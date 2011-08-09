@@ -4948,6 +4948,26 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 }
 
+function cell_ajustee_une_ligne($texte,$x,$y,$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure) {
+	global $pdf;
+
+	$pdf->SetFont($fonte,$graisse,$hauteur_caractere);
+	$val = $pdf->GetStringWidth($texte);
+	$temoin='';
+	while($temoin != 'ok') {
+		if($largeur_dispo < $val){
+			$hauteur_caractere = $hauteur_caractere-0.3;
+			$pdf->SetFont($fonte,$graisse,$hauteur_caractere);
+			$val = $pdf->GetStringWidth($texte);
+		} else {
+			$temoin = 'ok';
+		}
+	}
+
+	$pdf->SetXY($x,$y);
+	$pdf->Cell($largeur_dispo,$h_ligne, $texte,$bordure,2,$alignement);
+}
+
 function casse_mot($mot,$mode='maj') {
 	if($mode=='maj') {
 		return strtr(strtoupper($mot),"äâàáåãéèëêòóôõöøìíîïùúûüıñçşÿæ½ğø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜİÑÇŞİÆ¼ĞØ");

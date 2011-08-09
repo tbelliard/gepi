@@ -68,6 +68,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']==1)) {
 	$order_by = "nom";
 }
 
+//debug_var();
 //=====================================================
 if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 
@@ -83,8 +84,6 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 
 	// Filtrer les caractères dans le nom de fichier:
 	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
-
-	send_file_download_headers('text/x-csv',$nom_fic);
 
 	$fd="";
 	//$fd.=affiche_tableau_csv2($nb_lignes_tableau, $nb_col, $ligne1_csv, $col);
@@ -103,7 +102,277 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 		$fd.=preg_replace("/&#039;/","'",html_entity_decode($lignes_csv[$j])."\n");
 	}
 
+	send_file_download_headers('text/x-csv',$nom_fic);
 	echo $fd;
+	die();
+}
+if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
+
+	$now = gmdate('D, d M Y H:i:s') . ' GMT';
+
+	$chaine_titre="export";
+	if(isset($current_group)) {
+		$chaine_titre=$current_group['name']."_".preg_replace("/,/","_",$current_group['classlist_string']);
+	}
+
+	$nom_fic=$chaine_titre."_".$now.".pdf";
+
+	// Filtrer les caractères dans le nom de fichier:
+	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
+
+	//include("get_param_pdf.php");
+
+	// Extraire les infos générales sur l'établissement
+	//require("../bulletin/header_bulletin_pdf.php");
+
+	require('../fpdf/fpdf.php');
+	require('../fpdf/ex_fpdf.php');
+	require_once("../fpdf/class.multicelltag.php");
+
+	// Fichier d'extension de fpdf pour le bulletin
+	require_once("../class_php/gepi_pdf.class.php");
+
+	// Fonctions php des bulletins pdf
+	require_once("../bulletin/bulletin_fonctions.php");
+	// Ensemble des données communes
+	require_once("../bulletin/bulletin_donnees.php");
+
+	define('FPDF_FONTPATH','../fpdf/font/');
+	/*
+	define('TopMargin','5');
+	define('RightMargin','2');
+	define('LeftMargin','2');
+	define('BottomMargin','5');
+	define('LargeurPage','210');
+	define('HauteurPage','297');
+	*/
+	session_cache_limiter('private');
+
+	$X1 = 0; $Y1 = 0; $X2 = 0; $Y2 = 0;
+	$X3 = 0; $Y3 = 0; $X4 = 0; $Y4 = 0;
+	$X5 = 0; $Y5 = 0; $X6 = 0; $Y6 = 0;
+
+	$annee_scolaire = $gepiYear;
+
+	$gepiSchoolName=getSettingValue('gepiSchoolName');
+
+	$ligne1_csv=$_POST['ligne1_csv'];
+	$lignes_csv=$_POST['lignes_csv'];
+
+
+	$largeur_page=210;
+	$hauteur_page=297;
+
+	$marge_gauche=5;
+	$marge_droite=5;
+	$marge_haute=5;
+	$marge_basse=5;
+
+	$hauteur_police=10;
+	$largeur_col_nom_ele=40;
+
+	// Taille en-dessous de laquelle on passe en format Paysage.
+	$largeur_min_app=55;
+
+	// Hauteur des lignes:
+	//$h_cell=10;
+	$h_cell=isset($_POST['h_cell']) ? $_POST['h_cell'] : 10;
+	if((!preg_match("/^[0-9]+$/", $h_cell)||($h_cell<5))) {$h_cell=10;}
+	$h_ligne_titre_tableau=10;
+
+	// Largeur des colonnes
+	$largeur_col=array();
+	$largeur_col[1]=$largeur_col_nom_ele;
+	$indice_col_app=array();
+
+	$taille_max_police=$hauteur_police;
+	$taille_min_police=ceil($taille_max_police/3);
+
+	$x0=$marge_gauche;
+	$y0=$marge_haute;
+
+	$largeur_nomprenom_classe_et_notes=$marge_gauche+$largeur_col_nom_ele;
+	$nb_col_app=0;
+	for($i=2;$i<=count($ligne1_csv);$i++) {
+
+		if(preg_match("/^Note/", $ligne1_csv[$i])) {
+			$largeur_nomprenom_classe_et_notes+=10;
+			$largeur_col[$i]=10;
+		}
+		elseif(preg_match("/^Classe/", $ligne1_csv[$i])) {
+			$largeur_nomprenom_classe_et_notes+=10;
+			$largeur_col[$i]=10;
+		}
+		elseif(preg_match("/^Rang/", $ligne1_csv[$i])) {
+			$largeur_nomprenom_classe_et_notes+=10;
+			$largeur_col[$i]=10;
+		}
+		elseif(preg_match("/^Moyenne/", $ligne1_csv[$i])) {
+			$largeur_nomprenom_classe_et_notes+=10;
+			$largeur_col[$i]=10;
+		}
+		else {
+			$nb_col_app++;
+			$indice_col_app[]=$i;
+		}
+	}
+
+	$format_page="P";
+	if($nb_col_app>0) {
+		$largeur_col_app=floor(($largeur_page-$marge_droite-$largeur_nomprenom_classe_et_notes)/$nb_col_app);
+
+		if($largeur_col_app<$largeur_min_app) {
+			$format_page="L";
+			$largeur_page=297;
+			$hauteur_page=210;
+
+			$largeur_col_app=floor(($largeur_page-$marge_droite-$largeur_nomprenom_classe_et_notes)/$nb_col_app);
+		}
+	}
+
+	for($i=0;$i<count($indice_col_app);$i++) {
+		$largeur_col[$indice_col_app[$i]]=$largeur_col_app;
+	}
+
+	$pdf=new bul_PDF($format_page, 'mm', 'A4');
+	$pdf->SetCreator($gepiSchoolName);
+	$pdf->SetAuthor($gepiSchoolName);
+	$pdf->SetKeywords('');
+	$pdf->SetSubject('Mes_moyennes');
+	$pdf->SetTitle('Mes_moyennes');
+	$pdf->SetDisplayMode('fullwidth', 'single');
+	$pdf->SetCompression(TRUE);
+	$pdf->SetAutoPageBreak(TRUE, 5);
+
+	$pdf->AddPage();
+	$fonte='Arial';
+
+	$pdf->SetFont($fonte,'B',8);
+
+	$texte_titre=$current_group['profs']['proflist_string']." - ".$current_group['description']." en ".$current_group['classlist_string'];
+
+	$pdf->SetXY($x0,$y0);
+
+	$texte=$texte_titre;
+	$largeur_dispo=$largeur_page-$marge_gauche-$marge_droite;
+	$hauteur_caractere=12;
+	$h_ligne=$h_ligne_titre_tableau;
+	$graisse='B';
+	$alignement='C';
+	$bordure='';
+	cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
+	$y2=$y0+$h_ligne_titre_tableau;
+
+
+	//===========================
+	// Ligne d'entête du tableau
+	//$pdf->SetXY($x0,$y0);
+	$pdf->SetXY($x0,$y2);
+	$largeur_dispo=$largeur_col_nom_ele;
+	$texte=$ligne1_csv[1];
+
+	$graisse='B';
+	//$alignement='L';
+	$alignement='C';
+	$bordure='LRBT';
+	cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+	$alignement='C';
+	$largeur_dispo=$largeur_col_nom_ele;
+	$x2=$x0+$largeur_col_nom_ele;
+	for($i=2;$i<=count($ligne1_csv);$i++) {
+		$pdf->SetXY($x2, $y2);
+		$largeur_dispo=$largeur_col[$i];
+
+		$texte=" ".$ligne1_csv[$i]." ";
+		//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+		cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+		$x2+=$largeur_dispo;
+	}
+	//===========================
+
+	$graisse='';
+	$alignement='C';
+	$bordure='LRBT';
+
+	$y2=$y2+$h_ligne_titre_tableau;
+	$k=1;
+	for($j=0;$j<count($lignes_csv);$j++) {
+		$tab=explode(";", $lignes_csv[$j]);
+		if(($tab[0]!='Moyenne')&&($tab[0]!='Min.')&&($tab[0]!='Max.')) {
+			$h_ligne=$h_cell;
+			$graisse="";
+		}
+		else {
+			$h_ligne=$h_ligne_titre_tableau;
+			$graisse="B";
+		}
+
+		//if($y0+$k*$h_cell>$hauteur_page-5-$h_cell) {
+		if($y2+$h_ligne>$hauteur_page-$marge_basse) {
+			$pdf->AddPage();
+
+			//===========================
+			// Ligne d'entête du tableau
+			$pdf->SetXY($x0,$y0);
+			$largeur_dispo=$largeur_col_nom_ele;
+			$texte=$ligne1_csv[1];
+
+			//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+			$graisse='B';
+			//$alignement='L';
+			$alignement='C';
+			$bordure='LRBT';
+			cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+		
+			$alignement='C';
+			$largeur_dispo=$largeur_col_nom_ele;
+			$x2=$x0+$largeur_col_nom_ele;
+			$y2=$y0;
+			for($i=2;$i<=count($ligne1_csv);$i++) {
+				$pdf->SetXY($x2, $y2);
+				$largeur_dispo=$largeur_col[$i];
+		
+				$texte=" ".$ligne1_csv[$i]." ";
+				//$texte=$ligne1_csv[$i];
+				//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+				cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+		
+				$x2+=$largeur_dispo;
+			}
+			//===========================
+
+			$y2=$y0+$h_ligne_titre_tableau;
+
+			$k=1;
+
+			$graisse='';
+			$alignement='C';
+
+		}
+		$x2=$x0;
+
+		for($i=1;$i<=count($ligne1_csv);$i++) {
+			$pdf->SetXY($x2, $y2);
+
+			$largeur_dispo=$largeur_col[$i];
+			$texte=$tab[$i-1];
+			if(preg_match("/^App/", $ligne1_csv[$i])) {
+				cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
+			}
+			else {
+				cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+			}
+			$x2+=$largeur_dispo;
+		}
+		$y2+=$h_ligne;
+
+		$k++;
+	}
+
+	send_file_download_headers('application/pdf',$nom_fic);
+	$pdf->Output($nom_fic,'I');
 	die();
 }
 //=====================================================
@@ -1527,9 +1796,9 @@ function checkbox_change(champ, cpt) {
 
 
 	//=======================================================
-	echo "\n<!-- Formulaire pour l'export CSV -->\n";
 	if((isset($col_csv))&&(count($col_csv)>0)) {
 		echo "<div style='width:10em;float:right;'>\n";
+		echo "\n<!-- Formulaire pour l'export CSV -->\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"form_csv\" target='_blank'>\n";
 	
 		for($i=1;$i<=count($ligne1_csv);$i++) {
@@ -1562,6 +1831,45 @@ function checkbox_change(champ, cpt) {
 		// On ne met le bouton que pour l'affichage avec entête
 		if ($en_tete == "yes") {echo "<input type='submit' value='Générer un CSV' />\n";}
 		echo "</form>\n";
+
+		echo "\n<!-- Formulaire pour l'export PDF -->\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"form_pdf\" target='_blank'>\n";
+	
+		for($i=1;$i<=count($ligne1_csv);$i++) {
+			echo "<input type='hidden' name='ligne1_csv[$i]' value=\"$ligne1_csv[$i]\" />\n";
+		}
+		echo "<br />\n";
+	
+		$lignes_csv=array();
+		for($i=1;$i<=count($col_csv);$i++) {
+			for($j=0;$j<count($col_csv[$i]);$j++) {
+				if(!isset($lignes_csv[$j])) {
+					$lignes_csv[$j]=$col_csv[$i][$j];
+				}
+				else {
+					$lignes_csv[$j].=";".preg_replace('/"/',"'",preg_replace("/;/",",",preg_replace("/&#039;/","'",html_entity_decode($col_csv[$i][$j]))));
+				}
+	
+				//echo "<input type='hidden' name='col_csv_".$i."[$j]' value='".$col_csv[$i][$j]."' />\n";
+			}
+			//echo "<br />\n";
+		}
+	
+		for($j=0;$j<count($col_csv[1]);$j++) {
+			echo "<input type='hidden' name='lignes_csv[$j]' value=\"".$lignes_csv[$j]."\" />\n";
+			//echo "<br />\n";
+		}
+	
+		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
+		echo "<input type='hidden' name='mode' value='pdf' />\n";
+		// On ne met le bouton que pour l'affichage avec entête
+		if ($en_tete == "yes") {
+			echo "<input type='submit' value='Générer un PDF' />\n";
+			echo "<br />\n";
+			echo "Hauteur de ligne&nbsp;: <input type='text' name='h_cell' id='h_cell' value='10' size='2' onKeyDown=\"clavier_2(this.id,event,5,50);\" AutoComplete=\"off\" />mm\n";
+		}
+		echo "</form>\n";
+
 		echo "</div>\n";
 	}
 	//=======================================================
