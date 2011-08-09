@@ -332,6 +332,7 @@ if (file_exists(dirname(__FILE__).'/../lib/simplesaml/config/authsources.php')) 
 	echo "</label>\n";
 	
 	echo "<br/>\n<select name=\"auth_simpleSAML_source\" size=\"1\">\n";
+	echo "<option value='unset'></option>";
 	include_once(dirname(__FILE__).'/../lib/simplesaml/lib/_autoload.php');
 	$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
 	$sources = $config->getOptions();
