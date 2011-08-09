@@ -247,7 +247,7 @@ class Session {
 								exit();
               }else{
                 if ($this->current_auth_mode == "sso") {
-									setcookie('RNE', $t_rne);
+									setcookie('RNE', $t_rne, null, '/');
 									header("Location: login_sso.php?rne=".$t_rne);
 									exit();
 								} else {
@@ -279,7 +279,7 @@ class Session {
 							}else{
 								// Il n'y en a qu'un, on recharge !
 								if ($this->current_auth_mode == "sso") {
-									setcookie('RNE', $user["rne"][0]);
+									setcookie('RNE', $user["rne"][0], null, '/');
 									header("Location: login_sso.php?rne=".$user["rne"][0]);
 									exit();
 								} else {

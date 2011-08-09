@@ -77,7 +77,7 @@ NULL , 'Interface de GEPI', 'origine', 'n'
 
 // Pour le tbs_multisite
 if (isset($_GET["rne"])) {
-	setcookie('RNE', $_GET["rne"]);
+	setcookie('RNE', $_GET["rne"], null, '/');
 }
 
 // Vérification de la bonne installation de GEPI

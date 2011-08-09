@@ -22,7 +22,7 @@
 
 // Pour le multisite
 if (isset($_GET["rne"])) {
-	setcookie('RNE', $_GET["rne"]);
+	setcookie('RNE', $_GET["rne"], null, '/');
 }
 
 $niveau_arbo = 0;
