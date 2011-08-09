@@ -37,7 +37,7 @@ $GLOBALS['tabdiv_infobulle'] = array();
 /**
  * Texte à afficher quand une période est close
  * 
- * @global text $GLOBALS['gepiClosedPeriodLabel']
+ * @global string $GLOBALS['gepiClosedPeriodLabel']
  * @name $gepiClosedPeriodLabel
  */
 $GLOBALS['gepiClosedPeriodLabel'] = '';
@@ -98,10 +98,10 @@ include_once dirname(__FILE__).'/share-notes.inc.php';
 /**
  * Envoi d'un courriel
  *
- * @param text $sujet Le sujet du message
- * @param text $message Le message
- * @param text $destinataire Le destinataire
- * @param text $ajout_headers Text à ajouter dans le header
+ * @param string $sujet Le sujet du message
+ * @param string $message Le message
+ * @param string $destinataire Le destinataire
+ * @param string $ajout_headers Text à ajouter dans le header
  */
 function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 
@@ -478,7 +478,7 @@ function genDateSelector($prefix, $day, $month, $year, $option)
  * 
  * Passer la variable $local_debug à "y" pour activer le remplissage du fichier "/tmp/calcule_moyenne.txt" de debug
  * 
- * @param text $texte 
+ * @param string $texte 
  */
 function fdebug($texte){
 	$local_debug="n";
@@ -535,7 +535,7 @@ function checkAccess() {
  * Vérifie qu'un enseignant enseigne une matière dans une classe
  *
  * @deprecated la table j_classes_matieres_professeurs n'existe plus
- * @param text $login Login de l'enseignant
+ * @param string $login Login de l'enseignant
  * @param int $id_classe Id de la classe
  * @param type $matiere
  * @return boolean
@@ -561,8 +561,8 @@ function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
 /**
  * Recherche dans la base l'adresse courriel d'un utilisateur
  *
- * @param text $login_u Login de l'utilisateur
- * @return text adresse courriel de l'utilisateur
+ * @param string $login_u Login de l'utilisateur
+ * @return string adresse courriel de l'utilisateur
  */
 function retourne_email ($login_u) {
 $call = mysql_query("SELECT email FROM utilisateurs WHERE login = '$login_u'");
@@ -574,7 +574,7 @@ return $email;
 /**
  * Renvoie une chaine débarassée de l'encodage ASCII
  *
- * @param text $s le texte à convertir
+ * @param string $s le texte à convertir
  * @return string le texte avec les lettres accentuées
  */
 function dbase_filter($s){
@@ -604,8 +604,8 @@ function dbase_filter($s){
 /**
  * Renvoie le navigateur et sa version
  *
- * @param text $HTTP_USER_AGENT
- * @return text navigateur - version
+ * @param string $HTTP_USER_AGENT
+ * @return string navigateur - version
  */
 function detect_browser($HTTP_USER_AGENT) {
 	// D'après le fichier db_details_common.php de phpmyadmin
@@ -721,7 +721,7 @@ function detect_browser($HTTP_USER_AGENT) {
  * Retourne la date passée en argument si le format n'est pas bon
  *
  * @param date $date La date à formater
- * @return text la date formatée
+ * @return string la date formatée
  */
 function affiche_date_naissance($date) {
     if (strlen($date) == 10) {
@@ -945,7 +945,7 @@ function get_periode_active($_id_classe){
  * la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
  * 
  * @deprecated GEPI ne fonctionne plus sans php 5.2 et plus
- * @param text $string
+ * @param string $string
  * @return type 
  */
 function html_entity_decode_all_version ($string)
@@ -1263,7 +1263,7 @@ function get_user_temp_directory(){
  * Retourne un nombre formaté en Mo, ko ou o suivant ça taille
  *
  * @param int $volume le nombre à formater
- * @return text le nombre formaté
+ * @return string le nombre formaté
  */
 function volume_human($volume){
 	if($volume>=1048576){
@@ -1283,8 +1283,8 @@ function volume_human($volume){
  * Renvoie la taille d'un répertoire
  *
  * @global int $totalsize
- * @param text $dir Le répertoire à tester
- * @return text la taille formatée 
+ * @param string $dir Le répertoire à tester
+ * @return string la taille formatée 
  * @see volume_dir()
  * @see volume_human()
  */
@@ -1300,7 +1300,7 @@ function volume_dir_human($dir){
  * Additionne la taille des répertoires et sous-répertoires
  *
  * @global int
- * @param text $dir répertoire à parser
+ * @param string $dir répertoire à parser
  * @return int la taille totale du répertoire
  */
 function volume_dir($dir){
@@ -1328,7 +1328,7 @@ function volume_dir($dir){
 /**
  * Supprime les fichiers d'un dossier
  *
- * @param text $dir le répertoire à vider
+ * @param string $dir le répertoire à vider
  * @return boolean TRUE si tout c'est bien passé
  * @todo En ajoutant un paramètre à la fonction, on pourrait activer la suppression récursive (avec une profondeur par exemple)
  */
@@ -1364,8 +1364,8 @@ function vider_dir($dir){
  * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien
  * retournée en ISO-8859-1.
  * 
- * @param text La chaine à tester
- * @return text La chaine traitée
+ * @param string La chaine à tester
+ * @return string La chaine traitée
  * @todo On pourrait au moins passer en ISO-8859-15
  */
 function ensure_iso8859_1($str) {
@@ -1380,8 +1380,8 @@ function ensure_iso8859_1($str) {
 /**
  * Encode une chaine en utf8
  * 
- * @param text $chaine La chaine à tester
- * @return text La chaine traitée
+ * @param string $chaine La chaine à tester
+ * @return string La chaine traitée
  */
 function caract_ooo($chaine){
 	if(function_exists('utf8_encode')){
@@ -1419,7 +1419,7 @@ function caract_ooo($chaine){
 /**
  * Correspondances de caractères accentués/désaccentués
  * 
- * @global text $GLOBALS['liste_caracteres_accentues']
+ * @global string $GLOBALS['liste_caracteres_accentues']
  * @name $liste_caracteres_accentues
  */
 $GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõø¨ûüùúıÿ¸";
@@ -1427,7 +1427,7 @@ $GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚİ¾´áàâäãåçéèê
 /**
  * Correspondances de caractères accentués/désaccentués
  * 
- * @global text $GLOBALS['liste_caracteres_desaccentues']
+ * @global string $GLOBALS['liste_caracteres_desaccentues']
  * @name $liste_caracteres_desaccentues
  */
 $GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
@@ -1517,6 +1517,12 @@ function get_class_from_ele_login($ele_login){
 	return $tab_classe;
 }
 
+/**
+ * Retourne les classes d'un élève ordonnées par périodes puis classes
+ *
+ * @param string $ele_login Login de l'élève
+ * @return array 
+ */
 function get_noms_classes_from_ele_login($ele_login){
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
 	$res_class=mysql_query($sql);
@@ -4529,7 +4535,7 @@ function recherche_eleves_sans_photo() {
 
 /**
  *
- * @param text $statut statut recherché
+ * @param string $statut statut recherché
  * @return array tableau des personnels sans photo ou NULL
  */
 function recherche_personnel_sans_photo($statut='professeur') {
@@ -4549,8 +4555,8 @@ function recherche_personnel_sans_photo($statut='professeur') {
 
 /**
  * Efface le dossier photo passé en argument
- * @param text $photos le dossier à effacer personnels ou eleves
- * @return text L'état de la suppression
+ * @param string $photos le dossier à effacer personnels ou eleves
+ * @return string L'état de la suppression
  */
 function efface_photos($photos) {
 // on liste les fichier du dossier photos/personnels ou photos/eleves
@@ -4603,8 +4609,8 @@ function efface_photos($photos) {
  **********************************************************************************************/
 /**
  * gestion du fil d'ariane en remplissant le tableau $_SESSION['ariane']
- * @param text $lien page atteinte par le lien
- * @param text $texte texte à afficher dans le fil d'ariane
+ * @param string $lien page atteinte par le lien
+ * @param string $texte texte à afficher dans le fil d'ariane
  * @return booleanTrue si tout s'est bien passé, False sinon
  */
 function suivi_ariane($lien,$texte){
@@ -4668,7 +4674,7 @@ function affiche_ariane($validation= FALSE,$themessage="" ){
 /**
  * Renvoie le chemin relatif pour remonter à la racine du site
  * @param int $niveau niveau dans l'arborescence
- * @return text chemin relatif vers la racine
+ * @return string chemin relatif vers la racine
  */
 function path_niveau($niveau=1){
   switch ($niveau) {
@@ -4688,7 +4694,7 @@ function path_niveau($niveau=1){
 
 /**
  *
- * @param text $dossier_a_archiver limité à documents ou photos
+ * @param string $dossier_a_archiver limité à documents ou photos
  * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
  * @return bool
  */
@@ -4735,8 +4741,8 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 
 /**
  * Déplace un fichier de $source vers $dest
- * @param text $source : emplacement du fichier à déplacer
- * @param text $dest : Nouvel emplacement du fichier
+ * @param string $source : emplacement du fichier à déplacer
+ * @param string $dest : Nouvel emplacement du fichier
  * @return bool
  */
 function deplacer_upload($source, $dest) {
@@ -4749,8 +4755,8 @@ function deplacer_upload($source, $dest) {
  * Télécharge un fichier dans $dirname après avoir nettoyer son nom si tout se passe bien :
  * $sav_file['name']=my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name'])
  * @param array $sav_file tableau de type $_FILE["nom_du_fichier"]
- * @param text $dirname
- * @return text ok ou message d'erreur
+ * @param string $dirname
+ * @return string ok ou message d'erreur
  */
 function telecharge_fichier($sav_file,$dirname,$type,$ext){
   if (!isset($sav_file['tmp_name']) or ($sav_file['tmp_name'] =='')) {
@@ -4774,10 +4780,10 @@ function telecharge_fichier($sav_file,$dirname,$type,$ext){
 
 /**
  * Extrait une archive Zip
- * @param text $fichier le nom du fichier à dézipper
- * @param text $repertoire le répertoire de destination
+ * @param string $fichier le nom du fichier à dézipper
+ * @param string $repertoire le répertoire de destination
  * @param int $niveau niveau dans l'arborescence de la page appelante
- * @return text ok ou message d'erreur
+ * @return string ok ou message d'erreur
  */
 function dezip_PclZip_fichier($fichier,$repertoire,$niveau=1){
   $path = path_niveau();

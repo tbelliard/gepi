@@ -22,7 +22,7 @@ $GLOBALS['niveau_arbo']=$niveau_arbo;
  * 
  * On la retrouve en tant que global dans share.inc.php
  *
- * @global text $GLOBALS['gepiPath']
+ * @global string $GLOBALS['gepiPath']
  * @name $gepiPath
  */
 $GLOBALS['gepiPath']=$gepiPath;
@@ -30,7 +30,7 @@ $GLOBALS['gepiPath']=$gepiPath;
 /**
  * Chemin relatif vers la racine de GEPI
  *
- * @global text $GLOBALS['relatif_gepi']
+ * @global string $GLOBALS['relatif_gepi']
  * @name $chemin_relatif_gepi
  */
 $GLOBALS['relatif_gepi']='';
@@ -38,7 +38,7 @@ $GLOBALS['relatif_gepi']='';
 /**
  * y si on est en multisite, n sinon
  * 
- * @global text $GLOBALS['multisite']
+ * @global string $GLOBALS['multisite']
  * @name $multisite
  */
 $GLOBALS['multisite'] = $multisite;
