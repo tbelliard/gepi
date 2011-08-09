@@ -41,12 +41,12 @@ function generate_token() {
 /**
  * Renvoie une balise <input type='hidden'... /> avec la variable $_SESSION['gepi_alea']
  * 
- * Dans une page, il ne devrait y avoir qu'un seul appel à add_token_field(true), les autres... 
+ * Dans une page, il ne devrait y avoir qu'un seul appel à add_token_field(TRUE), les autres... 
  * dans les autres formulaires étant avec add_token_field()
  * 
- * Appels pour insérer le champ 'csrf_alea' dans des forumulaires inclus dans le code
+ * Appels pour insérer le champ 'csrf_alea' dans des formulaires inclus dans le code
  * de messages du panneau d'affichage (table 'messages') : 
- * add_token_field(true,false) ou add_token_field(false,false)
+ * add_token_field(TRUE,FALSE) ou add_token_field(FALSE,FALSE)
  * 
  * @todo On pourrait utiliser une variable globale pour... si l'id csrf_alea est déjà défini ne plus l'ajouter...
  * @param bool $avec_id ajoute un argument id='csrf_alea' à la balise si TRUE
@@ -70,13 +70,13 @@ function add_token_field($avec_id=FALSE,$avec_gepi_alea=TRUE) {
  * 
  * appels pour insérer le champ 'csrf_alea' dans des liens inclus dans le code
  * de messages du panneau d'affichage (table 'messages') :
- * add_token_in_url(true,false) ou add_token_in_url(false,false)
+ * add_token_in_url(TRUE,FALSE) ou add_token_in_url(FALSE,FALSE)
  * 
  * @param bool $html_chars echappe le & si TRUE
- * @param bool $avec_gepi_alea$ remplace le nombre aléatoire par "_CRSF_ALEA_" si FALSE
+ * @param bool $avec_gepi_alea remplace le nombre aléatoire par "_CRSF_ALEA_" si FALSE
  * @return text le texte à ajouter à l'URL
  */
-function add_token_in_url($html_chars = TRUE,$avec_gepi_alea=TRUE) {
+function add_token_in_url($html_chars = TRUE, $avec_gepi_alea=TRUE) {
 	
 	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CRSF_ALEA_";
 
@@ -102,14 +102,14 @@ function add_token_in_js_func() {
  * 
  * Avant le Header, on appelle check_token()
  * 
- * Après le Header, on appelle check_token(false)
+ * Après le Header, on appelle check_token(FALSE)
  *
  * @global int
- * @param type $redirection 
+ * @param bool $redirection 
  * @see getSettingValue()
  * @see action_alea_invalide()
  */
-function check_token($redirection=true) {
+function check_token($redirection=TRUE) {
 	global $niveau_arbo;
 
 	$csrf_alea=isset($_POST['csrf_alea']) ? $_POST['csrf_alea'] : (isset($_GET['csrf_alea']) ? $_GET['csrf_alea'] : "");
@@ -157,7 +157,7 @@ function check_token($redirection=true) {
 	else {
 		if($csrf_alea!=$_SESSION['gepi_alea']) {
 			// Sans mail
-			action_alea_invalide(false);
+			action_alea_invalide(FALSE);
 		}
 	}
 }
