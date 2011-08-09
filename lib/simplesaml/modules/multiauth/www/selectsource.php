@@ -22,9 +22,6 @@ $state = SimpleSAML_Auth_State::loadState($authStateId, sspmod_multiauth_Auth_So
 if (array_key_exists('source', $_REQUEST)) {
 	$source = $_REQUEST['source'];
 	sspmod_multiauth_Auth_Source_MultiAuth::delegateAuthentication($source, $state);
-} elseif (array_key_exists('source', $_COOKIE)) {
-	$source = $_COOKIE['source'];
-	sspmod_multiauth_Auth_Source_MultiAuth::delegateAuthentication($source, $state);	
 }
 
 $globalConfig = SimpleSAML_Configuration::getInstance();
