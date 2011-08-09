@@ -623,5 +623,212 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 
 
 
+/**
+ * Crée un formulaire avec une zone de sélection contenant les classes
+ *
+ * @param type $link lien vers la page à atteindre ensuite
+ * @param type $current Id de la classe courante pour qu'elle soit par défaut
+ * @param type $year l'année
+ * @param type $month le mois
+ * @param type $day le jour
+ * @return text la balise <form> complète
+ */
+function make_classes_select_html($link, $current, $year, $month, $day)
+
+{
+  // Pour le multisite, on doit récupérer le RNE de l'établissement
+  $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
+  $aff_input_rne = $aff_get_rne = NULL;
+  if ($rne != 'aucun') {
+	$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
+	$aff_get_rne = '&amp;rne=' . $rne;
+  }
+  $out_html = "<form name=\"classe\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><strong><em>Classe :</em></strong><br />
+  " . $aff_input_rne . "
+  <select name=\"classe\" onchange=\"classe_go()\">";
+
+  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
+
+
+  if (isset($_SESSION['statut']) && ($_SESSION['statut']=='scolarite'
+		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")){
+  $sql = "SELECT DISTINCT c.id, c.classe
+	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
+	WHERE (c.id = jgc.id_classe
+	  AND jgc.id_groupe = ct.id_groupe
+	  AND jsc.id_classe=jgc.id_classe
+	  AND jsc.login='".$_SESSION ['login']."'
+		)
+	ORDER BY classe ;";
+
+  } else if (isset($_SESSION['statut']) && ($_SESSION['statut']=='cpe'
+		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")){
+
+
+	$sql = "SELECT DISTINCT c.id, c.classe
+	  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_eleves_cpe jec,j_eleves_classes jecl
+	  WHERE (c.id = jgc.id_classe
+	  AND jgc.id_groupe = ct.id_groupe
+	  AND jec.cpe_login = '".$_SESSION ['login']."'
+	  AND jec.e_login = jecl.login
+	  AND jecl.id_classe = jgc.id_classe)
+	  ORDER BY classe ;";
+  }else{
+
+
+	$sql = "SELECT DISTINCT c.id, c.classe
+	  FROM classes c, j_groupes_classes jgc, ct_entry ct
+	  WHERE (c.id = jgc.id_classe
+	  AND jgc.id_groupe = ct.id_groupe)
+	  ORDER BY classe";
+  }
+
+  //GepiAccesCdtCpeRestreint
+
+  $res = sql_query($sql);
+
+
+  if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
+  {
+    $selected = ($row[0] == $current) ? "selected" : "";
+    $link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$row[0]" . $aff_get_rne;
+    $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[1]);
+  }
+  $out_html .= "</select>
+  <script type=\"text/javascript\">
+  <!--
+  function classe_go()
+  {
+  box = document.forms[\"classe\"].classe;
+  destination = box.options[box.selectedIndex].value;
+  if (destination) location.href = destination;
+  }
+  // -->
+  </script>
+  <noscript>
+  <input type=submit value=\"OK\" />
+  </noscript>
+  </form>";
+  return $out_html;
+}
+
+/**
+ * Crée un formulaire avec une zone de sélection contenant les groupes 
+ * 
+ * $id_ref peut être soit l'ID d'une classe, auquel cas on affiche tous les groupes pour la classe,
+ * soit le login d'un élève, auquel cas on affiche tous les groupes pour l'élève en question
+ * 
+ * @param type $link lien vers la page à atteindre ensuite
+ * @param int|text $id_ref Id d'une classe ou login d'un élève
+ * @param int|text $current Id de la classe courante
+ * @param int $year Année
+ * @param type $month Mois
+ * @param type $day Jour
+ * @param text $special
+ * @return text La balise <form>
+ */
+function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day, $special='')
+{
+	// Pour le multisite, on doit récupérer le RNE de l'établissement
+	$prof="";
+	
+	$rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
+	$aff_input_rne = $aff_get_rne = NULL;
+	if ($rne != 'aucun') {
+		$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
+		$aff_get_rne = '&amp;rne=' . $rne;
+	}
+		$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n" . $aff_input_rne . "\n
+	<h2 class='h2_label'> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label>\n</h2>\n<p>\n<select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
+	
+	if (is_numeric($id_ref)) {
+		$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>\n";
+	
+		if($special!='') {
+			$selected="";
+			if($special=='Toutes_matieres') {$selected=" selected='TRUE'";}
+			if (is_numeric($id_ref)) {
+				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
+			} else {
+				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
+			}
+			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
+		}
+	
+		$sql = "select DISTINCT g.id, g.name, g.description from j_groupes_classes jgc, groupes g, ct_entry ct where (" .
+				"jgc.id_classe='".$id_ref."' and " .
+				"g.id = jgc.id_groupe and " .
+				"jgc.id_groupe = ct.id_groupe" .
+				") order by g.name";
+	} else {
+		$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>\n";
+
+		if($special!='') {
+			$selected="";
+			if($special=='Toutes_matieres') {$selected=" selected='TRUE'";}
+			if (is_numeric($id_ref)) {
+				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
+			} else {
+				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
+			}
+			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
+		}
+
+		$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
+				"jec.login='".$id_ref."' and " .
+				"g.id = jec.id_groupe and " .
+				"jec.id_groupe = ct.id_groupe" .
+				") order by g.name";
+	}
+	$res = sql_query($sql);
+	if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
+	{
+		$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$row[0]."' and u.login=j.login) ORDER BY nom, prenom";
+		$res_prof = sql_query($test_prof);
+		$chaine = "";
+		for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
+			if ($k != 0) $chaine .= ", ";
+			$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+		}
+
+		$selected = ($row[0] == $current) ? "selected=\"selected\"" : "";
+		if (is_numeric($id_ref)) {
+			$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
+		} else {
+			$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
+		}
+
+		$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
+	}
+	$out_html .= "\n</select>\n</p>\n
+	
+	<script type=\"text/javascript\">
+	<!--
+	function matiere_go()
+	{
+		box = document.forms[\"matiere\"].matiere;
+		destination = box.options[box.selectedIndex].value;
+		if (destination) location.href = destination;
+	}
+	// -->
+	</script>
+	
+	<noscript><p>\n";
+		if (is_numeric($id_ref)) {
+			$out_html .= "<input type=\"hidden\" name=\"id_classe\" value=\"$id_ref\" />\n";
+		} else {
+			$out_html .= "<input type=\"hidden\" name=\"login_eleve\" value=\"$id_ref\" />\n";
+		}
+		$out_html .= "<input type=\"hidden\" name=\"year\" value=\"$year\" />
+		<input type=\"hidden\" name=\"month\" value=\"$month\" />
+		<input type=\"hidden\" name=\"day\" value=\"$day\" />
+		<input type=\"submit\" value=\"OK\" />
+		</p>
+	</noscript>
+	</form>\n";
+	
+	return $out_html;
+}
+
 
 ?>

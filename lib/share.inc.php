@@ -133,7 +133,6 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
  * @todo on déclare $char_spec alors qu'on ne l'utilise pas, n'y aurait-il pas un problème ?
  */
 function verif_mot_de_passe($password,$flag) {
-	// global $char_spec;
 	if ($flag == 1) {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
 			return FALSE;
@@ -597,8 +596,6 @@ function dbase_filter($s){
 
 /**
  * Renvoie le navigateur et sa version
- * 
- * 
  *
  * @param text $HTTP_USER_AGENT
  * @return text navigateur - version
@@ -822,17 +819,19 @@ function quelle_maj($num) {
 
 /**
  *
- * @global type $multisite
- * @return type 
+ * @global text
+ * @return bool TRUE si tout c'est bien passé 
+ * @see getSettingValue()
+ * @see saveSetting()
  */
 function check_backup_directory() {
 
 	global $multisite;
 
     $current_backup_dir = getSettingValue("backup_directory");
-    if ($current_backup_dir == null) $current_backup_dir = "no_folder";
+    if ($current_backup_dir == NULL) $current_backup_dir = "no_folder";
     if (!file_exists("./backup/".$current_backup_dir)) {
-        $backupDirName = null;
+        $backupDirName = NULL;
         if ($multisite != 'y') {
         	// On regarde d'abord si le répertoire de backup n'existerait pas déjà...
         	$handle=opendir('./backup');
@@ -844,12 +843,12 @@ function check_backup_directory() {
         	closedir($handle);
         }
 
-        if ($backupDirName != null) {
+        if ($backupDirName != NULL) {
             // Il existe : on met simplement à jour le nom du répertoire...
             $update = saveSetting("backup_directory",$backupDirName);
         } else {
-            // Il n existe pas
-            // On créé le répertoire de backup
+            // Il n'existe pas
+            // On crée le répertoire de backup
             $length = rand(35, 45);
             for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
             $dirname = $r;
@@ -909,8 +908,8 @@ function check_backup_directory() {
 /**
  * Fonction qui retourne le nombre de périodes pour une classe
  *
- * @param integer $_id_classe identifiant numérique de la classe
- * @return integer Nombre de periodes définies pour cette classe
+ * @param int identifiant numérique de la classe
+ * @return int Nombre de periodes définies pour cette classe
  */
 function get_period_number($_id_classe) {
     $periode_query = mysql_query("SELECT count(*) FROM periodes WHERE id_classe = '" . $_id_classe . "'");
@@ -919,9 +918,9 @@ function get_period_number($_id_classe) {
 }
 
 /**
- * Renvoie le numéro et le nom de la première période active (O) pour une classe
+ * Renvoie le numéro et le nom de la première période active pour une classe
  *
- * @param integer $_id_classe identifiant unique de la classe
+ * @param int $_id_classe identifiant unique de la classe
  * @return array numéro de la période 'num' et son nom 'nom'
  */
 function get_periode_active($_id_classe){
@@ -932,8 +931,17 @@ function get_periode_active($_id_classe){
 
 }
 
-// Pour les utilisateurs ayant des versions antérieures à PHP 4.3.0 :
-// la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
+/**
+ *  Equivalent à html_entity_decode()
+ * 
+ * Pour les utilisateurs ayant des versions antérieures à PHP 4.3.0 :
+ * la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
+ * 
+ * @deprecated GEPI ne fonctionne plus sans php 5.2 et plus
+ * @global type $use_function_html_entity_decode
+ * @param type $string
+ * @return type 
+ */
 function html_entity_decode_all_version ($string)
 {
    global $use_function_html_entity_decode;
@@ -947,210 +955,6 @@ function html_entity_decode_all_version ($string)
        return strtr ($string, $trans_tbl);
    } else
        return html_entity_decode($string);
-}
-
-function make_classes_select_html($link, $current, $year, $month, $day)
-
-{
-  // Pour le multisite, on doit récupérer le RNE de l'établissement
-  $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
-  $aff_input_rne = $aff_get_rne = NULL;
-  if ($rne != 'aucun') {
-	$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
-	$aff_get_rne = '&amp;rne=' . $rne;
-  }
-  $out_html = "<form name=\"classe\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><strong><em>Classe :</em></strong><br />
-  " . $aff_input_rne . "
-  <select name=\"classe\" onchange=\"classe_go()\">";
-	// correction W3C : onChange = onchange
-  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
-  // Ligne suivante corrigée sur suggestion tout à fait pertinente de Stéphane, mail du 1er septembre 06
-
-
-  if (isset($_SESSION['statut']) && ($_SESSION['statut']=='scolarite'
-		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")){
-  $sql = "SELECT DISTINCT c.id, c.classe
-	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
-	WHERE (c.id = jgc.id_classe
-	  AND jgc.id_groupe = ct.id_groupe
-	  AND jsc.id_classe=jgc.id_classe
-	  AND jsc.login='".$_SESSION ['login']."'
-		)
-	ORDER BY classe ;";
-
-  } else if (isset($_SESSION['statut']) && ($_SESSION['statut']=='cpe'
-		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")){
-
-
-	$sql = "SELECT DISTINCT c.id, c.classe
-	  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_eleves_cpe jec,j_eleves_classes jecl
-	  WHERE (c.id = jgc.id_classe
-	  AND jgc.id_groupe = ct.id_groupe
-	  AND jec.cpe_login = '".$_SESSION ['login']."'
-	  AND jec.e_login = jecl.login
-	  AND jecl.id_classe = jgc.id_classe)
-	  ORDER BY classe ;";
-  }else{
-
- /* if(getSettingValue('GepiAccesCdtCpeRestreint')!="yes"
-		  || getSettingValue('GepiAccesCdtScolRestreint')!="yes"){*/
-	$sql = "SELECT DISTINCT c.id, c.classe
-	  FROM classes c, j_groupes_classes jgc, ct_entry ct
-	  WHERE (c.id = jgc.id_classe
-	  AND jgc.id_groupe = ct.id_groupe)
-	  ORDER BY classe";
-  }
-
-  //GepiAccesCdtCpeRestreint
-
-  $res = sql_query($sql);
-
-
-  if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
-  {
-    $selected = ($row[0] == $current) ? "selected" : "";
-    $link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$row[0]" . $aff_get_rne;
-    $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[1]);
-  }
-  $out_html .= "</select>
-  <script type=\"text/javascript\">
-  <!--
-  function classe_go()
-  {
-  box = document.forms[\"classe\"].classe;
-  destination = box.options[box.selectedIndex].value;
-  if (destination) location.href = destination;
-  }
-  // -->
-  </script>
-  <noscript>
-  <input type=submit value=\"OK\" />
-  </noscript>
-  </form>";
-  return $out_html;
-}
-
-function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day, $special='')
-{
-	// $id_ref peut être soit l'ID d'une classe, auquel cas on affiche tous les groupes
-	// pour la classe, soit le login d'un élève, auquel cas on affiche tous les groupes
-	// pour l'élève en question
-
-	// correction W3C : onChange = onchange
-	//						  Ajout de balises <p>...</p> pour pouvoir mettre en forme le texte
-	//						  Création d'un label pour passer les tests WAI
-	//						  Ajout de balises <p>...</p> pour encadrer <select>...
-	/*
-	$out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><strong><em>Matière :</em></strong><br />
-	<select name=\"matiere\" onchange=\"matiere_go()\">\n";
-	*/
-	// Pour le multisite, on doit récupérer le RNE de l'établissement
-	$prof="";
-	
-	$rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
-	$aff_input_rne = $aff_get_rne = NULL;
-	if ($rne != 'aucun') {
-		$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
-		$aff_get_rne = '&amp;rne=' . $rne;
-	}
-		$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n" . $aff_input_rne . "\n
-	<h2 class='h2_label'> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label>\n</h2>\n<p>\n<select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
-	
-		// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
-	if (is_numeric($id_ref)) {
-		//$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>";
-		$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>\n";
-	
-		if($special!='') {
-			$selected="";
-			if($special=='Toutes_matieres') {$selected=" selected='TRUE'";}
-			if (is_numeric($id_ref)) {
-				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
-			} else {
-				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
-			}
-			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
-		}
-	
-		$sql = "select DISTINCT g.id, g.name, g.description from j_groupes_classes jgc, groupes g, ct_entry ct where (" .
-				"jgc.id_classe='".$id_ref."' and " .
-				"g.id = jgc.id_groupe and " .
-				"jgc.id_groupe = ct.id_groupe" .
-				") order by g.name";
-	} else {
-		// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
-		//$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>";
-		$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>\n";
-
-		if($special!='') {
-			$selected="";
-			if($special=='Toutes_matieres') {$selected=" selected='TRUE'";}
-			if (is_numeric($id_ref)) {
-				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
-			} else {
-				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
-			}
-			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
-		}
-
-		$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
-				"jec.login='".$id_ref."' and " .
-				"g.id = jec.id_groupe and " .
-				"jec.id_groupe = ct.id_groupe" .
-				") order by g.name";
-	}
-	$res = sql_query($sql);
-	if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
-	{
-		$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$row[0]."' and u.login=j.login) ORDER BY nom, prenom";
-		$res_prof = sql_query($test_prof);
-		$chaine = "";
-		for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
-			if ($k != 0) $chaine .= ", ";
-			$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
-		}
-		//$chaine .= ")";
-		
-		
-		//$selected = ($row[0] == $current) ? "selected" : "";
-		$selected = ($row[0] == $current) ? "selected=\"selected\"" : "";
-		if (is_numeric($id_ref)) {
-			$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
-		} else {
-			$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
-		}
-		// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
-		//$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
-		$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
-	}
-	$out_html .= "\n</select>\n</p>\n
-	
-	<script type=\"text/javascript\">
-	<!--
-	function matiere_go()
-	{
-		box = document.forms[\"matiere\"].matiere;
-		destination = box.options[box.selectedIndex].value;
-		if (destination) location.href = destination;
-	}
-	// -->
-	</script>
-	
-	<noscript><p>\n";
-		if (is_numeric($id_ref)) {
-			$out_html .= "<input type=\"hidden\" name=\"id_classe\" value=\"$id_ref\" />\n";
-		} else {
-			$out_html .= "<input type=\"hidden\" name=\"login_eleve\" value=\"$id_ref\" />\n";
-		}
-		$out_html .= "<input type=\"hidden\" name=\"year\" value=\"$year\" />
-		<input type=\"hidden\" name=\"month\" value=\"$month\" />
-		<input type=\"hidden\" name=\"day\" value=\"$day\" />
-		<input type=\"submit\" value=\"OK\" />
-		</p>
-	</noscript>
-	</form>\n";
-	// correction W3C : ajout de \" pour encadrer submit ci-dessus et de <p>...</p> pour encadrer <input...>
-	return $out_html;
 }
 
 function make_eleve_select_html($link, $login_resp, $current, $year, $month, $day)
@@ -1390,7 +1194,7 @@ function tentative_intrusion($_niveau, $_description) {
  * @param array $tab_lien tableau des liens
  * @param integer $nbcol Nombre de colonnes
  */
-function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = null){
+function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL){
 
 	// Nombre d'enregistrements à afficher
 	$nombreligne=count($tab_txt);
@@ -2013,7 +1817,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 						Si la barre de titre n'est pas affichée, ce bouton ne peut pas être affiché.
 		$survol_close:	'y' ou 'n' pour refermer le DIV automatiquement lorsque le survol quitte le DIV
 		$overflow:		'y' ou 'n' activer l'overflow automatique sur la partie Texte.
-						Il faut que $hauteur soit non nulle
+						Il faut que $hauteur soit non NULLe
 	*/
 	global $posDiv_infobulle;
 	global $tabid_infobulle;
