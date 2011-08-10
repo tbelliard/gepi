@@ -22,12 +22,12 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 	private $_search_table_gepi_login_column;
 
 	/**
-	 * @var search_champ_uid_retour Où trouver l'UID entre $username et $casattributes
+	 * @var champ_cas_uid_retour Où trouver l'UID entre $username et $casattributes
 	 */
-	private $_search_champ_uid_retour;
+	private $_champ_cas_uid_retour;
 
 	/**
-	 * @var search_champ_uid_retour Où trouver l'UID entre $username et $casattributes
+	 * @var champ_cas_uid_retour Où trouver l'UID entre $username et $casattributes
 	 */
 	private $_disconnect_CAS;
 
@@ -70,8 +70,8 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 			throw new Exception("gepi_login_column not specified");
 		}
 
-		if(isset($search_table_array['champ_uid_retour'])){
-			$this->_search_champ_uid_retour =  $search_table_array['champ_uid_retour'];
+		if(isset($search_table_array['champ_cas_uid_retour'])){
+			$this->_champ_cas_uid_retour =  $search_table_array['champ_cas_uid_retour'];
 		}else{
 			throw new Exception("champ_uid_retour not specified");
 		}
@@ -102,7 +102,7 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		// Database connection
 		require_once($path."/lib/mysql.inc");
 		
-		if ($this->_search_champ_uid_retour == 'username') {
+		if ($this->_champ_cas_uid_retour == 'username') {
 			$uid = $username;
 		} else {
 			$uid = $casattributes['uid'];

@@ -29,7 +29,7 @@ $config = array(
 		    'name' => 'plugin_sso_table',
 		    'cas_uid_column' => 'login_sso',
 		    'gepi_login_column' => 'login_gepi',
-		    'champ_uid_retour' => 'username'
+		    'champ_cas_uid_retour' => 'username'
 		),
 	),
 
