@@ -355,6 +355,274 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						die();
 
 					}
+					if($mode=='pdf') {
+						require('../fpdf/fpdf.php');
+						require('../fpdf/ex_fpdf.php');
+						require_once("../fpdf/class.multicelltag.php");
+					
+						// Fichier d'extension de fpdf pour le bulletin
+						require_once("../class_php/gepi_pdf.class.php");
+					
+						// Fonctions php des bulletins pdf
+						require_once("../bulletin/bulletin_fonctions.php");
+						// Ensemble des données communes
+						require_once("../bulletin/bulletin_donnees.php");
+					
+						define('FPDF_FONTPATH','../fpdf/font/');
+					
+						session_cache_limiter('private');
+					
+						$X1 = 0; $Y1 = 0; $X2 = 0; $Y2 = 0;
+						$X3 = 0; $Y3 = 0; $X4 = 0; $Y4 = 0;
+						$X5 = 0; $Y5 = 0; $X6 = 0; $Y6 = 0;
+					
+						$annee_scolaire = $gepiYear;
+					
+						$gepiSchoolName=getSettingValue('gepiSchoolName');
+					
+						$largeur_page=210;
+						$hauteur_page=297;
+					
+						$marge_gauche=5;
+						$marge_droite=5;
+						$marge_haute=5;
+						$marge_basse=5;
+					
+						$hauteur_police=10;
+						$taille_max_police=$hauteur_police;
+						$taille_min_police=ceil($taille_max_police/3);
+
+						// Largeur des colonnes
+						$largeur_col_nom_ele=40;
+						$largeur_min_col_note=10;
+						$largeur_max_col_note=30;
+						$largeur_col_note=($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele)/($nb_matieres+1);
+						if($largeur_col_note<$largeur_min_col_note) {
+							$largeur_col_note=$largeur_min_col_note;
+						}
+						elseif($largeur_col_note>$largeur_max_col_note) {
+							$largeur_col_note=$largeur_max_col_note;
+						}
+
+						// Hauteur des lignes:
+						$h_ligne_titre=10;
+						$h_ligne_titre_tableau=10;
+						$h_cell=10;
+						$h_min_cell=7;
+						$h_max_cell=10;
+
+						$x0=$marge_gauche;
+						$y0=$marge_haute;
+
+						$format_page="P";
+
+						// Tester si cela tient en largeur
+						$largeur_totale=$largeur_col_nom_ele+($nb_matieres+1)*$largeur_col_note;
+						if($largeur_totale>$largeur_page-$marge_gauche-$marge_droite) {
+							$format_page="L";
+							$tmp=$largeur_page;
+							$largeur_page=$hauteur_page;
+							$hauteur_page=$tmp;
+
+							if($largeur_totale>$largeur_page-$marge_gauche-$marge_droite) {
+								// Il va falloir réduire la taille des cellules
+								$largeur_col_note=floor(($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele)/($nb_matieres+1));
+							}
+						}
+
+						$nb_max_eleves_par_classe=0;
+						for($i=0;$i<$nb_classes;$i++) {
+							$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$tab_id_classe[$i]';";
+							$res=mysql_query($sql);
+							if(mysql_num_rows($res)>0) {
+								if(mysql_num_rows($res)>$nb_max_eleves_par_classe) {$nb_max_eleves_par_classe=mysql_num_rows($res);}
+							}
+						}
+						if($nb_max_eleves_par_classe>0) {
+							$h_cell=floor(($hauteur_page-$h_ligne_titre-$h_ligne_titre_tableau-$marge_haute-$marge_basse)/$nb_max_eleves_par_classe);
+
+							if($h_cell>$h_max_cell) {$h_cell=$h_max_cell;}
+
+							if($h_cell<$h_min_cell) {
+								$h_cell=$h_min_cell;
+								// Et on changera de page...
+								// On pourrait recalculer une hauteur optimale avec 2 pages, 3 pages,...
+							}
+						}
+
+						$pdf=new bul_PDF($format_page, 'mm', 'A4');
+						$pdf->SetCreator($gepiSchoolName);
+						$pdf->SetAuthor($gepiSchoolName);
+						$pdf->SetKeywords('');
+						$pdf->SetSubject('Examen blanc '.$id_exam);
+						$pdf->SetTitle('Examen blanc '.$id_exam);
+						$pdf->SetDisplayMode('fullwidth', 'single');
+						$pdf->SetCompression(TRUE);
+						$pdf->SetAutoPageBreak(TRUE, 5);
+
+						$fonte='Arial';
+
+						for($i=0;$i<$nb_classes;$i++) {
+							$pdf->AddPage();
+							//========================================
+							// Titre
+							$pdf->SetXY($x0, $y0);
+							$texte="Relevé de notes de l'examen blanc n°$id_exam - Classe de ".$tab_classe[$i];
+							$largeur_dispo=$largeur_page-$marge_gauche-$marge_droite;
+							$hauteur_caractere=12;
+							$h_ligne=$h_ligne_titre;
+							$graisse='B';
+							$alignement='C';
+							$bordure='';
+							cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
+							$y2=$y0+$h_ligne_titre;
+							//========================================
+	
+							//========================================
+							// Ligne d'entête du tableau
+							$x2=$x0;
+							$pdf->SetXY($x2, $y2);
+							$largeur_dispo=$largeur_col_nom_ele;
+							$texte='Nom prénom';
+							$graisse='B';
+							$alignement='C';
+							$bordure='LRBT';
+							cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+	
+							$x2=$x0+$largeur_col_nom_ele;
+							$largeur_dispo=$largeur_col_note;
+							for($j=0;$j<$nb_matieres;$j++) {
+								$pdf->SetXY($x2, $y2);
+								$texte=$tab_matiere[$j];
+								cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+								$x2+=$largeur_dispo;
+							}
+	
+							$pdf->SetXY($x2, $y2);
+							$texte='Moyenne';
+							cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+	
+							$y2=$y2+$h_ligne_titre_tableau;
+							//========================================
+
+
+							//========================================
+							// Lignes du tableau
+							$graisse='';
+							$alignement='C';
+							$bordure='LRBT';
+							$h_ligne=$h_cell;
+
+							// Problème avec les élèves qui ont changé de classe en cours d'année... il faudrait choisir une période de référence pour l'appartenance de classe
+							$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
+							//echo "$sql<br />\n";
+							$res_ele=mysql_query($sql);
+							if(mysql_num_rows($res_ele)>0) {
+								while($lig_ele=mysql_fetch_object($res_ele)) {
+									$tot_ele=0;
+									$tot_coef=0;
+
+									if($y2+$h_ligne>$hauteur_page-$marge_basse) {
+										$pdf->AddPage();
+
+										//========================================
+										// Ligne d'entête du tableau
+										$x2=$x0;
+										$y2=$y0;
+										$pdf->SetXY($x2, $y2);
+										$largeur_dispo=$largeur_col_nom_ele;
+										$texte='Nom prénom';
+										$graisse='B';
+										$alignement='C';
+										$bordure='LRBT';
+										cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+										$x2+=$largeur_dispo;
+				
+										$x2=$x0+$largeur_col_nom_ele;
+										$largeur_dispo=$largeur_col_note;
+										for($j=0;$j<$nb_matieres;$j++) {
+											$pdf->SetXY($x2, $y2);
+											$texte=$tab_matiere[$j];
+											cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+											$x2+=$largeur_dispo;
+										}
+				
+										$pdf->SetXY($x2, $y2);
+										$texte='Moyenne';
+										cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+										$x2+=$largeur_dispo;
+				
+										$y2+=$h_ligne_titre_tableau;
+										//========================================
+
+									}
+
+									// Colonne Nom_prénom
+									$x2=$x0;
+									$pdf->SetXY($x2, $y2);
+									$largeur_dispo=$largeur_col_nom_ele;
+									$texte=casse_mot($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2');
+									cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+									$x2+=$largeur_dispo;
+
+									// Colonnes matières
+									$largeur_dispo=$largeur_col_note;
+									for($j=0;$j<count($tab_matiere);$j++) {
+										$pdf->SetXY($x2, $y2);
+										$texte="";
+										if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
+											if($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut']!='') {
+												$texte=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'];
+											}
+											else {
+												if($tab_bonus[$j]=='n') {
+													$tot_coef+=$tab_coef[$j];
+													$tot_ele+=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note']*$tab_coef[$j];
+												}
+												else {
+													$tot_ele+=max(0,($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note']-10)*$tab_coef[$j]);
+												}
+												$texte=strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note'],".",",");
+											}
+										}
+										else {
+											$texte="";
+										}
+
+										cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+										$x2+=$largeur_dispo;
+									}
+
+									// Colonne Moyenne
+									if($tot_coef>0) {
+										$moyenne=round(10*$tot_ele/$tot_coef)/10;
+
+										$texte=strtr($moyenne,".",",");
+									}
+									else {
+										$texte="";
+									}
+
+									$pdf->SetXY($x2, $y2);
+									cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+									$x2+=$largeur_dispo;
+									$y2+=$h_cell;
+								}
+							}
+
+							//========================================
+
+						}
+
+						$nom_fic="releve_examen_num_".$id_exam.".pdf";
+						send_file_download_headers('application/pdf',$nom_fic);
+						$pdf->Output($nom_fic,'I');
+						die();
+					}
 				}
 			}
 		}
@@ -464,6 +732,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	echo "<div style='float:right; width: 5em; text-align:center; border: 1px solid black;'>\n";
 	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=csv".add_token_in_url()."'";
 	echo ">CSV</a>\n";
+	echo "<br />\n";
+	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=pdf".add_token_in_url()."'";
+	echo ">PDF</a>\n";
 	echo "</div>\n";
 
 	//$csv="";
