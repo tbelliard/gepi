@@ -140,10 +140,14 @@ if (isset($_REQUEST["source"])) {
    require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
  /**
   * Librairies
+  * 
+  * @see share.inc.php
   */
    include $chemin_relatif_gepi."/lib/share.inc.php";
  /**
   * Fonctions relatives aux groupes
+  * 
+  * @see groupes.inc.php
   */
     include $chemin_relatif_gepi."/lib/groupes.inc.php";
  /**
@@ -153,6 +157,7 @@ if (isset($_REQUEST["source"])) {
  /**
   * Fonctions de manipulation de la table settings
   * 
+  * @see settings.inc
   * @see loadSettings()
   */
    require_once($chemin_relatif_gepi."/lib/settings.inc");
