@@ -59,6 +59,8 @@
 <!-- on inclut le bandeau -->
 	<?php include('../templates/origine/bandeau_template.php');?>
 
+	<?php //debug_var();?>
+
 <!-- fin bandeau_template.html      -->
 
 <div  id='container'>
@@ -70,6 +72,7 @@
 <!-- début corps -->
 
   <form action="droits_acces.php" method="post" id="form1">
+	<input type='hidden' name='onglet_courant' id='onglet_courant' value='' />
 	<p class="center">
 		<?php
 			echo add_token_field();
@@ -83,7 +86,7 @@
 	<?php 
 	  foreach (array('Enseignant', 'Professeur_principal', 'Scolarite', 'CPE', 'Administrateur', 'eleve', 'responsable') as $StatutItem){
     ?>
-	  <a class="onglet_0 onglet" id='onglet_<?php echo $StatutItem ;?>' href="#<?php echo $StatutItem ;?>" title="section <?php echo $StatutItem ;?>" onclick="javascript:change_onglet('<?php echo $StatutItem; ?>');return false;">
+	  <a class="onglet_0 onglet" id='onglet_<?php echo $StatutItem ;?>' href="#<?php echo $StatutItem ;?>" title="section <?php echo $StatutItem ;?>" onclick="javascript:change_onglet('<?php echo $StatutItem; ?>');document.getElementById('onglet_courant').value='<?php echo $StatutItem; ?>';return false;">
 	<?php
 		if (my_strtolower($StatutItem) =='responsable') echo ucfirst($gepiSettings['denomination_responsable']);
 		elseif (my_strtolower($StatutItem) =='eleve') echo ucfirst($gepiSettings['denomination_eleve']);
@@ -160,8 +163,13 @@
 <script type="text/javascript">
 //<!--
 //document.getElementByClassNames('contenu_onglet2').ClassNames = 'contenu_onglet';
-		var anc_onglet = 'Enseignant';
-		change_onglet(anc_onglet);
+	<?php
+		$anc_onglet=isset($_POST['onglet_courant']) ? $_POST['onglet_courant'] : 'Enseignant';
+		if($anc_onglet=='') {$anc_onglet='Enseignant';}
+	?>
+
+	var anc_onglet = '<?php echo $anc_onglet;?>';
+	change_onglet(anc_onglet);
 //-->
 </script>
 
