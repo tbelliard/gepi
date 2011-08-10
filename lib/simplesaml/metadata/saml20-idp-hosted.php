@@ -29,6 +29,9 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 
 		/* Uncomment the following to use the uri NameFormat on attributes. */
 		'AttributeNameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+	
+		'logouttype' => 'iframe',
+	
 	);
 	
 	
