@@ -2509,77 +2509,7 @@ function get_class_from_id($id_classe) {
 	}
 }
 
-/* Outils complémentaires de gestion des AID
-fonction vérifiant si les outils complémetaires sont-ils activés
-*/
-function VerifAidIsAcive($indice_aid,$aid_id,$annee='') {
-    if ($annee=='')
-      $test_active = sql_query1("select indice_aid from aid_config WHERE outils_complementaires = 'y' and indice_aid='".$indice_aid."'");
-    else
-      $test_active = sql_query1("select id from archivage_types_aid WHERE outils_complementaires = 'y' and id='".$indice_aid."'");
-    if ($test_active == -1)
-       return FALSE;
-    else {
-       if ($aid_id != "") {
-         if ($annee=='')
-           $test_aid_existe = sql_query1("select count(id) from aid WHERE indice_aid='".$indice_aid."' and id='".$aid_id."'");
-        else
-           $test_aid_existe = sql_query1("select count(id) from archivage_aids WHERE id_type_aid='".$indice_aid."' and id='".$aid_id."'");
-        if ($test_aid_existe != 1)
-           return FALSE;
-        else
-           return TRUE;
-       } else
-           return TRUE;
 
-    }
-}
-/* Outils complémentaires de gestion des AID
-fonction qui renvoie le libellé du champ
-*/
-function LibelleChampAid($champ) {
-    $nom = sql_query1("select description from droits_aid where id = '".$champ."'");
-    return $nom;
-}
-
-/* Gestion des AIDs
-fonction qui calcul le niveau de gestion des AIDs
-0 : aucun droit
-1 : peut uniquement ajouter / supprimer des élèves
-2 : (pas encore implémenter) peut uniquement ajouter / supprimer des élèves et des professeurs responsables
-3 : ...
-10 : Peut tout faire
-*/
-function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
-    if ($_SESSION['statut'] == "administrateur") {
-        return 10;
-        die();
-    }
-    if (getSettingValue("active_mod_gest_aid")=="y") {
-      // l'id de l'aid n'est pas défini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catégorie
-      if ($_id_aid == "") {
-        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
-        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
-        if ($test2 >= 1) {
-            return 5;
-        } else if ($test1 >= 1) {
-            return 1;
-        } else
-          return 0;
-      } else {
-      // l'id de l'aid est défini : on regarde si l'utilisateur est gestionnaire de cette aid
-        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."' and id_aid = '".$_id_aid."')");
-        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
-        if ($test2 >= 1) {
-            return 5;
-        } else if ($test1 >= 1) {
-            return 1;
-        } else
-          return 0;
-      }
-    } else
-      return 0;
-}
 
 /* Gestion des droits d'accès à confirm_query.php
 */
