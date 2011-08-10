@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -21,23 +21,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/**
- * Classe qui implémente un serveur pour permettre à un ENT de se connecter à GEPI
- * Accès limité à la lecture seule. Pour limiter les accès, on liste les méthodes disponibles
- * Les logins des élèves existent sous la forme d'un tableau envoyé en POST par curl
- *
- *
- * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeElevesAvecClasse(), listeProfesseursAvecMatieres(), listeClassesAvecProfesseurs(), listeMatieresAvecNomlong()
- *
- * @author Julien Jocal
- * @license GPL
- */
-
-/**
- * @todo il faut mettre en place une structure qui gère le multisite.
- *      Pour les applications tierces, le RNE est renseigné dans le fichier de config du serveur
- *      Pour les ENT qui auraient besoin de demander à plusieurs bases, ???
- */
 include '../secure/serveur.inc.php';
 if (in_array('domain_name', $_POST) AND in_array($_POST['domain_name'], $serveur) AND $serveur[$_POST['domain_name']]['RNE'] !== 'all'){
   $_GET['rne'] = isset($_POST['domain_name']) ? $serveur[$_POST['domain_name']]['RNE'] : NULL;
@@ -47,9 +30,19 @@ if (in_array('domain_name', $_POST) AND in_array($_POST['domain_name'], $serveur
 }
 $traite_anti_inject = 'no'; // pour éviter les échappements dans les tableaux sérialisés
 require_once("../lib/initialisationsPropel.inc.php");
-//require_once("../lib/initialisations.inc.php");
 
-
+/**
+ * Classe qui implémente un serveur pour permettre à un ENT de se connecter à GEPI
+ * Accès limité à la lecture seule. Pour limiter les accès, on liste les méthodes disponibles
+ * Les logins des élèves existent sous la forme d'un tableau envoyé en POST par curl
+ *
+ * http://www.sylogix.org/projects/gepi/wiki/RefDoc_serveurressource
+ *
+ * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeElevesAvecClasse(), listeProfesseursAvecMatieres(), listeClassesAvecProfesseurs(), listeMatieresAvecNomlong()
+ *
+ * @author Julien Jocal
+ * @license GPL
+ */
 class serveur_ent {
 
   /**
@@ -238,7 +231,7 @@ class serveur_ent {
       Die('Compte inexistant IP.');
     }else if ($this->_api_key != $serveur[$demandeur]['ip']){
       $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
-      Die('la clé est obsolète : ' . $this->_api_key . '|+|' . $key);
+      Die('la clé est obsolète');
     }else{
       return true;
     }
