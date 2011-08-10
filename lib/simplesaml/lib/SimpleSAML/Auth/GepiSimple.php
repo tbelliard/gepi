@@ -39,15 +39,21 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
 		$sources = $config->getOptions();
 		if (!count($sources)) {
-			echo 'Erreur simplesaml : Aucune source configurée';
+			echo 'Erreur simplesaml : Aucune source configurée dans le fichier authsources.php';
 			die;
 		}
 		if (!in_array($auth, $sources)) {
-			echo 'Erreur simplesaml : source '.$auth.' non configurée. Utilisation par défaut de la source : «Authentification au choix entre toutes les sources configurees».';
+			//si la source précisée n'est pas trouvée, utilisation par défaut d'une source proposant tout les choix possible
+			//(voir le fichier authsources.php)
+			if ($auth == 'unset') {
+				//l'admin a réglé la source à unset, ce n'est pas la peine de mettre un message d'erreur
+			} else {
+				echo 'Erreur simplesaml : source '.$auth.' non configurée. Utilisation par défaut de la source : «Authentification au choix entre toutes les sources configurees».';
+			}
 			$auth = 'Authentification au choix entre toutes les sources configurees';
 		}
 		
-		//on utilise un variable en session pour se souvenir quelle est la source utilisé pour cette session. Utile pour le logout.
+		//on utilise une variable en session pour se souvenir quelle est la source utilisé pour cette session. Utile pour le logout, si entretemps l'admin a changé la source d'authentification.
 		$_SESSION['gepi_setting_saml_source'] = $auth;
 		
 		parent::__construct($auth);
