@@ -110,8 +110,6 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idplog
         //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     }
 
-include('./templates/origine/logout_template.php');
-
 if(getSettingValue('temporary_dir_no_cleaning')!='yes') {
 	// On efface le dossier temporaire
 	if ($temp_perso) {
@@ -136,7 +134,7 @@ if ($session_gepi->auth_simpleSAML == 'yes') {
 // Ajout pour le multisite
 unset($_COOKIE['RNE']);
 setcookie('RNE', 'unset', null, '/'); // permet d'effacer le contenu du cookie.
-
+include('./templates/origine/logout_template.php');
 
 
 ?>
