@@ -74,8 +74,17 @@ class Session {
 		# Avant de faire quoi que ce soit, on initialise le fuseau horaire
 		if (isset($GLOBALS['timezone']) && $GLOBALS['timezone'] != '') {
 		    $this->update_timezone($GLOBALS['timezone']);
-                }
+        }
 
+		//si on est sur une authentification simplesaml et que l'utilisateur n'est pas authentifié, on purge la session
+		if (getSettingValue("auth_simpleSAML") == 'yes') {
+				include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
+				$auth = new SimpleSAML_Auth_GepiSimple();
+				if (!$auth->isAuthenticated()) {
+						$this->reset(0);
+				}
+		}
+                
 		$this->maxLength = getSettingValue("sessionMaxLength");
 		$this->verif_CAS_multisite();
 
