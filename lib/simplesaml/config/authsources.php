@@ -24,6 +24,7 @@ $config = array(
 		    'validate' => 'https://cas.e-lyco.fr/validate',
 		    'logout' => 'https://cas.e-lyco.fr/logout',
 		),
+		'disconnect_CAS' => true,
 		'search_table' => array(
 		    'name' => 'plugin_sso_table',
 		    'cas_uid_column' => 'login_sso',

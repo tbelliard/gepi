@@ -27,6 +27,11 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 	private $_search_champ_uid_retour;
 
 	/**
+	 * @var search_champ_uid_retour Où trouver l'UID entre $username et $casattributes
+	 */
+	private $_disconnect_CAS;
+
+	/**
 	 * Constructor for this authentication source.
 	 *
 	 * @param array $info  Information about this authentication source.
@@ -69,6 +74,12 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 			$this->_search_champ_uid_retour =  $search_table_array['champ_uid_retour'];
 		}else{
 			throw new Exception("champ_uid_retour not specified");
+		}
+		
+		if(isset($config['disconnect_CAS'])){
+			$this->_disconnect_CAS =  $config['disconnect_CAS'];
+		}else{
+			$this->_disconnect_CAS = true;
 		}
 	}
 
@@ -122,5 +133,28 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		$state['Attributes'] = $attributes;
 		
 		SimpleSAML_Auth_Source::completeAuth($state);
+	}
+	
+		/**
+	 * Log out from this authentication source.
+	 *
+	 * This function should be overridden if the authentication source requires special
+	 * steps to complete a logout operation.
+	 *
+	 * If the logout process requires a redirect, the state should be saved. Once the
+	 * logout operation is completed, the state should be restored, and completeLogout
+	 * should be called with the state. If this operation can be completed without
+	 * showing the user a page, or redirecting, this function should return.
+	 *
+	 * @param array &$state  Information about the current logout operation.
+	 */
+	public function logout(&$state) {
+		assert('is_array($state)');
+		if ($this->_disconnect_CAS) {
+			parent::logout($state);
+		} else {
+			SimpleSAML_Auth_State::deleteState($state);
+			return;
+		}
 	}
 }
