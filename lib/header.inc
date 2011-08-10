@@ -785,7 +785,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 		include("header_barre_menu.php");
 	}
 }
-if ($_SESSION["statut"] == "administrateur") {
+elseif ($_SESSION["statut"] == "administrateur") {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
@@ -796,6 +796,38 @@ if ($_SESSION["statut"] == "administrateur") {
 			require_once("./fonctions_calendrier.php");
 		}
 		include("header_barre_menu_admin.php");
+	}
+}
+elseif ($_SESSION["statut"] == "scolarite") {
+
+	// On vérifie que l'utilisateur ne l'a pas enlevée
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
+		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+			require_once($prefix."edt_organisation/fonctions_calendrier.php");
+		}elseif(file_exists("fonctions_calendrier.php")) {
+			require_once("./fonctions_calendrier.php");
+		}
+		include("header_barre_scolarite_template.php");
+
+		if (count($tbs_menu_scol)>0) {
+			echo '<div id="menu_barre">
+	<div class="menu_barre_bottom"></div>
+	<div class="menu_barre_container">
+		<ul class="niveau1">
+';
+			foreach ($tbs_menu_scol as $value) { 
+				if ("$value[li]"!="") {
+					echo $value['li'];
+				}
+			}
+			unset($value); 
+			echo '
+		</ul>
+	</div>
+</div>
+';
+		}
 	}
 }
 echo "<div id='container'>\n";
