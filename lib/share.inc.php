@@ -1282,7 +1282,7 @@ function volume_human($volume){
 /**
  * Renvoie la taille d'un répertoire
  *
- * @global int $totalsize
+ * @global int 
  * @param string $dir Le répertoire à tester
  * @return string la taille formatée 
  * @see volume_dir()
@@ -1536,6 +1536,14 @@ function get_noms_classes_from_ele_login($ele_login){
 	return $tab_classe;
 }
 
+/**
+ * Renvoie les élèves liés à un responsable
+ *
+ * @param string $resp_login Login du responsable
+ * @param string $mode Si avec_classe renvoie aussi la classe
+ * @return array 
+ * @see get_class_from_ele_login()
+ */
 function get_enfants_from_resp_login($resp_login,$mode='simple'){
 	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
 											responsables2 r,
@@ -1569,27 +1577,12 @@ function get_enfants_from_resp_login($resp_login,$mode='simple'){
 	return $tab_ele;
 }
 
-function liens_class_from_ele_login($ele_login){
-	$chaine="";
-	$tab_classe=get_class_from_ele_login($ele_login);
-	if(isset($tab_classe)){
-		if(count($tab_classe)>0){
-			foreach ($tab_classe as $key => $value){
-				if(strlen(preg_replace("/[0-9]/","",$key))==0) {
-					if($_SESSION['statut']=='administrateur') {
-						$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
-					}
-					else {
-						$chaine.=", <a href='../eleves/index.php?id_classe=$key&amp;quelles_classes=certaines&amp;case_2=yes'>$value</a>";
-					}
-				}
-			}
-			$chaine="(".substr($chaine,2).")";
-		}
-	}
-	return $chaine;
-}
-
+/**
+ * Renvoie le statut avec des accents
+ *
+ * @param string $user_statut Statut à corriger
+ * @return string Le statut corrigé
+ */
 function statut_accentue($user_statut){
 	switch($user_statut){
 		case "administrateur":
@@ -1620,6 +1613,14 @@ function statut_accentue($user_statut){
 	return $chaine;
 }
 
+/**
+ * Renvoie le nom d'une classe à partir de son Id
+ * 
+ * Renvoie classes.classe
+ *
+ * @param type $id_classe Id de la classe
+ * @return string|bool Le nom d'une classe ou FALSE
+ */
 function get_nom_classe($id_classe){
 	$sql="SELECT classe FROM classes WHERE id='$id_classe';";
 	$res_class=mysql_query($sql);
@@ -1634,6 +1635,12 @@ function get_nom_classe($id_classe){
 	}
 }
 
+/**
+ * Formate une date au format jj/mm/aa
+ *
+ * @param string $date
+ * @return string La date formatée
+ */
 function formate_date($date){
 	$tmp_date=explode(" ",$date);
 	$tab_date=explode("-",$tmp_date[0]);
@@ -1641,6 +1648,12 @@ function formate_date($date){
 	return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
 }
 
+/**
+ * Convertit les codes régimes de Sconet
+ *
+ * @param int $code_regime Le code Sconet
+ * @return string Le régime dans Gépi
+ */
 function traite_regime_sconet($code_regime){
 	$premier_caractere_code_regime=substr($code_regime,0,1);
 	switch($premier_caractere_code_regime){
@@ -1698,6 +1711,14 @@ function traite_regime_sconet($code_regime){
 	}
 }
 
+/**
+ * Renvoie les préférences d'un utilisateur pour un item en interrogeant la table preferences
+ *
+ * @param string $login Login de l'utilisateur
+ * @param string $item Item recherché
+ * @param string $default Valeur par défaut
+ * @return string La valeur de l'item
+ */
 function getPref($login,$item,$default){
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
 	$res_prefs=mysql_query($sql);
@@ -1711,6 +1732,14 @@ function getPref($login,$item,$default){
 	}
 }
 
+/**
+ * Enregistre les préférences d'un utilisateur pour un item dans la table preferences
+ *
+ * @param string $login Login de l'utilisateur
+ * @param string $item Item recherché
+ * @param string $valeur Valeur à enregistrer
+ * @return boolean TRUE si tout c'est bien passé
+ */
 function savePref($login,$item,$valeur){
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
 	$res_prefs=mysql_query($sql);
@@ -1725,46 +1754,90 @@ function savePref($login,$item,$valeur){
 	if($res) {return TRUE;} else {return FALSE;}
 }
 
+/**
+ * Position horizontale initiale pour permettre un affichage sans superposition
+ *
+ * @global int $GLOBALS['$posDiv_infobulle']
+ * @name $posDiv_infobulle
+ */
+$GLOBALS['$posDiv_infobulle'] = 0;
+
+/**
+ * 
+ * @global array $GLOBALS['tabid_infobulle']
+ * @name $tabid_infobulle
+ */
+$GLOBALS['tabid_infobulle'] = array();
+
+/**
+ * 
+ * @global string $GLOBALS['unite_div_infobulle']
+ * @name $unite_div_infobulle
+ */
+$GLOBALS['unite_div_infobulle'] = '';
+
+/**
+ * Les infobulles ne sont pas décallées si à oui
+ * 
+ * @global string $GLOBALS['pas_de_decalage_infobulle']
+ * @name $pas_de_decalage_infobulle
+ */
+$GLOBALS['pas_de_decalage_infobulle'] = '';
+
+/**
+ * Ajoute un argument aux classes du div
+ * 
+ * @global string $GLOBALS['class_special_infobulle']
+ * @name $class_special_infobulle
+ */
+$GLOBALS['class_special_infobulle'] = '';
+
+/**
+ * $bg_titre: Si $bg_titre est vide, on utilise la couleur par défaut correspondant à .infobulle_entete (défini dans style.css et éventuellement modifié dans style_screen_ajout.css)
+ * 
+ * $bg_texte: Si $bg_texte est vide, on utilise la couleur par défaut correspondant à .infobulle_corps (défini dans style.css et éventuellement modifié dans style_screen_ajout.css)
+ * 
+ * $hauteur: En mettant 0, on laisse le DIV s'adapter au contenu (se réduire/s'ajuster)
+ * 
+ * $bouton_close: S'il est affiché, c'est dans la barre de titre. Si la barre de titre n'est pas affichée, ce bouton ne peut pas être affiché.
+		
+ * 
+ * @global type 
+ * @global array 
+ * @global type 
+ * @global type 
+ * @global type 
+ * @global type 
+ * @param string $id Identifiant du DIV conteneur
+ * @param string $titre Texte du titre du DIV
+ * @param string $bg_titre Couleur de fond de la barre de titre.
+ * @param string $texte Texte du contenu du DIV
+ * @param string $bg_texte Couleur de fond du DIV contenant le texte
+ * @param int $largeur Largeur du DIV conteneur
+ * @param int $hauteur Hauteur (minimale) du DIV conteneur
+ * @param string $drag 'y' ou 'n' pour rendre le DIV draggable
+ * @param string $bouton_close 'y' ou 'n' pour afficher le bouton Close
+ * @param string $survol_close 'y' ou 'n' pour refermer le DIV automatiquement lorsque le survol quitte le DIV
+ * @param string $overflow 'y' ou 'n' activer l'overflow automatique sur la partie Texte. Il faut que $hauteur soit non NULLe
+ * @param int $zindex_infobulle 
+ * @return string 
+ */
 function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow,$zindex_infobulle=1){
-	/*
-		$id:			Identifiant du DIV conteneur
-		$titre:			Texte du titre du DIV
-		$bg_titre:		Couleur de fond de la barre de titre.
-						Si $bg_titre est vide, on utilise la couleur par défaut
-						correspondant à .infobulle_entete (défini dans style.css
-						et éventuellement modifié dans style_screen_ajout.css)
-		$texte:			Texte du contenu du DIV
-		$bg_texte:		Couleur de fond du DIV contenant le texte.
-						Si $bg_texte est vide, on utilise la couleur par défaut
-						correspondant à .infobulle_corps (défini dans style.css
-						et éventuellement modifié dans style_screen_ajout.css)
-		$largeur:		Largeur du DIV conteneur
-		$hauteur:		Hauteur (minimale) du DIV conteneur
-						En mettant 0, on laisse le DIV s'adapter au contenu (se réduire/s'ajuster)
-		$drag:			'y' ou 'n' pour rendre le DIV draggable
-		$bouton_close:	'y' ou 'n' pour afficher le bouton Close
-						S'il est affiché, c'est dans la barre de titre.
-						Si la barre de titre n'est pas affichée, ce bouton ne peut pas être affiché.
-		$survol_close:	'y' ou 'n' pour refermer le DIV automatiquement lorsque le survol quitte le DIV
-		$overflow:		'y' ou 'n' activer l'overflow automatique sur la partie Texte.
-						Il faut que $hauteur soit non NULLe
+	/*	
+		
+		$overflow:		
 	*/
 	global $posDiv_infobulle;
 	global $tabid_infobulle;
 	global $unite_div_infobulle;
 	global $niveau_arbo;
 	global $pas_de_decalage_infobulle;
-	//global $style_special_infobulle;
 	global $class_special_infobulle;
 
-	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute;";
 	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle;";
-	//if((isset($style_special_infobulle))&&($style_special_infobulle!='')) {$style_box.=$style_special_infobulle;}
-
+	
 	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
-	//$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 1em;";
 	$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;";
-
 
 	// On fait la liste des identifiants de DIV pour cacher les Div avec javascript en fin de chargement de la page (dans /lib/footer.inc.php).
 	$tabid_infobulle[]=$id;
@@ -1804,7 +1877,6 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 		$div.=">\n";
 
 		if($bouton_close=="y"){
-			//$div.="<div style='$style_close'><a href='#' onClick=\"cacher_div('$id');return FALSE;\">X</a></div>\n";
 			$div.="<div style='$style_close'><a href='#' onclick=\"cacher_div('$id');return FALSE;\">";
 			if(isset($niveau_arbo)&&$niveau_arbo==0){
 				$div.="<img src='./images/icons/close16.png' width='16' height='16' alt='Fermer' />";
@@ -1828,7 +1900,6 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 
 
 	// Partie texte:
-	//$div.="<div";
 	//==================
 	// 20110113
 	$div.="<div id='".$id."_contenu_corps'";
@@ -1841,18 +1912,14 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	if(($overflow=='y')&&($hauteur!=0)){
 		$hauteur_hors_titre=$hauteur-1;
 		$div.="<div style='width: ".$largeur.$unite_div_infobulle."; height: ".$hauteur_hors_titre.$unite_div_infobulle."; overflow: auto;'>\n";
-		//$div.="<span style='padding-left: 1px;'>\n";
 		$div.="<div style='padding-left: 1px;'>\n";
 		$div.=$texte;
-		//$div.="</span>\n";
 		$div.="</div>\n";
 		$div.="</div>\n";
 	}
 	else{
-		//$div.="<span style='padding-left: 1px;'>\n";
 		$div.="<div style='padding-left: 1px;'>\n";
 		$div.=$texte;
-		//$div.="</span>\n";
 		$div.="</div>\n";
 	}
 	$div.="</div>\n";
@@ -1870,11 +1937,30 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	return $div;
 }
 
-$debug_var_count=array();
-$cpt_debug_debug_var=0;
+/**
+ * tableau des variables transmises d'une page à l'autre
+ * 
+ * @global array $GLOBALS['debug_var_count']
+ * @name $debug_var_count
+ */
+$GLOBALS['debug_var_count']=array();
+
+/**
+ * indice de la variable transmise
+ * 
+ * @global int $GLOBALS['cpt_debug_debug_var']
+ * @name $cpt_debug_debug_var
+ */
+$GLOBALS['cpt_debug_debug_var']=0;
+
+/**
+ * Affiche les variables transmises d'une page à l'autre: GET, POST, SERVER et SESSION
+ *
+ * @global array
+ * @global int
+ */
 function debug_var() {
-	global $debug_var_count;
-	global $cpt_debug_debug_var;
+	global $debug_var_count, $cpt_debug_debug_var;
 
 	$debug_var_count['POST']=0;
 	$debug_var_count['GET']=0;
@@ -1883,7 +1969,6 @@ function debug_var() {
 
 	$debug_var_count['COOKIE']=0;
 
-	// Fonction destinée à afficher les variables transmises d'une page à l'autre: GET, POST et SESSION
 	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
 
 	$cpt_debug_debug_var=0;
@@ -1919,35 +2004,18 @@ function debug_var() {
 		}
 	}
 </script>\n";
-	/*
-	echo "<table summary=\"Tableau de debug\">\n";
-	foreach($_POST as $post => $val){
-		//echo "\$_POST['".$post."']=".$val."<br />\n";
-		//echo "<tr><td>\$_POST['".$post."']=</td><td>".$val."</td></tr>\n";
-		echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>".$val;
-
-		if(is_array($_POST[$post])) {
-			echo " (<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug_debug_var]=tab_etat_debug_var[$cpt_debug_debug_var]*(-1);affiche_debug_var('container_debug_var_$cpt_debug_debug_var',tab_etat_debug_var[$cpt_debug_debug_var]);return FALSE;\">*</a>)";
-			echo "<table id='container_debug_var_$cpt_debug_debug_var' summary=\"Tableau de debug\">\n";
-			foreach($_POST[$post] as $key => $value) {
-				echo "<tr><td>\$_POST['$post'][$key]=</td><td>$value</td></tr>\n";
-			}
-			echo "</table>\n";
-			//echo "<script type='text/javascript'>affiche_debug_var('debug_var_$post',tab_etat_debug_var[$cpt_debug_debug_var]);</script>\n";
-			$cpt_debug_debug_var++;
-		}
-
-		echo "</td></tr>\n";
-	}
-	echo "</table>\n";
-	*/
-
-	//function tab_debug_var($chaine_tab_niv1,$tableau,$pref_chaine,$cpt_debug_debug_var) {
+	
+/**
+ * Affiche un tableau des valeurs
+ *
+ * @global int 
+ * @global array 
+ * @param type $chaine_tab_niv1
+ * @param type $tableau
+ * @param type $pref_chaine 
+ */
 	function tab_debug_var($chaine_tab_niv1,$tableau,$pref_chaine) {
-		global $cpt_debug_debug_var;
-		global $debug_var_count;
-
-		//$cpt_debug_debug_var++;
+		global $cpt_debug_debug_var, $debug_var_count;
 
 		echo " (<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug_debug_var]=tab_etat_debug_var[$cpt_debug_debug_var]*(-1);affiche_debug_var('container_debug_var_$cpt_debug_debug_var',tab_etat_debug_var[$cpt_debug_debug_var]);return FALSE;\">*</a>)\n";
 
@@ -1958,7 +2026,6 @@ function debug_var() {
 			if(is_array($tableau[$post])) {
 				$cpt_debug_debug_var++;
 
-				//tab_debug_var($chaine_tab_niv1,$tableau[$post],$pref_chaine.'['.$post.']',$cpt_debug_debug_var);
 				tab_debug_var($chaine_tab_niv1,$tableau[$post],$pref_chaine.'['.$post.']');
 
 				$cpt_debug_debug_var++;
@@ -1978,7 +2045,6 @@ function debug_var() {
 		echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>".$val;
 
 		if(is_array($_POST[$post])) {
-			//tab_debug_var('POST',$_POST[$post],'$_POST['.$post.']',$cpt_debug_debug_var);
 			tab_debug_var('POST',$_POST[$post],'$_POST['.$post.']');
 
 			$cpt_debug_debug_var++;
@@ -2009,13 +2075,10 @@ function debug_var() {
 	$cpt_debug_debug_var++;
 	echo "<table summary=\"Tableau de debug sur GET\">";
 	foreach($_GET as $get => $val){
-		//echo "\$_GET['".$get."']=".$val."<br />\n";
-		//echo "<tr><td>\$_GET['".$get."']=</td><td>".$val."</td></tr>\n";
-
+		
 		echo "<tr><td valign='top'>\$_GET['".$get."']=</td><td>".$val;
 
 		if(is_array($_GET[$get])) {
-			//tab_debug_var('GET',$_GET[$get],'$_GET['.$get.']',$cpt_debug_debug_var);
 			tab_debug_var('GET',$_GET[$get],'$_GET['.$get.']');
 
 			$cpt_debug_debug_var++;
@@ -2047,12 +2110,9 @@ function debug_var() {
 	$cpt_debug_debug_var++;
 	echo "<table summary=\"Tableau de debug sur SESSION\">";
 	foreach($_SESSION as $variable => $val){
-		//echo "\$_SESSION['".$variable."']=".$val."<br />\n";
-		//echo "<tr><td>\$_SESSION['".$variable."']=</td><td>".$val."</td></tr>\n";
-
+		
 		echo "<tr><td valign='top'>\$_SESSION['".$variable."']=</td><td>".$val;
 		if(is_array($_SESSION[$variable])) {
-			//tab_debug_var('SESSION',$_SESSION[$variable],'$_SESSION['.$variable.']',$cpt_debug_debug_var);
 			tab_debug_var('SESSION',$_SESSION[$variable],'$_SESSION['.$variable.']');
 
 			$cpt_debug_debug_var++;
@@ -2083,7 +2143,6 @@ function debug_var() {
 	$cpt_debug_debug_var++;
 	echo "<table summary=\"Tableau de debug sur SERVER\">";
 	foreach($_SERVER as $variable => $valeur){
-		//echo "\$_SERVER['".$variable."']=".$valeur."<br />\n";
 		echo "<tr><td>\$_SERVER['".$variable."']=</td><td>".$valeur."</td></tr>\n";
 	}
 	echo "</table>\n";
@@ -2106,13 +2165,11 @@ function debug_var() {
 		echo "<div id='container_debug_var_$cpt_debug_debug_var'>\n";
 		$cpt_debug_debug_var++;
 
-		//echo "cpt_debug=$cpt_debug_debug_var<br />";
 		echo "<table summary=\"Tableau de debug\">\n";
 		foreach($_FILES as $key => $val) {
 			echo "<tr><td valign='top'>\$_FILES['".$key."']=</td><td>".$val;
 	
 			if(is_array($_FILES[$key])) {
-				//tab_debug_var('FILES',$_FILES[$key],'$_FILES['.$key.']',$cpt_debug_debug_var);
 				tab_debug_var('FILES',$_FILES[$key],'$_FILES['.$key.']');
 	
 				$cpt_debug_debug_var++;
@@ -2138,14 +2195,12 @@ function debug_var() {
 	echo "<blockquote>\n";
 	echo "<div id='container_debug_var_$cpt_debug_debug_var'>\n";
 	$cpt_debug_debug_var++;
-	//echo "cpt_debug=$cpt_debug_debug_var<br />";
 	echo "<table summary=\"Tableau de debug sur COOKIE\">";
 	foreach($_COOKIE as $variable => $val){
 
 		echo "<tr><td valign='top'>\$_COOKIE['".$variable."']=</td><td>".$val;
 
 		if(is_array($val)) {
-			//tab_debug_var('COOKIE',$_COOKIE[$get],'$_COOKIE['.$get.']',$cpt_debug_debug_var);
 			tab_debug_var('COOKIE',$val,'$_COOKIE['.$variable.']');
 
 			$cpt_debug_debug_var++;
@@ -2179,8 +2234,13 @@ function debug_var() {
 	echo "</div>\n";
 }
 
+/**
+ *permet de vérifier si tel statut peut avoir accès à l'EdT en fonction des settings de l'admin
+ * 
+ * @param string $statut Statut testé
+ * @return string yes si peut avoir accès à l'EdT, no sinon
+ */
 function param_edt($statut){
-	// Fonction qui permet de vérifier si tel statut peut avoir accès à l'EdT en fonction des settings de l'admin
 		$verif = "";
 	if ($statut == "administrateur") {
 		$verif = getSettingValue("autorise_edt_admin");
@@ -2200,18 +2260,19 @@ function param_edt($statut){
 }
 
 /**
-* Renvoie le nom de la photo de l'élève ou du prof
+ * Renvoie le nom de la photo de l'élève ou du prof
  *
-* Renvoie NULL si :
+ * Renvoie NULL si :
  *
-* - le module trombinoscope n'est pas activé
+ * - le module trombinoscope n'est pas activé
  *
-* - ou bien la photo n'existe pas.
-*
-*@var $_elenoet_ou_login : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
-*@var $repertoire : "eleves" ou "personnels"
-*@var $arbo : niveau d'aborescence (1 ou 2).
-*/
+ * - la photo n'existe pas.
+ *
+ * @param string $_elenoet_ou_login selon les cas, soit l'elenoet de l'élève soit le login du professeur
+ * @param string $repertoire "eleves" ou "personnels"
+ * @param int $arbo niveau d'aborescence (1 ou 2).
+ * @return string Le chemin vers la photo ou NULL
+ */
 function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 	if (($repertoire != "eleves") and ($repertoire != "personnels")) {
@@ -2224,7 +2285,6 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	}
 		$photo=NULL;
 
-
 	// En multisite, on ajoute le répertoire RNE
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 		  // On récupère le RNE de l'établissement
@@ -2233,41 +2293,9 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	  $repertoire2="";
 	}
 
-
 	// Cas des élèves
 	if ($repertoire == "eleves") {
-	  /*
-		// En multisite, le login est préférable à l'ELENOET
-		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			// On récupère l'INE de cet élève
-			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
-			$query = mysql_query($sql);
-			$_elenoet_ou_login = mysql_result($query, 0,'login');
-		}
-
-		$photo="";
-		if($_elenoet_ou_login!='') {
-			if(file_exists($chemin."../photos/eleves/$_elenoet_ou_login.jpg")) {
-				$photo="$_elenoet_ou_login.jpg";
-			}
-			else {
-				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=sprintf("%05d",$_elenoet_ou_login).".jpg";
-				} else {
-					for($i=0;$i<5;$i++){
-						if(substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=substr($_elenoet_ou_login,$i+1);
-							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
-							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
-								$photo=$test_photo.".jpg";
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-	*/
+	  
 	  if($_elenoet_ou_login!='') {
 
 		// on vérifie si la photo existe
@@ -2295,7 +2323,6 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 					for($i=0;$i<5;$i++){
 						if(substr($_elenoet_ou_login,$i,1)=="0"){
 							$test_photo=substr($_elenoet_ou_login,$i+1);
-							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;
@@ -2313,9 +2340,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	else {
 
 		$_elenoet_ou_login = md5(strtolower($_elenoet_ou_login));
-			//if(file_exists($chemin."../photos/personnels/$_elenoet_ou_login.jpg")){
 			if(file_exists($chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg")){
-				//$photo="$_elenoet_ou_login.jpg";
 				$photo=$chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg";
 			} else {
 				$photo = NULL;
@@ -2717,9 +2742,7 @@ function mail_connexion() {
 			$lig_user=mysql_fetch_object($res_user);
 
 			$adresse_ip = $_SERVER['REMOTE_ADDR'];
-			//$date = strftime("%Y-%m-%d %H:%M:%S");
 			$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
-			//$url = parse_url($_SERVER['REQUEST_URI']);
 
 			if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
 				$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
@@ -2864,14 +2887,10 @@ function decompte_debug($motif,$texte) {
 			else {
 				$diff=$tmp_tab1[0]-$tmp_tab2[0];
 			}
-			//if($debug=="y") {
 				echo "<p style='color:green;'>$texte: ".$diff." s</p>\n";
-			//}
 		}
 		else {
-			//if($debug=="y") {
 				echo "<p style='color:green;'>$texte</p>\n";
-			//}
 		}
 		$tab_instant[$motif]=$instant;
 	}
@@ -2884,7 +2903,7 @@ function retourneUri($eleve, $https, $type){
 	global $gepiPath;
 	$rep = array();
 
-	// on vérifie que la table e nquestion existe déjà
+	// on vérifie que la table en question existe déjà
 	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
 	if ($test_table >= 1) {
 
@@ -2969,7 +2988,6 @@ function nf($nombre,$nb_chiffre_apres_virgule=1) {
 	else {
 		$nombre=strtr($nombre,",",".");
 		$valeur=number_format(round($nombre/$precision)*$precision, $nb_chiffre_apres_virgule, ',', '');
-		//$valeur=strtr($valeur,".",",");
 	}
 	return $valeur;
 }
@@ -3043,7 +3061,6 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 	$texte=trim($texte);
 	$hauteur_texte=$hauteur_max_font;
-	//$pdf->SetFontSize($hauteur_texte);
 
 	//================================
 	// Options de debug
@@ -3074,7 +3091,6 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	// Pour forcer en debug:
 	//$tronquer='y';
 
-	//while(TRUE) {
 	while($tronquer!='y') {
 		// On (re)démarre un essai avec une taille de police
 
@@ -3082,11 +3098,8 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 		// Nombre max de lignes avec la hauteur courante de police
 		// Il manque l'interligne de bas de cellule
-		//$nb_max_lig=max(1,floor($h_cell/((1+$r_interligne)*($hauteur_texte*26/100))));
-		//$nb_max_lig=max(1,floor($h_cell/((1+2*$r_interligne)*($hauteur_texte*26/100))));
 		$nb_max_lig=max(1,floor(($h_cell-$r_interligne*($hauteur_texte*26/100))/((1+$r_interligne)*($hauteur_texte*26/100))));
-		//$nb_max_lig=max(1,floor(($h_cell-$r_interligne*($hauteur_texte*26/100))/((1+$r_interligne)*($hauteur_texte*26/100)))-1);
-
+		
 		if($my_echo_debug==1) my_echo_debug("\nOn lance un tour avec la taille de police:\n\$hauteur_texte=$hauteur_texte\n");
 		if($my_echo_debug==1) my_echo_debug("\$nb_max_lig=$nb_max_lig\n");
 
@@ -3120,7 +3133,6 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		$temoin_reduire_police="n";
 
 		if($supprimer_retours_a_la_ligne=="y") {
-			//$texte=str_replace('\n'," ",$texte);
 			$texte=trim(preg_replace("/\n/"," ",$texte));
 		}
 
@@ -3128,24 +3140,19 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 		$tab=preg_split('/<(.*)>/U',$texte,-1,PREG_SPLIT_DELIM_CAPTURE);
 		foreach($tab as $i=>$valeur) {
-			//$pdf->Cell(150,7, "\$tab[$i]=$valeur",0,2,'');
 			// Avec $i pair on a le texte et les indices impairs correspondent aux balises (b et /b,...)
 
 			// On initialise la ligne courante si nécessaire pour le cas où on aurait $texte="<b>Blabla..."
 			// Il faut que la ligne soit initialisée pour pouvoir ajouter le <b> dans $i%2!=0
 			if(!isset($ligne[$cpt])) {
-			//if(!isset($test_ligne)) {
 				$ligne[$cpt]='';
 				$longueur_ligne_courante=0;
 				$chaine_longueur_ligne_courante="0";
-				//$test_ligne="";
 			}
 
 			if($i%2==0) {
 				if($my_echo_debug==1) my_echo_debug("\nParcours avec l'élément \$i=$i: \"$tab[$i]\"\n");
 
-
-				//$tab2=preg_split("/[\s]+/",$tab[$i]); // Ca compterait les espaces, tabulations, \n et \r
 				$tab2=explode(" ",$tab[$i]);
 				// Si on gère aussi les virgules et tirets, il y a une difficulté supplémentaire à gérer pour re-concaténer (normalement après une virgule, on doit avoir un espace)... donc on ne gère que les espaces
 
@@ -3203,12 +3210,10 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 					// Prendre en compte à ce niveau les \n
 					if($supprimer_retours_a_la_ligne=="n") {
 						if($my_echo_debug==1) my_echo_debug("On découpe si nécessaire les retours à la ligne\n");
-						//$tab3=split("\n",$tab2[$j]);
 						$tab3=explode("\n",$tab2[$j]);
 						for($loop=0;$loop<count($tab3);$loop++) {if($my_echo_debug==1) my_echo_debug("   \$tab3[$loop]=\"$tab3[$loop]\"\n");}
 					}
 					else {
-						//$tab3[0]=str_replace("\n"," ",$tab2[$j]);
 						$tab3[0]=$tab2[$j];
 					}
 
@@ -3231,15 +3236,10 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 							$ligne[$cpt]='';
 							$longueur_ligne_courante=0;
 							$chaine_longueur_ligne_courante="0";
-							//$test_ligne="";
 						}
-						//$test_ligne.=$tab3[$k];
-						//$longueur_ligne_courante+=$pdf->GetStringWidth($tab3[$k]);
 						$test_longueur_ligne_courante=$longueur_ligne_courante+$pdf->GetStringWidth($tab3[$k]);
 						if($my_echo_debug==1) my_echo_debug("La longueur du mot \$tab3[$k]=\"$tab3[$k]\" est ".$pdf->GetStringWidth($tab3[$k])."\n");
 
-						//if($pdf->GetStringWidth($test_ligne)>$largeur_dispo) {
-						//if($longueur_ligne_courante>$largeur_dispo) {
 						if($test_longueur_ligne_courante>$largeur_utile) {
 							$cpt++;
 							if($cpt+1>$nb_max_lig) {
@@ -3256,7 +3256,6 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 						else {
 							// Ca tient encore sur la ligne courante
 							$ligne[$cpt].=$tab3[$k];
-							//$ligne[$cpt]=$test_ligne;
 							$longueur_mot=$pdf->GetStringWidth($tab3[$k]);
 							$longueur_ligne_courante+=$longueur_mot;
 							$chaine_longueur_ligne_courante.="+".$longueur_mot;
@@ -3451,7 +3450,6 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		}
 	}
 
-
 	// On va afficher le texte
 
 	// Hauteur de la police en mm
@@ -3485,7 +3483,6 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	// On ne gère que les v_align Top et Center... et ajout d'un mode aéré
 	if($v_align=='E') {
 		// Mode aéré
-		//$espace_v=($h_cell-2*$marge_verticale-$nb_lig*$hauteur_texte_mm)/max(1,$nb_lig-1);
 		$espace_v=($h_cell-4*$marge_verticale-$nb_lig*$hauteur_texte_mm)/max(1,$nb_lig-1);
 	}
 	elseif($v_align!='T') {
@@ -3525,18 +3522,9 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			$y_courant=$y+$decalage_v_top+$i*($hauteur_texte_mm+$marge_verticale);
 
 			// Pour pouvoir afficher le $bord_debug A REFAIRE
-			//$pdf->SetXY($x,$y_courant);
-			//$pdf->Cell($largeur_dispo,$h_cell/count($tab_lig[$ifmax]['lignes']), '',$bord_debug,1,$align);
-
+			
 			$pdf->SetXY($x,$y_courant);
-			/*
-			if(preg_match('/<(.*)>/U',$ligne[$i])) {
-				$pdf->WriteHTML($ligne[$i]);
-			}
-			else {
-				$pdf->Cell($largeur_dispo,$hauteur_texte_mm, $ligne[$i],$bord_debug,1,$align);
-			}
-			*/
+			
 			$pdf->myWriteHTML($ligne[$i]);
 		}
 	}
@@ -3559,10 +3547,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	// Ca nous donne le nombre max de lignes en hauteur avec la taille de police maxi
 	// Il faudrait plutôt déterminer ce nombre d'après une taille minimale acceptable de police
 	$nb_max_lig=max(1,floor($h_cell/((1+$r_interligne)*($hauteur_min_font*26/100))));
-	// echo "\$nb_max_lig=$nb_max_lig<br />";
-
-	//$ifmax=0;
-	//$ifmax=1;
+	
 	$fmax=0;
 
 	$tab_lig=array();
@@ -3606,7 +3591,6 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		$taille_texte_ligne=0;
 		$num=0;
 		for($i=0;$i<count($ligne);$i++) {
-			// echo "\$ligne[$i]=$ligne[$i]<br />";
 			$l=$pdf->GetStringWidth($ligne[$i]);
 			if($taille_texte_ligne<$l) {$taille_texte_ligne=$l;$num=$i;}
 		}
@@ -3621,16 +3605,13 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		// et on contrôle aussi que cela tient en hauteur, sinon on continue à réduire la police.
 		$grandeur_texte='test';
 		while($grandeur_texte!='ok') {
-			//if($largeur_dispo<$taille_texte_ligne) {
 			if(($largeur_dispo<$taille_texte_ligne)||($hauteur_totale>$h_cell)) {
 				$hauteur_texte=$hauteur_texte-$increment;
 				if($hauteur_texte<$hauteur_min_font) {break;}
 				$hauteur_texte_mm=$hauteur_texte*26/100;
 				$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
-				//$pdf->SetFont('Arial','',$hauteur_texte);
 				$pdf->SetFontSize($hauteur_texte);
 				$taille_texte_ligne=$pdf->GetStringWidth($ligne[$num]);
-				// echo "\$hauteur_texte=$hauteur_texte -&gt; \$taille_texte_ligne=".$taille_texte_ligne."<br/>";
 			}
 			else {
 				$grandeur_texte='ok';
@@ -3707,16 +3688,13 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			// et on contrôle aussi que cela tient en hauteur, sinon on continue à réduire la police.
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
-				//if($largeur_dispo<$taille_texte_ligne) {
 				if(($largeur_dispo<$taille_texte_ligne)||($hauteur_totale>$h_cell)) {
 					$hauteur_texte=$hauteur_texte-$increment;
 					if($hauteur_texte<$hauteur_min_font) {break;}
 					$hauteur_texte_mm=$hauteur_texte*26/100;
 					$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
-					//$pdf->SetFont('Arial','',$hauteur_texte);
 					$pdf->SetFontSize($hauteur_texte);
 					$taille_texte_ligne=$pdf->GetStringWidth($ligne[$num]);
-					// echo "\$hauteur_texte=$hauteur_texte -&gt; \$taille_texte_ligne=".$taille_texte_ligne."<br/>";
 				}
 				else {
 					$grandeur_texte='ok';
@@ -3748,24 +3726,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 		// Si ça ne passe toujours pas, on prend $hauteur_min_font sans retours à la ligne et on tronque
 		if(!isset($ifmax)) {
-			/*
-			$tab_lig=array();
-			$j=1;
-			$ifmax=$j;
-			$hauteur_texte=$hauteur_min_font;
-			$hauteur_texte_mm=$hauteur_texte*26/100;
-			$tab_lig[$j]['hauteur_texte_mm']=$hauteur_texte_mm;
-			// Hauteur de la police en pt
-			$tab_lig[$j]['taille_police']=$hauteur_texte;
-			// Hauteur totale du texte
-			$tab_lig[$j]['hauteur_totale']=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
-			// Marge verticale en mm entre les lignes
-			$marge_verticale=$hauteur_texte_mm*$r_interligne;
-			$tab_lig[$j]['marge_verticale']=$marge_verticale;
-			// Tableau des lignes
-			$tab_lig[$j]['lignes'][]="Texte trop long";
-			*/
-
+			
 			$fmax=0;
 
 			$tab_lig=array();
@@ -3828,14 +3789,9 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	$h=count($tab_lig[$ifmax]['lignes'])*$tab_lig[$ifmax]['hauteur_texte_mm']*(1+$r_interligne);
 	$t=$h_cell-$h;
 	$bord_debug='';
-	//$bord_debug='LRBT';
 	for($i=0;$i<count($tab_lig[$ifmax]['lignes']);$i++) {
 
-		//$pdf->SetXY(10,$y+$i*($hauteur_texte_mm+$marge_verticale)+$marge_h);
 		$pdf->SetXY($x,$y+$i*($tab_lig[$ifmax]['hauteur_texte_mm']+$tab_lig[$ifmax]['marge_verticale']));
-
-		//if($i==1) {$bord_debug='LRBT';} else {$bord_debug='';}
-		//$pdf->Cell($largeur_dispo-4,$h_cell/count($tab_lig[$ifmax]['lignes']), $tab_lig[$ifmax]['lignes'][$i],$bord_debug,2,'');
 
 		if($v_align=='T') {
 			$pdf->Cell($largeur_dispo,$tab_lig[$ifmax]['hauteur_texte_mm']+2*$tab_lig[$ifmax]['marge_verticale'], $tab_lig[$ifmax]['lignes'][$i],$bord_debug,1,$align);
@@ -3844,8 +3800,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			$pdf->Cell($largeur_dispo,$h_cell/count($tab_lig[$ifmax]['lignes']), $tab_lig[$ifmax]['lignes'][$i],$bord_debug,1,$align);
 		}
 	}
-	//if($tab_lig[$ifmax]['taille_police']!=$hauteur_max_font) {$pdf->Cell(20,$h_cell, $tab_lig[$ifmax]['taille_police'],$bord_debug,2,'');}
-
+	
 }
 
 function cell_ajustee_une_ligne($texte,$x,$y,$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure) {
@@ -4035,10 +3990,8 @@ calcul_moy_med();
 function calcule_moy_mediane_quartiles($tab) {
 	$tab2=array();
 
-	//echo "<p>";
 	$total=0;
 	for($i=0;$i<count($tab);$i++) {
-		//echo "\$tab[$i]=".$tab[$i]."<br />\n";
 		if(($tab[$i]!='')&&($tab[$i]!='-')&&($tab[$i]!='&nbsp;')&&($tab[$i]!='abs')&&($tab[$i]!='disp')) {
 			$tab2[]=preg_replace('/,/','.',$tab[$i]);
 			$total+=preg_replace('/,/','.',$tab[$i]);
@@ -4055,13 +4008,6 @@ function calcule_moy_mediane_quartiles($tab) {
 
 	if(count($tab2)>0) {
 		sort($tab2);
-
-		/*
-		echo "<p>";
-		for($i=0;$i<count($tab2);$i++) {
-			echo "\$tab2[$i]=".$tab2[$i]."<br />\n";
-		}
-		*/
 
 		$moyenne=round(10*$total/count($tab2))/10;
 
@@ -4087,13 +4033,6 @@ function calcule_moy_mediane_quartiles($tab) {
 		$tab_retour['q1']=$q1;
 		$tab_retour['q3']=$q3;
 	}
-
-	/*
-	echo "<p>";
-	foreach($tab_retour as $key => $value) {
-		echo "\$tab_retour['$key']=".$value."<br />\n";
-	}
-	*/
 
 	return $tab_retour;
 }
