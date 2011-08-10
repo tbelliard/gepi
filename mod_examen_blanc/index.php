@@ -966,6 +966,30 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				echo "<div style='float:right; width:15em; border: 1px solid black;'>\n";
 
 				echo "<ul>\n";
+
+				$sql="SELECT DISTINCT id FROM ex_examens WHERE id!='$id_exam';";
+				$res_autres_exam=mysql_query($sql);
+				if(mysql_num_rows($res_autres_exam)>0) {
+					$acces_copie_exam="y";
+					if($_SESSION['statut']=='professeur') {
+						$acces_copie_exam="n";
+						while($lig_autres_exam=mysql_fetch_object($res_autres_exam)) {
+							if(is_pp_proprio_exb($lig_autres_exam->id)) {
+								$acces_copie_exam="y";
+								break;
+							}
+						}
+					}
+
+					if($acces_copie_exam=="y") {
+						echo "<li>\n";
+						echo "<p><a href='copie_exam.php?id_exam=$id_exam'";
+						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+						echo ">Copier les paramètres d'un autre examen blanc</a></p>\n";
+						echo "</li>\n";
+					}
+				}
+
 				echo "<li>\n";
 				$sql="SELECT c.classe, ec.id_classe FROM ex_classes ec, classes c WHERE ec.id_exam='$id_exam' AND c.id=ec.id_classe ORDER BY c.classe;";
 				//echo "$sql<br />";
