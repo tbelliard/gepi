@@ -21,6 +21,7 @@ Interface:
 - Possibilité d'exporter/importer son modèle de couleurs de l'interface Gepi.
 - Ajout de sous-menus à la barre de menu horizontale pour les professeurs.
 - Ajout d'une barre de menu pour l'administrateur.
+- Ajout d'une barre de menu pour les comptes scolarité.
 
 Absences:
 - Ajout d'un filtrage sur la page bilan indviduel du module abs2 et ajout d'un texte optionnel sur l'export odt de cette page
@@ -37,6 +38,7 @@ Initialisation XML:
 
 Examens blancs:
 - Organisation d'examens blancs possible en prof principal (selon le paramétrage en Droits d'accès).
+- Possibilité d'exporter le relevé de notes en PDF.
 
 - A compléter au fur et à mesure;)...
 
