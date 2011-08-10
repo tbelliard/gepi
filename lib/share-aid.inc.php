@@ -1,7 +1,7 @@
 <?php
 /** Outils complémentaires de gestion des AID
  * 
- * $Id:  $
+ * $Id$
  * 
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
