@@ -10,9 +10,6 @@
  */
 class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 
-
-	private $source;
-	
 	/**
 	 * Initialise une authentification en utilisant les paramêtre renseignés dans gepi
 	 *
@@ -52,6 +49,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		
 		//on utilise un variable en session pour se souvenir quelle est la source utilisé pour cette session. Utile pour le logout.
 		$_SESSION['gepi_setting_saml_source'] = $auth;
+		
 		parent::__construct($auth);
 	}
 
@@ -117,6 +115,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	 */
 	public function logout($params = NULL) {
 		unset($_SESSION['gepi_setting_saml_source']);
+		parent::logout($params);
 	}
 	
 }
