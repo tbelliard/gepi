@@ -217,8 +217,8 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
  * vérifie si un Aid est actif
  * 
  * @param int $indice_aid Indice de l'aid
- * @param text $aid_id Id de l'aid
- * @param text $annee l'année de recherche (année courante si vide)
+ * @param string $aid_id Id de l'aid
+ * @param string $annee l'année de recherche (année courante si vide)
  * @return boolean 
  */
 function VerifAidIsAcive($indice_aid,$aid_id,$annee='') {
@@ -255,14 +255,20 @@ function LibelleChampAid($champ) {
     return $nom;
 }
 
-/* Gestion des AIDs
-fonction qui calcul le niveau de gestion des AIDs
-0 : aucun droit
-1 : peut uniquement ajouter / supprimer des élèves
-2 : (pas encore implémenter) peut uniquement ajouter / supprimer des élèves et des professeurs responsables
-3 : ...
-10 : Peut tout faire
-*/
+/**
+ * Calcule le niveau de gestion des AIDs
+ * 
+ * - 0 : aucun droit
+ * - 1 : peut uniquement ajouter / supprimer des élèves
+ * - 2 : (pas encore implémenter) peut uniquement ajouter / supprimer des élèves et des professeurs responsables
+ * - 3 : ...
+ * - 10 : Peut tout faire
+ *
+ * @param string $_login Login de l'utilisateur
+ * @param int $indice_aid Indice de l'aid
+ * @param string $aid_id Id de l'aid
+ * @return int le niveau de gestion
+ */
 function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
     if ($_SESSION['statut'] == "administrateur") {
         return 10;
@@ -293,5 +299,40 @@ function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
     } else
       return 0;
 }
+
+/**
+ * Vérifie si un utilisateurs à des droits de suppression sur un Aid
+ * 
+ * @param string $_login Login de l'utilisateur
+ * @param string $_action Action à tester
+ * @param string $_cible1 Non utilisé mais obligatoire
+ * @param int $_cible2 id_aid
+ * @param int $_cible3 indice_aid
+ * @return bool TRUE si l'utilisateur a les droits
+ * @see getSettingValue()
+ */
+function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cible3) {
+    if ($_SESSION['statut'] == "administrateur") {
+        return TRUE;
+        die();
+    }
+    if (getSettingValue("active_mod_gest_aid")=="y") {
+      if (($_action=="del_eleve_aid") or ($_action=="del_prof_aid") or ($_action=="del_aid")) {
+      // on regarde si l'utilisateur est gestionnaire de l'aid
+        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."' and id_aid = '".$_cible2."')");
+        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."')");
+        $test = max($test1,$test2);
+        if ($test >= 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+      }
+    } else
+    return FALSE;
+}
+
+
+
 
 ?>

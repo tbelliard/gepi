@@ -2036,8 +2036,6 @@ function debug_var() {
 		global $cpt_debug_debug_var;
 		global $debug_var_count;
 
-		//$cpt_debug_debug_var++;
-
 		echo " (<a href='#ancre_debug_var_$cpt_debug_debug_var' onclick=\"tab_etat_debug_var[$cpt_debug_debug_var]=tab_etat_debug_var[$cpt_debug_debug_var]*(-1);affiche_debug_var('container_debug_var_$cpt_debug_debug_var',tab_etat_debug_var[$cpt_debug_debug_var]);return FALSE;\">*</a>)\n";
 
 		echo "<table id='container_debug_var_$cpt_debug_debug_var' summary=\"Tableau de debug\">\n";
@@ -2047,7 +2045,6 @@ function debug_var() {
 			if(is_array($tableau[$post])) {
 				$cpt_debug_debug_var++;
 
-				//tab_debug_var($chaine_tab_niv1,$tableau[$post],$pref_chaine.'['.$post.']',$cpt_debug_debug_var);
 				tab_debug_var($chaine_tab_niv1,$tableau[$post],$pref_chaine.'['.$post.']');
 
 				$cpt_debug_debug_var++;
@@ -2067,7 +2064,6 @@ function debug_var() {
 		echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>".$val;
 
 		if(is_array($_POST[$post])) {
-			//tab_debug_var('POST',$_POST[$post],'$_POST['.$post.']',$cpt_debug_debug_var);
 			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 			tab_debug_var('POST',$_POST[$post],'$_POST['.$post.']');
 
@@ -2100,13 +2096,10 @@ function debug_var() {
 	$cpt_debug_debug_var++;
 	echo "<table summary=\"Tableau de debug sur GET\">";
 	foreach($_GET as $get => $val){
-		//echo "\$_GET['".$get."']=".$val."<br />\n";
-		//echo "<tr><td>\$_GET['".$get."']=</td><td>".$val."</td></tr>\n";
-
+		
 		echo "<tr><td valign='top'>\$_GET['".$get."']=</td><td>".$val;
 
 		if(is_array($_GET[$get])) {
-			//tab_debug_var('GET',$_GET[$get],'$_GET['.$get.']',$cpt_debug_debug_var);
 			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 			tab_debug_var('GET',$_GET[$get],'$_GET['.$get.']');
 
@@ -2140,12 +2133,9 @@ function debug_var() {
 	$cpt_debug_debug_var++;
 	echo "<table summary=\"Tableau de debug sur SESSION\">";
 	foreach($_SESSION as $variable => $val){
-		//echo "\$_SESSION['".$variable."']=".$val."<br />\n";
-		//echo "<tr><td>\$_SESSION['".$variable."']=</td><td>".$val."</td></tr>\n";
-
+		
 		echo "<tr><td valign='top'>\$_SESSION['".$variable."']=</td><td>".$val;
 		if(is_array($_SESSION[$variable])) {
-			//tab_debug_var('SESSION',$_SESSION[$variable],'$_SESSION['.$variable.']',$cpt_debug_debug_var);
 			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 			tab_debug_var('SESSION',$_SESSION[$variable],'$_SESSION['.$variable.']');
 
@@ -2178,7 +2168,6 @@ function debug_var() {
 	$cpt_debug_debug_var++;
 	echo "<table summary=\"Tableau de debug sur SERVER\">";
 	foreach($_SERVER as $variable => $valeur){
-		//echo "\$_SERVER['".$variable."']=".$valeur."<br />\n";
 		echo "<tr><td>\$_SERVER['".$variable."']=</td><td>".$valeur."</td></tr>\n";
 	}
 	echo "</table>\n";
@@ -2202,13 +2191,11 @@ function debug_var() {
 		echo "<div id='container_debug_var_$cpt_debug_debug_var'>\n";
 		$cpt_debug_debug_var++;
 
-		//echo "cpt_debug=$cpt_debug_debug_var<br />";
 		echo "<table summary=\"Tableau de debug\">\n";
 		foreach($_FILES as $key => $val) {
 			echo "<tr><td valign='top'>\$_FILES['".$key."']=</td><td>".$val;
 	
 			if(is_array($_FILES[$key])) {
-				//tab_debug_var('FILES',$_FILES[$key],'$_FILES['.$key.']',$cpt_debug_debug_var);
 				echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 				tab_debug_var('FILES',$_FILES[$key],'$_FILES['.$key.']');
 	
@@ -2236,14 +2223,12 @@ function debug_var() {
 	echo "<blockquote>\n";
 	echo "<div id='container_debug_var_$cpt_debug_debug_var'>\n";
 	$cpt_debug_debug_var++;
-	//echo "cpt_debug=$cpt_debug_debug_var<br />";
 	echo "<table summary=\"Tableau de debug sur COOKIE\">";
 	foreach($_COOKIE as $variable => $val){
 
 		echo "<tr><td valign='top'>\$_COOKIE['".$variable."']=</td><td>".$val;
 
 		if(is_array($val)) {
-			//tab_debug_var('COOKIE',$_COOKIE[$get],'$_COOKIE['.$get.']',$cpt_debug_debug_var);
 			echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 			tab_debug_var('COOKIE',$val,'$_COOKIE['.$variable.']');
 
@@ -2309,7 +2294,6 @@ function param_edt($statut){
  * Renvoie NULL si :
  *
  * - le module trombinoscope n'est pas activé
- *
  * - la photo n'existe pas.
  *
  * @param string $_elenoet_ou_login selon les cas, soit l'elenoet de l'élève soit le login du professeur
@@ -2511,28 +2495,6 @@ function get_class_from_id($id_classe) {
 
 
 
-/* Gestion des droits d'accès à confirm_query.php
-*/
-function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cible3) {
-    if ($_SESSION['statut'] == "administrateur") {
-        return TRUE;
-        die();
-    }
-    if (getSettingValue("active_mod_gest_aid")=="y") {
-      if (($_action=="del_eleve_aid") or ($_action=="del_prof_aid") or ($_action=="del_aid")) {
-      // on regarde si l'utilisateur est gestionnaire de l'aid
-        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."' and id_aid = '".$_cible2."')");
-        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."')");
-        $test = max($test1,$test2);
-        if ($test >= 1) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-      }
-    } else
-    return FALSE;
-}
 
 /*
 function fdebug_mail_connexion($texte){
@@ -2545,7 +2507,6 @@ function fdebug_mail_connexion($texte){
 	}
 }
 */
-
 
 /**
  * 
@@ -2600,7 +2561,6 @@ function mail_connexion() {
 				$result_hostbyaddr = "";
 			}
 
-
 			$message = "** Mail connexion Gepi **\n\n";
 			$message .= "\n";
 			$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
@@ -2625,8 +2585,16 @@ function mail_connexion() {
 	}
 }
 
-
-
+/**
+ * Envoi un courriel à un utilisateur en cas de connexion avec son compte
+ *
+ * @global string
+ * @param string $sujet Sujet du message
+ * @param string $texte Texte du message
+ * @param type $informer_admin Envoi aussi un courriel à l'administrateur si pas à 'n'
+ * @see envoi_mail()
+ * @see getSettingValue()
+ */
 function mail_alerte($sujet,$texte,$informer_admin='n') {
 	global $active_hostbyaddr;
 
@@ -2695,20 +2663,49 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 	}
 }
 
-
-
+/**
+ * Formate un texte
+ * 
+ * - Si le texte contient des < et >, on affiche tel quel
+ * - Sinon, on transforme les retours à la ligne en <br />
+ *
+ * @param string $texte Le texte à formater
+ * @return string Le texte formaté
+ */
 function texte_html_ou_pas($texte){
-	// Si le texte contient des < et >, on affiche tel quel
 	if((strstr($texte,">"))||(strstr($texte,"<"))){
 		$retour=$texte;
 	}
-	// Sinon, on transforme les retours à la ligne en <br />
 	else{
 		$retour=nl2br($texte);
 	}
 	return $retour;
 }
 
+/**
+ * Activer le mode debug, "y" pour oui
+ *
+ * @global string $GLOBALS['debug']
+ * @name $debug
+ */
+$GLOBALS['debug'] = '';
+
+/**
+ * 
+ *
+ * @global array $GLOBALS['tab_instant']
+ * @name $tab_instant
+ */
+$GLOBALS['tab_instant'] = array();
+
+/**
+ * 
+ *
+ * @global array
+ * @global string
+ * @param type $motif
+ * @param string $texte 
+ */
 function decompte_debug($motif,$texte) {
 	global $tab_instant, $debug;
 	if($debug=="y") {
@@ -2731,8 +2728,17 @@ function decompte_debug($motif,$texte) {
 	}
 }
 
-
-// Fonction qui retourne l'URI des élèves pour les flux rss
+ 
+/**
+ * Retourne l'URI des élèves pour les flux rss
+ *
+ * @global string
+ * @param string $eleve Login de l'élève
+ * @param string $https La page est-elle sécurisée ? en https si 'y'
+ * @param string $type 'cdt' ou ''
+ * @return string
+ * @see getSettingValue()
+ */
 function retourneUri($eleve, $https, $type){
 
 	global $gepiPath;
@@ -2771,6 +2777,11 @@ function retourneUri($eleve, $https, $type){
 	return $rep;
 }
 
+/**
+ * Met une date en français
+ *
+ * @return text La date formatée 
+ */
 function get_date_php() {
 	$eng_words = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
 	$french_words = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre');
@@ -2779,6 +2790,12 @@ function get_date_php() {
 	return $date_str;
 }
 
+/**
+ * Met en forme un prénom
+ *
+ * @param type $prenom Le prénom à traiter
+ * @return type Le prénom traité
+ */
 function casse_prenom($prenom) {
 	$tab=explode("-",$prenom);
 
@@ -2794,6 +2811,21 @@ function casse_prenom($prenom) {
 	return $retour;
 }
 
+/**
+ * Faut-il encoder un texte en utf8
+ *
+ * @global string  $GLOBALS['mode_utf8_pdf']
+ * @name $mode_utf8_pdf
+ */
+$GLOBALS['mode_utf8_pdf'] = '';
+
+/**
+ * Encode une chaine en utf8 si $mode_utf8_pdf="y"
+ *
+ * @global type 
+ * @param type $chaine Chaine à encoder
+ * @return type 
+ */
 function traite_accents_utf8($chaine) {
 	global $mode_utf8_pdf;
 	if($mode_utf8_pdf=="y") {
@@ -2804,6 +2836,13 @@ function traite_accents_utf8($chaine) {
 	}
 }
 
+/**
+ * Arrondi un nombre avec un certain nombre de chiffres après la virgule
+ *
+ * @param type $nombre Le nombre à convertir
+ * @param type $nb_chiffre_apres_virgule
+ * @return decimal Le nombre arrondi
+ */
 function nf($nombre,$nb_chiffre_apres_virgule=1) {
 	// Formatage des nombres
 	// Precision:
