@@ -110,7 +110,7 @@ if((isset($choix_classes))&&((isset($id_classe))||(isset($classes_futures)))) {
 	}
 }
 
-
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Génèse classe: Choix classes";
 //echo "<div class='noprint'>\n";
@@ -125,7 +125,7 @@ if((!isset($projet))||($projet=="")) {
 }
 
 //echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
+echo "<p class='bold'><a href='index.php?projet=$projet'".insert_confirm_abandon().">Retour</a>";
 echo "</p>\n";
 //echo "</div>\n";
 
@@ -179,7 +179,7 @@ while($lig_clas=mysql_fetch_object($res_classes)) {
 
 	echo "<input type='checkbox' name='id_classe[]' id='id_classe_$cpt_i' value='$lig_clas->id' ";
 	if(in_array($lig_clas->id,$tab_id_div)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-	echo "onchange=\"checkbox_change($cpt_i)\" ";
+	echo "onchange=\"checkbox_change('id_classe_$cpt_i');changement()\" ";
 	echo "/><label for='id_classe_$cpt_i'><span id='texte_id_classe_$cpt_i'$temp_style>$lig_clas->classe</span></label>";
 	echo "<input type='hidden' name='classe[$lig_clas->id]' value='$lig_clas->classe' />";
 	echo "<br />\n";
@@ -190,22 +190,10 @@ echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
 
-
-	echo "<script type='text/javascript'>
-function checkbox_change(cpt) {
-	if(document.getElementById('id_classe_'+cpt)) {
-		if(document.getElementById('id_classe_'+cpt).checked) {
-			document.getElementById('texte_id_classe_'+cpt).style.fontWeight='bold';
-		}
-		else {
-			document.getElementById('texte_id_classe_'+cpt).style.fontWeight='normal';
-		}
-	}
-}
-</script>\n";
+echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<p>Ajouter une ou des classes futures&nbsp;:\n";
-echo " <input type='text' name='classes_futures' value='$classes_futures' /><br />\n";
+echo " <input type='text' name='classes_futures' value='$classes_futures' onchange=\"changement()\" /><br />\n";
 echo "(<i>pour saisir plusieurs classes, mettre une virgule entre les classes</i>)</p>\n";
 
 echo "<input type='hidden' name='projet' value='$projet' />\n";

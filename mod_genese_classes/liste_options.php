@@ -396,7 +396,7 @@ if(isset($_POST['valider_param'])) {
 	}
 }
 
-
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Génèse classe: Liste des options";
 //echo "<div class='noprint'>\n";
@@ -411,9 +411,9 @@ if((!isset($projet))||($projet=="")) {
 }
 
 //echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
+echo "<p class='bold'><a href='index.php?projet=$projet'".insert_confirm_abandon().">Retour</a>";
 if((isset($_POST['choix_param']))||(isset($_POST['valider_param']))) {
-	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Choisir d'autres options</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'".insert_confirm_abandon().">Choisir d'autres options</a>";
 }
 echo "</p>\n";
 //echo "</div>\n";
@@ -465,7 +465,7 @@ if(!isset($_POST['choix_param'])) {
 			}
 		
 			echo "<input type='checkbox' name='id_classe[]' id='id_classe_$cpt_i' value='$lig_clas->id' ";
-			echo "onchange=\"checkbox_classe_change($cpt_i)\" ";
+			echo "onchange=\"checkbox_champ_change('id_classe_$cpt_i'); changement();\" ";
 			if(in_array($lig_clas->id,$tab_id_classe)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 			echo "/><label for='id_classe_$cpt_i'><span id='texte_id_classe_$cpt_i'$temp_style>$lig_clas->classe</span></label>\n";
 			echo "<input type='hidden' name='classe[$lig_clas->id]' value='$lig_clas->classe' />\n";
@@ -563,18 +563,9 @@ if(!isset($_POST['choix_param'])) {
 		$chaine_champs.="'".$tab_champs[$i]."'";
 	}
 
-	echo "<script type='text/javascript'>
-function checkbox_classe_change(cpt) {
-	if(document.getElementById('id_classe_'+cpt)) {
-		if(document.getElementById('id_classe_'+cpt).checked) {
-			document.getElementById('texte_id_classe_'+cpt).style.fontWeight='bold';
-		}
-		else {
-			document.getElementById('texte_id_classe_'+cpt).style.fontWeight='normal';
-		}
-	}
-}
+	echo js_checkbox_change_style('checkbox_champ_change', 'texte_', 'y');
 
+	echo "<script type='text/javascript'>
 var champs=new Array($chaine_champs, $chaine_champs_matiere);
 for(i=0;i<champs.length;i++) {
 	if(document.getElementById(champs[i])) {
@@ -586,18 +577,6 @@ for(i=0;i<champs.length;i++) {
 		}
 	}
 }
-
-function checkbox_champ_change(id) {
-	if(document.getElementById(id)) {
-		if(document.getElementById(id).checked) {
-			document.getElementById('texte_'+id).style.fontWeight='bold';
-		}
-		else {
-			document.getElementById('texte_'+id).style.fontWeight='normal';
-		}
-	}
-}
-
 </script>\n";
 
 }
