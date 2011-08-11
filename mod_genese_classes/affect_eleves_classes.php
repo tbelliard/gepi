@@ -81,9 +81,15 @@ if(isset($_POST['is_posted'])) {
 		//$sql="DELETE FROM gc_eleve_fut_classe WHERE projet='$projet';";
 		//$del=mysql_query($sql);
 
+		$nom_requete=isset($_POST['nom_requete']) ? $_POST['nom_requete'] : '';
+		$sql="UPDATE gc_affichages SET nom_requete='".addslashes($_POST['nom_requete'])."' WHERE id_aff='".$_POST['id_aff']."' AND id_req='".$_POST['id_req']."' AND projet='$projet';";
+		//echo "$sql<br />";
+		$res_nom_req=mysql_query($sql);
+
 		$profil=isset($_POST['profil']) ? $_POST['profil'] : array();
 
 		for($i=0;$i<count($eleve);$i++) {
+			//echo "plop<br />";
 			/*
 			$sql="DELETE FROM gc_eleve_fut_classe WHERE projet='$projet' AND login='$eleve[$i]';";
 			//echo "$sql<br />";
@@ -437,13 +443,21 @@ function change_display(id) {
 
 			echo "<div id='id_aff_$lig_req_aff->id_aff' style='display:none;'>\n";
 			//++++++++++++++++++++++++++++++++++++++++++++++
-			$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet'AND id_aff='$lig_req_aff->id_aff' ORDER BY id_req;";
+			//$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet'AND id_aff='$lig_req_aff->id_aff' ORDER BY id_req;";
+			$sql="SELECT DISTINCT id_req, nom_requete FROM gc_affichages WHERE projet='$projet'AND id_aff='$lig_req_aff->id_aff' ORDER BY id_req;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
 				$txt_requete="<ul>\n";
 				while($lig=mysql_fetch_object($res)) {
 					$txt_requete.="<li>\n";
-					$txt_requete.="<b><a href='".$_SERVER['PHP_SELF']."?choix_affich=y&amp;requete_definie=y&amp;id_aff=$lig_req_aff->id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'>Requête n°$lig->id_req</a></b>";
+					$txt_requete.="<b><a href='".$_SERVER['PHP_SELF']."?choix_affich=y&amp;requete_definie=y&amp;id_aff=$lig_req_aff->id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'>";
+					if($lig->nom_requete!="") {
+						$txt_requete.="$lig->nom_requete (<em>Req.n°$lig->id_req</em>)";
+					}
+					else {
+						$txt_requete.="Requête n°$lig->id_req";
+					}
+					$txt_requete.="</a></b>";
 	
 					//===========================================
 					$id_req=$lig->id_req;
@@ -880,6 +894,7 @@ else {
 	$sans_profil=isset($_POST['sans_profil']) ? $_POST['sans_profil'] : (isset($_GET['sans_profil']) ? $_GET['sans_profil'] : array());
 	*/
 
+	//debug_var();
 
 	// Pour utiliser des listes d'affichage
 	$requete_definie=isset($_POST['requete_definie']) ? $_POST['requete_definie'] : (isset($_GET['requete_definie']) ? $_GET['requete_definie'] : 'n');
@@ -887,8 +902,10 @@ else {
 	$id_req=isset($_POST['id_req']) ? $_POST['id_req'] : (isset($_GET['id_req']) ? $_GET['id_req'] : NULL);
 	if(($requete_definie=='y')&&(isset($id_aff))&&(isset($id_req))) {
 		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req' ORDER BY type;";
+		//echo "$sql<br />";
 		$res_tmp=mysql_query($sql);
 		while($lig_tmp=mysql_fetch_object($res_tmp)) {
+			$nom_requete=$lig_tmp->nom_requete;
 			switch($lig_tmp->type) {
 				case 'id_clas_act':
 					if(!in_array($lig_tmp->valeur,$id_clas_act)) {$id_clas_act[]=$lig_tmp->valeur;}
@@ -1085,7 +1102,14 @@ else {
 		$tab_ele[]=$lig_ele->login;
 	}
 
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+
+	echo "<p>Nom de la requête&nbsp;: <input type='text' name='nom_requete' value=\"$nom_requete\" ></p>\n";
+	echo "<input type='hidden' name='id_aff' value=\"$id_aff\" >\n";
+	echo "<input type='hidden' name='id_req' value=\"$id_req\" >\n";
+
 	// Rappel de la requête:
+
 	echo "<p>";
 	echo "<a href='".$_SERVER['PHP_SELF']."?$chaine_lien_modif_requete'>";
 	if($chaine_classes_actuelles!="") {echo "Classes actuelles $chaine_classes_actuelles<br />\n";}
@@ -1213,7 +1237,7 @@ $_POST['projet']=	4eme_vers_3eme
 	necessaire_bull_simple();
 	//=========================================
 
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	//echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
 	for($i=0;$i<count($avec_lv1);$i++) {
 		echo "<input type='hidden' name='avec_lv1[$i]' value='$avec_lv1[$i]' />\n";

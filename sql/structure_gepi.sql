@@ -315,7 +315,7 @@ CREATE TABLE IF NOT EXISTS gc_options_classes (id int(11) unsigned NOT NULL auto
 DROP TABLE IF EXISTS gc_ele_arriv_red;
 CREATE TABLE IF NOT EXISTS gc_ele_arriv_red (login VARCHAR( 255 ) NOT NULL,statut ENUM('Arriv','Red') NOT NULL ,projet VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( login , projet ));
 DROP TABLE IF EXISTS gc_affichages;
-CREATE TABLE IF NOT EXISTS gc_affichages (id int(11) unsigned NOT NULL auto_increment,id_aff int(11) unsigned NOT NULL,id_req int(11) unsigned NOT NULL,projet VARCHAR( 255 ) NOT NULL ,type VARCHAR(255) NOT NULL,valeur varchar(255) NOT NULL,PRIMARY KEY ( id ));
+CREATE TABLE IF NOT EXISTS gc_affichages (id int(11) unsigned NOT NULL auto_increment,id_aff int(11) unsigned NOT NULL,id_req int(11) unsigned NOT NULL,projet VARCHAR( 255 ) NOT NULL , nom_requete VARCHAR( 255 ) NOT NULL, type VARCHAR(255) NOT NULL,valeur varchar(255) NOT NULL,PRIMARY KEY ( id ));
 DROP TABLE IF EXISTS gc_eleves_options;
 CREATE TABLE IF NOT EXISTS gc_eleves_options (id int(11) unsigned NOT NULL auto_increment,login VARCHAR( 255 ) NOT NULL ,profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS',moy VARCHAR( 255 ) NOT NULL ,nb_absences VARCHAR( 255 ) NOT NULL ,non_justifie VARCHAR( 255 ) NOT NULL ,nb_retards VARCHAR( 255 ) NOT NULL ,projet VARCHAR( 255 ) NOT NULL ,id_classe_actuelle VARCHAR(255) NOT NULL ,classe_future VARCHAR(255) NOT NULL ,liste_opt VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( id ));
 DROP TABLE IF EXISTS plugins;

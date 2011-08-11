@@ -661,4 +661,17 @@ if ($query) {
 		$result .= "<font color=\"red\">Erreur</font><br />";
 }
 
+$result .= "<br />&nbsp;->Ajout d'un champ 'nom_requete' à la table 'gc_affichages'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM gc_affichages LIKE 'nom_requete';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+} else {
+	$query = mysql_query("ALTER TABLE gc_affichages ADD nom_requete VARCHAR( 255 ) NOT NULL AFTER projet;");
+	if ($query) {
+		$result .= "<font color=\"blue\">Le champ 'nom_requete' de la table 'gc_affichages' a été ajouté.</font><br />";
+	} else {
+		$result .= "<font color=\"red\">Erreur : Le champ 'nom_requete' de la table 'gc_affichages' n'a pas été ajouté</font><br />";
+	}
+}
+
 ?>
