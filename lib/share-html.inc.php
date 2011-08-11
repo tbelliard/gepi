@@ -1550,5 +1550,33 @@ function affiche_actions_compte($login) {
 	return $retour;
 }
 
+/**
+ * Insère une fonction javascript pour passer en gras/normal le label associé à un champ checkbox
+ *
+ * @param string $nom_js_func le nom de la fonction javascript (par défaut 'checkbox_change')
+ * @param string $prefixe_texte le préfixe de l'id du label associé (par défaut 'texte_')
+ *               Si l'id du checkbox est id_groupe_12, le label doit avoir l'id texte_id_groupe_12
+ * @param string $avec_balise_script 'n': On ne renvoye que le texte de la fonction
+ *                                   'y': On renvoye le texte entre balises <script>
+ * @return string Le texte de la fonction javascript
+ * @see add_token_in_url()
+ */
+function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n") {
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
+	$retour.="
+	function $nom_js_func(id) {
+		if(document.getElementById(id)) {
+			if(document.getElementById(id).checked) {
+				document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
+			}
+		}
+	}\n";
+	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
+}
 
 ?>
