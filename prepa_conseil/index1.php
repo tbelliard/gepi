@@ -300,7 +300,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$k=1;
 	for($j=0;$j<count($lignes_csv);$j++) {
 		$tab=explode(";", $lignes_csv[$j]);
-		if(($tab[0]!='Moyenne')&&($tab[0]!='Min.')&&($tab[0]!='Max.')) {
+		if(($tab[0]!='Moyenne')&&($tab[0]!='Min.')&&($tab[0]!='Max.')&&($tab[0]!='Quartile 1')&&($tab[0]!='Médiane')&&($tab[0]!='Quartile 3')) {
 			$h_ligne=$h_cell;
 			$graisse="";
 		}
@@ -739,6 +739,13 @@ if (!$current_group) {
 		echo "/><label for='afficher_rang' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher le rang des élèves.</span></label></p>\n";
 		$cpt++;
 	}
+	//==========================================
+	$name="vmm_afficher_mediane";
+	echo "<p><input type='checkbox' name='afficher_mediane' id='afficher_mediane' value='yes' ";
+	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+	echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
+	echo "/><label for='afficher_mediane' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher les médiane, 1er et 3ème quartiles pour chaque colonne de note.</span></label></p>\n";
+	$cpt++;
 	//==========================================
 
 	$name="vmm_stat";
@@ -1382,16 +1389,26 @@ function checkbox_change(champ, cpt) {
 					$col[$j][$nb_lignes] = "<center>-</center>";
 					$col[$j][$nb_lignes+1] = "<center>-</center>";
 					$col[$j][$nb_lignes+2] = "<center>-</center>";
+					if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+						$col[$j][$nb_lignes+3] = "<center>-</center>";
+						$col[$j][$nb_lignes+4] = "<center>-</center>";
+						$col[$j][$nb_lignes+5] = "<center>-</center>";
+					}
                     $col_csv[$j][$nb_lignes] = '-' ;
                     $col_csv[$j][$nb_lignes+1] = '-' ;
                     $col_csv[$j][$nb_lignes+2] = '-' ;
+					if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+						$col_csv[$j][$nb_lignes+3] = '-' ;
+						$col_csv[$j][$nb_lignes+4] = '-' ;
+						$col_csv[$j][$nb_lignes+5] = '-' ;
+					}
 				}
 			}
 
             $temp = "visu_note_".$k;
             if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+				$j++;
 
-                $j++;
                 $call_moyenne = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
                 $call_max = mysql_query("SELECT max(note) note_max FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
                 $call_min = mysql_query("SELECT min(note) note_min FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
@@ -1425,6 +1442,39 @@ function checkbox_change(champ, cpt) {
 					$col[$j][$nb_lignes+2] = "<center>-</center>";
                     $col_csv[$j][$nb_lignes+2] = '-' ;
                 }
+
+				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					//echo "\$col[$j][0]=".$col[$j][0]."<br />";
+					//echo "\$col[$j][1]=".$col[$j][1]."<br />";
+					$tab_notes_ele=array();
+					for($loop_ele=0;$loop_ele<$nb_lignes;$loop_ele++) {
+						$tab_notes_ele[]=$col_csv[$j][$loop_ele];
+					}
+					$tab_stat=calcule_moy_mediane_quartiles($tab_notes_ele);
+					/*
+					echo "<pre>";
+					foreach($tab_notes_ele as $key => $value) {
+						echo "\$tab_notes_ele[$key]=$value<br />";
+					}
+					foreach($tab_stat as $key => $value) {
+						echo "\$tab_stat[$key]=$value<br />";
+					}
+					echo "</pre>";
+					*/
+					//$tab_champs_stat=array('Quartile 1', 'Médiane', 'Quartile 3');
+					$tab_code_champs_stat=array('q1', 'mediane', 'q3');
+					for($loop_stat=0;$loop_stat<count($tab_code_champs_stat);$loop_stat++) {
+						if(($tab_stat[$tab_code_champs_stat[$loop_stat]]!='')&&($tab_stat[$tab_code_champs_stat[$loop_stat]]!='-')) {
+							$temp=$tab_stat[$tab_code_champs_stat[$loop_stat]];
+							$col[$j][$nb_lignes+2+1+$loop_stat] = "<center>".number_format($temp,1,',','')."</center>";
+							$col_csv[$j][$nb_lignes+2+1+$loop_stat] = number_format($temp,1,',','') ;
+						}
+						else {
+							$col[$j][$nb_lignes+2+1+$loop_stat] = "<center>-</center>";
+							$col_csv[$j][$nb_lignes+2+1+$loop_stat] = '-' ;
+						}
+					}
+				}
             }
             $temp = "visu_app_".$k;
             if (isset($_POST[$temp]) or isset($_GET[$temp])) {
@@ -1432,9 +1482,19 @@ function checkbox_change(champ, cpt) {
                 $col[$j][$nb_lignes] = '-';
                 $col[$j][$nb_lignes+1] = '-';
                 $col[$j][$nb_lignes+2] = '-';
+				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					$col[$j][$nb_lignes+3] = '-';
+					$col[$j][$nb_lignes+4] = '-';
+					$col[$j][$nb_lignes+5] = '-';
+				}
                 $col_csv[$j][$nb_lignes] = '-';
                 $col_csv[$j][$nb_lignes+1] = '-';
                 $col_csv[$j][$nb_lignes+2] = '-';
+				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					$col_csv[$j][$nb_lignes+3] = '-';
+					$col_csv[$j][$nb_lignes+4] = '-';
+					$col_csv[$j][$nb_lignes+5] = '-';
+				}
             }
             $k++;
         }
@@ -1448,6 +1508,37 @@ function checkbox_change(champ, cpt) {
 				$col_csv[$nb_col][$nb_lignes+1] = number_format($min_notes,1,',','');
 				$col[$nb_col][$nb_lignes+2] = "<center>".number_format($max_notes,1,',','')."</center>";
 				$col_csv[$nb_col][$nb_lignes+2] = number_format($max_notes,1,',','');
+
+				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					$tab_notes_ele=array();
+					for($loop_ele=0;$loop_ele<$nb_lignes;$loop_ele++) {
+						$tab_notes_ele[]=$col_csv[$nb_col][$loop_ele];
+					}
+					$tab_stat=calcule_moy_mediane_quartiles($tab_notes_ele);
+					/*
+					echo "<pre>";
+					foreach($tab_notes_ele as $key => $value) {
+						echo "\$tab_notes_ele[$key]=$value<br />";
+					}
+					foreach($tab_stat as $key => $value) {
+						echo "\$tab_stat[$key]=$value<br />";
+					}
+					echo "</pre>";
+					*/
+					//$tab_champs_stat=array('Quartile 1', 'Médiane', 'Quartile 3');
+					$tab_code_champs_stat=array('q1', 'mediane', 'q3');
+					for($loop_stat=0;$loop_stat<count($tab_code_champs_stat);$loop_stat++) {
+						if(($tab_stat[$tab_code_champs_stat[$loop_stat]]!='')&&($tab_stat[$tab_code_champs_stat[$loop_stat]]!='-')) {
+							$temp=$tab_stat[$tab_code_champs_stat[$loop_stat]];
+							$col[$nb_col][$nb_lignes+2+1+$loop_stat] = "<center>".number_format($temp,1,',','')."</center>";
+							$col_csv[$nb_col][$nb_lignes+2+1+$loop_stat] = number_format($temp,1,',','') ;
+						}
+						else {
+							$col[$nb_col][$nb_lignes+2+1+$loop_stat] = "<center>-</center>";
+							$col_csv[$nb_col][$nb_lignes+2+1+$loop_stat] = '-' ;
+						}
+					}
+				}
 			}
 			else {
 				$col[$nb_col][$nb_lignes] = "<center>-</center>";
@@ -1457,6 +1548,15 @@ function checkbox_change(champ, cpt) {
 				$col_csv[$nb_col][$nb_lignes+1] = "-";
 				$col[$nb_col][$nb_lignes+2] = "<center>-</center>";
 				$col_csv[$nb_col][$nb_lignes+2] = "-";
+
+				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					$col[$nb_col][$nb_lignes+3] = "<center>-</center>";
+					$col_csv[$nb_col][$nb_lignes+3] = "-";
+					$col[$nb_col][$nb_lignes+4] = "<center>-</center>";
+					$col_csv[$nb_col][$nb_lignes+4] = "-";
+					$col[$nb_col][$nb_lignes+5] = "<center>-</center>";
+					$col_csv[$nb_col][$nb_lignes+5] = "-";
+				}
 			}
 			//$col_csv[$nb_col][$nb_lignes]=$col[$nb_col][$nb_lignes];
 
@@ -1487,20 +1587,45 @@ function checkbox_change(champ, cpt) {
         $col[1][$nb_lignes] = '<b>Moyenne</b>';
         $col[1][$nb_lignes+1] = '<b>Min.</b>';
         $col[1][$nb_lignes+2] = '<b>Max.</b>';
-
+		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			$col[1][$nb_lignes+3] = '<b>Quartile 1</b>';
+			$col[1][$nb_lignes+4] = '<b>Médiane</b>';
+			$col[1][$nb_lignes+5] = '<b>Quartile 3</b>';
+		}
         $col_csv[1][$nb_lignes] = 'Moyenne';
         $col_csv[1][$nb_lignes+1] = 'Min.';
         $col_csv[1][$nb_lignes+2] = 'Max.';
+		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			$col_csv[1][$nb_lignes+3] = 'Quartile 1';
+			$col_csv[1][$nb_lignes+4] = 'Médiane';
+			$col_csv[1][$nb_lignes+5] = 'Quartile 3';
+		}
+
         if ($multiclasses) {
             $col[2][$nb_lignes] = '&nbsp;';
             $col[2][$nb_lignes+1] = '&nbsp;';
             $col[2][$nb_lignes+2] = '&nbsp;';
+			if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				$col[2][$nb_lignes+3] = '&nbsp;';
+				$col[2][$nb_lignes+4] = '&nbsp;';
+				$col[2][$nb_lignes+5] = '&nbsp;';
+			}
 
             $col_csv[2][$nb_lignes] = '';
             $col_csv[2][$nb_lignes+1] = '';
             $col_csv[2][$nb_lignes+2] = '';
+			if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				$col_csv[2][$nb_lignes+3] = '';
+				$col_csv[2][$nb_lignes+4] = '';
+				$col_csv[2][$nb_lignes+5] = '';
+			}
         }
-        $nb_lignes = $nb_lignes + 3;
+		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			$nb_lignes = $nb_lignes + 6;
+		}
+		else {
+			$nb_lignes = $nb_lignes + 3;
+		}
     }
 
 	//==============================================
@@ -1515,9 +1640,19 @@ function checkbox_change(champ, cpt) {
         $col[$nb_col][$nb_lignes-1] = "<center>-</center>";
         $col[$nb_col][$nb_lignes-2] = "<center>-</center>";
         $col[$nb_col][$nb_lignes-3] = "<center>-</center>";
+		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			$col[$nb_col][$nb_lignes-4] = "<center>-</center>";
+			$col[$nb_col][$nb_lignes-5] = "<center>-</center>";
+			$col[$nb_col][$nb_lignes-6] = "<center>-</center>";
+		}
         $col_csv[$nb_col][$nb_lignes-1] = '-';
         $col_csv[$nb_col][$nb_lignes-2] = '-';
         $col_csv[$nb_col][$nb_lignes-3] = '-';
+		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			$col_csv[$nb_col][$nb_lignes-4] = '-';
+			$col_csv[$nb_col][$nb_lignes-5] = '-';
+			$col_csv[$nb_col][$nb_lignes-6] = '-';
+		}
 	}
 	//==============================================
 
@@ -1772,9 +1907,11 @@ function checkbox_change(champ, cpt) {
         $i++;
     }
 
-
 	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
 		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
+	}
+	if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		echo "<input type='hidden' name='afficher_mediane' value='yes' />\n";
 	}
     if ($en_tete == "yes") {
 		echo "<input type='hidden' name='en_tete' value='yes' />\n";
@@ -1919,6 +2056,12 @@ function checkbox_change(champ, cpt) {
 	}
 	elseif(isset($_SESSION['vmm_afficher_rang'])) {unset($_SESSION['vmm_afficher_rang']);}
 
+	if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		echo "<input type='hidden' name='afficher_mediane' value='yes' />\n";
+		$_SESSION['vmm_afficher_mediane']="yes";
+	}
+	elseif(isset($_SESSION['vmm_afficher_mediane'])) {unset($_SESSION['vmm_afficher_mediane']);}
+
     echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
 	if($couleur_alterne=="y") {$_SESSION['vmm_couleur_alterne']="y";} else {unset($_SESSION['vmm_couleur_alterne']);}
 
@@ -1931,6 +2074,9 @@ function checkbox_change(champ, cpt) {
     //if (isset($col)) affiche_tableau($nb_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
 
 	//function affiche_tableau_index1($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
+
+	// On commence en colonne 1: Nom Prénom
+	//echo "$ligne1[1]<br />";
 
     if (isset($col)) {
 		//$couleur_alterne="y";
