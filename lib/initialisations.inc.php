@@ -43,6 +43,30 @@ $GLOBALS['relatif_gepi']='';
  */
 $GLOBALS['multisite'] = $multisite;
 
+/**
+ * Version de GEPI stable
+ * 
+ * @global mixed $GLOBALS['gepiVersion']
+ * @name $gepiVersion
+ */
+$GLOBALS['gepiVersion'] = '';
+
+/**
+ * Version de GEPI release candidate
+ * 
+ * @global mixed $GLOBALS['gepiRcVersion']
+ * @name $gepiRcVersion
+ */
+$GLOBALS['gepiRcVersion'] = '';
+
+/**
+ * Version de GEPI Beta
+ * 
+ * @global mixed $GLOBALS['gepiBetaVersion']
+ * @name $gepiBetaVersion
+ */
+$GLOBALS['gepiBetaVersion'] = '';
+
 
 
 

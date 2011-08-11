@@ -43,30 +43,6 @@ $GLOBALS['tabdiv_infobulle'] = array();
 $GLOBALS['gepiClosedPeriodLabel'] = '';
 
 /**
- * Version de GEPI stable
- * 
- * @global mixed $GLOBALS['gepiVersion']
- * @name $gepiVersion
- */
-$GLOBALS['gepiVersion'] = '';
-
-/**
- * Version de GEPI release candidate
- * 
- * @global mixed $GLOBALS['gepiRcVersion']
- * @name $gepiRcVersion
- */
-$GLOBALS['gepiRcVersion'] = '';
-
-/**
- * Version de GEPI Beta
- * 
- * @global mixed $GLOBALS['gepiBetaVersion']
- * @name $gepiBetaVersion
- */
-$GLOBALS['gepiBetaVersion'] = '';
-
-/**
  * 
  * @global int $GLOBALS['totalsize']
  * @name $totalsize
@@ -4133,8 +4109,8 @@ function suppression_sauts_de_lignes_surnumeraires($chaine) {
  * @param string $type "notes" pour voir les notes sinon commentaires
  * @param int $id_groupe Id du groupe
  * @param int $periode_num numéro de la période
- * @param  $mode Si "couleur" le texte est sur fond orange si tous les élèves ne sont pas notés
- * @return  le nombre de notes ou commentaires saisis
+ * @param string $mode Si "couleur" le texte est sur fond orange si tous les élèves ne sont pas notés
+ * @return string le nombre de notes ou commentaires saisis
  */
 function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
 	$retour="";
