@@ -1244,9 +1244,18 @@ function checkbox_change(champ, cpt) {
 			//echo "<tr><td valign='top'>";
 			unset($tmp_tab);
 			//for($loop=0;$loop<count($col[$col_tri]);$loop++) {
+			//echo "\$_POST['col_tri']=".$_POST['col_tri']."<br />";
+			//echo "\$nb_col=".$nb_col."<br />";
 			for($loop=0;$loop<count($col_csv[1]);$loop++) {
 				// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
 				$tmp_tab[$loop]=preg_replace("/,/",".",$col_csv[$col_tri][$loop]);
+
+				// La colonne Rang sur la moyenne générale annuelle est ajoutée plus loin dans le code (c'est la seule)
+				if(($_POST['col_tri']>$nb_col)||
+					(preg_match('/^Rang/',$ligne1_csv[$_POST['col_tri']]))) {
+					if($tmp_tab[$loop]=='-') {$tmp_tab[$loop]=1000000;}
+				}
+
 				//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
 			}
 			/*
