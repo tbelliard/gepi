@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -111,6 +111,7 @@ while ($j < $nombre_groupes) {
         $k= 0;
         $rang_prec = 1;
         $note_prec='';
+		$max_rang=0;
         //mise à jour du champ des rangs
         while ($k < $nb_notes[$group_id][$periode_num]) {
             if ($k >=1) $note_prec = mysql_result($quer, $k-1, 'note');
@@ -118,13 +119,29 @@ while ($j < $nombre_groupes) {
             if ($note == $note_prec) $rang = $rang_prec; else $rang = ($k+1);
             $rang_prec = $rang;
             $login_eleve_temp = mysql_result($quer, $k, 'login');
+			/*
+			if($current_group[$j]["id"]=='1498') {
+			echo "\$login_eleve_temp=$login_eleve_temp et \$note=$note<br />";
+			}
+			*/
             $reg_rang = mysql_query("update matieres_notes set rang='".$rang."' where (
             periode = '".$periode_num."' and
             id_groupe = '".$current_group[$j]["id"]."' and
             login = '".$login_eleve_temp."' )
             ");
+			if($rang>$max_rang) {$max_rang=$rang;}
             $k++;
         }
+
+		// Pour ne pas laisser un Rang à zéro (valeur par défaut du champ)... ce qui fait passer un non noté en première position:
+		$max_rang++;
+		$sql="UPDATE matieres_notes SET rang='$max_rang' WHERE (
+			periode = '".$periode_num."' and
+			id_groupe = '".$current_group[$j]["id"]."' and
+			statut = '-' )
+			";
+		$update_rang_non_notes=mysql_query($sql);
+
         // On indique que le recalcul du rang n'est plus nécessaire
         $long = strlen($recalcul_rang);
         if ($long >= $periode_num) {
