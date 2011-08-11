@@ -486,12 +486,12 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "<table border='0' summary='Choix du type de bulletin'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg()' ";
+	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");' ";
 	if($type_bulletin_par_defaut=='html') {echo "checked ";}
 	echo "/> ";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<label for='mode_bulletin_html' style='cursor:pointer;'>Bulletin HTML</label>\n";
+	echo "<label for='mode_bulletin_html' id='texte_mode_bulletin_html' style='cursor:pointer;'>Bulletin HTML</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -525,12 +525,12 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			}
 		}
 		else {
-			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg()' ";
+			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_html\");' ";
 			if($type_bulletin_par_defaut=='pdf') {echo "checked ";}
 			echo "/> ";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<label for='mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
+			echo "<label for='mode_bulletin_pdf' id='texte_mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
 
 			echo "<br />\n";
 			//echo "<span id='div_modele_bulletin_pdf'>\n";
@@ -562,10 +562,10 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 				}
 			//echo "</span>\n";
 
-			echo "<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /><label for='use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
+			echo "<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' onchange=\"checkbox_change(this.id)\" /><label for='use_cell_ajustee' id='texte_use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
 
 			$titre_infobulle="Fonction cell_ajustee()\n";
-			$texte_infobulle="Pour les appréciations sur les bulletins, relevés,... on utilisait auparavant la fonction DraxTextBox() de FPDF.<br />Cette fonction avait parfois un comportement curieux avec des textes tronqués ou beaucoup plus petits dans la cellule que ce qui semblait pouvoir tenir dans la case.<br />La fonction cell_ajustee() est une fonction que mise au point pour tenter de faire mieux que DraxTextBox().<br />Comme elle n'a pas été expérimentée par suffisamment de monde sur trunk, nous avons mis une case à cocher qui permet d'utiliser l'ancienne fonction DrawTextBox() si cell_ajustee() ne se révélait pas aussi bien fichue que nous l'espèrons;o).<br />\n";
+			$texte_infobulle="Pour les appréciations sur les bulletins, relevés,... on utilisait auparavant la fonction DraxTextBox() de FPDF.<br />Cette fonction avait parfois un comportement curieux avec des textes tronqués ou beaucoup plus petits dans la cellule que ce qui semblait pouvoir tenir dans la case.<br />La fonction cell_ajustee() est une fonction que mise au point pour tenter de faire mieux que DraxTextBox().<br />Comme elle n'a pas été expérimentée par suffisamment de monde sur trunk, nous avons mis une case à cocher qui permet d'utiliser l'ancienne fonction DrawTextBox() si cell_ajustee() ne se révélait pas aussi bien fichue que nous l'espérons;o).<br />\n";
 			//$texte_infobulle.="\n";
 			$tabdiv_infobulle[]=creer_div_infobulle('a_propos_cell_ajustee',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 	
@@ -574,7 +574,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			echo "<br />\n";
 
 			// Debug
-			echo "<input type='checkbox' name='bull_pdf_debug' id='bull_pdf_debug' value='y' />&nbsp;<label for='bull_pdf_debug' style='cursor: pointer;'>Activer le debug pour afficher les erreurs perturbant la génération de PDF.</label>\n";
+			echo "<input type='checkbox' name='bull_pdf_debug' id='bull_pdf_debug' value='y' onchange=\"checkbox_change(this.id)\" />&nbsp;<label for='bull_pdf_debug' id='texte_bull_pdf_debug' style='cursor: pointer;'>Activer le debug pour afficher les erreurs perturbant la génération de PDF.</label>\n";
 
 			$titre_infobulle="Debug\n";
 			$texte_infobulle="Il arrive que la génération de PDF échoue.<br />Les raisons peuvent être variables (<em>manque de ressources serveur, bug,...</em>).<br />Dans ce cas, la présence d'un plugin lecteur PDF peut empêcher de voir quelles erreurs provoquent l'échec.<br />En cochant la case DEBUG, vous obtiendrez l'affichage des erreurs et ainsi vous pourrez obtenir de l'aide plus facilement sur la liste 'gepi-users'<br />\n";
@@ -594,7 +594,12 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "</tr>\n";
 	echo "</table>\n";
 
+	echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
+
 	echo "<script type='text/javascript'>
+	checkbox_change('mode_bulletin_pdf');
+	checkbox_change('mode_bulletin_html');
+
 	function display_div_modele_bulletin_pdf() {
 		if(document.getElementById('div_modele_bulletin_pdf')) {
 			if(document.getElementById('mode_bulletin_pdf').checked==true) {
@@ -638,7 +643,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	//echo "<div style='float:right; width:40%'>\n";
 	echo "<div id='div_parametres'>\n";
 	echo "<table border='0' summary='Tableau des paramètres'>\n";
-	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
+	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' onchange=\"checkbox_change(this.id)\" /></td><td><label for='un_seul_bull_par_famille' id='texte_un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
 
 	// A FAIRE:
 	// Tester et ne pas afficher:
@@ -657,23 +662,23 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "</tr>\n";
 		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 		*/
-		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui'  /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
+		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' onchange=\"checkbox_change(this.id)\" /></td><td><label for='coefficients_a_1' id='texte_coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 
 		// A FAIRE: A déplacer et mettre dans le modèle PDF
 		//echo "<tr id='id_tr_moyennes_periodes_precedentes'><td valign='top'><input type='checkbox' name='moyennes_periodes_precedentes' id='moyennes_periodes_precedentes' value='y'  /></td><td><label for='moyennes_periodes_precedentes' style='cursor: pointer;'>Afficher les moyennes de l'élève pour les périodes précédentes (<i>incompatible avec l'affichage des moyennes min/max/classe dans la même cellule que la moyenne de l'élève</i>).</label></td></tr>\n";
 
 		//echo "<tr id='id_tr_evolution_moyenne_periode_precedente'><td valign='top'><input type='checkbox' name='evolution_moyenne_periode_precedente' id='evolution_moyenne_periode_precedente' value='y'  /></td><td><label for='evolution_moyenne_periode_precedente' style='cursor: pointer;'>Indiquer par un + ou - l'évolution de la moyenne (<i>hausse/stable/baisse</i>).</label></td></tr>\n";
 
-		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les bulletins par établissement d'origine.</label></td></tr>\n";
+		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' onchange=\"checkbox_change(this.id)\" /></td><td><label for='tri_par_etab_orig' id='texte_tri_par_etab_orig' style='cursor: pointer;'>Trier les bulletins par établissement d'origine.</label></td></tr>\n";
 
 		/*
 		echo "<tr><td valign='top'><input type='checkbox' name='avec_coches_mentions' id='avec_coches_mentions' value='y' /></td><td><label for='avec_coches_mentions' style='cursor: pointer;'>Faire apparaître des cases à cocher pour les ".$gepi_denom_mention."s (<i>Félicitations, Mention honorable, Encouragements, ou autre...</i>) sur les bulletins PDF.</label></td></tr>\n";
 		*/
 
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
-			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_moy_conteneurs' id='forcer_recalcul_moy_conteneurs' value='y' /></td><td><label for='forcer_recalcul_moy_conteneurs' style='cursor: pointer;'>Forcer le recalcul des moyennes de conteneurs.</label></td></tr>\n";
+			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_moy_conteneurs' id='forcer_recalcul_moy_conteneurs' value='y' onchange=\"checkbox_change(this.id)\" /></td><td><label for='forcer_recalcul_moy_conteneurs' id='texte_forcer_recalcul_moy_conteneurs' style='cursor: pointer;'>Forcer le recalcul des moyennes de conteneurs.</label></td></tr>\n";
 
-			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_rang' id='forcer_recalcul_rang' value='y' /></td><td><label for='forcer_recalcul_rang' style='cursor: pointer;'>Forcer le recalcul des rangs.</label></td></tr>\n";
+			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_rang' id='forcer_recalcul_rang' value='y' onchange=\"checkbox_change(this.id)\" /></td><td><label for='forcer_recalcul_rang' id='texte_forcer_recalcul_rang' style='cursor: pointer;'>Forcer le recalcul des rangs.</label></td></tr>\n";
 		}
 	//}
 	echo "</table>\n";
@@ -719,12 +724,11 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	//===========================================
 
 
-
 	// L'admin peut avoir accès aux bulletins, mais il n'a de toute façon pas accès au relevés de notes.
 	$sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_bis.php' AND ".$_SESSION['statut']."='V';";
 	$res_verif_droit=mysql_query($sql);
 	if (mysql_num_rows($res_verif_droit)>0) {
-		echo "<p><input type='checkbox' name='intercaler_releve_notes' id='intercaler_releve_notes' value='y' onchange='display_param_releve();' /> <label for='intercaler_releve_notes' style='cursor: pointer;'>Intercaler les relevés de notes</label>\n";
+		echo "<p><input type='checkbox' name='intercaler_releve_notes' id='intercaler_releve_notes' value='y' onchange='display_param_releve();checkbox_change(this.id)' /> <label for='intercaler_releve_notes' id='texte_intercaler_releve_notes' style='cursor: pointer;'>Intercaler les relevés de notes</label>\n";
 
 		echo "<span id='pliage_param_releve'>\n";
 		echo "(<i>";
