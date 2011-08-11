@@ -1558,6 +1558,7 @@ function affiche_actions_compte($login) {
  *               Si l'id du checkbox est id_groupe_12, le label doit avoir l'id texte_id_groupe_12
  * @param string $avec_balise_script 'n': On ne renvoye que le texte de la fonction
  *                                   'y': On renvoye le texte entre balises <script>
+ * Sur les checkbox, insérer onchange="checkbox_change(this.id)"
  * @return string Le texte de la fonction javascript
  */
 function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n") {
