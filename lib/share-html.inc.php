@@ -1559,7 +1559,6 @@ function affiche_actions_compte($login) {
  * @param string $avec_balise_script 'n': On ne renvoye que le texte de la fonction
  *                                   'y': On renvoye le texte entre balises <script>
  * @return string Le texte de la fonction javascript
- * @see add_token_in_url()
  */
 function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n") {
 	$retour="";
