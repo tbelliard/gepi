@@ -1023,5 +1023,489 @@ function liens_class_from_ele_login($ele_login){
 	return $chaine;
 }
 
+/**
+ * Teste et construit un tableau html des dossiers qui doivent être accessibles en écriture
+ *
+ * Par défaut les dossiers nécessaires à GEPI
+ * 
+ * Le chemin complet doit être passé
+ * @global string
+ * @param type $tab_restriction Le tableau des répertoires à tester
+ */
+function test_ecriture_dossier($tab_restriction=array()) {
+    global $gepiPath;
+
+	if(count($tab_restriction)>0) {
+		$tab_dossiers_rw=$tab_restriction;
+	}
+	else {
+		$tab_dossiers_rw=array("artichow/cache","backup","documents","documents/archives","images","images/background","lib/standalone/HTMLPurifier/DefinitionCache/Serializer","mod_ooo/mes_modeles","mod_ooo/tmp","photos","temp");
+	}
+
+	$nom_fichier_test='test_acces_rw';
+
+	echo "<table class='boireaus'>\n";
+    echo "<caption style='display:none;'>dossiers devant être accessibles en écriture<caption>\n";
+	echo "<tr>\n";
+	echo "<th>Dossier</th>\n";
+	echo "<th>Ecriture</th>\n";
+	echo "</tr>\n";
+	$alt=1;
+	for($i=0;$i<count($tab_dossiers_rw);$i++) {
+		$ok_rw="no";
+		if ($f = @fopen("../".$tab_dossiers_rw[$i]."/".$nom_fichier_test, "w")) {
+			@fputs($f, '<'.'?php $ok_rw = "yes"; ?'.'>');
+			@fclose($f);
+			include("../".$tab_dossiers_rw[$i]."/".$nom_fichier_test);
+			$del = @unlink("../".$tab_dossiers_rw[$i]."/".$nom_fichier_test);
+		}
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt white_hover'>\n";
+		echo "<td style='text-align:left;'>$gepiPath/$tab_dossiers_rw[$i]</td>\n";
+		echo "<td>";
+		if($ok_rw=='yes') {
+			echo "<img src='../images/enabled.png' height='20' width='20' alt=\"Le dossier est accessible en écriture.\" />";
+		}
+		else {
+			echo "<img src='../images/disabled.png' height='20' width='20' alt=\"Le dossier n'est pas accessible en écriture.\" />";
+		}
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		if($tab_dossiers_rw[$i]=="documents/archives") {
+			if(getSettingValue('multisite')=='y') {
+				$dossier_temp='documents/archives/'.$_COOKIE['RNE'];
+			}
+			else {
+				$dossier_temp='documents/archives/etablissement';
+			}
+
+			if(file_exists("../$dossier_temp")) {
+				$ok_rw="no";
+				if ($f = @fopen("../".$dossier_temp."/".$nom_fichier_test, "w")) {
+					@fputs($f, '<'.'?php $ok_rw = "yes"; ?'.'>');
+					@fclose($f);
+					include("../".$dossier_temp."/".$nom_fichier_test);
+					$del = @unlink("../".$dossier_temp."/".$nom_fichier_test);
+				}
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td style='text-align:left;'>$gepiPath/$dossier_temp</td>\n";
+				echo "<td>";
+				if($ok_rw=='yes') {
+					echo "<img src='../images/enabled.png' height='20' width='20' alt=\"Le dossier est accessible en écriture.\" />";
+				}
+				else {
+					echo "<img src='../images/disabled.png' height='20' width='20' alt=\"Le dossier n'est pas accessible en écriture.\" />";
+				}
+				echo "</td>\n";
+				echo "</tr>\n";
+
+			}
+		}
+	}
+	echo "</table>\n";
+}
+
+/**
+ * Affiche un tableau html des connexions d'un utilisateur
+ * 
+ * $duree
+ * -   7 -> "une semaine"
+ * -  15 -> "quinze jours"
+ * -  30 -> "un mois"
+ * -  60 -> "deux mois"
+ * - 183 -> "six mois"
+ * - 365 -> "un an"
+ * - all -> "le début"
+ *
+ * @param string $login Login de l'utilisateur
+ * @param int|string $duree
+ * @param string $page 'mon_compte' pour afficher ses propres connexions
+ * @param string $pers_id Permet d'avoir une balise <input type='hidden' personnelle
+ * @todo On pourrait utiliser $_SESSION['login'] plutôt que $page
+ */
+function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
+	switch( $duree ) {
+	case 7:
+		$display_duree="une semaine";
+		break;
+	case 15:
+		$display_duree="quinze jours";
+		break;
+	case 30:
+		$display_duree="un mois";
+		break;
+	case 60:
+		$display_duree="deux mois";
+		break;
+	case 183:
+		$display_duree="six mois";
+		break;
+	case 365:
+		$display_duree="un an";
+		break;
+	case 'all':
+		$display_duree="le début";
+		break;
+	}
+
+	if($page=='mon_compte') {
+		echo "<h2>Journal de vos connexions depuis <b>".$display_duree."</b>**</h2>\n";
+	}
+	else {
+		echo "<h2>Journal des connexions de ".civ_nom_prenom($login)." depuis <b>".$display_duree."</b>**</h2>\n";
+	}
+	$requete = '';
+	if ($duree != 'all') {$requete = "and START > now() - interval " . $duree . " day";}
+
+	$sql = "select START, SESSION_ID, REMOTE_ADDR, USER_AGENT, AUTOCLOSE, END from log where LOGIN = '".$login."' ".$requete." order by START desc";
+	//echo "$sql<br />";
+	$day_now   = date("d");
+	$month_now = date("m");
+	$year_now  = date("Y");
+	$hour_now  = date("H");
+	$minute_now = date("i");
+	$seconde_now = date("s");
+	$now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_now);
+
+	echo "<ul>
+<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
+<li>Les lignes en orange signalent une session close pour laquelle vous ne vous êtes pas déconnecté correctement.</li>
+<li>Les lignes en noir signalent une session close normalement.</li>
+<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement).</li>
+</ul>
+<table class='col' style='width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;' cellpadding='5' cellspacing='0' summary='Connexions'>
+	<tr>
+		<th class='col'>Début session</th>
+		<th class='col'>Fin session</th>
+		<th class='col'>Adresse IP et nom de la machine cliente</th>
+		<th class='col'>Navigateur</th>
+	</tr>
+";
+
+	$res = sql_query($sql);
+	if ($res) {
+		for ($i = 0; ($row = sql_row($res, $i)); $i++)
+		{
+			$annee_b = substr($row[0],0,4);
+			$mois_b =  substr($row[0],5,2);
+			$jour_b =  substr($row[0],8,2);
+			$heures_b = substr($row[0],11,2);
+			$minutes_b = substr($row[0],14,2);
+			$secondes_b = substr($row[0],17,2);
+			$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
+
+			$annee_f = substr($row[5],0,4);
+			$mois_f =  substr($row[5],5,2);
+			$jour_f =  substr($row[5],8,2);
+			$heures_f = substr($row[5],11,2);
+			$minutes_f = substr($row[5],14,2);
+			$secondes_f = substr($row[5],17,2);
+			$date_fin = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
+			$end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
+
+			$temp1 = '';
+			$temp2 = '';
+			if ($end_time > $now) {
+				$temp1 = "<font color='green'>";
+				$temp2 = "</font>";
+			} else if (($row[4] == 1) or ($row[4] == 2) or ($row[4] == 3)) {
+				//$temp1 = "<font color=orange>\n";
+				$temp1 = "<font color='#FFA500'>";
+				$temp2 = "</font>";
+			} else if ($row[4] == 4) {
+				$temp1 = "<b><font color='red'>";
+				$temp2 = "</font></b>";
+
+			}
+
+			echo "<tr>\n";
+			echo "<td class=\"col\">".$temp1.$date_debut.$temp2."</td>\n";
+			if ($row[4] == 2) {
+				echo "<td class=\"col\">".$temp1."Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
+			}
+			else {
+				echo "<td class=\"col\">".$temp1.$date_fin.$temp2."</td>\n";
+			}
+			if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+				$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
+			}
+			else if ($active_hostbyaddr == "no_local") {
+				if ((substr($row[2],0,3) == 127) or
+					(substr($row[2],0,3) == 10.) or
+					(substr($row[2],0,7) == 192.168)) {
+					$result_hostbyaddr = "";
+				}
+				else {
+					$tabip=explode(".",$row[2]);
+					if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+						$result_hostbyaddr = "";
+					}
+					else {
+						$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
+					}
+				}
+			}
+			else {
+				$result_hostbyaddr = "";
+			}
+
+			echo "<td class=\"col\"><span class='small'>".$temp1.$row[2].$result_hostbyaddr.$temp2. "</span></td>\n";
+			echo "<td class=\"col\">".$temp1. detect_browser($row[3]) .$temp2. "</td>\n";
+			echo "</tr>\n";
+			flush();
+		}
+	}
+
+
+	echo "</table>\n";
+
+	echo "<form action=\"".$_SERVER['PHP_SELF']."#connexion\" name=\"form_affiche_log\" method=\"post\">\n";
+
+	if($page=='modify_user') {
+		echo "<input type='hidden' name='user_login' value='$login' />\n";
+		echo "<input type='hidden' name='journal_connexions' value='y' />\n";
+	}
+	elseif($page=='modify_eleve') {
+		echo "<input type='hidden' name='eleve_login' value='$login' />\n";
+		echo "<input type='hidden' name='journal_connexions' value='y' />\n";
+	}
+	elseif($page=='modify_resp') {
+		echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
+		echo "<input type='hidden' name='journal_connexions' value='y' />\n";
+	}
+
+	echo "Afficher le journal des connexions depuis : <select name=\"duree\" size=\"1\">\n";
+	echo "<option ";
+	if ($duree == 7) echo "selected";
+	echo " value=7>Une semaine</option>\n";
+	echo "<option ";
+	if ($duree == 15) echo "selected";
+	echo " value=15 >Quinze jours</option>\n";
+	echo "<option ";
+	if ($duree == 30) echo "selected";
+	echo " value=30>Un mois</option>\n";
+	echo "<option ";
+	if ($duree == 60) echo "selected";
+	echo " value=60>Deux mois</option>\n";
+	echo "<option ";
+	if ($duree == 183) echo "selected";
+	echo " value=183>Six mois</option>\n";
+	echo "<option ";
+	if ($duree == 365) echo "selected";
+	echo " value=365>Un an</option>\n";
+	echo "<option ";
+	if ($duree == 'all') echo "selected";
+	echo " value='all'>Le début</option>\n";
+	echo "</select>\n";
+	echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />\n";
+
+	echo "</form>\n";
+
+	echo "<p class='small'>** Les renseignements ci-dessus peuvent vous permettre de vérifier qu'une connexion pirate n'a pas été effectuée sur votre compte.
+	Dans le cas d'une connexion inexpliquée, vous devez immédiatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.</p>\n";
+}
+
+/**
+ * Affiche une action à effectuer
+ */
+function affiche_infos_actions() {
+	$sql="SELECT ia.* FROM infos_actions ia, infos_actions_destinataires iad WHERE
+	ia.id=iad.id_info AND
+	((iad.nature='individu' AND iad.valeur='".$_SESSION['login']."') OR
+	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."'));";
+    
+	$res=mysql_query($sql);
+	$chaine_id="";
+	if(mysql_num_rows($res)>0) {
+		echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
+		echo "<div id='info_action_titre' style='font-weight: bold;' class='infobulle_entete'>\n";
+			echo "<div id='info_action_pliage' style='float:right; width: 1em'>\n";
+			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+			echo "</div>\n";
+			echo "Actions en attente";
+		echo "</div>\n";
+
+		echo "<div id='info_action_corps_conteneur'>\n";
+
+		$cpt_id=0;
+		while($lig=mysql_fetch_object($res)) {
+			echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
+				echo "<div id='info_action_titre_$lig->id' style='font-weight: bold;' class='infobulle_entete'>\n";
+					echo "<div id='info_action_pliage_$lig->id' style='float:right; width: 1em'>\n";
+					echo "<a href=\"javascript:div_alterne_affichage('$lig->id')\"><span id='img_pliage_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+					echo "</div>\n";
+					echo $lig->titre;
+				echo "</div>\n";
+
+				echo "<div id='info_action_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
+					echo "<div style='float:right; width: 9em; text-align: right;'>\n";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
+					echo "</div>\n";
+
+					echo nl2br($lig->description);
+				echo "</div>\n";
+			echo "</div>\n";
+			if($cpt_id>0) {$chaine_id.=", ";}
+			$chaine_id.="'$lig->id'";
+			$cpt_id++;
+		}
+		echo "</div>\n";
+		echo "</div>\n";
+
+		echo "<script type='text/javascript'>
+	function div_alterne_affichage(id) {
+		if(document.getElementById('info_action_corps_'+id)) {
+			if(document.getElementById('info_action_corps_'+id).style.display=='none') {
+				document.getElementById('info_action_corps_'+id).style.display='';
+				document.getElementById('img_pliage_'+id).innerHTML='<img src=\'images/icons/remove.png\' width=\'16\' height=\'16\' />'
+			}
+			else {
+				document.getElementById('info_action_corps_'+id).style.display='none';
+				document.getElementById('img_pliage_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' />'
+			}
+		}
+	}
+
+	chaine_id_action=new Array($chaine_id);
+	for(i=0;i<chaine_id_action.length;i++) {
+		id_a=chaine_id_action[i];
+		if(document.getElementById('info_action_corps_'+id_a)) {
+			div_alterne_affichage(id_a);
+		}
+	}
+</script>\n";
+	}
+}
+
+
+/**
+ * Affiche les accès aux cahiers de texte
+ */
+function affiche_acces_cdt() {
+	$retour="";
+
+	$tab_statuts=array('professeur', 'administrateur', 'scolarite');
+	if(in_array($_SESSION['statut'], $tab_statuts)) {
+		$sql="SELECT a.* FROM acces_cdt a ORDER BY date2;";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		$chaine_id="";
+		if(mysql_num_rows($res)>0) {
+			$visible="y";
+			if($_SESSION['statut']=='professeur') {
+				$visible="n";
+				$sql="SELECT ag.id_acces FROM acces_cdt_groupes ag, j_groupes_professeurs jgp WHERE jgp.id_groupe=ag.id_groupe AND jgp.login='".$_SESSION['login']."';";
+				$res2=mysql_query($sql);
+				if(mysql_num_rows($res2)>0) {
+					$visible="y";
+					$tab_id_acces=array();
+					while($lig2=mysql_fetch_object($res2)) {
+						$tab_id_acces[]=$lig2->id_acces;
+					}
+				}
+			}
+	
+			if($visible=="y") {
+				$retour.="<div id='div_infos_acces_cdt' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%; margin-top:3px;'>\n";
+				$retour.="<div id='info_acces_cdt_titre' style='font-weight: bold;' class='infobulle_entete'>\n";
+					$retour.="<div id='info_acces_cdt_pliage' style='float:right; width: 1em'>\n";
+					$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('conteneur')\"><span id='img_pliage_acces_cdt_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+					$retour.="</div>\n";
+					$retour.="Accès ouvert à des CDT";
+				$retour.="</div>\n";
+		
+				$retour.="<div id='info_acces_cdt_corps_conteneur'>\n";
+		
+				$cpt_id=0;
+				while($lig=mysql_fetch_object($res)) {
+					$visible="y";
+					if(($_SESSION['statut']=='professeur')&&(!in_array($lig->id,$tab_id_acces))) {
+						$visible="n";
+					}
+	
+					if($visible=="y") {
+						$retour.="<div id='info_acces_cdt_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
+							$retour.="<div id='info_acces_cdt_titre_$lig->id' style='font-weight: bold;' class='infobulle_entete'>\n";
+								$retour.="<div id='info_acces_cdt_pliage_$lig->id' style='float:right; width: 1em'>\n";
+								$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('$lig->id')\"><span id='img_pliage_acces_cdt_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+								$retour.="</div>\n";
+								$retour.="Accès CDT jusqu'au ".formate_date($lig->date2);
+							$retour.="</div>\n";
+			
+							$retour.="<div id='info_acces_cdt_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
+								if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+									$retour.="<div style='float:right; width: 9em; text-align: right;'>\n";
+									$retour.="<a href=\"".$_SERVER['PHP_SELF']."?del_id_acces_cdt=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->description)."', 'Etes-vous sûr de vouloir supprimer cet accès')\">Supprimer l'accès</span></a>";
+									$retour.="</div>\n";
+								}
+	
+								$retour.="<p><b>L'accès a été ouvert pour le motif suivant&nbsp;:</b><br />";
+								$retour.=preg_replace("/\\\\r\\\\n/","<br />",$lig->description);
+								$retour.="</p>\n";
+	
+								$chaine_enseignements="<ul>";
+								$sql="SELECT id_groupe FROM acces_cdt_groupes WHERE id_acces='$lig->id';";
+								$res3=mysql_query($sql);
+								if(mysql_num_rows($res3)>0) {
+									$tab_champs=array('classes', 'professeurs');
+									while($lig3=mysql_fetch_object($res3)) {
+										$current_group=get_group($lig3->id_groupe);
+	
+										$chaine_profs="";
+										$cpt=0;
+										foreach($current_group['profs']['users'] as $login_prof => $current_prof) {
+											if($cpt>0) {$chaine_profs.=", ";}
+											$chaine_profs.=$current_prof['civilite']." ".$current_prof['nom']." ".$current_prof['prenom'];
+											$cpt++;
+										}
+	
+										$chaine_enseignements.="<li>";
+										$chaine_enseignements.=$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>".$chaine_profs."</i>)";
+										$chaine_enseignements.="</li>\n";
+									}
+								}
+								$chaine_enseignements.="</ul>";
+								
+								$retour.="<p>Les CDT accessibles à l'adresse <a href='$lig->chemin' target='_blank'>$lig->chemin</a> sont&nbsp;:<br />".$chaine_enseignements."</p>";
+							$retour.="</div>\n";
+						$retour.="</div>\n";
+						if($cpt_id>0) {$chaine_id.=", ";}
+						$chaine_id.="'$lig->id'";
+						$cpt_id++;
+					}
+				}
+				$retour.="</div>\n";
+				$retour.="</div>\n";
+		
+				$retour.="<script type='text/javascript'>
+			function div_alterne_affichage_acces_cdt(id) {
+				if(document.getElementById('info_acces_cdt_corps_'+id)) {
+					if(document.getElementById('info_acces_cdt_corps_'+id).style.display=='none') {
+						document.getElementById('info_acces_cdt_corps_'+id).style.display='';
+						document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/remove.png\' width=\'16\' height=\'16\' />'
+					}
+					else {
+						document.getElementById('info_acces_cdt_corps_'+id).style.display='none';
+						document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' />'
+					}
+				}
+			}
+		
+			chaine_id_acces_cdt=new Array($chaine_id);
+			for(i=0;i<chaine_id_acces_cdt.length;i++) {
+				id_a=chaine_id_acces_cdt[i];
+				if(document.getElementById('info_acces_cdt_corps_'+id_a)) {
+					div_alterne_affichage_acces_cdt(id_a);
+				}
+			}
+		</script>\n";
+			}
+		}
+	}
+	echo $retour;
+}
+
 
 ?>

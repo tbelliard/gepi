@@ -475,6 +475,224 @@ function Verif_prof_cahier_notes ($_login,$_id_racine) {
     }
 }
 
+/**
+ * Ajoute du code pour préparer un tableau pour calculer et afficher les statistiques sur les notes d'une classe 
+ * 
+ * Fonction à appeler avec une portion de code du type:
+ * 
+ * echo "<div style='position: fixed; top: 200px; right: 200px;'>\n";
+ * 
+ * javascript_tab_stat('tab_stat_',$cpt);
+ * 
+ * echo "</div>\n";
+ * 
+ * @param string $pref_id prefixe des Id des balises <td...>
+ * @param int $cpt 
+ */
+function javascript_tab_stat($pref_id,$cpt) {
+	
+	$alt=1;
+	echo "<table class='boireaus'>\n";
+	echo "<caption style='display:none;'>Statistiques</caption>";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>Moyenne</th>\n";
+	echo "<td id='".$pref_id."moyenne'></td>\n";
+	echo "</tr>\n";
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>1er quartile</th>\n";
+	echo "<td id='".$pref_id."q1'></td>\n";
+	echo "</tr>\n";
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>Médiane</th>\n";
+	echo "<td id='".$pref_id."mediane'></td>\n";
+	echo "</tr>\n";
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>3è quartile</th>\n";
+	echo "<td id='".$pref_id."q3'></td>\n";
+	echo "</tr>\n";
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>Min</th>\n";
+	echo "<td id='".$pref_id."min'></td>\n";
+	echo "</tr>\n";
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<th>Max</th>\n";
+	echo "<td id='".$pref_id."max'></td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<script type='text/javascript' language='JavaScript'>
+
+function calcul_moy_med() {
+	var eff_utile=0;
+	var total=0;
+	var valeur;
+	var tab_valeur=new Array();
+	var i=0;
+	var j=0;
+	var n=0;
+	var mediane;
+	var moyenne;
+	var q1;
+	var q3;
+	var rang=0;
+
+	for(i=0;i<$cpt;i++) {
+		if(document.getElementById('n'+i)) {
+			valeur=document.getElementById('n'+i).value;
+
+			valeur=valeur.replace(',','.');
+
+			if((valeur!='abs')&&(valeur!='disp')&&(valeur!='-')&&(valeur!='')) {
+				tab_valeur[j]=valeur;
+				// Tambouille pour éviter que 'valeur' soit pris pour une chaine de caractères
+				total=eval((total*100+valeur*100)/100);
+				eff_utile++;
+				j++;
+			}
+		}
+	}
+	if(eff_utile>0) {
+		moyenne=Math.round(10*total/eff_utile)/10;
+		document.getElementById('".$pref_id."moyenne').innerHTML=moyenne;
+
+		tab_valeur.sort((function(a,b){return a - b}));
+		n=tab_valeur.length;
+		if(n/2==Math.round(n/2)) {
+			// Les indices commencent à zéro
+			// Tambouille pour éviter que 'valeur' soit pris pour une chaine de caractères
+			mediane=((eval(100*tab_valeur[n/2-1]+100*tab_valeur[n/2]))/100)/2;
+		}
+		else {
+			mediane=tab_valeur[(n-1)/2];
+		}
+		document.getElementById('".$pref_id."mediane').innerHTML=mediane;
+
+		if(eff_utile>=4) {
+			rang=Math.ceil(eff_utile/4);
+			q1=tab_valeur[rang-1];
+
+			rang=Math.ceil(3*eff_utile/4);
+			q3=tab_valeur[rang-1];
+
+			document.getElementById('".$pref_id."q1').innerHTML=q1;
+			document.getElementById('".$pref_id."q3').innerHTML=q3;
+		}
+		else {
+			document.getElementById('".$pref_id."q1').innerHTML='-';
+			document.getElementById('".$pref_id."q3').innerHTML='-';
+		}
+
+		document.getElementById('".$pref_id."min').innerHTML=tab_valeur[0];
+		document.getElementById('".$pref_id."max').innerHTML=tab_valeur[n-1];
+	}
+	else {
+		document.getElementById('".$pref_id."moyenne').innerHTML='-';
+		document.getElementById('".$pref_id."mediane').innerHTML='-';
+		document.getElementById('".$pref_id."q1').innerHTML='-';
+		document.getElementById('".$pref_id."q3').innerHTML='-';
+		document.getElementById('".$pref_id."min').innerHTML='-';
+		document.getElementById('".$pref_id."max').innerHTML='-';
+	}
+}
+
+calcul_moy_med();
+</script>
+";
+}
+
+/**
+ * Calcule les statistiques d'un tableau de notes
+ * 
+ * - 'moyenne' -> moyenne des notes
+ * - 'mediane' -> mediane des notes
+ * - 'min'     -> note minimale
+ * - 'max'     -> note maximale
+ * - 'q1'      -> premier quartile
+ * - 'q3'      -> troisième quartile
+ *
+ * @param array $tab Tableau de notes à traiter
+ * @return array Tableau de statistiques
+ */
+function calcule_moy_mediane_quartiles($tab) {
+	$tab2=array();
+
+	$total=0;
+	for($i=0;$i<count($tab);$i++) {
+		if(($tab[$i]!='')&&($tab[$i]!='-')&&($tab[$i]!='&nbsp;')&&($tab[$i]!='abs')&&($tab[$i]!='disp')) {
+			$tab2[]=preg_replace('/,/','.',$tab[$i]);
+			$total+=preg_replace('/,/','.',$tab[$i]);
+		}
+	}
+
+	// Initialisation
+	$tab_retour['moyenne']='-';
+	$tab_retour['mediane']='-';
+	$tab_retour['min']='-';
+	$tab_retour['max']='-';
+	$tab_retour['q1']='-';
+	$tab_retour['q3']='-';
+
+	if(count($tab2)>0) {
+		sort($tab2);
+
+		$moyenne=round(10*$total/count($tab2))/10;
+
+		if(count($tab2)%2==0) {
+			$mediane=($tab2[count($tab2)/2-1]+$tab2[count($tab2)/2])/2;
+		}
+		else {
+			$mediane=$tab2[(count($tab2)-1)/2];
+		}
+
+		$min=min($tab2);
+		$max=max($tab2);
+
+		if(count($tab2)>=4) {
+			$q1=$tab2[ceil(count($tab2)/4)-1];
+			$q3=$tab2[ceil(3*count($tab2)/4)-1];
+		}
+
+		$tab_retour['moyenne']=$moyenne;
+		$tab_retour['mediane']=$mediane;
+		$tab_retour['min']=$min;
+		$tab_retour['max']=$max;
+		$tab_retour['q1']=$q1;
+		$tab_retour['q3']=$q3;
+	}
+
+	return $tab_retour;
+}
+
+/**
+ * Renvoie l'Id du carnet de notes d'un groupe pour une période
+ *
+ * @param int $id_groupe Id du groupe
+ * @param int $periode_num numéro de la période
+ * @return int Id du carnet de notes
+ */
+function get_cn_from_id_groupe_periode_num($id_groupe, $periode_num) {
+	$id_cahier_notes="";
+
+	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$id_cahier_notes=$lig->id_cahier_notes;
+	}
+	return $id_cahier_notes;
+}
+
 
 
 ?>

@@ -41,6 +41,7 @@ $GLOBALS['pdf'] = NULL;
  * @param type $align
  * @param type $increment nombre dont on réduit la police à chaque essai
  * @param type $r_interligne proportion de la taille de police pour les interlignes
+ * @see PDF
  * @see getSettingValue()
  * @see cell_ajustee0()
  * @see cell_ajustee1()
@@ -77,6 +78,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
  * @param type $align
  * @param type $increment nombre dont on réduit la police à chaque essai
  * @param type $r_interligne  proportion de la taille de police pour les interlignes
+ * @see PDF
  */
 function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
 	
@@ -572,6 +574,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
  * @param type $align
  * @param int $increment nombre dont on réduit la police à chaque essai
  * @param type $r_interligne proportion de la taille de police pour les interlignes
+ * @see PDF
  */
 function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
 	global $pdf;
@@ -839,6 +842,42 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	}
 	
 }
+
+/**
+ *
+ * @global class
+ * @param type $texte
+ * @param type $x
+ * @param type $y
+ * @param type $largeur_dispo
+ * @param type $h_ligne
+ * @param type $hauteur_caractere
+ * @param type $fonte
+ * @param type $graisse
+ * @param type $alignement
+ * @param type $bordure 
+ * @see PDF
+ */
+function cell_ajustee_une_ligne($texte,$x,$y,$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure) {
+	global $pdf;
+
+	$pdf->SetFont($fonte,$graisse,$hauteur_caractere);
+	$val = $pdf->GetStringWidth($texte);
+	$temoin='';
+	while($temoin != 'ok') {
+		if($largeur_dispo < $val){
+			$hauteur_caractere = $hauteur_caractere-0.3;
+			$pdf->SetFont($fonte,$graisse,$hauteur_caractere);
+			$val = $pdf->GetStringWidth($texte);
+		} else {
+			$temoin = 'ok';
+		}
+	}
+
+	$pdf->SetXY($x,$y);
+	$pdf->Cell($largeur_dispo,$h_ligne, $texte,$bordure,2,$alignement);
+}
+
 
 
 
