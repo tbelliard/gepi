@@ -4559,7 +4559,7 @@ function acces_ele_disc($login_ele) {
 /**
  * Renvoie un tableau des responsables d'un élève
  * 
- * $tab[indice] = array('login','nom','prenom','civilite','designation'=civilite nom prenom)
+ * $tab[indice] = array('login','nom','prenom','civilite','designation'=>civilite nom prenom)
  *
  * @param string $ele_login Login de l'élève
  * @return array Le tableau
