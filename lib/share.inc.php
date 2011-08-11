@@ -4147,6 +4147,13 @@ function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
 	return $retour;
 }
 
+/**
+ * Crée un fichier index.html de redirection vers login.php
+ *
+ * @param string $chemin_relatif Le répertoire à protéger
+ * @param int $niveau_arbo Niveau dans l'arborescence GEPI
+ * @return boolean TRUE si le fichier est créé
+ */
 function creation_index_redir_login($chemin_relatif,$niveau_arbo=1) {
 	$retour=TRUE;
 
@@ -4181,6 +4188,13 @@ function creation_index_redir_login($chemin_relatif,$niveau_arbo=1) {
 	return $retour;
 }
 
+/**
+ * Renvoie un tableau des fichiers contenus dans le dossier
+ *
+ * @param string $path Le dossier à parser
+ * @param array $tab_exclusion Fichiers à ne pas prendre en compte
+ * @return array Tableau des fichiers
+ */
 function get_tab_file($path,$tab_exclusion=array(".", "..", "remove.txt", ".htaccess", ".htpasswd", "index.html")) {
 	$tab_file = array();
 
@@ -4199,6 +4213,23 @@ function get_tab_file($path,$tab_exclusion=array(".", "..", "remove.txt", ".htac
 	return $tab_file;
 }
 
+
+/**
+ * Tableau des mentions pour les bulletins
+ *
+ * @global array $GLOBALS['tableau_des_mentions_sur_le_bulletin']
+ * @name $tableau_des_mentions_sur_le_bulletin
+ */
+$GLOBALS['tableau_des_mentions_sur_le_bulletin'] = array();
+
+/**
+ * Retourne une mention pour les bulletins à partir de son Id
+ * 
+ * @global array
+ * @param int $code Id de la mention recherchée
+ * @return string 
+ * @see get_mentions()
+ */
 function traduction_mention($code) {
 	global $tableau_des_mentions_sur_le_bulletin;
 
@@ -4213,7 +4244,14 @@ function traduction_mention($code) {
 	return $retour;
 }
 
-
+/**
+ * Retourne un tableau des mentions pour les bulletins
+ * 
+ * tableau[index de la mention] = texte de la mention;
+ * 
+ * @param int $id_classe Id de la classe
+ * @return array Le tableau des mentions
+ */
 function get_mentions($id_classe=NULL) {
 	$tab=array();
 	if(!isset($id_classe)) {
@@ -4232,7 +4270,14 @@ function get_mentions($id_classe=NULL) {
 	return $tab;
 }
 
-// Pour interdire la suppression d'une mention saisie pour un élève
+/**
+ * Retourne un tableau des mentions déjà utilisées dans les bulletins
+ *
+ * Pour interdire la suppression d'une mention saisie pour un élève
+ * 
+ * @param int $id_classe Id de la classe
+ * @return array Le tableau des mentions
+ */
 function get_tab_mentions_affectees($id_classe=NULL) {
 	$tab=array();
 	if(!isset($id_classe)) {
@@ -4250,20 +4295,27 @@ function get_tab_mentions_affectees($id_classe=NULL) {
 	return $tab;
 }
 
-function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected="") {
+/**
+ * Renvoie une balise <select> avec les mentions de bulletin
+ *
+ * @param string $nom_champ_select valeur des attribut name et id du select
+ * @param int $id_classe Id de la classe
+ * @param string $id_mention_selected Id de la mention à sélectionner par défaut
+ * @return string La balise
+ */
+function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected='') {
 
 	$tab_mentions=get_mentions($id_classe);
-	//$retour="$id_mention_selected<select name='$nom_champ_select'>\n";
 	$retour="<select name='$nom_champ_select' id='$nom_champ_select'>\n";
 	$retour.="<option value=''";
 	if(($id_mention_selected=="")||(!array_key_exists($id_mention_selected,$tab_mentions))) {
-		$retour.=" selected";
+		$retour.=" selected='selected'";
 	}
 	$retour.="> </option>\n";
 	foreach($tab_mentions as $key => $value) {
 		$retour.="<option value='$key'";
 		if($id_mention_selected==$key) {
-			$retour.=" selected";
+			$retour.=" selected='selected'";
 		}
 		//$retour.=">".$value." ".$key."</option>\n";
 		$retour.=">".$value."</option>\n";
@@ -4273,6 +4325,12 @@ function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected=
 	return $retour;
 }
 
+/**
+ * Teste s'il y a des mentions de bulletin définies pour une classe
+ *
+ * @param type $id_classe Id de la classe
+ * @return boolean TRUE si il y a des mentions 
+ */
 function test_existence_mentions_classe($id_classe) {
 	$sql="SELECT 1=1 FROM j_mentions_classes WHERE id_classe='$id_classe';";
 	$test=mysql_query($sql);
@@ -4285,6 +4343,16 @@ function test_existence_mentions_classe($id_classe) {
 
 }
 
+/**
+ * Teste si un compte est actif
+ * 
+ * - 0 si l'utilisateur n'est pas trouvé
+ * - 1 compte actif
+ * - 2 compte non-actif
+ *
+ * @param type $login Login de l'utilisateur
+ * @return int  
+ */
 function check_compte_actif($login) {
 	$sql="SELECT etat FROM utilisateurs WHERE login='$login';";
 	$res=mysql_query($sql);
@@ -4302,7 +4370,21 @@ function check_compte_actif($login) {
 	}
 }
 
-function lien_image_compte_utilisateur($login, $statut="", $target="", $avec_lien="y") {
+/**
+ * Crée un lien derrière une image pour modifier les données d'un utilisateur
+ *
+ * @global string
+ * @param string $login id de l'utilisateur cherché
+ * @param string $statut statut de l'utilisateur (si '', il sera cherché avec get_statut_from_login())
+ * @param string $target pour ouvrir dans une autre fenêtre
+ * @param string $avec_lien 'y' ou absent pour créer un lien
+ * @return string Le code html
+ * @see check_compte_actif()
+ * @see get_statut_from_login()
+ * @see get_infos_from_login_utilisateur()
+ * @todo si $target='_blank' il faudrait ajouter un argument title pour prévenir
+ */
+function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lien='y') {
 	global $gepiPath;
 
 	$retour="";
@@ -4357,6 +4439,12 @@ function lien_image_compte_utilisateur($login, $statut="", $target="", $avec_lie
 	return $retour;
 }
 
+/**
+ * Renvoie le statut d'un utilisateur à partir de son login
+ *
+ * @param string $login Login de l'utilisateur
+ * @return string Le statut
+ */
 function get_statut_from_login($login) {
 	$sql="SELECT statut FROM utilisateurs WHERE login='$login';";
 	$res=mysql_query($sql);
@@ -4369,6 +4457,20 @@ function get_statut_from_login($login) {
 	}
 }
 
+/**
+ * Renvoie dans un tableau les informations d'un utilisateur à partir de son login
+ * 
+ * Champs disponibles dans le tableau
+ * - tout utilisateur ->  'nom', 'prenom', 'civilite', 'email','show_email','statut','etat','change_mdp','date_verrouillage','ticket_expiration','niveau_alerte','observation_securite','temp_dir','numind','auth_mode'
+ * - responsable -> pers_id
+ * - eleve -> 'no_gep','sexe','naissance','lieu_naissance','elenoet','ereno','ele_id','id_eleve','id_mef','date_sortie'
+ * 
+ * @param string $login Login de l'utilisateur
+ * @param string $tab_champs Tableau non utilisé
+ * @return array Le tableau des informations
+ * @todo $tab_champs n'est pas utilisé pour l'instant
+ * @todo Déterminer les champs supplémentaires pour le statut autre
+ */
 function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 	$tab=array();
 
@@ -4380,6 +4482,7 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 		foreach($tab_champs_utilisateur as $key => $value) {
 			$tab[$value]=$lig->$value;
 		}
+        unset ($key, $value);
 
 		if($tab['statut']=='responsable') {
 			$sql="SELECT pers_id FROM resp_pers WHERE login='$login';";
@@ -4403,6 +4506,7 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 				foreach($tab_champs_eleve as $key => $value) {
 					$tab[$value]=$lig->$value;
 				}
+                unset ($key, $value);
 
 				if(in_array('parents', $tab_champs)) {
 					// A compléter
@@ -4418,41 +4522,14 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 	return $tab;
 }
 
-function affiche_actions_compte($login) {
-	global $gepiPath;
-
-	$retour="";
-
-	$user=get_infos_from_login_utilisateur($login);
-
-	$retour.="<p>\n";
-	if ($user['etat'] == "actif") {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Désactiver le compte</a>";
-	} else {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Réactiver le compte</a>";
-	}
-	$retour.="<br />\n";
-	if ($user['observation_securite'] == 0) {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Placer en observation</a>";
-	} else {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=stop_observation&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Retirer l'observation</a>";
-	}
-	if($user['niveau_alerte']>0) {
-		$retour.="<br />\n";
-		$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
-		$retour.="<br />\n";
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Réinitialiser cumul</a>";
-	}
-	$retour.="</p>\n";
-
-	return $retour;
-}
-
+/**
+ * Vérifie qu'un responsable a accès au module discipline
+ *
+ * @param string $login_resp Login du responsable
+ * @return boolean TRUE si le responsable a accès
+ * @see check_compte_actif()
+ * @see getSettingValue()
+ */
 function acces_resp_disc($login_resp) {
 	if((check_compte_actif($login_resp)!=0)&&(getSettingValue('visuRespDisc')=='yes')) {
 		return TRUE;
@@ -4462,6 +4539,14 @@ function acces_resp_disc($login_resp) {
 	}
 }
 
+/**
+ * Vérifie qu'un élève a accès au module discipline
+ *
+ * @param string $login_ele Login de l'élève
+ * @return boolean TRUE si l'élève a accès
+ * @see check_compte_actif()
+ * @see getSettingValue()
+ */
 function acces_ele_disc($login_ele) {
 	if((check_compte_actif($login_ele)!=0)&&(getSettingValue('visuEleDisc')=='yes')) {
 		return TRUE;
@@ -4471,6 +4556,14 @@ function acces_ele_disc($login_ele) {
 	}
 }
 
+/**
+ * Renvoie un tableau des responsables d'un élève
+ * 
+ * $tab[indice] = array('login','nom','prenom','civilite','designation'=civilite nom prenom)
+ *
+ * @param string $ele_login Login de l'élève
+ * @return array Le tableau
+ */
 function get_resp_from_ele_login($ele_login) {
 	$tab="";
 

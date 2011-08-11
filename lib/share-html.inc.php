@@ -1507,5 +1507,48 @@ function affiche_acces_cdt() {
 	echo $retour;
 }
 
+/**
+ * Crée une balise <p> avec les actions possibles sur un compte
+ *
+ * @global string 
+ * @param string $login Id de l'utilisateur
+ * @return string La balises
+ * @see add_token_in_url()
+ */
+function affiche_actions_compte($login) {
+	global $gepiPath;
+
+	$retour="";
+
+	$user=get_infos_from_login_utilisateur($login);
+
+	$retour.="<p>\n";
+	if ($user['etat'] == "actif") {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Désactiver le compte</a>";
+	} else {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Réactiver le compte</a>";
+	}
+	$retour.="<br />\n";
+	if ($user['observation_securite'] == 0) {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Placer en observation</a>";
+	} else {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=stop_observation&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Retirer l'observation</a>";
+	}
+	if($user['niveau_alerte']>0) {
+		$retour.="<br />\n";
+		$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
+		$retour.="<br />\n";
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Réinitialiser cumul</a>";
+	}
+	$retour.="</p>\n";
+
+	return $retour;
+}
+
 
 ?>
