@@ -1803,8 +1803,9 @@ else {
 
 			//========================================
 
-
-			if ($affiche_rang == 'y'){
+			//$affiche_rang="y";
+			if (($affiche_rang == 'y')||
+			((isset($_POST['forcer_recalcul_rang']))&&($_POST['forcer_recalcul_rang']=='y'))) {
 				// On teste la présence d'au moins un coeff pour afficher la colonne des coef
 				$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 				include("../lib/calcul_rang.inc.php");
