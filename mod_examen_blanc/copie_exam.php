@@ -247,7 +247,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						//echo "$sql<br />\n";
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)==0) {
-							$sql="INSERT INTO ex_groupes SET id_exam='$id_exam', id_groupe='$lig_modele->id_groupe', matiere='$lig_modele->matiere', type='$lig_modele->type';";
+							$sql="INSERT INTO ex_groupes SET id_exam='$id_exam', id_groupe='$lig_modele->id_groupe', matiere='$lig_modele->matiere', type='$lig_modele->type', id_dev='$lig_modele->id_dev', valeur='$lig_modele->valeur';";
 							//echo "$sql<br />\n";
 							$insert=mysql_query($sql);
 							if(!$insert) {
@@ -376,18 +376,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	echo add_token_field();
 	echo "</form>\n";
 
-	echo "<script type='text/javascript'>
-function checkbox_change(id) {
-	if(document.getElementById(id)) {
-		if(document.getElementById(id).checked) {
-			document.getElementById('texte_'+id).style.fontWeight='bold';
-		}
-		else {
-			document.getElementById('texte_'+id).style.fontWeight='normal';
-		}
-	}
-}
+	echo js_checkbox_change_style('checkbox_change', 'texte_', "y");
 
+	echo "<script type='text/javascript'>
 function checkbox_change2(pref_id, id_exam) {
 	var tab_id_exam=new Array($chaine_tab_id_exam);
 	for(i=0;i<$nb_exam;i++) {
