@@ -341,12 +341,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	echo "<th>Détails</th>\n";
 	echo "</tr>\n";
 	$alt=1;
-	for($i=0;$i<count($tab_exam);$i++) {
+	$nb_exam=count($tab_exam);
+	$chaine_tab_id_exam="";
+	for($i=0;$i<$nb_exam;$i++) {
 		$alt=$alt*(-1);
+		if($chaine_tab_id_exam!="") {$chaine_tab_id_exam.=", ";}
+		$chaine_tab_id_exam.="'".$tab_exam[$i]['id']."'";
 		echo "<tr class='lig$alt white_hover'>\n";
-		echo "<td><input type='radio' name='id_exam_modele' id='id_exam_modele_".$tab_exam[$i]['id']."' value='".$tab_exam[$i]['id']."' onchage='changement()' /></td>\n";
+		echo "<td><input type='radio' name='id_exam_modele' id='id_exam_modele_".$tab_exam[$i]['id']."' value='".$tab_exam[$i]['id']."' onchange=\"checkbox_change2('id_exam_modele_',".$tab_exam[$i]['id'].");changement()\" /></td>\n";
 		echo "<td><label for='id_exam_modele_".$tab_exam[$i]['id']."'>".$tab_exam[$i]['id']."</label></td>\n";
-		echo "<td><label for='id_exam_modele_".$tab_exam[$i]['id']."'>".$tab_exam[$i]['intitule']."</label></td>\n";
+		echo "<td><label for='id_exam_modele_".$tab_exam[$i]['id']."' id='texte_id_exam_modele_".$tab_exam[$i]['id']."'>".$tab_exam[$i]['intitule']."</label></td>\n";
 		echo "<td><label for='id_exam_modele_".$tab_exam[$i]['id']."'>".$tab_exam[$i]['description']."</label></td>\n";
 		echo "<td><label for='id_exam_modele_".$tab_exam[$i]['id']."'>".formate_date($tab_exam[$i]['date'])."</label></td>\n";
 		echo "<td><label for='id_exam_modele_".$tab_exam[$i]['id']."'>".$tab_exam[$i]['etat']."</label></td>\n";
@@ -358,19 +362,54 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 	echo "<p class='bold'>Quels paramètres copier&nbsp;?</p>\n";
 	echo "<p>\n";
-	echo "<input type='checkbox' name='copier_classes' id='copier_classes' value='y' onchage='changement()' /><label for='copier_classes'>Classes</label><br />\n";
-	echo "<input type='checkbox' name='copier_matieres' id='copier_matieres' value='y' onchage='changement()' /><label for='copier_matieres'>Matières</label><br />\n";
-	echo "<input type='checkbox' name='copier_groupes' id='copier_groupes' value='y' onchage='changement()' /><label for='copier_groupes'>Enseignements (<i>groupes</i>)</label><br />\n";
-	echo "<input type='checkbox' name='copier_coef' id='copier_coef' value='y' onchage='changement()' /><label for='copier_coef'>Coefficients et bonus</label><br />\n";
+	echo "<input type='checkbox' name='copier_classes' id='copier_classes' value='y' onchange=\"checkbox_change('copier_classes');changement()\" /><label for='copier_classes' id='texte_copier_classes'>Classes</label><br />\n";
+	echo "<input type='checkbox' name='copier_matieres' id='copier_matieres' value='y' onchange=\"checkbox_change('copier_matieres');changement()\" /><label for='copier_matieres' id='texte_copier_matieres'>Matières</label><br />\n";
+	echo "<input type='checkbox' name='copier_groupes' id='copier_groupes' value='y' onchange=\"checkbox_change('copier_groupes');changement()\" /><label for='copier_groupes' id='texte_copier_groupes'>Enseignements (<i>groupes</i>)</label><br />\n";
+	echo "<input type='checkbox' name='copier_coef' id='copier_coef' value='y' onchange=\"checkbox_change('copier_coef');changement()\" /><label for='copier_coef' id='texte_copier_coef'>Coefficients et bonus</label><br />\n";
 	//echo "<input type='checkbox' name='' id='' value='y' /><label for=''></label><br />\n";
 	echo "</p>\n";
 
-	echo "<p><input type='checkbox' name='vider_param_anterieurs' id='vider_param_anterieurs' value='y' onchage='changement()' /><label for='vider_param_anterieurs'>Vider les éventuelles sélections antérieures de classes, groupes, matières,... de l'examen blanc n°$id_exam</label></p>\n";
+	echo "<p><input type='checkbox' name='vider_param_anterieurs' id='vider_param_anterieurs' value='y' onchange=\"checkbox_change('vider_param_anterieurs');changement()\" /><label for='vider_param_anterieurs' id='texte_vider_param_anterieurs'>Vider les éventuelles sélections antérieures de classes, groupes, matières,... de l'examen blanc n°$id_exam</label></p>\n";
 
 	echo "<input type='hidden' name='id_exam' value='$id_exam' />\n";
 	echo "<p align='center'><input type='submit' name='copier_param_exam' value='Valider' /></p>\n";
 	echo add_token_field();
 	echo "</form>\n";
+
+	echo "<script type='text/javascript'>
+function checkbox_change(id) {
+	if(document.getElementById(id)) {
+		if(document.getElementById(id).checked) {
+			document.getElementById('texte_'+id).style.fontWeight='bold';
+		}
+		else {
+			document.getElementById('texte_'+id).style.fontWeight='normal';
+		}
+	}
+}
+
+function checkbox_change2(pref_id, id_exam) {
+	var tab_id_exam=new Array($chaine_tab_id_exam);
+	for(i=0;i<$nb_exam;i++) {
+		id=pref_id+tab_id_exam[i];
+		//alert(id)
+		if(document.getElementById('texte_'+id)) {
+			document.getElementById('texte_'+id).style.fontWeight='normal';
+		}
+	}
+
+	id=pref_id+id_exam;
+	if(document.getElementById(id)) {
+		if(document.getElementById(id).checked) {
+			document.getElementById('texte_'+id).style.fontWeight='bold';
+		}
+		else {
+			document.getElementById('texte_'+id).style.fontWeight='normal';
+		}
+	}
+}
+
+</script>\n";
 
 	echo "<p><br /></p>\n";
 	require("../lib/footer.inc.php");
