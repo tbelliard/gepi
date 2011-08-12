@@ -179,6 +179,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						echo '<form id="sacoche_form" name="sacoche_form" method="POST" action="'.getSettingValue("sacocheUrl").'/index.php">';
 						echo '<input type="hidden" name="page" value="professeur_eval"/>';
 						echo '<input type="hidden" name="section" value="groupe"/>';
+						echo '<input type="hidden" name="source" value="distant-gepi-saml"/>';//source simplesaml pour préselectionner la source dans le module multiauth et éviter de choisir le webmestre
 						//encodage du devoir
 						mysql_data_seek($appel_dev, $j);
 						$devoir_array = mysql_fetch_array($appel_dev);
