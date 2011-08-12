@@ -349,8 +349,18 @@ if(isset($enregistrer)) {
 				$sql="UPDATE preferences SET value='$aff_photo_saisie_app' WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app';";
 				//echo $sql."<br />\n";
 				if(!mysql_query($sql)){
-					$msg.="Erreur lors de l'enregistrement de $tab[$j] pour ".$_SESSION['login']."<br />\n";
+					$msg.="Erreur lors de l'enregistrement de aff_photo_saisie_app pour ".$_SESSION['login']."<br />\n";
 				}
+			}
+
+			$cn_avec_min_max=isset($_POST['cn_avec_min_max']) ? $_POST['cn_avec_min_max'] : "n";
+			if(!savePref($_SESSION['login'],'cn_avec_min_max',$cn_avec_min_max)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_avec_min_max'<br />\n";
+			}
+
+			$cn_avec_mediane_q1_q3=isset($_POST['cn_avec_mediane_q1_q3']) ? $_POST['cn_avec_mediane_q1_q3'] : "n";
+			if(!savePref($_SESSION['login'],'cn_avec_mediane_q1_q3',$cn_avec_mediane_q1_q3)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_avec_mediane_q1_q3'<br />\n";
 			}
 
 		}
@@ -678,8 +688,9 @@ else{
 		}
 		echo "<p>\n";
 		echo "<input type='checkbox' name='aff_quartiles_cn' id='aff_quartiles_cn' value='y' ";
+		echo "onchange=\"checkbox_change('aff_quartiles_cn');changement()\" ";
 		if($aff_quartiles_cn=='y') {echo 'checked';}
-		echo "/><label for='aff_quartiles_cn'> Afficher par défaut, les moyenne, médiane, quartiles, min, max sur les carnets de notes.</label>\n";
+		echo "/><label for='aff_quartiles_cn' id='texte_aff_quartiles_cn'> Afficher par défaut l'infobulle contenant les moyenne, médiane, quartiles, min, max sur les carnets de notes.</label>\n";
 		echo "</p>\n";
 
 		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_cn'";
@@ -693,11 +704,27 @@ else{
 		}
 		echo "<p>\n";
 		echo "<input type='checkbox' name='aff_photo_cn' id='aff_photo_cn' value='y' ";
+		echo "onchange=\"checkbox_change('aff_photo_cn');changement()\" ";
 		if($aff_photo_cn=='y') {echo 'checked';}
-		echo "/><label for='aff_photo_cn'> Afficher par défaut la photo des élèves sur les carnets de notes.</label>\n";
+		echo "/><label for='aff_photo_cn' id='texte_aff_photo_cn'> Afficher par défaut la photo des élèves sur les carnets de notes.</label>\n";
+		echo "</p>\n";
+
+		echo "<p>\n";
+		$cn_avec_min_max=getPref($_SESSION['login'], 'cn_avec_min_max', 'y');
+		echo "<input type='checkbox' name='cn_avec_min_max' id='cn_avec_min_max' value='y' ";
+		echo "onchange=\"checkbox_change('cn_avec_min_max');changement()\" ";
+		if($cn_avec_min_max=='y') {echo 'checked';}
+		echo "/><label for='cn_avec_min_max' id='texte_cn_avec_min_max'> Afficher pour chaque colonne de notes les valeurs minimale et maximale.</label>\n";
+		echo "</p>\n";
+
+		echo "<p>\n";
+		$cn_avec_mediane_q1_q3=getPref($_SESSION['login'], 'cn_avec_mediane_q1_q3', 'y');
+		echo "<input type='checkbox' name='cn_avec_mediane_q1_q3' id='cn_avec_mediane_q1_q3' value='y' ";
+		echo "onchange=\"checkbox_change('cn_avec_mediane_q1_q3');changement()\" ";
+		if($cn_avec_mediane_q1_q3=='y') {echo 'checked';}
+		echo "/><label for='cn_avec_mediane_q1_q3' id='texte_cn_avec_mediane_q1_q3'> Afficher pour chaque colonne de notes les valeur médiane, 1er et 3è quartiles.</label>\n";
 		echo "</p>\n";
 	}
-
 
 
 	if(($page=="add_modif_dev")||($_SESSION['statut']=='professeur')){
@@ -906,8 +933,9 @@ else{
 
 		echo "<p>\n";
 		echo "<input type='checkbox' name='aff_photo_saisie_app' id='aff_photo_saisie_app' value='y' ";
+		echo "onchange=\"checkbox_change('aff_photo_saisie_app');changement()\" ";
 		if($aff_photo_saisie_app=='y') {echo 'checked';}
-		echo "/><label for='aff_photo_saisie_app'> Afficher par défaut les photos des élèves lors de la saisie des appréciations sur les bulletins.</label>\n";
+		echo "/><label for='aff_photo_saisie_app' id='texte_aff_photo_saisie_app'> Afficher par défaut les photos des élèves lors de la saisie des appréciations sur les bulletins.</label>\n";
 		echo "</p>\n";
 	}
 
@@ -923,6 +951,7 @@ else{
 	echo "<p align='center'><input type=\"submit\" name='enregistrer' value=\"Valider\" style=\"font-variant: small-caps;\" /></p>\n";
 
 	echo "<script type='text/javascript' language='javascript'>
+
 	function modif_coche(item,statut){
 		// statut: true ou false
 		for(k=0;k<$nb_profs;k++){
@@ -1018,11 +1047,11 @@ if ($aff == "oui") {
 		<legend style="border: 1px solid grey;">Gérer la barre horizontale du menu</legend>
 			<input type="hidden" name="modifier_le_menu" value="ok" />
 		<p>
-			<label for="visibleMenu">Rendre visible la barre de menu horizontale sous l\'en-tête.</label>
+			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale sous l\'en-tête.</label>
 			<input type="radio" id="visibleMenu" name="afficher_menu" value="yes"'.eval_checked("utiliserMenuBarre", "yes", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
 		</p>
 		<p>
-			<label for="invisibleMenu">Ne pas utiliser la barre de menu horizontale.</label>
+			<label for="invisibleMenu" id="texte_invisibleMenu">Ne pas utiliser la barre de menu horizontale.</label>
 			<input type="radio" id="invisibleMenu" name="afficher_menu" value="no"'.eval_checked("utiliserMenuBarre", "no", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
 		</p>
 	</fieldset>
@@ -1047,17 +1076,19 @@ if ($_SESSION["statut"] == 'administrateur') {
 				<legend style="border: 1px solid grey;">Gérer la hauteur de l\'entête pour les professeurs</legend>
 				<input type="hidden" name="modifier_entete_prof" value="ok" />
 				<p>
-					<label for="headerBas">Imposer une entête basse</label>
+					<label for="headerBas" id="texte_headerBas">Imposer une entête basse</label>
 					<input type="radio" id="headerBas" name="header_bas" value="y"'.eval_checked("impose_petit_entete_prof", "y", "administrateur", $_SESSION["login"]).' onclick="document.change_header_prof.submit();" />
 				</p>
 				<p>
-					<label for="headerNormal">Ne rien imposer</label>
+					<label for="headerNormal" id="texte_headerNormal">Ne rien imposer</label>
 					<input type="radio" id="headerNormal" name="header_bas" value="n"'.eval_checked("impose_petit_entete_prof", "n", "administrateur", $_SESSION["login"]).' onclick="document.change_header_prof.submit();" />
 				</p>
 				' . $message_header_prof . '
 			</fieldset>
 		</form>';
 }
+
+echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 //============================================
 // Choix de l'alerte sonore de fin de session
@@ -1078,6 +1109,7 @@ $tab_sound=get_tab_file($chemin_sound);
 if(count($tab_sound)>=0) {
 	$footer_sound_actuel=getPref($_SESSION['login'],'footer_sound',"");
 
+	echo "<br />\n";
 	echo "<form name='change_footer_sound' method='post' action='".$_SERVER['PHP_SELF']."'>\n";
 	echo add_token_field();
 
@@ -1093,6 +1125,7 @@ if(count($tab_sound)>=0) {
 		echo ">".$tab_sound[$i]."</option>\n";
 	}
 	echo "	</select>
+	<a href='javascript:test_play_footer_sound()'><img src='../images/icons/sound.png' width='16' height='16' alt='Ecouter le son choisi' title='Ecouter le son choisi' /></a>
 	</p>
 	<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>
 </fieldset>
@@ -1114,9 +1147,15 @@ function test_play_footer_sound() {
 		}
 	}
 }
+
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'invisibleMenu', 'headerBas', 'headerNormal');
+for(i=0;i<champs_checkbox.length;i++) {
+	checkbox_change(champs_checkbox[i]);
+}
 </script>
 ";
 }
+
 //============================================
 
 echo "<br />\n";

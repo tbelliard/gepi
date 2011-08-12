@@ -5,7 +5,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-trunk (20/04/2011)
+Gepi-trunk (12/08/2011)
 ===========================
 Bulletins:
 - Possibilité de ne pas faire apparaître un enseignement sur les bulletins sans passer par les catégories de matières.
@@ -13,6 +13,9 @@ Bulletins:
 - Ajout de paramètres dans les bulletins PDF (mentions, largeur du cadre absences, site web établissement, présentation des noms de professeurs en ligne ou colonne,...)
   Déplacement vers les paramètres de bulletins PDF des choix 'moyennes_periodes_precedentes' et 'id_tr_evolution_moyenne_periode_precedente'.
 - Correctif: On n'affiche plus de colonnes Min/Classe/Max dans les bulletins PDF si le choix est fait de les afficher dans la même cellule que la moyenne de l'élève (sous la moyenne de l'élève).
+
+Carnets de notes:
+- Possibilité d'afficher les min/max/médiane/quartiles dans les colonnes de notes (désactivable dans 'Paramétrer mon interface').
 
 Cahiers de textes:
 - Possibilité de mettre en place un accès inspecteur dynamique (pour pouvoir accéder à des notices jusqu'à une date dans le futur). L'accès précédent était un export ne pouvant faire apparaître que ce qui était d'ores et déjà saisi.
@@ -22,6 +25,7 @@ Interface:
 - Ajout de sous-menus à la barre de menu horizontale pour les professeurs.
 - Ajout d'une barre de menu pour l'administrateur.
 - Ajout d'une barre de menu pour les comptes scolarité.
+- Mise en place d'une alerte sonore de fin de session, paramétrable dans 'Paramétrer mon interface' en prof et 'Gestion générale/Interface simplifiée professeur' en administrateur.
 
 Absences:
 - Ajout d'un filtrage sur la page bilan indviduel du module abs2 et ajout d'un texte optionnel sur l'export odt de cette page
@@ -39,6 +43,7 @@ Initialisation XML:
 Examens blancs:
 - Organisation d'examens blancs possible en prof principal (selon le paramétrage en Droits d'accès).
 - Possibilité d'exporter le relevé de notes en PDF.
+- Copie de paramètres d'un autre examen blanc.
 
 - A compléter au fur et à mesure;)...
 
