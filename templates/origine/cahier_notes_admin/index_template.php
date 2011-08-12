@@ -215,6 +215,10 @@
 			 size="8"
 			 title="utiliser_sacoche"
 			 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {echo 'checked="checked"';} ?> />
+	 <br/>
+	 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {
+	 	echo '<a href="'.getSettingValue("sacocheUrl").'">Accéder à l\'administration sacoche</a>';
+	 } ?>
 	</p>
 	
 	<p class="center">
