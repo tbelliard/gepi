@@ -51,7 +51,8 @@ class ClassIncidents {
     private $top_sanctions = Null;
     private $top_retenues = Null;
     private $top_exclusions = Null;
-
+    private $array_id_incidents=null;
+    
     public function __construct() {
 
         $this->modele = new Modele();
@@ -135,7 +136,7 @@ class ClassIncidents {
         if (!isset($this->incidents_from_db['L\'Etablissement']['error'])) {
             $this->liste_id_incidents_selected = $this->make_liste_id($this->incidents_from_db['L\'Etablissement']);
             $this->protagonistes_from_db = $this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
-            $this->liste_eleves_par_classe['L\'Etablissement'] = $this->make_liste_protagonistes($this->protagonistes_from_db, 'eleve');
+            if(isset($this->protagonistes_from_db)) $this->liste_eleves_par_classe['L\'Etablissement'] = $this->make_liste_protagonistes($this->protagonistes_from_db, 'eleve',$this->array_id_incidents);
             $this->mesures_from_db = $this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
             $this->sanctions_from_db = $this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
         }
@@ -144,7 +145,7 @@ class ClassIncidents {
             if (!isset($this->incidents_from_db['Tous les élèves']['error'])) {
                 $this->liste_id_incidents_selected = $this->make_liste_id($this->incidents_from_db['Tous les élèves']);
                 $this->protagonistes_from_db = $this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
-                $this->liste_eleves_par_classe['Tous les élèves'] = $this->make_liste_protagonistes($this->protagonistes_from_db, 'eleve');
+                if(isset($this->protagonistes_from_db)) $this->liste_eleves_par_classe['Tous les élèves'] = $this->make_liste_protagonistes($this->protagonistes_from_db, 'eleve',$this->array_id_incidents);
                 $this->mesures_from_db = $this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
                 $this->sanctions_from_db = $this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
             }
@@ -154,7 +155,7 @@ class ClassIncidents {
             if (!isset($this->incidents_from_db['Tous les personnels']['error'])) {
                 $this->liste_id_incidents_selected = $this->make_liste_id($this->incidents_from_db['Tous les personnels']);
                 $this->protagonistes_from_db = $this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
-                $this->liste_eleves_par_classe['Tous les personnels'] = $this->make_liste_protagonistes($this->protagonistes_from_db, 'eleve');
+                if(isset($this->protagonistes_from_db)) $this->liste_eleves_par_classe['Tous les personnels'] = $this->make_liste_protagonistes($this->protagonistes_from_db, 'eleve',$this->array_id_incidents);
                 $this->mesures_from_db = $this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
                 $this->sanctions_from_db = $this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
             }
@@ -196,16 +197,19 @@ class ClassIncidents {
     }
 
     private function make_liste_id($array_incidents) {
-        unset($this->liste_id);
+        unset($this->array_id_incidents);
         foreach ($array_incidents as $incident) {
-            $this->liste_id[] = $incident->id_incident;
+            $this->array_id_incidents[] = $incident->id_incident;
         }
-        return($this->liste_id = $this->modele->make_list_for_request_in($this->liste_id));
+        return($this->modele->make_list_for_request_in($this->array_id_incidents));
     }
-
-    private function make_liste_protagonistes($protagonistes, $statut) {
-        foreach ($protagonistes as $id_incident) {
+    
+    private function make_liste_protagonistes($protagonistes, $statut,$liste_incidents) {
+        foreach ($protagonistes as $id_incident) { 
             foreach ($id_incident as $protagoniste) {
+                if(!in_array($protagoniste->id_incident,$liste_incidents)){
+                    continue;
+                }
                 if ($protagoniste->statut == $statut) {
                     $liste_protagoniste[$protagoniste->login] = $protagoniste->login;
                 }
