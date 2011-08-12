@@ -178,6 +178,12 @@ fclose($fich);
 //debug_var();
 
 //-----------------------------------------------------------------------------------
+if (isset($_REQUEST['id_devoir'])) {
+    $appel_devoir = mysql_query("SELECT id_racine FROM cn_devoirs WHERE (id='".$_REQUEST['id_devoir']."')");
+    if (mysql_num_rows($appel_devoir) != 0) {
+    	$id_racine = mysql_result($appel_devoir, 0, 'id_racine');
+    }
+}
 if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
 //if (isset($id_groupe) and isset($periode_num)) {
     $id_groupe = $_GET['id_groupe'];
