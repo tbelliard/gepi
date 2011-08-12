@@ -170,6 +170,10 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
   		saveSetting("sacocheUrl", $_POST['sacocheUrl']);
 	}
 		
+  	if (isset($_POST['sacoche_base'])) {
+		saveSetting("sacoche_base", $_POST['sacoche_base']);
+	}
+		
 	if (isset($_POST['statut_utilisateur_defaut'])) {
 	    if (!in_array($_POST['statut_utilisateur_defaut'], array("professeur","responsable","eleve"))) {
 	    	$_POST['statut_utilisateur_defaut'] = "professeur";
@@ -389,6 +393,8 @@ if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted
 	echo "<p>\n";
 	echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service sacoche si possible en https (exemple : https://localhost/sacoche) </label>\n";
 	echo "<input type='text' size='60' name='sacocheUrl' value='".getSettingValue("sacocheUrl")."' id='sacocheUrl' />\n<br/>";
+	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (laisser vide si votre instalation de sacoche est mono établissement)</label>\n";
+	echo "<input type='text' size='5' name='sacoche_base' value='".getSettingValue("sacoche_base")."' id='sacoche_base' />\n<br/>";
 	echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadate/saml20-sp-remote.php';
 	echo "</p>\n";
 }

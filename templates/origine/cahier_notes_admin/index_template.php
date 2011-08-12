@@ -217,11 +217,13 @@
 			 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {echo 'checked="checked"';} ?> />
 	 <br/>
 	 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {
-	 	echo '<a href="'.getSettingValue("sacocheUrl").'">Accéder à l\'administration sacoche</a>';
+	 	echo '<a href="'.getSettingValue("sacocheUrl").'?id='.getSettingValue('sacoche_base').'">Accéder à l\'administration sacoche</a>';
 	 } ?>
 	 <br/>
 	 <label for='sacocheUrl' style='cursor: pointer;'>Adresse du service sacoche si possible en https (exemple : https://localhost/sacoche) </label>
 	 <input type='text' size='60' name='sacocheUrl' value='<?php echo(getSettingValue("sacocheUrl")); ?>' id='sacocheUrl' /><br/>
+	 <label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (laisser vide si votre instalation de sacoche est mono établissement)</label>
+	 <input type='text' size='5' name='sacoche_base' value='<?php echo(getSettingValue("sacoche_base")); ?>' id='sacoche_base' /><br/>
 	</p>
 	
 	<p class="center">

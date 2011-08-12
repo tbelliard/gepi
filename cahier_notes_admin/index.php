@@ -120,6 +120,11 @@ if(isset($_POST['is_posted'])) {
 		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, strlen($sacocheUrl)-1);} //on enleve le / a  la fin
 	  	saveSetting("sacocheUrl", $_POST['sacocheUrl']);
 	}
+
+  	if (isset($_POST['sacoche_base'])) {
+		saveSetting("sacoche_base", $_POST['sacoche_base']);
+	}
+		
 	
 }
 

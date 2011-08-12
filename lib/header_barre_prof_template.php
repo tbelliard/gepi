@@ -190,7 +190,7 @@ include("tbs_menu_plugins.inc.php");
 		}
 
 		if (getSettingValue('utiliser_sacoche') == 'yes' && getSettingValue('sacocheUrl') != '') {
-			$tmp_sous_menu[$cpt_sous_menu] = array("lien"=> getSettingValue('sacocheUrl') , "texte"=>"Sacoche");
+			$tmp_sous_menu[$cpt_sous_menu] = array("lien"=> getSettingValue('sacocheUrl').'?id='.getSettingValue('sacoche_base') , "texte"=>"Sacoche");
 			$cpt_sous_menu++;
 		}
 		
