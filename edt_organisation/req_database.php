@@ -3,8 +3,7 @@
  * Fichier req_database.php pour accéder à la base de données
  *
  * @version     $Id$
- * @package		GEPI
- * @subpackage	EmploisDuTemps
+ * @package		EmploisDuTemps
  * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
  * @license		GNU/GPL, see COPYING.txt
  * 

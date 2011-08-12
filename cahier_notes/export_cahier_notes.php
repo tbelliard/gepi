@@ -1,8 +1,13 @@
 <?php
-/*
+/**
+ * Export du carnet de notes
  * @version: $Id$
- *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @license GNU/GPL, 
+ * @package Carnet_de_notes
+ * @subpackage export
+ * @see COPYING.txt
+ * @todo utiliser TBSOoo pour générer l'export odt
  *
  * This file is part of GEPI.
  *

@@ -1,6 +1,7 @@
 <?php
-/*
-*$Id$
+/**
+ * Administration du trombinoscope
+* $Id$
 *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -19,10 +20,12 @@
  * You should have received a copy of the GNU General Public License
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * @package Trombinoscope
  */
 
 
-/**
+/*
  * Paramétrage du trombinoscope
  *
  * @param $_POST['activer'] activation/désactivation
