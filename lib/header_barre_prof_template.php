@@ -189,6 +189,11 @@ include("tbs_menu_plugins.inc.php");
 			$cpt_sous_menu++;
 		}
 
+		if (getSettingValue('utiliser_sacoche') == 'yes' && getSettingValue('sacocheUrl') != '') {
+			$tmp_sous_menu[$cpt_sous_menu] = array("lien"=> getSettingValue('sacocheUrl') , "texte"=>"Sacoche");
+			$cpt_sous_menu++;
+		}
+		
 		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 		$compteur_menu++;
