@@ -25,7 +25,7 @@ Interface:
 - Ajout de sous-menus à la barre de menu horizontale pour les professeurs.
 - Ajout d'une barre de menu pour l'administrateur.
 - Ajout d'une barre de menu pour les comptes scolarité.
-- Mise en place d'une alerte sonore de fin de session, paramétrable dans 'Paramétrer mon interface' en prof et 'Gestion générale/Interface simplifiée professeur' en administrateur.
+- Mise en place d'une alerte sonore de fin de session, paramétrable dans 'Paramétrer mon interface' en prof et 'Gestion générale/Paramétrage interface professeur' en administrateur.
 
 Absences:
 - Ajout d'un filtrage sur la page bilan indviduel du module abs2 et ajout d'un texte optionnel sur l'export odt de cette page

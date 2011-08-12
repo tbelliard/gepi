@@ -114,10 +114,59 @@ if($_SESSION['statut']!="administrateur"){
 	$tab_sound=get_tab_file($chemin_sound);
 
 	if((count($tab_sound)>0)&&(isset($_POST['footer_sound']))&&(in_array($_POST['footer_sound'],$tab_sound))&&(preg_match('/\.wav/i',$_POST['footer_sound']))&&(file_exists($chemin_sound.$_POST['footer_sound']))) {
-		if(!savePref($_SESSION['login'],'footer_sound',$_POST['footer_sound'])) {
-			$msg.="Erreur lors de l'enregistrement de l'alerte sonore de fin de session.<br />";
+		$footer_sound_pour_qui=isset($_POST['footer_sound_pour_qui']) ? $_POST['footer_sound_pour_qui'] : 'perso';
+		$statut_sound=array();
+		$nb_err_sound=0;
+		$nb_reg_sound=0;
+		if(($footer_sound_pour_qui=='perso')||($_SESSION['statut']!='administrateur')) {
+			if(!savePref($_SESSION['login'],'footer_sound',$_POST['footer_sound'])) {
+				$msg.="Erreur lors de l'enregistrement de l'alerte sonore de fin de session.<br />";
+			}
+			else {
+				$msg.="Enregistrement de l'alerte sonore de fin de session effectué.<br />";
+			}
 		}
-		else {
+		elseif($footer_sound_pour_qui=='tous_profs') {
+			$statut_sound[]='professeur';
+		}
+		elseif($footer_sound_pour_qui=='tous_personnels') {
+			$statut_sound[]='administrateur';
+			$statut_sound[]='professeur';
+			$statut_sound[]='scolarite';
+			$statut_sound[]='cpe';
+			$statut_sound[]='secours';
+			$statut_sound[]='autre';
+		}
+		elseif($footer_sound_pour_qui=='tous') {
+			$statut_sound[]='administrateur';
+			$statut_sound[]='professeur';
+			$statut_sound[]='scolarite';
+			$statut_sound[]='cpe';
+			$statut_sound[]='secours';
+			$statut_sound[]='autre';
+			$statut_sound[]='eleve';
+			$statut_sound[]='responsable';
+		}
+
+		for($loop=0;$loop<count($statut_sound);$loop++) {
+			$sql="SELECT DISTINCT login FROM utilisateurs WHERE statut='$statut_sound[$loop]';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				while($lig=mysql_fetch_object($res)) {
+					if(!savePref($lig->login,'footer_sound',$_POST['footer_sound'])) {
+						$nb_err_sound++;
+					}
+					else {
+						$nb_reg_sound++;
+					}
+				}
+			}
+		}
+
+		if($nb_err_sound>0) {
+			$msg.="Erreur ($nb_err_sound) lors de l'enregistrement de l'alerte sonore de fin de session.<br />";
+		}
+		elseif($nb_reg_sound>0) {
 			$msg.="Enregistrement de l'alerte sonore de fin de session effectué.<br />";
 		}
 	}
@@ -1126,7 +1175,19 @@ if(count($tab_sound)>=0) {
 	}
 	echo "	</select>
 	<a href='javascript:test_play_footer_sound()'><img src='../images/icons/sound.png' width='16' height='16' alt='Ecouter le son choisi' title='Ecouter le son choisi' /></a>
-	</p>
+	</p>\n";
+
+	if($_SESSION['statut']=='administrateur') {
+		echo "<p><input type='radio' name='footer_sound_pour_qui' id='footer_sound_pour_qui_perso' value='perso' onchange='maj_style_label_checkbox()' checked /><label for='footer_sound_pour_qui_perso' id='texte_footer_sound_pour_qui_perso'> Appliquer ce choix à mon compte uniquement</label><br />\n";
+		echo "<input type='radio' name='footer_sound_pour_qui' id='footer_sound_pour_qui_tous_profs' value='tous_profs' onchange='maj_style_label_checkbox()' /><label for='footer_sound_pour_qui_tous_profs' id='texte_footer_sound_pour_qui_tous_profs'> Appliquer ce choix à tous les comptes professeurs</label><br />\n";
+		echo "<input type='radio' name='footer_sound_pour_qui' id='footer_sound_pour_qui_tous_personnels' value='tous_personnels' onchange='maj_style_label_checkbox()' /><label for='footer_sound_pour_qui_tous_personnels' id='texte_footer_sound_pour_qui_tous_personnels'> Appliquer ce choix à tous les comptes de personnels</label><br />\n";
+		echo "<input type='radio' name='footer_sound_pour_qui' id='footer_sound_pour_qui_tous' value='tous' onchange='maj_style_label_checkbox()' /><label for='footer_sound_pour_qui_tous' id='texte_footer_sound_pour_qui_tous'> Appliquer ce choix à tous les comptes sans distinction de statut</label></p>\n";
+	}
+	else {
+		echo "<input type='hidden' name='footer_sound_pour_qui' id='footer_sound_pour_qui_perso' value='perso' />\n";
+	}
+
+	echo "
 	<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>
 </fieldset>
 </form>\n";
@@ -1148,10 +1209,13 @@ function test_play_footer_sound() {
 	}
 }
 
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'invisibleMenu', 'headerBas', 'headerNormal');
-for(i=0;i<champs_checkbox.length;i++) {
-	checkbox_change(champs_checkbox[i]);
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous');
+function maj_style_label_checkbox() {
+	for(i=0;i<champs_checkbox.length;i++) {
+		checkbox_change(champs_checkbox[i]);
+	}
 }
+maj_style_label_checkbox();
 </script>
 ";
 }
