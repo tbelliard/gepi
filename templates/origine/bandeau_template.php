@@ -208,6 +208,8 @@
 			// éventuellement le lien peut être vide
 			if ($tab['lien']=="")
 				echo $tab['texte']."\n";
+			else if (substr($tab['lien'],0,4) == 'http')
+				echo "<a href=\"".$tab['lien']."\">".$tab['texte']."</a>\n";
 			else 
 				echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>\n";
 
@@ -229,6 +231,8 @@
 			// éventuellement le lien peut être vide
 			if ($tab['lien']=="")
 				echo $tab['texte']."\n";
+			else if (substr($tab['lien'],0,4) == 'http')
+				echo "<a href=\"".$tab['lien']."\">".$tab['texte']."</a>\n";
 			else
 				echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>";
 			echo "</li>\n";
