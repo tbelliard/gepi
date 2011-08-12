@@ -256,6 +256,21 @@ if (isset($_POST['notes'])) {
 	}
 }
 
+//debug_var();
+//-------------------------------------------------------------------------------------------------------------------
+if (isset($_POST['import_sacoche'])) {
+	//check_token();
+	//@TODO check referer
+	
+	$note_import = array();
+	$i = 0;
+	if(!isset($note_sur_dev_choisi)) {$note_sur_dev_choisi=20;}
+	do {
+		$note_import_sacoche[$_POST['log_eleve'][$i]] = round($_POST['note_eleve'][$i]*$note_sur_dev_choisi/100);
+		$i++;
+	} while ($i < $_POST['indice_max_log_eleve']); 
+}
+
 // Ajout delineau -> fonctionnalité de copier/coller d'appréciations
 //-------------------------------------------------------------------------------------------------------------------
 if (isset($_POST['appreciations'])) {
@@ -463,8 +478,11 @@ if((isset($_GET['recalculer']))&&(isset($id_conteneur))&&(isset($periode_num))&&
 		recherche_enfant($id_conteneur);
 	}
 }
-
-$message_enregistrement = "Les modifications ont été enregistrées !";
+if (isset($_POST['import_sacoche'])) {
+	$message_enregistrement = "Vos notes ne sont pas encore enregistrées, veuillez les vérifier et cliquer sur le bouton d'enregistrement";
+} else {
+	$message_enregistrement = "Les modifications ont été enregistrées !";
+}
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes";
@@ -962,6 +980,7 @@ $prev_classe = null;
 $tab_graph=array();
 //=========================
 
+
 foreach ($liste_eleves as $eleve) {
 	$eleve_login[$i] = $eleve["login"];
 	$eleve_nom[$i] = $eleve["nom"];
@@ -1057,6 +1076,9 @@ foreach ($liste_eleves as $eleve) {
 			if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
 				$mess_note[$i][$k]=$mess_note[$i][$k].$note_import[$current_displayed_line];
 				$mess_note_pdf[$i][$k] = $note_import[$current_displayed_line];
+			} else if (isset($note_import_sacoche[$eleve["login"]])){
+				$mess_note[$i][$k] .= $note_import_sacoche[$eleve["login"]];
+				$mess_note_pdf[$i][$k] = $note_import_sacoche[$eleve["login"]];
 			}
 			else {
 				//echo "<p>\$eleve_login[$i]=$eleve_login[$i] \$i=$i et \$k=$j<br />\$eleve_statut=$eleve_statut<br />\$eleve_note=$eleve_note<br />";
