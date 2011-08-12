@@ -219,6 +219,9 @@
 	 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {
 	 	echo '<a href="'.getSettingValue("sacocheUrl").'">Accéder à l\'administration sacoche</a>';
 	 } ?>
+	 <br/>
+	 <label for='sacocheUrl' style='cursor: pointer;'>Adresse du service sacoche si possible en https (exemple : https://localhost/sacoche) </label>
+	 <input type='text' size='60' name='sacocheUrl' value='<?php echo(getSettingValue("sacocheUrl")); ?>' id='sacocheUrl' /><br/>
 	</p>
 	
 	<p class="center">
