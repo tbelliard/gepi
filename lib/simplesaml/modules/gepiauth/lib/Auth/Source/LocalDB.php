@@ -163,6 +163,10 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		$attributes['statut'] = array($row->statut);
 		$attributes['email'] = array($row->email);
 		
+		$sql = "SELECT id_matiere FROM j_professeurs_matieres WHERE (id_professeur = '" . $username . "') ORDER BY ordre_matieres LIMIT 1";
+        $matiere_principale = sql_query1($sql);
+		$attributes['matieres'] = array($matiere_principale);
+		
 		SimpleSAML_Logger::info('gepiauth:' . $this->authId . ': Attributes: ' .
 			implode(',', array_keys($attributes)));
 			
