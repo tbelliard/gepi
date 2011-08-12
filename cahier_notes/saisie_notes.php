@@ -1279,11 +1279,11 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td class=cn valign='top'>&nbsp;</td>\n";
 $header_pdf[] = "Evaluation :";
-if ($multiclasses) $header_pdf[] = "";
+if ($multiclasses) {$header_pdf[] = "";}
 $w_pdf[] = $w1;
 //if ($multiclasses) $w_pdf[] = $w1b;
-if ($multiclasses) echo "<td class='cn'>&nbsp;</td>\n";
-if ($multiclasses) $w_pdf[] = $w2;
+if ($multiclasses) {echo "<td class='cn'>&nbsp;</td>\n";}
+if ($multiclasses) {$w_pdf[] = $w2;}
 $i = 0;
 while ($i < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
@@ -1367,7 +1367,7 @@ echo "</tr>";
 // Troisième ligne
 //
 echo "<tr><td class=cn valign='top'>&nbsp;</td>";
-if ($multiclasses) echo "<td class='cn'>&nbsp;</td>";
+if ($multiclasses) {echo "<td class='cn'>&nbsp;</td>";}
 echo "\n";
 $i = 0;
 while ($i < $nb_dev) {
@@ -1379,11 +1379,13 @@ while ($i < $nb_dev) {
 //            echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&id_devoir=0&affiche_message=$affiche_message\" onclick=\"form2.submit();\">verrouiller</a></center></td>";
 			echo "<td class=cn valign='top'>&nbsp;</td>\n";
 		} else {
-			if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)
-			echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev[$i]\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a></center></td>\n";
-			else
+			if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
+				echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev[$i]\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a></center></td>\n";
+			}
+			else {
 				echo "<td class=cn valign='top'>&nbsp;</td>\n";
-			if (($nocomment[$i]!='yes')  and ($_SESSION['affiche_comment'] == 'yes')) echo "<td class=cn valign='top'>&nbsp;</td>\n";
+			}
+			if (($nocomment[$i]!='yes')  and ($_SESSION['affiche_comment'] == 'yes')) {echo "<td class=cn valign='top'>&nbsp;</td>\n";}
 		}
 	}
 	$i++;
@@ -1405,7 +1407,7 @@ if ($id_devoir==0) {
 	}
 }
 // En mode saisie, on n'affiche que le devoir à saisir
-if ($id_devoir==0) echo "<td class='cn' valign='top'>&nbsp;</td>\n";
+if ($id_devoir==0) {echo "<td class='cn' valign='top'>&nbsp;</td>\n";}
 echo "</tr>";
 
 //
@@ -1413,7 +1415,7 @@ echo "</tr>";
 //
 echo "<tr><td class='cn' valign='top'><b>" .
 		"<a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=nom' onclick=\"return confirm_abandon (this, change,'$themessage')\">Nom Prénom</a></b></td>";
-if ($multiclasses) echo "<td><a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=classe' onclick=\"return confirm_abandon (this, change,'$themessage')\">Classe</a></td>";
+if ($multiclasses) {echo "<td><a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=classe' onclick=\"return confirm_abandon (this, change,'$themessage')\">Classe</a></td>";}
 echo "\n";
 
 //$data_pdf[0][] = "Nom Prénom\Coef.";
@@ -1425,7 +1427,7 @@ if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 	$data_pdf[0][] = traite_accents_utf8("Nom Prénom \ (coef)");
 }
 
-if ($multiclasses) $data_pdf[0][] = "";
+if ($multiclasses) {$data_pdf[0][] = "";}
 $i = 0;
 while ($i < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
@@ -1449,7 +1451,7 @@ while ($i < $nb_dev) {
 			$data_pdf[0][] = "(".number_format($coef[$i],1, ',', ' ').")";
 		}
 		echo "coef : ".number_format($coef[$i],1, ',', ' ');
-		if (($facultatif[$i] == 'B') or ($facultatif[$i] == 'N')) echo "<br />Bonus";
+		if (($facultatif[$i] == 'B') or ($facultatif[$i] == 'N')) {echo "<br />Bonus";}
 		echo "</center></td>\n";
 		if ($id_dev[$i] == $id_devoir) {
 			echo "<td class='cn' valign='top'>&nbsp;</td>\n";
@@ -1599,7 +1601,8 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 			echo "&nbsp;";
 		}
 		echo "</td>\n";
-		if($nocomment[$k]=='no') {
+		//if($nocomment[$k]=='no') {
+		if(($nocomment[$k]=='no')&&($_SESSION['affiche_comment'] == 'yes')) {
 			echo "<td>&nbsp;</td>\n";
 		}
 	}
@@ -1627,6 +1630,7 @@ $alt=1;
 $i = 0;
 $pointer = 0;
 $tot_data_pdf = 1;
+$tab_ele_notes=array();
 $nombre_lignes = count($current_group["eleves"][$periode_num]["list"]);
 while($i < $nombre_lignes) {
 	$pointer++;
@@ -1634,7 +1638,9 @@ while($i < $nombre_lignes) {
 	//$data_pdf[$pointer][] = $eleve_nom[$i]." ".$eleve_prenom[$i];
 	//if ($multiclasses) $data_pdf[$pointer][] = $eleve_classe[$i];
 	$data_pdf[$pointer][] = traite_accents_utf8($eleve_nom[$i]." ".$eleve_prenom[$i]);
-	if ($multiclasses) {$data_pdf[$pointer][] = traite_accents_utf8($eleve_classe[$i]);}
+	if ($multiclasses) {
+		$data_pdf[$pointer][] = traite_accents_utf8($eleve_classe[$i]);
+	}
 	$alt=$alt*(-1);
 	//echo "<tr>";
 	echo "<tr class='lig$alt'>\n";
@@ -1646,7 +1652,7 @@ while($i < $nombre_lignes) {
 
 		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
 		echo "</td>";
-		if ($multiclasses) echo "<td style='border-top: 2px solid blue;'>$eleve_classe[$i]</td>";
+		if ($multiclasses) {echo "<td style='border-top: 2px solid blue;'>$eleve_classe[$i]</td>";}
 		echo "\n";
 	} else {
 		//echo "<td class=cn>$eleve_nom[$i] $eleve_prenom[$i]</td>";
@@ -1665,8 +1671,12 @@ while($i < $nombre_lignes) {
 		}
 
 		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
+		$tab_ele_notes[$i][]="";
 		echo "</td>";
-		if ($multiclasses) echo "<td>$eleve_classe[$i]</td>";
+		if ($multiclasses) {
+			echo "<td>$eleve_classe[$i]</td>";
+			$tab_ele_notes[$i][]="";
+		}
 		echo "\n";
 	}
 	$prev_classe = $eleve_classe[$i];
@@ -1675,15 +1685,21 @@ while($i < $nombre_lignes) {
 		// En mode saisie, on n'affiche que le devoir à saisir
 		if (($id_devoir==0) or ($id_dev[$k] == $id_devoir)) {
 			echo $mess_note[$i][$k];
+			//$tab_ele_notes[$i][$k]=$mess_note[$i][$k];
+			//$tab_ele_notes[$i][$k]=$mess_note_pdf[$i][$k];
+			$tab_ele_notes[$i][]=$mess_note_pdf[$i][$k];
+			//echo "\$tab_ele_notes[$i][$k]=".$mess_note_pdf[$i][$k]."<br />";
 			$data_pdf[$pointer][] = $mess_note_pdf[$i][$k];
 			if ((($nocomment[$k]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$k] == $id_devoir)) {
 				echo $mess_comment[$i][$k];
 				//$data_pdf[$pointer][] = $mess_comment_pdf[$i][$k];
 				$data_pdf[$pointer][] = traite_accents_utf8($mess_comment_pdf[$i][$k]);
+				$tab_ele_notes[$i][]="";
 			}
 		}
 		$k++;
 	}
+
 	//
 	// Affichage de la moyenne de tous les sous-conteneurs
 	//
@@ -1725,6 +1741,7 @@ while($i < $nombre_lignes) {
 						$tmp = "&nbsp;";
 						$data_pdf[$pointer][] = "";
 					}
+					$tab_ele_notes[$i][]=$eleve_note;
 					// ===================================
 					echo "<td class='cn' bgcolor='$couleur_devoirs'><center><b>$tmp</b></center></td>\n";
 
@@ -1742,12 +1759,15 @@ while($i < $nombre_lignes) {
 					$moy = @mysql_result($moyenne_query, 0, "note");
 					$moy = number_format($moy,1, ',', ' ');
 					$data_pdf[$pointer][] = $moy;
+					$tab_ele_notes[$i][]=$moy;
 				} else {
+					$tab_ele_notes[$i][]='';
 					$moy = '&nbsp;';
 					$data_pdf[$pointer][] = "";
 				}
 			}
 			else{
+				$tab_ele_notes[$i][]='';
 				$statut_moy = "";
 				$moy = '&nbsp;';
 				$data_pdf[$pointer][] = "";
@@ -1758,7 +1778,7 @@ while($i < $nombre_lignes) {
 		}
 	}
 	//
-	// affichage des moyennes du conteneur
+	// affichage des moyennes du conteneur (moyennes des élèves sur le conteneur choisi (éventuellement le conteneur racine))
 	//
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if ($id_devoir==0)  {
@@ -1774,6 +1794,7 @@ while($i < $nombre_lignes) {
 				$moy = number_format($moy,1, ',', ' ');
 				//echo "$moy -&gt; ";
 				$data_pdf[$pointer][] = $moy;
+				$tab_ele_notes[$i][]=$moy;
 
 				//=========================
 				// AJOUT: boireaus 20080607
@@ -1782,11 +1803,13 @@ while($i < $nombre_lignes) {
 				//=========================
 
 			} else {
+				$tab_ele_notes[$i][]='';
 				$moy = '&nbsp;';
 				$data_pdf[$pointer][] = "";
 			}
 		}
 		else{
+			$tab_ele_notes[$i][]='';
 			$statut_moy = "";
 			$moy = '&nbsp;';
 			$data_pdf[$pointer][] = "";
@@ -1857,7 +1880,7 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 echo "<b>Moyennes :</b></td>\n";
 $w_pdf[] = $w2;
 $data_pdf[$tot_data_pdf][] = "Moyennes";
-if ($multiclasses) $data_pdf[$tot_data_pdf][] = "";
+if ($multiclasses) {$data_pdf[$tot_data_pdf][] = "";}
 $k='0';
 while ($k < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
@@ -1955,7 +1978,104 @@ if ($id_devoir==0) {
 		$data_pdf[$tot_data_pdf][] = "";
 	}
 }
-echo "</tr></table>\n";
+echo "</tr>\n";
+
+//echo "<pre>".print_r($tab_ele_notes)."</pre>";
+$indice_premiere_col_note=1;
+if ($multiclasses) {$indice_premiere_col_note=2;}
+$tab_col_note=array();
+for($i=0;$i<count($tab_ele_notes);$i++) {
+	for($j=0;$j<count($tab_ele_notes[$i]);$j++) {
+		$tab_col_note[$j][$i]=$tab_ele_notes[$i][$j];
+	}
+}
+
+for($i=0;$i<count($tab_col_note);$i++) {
+	$tab_m[$i]=calcule_moy_mediane_quartiles($tab_col_note[$i]);
+}
+/*
+echo "<tr>\n";
+echo "<td class='cn bold'><b>Moyennes&nbsp;:</b></td>\n";
+if ($multiclasses) {echo "<td class='cn bold'>&nbsp;</td>\n";}
+for($i=$indice_premiere_col_note;$i<count($tab_m);$i++) {
+	echo "<td class='cn bold'>".$tab_m[$i]['moyenne']."</td>\n";
+}
+echo "</tr>\n";
+*/
+if(getPref($_SESSION['login'], 'cn_avec_min_max', 'y')=='y') {
+	$tot_data_pdf++;
+	$data_pdf[$tot_data_pdf][]='Min.:';
+	echo "<tr>\n";
+	echo "<td class='cn bold'><b>Min.&nbsp;:</b></td>\n";
+	if ($multiclasses) {
+		echo "<td class='cn bold'>&nbsp;</td>\n";
+		$data_pdf[$tot_data_pdf][]='';
+	}
+	for($i=$indice_premiere_col_note;$i<count($tab_m);$i++) {
+		echo "<td class='cn bold'>".$tab_m[$i]['min']."</td>\n";
+		$data_pdf[$tot_data_pdf][]=$tab_m[$i]['min'];
+	}
+	echo "</tr>\n";
+	
+	$tot_data_pdf++;
+	$data_pdf[$tot_data_pdf][]='Max.:';
+	echo "<tr>\n";
+	echo "<td class='cn bold'><b>Max.&nbsp;:</b></td>\n";
+	if ($multiclasses) {
+		echo "<td class='cn bold'>&nbsp;</td>\n";
+		$data_pdf[$tot_data_pdf][]='';
+	}
+	for($i=$indice_premiere_col_note;$i<count($tab_m);$i++) {
+		echo "<td class='cn bold'>".$tab_m[$i]['max']."</td>\n";
+		$data_pdf[$tot_data_pdf][]=$tab_m[$i]['max'];
+	}
+	echo "</tr>\n";
+}
+
+if(getPref($_SESSION['login'], 'cn_avec_mediane_q1_q3', 'y')=='y') {
+	$tot_data_pdf++;
+	$data_pdf[$tot_data_pdf][]='Médianes :';
+	echo "<tr>\n";
+	echo "<td class='cn bold'><b>Médianes&nbsp;:</b></td>\n";
+	if ($multiclasses) {
+		echo "<td class='cn bold'>&nbsp;</td>\n";
+		$data_pdf[$tot_data_pdf][]='';
+	}
+	for($i=$indice_premiere_col_note;$i<count($tab_m);$i++) {
+		echo "<td class='cn bold'>".$tab_m[$i]['mediane']."</td>\n";
+		$data_pdf[$tot_data_pdf][]=$tab_m[$i]['mediane'];
+	}
+	echo "</tr>\n";
+	
+	$tot_data_pdf++;
+	$data_pdf[$tot_data_pdf][]='1er quartile :';
+	echo "<tr>\n";
+	echo "<td class='cn bold'><b>1er quartile&nbsp;:</b></td>\n";
+	if ($multiclasses) {
+		echo "<td class='cn bold'>&nbsp;</td>\n";
+		$data_pdf[$tot_data_pdf][]='';
+	}
+	for($i=$indice_premiere_col_note;$i<count($tab_m);$i++) {
+		echo "<td class='cn bold'>".$tab_m[$i]['q1']."</td>\n";
+		$data_pdf[$tot_data_pdf][]=$tab_m[$i]['q1'];
+	}
+	echo "</tr>\n";
+	
+	$tot_data_pdf++;
+	$data_pdf[$tot_data_pdf][]='3è quartile :';
+	echo "<tr>\n";
+	echo "<td class='cn bold'><b>3è quartile&nbsp;:</b></td>\n";
+	if ($multiclasses) {
+		echo "<td class='cn bold'>&nbsp;</td>\n";
+		$data_pdf[$tot_data_pdf][]='';
+	}
+	for($i=$indice_premiere_col_note;$i<count($tab_m);$i++) {
+		echo "<td class='cn bold'>".$tab_m[$i]['q3']."</td>\n";
+		$data_pdf[$tot_data_pdf][]=$tab_m[$i]['q3'];
+	}
+	echo "</tr>\n";
+}
+echo "</table>\n";
 
 //===================================
 if((isset($id_devoir))&&($id_devoir!=0)) {
