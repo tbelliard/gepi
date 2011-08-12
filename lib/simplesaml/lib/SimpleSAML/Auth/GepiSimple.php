@@ -17,10 +17,10 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	 */
 	public function __construct($auth = null) {
 		if ($auth == null) {
-			if (isset($_SESSION['gepi_setting_saml_source'])) {
+			if (isset($_SESSION['utilisateur_saml_source'])) {
 				//on prend la source précisée précedemment en session.
 				//Cela sert si le mode d'authentification a changé au cours de la session de l'utilisateur
-				$auth = $_SESSION['gepi_setting_saml_source'];
+				$auth = $_SESSION['utilisateur_saml_source'];
 			} else {
 			    //on va sélectionner la source d'authentification gepi
 			    $path = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
@@ -54,7 +54,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		}
 		
 		//on utilise une variable en session pour se souvenir quelle est la source utilisé pour cette session. Utile pour le logout, si entretemps l'admin a changé la source d'authentification.
-		$_SESSION['gepi_setting_saml_source'] = $auth;
+		$_SESSION['utilisateur_saml_source'] = $auth;
 		
 		parent::__construct($auth);
 	}
@@ -120,7 +120,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	 *                                   NULL, we will return to the current page.
 	 */
 	public function logout($params = NULL) {
-		unset($_SESSION['gepi_setting_saml_source']);
+		unset($_SESSION['utilisateur_saml_source']);
 		parent::logout($params);
 	}
 	
