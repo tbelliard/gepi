@@ -175,6 +175,20 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 			if($nb_dev>0){
 				echo "<ul>\n";
 				while ($j < $nb_dev) {
+					if (getSettingValue("utiliser_sacoche") == 'yes') {
+						echo '<form id="sacoche_form" name="sacoche_form" method="POST" action="'.getSettingValue("sacocheUrl").'/index.php">';
+						echo '<input type="hidden" name="page" value="professeur_eval"/>';
+						echo '<input type="hidden" name="section" value="groupe"/>';
+						//encodage du devoir
+						mysql_data_seek($appel_dev, $j);
+						$devoir_array = mysql_fetch_array($appel_dev);
+						$devoir_array = array_map_deep('utf8_encode', $devoir_array);
+						echo '<input type="hidden" name="gepi_cn_devoirs_array" value=\''.json_encode($devoir_array).'\'/>';
+						$current_group = array_map_deep('utf8_encode', get_group($id_groupe));
+						echo '<input type="hidden" name="gepi_current_group" value=\''.json_encode($current_group).'\'/>';
+						echo '</form>';
+					}
+					
 					$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
 					$id_dev = mysql_result($appel_dev, $j, 'id');
 					echo "<li>\n";
@@ -210,7 +224,11 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
 						$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
+						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
+					}
+
+					if (getSettingValue("utiliser_sacoche") == 'yes') {
+						echo " - <a href='#' onclick='document.sacoche_form.submit();'>Évaluer par compétence</a>";
 					}
 
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";

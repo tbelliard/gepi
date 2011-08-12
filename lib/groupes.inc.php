@@ -329,7 +329,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			foreach ($temp["periodes"] as $key => $period) {
 				$temp["eleves"][$key]["list"] = array();
 				$temp["eleves"][$key]["users"] = array();
-				$get_eleves = mysql_query("SELECT distinct j.login, e.nom, e.prenom FROM eleves e, j_eleves_groupes j WHERE (" .
+				$get_eleves = mysql_query("SELECT distinct j.login, e.nom, e.prenom, e.ele_id, e.elenoet FROM eleves e, j_eleves_groupes j WHERE (" .
 											"e.login = j.login and j.id_groupe = '" . $_id_groupe . "' and j.periode = '" . $period["num_periode"] . "') " .
 											"ORDER BY e.nom, e.prenom");
 		
@@ -339,8 +339,10 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 					$e_nom = mysql_result($get_eleves, $i, "nom");
 					$e_prenom = mysql_result($get_eleves, $i, "prenom");
 					$e_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')"), 0);
+					$e_sconet_id = mysql_result($get_eleves, $i, "ele_id");
+					$e_elenoet = mysql_result($get_eleves, $i, "elenoet");
 					$temp["eleves"][$key]["list"][] = $e_login;
-					$temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $e_classe);
+					$temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $e_classe, "sconet_id" => $e_sconet_id, "elenoet" => $e_elenoet);
 				}
 			}
 		

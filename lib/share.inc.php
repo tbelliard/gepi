@@ -4590,4 +4590,21 @@ function get_resp_from_ele_login($ele_login) {
 
 	return $tab;
 }
+
+function array_map_deep($callback, $array) {
+    $new = array();
+    if (is_array($array) || $array instanceof ArrayAccess) {
+    	foreach ($array as $key => $val) {
+	        if (is_array($val)) {
+	            $new[$key] = array_map_deep($callback, $val);
+	        } else {
+	            $new[$key] = call_user_func($callback, $val);
+	        }
+    	}
+    }
+    else $new = call_user_func($callback, $array);
+    return $new;
+} 
+
+
 ?>
