@@ -30,8 +30,8 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) != '/') {$sacocheUrl .= '/';} //on rajout un / a  la fin
 		$firstEntityID = 'sacoche-sp';
 		$firstEntityArray = array();
-		$firstEntityArray['AssertionConsumerService'] = $sacocheUrl.'_lib/SimpleSAMLphp/module.php/saml/sp/saml2-acs.php/distant-gepi-saml';
-		$firstEntityArray['SingleLogoutService'] = $sacocheUrl.'_lib/SimpleSAMLphp/module.php/saml/sp/saml2-logout.php/distant-gepi-saml';
+		$firstEntityArray['AssertionConsumerService'] = $sacocheUrl.'_lib/SimpleSAMLphp/www/module.php/saml/sp/saml2-acs.php/distant-gepi-saml';
+		$firstEntityArray['SingleLogoutService'] = $sacocheUrl.'_lib/SimpleSAMLphp/www/module.php/saml/sp/saml2-logout.php/distant-gepi-saml';
 		$metadata[$firstEntityID]= $firstEntityArray;
 	}
 }
