@@ -108,7 +108,7 @@ Class modele_select extends Modele {
                             $this->individu_identite = $this->row;
                         }
                     } else {
-                        $this->individu_identite = Array("login" => $ident, "nom" => "personnel inconnu(login:'.$ident.'", "prenom" => "inconnu", "statut" => "statut inconnu");
+                        $this->individu_identite = Array("login" => $ident, "nom" => "personnel inconnu(login:$ident)", "prenom" => "inconnu", "statut" => "statut inconnu");
                     }
 
                     break;
