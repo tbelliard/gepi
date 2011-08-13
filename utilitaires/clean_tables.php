@@ -2137,32 +2137,6 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		echo "<p>Terminé.</p>\n";
 	}
-} elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_discipline') {
-	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
-	echo "</p>\n";
-
-	echo "<p><b>Nettoyage des tables du module Discipline&nbsp;:</b> \n";
-	$tab_table=array('s_alerte_mail',
-					's_autres_sanctions',
-					's_communication',
-					's_exclusions',
-					's_incidents',
-					's_retenues',
-					's_sanctions',
-					's_traitement_incident',
-					's_travail',
-					's_protagonistes');
-	for($i=0;$i<count($tab_table);$i++) {
-		if($i>0) {echo ", ";}
-		echo $tab_table[$i];
-		$sql="TRUNCATE TABLE $tab_table[$i];";
-		//echo "$sql<br />\n";
-		$suppr=mysql_query($sql);
-	}
-	echo "</p>\n";
-
-	echo "<p>Terminé.</p>\n";
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_cdt') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -2405,6 +2379,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	echo "<p>Terminé.</p>\n";
+
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'nettoyage_mod_discipline') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -2542,193 +2517,208 @@ else {
 	//echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
 	echo "</p>\n";
 
-	echo "<p>Il est très vivement conseillé de <b>faire une sauvegarde de la base MySql avant de lancer la procédure.</b></p>\n";
-	echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php?action=dump\" method=post name='formulaire'>\n";
-	echo add_token_field();
-	echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>\n";
-	echo "<p>Il est également vivement conseillé de <b><a href='../gestion/gestion_connect.php'>désactiver les connexions à GEPI</a> durant la phase de nettoyage</b>.</p>
-<p align='center'><b><font size=\"+1\">Attention : selon la taille de la base, cette opération peut durer plusieurs heures.</font></b></p>\n";
-	echo "<hr />\n";
-	echo "<p>Cette procédure opère un <b>nettoyage</b> des lignes inutiles dans les <b>tables de liaison</b> de la base MySql de GEPI et dans les tables des données scolaires des élèves (notes, appréciations, absences).";
-	echo "<br />Les tables de liaison contiennent des informations qui mettent en relation les tables principales de GEPI
-(élèves, professeurs, matières, classes).<br /><br />
-Du fait de bugs mineurs (éventuellement déjà réglés mais présents dans des versions antérieures de GEPI) ou de mauvaises manipulations,
-ces tables de liaison peuvent contenir des données obsolètes ou des doublons qui peuvent nuire à un fonctionnement optimal de GEPI.";
+	echo "<h2>Sauvegarde préalable</h2>\n";
+	echo "<div style='margin-left: 3em;'>\n";
 
+		echo "<p>Il est très vivement conseillé de <b>faire une sauvegarde de la base MySql avant de lancer la procédure.</b></p>\n";
+		echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php?action=dump\" method=post name='formulaire'>\n";
+		echo add_token_field();
+		echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>\n";
+		echo "<p>Il est également vivement conseillé de <b><a href='../gestion/gestion_connect.php'>désactiver les connexions à GEPI</a> durant la phase de nettoyage</b>.</p>
+	<p align='center'><b><font size=\"+1\">Attention : selon la taille de la base, cette opération peut durer plusieurs heures.</font></b></p>\n";
 
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<p><b>Cliquez sur le bouton suivant pour commencer le nettoyage des tables de la base</b></p>\n";
-	echo "<p>Cette procédure s'effectue en plusieurs étapes : à chaque étape, une page affiche le compte-rendu du nettoyage et un <b>bouton situé en bas de la page</b> vous permet de passer à l'étape suivante.</p>\n";
-
-	echo "<div align='center'>\n";
-	echo "<p><input type='checkbox' name='mode_auto' id='mode_auto' value='y' /><label for='mode_auto' style='cursor: pointer;'> Mode automatique : Cochez cette case pour laisser dérouler les étapes du nettoyage.<br />Le rapport sera rappelé en page d'accueil.</label>\n";
-	echo "<br />\n";
-	echo "<input type=submit value='Procéder au nettoyage des tables' />\n";
 	echo "</div>\n";
-	echo "<input type=hidden name='maj' value='1' />\n";
-	echo "<input type=hidden name='valid' value='$valid' />\n";
-	echo "</form>\n";
 
-	echo "<p>Ou n'effectuer que certains des nettoyages de la liste&nbsp;:<br />\n";
-	echo "<a href='clean_tables.php?maj=1".add_token_in_url()."'>Tables AID, j_eleves_etablissements, j_eleves_regime et j_professeurs_matieres</a><br />\n";
-	echo "<a href='clean_tables.php?maj=2".add_token_in_url()."'>Table j_eleves_professeurs</a> (<i>associations élèves/".getSettingValue('gepi_prof_suivi')."</i>)<br />\n";
-	echo "<a href='clean_tables.php?maj=4".add_token_in_url()."'>Table j_eleves_classes</a> (<i>inscription des élèves dans les classes pour chaque période</i>)<br />\n";
-	echo "<a href='clean_tables.php?maj=6".add_token_in_url()."'>Tables aid_appreciations et avis_conseil_classe</a><br />\n";
-	echo "<a href='clean_tables.php?maj=7".add_token_in_url()."'>Table matieres_appreciations</a> (<i>appréciations des élèves sur les bulletins</i>)<br />\n";
-	echo "<a href='clean_tables.php?maj=8".add_token_in_url()."'>Table matieres_notes</a> (<i>notes des élèves sur les bulletins</i>)<br />\n";
-	echo "<a href='clean_tables.php?maj=9".add_token_in_url()."'>Tables concernant les groupes</a> (<i>associations élèves/enseignements/périodes/classes</i>)<br />\n";
-	echo "<a href='clean_tables.php?maj=10".add_token_in_url()."'>Tables concernant les comptes élèves et responsables</a><br />\n";
-	echo "<a href='clean_tables.php?maj=11".add_token_in_url()."'>Tables concernant les grilles PDF.</a><br />\n";
-	//echo "<span style='color:red'>A DETAILLER...</span>";
-	echo "</p>\n";
+	echo "<hr />\n";
+	//====================================================
+
+	echo "<h2>Nettoyages</h2>\n";
+	echo "<div style='margin-left: 3em;'>\n";
+
+		echo "<p>Cette procédure opère un <b>nettoyage</b> des lignes inutiles dans les <b>tables de liaison</b> de la base MySql de GEPI et dans les tables des données scolaires des élèves (notes, appréciations, absences).";
+		echo "<br />Les tables de liaison contiennent des informations qui mettent en relation les tables principales de GEPI
+	(élèves, professeurs, matières, classes).<br /><br />
+	Du fait de bugs mineurs (éventuellement déjà réglés mais présents dans des versions antérieures de GEPI) ou de mauvaises manipulations,
+	ces tables de liaison peuvent contenir des données obsolètes ou des doublons qui peuvent nuire à un fonctionnement optimal de GEPI.";
+	
+	
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<p><b>Cliquez sur le bouton suivant pour commencer le nettoyage des tables de la base</b></p>\n";
+		echo "<p>Cette procédure s'effectue en plusieurs étapes : à chaque étape, une page affiche le compte-rendu du nettoyage et un <b>bouton situé en bas de la page</b> vous permet de passer à l'étape suivante.</p>\n";
+	
+		echo "<div align='center'>\n";
+		echo "<p><input type='checkbox' name='mode_auto' id='mode_auto' value='y' /><label for='mode_auto' style='cursor: pointer;'> Mode automatique : Cochez cette case pour laisser dérouler les étapes du nettoyage.<br />Le rapport sera rappelé en page d'accueil.</label>\n";
+		echo "<br />\n";
+		echo "<input type=submit value='Procéder au nettoyage des tables' />\n";
+		echo "</div>\n";
+		echo "<input type=hidden name='maj' value='1' />\n";
+		echo "<input type=hidden name='valid' value='$valid' />\n";
+		echo "</form>\n";
+	
+		echo "<p>Ou n'effectuer que certains des nettoyages de la liste&nbsp;:<br />\n";
+		echo "<a href='clean_tables.php?maj=1".add_token_in_url()."'>Tables AID, j_eleves_etablissements, j_eleves_regime et j_professeurs_matieres</a><br />\n";
+		echo "<a href='clean_tables.php?maj=2".add_token_in_url()."'>Table j_eleves_professeurs</a> (<i>associations élèves/".getSettingValue('gepi_prof_suivi')."</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=4".add_token_in_url()."'>Table j_eleves_classes</a> (<i>inscription des élèves dans les classes pour chaque période</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=6".add_token_in_url()."'>Tables aid_appreciations et avis_conseil_classe</a><br />\n";
+		echo "<a href='clean_tables.php?maj=7".add_token_in_url()."'>Table matieres_appreciations</a> (<i>appréciations des élèves sur les bulletins</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=8".add_token_in_url()."'>Table matieres_notes</a> (<i>notes des élèves sur les bulletins</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=9".add_token_in_url()."'>Tables concernant les groupes</a> (<i>associations élèves/enseignements/périodes/classes</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=10".add_token_in_url()."'>Tables concernant les comptes élèves et responsables</a><br />\n";
+		echo "<a href='clean_tables.php?maj=11".add_token_in_url()."'>Tables concernant les grilles PDF.</a><br />\n";
+		//echo "<span style='color:red'>A DETAILLER...</span>";
+		echo "</p>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<h2>Nettoyages complémentaires</h2>\n";
+	
+		echo "<p>Il est arrivé que des élèves puissent être inscrits à des groupes sur des périodes où ils ne sont plus dans la classe (<i>suite à des changements de classes, départs,... par exemple</i>).<br />Il en résulte des affichages d'erreur non fatales, mais disgracieuses.<br />Le problème n'est normalement plus susceptible de revenir, mais dans le cas où vous auriez des erreurs inexpliquées concernant /lib/groupes.inc.php, vous pouvez contrôler les appartenances aux groupes/classes en visitant la page suivante:</p>\n";
+	
+		//echo "<p><a href='verif_groupes.php'>Contrôler les appartenances d'élèves à des groupes/classes</a>.</p>\n";
+	
+		echo "<form action=\"verif_groupes.php\" method=\"post\">\n";
+		echo "<center><input type=submit value='Contrôler les groupes' /></center>\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		//echo "<p>Jusqu'à la version 1.4.3-1, GEPI a comporté un bug sur le calcul des moyennes de conteneurs (<i>boites/sous-matières</i>).<br />\nSi on déplaçait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problème est désormais corrigé, mais dans le cas où vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matières.<br />\nLes modifications effectuées seront affichées.</p>\n";
+		echo "<p>Jusqu'à la version 1.4.3-1, GEPI a comporté un bug sur le calcul des moyennes de conteneurs (<i>".getSettingValue("gepi_denom_boite")."s</i>).<br />\nSi on déplaçait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problème est désormais corrigé, mais dans le cas où vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matières.<br />\nLes modifications effectuées seront affichées.</p>\n";
+	
+		echo "<form action=\"recalcul_moy_conteneurs.php\" method=\"post\">\n";
+		echo "<center><input type=submit value='Recalculer les moyennes de conteneurs' /></center>\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<p>La procédure de sauvegarde avec la commande 'mysqldump' dans la version 1.4.4-stable contenait un bug aboutissant à la perte de la fonction auto_increment sur certains champs, ce qui peut aboutir très rapidement à des incohérences dans la base de données.</p>\n";
+		echo "<p>Si vous avez restauré une sauvegarde générée avec la méthode mysqldump, vous devez absolument lancer cette vérification le plus rapidement possible et corriger les erreurs si le script ne peut les corriger automatiquement.</p>\n";
+		echo "<p><b>Il est vivement recommandé de faire une sauvegarde de la base avant d'effectuer cette opération !</b></p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center><input type=submit value='Contrôler les champs auto-incrémentés' /></center>\n";
+		echo "<input type='hidden' name='action' value='check_auto_increment' />\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<p>Gepi a un temps contenu un bug sur le format des login.<br />La présence de 'point' dans un nom de login par exemple pouvait provoquer des dysfonctionnements.<br />Le contenu des tables 'j_eleves_cpe' et 'j_eleves_professeurs' pouvait être affecté.</p>\n";
+		echo "<p><b>Il est vivement recommandé de faire une sauvegarde de la base avant d'effectuer cette opération !</b></p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center><input type=submit value=\"Contrôler les tables 'j_eleves_cpe' et 'j_eleves_professeurs'\" /></center>\n";
+		echo "<input type='hidden' name='action' value='check_jec_jep_point' />\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<p>Vérification de l'Emploi du temps.</p>\n";
+		echo "Pour vérifier votre emploi du temps en cas d'anomalies, suivez ce lien&nbsp;: <a href='../edt_organisation/verifier_edt.php?a=a".add_token_in_url()."'>Vérification de l'Emploi du temps</a></p>\n";
+
+		echo "<hr />\n";
+
+		echo "<p>Contrôle de l'interclassement (<i>COLLATION</i>) des champs des tables.<br />Des interclassements différents sur des champs de deux tables intervenant dans une jointure peut provoquer des erreurs.<br />Un tel problème peut survenir avec des bases transférées d'une machine à une autre,...</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Contrôler les interclassements\" />\n";
+		echo "<input type='hidden' name='action' value='verif_interclassements' />\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<p>Contrôle des ordres de matières pour les professeurs.<br />Si les ordres de matières ne sont pas correctement renseignés dans la table j_professeurs_matieres (<i>ordre_matieres tous à zéro par exemple</i>), il n'est pas possible de choisir la matière principale d'un professeur.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Corriger les ordres de matières des professeurs\" />\n";
+		echo "<input type='hidden' name='action' value='corrige_ordre_matieres_professeurs' />\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<p>Contrôle catégories de matières.<br />Si les vous n'obtenez aucune matière dans les relevés de notes quand les Catégories de matières sont cochées dans 'Gestion des bases/Gestion des classes/&lt;Une_classe&gt; Paramètres', les informations de la table 'j_matieres_categories_classes' sont probablement incomplètes.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Contrôler les catégories de matières\" />\n";
+		echo "<input type='hidden' name='action' value='controle_categories_matieres' />\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<p>Nettoyage de scories dans le module Discipline.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Nettoyage des tables du module Discipline\" />\n";
+		echo "<input type='hidden' name='action' value='nettoyage_mod_discipline' />\n";
+		echo "</form>\n";
+	
+
+	echo "</div>\n";
 
 	echo "<hr />\n";
 
-	echo "<h2>Nettoyages complémentaires</h2>\n";
+	//====================================================
 
-	echo "<p>Il est arrivé que des élèves puissent être inscrits à des groupes sur des périodes où ils ne sont plus dans la classe (<i>suite à des changements de classes, départs,... par exemple</i>).<br />Il en résulte des affichages d'erreur non fatales, mais disgracieuses.<br />Le problème n'est normalement plus susceptible de revenir, mais dans le cas où vous auriez des erreurs inexpliquées concernant /lib/groupes.inc.php, vous pouvez contrôler les appartenances aux groupes/classes en visitant la page suivante:</p>\n";
+	echo "<h2>Nettoyage par le vide;) au changement d'année</h2>\n";
+	echo "<div style='margin-left: 3em;'>\n";
 
-	//echo "<p><a href='verif_groupes.php'>Contrôler les appartenances d'élèves à des groupes/classes</a>.</p>\n";
+		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'edt_classes', 'edt_cours', 'edt_calendrier' du module emploi du temps de Gepi.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center><input type=submit value=\"Vider les tables Emploi du temps\" /></center>\n";
+		echo "<input type='hidden' name='action' value='clean_edt' />\n";
+		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module absences de Gepi.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Vider les tables enregistrements du module absences\" />\n";
+		$annee=strftime("%Y");
+		$mois=strftime("%m");
+		if($mois<=7) {$annee--;}
+		echo "pour les absences antérieures au <input type='text' name='date_limite' size='10' value='31/07/$annee' />\n";
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='clean_absences' />\n";
+		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "</form>\n";
+	
+		echo "<hr />\n";
+	
+		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables du module Discipline de Gepi.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Vider les tables du module Discipline\" />\n";
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='vidage_mod_discipline' />\n";
+		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "</form>\n";
 
-	echo "<form action=\"verif_groupes.php\" method=\"post\">\n";
-	echo "<center><input type=submit value='Contrôler les groupes' /></center>\n";
-	echo "</form>\n";
+		echo "<hr />\n";
+	
+		echo "<p>Au changement d'année, il faut <a href='../cahier_texte_2/archivage_cdt.php'>archiver les Cahiers de Textes</a>, puis le vider.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Vider les tables du module Cahier de Textes\" />\n";
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='clean_cdt' />\n";
+		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "</form>\n";
 
-	echo "<hr />\n";
+	echo "</div>\n";
 
-	//echo "<p>Jusqu'à la version 1.4.3-1, GEPI a comporté un bug sur le calcul des moyennes de conteneurs (<i>boites/sous-matières</i>).<br />\nSi on déplaçait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problème est désormais corrigé, mais dans le cas où vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matières.<br />\nLes modifications effectuées seront affichées.</p>\n";
-	echo "<p>Jusqu'à la version 1.4.3-1, GEPI a comporté un bug sur le calcul des moyennes de conteneurs (<i>".getSettingValue("gepi_denom_boite")."s</i>).<br />\nSi on déplaçait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problème est désormais corrigé, mais dans le cas où vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matières.<br />\nLes modifications effectuées seront affichées.</p>\n";
+	//echo "<hr />\n";
 
-	echo "<form action=\"recalcul_moy_conteneurs.php\" method=\"post\">\n";
-	echo "<center><input type=submit value='Recalculer les moyennes de conteneurs' /></center>\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>La procédure de sauvegarde avec la commande 'mysqldump' dans la version 1.4.4-stable contenait un bug aboutissant à la perte de la fonction auto_increment sur certains champs, ce qui peut aboutir très rapidement à des incohérences dans la base de données.</p>\n";
-	echo "<p>Si vous avez restauré une sauvegarde générée avec la méthode mysqldump, vous devez absolument lancer cette vérification le plus rapidement possible et corriger les erreurs si le script ne peut les corriger automatiquement.</p>\n";
-	echo "<p><b>Il est vivement recommandé de faire une sauvegarde de la base avant d'effectuer cette opération !</b></p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center><input type=submit value='Contrôler les champs auto-incrémentés' /></center>\n";
-	echo "<input type='hidden' name='action' value='check_auto_increment' />\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Gepi a un temps contenu un bug sur le format des login.<br />La présence de 'point' dans un nom de login par exemple pouvait provoquer des dysfonctionnements.<br />Le contenu des tables 'j_eleves_cpe' et 'j_eleves_professeurs' pouvait être affecté.</p>\n";
-	echo "<p><b>Il est vivement recommandé de faire une sauvegarde de la base avant d'effectuer cette opération !</b></p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center><input type=submit value=\"Contrôler les tables 'j_eleves_cpe' et 'j_eleves_professeurs'\" /></center>\n";
-	echo "<input type='hidden' name='action' value='check_jec_jep_point' />\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Vérification de l'Emploi du temps.</p>\n";
-	echo "Pour vérifier votre emploi du temps en cas d'anomalies, suivez ce lien&nbsp;: <a href='../edt_organisation/verifier_edt.php?a=a".add_token_in_url()."'>Vérification de l'Emploi du temps</a></p>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'edt_classes', 'edt_cours', 'edt_calendrier' du module emploi du temps de Gepi.</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center><input type=submit value=\"Vider les tables Emploi du temps\" /></center>\n";
-	echo "<input type='hidden' name='action' value='clean_edt' />\n";
-	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module absences de Gepi.</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center>\n";
-	echo "<input type=submit value=\"Vider les tables enregistrements du module absences\" />\n";
-	$annee=strftime("%Y");
-	$mois=strftime("%m");
-	if($mois<=7) {$annee--;}
-	echo "pour les absences antérieures au <input type='text' name='date_limite' size='10' value='31/07/$annee' />\n";
-	echo "</center>\n";
-	echo "<input type='hidden' name='action' value='clean_absences' />\n";
-	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables du module Discipline de Gepi.</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center>\n";
-	echo "<input type=submit value=\"Vider les tables du module Discipline\" />\n";
-	echo "</center>\n";
-	echo "<input type='hidden' name='action' value='clean_discipline' />\n";
-	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Au changement d'année, il faut <a href='../cahier_texte_2/archivage_cdt.php'>archiver les Cahiers de Textes</a>, puis le vider.</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center>\n";
-	echo "<input type=submit value=\"Vider les tables du module Cahier de Textes\" />\n";
-	echo "</center>\n";
-	echo "<input type='hidden' name='action' value='clean_cdt' />\n";
-	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Contrôle de l'interclassement (<i>COLLATION</i>) des champs des tables.<br />Des interclassements différents sur des champs de deux tables intervenant dans une jointure peut provoquer des erreurs.<br />Un tel problème peut survenir avec des bases transférées d'une machine à une autre,...</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center>\n";
-	echo "<input type=submit value=\"Contrôler les interclassements\" />\n";
-	echo "<input type='hidden' name='action' value='verif_interclassements' />\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Contrôle des ordres de matières pour les professeurs.<br />Si les ordres de matières ne sont pas correctement renseignés dans la table j_professeurs_matieres (<i>ordre_matieres tous à zéro par exemple</i>), il n'est pas possible de choisir la matière principale d'un professeur.</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center>\n";
-	echo "<input type=submit value=\"Corriger les ordres de matières des professeurs\" />\n";
-	echo "<input type='hidden' name='action' value='corrige_ordre_matieres_professeurs' />\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Contrôle catégories de matières.<br />Si les vous n'obtenez aucune matière dans les relevés de notes quand les Catégories de matières sont cochées dans 'Gestion des bases/Gestion des classes/&lt;Une_classe&gt; Paramètres', les informations de la table 'j_matieres_categories_classes' sont probablement incomplètes.</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center>\n";
-	echo "<input type=submit value=\"Contrôler les catégories de matières\" />\n";
-	echo "<input type='hidden' name='action' value='controle_categories_matieres' />\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Nettoyage de scories dans le module Discipline.</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center>\n";
-	echo "<input type=submit value=\"Nettoyage des tables du module Discipline\" />\n";
-	echo "<input type='hidden' name='action' value='nettoyage_mod_discipline' />\n";
-	echo "</form>\n";
-
-	echo "<hr />\n";
-
-	echo "<p>Vider les tables du module Discipline.</p>\n";
-	echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-	echo add_token_field();
-	echo "<center>\n";
-	echo "<input type=submit value=\"Vidage des tables du module Discipline\" />\n";
-	echo "<input type='hidden' name='action' value='vidage_mod_discipline' />\n";
-	echo "</form>\n";
+	//====================================================
 
 }
 echo "<p><br /></p>\n";
