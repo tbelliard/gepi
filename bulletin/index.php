@@ -1,9 +1,17 @@
 <?php
-/*
+/**
+ * Edition des bulletins
+ * 
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
+ * @copyright Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * 
+ * @package Bulletins
+ * @subpackage Edition
+ * @license GNU/GPL, 
+ * @see COPYING.txt
+ */
+ /*
  * This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
@@ -21,7 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 extract($_GET, EXTR_OVERWRITE);
@@ -71,10 +81,7 @@ if (!checkAccess()) {
 
 
 	// ERIC on n'imprime plus que les periodes fermées
-	/*
-	   if (empty($_GET['periode_ferme']) and empty($_POST['periode_ferme'])) { $periode_ferme = ''; }
-	   else { if (isset($_GET['periode_ferme'])) { $periode_ferme = $_GET['periode_ferme']; } if (isset($_POST['periode_ferme'])) { $periode_ferme = $_POST['periode_ferme']; } }
-	*/
+	
 	$periode_ferme = '1';
 	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
 	   else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
@@ -94,40 +101,23 @@ if (!checkAccess()) {
 	}
 	*/
 
-	//if(!isset($msg)){$msg='';}
 	if ( !empty($classe[0]) and !empty($periode[0])) {
 		for($i=0;$i<count($classe);$i++){
-			//echo "\$classe[$i]=".$classe[$i]."<br />";
 			for($j=0;$j<count($periode);$j++){
-				//echo "\$periode[$j]=".$periode[$j]."<br />";
-
-				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode='".$periode[$j]."' AND verouiller!='O';";
-				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸']","%",$periode[$j])."' AND verouiller!='O';";
-				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[^.a-zA-Z0-9_-]+","%",$periode[$j])."' AND verouiller!='O';";
-
-				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[^.a-zA-Z0-9_-]+","%",html_entity_decode($periode[$j]))."' AND verouiller!='O';";
-
+				
 				$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".my_ereg_replace("[^.a-zA-Z0-9_-]+","%",html_entity_decode($periode[$j]))."' AND verouiller='N';";
 
-				//echo "$sql<br />\n";
 				$test_per=mysql_query($sql);
-				//echo "mysql_num_rows(\$test_per)=".mysql_num_rows($test_per)."<br />";
 				if(mysql_num_rows($test_per)>0){
 
 					if($message_erreur!=''){$message_erreur.='<br />';}
 					$message_erreur.="La période $periode[$j] n'est pas close pour ".get_class_from_id($classe[$i]);
-					/*
-					if($msg!=''){$msg.='<br />';}
-					$msg.="La période $periode[$j] n'est pas close pour la classe ".get_class_from_id($classe[$i]);
-					//echo "msg=$msg<br />";
-					*/
 				}
 			}
 		}
 	}
 
 	if($message_erreur=='') {
-	//if(($message_erreur=='')&&($msg=='')) {
 		$_SESSION['classe'] = $classe;
 		$_SESSION['eleve'] = $eleve;
 		$_SESSION['periode'] = $periode;
@@ -153,24 +143,7 @@ if (!checkAccess()) {
 	//ERIC
 		if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {
 			// le redirection se fait sur l'un ou l'autre des 2 fichiers de génération du bulletin en PDF
-	/*	    $option_modele_bulletin=getSettingValue("option_modele_bulletin");
-			if ($option_modele_bulletin!=1) {
-			if ($type_bulletin == -1) {
-				//cas avec les modèles affectés aux classes.
-				header("Location: bulletin_pdf_avec_modele_classe.php");
-			} else {
-				//cas sans les modèles affectés à chaque classe .
-				header("Location: buletin_pdf.php");
-			}
-			} else { // on utilise le modèle définie dans les paramètres de la classe.
-				//cas avec les modèles affectés aux classes.
-				header("Location: bulletin_pdf_avec_modele_classe.php");
-			}
-			*/
-
-
-		//		header("Location: bulletin_pdf_avec_modele_classe.php");
-		$bulletin_pass = 'oui';
+			$bulletin_pass = 'oui';
 		}
 	// FIN Christian renvoye vers le fichier PDF bulletin
 	}
@@ -223,13 +196,10 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 //debug_var();
 
-//if (!isset($id_classe)) {
-
 	//modification christian pour le choix des bulletins au format PDF
 	if(!isset($id_classe)) {
 		echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 
-		//echo "format=$format<br />";
 		if((empty($format))) {
 			echo " | <a href='index.php?format=pdf'>Impression au format PDF </a>";
 		}
@@ -237,13 +207,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 			echo " | <a href='index.php?format='>Impression au format HTML </a>";
 		}
 	}
-	//elseif(!empty($format) AND $format == 'pdf'))
-	/*
-	else {
-		echo " | <a href='index.php?format='>Impression au format HTML </a>";
-	}
-	*/
-
+	
        //modification Christian CHAPEL
 	if($format === 'pdf' and ( empty($bt_select_periode)) or !empty($creer_pdf) and $modele ==='' and !isset($classe[0]))
 	{
@@ -325,8 +289,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 						 }
 				  ?>
 				  </select>
-				  <!--<input type="checkbox" name="periode_ferme" id="periode_ferme" value="1" <?php if( isset($periode_ferme) and $periode_ferme === '1' ) { ?>checked="checked"<?php } ?> title="Imprimer seulement les période fermée" alt="Imprimer seulement les période fermée" />-->
-			      </td>
+				  </td>
 			      <td align="left" nowrap="nowrap" valign="middle" colspan="1" rowspan="2" >
 				<select name="eleve[]" size="6" multiple="multiple" tabindex="4">
 				  <optgroup label="----- Listes des &eacute;l&egrave;ves -----">
@@ -365,16 +328,13 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 		    echo "<br />Choisir le modèle de bulletin<br/>";
 			echo "<select tabindex=\"5\" name=\"type_bulletin\">";
 			// sélection des modèle des bulletins.
-			//$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
 			$sql="SELECT id_model_bulletin, valeur FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC";
-			//echo "$sql<br />";
 			$requete_modele = mysql_query($sql);
 			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
 				echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>";
 			}
 				while($donner_modele = mysql_fetch_array($requete_modele)) {
 					echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
-					//echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
 					echo ">".ucfirst($donner_modele['valeur'])."</option>\n";
 				}
 			echo "</select>\n";
@@ -448,7 +408,6 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
     if ($_SESSION["statut"] == "scolarite") {
-        //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
         $calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
     } else {
 	    if ($_SESSION["statut"] == "administrateur") {
@@ -490,48 +449,17 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 		echo "<p>Ou <a href='bull_index.php'>accéder au nouveau dispositif des bulletins (<i>HTML et PDF</i>)</a></p>\n";
 	}
-	/*
-	$nb_class_par_colonne=round($nombreligne/3);
-	//echo "<table width='100%' border='1'>\n";
-	echo "<table width='100%'>\n";
-	echo "<tr valign='top' align='center'>\n";
-
-	$i = 0;
-
-	echo "<td align='left'>\n";
-
-	while ($i < $nombreligne){
-
-		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-			echo "</td>\n";
-			//echo "<td style='padding: 0 10px 0 10px'>\n";
-			echo "<td align='left'>\n";
-		}
-
-		$ide_classe = mysql_result($calldata, $i, "id");
-		$classe_liste = mysql_result($calldata, $i, "classe");
-		echo "<br /><a href='index.php?id_classe=$ide_classe'>$classe_liste</a>\n";
-		$i++;
-	}
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	*/
 }
 
 if (isset($id_classe) and $format != 'pdf' and $modele === '') {
-	//echo " | <a href=\"index.php\">Choisir une autre classe</a>";
-
+	
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
 	echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 
 	echo " | <a href='index.php?format=pdf'>Impression au format PDF</a>\n";
 
-	//echo "<p class='bold'>\n";
-
 	if($_SESSION['statut']=='scolarite'){
-		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	if($_SESSION['statut']=='professeur'){
@@ -591,33 +519,11 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 	echo "</form>\n";
 
-
-
-/*
-	// On choisit le periode :
-	echo "<p><b>Choisissez la période : </b></p>\n";
-	include "../lib/periodes.inc.php";
-	$i="1";
-	while ($i < $nb_periode) {
-		if ($ver_periode[$i] == "N") {
-			echo "<p><b>".ucfirst($nom_periode[$i])."</b> : édition Impossible ";
-			echo " ($gepiOpenPeriodLabel)";
-		} else {
-			echo "<p><a href='edit.php?id_classe=$id_classe&amp;periode_num=$i' target='bull'><b>".ucfirst($nom_periode[$i])."</b></a>";
-			if ($ver_periode[$i] == "P")  echo " (Période partiellement close, seule la saisie des avis du conseil de classe est possible)";
-			if ($ver_periode[$i] == "O")  echo " (Période entièrement close, plus aucune saisie/modification n'est possible)";
-		}
-		echo "</p>\n";
-		$i++;
-	}
-*/
 	echo "<p><b>Choisissez la période : </b></p>\n";
 	include "../lib/periodes.inc.php";
 
 	$i="1";
-	//echo "<form name='choix' action='edit.php' target='bull' method='post'>\n";
 	echo "<form name='choix' action='edit.php' target='_blank' method='post'>\n";
-	//echo "<form name='choix' action='edit.php' target='bull' method='get' >\n";
 	echo "<input type='hidden' name='id_classe' value='$id_classe' /> \n";
 	echo "<table border='0' summary='Choix'>\n";
 	$num_per_close=0;
@@ -634,14 +540,10 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	while ($i < $nb_periode) {
 		echo "<tr>\n";
 		if ($ver_periode[$i] == "N") {
-			//echo "<td style='text-align:center; color:red;'>X</td>\n";
-			//echo "<td style='text-align:center; color:red;'><img src='../images/disabled.png' alt='impossible' /></td>\n";
 			echo "<td style='text-align:center; color:red;'>&nbsp;</td>\n";
 			echo "<td><b>".ucfirst($nom_periode[$i])."</b> : édition impossible ";
 			echo " (<i>$gepiOpenPeriodLabel</i>)</td>\n";
 		} else {
-			//echo "<td align='center'><input type='radio' name='periode_num' id='id_periode_num' value='$i' /> </td>\n";
-			//echo "<td align='center'><input type='radio' name='periode_num' id='id_periode_num' value='$i'";
 			echo "<td align='center'><input type='radio' name='periode_num' id='periode_num_$i' value='$i'";
 			if(isset($periode_par_defaut_bulletin)) {
 				if($periode_par_defaut_bulletin==$i) {echo " checked";}
@@ -681,22 +583,6 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	colore_checked();
 </script>\n";
 
-/*
-// Je ne parviens pas à cocher la dernière période close (si elle existe)...
-	if($nb_per_close>0){
-		echo "<script type='text/javascript' language='javascript'>
-//document.getElementById('id_periode_num').element[$num_per_close].checked=true;
-//document.forms[0].periode_num[$num_per_close].checked=true;
-//document.elements['choix'].elements['periode_num'][$num_per_close].checked=true;
-//document.forms[0].periode_num[$num_per_close].checked=true;
-radio=document.getElementById('id_periode_num');
-for(i=0;i<$nb_per_close;i++){
-	alert('radio['+i+']='+radio[i].value);
-}
-</script>\n";
-	}
-*/
-
 	// AJOUTER LES AUTRES PARAMETRES
 	echo "<p><b>Et les bulletins à imprimer: </b></p>\n";
 	$sql="SELECT DISTINCT e.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
@@ -709,17 +595,6 @@ for(i=0;i<$nb_per_close;i++){
 		die();
 	}
 	else{
-		/*
-		echo "<p>\n";
-		echo "<select name='liste_login_ele'>\n";
-		echo "<option value='_CLASSE_ENTIERE_' selected>Classe entière</option>\n";
-		while($lig_ele=mysql_fetch_object($res_ele)){
-			echo "<option value='$lig_ele->login'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
-		}
-		echo "</select>\n";
-		//echo "<br />\n";
-		echo "</p>\n";
-		*/
 
 		echo "<table border='0' summary='Sélection'>\n";
 		echo "<tr>\n";
@@ -731,8 +606,7 @@ for(i=0;i<$nb_per_close;i++){
 		echo "<td valign='top'><input type='radio' name='selection' id='selection_ele' value='_SELECTION_' onchange=\"affiche_nb_ele_select();\" /></td>\n";
 		echo "<td valign='top'><label for='selection_ele' style='cursor: pointer;'>Sélection</label><br />\n";
 		echo "<select id='liste_login_ele' name='liste_login_ele[]' multiple='yes' size='5' onchange=\"document.getElementById('selection_ele').checked=true;affiche_nb_ele_select();\">\n";
-		//echo "<option value='_CLASSE_ENTIERE_' selected>Classe entière</option>\n";
-
+		
 		while($lig_ele=mysql_fetch_object($res_ele)){
 			echo "<option value='$lig_ele->login'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
 		}
@@ -783,11 +657,6 @@ for(i=0;i<$nb_per_close;i++){
 		$bull_intitule_app=getSettingValue("bull_intitule_app");
 	}
 
-
-/*
-	echo "<tr><td valign='top'><input type='checkbox' name='ne_pas_afficher_moy_gen' value='oui' /><td><td>Ne pas afficher la moyenne générale (<i>même si l'affichage des coefficients de matières est activé</i>).<br /><i>Rappel:</i> La moyenne générale ne peut apparaitre que si un des coefficients de matière au moins est non nul.</td></tr>\n";
-	echo "<tr><td valign='top'><input type='checkbox' name='min_max_moyclas' value='1' /></td><td>Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'appréciation.</td></tr>\n";
-*/
 	// A FAIRE:
 	// Tester et ne pas afficher:
 	// - si tous les coeff sont à 1
@@ -858,5 +727,8 @@ for(i=0;i<$nb_per_close;i++){
 	</td></tr></table></center>\n";
 }
 
+/**
+ * Pied de page
+ */
 require("../lib/footer.inc.php");
 ?>

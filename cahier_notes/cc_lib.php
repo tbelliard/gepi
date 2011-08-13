@@ -1,10 +1,17 @@
 <?php
-/*
-* @version: $Id$
+/**
+ * Fonctions de évaluation cumule
+ * 
+* $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
-* This file is part of GEPI.
+* @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * 
+ * @package Carnet_de_notes
+ * @subpackage Evaluation_cumule
+ * @license GNU/GPL, 
+ * @see COPYING.txt
+*/
+/* This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -25,7 +32,12 @@ $nom_cc=getSettingValue('nom_cc');
 if($nom_cc=='') {
 	$nom_cc="evaluation-cumul";
 }
-
+/**
+ *
+ * @param float $moyenne note à arrondir
+ * @param string $arrondir
+ * @return float
+ */
 function precision_arrondi($moyenne,$arrondir) {
 	//
 	// Calcul des arrondis
