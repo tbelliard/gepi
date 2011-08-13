@@ -8,9 +8,17 @@
  *
  * @package Carnet_de_notes
  * @subpackage Evaluation_cumule
- * @license GNU/GPL, 
- * @see COPYING.txt
+ * @license GNU/GPL
+ * @see add_token_field()
+ * @see Calendrier::get_strPopup()
+ * @see checkAccess()
+ * @see get_group()
+ * @see getSettingValue()
+ * @see Session::security_check()
+ * @see traitement_magic_quotes()
+ * @see Verif_prof_cahier_notes()
  */
+
 /* This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
