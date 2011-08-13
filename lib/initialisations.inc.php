@@ -67,6 +67,15 @@ $GLOBALS['gepiRcVersion'] = '';
  */
 $GLOBALS['gepiBetaVersion'] = '';
 
+/**
+ * Les informations du groupes obtenues à partir de get_group()
+ * 
+ * @global array $GLOBALS['current_group']
+ * @name $current_group
+ * @see get_group()
+ */
+$GLOBALS['current_group'] = '';
+
 
 
 

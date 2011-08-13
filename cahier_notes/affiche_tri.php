@@ -1,9 +1,15 @@
 <?php
-/*
+/**
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
+ * @package Carnet_de_notes
+ * @subpackage Conteneur
+ * @license GNU/GPL, 
+ * @see COPYING.txt
+ */
+/*
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify

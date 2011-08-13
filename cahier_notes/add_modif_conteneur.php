@@ -8,8 +8,20 @@
  *
  * @package Carnet_de_notes
  * @subpackage Conteneur
- * @license GNU/GPL, 
+ * @license GNU/GPL,  
  * @see COPYING.txt
+ * @see add_token_field()
+ * @see checkAccess()
+ * @see check_token()
+ * @see corriger_caracteres()
+ * @see get_group()
+ * @see getPref()
+ * @see getSettingValue()
+ * @see mise_a_jour_moyennes_conteneurs()
+ * @see recherche_enfant()
+ * @see sous_conteneurs()
+ * @see Verif_prof_cahier_notes ()
+
 */
 /*
 * This file is part of GEPI.
@@ -32,7 +44,6 @@
 /**
  * Fichiers d'initialisation
  */
-// Initialisations files
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -204,32 +215,7 @@ if (isset($_POST['ok'])) {
         mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur,$arret);
         // La boite courante est mise à jour...
         // ... mais pas la boite destination.
-        // Il faudrait rechercher pour $id_racine les derniers descendants et lancer la mise à jour sur chacun de ces descendants.
-        /**
-         *
-         * @global int 
-         * @global int 
-         * @global int
-         * @param int $id_parent_tmp
-         * @see mise_a_jour_moyennes_conteneurs(mise_a_jour_moyennes_conteneurs(
-         */
-        function recherche_enfant($id_parent_tmp){
-            global $current_group, $periode_num, $id_racine;
-            $sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
-            //echo "<!-- $sql -->\n";
-            $res_enfant=mysql_query($sql);
-            if(mysql_num_rows($res_enfant)>0){
-                while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
-                   
-                    recherche_enfant($lig_conteneur_enfant->id);
-                }
-            }
-            else{
-                $arret = 'no';
-                $id_conteneur_enfant=$id_parent_tmp;
-                mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
-            }
-        }
+        
         recherche_enfant($id_racine);
     }
     //==========================================================
@@ -296,7 +282,6 @@ if ($id_conteneur)  {
 	else{
 		$nom_court = "Nouveau ".strtolower(getSettingValue("gepi_denom_boite"));
 	}
-	//$nom_court = "Nouvel(le) ".strtolower(getSettingValue("gepi_denom_boite"));
 	$nom_complet = '';
 	$new_conteneur = 'yes';
 	$coef = "1";
@@ -332,13 +317,10 @@ if(($mode_navig == 'retour_saisie')&&(isset($id_retour))) {
 }
 
 // Interface simplifiée
-//$interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : "");
 
 $interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : getPref($_SESSION['login'],'add_modif_conteneur_simpl','n'));
 
 
-
-// https://127.0.0.1/steph/gepi-cvs/cahier_notes/add_modif_conteneur.php?id_racine=64&mode_navig=retour_index
 echo " | <a href='add_modif_conteneur.php?id_racine=$id_racine";
 if(isset($id_conteneur)){
 	echo "&amp;id_conteneur=$id_conteneur";
@@ -369,10 +351,6 @@ else{
 }
 
 
-
-
-
-//if($interface_simplifiee!=""){
 if($interface_simplifiee=="y"){
 
 	// Récupérer les paramètres à afficher.
@@ -657,7 +635,6 @@ else{
 				// On recherche si le conteneur est un descendant du conteneur courant.
 				$tmp_parent=$id_parent;
 				$temoin_display="oui";
-				//$cpt_tmp=0;
 				while($tmp_parent!=0){
 					$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' AND id='$tmp_parent'";
 					//echo "<!-- $sql -->\n";

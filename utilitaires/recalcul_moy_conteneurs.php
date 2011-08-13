@@ -52,6 +52,7 @@ if (getSettingValue("active_carnets_notes")!='y') {
 
 // Fonction de recherche des conteneurs derniers enfants (sans enfants (non parents, en somme))
 // avec recalcul des moyennes lancé...
+/*
 function recherche_enfant($id_parent_tmp){
 	global $current_group, $periode_num, $id_racine;
 	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
@@ -70,6 +71,7 @@ function recherche_enfant($id_parent_tmp){
 		//echo "<!-- ========================================== -->\n";
 	}
 }
+*/
 //recherche_enfant($id_racine);
 
 

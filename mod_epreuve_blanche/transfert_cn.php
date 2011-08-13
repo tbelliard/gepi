@@ -66,6 +66,7 @@ if (!checkAccess()) {
 
 // La boite courante est mise à jour...
 // ... mais pas la boite destination.
+/*
 // Il faudrait rechercher pour $id_racine les derniers descendants et lancer la mise à jour sur chacun de ces descendants.
 function recherche_enfant($id_parent_tmp) {
 	global $current_group, $periode_num, $id_racine;
@@ -92,7 +93,7 @@ function recherche_enfant($id_parent_tmp) {
 		//echo "<!-- ========================================== -->\n";
 	}
 }
-
+*/
 
 $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['id_epreuve']) ? $_GET['id_epreuve'] : NULL);
 

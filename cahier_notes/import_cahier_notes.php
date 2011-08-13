@@ -105,7 +105,7 @@ $jour=sprintf("%02d",$instant['mday']);
 $annee=$instant['year'];
 
 
-
+/*
 function recherche_enfant($id_parent_tmp){
 	global $current_group, $periode_num, $id_racine;
 	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
@@ -122,7 +122,7 @@ function recherche_enfant($id_parent_tmp){
 		mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
 	}
 }
-
+*/
 
 
 //**************** EN-TETE *****************

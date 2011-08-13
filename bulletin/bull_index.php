@@ -1,10 +1,18 @@
 <?php
+/**
+ * Edition des bulletins
+ *
+ * $Id$
+ *
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @todo Les bulletins HTML utilisent les infos display_rang, display_coef,... de la table 'classes'.
+ *Les bulletins PDF utilisent plutôt les infos de la table 'modele_bulletin' il me semble.
+ *Il faudrait peut-être revoir le dispositif pour adopter la même stratégie.
+ *On a aussi ajouté des champs dans la table 'classes' pour les relevés de notes,... faut-il envisager une autre structure ?
+ * @package Bulletin
+ * @subpackage Edition
+ */
 /*
-*
-* $Id$
-*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
-*
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -69,6 +77,7 @@ $bull_pdf_debug=isset($_POST['bull_pdf_debug']) ? $_POST['bull_pdf_debug'] : "n"
 
 // Fonction de recherche des conteneurs derniers enfants (sans enfants (non parents, en somme))
 // avec recalcul des moyennes lancé...
+/*
 function recherche_enfant($id_parent_tmp){
 	global $current_group, $periode_num, $id_racine;
 	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
@@ -87,7 +96,7 @@ function recherche_enfant($id_parent_tmp){
 		//echo "<!-- ========================================== -->\n";
 	}
 }
-
+*/
 
 //====================================================
 //=============== ENTETE STANDARD ====================

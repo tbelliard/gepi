@@ -1,9 +1,17 @@
 <?php
+/**
+ * Ajouter, modifier un devoir
+ * 
+ * $Id$
+ *
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * @package Carnet_de_notes
+ * @subpackage Conteneur
+ * @license GNU/GPL, 
+ * @see COPYING.txt
+ */
 /*
- * @version: $Id$
- *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
  * This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
@@ -21,7 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -125,7 +135,6 @@ if (isset($_POST['ok'])) {
 			$id_emplacement=isset($_POST['id_emplacement']) ? $_POST['id_emplacement'] : $id_racine;
 
 			$sql="SELECT * FROM cn_conteneurs WHERE id='$id_emplacement';";
-			//echo "$sql<br />\n";
 			$res_infos_conteneur=mysql_query($sql);
 			$lig_conteneur=mysql_fetch_object($res_infos_conteneur);
 			$nom_court_conteneur=$lig_conteneur->nom_court;
@@ -141,7 +150,6 @@ if (isset($_POST['ok'])) {
 			$cpt=0;
 			// Boucle sur les autres enseignements sur lesquels créer le même devoir
 			for($i=0;$i<count($id_autre_groupe);$i++) {
-				//$tab_group[$i]=get_group($id_autre_groupe);
 				$tmp_group=get_group($id_autre_groupe[$i]);
 				// Vérifier que la période est bien ouverte en saisie
 				if($tmp_group["classe"]["ver_periode"]["all"][$periode_num]>=2) {
@@ -287,15 +295,6 @@ if (isset($_POST['ok'])) {
 		}
     }
 
-	/*
-    if ($_POST['coef']) {
-        $reg = mysql_query("UPDATE cn_devoirs SET coef = '".$_POST['coef']."' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
-    } else {
-        $reg = mysql_query("UPDATE cn_devoirs SET coef = '0' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
-    }
-	*/
 	$tmp_coef=isset($_POST['coef']) ? $_POST['coef'] : 0;
 	$reg = mysql_query("UPDATE cn_devoirs SET coef='".$tmp_coef."' WHERE id='$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
@@ -305,15 +304,6 @@ if (isset($_POST['ok'])) {
 		$reg=mysql_query($sql);
 	}
 
-	/*
-   if (isset($_POST['note_sur'])) {
-        $reg = mysql_query("UPDATE cn_devoirs SET note_sur = '".$_POST['note_sur']."' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
-    } else {
-        $reg = mysql_query("UPDATE cn_devoirs SET note_sur = '".getSettingValue("referentiel_note")."' WHERE id = '$id_devoir'");
-        if (!$reg)  $reg_ok = "no";
-    }
-	*/
 	$note_sur=isset($_POST['note_sur']) ? $_POST['note_sur'] : getSettingValue("referentiel_note");
 	$reg = mysql_query("UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='$id_devoir'");
 	if (!$reg)  $reg_ok = "no";
@@ -436,6 +426,7 @@ if (isset($_POST['ok'])) {
     mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur,$arret);
     // La boite courante est mise à jour...
     // ... mais pas la boite destination.
+    /*
     // Il faudrait rechercher pour $id_racine les derniers descendants et lancer la mise à jour sur chacun de ces descendants.
     function recherche_enfant($id_parent_tmp){
         global $current_group, $periode_num, $id_racine;
@@ -444,24 +435,16 @@ if (isset($_POST['ok'])) {
     $res_enfant=mysql_query($sql);
     if(mysql_num_rows($res_enfant)>0){
         while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
-            /*
-            echo "<!-- nom_court=$lig_conteneur_enfant->nom_court -->\n";
-            echo "<!-- nom_complet=$lig_conteneur_enfant->nom_complet -->\n";
-            echo "<!-- id=$lig_conteneur_enfant->id -->\n";
-            echo "<!-- parent=$lig_conteneur_enfant->parent -->\n";
-            echo "<!-- recherche_enfant($lig_conteneur_enfant->id); -->\n";
-            */
-            recherche_enfant($lig_conteneur_enfant->id);
+           recherche_enfant($lig_conteneur_enfant->id);
         }
     }
     else{
         $arret = 'no';
         $id_conteneur_enfant=$id_parent_tmp;
-        //echo "<!-- mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret); -->\n";
         mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
-        //echo "<!-- ========================================== -->\n";
     }
     }
+    */
     recherche_enfant($id_racine);
     //==========================================================
 
@@ -492,8 +475,7 @@ if (isset($_POST['ok'])) {
         header("Location: ./index.php?id_racine=$id_racine&msg=$msg");
         die();
     } elseif($mode_navig == 'saisie_devoir'){
-	//https://127.0.0.1/steph/gepi-cvs/cahier_notes/saisie_notes.php?id_conteneur=63&id_devoir=79
-        header("Location: ./saisie_notes.php?id_conteneur=$id_conteneur&id_devoir=$id_devoir&msg=$msg");
+	     header("Location: ./saisie_notes.php?id_conteneur=$id_conteneur&id_devoir=$id_devoir&msg=$msg");
         die();
     }
 }
@@ -556,29 +538,6 @@ if ($mode_navig == 'retour_saisie') {
     echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 }
 
-/*
-if (isset($_POST['ok'])) {
-	echo "|<a href='saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_devoir'>Saisir</a>\n";
-}
-*/
-
-
-/*
-// Déplacée var /lib/share.inc.php
-function getPref($login,$item,$default){
-	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
-	$res_prefs=mysql_query($sql);
-
-	if(mysql_num_rows($res_prefs)>0){
-		$ligne=mysql_fetch_object($res_prefs);
-		return $ligne->value;
-	}
-	else{
-		return $default;
-	}
-}
-*/
-
 // Interface simplifiée
 //$interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : "");
 
@@ -610,7 +569,6 @@ echo "\n";
 
 
 
-//echo "<p class='bold'> Classe : $nom_classe | Matière : $matiere_nom ($matiere_nom_court)| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "<p class='bold'> Classe : $nom_classe | Matière : ".htmlentities("$matiere_nom ($matiere_nom_court)")."| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "</div>";
 
@@ -619,7 +577,6 @@ echo "<h2 class='gepi'>Configuration de l'évaluation :</h2>\n";
 
 
 
-//if($interface_simplifiee!=""){
 if($interface_simplifiee=="y"){
 	// Récupérer les paramètres à afficher.
 	// Dans un premier temps, un choix pour tous.
@@ -636,11 +593,7 @@ if($interface_simplifiee=="y"){
 
 
 	echo "<div align='center'>\n";
-	//echo "<table border='1'>\n";
 	echo "<table class='boireaus' border='1' summary='Parametres du devoir'>\n";
-
-	//#aaaae6
-	//#aae6aa
 
 	if($aff_nom_court=='y'){
 		echo "<tr>\n";
@@ -690,7 +643,6 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
 		echo "<td>\n";
-		//echo "<textarea name='description' rows='2' cols='40' >".$description."</textarea>\n";
 		echo "<input type='hidden' name='description' value='$description' />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -726,7 +678,6 @@ if($interface_simplifiee=="y"){
     		echo "<td><input type='checkbox' name='ramener_sur_referentiel' value='V' "; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />\n";
 			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
 			echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />\n";
-			//echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />\n";
 			echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -797,7 +748,6 @@ if($interface_simplifiee=="y"){
 			$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
 			echo "<option value='$id_cont' ";
 			if ($id_cont == $id_conteneur) echo "selected";
-			//echo " >$nom_conteneur</option>\n";
 			if($nom_conteneur==""){echo " >---</option>\n";}else{echo " >$nom_conteneur</option>\n";}
 			$i++;
 		}
@@ -815,19 +765,6 @@ if($interface_simplifiee=="y"){
 		echo "</tr>\n";
 	}
 
-/*	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur";
-	if(isset($id_devoir)){
-		echo "&amp;mode_navig=$mode_navig";
-	}
-	if(isset($id_devoir)){
-		echo "&amp;id_devoir=$id_devoir";
-	}
-	echo "'>Interface complète</a>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-*/
 	echo "</table>\n";
 	echo "</div>\n";
 	echo "<input type='hidden' name='facultatif' value='$facultatif' />\n";
@@ -840,9 +777,6 @@ if($interface_simplifiee=="y"){
 	document.formulaire.nom_court.focus();
 </script>\n";
 	}
-
-	//echo "<center><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
-	//echo "<br />\n";
 }
 else{
 	//====================================
@@ -850,9 +784,7 @@ else{
 	// =================
 
 	echo "<table summary='Nom et conteneur du devoir'>\n";
-	//echo "<tr><td>Nom court : </td><td><input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" /></td></tr>\n";
 	echo "<tr><td>Nom court : </td><td><input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
-	//echo "<tr><td>Nom complet : </td><td><input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" /></td></tr>\n";
 	echo "<tr><td>Nom complet : </td><td><input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
 	echo "<tr><td>Description : </td><td><textarea name='description' rows='2' cols='40' >".$description."</textarea></td></tr></table>\n";
 	echo "<br />\n";
@@ -865,8 +797,7 @@ else{
 	$id_cont = mysql_result($appel_conteneurs, $i, 'id');
 	$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
 	echo "<option value='$id_cont' ";
-	if ($id_cont == $id_conteneur) echo "selected";
-	//echo " >$nom_conteneur</option>\n";
+	if ($id_cont == $id_conteneur) {echo "selected='selected'";}
 	if($nom_conteneur==""){echo " >---</option>\n";}else{echo " >$nom_conteneur</option>\n";}
 	$i++;
 	}
@@ -890,7 +821,6 @@ else{
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
 		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />";
 		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";
-		//echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />";
 		echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
 		echo "</td>";
 		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V'"; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
@@ -961,7 +891,6 @@ else{
 if ($new_devoir=='yes') {
 	echo "<input type='hidden' name='new_devoir' value='yes' />\n";
 
-	//$sql="SELECT g.name, jgc.id_classe FROM groupes g, j_groupes_classes jgc WHERE ";
 	$tab_group=get_groups_for_prof($_SESSION['login']);
 	if(count($tab_group)>1) {
 
@@ -976,7 +905,6 @@ if ($new_devoir=='yes') {
 		echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 		echo "</th>\n";
 		echo "<th colspan='3'>Enseignement</th>\n";
-		//echo "<th rowspan='2'>Boite</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<th>Nom</th>\n";
@@ -1013,11 +941,9 @@ if ($new_devoir=='yes') {
 		}
 		echo "</table>\n";
 		// A METTRE AU POINT: 
-		//echo "<input type='checkbox' name='creer_arbo_conteneurs' id='creer_arbo_conteneurs' value='y' /><label for='creer_arbo_conteneurs'> Créer si nécessaire la même arborescence de boites/conteneurs.</label>\n";
 		echo "<input type='checkbox' name='creer_conteneur' id='creer_conteneur' value='y' /><label for='creer_conteneur'> Créer si nécessaire ";
 		if(getSettingValue('gepi_denom_boite_genre')=="m") {echo "le ";} else {echo "la ";}
 		echo getSettingValue('gepi_denom_boite');
-		//echo "la boite conteneur";
 		echo ".</label>\n";
 		echo "</div>\n";
 		if($interface_simplifiee=="y"){echo "</div>\n";}
@@ -1050,12 +976,14 @@ echo "<input type='hidden' name='id_conteneur' value='$id_conteneur' />\n";
 echo "<input type='hidden' name='mode_navig' value='$mode_navig' />\n";
 echo "<input type='hidden' name='id_retour' value='$id_retour' />\n";
 
-//echo "<center><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
 echo "<div style='display:none'><input type=\"hidden\" name='ok' value=\"Enregistrer\" /></div>\n";
 echo "<p style='text-align:center;'><input type=\"submit\" name='ok1' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /><br/>\n";
 echo "<input type=\"button\" name='ok2' value=\"Enregistrer et saisir dans la foulée\" style=\"font-variant: small-caps;\" onClick=\"document.forms['formulaire'].mode_navig.value='saisie_devoir';document.forms['formulaire'].submit();\" /></p>\n";
 
 echo "</form>\n";
 echo "<br />\n";
+/**
+ * Pied de page
+ */
 require("../lib/footer.inc.php");
 ?>

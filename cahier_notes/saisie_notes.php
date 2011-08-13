@@ -456,7 +456,8 @@ if((isset($_GET['recalculer']))&&(isset($id_conteneur))&&(isset($periode_num))&&
 	check_token();
 
 	if((isset($id_conteneur))&&($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
-		function recherche_enfant($id_parent_tmp){
+	/*	
+      function recherche_enfant($id_parent_tmp){
 			global $current_group, $periode_num, $id_racine;
 			$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
 			//echo "<!-- $sql -->\n";
@@ -474,7 +475,7 @@ if((isset($_GET['recalculer']))&&(isset($id_conteneur))&&(isset($periode_num))&&
 				//echo "<!-- ========================================== -->\n";
 			}
 		}
-
+*/
 		recherche_enfant($id_conteneur);
 	}
 }
