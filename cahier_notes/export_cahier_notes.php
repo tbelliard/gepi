@@ -1,15 +1,17 @@
 <?php
 /**
  * Export du carnet de notes
- * @version: $Id$
+ * 
+ * $Id$
+ * 
  * @copyright Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage export
  * @see COPYING.txt
  * @todo utiliser TBSOoo pour générer l'export odt
- *
- * This file is part of GEPI.
+ */
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +27,10 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-// Initialisations files
+
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 // Resume session

@@ -1,9 +1,17 @@
 <?php
+/**
+ * Ajouter, modifier un conteneur
+ * 
+ * $Id$
+*
+*  @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * @package Carnet_de_notes
+ * @subpackage Conteneur
+ * @license GNU/GPL, 
+ * @see COPYING.txt
+*/
 /*
- * @version: $Id$
-*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -21,6 +29,9 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/**
+ * Fichiers d'initialisation
+ */
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -79,6 +90,9 @@ $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 
 $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+/**
+ * Gestion des périodes
+ */
 include "../lib/periodes.inc.php";
 
 // On teste si la periode est vérouillée !
@@ -191,6 +205,14 @@ if (isset($_POST['ok'])) {
         // La boite courante est mise à jour...
         // ... mais pas la boite destination.
         // Il faudrait rechercher pour $id_racine les derniers descendants et lancer la mise à jour sur chacun de ces descendants.
+        /**
+         *
+         * @global int 
+         * @global int 
+         * @global int
+         * @param int $id_parent_tmp
+         * @see mise_a_jour_moyennes_conteneurs(mise_a_jour_moyennes_conteneurs(
+         */
         function recherche_enfant($id_parent_tmp){
             global $current_group, $periode_num, $id_racine;
             $sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
@@ -198,22 +220,14 @@ if (isset($_POST['ok'])) {
             $res_enfant=mysql_query($sql);
             if(mysql_num_rows($res_enfant)>0){
                 while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
-                    /*
-                    echo "<!-- nom_court=$lig_conteneur_enfant->nom_court -->\n";
-                    echo "<!-- nom_complet=$lig_conteneur_enfant->nom_complet -->\n";
-                    echo "<!-- id=$lig_conteneur_enfant->id -->\n";
-                    echo "<!-- parent=$lig_conteneur_enfant->parent -->\n";
-                    echo "<!-- recherche_enfant($lig_conteneur_enfant->id); -->\n";
-                    */
+                   
                     recherche_enfant($lig_conteneur_enfant->id);
                 }
             }
             else{
                 $arret = 'no';
                 $id_conteneur_enfant=$id_parent_tmp;
-                //echo "<!-- mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret); -->\n";
                 mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
-                //echo "<!-- ========================================== -->\n";
             }
         }
         recherche_enfant($id_racine);
@@ -302,43 +316,20 @@ if(getSettingValue("gepi_denom_boite_genre")=='f'){
 else{
 	$titre_page = "Carnet de notes - Ajout/modification d'un ".strtolower(getSettingValue("gepi_denom_boite"));
 }
+/**
+ * Entête de la page
+ */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-/*
-echo "<div id='coefinfo' style='display:none; float:right; width:200px; border: 1px solid black; background-color: white;'>\n";
-echo "Si le coefficient est 0, la moyenne de <b>$nom_court</b> n'intervient pas dans le calcul de la moyenne du carnet de note.\n";
-echo "</div>\n";
-*/
-/*
-echo "\$id_racine=$id_racine<br />\n";
-echo "\$id_conteneur=$id_conteneur<br />\n";
-echo "\$parent=$parent<br />\n";
-*/
+
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_conteneur.php\" method='post'>\n";
 echo add_token_field();
-//if ($mode_navig == 'retour_saisie') {
 if(($mode_navig == 'retour_saisie')&&(isset($id_retour))) {
     echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 } else {
     echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
-
-/*
-// Déplacée var /lib/share.inc.php
-function getPref($login,$item,$default){
-	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
-	$res_prefs=mysql_query($sql);
-
-	if(mysql_num_rows($res_prefs)>0){
-		$ligne=mysql_fetch_object($res_prefs);
-		return $ligne->value;
-	}
-	else{
-		return $default;
-	}
-}
-*/
 
 // Interface simplifiée
 //$interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : "");
@@ -356,7 +347,6 @@ if(isset($mode_navig)){
 	echo "&amp;mode_navig=$mode_navig";
 }
 
-//if($interface_simplifiee!=""){
 if($interface_simplifiee=="y"){
 	echo "&amp;interface_simplifiee=n";
 	echo "'>Interface complète</a>\n";
@@ -388,20 +378,7 @@ if($interface_simplifiee=="y"){
 	// Récupérer les paramètres à afficher.
 	// Dans un premier temps, un choix pour tous.
 	// Dans le futur, permettre un paramétrage par utilisateur
-/*
-	function getPref($login,$item,$default){
-		$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
-		$res_prefs=mysql_query($sql);
 
-		if(mysql_num_rows($res_prefs)>0){
-			$ligne=mysql_fetch_object($res_prefs);
-			return $ligne->value;
-		}
-		else{
-			return $default;
-		}
-	}
-*/
 	$aff_nom_court=getPref($_SESSION['login'],'add_modif_conteneur_nom_court','y');
 	$aff_nom_complet=getPref($_SESSION['login'],'add_modif_conteneur_nom_complet','n');
 	$aff_description=getPref($_SESSION['login'],'add_modif_conteneur_description','n');
@@ -411,11 +388,7 @@ if($interface_simplifiee=="y"){
 	$aff_display_bull=getPref($_SESSION['login'],'add_modif_conteneur_aff_display_bull','n');
 
 	echo "<div align='center'>\n";
-	//echo "<table border='1'>\n";
 	echo "<table class='boireaus' border='1'>\n";
-
-	//#aaaae6
-	//#aae6aa
 
 	if($aff_nom_court=='y'){
 		echo "<tr>\n";
@@ -457,7 +430,6 @@ if($interface_simplifiee=="y"){
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
 		echo "<td>\n";
 		echo "<textarea name='description' rows='2' cols='40' wrap='virtual' onfocus=\"javascript:this.select()\">".$description."</textarea>\n";
-		//echo "<input type='hidden' name='description' size='40' value='$description' onfocus=\"javascript:this.select()\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -465,7 +437,6 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
 		echo "<td>\n";
-		//echo "<textarea name='description' rows='2' cols='40' wrap='virtual'>".$description."</textarea>\n";
 		echo "<input type='hidden' name='description' value='$description' />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -477,7 +448,6 @@ if($interface_simplifiee=="y"){
 		if($aff_boite=='y'){
 			echo "<tr>\n";
 
-			//echo "<td style='background-color: #aae6aa; font-weight: bold;'>Emplacement de l'évaluation:</td>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold;'>\n";
 			if(getSettingValue("gepi_denom_boite_genre")=='f'){
 				echo "Emplacement de la ".strtolower(getSettingValue("gepi_denom_boite")).":\n";
@@ -495,17 +465,13 @@ if($interface_simplifiee=="y"){
 			while ($i < $nb_cont) {
 				//==========================================
 				// MODIF: boireaus
-				//$id_cont = mysql_result($appel_conteneurs, $i, 'id');
 				$lig_cont=mysql_fetch_object($appel_conteneurs);
 				$id_cont=$lig_cont->id;
 				$id_parent=$lig_cont->parent;
-				//if ($id_cont != $id_conteneur) {
 				if(($id_cont!=$id_conteneur)&&($id_parent!=$id_conteneur)){
 					// On recherche si le conteneur est un descendant du conteneur courant.
 					$tmp_parent=$id_parent;
 					$temoin_display="oui";
-					//$cpt_tmp=0;
-					//while(($tmp_parent!=0)&&($cpt_tmp<10)){
 					while($tmp_parent!=0){
 						$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' AND id='$tmp_parent'";
 						//echo "<!-- $sql -->\n";
@@ -515,15 +481,12 @@ if($interface_simplifiee=="y"){
 						if($tmp_parent==$id_conteneur){
 							$temoin_display="non";
 						}
-						//$cpt_tmp++;
 					}
 
 					if($temoin_display=="oui"){
-						//$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
 						$nom_conteneur=$lig_cont->nom_court;
 						echo "<option value='$id_cont'";
 						if ($parent == $id_cont){echo " selected ";}
-						//echo ">$nom_conteneur</option>\n";
 						if($nom_conteneur==""){echo " >---</option>\n";}else{echo " >$nom_conteneur</option>\n";}
 					}
 				}
@@ -571,18 +534,12 @@ if($interface_simplifiee=="y"){
 				echo "Coefficient du ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
 			}
 
-			//echo " (<a href='javascript:alert(\"si 0, la moyenne de $nom_court ne compte pas dans le calcul de la moyenne du carnet de note.\")'>*</a>)\n";
 			echo " (<a href='#' onmouseover=\"document.getElementById('coefinfo').style.display='block';\" onmouseout=\"document.getElementById('coefinfo').style.display='none';\">*</a>)\n";
 
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<input type='text' name = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" />\n";
-			/*
-			echo "<div id='coefinfo' style='display:none;'>\n";
-			echo "<br />\n";
-			echo "Si le coefficient est 0, la moyenne de <b>$nom_court</b> n'intervient pas dans le calcul de la moyenne du carnet de note.\n";
-			echo "</div>\n";
-			*/
+			
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -601,12 +558,6 @@ if($interface_simplifiee=="y"){
 			echo "</tr>\n";
 		}
 	}
-
-
-
-
-
-
 
 	if ($parent != 0) {
 		if($aff_display_releve_notes=='y'){
@@ -669,11 +620,8 @@ if($interface_simplifiee=="y"){
 	echo "<input type='hidden' name = 'ponderation' value='".$ponderation."' />\n";
 
 	echo "</div>\n";
-
-
-
-	//echo "<div id='coefinfo' style='display:none; float:right; width:200px; border: 1px solid black; background-color: white;'>\n";
-	echo "<div id='coefinfo' style='display:none; text-align:justify; float:right; width:30em; border: 1px solid black; background-color: white;'>\n";
+    
+    echo "<div id='coefinfo' style='display:none; text-align:justify; float:right; width:30em; border: 1px solid black; background-color: white;'>\n";
 	echo "Si le coefficient est 0, la moyenne de <b>$nom_court</b> n'intervient pas dans le calcul de la moyenne du carnet de note.\n";
 	echo "</div>\n";
 
@@ -696,38 +644,20 @@ else{
 			echo "<table><tr><td><h3 class='gepi'>Emplacement du ".strtolower(getSettingValue("gepi_denom_boite"))." : </h3></td>\n<td>\n";
 		}
 		echo "<select size='1' name='parent'>\n";
-		//==========================================
-		// MODIF: boireaus
-		/*
-		//$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court");
-		if($new_conteneur=='no'){
-			$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' AND parent!='$id_conteneur' order by nom_court";
-		}
-		else{
-			$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court";
-		}
-		echo "<!-- $sql -->\n";
-		*/
-		// Cela n'excluait que la boite fille directe... pas les descendants.
-		//==========================================
+		
 		$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court";
 		$appel_conteneurs = mysql_query($sql);
 		$nb_cont = mysql_num_rows($appel_conteneurs);
 		$i = 0;
 		while ($i < $nb_cont) {
-			//==========================================
-			// MODIF: boireaus
-			//$id_cont = mysql_result($appel_conteneurs, $i, 'id');
 			$lig_cont=mysql_fetch_object($appel_conteneurs);
 			$id_cont=$lig_cont->id;
 			$id_parent=$lig_cont->parent;
-			//if ($id_cont != $id_conteneur) {
 			if(($id_cont!=$id_conteneur)&&($id_parent!=$id_conteneur)){
 				// On recherche si le conteneur est un descendant du conteneur courant.
 				$tmp_parent=$id_parent;
 				$temoin_display="oui";
 				//$cpt_tmp=0;
-				//while(($tmp_parent!=0)&&($cpt_tmp<10)){
 				while($tmp_parent!=0){
 					$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' AND id='$tmp_parent'";
 					//echo "<!-- $sql -->\n";
@@ -737,15 +667,12 @@ else{
 					if($tmp_parent==$id_conteneur){
 						$temoin_display="non";
 					}
-					//$cpt_tmp++;
 				}
 
 				if($temoin_display=="oui"){
-					//$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
 					$nom_conteneur=$lig_cont->nom_court;
 					echo "<option value='$id_cont'";
 					if ($parent == $id_cont){echo " selected ";}
-					//echo ">$nom_conteneur</option>\n";
 					if($nom_conteneur==""){echo " >---</option>\n";}else{echo " >$nom_conteneur</option>\n";}
 				}
 			}
@@ -928,8 +855,6 @@ else{
 
 	echo "<h3 class='gepi'>Pondération</h3>\n";
 	echo "<table>\n<tr><td>";
-	//echo "Pour chaque élève, augmente ou diminue de la valeur indiquée ci-contre, le coefficient de la meilleur note de <b>$nom_court</b> :&nbsp;";
-	//echo "<br /><i>Si la valeur est 0, il n'y a aucune pondération.</i></td>";
 	echo "Pour chaque élève, le coefficient de la meilleure note de <b>$nom_court</b> augmente ou diminue de : &nbsp;</td>\n";
 	echo "<td><input type='text' name = 'ponderation' size='4' value = \"".$ponderation."\" onfocus=\"javascript:this.select()\" /></td></tr>\n</table>\n";
 
@@ -984,5 +909,8 @@ echo "<input type=hidden name=id_retour value='$id_retour' />\n";
 
 echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "</form>\n";
+/**
+ * Pied de page
+ */
 require("../lib/footer.inc.php");
 ?>

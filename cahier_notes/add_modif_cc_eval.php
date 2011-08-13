@@ -1,10 +1,17 @@
 <?php
-/*
-* @version: $Id$
-*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
-* This file is part of GEPI.
+/**
+ * Ajouter, modifier une évaluation cumule
+ * 
+ * $Id$
+ * 
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * @package Carnet_de_notes
+ * @subpackage Evaluation_cumule
+ * @license GNU/GPL, 
+ * @see COPYING.txt
+ */
+/* This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -21,6 +28,9 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/**
+ * Fichiers d'initialisation
+ */
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -43,7 +53,9 @@ if (!checkAccess()) {
 if (getSettingValue("active_carnets_notes")!='y') {
 	die("Le module n'est pas activé.");
 }
-
+/**
+ * Calcul des arrondis
+ */
 require('cc_lib.php');
 
 $id_racine=isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);
@@ -65,6 +77,10 @@ $appel_cahier_notes=mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_n
 $id_groupe=mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group=get_group($id_groupe);
 $periode_num=mysql_result($appel_cahier_notes, 0, 'periode');
+
+/**
+ * Gestion des périodes
+ */
 include "../lib/periodes.inc.php";
 
 $id_dev=isset($_POST["id_dev"]) ? $_POST["id_dev"] : (isset($_GET["id_dev"]) ? $_GET["id_dev"] : NULL);
@@ -114,8 +130,6 @@ if(isset($id_eval))  {
 	}
 }
 else {
-	//header("Location: ../logout.php?auto=1");
-	//die();
 
 	$nom_court="Ev";
 	$nom_complet="Evaluation n°";
@@ -193,12 +207,17 @@ if (isset($_POST['ok'])) {
 
 }
 
-//Configuration du calendrier
+/**
+ * Configuration du calendrier
+ */
 include("../lib/calendrier/calendrier.class.php");
 $cal = new Calendrier("formulaire", "display_date");
 
 //**************** EN-TETE *****************
 $titre_page="Carnet de notes - Ajout/modification d'un $nom_cc";
+/**
+ * Entête de la page
+ */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -269,7 +288,6 @@ else{
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description&nbsp;:</td>\n";
 	echo "<td>\n";
-	//echo "<textarea name='description' rows='2' cols='40' >".$description."</textarea>\n";
 	echo "<input type='hidden' name='description' value='$description' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -331,5 +349,8 @@ echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enr
 
 echo "</form>\n";
 echo "<br />\n";
+/**
+ * Pied de page
+ */
 require("../lib/footer.inc.php");
 ?>

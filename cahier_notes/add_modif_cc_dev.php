@@ -1,10 +1,17 @@
 <?php
-/*
-* @version: $Id$
-*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
-* This file is part of GEPI.
+/**
+ * Ajouter, modifier un devoir dans une évaluation cumule
+ * 
+ * $Id$
+ *
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * @package Carnet_de_notes
+ * @subpackage Evaluation_cumule
+ * @license GNU/GPL, 
+ * @see COPYING.txt
+ * /
+/* This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -20,6 +27,10 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+/**
+ * Fichiers d'initialisation
+ */
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
