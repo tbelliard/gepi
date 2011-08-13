@@ -50,7 +50,6 @@ if(array_key_exists('header', $this->data)) {
 	echo 'simpleSAMLphp';
 }
 ?></title>
-
 	<link rel="stylesheet" type="text/css" href="/<?php echo $this->data['baseurlpath']; ?>resources/gepitheme/default.css" />
 	<link rel="icon" type="image/icon" href="/<?php echo $gepiPath.'/favicon.ico'?>" />
 
@@ -194,6 +193,11 @@ if($onLoad !== '') {
 
 	?>
 	<div id="content">
+	<?php if ((getSettingValue("disable_login"))!='no'){
+		// Fermeture du site à afficher en rouge et plus grand
+		echo "Le site est en cours de maintenance et temporairement inaccessible.";
+		echo "Veuillez nous excuser de ce d&eacute;rangement et r&eacute;essayer de vous connecter ult&eacute;rieurement.";
+	}?>
 
 
 
