@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
+header('Content-Type: text/html; charset=ISO-8859-1');
 $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
