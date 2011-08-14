@@ -70,6 +70,9 @@ if ($_GET['error'] == '2') {
 } elseif ($_GET['error'] == '10') {
 	$message = 'Vous n\'avez pas de droits suffisants pour entrer, veuillez contacter l\'administrateur de Gepi.';
 
+} elseif ($_GET['error'] == '11') {
+	$message = 'Vous avez bien été identifié mais votre compte Gépi ne semble pas configuré correctement pour le SSO avec table . Contactez votre administrateur GEPI pour corriger le problème ';
+
 } else {
 	$message = 'Une erreur indéterminée s\'est produite lors de votre authentification.';
 }
@@ -111,7 +114,9 @@ if (isset($_GET['mode']) && $_GET['mode'] == "sso") {
 	if ($session_gepi->auth_locale || $session_gepi->auth_ldap) {
 		echo "</p><p><a href='login.php'>Accéder au formulaire d'authentification locale</a>";
 	}
-} else {
+}elseif(isset($_GET['mode']) && $_GET['mode'] == "sso_table"){
+    exit;
+}else {
 	echo "<a href='login.php'>Retourner à la page d'authentification</a>";
 }
 ?>
