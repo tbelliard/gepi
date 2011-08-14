@@ -7,7 +7,9 @@
  * @package Carnet_de_notes
  * @subpackage Conteneur
  * @license GNU/GPL, 
- * @see COPYING.txt
+ * @see Session::security_check()
+ * @see checkAccess()
+ * @see get_nom_prenom_eleve()
  */
 
 /*
