@@ -4,12 +4,23 @@
  * 
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
  * @license GNU/GPL
  * @package Carnet_de_notes
  * @subpackage export
-*/
+ * @see add_token_field()
+ * @see checkAccess()
+ * @see check_token()
+ * @see formate_date()
+ * @see get_nom_prenom_eleve()
+ * @see get_group()
+ * @see getSettingValue()
+ * @see mise_a_jour_moyennes_conteneurs()
+ * @see recherche_enfant()
+ * @see Session::security_check()
+ * @see Verif_prof_cahier_notes()
+ */
 
 /* This file is part of GEPI.
 *
@@ -85,7 +96,9 @@ if (count($current_group["classes"]["list"]) > 1) {
     $order_by = "nom";
 }
 
-
+/**
+ * Gestion des périodes
+ */
 include "../lib/periodes.inc.php";
 
 // On teste si la periode est vérouillée !
@@ -211,7 +224,10 @@ else {
 				if($temoin!=count($tabchamps)){
 					echo "<p><b>ERREUR:</b> La ligne d'entête du fichier n'est pas conforme à ce qui est attendu.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
-					require("../lib/footer.inc.php");
+					/**
+                     * Pied de page
+                     */
+                    require("../lib/footer.inc.php");
 					die();
 				}
 
@@ -360,7 +376,10 @@ else {
 				if(count($nomc_dev)==0){
 					echo "<p><b>Erreur:</b> Aucun nom de devoir n'a été trouvé.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
-					require("../lib/footer.inc.php");
+					/**
+                     * Pied de page
+                     */
+                    require("../lib/footer.inc.php");
 					die();
 				}
 
@@ -370,7 +389,10 @@ else {
                                   ){
 					echo "<p><b>Erreur:</b> Le nombre de champs ne coïncide pas pour les noms courts, coefficients et dates.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
-					require("../lib/footer.inc.php");
+					/**
+                     * Pied de page
+                     */
+                    require("../lib/footer.inc.php");
 					die();
 				}
 
@@ -380,7 +402,7 @@ else {
 				}
 
 /**
- * @todoAFFICHER UN TABLEAU DE CE QUI VA ETRE CRéé à CE STADE... AVEC DES CASES à COCHER POUR CONFIRMER.
+ * @todo AFFICHER UN TABLEAU DE CE QUI VA ETRE CRéé à CE STADE... AVEC DES CASES à COCHER POUR CONFIRMER.
  */
 
 				echo "<div align='center'>\n";
@@ -410,7 +432,6 @@ else {
 				echo "<th>&nbsp;</th>\n";
 				for($i=0;$i<count($nomc_dev);$i++){
 					if($nomc_dev[$i]!=""){
-						//echo "<th>".formate_date($date_dev[$i])."</th>\n";
 						echo "<th>";
 						echo "<input type='hidden' name='date_dev[$i]' value=\"".$date_dev[$i]."\" />\n";
 						echo formate_date($date_dev[$i]);
@@ -423,7 +444,6 @@ else {
 				echo "<th>&nbsp;</th>\n";
 				for($i=0;$i<count($nomc_dev);$i++){
 					if($nomc_dev[$i]!=""){
-						//echo "<th>$coef_dev[$i]</th>\n";
 						echo "<th>";
 						echo "<input type='hidden' name='coef_dev[$i]' value=\"".$coef_dev[$i]."\" />\n";
 						echo $coef_dev[$i];
@@ -436,7 +456,6 @@ else {
 				echo "<th>&nbsp;</th>\n";
 				for($i=0;$i<count($nomc_dev);$i++){
 					if($nomc_dev[$i]!=""){
-						//echo "<th>$note_sur_dev[$i]</th>\n";
 						echo "<th>";
 						echo "<input type='hidden' name='note_sur_dev[$i]' value=\"".$note_sur_dev[$i]."\" />\n";
 						echo $note_sur_dev[$i];
@@ -446,7 +465,6 @@ else {
 				echo "</tr>\n";
 
 				echo "<tr>\n";
-				//echo "<th>&nbsp;</th>\n";
 				echo "<th>Cocher le(s) devoir(s) à importer</th>\n";
 				for($i=0;$i<count($nomc_dev);$i++){
 					if($nomc_dev[$i]!=""){
@@ -463,11 +481,9 @@ else {
 					if(isset($tab_dev[$i]['login'])){
 						echo "<td>";
 						echo "<input type='hidden' name='login_ele[$i]' value=\"".$tab_dev[$i]['login']."\" />\n";
-						//echo $tab_dev[$i]['login'];
 						echo get_nom_prenom_eleve($tab_dev[$i]['login']);
 
 						echo "</td>\n";
-						//for($j=0;$j<count($id_dev);$j++){
 						for($j=0;$j<$nb_dev;$j++){
 							if((isset($tab_dev[$i]['note'][$j]))&&(isset($tab_dev[$i]['statut'][$j]))){
 
@@ -503,31 +519,46 @@ else {
 		$nomc_dev=isset($_POST['nomc_dev']) ? $_POST['nomc_dev'] : NULL;
 		if(!isset($nomc_dev)){
 			echo "<p>ERREUR: Aucun devoir importé.</p>\n";
-			require("../lib/footer.inc.php");
+			/**
+             * Pied de page
+             */
+            require("../lib/footer.inc.php");
 		}
 
 		$date_dev=isset($_POST['date_dev']) ? $_POST['date_dev'] : NULL;
 		if(!isset($date_dev)){
 			echo "<p>ERREUR: Aucune date définie.</p>\n";
-			require("../lib/footer.inc.php");
+			/**
+             * Pied de page
+             */
+            require("../lib/footer.inc.php");
 		}
 
 		$coef_dev=isset($_POST['coef_dev']) ? $_POST['coef_dev'] : NULL;
 		if(!isset($coef_dev)){
 			echo "<p>ERREUR: Aucun coefficient défini.</p>\n";
-			require("../lib/footer.inc.php");
+			/**
+             * Pied de page
+             */
+            require("../lib/footer.inc.php");
 		}
 
 		$note_sur_dev=isset($_POST['note_sur_dev']) ? $_POST['note_sur_dev'] : NULL;
 		if(!isset($note_sur_dev)){
 			echo "<p>ERREUR: Aucun référentiel de notation défini.</p>\n";
-			require("../lib/footer.inc.php");
+			/**
+             * Pied de page
+             */
+            require("../lib/footer.inc.php");
 		}
 
 		$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : NULL;
 		if(!isset($login_ele)){
 			echo "<p>ERREUR: Aucun élève importé.</p>\n";
-			require("../lib/footer.inc.php");
+			/**
+             * Pied de page
+             */
+            require("../lib/footer.inc.php");
 		}
 
 		$valide_import_dev=isset($_POST['valide_import_dev']) ? $_POST['valide_import_dev'] : NULL;
@@ -541,9 +572,6 @@ else {
 		// On crée les devoirs à la racine... pas de gestion des boites pour le moment
 		$id_conteneur=$id_racine;
 		echo "<p>\n";
-		//unset($temoin_dev);
-		//$temoin_dev=array();
-		//echo "count(\$nomc_dev)=".count($nomc_dev)."<br />";
 		for($i=0;$i<count($nomc_dev);$i++){
 			if($nomc_dev[$i]!=""){
 				if(isset($valide_import_dev[$i])){
@@ -558,7 +586,10 @@ else {
 					else{
 						echo "<p><b>Erreur</b> lors de la création du devoir n°$i (<i>$nomc_dev[$i]</i>).</p>\n";
 						echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
-						require("../lib/footer.inc.php");
+						/**
+                         * Pied de page
+                         */
+                require("../lib/footer.inc.php");
 						die();
 					}
 
@@ -573,15 +604,12 @@ else {
 					//echo "$sql<br />\n";
 					$res_update=mysql_query($sql);
 					if(!$res_update){
-					/*
-						$temoin_dev[$i]="ERREUR";
-					}
-					else{
-						$temoin_dev[$i]="OK";
-					*/
 						echo "<p><b>Erreur</b> lors de la création du devoir n°$i (<i>$nomc_dev[$i]</i>).</p>\n";
 						echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
-						require("../lib/footer.inc.php");
+						/**
+                         * Pied de page
+                         */
+                    require("../lib/footer.inc.php");
 						die();
 					}
 					flush();

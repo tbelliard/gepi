@@ -1,15 +1,24 @@
 <?php
-/*
-* $Id$
-*
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-* Portion de code qui calcule des tableaux suivants
-	$moy_gen_classe =  tableau des moyennes générales de la classe
-	$moy_gen_eleve =  tableau des moyennes générales d'élèves
-le script à besoin de :
-	- $id_classe : la classe concernée
-	- $periode_num : la période concernée
-*/
+/**
+ * calcul de la moyenne générale
+ * 
+ * $Id$
+ * 
+ * calcul des tableaux :
+ * - $moy_gen_classe = tableau des moyennes générales de la classe
+ * - $moy_gen_eleve  = tableau des moyennes générales d'élèves
+ * 
+ * le script à besoin de :
+ * - $id_classe : la classe concernée
+ * - $periode_num : la période concernée
+ * 
+ * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @license GNU/GPL
+ * @package Carnet_de_notes
+ * @subpackage calculs
+ * @see calc_moy_debug()
+ * @see get_group()
+ */
 
 /*
 function calc_moy_debug($texte){
@@ -48,15 +57,7 @@ $quartile6_grp=array();
 $place_eleve_classe=array();
 
 // On appelle la liste des élèves de la classe
-/*
-$appel_liste_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c
-	WHERE (
-	e.login = c.login and
-	c.id_classe = '".$id_classe."' and
-	c.periode='".$periode_num."'
-	)
-	ORDER BY e.nom, e.prenom");
-*/
+
 $sql="SELECT e.* FROM eleves e, j_eleves_classes c
 	WHERE (
 	e.login = c.login and
@@ -75,17 +76,7 @@ calc_moy_debug("\$nombre_eleves=$nombre_eleves\n");
 if ($affiche_categories) {
 	calc_moy_debug("\$affiche_categories=$affiche_categories\n");
 	// On utilise les valeurs spécifiées pour la classe en question
-	/*
-	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
-	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
-	"WHERE ( " .
-	"jgc.categorie_id = jmcc.categorie_id AND " .
-	"jgc.id_classe='".$id_classe."' AND " .
-	"jgm.id_groupe=jgc.id_groupe AND " .
-	"m.matiere = jgm.id_matiere" .
-	") " .
-	"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
-	*/
+
 	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id, jgc.mode_moy ".
 	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m, matieres_categories mc " .
 	"WHERE ( " .
@@ -102,15 +93,6 @@ if ($affiche_categories) {
 	$appel_liste_groupes = mysql_query($sql);
 } else {
 	calc_moy_debug("\$affiche_categories=\n");
-	/*
-	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef
-	FROM j_groupes_classes jgc, j_groupes_matieres jgm
-	WHERE (
-	jgc.id_classe='".$id_classe."' AND
-	jgm.id_groupe=jgc.id_groupe
-	)
-	ORDER BY jgc.priorite,jgm.id_matiere");
-	*/
 	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.mode_moy
 	FROM j_groupes_classes jgc, j_groupes_matieres jgm
 	WHERE (
@@ -140,33 +122,24 @@ $current_coef_eleve=array();
 
 $moy_gen_classe = array();
 $moy_gen_eleve = array();
-//===============
-// Ajout J.Etheve
 $moy_gen_eleve1 = array();
 //===============
 $moy_cat_eleve = array();
 $moy_cat_classe = array();
 $moy_cat_min = array();
 $moy_cat_max = array();
-//$total_coef = array();
 $total_coef_classe = array();
 $total_coef_eleve = array();
 $tot_points_eleve = array();
-//===============
-// Ajout d'après J.Etheve
 $moy_gen_classe1=array();
 $total_coef_classe1=array();
 $total_coef_eleve1=array();
 $tot_points_eleve1=array();
 $current_coef_eleve1=array();
-//===============
-
-//$total_coef_cat = array();
 $total_coef_cat_classe = array();
 $total_coef_cat_eleve = array();
 
 $i=0;
-//$get_cat = mysql_query("SELECT id FROM matieres_categories");
 $get_cat = mysql_query("SELECT id,nom_complet FROM matieres_categories");
 $categories = array();
 $tab_noms_categories = array();
@@ -175,45 +148,29 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 	$categories[] = $row["id"];
 	$tab_noms_categories[$row["id"]]=$row["nom_complet"];
 	$tab_id_categories[$row["nom_complet"]]=$row["id"];
-
-	//echo "\$tab_noms_categories[".$row["id"]."]=".$row["nom_complet"]."<br />";
-	//echo "\$tab_id_categories[".$row["nom_complet"]."]=".$row["id"]."<br />";
 }
 
-//echo "\$nombre_eleves=$nombre_eleves<br />";
 while ($i < $nombre_eleves) {
-	//$total_coef[$i] = 0;
 	$total_coef_classe[$i] = 0;
 	$total_coef_eleve[$i] = 0;
-
-	//======================================
-	// Ajout: boireaus 20080408
 	$current_coef_eleve[$i]=array();
-	//======================================
-
 	$moy_gen_eleve[$i] = 0;
 	$tot_points_eleve[$i] = 0;
-	//===============
-	// Ajout J.Etheve
 	$moy_gen_eleve1[$i] = 0;
-	// Et boireaus d'après J.Etheve
 	$total_coef_classe1[$i] = 0;
 	$total_coef_eleve1[$i] = 0;
 	$tot_points_eleve1[$i] = 0;
 	$moy_gen_classe1[$i] = 0;
-	//===============
 	$moy_gen_classe[$i] = 0;
 	$moy_cat_classe[$i] = array();
 	$moy_cat_min[$i] = array();
 	$moy_cat_max[$i] = array();
 	$moy_cat_eleve[$i] = array();
 
-	//$total_coef_cat[$i] = array();
 	$total_coef_cat_classe[$i] = array();
 	$total_coef_cat_eleve[$i] = array();
 	foreach($categories as $cat_id) {
 		$moy_cat_eleve[$i][$cat_id] = 0;
-		//$total_coef_cat[$i][$cat_id] = 0;
 		$total_coef_cat_classe[$i][$cat_id] = 0;
 		$total_coef_cat_eleve[$i][$cat_id] = 0;
 		$moy_cat_classe[$i][$cat_id] = 0;
@@ -222,7 +179,6 @@ while ($i < $nombre_eleves) {
 		$moy_cat_max[$i][$cat_id] = "-";
 	}
 
-	//=================================
 	// Pour le cas où une matière est saisie en "Aucune" catégorie dans
 	// Gestion des bases/Gestion des classes/<classe> Enseignements
 	// La catégorie "Aucune" n'existe pas dans 'matieres_categories'
@@ -273,7 +229,6 @@ while ($j < $nombre_groupes) {
 
 	if((isset($utiliser_coef_perso))&&($utiliser_coef_perso=='y')) {
 		if(isset($coef_perso[$current_group[$j]["id"]])) {
-			//$current_coef[$j]=$current_group[$j]["id"];
 			$current_coef[$j]=$coef_perso[$current_group[$j]["id"]];
 		}
 	}
@@ -361,7 +316,6 @@ while ($j < $nombre_groupes) {
 								note<12)";
 	//echo "$sql<br />";
 	$quartile3_grp[$j]=sql_query1($sql);
-	//echo "\$quartile3_grp[$j]=".$quartile3_grp[$j]."<br />";
 	$sql="SELECT COUNT(note) as quartile4 FROM matieres_notes WHERE (periode='$periode_num' AND
 								id_groupe='".$current_group[$j]["id"]."' AND
 								statut='' AND
@@ -369,7 +323,6 @@ while ($j < $nombre_groupes) {
 								note<10)";
 	//echo "$sql<br />";
 	$quartile4_grp[$j]=sql_query1($sql);
-	//echo "\$quartile4_grp[$j]=".$quartile4_grp[$j]."<br />";
 	$sql="SELECT COUNT(note) as quartile5 FROM matieres_notes WHERE (periode='$periode_num' AND
 								id_groupe='".$current_group[$j]["id"]."' AND
 								statut='' AND
@@ -377,14 +330,12 @@ while ($j < $nombre_groupes) {
 								note<8)";
 	//echo "$sql<br />";
 	$quartile5_grp[$j]=sql_query1($sql);
-	//echo "\$quartile5_grp[$j]=".$quartile5_grp[$j]."<br />";
 	$sql="SELECT COUNT(note) as quartile6 FROM matieres_notes WHERE (periode='$periode_num' AND
 								id_groupe='".$current_group[$j]["id"]."' AND
 								statut='' AND
 								note<5)";
 	//echo "$sql<br />";
 	$quartile6_grp[$j]=sql_query1($sql);
-	//echo "\$quartile6_grp[$j]=".$quartile6_grp[$j]."<br />";
 
 	if ((isset($affiche_rang))&&($affiche_rang=='y')) {
 		$current_eleve_rang[$j]=array();
@@ -395,7 +346,6 @@ while ($j < $nombre_groupes) {
 		$current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
 		//===============
 		// Ajout J.Etheve
-		//$tab_login_indice[$current_eleve_login[$i]]=$i;
 		$tab_login_indice[strtoupper($current_eleve_login[$i])]=$i;
 		//===============
 
@@ -403,8 +353,6 @@ while ($j < $nombre_groupes) {
 			$lignes_debug.="<p>\$tab_login_indice[\$current_eleve_login[$i]]=\$tab_login_indice[".$current_eleve_login[$i]."]=$i<br />";
 			$lignes_debug.="<p>\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
 		}
-
-		//echo "\$current_eleve_login[$i]=".$current_eleve_login[$i]."<br />";
 
 		// Maintenant on regarde si l'élève suit bien cette matière ou pas
 		if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
@@ -418,24 +366,17 @@ while ($j < $nombre_groupes) {
 			periode='$periode_num' AND
 			id_groupe='".$current_group[$j]["id"]."'
 			)";
-			//if($current_eleve_login[$i]=="ALLAIX_N") {echo "$sql<br />";}
 			calc_moy_debug("$sql\n");
-			//echo "$sql<br />";
 			$current_eleve_note_query = mysql_query($sql);
 
-			//echo "\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
 			if(mysql_num_rows($current_eleve_note_query)>0) {
 				$lig_tmp=mysql_fetch_object($current_eleve_note_query);
-				//$current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
 				$current_eleve_note[$j][$i]=$lig_tmp->note;
 				calc_moy_debug("\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."\n");
 
-				//$current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
 				$current_eleve_statut[$j][$i]=$lig_tmp->statut;
 				calc_moy_debug("\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."\n");
 
-				//echo "\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."<br />";
-				//echo "\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."<br />";
 			}
 			else {
 				$current_eleve_note[$j][$i]="-";
@@ -490,11 +431,6 @@ while ($j < $nombre_groupes) {
 				// Si la matière est une matière à "bonus" (seules les notes supérieures à 10 comptent), on passe le coef à zéro si la note n'est pas numérique ou si elle est inférieure à 10.
 				if(($current_eleve_note[$j][$i]!="")&&($current_eleve_note[$j][$i]!="-")&&($current_eleve_note[$j][$i]<10)) {
 					$coef_eleve=0;
-					//===============
-					// Ajout J.Etheve
-					//$coef_eleve1=0;
-					// On compte la note dans la moyenne générale en mode tous_les_coef_a_1
-					//===============
 				}
 			}
 
@@ -540,10 +476,8 @@ while ($j < $nombre_groupes) {
 			calc_moy_debug("\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."\n");
 			calc_moy_debug("\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."\n");
 			// DEBUG
-			//echo "\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."<br />";
 
 			//=====================================
-			//if ($coef_eleve!=0) {
 			if ($coef_eleve_reserve!=0) {
 				//if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
 				if (($current_eleve_note[$j][$i] != '') and ($current_eleve_note[$j][$i] != '-') and ($current_eleve_statut[$j][$i] == '')) {
@@ -568,7 +502,6 @@ while ($j < $nombre_groupes) {
 						}
 
 						// On n'augmente pas le total des coef pour la moyenne générale
-						//$total_coef_eleve[$i] += $coef_eleve;
 					}
 					elseif($current_mode_moy[$j]=='ameliore') {
 						// Non traité pour le moment
@@ -595,15 +528,6 @@ while ($j < $nombre_groupes) {
 					// La note compte normalement pour le mode avec coef forcés à 1:	
 					$moy_gen_eleve1[$i] += $coef_eleve1*$current_eleve_note[$j][$i];
 
-					/*
-					// La note est toujours comptée pour la moyenne de catégorie quel que soit le mode
-					// NON: Dans le cas sup10, $coef_eleve=0 si la note est en dessous de 10
-					//      Et dans le cas bonus, le coef compterait dans la moyenne de catégorie
-					$total_coef_cat_eleve[$i][$prev_cat] += $coef_eleve;
-					calc_moy_debug("\$total_coef_cat_eleve[$i][$prev_cat]=".$total_coef_cat_eleve[$i][$prev_cat]."\n");
-					$moy_cat_eleve[$i][$prev_cat] += $coef_eleve*$current_eleve_note[$j][$i];
-					calc_moy_debug("\$moy_cat_eleve[$i][$prev_cat]=".$moy_cat_eleve[$i][$prev_cat]."\n");
-					*/
 					// On fait en sorte que les coef comptent au niveau des catégories: on ne prend pas en compte les mode_moy
 					// On prend le coef pour la moyenne de catégorie
 					$total_coef_cat_eleve[$i][$prev_cat] += $coef_eleve_reserve;
@@ -623,63 +547,6 @@ while ($j < $nombre_groupes) {
 
 				}
 			}
-			//=====================================
-
-/*
-			//=====================================
-			// Il ne faut pas augmenter si il n'y a aucune note dans la matière $j.
-			if($current_classe_matiere_moyenne[$j]!="") {
-
-				// Normalement $moy_gen_classe[$i] ne sert plus
-				// On calcule la moyenne générale de la classe comme somme_moyennes_generales_eleves/nb_eleves
-				if($current_mode_moy[$j]=='sup10') {
-					// La note compte si elle est supérieure à 10
-					// Une telle note peut faire baisser la moyenne si la moyenne est supérieure à la note courante à comptabiliser
-					// Si coef_eleve>0, c'est que la note est supérieure à 10
-
-					// Dans la moyenne générale, on comptabilise la moyenne sur l'enseignement
-					$total_coef_classe[$i] += $current_coef[$j];
-					$moy_gen_classe[$i] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
-				}
-				elseif($current_mode_moy[$j]=='bonus') {
-					// Mode bac
-					// Les points au-dessus de 10 sont coefficientés et ajoutés sans augmenter le total des coefs
-
-					if($current_classe_matiere_moyenne[$j]>10) {
-						$moy_gen_classe[$i] += $current_coef[$j]*($current_classe_matiere_moyenne[$j]-10);
-					}
-
-					// On n'augmente pas le total des coef pour la moyenne générale
-				}
-				elseif($current_mode_moy[$j]=='ameliore') {
-					// Sur la moyenne générale, on compte le coef?
-					$total_coef_classe[$i] += $current_coef[$j];
-					calc_moy_debug("\$total_coef_classe[$i]=$total_coef_classe[$i]\n");
-					$moy_gen_classe[$i] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
-				}
-				else {
-					// Mode classique
-					$total_coef_classe[$i] += $current_coef[$j];
-					calc_moy_debug("\$total_coef_classe[$i]=$total_coef_classe[$i]\n");
-					$moy_gen_classe[$i] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
-				}
-
-
-				//===============
-				// Ajout J.Etheve
-				$total_coef_classe1[$i] += $current_coef1[$j];
-				$moy_gen_classe1[$i] += $current_coef1[$j]*$current_classe_matiere_moyenne[$j];
-				//===============
-				calc_moy_debug("\$moy_gen_classe[$i]=$moy_gen_classe[$i]\n");
-
-
-				if($current_eleve_login[$i]==$ele_login_debug) {
-					$lignes_debug.="\$total_coef_classe[$i]=".$total_coef_classe[$i]."<br />";
-					$lignes_debug.="\$moy_gen_classe[$i]=".$moy_gen_classe[$i]."<br />";
-				}
-			}
-			//=====================================
-*/
 		}
 		$i++;
 		calc_moy_debug("==============================\n");
@@ -691,15 +558,8 @@ $lignes_debug.="<p>";
 
 $i = 0;
 while ($i < $nombre_eleves) {
-	//if ($total_coef[$i] != 0) {
-	/*
-	if($current_eleve_login[$i]=='BERTHON_G') {
-		echo "\$total_coef_eleve[$i]=".$total_coef_eleve[$i]."<br />";
-	}
-	*/
 	if ($total_coef_eleve[$i] != 0) {
 		$place_eleve_classe[$i] = "";
-		//$moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef[$i];
 		if($temoin_au_moins_une_matiere_avec_note[$i]=="y") {
 			$tot_points_eleve[$i]=$moy_gen_eleve[$i];
 			$moy_gen_eleve[$i] = $moy_gen_eleve[$i]/$total_coef_eleve[$i];
@@ -708,13 +568,10 @@ while ($i < $nombre_eleves) {
 				$lignes_debug.="\$moy_gen_eleve[$i]=".$moy_gen_eleve[$i]."/".$total_coef_eleve[$i]."=".$moy_gen_eleve[$i]."<br />";
 			}
 
-			//===============
-			// Ajout J.Etheve
 			if ($total_coef_eleve1[$i] != 0) {
 				$tot_points_eleve1[$i]=$moy_gen_eleve1[$i];
 				$moy_gen_eleve1[$i] = $moy_gen_eleve1[$i]/$total_coef_eleve1[$i];
 			}
-			//===============
 
 			if($current_eleve_login[$i]==$ele_login_debug) {
 				$lignes_debug.="\$moy_gen_eleve[$i]=".$moy_gen_eleve[$i]."/".$total_coef_eleve[$i]."<br />";
@@ -722,43 +579,14 @@ while ($i < $nombre_eleves) {
 		}
 		else {
 			$moy_gen_eleve[$i]="-";
-			//===============
-			// Ajout J.Etheve
 			$moy_gen_eleve1[$i]="-";
-			//===============
 		}
 		calc_moy_debug("\$moy_gen_eleve[$i]=$moy_gen_eleve[$i]\n");
 
 		if($current_eleve_login[$i]==$ele_login_debug) {
 			$lignes_debug.="\$moy_gen_eleve[$i]=".$moy_gen_eleve[$i]."<br />";
 		}
-/*
-		if($total_coef_classe[$i] != 0){
-			//$moy_gen_classe[$i] = $moy_gen_classe[$i]/$total_coef[$i];
-			if($current_eleve_login[$i]==$ele_login_debug) {
-				$lignes_debug.="\$moy_gen_classe[$i]=".$moy_gen_classe[$i]."/".$total_coef_classe[$i]."<br />";
-			}
 
-			$moy_gen_classe[$i] = $moy_gen_classe[$i]/$total_coef_classe[$i];
-			//===============
-			// Ajout J.Etheve
-			$moy_gen_classe1[$i] = $moy_gen_classe1[$i]/$total_coef_classe1[$i];
-			//===============
-			calc_moy_debug("\$moy_gen_classe[$i]=$moy_gen_classe[$i]\n");
-			//$moy_gen_classe[$i] = number_format($moy_gen_classe[$i],1, ',', ' ');
-		}
-		else{
-			$moy_gen_classe[$i]="-";
-			//===============
-			// Ajout J.Etheve
-			$moy_gen_classe1[$i]="-";
-			//===============
-		}
-
-		if($current_eleve_login[$i]==$ele_login_debug) {
-			$lignes_debug.="\$moy_gen_classe[$i]=".$moy_gen_classe[$i]."<br />";
-		}
-*/
 		// Préparation des données pour affichage des graphiques
 		if ($affiche_graph == 'y')  {
 			if ($moy_gen_eleve[$i] >= 15) {$quartile1_classe_gen++; $place_eleve_classe[$i] = 1;}
@@ -768,50 +596,20 @@ while ($i < $nombre_eleves) {
 			else if (($moy_gen_eleve[$i] >= 5) and ($moy_gen_eleve[$i] < 8)) {$quartile5_classe_gen++;$place_eleve_classe[$i] = 5;}
 			else {$quartile6_classe_gen++;$place_eleve_classe[$i] = 6;}
 		}
-		// Eric déplacé en fin de fichier dans une nouvelle boucle.
-		//$moy_gen_eleve[$i] = number_format($moy_gen_eleve[$i],1, ',', ' ');
-		//$moy_gen_classe[$i] = number_format($moy_gen_classe[$i],1, ',', ' ');
 
 	} else {
 		$moy_gen_eleve[$i] = "-";
-//		$moy_gen_classe[$i] = "-";
-		//===============
-		// Ajout J.Etheve
-		//$moy_gen_eleve[$i] = "-";
-		//$moy_gen_classe[$i] = "-";
-		// Correction
 		$moy_gen_eleve1[$i] = "-";
-//		$moy_gen_classe1[$i] = "-";
-		//===============
 	}
 
 	foreach($categories as $cat) {
-		/*
-		//if ($total_coef_cat[$i][$cat] != 0) {
-		if ($total_coef_cat_classe[$i][$cat] != 0) {
-			if($current_eleve_login[$i]==$ele_login_debug) {
-				$lignes_debug.="\$moy_cat_classe[$i][$cat]=".$moy_cat_classe[$i][$cat]."/".$total_coef_cat_classe[$i][$cat]."<br />";
-			}
-
-			$moy_cat_classe[$i][$cat] = $moy_cat_classe[$i][$cat]/$total_coef_cat_classe[$i][$cat];
-			$moy_cat_classe[$i][$cat] = number_format($moy_cat_classe[$i][$cat],1, ',', ' ');
-			calc_moy_debug("\$moy_cat_classe[$i][$cat]=".$moy_cat_classe[$i][$cat]."\n");
-		} else {
-			$moy_cat_classe[$i][$cat] = "-";
-		}
-
-		if($current_eleve_login[$i]==$ele_login_debug) {
-			$lignes_debug.="\$moy_cat_classe[$i][$cat]=".$moy_cat_classe[$i][$cat]."<br />";
-		}
-		*/
-
+		
 		if ($total_coef_cat_eleve[$i][$cat] != 0) {
 			if($current_eleve_login[$i]==$ele_login_debug) {
 				$lignes_debug.="\$moy_cat_eleve[$i][$cat]=".$moy_cat_eleve[$i][$cat]."/".$total_coef_cat_eleve[$i][$cat]."<br />";
 			}
 
 			$moy_cat_eleve[$i][$cat] = $moy_cat_eleve[$i][$cat]/$total_coef_cat_eleve[$i][$cat];
-			//$moy_cat_eleve[$i][$cat] = number_format($moy_cat_eleve[$i][$cat],1, ',', ' ');
 			calc_moy_debug("\$moy_cat_eleve[$i][$cat]=".$moy_cat_eleve[$i][$cat]."\n");
 		} else {
 			$moy_cat_eleve[$i][$cat] = "-";
@@ -836,7 +634,6 @@ foreach($categories as $cat) {
 
 	$i = 0;
 	while ($i < $nombre_eleves) {
-		//echo "\$moy_cat_eleve[$i][$cat]=".$moy_cat_eleve[$i][$cat]."<br />";
 		if($moy_cat_eleve[$i][$cat]!="-") {
 			if($moy_cat_eleve[$i][$cat]<$moy_min_categorie[$cat]) {
 				$moy_min_categorie[$cat]=$moy_cat_eleve[$i][$cat];
@@ -848,8 +645,7 @@ foreach($categories as $cat) {
 
 			// On formate avec virgule la moyenne de catégorie pour l'élève
 			// *** A FAIRE *** Il faudrait prendre en compte le nombre de décimales demandées sur le modèle
-			//$moy_cat_eleve[$i][$cat] = number_format($moy_cat_eleve[$i][$cat],1, ',', ' ');
-
+			
 			// On incrémente le nombre d'élèves qui ont une moyenne sur la catégorie
 			$tmp_eff++;
 		}
@@ -892,14 +688,9 @@ foreach($categories as $cat) {
 	}
 }
 
-
 // DEBUG:
 //echo $lignes_debug;
 
-//Ajout Eric pour avoir les moyennes générales minimum et maximum sur les bulletins
-
-//$moy_min_classe = min($moy_gen_eleve);
-//$moy_min_classe=20;
 $moy_min_classe=21;
 for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {
 	if($moy_gen_eleve[$i]!="-"){
@@ -912,10 +703,6 @@ if($moy_min_classe==21) {
 	$moy_min_classe="-";
 }
 
-//===============
-// Ajout J.Etheve
-//$moy_min_classe = min($moy_gen_eleve);
-//$moy_min_classe=20;
 $moy_min_classe1=21;
 for ( $i=0 ; $i < sizeof($moy_gen_eleve1) ; $i++ ) {
 	if($moy_gen_eleve1[$i]!="-"){
@@ -927,16 +714,9 @@ for ( $i=0 ; $i < sizeof($moy_gen_eleve1) ; $i++ ) {
 if($moy_min_classe1==21) {
 	$moy_min_classe1="-";
 }
-//===============
 
-//$moy_min_classe = number_format($moy_min_classe,1, ',', ' ');
 $moy_max_classe = max($moy_gen_eleve);
-//$moy_max_classe = number_format($moy_max_classe,1, ',', ' ');
-
-//===============
-// Ajout J.Etheve
 $moy_max_classe1 = max($moy_gen_eleve1);
-//===============
 
 //Calcul de la moyenne générale de la classe
 $nb_elv_classe=sizeof($moy_gen_eleve);
@@ -946,18 +726,13 @@ for ( $i=0 ; $i < $nb_elv_classe ; $i++ ) {
 	$moy_generale_classe += $moy_gen_eleve[$i];
 	if($temoin_au_moins_une_matiere_avec_note[$i]=='y') {$effectif_avec_moyenne++;}
 }
-//$moy_generale_classe = $moy_generale_classe / $nb_elv_classe;
 if($effectif_avec_moyenne!=0) {
 	$moy_generale_classe=$moy_generale_classe/$effectif_avec_moyenne;
-	//$moy_generale_classe = number_format($moy_generale_classe,1, ',', ' ');
 }
 else {
 	$moy_generale_classe="-";
 }
 
-//===============
-// Ajout J.Etheve
-//Calcul de la moyenne générale de la classe avec coef 1
 $nb_elv_classe=sizeof($moy_gen_eleve);
 $moy_generale_classe1 = 0;
 $effectif_avec_moyenne1=0;
@@ -965,82 +740,17 @@ for ( $i=0 ; $i < $nb_elv_classe ; $i++ ) {
 	$moy_generale_classe1 += $moy_gen_eleve1[$i];
 	if($temoin_au_moins_une_matiere_avec_note[$i]=='y') {$effectif_avec_moyenne1++;}
 }
-//$moy_generale_classe = $moy_generale_classe / $nb_elv_classe;
 if($effectif_avec_moyenne1!=0) {
 	$moy_generale_classe1=$moy_generale_classe1/$effectif_avec_moyenne1;
-	//$moy_generale_classe = number_format($moy_generale_classe,1, ',', ' ');
 }
 else {
 	$moy_generale_classe1="-";
 }
-//===============
 
-
-//===============================================
-// On se débarrasse des $moy_gen_classe[$i] mal fichus mais encore appelés ici ou là dans d'autres pages: 20100102
 for ( $i=0 ; $i < $nb_elv_classe ; $i++ ) {
 	$moy_gen_classe[$i]=$moy_generale_classe;
 	$moy_gen_classe1[$i]=$moy_generale_classe1;
 }
-//===============================================
 
-/*
-for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {
-	if($moy_gen_eleve[$i]!='-') {$moy_gen_eleve[$i] = number_format($moy_gen_eleve[$i],1, ',', ' ');}
-}
-*/
-
-// On fournit en entrée:
-//     - $id_classe : la classe concernée
-//     - $periode_num : la période concernée
-// On récupère en sortie:
-//     - $moy_gen_eleve[$i]
-//     - $moy_gen_eleve1[$i] idem avec les coef forcés à 1
-//     - $moy_gen_classe[$i]
-//     - $moy_generale_classe
-//     - $moy_max_classe
-//     - $moy_min_classe
-
-// A VERIFIER, mais s'il n'y a pas de coef spécifique pour un élève, on devrait avoir
-//             $moy_gen_classe[$i] == $moy_generale_classe
-// NON: Cela correspond à un mode de calcul qui ne retient que les matières suivies par l'élève pour calculer la moyenne générale
-//      Le LATIN n'est pas compté dans cette moyenne générale si l'élève ne fait pas latin.
-//      L'Allemand n'est pas comptabilisé si l'élève ne fait pas allemand
-// FAIRE LE TOUR DES PAGES POUR VIRER TOUS CES $moy_gen_classe s'il en reste?
-
-//     - $moy_cat_classe[$i][$cat]
-//     - $moy_cat_eleve[$i][$cat]
-
-//     - $moy_cat_min[$i][$cat] égale à $moy_min_categorie[$cat]
-//     - $moy_cat_max[$i][$cat] égale à $moy_max_categorie[$cat]
-
-// Là le positionnement au niveau moyenne générale:
-//     - $quartile1_classe_gen
-//       à
-//     - $quartile6_classe_gen
-//     - $place_eleve_classe[$i]
-
-// On a récupéré en intermédiaire les
-//     - $current_eleve_login[$i]
-//     - $current_group[$j]
-//     - $current_eleve_note[$j][$i]
-//     - $current_eleve_statut[$j][$i]
-//     - $current_coef[$j] (qui peut être différent du $coef_eleve pour une matière spécifique)
-//     - $categories -> id
-//     - $current_classe_matiere_moyenne[$j] (moyenne de la classe dans la matière)
-
-// AJOUTé:
-//     - $current_coef_eleve[$i][$j]
-//     - $moy_min_classe_grp[$j]
-//     - $moy_max_classe_grp[$j]
-//     - $current_eleve_rang[$j][$i] sous réserve que $affiche_rang=='y'
-//     - $quartile1_grp[$j] à $quartile6_grp[$j]
-//     - $place_eleve_grp[$j][$i]
-//     - $current_group_effectif_avec_note[$j] pour le nombre de "vraies" moyennes pour le rang (pas disp, abs,...)
-//     - $tab_login_indice[LOGIN_ELEVE]=$i
-
-//     $categories[] = $row["id"];
-//     $tab_noms_categories[$row["id"]]=$row["nom_complet"];
-//     $tab_id_categories[$row["nom_complet"]]=$row["id"];
 
 ?>
