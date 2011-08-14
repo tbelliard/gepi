@@ -1,9 +1,36 @@
 <?php
+/**
+ * saisie des Notes
+ * 
+ * $Id$
+ *
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * 
+ * @license GNU/GPL
+ * @package Carnet_de_notes
+ * @subpackage saisie
+ * @see add_token_field()
+ * @see check_token()
+ * @see checkAccess()
+ * @see corriger_caracteres()
+ * @see creer_div_infobulle()
+ * @see formate_date()
+ * @see getSettingValue()
+ * @see get_group()
+ * @see get_groups_for_prof()
+ * @see getPref()
+ * @see html_entity_decode()
+ * @see javascript_tab_stat()
+ * @see mise_a_jour_moyennes_conteneurs(recherche_enfant()
+ * @see nom_photo()
+ * @see Session::security_check()
+ * @see sous_conteneurs()
+ * @see traite_accents_utf8()
+ * @see traitement_magic_quotes()
+ * @see Verif_prof_cahier_notes ()
+ */
+
 /*
- * @version: $Id$
-*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -32,7 +59,9 @@ if($mode_commentaire_20080422=="no_anti_inject") {
 }
 //==============================
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -168,6 +197,9 @@ if (count($current_group["classes"]["list"]) > 1) {
 	$multiclasses = false;
 	$order_by = "nom";
 }
+/**
+ * Gestion des périodes
+ */
 include "../lib/periodes.inc.php";
 
 // On teste si la periode est vérouillée !
@@ -468,6 +500,9 @@ if (isset($_POST['import_sacoche'])) {
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes";
+    /**
+     * Entête de la page
+     */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -850,6 +885,9 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 	if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "La ";}else{echo "Le ";}
 	echo htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." $nom_conteneur ne contient aucune évaluation. </p>\n";
 
+/**
+ * Pied de page
+ */
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -2361,4 +2399,9 @@ if($aff_photo_cn_par_defaut=='y') {
 }
 ?>
 </script>
-<?php require("../lib/footer.inc.php");?>
+<?php 
+/**
+ * Pied de page
+ */
+require("../lib/footer.inc.php");
+?>
