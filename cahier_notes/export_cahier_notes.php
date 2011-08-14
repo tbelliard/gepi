@@ -8,9 +8,10 @@
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage export
- * @see COPYING.txt
+ * @see 
  * @todo utiliser TBSOoo pour gÈnÈrer l'export odt
  */
+
 /* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
@@ -59,17 +60,10 @@ if (getSettingValue("active_carnets_notes")!='y') {
 
 unset($id_racine);
 $id_racine=isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);
-//$is_posted=isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 $type_export=isset($_POST["type_export"]) ? $_POST["type_export"] : NULL;
 
 $nettoyage=isset($_GET["nettoyage"]) ? $_GET["nettoyage"] : NULL;
 
-/*
-if(!isset($id_racine)) {
-	if((isset($id_groupe))&&(isset($periode_num))) {
-	}
-}
-*/
 
 if($_SESSION['user_temp_directory']!='y') {
 	$type_export="CSV";
@@ -78,19 +72,13 @@ else {
 	if(getSettingValue("export_cn_ods")=='y') {
 		$user_tmp=get_user_temp_directory();
 		if(!$user_tmp) {
-			/*
-			$msg="Votre dossier temporaire n'est pas accessible.";
-			header("Location: index.php?msg=".rawurlencode($msg));
-			die();
-			*/
+			
 			// L'export ODS n'est pas possible.
 			$msg="Votre dossier temporaire n'est pas accessible. Seul l'export CSV est possible.";
 			$type_export="CSV";
 		}
 
-		//$chemin_temp="../temp/".getSettingValue("temp_directory");
 		$chemin_temp="../temp/".$user_tmp;
-
 
 		$chemin_modele_ods="export_cn_modele_ods";
 
@@ -159,15 +147,20 @@ if (count($current_group["classes"]["list"]) > 1) {
     $order_by = "nom";
 }
 
-
+/**
+ * Gestion des pÈriodes
+ */
 include "../lib/periodes.inc.php";
 
 // On teste si la periode est vÈrouillÈe !
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) and (isset($id_devoir)) and ($id_devoir!='') ) {
-	// ON NE DOIT JAMAIS ENTRER ICI
-	// CELA RESSEMBLE A UNE SCORIE
-	// POUR L'IMPORT CE TEST SERAIT UTILE, MAIS PAS POUR L'EXPORT
-	// VERIFIER ET VIRER
+  /**
+   * @todo
+   * ON NE DOIT JAMAIS ENTRER ICI
+   * CELA RESSEMBLE A UNE SCORIE
+   * POUR L'IMPORT CE TEST SERAIT UTILE, MAIS PAS POUR L'EXPORT
+   * VERIFIER ET VIRER
+   */
     $mess=rawurlencode("Vous tentez de pÈnÈtrer dans un carnet de notes dont la pÈriode est bloquÈe !");
     header("Location: index.php?msg=$mess");
     die();
@@ -181,18 +174,15 @@ $nom_classe = $current_group["classlist_string"];
 $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
-
-//echo "\$is_posted=$is_posted<br />";
-//echo "\$type_export=$type_export<br />";
-
-//if((!isset($is_posted))||(!isset($type_export))) {
 if(!isset($type_export)) {
 	//**************** EN-TETE *****************
 	$titre_page = "Export des notes";
+    /**
+     * EntÍte de la page
+     */
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
-	//$titre=htmlentities($current_group['description'])." (".$nom_periode.")";
 	$titre=htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
 	$titre.=" - EXPORT";
 
@@ -201,18 +191,12 @@ if(!isset($type_export)) {
 	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
     echo "<p class='bold'>\n";
 
-	//echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
-    //echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
-
     echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
-
 
 	if($_SESSION['statut']=='professeur') {
 		$login_prof_groupe_courant=$_SESSION["login"];
 	}
 	else {
-		//$tmp_current_group=get_group($id_groupe);
-		//$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
 		$login_prof_groupe_courant=$current_group["profs"]["list"][0];
 	}
 
@@ -225,26 +209,20 @@ if(!isset($type_export)) {
 		$num_groupe=-1;
 		$nb_groupes_suivies=count($tab_groups);
 
-		//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
-
 		$id_grp_prec=0;
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
-		//foreach($tab_groups as $tmp_group) {
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			// On ne retient que les groupes qui ont un nombre de pÈriodes au moins Ègal ‡ la pÈriode sÈlectionnÈe
 			if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
 				if($tab_groups[$loop]['id']==$id_groupe){
 					$num_groupe=$loop;
 
-					//$chaine_options_enseignements.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					$chaine_options_enseignements.="<option value='".$id_racine."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 
 					$temoin_tmp=1;
 					if(isset($tab_groups[$loop+1])){
 						$id_grp_suiv=$tab_groups[$loop+1]['id'];
-
-						//$chaine_options_enseignements.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
 					}
 					else{
 						$id_grp_suiv=0;
@@ -253,29 +231,17 @@ if(!isset($type_export)) {
 				else {
 					$tmp_id_cahier_notes=get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num);
 					if($tmp_id_cahier_notes!='') {
-						//$chaine_options_enseignements.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 						$chaine_options_enseignements.="<option value='".$tmp_id_cahier_notes."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					}
 				}
 
 				if($temoin_tmp==0){
 					$id_grp_prec=$tab_groups[$loop]['id'];
-
-					//$chaine_options_enseignements.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-				}
+                    
+                }
 			}
 		}
-		// =================================
-
-		/*
-		if(isset($id_grp_prec)){
-			if($id_grp_prec!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement prÈcÈdent</a>";
-			}
-		}
-		*/
-
+		
 		if(($chaine_options_enseignements!="")&&($nb_groupes_suivies>1)) {
 
 			echo "<script type='text/javascript'>
@@ -301,21 +267,10 @@ if(!isset($type_export)) {
 </script>\n";
 
 			echo "<input type='hidden' name='periode_num' id='periode_num' value='$periode_num' />\n";
-			//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 			echo "Export en pÈriode $periode_num: <select name='id_racine' id='id_racine' onchange=\"confirm_changement_enseignement(change, '$themessage');\">\n";
 			echo $chaine_options_enseignements;
 			echo "</select> | \n";
 		}
-
-		/*
-		if(isset($id_grp_suiv)){
-			if($id_grp_suiv!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
-				}
-		}
-		*/
-
 	}
 	echo "</form>\n";
 	echo "</div>";
@@ -326,7 +281,6 @@ if(!isset($type_export)) {
 	echo add_token_field();
 	echo "<p>Vous pouvez effectuer un export:<br />\n";
 	echo "<input type='hidden' name='id_racine' value='$id_racine' />\n";
-	//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 	echo "<input type='radio' name='type_export' id='type_export_csv' value='CSV' checked /><label for='type_export_csv' style='cursor: pointer;'> fichier CSV</label><br />\n";
 
 	if(getSettingValue("export_cn_ods")=='y') {
@@ -334,9 +288,13 @@ if(!isset($type_export)) {
 	}
 	echo "<input type='submit' name='envoyer' value='Valider' /></p>\n";
 	echo "</form>\n";
-
-	// On pourrait ajouter le mÈnage des fichiers de $chemin_ods ici en virant tout ce qui commence par $_SESSION['login'] et se termine par '.ods'...
-
+/**
+ * @todo On pourrait ajouter le mÈnage des fichiers de $chemin_ods ici en virant tout ce qui commence par $_SESSION['login'] et se termine par '.ods'...
+ */
+    
+/**
+ * Pied de page
+ */
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -367,7 +325,6 @@ if($type_export=="CSV") {
 	$nb_dev  = mysql_num_rows($appel_dev);
 
 	$ligne_entete="GEPI_INFOS;GEPI_LOGIN_ELEVE;NOM;PRENOM;CLASSE;MOYENNE;GEPI_COL_1ER_DEVOIR";
-	//echo "$ligne_entete<br />\n";
 	$fd.="$ligne_entete\n";
 
 	unset($id_dev);
@@ -391,13 +348,10 @@ if($type_export=="CSV") {
 		$id_dev[$cpt]=$lig_dev->id;
 		$nomc_dev[$cpt]=$lig_dev->nom_court;
 		// ProblËme avec les 17.5 qui sont convertis en dates
-		//$coef_dev[$cpt]=$lig_dev->coef;
 		$coef_dev[$cpt]=strtr($lig_dev->coef,".",",");
 		$note_sur_dev[$cpt]=$lig_dev->note_sur;
 		// ProblËme avec le format DATETIME
-		//$date_dev[$cpt]=$lig_dev->date;
 		$tmptab=explode(" ",$lig_dev->date);
-		//$date_dev[$cpt]=$tmptab[0];
 		$tmptab2=explode("-",$tmptab[0]);
 		$date_dev[$cpt]=$tmptab2[2]."/".$tmptab2[1]."/".$tmptab2[0];
 
@@ -405,18 +359,15 @@ if($type_export=="CSV") {
 		$ligne_info_dev[1].=";".$coef_dev[$cpt];
 		$ligne_info_dev[2].=";".$note_sur_dev[$cpt];
 		$ligne_info_dev[3].=";".$date_dev[$cpt];
-		// A amÈliorer par la suite: calculer la moyenne de la classe:
-		//$ligne_info_dev[3].="Moyenne_classe;";
-		//$ligne_info_dev[3].=";";
-
-		//$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_devoirs WHERE (id='$id_dev[$cpt]' AND statut='')";
+		/**
+         * @todo A amÈliorer par la suite: calculer la moyenne de la classe:
+         */
 		$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_notes_devoirs WHERE (id_devoir='$id_dev[$cpt]' AND statut='')";
 		$res_moy=mysql_query($sql);
 		if($res_moy) {
 			$lig_moy=mysql_fetch_array($res_moy);
 			if($lig_moy[1]!=0) {
 				$moy=strtr(round(10*$lig_moy[0]/$lig_moy[1])/10,".",",");
-				//echo "$lig_moy[0]/$lig_moy[1]=".$moy."<br />";
 				$ligne_info_dev[4].=";".$moy;
 			}
 			else{
@@ -431,16 +382,12 @@ if($type_export=="CSV") {
 	}
 
 	for($i=0;$i<count($ligne_info_dev);$i++) {
-		//echo "$ligne_info_dev[$i]<br />\n";
 		$fd.="$ligne_info_dev[$i]\n";
 	}
 
 
 
 	$i = 0;
-	//$num_id=10;
-	//$current_displayed_line = 0;
-
 	$order_by="";
 
 	// On commence par mettre la liste dans l'ordre souhaitÈ
@@ -482,13 +429,10 @@ if($type_export=="CSV") {
 		$ligne_eleve="GEPI_LOGIN_ELEVE;".$eleve_login[$i].";".$eleve_nom[$i].";".$eleve_prenom[$i].";".$eleve_classe[$i];
 
 		// A amÈliorer par la suite: RÈcupÈrer/calculer la moyenne de l'ÈlËve
-		//$ligne_eleve.="Moyenne_calculÈe;";
 		$ligne_eleve.=";";
 		// Calculer la moyenne de l'ÈlËve est assez illusoire si on ne gËre pas les boites et leurs coefficients...
 
 		while ($k < $nb_dev) {
-			//echo "<p>id_dev[$k]=$id_dev[$k]<br />\n";
-
 			$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
 
 			if(mysql_num_rows($note_query)==0) {
@@ -499,11 +443,6 @@ if($type_export=="CSV") {
 				$eleve_statut = @mysql_result($note_query, 0, "statut");
 				$eleve_note = @mysql_result($note_query, 0, "note");
 			}
-
-			//$eleve_login_note = $eleve_login[$i]."_note";
-
-			//echo "$eleve_login[$i]: $eleve_note - $eleve_statut<br />";
-
 			// ProblËme avec les 17.5 qui sont convertis en dates -> 17/05/07
 			$eleve_note=strtr($eleve_note,".",",");
 
@@ -520,7 +459,6 @@ if($type_export=="CSV") {
 			$k++;
 		}
 
-		//echo "$ligne_eleve<br />\n";
 		$fd.="$ligne_eleve\n";
 
 		$i++;
@@ -530,12 +468,13 @@ if($type_export=="CSV") {
 	echo $fd;
 	die();
 }
-//elseif($type_export=="ODS") {
 elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
-	// GÈnÈration d'un fichier tableur...
-	// ... il faudra prÈvoir un nettoyage.
-	// Il faudrait que l'option gÈnÈrer des ODS soit activable/dÈsactivable par l'admin
+	/** 
+     * @todo GÈnÈration d'un fichier tableur...
+	 *  ... il faudra prÈvoir un nettoyage.
+	 * Il faudrait que l'option gÈnÈrer des ODS soit activable/dÈsactivable par l'admin
+     */
 
 	// On fait la liste des devoirs de ce carnet de notes
 	$appel_dev = mysql_query("select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
@@ -552,12 +491,10 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$nomc_dev[$cpt]=preg_replace("/[^a-zA-Z0-9_\. - ]/","",remplace_accents($lig_dev->nom_court,'all'));
 
 		// ProblËme avec les 17.5 qui sont convertis en dates
-		//$coef_dev[$cpt]=$lig_dev->coef;
 		$coef_dev[$cpt]=strtr($lig_dev->coef,".",",");
 		$note_sur_dev[$cpt]=$lig_dev->note_sur;
 
 		// ProblËme avec le format DATETIME
-		//$date_dev[$cpt]=$lig_dev->date;
 		$tmptab=explode(" ",$lig_dev->date);
 		$date_dev[$cpt]=$tmptab[0];
 		// Pour le fichier ODS, on veut des dates au format aaaa-mm-jj
@@ -583,8 +520,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 
 	// GÈnÈration du fichier ODS
-	//$nom_fic.=".ods";
-
+	
 	$instant=getdate();
 	$heure=$instant['hours'];
 	$minute=$instant['minutes'];
@@ -596,17 +532,11 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 	$nom_fic.="_".$chaine_tmp.".ods";
 
-
-
 	// Fichier content.xml
-	//echo "\$tmp_fich=$tmp_fich<br />\n";
 	$tmp_fich="content_".$_SESSION['login'];
-	//echo "\$tmp_fich=$tmp_fich<br />\n";
 	$tmp_fich.="_".strtr(microtime()," ","_");
-	//echo "\$tmp_fich=$tmp_fich<br />\n";
 	$tmp_fich.=".xml";
-	//echo "\$tmp_fich=$tmp_fich<br />\n";
-
+	
 	$tmp_fich=$chemin_temp."/".$tmp_fich;
 
 	$fichier_tmp_xml=fopen("$tmp_fich","w+");
@@ -615,8 +545,6 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 	// AJOUT du style gras pour le feuillet Infos:
 	$ecriture=fwrite($fichier_tmp_xml,'<style:style style:name="ce14" style:family="table-cell" style:parent-style-name="Default"><style:text-properties fo:font-weight="bold"/></style:style>');
-
-	//$ecriture=fwrite($fichier_tmp_xml,'</office:automatic-styles><office:body><office:spreadsheet><table:table table:name="Notes" table:style-name="ta1" table:print="false">');
 
 	$ecriture=fwrite($fichier_tmp_xml,'<style:style style:name="P1" style:family="paragraph"><style:paragraph-properties fo:text-align="center"/></style:style>');
 
@@ -652,24 +580,17 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell/>');
 
 
-	//$ecriture=fwrite($fichier_tmp_xml,'');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1"><draw:control table:end-cell-address="Notes.E4" table:end-x="0.039cm" table:end-y="0.022cm" draw:z-index="0" draw:text-style-name="P1" svg:width="2.406cm" svg:height="0.622cm" svg:x="3.044cm" svg:y="0.414cm" draw:control="control1"/></table:table-cell>');
 
-	//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="2"/>');
 
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Nom court du devoir</text:p></table:table-cell>');
 
-
-	//$ecriture=fwrite($fichier_tmp_xml,'');
-
-	//for($i=0;$i<count($nomc_dev);$i++) {
 	for($i=0;$i<$nb_dev;$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="string"><text:p>'.$nomc_dev[$i].'</text:p></table:table-cell>');
 	}
 
 	// PB: J'ai prÈvu un maximum de 46 colonnes de devoirs...
-	//$nb_vide=46-count($nomc_dev);
 	$nb_vide=46-$nb_dev;
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" table:number-columns-repeated="'.$nb_vide.'"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
@@ -683,13 +604,11 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Coefficient</text:p></table:table-cell>');
 
-	//for($i=0;$i<count($coef_dev);$i++) {
 	for($i=0;$i<$nb_dev;$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="float" office:value="'.strtr($coef_dev[$i],",",".").'"><text:p>'.$coef_dev[$i].'</text:p></table:table-cell>');
 	}
 
 	// PB: J'ai prÈvu un maximum de 46 colonnes de devoirs...
-	//$nb_vide=46-count($coef_dev);
 	$nb_vide=46-$nb_dev;
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:number-columns-repeated="'.$nb_vide.'" table:style-name="ce6"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
@@ -703,13 +622,11 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Note sur :</text:p></table:table-cell>');
 
-	//for($i=0;$i<count($coef_dev);$i++) {
 	for($i=0;$i<$nb_dev;$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="float" office:value="'.strtr($note_sur_dev[$i],",",".").'"><text:p>'.$note_sur_dev[$i].'</text:p></table:table-cell>');
 	}
 
 	// PB: J'ai prÈvu un maximum de 46 colonnes de devoirs...
-	//$nb_vide=46-count($coef_dev);
 	$nb_vide=46-$nb_dev;
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:number-columns-repeated="'.$nb_vide.'" table:style-name="ce6"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
@@ -723,13 +640,11 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Date</text:p></table:table-cell>');
 
-	//for($i=0;$i<count($date_dev);$i++) {
 	for($i=0;$i<$nb_dev;$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" office:value-type="date" office:date-value="'.$date_dev[$i].'"><text:p>'.$date_dev_fr[$i].'</text:p></table:table-cell>');
 	}
 
 	// PB: J'ai prÈvu un maximum de 46 colonnes de devoirs...
-	//$nb_vide=46-count($date_dev);
 	$nb_vide=46-$nb_dev;
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" table:number-columns-repeated="'.$nb_vide.'"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
@@ -747,30 +662,19 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$tabcol[$i]="A".substr($alphabet,$i-strlen($alphabet),1);
 	}
 
-	/*
-	for($i=0;$i<count($tabcol);$i++) {
-		echo $tabcol[$i]." - ";
-	}
-	*/
-
 	// OpenOffice recalcule les valeurs lors de l'ouverture du document...
 	$valeur_defaut=0;
 	// On pourrait ne pas mettre de valeur...
 
 	$num_col=6;
 
-	//for($i=0;$i<count($moy_dev);$i++) {
 	for($i=0;$i<$nb_dev;$i++) {
-		//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
-
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.strtr($moy_dev[$i],',','.').'"><text:p>'.$moy_dev[$i].'</text:p></table:table-cell>');
-		//echo "$num_col - ";
 		$num_col++;
 	}
 
 	for($i=$num_col;$i<count($tabcol);$i++) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'7:.'.$tabcol[$num_col].'100])))"><text:p/></table:table-cell>');
-		//echo "$num_col - ";
 		$num_col++;
 	}
 
@@ -820,18 +724,14 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 		$k=0;
 
-		//$ligne_eleve="GEPI_LOGIN_ELEVE;".$eleve_login[$i].";".$eleve_nom[$i].";".$eleve_prenom[$i].";".$eleve_classe[$i];
-
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro2">');
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>GEPI_LOGIN_ELEVE</text:p></table:table-cell>');
 
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_nom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_prenom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_classe[$i]).'</text:p></table:table-cell>');
 
-
 		// OpenOffice recalcule les valeurs lors de l'ouverture du document...
 		$valeur_defaut=0;
 
-		//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$num_lig.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUM([.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;abs&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;disp&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;-&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;&quot;;[.G$3:.AZ$3]));1));&quot;-&quot;;ROUND(SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUM([.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;abs&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;disp&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;-&quot;;[.G$3:.AZ$3])-SUMIF([.G'.$num_lig.':.AZ'.$num_lig.'];&quot;&quot;;[.G$3:.AZ$3]));1)))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$num_lig.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(20*SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1));&quot;-&quot;;ROUND(20*SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1)))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
 
 		$num_col=6;
@@ -846,9 +746,6 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 				$eleve_statut = @mysql_result($note_query, 0, "statut");
 				$eleve_note = @mysql_result($note_query, 0, "note");
 			}
-
-			//$eleve_login_note=$eleve_login[$i]."_note";
-
 			if($eleve_statut=='v') {
 				// Pas de note saisie -> statut = v pour vide
 				$eleve_note="-";
@@ -867,7 +764,6 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="float" office:value="'.$eleve_note.'"><text:p>'.$eleve_note_virg.'</text:p></table:table-cell>');
 			}
 
-			//$ligne_eleve.=";".$eleve_note;
 			$k++;
 			$num_col++;
 		}
@@ -884,8 +780,6 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	// ===================
 
 	for($i=$num_lig;$i<=100;$i++) {
-		//'.$tabcol[$num_col].'
-
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell/><table:table-cell table:number-columns-repeated="3"/>');
 
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$i.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(20*SUMPRODUCT([.G'.$i.':.AZ'.$i.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1));&quot;-&quot;;ROUND(20*SUMPRODUCT([.G'.$i.':.AZ'.$i.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$i.':.AZ'.$i.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1)))"><text:p/></table:table-cell>');
@@ -895,30 +789,20 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 		$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
 	}
-
-	// ===================
-
-	//$ecriture=fwrite($fichier_tmp_xml,'');
-
+    
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table>');
-
-	// ===================
-
-	//$ecriture=fwrite($fichier_tmp_xml,'<table:table table:name="Infos" table:style-name="ta1" table:print="false"><table:table-column table:style-name="co2" table:number-columns-repeated="6" table:default-cell-style-name="Default"/><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="6"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>Feuille de calcul destin√©e √†:</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. une saisie hors ligne des notes</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. une conservation des r√©sultats dans un tableur,...</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="6"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell/><table:table-cell office:value-type="string"><text:p>L&apos;import des notes dans GEPI se fait ainsi:</text:p></table:table-cell><table:table-cell table:number-columns-repeated="3"/><table:table-cell office:value-type="string"><text:p><text:s/></text:p></table:table-cell></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. dans le feuillet &apos;Notes&apos;, cliquer sur le menu &apos;Fichier/Enregistrer sous&apos;</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. choisir &apos;Fichier CSV&apos; dans &apos;Type de fichiers&apos; et cocher &apos;Editer les param√®tres du filtre&apos;</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. cliquer sur &apos;Enregistrer&apos;</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. valider &apos;Oui&apos; l&apos;avertissement comme quoi seul le feuillet actif va √™tre enregistr√©</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. dans les param√®tres CSV, choisir le point-virgule comme s√©parateur de champs et supprimer le s√©parateur de texte</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="6"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell/><table:table-cell office:value-type="string"><text:p>Quelques conseils et remarques pour permettre un import des notes dans GEPI:</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Les champs import√©s sont rep√©r√©s par le contenu de la colonne A et de la ligne 1 avec un pr√©fixe GEPI_</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Les colonnes moyennes ne sont pas prises en compte dans GEPI; elles sont recalcul√©es d&apos;apr√®s les notes import√©es.</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Ne pas fusionner de cellules sans quoi le format CSV sera perturb√©.</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Les formules permettent des calculs jusqu&apos;√† la ligne 100 et jusqu&apos;√† la colonne AZ.</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row></table:table></office:spreadsheet></office:body></office:document-content>');
-
 
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table table:name="Infos" table:style-name="ta1" table:print="false"><table:table-column table:style-name="co2" table:number-columns-repeated="6" table:default-cell-style-name="Default"/><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="6"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell table:style-name="ce14" office:value-type="string"><text:p>Feuille de calcul destin√©e √†:</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. une saisie hors ligne des notes</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. une conservation des r√©sultats dans un tableur,...</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="6"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell/><table:table-cell table:style-name="ce14" office:value-type="string"><text:p>L&apos;import des notes dans GEPI se fait ainsi:</text:p></table:table-cell><table:table-cell table:number-columns-repeated="3"/><table:table-cell office:value-type="string"><text:p><text:s/></text:p></table:table-cell></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. dans le feuillet &apos;Notes&apos;, cliquer sur le menu &apos;Fichier/Enregistrer sous&apos;</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. choisir &apos;Fichier CSV&apos; dans &apos;Type de fichiers&apos; et cocher &apos;Editer les param√®tres du filtre&apos;</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. cliquer sur &apos;Enregistrer&apos;</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. valider &apos;Oui&apos; l&apos;avertissement comme quoi seul le feuillet actif va √™tre enregistr√©</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. dans les param√®tres CSV, choisir le point-virgule comme s√©parateur de champs et supprimer le s√©parateur de texte</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="6"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell/><table:table-cell table:style-name="ce14" office:value-type="string"><text:p>Quelques conseils et remarques pour permettre un import des notes dans GEPI:</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Les champs import√©s sont rep√©r√©s par le contenu de la colonne A (masqu√©e par d√©faut) et de la ligne 1 avec un pr√©fixe GEPI_</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Les colonnes moyennes ne sont pas prises en compte dans GEPI; elles sont recalcul√©es d&apos;apr√®s les notes import√©es.</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Ne pas fusionner de cellules sans quoi le format CSV sera perturb√©.</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Les formules permettent des calculs jusqu&apos;√† la ligne 100 et jusqu&apos;√† la colonne AZ.</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>. Ne pas ins√©rer de ligne pour ajouter un √©l√®ve (√† moins de remplir correctement aussi la colonne A (masqu√©e par d√©faut))</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="6"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell table:style-name="ce14" office:value-type="string"><text:p>Astuce:</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>Vous pouvez saisir plusieurs trimestres en ins√©rant un nouveau feuillet (copie du premier) pour saisir tous les trimestres dans un m√™me fichier tableur. </text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell office:value-type="string"><text:p>Il est indispensable que les lignes et colonnes masqu√©es soient copi√©es avec le reste de la page.</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell/><table:table-cell office:value-type="string"><text:p>Lors de l&apos;export, la macro Export_CSV prend en compte le feuillet en courant.</text:p></table:table-cell><table:table-cell table:number-columns-repeated="4"/></table:table-row></table:table></office:spreadsheet></office:body></office:document-content>');
 
 	$fermeture=fclose($fichier_tmp_xml);
-
-
-
-
+    
 	//set_time_limit(3000);
+    /**
+     * CrÈation d'un .odc 
+     */
 	require_once("../lib/ss_zip.class.php");
 
 	$zip= new ss_zip('',6);
-	//$zip->add_file('sxc/content.xml');
 	$zip->add_file("$tmp_fich",'content.xml');
 
 	// On n'ajoute pas les dossiers, ni les fichiers vides... ss_zip ne le supporte pas...
@@ -929,24 +813,10 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	$zip->add_file($chemin_modele_ods.'/Basic/Standard/Module1.xml', 'Basic/Standard/Module1.xml');
 
 	// On ne met pas ce fichier parce que sa longueur vide fait une blague pour ss_zip.
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/accelerator/current.xml', 'Configurations2/accelerator/current.xml');
-
-	//$zip->add_file($chemin_modele_ods.'/Configurations2', 'Configurations2');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/floater', 'Configurations2/floater');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/images', 'Configurations2/images');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/images/Bitmaps', 'Configurations2/images/Bitmaps');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/accelerator', 'Configurations2/accelerator');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/accelerator/current.xml', 'Configurations2/accelerator/current.xml');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/statusbar', 'Configurations2/statusbar');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/progressbar', 'Configurations2/progressbar');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/toolbar', 'Configurations2/toolbar');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/popupmenu', 'Configurations2/popupmenu');
-	//$zip->add_file($chemin_modele_ods.'/Configurations2/menubar', 'Configurations2/menubar');
-	//$zip->add_file($chemin_modele_ods.'/META-INF', 'META-INF');
+	
 	$zip->add_file($chemin_modele_ods.'/META-INF/manifest.xml', 'META-INF/manifest.xml');
 	$zip->add_file($chemin_modele_ods.'/settings.xml', 'settings.xml');
 	$zip->add_file($chemin_modele_ods.'/meta.xml', 'meta.xml');
-	//$zip->add_file($chemin_modele_ods.'/Thumbnails', 'Thumbnails');
 	$zip->add_file($chemin_modele_ods.'/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
 	$zip->add_file($chemin_modele_ods.'/mimetype', 'mimetype');
 	$zip->add_file($chemin_modele_ods.'/styles.xml', 'styles.xml');
@@ -955,7 +825,6 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 
 	if(file_exists("$chemin_temp/$nom_fic")) {unlink("$chemin_temp/$nom_fic");}
-	//rename("$tmp_fich.zip","$chemin_ods/$chaine_tmp.$nom_fic");
 	rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
 
 	// Suppression du fichier content...xml
@@ -963,10 +832,12 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 	//**************** EN-TETE *****************
 	$titre_page = "Export des notes";
+    /**
+     * EntÍte de la page
+     */
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
-	//$titre=htmlentities($current_group['description'])." (".$nom_periode.")";
 	$titre=htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
 	$titre.=" - EXPORT";
 
@@ -981,30 +852,25 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 	echo "<p>TÈlÈcharger: <a href='$chemin_temp/$nom_fic'>$nom_fic</a></p>\n";
 
-	/*
-	echo "filetype($chemin_ods/$nom_fic)=".filetype("$chemin_ods/$nom_fic")."<br />\n";
-
-	$fp=fopen("$chemin_ods/$nom_fic","r");
-	$ligne=fgets($fp, 4096);
-	fclose($fp);
-
-	echo "<pre>$ligne</pre>";
-	*/
+	
 
 	// AJOUTER UN LIEN POUR FAIRE LE MENAGE... et permettre ‡ l'admin de faire le mÈnage.
 	echo "<p>Pour ne pas encombrer inutilement le serveur et par soucis de confidentialitÈ, il est recommandÈ de supprimer le fichier du serveur aprËs rÈcupÈration du fichier ci-dessus.<br />\n";
-	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic'>Supprimer le fichier</a>.";
 	echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num".add_token_in_url()."'>Supprimer le fichier</a>.";
-	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=".$nom_fic."_truc'>Supprimer le fichier 2</a>.";
-	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=_truc".$nom_fic."'>Supprimer le fichier 3</a>.";
 	echo "</p>\n";
 
-
+/**
+ * Pied de page
+ */
 	require("../lib/footer.inc.php");
 	die();
 }
 else{
 	echo "<p>Tiens, c'est bizarre! Ce cas ne devrait pas arriver.</p>\n";
 }
+
+/**
+ * Pied de page
+ */
 require("../lib/footer.inc.php");
 ?>

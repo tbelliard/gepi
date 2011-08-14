@@ -1,4 +1,5 @@
 <?php
+$siteRetour = 'https://cas.e-lyco.fr/saml/Logout?RelayState=beaussire.vendee';
 
 $config = array(
 
@@ -22,7 +23,7 @@ $config = array(
 		'cas' => array(
 		    'login' => 'https://cas.e-lyco.fr/login',
 		    'validate' => 'https://cas.e-lyco.fr/validate',
-		    'logout' => 'https://cas.e-lyco.fr/logout?RelayState=beaussire.vendee',
+		    'logout' => $siteRetour,
 		),
 		'disconnect_CAS' => true,
 		'search_table' => array(

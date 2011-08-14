@@ -1,10 +1,28 @@
 <?php
-/*
+/**
+ * Arborescence des évaluations
+ * 
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
- * This file is part of GEPI.
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * 
+ * @package Carnet_de_notes
+ * @subpackage Conteneur
+ * @license GNU/GPL 
+ * @see affiche_devoirs_conteneurs()
+ * @see check_token()
+ * @see checkAccess()
+ * @see get_groups_for_prof()
+ * @see getSettingValue()
+ * @see mise_a_jour_moyennes_conteneurs()
+ * @see recopie_arbo()
+ * @see Session::security_check()
+ * @see traitement_magic_quotes()
+ * @see tentative_intrusion()
+ * @see Verif_prof_cahier_notes()
+ */
+
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +39,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 /*
@@ -96,13 +116,6 @@ if ((isset($_POST['id_racine'])) or (isset($_GET['id_racine']))) {
     }
 }
 
-/*
-$fich=fopen("/tmp/test_img.txt","a+");
-fwrite($fich,"Juste avant Header\n");
-fclose($fich);
-*/
-
-//id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev
 if(isset($_GET['clean_anomalie_dev'])) {
 
 	if((isset($_GET['id_groupe']))&&(isset($_GET['periode_num']))) {
@@ -114,7 +127,6 @@ if(isset($_GET['clean_anomalie_dev'])) {
 		$appel_cahier_notes = mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='".$_GET['id_racine']."';");
 		$tmp_id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 		$tmp_periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
-		//echo "B<br />";
 	}
 
 	if((!isset($tmp_id_groupe))||(!isset($tmp_periode_num))) {
@@ -160,11 +172,16 @@ if(isset($_GET['clean_anomalie_dev'])) {
 
 	}
 }
-
+/**
+ * 
+ */
 require('cc_lib.php');
 
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes";
+/**
+ * Entête de la page
+ */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
@@ -185,7 +202,6 @@ if (isset($_REQUEST['id_devoir'])) {
     }
 }
 if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
-//if (isset($id_groupe) and isset($periode_num)) {
     $id_groupe = $_GET['id_groupe'];
     $periode_num = $_GET['periode_num'];
     $login_prof = $_SESSION['login'];
@@ -263,7 +279,6 @@ if ((isset($_GET['creer_structure'])) and ($current_group["classe"]["ver_periode
     if ($vide == 'yes') {
 		echo "<p><center><b><font color='red'>Structure vide : aucun";
 		if(getSettingValue('gepi_denom_boite_genre')=="f") {$accord_f="e";} else {$accord_f="";}
-		//echo "e boîte";
 		echo "$accord_f ";
 		echo getSettingValue('gepi_denom_boite');
 		echo " n'a été cré$accord_f dans le carnet de notes de la période précédente.</font></b></center></p><hr />";
@@ -304,8 +319,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 		fwrite($fich,"==================================\n");
 		fclose($fich);
 		*/
-	    //if((isset($_GET['alea']))&&($_GET['alea']==$_SESSION['gepi_alea'])) {
-		check_token();
+	    check_token();
 
 			$sql0="SELECT id_conteneur FROM cn_devoirs WHERE id='$temp'";
 			//echo "$sql0<br />";
@@ -339,14 +353,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 					mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
 				}
 			}
-		/*
-		}
-		else {
-			$texte_mail="Tentative de suppression de devoir avec un aléa qui ne coïncide pas avec celui de la session\nLa suppression tentée était \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n";
-			mail_alerte("Anomalie de suppression de devoir",$texte_mail,'y');
-			echo "<p style='color:red'>$texte_mail</p>\n";
-		}
-		*/
+		
     }
     //
     // Supression d'un conteneur
@@ -380,17 +387,9 @@ if  (isset($id_racine) and ($id_racine!='')) {
 				}
 	
 			}
-		/*
-		}
-		else {
-			$texte_mail="Tentative de suppression d'un conteneur avec un aléa qui ne coïncide pas avec celui de la session\nLa suppression tentée était \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n";
-			mail_alerte("Anomalie de suppression de conteneur",$texte_mail,'y');
-			echo "<p style='color:red'>$texte_mail</p>\n";
-		}
-		*/
+		
     }
 
-    //echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"index.php\" method=\"POST\">\n";
     echo "<div class='norme'>\n";
 	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
     echo "<p class='bold'>\n";
@@ -417,54 +416,36 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 		$num_groupe=-1;
 		$nb_groupes_suivies=count($tab_groups);
-
-		//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
-
+        
 		$id_grp_prec=0;
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
-		//foreach($tab_groups as $tmp_group) {
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
 			if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
 				if($tab_groups[$loop]['id']==$id_groupe){
 					$num_groupe=$loop;
 
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 
 					$temoin_tmp=1;
 					if(isset($tab_groups[$loop+1])){
 						$id_grp_suiv=$tab_groups[$loop+1]['id'];
-
-						//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
 					}
 					else{
 						$id_grp_suiv=0;
 					}
 				}
 				else {
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 				}
 
 				if($temoin_tmp==0){
 					$id_grp_prec=$tab_groups[$loop]['id'];
-
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 				}
 			}
 		}
 		// =================================
-
-		/*
-		if(isset($id_grp_prec)){
-			if($id_grp_prec!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
-			}
-		}
-		*/
 
 		if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
 
@@ -491,26 +472,14 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 </script>\n";
 
 			echo "<input type='hidden' name='periode_num' id='periode_num' value='$periode_num' />\n";
-			//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 			echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
 			echo "</select> | \n";
 		}
-
-		/*
-		if(isset($id_grp_suiv)){
-			if($id_grp_suiv!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
-				}
-		}
-		*/
 	}
 	// =================================
 }
 
-    //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'>" . $current_group["description"] . " : Choisir une autre période</a>|";
-    //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> " . htmlentities($current_group["description"]) . " : Choisir une autre période</a> | \n";
     echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre période</a> | \n";
 
 	// Recuperer la liste des cahiers de notes
@@ -528,7 +497,6 @@ var tab_per_cn=new Array();\n";
 			if($lig_cn->periode==$periode_num) {$chaine_options_periodes.=" selected='true'";}
 			$chaine_options_periodes.=">$lig_cn->periode</option>\n";
 
-			//echo "var tab_per_cn[$lig_cn->id_cahier_notes]=$lig_cn->periode;\n";
 			echo "tab_per_cn[$lig_cn->id_cahier_notes]=$lig_cn->periode;\n";
 		}
 
@@ -562,7 +530,6 @@ var tab_per_cn=new Array();\n";
 	}
 </script>\n";
 	
-		//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 		echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période</span> <select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 		echo $chaine_options_periodes;
 		echo "</select> | \n";
@@ -581,22 +548,14 @@ var tab_per_cn=new Array();\n";
 		echo "<a href='import_cahier_notes.php?id_racine=".$id_racine."'>Importer les notes</a> | \n";
 		//==================================
 
-        //echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&mode_navig=retour_index'>Créer une boîte</a>|";
-
-        //echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'>Créer une boîte</a>|\n";
-
-        //echo "<br/><a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
         echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
         if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
         echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
 
-        //echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&mode_navig=retour_index'>Créer une évaluation</a>|";
         echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a> | \n";
         if ($periode_num!='1')  {
             $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
-            //echo "<a href='index.php?id_groupe=$id_groupe&periode_num=$periode_num&creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Créer la même structure que la période précédent</a>|";
             echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
-			//echo "&nbsp;| \n";
         }
     }
 
@@ -607,14 +566,11 @@ var tab_per_cn=new Array();\n";
 	echo " | ";
 	echo "<a href=\"index_cc.php?id_racine=$id_racine\"> ".ucfirst($nom_cc)."</a>";
 
-    //echo "</b>\n";
     echo "</p>\n";
 	echo "</form>\n";
 	echo "</div>\n";
 
-    //echo "<h2 class='gepi'>Carnet de notes : ". $current_group["description"] . " ($nom_periode[$periode_num])</h2>\n";
     echo "<h2 class='gepi'>Carnet de notes : ". htmlentities($current_group["description"]) . " ($nom_periode[$periode_num])</h2>\n";
-    //echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | Matière : " . $current_group["matiere"]["nom_complet"] . "(" . $current_group["matiere"]["matiere"] . ")";
     echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . "(" . htmlentities($current_group["matiere"]["matiere"]) . ")";
     // On teste si le carnet de notes est partagé ou non avec d'autres utilisateurs
     $login_prof = $_SESSION['login'];
@@ -709,7 +665,6 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
         echo "<p><a href='index.php?id_groupe=$id_groupe&amp;periode_num=$i'>".ucfirst($current_group["periodes"][$i]["nom_periode"])."</a>";
 
 	$sql="SELECT * FROM periodes WHERE num_periode='$i' AND id_classe='".$current_group["classes"]["list"][0]."' AND verouiller='N'";
-	//echo "<br />$sql<br />";
 	$res_test=mysql_query($sql);
 	if(mysql_num_rows($res_test)==0){
 		echo " (<i>période close</i>)";
@@ -728,22 +683,22 @@ if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset(
     <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
     <p>Accéder au carnet de notes : </p>
     <?php
-    //$groups = get_groups_for_prof($_SESSION["login"]);
     $groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 
     if (empty($groups)) {
         echo "<br /><br />";
-        //echo "<b>Aucun cahier de texte n'est disponible.</b>";
         echo "<b>Aucun cahier de notes n'est disponible.</b>";
         echo "<br /><br />";
     }
 
     foreach($groups as $group) {
        echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-       //echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . $group["description"] . "</a> <span class=small>(" . $group["matiere"]["nom_complet"] .")</span></p>";
        echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
        echo "</span></p>\n";
     }
 }
+  /**
+   * Pied de page
+   */
 require("../lib/footer.inc.php");
 ?>
