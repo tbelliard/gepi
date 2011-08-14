@@ -674,4 +674,19 @@ if ($test_champ>0) {
 	}
 }
 
+
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_cas_table'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('sso_cas_table', 'no');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Définition du paramètre sso_cas_table : Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Définition du paramètre sso_cas_table : Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre sso_cas_table existe déjà dans la table setting.</font><br />";
+}
+
+
 ?>

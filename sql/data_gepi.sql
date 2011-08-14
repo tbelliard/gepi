@@ -954,3 +954,5 @@ INSERT INTO droits VALUES ( '/mod_discipline/definir_natures.php', 'V', 'F', 'F'
 INSERT INTO droits SET id='/init_xml2/traite_csv_udt.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Import des enseignements via un Export CSV UDT',statut='';
 INSERT INTO droits VALUES ('/init_xml2/init_alternatif.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');
 INSERT INTO droits SET id='/mod_examen_blanc/copie_exam.php', administrateur='V', professeur='V', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Examen blanc: Copie', statut='';
+INSERT INTO `setting` VALUES ('sso_cas_table', 'no');
+INSERT INTO droits VALUES ('/mod_sso_table/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion de la table de correspondance sso', '');

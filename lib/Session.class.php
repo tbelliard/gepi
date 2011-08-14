@@ -51,6 +51,7 @@ class Session {
 	public $auth_locale = true; # true, false. Par défaut, on utilise l'authentification locale
 	public $auth_ldap = false; # false, true
 	public $auth_sso = false; # false, cas, lemon, lcs
+    private $login_sso = false; //login (ou uid) du sso auquel on est connecté (peut être différent du login gepi, la correspondance est faite dans mod_sso_table) 
 	public $current_auth_mode = false;  # gepi, ldap, sso, ou false : le mode d'authentification
 										# utilisé par l'utilisateur actuellement connecté
 
@@ -823,8 +824,21 @@ class Session {
 		// Authentification
 		phpCAS::forceAuthentication();
 */
-
-		$this->login = phpCAS::getUser();
+if (getSettingValue("sso_cas_table") == 'yes') {
+            $this->login_sso = phpCAS::getUser();
+            $test = $this->test_loginsso();
+            if ($test == '0') {
+                //la correspondance n'existe pas dans gépi; on detruit la session avant de rediriger.            
+                session_destroy();
+                header("Location:login_failure.php?error=11&mode=sso_table");
+                exit;
+            } else {
+                $this->login = $test;
+            }
+        } else {
+            $this->login = phpCAS::getUser();
+        }
+		
 /* La session est gérée par phpCAS directement, en amont. On n'y touche plus.
 		session_name("GEPI");
 		session_start();
@@ -854,6 +868,17 @@ class Session {
 		return true;
 	}
 
+    private function test_loginsso()
+  {
+      $requete = "SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='$this->login_sso'";
+      $result = mysql_query($requete);
+      $valeur = mysql_fetch_array($result);
+      if ($valeur[0] == '') {
+          return "0";
+      } else {
+          return $valeur[0];
+      }
+  }
 	public function logout_cas() {
 		include_once('CAS.php');
 

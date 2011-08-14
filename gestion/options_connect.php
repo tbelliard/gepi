@@ -71,6 +71,14 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 		saveSetting("auth_sso", $_POST['auth_sso']);
 	}
 
+	if (isset($_POST['sso_cas_table'])) {
+	    if ($_POST['sso_cas_table'] != "yes") {
+	    	$_POST['sso_cas_table'] = "no";
+	    }
+	} else {
+		$_POST['sso_cas_table'] = "no";
+	}
+	saveSetting("sso_cas_table", $_POST['sso_cas_table']);
 
 	if (isset($_POST['auth_locale'])) {
 	    if ($_POST['auth_locale'] != "yes") {
@@ -481,6 +489,13 @@ echo "<input type='text' size='60' name='login_sso_url' value='".getSettingValue
 echo "</p>\n";
 
 echo "<br/>\n";
+
+echo "<p><input type='checkbox' name='sso_cas_table' value='yes' id='sso_cas_table'";
+if ($gepiSettings['sso_cas_table'] == 'yes') echo " checked='checked' ";
+echo " /> <label for='sso_cas_table' style='cursor: pointer;'>Sessions SSO CAS uniquement : utiliser une table de correspondance .";
+echo "</label>\n";
+echo "</p>\n";
+
 echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>\n";
 
 echo "<input type='hidden' name='auth_options_posted' value='1' />\n";
