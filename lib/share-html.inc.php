@@ -176,7 +176,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 				echo "<ul>\n";
 				while ($j < $nb_dev) {
 					if (getSettingValue("utiliser_sacoche") == 'yes') {
-						echo '<form id="sacoche_form" name="sacoche_form" method="POST" action="'.getSettingValue("sacocheUrl").'/index.php">';
+						echo '<form id="sacoche_form_'.$j.'" method="POST" action="'.getSettingValue("sacocheUrl").'/index.php">';
 						echo '<input type="hidden" name="id" value="'.getSettingValue("sacoche_base").'"/>';
 						echo '<input type="hidden" name="page" value="professeur_eval"/>';
 						echo '<input type="hidden" name="section" value="groupe"/>';
@@ -231,7 +231,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					}
 
 					if (getSettingValue("utiliser_sacoche") == 'yes') {
-						echo " - <a href='#' onclick='document.sacoche_form.submit();'>Évaluer par compétence</a>";
+						echo " - <a href='#' onclick=\"document.getElementById('sacoche_form_".$j."').submit();\">Évaluer par compétence</a>";
 					}
 
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
