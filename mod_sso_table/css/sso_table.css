@@ -1,0 +1,35 @@
+.message_red {
+  color : #FF0000;
+
+}
+.message_orange {
+  color : #FF9F14;
+
+}
+.message_green {
+  color : #007F0E;
+
+}
+.message_blue {
+  color : #0000FF;
+
+}
+.message_purple {
+  color : #B219FF;
+
+}
+.left{
+  float:left;
+  margin-right: 50px;
+
+}
+div.red {
+  border:1px solid;
+  border-color:red;
+  text-align:center;
+  font-size: 20px;
+  color:#FFFFFF;
+  margin:10px;
+  padding:5px;
+  background-color: #FF7797;
+}

@@ -775,6 +775,7 @@ description='Import des enseignements via un Export CSV UDT',
 statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/init_xml2/init_alternatif.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_sso_table/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion de la table de correspondance sso', '');";
 
 $tab_req[] = "INSERT INTO droits SET id='/mod_examen_blanc/copie_exam.php', administrateur='V', professeur='V', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Examen blanc: Copie', statut='';";
 
