@@ -698,10 +698,10 @@ function get_cn_from_id_groupe_periode_num($id_groupe, $periode_num) {
 // avec recalcul des moyennes lancé...
 /**
  *
- * @global type $current_group
- * @global type $periode_num
- * @global type $id_racine
- * @param type $id_parent_tmp 
+ * @global int
+ * @global int
+ * @global int
+ * @param int $id_parent_tmp 
  */
 function recherche_enfant($id_parent_tmp){
 	global $current_group, $periode_num, $id_racine;

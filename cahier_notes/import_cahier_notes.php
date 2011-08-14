@@ -105,24 +105,7 @@ $jour=sprintf("%02d",$instant['mday']);
 $annee=$instant['year'];
 
 
-/*
-function recherche_enfant($id_parent_tmp){
-	global $current_group, $periode_num, $id_racine;
-	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
-	//echo "<!-- $sql -->\n";
-	$res_enfant=mysql_query($sql);
-	if(mysql_num_rows($res_enfant)>0){
-		while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
-			recherche_enfant($lig_conteneur_enfant->id);
-		}
-	}
-	else{
-		$arret = 'no';
-		$id_conteneur_enfant=$id_parent_tmp;
-		mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
-	}
-}
-*/
+
 
 
 //**************** EN-TETE *****************
