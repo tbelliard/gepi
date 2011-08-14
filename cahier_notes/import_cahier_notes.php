@@ -1,11 +1,17 @@
 <?php
-//@set_time_limit(0);
-/*
- * @version: $Id$
-*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
-* This file is part of GEPI.
+/**
+ * Import de devoirs dans le carnet de notes
+ * 
+ * $Id$
+ *
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * 
+ * @license GNU/GPL
+ * @package Carnet_de_notes
+ * @subpackage export
+*/
+
+/* This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -22,8 +28,11 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+//@set_time_limit(0);
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 extract($_POST, EXTR_OVERWRITE);
 
@@ -110,6 +119,9 @@ $annee=$instant['year'];
 
 //**************** EN-TETE *****************
 $titre_page = "Import de devoirs dans le cahier de notes";
+/**
+ * EntÍte de la page
+ */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -130,12 +142,6 @@ if (!isset($is_posted)) {
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=\"hidden\" name=\"id_racine\" value=\"$id_racine\" />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
-
-	/*
-	// Ajouter une case ‡ cocher pour ajouter ou remplacer les devoirs de mÍme nom existants... A FAIRE
-	echo "<p><input type=\"radio\" name=\"mode\" value=\"ajouter\" />Ajouter le contenu du CSV comme de nouveaux devoirs,<br />\n";
-	echo "ou <input type=\"radio\" name=\"mode\" value=\"remplacer\" /> remplacer les notes pour les devoirs de mÍme nom.</p>\n";
-	*/
 
 	echo "<p><input type=submit value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -166,19 +172,12 @@ else {
 	if(!isset($_POST['valide_insertion_devoirs'])) {
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-		/*
-		foreach($csv_file as $key => $value) {
-			echo "\$csv_file[$key]=$value<br />";
-		}
-		*/
-
 		if (trim($csv_file['name'])=='') {
 			echo "<p>Aucun fichier n'a ÈtÈ sÈlectionnÈ !<br />\n";
 			echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>";
 		}
 		else{
 
-			//$fp = dbase_open($csv_file['tmp_name'], 0);
 			$fp=fopen($csv_file['tmp_name'],"r");
 
 			if(!$fp){
@@ -204,7 +203,6 @@ else {
 					for($i=0;$i<count($en_tete);$i++){
 						if(trim($en_tete[$i])==$tabchamps[$k]){
 							$tabindice[$k]=$i;
-							//echo "\$tabindice[$k]=$tabindice[$k]<br />";
 							$temoin++;
 						}
 					}
@@ -230,7 +228,6 @@ else {
 					$ligne = fgets($fp, 4096);
 					if(trim($ligne)!=""){
 						$ligne=trim($ligne);
-						//echo "<p>ligne=$ligne<br />\n";
 						$tabligne=explode(";",preg_replace('/"/','',$ligne));
 
 						switch($tabligne[$tabindice[0]]){
@@ -244,14 +241,8 @@ else {
 									// On ne compte pas les champs avec un nom de devoir vide
 									// Si: il faut que les nomc_dev, coef_dev et date_dev aient le mÍme nombre de colonnes...
 									// ... le test est fait plus loin pour ne pas crÈer de devoir avec un nom vide.
-									//if(trim($tabligne[$i])!=""){
-										$nomc_dev[]=preg_replace("/[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_\. - ]/","",corriger_caracteres($tabligne[$i]));
-									//}
-									/*
-									if($mode=="remplacer"){
-										$sql="SELECT id FROM cn_devoirs WHERE (nom_court='".."' AND id_racine='$id_racine')";
-									}
-									*/
+									$nomc_dev[]=preg_replace("/[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_\. - ]/","",corriger_caracteres($tabligne[$i]));
+									
 								}
 								break;
 							case "GEPI_DEV_COEF":
@@ -284,18 +275,14 @@ else {
 								$date_dev=array();
 								for($i=$tabindice[2];$i<sizeof($tabligne);$i++){
 									// Comment la date va-t-elle Ítre formatÈe?
-									//$date_dev[]=$tabligne[$i];
-
-									//echo "\$tabligne[$i]=$tabligne[$i]<br />\n";
-
+									
 									// Dans le cas d'un import de CSV rÈalisÈ depuis l'enregistrement ODS->CSV, on a 46 colonnes de devoirs
 									// Le tabeau $date_dev[] est rempli jusqu'‡ l'indice 45.
 									// Par contre, pour les devoirs, ne sont crÈÈs que ceux dont le nomc_dev[] est non vide
 									if((strlen(preg_replace("#[0-9/]#","",$tabligne[$i]))!=0)||($tabligne[$i]=="")){
 										$tabligne[$i]="$jour/$mois/$annee";
 									}
-									//echo "\$tabligne[$i]=$tabligne[$i]<br />\n";
-
+									
 									$tmpdate=explode("/",$tabligne[$i]);
 									if(strlen($tmpdate[0])==4){
 										// Ce cas ne devrait pas se produire...
@@ -307,7 +294,6 @@ else {
 										}
 										$date="$tmpdate[2]-$tmpdate[1]-$tmpdate[0] 00:00:00";
 									}
-									//echo "date=$date<br />\n";
 									$date_dev[]=$date;
 								}
 								break;
@@ -393,9 +379,9 @@ else {
 					$note_sur_dev = array_pad(array(), count($nomc_dev), 20);
 				}
 
-				//================
-				// A FAIRE:
-				// AFFICHER UN TABLEAU DE CE QUI VA ETRE CRÈÈ ‡ CE STADE... AVEC DES CASES ‡ COCHER POUR CONFIRMER.
+/**
+ * @todoAFFICHER UN TABLEAU DE CE QUI VA ETRE CRÈÈ ‡ CE STADE... AVEC DES CASES ‡ COCHER POUR CONFIRMER.
+ */
 
 				echo "<div align='center'>\n";
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -486,26 +472,12 @@ else {
 							if((isset($tab_dev[$i]['note'][$j]))&&(isset($tab_dev[$i]['statut'][$j]))){
 
 								if($tab_dev[$i]['statut'][$j]!=""){
-									/*
-									//echo "<td>".$tab_dev[$i]['statut'][$j]."</td>\n";
-									echo "<td>";
-									//echo $tab_dev[$i]['statut'][$j];
-									echo "<input type='text' name='tab_dev_".$i."_statut_".$j."' value=\"".$tab_dev[$i]['statut'][$j]."\" />\n";
-									echo "</td>\n";
-									*/
 									$note=$tab_dev[$i]['statut'][$j];
 									if($note=="v"){
 										$note="";
 									}
 								}
 								else{
-									/*
-									//echo "<td>".$tab_dev[$i]['note'][$j]."</td>\n";
-									echo "<td>";
-									//echo $tab_dev[$i]['statut'][$j];
-									echo "<input type='text' name='tab_dev_".$i."_note_".$j."' value=\"".$tab_dev[$i]['note'][$j]."\" />\n";
-									echo "</td>\n";
-									*/
 									$note=$tab_dev[$i]['note'][$j];
 								}
 								echo "<td>";
@@ -522,7 +494,6 @@ else {
 				echo "</form>\n";
 
 				echo "</div>\n";
-				//================
 			}
 		}
 	}
@@ -576,15 +547,6 @@ else {
 		for($i=0;$i<count($nomc_dev);$i++){
 			if($nomc_dev[$i]!=""){
 				if(isset($valide_import_dev[$i])){
-					/*
-					$sql="INSERT INTO cn_devoirs SET id_racine='$id_racine',
-													id_conteneur='$id_conteneur',
-													nom_court='".$nomc_dev[$i]."'
-													nom_complet='".$nomc_dev[$i]."',
-													date='".$date_dev[$i]."',
-													coef='".$coef_dev[$i]."',
-													display_parents='1';";
-					*/
 					$sql="INSERT INTO cn_devoirs SET id_racine='$id_racine',
 													id_conteneur='$id_conteneur',
 													nom_court='Nouveau';";
@@ -629,51 +591,12 @@ else {
 		echo "</p>\n";
 
 		// On passe ‡ l'insertion des notes
-		// $tab_dev[$cpt_ele]['login']
-		// $tab_dev[$cpt_ele]['note'][]
-		// $tab_dev[$cpt_ele]['statut'][]
 		echo "<p>Insertion des notes pour ";
-		/*
-		for($i=0;$i<count($tab_dev);$i++){
-			if($i>0){echo ", ";}
-			if(isset($tab_dev[$i]['login'])){
-				echo $tab_dev[$i]['login'];
-				for($j=0;$j<count($id_dev);$j++){
-					if((isset($tab_dev[$i]['note'][$j]))&&(isset($tab_dev[$i]['statut'][$j]))){
-						$sql="INSERT INTO cn_notes_devoirs SET login='".$tab_dev[$i]['login']."',
-																id_devoir='".$id_dev[$j]."',
-																note='".$tab_dev[$i]['note'][$j]."',
-																statut='".$tab_dev[$i]['statut'][$j]."';";
-						//echo "$sql<br />\n";
-						//echo "OK<br />\n";
-						$res_insert=mysql_query($sql);
-						// METTRE LES ERREURS DANS UN $msg?
-					}
 
-					if($i==count($tab_dev)-1){
-						//echo " (recalcul) ";
-						$arret = 'no';
-						mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur,$arret);
-						// La boite courante est mise ‡ jour...
-						// ... mais pas la boite destination.
-						// Il faudrait rechercher pour $id_racine les derniers descendants et lancer la mise ‡ jour sur chacun de ces descendants.
-						// C'est fait l‡:
-						recherche_enfant($id_racine);
-					}
-					flush();
-				}
-			}
-		}
-		*/
-
-		//for($i=0;$i<count($tab_dev);$i++){
-		//for($i=0;$i<count($nomc_dev);$i++){
 		for($i=0;$i<count($login_ele);$i++){
 			if($i>0){echo ", ";}
 			if(isset($login_ele[$i])) {
-				//echo $login_ele[$i];
 				echo get_nom_prenom_eleve($login_ele[$i]);
-				//for($j=0;$j<count($id_dev);$j++){
 				for($j=0;$j<count($nomc_dev);$j++){
 					if(isset($valide_import_dev[$j])){
 						if(isset($id_dev[$j])){
@@ -704,26 +627,15 @@ else {
 									$elev_statut='v';
 								}
 
-								/*
-								$sql="INSERT INTO cn_notes_devoirs SET login='".$tab_dev[$i]['login']."',
-																		id_devoir='".$id_dev[$j]."',
-																		note='".$tab_dev[$i]['note'][$j]."',
-																		statut='".$tab_dev[$i]['statut'][$j]."';";
-								*/
 								$sql="INSERT INTO cn_notes_devoirs SET login='".$login_ele[$i]."',
 																		id_devoir='".$id_dev[$j]."',
 																		note='".$note."',
 																		statut='".$elev_statut."';";
-								//echo "$sql<br />\n";
-								//echo "OK<br />\n";
 								$res_insert=mysql_query($sql);
 								// METTRE LES ERREURS DANS UN $msg?
 							}
 
-							//if($i==count($tab_dev)-1){
-							//if($i==count($nomc_dev)-1){
 							if($i==count($login_ele)-1){
-								//echo " (recalcul) ";
 								$arret = 'no';
 								mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur,$arret);
 								// La boite courante est mise ‡ jour...
@@ -745,5 +657,8 @@ else {
 	}
 }
 echo "<p><br /></p>\n";
+/**
+ * Pied de page
+ */
 require("../lib/footer.inc.php");
 ?>
