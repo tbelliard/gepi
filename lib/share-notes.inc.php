@@ -38,9 +38,9 @@ function test_conteneurs_vides($id_conteneur,$id_racine) {
  *
  * @param array $_current_group les informations du groupes obtenues à partir de get_group()
  * @param int $periode_num le numéro de la période
- * @param type $id_racine Id du conteneur racine
- * @param type $id_conteneur Id du conteneur
- * @param type $arret si yes, on ne recalcule pas les sous-conteneurs
+ * @param int $id_racine Id du conteneur racine
+ * @param int $id_conteneur Id du conteneur
+ * @param string $arret si yes, on ne recalcule pas les sous-conteneurs
  * @see get_group()
  * @see calcule_moyenne()
  */

@@ -75,13 +75,7 @@ function recherche_enfant($id_parent_tmp) {
 	$res_enfant=mysql_query($sql);
 	if(mysql_num_rows($res_enfant)>0){
 		while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
-			/*
-			echo "<!-- nom_court=$lig_conteneur_enfant->nom_court -->\n";
-			echo "<!-- nom_complet=$lig_conteneur_enfant->nom_complet -->\n";
-			echo "<!-- id=$lig_conteneur_enfant->id -->\n";
-			echo "<!-- parent=$lig_conteneur_enfant->parent -->\n";
-			echo "<!-- recherche_enfant($lig_conteneur_enfant->id); -->\n";
-			*/
+			
 			recherche_enfant($lig_conteneur_enfant->id);
 		}
 	}

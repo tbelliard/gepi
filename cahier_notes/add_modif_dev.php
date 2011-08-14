@@ -8,9 +8,22 @@
  *
  * @package Carnet_de_notes
  * @subpackage Conteneur
- * @license GNU/GPL, 
- * @see COPYING.txt
+ * @license GNU/GPL
+ * @see add_token_field()
+ * @see Calendrier::get_strPopup()
+ * @see check_token()
+ * @see checkAccess()
+ * @see corriger_caracteres()
+ * @see get_group()
+ * @see get_groups_for_prof()
+ * @see getPref()
+ * @see getSettingValue()
+ * @see mise_a_jour_moyennes_conteneurs()
+ * @see recherche_enfant()
+ * @see Session::security_check()
+ * @see Verif_prof_cahier_notes()
  */
+
 /*
  * This file is part of GEPI.
  *
@@ -75,7 +88,9 @@ if ($id_devoir)  {
     header("Location: ../logout.php?auto=1");
     die();
 }
-//Configuration du calendrier
+/**
+ * Configuration des calendriers
+ */
 include("../lib/calendrier/calendrier.class.php");
 $cal = new Calendrier("formulaire", "display_date");
 $cal2 = new Calendrier("formulaire", "date_ele_resp");
@@ -92,6 +107,9 @@ $appel_cahier_notes = mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier
 $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+/**
+ * Gestion des périodes
+ */
 include "../lib/periodes.inc.php";
 
 // On teste si la periode est vérrouillée !
@@ -426,25 +444,7 @@ if (isset($_POST['ok'])) {
     mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur,$arret);
     // La boite courante est mise à jour...
     // ... mais pas la boite destination.
-    /*
-    // Il faudrait rechercher pour $id_racine les derniers descendants et lancer la mise à jour sur chacun de ces descendants.
-    function recherche_enfant($id_parent_tmp){
-        global $current_group, $periode_num, $id_racine;
-    $sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
-    //echo "<!-- $sql -->\n";
-    $res_enfant=mysql_query($sql);
-    if(mysql_num_rows($res_enfant)>0){
-        while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
-           recherche_enfant($lig_conteneur_enfant->id);
-        }
-    }
-    else{
-        $arret = 'no';
-        $id_conteneur_enfant=$id_parent_tmp;
-        mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
-    }
-    }
-    */
+    
     recherche_enfant($id_racine);
     //==========================================================
 
@@ -528,6 +528,9 @@ if ($id_devoir)  {
 }
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Ajout/modification d'une évaluation";
+/**
+ * Entête de la page
+ */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";

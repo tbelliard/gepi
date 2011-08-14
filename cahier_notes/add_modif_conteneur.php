@@ -8,8 +8,7 @@
  *
  * @package Carnet_de_notes
  * @subpackage Conteneur
- * @license GNU/GPL,  
- * @see COPYING.txt
+ * @license GNU/GPL
  * @see add_token_field()
  * @see checkAccess()
  * @see check_token()
@@ -19,10 +18,11 @@
  * @see getSettingValue()
  * @see mise_a_jour_moyennes_conteneurs()
  * @see recherche_enfant()
+ * @see Session::security_check()
  * @see sous_conteneurs()
- * @see Verif_prof_cahier_notes ()
-
+ * @see Verif_prof_cahier_notes()
 */
+
 /*
 * This file is part of GEPI.
 *
