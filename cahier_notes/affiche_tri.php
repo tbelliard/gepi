@@ -9,6 +9,7 @@
  * @license GNU/GPL, 
  * @see COPYING.txt
  */
+
 /*
 * This file is part of GEPI.
 *
@@ -28,6 +29,9 @@
 */
 
 // Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -74,6 +78,9 @@ header('Content-Type: text/xml; charset=ISO-8859-1');
 if($mode!="ajax") {
 	//**************** EN-TETE *****************
 	//$titre_page = "Saisie des notes";
+  /**
+   * Entête de la page
+   */
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 }
@@ -86,7 +93,6 @@ $tab2=explode('|',$chaine2);
 $tab3=array();
 $rg=array();
 
-//echo "<h2>$titre</h2>\n";
 echo "<table width='100%' class='boireaus'>\n";
 echo "<tr>\n";
 echo "<td>\n";
@@ -150,6 +156,9 @@ echo "</tr>\n";
 echo "</table>\n";
 
 if($mode!="ajax") {
+  /**
+   * Pied de page
+   */
 	require("../lib/footer.inc.php");
 }
 ?>

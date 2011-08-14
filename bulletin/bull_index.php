@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
  * @todo Les bulletins HTML utilisent les infos display_rang, display_coef,... de la table 'classes'.
  *Les bulletins PDF utilisent plutôt les infos de la table 'modele_bulletin' il me semble.
  *Il faudrait peut-être revoir le dispositif pour adopter la même stratégie.
@@ -12,6 +12,7 @@
  * @package Bulletin
  * @subpackage Edition
  */
+
 /*
 * This file is part of GEPI.
 *
@@ -30,7 +31,9 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 // Resume session

@@ -1,8 +1,13 @@
 <?php
-/* $Id$ */
+/**
+ *  $Id$
+ * 
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @package Epreuve_blanche
+ * @subpackage Transfert
+ */
+
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify

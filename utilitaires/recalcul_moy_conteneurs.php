@@ -1,9 +1,15 @@
 <?php
+/** Calcule les moyennes d'un conteneur
+ * 
+ * $Id$
+ *
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @package Notes
+ * @subpackage Conteneur
+ * @license GNU/GPL
+ */
+
 /*
-* $Id$
-*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -21,7 +27,9 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
