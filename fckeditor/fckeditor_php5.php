@@ -1,7 +1,12 @@
 <?php
-/*
+/**
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * @copyright Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * 
+ * @package externe
+ * @subpackage FCKeditor	
+ */
+/*
  *
  * == BEGIN LICENSE ==
  *

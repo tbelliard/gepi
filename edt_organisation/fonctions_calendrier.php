@@ -1,12 +1,16 @@
 <?php
 
 /**
- * @version $Id$
- *
  * Fichier de fonctions destinées au calendrier
+ * 
+ * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
- *
+ * @copyright Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
+ * 
+ * @package Emploi_du_temps
+ * @subpackage fonctions
+ */
+/*
  * This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
@@ -24,12 +28,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// ===============================================================================
-//
-//      Renvoie le numéro de la dernière semaine de l'année civile (52 ou 53)
-//
-// ===============================================================================
 
+/**
+ * Renvoie le numéro de la dernière semaine de l'année civile (52 ou 53)
+ * @return int numéro de la dernière semaine
+ */
 function NumLastWeek() {
 /* On regarde si on est entre Aout ou décembre auquel cas on est en année scolaire AA - AA+1
 ou si on est avant auquel cas on est en année scolaire AA-1 - AA
@@ -42,12 +45,10 @@ ou si on est avant auquel cas on est en année scolaire AA-1 - AA
  return $derniere_semaine;
 } 
 
-
-// ===================================================
-//
-//      Affiche le nom de la période courante (si définie dans les edt)
-//
-// ===================================================
+/**
+ *Affiche le nom de la période courante (si définie dans les edt)
+ * @param type $date_ts 
+ */
 function AffichePeriode($date_ts) {
 	$req_periode = mysql_query("SELECT * FROM edt_calendrier");
 	$endprocess = false;
@@ -59,11 +60,10 @@ function AffichePeriode($date_ts) {
 	}	
     
 }
-// ========================================================================
-//
-//      Affiche les dates du lundi et du samedi de la semaine courante
-//
-// ========================================================================
+
+/**
+ * Affiche les dates du lundi et du samedi de la semaine courante
+ */
 function AfficheDatesDebutFinSemaine() {
 
         $ts = time();
@@ -77,16 +77,17 @@ function AfficheDatesDebutFinSemaine() {
         echo strftime("%d %b %Y", $ts);
 }
 
-
-// ========================================================================
-//
-//
-// =========================================================================
+/**
+ * Calcule le timestamp d'un jour
+ * 
+ * Calcule à partir du N° de la semaine stocké dans $_SESSION['week_selected'] 
+ * et du N° du jour dans la semaine
+ * @param type $jour
+ * @return type
+ * @todo à quoi sert le premier test ? il ne manquerait pas un + 1 ?
+ */
 function RecupereTimestampJour ($jour) {
-
-    //setlocale (LC_TIME, 'fr_FR','fra');
     if ((1<=$_SESSION['week_selected']) AND ($_SESSION['week_selected'] <= 28)) {
-    //if ((1<=date("n")) AND (date("n") <=8)) {
 	    $annee = date("Y");
     }
     else {
@@ -106,16 +107,15 @@ function RecupereTimestampJour ($jour) {
     return $timestamp;
 }
 
-
-// ========================================================================
-//
-//      Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
-//      Usage : 
-//      $tab = RecupereLundisVendredis();
-//      echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01     
-//      echo $tab[5]["vendredis"];      // renvoie la date du vendredi de la semaine 06 
-//
-// =========================================================================
+/**
+ * Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
+ * 
+ * Usage : 
+ * - $tab = RecupereLundisVendredis();
+ * - echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01
+ * - echo $tab[5]["vendredis"];      // renvoie la date du vendredi de la semaine 06 
+ * @return array 
+ */
 function RecupereLundisVendredis () {
 
     $tab_select_semaine = array();
@@ -156,15 +156,17 @@ function RecupereLundisVendredis () {
     return $tab_select_semaine;
 }
 
-// ========================================================================
-//
-//      Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
-//      Usage : 
-//      $tab = RecupereJoursSemaine();
-//      echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01     
-//      echo $tab[5]["vendredis"];      // renvoie la date du vendredi de la semaine 06 
-//
-// =========================================================================
+/** 
+ * Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
+ * 
+ * Usage : 
+ * - $tab = RecupereJoursSemaine();
+ * - echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01
+ * - echo $tab[5]["vendredis"];      // renvoie la date du vendredi de la semaine 06 
+ * @return array 
+ * @todo Quelles différence avec RecupereLundisVendredis ()
+ * @see RecupereLundisVendredis()
+ */
 function RecupereJoursSemaine () {
 
     $tab_select_semaine = array();
@@ -221,11 +223,10 @@ function RecupereJoursSemaine () {
     return $tab_select_semaine;
 }
 
-// ===================================================
-//
-//      Renvoie "true" si des périodes sont définies
-//
-// ===================================================
+/**
+ * Renvoie "true" si des périodes sont définies
+ * @return boolean 
+ */
 function PeriodesExistent() {
 	$req_periode = mysql_query("SELECT * FROM edt_calendrier");
     if (mysql_num_rows($req_periode) > 0) {
@@ -236,11 +237,12 @@ function PeriodesExistent() {
     }
     return $retour;
 }
-// ===================================================
-//
-//      Renvoie "true" si la période spécifiée existe
-//
-// ===================================================
+
+/**
+ *Renvoie "true" si la période spécifiée existe
+ * @param type $period
+ * @return boolean 
+ */
 function PeriodExistsInDB($period) {
 	$req_periode = mysql_query("SELECT id_calendrier FROM edt_calendrier WHERE id_calendrier='".$period."' ");
     if (mysql_num_rows($req_periode) > 0) {
@@ -251,11 +253,11 @@ function PeriodExistsInDB($period) {
     }
     return $retour;
 }
-// ===================================================
-//
-//
-//
-// ===================================================
+
+/**
+ * Renvoie l'id de la première période de edt_calendrier
+ * @return int 
+ */
 function ReturnFirstIdPeriod() {
 	$req_periode = mysql_query("SELECT id_calendrier FROM edt_calendrier");
     $retour = 0;
@@ -265,11 +267,11 @@ function ReturnFirstIdPeriod() {
     return $retour;    
 }
 
-// ===================================================
-//
-//      Renvoie l'id de la période courante
-//
-// ===================================================
+/**
+ * Renvoie l'id de la période courante
+ * @param timestamp $date_ts
+ * @return int 
+ */
 function ReturnIdPeriod($date_ts) {
 	$req_periode = mysql_query("SELECT * FROM edt_calendrier");
 	$endprocess = false;
@@ -283,11 +285,12 @@ function ReturnIdPeriod($date_ts) {
     return $retour;    
 }
 
-// ===================================================
-//
-//      Renvoie l'id de la période suivant celle passée en argument
-//
-// ===================================================
+/**
+ * Renvoie l'id de la période suivant celle passée en argument
+ * @param int $current_id_period
+ * @return int
+ * @see ReturnIdPeriod()
+ */
 function ReturnNextIdPeriod($current_id_period) {
 	$req_periode = mysql_query("SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts ASC");
 	$endprocess = false;
@@ -308,11 +311,12 @@ function ReturnNextIdPeriod($current_id_period) {
     return $retour;    
 }
 
-// ===================================================
-//
-//
-//
-// ===================================================
+/**
+ * Renvoie l'id de la période précédant celle passée en argument
+ * @param int $current_id_period
+ * @return int
+ * @see ReturnIdPeriod()
+ */
 function ReturnPreviousIdPeriod($current_id_period) {
 	$req_periode = mysql_query("SELECT * FROM edt_calendrier ORDER BY debut_calendrier_ts DESC");
 	$endprocess = false;
@@ -333,7 +337,10 @@ function ReturnPreviousIdPeriod($current_id_period) {
     return $retour;    
 }
 
-// Fonction qui retourne le type de la semaine en cours
+/**
+ * Retourne le type de la semaine en cours
+ * @return string 
+ */
 function typeSemaineActu(){
 		$retour = '0';
 	$numero_sem_actu = date("W");
@@ -348,7 +355,12 @@ function typeSemaineActu(){
 	return $retour;
 }
 
-// Fonction qui retourne le jour actu en français et en toutes lettres
+/**
+ * Retourne le jour en français et en toutes lettres
+ * @param type $jour
+ * @return string
+ * @todo Pourquoi faire une boucle ?
+ */
 function retourneJour($jour){
 	if ($jour === "") {
 		$jour = date("w");
@@ -364,7 +376,10 @@ function retourneJour($jour){
 	return $jour_semaine;
 }
 
-// Fonction qui retourne l'id du créneau actuel
+/**
+ * Fonction qui retourne l'id du créneau actuel
+ * @return int 
+ */
 function retourneCreneau(){
 		$retour = 'non';
 	$heure = date("H:i:s");
@@ -387,7 +402,10 @@ function retourneCreneau(){
 	return $retour;
 }
 
-//Fonction qui retourne si on est dans la première ou la seconde partie d'un créneau
+/**
+ * Fonction qui retourne si on est dans la première ou la seconde partie d'un créneau
+ * @return float 0 ou 0.5
+ */
 function heureDeb(){
 		$retour = '0';
 	// On compare des minutes car c'est plus simple
@@ -421,7 +439,11 @@ function heureDeb(){
 	return $retour;
 }
 
-// Fonction qui retourne l'id du cours d'un prof à un créneau, jour et type_semaine donnés
+/**
+ * Fonction qui retourne l'id du cours d'un prof à un créneau, jour et type_semaine donnés
+ * @param string $prof Login de l'enseignant
+ * @return int l'id du cours
+ */
 function retourneCours($prof){
 		$retour = 'non';
 	$query = mysql_query("SELECT id_cours FROM edt_cours, j_groupes_professeurs WHERE

@@ -13,7 +13,9 @@
 *                                                                           *
 * You may use and modify this software as you wish.                         *
 * PLEASE REPORT ANY BUGS TO THE AUTHOR. THANK YOU   
- * @package FPDF	                    *	                    *
+ * 
+ * @package externe
+ * @subpackage FPDF	                    *	                    *
 ****************************************************************************/
 
 /**
