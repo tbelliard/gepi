@@ -4606,5 +4606,15 @@ function array_map_deep($callback, $array) {
     return $new;
 } 
 
+function check_utf8_and_convert($var) {
+	if(function_exists("mb_check_encoding")) {
+		if (!mb_check_encoding($var, 'UTF-8')) {
+    		return utf8_encode($var);
+    	} else {
+    		return $var;
+    	}
+	}
+} 
+
 
 ?>
