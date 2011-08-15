@@ -93,7 +93,7 @@ class PropelModelPager implements IteratorAggregate, Countable
 
 			$qForCount = clone $this->getQuery();
 
-			$this->setNbResults($this->getQuery()->find()->count());
+			$this->setNbResults($qForCount->find()->count());
 
 			if (($this->getPage() == 0 || $this->getMaxPerPage() == 0)) {
 				$this->setLastPage(0);
