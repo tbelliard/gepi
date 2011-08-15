@@ -4,6 +4,8 @@
  * 
  * $Id$
  * 
+ * Script à appeler dans le code
+ * 
  * calcul des tableaux :
  * - $moy_gen_classe = tableau des moyennes générales de la classe
  * - $moy_gen_eleve  = tableau des moyennes générales d'élèves
@@ -14,8 +16,8 @@
  * 
  * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL
- * @package Carnet_de_notes
- * @subpackage calculs
+ * @package Notes
+ * @subpackage script
  * @see calc_moy_debug()
  * @see get_group()
  */
