@@ -417,7 +417,6 @@ if ($traitement->getModifiable()) {
     echo '<tr><td colspan="2" align="center">';
     echo '<form method="post" action="enregistrement_modif_traitement.php">';
     echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
-    echo '<input type="hidden" name="id_saisie_appel" value="'.$id_saisie_appel.'"/>';
 	echo '<p>';
     echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="supprimer"/>';
