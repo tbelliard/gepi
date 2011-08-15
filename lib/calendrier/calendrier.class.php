@@ -2,10 +2,14 @@
 /**
  * Définition de la classe Calendrier
  * 
- * @package general
- * @subpackage calendrier
+ * @package General
+ * @subpackage Calendrier
  */
 
+/**
+ * @package General
+ * @subpackage Calendrier
+ */
 class Calendrier {
 
     //---------------------------------------------------------------------------------------------------------------//

@@ -36,6 +36,10 @@ require_once("class.string_tags.php");
 
 if (!defined('PARAGRAPH_STRING')) define('PARAGRAPH_STRING', '~~~');
 
+/**
+ * @package externe
+ * @subpackage FPDF
+ */
 class FPDF_MULTICELLTAG extends FPDF{
 var $wt_Current_Tag;
 var $wt_FontInfo;//tags font info

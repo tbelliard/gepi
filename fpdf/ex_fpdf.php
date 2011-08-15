@@ -7,6 +7,11 @@
  * @package externe
  * @subpackage FPDF                        *
 */
+
+/**
+ * @package externe
+ * @subpackage FPDF
+ */
 class PDF extends FPDF
 {
 var $B;

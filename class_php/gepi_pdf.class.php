@@ -1,13 +1,16 @@
 <?php
 
 /**
+ * Classe de gestion de l'impression PDF
  *
+ * $Id$
  *
- * @version $Id$
- *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
- *
- * This file is part of GEPI.
+ * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @package General
+ * @subpackage Impression
+ */
+
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +27,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/**
+ * @package General
+ * @subpackage Impression
+ */
 class bul_PDF extends FPDF_MULTICELLTAG {
 
 	/**
@@ -33,8 +40,13 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 	* drawTextBox uses drawRows
 	*
 	* This function is provided by TUFaT.com
+     * @param type $strText
+     * @param type $w
+     * @param type $h
+     * @param type $align
+     * @param type $valign
+     * @param type $border 
 	*/
-
 	function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1) {
 		$xi=$this->GetX();
 		$yi=$this->GetY();
@@ -60,8 +72,20 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 
 		$this->drawRows($w,$hrow,$strText,0,$align,0,$rows,1);
 
-	} //function drawTextBox
-
+	}
+    
+/**
+ *
+ * @param type $w
+ * @param type $h
+ * @param type $txt
+ * @param string $border
+ * @param type $align
+ * @param type $fill
+ * @param type $maxline
+ * @param type $prn
+ * @return int 
+ */
 	function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0) {
 
 		$cw=&$this->CurrentFont['cw'];
@@ -180,8 +204,15 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		}
 		$this->x=$this->lMargin;
 		return $nl;
-	} //function drawRows
-
+	}
+    
+/**
+ *
+ * @param type $x
+ * @param type $y
+ * @param type $txt
+ * @param type $direction 
+ */
 	function TextWithDirection($x,$y,$txt,$direction='R'){
 
 		$txt=str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt)));
@@ -198,8 +229,16 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		if ($this->ColorFlag)
 			$s='q '.$this->TextColor.' '.$s.' Q';
 		$this->_out($s);
-	} // function TextWithDirection
+	}
 
+    /**
+     *
+     * @param type $x
+     * @param type $y
+     * @param type $txt
+     * @param type $txt_angle
+     * @param type $font_angle 
+     */
 	function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0){
 
 		$txt=str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt)));
@@ -219,9 +258,17 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		if ($this->ColorFlag)
 			$s='q '.$this->TextColor.' '.$s.' Q';
 		$this->_out($s);
-	} // function TextWithRotation
+	}
 
-	// fonction graphique de niveau
+/**
+ * Graphique de niveau
+ * @param type $X_placement
+ * @param type $Y_placement
+ * @param type $L_diagramme
+ * @param type $H_diagramme
+ * @param type $data
+ * @param type $place 
+ */
 	function DiagBarre($X_placement, $Y_placement, $L_diagramme, $H_diagramme, $data, $place)
 	{
 		$this->SetFont('Courier', '', 10);
@@ -234,7 +281,6 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		$L_diagramme_affiche = $L_diagramme-1;
 		$H_diagramme_affiche = $H_diagramme-1;
 		$this->Rect($X_placement_diagramme, $Y_placement_diagramme, $L_diagramme_affiche, $H_diagramme_affiche, 'D');
-
 
 		//calcul de la longeur de chaque barre
 		$nb_valeur=count($data);
@@ -275,27 +321,22 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 			$this->Rect($X_barre, $Y_barre, $L_barre, $H_barre, 'DF');
 			$i++;
 		}
-	} // function DiagBarre
-
-	//En-tête du document
+	}
+    
+/**
+ * En-tête du document
+ */
 	function Header(){
 
 	}
 
-	//Pied de page du document
+/**
+ * Pied de page du document
+ */
 	function Footer() {
 		// On utilise la classe bul_PDF pour les bulletins et pour les relevés de notes et la formule de bas de page ne doit pas nécessairement être la même.
 		// Traitement du footer déplacé dans les pages concernées.
-		/*
-		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
-		$this->SetXY(5,-10);
-		//Police Arial Gras 6
-		$this->SetFont('Arial','B',8);
-		// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
-		$fomule = getSettingValue("bull_formule_bas");
-		$this->Cell(0,4.5, $fomule,0,0,'C');
-		*/
 	}
 
-} // class bul_PDF
+}
 ?>

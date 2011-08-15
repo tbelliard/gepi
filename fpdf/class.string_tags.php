@@ -19,7 +19,9 @@
 ****************************************************************************/
 
 /**
-	Extracts the tags from a string
+ * Extracts the tags from a string
+ * @package externe
+ * @subpackage FPDF	
 */
 class String_TAGS{
 var $aTAGS;

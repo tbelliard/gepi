@@ -9,11 +9,18 @@
 * Modifications : decode_pdf_utf8 (Equipe Gepi)                                *
 * Modifications : Fonctions myWriteHTML, MyOpenTag, MyCloseTag, MySetStyle     *
 *                 pour ne gerer que les styles B, I, U et évaluer correctement *
-*                 les largeurs                                                 *
+*                 les largeurs  
+ * @package externe
+ * @subpackage FPDF                                          *
 *******************************************************************************/
-
+/**
+ * Version de FPDF
+ */
 define('FPDF_VERSION','1.6');
-
+/**
+ * @package externe
+ * @subpackage FPDF            
+ */
 class FPDF
 {
 var $page;               //current page number

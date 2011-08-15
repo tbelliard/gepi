@@ -6,6 +6,7 @@
  * @package externe
  * @subpackage FCKeditor	
  */
+
 /*
  *
  * == BEGIN LICENSE ==
@@ -76,6 +77,11 @@ function FCKeditor_IsCompatibleBrowser()
 		return false ;
 }
 
+/**
+ * 
+ * @package externe
+ * @subpackage FCKeditor
+ */
 class FCKeditor
 {
 	/**

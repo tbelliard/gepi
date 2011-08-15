@@ -3,8 +3,8 @@
  * 
  * $Id$
  * 
- * @package general
- * @subpackage alertes
+ * @package General
+ * @subpackage Alertes
  *
  */
 	$image_path=null;

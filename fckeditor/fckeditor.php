@@ -6,6 +6,7 @@
  * @package externe
  * @subpackage FCKeditor	
  */
+
 /*
  * == BEGIN LICENSE ==
  *
@@ -30,6 +31,13 @@
  */
 
 if ( !function_exists('version_compare') || version_compare( phpversion(), '5', '<' ) )
+    /**
+     * appelle fckeditor_php4
+     */
 	include_once( 'fckeditor_php4.php' ) ;
 else
+    /**
+     * appelle fckeditor_php5
+     * @see fckeditor_php5.php
+     */
 	include_once( 'fckeditor_php5.php' ) ;
