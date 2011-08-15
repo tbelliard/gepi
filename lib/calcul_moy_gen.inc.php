@@ -17,7 +17,7 @@
  * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL
  * @package Notes
- * @subpackage script
+ * @subpackage scripts
  * @see calc_moy_debug()
  * @see get_group()
  */

@@ -12,7 +12,8 @@
 * License:  Free for non-commercial use                                     *
 *                                                                           *
 * You may use and modify this software as you wish.                         *
-* PLEASE REPORT ANY BUGS TO THE AUTHOR. THANK YOU   	                    *
+* PLEASE REPORT ANY BUGS TO THE AUTHOR. THANK YOU   
+ * @package FPDF	                    *
 ****************************************************************************/
 
 /**

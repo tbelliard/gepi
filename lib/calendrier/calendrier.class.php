@@ -1,4 +1,10 @@
 <?php
+/**
+ * Définition de la classe Calendrier
+ * 
+ * @package general
+ * @subpackage calendrier
+ */
 
 class Calendrier {
 
@@ -9,21 +15,33 @@ class Calendrier {
     /**
      * Variables concernant le format de la date
      *
-     * @var     boolean     $zeros      A true, on met les zéros devant mois ou jour s'ils sont plus petit que 10
-     * @var     array       $format     L'ordre de la date, soit l'année (a), le mois (m) et le jour (j)
-     * @var     string      $sep        Le séparateur entre l'année, le mois et le jour
+     * @var boolean A true, on met les zéros devant mois ou jour s'ils sont plus petit que 10
      */
     var $zeros = true;
+    /**
+     * Variables concernant le format de la date
+     *
+     * @var array L'ordre de la date, soit l'année (a), le mois (m) et le jour (j)
+     */
     var $format = array("j", "m", "a");
+    /**
+     * Variables concernant le format de la date
+     *
+     * @var string Le séparateur entre l'année, le mois et le jour
+     */
     var $sep = "/";
 
     /**
-     * Propriétés concernant les années dipsonibles dans le calendrier
+     * Propriétés concernant les années disponibles dans le calendrier
      *
-     * @var     integer     $aMoins     Le nombre d'années de moins que celle actuelle
-     * @var     integer     $aPlus      Le nombre d'années de plus que celle actuelle
+     * @var integer Le nombre d'années de moins que celle actuelle
      */
     var $aMoins = 1;
+    /**
+     * Propriétés concernant les années disponibles dans le calendrier
+     *
+     * @var integer Le nombre d'années de plus que celle actuelle
+     */
     var $aPlus = 2;
 
     /**
@@ -32,36 +50,65 @@ class Calendrier {
      * Si $popup est à false, c'est que le calendrier va s'afficher dans la même page. Il faut
      * donc spécifier le nom du formulaire, le nom du champ ainsi que celui de la page. Pour
      * customiser un peu l'affichage, on peut jouer sur la largeur et les marges.
-     *
+     * - $largeurCal     La largeur du calendrier (spécifier l'unité px, %, etc)
+     * - $margesCal      Les marges du calendrier (genre 15px 10px 0 10px)
+     * - string      $form           Le nom du formulaire
+     * - string      $champ          Le nom du champ
+     * - string      $page           Le nom de la page
      * @var     boolean     $popup          A true, affichera le calendrier sous forme de popup
-     * @var     string      $largeurCal     La largeur du calendrier (spécifier l'unité px, %, etc)
-     * @var     string      $margesCal      Les marges du calendrier (genre 15px 10px 0 10px)
-     * @var     string      $form           Le nom du formulaire
-     * @var     string      $champ          Le nom du champ
-     * @var     string      $page           Le nom de la page
      */
     var $popup = true;
+    
+    /**
+     * La largeur du calendrier (spécifier l'unité px, %, etc)
+     * @var     string
+     */
     var $largeurCal = "100%";
+    /**
+     * Les marges du calendrier (genre 15px 10px 0 10px)
+     * @var string  
+     */
     var $margesCal = 0;
+    /**
+     * Le nom du formulaire
+     * @var string
+     */
     var $form = null;
+    /**
+     * Le nom du champ
+     * @var string
+     */
     var $champ = null;
+    /**
+     * Le nom de la page
+     * @var string
+     */
     var $page = null;
 
     /**
-     * Propriétés diverses et variées
-     *
-     * @var     string      $titre      Le titre de la popup
-     * @var     string      $css        Le chemin et le nom du fichier de css du calendrier
-     * @var     string      $css        Le chemin et le nom du fichier javascript du calendrier
-     * @var     array       $nomj       Le nom des jours
-     * @var     array       $nomm       Le nom des mois
-     * @var     integer     $mois           Le mois choisi à afficher
-     * @var     integer     $annee          L'année choisie à afficher
+     * Le titre de la popup
+     * @var     string
      */
     var $titre = "Calendrier";
+    /**
+     * Le chemin et le nom du fichier de css du calendrier
+     * @var     string      
+     */
     var $css = "calendrier.css";
+    /**
+     * Le chemin et le nom du fichier javascript du calendrier
+     * @var     string  
+     */
     var $js = "calendrier.js";
+    /**
+     * Le nom des jours
+     * @var     array
+     */
     var $nomj = array ("Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa");
+    /**
+     * Le nom des mois
+     * @var     array
+     */
     var $nomm = array(
         "Janvier",
         "F&eacute;vrier",
@@ -76,19 +123,29 @@ class Calendrier {
         "Novembre",
         "D&eacute;cembre"
     );
+    /**
+     * Le mois choisi à afficher
+     * @var     integer
+     */
     var $mois = null;
+    /**
+     * L'année choisie à afficher
+     * @var     integer
+     */
     var $annee = null;
 
     /**
-     * Propriétés concernant le style d'affichage du calendrier
+     * Tableau de string représentant les styles disponibles
+     * @var     array       $stylesDispo
+     */
+    var $stylesDispo = array("fr", "en"); 
+    /**
+     * Style d'affichage du calendrier
      *
      * Par exemple, le style "fr" (français) commencera par lundi, alors que le style "en" (anglais)
      * commencera lui par dimanche.
-     *
-     * @var     array       $stylesDispo    Tableau de string représentant les styles disponibles
-     * @var     string      $style          Le style d'affichage du calendrier
+     * @var     string
      */
-    var $stylesDispo = array("fr", "en");
     var $style = "fr";
 
 
@@ -119,7 +176,7 @@ class Calendrier {
      *
      * Un style fr commencera par lundi, alors qu'un style "en" débutera par dimanche
      *
-     * @param   string      $form       Le type d'affichage (fr ou en)
+     * @param   string      $style       Le type d'affichage (fr ou en)
      */
     function set_style($style){
         $tab = $this->stylesDispo;
@@ -207,7 +264,7 @@ class Calendrier {
      *      - $_POST['mois']        : le numéro du mois
      *      - $_POST['annee']       : l'année
      *
-     * @param   integer     $mois       Le numéro du mois (1 = janvier)
+     * @param   array     $_POST        Le numéro du mois (1 = janvier)
      * @return  boolean                 False si change_date n'existe pas, true sinon
      */
     function auto_set_date($_POST){
@@ -595,6 +652,7 @@ class Calendrier {
      *
      * @param   integer     $jour       Le jour en cours
      * @param   integer     $index      La valeur par défaut de la string
+     * @param   string      $mode       Le mode d'affichage du calendrier ("fr" ou "en")
      * @return  string                  La string nécessaire pour appeller la classe CSS voulue
      */
     function _get_classe($jour, $index, $mode){
