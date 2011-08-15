@@ -1,4 +1,12 @@
 <?php
+/** Affiche un popup
+ * 
+ * $Id$
+ * 
+ * @package general
+ * @subpackage affichage
+ *
+ */
 	$image_path=null;
 	
 	if (isset($niveau_arbo)) {
