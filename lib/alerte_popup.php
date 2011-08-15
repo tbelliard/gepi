@@ -4,7 +4,7 @@
  * $Id$
  * 
  * @package general
- * @subpackage affichage
+ * @subpackage alertes
  *
  */
 	$image_path=null;

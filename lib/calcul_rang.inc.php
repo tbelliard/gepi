@@ -1,11 +1,30 @@
 <?php
-/*
+/** Mise à jour des rangs
+ * 
  * $Id$
+ * 
+ * Script à appeler dans le code
+ * 
+ * Met à jour les champs rang des tables
+ * - matieres_notes 
+ * - j_eleves_classes
+ * 
+ * Egalement : calcul  des tableaux suivants
+ * - $moy_gen_classe =  tableau des moyennes générales de la classe
+ * - $moy_gen_eleve =  tableau des moyennes générales d'élèves
+
+ * le script à besoin de :
+ * - $id_classe : la classe concernée
+ * - $periode_num : la période concernée
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @package Notes
+ * @subpackage script
+ */
+
+/* 
  * This file is part of GEPI.
- *
+ * 
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -21,18 +40,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
-/*
-Portion de code qui met à jour le champ rang de la table matieres_notes
-et le champ rang de la table  j_eleves_classes
-Egalement Calcul  des tableaux suivants
-$moy_gen_classe =  tableau des moyennes générales de la classe
-$moy_gen_eleve =  tableau des moyennes générales d'élèves
-
-le script à besoin de :
-- $id_classe : la classe concernée
-- $periode_num : la période concernée
-*/
 
 // On appelle la liste des élèves de la classe.
 
@@ -96,9 +103,7 @@ while ($j < $nombre_groupes) {
         order by note DESC
         ");
         $nb_notes[$group_id][$periode_num] = mysql_num_rows($quer);
-	//echo "\$nb_notes[\$group_id][\$periode_num]=\$nb_notes[$group_id][$periode_num]=".$nb_notes[$group_id][$periode_num]."<br />";
-        //echo $current_group[$j]["description"] . " : " . $nb_notes[$j][$periode_num] . " - ";
-
+	
     // Calcul du rang pour chaque matière
     $recalcul_rang = sql_query1("select recalcul_rang from groupes
         where id='".$current_group[$j]["id"]."' limit 1 ");
@@ -119,11 +124,7 @@ while ($j < $nombre_groupes) {
             if ($note == $note_prec) $rang = $rang_prec; else $rang = ($k+1);
             $rang_prec = $rang;
             $login_eleve_temp = mysql_result($quer, $k, 'login');
-			/*
-			if($current_group[$j]["id"]=='1498') {
-			echo "\$login_eleve_temp=$login_eleve_temp et \$note=$note<br />";
-			}
-			*/
+			
             $reg_rang = mysql_query("update matieres_notes set rang='".$rang."' where (
             periode = '".$periode_num."' and
             id_groupe = '".$current_group[$j]["id"]."' and
@@ -186,7 +187,6 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
             // Maintenant on regarde si l'élève suit bien cette matière ou pas
 
             if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
-//                $count[$j][$i] == "0";
                 $current_eleve_note_query = mysql_query("SELECT distinct * FROM matieres_notes
                 WHERE (
                 login='".$current_eleve_login[$i]."' AND
@@ -218,7 +218,6 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
                         }
                         elseif($current_mode_moy[$j]=='bonus') {
                             if($moy_gen_eleve[$i]>=10) {
-                                //$total_coef[$i] += $coef_eleve;
                                 $moy_gen_eleve[$i] += $coef_eleve*($current_eleve_note[$j][$i]-10);
                             }
                             $moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
@@ -240,15 +239,6 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
     while ($i < $nombre_eleves) {
         if ($total_coef[$i] != 0) {
             $temp[$i] = round($moy_gen_eleve[$i]/$total_coef[$i],1);
-			/*
-			if(($current_eleve_login[$i]=='DASILVA_J')||($current_eleve_login[$i]=='BARJON_P')||($current_eleve_login[$i]=='RAOUI_R')) {
-				echo "<p>\$current_eleve_login[$i]=$current_eleve_login[$i]<br />\n";
-				echo "\$temp[$i]=round($moy_gen_eleve[$i]/$total_coef[$i],1)=".$temp[$i]."<br />\n";
-				$tmp_val=$moy_gen_eleve[$i]/$total_coef[$i];
-				echo "$moy_gen_eleve[$i]/$total_coef[$i]=".$tmp_val."</p>\n";
-			}
-			*/
-            //$temp[$i] = round(10*$moy_gen_eleve[$i]/$total_coef[$i],1);
             $moy_gen_eleve[$i] = number_format($moy_gen_eleve[$i]/$total_coef[$i],1, ',', ' ');
             $moy_gen_classe[$i] = number_format($moy_gen_classe[$i]/$total_coef[$i],1, ',', ' ');
         } else {
