@@ -493,7 +493,7 @@ function fdebug($texte){
  */
 function checkAccess() {
     global $gepiPath;
-    $url = parse_url($_SERVER['REQUEST_URI']);
+    $url = parse_url($_SERVER['SCRIPT_NAME']);
     if ($_SESSION["statut"] == 'autre') {
 
     	$sql = "SELECT autorisation
