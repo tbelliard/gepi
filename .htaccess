@@ -23,7 +23,7 @@ AddType application/octet-stream .csv
     </FilesMatch>
 </IfModule>
 
-DirectoryIndex login.php
+DirectoryIndex login.php index.html index.htm index.php
 
 <IfModule rewrite_module>
     RewriteEngine On
