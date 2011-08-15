@@ -201,7 +201,7 @@ $eleve_col = $query
 		<input type="hidden" id="id_lieu" name="id_lieu" value=""/>
         <input type="hidden" id="filtre_actif" name="filtre_actif" value="<?php echo $filtre_actif ?>"/>
         <fieldset style="width:380px;display: inline;">
-            <legend>Choix de la date</legend>
+            <legend>Date</legend>
             <p class="expli_page choix_fin">
                 <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
                 <button dojoType="dijit.form.Button"  name="nav_date" type="submit"  value="precedent">Jour précédent</button>
