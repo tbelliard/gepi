@@ -8,7 +8,18 @@
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage export
- * @see 
+ * @see add_token_field()
+ * @see check_token()
+ * @see checkAccess()
+ * @see get_cn_from_id_groupe_periode_num()
+ * @see get_group()
+ * @see get_groups_for_prof()
+ * @see get_user_temp_directory()
+ * @see getSettingValue()
+ * @see send_file_download_headers()
+ * @see Session::security_check()
+ * @see Verif_prof_cahier_notes()
+ * @see ss_zip
  * @todo utiliser TBSOoo pour générer l'export odt
  */
 
