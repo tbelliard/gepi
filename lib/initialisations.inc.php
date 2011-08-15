@@ -76,6 +76,11 @@ $GLOBALS['gepiBetaVersion'] = '';
  */
 $GLOBALS['current_group'] = '';
 
+/**
+ * @global array $GLOBALS['tab_conteneurs_enfants'] 
+ * @name $tab_conteneurs_enfants
+ */
+$GLOBALS['tab_conteneurs_enfants'] = array ();
 
 
 

@@ -1,7 +1,16 @@
 <?php
-	/*
-		$Id$
-	*/
+/**
+ * Extrait les données pour les relevés de notes
+ * 
+ * $Id$
+ * 
+ * @package Notes
+ * @subpackage scripts
+ * @license GNU/GPL
+ * @see get_class_from_id()
+ * @see getSettingValue()
+ * @see recherche_conteneurs_enfants()
+*/
 
 	$debug_extract="n";
 	$debug_ele_login="ahnjinwon";
@@ -31,16 +40,13 @@
 		$categories[] = $row["id"];
 	}
 
-	//$tab_releve['categorie']=array();
 
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		//$cat_names[$cat_id]=mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 		$sql="SELECT nom_complet FROM matieres_categories WHERE id='".$cat_id."';";
 		$res_cat=mysql_query($sql);
 		if ($res_cat) {
 			$cat_names[$cat_id]=mysql_result($res_cat, 0);
-			//$tab_releve['categorie'][$cat_id]=$cat_names[$cat_id];
 		}
 	}
 	//===================================
@@ -68,7 +74,6 @@
 
 	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : array();
 
-	// 20100526
 	$tab_rn_moy_min_max_classe=isset($_POST['rn_moy_min_max_classe']) ? $_POST['rn_moy_min_max_classe'] : array();
 	$tab_rn_moy_classe=isset($_POST['rn_moy_classe']) ? $_POST['rn_moy_classe'] : array();
 
@@ -82,10 +87,14 @@
 	// GepiAccesOptionsReleveEleve
 	//+++++++++++++++++++++++++++++++++++
 
-	// AJOUT 20091113
+    /**
+     * Renvoie les conteneurs enfants dans un tableau
+     * @global array
+     * @param int $id_parent 
+     * @todo Déjà vu ailleurs
+     */
 	function recherche_conteneurs_enfants($id_parent) {
 		global $tab_conteneurs_enfants;
-		//$sql="SELECT id FROM cn_conteneurs where parent='$id_parent' AND parent=id;";
 		$sql="SELECT id FROM cn_conteneurs where parent='$id_parent';";
 		//echo "$sql<br />\n";
 		$res_conteneurs_enfants=mysql_query($sql);
@@ -93,7 +102,6 @@
 			while($lig=mysql_fetch_object($res_conteneurs_enfants)) {
 				$tab_conteneurs_enfants[]=$lig->id;
 				recherche_conteneurs_enfants($lig->id);
-				//echo "recherche_conteneurs_enfants($lig->id)<br />";
 			}
 		}
 	}
@@ -124,33 +132,9 @@
 		//echo "\$affiche_adresse=$affiche_adresse<br />";
 		// ++++++++++++++++++++++++++++++++++
 
-
-		/*
-		//+++++++++++++++++++++++++++++
-		// RECUPERER LES PARAMETRES ICI
-		//+++++++++++++++++++++++++++++
-		$tab_releve[$id_classe]['rn_nomdev']=isset($tab_rn_nomdev[$loop_classe]) ? "y" : "n";
-		$tab_releve[$id_classe]['rn_toutcoefdev']=isset($tab_rn_toutcoefdev[$loop_classe]) ? "y" : "n";
-		$tab_releve[$id_classe]['rn_coefdev_si_diff']=isset($tab_rn_coefdev_si_diff[$loop_classe]) ? "y" : "n";
-		$tab_releve[$id_classe]['rn_datedev']=isset($tab_rn_datedev[$loop_classe]) ? "y" : "n";
-		$tab_releve[$id_classe]['rn_sign_chefetab']=isset($tab_rn_sign_chefetab[$loop_classe]) ? "y" : "n";
-		$tab_releve[$id_classe]['rn_sign_pp']=isset($tab_rn_sign_pp[$loop_classe]) ? "y" : "n";
-		$tab_releve[$id_classe]['rn_sign_resp']=isset($tab_rn_sign_resp[$loop_classe]) ? "y" : "n";
-
-		$tab_releve[$id_classe]['rn_sign_nblig']=isset($tab_rn_sign_nblig[$loop_classe]) ? $tab_rn_sign_nblig[$loop_classe] : 3;
-		$tab_releve[$id_classe]['rn_formule']=isset($tab_rn_formule[$loop_classe]) ? $tab_rn_formule[$loop_classe] : "";
-		*/
-
-
-		//++++++++++++++++++++++++++++
-		// A VOIR: COMMENT TRAITER LE CAS $choix_periode=='intervalle'
 		if($choix_periode=='intervalle') {
 			$tab_periode_num[0]="intervalle";
 		}
-		// Fixé ainsi pour entrer dans la boucle ci-dessous
-		//++++++++++++++++++++++++++++
-
-		//echo "count(\$tab_periode_num)=".count($tab_periode_num)."<br />";
 
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
@@ -223,7 +207,6 @@
 			$affiche_adresse=$tab_releve[$id_classe][$periode_num]['rn_adr_resp'];
 			$tab_releve[$id_classe][$periode_num]['affiche_adresse']=$affiche_adresse;
 
-			// 20100526
 			$tab_releve[$id_classe][$periode_num]['rn_moy_min_max_classe']=isset($tab_rn_moy_min_max_classe[$loop_classe]) ? "y" : "n";
 			$tab_releve[$id_classe][$periode_num]['rn_moy_classe']=isset($tab_rn_moy_classe[$loop_classe]) ? "y" : "n";
 
@@ -233,8 +216,6 @@
 			$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font']=((isset($tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]!='')&&(preg_match("/^[0-9.]*$/",$tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]>0)) ? $tab_rn_rapport_standard_min_font[$loop_classe] : 3;
 
 			$_SESSION['pref_rn_rapport_standard_min_font']=$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font'];
-
-			//echo "\$tab_releve[$id_classe][$periode_num]['affiche_adresse']=".$tab_releve[$id_classe][$periode_num]['affiche_adresse']."<br />";
 
 			// Informations sur la période
 			if ($choix_periode=="intervalle") {
@@ -251,8 +232,6 @@
 			}
 
 			// Liste des élèves à éditer/afficher/imprimer (sélection):
-			// tab_ele_".$i."_".$j.
-			//$tab_releve[$id_classe][$periode_num]['selection_eleves']=array();
 			if($choix_periode=="intervalle") {
 				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_intervalle']) ? $_POST['tab_selection_ele_'.$loop_classe.'_intervalle'] : array();
 			}
@@ -281,7 +260,6 @@
 			$tab_releve[$id_classe][$periode_num]['classe']=$lig_classe->classe;
 			$tab_releve[$id_classe][$periode_num]['classe_nom_complet']=$lig_classe->nom_complet;
 			// Formule du bulletin:
-			//$tab_releve[$id_classe][$periode_num]['formule']=$lig_classe->formule;
 			$tab_releve[$id_classe][$periode_num]['suivi_par']=$lig_classe->suivi_par;
 
 			$classe=$lig_classe->classe;
@@ -296,9 +274,7 @@
 				$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$periode_num';";
 			}
 			$res_eff_classe=mysql_query($sql);
-			//$lig_eff_classe=mysql_fetch_object($res_eff_classe);
 			$eff_classe=mysql_num_rows($res_eff_classe);
-			//echo "<p>Effectif de la classe: $eff_classe</p>\n";
 
 
 			// Variables simples
@@ -319,8 +295,6 @@
 			// Cette liste peut avoir été manipulée...
 			// il faut contrôler si les élèves de la liste sont bien dans la classe sur la période indiquée
 			$current_eleve_login=$tab_releve[$id_classe][$periode_num]['selection_eleves'];
-			//echo "count(\$current_eleve_login)=".count($current_eleve_login)."<br />";
-
 
 			// Boucle élèves de la classe $id_classe pour la période $periode_num
 			for($i=0;$i<count($current_eleve_login);$i++) {
@@ -333,7 +307,6 @@
 					echo "<script type='text/javascript'>
 	document.getElementById('td_ele').innerHTML='".$current_eleve_login[$i]."';
 </script>\n";
-					//echo "\$current_eleve_login[$i]=".$current_eleve_login[$i]."<br />";
 					flush();
 				}
 				//==============================
@@ -354,12 +327,7 @@
 				$appartenance_classe_periode=mysql_num_rows($test_appartenance_classe_periode);
 				//++++++++++++++++++++++++++++++
 				if(mysql_num_rows($test_appartenance_classe_periode)>0) {
-				//if(($appartenance_classe_periode!=0)&&($autorisation_acces=='y')) {
-					// L'élève fait bien partie de la classe pour la période indiquée
-					//echo "OK classe/période<br />";
 
-
-					//+++++++++++++++++++++++++++++++++++
 					//===============================================
 					// A FAIRE
 					// Contrôler qu'il n'y a pas d'usurpation d'accès
@@ -403,11 +371,6 @@
 							if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
 						}
 						else {
-							/*
-							tentative_intrusion(2, "Tentative d'un professeur d'accéder à un relevé de notes (".$current_eleve_login[$i].") sans y être autorisé.");
-							require("../lib/footer.inc.php");
-							die();
-							*/
 							// Ou juste:
 							$autorisation_acces='n';
 						}
@@ -450,12 +413,6 @@
 					elseif ($_SESSION['statut'] == 'secours') {
 						$autorisation_acces='y';
 					}
-					//echo "\$current_eleve_login[$i]=$current_eleve_login[$i]<br />\n";
-					//echo "\$_SESSION['login']=".$_SESSION['login']."<br />\n";
-					//echo "$sql<br />\n";
-					//$autorisation_acces='y';
-					//===============================================
-					//+++++++++++++++++++++++++++++++++++
 
 					if($autorisation_acces=='y') {
 
@@ -526,7 +483,6 @@
 							}
 							$tab_ele['groupe'][$j]['matiere_nom_complet']=$current_matiere_nom_complet;
 
-							//if($avec_coef_devoir=="oui"){
 							if($tab_releve[$id_classe][$periode_num]['rn_coefdev_si_diff']=='y') {
 								// On teste s'il y a des coeff différents
 								if ($choix_periode=="intervalle") {
@@ -550,9 +506,6 @@
 									cn.periode = '".$periode_num."'
 									)";
 								}
-								//if(($tab_ele['groupe'][$j]['id_groupe']==290)&&($i==0)) {
-								//	echo "$sql<br />\n";
-								//}
 								$res_differents_coef=mysql_query($sql);
 								if(mysql_num_rows($res_differents_coef)>1){
 									$differents_coef="y";
@@ -563,42 +516,16 @@
 								$tab_ele['groupe'][$j]['differents_coef']=$differents_coef;
 							}
 
-							/*
-							// AJOUT 20091113
-
-							function recherche_conteneurs_enfants($id_parent) {
-								global $tab_conteneurs_enfants;
-								//$sql="SELECT id FROM cn_conteneurs where parent='$id_parent' AND parent=id;";
-								$sql="SELECT id FROM cn_conteneurs where parent='$id_parent';";
-								echo "$sql<br />\n";
-								$res_conteneurs_enfants=mysql_query($sql);
-								if(mysql_num_rows($res_conteneurs_enfants)>0) {
-									while($lig=mysql_fetch_object($res_conteneurs_enfants)) {
-										$tab_conteneurs_enfants[]=$lig->id;
-										recherche_conteneurs_enfants($lig->id);
-										echo "recherche_conteneurs_enfants($lig->id)<br />";
-									}
-								}
-							}
-							*/
-
-							//unset($tab_tmp);
-							//$tab_tmp=array();
 							// PB: en mode intervalle, on ne sait pas quel cahier de notes récupérer (quelle période?)
 							$sql="SELECT DISTINCT id_cahier_notes, periode FROM cn_cahier_notes WHERE id_groupe='$current_groupe' ORDER BY periode;";
 							//echo "$sql<br />\n";
-							//if(($tab_ele['groupe'][$j]['id_groupe']==290)&&($i==0)) {
 							if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
 								echo "$sql<br />\n";
 							}
 							$res_grp_id_cn=mysql_query($sql);
 							while($lig_grp_id_cn=mysql_fetch_object($res_grp_id_cn)) {
-								//$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['id_racine']=$lig_grp_id_cn->id_cahier_notes;
-
 								// Recherche des enfants de niveau 1
 								$sql="SELECT id, nom_court, nom_complet, display_parents FROM cn_conteneurs where id_racine='$lig_grp_id_cn->id_cahier_notes' AND parent=id_racine;";
-								//if($current_groupe==1136) {echo "$sql<br />\n";}
-								//if(($tab_ele['groupe'][$j]['id_groupe']==290)&&($i==0)) {
 								if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
 									echo "$sql<br />\n";
 								}
@@ -609,11 +536,7 @@
 										unset($tab_conteneurs_enfants);
 										$tab_conteneurs_enfants=array();
 
-										//if($cpt>0) {$tab_ele['groupe'][$j]['id_cn']['existence_sous_conteneurs']='y';}
-										//if($cpt>0) {$tab_ele['groupe'][$j]['existence_sous_conteneurs']='y';}
-
 										$tab_ele['groupe'][$j]['existence_sous_conteneurs']='y';
-
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['periode']=$lig_grp_id_cn->periode;
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['id_racine']=$lig_cnt->id;
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['nom_court']=$lig_cnt->nom_court;
@@ -621,8 +544,6 @@
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['display_parents']=$lig_cnt->display_parents;
 
 										recherche_conteneurs_enfants($lig_cnt->id);
-										//echo "recherche_conteneurs_enfants($lig->id)<br />";
-
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['conteneurs_enfants']=$tab_conteneurs_enfants;
 
 										$sql="SELECT cnc.* FROM cn_notes_conteneurs cnc, cn_conteneurs cc WHERE (
@@ -630,7 +551,6 @@
 										cnc.id_conteneur=cc.id AND
 										cc.id='$lig_cnt->id'
 										);";
-										//if(($tab_ele['groupe'][$j]['id_groupe']==290)&&($i==0)) {
 										if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
 											echo "$sql<br />\n";
 										}
@@ -658,22 +578,10 @@
 										$cpt++;
 									}
 
-									/*
-									for($i=0;$i<count($tab_tmp);$i++) {
-										echo "<p><b>".$tab_tmp[$i]['id_racine']."&nbsp;:</b> ";
-										for($j=0;$j<count($tab_tmp[$i]['conteneurs_enfants']);$j++) {
-											echo $tab_tmp[$i]['conteneurs_enfants'][$j]." - ";
-										}
-										echo "</p>";
-									}
-									*/
 								}
 							}
 
-							//if ($choix_periode ==0) {
 							if ($choix_periode=="intervalle") {
-								//$sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-								//$sql1="SELECT cn.id_cahier_notes, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								$sql1="SELECT cn.id_cahier_notes, d.id, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
@@ -687,7 +595,6 @@
 								";
 							}
 							else {
-								//$sql1 = "SELECT cn.id_cahier_notes, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								$sql1 = "SELECT cn.id_cahier_notes, d.id, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
@@ -699,14 +606,12 @@
 								ORDER BY d.date, d.nom_court, d.nom_complet
 								";
 							}
-							//if(($tab_ele['groupe'][$j]['id_groupe']==290)&&($i==0)) {
 							if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
 								echo "$sql1<br />";
 							}
 							$query_notes = mysql_query($sql1);
 							//echo "$sql1<br />";
-							//====================================================
-
+							
 							// Date actuelle pour le test de la date de visibilité des devoirs
 							$timestamp_courant=time();
 
@@ -721,23 +626,13 @@
 									$tmp_tabdate=explode(" ",$date_ele_resp);
 									$tabdate=explode("-",$tmp_tabdate[0]);
 
-									//echo "\$date_ele_resp=$date_ele_resp<br />";
-									//echo "\$tabdate[0]=$tabdate[0]<br />";
-									//echo "\$tabdate[1]=$tabdate[1]<br />";
-									//echo "\$tabdate[2]=$tabdate[2]<br />";
-	
 									$timestamp_limite=mktime(0,0,0,$tabdate[1],$tabdate[2],$tabdate[0]);
 									if($timestamp_courant<$timestamp_limite) {
 										$visible="n";
 									}
-									//echo "\$timestamp_courant=$timestamp_courant<br />";
-									//echo "\$timestamp_limite=$timestamp_limite<br />";
 								}
 
 								if($visible=="y") {
-									//if(($tab_ele['groupe'][$j]['id_groupe']==290)&&($i==0)) {
-									//	echo "visible=y<br />";
-									//}
 									$eleve_display_app = @mysql_result($query_notes,$mm,'d.display_parents_app');
 									$eleve_app = @mysql_result($query_notes,$mm,'nd.comment');
 									if(getSettingValue("note_autre_que_sur_referentiel")=="V" || mysql_result($query_notes,$mm,'d.note_sur')!=getSettingValue("referentiel_note")) {
@@ -771,19 +666,10 @@
 									$tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur']=@mysql_result($query_notes,$mm,'d.id_conteneur');
 
 									// On ne récupère pas le nom long du devoir?
-									//if(($tab_ele['groupe'][$j]['id_groupe']==290)&&($i==0)) {
 									if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
 										echo "\$tab_ele['groupe'][$j]['devoir'][$m]['note']=".$tab_ele['groupe'][$j]['devoir'][$m]['note']." (\$current_id_devoir=$current_id_devoir et \$id_cahier_notes=".$tab_ele['groupe'][$j]['devoir'][$m]['id_cahier_notes']." et \$id_conteneur=".$tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur'].")<br />";
 									}
 
-									//echo "\$eleve_nom_court=$eleve_nom_court<br />";
-									//echo "\$eleve_note=$eleve_note<br />";
-									//echo "\$eleve_statut=$eleve_statut<br />";
-
-									//=================================
-									// 20100626
-									// Ne faire l'extraction que si les min/classe/max sont demandés... il faut récupérer l'info: classe concernée
-									//if() {
 										$id_dev= @mysql_result($query_notes,$mm,'d.id');
 										if(!isset($tab_moy_min_max_classe[$id_dev])) {
 											$tab_moy_min_max_classe[$id_dev]=array();
@@ -802,7 +688,6 @@
 												$tab_moy_min_max_classe[$id_dev]['moy_classe']="-";
 											}
 										}
-									//}
 									$tab_ele['groupe'][$j]['devoir'][$m]['min']=$tab_moy_min_max_classe[$id_dev]['min'];
 									$tab_ele['groupe'][$j]['devoir'][$m]['max']=$tab_moy_min_max_classe[$id_dev]['max'];
 									$tab_ele['groupe'][$j]['devoir'][$m]['moy_classe']=$tab_moy_min_max_classe[$id_dev]['moy_classe'];
@@ -810,7 +695,6 @@
 
 									$m++;
 								}
-								//echo "===================================<br />";
 
 								$mm++;
 							}
@@ -823,13 +707,7 @@
 						$sql="SELECT * FROM eleves e WHERE e.login='".$current_eleve_login[$i]."';";
 						$res_ele=mysql_query($sql);
 						$lig_ele=mysql_fetch_object($res_ele);
-/*
-if($i==0) {
-	echo "<pre>";
-	print_r($tab_ele['groupe']);
-	echo "</pre>";
-}
-*/
+
 						$tab_ele['login']=$current_eleve_login[$i];
 						$tab_ele['nom']=$lig_ele->nom;
 						$tab_ele['prenom']=$lig_ele->prenom;
@@ -853,7 +731,6 @@ if($i==0) {
 							$tab_ele['doublant']=$lig_ele_reg->doublant;
 						}
 
-						//$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement);";
 						$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$tab_ele['elenoet']."' AND e.id = j.id_etablissement);";
 						$data_etab = mysql_query($sql);
 						if(mysql_num_rows($data_etab)>0) {
@@ -873,7 +750,6 @@ if($i==0) {
 								if ($tab_ele['etab_cp']==0) {
 									$tab_ele['etab_cp']='';
 								}
-								//if ($tab_ele['etab_type']=='aucun') {
 								if (($tab_ele['etab_type']=='aucun')||($tab_ele['etab_type']=='')) {
 									$tab_ele['etab_type']='';
 								}
@@ -966,9 +842,7 @@ if($i==0) {
 						}
 
 						// On affecte la partie élève $tab_ele dans $tab_releve
-						//$tab_releve[$id_classe][$periode_num]['eleve'][$i]=$tab_ele;
 						$tab_releve[$id_classe][$periode_num]['eleve'][]=$tab_ele;
-						//echo "On affecte \$tab_releve[$id_classe][$periode_num]['eleve'][$i]<br />";
 					}
 				}
 			}
