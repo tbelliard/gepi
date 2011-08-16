@@ -209,7 +209,7 @@
 	  Évaluation par compétence
 	</h2>
 	<p>
-	  Utilisation de sacoche pour l'évaluation par compétence
+	  Utilisation d'un logiciel externe pour l'évaluation par compétence
 	  <input type="checkbox" 
 			 name="utiliser_sacoche" 
 			 size="8"
@@ -217,12 +217,12 @@
 			 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {echo 'checked="checked"';} ?> />
 	 <br/>
 	 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {
-	 	echo '<a href="'.getSettingValue("sacocheUrl").'?id='.getSettingValue('sacoche_base').'">Accéder à l\'administration sacoche</a>';
+	 	echo '<a href="'.getSettingValue("sacocheUrl").'?id='.getSettingValue('sacoche_base').'">Accéder à l\'administration de l\'Évaluation par compétence</a>';
 	 } ?>
 	 <br/>
-	 <label for='sacocheUrl' style='cursor: pointer;'>Adresse du service sacoche si possible en https (exemple : https://localhost/sacoche) </label>
+	 <label for='sacocheUrl' style='cursor: pointer;'>Adresse du service d'évaluation par compétence si possible en https (exemple : https://localhost/panier) </label>
 	 <input type='text' size='60' name='sacocheUrl' value='<?php echo(getSettingValue("sacocheUrl")); ?>' id='sacocheUrl' /><br/>
-	 <label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (laisser vide si votre instalation de sacoche est mono établissement)</label>
+	 <label for='sacoche_base' style='cursor: pointer;'>Numéro technique de «base» (laisser vide si votre instalation du logiciel d'évaluation par compétence est mono établissement)</label>
 	 <input type='text' size='5' name='sacoche_base' value='<?php echo(getSettingValue("sacoche_base")); ?>' id='sacoche_base' /><br/>
 	</p>
 	
