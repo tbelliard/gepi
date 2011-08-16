@@ -290,7 +290,9 @@ if ($affichage == 'html') {
 	
 		
 			echo 'Veuillez patienter, étape '.$page.' sur '.$saisie_col->getLastPage();
-			ob_flush();
+			if (ob_get_contents()) {
+				ob_flush();
+			}
 			flush();
 			
 	    	$output = '';
