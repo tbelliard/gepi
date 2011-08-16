@@ -59,6 +59,7 @@ include("menu_plugins.inc.php");
 		$menus = null;
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Initialisation</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/changement_d_annee.php">Changement d\'année</a></li>'."\n";
 		if (LDAPServer::is_setup()) {
 			$menus .= '     <li><a href="'.$gepiPath.'/init_scribe_ng/index.php">Init.Ldap Scribe</a></li>'."\n";
 			$menus .= '     <li><a ';
@@ -214,9 +215,9 @@ include("menu_plugins.inc.php");
 		$menus .= '          <li><a href="'.$gepiPath.'/gestion/security_panel.php">Alertes</a></li>'."\n";
 		$menus .= '          <li><a href="'.$gepiPath.'/gestion/security_policy.php">Politique de sécurité</a></li>'."\n";
 		$menus .= '    </ul>'."\n";
-		$menus .= '  </li>'."\n";	
+		$menus .= '  </li>'."\n";
 
-		$tbs_menu_admin[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>'."\n");		
+		$tbs_menu_admin[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>'."\n");
 		$tbs_menu_admin[]=array("li"=> $menus);	
 	}
 
