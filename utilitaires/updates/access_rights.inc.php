@@ -779,6 +779,18 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_sso_table/index.php', 'V', 'F', '
 
 $tab_req[] = "INSERT INTO droits SET id='/mod_examen_blanc/copie_exam.php', administrateur='V', professeur='V', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Examen blanc: Copie', statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/gestion/changement_d_annee.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Changement d\'année.',
+statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

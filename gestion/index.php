@@ -390,7 +390,13 @@ if (LDAPServer::is_setup()) {
 	$chemin = array();
   $titre = array();
   $expli = array();
-	
+
+	$chemin="changement_d_annee.php";
+	$titre = "Changement d'année";
+	$expli = "Permet d'effectuer les opérations d'archivage de fin d'année et les opérations précédent l'initialisation de la nouvelle année.";
+	$ancre="chgt_annee";
+	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
+
 if (LDAPServer::is_setup()) {	
 	
 	$chemin="../init_scribe_ng/index.php";
