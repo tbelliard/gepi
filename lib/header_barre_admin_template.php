@@ -1,9 +1,21 @@
 <?php
 
-/*
- * $Id: header_barre_admin_template.php $
- *
+/**
+ * Barre de menu des pages administrateurs utilisant un gabarit
  * 
+ * 
+ * 
+ * $Id$
+ *
+ * @license GNU/GPL v2
+ * @package General
+ * @subpackage Affichage
+ * @see getSettingValue()
+ * @todo Réécrire la barre administrateur, le principe des gabarits, c'est d'envoyer des variables aux gabarits, 
+ * pas d'écrire du code html dans le constructeur
+ */
+
+ /*
  * This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
@@ -23,19 +35,7 @@
  * Fichier qui permet de construire la barre de menu professeur
  *
  */
- 
- 
-/* ---------Variables envoyées au gabarit
-*	----- tableaux -----
-* $tbs_menu_admin										liens se la barre de menu prof
-*				-> li
-*
-
-$TBS->MergeBlock('tbs_menu_prof',$tbs_menu_prof) ;
-
-unset($tbs_menu_prof);
-*/
- 
+  
 // ====== SECURITE =======
 
 if (!$_SESSION["login"]) {
@@ -43,7 +43,9 @@ if (!$_SESSION["login"]) {
     die();
 }
 
-// Fonction générant le menu Plugins
+/**
+ * Fonction générant le menu Plugins
+ */
 include("menu_plugins.inc.php");
 	
 /*******************************************************************
@@ -96,8 +98,7 @@ include("menu_plugins.inc.php");
 		$menus .= '</li>'."\n";
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Données</a>'."\n";
 		$menus .= '  <ul class="niveau2">'."\n";
-		//$menus .= '        <li ><a href="'.$gepiPath.'/responsables/maj_import.php">Maj Sconet</a></li>'."\n";
-
+		
 		$menus .= '        <li><a href="'.$gepiPath.'/matieres/index.php">Matières</a></li>'."\n";
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/utilisateurs/index.php">Utilisateurs</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
@@ -126,9 +127,6 @@ include("menu_plugins.inc.php");
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
-		//$menus .= '        <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers">Trombinoscopes</a></li>'."\n";
-		//$menus .= '        <li><a href="'.$gepiPath.'/eleves/visu_eleve.php">Fiches élèves</a></li>'."\n";
-
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/classes/index.php">Classes</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li class="plus"><a href="'.$gepiPath.'/classes/index.php">Gestion des classes</a>'."\n";
@@ -146,7 +144,6 @@ include("menu_plugins.inc.php");
 		$menus .= '        </li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php">AID</a></li>'."\n";
-
 
 		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php">Etablissements</a></li>'."\n";
 		$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php">Données de tests</a></li>'."\n";
@@ -194,7 +191,6 @@ include("menu_plugins.inc.php");
 		$menus .= '  <li><a href="'.$gepiPath.'/messagerie/index.php">Panneau d\'affichage</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php">Modèles OpenOffice</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php">Discipline/Sanctions</a></li>'."\n";
-		//$menus .= '  <li><a href="'.$gepiPath.'/mod_genese_classes/index.php">Génèse des classes</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_epreuve_blanche/index.php">Epreuves blanches</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_examen_blanc/index.php">Examens blancs</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php">Visa c. de textes</a></li>'."\n";
