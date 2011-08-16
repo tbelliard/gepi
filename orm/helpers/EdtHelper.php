@@ -125,7 +125,7 @@ class EdtHelper {
         $DateFinAnneeScolaire=clone ($date_now);
         $semaine_en_cours = $date_now->format('W');
         $annee_en_cours = $date_now->format('Y');
-        if ($semaine_en_cours > 33) {
+        if ($semaine_en_cours >= 33) {
             $annee_en_cours=$annee_en_cours+1;
         } 
         $DateFinAnneeScolaire->setDate($annee_en_cours,8,31);
