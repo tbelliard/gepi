@@ -16,7 +16,7 @@
  * @global int $GLOBALS['min_max_moyclas']
  * @name $min_max_moyclas
  */
-$GLOBALS['min_max_moyclas'] = 0;
+$GLOBALS['min_max_moyclas'] = NULL;
 
 /**
  * Effectif du groupe
@@ -24,7 +24,7 @@ $GLOBALS['min_max_moyclas'] = 0;
  * @global int $GLOBALS['eff_groupe']
  * @name $eff_groupe
  */
-$GLOBALS['eff_groupe'] = 0;
+$GLOBALS['eff_groupe'] = NULL;
 
 /**
  * Tableau contenant les informations pour afficher une infobulle
@@ -47,7 +47,7 @@ $GLOBALS['gepiClosedPeriodLabel'] = '';
  * @global int $GLOBALS['totalsize']
  * @name $totalsize
  */
-$GLOBALS['totalsize'] = 0;
+$GLOBALS['totalsize'] = NULL;
 
 
 

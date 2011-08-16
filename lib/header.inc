@@ -1,13 +1,16 @@
 <?php
-/*
+/**
+ * Entête de la page
+ * 
  * $Id$
  *
- * Basé sur  header.inc 2968 2009-03-03 20:11:00Z jjocal $
- * modifié avec getSettingValue("contact_admin_mailto")=='y'
+ * @copyright Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
+ * 
+ * @package General
+ * @subpackage Affichage
+ */
 
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
- *
- * This file is part of GEPI.
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +27,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/**
+ * Renvoie la dernière connexion de l'utilisateur
+ * @global string
+ * @return string la dernière connexion
+ */
 function last_connection() {
 	global $gepiPath;
    $sql = "select START, AUTOCLOSE, REMOTE_ADDR from log where LOGIN = '".$_SESSION['login']."' and SESSION_ID != '".session_id()."' order by START desc";
@@ -85,33 +93,22 @@ elseif(($session_gc_maxlifetime!="")&&(preg_match("/^[0-9]*$/",$session_gc_maxli
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<!-- <meta http-equiv="refresh" content="<?php echo $sessionMaxLength; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;session_id=<?php echo session_id();?>" /> -->
-<!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
-<!--fin correction Regis html xmlns + majuscules -->
 
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves</title>
 
-<!--correction Regis javascript -->
 <script type="text/javascript">
+//<![CDATA[ 
 <?php if (isset($affiche_message) and ($affiche_message == 'yes')) { ?>
-<!--
 alert("<?php echo $message_enregistrement; ?>");
-//-->
 <?php } ?>
 function changement() {
 change = 'yes';
 }
+//]]>
 </script>
 
-
-<!-- Gestion de l'expiration des session - Patrick Duthilleul -->
-<!--correction Regis javascript -->
-
-
-<!-- christian -->
-<!--correction Regis javascript -->
 <script type="text/javascript">
     function ouvre_popup(url) {
         eval("window.open('<?php echo($gepiPath); ?>/mod_miseajour/utilisateur/fenetre.php','fen','width=600,height=500,menubar=no,scrollbars=yes')");
@@ -121,9 +118,7 @@ change = 'yes';
 
 <?php
 
-
 // ====================== Affichage du favicon ========================
-// correction Regis LINK REL -> link rel
 echo '
 <link rel="SHORTCUT ICON" href="'.$gepiPath.'/favicon.ico" />
 	'."\n";

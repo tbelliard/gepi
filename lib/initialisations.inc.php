@@ -82,7 +82,11 @@ $GLOBALS['current_group'] = '';
  */
 $GLOBALS['tab_conteneurs_enfants'] = array ();
 
-
+/**
+ * @global int $GLOBALS['id_groupe'] 
+ * @name $id_groupe
+ */
+$GLOBALS['id_groupe']  = NULL;
 
 // Initialisation de variables utilisées si javascript activé
 $tabdiv_infobulle=array();
