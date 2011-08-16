@@ -151,8 +151,7 @@ class SelectCtrl extends Controleur {
   private function set_data_selected() {
     $this->set_data_all_selected();
     $this->set_classes_selected();
-    if(!is_null($this->login)) $this->set_individus_selected($this->login,$this->statut);
-    //   $this->test_type_abs();
+    if(!is_null($this->login)) $this->set_individus_selected($this->login,$this->statut);    
   }
 
   private function set_data_all_selected() {
@@ -194,23 +193,6 @@ class SelectCtrl extends Controleur {
         $_SESSION['individus'][$login]=Array($login,$statut);
     }
   }
-
-  // private function test_type_abs() {
-  //   if ($_SESSION['type']=='Abs')$this->clear_data_selected_for_abs();
-//  }
-
-  //  private function clear_data_selected_for_abs() {
-  //   unset($_SESSION['eleve_all']);
-  //   unset($_SESSION['pers_all']);
-  //   if (isset($_SESSION['individus'])) {
-  //     foreach ($_SESSION['individus'] as $value) {
-  //       if ($value[1]=='personnels') {
-  //         if (count($_SESSION['individus'])==1) unset ($_SESSION['individus']);
-  //        else unset($_SESSION['individus'][$value[0]]);
-  //      }
-  //     }
-  //   }
-  //  }
 
   public function test_data_selected() {
     if (isset($_SESSION['individus'])||isset($_SESSION['stats_classes_selected'])
