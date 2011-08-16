@@ -33,7 +33,8 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 		'logouttype' => 'iframe',
 	
 	);
-	
-	
+	if ($metadata['gepi-idp']['auth'] == null) {
+		$metadata['gepi-idp']['auth'] = 'Authentification au choix entre toutes les sources configurees';
+	}
 }
 
