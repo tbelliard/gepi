@@ -341,7 +341,7 @@ class CvsentCtrl extends Controleur {
         //$RecNum    : numéro de l'enregsitrement en cours (lecture seule)
         switch ($code) {
             case 0:
-                $query = "SELECT `login_sso` FROM `plugin_sso_table` WHERE `login_gepi`='" . $this->ligne['login'] . "'";
+                $query = "SELECT `login_sso` FROM `sso_table_correspondance` WHERE `login_gepi`='" . $this->ligne['login'] . "'";
                 $result = mysql_query($query);
                 // Vérification du résultat
                 if (!$result) {
