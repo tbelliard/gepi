@@ -123,7 +123,7 @@ if(getSettingValue('active_module_absence')=='2') {
 	echo "<li><p><a href='../mod_abs2/extraction_saisies.php'>Effectuer une extraction CSV des absences</a>.</p></li>\n";
 }
 echo "<li><p>Sauvegarder l'arborescence Gepi (<em>par ftp, sftp,...</em>) $lien_svg</p></li>\n";
-echo "<li><p>Conserver les données de l'année passée via le module Années antérieures.</p></li>\n";
+echo "<li><p>Conserver les données de l'année passée via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php'>module Années antérieures</a>.</p></li>\n";
 echo "</ol>\n";
 
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";
