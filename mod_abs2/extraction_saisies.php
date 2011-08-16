@@ -264,7 +264,7 @@ if ($affichage == 'html') {
 } else if ($affichage == 'csv') {
 	if ($traitement_csv_en_cours == 'false') {
 		//le traitement viens de se finir, on propose le fichier au téléchargement
-		echo '<a href="../backup/'.$_REQUEST['filename'].'">Télécharger le résultat</a>';
+		echo '<a href="../backup/absences/'.$_REQUEST['filename'].'">Télécharger le résultat</a>';
 		if ($page == 1) {
 			//on s'est arreter à la page 0, il n'y a pas de résultat
 			echo ' (extraction vide)';
@@ -279,8 +279,11 @@ if ($affichage == 'html') {
 		    $output .= ('Extraction des saisies d\'absence '.getSettingValue('gepiSchoolName').' '.getSettingValue('gepiYear')."\n");
 		    $output .= 'Extraction faite le '.date("d/m/Y - H:i")."\n";
 		    $output .= ("Nom,Prenom,Classe,Debut absence,Fin absence, Type, Manquement a l'obligation de presence, Sous responsabilite etablissement\n");
-		    $filename = 'extrait_saisies_'.date("d_m_Y_H_i").'.csv';
-			$myFile = dirname(__FILE__).'/../backup/'.$filename;
+		    $filename = '/extrait_saisies_'.date("d_m_Y_H_i").'.csv';
+		    if (!file_exists('../backup/absences')) {
+		    	mkdir(dirname(__FILE__).'/../backup/absences');
+		    }
+			$myFile = dirname(__FILE__).'/../backup/absences/'.$filename;
 			$fh = fopen($myFile, 'w');
 		    
 		    fwrite($fh,$output);
@@ -322,7 +325,7 @@ if ($affichage == 'html') {
 				}
 				$output .= "\n";
 		    }
-			$myFile = dirname(__FILE__).'/../backup/'.$filename;
+			$myFile = dirname(__FILE__).'/../backup/absences/'.$filename;
 			$fh = fopen($myFile, 'a');
 		    
 		    fwrite($fh,$output);
