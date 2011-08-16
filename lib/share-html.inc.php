@@ -176,7 +176,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 				echo "<ul>\n";
 				while ($j < $nb_dev) {
 					if (getSettingValue("utiliser_sacoche") == 'yes') {
-						echo '<form id="sacoche_form_'.$j.'" method="POST" action="'.getSettingValue("sacocheUrl").'/index.php">';
+						echo '<form id="sacoche_form_'.$j.'" method="POST" action="'.getSettingValue("sacocheUrl").'/index.php?sso&page=professeur_eval&section=groupe">';
 						echo '<input type="hidden" name="id" value="'.getSettingValue("sacoche_base").'"/>';
 						echo '<input type="hidden" name="page" value="professeur_eval"/>';
 						echo '<input type="hidden" name="section" value="groupe"/>';
