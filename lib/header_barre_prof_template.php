@@ -1,7 +1,7 @@
 <?php
 
 /*
- * $Id: header_barre_prof_template.php $
+ * $Id$
  *
  * 
  * This file is part of GEPI.
@@ -190,7 +190,7 @@ include("tbs_menu_plugins.inc.php");
 		}
 
 		if (getSettingValue('utiliser_sacoche') == 'yes' && getSettingValue('sacocheUrl') != '') {
-			$tmp_sous_menu[$cpt_sous_menu] = array("lien"=> getSettingValue('sacocheUrl').'?id='.getSettingValue('sacoche_base') , "texte"=>"Évaluation par compétence");
+			$tmp_sous_menu[$cpt_sous_menu] = array("lien"=> getSettingValue('sacocheUrl').'?sso&amp;id='.getSettingValue('sacoche_base') , "texte"=>"Évaluation par compétence");
 			$cpt_sous_menu++;
 		}
 		
