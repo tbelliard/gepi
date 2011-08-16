@@ -104,6 +104,7 @@ include("menu_plugins.inc.php");
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=personnels">Comptes Personnels</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php">Comptes Resp.légaux</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php">Comptes Elèves</a></li>'."\n";
+        $menus .= '                <li><a href="'.$gepiPath.'/mod_sso_table/index.php">Correspondances identifiants SSO</a></li>'."\n";
 		$menus .= '            </ul>'."\n";		
 		$menus .= '        </li>'."\n";
 
