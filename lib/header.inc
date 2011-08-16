@@ -6,8 +6,16 @@
  *
  * @copyright Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  * 
+ * @license GNU/GPL v2
  * @package General
  * @subpackage Affichage
+ * @see get_enfants_from_resp_login()
+ * @see get_noms_classes_from_ele_login()
+ * @see getPref()
+ * @see getSettingValue()
+ * @see insert_confirm_abandon()
+ * @see last_connection()
+ * @todo ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix ?
  */
 
 /* This file is part of GEPI.
@@ -110,10 +118,12 @@ change = 'yes';
 </script>
 
 <script type="text/javascript">
+//<![CDATA[ 
     function ouvre_popup(url) {
         eval("window.open('<?php echo($gepiPath); ?>/mod_miseajour/utilisateur/fenetre.php','fen','width=600,height=500,menubar=no,scrollbars=yes')");
         fen.focus();
     }
+//]]>
 </script>
 
 <?php
@@ -214,7 +224,7 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 
 <script type="text/javascript" src="<?php echo $gepiPath; ?>/lib/cookieClass.js"></script>
 <script type="text/javascript">
-<!--
+//<![CDATA[ 
 debut_alert=new Date()
 cookie_modified = false;
 warn_msg1_already_displayed = false;
@@ -328,7 +338,7 @@ function show_message_deconnexion() {
   }
   setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
 }
-//-->
+//]]>
 </script>
 
 
@@ -374,9 +384,6 @@ if(isset($style_specifique)) {
         ?><link rel='stylesheet' type='text/css' href='<?php echo $gepiPath; ?>/mod_absences/styles/mod_absences.css' /><?php
     }
 
-
-// Voir si on restreint l'usage aux pages du module cahier de textes
-// Restreint aux pages modifiées pour une meilleure accessibilité
 // Voir si on restreint l'usage aux pages du module cahier de textes
 // Restreint aux pages modifiées pour une meilleure accessibilité
 
@@ -406,8 +413,6 @@ echo "<!--[if IE 7]>\n";
 	echo "	<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/css/bandeau_r01_ie7.css' media='screen' />\n";
 echo "<![endif]-->\n";
 
-// fin modification Régis
-
 if(isset($style_screen_ajout)) {
 
 	// Styles paramétrables depuis l'interface:
@@ -436,11 +441,10 @@ if(isset($style_screen_ajout)) {
 	}
 }
 
-//echo "<link href='".$gepiPath."/grid.css' rel='stylesheet' type='text/css'/>\n";
-
-
 echo '	<!-- Fin des styles -->'."\n\n";
-
+/**
+ * Réglage des couleurs
+ */
 include 'maj_coul_global.inc';
 
 // ============================== FIN des feuilles de style =======================
@@ -458,7 +462,6 @@ if (isset($use_observeur) AND $use_observeur == 'ok') {
 <body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt Verdana,sans-serif;"';}?> >
 
 <?php
-//echo "\$sessionMaxLength=$sessionMaxLength<br />";
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
 	$_SESSION['cacher_header']="y";
 }
@@ -469,11 +472,6 @@ if (isset($titre_page)) {
 	if(!isset($_SESSION['cacher_header'])) {
 		$_SESSION['cacher_header']="n";
 	}
-
-
-
-// ----- modifications Régis Bandeau -----
-// début des modifications du bandeau
 
 	echo "<!-- Header start -->\n";
 
@@ -504,12 +502,9 @@ if (isset($titre_page)) {
 // Initialisation du bandeau à la bonne taille
 	$cacher_header = isset($_SESSION['cacher_header']) ? $_SESSION['cacher_header'] : "n";
 
-	//=====================
-	// AJOUT boireaus 20080806
 	if(isset($mode_header_reduit)) {
 		$cacher_header="y";
 	}
-	//=====================
 
 	if($cacher_header=="n") {
 		$taille_bandeau_header="g";
@@ -517,7 +512,7 @@ if (isset($titre_page)) {
 	else {
 		$taille_bandeau_header="p";
 	}
-	// 	echo $_SESSION['login'];
+
 	if($taille_bandeau_header=="p") {
 		echo "<script type='text/javascript'>
 			<!--
@@ -530,13 +525,8 @@ if (isset($titre_page)) {
 			echo "<!-- User name, status, main matter, home, logout, account management -->\n";
 
 			// Bandeau de gauche
-			// echo "<div id='bandeau_gauche'>\n";
-
-				//=====================
-				// AJOUT boireaus 20080806
+			
 				if(!isset($mode_header_reduit)) {
-				//=====================
-					//echo "<div class='bt_change_taille'>";
 						// Bouton réduire le bandeau
 						echo "<a class='change_taille_gd' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('y', '".$gepiPath."');return false;\">";
 							echo "<img src='$gepiPath/images/up.png' alt='Cacher le bandeau' title='Cacher le bandeau' />";
@@ -545,13 +535,8 @@ if (isset($titre_page)) {
 						echo "<a class='change_taille_pt' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('n', '".$gepiPath."');return false;\">";
 							echo "<img src='$gepiPath/images/down.png' alt='Afficher le bandeau' title='Afficher le bandeau' />";
 						echo "</a>";
-					//echo "</div>\n";
-				//=====================
-				// AJOUT boireaus 20080806
 				}
-				//=====================
 
-				//=====================================
 				if(getSettingValue('afficher_temoin_filtrage_html')=='y') {
 					if($filtrage_html=='htmlpurifier') {
 						echo " <img src='$gepiPath/images/bulle_verte.png' width='9' height='9' alt='Filtrage HTML avec HTMLPurifier' title='Filtrage HTML avec HTMLPurifier' />\n";
@@ -563,8 +548,6 @@ if (isset($titre_page)) {
 						echo " <img src='$gepiPath/images/bulle_rouge.png' width='9' height='9' alt='Pas de filtrage HTML' title='Pas de filtrage HTML' />\n";
 					}
 				}
-				//=====================================
-
 
 				//=== Titre de la page ===
 				echo "<h1>".$titre_page."</h1>\n";
@@ -572,7 +555,6 @@ if (isset($titre_page)) {
 
 				//=== Nom Prénom utilisateur ===
 				echo "<p id='bd_nom'>\n";
-					// echo "<span id='bd_nom'>";
 					if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
 						$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
 						$res_np=mysql_query($sql);
@@ -588,7 +570,6 @@ if (isset($titre_page)) {
 					else {
 						echo "NOM Prenom";
 					}
-					// echo "</span>\n";
 				echo "</p>\n";
 
 				//=== Dernière connexion ===
@@ -607,7 +588,6 @@ if (isset($titre_page)) {
 						$nom_complet_matiere = sql_query1("select nom_complet from matieres
 						where matiere = '".$_SESSION['matiere']."'");
 						if ($nom_complet_matiere != '-1') {
-							//echo("Professeur de : " . $nom_complet_matiere);
 							echo("Professeur de : " . htmlentities($nom_complet_matiere));
 						} else {
 							echo "Invité";
@@ -655,7 +635,6 @@ if (isset($titre_page)) {
 					echo "</a>\n<br />\n";
 				}
 
-				//christian
 				// menus de droite
 				// menu accueil
 				echo "<ol id='premier_menu'>\n";
@@ -720,7 +699,6 @@ if (isset($titre_page)) {
 								echo ",%0d%0aCordialement.'>Contacter l'administrateur</a>";
 							}
 							else {
-								//echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
 								echo("<a href=\"$gepiPath/gestion/contacter_admin.php\" onclick=\"centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes');return false;\" >Contacter l'administrateur</a>");
 							}
 						}
@@ -732,8 +710,6 @@ if (isset($titre_page)) {
 						echo "<a href='javascript:centrerpopup(\"$gepiPath/gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
 					echo "</li>\n";
 				echo "</ol>\n";
-
-				// echo "<div class='spacer_bas'> </div>\n"; // bloque les menus dans le bandeau
 
 		 //=== Affichage de la version de Gepi ===
 				if ($_SESSION['statut'] == "administrateur") {
@@ -750,7 +726,6 @@ if (isset($titre_page)) {
 					  }
 					  if ($gepiSvnRev != '') $version_gepi .= " r".$gepiSvnRev;
 
-					//echo "<div id='version_gepi'"
 					echo "<p id='num_version'>".$version_gepi."</p>";
 				}
 				else{
@@ -758,8 +733,6 @@ if (isset($titre_page)) {
 				}
 
 	// Fin du conteneur de Header
-
-// ----- Régis : fin des modifications du bandeau -----
 
 	echo "</div>\n";
 
@@ -773,10 +746,19 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+          /**
+           * Inclusion des fonctions de  calendrier
+           */
 			require_once($prefix."edt_organisation/fonctions_calendrier.php");
 		}elseif(file_exists("fonctions_calendrier.php")) {
+          /**
+           * Inclusion des fonctions de  calendrier
+           */
 			require_once("./fonctions_calendrier.php");
 		}
+        /**
+         * Inclusion barre menu professeur
+         */
 		include("header_barre_menu.php");
 	}
 }
@@ -786,10 +768,19 @@ elseif ($_SESSION["statut"] == "administrateur") {
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+          /**
+           * Inclusion des fonctions de  calendrier
+           */
 			require_once($prefix."edt_organisation/fonctions_calendrier.php");
 		}elseif(file_exists("fonctions_calendrier.php")) {
+          /**
+           * Inclusion des fonctions de  calendrier
+           */
 			require_once("./fonctions_calendrier.php");
 		}
+        /**
+         * Inclusion barre menu administrateur
+         */
 		include("header_barre_menu_admin.php");
 	}
 }
@@ -799,10 +790,19 @@ elseif ($_SESSION["statut"] == "scolarite") {
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+          /**
+           * Inclusion des fonctions de  calendrier
+           */
 			require_once($prefix."edt_organisation/fonctions_calendrier.php");
 		}elseif(file_exists("fonctions_calendrier.php")) {
+          /**
+           * Inclusion des fonctions de  calendrier
+           */
 			require_once("./fonctions_calendrier.php");
 		}
+        /**
+         * Inclusion barre menu scolarité
+         */
 		include("header_barre_scolarite_template.php");
 
 		if (count($tbs_menu_scol)>0) {
@@ -870,6 +870,5 @@ if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))) {
 // Décommenter la ligne ci -dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
 
-//if (isset($titre_page)) echo "</div>";
 ?>
 
