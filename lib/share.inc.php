@@ -40,7 +40,7 @@ $GLOBALS['tabdiv_infobulle'] = array();
  * @global string $GLOBALS['gepiClosedPeriodLabel']
  * @name $gepiClosedPeriodLabel
  */
-$GLOBALS['gepiClosedPeriodLabel'] = '';
+$GLOBALS['gepiClosedPeriodLabel'] = NULL;
 
 /**
  * 
