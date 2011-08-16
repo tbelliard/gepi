@@ -1690,6 +1690,10 @@ class Eleve extends BaseEleve {
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
+		if ($dateDebut->format('U') > $dateFin->format('U')) {
+			throw new PropelException('Erreur: la date de debut ne peut être postérieure à la date de fin');
+		}
+		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;
