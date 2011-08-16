@@ -33,7 +33,7 @@ $GLOBALS['gepiPath']=$gepiPath;
  * @global string $GLOBALS['relatif_gepi']
  * @name $chemin_relatif_gepi
  */
-$GLOBALS['relatif_gepi']='';
+$GLOBALS['relatif_gepi']=NULL;
 
 /**
  * y si on est en multisite, n sinon
@@ -49,7 +49,7 @@ $GLOBALS['multisite'] = $multisite;
  * @global mixed $GLOBALS['gepiVersion']
  * @name $gepiVersion
  */
-$GLOBALS['gepiVersion'] = '';
+$GLOBALS['gepiVersion'] = NULL;
 
 /**
  * Version de GEPI release candidate
@@ -57,7 +57,7 @@ $GLOBALS['gepiVersion'] = '';
  * @global mixed $GLOBALS['gepiRcVersion']
  * @name $gepiRcVersion
  */
-$GLOBALS['gepiRcVersion'] = '';
+$GLOBALS['gepiRcVersion'] = NULL;
 
 /**
  * Version de GEPI Beta
@@ -65,7 +65,7 @@ $GLOBALS['gepiRcVersion'] = '';
  * @global mixed $GLOBALS['gepiBetaVersion']
  * @name $gepiBetaVersion
  */
-$GLOBALS['gepiBetaVersion'] = '';
+$GLOBALS['gepiBetaVersion'] = NULL;
 
 /**
  * Les informations du groupes obtenues à partir de get_group()
@@ -74,7 +74,6 @@ $GLOBALS['gepiBetaVersion'] = '';
  * @name $current_group
  * @see get_group()
  */
-//$GLOBALS['current_group'] = '';
 $GLOBALS['current_group'] = NULL;
 
 /**
