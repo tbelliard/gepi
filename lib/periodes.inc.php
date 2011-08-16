@@ -27,17 +27,20 @@ if ((isset($id_classe))||(isset($current_group))) {
 	//if (isset($id_classe) and $id_classe > 0) {
 	if ((isset($id_classe))&&($id_classe > 0)) {
 		$_id_classe = $id_classe;
-	} else {
+	} elseif(isset($current_group["classes"]["list"][0])) {
 		$_id_classe = $current_group["classes"]["list"][0];
 	}
-  $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$_id_classe' ORDER BY num_periode");
-  $nb_periode = mysql_num_rows($periode_query) + 1 ;
-  $i = "1";
-  while ($i < $nb_periode) {
-    $nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
-    $ver_periode[$i] = mysql_result($periode_query, $i-1, "verouiller");
-    $date_ver_periode[$i] = mysql_result($periode_query, $i-1, "date_verrouillage");
-    $i++;
- }
+
+	if(isset($_id_classe)) {
+		$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$_id_classe' ORDER BY num_periode");
+		$nb_periode = mysql_num_rows($periode_query) + 1 ;
+		$i = "1";
+		while ($i < $nb_periode) {
+			$nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
+			$ver_periode[$i] = mysql_result($periode_query, $i-1, "verouiller");
+			$date_ver_periode[$i] = mysql_result($periode_query, $i-1, "date_verrouillage");
+			$i++;
+		}
+	}
 }
 ?>
