@@ -825,6 +825,38 @@ elseif ($_SESSION["statut"] == "scolarite") {
 		}
 	}
 }
+elseif ($_SESSION["statut"] == "cpe") {
+
+	// On vérifie que l'utilisateur ne l'a pas enlevée
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
+		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+			require_once($prefix."edt_organisation/fonctions_calendrier.php");
+		}elseif(file_exists("fonctions_calendrier.php")) {
+			require_once("./fonctions_calendrier.php");
+		}
+		include("header_barre_cpe_template.php");
+
+		if (count($tbs_menu_cpe)>0) {
+			echo '<div id="menu_barre">
+	<div class="menu_barre_bottom"></div>
+	<div class="menu_barre_container">
+		<ul class="niveau1">
+';
+			foreach ($tbs_menu_cpe as $value) { 
+				if ("$value[li]"!="") {
+					echo $value['li'];
+				}
+			}
+			unset($value); 
+			echo '
+		</ul>
+	</div>
+</div>
+';
+		}
+	}
+}
 echo "<div id='container'>\n";
 if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))) {
 	$msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
