@@ -26,6 +26,10 @@
  * Code adapté du controleur de Philippe Rigaux:
  * http://www.lamsade.dauphine.fr/rigaux/mysqlphp
  */
+// On empêche l'accès direct au fichier
+if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
+    die();
+};
 //require_once('tbs_class_php5.php');
 require_once('Class.Vue.php');
 abstract class Controleur {

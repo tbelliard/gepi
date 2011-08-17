@@ -27,7 +27,10 @@
  * Code adapté du controleur de Philippe Rigaux:
  *  http://www.lamsade.dauphine.fr/rigaux/mysqlphp
  */
-
+// On empêche l'accès direct au fichier
+if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
+    die();
+};
 class Frontal {
     const NOM_CTRL = "ctrl";
     const NOM_ACTION = "action";

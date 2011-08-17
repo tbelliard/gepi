@@ -1,4 +1,9 @@
 <?php
+// On empêche l'accès direct au fichier
+if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
+    die();
+};
+
 require_once "../../../../artichow/LinePlot.class.php";
 if (get_magic_quotes_gpc()) {
   $data = @unserialize(stripslashes($_GET['values']));     

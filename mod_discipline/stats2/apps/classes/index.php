@@ -1,5 +1,8 @@
 <?php
+
 /*
+ * $Id$
+ *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *
  * This file is part of GEPI.
@@ -18,13 +21,5 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
-if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
-    die();
-};
-
- foreach ($messages as $message):?>
-<div class="<?php echo $message['class'];?>">
-<?php echo $message['message']?>
-</div>
-<?php endforeach ?>
+header("Location:../../../../accueil.php");
+?>
