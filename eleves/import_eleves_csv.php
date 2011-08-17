@@ -1,10 +1,13 @@
 <?php
-/*
+/**
  * Last modification  : 04/04/2005
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
- * This file is part of GEPI.
+ * @package eleves
+ */
+
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +24,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 // Resume session
 
@@ -66,7 +71,7 @@ if ($rss == "y") {
 
 }else{
 
-	$nom_fic = "base_eleves_gepi.csv";
+	$nom_fic = "base_eleve_gepi.csv";
 
 }
 
