@@ -173,24 +173,6 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		return $attributes;
 	}
 
-	/**
-	 * This function is called when the user start a logout operation, for example
-	 * by logging out of a SP that supports single logout.
-	 *
-	 * @param array &$state  The logout state array.
-	 */
-	public function logout(&$state) {
-		//echo 'called';die;
-		assert('is_array($state)');
-
-		if (!session_id()) {
-			/* session_start not called before. Do it here. */
-			session_start();
-		}
-
-		// Session related functions
-		unset($_SESSION['login']);
-	}
 }
 
 ?>
