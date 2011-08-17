@@ -3,7 +3,7 @@
  * 
  * $Id$
  * 
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
  * @package Initialisation
  * @subpackage general
@@ -16,7 +16,6 @@
  * @global int $GLOBALS['min_max_moyclas']
  * @name $min_max_moyclas
  */
-$GLOBALS['min_max_moyclas'] = NULL;
 
 /**
  * Effectif du groupe
@@ -24,7 +23,6 @@ $GLOBALS['min_max_moyclas'] = NULL;
  * @global int $GLOBALS['eff_groupe']
  * @name $eff_groupe
  */
-$GLOBALS['eff_groupe'] = NULL;
 
 /**
  * Tableau contenant les informations pour afficher une infobulle
@@ -32,7 +30,6 @@ $GLOBALS['eff_groupe'] = NULL;
  * @global array $GLOBALS['tabdiv_infobulle']
  * @name $tabdiv_infobulle
  */
-$GLOBALS['tabdiv_infobulle'] = array();
 
 /**
  * Texte à afficher quand une période est close
@@ -40,14 +37,12 @@ $GLOBALS['tabdiv_infobulle'] = array();
  * @global string $GLOBALS['gepiClosedPeriodLabel']
  * @name $gepiClosedPeriodLabel
  */
-$GLOBALS['gepiClosedPeriodLabel'] = NULL;
 
 /**
  * 
  * @global int $GLOBALS['totalsize']
  * @name $totalsize
  */
-$GLOBALS['totalsize'] = NULL;
 
 
 
