@@ -11,6 +11,20 @@
 class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 
 	/**
+	 * La configuration de la source sélectionnée
+	 *
+	 * @var array
+	 */
+	protected $authSourceConfig;
+		
+	/**
+	 * The id of the authentication source we are accessing.
+	 *
+	 * @var string
+	 */
+	private $authSource;
+	
+	/**
 	 * Initialise une authentification en utilisant les paramêtre renseignés dans gepi
 	 *
 	 * @param string|NULL $auth  The authentication source. Si non précisé, utilise la source configurée dans gepi.
@@ -55,6 +69,13 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		
 		//on utilise une variable en session pour se souvenir quelle est la source utilisé pour cette session. Utile pour le logout, si entretemps l'admin a changé la source d'authentification.
 		$_SESSION['utilisateur_saml_source'] = $auth;
+		
+		//print_r($config);die;
+		$this->authSourceConfig = $config->getArray($auth);
+		
+		assert('is_string($auth)');
+
+		$this->authSource = $auth;
 		
 		parent::__construct($auth);
 	}
@@ -102,8 +123,9 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	}
 	
 	/**
-	 * Efface la variable de la source d'authentification de la session
 	 * Log the user out.
+	 * Ajout : Efface la variable de la source d'authentification de la session
+	 * Ajout : ne fait pas le logout de la source si c'est précisé dans la configuration. La fonction retourne dans ce cas là
 	 *
 	 * This function logs the user out. It will never return. By default,
 	 * it will cause a redirect to the current page after logging the user
@@ -121,7 +143,108 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	 */
 	public function logout($params = NULL) {
 		unset($_SESSION['utilisateur_saml_source']);
-		parent::logout($params);
+		
+		
+		//if ($this->$authSourceConfig[]) 
+		if ($this->getDoSourceLogout()) {
+			parent::logout($params);
+			//la fonction ne retourne pas, donc ce n'est pas la peine de faire un branchement else.
+		} else {
+			print_r('not doing source logout');
+			assert('is_array($params) || is_string($params) || is_null($params)');
+	
+			if ($params === NULL) {
+				$params = SimpleSAML_Utilities::selfURL();
+			}
+	
+			if (is_string($params)) {
+				$params = array(
+					'ReturnTo' => $params,
+				);
+			}
+	
+			assert('is_array($params)');
+			assert('isset($params["ReturnTo"]) || isset($params["ReturnCallback"])');
+	
+			if (isset($params['ReturnStateParam']) || isset($params['ReturnStateStage'])) {
+				assert('isset($params["ReturnStateParam"]) && isset($params["ReturnStateStage"])');
+			}
+	
+			$session = SimpleSAML_Session::getInstance();
+			if ($session->isValid($this->authSource)) {
+				$state = $session->getAuthData($this->authSource, 'LogoutState');
+				if ($state !== NULL) {
+					$params = array_merge($state, $params);
+				}
+	
+				$session->doLogout($this->authSource);
+	
+				$params['LogoutCompletedHandler'] = array(get_class(), 'logoutCompleted');
+			}
+
+			//print_r($_SESSION);echo 'on est la';die;
+			
+			self::logoutCompleted($params);
+		}
 	}
 	
+	
+	/**
+	 * retourne la configuration de la source sélectionnée
+	 *
+	 * @return array
+	 */
+	public function getAuthSourceConfig() {
+		return $this->authSourceConfig;
+	}
+	
+	/**
+	 * retourne l'url de retour vers le portail
+	 *
+	 * @return string
+	 */
+	public function getPortalReturnUrl() {
+		$config = $this->getChosenSourceConfig();
+		if (isset($config['portal_return_url'])) {
+			return $config['portal_return_url'];
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * retourne la configuration de la source réelle utilisée pour l'authentification
+	 *
+	 * @return array
+	 */
+	protected function getChosenSourceConfig() {
+		//si on est en multiauth, il va y avoir une délégation de source
+		//on va donc regarder la configuration de la source choisie par l'utilisateur
+		if($this->authSourceConfig[0] != 'multiauth:MultiAuth') {
+			return $this->authSourceConfig;
+		} else {
+			$session = SimpleSAML_Session::getInstance();
+			$delegationAuthId = $session->getData(sspmod_multiauth_Auth_Source_MultiAuth::SESSION_SOURCE, $this->authSource);
+			if ($delegationAuthId == null) {
+				//aucune source choisie pour l'instant par l'utilisateur
+				return $this->authSourceConfig;
+			}
+			$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
+			return $config->getArray($delegationAuthId);
+		}
+	}
+
+	/**
+	 * retourne l'url de retour vers le portail
+	 *
+	 * @return array
+	 */
+	public function getDoSourceLogout() {
+		$config = $this->getChosenSourceConfig();
+		if (isset($config['do_source_logout'])) {
+			return $config['do_source_logout'];
+		} else {
+			return true;
+		}
+	}
 }

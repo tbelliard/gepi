@@ -1,6 +1,10 @@
 <?php
-$siteRetour = 'https://cas.e-lyco.fr/saml/Logout?RelayState=beaussire.vendee';
 
+/*
+ * Paramètre de configuration spécifique à gepi :
+ * 'portal_return_url' => 'mon url', //adresse de redirection lorsque l'on quitte gepi. Si cette url est présente, on affiche un lien retour au portail et non un lien déconnection
+ * 'do_source_logout' => true, //true par défaut, Sur une identification distante sans single logout, il faut éviter et mettre false pour ne pas déconnecter le portail a tord
+*/
 $config = array(
 
 	/*authentification admin saml en utilisant un profil administrateur gepi
@@ -23,15 +27,16 @@ $config = array(
 		'cas' => array(
 		    'login' => 'https://cas.e-lyco.fr/login',
 		    'validate' => 'https://cas.e-lyco.fr/validate',
-		    'logout' => $siteRetour,
+		    'logout' => 'https://cas.e-lyco.fr/saml/Logout',
 		),
-		'disconnect_CAS' => true,
 		'search_table' => array(
 		    'name' => 'plugin_sso_table',
 		    'cas_uid_column' => 'login_sso',
 		    'gepi_login_column' => 'login_gepi',
 		    'champ_cas_uid_retour' => 'username'
 		),
+		'portal_return_url' => 'http://cas.e-lyco.fr',
+		'do_source_logout' => true,
 	),
 
 
