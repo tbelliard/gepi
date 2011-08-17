@@ -53,7 +53,7 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idplog
 		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
 		$auth = new SimpleSAML_Auth_GepiSimple();
 		if ($auth->isAuthenticated()) {
-			//on fait le logout de session avec simplesaml en tant que fournisseur d'identité. Ça va déconnecter les services associés.
+			//on fait le logout de session avec simplesaml en tant que fournisseur d'identité. Ça va déconnecter uniqement les services associés.
 			//Si gepi n'est pas connecté en local, il faut revenir à la page de logout et passer à la déconnexion de gepi 
 			$logout_return_url = $_SERVER['REQUEST_URI'];
 			if (strpos($logout_return_url, '?')) {
@@ -61,22 +61,23 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idplog
 			} else {
 				$logout_return_url .= '?';
 			}
-			$logout_return_url .= 'idploggedout=true';
+			$logout_return_url .= 'idploggedout=done';
 			header("Location:./lib/simplesaml/www/saml2/idp/SingleLogoutService.php?ReturnTo=".urlencode($logout_return_url));
 			exit();
 		}
 }
+//print_r($session_gepi);die;
 
 //$message = "<h1 class='gepi'>Déconnexion</h1>";
     $titre= "Déconnexion";
     $message = "";
-	//$message .= "<img src='$gepiPath/images/icons/lock-open.png' alt='lock-open' /><br/><br/>";
-    if (!$_GET['auto']) {
-    	if ($session_gepi->auth_simpleSAML != 'yes') $session_gepi->close($_GET['auto']);
+    	
+    if (!isset($_GET['auto']) || !$_GET['auto']) {
+    	$session_gepi->close(0);
         $message .= "Vous avez fermé votre session GEPI.";
         //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     } else if ($_GET['auto']==2) {
-        if ($session_gepi->auth_simpleSAML != 'yes') $session_gepi->close($_GET['auto']);
+        $session_gepi->close($_GET['auto']);
         $message .= "Vous avez été déconnecté. Il peut s'agir d'une mauvaise configuration de la variable \$GepiPath dans le fichier \"connect.inc.php\"<br />
         <a href='aide_gepipath.php'><b>Aide à la configuration de \$GepiPath</b></a>";
         //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
@@ -86,7 +87,7 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idplog
         $sql = "select now() > END TIMEOUT from log where SESSION_ID = '" . $_GET['session_id'] . "' and START = '" . $debut_session . "'";
         if (sql_query1($sql)) {
            // Le temps d'inactivité est dépassé
-           if ($session_gepi->auth_simpleSAML != 'yes') $session_gepi->close($_GET['auto']);
+           $session_gepi->close($_GET['auto']);
            $message .= "Votre session GEPI a expiré car le temps maximum (".getSettingValue("sessionMaxLength")." minutes) sans échange avec le serveur a été atteint.<br /><br />Date et heure de la déconnexion : ".$date_fermeture."";
            //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
         } else {
@@ -102,7 +103,7 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idplog
            //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
         }
     } else {
-        if ($session_gepi->auth_simpleSAML != 'yes') $session_gepi->close($_GET['auto']);
+        $session_gepi->close($_GET['auto']);
         $message .= "Votre session GEPI a expiré, ou bien vous avez été déconnecté.<br />";
         if ((getSettingValue("disable_login"))=='yes')  {
         	$message .=  "<br /><span class=\"rouge gras\">Le site est momentanément inaccessible. Veuillez nous excuser de ce dérangement !<span>";
@@ -120,15 +121,6 @@ if(getSettingValue('temporary_dir_no_cleaning')!='yes') {
 		}
 	unset ($filename);
 	}
-}
-
-if ($session_gepi->auth_simpleSAML == 'yes') {
-		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
-		$auth = new SimpleSAML_Auth_GepiSimple();
-		if ($auth->isAuthenticated()) {
-			//on fait le logout de session avec simplesaml
-			$auth->logout();
-		}
 }
 
 // Ajout pour le multisite
