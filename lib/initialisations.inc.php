@@ -12,8 +12,6 @@
  * @global int $GLOBALS['niveau_arbo']
  * @name $niveau_arbo
  */
-$GLOBALS['niveau_arbo']=$niveau_arbo;
-
 
 /**
  * Chemin de la racine de GEPI
@@ -25,7 +23,6 @@ $GLOBALS['niveau_arbo']=$niveau_arbo;
  * @global string $GLOBALS['gepiPath']
  * @name $gepiPath
  */
-$GLOBALS['gepiPath']=$gepiPath;
 
 /**
  * Chemin relatif vers la racine de GEPI
@@ -33,7 +30,6 @@ $GLOBALS['gepiPath']=$gepiPath;
  * @global string $GLOBALS['relatif_gepi']
  * @name $chemin_relatif_gepi
  */
-$GLOBALS['relatif_gepi']=NULL;
 
 /**
  * y si on est en multisite, n sinon
@@ -41,7 +37,6 @@ $GLOBALS['relatif_gepi']=NULL;
  * @global string $GLOBALS['multisite']
  * @name $multisite
  */
-$GLOBALS['multisite'] = $multisite;
 
 /**
  * Version de GEPI stable
@@ -49,7 +44,6 @@ $GLOBALS['multisite'] = $multisite;
  * @global mixed $GLOBALS['gepiVersion']
  * @name $gepiVersion
  */
-$GLOBALS['gepiVersion'] = NULL;
 
 /**
  * Version de GEPI release candidate
@@ -57,7 +51,6 @@ $GLOBALS['gepiVersion'] = NULL;
  * @global mixed $GLOBALS['gepiRcVersion']
  * @name $gepiRcVersion
  */
-$GLOBALS['gepiRcVersion'] = NULL;
 
 /**
  * Version de GEPI Beta
@@ -65,7 +58,6 @@ $GLOBALS['gepiRcVersion'] = NULL;
  * @global mixed $GLOBALS['gepiBetaVersion']
  * @name $gepiBetaVersion
  */
-$GLOBALS['gepiBetaVersion'] = NULL;
 
 /**
  * Les informations du groupes obtenues à partir de get_group()
@@ -74,19 +66,16 @@ $GLOBALS['gepiBetaVersion'] = NULL;
  * @name $current_group
  * @see get_group()
  */
-$GLOBALS['current_group'] = NULL;
 
 /**
  * @global array $GLOBALS['tab_conteneurs_enfants'] 
  * @name $tab_conteneurs_enfants
  */
-$GLOBALS['tab_conteneurs_enfants'] = array ();
 
 /**
  * @global int $GLOBALS['id_groupe'] 
  * @name $id_groupe
  */
-$GLOBALS['id_groupe']  = NULL;
 
 // Initialisation de variables utilisées si javascript activé
 $tabdiv_infobulle=array();
