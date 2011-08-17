@@ -206,12 +206,15 @@
 			//echo "<a href=\"$gepiPath/".$tab['lien']." ".insert_confirm_abandon()."\">".$tab['texte']."</a>\n";
 
 			// éventuellement le lien peut être vide
-			if ($tab['lien']=="")
+			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
-			else if (substr($tab['lien'],0,4) == 'http')
-				echo "<a href=\"".$tab['lien']."\">".$tab['texte']."</a>\n";
-			else 
-				echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>\n";
+			}
+			elseif (substr($tab['lien'],0,4) == 'http') {
+				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().">".$tab['texte']."</a>\n";
+			}
+			else {
+				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().">".$tab['texte']."</a>\n";
+			}
 
 			echo "<ul class='niveau".$tab['niveau_sous_menu']."'>\n";
 			for($i=0;$i<count($tab['sous_menu']);$i++) {
@@ -229,12 +232,15 @@
 			//echo "<a href=\"$gepiPath/".$tab['lien']."\" ".insert_confirm_abandon().">".$tab['texte']."</a>";
 
 			// éventuellement le lien peut être vide
-			if ($tab['lien']=="")
+			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
-			else if (substr($tab['lien'],0,4) == 'http')
-				echo "<a href=\"".$tab['lien']."\">".$tab['texte']."</a>\n";
-			else
-				echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>";
+			}
+			elseif (substr($tab['lien'],0,4) == 'http') {
+				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().">".$tab['texte']."</a>\n";
+			}
+			else {
+				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().">".$tab['texte']."</a>";
+			}
 			echo "</li>\n";
 		}
 	}

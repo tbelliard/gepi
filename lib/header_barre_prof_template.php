@@ -115,16 +115,16 @@ include("tbs_menu_plugins.inc.php");
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
 			//echo $tmp_group['name']." ".$tmp_group['classlist_string']." plop<br />";
-			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir="'.insert_confirm_abandon();
+			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir="';
 			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)';
 			//$tmp_sous_menu[$cpt_sous_menu]['niveau']=2;
 			$cpt_sous_menu++;
 		}
 		if(getSettingValue('GepiCahierTexteVersion')==2) {
-			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/see_all.php"'.insert_confirm_abandon();
+			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/see_all.php"';
 		}
 		else {
-			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/see_all.php"'.insert_confirm_abandon();
+			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/see_all.php"';
 		}
 		$tmp_sous_menu[$cpt_sous_menu]['texte']="Consultation des cahiers de textes";
 		//$tmp_sous_menu[$cpt_sous_menu]['niveau']=2;
@@ -429,11 +429,10 @@ include("tbs_menu_plugins.inc.php");
 	// plugin
 
 	$menu_plugins=tbs_menu_plugins();
-	if (count($menu_plugins)>0)
-		{
+	if (count($menu_plugins)>0) {
 		$tbs_menu_prof[$compteur_menu] = array('lien'=>"",'texte'=>"Plugins",'sous_menu'=>$menu_plugins,'niveau_sous_menu'=>2);
 		$compteur_menu++; 
-		}
+	}
 
 	
 	//=======================================================
