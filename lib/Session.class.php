@@ -51,9 +51,10 @@ class Session {
 	public $auth_locale = true; # true, false. Par défaut, on utilise l'authentification locale
 	public $auth_ldap = false; # false, true
 	public $auth_sso = false; # false, cas, lemon, lcs
-    private $login_sso = false; //login (ou uid) du sso auquel on est connecté (peut être différent du login gepi, la correspondance est faite dans mod_sso_table) 
+	public $auth_simpleSAML = false; # false, cas, lemon, lcs
+	private $login_sso = false; //login (ou uid) du sso auquel on est connecté (peut être différent du login gepi, la correspondance est faite dans mod_sso_table) 
 	public $current_auth_mode = false;  # gepi, ldap, sso, ou false : le mode d'authentification
-										# utilisé par l'utilisateur actuellement connecté
+	public $portal_return_url;	# configuration ssaml
 
 	private $etat = false; 	# actif/inactif. Utilisé simplement en interne pour vérifier que
 							# l'utilisateur authentifié de source externe est bien actif dans Gepi.
@@ -77,15 +78,6 @@ class Session {
 		    $this->update_timezone($GLOBALS['timezone']);
         }
 
-		//si on est sur une authentification simplesaml et que l'utilisateur n'est pas authentifié, on purge la session
-		if (getSettingValue("auth_simpleSAML") == 'yes') {
-				include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
-				$auth = new SimpleSAML_Auth_GepiSimple();
-				if (!$auth->isAuthenticated()) {
-						$this->reset(0);
-				}
-		}
-                
 		$this->maxLength = getSettingValue("sessionMaxLength");
 		$this->verif_CAS_multisite();
 
@@ -96,12 +88,29 @@ class Session {
 		$this->auth_ldap = getSettingValue("auth_ldap") == 'yes' ? true : false;
 		$this->auth_simpleSAML = getSettingValue("auth_simpleSAML") == 'yes' ? true : false;
 		$this->auth_sso = in_array(getSettingValue("auth_sso"), array("lemon", "cas", "lcs")) ? getSettingValue("auth_sso") : false;
+		$this->portal_return_url = getSettingValue('portal_return_url');
+		
+		//si on est sur une authentification simplesaml et que l'utilisateur n'est pas authentifié, on purge la session
+		if (getSettingValue("auth_simpleSAML") == 'yes') {
+				include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
+				$auth = new SimpleSAML_Auth_GepiSimple();
+				if (!$auth->isAuthenticated()) {
+						//on ne fait pas de retour au portail puisque l'utilisateur n'est pas authentifié sur un portail
+						$this->portal_return_url = null;
+						$this->reset(0);
+				}
+				if ($this->portal_return_url == null) {//si rien n'est précisé dans les settings, on utilise la configuration de la source ssaml
+					$this->portal_return_url = $auth->getPortalReturnUrl();
+				}
+		}
+                
+		
 		if (!$this->is_anonymous()) {
 		  # Il s'agit d'une session non anonyme qui existait déjà.
       if (!$login_CAS_en_cours) {
         # On regarde s'il n'y a pas de timeout
-        if ($this->timeout()) {
-          # timeout : on remet à zéro.
+        if ($this->start && $this->timeout()) {
+           # timeout : on remet à zéro.
           $debut_session = $_SESSION['start'];
           $this->reset(3);
           if (isset($GLOBALS['niveau_arbo'])) {
@@ -598,7 +607,16 @@ class Session {
         $this->register_logout($_auto);
 	    }
 
-	   // Détruit toutes les variables de session
+		if ($this->auth_simpleSAML == 'yes') {
+				include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
+				$auth = new SimpleSAML_Auth_GepiSimple();				
+				if ($auth->isAuthenticated()) {
+					//on fait le logout de session avec simplesaml
+					$auth->logout();
+				}
+		}
+
+	    // Détruit toutes les variables de session
 	    session_unset();
 	    $_SESSION = array();
 
@@ -612,6 +630,15 @@ class Session {
 		//on redémarre une nouvelle session
 		session_start();
 		session_regenerate_id();
+		
+		$this->login = null;
+		
+		//si une url de portail est donnée, on redirige
+		if ($this->portal_return_url != null) {
+			header('Location:'.$this->portal_return_url);
+			die;
+		}
+		
 	}
 
 	private function load_session_data() {
