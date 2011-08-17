@@ -447,7 +447,7 @@ class SimpleSAML_IdP {
 			array('id' => $id)
 		);
 
-		$this->authSource->logout($returnTo);
+		//$this->authSource->logout($returnTo);
 
 		$handler = $this->getLogoutHandler();
 		$handler->startLogout($state, $assocId);
