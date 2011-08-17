@@ -120,7 +120,7 @@ if(strtolower(substr(getSettingValue('active_cahiers_texte'),0,1))=='y') {
 	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passés.</p></li>\n";
 }
 if(getSettingValue('active_module_absence')=='2') {
-	echo "<li><p><a href='../mod_abs2/extraction_saisies.php'>Effectuer une extraction CSV des absences</a>.</p></li>\n";
+	echo "<li><p><a href='../mod_abs2/extraction_saisies.php?date_absence_eleve_debut=".(date('Y')-1)."-08-01&date_absence_eleve_fin=".date('Y')."-08-01&type_extrait=1&retour=../gestion/changement_d_annee.php'>Effectuer une extraction CSV des absences</a>.</p></li>\n";
 }
 echo "<li><p>Sauvegarder l'arborescence Gepi (<em>par ftp, sftp,...</em>) $lien_svg</p></li>\n";
 echo "<li><p>Conserver les données de l'année passée via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php'>module Années antérieures</a>.</p></li>\n";
@@ -128,31 +128,31 @@ echo "</ol>\n";
 
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";
 echo "<ol>\n";
-echo "<li><p>Modifier l'année scolaire&nbsp;: <input type='text' name='gepiYear' size='20' value='".getSettingValue('gepiYear')."' onchange='changement()' /></li>\n";
+echo "<li><p>Modifier l'année scolaire&nbsp; (actuellement ".getSettingValue('gepiYear').") : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange='changement()' /></li>\n";
 echo "<li><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:<br />";
 ?>
 
 <table>
      <tr>
         <td>
-        Date de début des cahiers de textes :
+        Date de début des cahiers de textes (actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("begin_bookings")); ?>) :
         </td>
         <td><?php
         $bday = strftime("%d", getSettingValue("begin_bookings"));
         $bmonth = strftime("%m", getSettingValue("begin_bookings"));
-        $byear = strftime("%Y", getSettingValue("begin_bookings"));
+        $byear = date('Y');
         genDateSelector("begin_", $bday, $bmonth, $byear,"more_years") ?>
         </td>
     </tr>
     <tr>
         <td>
-        Date de fin des cahiers de textes :
+        Date de fin des cahiers de textes (actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("end_bookings")); ?>) :
         </td>
         <td><?php
         $eday = strftime("%d", getSettingValue("end_bookings"));
         $emonth = strftime("%m", getSettingValue("end_bookings"));
-        $eyear= strftime("%Y", getSettingValue("end_bookings"));
-        genDateSelector("end_",$eday,$emonth,$eyear,"more_years") ?>
+        $eyear = date('Y')+1;
+		genDateSelector("end_",$eday,$emonth,$eyear,"more_years") ?>
         </td>
     </tr>
 </table>

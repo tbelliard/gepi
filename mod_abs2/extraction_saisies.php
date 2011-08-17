@@ -55,7 +55,7 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" && $utilisateur->getStatut()!="administrateur" ) {
     die("acces interdit");
 }
 
@@ -67,7 +67,7 @@ $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :(isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
 $date_absence_eleve_debut = isset($_POST["date_absence_eleve_debut"]) ? $_POST["date_absence_eleve_debut"] :(isset($_GET["date_absence_eleve_debut"]) ? $_GET["date_absence_eleve_debut"] :(isset($_SESSION["date_absence_eleve_debut"]) ? $_SESSION["date_absence_eleve_debut"] : NULL));
 $date_absence_eleve_fin = isset($_POST["date_absence_eleve_fin"]) ? $_POST["date_absence_eleve_fin"] :(isset($_GET["date_absence_eleve_fin"]) ? $_GET["date_absence_eleve_fin"] :(isset($_SESSION["date_absence_eleve_fin"]) ? $_SESSION["date_absence_eleve_fin"] : NULL));
-$type_extrait = isset($_POST["type_extrait"]) ? $_POST["type_extrait"] :(isset($_GET["type_extrait"]) ? $_GET["type_extrait"] : NULL);
+$type_extrait = isset($_POST["type_extrait"]) ? $_POST["type_extrait"] :(isset($_GET["type_extrait"]) ? $_GET["type_extrait"] : 1);
 $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] :(isset($_GET["affichage"]) ? $_GET["affichage"] : NULL);
 $page= isset($_REQUEST['page'])?$_REQUEST['page']:0;
 $traitement_csv_en_cours= isset($_REQUEST['traitement_csv_en_cours'])?$_REQUEST['traitement_csv_en_cours']:'non_defini';
@@ -108,59 +108,64 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    ?>
 	    <div id="contain_div" class="css-panes">
 	    <form dojoType="dijit.form.Form" id="choix_extraction" name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
-	    <h2>Les saisies du 		
+	    <h2>Etraire les saisies du 		
 	    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
 	    au               
 	    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
 		</h2>
-		  <p>
-	    Nom (facultatif) : <input dojoType="dijit.form.TextBox" type="text" style="width : 10em" name="nom_eleve" size="10" value="<?php echo $nom_eleve?>"/>
-	
-	    <?php
-	    //on affiche une boite de selection avec les classe
-	    if ($affichage != 'ods')
-	    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-		$classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
-	    } else {
-		$classe_col = $utilisateur->getClasses();
-	    }
-	    if (!$classe_col->isEmpty()) {
-		    echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\">");
-		    echo "<option value='-1'>Toutes les classes</option>\n";
-		    foreach ($classe_col as $classe) {
-			    echo "<option value='".$classe->getId()."'";
-			    if ($id_classe == $classe->getId()) echo " selected='selected' ";
-			    echo ">";
-			    echo $classe->getNom();
-			    echo "</option>\n";
+	    <?php 
+	    if ($utilisateur->getStatut()!="administrateur" ) {
+			echo '<p>Nom (facultatif) : <input dojoType="dijit.form.TextBox" type="text" style="width : 10em" name="nom_eleve" size="10" value="'.$nom_eleve.'"/>';
+		
+		    //on affiche une boite de selection avec les classe
+		    if ($affichage != 'ods')
+		    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+			$classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
+		    } else {
+			$classe_col = $utilisateur->getClasses();
 		    }
-		    echo "</select> ";
-	    } else {
-		echo 'Aucune classe avec élève affecté n\'a été trouvée';
-	    }
-     ?>
-	</p>
-    <p>
-    Type :
-    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait">
-    <option value='1' <?php if ($type_extrait == '1') {echo 'selected';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
-    <option value='2' <?php if ($type_extrait == '2') {echo 'selected';}?>>Liste de toutes les saisies</option>
-    </select>
-    <br />
-    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="html">Afficher</button>
-    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="ods">Enregistrer au format ods</button>
-    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="csv">Enregistrer au format csv</button>
-	</p>
-	</form>
- 
-    <?php
-  }
+		    if (!$classe_col->isEmpty()) {
+			    echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\">");
+			    echo "<option value='-1'>Toutes les classes</option>\n";
+			    foreach ($classe_col as $classe) {
+				    echo "<option value='".$classe->getId()."'";
+				    if ($id_classe == $classe->getId()) echo " selected='selected' ";
+				    echo ">";
+				    echo $classe->getNom();
+				    echo "</option>\n";
+			    }
+			    echo "</select> ";
+		    } else {
+			echo 'Aucune classe avec élève affecté n\'a été trouvée';
+		    }
+	    ?>
+		</p>
+	    <p>
+	    Type :
+	    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait">
+	    <option value='1' <?php if ($type_extrait == '1') {echo 'selected';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
+	    <option value='2' <?php if ($type_extrait == '2') {echo 'selected';}?>>Liste de toutes les saisies</option>
+	    </select>
+	    <br />
+	    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="html">Afficher</button>
+	    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="ods">Enregistrer au format ods</button>
+	    <?php } else {
+	    	?><button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="csv">Enregistrer au format csv</button>
+	    	<?php
+	    	if (isset($_REQUEST['retour']) && $traitement_csv_en_cours != 'true') {
+				echo '<br/><br/><br/><input type="hidden" name="retour" value="'.$_REQUEST['retour'].'" />';
+			}
+	    }?>
+		</form>
+		 
+	    <?php
+	}
 }
 if ($affichage != null && $affichage != '') {
     $eleve_query = EleveQuery::create();
-    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    if ($utilisateur->getStatut() == 'administrateur' || getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
     } else {
-	$eleve_query->filterByUtilisateurProfessionnel($utilisateur);
+		$eleve_query->filterByUtilisateurProfessionnel($utilisateur);
     }
     if ($id_classe !== null && $id_classe != -1) {
 	$eleve_query->useJEleveClasseQuery()->filterByIdClasse($id_classe)->endUse();
@@ -175,7 +180,7 @@ if ($affichage != null && $affichage != '') {
 	->filterByEleveId($eleve_col->toKeyValue('IdEleve', 'IdEleve'));
 
     if ($type_extrait == '1') {
-	$saisie_query->filterByManquementObligationPresence(true);
+		$saisie_query->filterByManquementObligationPresence(true);
     }
 
     $saisie_query->useEleveQuery()->orderByNom()->orderByPrenom()->endUse();
@@ -261,29 +266,30 @@ if ($affichage == 'html') {
     }
     $nom_fichier .=  $dt_date_absence_eleve_fin->format("d_m_Y").'.ods';
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fichier);
-} else if ($affichage == 'csv') {
+} else if ($affichage == 'csv' && $utilisateur->getStatut() == "administrateur") {
 	if ($traitement_csv_en_cours == 'false') {
 		//le traitement viens de se finir, on propose le fichier au téléchargement
-		echo '<a href="../backup/absences/'.$_REQUEST['filename'].'">Télécharger le résultat</a>';
+		echo '<br/><a href="'.'../backup/'.getSettingValue("backup_directory").'/absences/'.$_REQUEST['filename'].'">Télécharger le résultat</a>';
 		if ($page == 1) {
 			//on s'est arreter à la page 0, il n'y a pas de résultat
 			echo ' (extraction vide)';
 		}
+		echo '<br/>';
 	} else {
 		//print_r($page);die;
 	    // titre des colonnes
-    	$saisie_col = $saisie_query->paginate($page, 1500);
+    	$saisie_col = $saisie_query->paginate($page, 750);
 		if ($page == 0) {
 		    $output = '';
 		    $date = new DateTime();
 		    $output .= ('Extraction des saisies d\'absence '.getSettingValue('gepiSchoolName').' '.getSettingValue('gepiYear')."\n");
 		    $output .= 'Extraction faite le '.date("d/m/Y - H:i")."\n";
 		    $output .= ("Nom,Prenom,Classe,Debut absence,Fin absence, Type, Manquement a l'obligation de presence, Sous responsabilite etablissement\n");
-		    $filename = '/extrait_saisies_'.date("d_m_Y_H_i").'.csv';
-		    if (!file_exists('../backup/absences')) {
-		    	mkdir(dirname(__FILE__).'/../backup/absences');
+		    $filename = 'extrait_saisies_'.date("d_m_Y_H_i").'.csv';
+		    if (!file_exists('../backup/'.getSettingValue("backup_directory").'/absences')) {
+		    	mkdir('../backup/'.getSettingValue("backup_directory").'/absences');
 		    }
-			$myFile = dirname(__FILE__).'/../backup/absences/'.$filename;
+			$myFile = '../backup/'.getSettingValue("backup_directory").'/absences/'.$filename;
 			$fh = fopen($myFile, 'w');
 		    
 		    fwrite($fh,$output);
@@ -292,7 +298,7 @@ if ($affichage == 'html') {
 	    	$filename = $_REQUEST['filename'];
 	
 		
-			echo 'Veuillez patienter, étape '.$page.' sur '.$saisie_col->getLastPage();
+			echo '<br/>Veuillez patienter, étape '.$page.' sur '.$saisie_col->getLastPage();
 			if (ob_get_contents()) {
 				ob_flush();
 			}
@@ -325,7 +331,7 @@ if ($affichage == 'html') {
 				}
 				$output .= "\n";
 		    }
-			$myFile = dirname(__FILE__).'/../backup/absences/'.$filename;
+			$myFile = '../backup/'.getSettingValue("backup_directory").'/absences/'.$filename;
 			$fh = fopen($myFile, 'a');
 		    
 		    fwrite($fh,$output);
@@ -344,6 +350,9 @@ if ($affichage == 'html') {
 		}
 		$page++;
 		echo '<input type="hidden" name="page" value="'.$page.'" />';
+		if (isset($_REQUEST['retour'])) {
+			echo '<input type="hidden" name="retour" value="'.$_REQUEST['retour'].'" />';
+		}
 		echo  "<script type='text/javascript'>
 		                    document.form_table.submit();
 		                </script>  
@@ -351,9 +360,13 @@ if ($affichage == 'html') {
 		                <input type='submit' name='Submit' value='Continuer' />
 		                </noscript>
 		            ";
-		echo "</form>";
+		echo "</form><br/>";
 	}
  }
+ 
+if (isset($_REQUEST['retour']) && $traitement_csv_en_cours != 'true') {
+	echo '<br/><br/><a href="'.$_REQUEST['retour'].'">Retour</a>';
+}
 ?>
 	</div>
 <?php
