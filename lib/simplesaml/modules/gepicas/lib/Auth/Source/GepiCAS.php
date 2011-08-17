@@ -27,11 +27,6 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 	private $_champ_cas_uid_retour;
 
 	/**
-	 * @var champ_cas_uid_retour Où trouver l'UID entre $username et $casattributes
-	 */
-	private $_disconnect_CAS;
-
-	/**
 	 * Constructor for this authentication source.
 	 *
 	 * @param array $info  Information about this authentication source.
@@ -76,11 +71,6 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 			throw new Exception("champ_uid_retour not specified");
 		}
 		
-		if(isset($config['disconnect_CAS'])){
-			$this->_disconnect_CAS =  $config['disconnect_CAS'];
-		}else{
-			$this->_disconnect_CAS = true;
-		}
 	}
 
 	/**
@@ -107,7 +97,7 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		} else {
 			$uid = $casattributes['uid'];
 		}
-		
+
 		$requete = 'SELECT '.$this->_search_table_gepi_login_column.' FROM '.$this->_search_table_name.' WHERE '.$this->_search_table_cas_uid_column.'=\''.$uid.'\'';
 		$result = mysql_query($requete);
 		$valeur = mysql_fetch_array($result);
@@ -133,28 +123,5 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		$state['Attributes'] = $attributes;
 		
 		SimpleSAML_Auth_Source::completeAuth($state);
-	}
-	
-		/**
-	 * Log out from this authentication source.
-	 *
-	 * This function should be overridden if the authentication source requires special
-	 * steps to complete a logout operation.
-	 *
-	 * If the logout process requires a redirect, the state should be saved. Once the
-	 * logout operation is completed, the state should be restored, and completeLogout
-	 * should be called with the state. If this operation can be completed without
-	 * showing the user a page, or redirecting, this function should return.
-	 *
-	 * @param array &$state  Information about the current logout operation.
-	 */
-	public function logout(&$state) {
-		assert('is_array($state)');
-		if ($this->_disconnect_CAS) {
-			parent::logout($state);
-		} else {
-			SimpleSAML_Auth_State::deleteState($state);
-			return;
-		}
 	}
 }
