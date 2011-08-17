@@ -36,7 +36,7 @@ $config = array(
 		    'champ_cas_uid_retour' => 'username'
 		),
 		'portal_return_url' => 'http://cas.e-lyco.fr',
-		'do_source_logout' => true,
+		'do_source_logout' => false,
 	),
 
 
