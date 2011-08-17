@@ -57,13 +57,13 @@ class CvsentCtrl extends Controleur {
                 $this->copy_file($this->tmp);
             } else
                 throw new Exception('Aucun fichier ne semble uploadé ');
-            $this->csv = 'apps/csv/ENT-Identifiants.csv';
+            $this->csv = '../temp/'.get_user_temp_directory().'/ENT-Identifiants.csv';
             if (file_exists($this->csv)) {
                 $this->traite_file($this->csv);
                 unlink($this->csv);
-                if (file_exists($this->csv)
-
-                    )throw new Exception('Impossible de supprimer le fichier csv dans le repertoire csv. Il est conseillé de le faire manuellement.');
+                if (file_exists($this->csv)){
+                    throw new Exception('Impossible de supprimer le fichier csv dans votre repertoire temp. Il est conseillé de le faire manuellement.');
+                }
                 if (is_null($this->erreurs_lignes)) {
                     $this->vue->LoadTemplate('result.php');
                     if (!is_null($this->table)
@@ -92,7 +92,7 @@ class CvsentCtrl extends Controleur {
         if ($extension == '.csv') {
             $this->file = $_FILES['fichier']['name'];
             if ($this->file == 'ENT-Identifiants.csv') {
-                $copie = move_uploaded_file($file, 'apps/csv/' . $this->file);
+                $copie = move_uploaded_file($file,'../temp/'.get_user_temp_directory().'/'. $this->file);
             } else
                 throw new Exception('Le nom du fichier est incorrect');
         } else

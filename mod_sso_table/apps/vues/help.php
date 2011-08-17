@@ -58,8 +58,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 	<br />
 	<br />
 
-	<li><strong>Par recherche des correspondances sur les noms et prénoms, à partir d'un fichier csv :</strong></li>
-	<p class='message_red'>Le dossier <em>mod_sso_table/apps/csv</em> doit être accessible en écriture par le serveur</p
+	<li><strong>Par recherche des correspondances sur les noms et prénoms, à partir d'un fichier csv :</strong></li>	
 	<p>Cliquer sur <em>CVS export ENT</em></p>
 	<p>Le fichier à fournir doit s'appeler <em>ENT-Identifiants.csv</em></p>
 	<p>Il doit contenir par ligne treize champs séparés par un ;</p>
