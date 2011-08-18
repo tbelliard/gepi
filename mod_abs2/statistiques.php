@@ -212,8 +212,7 @@ if ($affichage != 'ods') {
             <h3 class="no">Les dates de début et de fin ont été inversés.</h3>
     <?php endif; ?>
         <p>
-            Cette page calcule le taux d'absentéisme par élève ainsi que le taux moyen pour les élèves sélectionnés sur une période donnée.<br />
-            La formule utilisée pour le calcul du taux d'absentéisme est : 100*(Nbre de demi-journées d'absences/Nbre de demi-journées ouvrées).<br /><br />
+            La formule utilisée pour le calcul du taux d'absentéisme est le pourcentage du nombre de demi-journées d'absences par rapport au nombre de demi-journées ouvrées.<br /><br />
         </p>
         <form dojoType="dijit.form.Form" name="abs_statistiques" id="abs_statistiques" action="statistiques.php" method="post">
             <fieldset>
