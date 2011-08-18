@@ -76,6 +76,10 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 	$entete_section[]="";
     $fich[]="absence_extraction_traitements.ods";
     $utilisation[]="ABS2 : Tableau des traitements d'absences";
+    
+    $entete_section[]="";
+    $fich[]="absence_taux_absenteisme.ods";
+    $utilisation[]="ABS2 : Tableau des taux d'absentéisme";
 
     $entete_section[]="";
     $fich[]="absence_extraction_bilan.ods";
