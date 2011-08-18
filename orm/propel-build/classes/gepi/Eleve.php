@@ -1690,7 +1690,7 @@ class Eleve extends BaseEleve {
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
-		if ($dateDebut->format('U') > $dateFin->format('U')) {
+		if ($dateDebut != null && $dateFin != null && $dateDebut->format('U') > $dateFin->format('U')) {
 			throw new PropelException('Erreur: la date de debut ne peut être postérieure à la date de fin');
 		}
 		
@@ -1855,7 +1855,7 @@ class Eleve extends BaseEleve {
 	
 	/**
 	 *
-	 * Mets à jour la table d'agrégation des absences pour cet élève
+	 * Vérifie et mets à jour l'ensemble de la table d'agrégation des absences pour cet élève
 	 * @TODO		implement the method
 	 *
 	 * @param      DateTime $dateDebut date de début pour la prise en compte de la mise à jours
@@ -1864,6 +1864,27 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		//on va vérifier que avant et après les dates précisées, la table est bien synchronisée
+		if ($dateDebut != null) {
+			$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(null, $dateDebut);
+		}
+		if ($dateFin != null) {
+			$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateFin, null);
+		}
+		$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateDebut, $dateFin);
+	}
+	
+	/**
+	 *
+	 * Mets à jour la table d'agrégation des absences pour cet élève, uniquement sur les dates précisées
+	 * @TODO		implement the method
+	 *
+	 * @param      DateTime $dateDebut date de début pour la prise en compte de la mise à jours
+	 * @param      DateTime $dateFin date de fin pour la prise en compte de la mise à jours
+	 * @return		Boolean
+	 *
+	 */
+	private function thinCheckAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
 		//on va regarder si il y a déjà des entrée dans cet intervalle de temps
 		$dateDebutClone = null;
 		$dateFinClone = null;
