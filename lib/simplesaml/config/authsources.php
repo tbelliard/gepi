@@ -30,7 +30,7 @@ $config = array(
 		    'logout' => 'https://cas.e-lyco.fr/saml/Logout',
 		),
 		'search_table' => array(
-		    'name' => 'plugin_sso_table',
+		    'name' => 'sso_table_correspondance',
 		    'cas_uid_column' => 'login_sso',
 		    'gepi_login_column' => 'login_gepi',
 		    'champ_cas_uid_retour' => 'username'
