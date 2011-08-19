@@ -174,7 +174,7 @@ if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
 }
 $limite_jours=7;
 
-if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2) &&  $cpt_classe<=count( $_SESSION['classes_bilan'])){
+if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2)){
     //si limitation de temps et si la limite de temps est dépassée en mode toutes les classes on ne lance pas de calculs 
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
@@ -244,8 +244,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             } else {
                 $classe_col = $utilisateur->getClasses();
             }
-            if (!$classe_col->isEmpty()) {
-                if(isset($_SESSION['classes_bilan'])) unset($_SESSION['classes_bilan']);
+            if (!$classe_col->isEmpty()) {                
                 echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" onChange='document.bilan_individuel.id_eleve.value=\"\";'>");
                 if($utilisateur->getStatut() != "autre" && $utilisateur->getStatut() != "professeur" ){
                     echo "<option value='-1'>Toutes les classes</option>\n";
@@ -256,8 +255,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
                         echo " selected='selected' ";
                     echo ">";
                     echo $classe->getNom();
-                    echo "</option>\n";
-                    $_SESSION['classes_bilan'][]=$classe->getId();
+                    echo "</option>\n";                    
                 }                
                 echo "</select> ";                
             } else {
