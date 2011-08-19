@@ -33,6 +33,12 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
                 $date_fin = EdtHelper::getDernierJourAnneeScolaire();
             }
         }
+        $Heure_debut=$date_debut->format('H');
+        if($Heure_debut<12){
+            $date_debut->setTime(0,0,0);
+        }else{
+           $date_debut->setTime(12,0,0); 
+        }        
         $this->filterByDateDemiJounee($date_debut, Criteria::GREATER_EQUAL)
              ->filterByDateDemiJounee($date_fin, Criteria::LESS_EQUAL);
         return $this;
