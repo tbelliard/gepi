@@ -449,7 +449,11 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 		// $tbs_probleme_dir[]="PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.";
 		$afficheAccueil->probleme_dir[]="PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.";
 	}
-
+    
+    if (version_compare(PHP_VERSION,'5.2.4')<0) {
+        $afficheAccueil->probleme_dir[]="Gépi nécessite une version de php supérieure à la version 5.2.4 pour fonctionner de manière optimale. Il est conseillé de mettre à jour votre version de PHP.";
+    }
+    
 	$sql="SELECT DISTINCT id_groupe, declarant FROM j_signalement WHERE nature='erreur_affect';";
 	$res_sign=mysql_query($sql);
 	if(mysql_num_rows($res_sign)>0) {
