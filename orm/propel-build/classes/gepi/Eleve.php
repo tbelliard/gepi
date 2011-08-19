@@ -1620,7 +1620,10 @@ class Eleve extends BaseEleve {
 				->filterByDateDemiJounee($dateFinClone, Criteria::LESS_EQUAL)
 				->count(); 
 				
-            $nbre_demi_journees=(int)(($dateFinClone->format('U')-$dateDebutClone->format('U'))/(3600*12)+1);
+            $nbre_demi_journees=(int)(($dateFinClone->format('U')+3600-$dateDebutClone->format('U')+3600)/(3600*12)); // on compte les tranches de 12h
+            //on ajoute une heure à la date de fin pour dépasser 23:59:59 et bien dépasser la tranche de 00:00
+            //si on a un debut à 00:00 et une fin la même journée à 23:59, en ajoutant une heure à la fin on a largement deux tranches de 12h completes
+            //donc bien deux demi journées de décomptées
             
 			if ($count != $nbre_demi_journees) {
 				return false;
