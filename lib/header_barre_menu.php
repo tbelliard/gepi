@@ -5,6 +5,18 @@
  *
  * @version $Id$
  * @copyright 2008-2011
+ * @license GNU/GPL v2
+ * @package General
+ * @subpackage Affichage
+ * @see acces()
+ * @see get_groups_for_prof()
+ * @see getSettingValue()
+ * @see insert_confirm_abandon()
+ * @see menu_plugins()
+ * @see nb_saisies_bulletin()
+ * @see retourneCours()
+ * @todo Proposer aussi les emplois du temps de ses classes
+ * @todo Ajouter Paramètres des bulletins et Impression des bulletins (pour les PP)
  */
 // ====== SECURITE =======
 
@@ -39,7 +51,6 @@ echo '<!--[if lt IE 7]>
 <![endif]-->
 ';
 
-	//$mes_groupes=get_groups_for_prof($_SESSION['login']);
 	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes'));
 	$tmp_mes_classes=array();
 	foreach($mes_groupes as $tmp_group) {
@@ -289,18 +300,6 @@ echo '<!--[if lt IE 7]>
 		$barre_notanet = '<li class="li_inline"><a href="'.$gepiPath.'/mod_notanet/index.php"'.insert_confirm_abandon().'>Brevet</a></li>'."\n";
 	}else{ $barre_notanet = '';}
 
-	/*
-	function acces($id,$statut) {
-		$tab_id = explode("?",$id);
-		$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-		$droit = @mysql_result($query_droits, 0, $statut);
-		if ($droit == "V") {
-			return "1";
-		} else {
-			return "0";
-		}
-	}
-	*/
 	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
 		$barre_consult_eleve = '<li class="li_inline"><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consult.élève</a></li>'."\n";
 	}
@@ -308,6 +307,10 @@ echo '<!--[if lt IE 7]>
 	
 	
 // plugins
+
+/**
+ * Inclusion des plugins dans la barre des menus
+ */
 include("menu_plugins.inc.php");
 $barre_plugin=menu_plugins();
 if ($barre_plugin!="")
@@ -320,21 +323,6 @@ if ($barre_plugin!="")
 	}
 // fin plugins
 
-	/*
-	echo '
-	<ol id="essaiMenu">
-		<li><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>
-		'.$barre_absence.'
-		'.$barre_textes.'
-		'.$barre_note.'
-		'.$barre_edt.'
-		'.$barre_discipline.'
-		'.$barre_notanet.'
-		'.$barre_consult_eleve.'
-		<li><a href="'.$gepiPath.'/utilisateurs/mon_compte.php">Mon compte</a></li>
-	</ol>
-	';
-	*/
 	echo '<div id="menu_barre">
 	<ul class="niveau1">
 		<li class="li_inline"><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>

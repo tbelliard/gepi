@@ -1,10 +1,24 @@
 <?php
 
-/*
- * $Id$
- *
+/**
+ * Fichier qui permet de construire la barre de menu professeur
  * 
- * This file is part of GEPI.
+ * $Id$
+ * 
+ * Variables envoyées au gabarit : liens de la barre de menu prof
+ * - $tbs_menu_prof = array(lien , texte)
+ *
+ * @license GNU/GPL v2
+ * @package General
+ * @subpackage Affichage
+ * @see acces()
+ * @see get_groups_for_prof()
+ * @see getSettingValue()
+ * @see nb_saisies_bulletin()
+ * @see retourneCours()
+ */
+
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,23 +34,9 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Fichier qui permet de construire la barre de menu professeur
  *
  */
- 
- 
-/* ---------Variables envoyées au gabarit
-*	----- tableaux -----
-* $tbs_menu_prof										liens se la barre de menu prof
-*				-> lien
-*				-> texte
-*
-
-$TBS->MergeBlock('tbs_menu_prof',$tbs_menu_prof) ;
-
-unset($tbs_menu_prof);
-*/
- 
+  
 // ====== SECURITE =======
 
 if (!$_SESSION["login"]) {
@@ -48,11 +48,9 @@ if (!$_SESSION["login"]) {
 include("tbs_menu_plugins.inc.php");
 
 	//=======================================================
-	//$mes_groupes=get_groups_for_prof($_SESSION['login']);
 	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes'));
 	$tmp_mes_classes=array();
 	foreach($mes_groupes as $tmp_group) {
-		//echo $tmp_group['name']." ".$tmp_group['classlist_string']."<br />";
 		foreach($tmp_group["classes"]["classes"] as $key_id_classe => $value_tab_classe) {
 			if(!in_array($value_tab_classe['classe'], $tmp_mes_classes)) {
 				$tmp_mes_classes[$key_id_classe]=$value_tab_classe['classe'];
@@ -91,13 +89,10 @@ include("tbs_menu_plugins.inc.php");
 	//=======================================================
 	// module absence
 	if (getSettingValue("active_module_absence_professeur")=='y') {
-		//$barre_absence = '<li><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs.'">Absences</a></li>';
 		if (getSettingValue("active_module_absence")=='y' ) {
 		    $tbs_menu_prof[$compteur_menu]=array("lien"=>'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs , "texte"=>"Absences");
-		    //$tbs_menu_prof[$compteur_menu]=array("lien"=>'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs , "texte"=>"Absences", "niveau"=>"1");
 		} else if (getSettingValue("active_module_absence")=='2' ) {
 		    $tbs_menu_prof[$compteur_menu]=array("lien"=>'/mod_abs2/index.php'.$groupe_abs , "texte"=>"Absences");
-		    //$tbs_menu_prof[$compteur_menu]=array("lien"=>'/mod_abs2/index.php'.$groupe_abs , "texte"=>"Absences", "niveau"=>"1");
 		}
 		$compteur_menu++;
 	}else{$barre_absence = '';}
@@ -105,19 +100,14 @@ include("tbs_menu_plugins.inc.php");
 	//=======================================================
 	// Module Cahier de textes
 	if (getSettingValue("active_cahiers_texte") == 'y') {
-		//$barre_textes = '<li><a href="'.$gepiPath.'/cahier_texte/index.php'.$groupe_text.'">C. de Textes</a></li>';
-		//$tbs_menu_prof[$compteur_menu]=array("lien"=>'/cahier_texte/index.php'.$groupe_text , "texte"=>"C. de Textes", "niveau"=>"1");
 		$tbs_menu_prof[$compteur_menu]["lien"]='/cahier_texte/index.php'.$groupe_text;
 		$tbs_menu_prof[$compteur_menu]["texte"]="C. de Textes";
-		//$tbs_menu_prof[$compteur_menu]["niveau"]="1";
-
+		
 		$tmp_sous_menu=array();
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
-			//echo $tmp_group['name']." ".$tmp_group['classlist_string']." plop<br />";
 			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir="';
 			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)';
-			//$tmp_sous_menu[$cpt_sous_menu]['niveau']=2;
 			$cpt_sous_menu++;
 		}
 		if(getSettingValue('GepiCahierTexteVersion')==2) {
@@ -127,7 +117,6 @@ include("tbs_menu_plugins.inc.php");
 			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/see_all.php"';
 		}
 		$tmp_sous_menu[$cpt_sous_menu]['texte']="Consultation des cahiers de textes";
-		//$tmp_sous_menu[$cpt_sous_menu]['niveau']=2;
 		$cpt_sous_menu++;
 
 		$tbs_menu_prof[$compteur_menu]["sous_menu"]=$tmp_sous_menu;
@@ -142,11 +131,9 @@ include("tbs_menu_plugins.inc.php");
 	if(getSettingValue("active_carnets_notes") == 'y'){
 		// Cahiers de notes
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/cahier_notes/index.php' , "texte"=>"Notes");
-		//$tbs_menu_prof[$compteur_menu]=array("lien"=> '/cahier_notes/index.php' , "texte"=>"Notes", "niveau"=>"1");
 		$tmp_sous_menu=array();
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
-			//echo $tmp_group['name']." ".$tmp_group['classlist_string']." plop<br />";
 			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
 			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)';
 			$tmp_sous_menu2=array();
@@ -201,7 +188,6 @@ include("tbs_menu_plugins.inc.php");
 
 		// Bulletins
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/saisie/index.php' , "texte"=>"Bulletins");
-		//$tbs_menu_prof[$compteur_menu]=array("lien"=> '/saisie/index.php' , "texte"=>"Bulletins", "niveau"=>"1");
 		$tmp_sous_menu=array();
 		$cpt_sous_menu=0;
 
@@ -360,69 +346,30 @@ include("tbs_menu_plugins.inc.php");
 	//=======================================================
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {
-		//$barre_edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof' , "texte"=>"Emploi du tps");
-		//$tbs_menu_prof[$compteur_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof' , "texte"=>"Emploi du tps", "niveau"=>"1");
 		$compteur_menu++;
 	}else{$barre_edt = '';}
 
 	//=======================================================
 	// Module discipline
 	if (getSettingValue("active_mod_discipline")=='y') {
-	    //$barre_discipline = "<li><a href=".$gepiPath."/mod_discipline/index.php>Discipline</a></li>";
-		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_discipline/index.php' , "texte"=>"Discipline");
-		//$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_discipline/index.php' , "texte"=>"Discipline", "niveau"=>"1");
+	    $tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_discipline/index.php' , "texte"=>"Discipline");
 		$compteur_menu++;
 	} else {$barre_discipline = '';}
 
 	//=======================================================
 	// Module notanet
 	if (getSettingValue("active_notanet") == "y") {
-		//$barre_notanet = '<li><a href="'.$gepiPath.'/mod_notanet/index.php">Brevet</a></li>';
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_notanet/index.php' , "texte"=>"Brevet");
-		//$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_notanet/index.php' , "texte"=>"Brevet", "niveau"=>"1");
 		$compteur_menu++;
 	}else{ $barre_notanet = '';}
 
-	/*
-	function acces($id,$statut) {
-		$tab_id = explode("?",$id);
-		$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-		$droit = @mysql_result($query_droits, 0, $statut);
-		if ($droit == "V") {
-			return "1";
-		} else {
-			return "0";
-		}
-	}
-	*/
-
 	//=======================================================
 	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
-		//$barre_consult_eleve = '<li><a href="'.$gepiPath.'/eleves/visu_eleve.php">Consult.élève</a></li>';
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/eleves/visu_eleve.php' , "texte"=>"Consult.élève");
-		//$tbs_menu_prof[$compteur_menu]=array("lien"=> '/eleves/visu_eleve.php' , "texte"=>"Consult.élève", "niveau"=>"1");
 		$compteur_menu++;
 	}
 	else{ $barre_consult_eleve = '';}
-
-
-
-
-/*
-	echo '
-	<ol id="essaiMenu">
-		<li><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>
-		'.$barre_absence.'
-		'.$barre_textes.'
-		'.$barre_note.'
-		'.$barre_edt.'
-		'.$barre_discipline.'
-		'.$barre_notanet.'
-		<li><a href="'.$gepiPath.'/utilisateurs/mon_compte.php">Mon compte</a></li>
-	</ol>
-	';
-*/
 
 
 	//=======================================================

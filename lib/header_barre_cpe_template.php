@@ -1,10 +1,23 @@
 <?php
 
-/*
- * $Id$
- *
+/**
+ * Fichier qui permet de construire la barre de menu cpe des pages utilisant un gabarit
  * 
- * This file is part of GEPI.
+ * $Id: header_barre_cpe_template.php 7793 2011-08-16 17:39:17Z crob 
+ * 
+ * Variables envoyées au gabarit
+ * - $tbs_menu_admin : liens de la barre de menu 
+ *
+ * @license GNU/GPL v2
+ * @package General
+ * @subpackage Affichage
+ * @see getSettingValue()
+ * @see insert_confirm_abandon()
+ * @todo Réécrire la barre administrateur, le principe des gabarits, c'est d'envoyer des variables aux gabarits, 
+ * pas d'écrire du code html dans le constructeur
+ */
+
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,16 +38,6 @@
  */
  
  
-/* ---------Variables envoyées au gabarit
-*	----- tableaux -----
-* $tbs_menu_admin										liens se la barre de menu prof
-*				-> li
-*
-
-$TBS->MergeBlock('tbs_menu_prof',$tbs_menu_prof) ;
-
-unset($tbs_menu_prof);
-*/
  
 // ====== SECURITE =======
 
@@ -61,22 +64,6 @@ if ($barre_plugin!="") {
  *			pour le profil administrateur
  *
  *******************************************************************/
-
-	//=======================================================
-	/*
-	// Trame modèle
-	$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;</a>'."\n";
-	$menus .= '   <ul class="niveau2">'."\n";
-	$menus .= '       <li><a href="'.$gepiPath.'"'.insert_confirm_abandon().'></a></li>'."\n";
-	$menus .= '       <li class="plus"><a href="'.$gepiPath.'"'.insert_confirm_abandon().'></a>'."\n";
-	$menus .= '           <ul class="niveau3">'."\n";
-	$menus .= '                <li><a href="'.$gepiPath.'"'.insert_confirm_abandon().'></a></li>'."\n";
-	$menus .= '           </ul>'."\n";
-	$menus .= '       </li>'."\n";
-	$menus .= '   </ul>'."\n";
-	$menus .= '</li>'."\n";
-	*/
-	//=======================================================
 
 	
 	if ($_SESSION['statut'] == "cpe") {
@@ -173,8 +160,6 @@ if ($barre_plugin!="") {
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================
-
-		//$menus='<li class="li_inline"><a href="'.$gepiPath.'/accueil.php"'.insert_confirm_abandon().'>Accueil</a></li>'."\n".$menus;
 
 		$menus .= $barre_plugin;
 

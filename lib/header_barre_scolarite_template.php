@@ -1,10 +1,24 @@
 <?php
 
-/*
+/**
+ * Fichier qui permet de construire la barre de menu scolarité
+ * 
  * $Id$
  *
- * 
- * This file is part of GEPI.
+ * Variables envoyées au gabarit : liens de la barre de menu scolarité
+ * - $tbs_menu_admin = array(li)
+ *
+ * @license GNU/GPL v2
+ * @package General
+ * @subpackage Affichage
+ * @see getSettingValue()
+ * @see insert_confirm_abandon()
+ * @see menu_plugins()
+ * @todo Réécrire la barre administrateur, le principe des gabarits, c'est d'envoyer des variables aux gabarits, 
+ * pas d'écrire du code html dans le constructeur
+ */
+
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,21 +34,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Fichier qui permet de construire la barre de menu professeur
- *
  */
- 
- 
-/* ---------Variables envoyées au gabarit
-*	----- tableaux -----
-* $tbs_menu_admin										liens se la barre de menu prof
-*				-> li
-*
-
-$TBS->MergeBlock('tbs_menu_prof',$tbs_menu_prof) ;
-
-unset($tbs_menu_prof);
-*/
  
 // ====== SECURITE =======
 
@@ -62,23 +62,6 @@ if ($barre_plugin!="") {
  *
  *******************************************************************/
 
-	//=======================================================
-	/*
-	// Trame modèle
-	$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;</a>'."\n";
-	$menus .= '   <ul class="niveau2">'."\n";
-	$menus .= '       <li><a href="'.$gepiPath.'"'.insert_confirm_abandon().'></a></li>'."\n";
-	$menus .= '       <li class="plus"><a href="'.$gepiPath.'"'.insert_confirm_abandon().'></a>'."\n";
-	$menus .= '           <ul class="niveau3">'."\n";
-	$menus .= '                <li><a href="'.$gepiPath.'"'.insert_confirm_abandon().'></a></li>'."\n";
-	$menus .= '           </ul>'."\n";
-	$menus .= '       </li>'."\n";
-	$menus .= '   </ul>'."\n";
-	$menus .= '</li>'."\n";
-	*/
-	//=======================================================
-
-	
 	if ($_SESSION['statut'] == "scolarite") {
 
 		$menus = null;
