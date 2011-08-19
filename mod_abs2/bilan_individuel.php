@@ -75,7 +75,6 @@ $tri = isset($_POST["tri"]) ? $_POST["tri"] : (isset($_GET["tri"]) ? $_GET["tri"
 $sans_commentaire = isset($_POST["sans_commentaire"]) ? $_POST["sans_commentaire"] : (isset($_GET["sans_commentaire"]) ? $_GET["sans_commentaire"] : Null);
 $non_traitees = isset($_POST["non_traitees"]) ? $_POST["non_traitees"] : (isset($_GET["non_traitees"]) ? $_GET["non_traitees"] : Null);
 $ods2 = isset($_POST["ods2"]) ? $_POST["ods2"] : (isset($_GET["ods2"]) ? $_GET["ods2"] : Null);
-$cpt_classe = isset($_POST["cpt_classe"]) ? $_POST["cpt_classe"] : (isset($_GET["cpt_classe"]) ? $_GET["cpt_classe"] : null);
 $ndj=isset($_POST["ndj"]) ? $_POST["ndj"] : (isset($_GET["ndj"]) ? $_GET["ndj"] :  null);
 $ndjnj=isset($_POST["ndjnj"]) ? $_POST["ndjnj"] : (isset($_GET["ndjnj"]) ? $_GET["ndjnj"] :  null);
 $nr=isset($_POST["nr"]) ? $_POST["nr"] : (isset($_GET["nr"]) ? $_GET["nr"] : null);
@@ -159,7 +158,7 @@ $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 //suppression des données en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
-if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html'&& is_null($cpt_classe))) && $click_filtrage!="ok" && $raz!=="ok"){
+if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html' && $click_filtrage!="ok" && $raz!=="ok"))){
     unset($_SESSION['donnees_bilan']);
 }
 
