@@ -1620,7 +1620,7 @@ class Eleve extends BaseEleve {
 				->filterByDateDemiJounee($dateFinClone, Criteria::LESS_EQUAL)
 				->count(); 
 				
-            $nbre_demi_journees=(int)(($dateFin->format('U')-$dateDebut->format('U'))/(3600*12)+1);
+            $nbre_demi_journees=(int)(($dateFinClone->format('U')-$dateDebutClone->format('U'))/(3600*12)+1);
             
 			if ($count != $nbre_demi_journees) {
 				return false;
@@ -1630,11 +1630,11 @@ class Eleve extends BaseEleve {
 		//on vérifie en comparant des dates que aucune mise a jour de la table d'agrégation n'a été oubliée 
 		//on va rechercher la date de dernière modification des saisies, traitements, etc...
 		$date_selection = ' 1=1 ';
-		if ($dateDebut != null) {
-			$date_selection .= ' and a_saisies.fin_abs > "'.$dateDebut->format('Y-m-d H:i:s').'" ';
+		if ($dateDebutClone != null) {
+			$date_selection .= ' and a_saisies.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
 		}
-		if ($dateFin != null) {
-			$date_selection .= ' and a_saisies.debut_abs < "'.$dateFin->format('Y-m-d H:i:s').'" ';
+		if ($dateFinClone != null) {
+			$date_selection .= ' and a_saisies.debut_abs <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 		}
 		$query = "
 				-- selection des date de modification de saisies
