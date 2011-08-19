@@ -1631,42 +1631,40 @@ class Eleve extends BaseEleve {
 		//on va rechercher la date de dernière modification des saisies, traitements, etc...
 		$date_selection = ' 1=1 ';
 		if ($dateDebutClone != null) {
-			$date_selection .= ' and a_saisies.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
+			$date_selection = ' and a_saisies.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
 		}
 		if ($dateFinClone != null) {
 			$date_selection .= ' and a_saisies.debut_abs <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 		}
-		$query = "
+		$query = '
+		SELECT union_date <= updated_at 
+			FROM(
 				-- selection des date de modification de saisies
-				SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+				SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_selection.'
 			UNION ALL
 				-- selection des date de suppression de saisies
-				SELECT deleted_at as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+				SELECT deleted_at as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and eleve_id='.$this->getIdEleve().' and '.$date_selection.'
 			UNION ALL
 				-- selection des date de modification des traitements
-				SELECT a_traitements.updated_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+				SELECT a_traitements.updated_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_selection.'
 			UNION ALL
 				-- selection des date de suppression des traitements
-				SELECT a_traitements.deleted_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and a_saisies.eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+				SELECT a_traitements.deleted_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_selection.'
 			
-			ORDER BY union_date DESC LIMIT 1";
+			ORDER BY union_date DESC LIMIT 1
+			) as union_date_select
+			
+			LEFT JOIN (
+				-- selection des date de modification dans le table d agrégation
+				SELECT updated_at FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getIdEleve().'
+						
+				ORDER BY updated_at DESC LIMIT 1
+			) as updated_at_select
+			
+			ON 1=1;
+		';
 		
-		$result = mysql_query($query);
-		$row = mysql_fetch_assoc($result);
-		$unionDateString = $row['union_date'];
-
-		//on va comparer avec les dates de la table d'agrégation
-		$result = mysql_query("
-			-- selection des date de modification dans le table d'agrégation
-			SELECT updated_at FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='".$this->getIdEleve()."'
-					
-			ORDER BY updated_at DESC LIMIT 1");
-		$row = mysql_fetch_assoc($result);
-		$agregationDateString = $row['updated_at'];
-		
-		if ($unionDateString === $agregationDateString) return true;
-		if ($unionDateString < $agregationDateString) return true;
-		return false;
+		return sql_query1($query);
 		
 		/** on ne regarde pas les dates de modification admin des types et autres constantes, c'est trop lourd
 		UNION ALL
