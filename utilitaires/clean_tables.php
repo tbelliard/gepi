@@ -115,7 +115,7 @@ $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['st
 
 //debug_var();
 
-if((isset($maj))||(isset($_POST['action']))) {
+if((isset($maj))||(isset($_REQUEST['action']))) {
 	check_token();
 }
 
@@ -2056,12 +2056,12 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 	echo "<p>Terminé.</p>\n";
 
-} elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_absences') {
+} elseif (isset($_REQUEST['action']) AND $_REQUEST['action'] == 'clean_absences') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
-	$date_limite=isset($_POST['date_limite']) ? $_POST['date_limite'] : NULL;
+	$date_limite=isset($_REQUEST['date_limite']) ? $_REQUEST['date_limite'] : NULL;
 	if(isset($date_limite)) {
 		$tmp_tab=explode("/",$date_limite);
 		$jour=$tmp_tab[0];
@@ -2116,8 +2116,25 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$suppr=mysql_query($sql);
 		echo ", ";
 
+		echo "a_agregation_decompte (abs2)";
+		$sql="DELETE FROM a_agregation_decompte WHERE debut_abs < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+		echo ", ";
+
+		echo "a_notifications (abs2)";
+		$sql="DELETE FROM a_notifications WHERE created_at < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+
 		echo "a_saisies (abs2)";
 		$sql="DELETE FROM a_saisies WHERE debut_abs < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+		echo ", ";
+
+		echo "a_saisies_version (abs2)";
+		$sql="DELETE FROM a_saisies_version WHERE debut_abs < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
 		$suppr=mysql_query($sql);
 		echo ", ";
@@ -2127,11 +2144,6 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		//echo "$sql<br />\n";
 		$suppr=mysql_query($sql);
 		echo ", ";
-
-		echo "a_notifications (abs2)";
-		$sql="DELETE FROM a_notifications WHERE created_at < date('$annee-$mois-$jour');";
-		//echo "$sql<br />\n";
-		$suppr=mysql_query($sql);
 
 		echo "</p>\n";
 
@@ -2676,7 +2688,7 @@ else {
 	
 		echo "<hr />\n";
 	
-		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module absences de Gepi.</p>\n";
+		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module abs1 de Gepi, ainsi que les tables a_agregation_decompte, a_notifications, a_saisies, a_saisies_version, a_traitements du module abs2 : </p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
