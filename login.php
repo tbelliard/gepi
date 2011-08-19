@@ -343,18 +343,9 @@ $test = mysql_query("SHOW TABLES LIKE 'gabarits'");
 
 // appel des bibliothèques tinyButStrong
 
-		$testphp = phpversion();
-		// on teste le premier chiffre
-		$version = substr($testphp, 0, 1);
-		if ($version == 5) {
-			$_SESSION['tbs_class'] = 'tbs/tbs_class_php5.php';
-		}elseif($version == 4){
-			$_SESSION['tbs_class'] = 'tbs/tbs_class.php';
-		}else{
-			echo ("GEPI necessite PHP5 pour fonctionner");
-			die();
-		}
-			include_once($_SESSION['tbs_class']);
+		
+$_SESSION['tbs_class'] = 'tbs/tbs_class.php';
+include_once($_SESSION['tbs_class']);
 			
 		
 

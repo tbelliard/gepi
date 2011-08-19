@@ -157,11 +157,7 @@ class AbsencesNotificationHelper {
    */
   public static function MergeInfosEtab($modele){
         // load the TinyButStrong libraries
-    if (version_compare(PHP_VERSION,'5')<0) {
-	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
-    } else {
-	include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
-    }
+    include_once('../tbs/tbs_class.php'); // TinyButStrong template engine    
     include_once('../tbs/plugins/tbsdb_php.php');
 
     $TBS = new clsTinyButStrong; // new instance of TBS

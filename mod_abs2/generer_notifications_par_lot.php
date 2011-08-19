@@ -136,12 +136,9 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     }
 
     //on imprime le global
-    // load the TinyButStrong libraries
-    if (version_compare(PHP_VERSION,'5')<0) {
-	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
-    } else {
-	include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
-    }
+    // load the TinyButStrong libraries    
+	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine
+    
     $TBS = new clsTinyButStrong; // new instance of TBS
     include_once('../tbs/plugins/tbs_plugin_opentbs.php');
     $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin

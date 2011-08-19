@@ -37,7 +37,7 @@ PURPOSE :
 function tbsdb_php_open(&$Source, &$Query) {
 	$fQuery = "return ".$Query.";";
 	$fResult = eval($fQuery);
-	if (!is_array($fResult) && !($fResult instanceof ArrayObject)) {
+	if (!is_array($fResult)) {
 		return false;
 	}
 	$fLen = count($fResult);

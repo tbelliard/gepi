@@ -5,11 +5,17 @@
 TinyButStrong Plug-in: this is a template plug-in that shows syntaxes for all events
 Version 1.4 , on 2008-02-29, by Skrol29
 Version 1.5 , on 2010-02-16, by Skrol29: rename argument $HtmlCharSet into $Charset
+Version 1.6 , on 2011-02-10, by Skrol29: direct commands
 ********************************************************
 */
 
 // Name of the class is a keyword used for Plug-In authentication. So it's better to save it into a constant.
 define('TBS_THIS_PLUGIN','clsTbsThisPlugIn');
+
+// Constants for direct commands (direct commands are supported since TBS version 3.6.2)
+// Direct command must be a string wich is prefixed by the name of the class followed by a dot (.).
+define('TBS_THIS_COMMAND1','clsTbsThisPlugIn.command1');
+define('TBS_THIS_COMMAND2','clsTbsThisPlugIn.command1');
 
 // Put the name of the class into global variable array $_TBS_AutoInstallPlugIns to have it automatically installed for any new TBS instance.
 // Example :
@@ -18,24 +24,27 @@ define('TBS_THIS_PLUGIN','clsTbsThisPlugIn');
 class clsTbsThisPlugIn {
 
 	// Property $this->TBS is automatically set by TinyButStrong when the Plug-In is installed.
-	// You can use it inside the following methods.
+	// More preciselly, it's added after the instanciation of the plug-in's class, and before the call to method OnInstall().
+	// You can use this property inside all the following methods.
 
 	function OnInstall() {
 		// Executed when the current plug-in is installed automatically or manually.
 		// You can define additional arguments to this method for the manual installation, but they should be optional in order to have the method compatible with automatic install.
 		// This method must return the list of TBS reserved methods that you want to be activated.
 		// Manual installation:
-		// $TBS->PlugIn(TBS_INSTALL,TBS_PLUGIN_TEMPLATE);
+		// $TBS->PlugIn(TBS_INSTALL,TBS_THIS_PLUGIN);
 		//  or the first call of:
 		// $TBS->PlugIn(TBS_THIS_PLUGIN);
-		$this->Version = '1.00'; // Version can be displayed using [var..tbs_info] since TBS 3.2.0
+		$this->Version = '1.00'; // Versions of installed plug-ins can be displayed using [var..tbs_info] since TBS 3.2.0
+		$this->DirectCommands = array(TBS_THIS_COMMAND1, TBS_THIS_COMMAND2); // optional, supported since TBS version 3.7.0. Direct Command's ids must be strings.
 		return array('OnCommand','BeforeLoadTemplate','AfterLoadTemplate','BeforeShow','AfterShow','OnData','OnFormat','OnOperation','BeforeMergeBlock','OnMergeSection','OnMergeGroup','AfterMergeBlock','OnSpecialVar','OnMergeField');
 	}
 
 	function OnCommand($x1,$x2) {
 		// Executed when TBS method PlugIn() is called. Arguments are for your own needs.
 		// You can use as many arguments as you want, but they have to be compatible with your PlugIn() calls.
-		// Example:  $TBS->PlugIn(TBS_THIS_PLUGIN,$x1,$x2);
+		// Example with a non-direct command:  $TBS->PlugIn(TBS_THIS_PLUGIN,$x1,$x2);
+		// Example with a direct command:  $TBS->PlugIn(TBS_THIS_COMMAND1, $x2);
 	}
 
 	function BeforeLoadTemplate(&$File,&$Charset) {
@@ -94,8 +103,17 @@ class clsTbsThisPlugIn {
 		// $Loc:       optional, undocumented.
 	}
 
+	function OnCacheField($BlockName,&$Loc,&$Txt,$PrmProc) {
+		// Executed each time a TBS field is found during the block analysis and about to be cached.
+		// No merging is processed here, only parameter att. This event is supported since TBS version 3.6.0.
+		// $BlockName: name of the block currently merged
+		// $Loc:       the TBS field object just found
+		// $Txt:       undocumented.
+		// $PrmProc:   an array that contains paremeters that will be processed before the field is cached (denpends only of the TBS version)
+	}
+
 	function BeforeMergeBlock(&$TplSource,&$BlockBeg,&$BlockEnd,$PrmLst,&$DataSrc,&$LocR) {
-		// Executed each time a named block is found and ready for merging.
+		// Executed each time a named block is found, analyzed and ready for merging.
 		// $TplSource: source of the current template.
 		// $BlockBeg, $BlockEnd: positions of block's bound in the template's source.
 		// $PrmLst:   (Read only) the array of the block's parameters.

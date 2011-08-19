@@ -30,7 +30,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
  
-require_once('../tbs/tbs_class_php5.php');
+include_once('../tbs/tbs_class.php'); // TinyButStrong template engine
 
 abstract class Controleur {
     // Objets utilitaires
