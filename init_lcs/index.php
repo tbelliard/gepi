@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -43,8 +43,11 @@ $titre_page = "Outil d'initialisation de l'année pour les serveurs LCS";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="../gestion/index.php#init_lcs"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class='bold'><a href="../gestion/index.php#init_lcs"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
+<?php
+	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
+?>
 <ul>
 <li>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes :<br /><br />
 - les données relatives aux établissements,<br />
