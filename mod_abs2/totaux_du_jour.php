@@ -205,7 +205,7 @@ $eleve_col = $query
             <p class="expli_page choix_fin">
                 <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
                 <button dojoType="dijit.form.Button"  name="nav_date" type="submit"  value="precedent">Jour précédent</button>
-                <input onchange="document.totaux_du_jour.submit()" style="width : 7em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
+                <input onchange="document.totaux_du_jour.submit()" style="width : 8em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
                 <button dojoType="dijit.form.Button"  name="nav_date" type="submit"  value="suivant">Jour suivant</button>
             </p>
         </fieldset>
