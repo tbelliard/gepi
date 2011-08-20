@@ -51,7 +51,7 @@ require_once("../lib/header.inc");
 }
 ?>
 
-<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.<br />
+<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
 <?php
 
 	//if((getSettingValue('use_sso')=="lcs")||(getSettingValue('use_sso')=="ldap_scribe")) {
@@ -59,13 +59,16 @@ require_once("../lib/header.inc");
 		echo "<p style='color:red;'><b>ATTENTION&nbsp;:</b> Vous utilisez un serveur LCS ou SCRIBE.<br />
 		Il existe un mode d'initialisation de l'année propre à <a href='../init_lcs/index.php'>LCS</a> d'une part et à SCRIBE d'autre part (<i><a href='../init_scribe/index.php'>Scribe</a> et <a href='../init_scribe_ng/index.php'>Scribe_ng</a></i>).<br />
 		Si vous initialisez l'année avec le mode XML, vous ne pourrez pas utiliser les comptes de votre serveur LCS/SCRIBE par la suite pour accéder à GEPI.<br />Réfléchissez-y à deux fois avant de poursuivre.</p>\n";
-		echo "<br />\n";
+		echo "</p>\n";
 	}
 
+	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
+
+	/*
 	$sql="SELECT 1=1 FROM matieres_notes LIMIT 1;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo "Avez-vous pensé à <a href='#' onmouseover=\"afficher_div('archivage','y',20,20);\" onclick=\"return false;\">archiver</a> l'année qui se termine ?</p>\n";
+		echo "<p>Avez-vous pensé à <a href='#' onmouseover=\"afficher_div('archivage','y',20,20);\" onclick=\"return false;\">archiver</a> l'année qui se termine ?</p>\n";
 		$texte="<p>L'archivage de l'année en cours vous permettra, une fois passé à l'année suivante, de consulter les bulletins antérieurs de chacun de vos élèves, pour peu qu'ils aient été scolarisés dans votre établissement.</p>";
 		if (getSettingValue("active_annees_anterieures")=='y') {
 			$texte.="<p>Procéder à l'<a href='../mod_annees_anterieures/conservation_annee_anterieure.php'>archivage de l'année</a>.</p>";
@@ -82,8 +85,14 @@ require_once("../lib/header.inc");
 	$sql="SELECT 1=1 FROM ct_devoirs_entry LIMIT 1;";
 	$test2=mysql_query($sql);
 	if((mysql_num_rows($test1)>0)||(mysql_num_rows($test2)>0)) {
-		echo "<p>Les cahiers de textes ne sont pas vides.<br />Vous devriez <a href='../cahier_texte_admin/admin_ct.php'>vider les cahiers de textes de l'an dernier</a> avant de procéder à l'initialisation.</p>\n";
+		echo "<p>Les cahiers de textes ne sont pas vides.<br />\n";
+		echo "Vous devriez&nbsp;:</p>\n";
+		echo "<ol>\n";
+		echo "<li><a href='../cahier_texte_2/archivage_cdt.php'>archiver les cahiers de textes de l'an dernier</a> si ce n'est pas encore fait,</li>\n";
+		echo "<li>puis <a href='../cahier_texte_admin/admin_ct.php'>vider les cahiers de textes de l'an dernier</a> avant de procéder à l'initialisation.</li>\n";
+		echo "</ol>\n";
 	}
+	*/
 ?>
 <ul>
 	<li>

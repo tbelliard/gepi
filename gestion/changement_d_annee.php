@@ -116,7 +116,7 @@ echo "<p>La partie archivage de fin d'année&nbsp;:</p>\n";
 echo "<ol>\n";
 echo "<li><p><a href='accueil_sauve.php'>Sauvegarder la base</a> $lien_svg</p></li>\n";
 if(strtolower(substr(getSettingValue('active_cahiers_texte'),0,1))=='y') {
-	echo "<li><p>Eventuellement, faire un <a href='../cahier_texte_2/export_cdt.php'>export des cahiers de textes</a><br />et une <a href='accueil_sauve.php'>sauvegarde des documents du Cahier de textes</a> $lien_svg</p></li>\n";
+	echo "<li><p>Eventuellement, faire un <a href='../cahier_texte_2/export_cdt.php'>export des cahiers de textes</a><br />et une <a href='accueil_sauve.php#zip'>sauvegarde des documents du Cahier de textes</a> $lien_svg</p></li>\n";
 	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passés.</p></li>\n";
 }
 if(getSettingValue('active_module_absence')=='2') {
