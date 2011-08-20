@@ -33,12 +33,31 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
                 $date_fin = EdtHelper::getDernierJourAnneeScolaire();
             }
         }
-        $Heure_debut=$date_debut->format('H');
-        if($Heure_debut<12){
-            $date_debut->setTime(0,0,0);
-        }else{
-           $date_debut->setTime(12,0,0); 
-        }        
+        
+        $heure_demi_journee = 11;
+        $minute_demi_journee = 50;
+        try {
+            $dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+            $heure_demi_journee = $dt_demi_journee->format('H');
+            $minute_demi_journee = $dt_demi_journee->format('i');
+        } catch (Exception $x) {
+            
+        }
+
+        if ($date_debut->format('Hi') < $heure_demi_journee . $minute_demi_journee) {
+            $date_debut->setTime(0, 0, 0);
+        } else {
+            $date_debut->setTime(12, 0, 0);
+        }
+        $dt_demi_journee->modify("+1 hour");
+        $dt_demi_journee->modify("+35 minutes");
+        $heure_demi_journee = $dt_demi_journee->format('H');
+        $minute_demi_journee = $dt_demi_journee->format('i');
+        
+        if ($date_fin->format('Hi')<$heure_demi_journee.$minute_demi_journee && $date_debut->format('H:i')=="00:00"){
+            $date_fin->setTime(11,59); 
+        }
+        
         $this->filterByDateDemiJounee($date_debut, Criteria::GREATER_EQUAL)
              ->filterByDateDemiJounee($date_fin, Criteria::LESS_EQUAL);
         return $this;
