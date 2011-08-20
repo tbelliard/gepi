@@ -63,7 +63,8 @@ require_once("../lib/header.inc");
 		echo "<br />\n";
 	}
 
-
+	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
+	/*
 	$sql="SELECT 1=1 FROM matieres_notes LIMIT 1;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
@@ -80,6 +81,7 @@ require_once("../lib/header.inc");
 	if((mysql_num_rows($test1)>0)||(mysql_num_rows($test2)>0)) {
 		echo "<p>Les cahiers de textes ne sont pas vides.<br />Vous devriez <a href='cahier_texte_admin/admin_ct.php'>vider les cahiers de textes de l'an dernier</a> avant de procéder à l'initialisation.</p>\n";
 	}
+	*/
 ?>
 </p>
 <ul>
