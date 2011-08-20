@@ -558,6 +558,10 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 require_once("../lib/footer.inc.php");
 
 function getTauxAbsenteisme($nbreDemiJourneesAbsences, $nbreTotalDemiJournees, $nbreEleves) {
-    return(round(100 * (($nbreDemiJourneesAbsences / $nbreTotalDemiJournees) / $nbreEleves), 2));
+    if ($nbreTotalDemiJournees == 0) { //l'établissement est fermé sur toute la période
+        return 0;
+    } else {
+        return(round(100 * (($nbreDemiJourneesAbsences / $nbreTotalDemiJournees) / $nbreEleves), 2));
+    }    
 }
 ?>
