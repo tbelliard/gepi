@@ -50,6 +50,7 @@ $liste_tables_del = array(
 "j_groupes_classes",
 "j_groupes_matieres",
 "j_groupes_professeurs",
+"j_groupes_visibilite",
 "eleves_groupes_settings",
 "j_signalement",
 "edt_classes",
