@@ -1,11 +1,10 @@
 <?php
-/*
- $Id: microtime_template.php $
-*/
-
-
-/* ---------Variables envoyées au gabarit
-*	$tbs_microtime							nombre de secondes pour charger la page
+/**
+ * Affichage du temps de génération de la page
+ * 
+ * ---------Variables envoyées au gabarit
+ * - $tbs_microtime							nombre de secondes pour charger la page
+ * $Id:  $
 */
 
 $tbs_microtime="";

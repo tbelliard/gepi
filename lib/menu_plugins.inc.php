@@ -1,7 +1,20 @@
 <?php
+/**
+ * Construction du menu des plugins
+ * @version $Id:  $
+ * @license GNU/GPL 
+ * @package General
+ * @subpackage Affichage
+ */
+
+/**
+ * Construit l'arborescence du menu des Plugins
+ * @global sting
+ * @return string 
+ */
 function menu_plugins()
 {
-	global $_SERVER,$gepiPath;
+	global $gepiPath;
 	$menu_plugins="";
 	// quels sont les plugins ouverts et autorisés au statut de l'utilisateur?
 	$r_sql="SELECT DISTINCT `plugins`.* FROM `plugins`,`plugins_autorisations`

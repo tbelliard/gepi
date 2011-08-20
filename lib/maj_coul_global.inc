@@ -1,6 +1,10 @@
 <?php
-/*
-@version $Id$
+/**
+ * Initialisation des couleurs
+ * @version $Id$
+ * @license GNU/GPL 
+ * @package Initialisation
+ * @subpackage initialisation
 */
 
 function getCouleurGlobal($couleur,$coul_origine) {

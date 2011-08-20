@@ -1,5 +1,12 @@
 <?php
-	// Portion des styles et initialisations à reprendre dans le cas d'une insertion des relevés de notes entre les bulletins
+/**
+ * Portion des styles et initialisations à reprendre dans le cas d'une insertion des relevés de notes entre les bulletins
+ * 
+ * @license GNU/GPL 
+ * @package Carnet_de_notes
+ * @subpackage affichage
+ */
+
 
 	$p_releve_margin=getSettingValue("p_releve_margin") ? getSettingValue("p_releve_margin") : "";
 	$releve_textsize=getSettingValue("releve_textsize") ? getSettingValue("releve_textsize") : 10;

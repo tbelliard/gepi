@@ -1,10 +1,25 @@
 <?php
-/*
+/**
+ * Gestion des cahiers de textes
+ * 
+ * $_POST['activer'] activation/désactivation
+ * $_POST['export_cn_ods'] autorisation de l'export au format OD
+ * $_POST['referentiel_note'] referentiel de note
+ * $_POST['note_autre_que_sur_referentiel'] note autre que sur referentiel
+ * $_POST['is_posted']
+ * 
  * @version: $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
- * This file is part of GEPI.
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @license GNU/GPL, 
+ * @package Carnet_de_notes
+ * @subpackage administration
+ * @see checkAccess()
+ * @see saveSetting()
+ * @see suivi_ariane()
+ */
+
+/* This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,23 +36,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/**
- * Gestion des cahiers de textes
- * 
- * @param $_POST['activer'] activation/désactivation
- * @param $_POST['export_cn_ods'] autorisation de l'export au format OD
- * @param $_POST['referentiel_note'] referentiel de note
- * @param $_POST['note_autre_que_sur_referentiel'] note autre que sur referentiel
- * @param $_POST['is_posted']
- *
- */
-
 $accessibilite="y";
 $titre_page = "Gestion des carnets de notes";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -79,19 +85,6 @@ if(isset($_POST['is_posted'])) {
 			$msg .= "Erreur lors de l'enregistrement de l'interdiction de l'export au format ODS !";
 		}
 	}
-
-	/*
-	if (isset($_POST['appreciations_types_profs'])) {
-		if (!saveSetting("appreciations_types_profs", 'y')) {
-			$msg .= "Erreur lors de l'enregistrement de l'autorisation d'utilisation d'appréciations-types pour les professeurs !";
-		}
-	}
-	else{
-		if (!saveSetting("appreciations_types_profs", 'n')) {
-			$msg .= "Erreur lors de l'enregistrement de l'interdiction d'utilisation d'appréciations-types pour les professeurs !";
-		}
-	}
-	*/
 
 	if (isset($_POST['referentiel_note'])) {
 		if (!saveSetting("referentiel_note", $_POST['referentiel_note'])) {
@@ -140,6 +133,9 @@ $messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment qu
 ****************************************************************/
 
 // ====== Inclusion des balises head et du bandeau =====
+/**
+ * Entête de la page
+ */
 include_once("../lib/header_template.inc");
 
 /****************************************************************
@@ -148,88 +144,6 @@ include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 		echo "erreur lors de la création du fil d'ariane";
-//$titre_page = "Gestion des cahiers de textes";
-//require_once("../lib/header.inc");
-/****************************************************************
-			CONSTRUCTION DE LA PAGE
-****************************************************************/
-// header
-// $titre_page = "Gestion des carnets de notes";
-// require_once("../lib/header.inc");
-/*
-?>
-<p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<h2>Configuration générale</h2>
-<i>La désactivation des carnets de notes n'entraîne aucune suppression des données. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.</i>
-<br />
-<form action="index.php" name="form1" method="post">
-
-<p>
-<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_carnets_notes")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer les carnets de notes</label><br />
-<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_carnets_notes")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver les carnets de notes</label>
-</p>
-
-<?php
-
-	echo "<br />\n";
-
-	echo "<p>\n";
-	if(file_exists("../lib/ss_zip.class.php")){
-		echo "<input type='checkbox' name='export_cn_ods' id='export_cn_ods' value='y'";
-		if(getSettingValue('export_cn_ods')=='y'){
-			echo ' checked';
-		}
-		echo " /> \n";
-		echo "<label for='export_cn_ods' style='cursor: pointer;'>Permettre l'export des carnets de notes au format ODS.</label><br />(<i>si les professeurs ne font pas le ménage après génération des exports,<br />ces fichiers peuvent prendre de la place sur le serveur</i>)\n";
-	}
-	else{
-		echo "En mettant en place la bibliothèque 'ss_zip_.class.php' dans le dossier '/lib/', vous pouvez générer des fichiers tableur ODS pour permettre des saisies hors ligne, la conservation de données,...<br />Voir <a href='http://smiledsoft.com/demos/phpzip/' target='_blank'>http://smiledsoft.com/demos/phpzip/</a><br />Une version limitée est disponible gratuitement.<br />Emplacement alternatif: <a href='http://stephane.boireau.free.fr/informatique/gepi/ss_zip.class.php.zip'>http://stephane.boireau.free.fr/informatique/gepi/ss_zip.class.php.zip</a>\n";
-
-		// Comme la bibliothèque n'est pas présente, on force la valeur à 'n':
-		$svg_param=saveSetting("export_cn_ods", 'n');
-	}
-	echo "</p>\n";
-
- */
-	/*
-	echo "<br />\n";
-
-	echo "<p>\n";
-	echo "<input type='checkbox' name='appreciations_types_profs' id='appreciations_types_profs' value='y'";
-	if(getSettingValue('appreciations_types_profs')=='y'){
-		echo ' checked';
-	}
-	echo " /> \n";
-	echo "<label for='appreciations_types_profs' style='cursor: pointer;'>Permettre aux professeurs d'utiliser des appréciations-types sur les bulletins.\n";
-	echo "</p>\n";
-
-?>
-<br/>
-<table>
-	<tr>
-		<td style="font-variant: small-caps;" valign='top'>
-		Référentiel des notes :</td>
-		<td>
-		<table summary='Genre'><tr valign='top'><td></td><td>
-		Référentiel des notes par défaut : <input type="text" name="referentiel_note" size="8" value="<?php echo(getSettingValue("referentiel_note")); ?>" />
-		</td></tr></table>
-		<table summary='Genre'><tr valign='top'><td></td><td>
-		<input type="radio" name="note_autre_que_sur_referentiel" id="note_sur_referentiel" value="V" <?php if(getSettingValue("note_autre_que_sur_referentiel")=="V"){echo 'checked';} ?> /><label for='note_sur_referentiel'> Autoriser les notes autre que sur le référentiel par défaut</label><br />
-		<input type="radio" name="note_autre_que_sur_referentiel" id="note_autre_que_referentiel" value="F" <?php if(getSettingValue("note_autre_que_sur_referentiel")=="F"){echo 'checked';} ?> /><label for='note_autre_que_referentiel'> Notes uniquement sur le référentiel par défaut</label>
-		</td></tr></table>
-		</td>
-	</tr>
-</table>
-
-
-<input type="hidden" name="is_posted" value="1" />
-<center><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></center>
-</form>
-<?php
-	echo "<p><br /></p>\n";
-	require("../lib/footer.inc.php");
-	*/
-
 
 /****************************************************************
 			BAS DE PAGE
@@ -253,6 +167,9 @@ if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/cahier_notes_admin/index_template.php';
 
 $tbs_last_connection=""; // On n'affiche pas les dernières connexions
+/**
+ * Inclusion du gabarit
+ */
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----

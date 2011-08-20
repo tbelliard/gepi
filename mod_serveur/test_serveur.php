@@ -168,6 +168,8 @@ if ($test->versionGd()) {
 
 echo '<br /><br /><br />';
 
-// inclusion du footer
+/**
+ * inclusion du footer
+ */
 require_once("../lib/footer.inc.php");
 ?>

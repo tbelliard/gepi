@@ -1,9 +1,22 @@
 <?php
-/*
+/**
+ * Visualisation des moyennes des carnets de notes
+ * 
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
+ * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @license GNU/GPL, 
+ * @package Carnet_de_notes
+ * @subpackage affichage
+ * @see add_token_field()
+ * @see checkAccess()
+ * @see getSettingValue()
+ * @see Session::security_check()
+ * @see sql_query1()
+ * @see tentative_intrusion()
+ */
+
+/*
  * This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
@@ -21,7 +34,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -47,6 +62,9 @@ if ($_SESSION['statut'] == "professeur") {
        ) {
        	tentative_intrusion("1","Tentative d'accès par un prof aux moyennes des carnets de notes sans avoir les autorisations nécessaires.");
        	echo "Vous n'êtes pas autorisé à être ici.";
+/**
+ * inclusion du pied de page
+ */
 		require ("../lib/footer.inc.php");
 		die();
        }
@@ -61,6 +79,9 @@ if (isset($id_classe)) {
 	if (!is_numeric($id_classe)) {
 		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numérique.");
 		echo "Erreur.";
+/**
+ * inclusion du pied de page
+ */
 		require ("../lib/footer.inc.php");
 		die();
 	}
@@ -70,6 +91,9 @@ if (isset($id_classe)) {
 		if ($test == "0") {
 			tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
 			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+            /**
+             * inclusion du pied de page
+             */
 			require ("../lib/footer.inc.php");
 			die();
 		}
@@ -79,10 +103,14 @@ if (isset($id_classe)) {
 $javascript_specifique="prepa_conseil/colorisation_visu_toutes_notes";
 //**************** EN-TETE *****************
 $titre_page = "Visualisation des moyennes des carnets de notes";
+
+/**
+ * Entête de la page
+ */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<!--p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|-->
+
 <?php
 if (isset($id_classe)) {
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
@@ -167,9 +195,11 @@ if (isset($id_classe)) {
 
 	echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes2.php\">\n";
 	echo add_token_field();
-	//echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes2.php\">\n";
 	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary='Choix de la période'><tr>";
 	echo "<td valign=\"top\"><b>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</b><br />\n";
+    /**
+     * Gestion des périodes
+     */
 	include "../lib/periodes.inc.php";
 	$i="1";
 	while ($i < $nb_periode) {
@@ -336,33 +366,10 @@ if (isset($id_classe)) {
 	echo "</tr>\n";
 	echo "</table>\n";
 
-/*
-	echo "<b>Paramètres d'affichage</b><br />\n<input type=\"hidden\" name=\"id_classe\" value=\"".$id_classe."\" />\n";
-	echo "<br />\nLargeur en pixel du tableau : <input type=text name=larg_tab size=3 value=\"680\" />\n";
-	echo "<br />\nBords en pixel du tableau : <input type=text name=bord size=3 value=\"1\" />\n";
-	echo "<br />\nCouleurs de fond des lignes alternées : <input type=\"checkbox\" name=\"couleur_alterne\" checked />\n";
-	echo "<br /><br /><table cellpadding=\"3\"><tr><td>\n<input type=\"checkbox\" name=\"aff_abs\" checked />Afficher les absences</td>
-	<td><input type=\"checkbox\" name=\"aff_reg\" checked /> Afficher le régime</td>
-	<td><input type=\"checkbox\" name=\"aff_doub\" checked />Afficher la mention doublant</td>\n";
-	$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
-	// On teste la présence d'au moins un coeff pour afficher la colonne des coef
-	$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
-
-
-	if (($affiche_rang == 'y') and ($test_coef != 0)) {
-		echo "<td><input type=\"checkbox\" name=\"aff_rang\" checked />Afficher le rang des élèves</td>\n";
-	}
-
-	echo "</tr></table>\n";
-*/
-
-
 
 	echo "<br />\n<center><input type=\"submit\" name=\"ok\" value=\"Valider\" /></center>\n";
 	echo "<br />\n<span class='small'>Remarque : le tableau des notes s'affiche sans en-tête et dans une nouvelle page. Pour revenir à cet écran, il vous suffit de fermer la fenêtre du tableau des notes.</span>\n";
 	echo "</td></tr>\n</table>\n";
-
-
 
 	//============================================
 	// Colorisation des résultats
@@ -382,8 +389,7 @@ if (isset($id_classe)) {
 	$chaine_couleurs='"aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"';
 
 	$tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
-	//$tabcouleur=array("red","darkcyan","gold","green","blue");
-
+	
 	echo "<div id='div_coloriser'>\n";
 	echo "<table id='table_couleur' class='boireaus' summary='Coloriser les résultats'>\n";
 	echo "<thead>\n";
@@ -412,7 +418,14 @@ if (isset($id_classe)) {
 			}
 		}
 
-		//$cpt_couleur=0;
+		/**
+         *
+         * @global type $cpt_couleur 
+         * @global array $tabcouleur
+         * @global type $vtn_borne_couleur
+         * @global type $vtn_couleur_texte
+         * @global type $vtn_couleur_cellule 
+         */
 		function add_tr_couleur() {
 			global $cpt_couleur, $tabcouleur, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
 
@@ -511,52 +524,20 @@ display_div_coloriser();
 	echo "</p>\n";
 	echo "<p><b>Visualiser les moyennes des carnets de notes par classe :</b><br />\n";
 
-	//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-
-	//if (($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) {
 	if($_SESSION['statut'] == 'scolarite'){
 		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	}
-	//elseif(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiAccesReleveProf")=='yes')){
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes"){
 		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes") {
 		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe");
 	}
-	//elseif(($_SESSION['statut'] == 'cpe')&&(getSettingValue("GepiAccesReleveCpe")=='yes')){
 	elseif($_SESSION['statut'] == 'cpe'){
 		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	}
 
-	/*
-	// Si on interdit l'accès, il faudrait contrôler que isset($appel_donnees)
-	if(){
-	}
-	*/
-
 	$lignes = mysql_num_rows($appel_donnees);
-	/*
-	$nb_class_par_colonne=round($lignes/3);
-        echo "<table width='100%'>\n";
-        echo "<tr valign='top' align='center'>\n";
-	$i = 0;
-        echo "<td>\n";
-	while($i < $lignes){
-		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-			echo "</td>\n";
-			//echo "<td style='padding: 0 10px 0 10px'>\n";
-			echo "<td>\n";
-		}
-		$id_classe = mysql_result($appel_donnees, $i, "id");
-		$display_class = mysql_result($appel_donnees, $i, "classe");
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
-		$i++;
-	}
-        echo "</td>\n";
-        echo "</tr>\n";
-        echo "</table>\n";
-	*/
 
 	if($lignes==0){
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
@@ -573,7 +554,6 @@ display_div_coloriser();
 		}
 		tab_liste($tab_txt,$tab_lien,3);
 	}
-	//echo "</p>\n";
 }
 echo "<p><i>Remarque:</i> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";
 echo "Cela ne correspond pas nécessairement à ce qui apparaitra sur le bulletin après saisie d'autres résultats et ajustements éventuels des coefficients.</p>\n";
@@ -582,5 +562,9 @@ if ($_SESSION['statut'] == "professeur"
 	AND getSettingValue("GepiAccesMoyennesProfToutesTousEleves") != "yes") {
 		echo "<p>Si vous n'enseignez pas à des classes entières, seuls les élèves auxquels vous enseignez apparaîtront dans la liste, et les moyennes calculés ne prendront en compte que les élèves affichés.</p>";
 	}
+
+/**
+ * inclusion du pied de page
+ */
 require ("../lib/footer.inc.php");
 ?>

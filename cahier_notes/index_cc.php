@@ -1,9 +1,16 @@
 <?php
+/**
+ * Création d'évaluations cumules
+ * 
+ * @version: $Id$
+ *
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @license GNU/GPL, 
+ * @package Carnet_de_notes
+ * @subpackage affichage
+ */
+
 /*
-* @version: $Id$
-*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -21,7 +28,9 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Initialisations files
+/**
+ * Fichiers d'initialisation
+ */
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -51,12 +60,6 @@ $id_racine = isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id
 /*
 // A FAIRE LORSQU'ON TENTE DE CREER UN DEVOIR D'APRES LE CC
 
-// On teste si la periode est vérrouillée !
-if ($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) {
-	$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
-	header("Location: index.php?msg=$mess");
-	die();
-}
 */
 
 if(!isset($id_racine)) {
@@ -175,6 +178,10 @@ if (isset($_GET['action'])) {
 
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Ajout/modification d'un $nom_cc";
+
+/**
+ * Entête de la page
+ */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -267,21 +274,12 @@ else {
 
 echo "<p>Liste des $nom_cc rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
 echo "<span style='color:red'>A FAIRE</span>";
-/*
-$sql="SELECT * FROM cc_dev ccd, WHERE id_groupe='$id_groupe' AND id_cn_dev IN (SELECT id FROM cn_devoirs) ORDER BY ;";
-// BOUCLER SUR LES PERIODES... récupérer les cn_cahier_notes, puis devoirs associés...
-
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
-	echo "Aucun $nom_cc n'est encore rattaché à un devoir du carnet de notes.</p>\n";
-}
-else {
-
-}
-*/
-
 
 echo "</form>\n";
 echo "<br />\n";
+
+/**
+ * inclusion du pied de page
+ */
 require("../lib/footer.inc.php");
 ?>

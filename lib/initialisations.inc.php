@@ -2,6 +2,7 @@
 /**
  * Appel des fichiers de configuration
  * 
+ * @license GNU/GPL, 
  * @package Initialisation
  * @subpackage initialisation
  */

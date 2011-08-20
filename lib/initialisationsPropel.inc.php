@@ -1,10 +1,16 @@
 <?php
 /**
- *
+ * Appel des fichiers de configuration de Propel
  * @version $Id$
  *
  * @Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *
+ * @license GNU/GPL, 
+ * @package Initialisation
+ * @subpackage initialisation
+ */
+
+/*
  * This file is part of GEPI.
  *
  * GEPI is free software; you can redistribute it and/or modify
