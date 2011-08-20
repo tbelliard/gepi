@@ -57,7 +57,7 @@ $plugin_id    = isset($_GET["plugin_id"]) ? $_GET["plugin_id"] : NULL;
 $nom_plugin   = isset($_GET["nom_plugin"]) ? $_GET["nom_plugin"] : NULL;
 $action       = isset($_GET["action"]) ? $_GET["action"] : NULL;
 $_erreur      = isset($_GET["_erreur"]) ? $_GET["_erreur"] : NULL;
-$_msg         = NULL;
+$_msg         = isset($_GET["_msg"]) ? $_GET["_msg"] : NULL;
 
 
 // ========================================== CODE METIER ================================================== //
@@ -82,12 +82,25 @@ if (isset($nom_plugin)) {
     }
 
     if ($testXML){
-
+	  // On charge les fonctions d'un éventuel le_plugin/fichier functions_le_plugin.php
+	  $fichier_fonctions=$nom_plugin."/functions_".$nom_plugin.".php";
+	  if (file_exists($fichier_fonctions)) include_once($fichier_fonctions);
       // On lit le fichier xml
       $xml = simplexml_load_file($nom_plugin . "/plugin.xml");
       $testXML = new traiterXml($xml);
 
       if ($testXML->getReponse() === true){
+		// traitement ante_installation
+		$fonction_ante="ante_installation_".$nom_plugin;
+		if (function_exists($fonction_ante))
+			{
+			$retour=$fonction_ante();
+			if ($retour!="") 
+				{
+				header("Location: index.php?_erreur=10&_msg=".urlencode("Erreur ante_installation : ".$retour).add_token_in_url(false));
+				exit();
+				}
+			}
         // alors on peut envoyer le xml pour installer le plugin
         $new_plugin = PlugInPeer::addPluginComplet($xml);
         /**
@@ -96,6 +109,18 @@ if (isset($nom_plugin)) {
         $traitement_requetes = new traiterRequetes($xml->installation->requetes);
         if ($traitement_requetes->getReponse() === true){
           // C'est fait les requêtes ont été exécutées
+		  // traitement post_installation
+		  $fonction_post="post_installation_".$nom_plugin;
+		  if (function_exists($fonction_post))
+			{
+			$retour=$fonction_post();
+			if ($retour!="") 
+				{
+				$_msg="Erreur post_installation : ".$retour;
+				$_erreur=10;
+				}
+			}
+ 
         }else{
           $_msg = '<p class="red">ERREUR(r) : ' . $traitement_requetes->getErreur() . '</p>';
         }
@@ -107,7 +132,7 @@ if (isset($nom_plugin)) {
 
     }else{
 
-      header("index.php?_erreur=1");
+      header("index.php?_erreur=1".add_token_in_url(false));
       exit();
 
     }
@@ -118,12 +143,42 @@ if (isset($nom_plugin)) {
   check_token();
   // On s'attache à faire les actions demandées sur ce plugin déjà installé
   $pluginAmodifier = PlugInPeer::retrieveByPK($plugin_id);
+  $nom_plugin=$pluginAmodifier->getNom();
+  // On charge les fonctions d'un éventuel fichier le_plugin/functions_le_plugin.php
+  $fichier_fonctions=$nom_plugin."/functions_".$nom_plugin.".php";
+  if (file_exists($fichier_fonctions)) include_once($fichier_fonctions);
   switch ($action) {
     case "desinstaller":
-      $xml = simplexml_load_file($pluginAmodifier->getNom() . "/plugin.xml");
+	// traitement ante_desinstallation
+	$fonction_ante="ante_desinstallation_".$nom_plugin;
+	if (function_exists($fonction_ante))
+		{
+		$retour=$fonction_ante();
+		if ($retour!="") 
+			{
+			header("Location: index.php?_erreur=10&_msg=".urlencode("Erreur ante_desinstallation : ".$retour).add_token_in_url(false));
+			exit();
+			}
+		}
+      $xml = simplexml_load_file($nom_plugin . "/plugin.xml");
       $pluginAmodifier->delete();
       $traitement_requetes = new traiterRequetes($xml->desinstallation->requetes);
-      break;
+	  if ($traitement_requetes->getReponse() === true){
+		  // traitement post_desinstallation
+		  $fonction_post="post_desinstallation_".$nom_plugin;
+		  if (function_exists($fonction_post))
+			{
+			$retour=$fonction_post();
+			if ($retour!="") 
+				{
+				$_msg="Erreur post_desinstallation : ".$retour;
+				$_erreur=10;
+				}
+			}
+		  break;
+	  } else {
+		$_msg = '<p class="red">ERREUR(r) : ' . $traitement_requetes->getErreur() . '</p>';
+		}
     case "ouvrir":
       $pluginAmodifier->ouvrePlugin();
       break;
@@ -167,10 +222,12 @@ switch ($_erreur) {
   case "2":
     $_msg = "<p class=\"red\">Le fichier plugin.xml ne respecte pas la struture demand&eacute;e ! voyez <a href=\"https://www.sylogix.org/wiki/gepi/plugin\">la documentation collaborative (wiki)</a></p>";
     break;
-
-default:
-  //$_msg = NULL;
-  break;
+  case "10":
+	$_msg="<p class=\"red\">".stripslashes($_msg)."</p>";
+    break;
+  default:
+    //$_msg = NULL;
+    break;
 }
 // ================= HEADER ========================//
 $titre_page = "Param&eacute;trer les plugins";
@@ -181,12 +238,11 @@ include '../lib/header.inc';
 echo "<p class='bold'><a href='../accueil_modules.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 ?>
 
-
+<?php if ($_msg!="") echo "<br/><br/>".$_msg; ?>
 <h3 class="Gepi">Liste des plugins install&eacute;s</h3>
 <p>Pour plus d'informations concernant les plugins de Gepi, voyez
   <a onclick="window.open(this.href, '_blank'); return false;" href="https://www.sylogix.org/projects/gepi/wiki/GuideAdministrateur#Syst%C3%A8me-de-plugins">la documentation collaborative (wiki)</a>
 </p>
-<?php echo $_msg; ?>
  <table class="table">
   <tr>
     <th>Plugin</th>
