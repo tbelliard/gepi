@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -26,18 +26,17 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
-
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //**************** EN-TETE *****************
@@ -45,7 +44,7 @@ $titre_page = "Outil d'initialisation de l'année";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="../gestion/index.php#init_csv"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='export_tables.php'>Exporter au format CSV le contenu actuel des tables</a></p>
+<p class='bold'><a href="../gestion/index.php#init_csv"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='export_tables.php'>Exporter au format CSV le contenu actuel des tables</a></p>
 
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.<br />
 <?php
@@ -57,6 +56,9 @@ require_once("../lib/header.inc");
 		echo "<br />\n";
 	}
 
+	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
+
+	/*
 	$sql="SELECT 1=1 FROM matieres_notes LIMIT 1;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
@@ -76,6 +78,7 @@ require_once("../lib/header.inc");
 	if((mysql_num_rows($test1)>0)||(mysql_num_rows($test2)>0)) {
 		echo "<p>Les cahiers de textes ne sont pas vides.<br />Vous devriez <a href='../cahier_texte_admin/admin_ct.php'>vider les cahiers de textes de l'an dernier</a> avant de procéder à l'initialisation.</p>\n";
 	}
+	*/
 ?>
 <!--/p-->
 <ul>
