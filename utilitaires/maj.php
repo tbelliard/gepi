@@ -20,7 +20,10 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+//test version de php
+if (version_compare(PHP_VERSION, '5') < 0) {
+    die('GEPI nécessite PHP5 pour fonctionner');
+}
 // On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
 // cela ici concerne le mot de passe
 $variables_non_protegees = 'yes';
