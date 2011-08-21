@@ -1031,6 +1031,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			}
 			
 			$this->getEleve()->updateAbsenceAgregationTable($debut,$fin);
+			$this->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($debut,$fin);
 		}
 		return $result;
 	}

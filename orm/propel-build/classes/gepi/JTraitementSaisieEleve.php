@@ -35,6 +35,7 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 		}
 		if ($saisie != null && $saisie->getEleve() != null) {
 			$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+			$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
 		}
 	}
 	
@@ -62,6 +63,7 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 		}
 		if ($saisie != null && $saisie->getEleve() != null) {
 			$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+			$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
 		}
 		return $result;
 	}

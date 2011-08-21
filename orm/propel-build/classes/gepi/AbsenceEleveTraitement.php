@@ -232,6 +232,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		foreach($saisieColOld as $saisie) {
 			if ($saisie->getEleve() != null) {
 				$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+				$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
 			}
 		}
 	}
@@ -245,6 +246,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		foreach($this->getAbsenceEleveSaisies() as $saisie) {
 			if ($saisie->getEleve() != null) {
 				$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+				$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
 			}
 		}
 	}
