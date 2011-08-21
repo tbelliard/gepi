@@ -106,15 +106,15 @@ include("tbs_menu_plugins.inc.php");
 		$tmp_sous_menu=array();
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
-			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir="';
-			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)';
+			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir=';
+			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 			$cpt_sous_menu++;
 		}
 		if(getSettingValue('GepiCahierTexteVersion')==2) {
-			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/see_all.php"';
+			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/see_all.php';
 		}
 		else {
-			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/see_all.php"';
+			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/see_all.php';
 		}
 		$tmp_sous_menu[$cpt_sous_menu]['texte']="Consultation des cahiers de textes";
 		$cpt_sous_menu++;
@@ -135,7 +135,7 @@ include("tbs_menu_plugins.inc.php");
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
 			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
-			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)';
+			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 			$tmp_sous_menu2=array();
 			$cpt_sous_menu2=0;
 			for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
@@ -197,7 +197,7 @@ include("tbs_menu_plugins.inc.php");
 			$cpt_sous_menu2=0;
 			foreach($mes_groupes as $tmp_group) {
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/index.php?id_groupe='.$tmp_group['id'];
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)';
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 	
 				$tmp_sous_menu3=array();
 				$cpt_sous_menu3=0;
@@ -231,7 +231,7 @@ include("tbs_menu_plugins.inc.php");
 			$cpt_sous_menu2=0;
 			foreach($mes_groupes as $tmp_group) {
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/index.php?id_groupe='.$tmp_group['id'];
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)';
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 	
 				$tmp_sous_menu3=array();
 				$cpt_sous_menu3=0;
@@ -264,7 +264,7 @@ include("tbs_menu_plugins.inc.php");
 			$cpt_sous_menu2=0;
 			foreach($mes_groupes as $tmp_group) {
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/prepa_conseil/index1.php?id_groupe='.$tmp_group['id'];
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)';
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 				$cpt_sous_menu2++;
 			}
 			$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
