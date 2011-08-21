@@ -39,43 +39,8 @@ if (!checkAccess()) {
 	die();
 }
 
-$liste_tables_del = array(
-"eleves_groupes_settings",
-"groupes",
-"j_eleves_groupes",
-"j_groupes_matieres",
-"j_groupes_professeurs",
-"j_groupes_classes",
-"j_groupes_visibilite",
-"j_signalement",
-"eleves_groupes_settings",
-"matieres_appreciations",
-"matieres_notes",
-"matieres_appreciations_grp",
-"matieres_appreciations_tempo",
-"matieres_app_corrections",
-"matieres_app_delais",
-"matieres_appreciations_acces",
-"synthese_app_classe",
-"tempo2",
-"tempo",
-"cc_dev",
-"cc_eval",
-"cc_notes_eval",
-"cn_cahier_notes",
-"cn_conteneurs",
-"cn_devoirs",
-"cn_notes_conteneurs",
-"cn_notes_devoirs",
-"ct_devoirs_entry",
-"ct_documents",
-"ct_entry",
-"ct_devoirs_documents",
-"ct_private_entry",
-"ct_sequences",
-'edt_classes',
-'edt_cours'
-);
+include("../lib/initialisation_annee.inc.php");
+$liste_tables_del = $liste_tables_del_etape_matieres;
 
 
 //**************** EN-TETE *****************

@@ -42,45 +42,8 @@ if (!checkAccess()) {
 	die();
 }
 
-$liste_tables_del = array(
-//"absences",
-//"aid",
-//"aid_appreciations",
-//"aid_config",
-//"avis_conseil_classe",
-//"classes",
-//"droits",
-//"eleves",
-//"responsables",
-//"etablissements",
-//"j_aid_eleves",
-"j_aid_utilisateurs",
-"j_groupes_professeurs",
-"j_aid_utilisateurs_gest",
-"j_aidcateg_super_gestionnaires",
-//"j_eleves_classes",
-//"j_eleves_etablissements",
-"j_eleves_professeurs",
-//"j_eleves_regime",
-//"j_professeurs_matieres",
-//"log",
-//"matieres",
-"matieres_appreciations",
-"matieres_notes",
-"matieres_appreciations_grp",
-"matieres_appreciations_tempo",
-//"periodes",
-"tempo2",
-//"temp_gep_import",
-"tempo",
-//"utilisateurs",
-"cn_cahier_notes",
-"cn_conteneurs",
-"cn_devoirs",
-"cn_notes_conteneurs",
-"cn_notes_devoirs",
-//"setting"
-);
+include("../lib/initialisation_annee.inc.php");
+$liste_tables_del = $liste_tables_del_etape_professeurs;
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des professeurs";

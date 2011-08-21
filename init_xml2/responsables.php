@@ -78,16 +78,8 @@
 	}
 	//echo "\$_SESSION['ad_retour']=".$_SESSION['ad_retour']."<br />";
 
-	$liste_tables_del = array(
-// On vide l'ancienne table responsables pour ne pas conserver des infos d'années antérieures:
-"responsables",
-
-"responsables2",
-"resp_pers",
-"resp_adr",
-"tempo2",
-"tempo"
-);
+	include("../lib/initialisation_annee.inc.php");
+	$liste_tables_del = $liste_tables_del_etape_resp;
 
 
 	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)

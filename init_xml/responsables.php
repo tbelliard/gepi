@@ -36,16 +36,8 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-$liste_tables_del = array(
-// On vide l'ancienne table responsables pour ne pas conserver des infos d'années antérieures:
-"responsables",
-
-"responsables2",
-"resp_pers",
-"resp_adr",
-"tempo2",
-"tempo"
-);
+include("../lib/initialisation_annee.inc.php");
+$liste_tables_del = $liste_tables_del_etape_resp;
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");

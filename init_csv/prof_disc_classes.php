@@ -42,63 +42,8 @@ if (!checkAccess()) {
 	die();
 }
 
-$liste_tables_del = array(
-//absences
-//edt_creneaux
-//absences_eleves
-//absences_gep
-//absences_motifs
-//aid
-//aid_appreciations
-//aid_config
-//avis_conseil_classe
-//classes
-"cn_cahier_notes",
-"cn_conteneurs",
-"cn_devoirs",
-"cn_notes_conteneurs",
-"cn_notes_devoirs",
-"ct_devoirs_entry",
-"ct_documents",
-"ct_entry",
-"ct_devoirs_documents",
-"ct_private_entry",
-"ct_sequences",
-//"ct_types_documents",
-//droits
-//eleves
-"eleves_groupes_settings",
-//etablissements
-"groupes",
-//j_aid_eleves
-//j_aid_utilisateurs
-//"j_eleves_classes",
-//j_eleves_cpe
-//j_eleves_etablissements
-"j_eleves_groupes",
-//j_eleves_professeurs
-//j_eleves_regime
-"j_groupes_classes",
-"j_groupes_matieres",
-"j_groupes_professeurs",
-"j_professeurs_matieres",
-"j_signalement",
-//log
-//matieres
-//matieres_appreciations
-//matieres_notes
-//messages
-//periodes
-//responsables
-//setting
-//suivi_eleve_cpe
-//tempo
-//tempo2
-//temp_gep_import
-//utilisateurs
-"edt_classes",
-"edt_cours"
-);
+include("../lib/initialisation_annee.inc.php");
+$liste_tables_del = $liste_tables_del_etape_matieres;
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
@@ -319,43 +264,43 @@ if (!isset($_POST["action"])) {
 				}
 				//=========================
 
-					$k = 0;
-					while (!feof($fp)) {
-						$ligne = fgets($fp, 4096);
-						if(trim($ligne)!="") {
+				$k = 0;
+				while (!feof($fp)) {
+					$ligne = fgets($fp, 4096);
+					if(trim($ligne)!="") {
 
-							$tabligne=explode(";",$ligne);
+						$tabligne=explode(";",$ligne);
 
-							// 0 : Login du prof
-							// 1 : nom court de la matière
-							// 2 : identifiant(s) de là (des) classe(s) (Format : 1S1!1S2!1S3)
-							// 3 : type de groupe (CG || OPT)
-
-
-			// On nettoie et on vérifie :
-			$tabligne[0] = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($tabligne[0])));
-			if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
-
-			$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[1])));
-			if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
-
-			$tabligne[2] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[2]));
-			if (strlen($tabligne[2]) > 2000) $tabligne[2] = substr($tabligne[2], 0, 2000);
-
-			$tabligne[3] = preg_replace("/[^A-Za-z]/","",trim(strtoupper($tabligne[3])));
-			if ($tabligne[3] != "CG" AND $tabligne[3] != "OPT") $tabligne[3] = "";
+						// 0 : Login du prof
+						// 1 : nom court de la matière
+						// 2 : identifiant(s) de là (des) classe(s) (Format : 1S1!1S2!1S3)
+						// 3 : type de groupe (CG || OPT)
 
 
+						// On nettoie et on vérifie :
+						$tabligne[0] = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($tabligne[0])));
+						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+			
+						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[1])));
+						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
+			
+						$tabligne[2] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[2]));
+						if (strlen($tabligne[2]) > 2000) $tabligne[2] = substr($tabligne[2], 0, 2000);
+			
+						$tabligne[3] = preg_replace("/[^A-Za-z]/","",trim(strtoupper($tabligne[3])));
+						if ($tabligne[3] != "CG" AND $tabligne[3] != "OPT") $tabligne[3] = "";
 
-							$data_tab[$k] = array();
 
-							$data_tab[$k]["prof"] = $tabligne[0];
-							$data_tab[$k]["matiere"] = $tabligne[1];
-							$data_tab[$k]["classes"] = $tabligne[2];
-							$data_tab[$k]["type"] = $tabligne[3];
-						}
-					$k++;
+
+						$data_tab[$k] = array();
+
+						$data_tab[$k]["prof"] = $tabligne[0];
+						$data_tab[$k]["matiere"] = $tabligne[1];
+						$data_tab[$k]["classes"] = $tabligne[2];
+						$data_tab[$k]["type"] = $tabligne[3];
 					}
+					$k++;
+				}
 
 				fclose($fp);
 

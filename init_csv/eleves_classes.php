@@ -42,57 +42,7 @@ if (!checkAccess()) {
 	die();
 }
 
-$liste_tables_del = array(
-//absences
-//edt_creneaux
-//absences_eleves
-//absences_gep
-//absences_motifs
-//aid
-//aid_appreciations
-//aid_config
-//avis_conseil_classe
-//classes
-//cn_cahier_notes
-//cn_conteneurs
-//cn_devoirs
-//cn_notes_conteneurs
-//cn_notes_devoirs
-//ct_devoirs_entry
-//ct_documents
-//ct_entry
-//ct_types_documents
-//droits
-//eleves
-//eleves_groupes_settings
-//etablissements
-//groupes
-//j_aid_eleves
-//j_aid_utilisateurs
-"j_eleves_classes",
-//j_eleves_cpe
-//j_eleves_etablissements
-//j_eleves_groupes
-//j_eleves_professeurs
-//j_eleves_regime
-//j_groupes_classes
-//j_groupes_matieres
-//j_groupes_professeurs
-//j_professeurs_matieres
-//log
-//matieres
-//matieres_appreciations
-//matieres_notes
-//messages
-//periodes
-//responsables
-//setting
-//suivi_eleve_cpe
-//tempo
-//tempo2
-//temp_gep_import
-//utilisateurs
-);
+$liste_tables_del = array("j_eleves_classes");
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";

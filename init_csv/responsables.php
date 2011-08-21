@@ -42,48 +42,8 @@ if (!checkAccess()) {
 	die();
 }
 
-$liste_tables_del = array(
-//"absences",
-//"absences_gep",
-//"aid",
-//"aid_appreciations",
-//"aid_config",
-//"avis_conseil_classe",
-//"classes",
-//"droits",
-//"eleves",
-"responsables",
-"responsables2",
-"resp_pers",
-"resp_adr"
-//"etablissements",
-//"j_aid_eleves",
-//"j_aid_utilisateurs",
-//"j_eleves_classes",
-//"j_eleves_etablissements",
-//"j_eleves_professeurs",
-//"j_eleves_regime",
-//"j_eleves_groupes",
-//"j_professeurs_matieres",
-//"log",
-//"matieres",
-//"matieres_appreciations",
-//"matieres_notes",
-//"periodes",
-//"tempo2",
-//"temp_gep_import",
-//"tempo",
-//"utilisateurs",
-//"cn_cahier_notes",
-//"cn_conteneurs",
-//"cn_devoirs",
-//"cn_notes_conteneurs",
-//"cn_notes_devoirs",
-//"setting"
-);
-
-
-
+include("../lib/initialisation_annee.inc.php");
+$liste_tables_del = $liste_tables_del_etape_resp;
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 1";
