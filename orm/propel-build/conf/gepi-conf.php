@@ -75,7 +75,7 @@ $conf = array (
 //  'log' =>
 //  array (
 //    'type' => 'file',
-//    'name' => 'propel.log',
+//    'name' => dirname(__FILE__).'/../../propel.log',
 //    'ident' => 'propel',
 //    'level' => '7',
 //    'conf' => '',
