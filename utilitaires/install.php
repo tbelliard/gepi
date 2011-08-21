@@ -24,7 +24,7 @@
 if (version_compare(PHP_VERSION, '5') < 0) {
     die('GEPI nécessite PHP5 pour fonctionner');
 }
-require_once("../lib/global.inc");
+require_once("../lib/global.inc.php");
 $nom_fic = "../secure/connect.inc.php";
 
 function test_ecriture_secure() {

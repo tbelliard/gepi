@@ -159,7 +159,7 @@ if (isset($_REQUEST["source"])) {
  /**
   * Fichier de configuration générale
   */
-   require_once($chemin_relatif_gepi."/lib/global.inc");
+   require_once($chemin_relatif_gepi."/lib/global.inc.php");
  /**
   * Filtrage html
   */
@@ -220,7 +220,7 @@ if (isset($_REQUEST["source"])) {
     */
    require_once($chemin_relatif_gepi.$session_class);
 
-// Modif pour la longueur des logins par $longmax_login du global.inc
+// Modif pour la longueur des logins par $longmax_login du global.inc.php
 // Si le champ de setting existe alors il faut l'utiliser car il est réglé par la page param_gen.php
 if(isset($gepiSettings['longmax_login'])){
     $longmax_login = $gepiSettings['longmax_login'];

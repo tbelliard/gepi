@@ -27,7 +27,7 @@ if (file_exists("./secure/connect.inc.php")) {
     $maj = 'no';
     if (@mysql_connect("$dbHost", "$dbUser", "$dbPass")) {
         if (@mysql_select_db("$dbDb")) {
-            require_once("./lib/global.inc");
+            require_once("./lib/global.inc.php");
             // Premier test
             $liste2 = array();
             

@@ -116,7 +116,7 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		    die("Erreur chargement settings");
 		}
 		// Global configuration file
-		require_once("$path/lib/global.inc");
+		require_once("$path/lib/global.inc.php");
 		// Libraries
 		include "$path/lib/share.inc.php";
 
