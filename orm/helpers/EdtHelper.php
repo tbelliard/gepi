@@ -139,7 +139,7 @@ class EdtHelper {
    */
     public static function getDernierJourAnneeScolaire($v = 'now'){
     	$dt = EdtHelper::getPremierJourAnneeScolaire($v);
-    	$dt->modify('+1 year');
+    	$dt->modify('+10 month');
         return($dt);           
     } 
     
