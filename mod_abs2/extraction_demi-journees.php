@@ -193,7 +193,7 @@ if ($affichage != null && $affichage != '') {
     $eleve_query->withColumn('SUM(AbsenceAgregationDecompte.ManquementObligationPresence)', 'NbAbsences')
     	->withColumn('SUM(AbsenceAgregationDecompte.Justifiee)', 'NbJustifiees')
     	->withColumn('SUM(AbsenceAgregationDecompte.NbRetards)', 'NbRetards')
-   		->withColumn('SUM(AbsenceAgregationDecompte.Justifiee) - SUM(AbsenceAgregationDecompte.NbRetards)', 'NbNonJustifiees')
+   		->withColumn('SUM(AbsenceAgregationDecompte.ManquementObligationPresence) - SUM(AbsenceAgregationDecompte.Justifiee)', 'NbNonJustifiees')
     	->groupBy('Eleve.IdEleve');
     
     $eleve_col = $eleve_query->find();
@@ -248,8 +248,8 @@ if ($affichage == 'html') {
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
-	    echo $eleve->getNbJustifiees();
-	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbJustifiees();
+	    echo $eleve->getNbNonJustifiees();
+	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbNonJustifiees();
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
