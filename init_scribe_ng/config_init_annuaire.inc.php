@@ -107,7 +107,9 @@ $liste_tables_del = array(
 "s_sanctions",
 "s_traitement_incident",
 "s_travail",
-"s_travail_mesure"
+"s_travail_mesure",
+
+"rss_users"
 );
 
 /*
