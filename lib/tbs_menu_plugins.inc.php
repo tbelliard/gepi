@@ -41,13 +41,13 @@ function tbs_menu_plugins()
 						if ($autorise)
 							{
 							$nb_items++;
-							$tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'texte'=>"".$menu_script->attributes()->titre);
-							$tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'texte'=>$plugin['nom']);
+							$tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'alt'=>$menu_script->attributes()->titre,'title'=>$menu_script->attributes()->description,'texte'=>"".$menu_script->attributes()->titre);
+							$tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'alt'=>$menu_script->attributes()->titre,'title'=>$plugin['description'],'texte'=>$plugin['description']);
 							}
 						}
 					}
 					if ($nb_items>1)
-						$tmp_menu_plugins=array('lien'=>"",'texte'=>$plugin['nom'],'sous_menu'=>$tmp_sous_menu_plugins,'niveau_sous_menu'=>3);
+						$tmp_menu_plugins=array('lien'=>"",'texte'=>$plugin['description'],'sous_menu'=>$tmp_sous_menu_plugins,'niveau_sous_menu'=>3);
 					else if ($nb_items==1)
 							$tmp_menu_plugins=$tmp_sous_menu_plugins_solo;
 				if (count($tmp_menu_plugins)>0) $menu_plugins[]=$tmp_menu_plugins;
