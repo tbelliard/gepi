@@ -42,6 +42,8 @@ if (!checkAccess()) {
 	die();
 }
 
+$msg="";
+
 if (($_SESSION['statut'] == 'professeur') or ($_SESSION['statut'] == 'cpe') or ($_SESSION['statut'] == 'responsable') or ($_SESSION['statut'] == 'eleve')) {
 	// Mot de passe comportant des lettres et des chiffres
 	$flag = 0;
@@ -601,6 +603,24 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	}
 }
 
+$tab_statuts_barre=array('professeur', 'cpe', 'scolarite', 'administrateur');
+$modifier_barre=isset($_POST['modifier_barre']) ? $_POST['modifier_barre'] : NULL;
+if((isset($modifier_barre))&&(strtolower(substr(getSettingValue('utiliserMenuBarre'),0,1))=='y')&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
+	$afficher_menu=isset($_POST['afficher_menu']) ? $_POST['afficher_menu'] : NULL;
+	if((strtolower(substr($afficher_menu,0,1))!='y')&&(strtolower(substr($afficher_menu,0,1))!='n')) {
+		if($msg!="") {$msg.="<br />";}
+		$msg.="Le choix '$afficher_menu' pour l'affichage ou non de la barre de menu est invalide.<br />\n";
+	}
+	else {
+		if(!savePref($_SESSION['login'], 'utiliserMenuBarre', $afficher_menu)) {
+			$msg.="Erreur lors de la sauvegarde de la préférence d'affichage ou non de la barre de menu.<br />\n";
+		}
+		else {
+			$msg.="Sauvegarde de la préférence d'affichage ou non de la barre de menu effectué.<br />\n";
+		}
+	}
+}
+
 
 // On appelle les informations de l'utilisateur pour les afficher :
 $call_user_info = mysql_query("SELECT nom,prenom,statut,email,show_email,civilite FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
@@ -990,6 +1010,48 @@ if ($affiche_bouton_submit=='yes')
 	echo "<input type=\"hidden\" name=\"valid\" value=\"yes\" />\n";
 echo "</form>\n";
 echo "  <hr />\n";
+
+if((strtolower(substr(getSettingValue('utiliserMenuBarre'),0,1))=='y')&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
+	$aff_barre="n";
+	$sql="SELECT value FROM preferences WHERE login='".$_SESSION['login']."' AND name='utiliserMenuBarre';";
+	$res_barre=mysql_query($sql);
+	if(mysql_num_rows($res_barre)==0) {
+		$aff_barre="y";
+	}
+	else {
+		$lig_barre=mysql_fetch_object($res_barre);
+		$aff_barre=strtolower(substr($lig_barre->value,0,1));
+	}
+
+	echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
+	echo add_token_field();
+
+	echo "<fieldset id='afficherBarreMenu' style='border: 1px solid grey;'>\n";
+	echo "<legend style='border: 1px solid grey;'>Gérer la barre horizontale du menu</legend>\n";
+	echo "<input type='hidden' name='modifier_barre' value='ok' />\n";
+
+	echo "<p>\n";
+	echo "<label for='visibleMenu' id='texte_visibleMenu'>Rendre visible la barre de menu horizontale sous l'en-tête.</label>\n";
+	echo "<input type='radio' id='visibleMenu' name='afficher_menu' value='yes'";
+	if($aff_barre=="y") {
+		echo " checked";
+	}
+	echo " />\n";
+	echo "</p>\n";
+	echo "<p>\n";
+	echo "<label for='invisibleMenu' id='texte_invisibleMenu'>Ne pas utiliser la barre de menu horizontale.</label>\n";
+	echo "<input type='radio' id='invisibleMenu' name='afficher_menu' value='no'";
+	if($aff_barre!="y") {
+		echo " checked";
+	}
+	echo " />\n";
+	echo "</p>\n";
+
+	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+	echo "</fieldset>\n";
+	echo "</form>\n";
+	echo "  <hr />\n";
+}
 
 // Journal des connexions
 echo "<a name=\"connexion\"></a>\n";
