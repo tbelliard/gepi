@@ -688,5 +688,21 @@ if ($res_test==0){
   $result .= "<font color=\"blue\">Le paramètre sso_cas_table existe déjà dans la table setting.</font><br />";
 }
 
+$result.="<br />";
+$result.="Définition du champ 'reglage' de la table 'edt_setting' comme UNIQUE :";
+$result_inter = traite_requete("ALTER TABLE edt_setting ADD UNIQUE (reglage);");
+if ($result_inter == '') {
+	$result.="<font color=\"green\"> : Ok !</font><br />";
+} else {
+	$result.="<font color=\"red\"> Erreur !</font><br />";
+}
+
+$result.="Définition du champ 'ref' de la table 'ref_wiki' comme UNIQUE :";
+$result_inter = traite_requete("ALTER TABLE ref_wiki ADD UNIQUE (ref);");
+if ($result_inter == '') {
+	$result.="<font color=\"green\"> Ok !</font><br />";
+} else {
+	$result.="<font color=\"red\"> Erreur !</font><br />";
+}
 
 ?>
