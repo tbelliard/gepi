@@ -16,6 +16,9 @@ $liste_tables_del_etape_eleves = array(
 // Absences
 "absences",
 "absences_gep",
+"absences_rb",
+"absences_repas",
+"absences_eleves",
 "vs_alerts_eleves",
 "vs_alerts_groupes",
 "vs_alerts_types",
