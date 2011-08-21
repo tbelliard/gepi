@@ -97,22 +97,39 @@ class EdtHelper {
     
    /**
    * Renvoi le premier jour de l'année scolaire sous forme d'objet DateTime
-   *   * 
    * @return     DateTime      $DateDebutAnneeScolaire premier septembre de l'année scolaire en cours à 00:00:00 (bascule d'annee semaine 33)
    *
    */
-    public static function getPremierJourAnneeScolaire(){
-        
-        $date_now = new DateTime('now');
-        $DateDebutAnneeScolaire=clone ($date_now);
-        $semaine_en_cours = $date_now->format('W');
-        $annee_en_cours = $date_now->format('Y');
-        if ($semaine_en_cours < 33) {
+    public static function getPremierJourAnneeScolaire($v = 'now'){
+    	
+	    if ($v === null || $v === '') {
+		    $dt = DateTime('now');
+	    } elseif ($v instanceof DateTime) {
+		    $dt = clone $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+	    
+        $annee_en_cours = $dt->format('Y');
+        if ($dt->format('W') < 33 || $dt->format('z') < 10) {//on rajoute $dt->format('z') < 10 pour le jour de l'année, sinon un 1 janvier peut etre semaine 52
             $annee_en_cours=$annee_en_cours-1;
         } 
-        $DateDebutAnneeScolaire->setDate($annee_en_cours,9,1);
-        $DateDebutAnneeScolaire->setTime(0,0,0);
-        return($DateDebutAnneeScolaire);
+        $dt->setDate($annee_en_cours,9,1);
+        $dt->setTime(0,0,0);
+		return($dt);
     } 
     
   /**
@@ -120,17 +137,10 @@ class EdtHelper {
    *    
    * @return     DateTime      $DateDebutAnneeScolaire 31 aout de l'année scolaire en cours à 23:59:59 (bascule d'annee semaine 33)
    */
-    public static function getDernierJourAnneeScolaire(){
-        $date_now = new DateTime('now');
-        $DateFinAnneeScolaire=clone ($date_now);
-        $semaine_en_cours = $date_now->format('W');
-        $annee_en_cours = $date_now->format('Y');
-        if ($semaine_en_cours >= 33) {
-            $annee_en_cours=$annee_en_cours+1;
-        } 
-        $DateFinAnneeScolaire->setDate($annee_en_cours,8,31);
-        $DateFinAnneeScolaire->setTime(23,59,59);
-        return($DateFinAnneeScolaire);           
+    public static function getDernierJourAnneeScolaire($v = 'now'){
+    	$dt = EdtHelper::getPremierJourAnneeScolaire($v);
+    	$dt->modify('+1 year');
+        return($dt);           
     } 
     
    /**
