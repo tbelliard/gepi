@@ -1,13 +1,26 @@
 <?php
-
 /**
- *
  *
  * @version $Id$
  *
- * Classes php qui renvoie les informations sur le serveur
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
- * @copyright 2008
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  */
 // Sécurité : éviter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
@@ -22,29 +35,27 @@ $analyse[3] = isset($analyse[3]) ? $analyse[3] : NULL;
  */
 class infos{
 
-
 	/**
 	 * Constructor
-	 * @access protected
+	 * @access public
 	 */
-	function __construct(){
+	public function __construct(){
 		// inutile ici
 	}
 
-	/*
-	function infos(){
-		// utile pour le compatibilité php4
-	}
-	 */
-
+    /**
+     * Renvoie un message sur la version de php et teste si elle convient
+     *
+     * @return string Message
+     */
 	function versionPhp(){
 		$test = phpversion();
 		// on teste le premier chiffre
 		$version = substr($test, 0, 1);
 		if ($version == 5) {
-			$retour = '<span style="color: green;">'.phpversion().'</span>';
+			$retour = '<span style="color: green;">'.phpversion().' (Gepi nécessite php 5.2.x minimum)</span>';
 		}elseif($version == 4 AND substr($test, 2, 2) >= 3){
-			$retour = '<span style="color: green;">'.phpversion().'(Attention, car php4 ne sera plus suivi pour la sécurité à partir du 8 août 2008</span>';
+			$retour = '<span style="color: green;">'.phpversion().'(Attention, Gepi ne fonctionne pas avec cette version, elle est trop ancienne)</span>';
 		}else{
 			$retour = '<span style="color: red;">'.phpversion().'(version ancienne !)</span>';
 		}
