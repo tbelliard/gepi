@@ -167,16 +167,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		}
 		$row = mysql_fetch_array($result_query);
 		mysql_free_result($result_query);
-		if (!$row['union_date']) {//il n'y a pas de saisie sur cette période, donc ça doit être à jour.
-			//TODO on va vérifier que toutes les entrées de la table d'agrégation dont bien nulle
-			if ($row['count_manquement']) {
-			echo 2;
-				return false;
-			} else {
-				return true;
-			}
-		} else if (!$row['updated_at'] || $row['union_date'] > $row['updated_at']){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
-			echo 3;
+		if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
 			return false;
 		} else if ($row['count_demi_jounee']==-1){
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
