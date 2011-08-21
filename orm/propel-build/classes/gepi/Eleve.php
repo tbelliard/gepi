@@ -924,7 +924,8 @@ class Eleve extends BaseEleve {
 		}else{
 		  $repertoire2="";
 		}
-
+		
+		$photo = null;
 		// on vérifie si la photo existe
 		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
 			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
