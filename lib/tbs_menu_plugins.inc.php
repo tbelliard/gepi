@@ -1,7 +1,24 @@
 <?php
+/**
+ * Construction de la barre de menu des gabarits
+ *
+ * @version $Id$
+ * @copyright 2008-2011
+ * @license GNU/GPL v2
+ * @package General
+ * @subpackage Affichage
+ * 
+ */
+
+/**
+ * Construit le tableau pour afficher le menu des gabarits
+ * 
+ * @global string
+ * @return array 
+ */
 function tbs_menu_plugins()
 {
-	global $_SERVER,$gepiPath;
+	global $gepiPath;
 	$menu_plugins=array();
 	// quels sont les plugins ouverts et autorisés au statut de l'utilisateur?
 	$r_sql="SELECT DISTINCT `plugins`.* FROM `plugins`,`plugins_autorisations`
@@ -41,8 +58,8 @@ function tbs_menu_plugins()
 						if ($autorise)
 							{
 							$nb_items++;
-							$tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'alt'=>$menu_script->attributes()->titre,'title'=>$menu_script->attributes()->description,'texte'=>"".$menu_script->attributes()->titre);
-							$tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'alt'=>$menu_script->attributes()->titre,'title'=>$plugin['description'],'texte'=>$plugin['description']);
+							$tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'alt'=>$menu_script->attributes()->titre,'title'=>$menu_script->attributes()->description,'texte'=>$menu_script->attributes()->titre);
+							$tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'alt'=>$menu_script->attributes()->titre,'title'=>utf8_decode($plugin['description']),'texte'=>  utf8_decode($plugin['description']));
 							}
 						}
 					}

@@ -191,8 +191,24 @@
 <![endif]-->
 ';
 
+    /**
+     *
+     * @global string
+     * @global string
+     * @param type $tab
+     * @param type $niveau 
+     */
 	function ligne_menu_barre($tab,$niveau) {
 		global $gepiPath, $themessage;
+             
+            $afficheTitle='';
+            if (isset ($tab['title']) && $tab['title'] !='') {
+              $afficheTitle= ' title=\''.$tab['title'].'\'';
+            }
+            $afficheAlt='';
+            if (isset ($tab['alt']) && $tab['alt'] !='') {
+              $afficheAlt= ' alt=\''.$tab['alt'].'\'';
+            }
 
 		if(isset($tab['sous_menu'])) {
 			echo "<li";
@@ -210,10 +226,10 @@
 				echo $tab['texte']."\n";
 			}
 			elseif (substr($tab['lien'],0,4) == 'http') {
-				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().">".$tab['texte']."</a>\n";
+				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
 			}
 			else {
-				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().">".$tab['texte']."</a>\n";
+				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
 			}
 
 			echo "<ul class='niveau".$tab['niveau_sous_menu']."'>\n";
@@ -236,10 +252,10 @@
 				echo $tab['texte']."\n";
 			}
 			elseif (substr($tab['lien'],0,4) == 'http') {
-				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().">".$tab['texte']."</a>\n";
+				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
 			}
 			else {
-				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().">".$tab['texte']."</a>";
+				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>";
 			}
 			echo "</li>\n";
 		}
