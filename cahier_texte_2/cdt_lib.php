@@ -300,9 +300,9 @@ require_once("'.$pref_arbo.'/entete.php");
 			//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
 			$html_tmp.= "<ul style=\"padding-left: 15px;\">";
 			for ($i=0; ($row = sql_row($res,$i)); $i++) {
-				if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+				if(isset($_SESSION['statut']) && ((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 					((getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
-					((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==true)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+					((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==true)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))))
 				) {
 					$titre = $row[0];
 					$emplacement = $pref_documents.$row[1];

@@ -138,7 +138,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 		}
 	}
 
-	$footer_sound=getPref($_SESSION['login'],'footer_sound',"");
+	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : '';
 	if($footer_sound=='') {
 		$footer_sound=getSettingValue('footer_sound');
 		if($footer_sound=='') {
