@@ -44,9 +44,23 @@ $config = array(
 	'Authentification au choix locale ou cas e-lyco' => array(
 		'multiauth:MultiAuth',
 		'sources' => array('Authentification locale gepi', 'Authentification cas e-lyco')
-	)
+	),
     
-    
+	/*authentification en s'appuyant sur un gepi-maitre distant (à décommenter sur le gepi esclave)
+	'Authentification sur un serveur gepi distant' => array(
+		'saml:SP',
+		'idp' => 'gepi-idp',
+		'entityID' => 'gepi-esclave-sp',
+		//ce paramêtre doit correspondre avec l' entityID dans le fichier simplesaml/metadata/saml20-sp-remote.php du fournisseur d'identité (gepi maitre)
+		'portal_return_url' => 'http://www.mon-serveur-esclave-gepi.fr',
+		'do_source_logout' => false,
+	),
+	'Authentification au choix locale ou sur serveur gepi distant' => array(
+		'multiauth:MultiAuth',
+		'sources' => array('Authentification locale gepi', 'Authentification sur un serveur gepi distant')
+	),
+	*/
+	
 );
 
 //configuration d'un choix multiple avec toutes les sources configurées
