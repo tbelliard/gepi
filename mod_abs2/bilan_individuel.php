@@ -389,7 +389,25 @@ if ($nom_eleve !== null && $nom_eleve != '') {
 if ($id_eleve !== null && $id_eleve != '') {
     $eleve_query->filterByIdEleve($id_eleve);
 }
-$eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
+$eleve_query->orderByNom()->orderByPrenom()->distinct();
+$table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
+    if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
+		$eleve_col = $eleve_query->find();
+		if ($eleve_col->count()>150) {
+			echo 'Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administreteur de remplir la table d\'agrégation.';
+			if (ob_get_contents()) {
+				ob_flush();
+			}
+			flush();
+		}
+		foreach ($eleve_col as $eleve) {
+			$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
+		}
+	}
+     //on recommence la requetes, maintenant que la table est synchronisé, avec les données d'absence
+        
+    $eleve_col = $eleve_query->find();
+    
 if ($eleve_col->isEmpty()) {    
     echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
     die();
@@ -399,7 +417,7 @@ if (isset($_SESSION['donnees_bilan'])){
     $donnees = unserialize($_SESSION['donnees_bilan']);
 }
 foreach ($eleve_col as $eleve) {    
-    $eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
+  //  $eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
     $eleve_id = $eleve->getIdEleve();
     //on initialise les donnees pour le nouvel eleve
     if ($precedent_eleve_id != $eleve_id) {
