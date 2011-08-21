@@ -79,4 +79,13 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
             return $retard->getFirst()->getVirtualColumn('NbRetards');
         }
     }
+    
+    /**
+     * Filtre la requete sur suivant que la marqueur de fin de calcul de mise a jours est présent
+     * 
+     * @return    AbsenceAgregationDecompteQuery The current query, for fluid interface
+     */
+    public function filterByMarqueurFinMiseAJours() {
+    	return $this->filterByDateDemiJounee(null);
+    }
 } // AbsenceAgregationDecompteQuery
