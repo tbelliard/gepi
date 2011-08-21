@@ -98,7 +98,7 @@ echo '<!--[if lt IE 7]>
 	<a href="'.$gepiPath.'/cahier_texte/index.php'.$groupe_text.'"'.insert_confirm_abandon().'>C. de Textes</a>'."\n";
 		$barre_textes .= '	<ul class="niveau2">'."\n";
 			foreach($mes_groupes as $tmp_group) {
-				$barre_textes .= '		<li><a href="'.$gepiPath.'/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir="'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a></li>'."\n";
+				$barre_textes .= '		<li><a href="'.$gepiPath.'/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir="'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a></li>'."\n";
 			}
 			if(getSettingValue('GepiCahierTexteVersion')==2) {
 				$barre_textes.= '		<li><a href="'.$gepiPath.'/cahier_texte_2/see_all.php"'.insert_confirm_abandon().'>Consultation des cahiers de textes</a></li>'."\n";
@@ -117,7 +117,7 @@ echo '<!--[if lt IE 7]>
 			$barre_note .= '	<ul class="niveau2">'."\n";
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
+					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 		
 					$barre_note.= '			<ul class="niveau3">'."\n";
 					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
@@ -165,7 +165,7 @@ echo '<!--[if lt IE 7]>
 	
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
+					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 		
 					$barre_note.= '			<ul class="niveau4">'."\n";
 					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
@@ -192,7 +192,7 @@ echo '<!--[if lt IE 7]>
 	
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
+					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 		
 					$barre_note.= '			<ul class="niveau4">'."\n";
 					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
@@ -218,7 +218,7 @@ echo '<!--[if lt IE 7]>
 				$barre_note .= '		<ul class="niveau3">'."\n";
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index1.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
+					$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index1.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 				}
 				$barre_note.= '			</ul>'."\n";
 			$barre_note.= '		</li>'."\n";
