@@ -397,9 +397,9 @@ if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted
 	echo "<p><strong>Fourniture d'identité :</strong></p>\n";
 	echo "<p><input type='checkbox' name='gepiEnableIdpSaml20' value='yes' id='gepiEnableIdpSaml20'";
 	if (getSettingValue("gepiEnableIdpSaml20")=='yes') echo " checked ";
-	echo " /> <label for='gepiEnableIdpSaml20' style='cursor: pointer;'>Fournir un service d'identification SAML 2.0</label>\n";
+	echo " /> <label for='gepiEnableIdpSaml20' style='cursor: pointer;'>Fournir une identification SAML 2.0</label>\n";
 	echo "<p>\n";
-	echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service si possible en https (exemple : https://localhost/valise) </label>\n";
+	echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service qui va se connecter si possible en https (exemple : https://localhost/mon-appli) </label>\n";
 	echo "<input type='text' size='60' name='sacocheUrl' value='".getSettingValue("sacocheUrl")."' id='sacocheUrl' />\n<br/>";
 	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (laisser vide si votre instalation de sacoche est mono établissement)</label>\n";
 	echo "<input type='text' size='5' name='sacoche_base' value='".getSettingValue("sacoche_base")."' id='sacoche_base' />\n<br/>";

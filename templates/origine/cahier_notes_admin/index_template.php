@@ -209,7 +209,7 @@
 	  Évaluation par compétence
 	</h2>
 	<p>
-	  Utilisation d'un logiciel externe pour l'évaluation par compétence
+	  Utilisation d'un logiciel externe pour l'évaluation par compétence (beta)
 	  <input type="checkbox" 
 			 name="utiliser_sacoche" 
 			 size="8"
