@@ -173,9 +173,9 @@ if ($affichage != null && $affichage != '') {
 		$eleve_query->filterByNomOrPrenomLike($nom_eleve);
     }
     
+    $eleve_col = $eleve_query->find();
     $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
     if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
-		$eleve_col = $eleve_query->find();
 		if ($eleve_col->count()>150) {
 			echo 'Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administrateur de remplir la table d\'agrégation.';
 			if (ob_get_contents()) {
@@ -189,7 +189,8 @@ if ($affichage != null && $affichage != '') {
 	}
     
     //on recommence la requetes, maintenant que la table est synchronisé, avec les données d'absence
-    $eleve_query->useAbsenceAgregationDecompteQuery()->filterByDateIntervalle($dt_date_absence_eleve_debut,  $dt_date_absence_eleve_fin)->endUse();
+    $eleve_query = EleveQuery::create()->filterByIdEleve($eleve_col->toKeyValue('IdEleve','IdEleve'));
+    $eleve_query->useAbsenceAgregationDecompteQuery()->distinct()->filterByDateIntervalle($dt_date_absence_eleve_debut,  $dt_date_absence_eleve_fin)->endUse();
     $eleve_query->withColumn('SUM(AbsenceAgregationDecompte.ManquementObligationPresence)', 'NbAbsences')
     	->withColumn('SUM(AbsenceAgregationDecompte.Justifiee)', 'NbJustifiees')
     	->withColumn('SUM(AbsenceAgregationDecompte.NbRetards)', 'NbRetards')
