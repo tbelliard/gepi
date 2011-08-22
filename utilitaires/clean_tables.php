@@ -101,7 +101,7 @@ function menage_utilisateurs_eleves() {
 //======================================================
 
 //$total_etapes = 8;
-$total_etapes = 11;
+$total_etapes = 15;
 $duree = 8;
 if (!isset($_GET['cpt'])) {
 	$cpt = 0;
@@ -861,7 +861,11 @@ if(isset($_POST['maj'])) {
 	$id_info=get_id_infos_action_nettoyage();
 }
 
-if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
+if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and (($_GET['maj'])=="1"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 1/$total_etapes</h2>\n";
 
 	$retour=clean_tables_aid_et_autres();
@@ -877,7 +881,11 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 	echo "</form>\n";
 
 	echo script_suite_submit();
-} else if (isset($_POST['maj']) and (($_POST['maj'])=="2")) {
+} else if ((isset($_POST['maj']) and (($_POST['maj'])=="2"))||(isset($_GET['maj']) and (($_GET['maj'])=="2"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 2/$total_etapes</h2>\n";
 
 	$retour=clean_table_j_eleves_professeurs();
@@ -893,7 +901,11 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 	echo "</form>\n";
 
 	echo script_suite_submit();
-} else if (isset($_POST['maj']) and (($_POST['maj'])=="3")) {
+} else if ((isset($_POST['maj']) and (($_POST['maj'])=="3"))||(isset($_GET['maj']) and (($_GET['maj'])=="3"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 3/$total_etapes</h2>\n";
 	// Cas de la table j_classes_matieres_professeurs
 	echo "<h2>Vérification de la table j_classes_matieres_professeurs</h2>\n";
@@ -907,7 +919,11 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 	echo "</form>\n";
 
 	echo script_suite_submit();
-} else if (isset($_POST['maj']) and (($_POST['maj'])=="4")) {
+} else if ((isset($_POST['maj']) and (($_POST['maj'])=="4"))||(isset($_GET['maj']) and (($_GET['maj'])=="4"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 4/$total_etapes</h2>\n";
 
 	$retour=clean_table_j_eleves_classes();
@@ -924,6 +940,10 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 	echo "</form>\n";
 	echo script_suite_submit();
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="5")) or (isset($_GET['maj']) and (($_GET['maj'])=="5"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 5/$total_etapes</h2>\n";
 	echo "<h2>Nettoyage de la table j_eleves_matieres</h2>\n";
 	echo "<p>Cette table n'est plus utilisée. Cette étape a été remplacée plus loin par une étape de nettoyage des attributions d'élèves aux groupes...</p>\n";
@@ -936,7 +956,11 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 	echo "</form>\n";
 	echo script_suite_submit();
 	//}
-} else if (isset($_POST['maj']) and (($_POST['maj'])=="6")) {
+} else if ((isset($_POST['maj']) and (($_POST['maj'])=="6"))||(isset($_GET['maj']) and (($_GET['maj'])=="6"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 6/$total_etapes</h2>\n";
 
 	$retour=clean_tables_aid_appreciations_et_avis_conseil_classe();
@@ -954,6 +978,10 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 	echo "</form>\n";
 	echo script_suite_submit();
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="7")) or (isset($_GET['maj']) and (($_GET['maj'])=="7"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 7/$total_etapes</h2>\n";
 
 	echo "<h2>Nettoyage de la table matieres_appreciations (tables des appréciations par discipline)</h2>\n";
@@ -1025,6 +1053,10 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 
 	}
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="8")) or (isset($_GET['maj']) and (($_GET['maj'])=="8"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 8/$total_etapes</h2>\n";
 	echo "<h2>Nettoyage de la table matieres_notes (tables des notes par discipline)</h2>\n";
 	init_time(); //initialise le temps
@@ -1093,6 +1125,10 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 
 }
 elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']) and (($_GET['maj'])=="9"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 9/$total_etapes</h2>\n";
 
 	//echo "<p><a href='index.php'>Retour à Outils de gestion</a> | <a href='index.php'>Retour à Vérification/nettoyage des tables</a></p>\n";
@@ -1454,6 +1490,10 @@ col2 varchar(100) NOT NULL default ''
 
 }
 elseif ((isset($_POST['maj']) and (($_POST['maj'])=="10")) or (isset($_GET['maj']) and (($_GET['maj'])=="10"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
 	echo "<h2 align=\"center\">Etape 10/$total_etapes</h2>\n";
 
 	$texte_info_action="<h2>Nettoyage des comptes élèves/responsables</h2>\n";
@@ -1699,8 +1739,25 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
 
+	//=====================================
+
+	echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+	echo add_token_field();
+	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
+
+	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
+	echo "<input type='hidden' name='maj' value='check_jec_jep_point' />\n";
+	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
+
+	echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+	echo "</form>\n";
+
+	echo script_suite_submit();
+
+/*
 	echo "<hr />\n";
 	echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+*/
 
 }
 elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') {
@@ -1835,7 +1892,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		echo "</form>\n";
 	}
 
-} elseif (isset($_POST['action']) AND $_POST['action'] == 'check_jec_jep_point') {
+} elseif ((isset($_POST['action']) AND $_POST['action'] == 'check_jec_jep_point')||((isset($_POST['maj']))&&($_POST['maj']=='check_jec_jep_point'))||((isset($_GET['maj']))&&($_GET['maj']=='check_jec_jep_point'))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
@@ -1843,7 +1900,17 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 
 	if (isset($_POST['is_confirmed']) and $_POST['is_confirmed'] == "yes") {
-		echo "<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+		if($_POST['maj']=='check_jec_jep_point') {
+			$texte_info_action="<h2 align=\"center\">Etape 12/$total_etapes<br />Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+		}
+		else {
+			$texte_info_action="<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+		}
+		echo $texte_info_action;
+		update_infos_action_nettoyage($id_info, $texte_info_action);
+
+		// Initialisation pour test
+		$texte_info_action="";
 
 		// Les champs vides pouvaient apparaitre avec le bug (désormais corrigé) sur les POINTS et TIRETS dans les noms de login.
 		$sql="SELECT * FROM j_eleves_cpe WHERE cpe_login='' OR e_login='';";
@@ -1854,10 +1921,14 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$nettoyage=mysql_query($sql);
 
 			if($nettoyage){
-				echo "<p>$nb_pb_cpe erreur(s) nettoyée(s) dans la table 'j_eleves_cpe'.</p>\n";
+				$texte_info_action="<p>$nb_pb_cpe erreur(s) nettoyée(s) dans la table 'j_eleves_cpe'.</p>\n";
+				echo $texte_info_action;
+				update_infos_action_nettoyage($id_info, $texte_info_action);
 			}
 			else{
-				echo "<p style='color:red;'>Erreur lors du nettoyage de la table 'j_eleves_cpe'.</p>\n";
+				$texte_info_action="<p style='color:red;'>Erreur lors du nettoyage de la table 'j_eleves_cpe'.</p>\n";
+				echo $texte_info_action;
+				update_infos_action_nettoyage($id_info, $texte_info_action);
 			}
 		}
 
@@ -1866,7 +1937,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$test=mysql_query($sql);
 		$nb_pb_cpe=mysql_num_rows($test);
 		if($nb_pb_cpe>0){
-			echo "<p>Suppression d'associations CPE/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
+			$texte_info_action="<p>Suppression d'associations CPE/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
 			$cpt_ele_cpe=0;
 			while($lig=mysql_fetch_object($test)){
 				if($cpt_ele_cpe>0){echo ", ";}
@@ -1886,14 +1957,16 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				//echo "<!-- $sql -->\n";
 				$nettoyage=mysql_query($sql);
 				if($nettoyage){
-					echo $eleve;
+					$texte_info_action.=$eleve;
 				}
 				else{
-					echo "<span style='color:red;'>$eleve</span>\n";
+					$texte_info_action.="<span style='color:red;'>$eleve</span>\n";;
 				}
 				$cpt_ele_cpe++;
 			}
-			echo ".</p>\n";
+			$texte_info_action.=".</p>\n";
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
 
 		$sql="SELECT * FROM j_eleves_professeurs WHERE login='' OR professeur='';";
@@ -1904,11 +1977,13 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$nettoyage=mysql_query($sql);
 
 			if($nettoyage){
-				echo "<p>$nb_pb_pp erreur(s) nettoyée(s) dans la table 'j_eleves_professeurs'.</p>\n";
+				$texte_info_action="<p>$nb_pb_pp erreur(s) nettoyée(s) dans la table 'j_eleves_professeurs'.</p>\n";;
 			}
 			else{
-				echo "<p style='color:red;'>Erreur lors du nettoyage de la table 'j_eleves_professeurs'.</p>\n";
+				$texte_info_action="<p style='color:red;'>Erreur lors du nettoyage de la table 'j_eleves_professeurs'.</p>\n";
 			}
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
 
 		// Problème de suppression de l'association eleve/professeur après suppression d'un élève de toutes les périodes... (plus dans aucune classe)
@@ -1916,7 +1991,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$test=mysql_query($sql);
 		$nb_pb_pp=mysql_num_rows($test);
 		if($nb_pb_pp>0){
-			echo "<p>Suppression d'associations Professeur/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
+			$texte_info_action="<p>Suppression d'associations Professeur/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
 			$cpt_ele_pp=0;
 			while($lig=mysql_fetch_object($test)){
 				if($cpt_ele_pp>0){echo ", ";}
@@ -1933,15 +2008,40 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$sql="DELETE FROM j_eleves_professeurs WHERE login='$lig->login';";
 				$nettoyage=mysql_query($sql);
 				if($nettoyage){
-					echo $eleve;
+					$texte_info_action.=$eleve;
 				}
 				else{
-					echo "<span style='color:red;'>$eleve</span>\n";
+					$texte_info_action.="<span style='color:red;'>$eleve</span>\n";
 				}
 				$cpt_ele_pp++;
 			}
-			echo ".</p>\n";
+			$texte_info_action.=".</p>\n";
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
+
+		if($texte_info_action=="") {
+			$texte_info_action.="<p>Aucune erreur n'a été trouvée.</p>\n";
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
+		}
+
+		//=====================================
+	
+		echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+		echo add_token_field();
+		echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
+	
+		echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
+		echo "<input type='hidden' name='maj' value='verif_interclassements' />\n";
+		echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
+	
+		echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+		echo "</form>\n";
+	
+		echo script_suite_submit();
+
+		//=====================================
 
 	} else {
 		echo "<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
@@ -2171,108 +2271,157 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	echo "<p>Terminé.</p>\n";
-} elseif(isset($_POST['action']) AND $_POST['action'] == 'verif_interclassements') {
+} elseif((isset($_POST['action']) AND $_POST['action'] == 'verif_interclassements')||(isset($_POST['maj']) AND $_POST['maj'] == 'verif_interclassements')||(isset($_GET['maj']) AND $_GET['maj'] == 'verif_interclassements')) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
+
+	if((isset($_POST['maj']))&&($_POST['maj']=='verif_interclassements')) {
+		$texte_info_action="<h2 align=\"center\">Etape 13/$total_etapes<br />Vérification des interclassements</h2>\n";
+	}
+	else {
+		$texte_info_action="<h2>Vérification des interclassements</h2>\n";
+	}
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
 
 	$sql="SHOW TABLES;";
 	$res_table=mysql_query($sql);
 	if(mysql_num_rows($res_table)==0) {
-		echo "<p style='color:red;'>Aucune table n'a été trouvée???</p>\n";
+		$texte_info_action="<p style='color:red;'>Aucune table n'a été trouvée???</p>\n";
 	}
 	else {
+		$texte_info_action="";
+
 		$tab_collations=array();
-		echo "<table class='boireaus' summary='Interclassements'>\n";
-		echo "<thead>\n";
-		echo "<tr>\n";
-		echo "<th>Table</th>\n";
-		echo "<th>Champ</th>\n";
-		echo "<th>Type</th>\n";
-		echo "<th>Interclassement</th>\n";
-		echo "</tr>\n";
-		echo "</thead>\n";
+		$texte_info_action.="<table class='boireaus' summary='Interclassements'>";
+		$texte_info_action.="<thead>";
+		$texte_info_action.="<tr>";
+		$texte_info_action.="<th>Table</th>";
+		$texte_info_action.="<th>Champ</th>";
+		$texte_info_action.="<th>Type</th>";
+		$texte_info_action.="<th>Interclassement</th>";
+		$texte_info_action.="</tr>";
+		$texte_info_action.="</thead>";
+		echo $texte_info_action;
+		update_infos_action_nettoyage($id_info, $texte_info_action);
 		$alt=1;
 		while($tab=mysql_fetch_array($res_table)) {
+			$texte_info_action="";
+
 			$alt=$alt*(-1);
 			$alt2=$alt;
-			//echo "\$tab[0]=$tab[0]<br />";
+			//$texte_info_action.="\$tab[0]=$tab[0]<br />";
 			//$sql="show fields from $tab[0] where type like 'varchar%' or type like 'char%';";
 			$sql="show full columns from $tab[0] where type like 'varchar%' or type like 'char%';";
 			$res_champs=mysql_query($sql);
 			$nb_champs=mysql_num_rows($res_champs);
-			echo "<tr class='lig$alt'>\n";
-			echo "<td style='vertical-align:top;'";
+			$texte_info_action.="<tr class='lig$alt'>";
+			$texte_info_action.="<td style='vertical-align:top;'";
 			if($nb_champs>0) {
-				echo " rowspan='$nb_champs'";
+				$texte_info_action.=" rowspan='$nb_champs'";
 			}
-			echo ">$tab[0]</td>\n";
+			$texte_info_action.=">$tab[0]</td>";
 			$cpt=0;
 			while($lig_champ=mysql_fetch_object($res_champs)) {
 				if($cpt>0) {
 					$alt2=$alt2*(-1);
-					echo "<tr class='lig$alt2'>\n";
+					$texte_info_action.="<tr class='lig$alt2'>";
 				}
-				echo "<td>$lig_champ->Field</td>\n";
-				echo "<td>$lig_champ->Type</td>\n";
-				echo "<td>\n";
+				$texte_info_action.="<td>$lig_champ->Field</td>";
+				$texte_info_action.="<td>$lig_champ->Type</td>";
+				$texte_info_action.="<td>";
 				/*
 				$sql="SELECT DISTINCT collation($lig->Field) as c FROM $tab[0];";
 				$res_collation=mysql_query($sql);
 				if(mysql_num_rows($res_collation)==0) {
-					echo "Table vide... détection de l'interclassement impossible";
+					$texte_info_action.="Table vide... détection de l'interclassement impossible";
 				}
 				else {
 					while($lig_collation=mysql_fetch_object($res_champs)) {
-						echo $lig_collation->c." ";
+						$texte_info_action.=$lig_collation->c." ";
 					}
 				}
 				*/
-				echo $lig_champ->Collation;
+				$texte_info_action.=$lig_champ->Collation;
 				if(!in_array($lig_champ->Collation,$tab_collations)) {$tab_collations[]=$lig_champ->Collation;}
-				echo "</td>\n";
-				echo "</tr>\n";
+				$texte_info_action.="</td>";
+				$texte_info_action.="</tr>";
 				$cpt++;
 			}
 			if($cpt==0) {
-				echo "<td colspan='3'>Aucun champ VARCHAR ni CHAR</td>\n";
-				echo "</tr>\n";
+				$texte_info_action.="<td colspan='3'>Aucun champ VARCHAR ni CHAR</td>";
+				$texte_info_action.="</tr>";
 			}
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
 			flush();
 		}
-		echo "</table>\n";
+		$texte_info_action="</table>";
 
 		$nb_collations=count($tab_collations);
 		if($nb_collations==1) {
-			echo "<p>Un seul interclassement a été trouvé dans vos tables.<br />Il n'y a pas de problème d'interclassement/collation.</p>\n";
+			$texte_info_action.="<p>Un seul interclassement a été trouvé dans vos tables.<br />Il n'y a pas de problème d'interclassement/collation.</p>\n";
 		}
 		elseif($nb_collations>1) {
-			echo "<p style='color:red;'>$nb_collations interclassements ont été trouvés dans vos tables.<br />Cela peut représenter un problème si deux interclassements différents sont utilisés sur une jointure de tables.<br />En cas de doute, signalez sur la liste de diffusion gepi-users les interclassements relevés (<i>en indiquant sur quels champs cela se produit</i>).</p>\n";
-			echo "<p>Voici la liste des interclassements trouvés&nbsp;: ";
+			$texte_info_action.="<p style='color:red;'>$nb_collations interclassements ont été trouvés dans vos tables.<br />Cela peut représenter un problème si deux interclassements différents sont utilisés sur une jointure de tables.<br />En cas de doute, signalez sur la liste de diffusion gepi-users les interclassements relevés (<i>en indiquant sur quels champs cela se produit</i>).</p>\n";
+			$texte_info_action.="<p>Voici la liste des interclassements trouvés&nbsp;: ";
 			for($loop=0;$loop<count($tab_collations);$loop++) {
-				if($loop>0) {echo ", ";}
-				echo "$tab_collations[$loop]";
+				if($loop>0) {$texte_info_action.=", ";}
+				$texte_info_action.="$tab_collations[$loop]";
 			}
-			echo "</p>\n";
+			$texte_info_action.="</p>";
 		}
 	}
 
-	echo "<p>Terminé.</p>\n";
-} elseif (isset($_POST['action']) AND $_POST['action'] == 'corrige_ordre_matieres_professeurs') {
+	$texte_info_action.="<p>Terminé.</p>";
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	//=====================================
+
+	echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+	echo add_token_field();
+	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
+
+	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
+	echo "<input type='hidden' name='maj' value='corrige_ordre_matieres_professeurs' />\n";
+	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
+
+	echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+	echo "</form>\n";
+
+	echo script_suite_submit();
+
+	//=====================================
+
+
+} elseif ((isset($_POST['action']) AND $_POST['action'] == 'corrige_ordre_matieres_professeurs')||(isset($_POST['maj']) AND $_POST['maj'] == 'corrige_ordre_matieres_professeurs')||(isset($_GET['maj']) AND $_GET['maj'] == 'corrige_ordre_matieres_professeurs')) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
-	echo "<p><b>Correction de l'ordre de matières des professeurs&nbsp;:</b> \n";
-	echo "</p>\n";
+	if((isset($_POST['maj']))&&($_POST['maj']=='corrige_ordre_matieres_professeurs')) {
+		$texte_info_action="<h2 align=\"center\">Etape 14/$total_etapes<br />Vérification de l'ordre des matières des professeurs</h2>\n";
+	}
+	else {
+		$texte_info_action="<h2>Vérification de l'ordre des matières des professeurs</h2>\n";
+	}
+
+	$texte_info_action.="<p><b>Correction de l'ordre de matières des professeurs&nbsp;:</b> \n";
+	$texte_info_action.="</p>\n";
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
 
 	$sql="SELECT * FROM j_professeurs_matieres ORDER BY id_professeur, ordre_matieres, id_matiere;";
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucune association professeur/matière n'est enregistrée dans la table 'j_professeurs_matieres'.</p>\n";
+		$texte_info_action="<p>Aucune association professeur/matière n'est enregistrée dans la table 'j_professeurs_matieres'.</p>\n";
 	}
 	else {
+		$texte_info_action="";
+
 		$nb_corrections=0;
 		$nb_erreurs=0;
 		$prof_precedent="";
@@ -2285,7 +2434,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			}
 
 			if(in_array($lig->ordre_matieres,$tab_ordre_matieres)) {
-				echo "Rang $lig->ordre_matieres de matière en doublon pour $lig->id_professeur (<i>$lig->id_matiere</i>)<br />\n";
+				$texte_info_action.="Rang $lig->ordre_matieres de matière en doublon pour $lig->id_professeur (<i>$lig->id_matiere</i>)<br />\n";
 				$nb_corrections++;
 			}
 			$tab_ordre_matieres[]=$lig->ordre_matieres;
@@ -2295,21 +2444,50 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$cpt++;
 		}
 	}
-	echo "<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
-	echo "<p>Terminé.</p>\n";
-} elseif (isset($_POST['action']) AND $_POST['action'] == 'controle_categories_matieres') {
+	$texte_info_action.="<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
+	$texte_info_action.="<p>Terminé.</p>\n";
+
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	//=====================================
+
+	echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+	echo add_token_field();
+	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
+
+	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
+	echo "<input type='hidden' name='maj' value='controle_categories_matieres' />\n";
+	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
+
+	echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+	echo "</form>\n";
+
+	echo script_suite_submit();
+
+	//=====================================
+
+
+} elseif ((isset($_POST['action']) AND $_POST['action'] == 'controle_categories_matieres')||(isset($_POST['maj']) AND $_POST['maj'] == 'controle_categories_matieres')||(isset($_GET['maj']) AND $_GET['maj'] == 'controle_categories_matieres')) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
-	echo "<p><b>Contrôler des catégories de matières&nbsp;:</b> \n";
-	echo "</p>\n";
+	if((isset($_POST['maj']))&&($_POST['maj']=='controle_categories_matieres')) {
+		$texte_info_action="<h2 align=\"center\">Etape 15/$total_etapes<br />Vérification des catégories de matières</h2>\n";
+	}
+	else {
+		$texte_info_action="<h2>Vérification des catégories de matières</h2>\n";
+	}
+
+	$texte_info_action.="<p><b>Contrôler des catégories de matières&nbsp;:</b> \n";
+	$texte_info_action.="</p>\n";
 
 	$sql="SELECT id, classe FROM classes ORDER BY classe;";
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucune classe n'est enregistrée dans la table 'classes'.</p>\n";
+		$texte_info_action.="<p>Aucune classe n'est enregistrée dans la table 'classes'.</p>\n";
 	}
 	else {
 		$nb_corrections=0;
@@ -2325,45 +2503,59 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 					$sql="SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id='$lig2->categorie_id'";
 					$res_cat=mysql_query($sql);
 					if(mysql_num_rows($res_cat)==0) {
-						echo "<span style='color:red'>La catégorie n°$lig2->categorie_id associée à la classe n°$lig->id ($lig->classe) n'existe pas dans la table 'matieres_categories'.</span><br />Vous devriez revoir le paramétrage des catégories.<br />Une solution consiste à forcer le même paramétrage pour toutes les classes depuis la page de <a href='../matieres/index.php' target='_blank'>Gestion des matières</a><br />Sinon, vous pouvez contrôler et Enregistrer dans la page <a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>Gestion des classes/&lt;$lig->classe&gt;/Enseignements</a> (<i>voir le ou les icones <img src='../images/icons/flag2.gif' width='17' height='18' /></i>).<br />";
+						$texte_info_action.="<span style='color:red'>La catégorie n°$lig2->categorie_id associée à la classe n°$lig->id ($lig->classe) n'existe pas dans la table 'matieres_categories'.</span><br />Vous devriez revoir le paramétrage des catégories.<br />Une solution consiste à forcer le même paramétrage pour toutes les classes depuis la page de <a href='../matieres/index.php' target='_blank'>Gestion des matières</a><br />Sinon, vous pouvez contrôler et Enregistrer dans la page <a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>Gestion des classes/&lt;$lig->classe&gt;/Enseignements</a> (<i>voir le ou les icones <img src='../images/icons/flag2.gif' width='17' height='18' /></i>).<br />";
 						$nb_erreurs++;
 					}
 					else {
 						$lig_cat=mysql_fetch_object($res_cat);
 	
-						echo "Insertion de l'association de la catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) avec la classe ".get_class_from_id($lig->id)."&nbsp;: ";
+						$texte_info_action.="Insertion de l'association de la catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) avec la classe ".get_class_from_id($lig->id)."&nbsp;: ";
 						$sql="INSERT INTO j_matieres_categories_classes SET classe_id='$lig->id', categorie_id='$lig2->categorie_id', priority='$lig_cat->priority', affiche_moyenne='0';";
 						$res3=mysql_query($sql);
 						if(!$res3) {
-							echo "<span style='color:red'>Echec</span>";
+							$texte_info_action.="<span style='color:red'>Echec</span>";
 							$nb_erreurs++;
 						}
 						else {
-							echo "<span style='color:green'>Succès</span>";
+							$texte_info_action.="<span style='color:green'>Succès</span>";
 							$nb_corrections++;
 						}
-						echo "<br />";
+						$texte_info_action.="<br />";
 					}
 				}
 			}
 			$cpt++;
 		}
 	}
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
 
+	$texte_info_action="";
 	$sql="SELECT * FROM matieres_categories WHERE id='0';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		$lig_cat=mysql_fetch_object($test);
-		echo "<p><span style='color:red'>Anomalie&nbsp;:</span> Une catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) a l'identifiant 0 dans la table 'matieres_categories'.<br />Cet identifiant est réservé à la \"catégorie\" Aucune qui sert pour les matières ne devant être dans aucune catégorie (<i>une astuce qui permet de ne pas faire apparaitre certains enseignements sur les bulletins (demi-groupes de TP par exemple)</i>).</p>\n";
-		echo "<p>Suppression de cette catégorie&nbsp;: ";
+		$texte_info_action.="<p><span style='color:red'>Anomalie&nbsp;:</span> Une catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) a l'identifiant 0 dans la table 'matieres_categories'.<br />Cet identifiant est réservé à la \"catégorie\" Aucune qui sert pour les matières ne devant être dans aucune catégorie (<i>une astuce qui permet de ne pas faire apparaitre certains enseignements sur les bulletins (demi-groupes de TP par exemple)</i>).</p>\n";
+		$texte_info_action.="<p>Suppression de cette catégorie&nbsp;: ";
 		$sql="DELETE FROM matieres_categories WHERE id='0';";
 		$del=mysql_query($sql);
-		if($del) {echo "<span style='color:green'>Succès</span>";} else {echo "<span style='color:red'>Echec</span>";}
-		echo "</p>";
+		if($del) {$texte_info_action.="<span style='color:green'>Succès</span>";} else {echo "<span style='color:red'>Echec</span>";}
+		$texte_info_action.="</p>";
 	}
 
-	echo "<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
-	echo "<p>Terminé.</p>\n";
+	$texte_info_action.="<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
+	$texte_info_action.="<p>Terminé.</p>\n";
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	$texte_info_action="<hr />\n";
+	$texte_info_action.="<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	if($mode_auto=="y") {
+		echo "<p><b>Pensez à parcourir le compte-rendu de nettoyage en page d'accueil.</b><br />Il peut s'y trouver des messages et liens concernant des opérations encore à effectuer, mais requérant un choix de votre part (<em>donc non effectuée automatiquement ici</em>).</p>\n";
+	}
 
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'vidage_mod_discipline') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
@@ -2578,6 +2770,10 @@ else {
 		echo "<a href='clean_tables.php?maj=9".add_token_in_url()."'>Tables concernant les groupes</a> (<i>associations élèves/enseignements/périodes/classes</i>)<br />\n";
 		echo "<a href='clean_tables.php?maj=10".add_token_in_url()."'>Tables concernant les comptes élèves et responsables</a><br />\n";
 		echo "<a href='clean_tables.php?maj=11".add_token_in_url()."'>Tables concernant les grilles PDF.</a><br />\n";
+		echo "<a href='clean_tables.php?maj=check_jec_jep_point".add_token_in_url()."'>Contrôle des tables j_eleves_cpe et j_eleves_professeurs.</a><br />\n";
+		echo "<a href='clean_tables.php?maj=verif_interclassements".add_token_in_url()."'>Vérification des interclassements (<em>collation,...</em>).</a><br />\n";
+		echo "<a href='clean_tables.php?maj=corrige_ordre_matieres_professeurs".add_token_in_url()."'>Vérification de l'ordre des matières pour les professeurs.</a><br />\n";
+		echo "<a href='clean_tables.php?maj=controle_categories_matieres".add_token_in_url()."'>Vérification des catégories de matières.</a><br />\n";
 		//echo "<span style='color:red'>A DETAILLER...</span>";
 		echo "</p>\n";
 	
