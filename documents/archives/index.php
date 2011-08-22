@@ -80,7 +80,8 @@ if($_SESSION['statut']=='professeur') {echo "<a href='../../cahier_texte_2/index
 else {echo "<a href='../../accueil.php'>";}
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 if($_SESSION['statut']=='administrateur') {
-	echo " | <a href='../../cahier_texte_admin/index.php'>Administration du module Cahiers de textes";
+	echo " | <a href='../../cahier_texte_2/archivage_cdt.php'>Archivage des cahiers de textes</a>";
+	echo " | <a href='../../cahier_texte_admin/index.php'>Administration du module Cahiers de textes</a>";
 }
 echo "</p>\n";
 
