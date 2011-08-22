@@ -86,7 +86,9 @@ $current_ordre='ASC';
 $dossier_etab=get_dossier_etab_cdt_archives();
 //===================================
 
-echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'><a href='";
+echo "../cahier_texte_admin/index.php";
+echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 //echo "<br />\$dossier_etab=$dossier_etab<br />";
 
