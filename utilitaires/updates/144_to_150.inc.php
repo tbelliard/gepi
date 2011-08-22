@@ -1,12 +1,22 @@
 <?php
-		$result .= "<br /><br /><b>Mise à jour vers la version 1.5.0" . $rc . $beta . " :</b><br />";
+/**
+ * Mise à jour des bases vers la version 1.5.0
+ * 
+ * $Id: maj.php 7839 2011-08-20 08:17:28Z dblanqui $
+ *
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @license GNU/GPL,
+ * @package General
+ * @subpackage mise_a jour
+ */
+		$result .= "<br /><br /><strong>Mise à jour vers la version 1.5.0" . $rc . $beta . " :</strong><br />";
 
 		$result .= "&nbsp;->Extension de la taille du champ NAME de la table 'setting'<br />";
 		$query28 = mysql_query("ALTER TABLE setting CHANGE NAME NAME VARCHAR( 255 ) NOT NULL");
 		if ($query28) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 		}
 
 		$result .= "&nbsp;->Ajout du champ responsable à la table droits<br />";
@@ -14,16 +24,16 @@
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `droits` ADD `responsable` varchar(1) NOT NULL DEFAULT 'F' AFTER `eleve`");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 
 				foreach ($droits_requests as $key => $value) {
 					$exec = traite_requete($value);
 				}
 			} else {
-				$result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+				$result .= msj_erreur('(le champ existe déjà ?)');
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 
@@ -32,12 +42,12 @@
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `eleves` ADD `email` varchar(255) NOT NULL");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur !</font><br />";
+				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les accès élèves et parents<br/>";
@@ -62,7 +72,7 @@
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCahierTexteParent', 'yes');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -76,7 +86,7 @@
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('enable_password_recovery', 'no');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -88,12 +98,12 @@
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `password_ticket` varchar(255) NOT NULL AFTER `date_verrouillage`");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 		$result .= "&nbsp;->Ajout du champ ticket_expiration à la table utilisateurs<br />";
@@ -101,12 +111,12 @@
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `ticket_expiration` datetime NOT NULL AFTER `password_ticket`");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès à la fonction de réinitialisation du mot de passe perdu<br/>";
@@ -142,7 +152,7 @@
 
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -155,7 +165,7 @@
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('cahier_texte_acces_public', 'no');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -193,7 +203,7 @@
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCpePPEmailParent', 'no');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -231,7 +241,7 @@
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesReleveProfTousEleves', 'yes');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -255,7 +265,7 @@
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesMoyennesProfToutesClasses', 'yes');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -273,7 +283,7 @@
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesGraphParent', 'yes');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -306,7 +316,7 @@
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombreEleve', '1');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -317,12 +327,12 @@
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `show_email` varchar(3) NOT NULL DEFAULT 'no' AFTER `email`");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 		$result .= "&nbsp;->Ajout du champ ele_id à la table eleves<br />";
@@ -330,12 +340,12 @@
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `eleves` ADD `ele_id` varchar(10) NOT NULL DEFAULT '' AFTER `ereno`");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_categ_font_size_avis'");
@@ -344,10 +354,10 @@
 			$query = mysql_query("INSERT INTO setting VALUES ('bull_categ_font_size_avis', '10');");
 			$result .= "Initialisation du paramètre bull_categ_font_size_avis à '10': ";
 			if($query){
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			}
 			else{
-				$result .= "<font color=\"red\">Erreur !</font><br />";
+				$result .= msj_erreur('!');
 			}
 		}
 
@@ -357,10 +367,10 @@
 			$query = mysql_query("INSERT INTO setting VALUES ('bull_police_avis', 'Times New Roman');");
 			$result .= "Initialisation du paramètre bull_police_avis à 'Times New Roman': ";
 			if($query){
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			}
 			else{
-				$result .= "<font color=\"red\">Erreur !</font><br />";
+				$result .= msj_erreur('!');
 			}
 		}
 
@@ -370,10 +380,10 @@
 			$query = mysql_query("INSERT INTO setting VALUES ('bull_font_style_avis', 'Normal');");
 			$result .= "Initialisation du paramètre bull_font_style_avis à Normal: ";
 			if($query){
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			}
 			else{
-				$result .= "<font color=\"red\">Erreur !</font><br />";
+				$result .= msj_erreur('!');
 			}
 		}
 
@@ -388,12 +398,12 @@
 `pers_contact` varchar(1) NOT NULL
 );");
 			if ($query1) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+			$result .= msj_present('La table existe déjà');
 		}
 
 		$result .= "&nbsp;->Création de la table resp_pers<br />";
@@ -413,12 +423,12 @@
 PRIMARY KEY  (`pers_id`)
 );");
 			if ($query1) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+			$result .= msj_present('La table existe déjà');
 		}
 
 		$result .= "&nbsp;->Création de la table resp_adr<br />";
@@ -436,12 +446,12 @@ PRIMARY KEY  (`pers_id`)
 PRIMARY KEY  (`adr_id`)
 );");
 			if ($query1) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+			$result .= msj_present('La table existe déjà');
 		}
 
 
@@ -449,23 +459,23 @@ PRIMARY KEY  (`adr_id`)
 		$alter1 = mysql_query("ALTER TABLE `resp_pers` CHANGE `tel_pers` `tel_pers` VARCHAR( 255 )");
 		$result .= "tel_pers: ";
 		if ($alter1) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 		}
 		$alter2 = mysql_query("ALTER TABLE `resp_pers` CHANGE `tel_port` `tel_port` VARCHAR( 255 )");
 		$result .= "tel_port: ";
 		if ($alter2) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 		}
 		$alter3 = mysql_query("ALTER TABLE `resp_pers` CHANGE `tel_prof` `tel_prof` VARCHAR( 255 )");
 		$result .= "tel_prof: ";
 		if ($alter3) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 		}
 
 
@@ -475,12 +485,12 @@ PRIMARY KEY  (`adr_id`)
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `classes` ADD `modele_bulletin_pdf` VARCHAR( 255 ) NULL AFTER `display_moy_gen`");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur !</font><br />";
+				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 
@@ -490,10 +500,10 @@ PRIMARY KEY  (`adr_id`)
 			$query = mysql_query("INSERT INTO `setting` VALUES ('option_modele_bulletin', '2');;");
 			$result .= "Initialisation du paramètre option_modele_bulletin à '2': ";
 			if($query){
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			}
 			else{
-				$result .= "<font color=\"red\">Erreur !</font><br />";
+				$result .= msj_erreur('!');
 			}
 		}
 
@@ -502,12 +512,12 @@ PRIMARY KEY  (`adr_id`)
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `tentatives_intrusion` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `login` VARCHAR( 255 ) NULL , `adresse_ip` VARCHAR( 255 ) NOT NULL , `date` DATETIME NOT NULL , `niveau` SMALLINT NOT NULL , `fichier` VARCHAR( 255 ) NOT NULL , `description` TEXT NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , PRIMARY KEY ( `id`, `login` ))");
 			if ($query1) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+			$result .= msj_present('La table existe déjà');
 		}
 
 		$result .= "&nbsp;->Ajout du champs `niveau_alerte` à la table `utilisateurs`.<br />";
@@ -515,12 +525,12 @@ PRIMARY KEY  (`adr_id`)
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `niveau_alerte` SMALLINT NOT NULL DEFAULT '0'");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur !</font><br />";
+				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 		$result .= "&nbsp;->Ajout du champs `observation_securite` à la table `utilisateurs`.<br />";
@@ -528,12 +538,12 @@ PRIMARY KEY  (`adr_id`)
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `observation_securite` TINYINT NOT NULL DEFAULT '0'");
 			if ($query5) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur !</font><br />";
+				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour la définition de la politique de sécurité<br/>";
@@ -631,12 +641,12 @@ PRIMARY KEY  (`adr_id`)
 				  PRIMARY KEY  (`id_alert_eleve`)
 				  );");
 			if ($query1) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+			$result .= msj_present('La table existe déjà');
 		}
 
 		$result .= "&nbsp;->Création de la table vs_alerts_groupes<br />";
@@ -649,12 +659,12 @@ PRIMARY KEY  (`adr_id`)
 				  PRIMARY KEY  (`id_alert_groupe`)
 				  );");
 			if ($query1) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+			$result .= msj_present('La table existe déjà');
 		}
 
 		$result .= "&nbsp;->Création de la table vs_alerts_types<br />";
@@ -671,18 +681,18 @@ PRIMARY KEY  (`adr_id`)
 				  PRIMARY KEY  (`id_alert_type`)
 				  );");
 			if ($query1) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+			$result .= msj_present('La table existe déjà');
 		}
 		// Fin Ajout Mod_absences
 
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -695,7 +705,7 @@ PRIMARY KEY  (`adr_id`)
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('gepi_stylesheet', 'style');");
 
 		if ($result_inter == '') {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
 			$result .= $result_inter;
 		}
@@ -707,12 +717,12 @@ PRIMARY KEY  (`adr_id`)
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `utilisateurs` ADD `temp_dir` VARCHAR( 255 ) NOT NULL AFTER `observation_securite`");
 			if ($query3) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+			$result .= msj_present('Le champ existe déjà');
 		}
 
 ?>
