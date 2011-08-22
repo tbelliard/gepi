@@ -185,7 +185,7 @@ include("menu_plugins.inc.php");
 		$menus .= '      <li><a href="'.$gepiPath.'/statistiques/index.php">Extractions stats</a></li>'."\n";
 		$gepi_denom_mention=getSettingValue('gepi_denom_mention');
 		if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
-		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/saisie_mentions.php">'.ucfirst($gepi_denom_mention).'s</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/saisie/saisie_mentions.php">'.ucfirst($gepi_denom_mention).'s</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_notanet/index.php">Notanet/Brevet</a></li>'."\n";
