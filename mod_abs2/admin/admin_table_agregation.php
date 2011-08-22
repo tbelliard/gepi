@@ -93,7 +93,9 @@ echo "</p>";
                         <p> Traitement de la tranche d\'élève ' . $page . '/' . $eleve_col->getLastPage() . ' en cours... <br />
                             Attention cette opération peut être longue.</p>
                          </div>';
-                    ob_flush();
+                    if(ob_get_contents()){
+                       ob_flush(); 
+                    }                   
                     flush();
                     foreach ($eleve_col as $eleve) {
                         $eleve->checkAndUpdateSynchroAbsenceAgregationTable($date_debut, $date_fin);
