@@ -205,10 +205,6 @@
             if (isset ($tab['title']) && $tab['title'] !='') {
               $afficheTitle= ' title=\''.$tab['title'].'\'';
             }
-            $afficheAlt='';
-            if (isset ($tab['alt']) && $tab['alt'] !='') {
-              $afficheAlt= ' alt=\''.$tab['alt'].'\'';
-            }
 
 		if(isset($tab['sous_menu'])) {
 			echo "<li";
