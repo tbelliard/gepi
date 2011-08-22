@@ -714,4 +714,17 @@ if ($result_inter == '') {
 	$result.="<font color=\"red\"> Erreur !</font><br />";
 }
 
+$test_file = '../lib/global.inc';
+if (file_exists($test_file)) { 
+    $result.="<br />";
+    $result.="Tentative de Suppression du fichier global.inc obsolète :";
+    unlink($test_file);
+    if (file_exists($test_file)){
+       $result.="<font color=\"red\"> Erreur !</font><br />"; 
+    }else{
+       $result.="<font color=\"green\"> Réussi !</font><br />"; 
+    }
+}             
+
+
 ?>
