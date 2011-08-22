@@ -10,45 +10,6 @@
  *
 */
 
-/**
- * Affichage des statistiques de la classe sur les bulletins si à 1
- * 
- * @global int $GLOBALS['min_max_moyclas']
- * @name $min_max_moyclas
- */
-$GLOBALS['min_max_moyclas']=NULL;
-
-/**
- * Effectif du groupe
- * 
- * @global int $GLOBALS['eff_groupe']
- * @name $eff_groupe
- */
-$GLOBALS['eff_groupe']=NULL;
-
-/**
- * Tableau contenant les informations pour afficher une infobulle
- * 
- * @global array $GLOBALS['tabdiv_infobulle']
- * @name $tabdiv_infobulle
- */
-$GLOBALS['tabdiv_infobulle']=NULL;
-
-/**
- * Texte à afficher quand une période est close
- * 
- * @global string $GLOBALS['gepiClosedPeriodLabel']
- * @name $gepiClosedPeriodLabel
- */
-$GLOBALS['gepiClosedPeriodLabel']=NULL;
-
-/**
- * 
- * @global int $GLOBALS['totalsize']
- * @name $totalsize
- */
-$GLOBALS['gepiClosedPeriodLabel']=NULL;
-
 
 
 /**
@@ -2492,15 +2453,6 @@ function fdebug_mail_connexion($texte){
 	}
 }
 */
-
-/**
- * 
- * 
- * @global string $GLOBALS['active_hostbyaddr']
- * @name  $active_hostbyaddr
- * @see getSettingValue()
- */
-$GLOBALS['active_hostbyaddr'] = '';
 
 /**
  *
