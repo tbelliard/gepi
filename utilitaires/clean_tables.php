@@ -2157,8 +2157,14 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "<p>Terminé.</p>\n";
 
 } elseif (isset($_REQUEST['action']) AND $_REQUEST['action'] == 'clean_absences') {
-	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "<p class=bold>";
+	if(isset($_GET['chgt_annee'])) {
+		echo "<a href='../gestion/changement_d_annee.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de Changement d'année</a> ";
+	}
+	else {
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+		echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	}
 	echo "</p>\n";
 
 	$date_limite=isset($_REQUEST['date_limite']) ? $_REQUEST['date_limite'] : NULL;

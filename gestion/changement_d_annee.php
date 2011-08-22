@@ -128,6 +128,9 @@ if (!loadSettings()) {
 }
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 
+if(isset($_SESSION['chgt_annee'])) {
+	unset($_SESSION['chgt_annee']);
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -153,17 +156,17 @@ $lien_svg="<a href='#svg_ext' ".insert_confirm_abandon()."><img src='../images/i
 echo "<p>Les points sont les suivants&nbsp;:</p>\n";
 echo "<p>La partie archivage de fin d'année&nbsp;:</p>\n";
 echo "<ol>\n";
-echo "<li><p><a href='accueil_sauve.php'>Sauvegarder la base</a> $lien_svg</p></li>\n";
+echo "<li><p><a href='accueil_sauve.php?chgt_annee=y'>Sauvegarder la base</a> $lien_svg</p></li>\n";
 if(strtolower(substr(getSettingValue('active_cahiers_texte'),0,1))=='y') {
-	echo "<li><p>Eventuellement, faire un <a href='../cahier_texte_2/export_cdt.php'>export des cahiers de textes</a><br />et une <a href='accueil_sauve.php#zip'>sauvegarde des documents du Cahier de textes</a> $lien_svg</p></li>\n";
-	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passés.</p></li>\n";
+	echo "<li><p>Eventuellement, faire un <a href='../cahier_texte_2/export_cdt.php?chgt_annee=y'>export des cahiers de textes</a><br />et une <a href='accueil_sauve.php?chgt_annee=y#zip'>sauvegarde des documents du Cahier de textes</a> $lien_svg</p></li>\n";
+	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php?chgt_annee=y'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passés.</p></li>\n";
 }
 if(getSettingValue('active_module_absence')=='2') {
 	echo "<li><p><a href='../mod_abs2/extraction_saisies.php?date_absence_eleve_debut=".(date('Y')-1)."-08-01&date_absence_eleve_fin=".date('Y')."-08-01&type_extrait=1&retour=../gestion/changement_d_annee.php'>Effectuer une extraction CSV des absences</a>,\n";
-	echo " puis <a onclick=\"return(confirm('Voulez vous vider les tables d\'absences ?'));\" href='../utilitaires/clean_tables.php?action=clean_absences&date_limite=31/07/".date('Y').add_token_in_url()."'/>purger les tables absences pour les absences antérieures au 31/07/".date('Y')."</a></p></li>";
+	echo " puis <a onclick=\"return(confirm('Voulez vous vider les tables d\'absences ?'));\" href='../utilitaires/clean_tables.php?action=clean_absences&amp;date_limite=31/07/".date('Y')."&amp;chgt_annee=y".add_token_in_url()."'/>purger les tables absences pour les absences antérieures au 31/07/".date('Y')."</a></p></li>";
 }
 echo "<li><p>Sauvegarder l'arborescence Gepi (<em>par ftp, sftp,...</em>) $lien_svg</p></li>\n";
-echo "<li><p>Conserver les données de l'année passée via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php'>module Années antérieures</a>.</p></li>\n";
+echo "<li><p>Conserver les données de l'année passée via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php?chgt_annee=y'>module Années antérieures</a>.</p></li>\n";
 echo "</ol>\n";
 
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";

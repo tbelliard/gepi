@@ -106,6 +106,8 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 
 }
 
+if(isset($_GET['chgt_annee'])) {$_SESSION['chgt_annee']="y";}
+
 $themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données concerant cette année ?';
 
 //**************** EN-TETE *****************
@@ -116,7 +118,14 @@ require_once("../lib/header.inc");
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
 if(!isset($annee_scolaire)){
-	echo "<div class='norme'><p class=bold><a href='./index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+	echo "<div class='norme'><p class=bold><a href='";
+	if(isset($_SESSION['chgt_annee'])) {
+		echo "../gestion/changement_d_annee.php";
+	}
+	else {
+		echo "./index.php";
+	}
+	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "</p></div>\n";
 
 	$sql="SELECT DISTINCT annee FROM archivage_disciplines ORDER BY annee";
@@ -168,7 +177,14 @@ if(!isset($annee_scolaire)){
 
 }
 else{
-	echo "<div class='norme'><p class=bold><a href='./index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+	echo "<div class='norme'><p class=bold><a href='";
+	if(isset($_SESSION['chgt_annee'])) {
+		echo "../gestion/changement_d_annee.php";
+	}
+	else {
+		echo "./index.php";
+	}
+	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 
 	$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire'";
 	$res_test=mysql_query($sql);

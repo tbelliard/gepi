@@ -1501,7 +1501,16 @@ if (isset($action) and ($action == 'zip'))  {
 <?php
 
 if(!isset($quitter_la_page)){
-	echo "<p class='bold'><a href='index.php#accueil_sauve'";
+	if(isset($_GET['chgt_annee'])) {$_SESSION['chgt_annee']="y";}
+
+	echo "<p class='bold'><a href='";
+	if(isset($_SESSION['chgt_annee'])) {
+		echo "changement_d_annee.php";
+	}
+	else {
+		echo "index.php#accueil_sauve";
+	}
+	echo "'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	//echo "</p>\n";

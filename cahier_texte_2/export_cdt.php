@@ -123,7 +123,21 @@ if($_SESSION['statut']=='professeur') {
 }
 else {
 	// Modifier par la suite le chemin de retour selon les statuts...
-	echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "<a href='";
+	if($_SESSION['statut']=='administrateur') {
+		if(isset($_GET['chgt_annee'])) {$_SESSION['chgt_annee']="y";}
+
+		if(isset($_SESSION['chgt_annee'])) {
+			echo "../gestion/changement_d_annee.php";
+		}
+		else {
+			echo "../accueil.php";
+		}
+	}
+	else {
+		echo "../accueil.php";
+	}
+	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
 
 // Création d'un espace entre le bandeau et le reste 
