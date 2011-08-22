@@ -119,6 +119,10 @@ include("tbs_menu_plugins.inc.php");
 		$tmp_sous_menu[$cpt_sous_menu]['texte']="Consultation des cahiers de textes";
 		$cpt_sous_menu++;
 
+		$tmp_sous_menu[$cpt_sous_menu]['lien']='/documents/archives/index.php';
+		$tmp_sous_menu[$cpt_sous_menu]['texte']="Mes archives CDT";
+		$cpt_sous_menu++;
+
 		$tbs_menu_prof[$compteur_menu]["sous_menu"]=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]["niveau_sous_menu"]=2;
 
