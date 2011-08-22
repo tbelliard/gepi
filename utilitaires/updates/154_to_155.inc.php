@@ -705,4 +705,13 @@ if ($result_inter == '') {
 	$result.="<font color=\"red\"> Erreur !</font><br />";
 }
 
+$result.="<br />";
+$result.="Extension du champ 'description' de la table 'infos_actions' en LONGTEXT :";
+$result_inter = traite_requete("ALTER TABLE infos_actions CHANGE description description LONGTEXT NOT NULL;");
+if ($result_inter == '') {
+	$result.="<font color=\"green\"> Ok !</font><br />";
+} else {
+	$result.="<font color=\"red\"> Erreur !</font><br />";
+}
+
 ?>
