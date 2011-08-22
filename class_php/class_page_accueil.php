@@ -1187,6 +1187,11 @@ class class_page_accueil {
 				"Mes archives de cahiers de textes",
 				"Ce menu vous permet de consulter vos cahiers de textes des années précédentes.");
 		}
+		elseif(($this->statutUtilisateur=="cpe")||($this->statutUtilisateur=="scolarite")||($this->statutUtilisateur=="administrateur")) {
+			$this->creeNouveauItem("/documents/archives/index.php",
+				"Archives de cahiers de textes",
+				"Ce menu vous permet de consulter les cahiers de textes des années précédentes.");
+		}
 	}
 
 	$this->creeNouveauItem("/impression/impression_serie.php",
