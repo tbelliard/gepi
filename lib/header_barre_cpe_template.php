@@ -89,7 +89,7 @@ if ($barre_plugin!="") {
 			if(getSettingValue('GepiCahierTexteVersion')==2) {
 				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/cahier_texte_2/see_all2.php"'.insert_confirm_abandon().'>&nbsp;CDT</a>'."\n";
 				$menus .= '   <ul class="niveau2">'."\n";
-				$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte/see_all2.php"'.insert_confirm_abandon().'>Consultation CDT</a></li>'."\n";
+				$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte_2/see_all2.php"'.insert_confirm_abandon().'>Consultation CDT</a></li>'."\n";
 			}
 			else {
 				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/cahier_texte/see_all.php"'.insert_confirm_abandon().'>&nbsp;CDT</a>'."\n";
