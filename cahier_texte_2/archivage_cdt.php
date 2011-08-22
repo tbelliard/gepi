@@ -644,7 +644,7 @@ else {
 						$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'';
 						$html2.='<?php'."\n";
 						//$html2.='if($_SESSION["statut"]=="professeur") {echo "CDT_".$_SESSION["login"];} else {echo "index_professeurs";}'."\n";
-						$html2.='if($_SESSION["statut"]=="professeur") {echo "index";} else {echo "index_professeurs";}'."\n";
+						$html2.='if($_SESSION["statut"]=="professeur") {echo "../../../index";} else {echo "index_professeurs";}'."\n";
 						$html2.='?>';
 						$html2.='.';
 						$html2.=$extension.'\'>Retour</a></div>';

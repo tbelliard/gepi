@@ -132,7 +132,8 @@ if(($_SESSION["statut"]=="professeur")&&(!in_array($_SESSION["login"],$tab_login
 
 			$entete.='<?php
 // Pour desactiver le correctif temporaire javascript sur les liens de retour professeur.
-$liens_retour_ok="y";
+//$liens_retour_ok="y";
+$liens_retour_ok2="y";
 
 $niveau_arbo='.$niveau_arbo.';
 $chaine_login_prof="'.$chaine_login_prof.'";

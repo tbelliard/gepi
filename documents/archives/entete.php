@@ -62,8 +62,9 @@ else {
 	}
 }
 
-// Corriger par la suite les liens de retour Professeur dans l'archivage et mettre avant l'appel entete.php: $liens_retour_ok="y";
-if(!isset($liens_retour_ok)) {
+// Corriger par la suite les liens de retour Professeur dans l'archivage et mettre avant l'appel entete.php: $liens_retour_ok2="y";
+//if(!isset($liens_retour_ok)) {
+if(!isset($liens_retour_ok2)) {
 	echo "<script type='text/javascript'>
 
 function cacher_div_lien_retour() {
