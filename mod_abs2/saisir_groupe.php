@@ -655,10 +655,14 @@ foreach($eleve_col as $eleve) {
 					    }
 					    $absences_du_creneau = $absences_du_creneau_du_prof;
 					} else if ($current_creneau != null && $edt_creneau->getHeuredebutDefiniePeriode('U') > $current_creneau->getHeuredebutDefiniePeriode('U')) {
-					    //on affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie
-					    $absences_du_creneau = new PropelCollection();
+					    //on affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie si c'est un enseignant
+                        if($utilisateur->getStatut() == "professeur"){
+                            $absences_du_creneau = new PropelCollection(); 
+                        }else{
+                           $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+                        }					    
 					}   else {
-					    //on affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie
+					    //on affiche  les informations pour les crenaux avant la saisie
 					    $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 					}
 
