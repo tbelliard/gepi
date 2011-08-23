@@ -43,7 +43,7 @@ if (!checkAccess()) {
 $sql="CREATE TABLE IF NOT EXISTS `sso_table_correspondance` ( `login_gepi` varchar(100) NOT NULL
                 default '', `login_sso` varchar(100) NOT NULL
                 default '', PRIMARY KEY (`login_gepi`) )
-                TYPE=MyISAM;";
+                ENGINE=MyISAM;";
 $test=mysql_query($sql);
 
 // **************** EN-TETE *****************

@@ -39,7 +39,7 @@ $sql="CREATE TABLE IF NOT EXISTS `s_categories` ( `id` INT(11) NOT NULL
                 auto_increment, `categorie` varchar(50) NOT NULL
                 default '',`sigle` varchar(20) NOT NULL
                 default '', PRIMARY KEY (`id`) )
-                TYPE=MyISAM;";
+                ENGINE=MyISAM;";
 $test=mysql_query($sql);
 $sql="SELECT 1=1 FROM `s_categories`;";
 $test=mysql_query($sql);
