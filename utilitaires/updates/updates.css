@@ -1,7 +1,10 @@
 .center{
   text-align: center;
 }
-
+.droite{
+  text-align: right;
+  margin-right: 1em; 
+}
 .rouge{
   color:red;
 }
@@ -28,3 +31,19 @@
   padding: 0 10px 10px;
   border: inset yellow 7px;
 }
+.form_identite{
+  padding-top: 8px; 
+  padding-bottom: 8px; 
+  width: 40%; 
+  margin-left: auto; 
+  margin-right: auto;
+}
+.legend_identite{
+  font-variant: small-caps;
+}
+.colonne {
+	display:inline-block;
+	min-width: 10em;
+}
+
+
