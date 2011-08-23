@@ -232,11 +232,13 @@ else {
 
 		if(!file_exists("../documents/archives/".$dossier_etab)) {
 			//$res=mkdir("../documents/archives/".$dossier_etab);
-			$res=creer_rep_docs_joints("../documents/archives/", $dossier_etab, "../../..");
+			//$res=creer_rep_docs_joints("../documents/archives/", $dossier_etab, "../../..");
+			$res=creer_rep_docs_joints("../documents/archives/", $dossier_etab);
 		}
 
 		if(!file_exists("../documents/archives/".$dossier_etab."/index.html")) {
-			$res=creer_index_logout("../documents/archives/".$dossier_etab, "../../..");
+			//$res=creer_index_logout("../documents/archives/".$dossier_etab, "../../..");
+			$res=creer_index_logout("../documents/archives/".$dossier_etab);
 		}
 
 		// Page HTML à faire à ce niveau pour accéder aux différentes années...
@@ -264,7 +266,8 @@ else {
 		}
 
 		if(!file_exists($dossier_annee."/index.html")) {
-			$res=creer_index_logout($dossier_annee, "../../../..");
+			//$res=creer_index_logout($dossier_annee, "../../../..");
+			$res=creer_index_logout($dossier_annee);
 		}
 
 		if(!file_exists($dossier_cdt)) {
@@ -285,7 +288,8 @@ else {
 		}
 
 		if(!file_exists($dossier_documents."/index.html")) {
-			$res=creer_index_logout($dossier_annee, "../../../../..");
+			//$res=creer_index_logout($dossier_annee, "../../../../..");
+			$res=creer_index_logout($dossier_annee);
 		}
 
 		// On copie les feuilles de style pour:

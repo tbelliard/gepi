@@ -306,7 +306,15 @@ require_once("'.$pref_arbo.'/entete.php");
 					((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==true)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))))
 				) {
 					$titre = $row[0];
-					$emplacement = $pref_documents.$row[1];
+					/*
+					// Inutile: Les fichiers déplacés se retrouvent dans archives/<RNE>/cahier_texte_<ANNEE>/documents/<RNE>/
+					if(isset($_COOKIE["RNE"])) {
+						$emplacement = $pref_documents.preg_replace("#^\.\./documents/".$_COOKIE["RNE"]."/#", "../documents/", $row[1]);
+					}
+					else {
+					*/
+						$emplacement = $pref_documents.$row[1];
+					//}
 					//$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" target=\"blank\">$titre</a></li>";
 					// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
 					// alternative, utiliser un javascript
@@ -359,7 +367,8 @@ require_once("'.$pref_arbo.'/entete.php");
 			if(!file_exists($dossier_documents."/".$dossier_courant)) {
 				//echo "Le dossier $dossier_documents/$dossier_courant n'existe pas encore<br />";
 				//$res=mkdir("$dossier_documents/$dossier_courant");
-				$res=creer_rep_docs_joints($dossier_documents, $dossier_courant, "../../../../../..");
+				//$res=creer_rep_docs_joints($dossier_documents, $dossier_courant, "../../../../../..");
+				$res=creer_rep_docs_joints($dossier_documents, $dossier_courant);
 				if(!$res) {
 					echo "<span style='color:red; margin-left: 3em;'>Erreur lors de la préparation de l'arborescence $dossier_documents/$dossier_courant</span><br />\n";
 					$transferer_doc="n";
@@ -409,7 +418,11 @@ require_once("'.$pref_arbo.'/entete.php");
 		return $chaineTmp;
 	}
 
-	function creer_index_logout($path, $pref_arbo_logout) {
+	//function creer_index_logout($path, $pref_arbo_logout) {
+	function creer_index_logout($path) {
+		// $pref_arbo_logout n'est plus utilisé
+		global $gepiPath;
+
 		if (!file_exists($path)) {return false;}
 		else {
 			$ok = false;
@@ -419,7 +432,8 @@ require_once("'.$pref_arbo.'/entete.php");
 				include("$path/.test");
 				if($ok) {
 					if ($f = @fopen("$path/index.html", "w")) {
-						@fputs($f, '<script type="text/javascript">document.location.replace("'.$pref_arbo_logout.'/login.php")</script>');
+						//@fputs($f, '<script type="text/javascript">document.location.replace("'.$pref_arbo_logout.'/logout.php")</script>');
+						@fputs($f, '<script type="text/javascript">document.location.replace("'.$gepiPath.'/logout.php?auto=1")</script>');
 						@fclose($f);
 					}
 				}
@@ -428,7 +442,11 @@ require_once("'.$pref_arbo.'/entete.php");
 		}
 	}
 
-	function creer_rep_docs_joints($base, $subdir, $pref_arbo_logout) {
+	//function creer_rep_docs_joints($base, $subdir, $pref_arbo_logout) {
+	function creer_rep_docs_joints($base, $subdir) {
+		// $pref_arbo_logout n'est plus utilisé
+		global $gepiPath;
+
 		$path = $base.'/'.$subdir;
 		if (file_exists($path)) {return true;}
 	
@@ -441,7 +459,8 @@ require_once("'.$pref_arbo.'/entete.php");
 			include("$path/.test");
 			if($ok) {
 				if ($f = @fopen("$path/index.html", "w")) {
-					@fputs($f, '<script type="text/javascript">document.location.replace("'.$pref_arbo_logout.'/login.php")</script>');
+					//@fputs($f, '<script type="text/javascript">document.location.replace("'.$pref_arbo_logout.'/login.php")</script>');
+					@fputs($f, '<script type="text/javascript">document.location.replace("'.$gepiPath.'/logout.php?auto=1")</script>');
 					@fclose($f);
 				}
 			}
