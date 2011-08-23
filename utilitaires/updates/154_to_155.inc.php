@@ -23,7 +23,7 @@
  * @see msj_present()
  */
 
-$result .= "<br /><br /><strong>Mise à jour vers la version 1.5.5" . $rc . $beta . " :</strong><br />";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.5" . $rc . $beta . " :</h3>";
 
 //===================================================
 /*
@@ -95,7 +95,7 @@ else {
 */
 //===================================================
 
-$result .= "<br /><br /><strong>Ajout d'une table 'j_groupes_visibilite' :</strong><br />";
+$result .= "<strong>Ajout d'une table 'j_groupes_visibilite' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'j_groupes_visibilite'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_visibilite (
@@ -186,7 +186,7 @@ else {
 
 //===================================================
 
-$result .= "<br /><br /><strong>Mots de passe :</strong><br />";
+$result .= "<br /><strong>Mots de passe :</strong><br />";
 $result .= "&nbsp;->Ajout d'un champ 'salt' à la table 'utilisateur' et allongement du champs password<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"));
 if ($test_champ>0) {
@@ -209,7 +209,7 @@ else {
 
 //===================================================
 
-$result .= "<br /><br /><strong>Messagerie :</strong><br />";
+$result .= "<br /><strong>Messagerie :</strong><br />";
 $result .= "&nbsp;->Modification du champ 'destinataires' de la table 'messages' en 'statuts_destinataires'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messages LIKE 'statuts_destinataires';"));
 if ($test_champ>0) {
@@ -258,7 +258,7 @@ if ($req_res == 0) {
 	$result .= msj_present("L'index existe déjà.");
 }
 
-$result .= "<br /><br /><strong>Ajout d'une table 's_travail_mesure' :</strong><br />";
+$result .= "<br /><strong>Ajout d'une table 's_travail_mesure' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 's_travail_mesure'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL);");
@@ -272,7 +272,7 @@ if ($test == -1) {
 		$result .= msj_present("La table existe déjà");
 }
 
-$result .= "<br /><br /><strong>Absence 2 :</strong><br />";
+$result .= "<br /><strong>Absence 2 :</strong><br />";
 $result .= "&nbsp;->Ajout des champs versions a la table a_saisies<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'version';"));
 if ($test_champ>0) {
@@ -511,7 +511,7 @@ $result .= add_index('a_saisies','a_saisies_I_2','`debut_abs`');
 $result .= add_index('a_saisies','a_saisies_I_3','`fin_abs`');
 $result .= add_index('a_traitements','a_traitements_I_1','`deleted_at`');
 
-$result .= "<br /><br /><strong>Ajout d'une table mentions :</strong><br />";
+$result .= "<br /><strong>Ajout d'une table mentions :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'mentions'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS mentions (
@@ -527,7 +527,7 @@ if ($test == -1) {
 		$result .= msj_present("La table existe déjà");
 }
 
-$result .= "<br /><br /><strong>Ajout d'une table j_mentions_classes :</strong><br />";
+$result .= "<br /><strong>Ajout d'une table j_mentions_classes :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'j_mentions_classes'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_mentions_classes (
@@ -626,7 +626,7 @@ nom_gepi varchar(255) NOT NULL default ''
 		$result .= msj_present("La table existe déjà");
 }
 
-$result .= "<br /><br /><strong>Mef :</strong><br />";
+$result .= "<br /><strong>Mef :</strong><br />";
 $result .= "&nbsp;->Modification du champ 'ext_id' de la table 'mef' en 'mef_code'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM mef LIKE 'mef_code';"));
 if ($test_champ>0) {
@@ -655,6 +655,7 @@ else {
 }
 
 $result .= "&nbsp;->Extension du 'mef_code' de la table 'eleves' en BIGINT(20) : ";
+$result.="<br />";
 $query = mysql_query("ALTER TABLE eleves CHANGE mef_code mef_code BIGINT( 20 ) NULL DEFAULT NULL COMMENT 'code mef de la formation de l''eleve';");
 if ($query) {
 		$result .= msj_ok();
@@ -663,6 +664,7 @@ if ($query) {
 }
 
 $result .= "&nbsp;->Extension du 'mef_code' de la table 'mef' en BIGINT(20) : ";
+$result.="<br />";
 $query = mysql_query("ALTER TABLE mef CHANGE mef_code mef_code BIGINT( 20 ) NULL DEFAULT NULL COMMENT 'code mef de la formation de l''eleve';");
 if ($query) {
 		$result .= msj_ok();
@@ -697,8 +699,9 @@ if ($res_test==0){
   $result .= msj_present("Le paramètre sso_cas_table existe déjà dans la table setting.");
 }
 
-$result.="<br />";
+//$result.="<br />";
 $result.="Définition du champ 'reglage' de la table 'edt_setting' comme UNIQUE :";
+$result.="<br />";
 $deja_cree = deja_unique('edt_setting','reglage' );
 if (!$deja_cree) {
   $result_inter = traite_requete("ALTER TABLE edt_setting ADD UNIQUE (reglage);");
@@ -712,6 +715,7 @@ if (!$deja_cree) {
 }
 
 $result.="Définition du champ 'ref' de la table 'ref_wiki' comme UNIQUE :";
+$result.="<br />";
 $deja_cree = deja_unique('ref_wiki','ref' );
 if (!$deja_cree) {
   $result_inter = traite_requete("ALTER TABLE ref_wiki ADD UNIQUE (ref);");
@@ -724,8 +728,9 @@ if (!$deja_cree) {
   $result.= msj_present(' le champ est déjà défini comme UNIQUE');
 }
 
-$result.="<br />";
+//$result.="<br />";
 $result.="Extension du champ 'description' de la table 'infos_actions' en LONGTEXT :";
+$result.="<br />";
 $result_inter = traite_requete("ALTER TABLE infos_actions CHANGE description description LONGTEXT NOT NULL;");
 if ($result_inter == '') {
 	$result.=msj_ok(" Ok !");

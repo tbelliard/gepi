@@ -46,7 +46,7 @@ function add_index($tablename, $indexname, $indexcolumns) {
  */
 function msj_ok($message=""){
   if ($message=="") {
-    return "<span style='color:green;'>Ok !</span><br />";
+    return "<span class='msj_ok'>Ok !</span><br />";
   } else {
     return "<span style='color:green;'>$message</span><br />";
   }
@@ -59,7 +59,7 @@ function msj_ok($message=""){
  * @return string Erreur suivi de $message écrit en rouge
  */
 function msj_erreur($message=""){
-  return "<span style='color:red;'>Erreur $message</span><br />";
+  return "<span class='msj_erreur'>Erreur $message</span><br />";
 }
 
 /**
@@ -68,7 +68,7 @@ function msj_erreur($message=""){
  * @return string $message écrit en bleu
  */
 function msj_present($message){
-  return "<span style='color:blue;'> $message.</span><br />";
+  return "<span class='msj_present'> $message.</span><br />";
 }
 
 ?>

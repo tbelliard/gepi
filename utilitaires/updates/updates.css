@@ -1,0 +1,30 @@
+.center{
+  text-align: center;
+}
+
+.rouge{
+  color:red;
+}
+.ecarte{
+  margin:1em;
+}
+.titreMaJ{
+  text-align:center;
+  font-size:medium;
+  font-weight:bold;
+}
+.msj_ok{
+  color:green;
+}
+.msj_erreur{
+  color:red;
+}
+.msj_present{
+  color:blue;
+}
+.cadreMaJ{
+  width:80%;
+  margin:0 auto 1em;
+  padding: 0 10px 10px;
+  border: inset yellow 7px;
+}

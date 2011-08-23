@@ -22,7 +22,7 @@
  * @see msj_present()
  */
 
-$result .= "<br /><br /><strong>Mise à jour vers la version 1.5.3.1" . $rc . $beta . " :</strong><br />";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.3.1" . $rc . $beta . " :</h3>";
 
 
 $test = sql_query1("SHOW TABLES LIKE 'edt_semaines'");

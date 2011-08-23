@@ -126,6 +126,7 @@ echo ('
 		<meta http-equiv="Cache-Control" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
 		<link rel="stylesheet" href="../style.css" type="text/css" />
+		<link rel="stylesheet" href="updates/updates.css" type="text/css" />
 		<title>Mise à jour de la base de donnée GEPI</title>
 		<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
 		<link rel="icon" type="image/ico" href="../favicon.ico" />
@@ -150,11 +151,11 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 	echo('
 		<form action="maj.php" method="POST" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
 			<div class="center">
-				<H2 align="center">Mise à jour de la base de donnée GEPI<br />(Accès administrateur)</H2>
+				<H2 class="center">Mise à jour de la base de donnée GEPI<br />(Accès administrateur)</H2>
 			');
 
 	if (isset ($message)) {
-		echo ("<p style='text-align:center; color:red;>" . $message . "</p>");
+		echo ("<p class='center rouge'>" . $message . "</p>");
 	}
 	echo('
 				<fieldset style="padding-top: 8px; padding-bottom: 8px; width: 40%; margin-left: auto; margin-right: auto;">
@@ -182,7 +183,7 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 
 if ((isset ($_SESSION['statut'])) and ($_SESSION['statut'] != 'administrateur')) {
 	if(($is_lcs_plugin!='yes')||($login_user!='admin')) {
-		echo "<p class='grand' style='color:red;text-align:center'>Mise à jour de la base MySql de GEPI.<br />Vous n'avez pas les droits suffisants pour accéder à cette page.</p></body></html>";
+		echo "<p class='grand center rouge'>Mise à jour de la base MySql de GEPI.<br />Vous n'avez pas les droits suffisants pour accéder à cette page.</p></body></html>";
 		die();
 	}
 }
@@ -274,19 +275,19 @@ if ($gepiBetaVersion != '') {
 $pb_maj_bd = getSettingValue("pb_maj");
 
 if (isset ($mess)) {
-	echo "<p class='grand' style='color:red;text-align:center'>" . $mess . "</p>";
+	echo "<p class='grand center rouge'>" . $mess . "</p>";
 }
-echo "<h2 class='grand' style='text-align:center'>Mise à jour de la base de données MySql de GEPI</h2>";
+echo "<h2 class='grand center'>Mise à jour de la base de données MySql de GEPI</h2>";
 
-echo "<hr /><p class='grand' style='text-align:center; margin:1em;'>Numéro de version actuel de la base MySql : GEPI " . $version_old . $rc_old . $beta_old . "</p>";
+echo "<hr /><p class='grand center ecarte'>Numéro de version actuel de la base MySql : GEPI " . $version_old . $rc_old . $beta_old . "</p>";
 echo "<hr />";
 // Mise à jour de la base de donnée
 
 if ($pb_maj_bd != 'yes') {
 	if (test_maj()) {
-		echo "<h3 style='text-align:center'>Mise à jour de la base de données vers la version GEPI " . $gepiVersion . $rc . $beta . "</h3>";
+		echo "<h3 class='center'>Mise à jour de la base de données vers la version GEPI " . $gepiVersion . $rc . $beta . "</h3>";
 		if (isset ($_SESSION['statut'])) {
-			echo "<p  style='text-align:center'>Il est vivement conseillé de faire une sauvegarde de la base MySql avant de procéder à la mise à jour</p>";
+			echo "<p class='center'>Il est vivement conseillé de faire une sauvegarde de la base MySql avant de procéder à la mise à jour</p>";
 			echo "<form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php\" method=post name=formulaire><p style='text-align:center'>";
 			//echo add_token_field();
 			if (getSettingValue("mode_sauvegarde") == "mysqldump") {
@@ -296,27 +297,27 @@ if ($pb_maj_bd != 'yes') {
 			}
 			echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></p></form>";
 		}
-		echo "<p style='text-align:center'>Remarque : la procédure de mise à jour vers la version <strong>GEPI " . $gepiVersion . $rc . $beta . "</strong> est utilisable à partir d'une version GEPI 1.2 ou plus récente.</p>";
+		echo "<p class='center'>Remarque : la procédure de mise à jour vers la version <strong>GEPI " . $gepiVersion . $rc . $beta . "</strong> est utilisable à partir d'une version GEPI 1.2 ou plus récente.</p>";
 		echo "<form action=\"maj.php\" method=\"post\">";
 		//echo add_token_field();
-		echo "<p style='color:red><strong>ATTENTION : Votre base de données ne semble pas être à jour.";
+		echo "<p class='rouge'><strong>ATTENTION : Votre base de données ne semble pas être à jour.";
 		if ($version_old != '')
 		echo " Numéro de version de la base de données : GEPI " . $version_old . $rc_old . $beta_old;
 		echo "</strong><br />";
 		echo "Cliquez sur le bouton suivant pour effectuer la mise à jour vers la version <strong>GEPI " . $gepiVersion . $rc . $beta . "</strong>";
-		echo "<p style='text-align:center'><span style='text-align:center;'><input type='submit' value='Mettre à jour' /></span>";
+		echo "<p class='center'><span style='text-align:center;'><input type='submit' value='Mettre à jour' /></span>";
 		echo "<input type='hidden' name='maj' value='yes' />";
 		echo "<input type='hidden' name='valid' value='$valid' /></p>";
 		echo "</form>";
 	} else {
 		echo "<h3 style='text-align:center'>Mise à jour de la base de données</h3>";
 		echo "<p style='text-align:center'><strong>Votre base de données est à jour. Vous n'avez pas de mise à jour à effectuer.</strong></p>";
-		echo "<p class='grand' style='text-align:center;'><strong><a href='../gestion/index.php#maj'>Retour</a></strong></p>";
+		echo "<p class='grand center'><strong><a href='../gestion/index.php#maj'>Retour</a></strong></p>";
 		echo "<form action=\"maj.php\" method=\"post\">";
 		//echo add_token_field();
 		echo "<p style='text-align:center'><strong>Néanmoins, vous pouvez forcer la mise à jour. Cette procédure, bien que sans risque, n'est utile que dans certains cas précis.</strong><br />";
 		echo "Cliquez sur le bouton suivant pour effectuer la mise à jour forcée vers la version <strong>GEPI " . $gepiVersion . $rc . $beta . "</strong></p>";
-		echo "<p style='text-align:center'><input type='submit' value='Forcer la mise à jour' />";
+		echo "<p class='center'><input type='submit' value='Forcer la mise à jour' />";
 		echo "<input type='hidden' name='maj' value='yes' />";
 		echo "<input type='hidden' name='force_maj' value='yes' />";
 		echo "<input type='hidden' name='valid' value='$valid' /></p>";
@@ -338,8 +339,8 @@ if ($pb_maj_bd != 'yes') {
 echo "<hr />";
 if (isset ($result)) {
 	//echo "<table style='width:80%; margin:0 auto;' border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 style ='text-align:center'>Résultat de la mise à jour</h2>";
-    echo "<div style='width:80%; margin:0 auto;padding: 0 10px 10px; border: inset yellow 7px;'>";
-	echo "<h2 style ='text-align:center'>Résultat de la mise à jour</h2>";
+    echo "<div class='cadreMaJ' style=''>";
+	echo "<h2 class='center'>Résultat de la mise à jour</h2>";
 	if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM responsables";
 		$test=mysql_query($sql);
