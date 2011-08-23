@@ -1,5 +1,5 @@
 <?php
-# Une fois renseigné, pensez à renommer ce fichier connect.cfg
+# Une fois renseigné, pensez à renommer ce fichier connect-modele.inc.php
 # en connect.inc.php dans le repertoire secure
 #
 # ============
@@ -28,12 +28,12 @@ $gepiPath="/gepi";
 /**
  * Connexion permanente à la base
  * 
- * Remplacer NULL par "oui" pour activer les connexions non permanentes
+ * Décommenter la ligne et remplacer NULL par "oui" pour activer les connexions non permanentes
  *
  * @global int $GLOBALS['db_nopersist']
  * @name $db_nopersist
  */
-$GLOBALS['db_nopersist']=NULL;
+//$GLOBALS['db_nopersist']=NULL;
 
 
 /* Base de l'URL (sans le chemin relatif défini ci-dessus)
