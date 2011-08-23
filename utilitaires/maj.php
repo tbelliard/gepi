@@ -148,7 +148,7 @@ echo ('
 ');
 
 
-if ((($resultat_session == '0') and ($valid != 'yes'))||(1==1)) {
+if (($resultat_session == '0') and ($valid != 'yes')) {
   
 	echo('
 		<form action="maj.php" method="post">
