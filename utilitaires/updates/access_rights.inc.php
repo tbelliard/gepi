@@ -83,7 +83,8 @@ function traite_requete($requete = "") {
 }
 
 // statuts dynamiques
-$result .= "&nbsp;->Ajout d'un champ 'autre' à la table 'droits'<br />";
+$result .= "<p>";
+$result .= "&nbsp;-> Ajout d'un champ 'autre' à la table 'droits'";
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'autre'"));
 if ($test1 == 0) {
         $query = mysql_query("ALTER TABLE `droits` ADD `autre` VARCHAR( 1 ) NOT NULL DEFAULT 'F' AFTER `secours` ;");
@@ -93,6 +94,7 @@ if ($test1 == 0) {
                 $result .= msj_erreur();
         }
 }
+$result .= "</p>";
 
 
 // A effectuer quelquesoit la mise à jour

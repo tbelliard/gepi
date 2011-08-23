@@ -276,9 +276,9 @@ $pb_maj_bd = getSettingValue("pb_maj");
 if (isset ($mess)) {
 	echo "<p class='grand' style='color:red;text-align:center'>" . $mess . "</p>";
 }
-echo "<p class='grand' style='text-align:center'>Mise à jour de la base de données MySql de GEPI</p>";
+echo "<h2 class='grand' style='text-align:center'>Mise à jour de la base de données MySql de GEPI</h2>";
 
-echo "<hr /><h3 style='text-align:center'>Numéro de version actuel de la base MySql : GEPI " . $version_old . $rc_old . $beta_old . "</h3>";
+echo "<hr /><p class='grand' style='text-align:center; margin:1em;'>Numéro de version actuel de la base MySql : GEPI " . $version_old . $rc_old . $beta_old . "</p>";
 echo "<hr />";
 // Mise à jour de la base de donnée
 
@@ -337,7 +337,6 @@ if ($pb_maj_bd != 'yes') {
 }
 echo "<hr />";
 if (isset ($result)) {
-	echo '<div>';
 	//echo "<table style='width:80%; margin:0 auto;' border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 style ='text-align:center'>Résultat de la mise à jour</h2>";
     echo "<div style='width:80%; margin:0 auto;padding: 0 10px 10px; border: inset yellow 7px;'>";
 	echo "<h2 style ='text-align:center'>Résultat de la mise à jour</h2>";
@@ -356,7 +355,6 @@ if (isset ($result)) {
 
 	echo $result;
 	//echo "</td></tr></table>";
-	echo '</div>';
 	echo '</div>';
 }
 ?>
