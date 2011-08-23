@@ -1329,7 +1329,15 @@ class SimpleSAML_Utilities {
 		}
 
 		$file = SimpleSAML_Utilities::resolveCert($file);
-		$data = @file_get_contents($file);
+		if (file_exists($file.'.php')) {
+			require($file.'.php');
+			/* Check that $data is initialized to a string. */
+			if (!is_string($data)) {
+				throw new Exception('Invalid certificate file: ' . $file.'.php');
+			}
+		} else {
+			$data = @file_get_contents($file);
+		}
 		if ($data === FALSE) {
 			throw new Exception('Unable to load private key from file "' . $file . '"');
 		}
