@@ -22,13 +22,6 @@
 function deja_unique($table, $index) {
   $sql = "SHOW COLUMNS FROM $table LIKE '$index'";
   $res = mysql_query($sql);
-  
-  /**
-  Field   | Type        | Null | Key | Default | Extra |
-+---------+-------------+------+-----+---------+-------+
-| reglage | varchar(30) | NO   | UNI | NULL    |    
-   
-   */  
   $test = mysql_num_rows($res);
   if ($test){
     $donnees =mysql_fetch_object($res);
