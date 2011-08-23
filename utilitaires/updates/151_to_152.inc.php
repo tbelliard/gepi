@@ -454,7 +454,7 @@ lieu VARCHAR( 255 ) NOT NULL
 		FOREIGN KEY (id_login)
 		REFERENCES utilisateurs (login)
 		ON DELETE CASCADE
-		)Type=MyISAM COMMENT='Notice privee du cahier de texte';";
+		)ENGINE=MyISAM COMMENT='Notice privee du cahier de texte';";
 		}
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {

@@ -1082,7 +1082,7 @@ if ($test == -1) {
 		auto_increment, categorie varchar(50) NOT NULL
 		default '',sigle varchar(20) NOT NULL
 		default '', PRIMARY KEY (id) )
-		TYPE=MyISAM;";
+		ENGINE=MyISAM;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 's_categories': ".$result_inter."<br />";
@@ -1156,7 +1156,7 @@ CREATE TABLE a_motifs
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des motifs possibles pour une absence';
+)ENGINE=MyISAM COMMENT='Liste des motifs possibles pour une absence';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1186,7 +1186,7 @@ CREATE TABLE a_justifications
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des justifications possibles pour une absence';
+)ENGINE=MyISAM COMMENT='Liste des justifications possibles pour une absence';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1221,7 +1221,7 @@ CREATE TABLE a_types
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
+)ENGINE=MyISAM COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1247,7 +1247,7 @@ CREATE TABLE a_types_statut
 		FOREIGN KEY (id_a_type)
 		REFERENCES a_types (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Liste des statuts autorises à saisir des types d\'absences';
+)ENGINE=MyISAM COMMENT='Liste des statuts autorises à saisir des types d\'absences';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1334,7 +1334,7 @@ CREATE TABLE a_saisies
 		FOREIGN KEY (id_aid)
 		REFERENCES aid (id)
 		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precisé dans debut_abs.';
+)ENGINE=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precisé dans debut_abs.';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1377,7 +1377,7 @@ CREATE TABLE a_traitements
 		FOREIGN KEY (a_justification_id)
 		REFERENCES a_justifications (id)
 		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
+)ENGINE=MyISAM COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1403,7 +1403,7 @@ CREATE TABLE j_traitements_saisies
 		FOREIGN KEY (a_traitement_id)
 		REFERENCES a_traitements (id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre la saisie et le traitement des absences';
+)ENGINE=MyISAM COMMENT='Table de jointure entre la saisie et le traitement des absences';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1446,7 +1446,7 @@ CREATE TABLE a_notifications
 		FOREIGN KEY (adr_id)
 		REFERENCES resp_adr (adr_id)
 		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Notification (a la famille) des absences';
+)ENGINE=MyISAM COMMENT='Notification (a la famille) des absences';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1472,7 +1472,7 @@ CREATE TABLE j_notifications_resp_pers
 		FOREIGN KEY (pers_id)
 		REFERENCES resp_pers (pers_id)
 		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
+)ENGINE=MyISAM COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
