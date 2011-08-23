@@ -12,6 +12,8 @@
 //hack for gepi rne (organization Id)
 if (isset($_REQUEST['organization'])) {
 	setcookie('RNE', $_REQUEST['organization'], null, '/');	
+} else if (isset($_REQUEST['rne'])) {
+	setcookie('RNE', $_REQUEST['rne'], null, '/');	
 }
 
 require_once('../../../www/_include.php');
