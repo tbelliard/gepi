@@ -1,4 +1,6 @@
 ; <?php header('Location:../login.php');die(); ?>
+; Une fois renseigné, pensez à renommer ce fichier multisite.ini.php dans le repertoire secure
+
 [RNE]
 nomhote		= localhost
 mysqluser	= user

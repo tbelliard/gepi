@@ -5,6 +5,11 @@ $Id$
 ##############################################################
 # Parametres propres a une authentification sur un serveur LCS
 ##############################################################
+#---
+# Ce fichier doit être renommé en config_lcs.inc.php dans le repertoire secure pour pouvoir être
+# pris en compte !
+#---
+
 /// Page d'authentification LCS
 define('LCS_PAGE_AUTHENTIF',"../../lcs/auth.php");
 // Page de la librairie ldap

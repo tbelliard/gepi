@@ -1,6 +1,6 @@
 <?php
 #
-# Vous devez renommer ce fichier en config_ldap.inc.php pour qu'il soit pris en compte !
+# Vous devez renommer ce fichier en config_ldap.inc.php dans le repertoire secure pour qu'il soit pris en compte !
 #
 
 # Les lignes suivantes sont à modifier selon votre configuration

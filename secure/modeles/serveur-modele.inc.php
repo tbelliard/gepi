@@ -1,6 +1,6 @@
 <?php
-# Une fois renseigné, pensez à renommer ce fichier serveur.cfg
-# en serveur.inc.php
+# Une fois renseigné, pensez à renommer ce fichier en serveur.inc.php dans le répertoire secure
+
 /*$serveur = array(
           'application' => array(
                       'domain' => 'nom du domaine du demandeur',

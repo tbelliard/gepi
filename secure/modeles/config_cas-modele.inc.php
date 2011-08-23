@@ -22,7 +22,7 @@
  */
 
 #---
-# Ce fichier doit être renommé en config_cas.inc.php pour pouvoir être
+# Ce fichier doit être renommé en config_cas.inc.php dans le repertoire secure pour pouvoir être
 # pris en compte !
 #---
 
