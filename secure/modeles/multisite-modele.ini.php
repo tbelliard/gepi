@@ -1,5 +1,4 @@
-; <?php header('Location:../login.php');die(); ?> Ligne non utilisée pour la configuration, présente pour des raisons de sécurité
-
+; <?php header('Location:../login.php');die(); ?>
 [RNE]
 nomhote		= localhost
 mysqluser	= user

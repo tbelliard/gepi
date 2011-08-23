@@ -54,7 +54,7 @@ $GLOBALS['db_nopersist']=NULL;
 #    ou dé-commentez -retirez le "# " en début de ligne- la ligne ci-dessous
 #$multisite = "y";
 #
-# 2- Renseignez le fichier /secure/multisite.ini.php comme indiqué
+# 2- Renseignez le fichier /secure/multisite.ini comme indiqué
 #
 # 3- Modifiez la valeur "multisite" de la table "settings"
 # en passant (via phpmyadmin par ex.) la commande sql suivante :
@@ -68,7 +68,7 @@ if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
 	if (!isset($RNE) || $RNE == 'RNE') {
 		echo 'Erreur : Numéro d\'établissement manquant dans la requete (paramètre 'rne' ou 'organization')'; die;
 	} else {
-		$init = parse_ini_file(__DIR__."/multisite.ini.php", TRUE);
+		$init = parse_ini_file(__DIR__."/multisite.ini", TRUE);
 		if (	!isset($init[$RNE]["nomhote"]) || 
 			!isset($init[$RNE]["nombase"]) || 
 			!isset($init[$RNE]["mysqluser"]) || 
