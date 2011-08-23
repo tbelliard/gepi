@@ -337,8 +337,10 @@ if ($pb_maj_bd != 'yes') {
 }
 echo "<hr />";
 if (isset ($result)) {
-	echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
-
+	echo '<div>';
+	//echo "<table style='width:80%; margin:0 auto;' border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 style ='text-align:center'>Résultat de la mise à jour</h2>";
+    echo "<div style='width:80%; margin:0 auto;padding: 0 10px 10px; border: inset yellow 7px;'>";
+	echo "<h2 style ='text-align:center'>Résultat de la mise à jour</h2>";
 	if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM responsables";
 		$test=mysql_query($sql);
@@ -353,7 +355,9 @@ if (isset ($result)) {
 	}
 
 	echo $result;
-	echo "</td></tr></table></center>";
+	//echo "</td></tr></table>";
+	echo '</div>';
+	echo '</div>';
 }
 ?>
 </body></html>

@@ -1,8 +1,9 @@
 <?php
-/*
+/**
+ * Fichier de mise à jour de la version 1.5.3 à la version 1.5.4
+ * 
  * $Id$
  *
- * Fichier de mise à jour de la version 1.5.3 à la version 1.5.4
  * Le code PHP présent ici est exécuté tel quel.
  * Pensez à conserver le code parfaitement compatible pour une application
  * multiple des mises à jour. Toute modification ne doit être réalisée qu'après
@@ -11,10 +12,17 @@
  * Le résultat de la mise à jour est du html préformaté. Il doit être concaténé
  * dans la variable $result, qui est déjà initialisé.
  *
- * Exemple : $result .= "<font color='gree'>Champ XXX ajouté avec succès</font>";
+ * Exemple : $result .= msj_ok("Champ XXX ajouté avec succès");
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @license GNU/GPL,
+ * @package General
+ * @subpackage mise_a jour
+ * @see msj_ok()
+ * @see msj_erreur()
+ * @see msj_present()
  */
 
-$result .= "<br /><br /><b>Mise à jour vers la version 1.5.3.1" . $rc . $beta . " :</b><br />";
+$result .= "<br /><br /><strong>Mise à jour vers la version 1.5.3.1" . $rc . $beta . " :</strong><br />";
 
 
 $test = sql_query1("SHOW TABLES LIKE 'edt_semaines'");
@@ -48,17 +56,17 @@ else {
 
 //==========================================================
 // Modification Delineau
-$result .= "<br /><br /><b>Ajout d'une table pour les \"super-gestionnaires\" d'AID :</b><br />";
+$result .= "<br /><br /><strong>Ajout d'une table pour les \"super-gestionnaires\" d'AID :</strong><br />";
 $result .= "<br />&nbsp;->Tentative de création de la table j_aidcateg_super_gestionnaires.<br />";
 $test = sql_query1("SHOW TABLES LIKE 'j_aidcateg_super_gestionnaires'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_super_gestionnaires (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL);");
 	if ($result_inter == '')
-	$result .= "<font color=\"green\">La table j_aidcateg_super_gestionnaires a été créée !</font><br />";
+	$result .= msj_ok("La table j_aidcateg_super_gestionnaires a été créée !");
 	else
 	$result .= $result_inter."<br />";
 } else {
-		$result .= "<font color=\"blue\">La table j_aidcateg_super_gestionnaires existe déjà.</font><br />";
+		$result .= msj_present("La table j_aidcateg_super_gestionnaires existe déjà.");
 }
 
 $champ_courant=array('nom1', 'prenom1', 'nom2', 'prenom2');
@@ -66,9 +74,9 @@ for($loop=0;$loop<count($champ_courant);$loop++) {
 	$result .= "&nbsp;->Extension à 50 caractères du champ '$champ_courant[$loop]' de la table 'responsables'<br />";
 	$query = mysql_query("ALTER TABLE responsables CHANGE $champ_courant[$loop] $champ_courant[$loop] VARCHAR( 50 ) NOT NULL;");
 	if ($query) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 	} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 	}
 }
 
@@ -77,9 +85,9 @@ for($loop=0;$loop<count($champ_courant);$loop++) {
 	$result .= "&nbsp;->Extension à 50 caractères du champ '$champ_courant[$loop]' de la table 'resp_pers'<br />";
 	$query = mysql_query("ALTER TABLE resp_pers CHANGE $champ_courant[$loop] $champ_courant[$loop] VARCHAR( 50 ) NOT NULL;");
 	if ($query) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 	} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 	}
 }
 

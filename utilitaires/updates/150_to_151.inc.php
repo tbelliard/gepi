@@ -8,6 +8,9 @@
  * @license GNU/GPL,
  * @package General
  * @subpackage mise_a jour
+ * @see msj_ok()
+ * @see msj_erreur()
+ * @see msj_present()
  */
 
 		$result .= "<br /><br /><strong>Mise à jour vers la version 1.5.1" . $rc . $beta . " :</strong><br />";

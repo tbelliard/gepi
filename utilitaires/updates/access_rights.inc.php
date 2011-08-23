@@ -1,13 +1,50 @@
 <?php
-/*
+/**
+ * Réinitialise totalement la table 'droits'
+ * 
  * $Id$
  *
  * Ce fichier est toujours appelé lors d'une mise à jour.
  * Il réinitialise totalement la table 'droits' avec les informations détaillées
  * ci-après
  *
+ * @license GNU/GPL,
+ * @package General
+ * @subpackage mise_a jour
  */
 
+/**
+ * Vérifie si l'index unique existe déjà
+ * @param type $table
+ * @param type $index 
+ * @return boolean TRUE si l'index unique existe déjà
+ */
+function deja_unique($table, $index) {
+  $sql = "SHOW COLUMNS FROM $table LIKE '$index'";
+  $res = mysql_query($sql);
+  
+  /**
+  Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| reglage | varchar(30) | NO   | UNI | NULL    |    
+   
+   */  
+  $test = mysql_num_rows($res);
+  if ($test){
+    $donnees =mysql_fetch_object($res);
+    if ($donnees->Key == 'UNI'){
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Exécute une requête et renvoie une erreur au besoin
+ * @global string
+ * @param string $requete La requête à traité
+ * @return string l'erreur ou vide
+ */
 function traite_requete($requete = "") {
 	global $pb_maj;
 	$retour = "";
@@ -22,24 +59,29 @@ function traite_requete($requete = "") {
 				$retour = "";
 				break;
 			case "1061" :
-				// La cléf existe déjà : pas de problème
+				// La clé existe déjà : pas de problème
 				$retour = "";
 				break;
 			case "1062" :
 				// Présence d'un doublon : création de la cléf impossible
-				$retour = "<font color=\"#FF0000\">Erreur (<b>non critique</b>) sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")</font><br />\n";
+				$retour = msj_erreur("Erreur (<strong>non critique</strong>) sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
 				$pb_maj = 'yes';
 				break;
 			case "1068" :
-				// Des cléfs existent déjà : pas de problème
+				// Des clés existent déjà : pas de problème
 				$retour = "";
+				break;
+			case "1069" :
+				// trop d'index existent déjà pour cette table
+				$retour = msj_erreur("Erreur (<strong>critique</strong>) sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
+				$pb_maj = 'yes';
 				break;
 			case "1091" :
 				// Déjà supprimé : pas de problème
 				$retour = "";
 				break;
 			default :
-				$retour = "<font color=\"#FF0000\">Erreur sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")</font><br />\n";
+				$retour = msj_erreur("Erreur sur la requête : <i>" . $requete . "</i> (" . mysql_errno() . " : " . mysql_error() . ")");
 				$pb_maj = 'yes';
 				break;
 		}
@@ -53,9 +95,9 @@ $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'autre'"));
 if ($test1 == 0) {
         $query = mysql_query("ALTER TABLE `droits` ADD `autre` VARCHAR( 1 ) NOT NULL DEFAULT 'F' AFTER `secours` ;");
         if ($query) {
-                $result .= "<font color=\"green\">Ok !</font><br />";
+                $result .= msj_ok();
         } else {
-                $result .= "<font color=\"red\">Erreur</font><br />";
+                $result .= msj_erreur();
         }
 }
 

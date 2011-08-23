@@ -1,18 +1,31 @@
 <?php
+/**
+ * Fichier de mise à jour de la version 1.5.1 à la version 1.5.2
+ * 
+ * $Id$
+ *
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @license GNU/GPL,
+ * @package General
+ * @subpackage mise_a jour
+ * @see msj_ok()
+ * @see msj_erreur()
+ * @see msj_present()
+ */
 
-		$result .= "<br /><br /><b>Mise à jour vers la version 1.5.2" . $rc . $beta . " :</b><br />";
+		$result .= "<br /><br /><strong>Mise à jour vers la version 1.5.2" . $rc . $beta . " :</strong><br />";
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_display_portail'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('sso_display_portail','no');");
 			if ($result_inter == '') {
-				$result.="<font color=\"green\">Définition du paramètre sso_display_portail à 'no': Ok !</font><br />";
+				$result.=msj_ok("Définition du paramètre sso_display_portail à 'no': Ok !");
 			} else {
-				$result.="<font color=\"red\">Définition du paramètre sso_display_portail à 'no': Erreur !</font><br />";
+				$result.=msj_erreur(": Définition du paramètre sso_display_portail à 'no'");
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le paramètre sso_use_portail existe déjà dans la table setting.</font><br />";
+			$result .= msj_present("Le paramètre sso_use_portail existe déjà dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_url_portail'");
@@ -20,12 +33,12 @@
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('sso_url_portail', 'https://www.example.com');");
 			if ($result_inter == '') {
-				$result.="<font color=\"green\">Définition du paramètre sso_url_portail à 'https://www.example.com': Ok !</font><br />";
+				$result.=msj_ok("Définition du paramètre sso_url_portail à 'https://www.example.com': Ok !");
 			} else {
-				$result.="<font color=\"red\">Définition du paramètre sso_url_portail à 'https://www.example.com': Erreur !</font><br />";
+				$result.=msj_erreur(": Définition du paramètre sso_url_portail à 'https://www.example.com'Erreur !");
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le paramètre denomination_eleves existe déjà dans la table setting.</font><br />";
+			$result .= msj_present("Le paramètre denomination_eleves existe déjà dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_hide_logout'");
@@ -33,12 +46,12 @@
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('sso_hide_logout', 'no');");
 			if ($result_inter == '') {
-				$result.="<font color=\"green\">Définition du paramètre sso_hide_logout à 'no': Ok !</font><br />";
+				$result.=msj_ok("Définition du paramètre sso_hide_logout à 'no': Ok !");
 			} else {
-				$result.="<font color=\"red\">Définition du paramètre sso_hide_logout à 'no': Erreur !</font><br />";
+				$result.=msj_erreur(": Définition du paramètre sso_hide_logout à 'no': Erreur !");
 			}
 		} else {
-			$result .= "<font color=\"blue\">Le paramètre sso_hide_logout existe déjà dans la table setting.</font><br />";
+			$result .= msj_present("Le paramètre sso_hide_logout existe déjà dans la table setting.");
 		}
 
 		// Module discipline
@@ -320,24 +333,24 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($testcn_devoirs_note_sur == 0) {
 			$query = mysql_query("ALTER TABLE `cn_devoirs` ADD `note_sur` INT(11) DEFAULT '20' AFTER `coef` ;");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font>";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<br /><font color=\"blue\">La colonne 'note_sur' existe deja.</font><br />";
+			$result .= "<br />".msj_present("La colonne 'note_sur' existe deja.");
 		}
 
 		$testcn_devoirs_ramener_sur_referentiel = mysql_num_rows(mysql_query("SHOW COLUMNS FROM cn_devoirs LIKE 'ramener_sur_referentiel'"));
 		if ($testcn_devoirs_ramener_sur_referentiel == 0) {
 			$result_inter = traite_requete("ALTER TABLE `cn_devoirs` ADD `ramener_sur_referentiel` CHAR(1) NOT NULL DEFAULT 'F' AFTER `note_sur` ;");
 			if ($query) {
-				$result .= "<font color=\"green\"> Ok !</font><br />";
+				$result .= msj_ok(" Ok !");
 			} else {
 				$result .= "<br />Erreur sur la modification de la table 'cn_devoirs': ".$result_inter."<br />";
 			}
 		} else {
-			$result .= "<font color=\"blue\">La colonne 'ramener_sur_referentiel' existe deja.</font><br />";
+			$result .= msj_present("La colonne 'ramener_sur_referentiel' existe deja.");
 		}
 
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'note_autre_que_sur_referentiel'");
@@ -362,10 +375,10 @@ lieu VARCHAR( 255 ) NOT NULL
 			$sql="INSERT INTO setting SET name='unzipped_max_filesize',value='10';";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
-				$result.="<font color=\"red\">Erreur</font><br />";
+				$result.=msj_erreur();
 			}
 			else {
-				$result.="<font color=\"green\">OK</font><br />";
+				$result.=msj_ok();
 			}
 		}
 
@@ -373,7 +386,7 @@ lieu VARCHAR( 255 ) NOT NULL
 		$result .= "<br />Mise à jour de la table archivage_types_aid.<br />";
 		$result_inter = traite_requete("ALTER TABLE archivage_types_aid ADD outils_complementaires ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' AFTER display_bulletin");
 		if ($result_inter == '')
-		$result .= "<font color=\"green\">Le champ outils_complementaires de la table archivage_types_aid a été ajouté !</font><br />";
+		$result .= msj_ok("Le champ outils_complementaires de la table archivage_types_aid a été ajouté !");
 		else
 		$result .= $result_inter."<br />";
 
@@ -383,12 +396,12 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test == 0) {
 			$query3 = mysql_query("CREATE TABLE `absences_repas` (`id` int(5) NOT NULL auto_increment, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
 			if ($query3) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table absences_repas existe déjà</font><br />";
+			$result .= msj_present("La table absences_repas existe déjà");
 		}
 
 		//module cahier de texte 2
@@ -463,13 +476,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE periodes ADD date_verrouillage TIMESTAMP NOT NULL ;");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+			$result .= msj_present("Champ déjà présent");
 		}
 
 		///Module OOO
@@ -527,13 +540,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE j_groupes_classes ADD saisie_ects TINYINT(1) NOT NULL DEFAULT 0;");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+			$result .= msj_present("Champ déjà présent");
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'valeur_ects' à la table 'j_groupes_classes': ";
@@ -541,13 +554,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE j_groupes_classes ADD valeur_ects DECIMAL(3,1) NOT NULL;");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+			$result .= msj_present("Champ déjà présent");
 		}
 
 
@@ -573,12 +586,12 @@ lieu VARCHAR( 255 ) NOT NULL
                                             REFERENCES groupes (id)
                                     )");
 			if ($query2) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+			$result .= msj_present("La table existe déjà");
 		}
 
         $result .= "&nbsp;->Création de la table ects_global_credits<br />";
@@ -596,12 +609,12 @@ lieu VARCHAR( 255 ) NOT NULL
                                             REFERENCES eleves (id_eleve)
                                     )");
 			if ($query2) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+			$result .= msj_present("La table existe déjà");
 		}
 
 
@@ -629,12 +642,12 @@ lieu VARCHAR( 255 ) NOT NULL
                                             REFERENCES eleves (no_gep)
                                     )");
 			if ($query2) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+			$result .= msj_present("La table existe déjà");
 		}
 
 
@@ -643,13 +656,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE classes ADD ects_type_formation VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+			$result .= msj_present("Champ déjà présent");
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_parcours' à la table 'classes': ";
@@ -657,13 +670,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE classes ADD ects_parcours VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+			$result .= msj_present("Champ déjà présent");
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_code_parcours' à la table 'classes': ";
@@ -671,13 +684,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE classes ADD ects_code_parcours VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+			$result .= msj_present("Champ déjà présent");
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_domaines_etude' à la table 'classes': ";
@@ -685,13 +698,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE classes ADD ects_domaines_etude VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+			$result .= msj_present("Champ déjà présent");
 		}
 
 		$result .= "&nbsp;->Ajout d'un champ 'ects_fonction_signataire_attestation' à la table 'classes': ";
@@ -699,13 +712,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE classes ADD ects_fonction_signataire_attestation VARCHAR(255) NOT NULL DEFAULT '';");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Champ déjà présent</font><br />";
+			$result .= msj_present("Champ déjà présent");
 		}
 
 
@@ -724,12 +737,12 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `archivage_disciplines` ADD INDEX annee ( `annee` )");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+			$result .= msj_present("L'index existe déjà.");
 		}
 
 		// Ajouts d'index
@@ -746,12 +759,12 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($req_res == 0) {
 			$query = mysql_query("ALTER TABLE `archivage_disciplines` ADD INDEX INE ( `INE` )");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		} else {
-			$result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+			$result .= msj_present("L'index existe déjà.");
 		}
 
 
@@ -760,13 +773,13 @@ lieu VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE j_groupes_classes ADD mode_moy ENUM('-','sup10','bonus') NOT NULL DEFAULT '-' AFTER valeur_ects;");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+			$result .= msj_present("Le champ est déjà présent");
 		}
 
     $result .= "&nbsp;->Ajout d'un setting sur l'utilisation unique du cahier de textes de Gepi<br />";
@@ -774,12 +787,12 @@ lieu VARCHAR( 255 ) NOT NULL
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
       if (mysql_query("INSERT INTO setting VALUES ('use_only_cdt', 'n');")){
-        $result .= "<font color=\"green\">Ok !</font><br />";
+        $result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
     }else{
-      $result .= "<font color=\"blue\">Le setting est déjà présent</font><br />";
+      $result .= msj_present("Le setting est déjà présent");
     }
 
     $result .= "&nbsp;->Ajout d'un setting sur le droit pour le professeur de saisir son edt<br />";
@@ -787,12 +800,12 @@ lieu VARCHAR( 255 ) NOT NULL
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
       if (mysql_query("INSERT INTO setting VALUES ('edt_remplir_prof', 'n');")){
-        $result .= "<font color=\"green\">Ok !</font><br />";
+        $result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
     }else{
-      $result .= "<font color=\"blue\">Le setting est déjà présent</font><br />";
+      $result .= msj_present("Le setting est déjà présent");
     }
 
     $test = sql_query1("SHOW TABLES LIKE 'ct_sequences'");
@@ -814,13 +827,13 @@ description TEXT NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE ct_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0' AFTER id_login;");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+			$result .= msj_present("Le champ est déjà présent");
 		}
 
     $result .= "&nbsp;->Ajout d'un champ 'id_sequence' à la table 'ct_devoirs_entry'<br />";
@@ -828,13 +841,13 @@ description TEXT NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE ct_devoirs_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0';");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+			$result .= msj_present("Le champ est déjà présent");
 		}
 
     $result .= "&nbsp;->Ajout d'un champ 'id_sequence' à la table 'ct_private_entry'<br />";
@@ -842,13 +855,13 @@ description TEXT NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE ct_private_entry ADD id_sequence INT ( 11 ) NOT NULL DEFAULT '0';");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+			$result .= msj_present("Le champ est déjà présent");
 		}
 
     $test = sql_query1("SHOW TABLES LIKE 'plugins'");
@@ -905,9 +918,9 @@ description_item VARCHAR( 255 ) NOT NULL
 		$result .= "<br />&nbsp;->Contrôle des valeurs autorisées pour le champ 'acces' de la table 'matieres_appreciations_acces'&nbsp;: ";
 		$query3 = mysql_query(" ALTER TABLE `matieres_appreciations_acces` CHANGE `acces` `acces` ENUM( 'y', 'n', 'date', 'd' ) NOT NULL DEFAULT 'y';");
 		if ($query3) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 		}
 		//==========================================================
 
@@ -916,13 +929,13 @@ description_item VARCHAR( 255 ) NOT NULL
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE cn_devoirs ADD date_ele_resp DATETIME NOT NULL ;");
 			if ($query) {
-				$result .= "<font color=\"green\">Ok !</font><br />";
+				$result .= msj_ok();
 			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+				$result .= msj_erreur();
 			}
 		}
 		else {
-			$result .= "<font color=\"blue\">Le champ est déjà présent</font><br />";
+			$result .= msj_present("Le champ est déjà présent");
 		}
 
 		//==========================================================
@@ -939,9 +952,9 @@ description_item VARCHAR( 255 ) NOT NULL
 				$result .= "<br />&nbsp;->Ajout d'un enregistrement pour 'enseignement_invisible' dans 'ref_wiki'<br />";
 				$query = mysql_query("INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/wiki/gepi/Enseignement_invisible');");
 				if ($query) {
-					$result .= "<font color=\"green\">Ok !</font><br />";
+					$result .= msj_ok();
 				} else {
-					$result .= "<font color=\"red\">Erreur</font><br />";
+					$result .= msj_erreur();
 				}
 			}
 		}
@@ -952,18 +965,18 @@ description_item VARCHAR( 255 ) NOT NULL
 		$result .= "&nbsp;->Migration des fichiers joint des devoirs au format cdt2<br />";
 		$query = mysql_query("insert into ct_devoirs_documents (id_ct_devoir, titre, taille, emplacement) select id_ct as id_ct_devoir ,titre, taille, emplacement from ct_documents where emplacement like '%/documents/cl_dev%' ;");
 		if ($query == true) {
-			$result .= "<font color=\"blue\">Migration effectuée</font><br />";
+			$result .= msj_present("Migration effectuée");
 			$result .= "&nbsp;->Suppression des fichiers joints devoir au format cdt1<br/>";
 
 			$query = mysql_query("DELETE FROM ct_documents where emplacement like '%/documents/cl_dev%';");
 			if ($query == true) {
-			    $result .= "<font color=\"blue\">Suppression effectuée</font><br />";
+			    $result .= msj_present("Suppression effectuée");
 			} else {
-			    $result .= "<font color=\"red\">Erreur</font><br />";
+			    $result .= msj_erreur();
 			    $result .= "Error: (" . mysql_errno() . ") " . mysql_error() . "< br/>";
 			}
 		} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 			$result .= "Error: (" . mysql_errno() . ") " . mysql_error() . "< br/>";
 		}
 
@@ -1023,10 +1036,10 @@ description_item VARCHAR( 255 ) NOT NULL
 			}
 		}
 		if($nb_err_synchro_acces_app==0) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= msj_ok();
 		}
 		else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= msj_erreur();
 		}
 	}
 
@@ -1038,14 +1051,14 @@ description_item VARCHAR( 255 ) NOT NULL
 	    $result .= "&nbsp;->Ajout d'un champ 'type_creneaux' à la table 'absences_creneaux'<br />";
 	    $test_type_creneaux=mysql_num_rows(mysql_query("SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux';"));
 	    if ($test_type_creneaux>0) {
-		    $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		    $result .= msj_present("Le champ existe déjà.");
 	    }
 	    else {
 		    $query = mysql_query("ALTER TABLE absences_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL;");
 		    if ($query) {
-				    $result .= "<font color=\"green\">Ok !</font><br />";
+				    $result .= msj_ok();
 		    } else {
-				    $result .= "<font color=\"red\">Erreur</font><br />";
+				    $result .= msj_erreur();
 		    }
 	    }
 	} else {

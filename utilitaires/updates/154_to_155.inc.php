@@ -19,6 +19,8 @@
  * @package General
  * @subpackage mise_a jour
  * @see msj_ok()
+ * @see msj_erreur()
+ * @see msj_present()
  */
 
 $result .= "<br /><br /><strong>Mise à jour vers la version 1.5.5" . $rc . $beta . " :</strong><br />";
@@ -697,19 +699,29 @@ if ($res_test==0){
 
 $result.="<br />";
 $result.="Définition du champ 'reglage' de la table 'edt_setting' comme UNIQUE :";
-$result_inter = traite_requete("ALTER TABLE edt_setting ADD UNIQUE (reglage);");
-if ($result_inter == '') {
-	$result.=msj_ok(" Ok !");
+$deja_cree = deja_unique('edt_setting','reglage' );
+if (!$deja_cree) {
+  $result_inter = traite_requete("ALTER TABLE edt_setting ADD UNIQUE (reglage);");
+  if ($result_inter == '') {
+      $result.=msj_ok(" Ok !");
+  } else {
+      $result.=msj_erreur(" ! ".$result_inter);
+  }
 } else {
-	$result.=msj_erreur(" !");
+  $result.= msj_present(' le champ est déjà défini comme UNIQUE');
 }
 
 $result.="Définition du champ 'ref' de la table 'ref_wiki' comme UNIQUE :";
-$result_inter = traite_requete("ALTER TABLE ref_wiki ADD UNIQUE (ref);");
-if ($result_inter == '') {
-	$result.=msj_ok(" Ok !");
+$deja_cree = deja_unique('ref_wiki','ref' );
+if (!$deja_cree) {
+  $result_inter = traite_requete("ALTER TABLE ref_wiki ADD UNIQUE (ref);");
+  if ($result_inter == '') {
+      $result.=msj_ok(" Ok !");
+  } else {
+      $result.=msj_erreur(" !".$result_inter);
+  }
 } else {
-	$result.=msj_erreur(" !");
+  $result.= msj_present(' le champ est déjà défini comme UNIQUE');
 }
 
 $result.="<br />";
@@ -718,7 +730,7 @@ $result_inter = traite_requete("ALTER TABLE infos_actions CHANGE description des
 if ($result_inter == '') {
 	$result.=msj_ok(" Ok !");
 } else {
-	$result.=msj_erreur(" !");
+	$result.=msj_erreur(" !".$result_inter);
 }
 
 $test_file = '../lib/global.inc';

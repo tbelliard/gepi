@@ -29,12 +29,12 @@ function add_index($tablename, $indexname, $indexcolumns) {
   if ($req_res == 0) {
     $query = mysql_query("ALTER TABLE `$tablename` ADD INDEX $indexname ($indexcolumns)");
     if ($query) {
-      $result .= "<font color=\"green\">Ok !</font><br />";
+      $result .= msj_ok();
     } else {
-      $result .= "<font color=\"red\">Erreur</font><br />";
+      $result .= msj_erreur();
     }
   } else {
-    $result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+    $result .= msj_present("L'index existe déjà.");
   }
   return $result;
 }
@@ -68,7 +68,7 @@ function msj_erreur($message=""){
  * @return string $message écrit en bleu
  */
 function msj_present($message){
-  return "<span style='color:blue;'>$message.</span><br />";
+  return "<span style='color:blue;'> $message.</span><br />";
 }
 
 ?>
