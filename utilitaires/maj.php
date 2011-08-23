@@ -153,7 +153,7 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 	echo('
 		<form action="maj.php" method="post">
 			<div class="center">
-				<h2 class="center">Mise à jour de la base de donnée GEPI<br />(Accès administrateur)</h2>
+				<h1 class="grand center">Mise à jour de la base de donnée GEPI<br />(Accès administrateur)</h1>
 			');
 
 	if (isset ($message)) {
@@ -277,7 +277,7 @@ $pb_maj_bd = getSettingValue("pb_maj");
 if (isset ($mess)) {
 	echo "<p class='grand center rouge'>" . $mess . "</p>";
 }
-echo "<h2 class='grand center'>Mise à jour de la base de données MySql de GEPI</h2>";
+echo "<h1 class='grand center'>Mise à jour de la base de données MySql de GEPI</h1>";
 
 echo "<hr /><p class='grand center ecarte'>Numéro de version actuel de la base MySql : GEPI " . $version_old . $rc_old . $beta_old . "</p>";
 echo "<hr />";
@@ -285,7 +285,7 @@ echo "<hr />";
 
 if ($pb_maj_bd != 'yes') {
 	if (test_maj()) {
-		echo "<h3 class='center'>Mise à jour de la base de données vers la version GEPI " . $gepiVersion . $rc . $beta . "</h3>";
+		echo "<h2> class='grand center'>Mise à jour de la base de données vers la version GEPI " . $gepiVersion . $rc . $beta . "</h3>";
 		if (isset ($_SESSION['statut'])) {
 			echo "<p class='center'>Il est vivement conseillé de faire une sauvegarde de la base MySql avant de procéder à la mise à jour</p>";
 			echo "<form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php\" method=post name=formulaire><p classe='center'>";
@@ -305,17 +305,17 @@ if ($pb_maj_bd != 'yes') {
 		echo " Numéro de version de la base de données : GEPI " . $version_old . $rc_old . $beta_old;
 		echo "</strong><br />";
 		echo "Cliquez sur le bouton suivant pour effectuer la mise à jour vers la version <strong>GEPI " . $gepiVersion . $rc . $beta . "</strong>";
-		echo "<p class='center'><span class='center;'><input type='submit' value='Mettre à jour' /></span>";
+		echo "<p class='center'><span class='center'><input type='submit' value='Mettre à jour' /></span>";
 		echo "<input type='hidden' name='maj' value='yes' />";
 		echo "<input type='hidden' name='valid' value='$valid' /></p>";
 		echo "</form>";
 	} else {
-		echo "<h3 class='center;'>Mise à jour de la base de données</h3>";
-		echo "<p class='center;'><strong>Votre base de données est à jour. Vous n'avez pas de mise à jour à effectuer.</strong></p>";
+		echo "<h2 class='grand center'>Mise à jour de la base de données</h2>";
+		echo "<p class='center'><strong>Votre base de données est à jour. Vous n'avez pas de mise à jour à effectuer.</strong></p>";
 		echo "<p class='grand center'><strong><a href='../gestion/index.php#maj'>Retour</a></strong></p>";
 		echo "<form action=\"maj.php\" method=\"post\">";
 		//echo add_token_field();
-		echo "<p class='center;'><strong>Néanmoins, vous pouvez forcer la mise à jour. Cette procédure, bien que sans risque, n'est utile que dans certains cas précis.</strong><br />";
+		echo "<p class='center'><strong>Néanmoins, vous pouvez forcer la mise à jour. Cette procédure, bien que sans risque, n'est utile que dans certains cas précis.</strong><br />";
 		echo "Cliquez sur le bouton suivant pour effectuer la mise à jour forcée vers la version <strong>GEPI " . $gepiVersion . $rc . $beta . "</strong></p>";
 		echo "<p class='center'><input type='submit' value='Forcer la mise à jour' />";
 		echo "<input type='hidden' name='maj' value='yes' />";
@@ -324,13 +324,13 @@ if ($pb_maj_bd != 'yes') {
 		echo "</form>";
 	}
 } else {
-	echo "<h3 class='center;'>Mise à jour de la base de données</h3>";
+	echo "<h3 class='center'>Mise à jour de la base de données</h3>";
 	echo "<p class='rouge'><strong>Une ou plusieurs erreurs ont été rencontrées lors de la dernière mise à jour de la base de données</strong></p>";
 	echo "<form action=\"maj.php\" method=\"post\">";
 	//echo add_token_field();
 	echo "<p><strong>Si vous pensez avoir réglé les problèmes entraînant ces erreurs, vous pouvez tenter une nouvelle mise à jour</strong>";
 	echo " en cliquant sur le bouton suivant pour effectuer la mise à jour vers la version <strong>GEPI " . $gepiVersion . $rc . $beta . "</strong>.</p>";
-	echo "<p class='center;'><input type='submit' value='Tenter une nouvelle mise à jour' />";
+	echo "<p class='center'><input type='submit' value='Tenter une nouvelle mise à jour' />";
 	echo "<input type='hidden' name='maj' value='yes' />";
 	echo "<input type='hidden' name='force_maj' value='yes' />";
 	echo "<input type='hidden' name='valid' value='$valid' /></p>";
