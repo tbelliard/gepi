@@ -68,7 +68,7 @@ if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
 	if (!isset($RNE) || $RNE == 'RNE') {
 		echo 'Erreur : Numéro d\'établissement manquant dans la requête (paramètre rne ou organization).'; die();
 	} else {
-		$init = parse_ini_file(__DIR__."/multisite.ini", TRUE);
+		$init = parse_ini_file(dirname(__FILE__)."/multisite.ini", TRUE);
 		if (	!isset($init[$RNE]["nomhote"]) || 
 			!isset($init[$RNE]["nombase"]) || 
 			!isset($init[$RNE]["mysqluser"]) || 
