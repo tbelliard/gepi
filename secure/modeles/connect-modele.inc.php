@@ -66,7 +66,7 @@ $GLOBALS['db_nopersist']=NULL;
 if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
 	$RNE = isset($_REQUEST['rne']) ? $_REQUEST['rne'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization'] : (isset($_COOKIE['RNE']) ? $_COOKIE['RNE'] : NULL));
 	if (!isset($RNE) || $RNE == 'RNE') {
-		echo 'Erreur : Numéro d\'établissement manquant dans la requete (paramètre 'rne' ou 'organization')'; die;
+		echo 'Erreur : Numéro d\'établissement manquant dans la requête (paramètre rne ou organization).'; die();
 	} else {
 		$init = parse_ini_file(__DIR__."/multisite.ini", TRUE);
 		if (	!isset($init[$RNE]["nomhote"]) || 
