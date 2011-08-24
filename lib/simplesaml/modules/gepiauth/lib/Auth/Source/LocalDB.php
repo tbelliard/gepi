@@ -46,8 +46,8 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 	 */
 	protected function getOrganizations() {
 		$path = dirname(dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))));
-		if (file_exists($path."/secure/multisite.ini")) { 
-			$init = parse_ini_file($path."/secure/multisite.ini", TRUE);
+		if (file_exists($path."/secure/multisite.ini.php")) { 
+			$init = parse_ini_file($path."/secure/multisite.ini.php", TRUE);
 			$orgs = Array();
 			foreach($init as $key => $value) {
 				if (isset($value['nometablissement'])) {
