@@ -64,7 +64,7 @@ $gepiPath="/gepi";
 
 /*
 if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
-	$RNE = isset($_REQUEST['rne']) ? $_REQUEST['rne'] : (isset($_REQUEST['RNE']) ? $_REQUEST['RNE'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization']));
+	$RNE = isset($_REQUEST['rne']) ? $_REQUEST['rne'] : (isset($_REQUEST['RNE']) ? $_REQUEST['RNE'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization'] : (isset($_COOKIE['RNE']) ? $_COOKIE['RNE'] : NULL)));
 	if (!isset($RNE) || $RNE == 'RNE') {
 		echo 'Erreur : Numéro d\'établissement manquant dans la requête (paramètre rne ou organization).'; die();
 	} else {
