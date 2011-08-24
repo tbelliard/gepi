@@ -60,7 +60,7 @@ if(isset($reinitialiser)) {
 	$nb_suppr=0;
 	for($i=0;$i<count($reinit);$i++){
 		//if(strlen(my_ereg_replace("[A-Za-z0-9_.]","",$reinit[$i]))!=0) {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_.\-]","",$reinit[$i]))!=0) {
+		if(strlen(preg_replace("/[A-Za-z0-9_.\-]/","",$reinit[$i]))!=0) {
 			$msg.="Le choix $reinit[$i] n'est pas valide.<br />\n";
 		}
 		else{
@@ -73,7 +73,7 @@ if(isset($reinitialiser)) {
 				$temp_dir=$lig_td->temp_dir;
 
 				//if(($temp_dir=="")||(strlen(my_ereg_replace("[A-Za-z0-9_.]","",$temp_dir))!=0)){
-				if(($temp_dir=="")||(strlen(my_ereg_replace("[A-Za-z0-9_.-]","",$temp_dir))!=0)){
+				if(($temp_dir=="")||(strlen(preg_replace("/[A-Za-z0-9_.-]/","",$temp_dir))!=0)){
 					$msg.="La valeur de temp_dir pour $reinit[$i] est inattendue: <font color='green'>'</font>$temp_dir<font color='green'>'</font><br />\n";
 				}
 				else{
@@ -121,11 +121,11 @@ else{
 		$nb_suppr=0;
 		for($i=0;$i<count($suppr);$i++){
 			//if(!my_ereg("_[A-Za-z0-9]{40}",$suppr[$i])) {
-			if(!my_ereg("_",$suppr[$i])) {
+			if(!preg_match("/_/",$suppr[$i])) {
 				$msg.="Le choix $suppr[$i] n'est pas valide.<br />\n";
 			}
 			//elseif(strlen(my_ereg_replace("[A-Za-z0-9_.]","",$suppr[$i]))!=0) {
-			elseif(strlen(my_ereg_replace("[A-Za-z0-9_.-]","",$suppr[$i]))!=0) {
+			elseif(strlen(preg_replace("/[A-Za-z0-9_.-]/","",$suppr[$i]))!=0) {
 				$msg.="Le choix $suppr[$i] n'est pas valide.<br />\n";
 			}
 			else{
@@ -294,8 +294,16 @@ else{
 	$bizarre=0;
 	$alt=1;
 	while ($file=readdir($handle)) {
+		$afficher_dossier='y';
+		if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
+			$pref_multi=$_COOKIE['RNE']."_";
+			if(!preg_match("/^$pref_multi/", $file)) {
+				$afficher_dossier='n';
+			}
+		}
+
 		//if(($file!=".")&&($file!="..")) {
-		if(($file!=".")&&($file!="..")&&($file!="index.html")) {
+		if(($file!=".")&&($file!="..")&&($file!="index.html")&&($afficher_dossier=='y')) {
 			//$num=$cpt%2;
 			//echo "<tr class='lig".$num."'>\n";
 			$alt=$alt*(-1);
@@ -305,7 +313,7 @@ else{
 			//if(strlen(my_ereg_replace("[A-Za-z0-9_.]","",$file))!=0) {
 			//if((strlen(my_ereg_replace("[A-Za-z0-9_.]","",$file))!=0)||(!my_ereg("_[A-Za-z0-9]{40}",$file))) {
 			//if((strlen(my_ereg_replace("[A-Za-z0-9_.-]","",$file))!=0)||(!my_ereg("_",$file))) {
-			if((strlen(my_ereg_replace("[A-Za-z0-9_.-]","",$file))!=0)||(!my_ereg("_",$file))) {
+			if((strlen(preg_replace("/[A-Za-z0-9_.-]/","",$file))!=0)||(!preg_match("/_/",$file))) {
 				// Il y a des caractères inattendus dans le nom de dossier
 				$bizarre++;
 
@@ -331,7 +339,7 @@ else{
 			}
 			else{
 				$tabtmp=explode("_",$file);
-				if(strlen(my_ereg_replace("[A-Za-z0-9.-]","",$tabtmp[0]))!=0) {
+				if(strlen(preg_replace("/[A-Za-z0-9.-]/","",$tabtmp[0]))!=0) {
 					$bizarre++;
 
 					echo "<td colspan='5' style='background-color:red; text-align:center;'>$file</td>\n";
