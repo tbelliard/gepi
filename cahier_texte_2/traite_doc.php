@@ -44,8 +44,8 @@ function corriger_extension($ext) {
 function creer_repertoire($path) {
 	if (file_exists($path)) return true;
 
-	mkdir($path, 0777);
-	chmod($path, 0777);
+	@mkdir($path, 0777);
+	@chmod($path, 0777);
 	$ok = false;
 	if ($f = @fopen("$path/.test", "w")) {
 		@fputs($f, '<'.'?php $ok = true; ?'.'>');

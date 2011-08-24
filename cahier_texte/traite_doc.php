@@ -30,8 +30,9 @@ if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_
 
 
 function deplacer_fichier_upload($source, $dest) {
-    $ok = @copy($source, $dest);
-    if (!$ok) $ok = @move_uploaded_file($source, $dest);
+    
+    $ok = copy($source, $dest);
+    if (!$ok) $ok = move_uploaded_file($source, $dest);
     return $ok;
 }
 
@@ -72,7 +73,7 @@ function creer_repertoire($base, $subdir) {
 
 
 function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
-    global $max_size, $total_max_size, $edit_devoir;
+    global $max_size, $total_max_size, $edit_devoir, $multisite;
     /* Vérification du type de fichier */
     //if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
     if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))) {
@@ -116,11 +117,19 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
     /* Recopier le fichier */
 
     $dest = '../documents/';
+    $dossier = '';
+    $multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
+    if ((isset($multisite) && $multisite == 'y') && is_dir('../documents/'.$multi) === false){
+        @mkdir('../documents/'.$multi);
+        $dest .= $multi;
+    }elseif((isset($multisite) && $multisite == 'y')){
+        $dest .= $multi;
+    }
     if (isset($edit_devoir))
         $dossier = "cl_dev".$_POST['id_groupe'];
     else
         $dossier = "cl".$_POST['id_groupe'];
-    if (creer_repertoire('../documents', $dossier)) {
+    if (creer_repertoire($dest, $dossier)) {
       $dest .= $dossier.'/';
     } else {
       return "Problème d'écriture sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
