@@ -1904,7 +1904,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * Vérifie et mets à jour l'ensemble de la table d'agrégation des absences pour cet élève, sur l'ensemble des années scolaires incluant $dateDebut et $dateFin,
 	 * et aussi avant et après les années scolaires si des saisies sont présentes.
-	 * Cela permet de remplir la table obligatoirement pour l'année en cours, et de la remplir avant et après l'année en cours si des saisies le nécessite
+	 * Cela permet de remplir la table obligatoirement pour l'année en cours (avec un mois de débordement sur les autres années), et de la remplir avant et après l'année en cours si des saisies le nécessite
 	 * 
 	 * @TODO		implement the method
 	 *
@@ -1921,28 +1921,34 @@ class Eleve extends BaseEleve {
 		//on va vérifier antérieurement à la date de début
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;
-			if (EdtHelper::getPremierJourAnneeScolaire($dateDebutClone) < $dateDebutClone) {//si l'année débute avant la date précisée, on va faire deux mise à jour, comme ça on est sur que à partir du début de l'année la table sera remplie
-				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(null, EdtHelper::getPremierJourAnneeScolaire($dateDebutClone));
-				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(EdtHelper::getPremierJourAnneeScolaire($dateDebutClone), $dateDebutClone);
+			$premier_jour_annee_scolaire_large = EdtHelper::getPremierJourAnneeScolaire($dateDebutClone);
+			$premier_jour_annee_scolaire_large->modify("-1 month");
+			if ($premier_jour_annee_scolaire_large < $dateDebutClone) {//si l'année débute avant la date précisée, on va faire deux mise à jour, comme ça on est sur que à partir du début de l'année la table sera remplie
+				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(null, $premier_jour_annee_scolaire_large);
+				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($premier_jour_annee_scolaire_large, $dateDebutClone);
 			} else {
 				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(null, $dateDebutClone);
 			}
 		} else {//si la date de début est nulle, on prend le début de l'année en cours
 			$dateDebutClone = EdtHelper::getPremierJourAnneeScolaire($dateFin);
+			$dateDebutClone->modify("-1 month");
 			$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(null, $dateDebutClone);
 		}
 		
 		//on va vérifier postérieurement à la date de fin
 		if ($dateFin != null) {
 			$dateFinClone = clone $dateFin;
-			if (EdtHelper::getDernierJourAnneeScolaire($dateFinClone) > $dateFinClone) {
-				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateFinClone, EdtHelper::getDernierJourAnneeScolaire($dateFinClone));
-				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(EdtHelper::getDernierJourAnneeScolaire($dateFinClone), null);
+			$dernier_jour_annee_scolaire_large = EdtHelper::getDernierJourAnneeScolaire($dateFinClone);
+			$dernier_jour_annee_scolaire_large->modify("+1 month");
+			if ($dernier_jour_annee_scolaire_large > $dateFinClone) {
+				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateFinClone, $dernier_jour_annee_scolaire_large);
+				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dernier_jour_annee_scolaire_large, null);
 			} else {
 				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateFinClone, null);
 			}
 		} else {//si la date de fin est nulle, on va prendre comme date de fin la fin de l'année
 			$dateFinClone = EdtHelper::getDernierJourAnneeScolaire($dateDebut);
+			$dateFinClone->modify("+1 month");
 			$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateFinClone, null);
 		}
 		
