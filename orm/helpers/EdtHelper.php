@@ -127,7 +127,7 @@ class EdtHelper {
         if ($dt->format('W') < 33 || $dt->format('z') < 10) {//on rajoute $dt->format('z') < 10 pour le jour de l'année, sinon un 1 janvier peut etre semaine 52
             $annee_en_cours=$annee_en_cours-1;
         } 
-        $dt->setDate($annee_en_cours,9,1);
+        $dt->setDate($annee_en_cours,8,31);
         $dt->setTime(0,0,0);
 		return($dt);
     } 
@@ -139,7 +139,7 @@ class EdtHelper {
    */
     public static function getDernierJourAnneeScolaire($v = 'now'){
     	$dt = EdtHelper::getPremierJourAnneeScolaire($v);
-    	$dt->modify('+10 month');
+    	$dt->modify('+11 months');        
         return($dt);           
     } 
     

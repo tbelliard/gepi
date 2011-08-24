@@ -58,6 +58,7 @@ if ($action == "vidage" || $action=="regeneration") {
 require_once("../../orm/helpers/EdtHelper.php");
 $date_debut =  EdtHelper::getPremierJourAnneeScolaire();
 $date_fin = EdtHelper::getDernierJourAnneeScolaire();
+$date_fin->setTime(23,59,59);
 
 // header
 $titre_page = "Gestion de la table d'agrégation des demi-journées d'absence";
