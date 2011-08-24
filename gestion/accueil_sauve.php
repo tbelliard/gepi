@@ -1475,7 +1475,7 @@ if (isset($action) and ($action == 'zip'))  {
 		  $chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
 		  $dossier_a_traiter = '../photos/'; //le dossier à traiter
 		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			$dossier_a_traiter .=getSettingValue("gepiSchoolRne")."/";
+			$dossier_a_traiter .=$_COOKIE['RNE']."/";
 		  }
 		  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
 		  break;
