@@ -64,11 +64,11 @@ $gepiPath="/gepi";
 
 /*
 if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
-	$RNE = isset($_REQUEST['rne']) ? $_REQUEST['rne'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization'] : (isset($_COOKIE['RNE']) ? $_COOKIE['RNE'] : NULL));
+	$RNE = isset($_REQUEST['rne']) ? $_REQUEST['rne'] : (isset($_REQUEST['RNE']) ? $_REQUEST['RNE'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization']));
 	if (!isset($RNE) || $RNE == 'RNE') {
 		echo 'Erreur : Numéro d\'établissement manquant dans la requête (paramètre rne ou organization).'; die();
 	} else {
-		$init = parse_ini_file(dirname(__FILE__)."/multisite.ini", TRUE);
+		$init = parse_ini_file(dirname(__FILE__)."/multisite.ini.php", TRUE);
 		if (	!isset($init[$RNE]["nomhote"]) || 
 			!isset($init[$RNE]["nombase"]) || 
 			!isset($init[$RNE]["mysqluser"]) || 
@@ -83,7 +83,8 @@ if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
 		$dbPass		= $init[$RNE]["mysqlmdp"];
 		$gepiPath	= $init[$RNE]["pathname"];
 	}
-}*/
+}
+*/
 
 
 $mode_debug = false;

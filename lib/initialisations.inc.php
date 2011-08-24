@@ -186,8 +186,10 @@ if ($version == 4) {
 }
 
 // Pour le multisite
-if (isset($_GET["rne"])) {
-	setcookie('RNE', $_GET["rne"], null, '/');
+if (isset($_REQUEST['rne'])) {
+	setcookie('RNE', $_REQUEST['rne'], null, '/');
+} elseif (isset($_REQUEST['RNE'])) {
+	setcookie('RNE', $_REQUEST['RNE'], null, '/');
 }
 // Pour le choix de la préférence de source d'authentification pour l'authentification multiauth
 if (isset($_REQUEST["source"])) {
