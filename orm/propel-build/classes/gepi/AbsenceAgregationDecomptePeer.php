@@ -52,9 +52,9 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		$num_rows = mysql_num_rows($result);
 		if ($num_rows>0 && $num_rows < 50) {
 			//on va corriger la table pour ces élèves là
+			$eleve_non_fantome = true;
 			while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 		    	$eleve = EleveQuery::create()->findOneByIdEleve($row[0]);
-		    	echo'on vérifie suite a une absence de marqueur '.$row[0].'<br/>';
 		    	$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dateDebutClone,$dateFinClone);
 			}
 			//après avoir corrigé on relance le test
@@ -75,28 +75,33 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			$date_agregation_selection .= ' and a_agregation_decompte.DATE_DEMI_JOUNEE <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 		}
 				
-		//on va vérifier que tout les élèves ont bien des entrées dans la table d'agrégation pour cette période
+		//on va vérifier que tout les élèves ont bien le bon nombres entrées dans la table d'agrégation pour cette période
 		$query = '
-			SELECT distinct eleves.ID_ELEVE
+			SELECT eleves.ID_ELEVE, count(*) as count_entrees
 			FROM `eleves` 
 			LEFT JOIN (
-				SELECT distinct ELEVE_ID
+				SELECT ELEVE_ID
 				FROM `a_agregation_decompte`
 				WHERE '.$date_agregation_selection.') as a_agregation_decompte_selection
 			ON (eleves.ID_ELEVE=a_agregation_decompte_selection.ELEVE_ID)
-			WHERE a_agregation_decompte_selection.ELEVE_ID is null';
+			group by eleves.ID_ELEVE';
 		$result = mysql_query($query);
-		$num_rows = mysql_num_rows($result);
-		if ($num_rows>0 && $num_rows < 50) {
+		$wrong_eleve = array();
+		$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600-$dateDebutClone->format('U'))/(3600*12));
+		while($row = mysql_fetch_array($result)){
+			if ($row[1]!=$nbre_demi_journees) {
+				$wrong_eleve[]=$row[0];
+			}
+		}
+		if (count($wrong_eleve) < 50) {
 			//on va corriger la table pour ces élèves là
-			while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-		    	$eleve = EleveQuery::create()->findOneByIdEleve($row[0]);
-		    	echo'on vérifie suite a une absence d entrée '.$row[0].'<br/>';
-		    	$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dateDebutClone,$dateFinClone);
+			foreach($wrong_eleve as $idEleve) {
+				$eleve = EleveQuery::create()->findOneByIdEleve($idEleve);
+				$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dateDebutClone,$dateFinClone);
 			}
 			//après avoir corrigé on relance le test
 			return(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dateDebutClone, $dateFinClone));
-		} elseif ($num_rows>0) {
+		} else {
 			return false;
 		}
 		
@@ -106,45 +111,13 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		 * - est-ce que la date updated_at de mise à jour de la table est bien postérieure aux date de modification des saisies et autres entrées
 		 * - on va compter le nombre de demi journée, elle doivent être toutes remplies
 		 */
-		//$query = 'select ELEVE_ID is not null, union_date <= as updated_at, count_demi_jounee
-		$query = 'select union_date, updated_at, count_demi_jounee, count_eleve
+		$query = 'select union_date, updated_at
 		
 		FROM
 			(SELECT updated_at 
 			FROM a_agregation_decompte WHERE '.$date_agregation_selection.'	
 			ORDER BY updated_at DESC LIMIT 1) as updated_at_select
 
-		LEFT JOIN (';
-		if ($dateDebutClone != null && $dateFinClone != null) {
-			$query .= '
-			(SELECT count(*) as count_demi_jounee from  a_agregation_decompte WHERE '.$date_agregation_selection;
-		} else {
-			$query .= '
-			(SELECT -1 as count_demi_jounee from  a_agregation_decompte limit 1';
-		}
-			$query .= '
-			) as count_demi_journee_select
-		) ON 1=1
-		
-		LEFT JOIN (';
-		if ($dateDebutClone != null && $dateFinClone != null) {
-			$query .= '
-			(SELECT count(DISTINCT eleve_id) as count_eleve from  a_agregation_decompte WHERE '.$date_agregation_selection;
-		} else {
-			$query .= '
-			(SELECT -1 as count_demi_jounee from  a_agregation_decompte limit 1';
-		}
-			$query .= '
-			) as count_eleve_id_select
-		) ON 1=1
-		
-		LEFT JOIN (
-			(SELECT count(*) as count_manquement from  a_agregation_decompte 
-			WHERE '.$date_agregation_selection.'
-			AND manquement_obligation_presence=1
-			) as count_select_manquement
-		) ON 1=1
-		
 		LEFT JOIN (
 			(SELECT union_date from 
 				(SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and '.$date_saisies_selection.'
@@ -169,18 +142,8 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		mysql_free_result($result_query);
 		if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
 			return false;
-		} else if ($row['count_demi_jounee']==-1){
-			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		} else {
-			$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600-$dateDebutClone->format('U'))/(3600*12)); // on compte les tranches de 12h
-            //on ajoute une heure à la date de fin pour dépasser 23:59:59 et bien dépasser la tranche de 00:00
-            //si on a un debut à 00:00 et une fin la même journée à 23:59, en ajoutant une heure à la fin on a largement deux tranches de 12h completes
-            //donc bien deux demi journées de décomptées
-            if ($row['count_demi_jounee'] == $nbre_demi_journees*EleveQuery::create()->count()) {
-				return true;
-            } else {
-            	return false;
-            }
+			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		}
 	}
 } // AbsenceAgregationDecomptePeer
