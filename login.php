@@ -168,7 +168,7 @@ $test = 'templates/accueil_externe.php' ;
 //==================================
 //Utilisation tbs_multisite
 	$tbs_multisite = "";
-	if (getSettingValue("tbs_multisite") == "y" AND isset($_GET["rne"]) AND $_GET["rne"] != '') {
+	if ($multisite == "y" AND isset($_GET["rne"]) AND $_GET["rne"] != '') {
 		$tbs_multisite = $_GET["rne"];
 	}
 
