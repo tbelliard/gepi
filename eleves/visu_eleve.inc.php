@@ -1479,9 +1479,9 @@ Patientez pendant l'extraction des données... merci.
 					echo "<tr class='lig$alt'>\n";
 					echo "<th>".htmlentities($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlentities($tab_ele['groupes'][$i]['description'])."</span></th>\n";
 					echo "<td>\n";
-					for($j=0;$j<count($tab_ele['groupes'][$i]['prof']);$j++) {
+                                        $nbre_professeurs = isset($tab_ele['groupes'][$i]['prof']) ? count($tab_ele['groupes'][$i]['prof']) : 0;
+					for($j=0;$j<$nbre_professeurs;$j++) {
 						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {
-							//echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."'>";
 							echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 							echo ",%0d%0aCordialement.'>";
