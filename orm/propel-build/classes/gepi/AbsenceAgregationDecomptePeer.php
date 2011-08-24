@@ -16,7 +16,7 @@
 class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	/**
 	 *
-	 * Vérifie que l'ensemble de la table d'agrégation est à jours, pour tous les élèves. Corrige la table dans certain cas non couteux, sinon renvoi faux
+	 * Vérifie que l'ensemble de la table d'agrégation est à jours, pour tous les élèves. Corrige automatiquement la table dans certain cas non couteux, sinon renvoi faux
 	 *
 	 * @param      DateTime $dateDebut date de début pour la prise en compte du test
 	 * @param      DateTime $dateFin date de fin pour la prise en compte du test
@@ -24,16 +24,26 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	 *
 	 */
 	public static function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-
+		$debug = false;
+		if ($debug) {
+			print_r('AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable() called<br/>');
+		}
+		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les dates passées en paramêtre.
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
 		if ($dateDebut != null) {
+			if ($debug) {
+				print_r('Date début '.$dateDebut->format('Y-m-d').'<br/>');
+			}
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
 		}
 		if ($dateFin != null) {
+			if ($debug) {
+				print_r('Date fin '.$dateFin->format('Y-m-d').'<br/>');
+			}
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
 		}
@@ -51,15 +61,23 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		$result = mysql_query($query);
 		$num_rows = mysql_num_rows($result);
 		if ($num_rows>0 && $num_rows < 50) {
+			if ($debug) {
+				print_r('Il manque des marqueurs de fin de calcul<br/>');
+			}
 			//on va corriger la table pour ces élèves là
-			$eleve_non_fantome = true;
 			while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-		    	$eleve = EleveQuery::create()->findOneByIdEleve($row[0]);
-		    	$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dateDebutClone,$dateFinClone);
+				$eleve = EleveQuery::create()->findOneByIdEleve($row[0]);
+				if ($debug) {
+					print_r('recalcul pour l eleve '.$eleve->getIdEleve().'<br/>');
+				}
+				$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dateDebutClone,$dateFinClone);
 			}
 			//après avoir corrigé on relance le test
 			return(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dateDebutClone, $dateFinClone));
 		} elseif ($num_rows>0) {
+			if ($debug) {
+				print_r('retourne faux : Il manque trop de marqueurs de fin de calcul<br/>');
+			}
 			return false;
 		}
 		
@@ -90,18 +108,27 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600-$dateDebutClone->format('U'))/(3600*12));
 		while($row = mysql_fetch_array($result)){
 			if ($row[1]!=$nbre_demi_journees) {
+				if ($debug) {
+					print_r('Il manque des entrees pour l eleve '.$row[0].'<br/>');
+				}
 				$wrong_eleve[]=$row[0];
 			}
 		}
-		if (count($wrong_eleve) < 50) {
+		if (count($wrong_eleve) > 0 && count($wrong_eleve) < 50) {
 			//on va corriger la table pour ces élèves là
 			foreach($wrong_eleve as $idEleve) {
 				$eleve = EleveQuery::create()->findOneByIdEleve($idEleve);
+				if ($debug) {
+					print_r('recalcul pour l eleve '.$eleve->getIdEleve().'<br/>');
+				}
 				$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dateDebutClone,$dateFinClone);
 			}
 			//après avoir corrigé on relance le test
 			return(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dateDebutClone, $dateFinClone));
-		} else {
+		} elseif (!empty($wrong_eleve) > 0) {
+			if ($debug) {
+				print_r('retourne faux : Il manque des saisies sur '.count($wrong_eleve).' eleves<br/>');
+			}
 			return false;
 		}
 		
@@ -141,8 +168,14 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		$row = mysql_fetch_array($result_query);
 		mysql_free_result($result_query);
 		if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
+			if ($debug) {
+				print_r('retourne faux : Les date de mise a jour de la table sont trop anciennes<br/>');
+			}
 			return false;
 		} else {
+			if ($debug) {
+				print_r('retourne vrai<br/>');
+			}
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		}
 	}
