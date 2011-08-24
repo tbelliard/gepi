@@ -434,7 +434,7 @@ check_token();
 		// En multisite, on ajoute le répertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			  // On récupère le RNE de l'établissement
-		  $repertoire="../photos/".getSettingValue("gepiSchoolRne")."/personnels/";
+		  $repertoire="../photos/".$_COOKIE['RNE']."/personnels/";
 		}else{
 		  $repertoire="../photos/personnels/";
 		}
@@ -742,7 +742,7 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 	// En multisite, on ajoute le répertoire RNE
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 		  // On récupère le RNE de l'établissement
-	  $repertoire="../photos/".getSettingValue("gepiSchoolRne")."/personnels/";
+	  $repertoire="../photos/".$_COOKIE['RNE']."/personnels/";
 	}else{
 	  $repertoire="../photos/personnels/";
 	}

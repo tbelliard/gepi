@@ -70,7 +70,7 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 // En multisite, on ajoute le répertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	  // On récupère le RNE de l'établissement
-	$rep_photos='../photos/'.getSettingValue("gepiSchoolRne").'/eleves/';
+	$rep_photos='../photos/'.$_COOKIE['RNE'].'/eleves/';
 
 	//============================================
 	// Pour le multisite

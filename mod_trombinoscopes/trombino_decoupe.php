@@ -264,7 +264,7 @@ if(isset($_POST['upload_scan'])) {
 
 				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 					// On récupère le RNE de l'établissement
-					$repertoire2=getSettingValue("gepiSchoolRne")."/";
+					$repertoire2=$_COOKIE['RNE']."/";
 				}
 				else {
 					$repertoire2="";

@@ -56,7 +56,7 @@ $msg="";
 // En multisite, on ajoute le répertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	  // On récupère le RNE de l'établissement
-  $rep_photos='../photos/'.getSettingValue("gepiSchoolRne").'/personnels/';
+  $rep_photos='../photos/'.$_COOKIE['RNE'].'/personnels/';
 }else{
   $rep_photos='../photos/personnels/';
 }

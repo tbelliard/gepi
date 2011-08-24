@@ -27,7 +27,7 @@ require_once("../../lib/initialisations.inc.php");
 // En multisite, on ajoute le répertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			  // On récupère le RNE de l'établissement
-		  $repertoire="../../photos/".getSettingValue("gepiSchoolRne")."/eleves/";
+		  $repertoire="../../photos/".$_COOKIE['RNE']."/eleves/";
 		}else{
 		  $repertoire="../../photos/eleves/";
 		}

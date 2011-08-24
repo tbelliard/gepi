@@ -57,7 +57,7 @@ $etape = isset($_GET["etape"]) ? $_GET["etape"] : NULL;
 
 // ======================= Traitement des données ================================
 // On récupère le RNE de l'établissement en question
-$RNE = getSettingValue("gepiSchoolRne");
+$RNE = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'] : getSettingValue("gepiSchoolRne");
 if ($RNE === '') {
 	$msg = "Attention, votre RNE n'est pas renseigné dans la page des <a href=\"gestion/param_gen.php\">paramètres généraux.</a>";
 } else {

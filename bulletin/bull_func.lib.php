@@ -1088,7 +1088,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			// On récupère le RNE de l'établissement
-			$rep_photos="../photos/".getSettingValue("gepiSchoolRne")."/eleves/";
+			$rep_photos="../photos/".$_COOKIE['RNE']."/eleves/";
 		}else{
 			$rep_photos="../photos/eleves/";
 		}

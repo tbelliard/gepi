@@ -3104,7 +3104,7 @@ function test_ecriture_style_screen_ajout() {
 function cree_repertoire_multisite() {
   if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 		// On récupère le RNE de l'établissement
-	if (!$repertoire=getSettingValue("gepiSchoolRne"))
+	if (!$repertoire=$_COOKIE['RNE'])
 	  return FALSE;
 	//on vérifie que le dossier photos/RNE_Etablissement n'existe pas
 	if (!is_dir("../photos/".$repertoire)){
@@ -3197,7 +3197,7 @@ function efface_photos($photos) {
 	$fichier_sup=array();
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 		  // On récupère le RNE de l'établissement
-	  if (!$repertoire=getSettingValue("gepiSchoolRne"))
+	  if (!$repertoire=$_COOKIE['RNE'])
 		return ("Erreur lors de la récupération du dossier établissement.");
 	} else {
 	  $repertoire="";
@@ -3349,7 +3349,7 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 	  $chemin_stockage = $path.$dirname."_photos".$suffixe_zip.".zip";
 	  $dossier_a_traiter = $path.'photos/'; //le dossier à traiter
 	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		$dossier_a_traiter .=getSettingValue("gepiSchoolRne")."/";
+		$dossier_a_traiter .=$_COOKIE['RNE']."/";
 	  }
 	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
 	  break;

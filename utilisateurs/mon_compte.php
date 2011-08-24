@@ -262,7 +262,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		// En multisite, on ajoute le répertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			  // On récupère le RNE de l'établissement
-		  $repertoire="../photos/".getSettingValue("gepiSchoolRne")."/personnels/";
+		  $repertoire="../photos/".$_COOKIE['RNE']."/personnels/";
 		}else{
 		  $repertoire="../photos/personnels/";
 		}
@@ -378,7 +378,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		// En multisite, on ajoute le répertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			  // On récupère le RNE de l'établissement
-		  $repertoire="../photos/".getSettingValue("gepiSchoolRne")."/eleves/";
+		  $repertoire="../photos/".$_COOKIE['RNE']."/eleves/";
 		}else{
 		  $repertoire="../photos/eleves/";
 		}
@@ -834,7 +834,7 @@ if(($_SESSION['statut']=='administrateur')||
 				// En multisite, on ajoute le répertoire RNE
 				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 					// On récupère le RNE de l'établissement
-					$repertoire="../photos/".getSettingValue("gepiSchoolRne")."/personnels/";
+					$repertoire="../photos/".$_COOKIE['RNE']."/personnels/";
 				}
 				else{
 					$repertoire="../photos/personnels/";

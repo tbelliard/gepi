@@ -218,7 +218,7 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 		// copy des fichiers vers /photos
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			  // On récupère le RNE de l'établissement
-		  if (!$repertoire=getSettingValue("gepiSchoolRne"))
+		  if (!$repertoire=$_COOKIE['RNE'])
 			return ("Erreur lors de la récupération du dossier établissement.");
 		} else {
 		  $repertoire="";
@@ -307,7 +307,7 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 // En multisite, on ajoute le répertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	  // On récupère le RNE de l'établissement
-  $repertoire=getSettingValue("gepiSchoolRne")."/";
+  $repertoire=$_COOKIE['RNE']."/";
 }else{
   $repertoire="";
 }

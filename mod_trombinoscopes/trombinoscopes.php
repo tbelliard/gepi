@@ -119,67 +119,6 @@ if (empty($_GET['id'])) {$id = ''; } else {$id=$_GET['id']; }
 if (empty($_POST['valider'])) {$valider = ''; } else {$valider=$_POST['valider']; }
 
 
-
-
-
-/*
-// =================================
-// AJOUT: boireaus
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')||($_SESSION['statut']=='professeur')) {
-	$chaine_options_classes="";
-
-	if($_SESSION['statut']=='administrateur') {
-		$sql="SELECT id, classe FROM classes ORDER BY classe";
-	}
-	elseif($_SESSION['statut']=='scolarite') {
-		$sql="SELECT id, classe FROM classes ORDER BY classe";
-	}
-	elseif($_SESSION['statut']=='cpe') {
-		$sql="SELECT id, classe FROM classes ORDER BY classe";
-	}
-	elseif($_SESSION['statut']=='professeur') {
-		$sql="SELECT id, classe FROM classes ORDER BY classe";
-	}
-
-	$res_class_tmp=mysql_query($sql);
-	if(mysql_num_rows($res_class_tmp)>0){
-		$id_class_prec=0;
-		$id_class_suiv=0;
-		$temoin_tmp=0;
-	
-		$cpt_classe=0;
-		$num_classe=-1;
-	
-		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-			if($lig_class_tmp->id==$id_classe){
-				// Index de la classe dans les <option>
-				$num_classe=$cpt_classe;
-	
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
-				$temoin_tmp=1;
-				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
-					$id_class_suiv=$lig_class_tmp->id;
-				}
-				else{
-					$id_class_suiv=0;
-				}
-			}
-			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
-			}
-	
-			if($temoin_tmp==0){
-				$id_class_prec=$lig_class_tmp->id;
-			}
-	
-			$cpt_classe++;
-		}
-	}
-}
-// =================================
-*/
-
 // =========== Style spécifique ================
 $style_specifique = "mod_trombinoscopes/styles/styles";
 //**************** EN-TETE *********************
@@ -242,18 +181,7 @@ function reactiver(mavar) {
 	if($_SESSION['statut']=='administrateur') {
 		echo " | <a href='trombino_decoupe.php'>Découpe trombinoscope</a>";
 	}
-	/*
-	function acces($id,$statut) {
-		$tab_id = explode("?",$id);
-		$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-		$droit = @mysql_result($query_droits, 0, $statut);
-		if ($droit == "V") {
-			return "1";
-		} else {
-			return "0";
-		}
-	}
-	*/
+
 	if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
 		//echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
 
@@ -358,13 +286,6 @@ function reactiver(mavar) {
 	$GepiAccesEleTrombiPersonnels=getSettingValue("GepiAccesEleTrombiPersonnels");
 	$GepiAccesEleTrombiProfsClasse=getSettingValue("GepiAccesEleTrombiProfsClasse");
 
-	/*
-	echo "\$GepiAccesEleTrombiTousEleves=$GepiAccesEleTrombiTousEleves<br />";
-	echo "\$GepiAccesEleTrombiElevesClasse=$GepiAccesEleTrombiElevesClasse<br />";
-	echo "\$GepiAccesEleTrombiPersonnels=$GepiAccesEleTrombiPersonnels<br />";
-	echo "\$GepiAccesEleTrombiProfsClasse=$GepiAccesEleTrombiProfsClasse<br />";
-	*/
-
 	$affichage_div_gauche="n";
 
 	if ( ( $classe === 'toutes' or $groupe === 'toutes' or $equipepeda === 'toutes' or $discipline === 'toutes' ) or ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) ) {
@@ -397,7 +318,6 @@ function reactiver(mavar) {
 				$classe = 'toutes';
 			}
 
-			//if ( $classe == '' ) {
 			if (($classe=='')&&($_SESSION['statut']=='professeur')) {
 				// Le prof ne voit par défaut que ses classes... mais en sélectionnant 'Toutes', il peut provoquer l'affichage des autres classes dans le champ select.
 				$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
@@ -407,15 +327,10 @@ function reactiver(mavar) {
 			}
 
 			if (($classe=='')&&($_SESSION['statut']=='eleve')) {
-				/*
-				if($GepiAccesEleTrombiTousEleves=="yes") {
-					$classe = 'toutes';
-				}
-				else {
-				*/
+
 					$requete_classe_prof = ("SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='".$_SESSION['login']."'
 					ORDER BY c.nom_complet ASC");
-				//}
+
 			}
 
 			if ( $classe == 'toutes' ) {
@@ -436,7 +351,6 @@ function reactiver(mavar) {
 				echo "<option value='toutes'>voir toutes les classes</option>\n";
 			}
 
-			//if ( $classe == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
 			if ( $classe == 'toutes' and ($_SESSION['statut'] == 'professeur')||($_SESSION['statut'] == 'eleve')) {
 				echo "<option value=''>voir mes classes</option>\n";
 			}
@@ -503,11 +417,7 @@ function reactiver(mavar) {
 				echo " selected='selected'";
 			}
 			echo "onclick=\"reactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
-			/*
-			if ( $groupe != 'toutes' ) {
-				echo "<option value='toutes'>voir tous les groupes</option>\n";
-			}
-			*/
+
 			if (( $groupe != 'toutes' )&&($_SESSION['statut']!='eleve')) {
 				echo "<option value='toutes'>voir tous les groupes</option>\n";
 			}
@@ -1165,10 +1075,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					}
 	
 					$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
-					//$photo = "../photos/".$repertoire."/".$nom_photo;
 					$photo = $nom_photo;
 	
-					//if (($nom_photo != "") and (file_exists($photo))) {
 					if (($nom_photo) and (file_exists($photo))) {
 						$valeur=redimensionne_image($photo);
 	
@@ -1176,24 +1084,6 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 						// largeur et hauteur de l'image d'origine
 						$largeur = $info_image[0];
 						$hauteur = $info_image[1];
-						/*
-						// largeur et/ou hauteur maximum à afficher
-						if(basename($_SERVER['PHP_SELF'],".php") === "trombi_impr") {
-							// si pour impression
-							$taille_max_largeur = getSettingValue("l_max_imp_trombinoscopes");
-							$taille_max_hauteur = getSettingValue("h_max_imp_trombinoscopes");
-						} else {
-						// si pour l'affichage écran
-							$taille_max_largeur = getSettingValue("l_max_aff_trombinoscopes");
-							$taille_max_hauteur = getSettingValue("h_max_aff_trombinoscopes");
-						}
-					
-						// calcule le ratio de redimensionnement
-						$ratio_l = $largeur / $taille_max_largeur;
-						$ratio_h = $hauteur / $taille_max_hauteur;
-						$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
-						*/
-	
 						$ratio=$largeur/$largeur_photo;
 	
 						// définit largeur et hauteur pour la nouvelle image
@@ -1204,15 +1094,11 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 						$valeur[1]=$nouvelle_hauteur;
 	
 					} else {
-						//$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
-						//$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
-	
 						$valeur[0]=$largeur_photo;
 						$valeur[1]=$largeur_photo;
 					}
 	
 					echo "<img src='";
-					//if (($nom_photo != "") and (file_exists($photo))) {
 					if (($nom_photo) and (file_exists($photo))) {
 						echo $photo;
 					}
@@ -1220,38 +1106,26 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 						echo "images/trombivide.jpg";
 					}
 	
-					//echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt='".$prenom_es." ".$nom_es."' title='".$prenom_es." ".$nom_es."' />\n";
 					echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
 					echo "<br /><span style='font-family: Arial, Helvetica, sans-serif'>\n";
-	
-					//echo "<b>$nom_es</b></span><br />\n";
-					//echo $prenom_es;
+
 					echo $nom_prenom_aff;
 	
 					if ( $matiere_prof[$i] != '' ) {
 						echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>\n";
 					}
 					if (( $action_affiche === 'groupe' )&&(strstr($current_group['classlist_string'],","))) {
-						/*
-						$sql="SELECT c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='".$login_trombinoscope[$i]."' ORDER BY jec.periode;";
-						$res_class_ele=mysql_query($sql);
-						*/
 						$tab_ele_classes=get_class_from_ele_login($login_trombinoscope[$i]);
 						echo "<br />".$tab_ele_classes['liste'];
 					}
 	
 					$i = $i + 1;
-					//echo "</span>\n";
 				}
 				else{
 					echo "&nbsp;";
 				}
-			//	echo "</td>\n";
 				echo "</div>\n";
-			//}
-			//echo "</tr>\n";
-	
-			//echo "<div style='width: 100%; height: ".$marge."px; border: 1px solid green;'></div>\n";
+
 		}
 		echo "</div>\n";
 		echo "<p align='center'><img src='images/barre.gif' width='550' height='2' alt='Barre' /></p>\n";
@@ -1295,10 +1169,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				}
 
 				$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
-				//$photo = "../photos/".$repertoire."/".$nom_photo;
 				$photo = $nom_photo;
 
-				//if (($nom_photo != "") and (file_exists($photo))) {
 				if (($nom_photo) and (file_exists($photo))) {
 					$valeur=redimensionne_image($photo);
 				} else {
@@ -1307,7 +1179,6 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				}
 
 				echo "<img src='";
-				//if (($nom_photo != "") and (file_exists($photo))) {
 				if (($nom_photo) and (file_exists($photo))) {
 					echo $photo;
 				}
@@ -1315,28 +1186,21 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					echo "images/trombivide.jpg";
 				}
 
-				//echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt='".$prenom_es." ".$nom_es."' title='".$prenom_es." ".$nom_es."' />\n";
 				echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
 				echo "<br /><span style='font-family: Arial, Helvetica, sans-serif'>\n";
 
-				//echo "<b>$nom_es</b></span><br />\n";
-				//echo $prenom_es;
 				echo $nom_prenom_aff;
 
 				if ( $matiere_prof[$i] != '' ) {
 					echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>\n";
 				}
 				if (( $action_affiche === 'groupe' )&&(strstr($current_group['classlist_string'],","))) {
-					/*
-					$sql="SELECT c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='".$login_trombinoscope[$i]."' ORDER BY jec.periode;";
-					$res_class_ele=mysql_query($sql);
-					*/
+
 					$tab_ele_classes=get_class_from_ele_login($login_trombinoscope[$i]);
 					echo "<br />".$tab_ele_classes['liste'];
 				}
 
 				$i = $i + 1;
-				//echo "</span>\n";
 			}
 			else{
 				echo "&nbsp;";
@@ -1357,7 +1221,6 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	echo "<p align='center'><img src='images/barre.gif' width='550' height='2' alt='Barre' /></p>\n";
 	echo "</div>\n";
 }
-//mysql_close();
 require("../lib/footer.inc.php");
 ?>
 
