@@ -790,8 +790,13 @@ function check_backup_directory() {
 
 	global $multisite;
 
+	$pref_multi="";
+	if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
+		$pref_multi=$_COOKIE['RNE']."_";
+	}
+
     $current_backup_dir = getSettingValue("backup_directory");
-    if ($current_backup_dir == NULL) $current_backup_dir = "no_folder";
+    if ($current_backup_dir == NULL) {$current_backup_dir = "no_folder";}
     if (!file_exists("./backup/".$current_backup_dir)) {
         $backupDirName = NULL;
         if ($multisite != 'y') {
@@ -813,7 +818,7 @@ function check_backup_directory() {
             // On crée le répertoire de backup
             $length = rand(35, 45);
             for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-            $dirname = $r;
+            $dirname = $pref_multi.$r;
             $create = mkdir("./backup/" . $dirname, 0700);
             copy("./backup/index.html","./backup/".$dirname."/index.html");
             if ($create) {
@@ -853,7 +858,7 @@ function check_backup_directory() {
         $dirname = getSettingValue("backup_directory");
         $length = rand(35, 45);
         for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
-        $newdirname = $r;
+        $newdirname = $pref_multi.$r;
         if (rename("./backup/".$dirname, "./backup/".$newdirname)) {
             saveSetting("backup_directory",$newdirname);
             saveSetting("backupdir_lastchange",time());
@@ -1096,10 +1101,17 @@ function check_temp_directory(){
  * Fonction destinée à créer un dossier /temp/<alea> propre au professeur
  * 
  * Test le dossier en écriture et le crée au besoin
+ * La fonction est appelée depuis la racine de l'arborescence GEPI (sinon ça peut bugger)
  *
  * @return booleanTRUE si tout c'est bien passé
  */
 function check_user_temp_directory(){
+	global $multisite;
+
+	$pref_multi="";
+	if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
+		$pref_multi=$_COOKIE['RNE']."_";
+	}
 
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
 	$res_temp_dir=mysql_query($sql);
@@ -1112,12 +1124,12 @@ function check_user_temp_directory(){
 		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
 		$dirname=$lig_temp_dir->temp_dir;
 
-		if($dirname==""){
+		if($dirname=="") {
 			// Le dossier n'existe pas
 			// On créé le répertoire temp
 			$length = rand(35, 45);
 			for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-			$dirname = $_SESSION['login']."_".$r;
+			$dirname = $pref_multi.$_SESSION['login']."_".$r;
 			$create = mkdir("./temp/".$dirname, 0700);
 
 			if($create){
@@ -1141,7 +1153,25 @@ function check_user_temp_directory(){
 				return FALSE;
 			}
 		}
-		else{
+		else {
+			if(($pref_multi!='')&&(!preg_match("/^$pref_multi/", $dirname))&&(file_exists("./temp/".$dirname))) {
+				// Il faut renommer le dossier
+				if(!rename("./temp/".$dirname,"./temp/".$pref_multi.$dirname)) {
+					return FALSE;
+					exit();
+				}
+				else {
+					$dirname=$pref_multi.$dirname;
+
+					$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$_SESSION['login']."'";
+					$res_update=mysql_query($sql);
+					if(!$res_update){
+						return FALSE;
+						exit();
+					}
+				}
+			}
+
 			if(!file_exists("./temp/".$dirname)){
 				// Le dossier n'existe pas
 				// On créé le répertoire temp
