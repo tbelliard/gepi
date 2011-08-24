@@ -1,5 +1,6 @@
 <?php
-/**Fonctions créant du html
+/**
+ * Fonctions créant du html
  * 
  * $Id$
  * 

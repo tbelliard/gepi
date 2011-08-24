@@ -1583,7 +1583,8 @@ class class_page_accueil {
 	  }
 
 	  if ($this->b>0){
-		$descriptionPlugin= iconv("utf-8","iso-8859-1",$plugin->description);
+		//$descriptionPlugin= iconv("utf-8","iso-8859-1",$plugin->description);
+        $descriptionPlugin = $plugin->description;
 		$this->creeNouveauTitre('accueil',"$descriptionPlugin",'images/icons/package.png');
 	  }
 

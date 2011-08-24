@@ -43,7 +43,7 @@ class PlugInPeer extends BasePlugInPeer {
     $new->setNom($xml->nom);
     $new->setRepertoire($xml->nom);
     $new->setOuvert('n');
-    $new->setDescription($xml->description);
+    $new->setDescription(utf8_decode($xml->description));
     $new->save();
 
     /**

@@ -681,7 +681,7 @@ width:".$largeur1."%;\n";
 				$photo=nom_photo($tab_bull['eleve'][$i]['elenoet']);
 				//echo "$photo";
 				if("$photo"!=""){
-					$photo="../photos/eleves/".$photo;
+					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)){
 						echo '<img src="'.$photo.'" style="width: 60px; height: 80px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
 					}
