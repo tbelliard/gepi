@@ -135,7 +135,11 @@ if (!empty($doc_file['name'][0])) {
 	require_once("traite_doc.php");
 	$total_max_size = getSettingValue("total_max_size");
 	$max_size = getSettingValue("max_size");
-	$dest_dir = "../documents/cl".$ctCompteRendu->getIdCt();
+        $multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
+        if ((isset($multisite) && $multisite == 'y') && is_dir('../documents/'.$multi) === false){
+            mkdir('../documents/'.$multi);
+        }
+	$dest_dir = '../documents/'.$multi.'cl'.$ctCompteRendu->getIdCt();
 
 	//il y a au plus trois documents joints dans l'interface de saisie
 	for ($index_doc=0; $index_doc < 3; $index_doc++) {

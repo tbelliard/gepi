@@ -1,6 +1,6 @@
 <?php
 /*
- * @version: $Id: traite_doc.php 1360 2008-01-13 20:03:09Z jjocal $
+ * @version: $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -44,8 +44,8 @@ function corriger_extension($ext) {
 function creer_repertoire($path) {
 	if (file_exists($path)) return true;
 
-	@mkdir($path, 0777);
-	@chmod($path, 0777);
+	mkdir($path, 0777);
+	chmod($path, 0777);
 	$ok = false;
 	if ($f = @fopen("$path/.test", "w")) {
 		@fputs($f, '<'.'?php $ok = true; ?'.'>');
@@ -101,6 +101,7 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	/* Crétion du répertoire de destination */
 	if (!creer_repertoire($dest)) {
 		echo "Erreur : Problème d'écriture sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
+                echo $dest;
 		die();
 	}
 	
