@@ -110,6 +110,7 @@ $url = parse_url($_SERVER['REQUEST_URI']);
 if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
   array_walk($_GET, 'anti_inject');
   array_walk($_POST, 'anti_inject');
+  array_walk($_REQUEST, 'anti_inject');
 }
 
 // On nettoie aussi $_SERVER et $_COOKIE de manière systématique
