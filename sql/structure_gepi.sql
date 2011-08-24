@@ -655,3 +655,52 @@ CREATE TABLE a_agregation_decompte
 		ON DELETE CASCADE
 ) ENGINE=MyISAM COMMENT='Table d\'agregation des decomptes de demi journees d\'absence et de retard';
 
+DROP TABLE IF EXISTS modeles_grilles_pdf;
+CREATE TABLE IF NOT EXISTS modeles_grilles_pdf (
+id_modele INT(11) NOT NULL auto_increment,
+login varchar(50) NOT NULL default '',
+nom_modele varchar(255) NOT NULL,
+par_defaut ENUM('y','n') DEFAULT 'n',
+PRIMARY KEY (id_modele)
+);
+
+DROP TABLE IF EXISTS modeles_grilles_pdf_valeurs;
+CREATE TABLE IF NOT EXISTS modeles_grilles_pdf_valeurs (
+id_modele INT(11) NOT NULL,
+nom varchar(255) NOT NULL default '',
+valeur varchar(255) NOT NULL,
+INDEX id_modele_champ (id_modele, nom)
+);
+
+DROP TABLE IF EXISTS a_lieux;
+CREATE TABLE IF NOT EXISTS a_lieux (
+id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',
+nom VARCHAR(250)  NOT NULL COMMENT 'Nom du lieu',
+commentaire TEXT   COMMENT 'commentaire saisi par l\'utilisateur',
+sortable_rank INTEGER,
+PRIMARY KEY (id)
+) ENGINE=MyISAM COMMENT='Lieu pour les types d\'absence ou les saisies';
+
+DROP TABLE IF EXISTS tempo3;
+CREATE TABLE IF NOT EXISTS tempo3 (
+id int(11) NOT NULL auto_increment,
+col1 VARCHAR(255) NOT NULL,
+col2 TEXT,
+PRIMARY KEY  (id)
+);
+
+DROP TABLE IF EXISTS tempo3_cdt;
+CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '');
+
+DROP TABLE IF EXISTS mentions;
+CREATE TABLE IF NOT EXISTS mentions (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+mention VARCHAR(255) NOT NULL);
+
+DROP TABLE IF EXISTS j_mentions_classes;
+CREATE TABLE IF NOT EXISTS j_mentions_classes (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+id_mention INT(11) NOT NULL ,
+id_classe INT(11) NOT NULL ,
+ordre TINYINT(4) NOT NULL);
+
