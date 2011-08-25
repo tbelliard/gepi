@@ -155,7 +155,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "public")) {
 
 $is_lcs_plugin="no";
 
-if (file_exists($chemin_relatif_gepi."secure/config_lcs.inc.php")) {
+if (file_exists($chemin_relatif_gepi."/secure/config_lcs.inc.php")) {
     $is_lcs_plugin="yes";
 }
 
