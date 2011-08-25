@@ -942,7 +942,7 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
     echo "<p><b>ATTENTION :</b> La procédure de restauration de la base est <b>irréversible</b>. Le fichier de restauration doit être valide. Selon le contenu de ce fichier, tout ou partie de la structure actuelle de la base ainsi que des données existantes peuvent être supprimées et remplacées par la structure et les données présentes dans le fichier.
     <br /><br />\n<b>AVERTISSEMENT :</b> Cette procédure peut être très longue selon la quantité de données à restaurer.</p>\n";
     echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>\n";
-    echo "<blockquote>\n";
+	echo "<blockquote>\n";
 
     echo "<table cellpadding=\"5\" cellspacing=\"5\" border=\"0\" summary='Confirmation'>\n";
     echo "<tr>\n";
@@ -1239,6 +1239,7 @@ if (isset($action) and ($action == 'dump'))  {
 			$fichier=$_GET["fichier"];
 		}
 
+
 		$sql="SHOW TABLES;";
 		$tab=mysql_query($sql);
         $tot=mysql_num_rows($tab);
@@ -1398,23 +1399,52 @@ if (isset($action) and ($action == 'zip'))  {
 
         switch ($dossier_a_archiver) {
         case "cdt":
-		$chemin_stockage = $path."/_cdt".$suffixe_zip.".zip"; //l'endroit où sera stockée l'archive
-		$dossier_a_traiter = '../documents/'; //le dossier à traiter
-                if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-                    $dossier_a_traiter .=$_COOKIE['RNE']."/";
-		}
-		$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
-		break;
-	case "photos":
-		$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
-		$dossier_a_traiter = '../photos/'; //le dossier à traiter
-		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-                    $dossier_a_traiter .=$_COOKIE['RNE']."/";
-		}
-		$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
-		break;
+			$chemin_stockage = $path."/_cdt".$suffixe_zip.".zip"; //l'endroit où sera stockée l'archive
+			if((isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')) {
+				if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) {
+					if(!preg_match('/^[A-Za-z0-9]*$/', $_COOKIE['RNE'])) {
+						echo "<p style='color:red; text-align:center'>RNE invalide&nbsp;: ".$_COOKIE['RNE']."</p>\n";
+						$chemin_stockage="";
+					}
+					else {
+						$dossier_a_traiter = '../documents/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
+						$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
+					}
+				}
+				else {
+					echo "<p style='color:red; text-align:center'>RNE invalide.</p>\n";
+					$chemin_stockage="";
+				}
+			}
+			else {
+				$dossier_a_traiter = '../documents/'; //le dossier à traiter
+				$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
+			}
+			break;
+		case "photos":
+			$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
+			$dossier_a_traiter = '../photos/'; //le dossier à traiter
+			$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
+
+			if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+				//$dossier_a_traiter .=$_COOKIE['RNE']."/";
+				if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) {
+					if(!preg_match('/^[A-Za-z0-9]*$/', $_COOKIE['RNE'])) {
+						echo "<p style='color:red; text-align:center'>RNE invalide&nbsp;: ".$_COOKIE['RNE']."</p>\n";
+						$chemin_stockage="";
+					}
+					else {
+						$dossier_a_traiter = '../photos/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
+					}
+				}
+				else {
+					echo "<p style='color:red; text-align:center'>RNE invalide.</p>\n";
+					$chemin_stockage="";
+				}
+			}
+			break;
 		default:
-                    $chemin_stockage = '';
+			$chemin_stockage = '';
 		}
 
         if ($chemin_stockage !='') {
@@ -1423,7 +1453,10 @@ if (isset($action) and ($action == 'zip'))  {
 										PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
 										PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
 			if ($v_list == 0) {
-				die("Error : ".$archive->errorInfo(true));
+				die("<p style='color:red; text-align:center'>Error : ".$archive->errorInfo(true)."</p>");
+			}
+			else {
+				echo "<p style='color:red; text-align:center;'>Le Zip a été créé.</p>";
 			}
 	    }
   }
@@ -1442,10 +1475,8 @@ if(!isset($quitter_la_page)){
 	echo "'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-	//echo "</p>\n";
 }
 else {
-
 	echo "<p class='bold'><a href=\"javascript:window.self.close();\"";
 	echo ">Refermer la page</a>";
 }
@@ -1560,12 +1591,10 @@ arsort($tab_file);
 if ($n > 0) {
     echo "<h3>Fichiers de restauration</h3>\n";
     echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
-    //echo "<center>\n<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">\n<tr><td><b>Nom du fichier de sauvegarde</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
     echo "<center>\n<table class='boireaus' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><b>Nom du fichier de sauvegarde</b></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
     $m = 0;
 	$alt=1;
     foreach($tab_file as $value) {
-        //echo "<tr><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
         $alt=$alt*(-1);
 		echo "<tr class='lig$alt'><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
         echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a></td>\n";
@@ -1591,6 +1620,7 @@ $sav_file="";
 echo "Les fichiers de sauvegarde sont sauvegardés dans un sous-répertoire du répertoire \"/backup\", dont le nom change de manière aléatoire régulièrement.
 Si vous le souhaitez, vous pouvez uploader un fichier de sauvegarde directement dans ce répertoire.
 Une fois cela fait, vous pourrez le sélectionner dans la liste des fichiers de restauration, sur cette page.\n";
+
 echo "<br />Vous pouvez également directement télécharger le fichier par ftp dans le répertoire \"/backup\".\n";
 
 echo "<br /><br /><b>Fichier à \"uploader\" </b>: <input type=\"file\" name=\"sav_file\" />
@@ -1620,7 +1650,6 @@ echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier créé u
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
 echo add_token_field();
 echo "<br />Dossier à sauvegarder :<br />";
-
 echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (_photos_le_DATE_a_HEURE.zip)</label><br />\n";
 echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (_cdt_le_DATE_a_HEURE.zip)</label><br />\n";
 echo "<br />\n";
