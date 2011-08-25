@@ -378,10 +378,12 @@ if ($reg_matiere != null) {
 				echo "<tr class='lig$alt'>\n";
 				echo "<td>\n";
 				echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
-				echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' />\n";
+				echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
+				echo "onchange='checkbox_change($p);changement();'";
+				echo " />\n";
 				echo "</td>\n";
 				echo "<td style='text-align:left;'>\n";
-				echo "<label for='prof_".$p."' style='cursor: pointer;'>\n";
+				echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>\n";
 				echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
 				echo "</label>\n";
 				echo "</td>\n";
@@ -412,6 +414,24 @@ if ($reg_matiere != null) {
     echo "</div>\n";
 }
 // Fin : professeurs
+
+echo "<script type='text/javascript'>
+function checkbox_change(cpt) {
+	if(document.getElementById('prof_'+cpt)) {
+		if(document.getElementById('prof_'+cpt).checked) {
+			document.getElementById('civ_nom_prenom_prof_'+cpt).style.fontWeight='bold';
+		}
+		else {
+			document.getElementById('civ_nom_prenom_prof_'+cpt).style.fontWeight='normal';
+		}
+	}
+}
+
+for(i=0;i<$p;i++) {
+	checkbox_change(i);
+}
+</script>\n";
+
 
 echo "<div style='float: left; width: 100%'>\n";
 echo "<input type='hidden' name='is_posted' value='1' />\n";
