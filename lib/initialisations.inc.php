@@ -295,8 +295,4 @@ if (!class_exists('Propel')
     if (isset($_SESSION['objets_propel'])) unset($_SESSION['objets_propel']);
 }
 
-// Sécurité multisite
-if ((isset($multisite) && $multisite == 'y' && isset($_SESSION['login'])) && strtoupper($_COOKIE['RNE']) != strtoupper(getSettingValue('gepiSchoolRne'))){
-    Die('Vous ne devez pas modifier vos cookies à la main !');
-}
 ?>

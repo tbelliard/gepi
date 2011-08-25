@@ -103,16 +103,10 @@ class Session {
 					$this->portal_return_url = $auth->getPortalReturnUrl();
 				}
 		}
-                
-		
+
 		if (!$this->is_anonymous()) {
 		  # Il s'agit d'une session non anonyme qui existait déjà.
       if (!$login_CAS_en_cours) {
-        # On regarde s'il n'y a pas de timeout
-        if ($this->start && $this->timeout()) {
-           # timeout : on remet à zéro.
-          $debut_session = $_SESSION['start'];
-          $this->reset(3);
           if (isset($GLOBALS['niveau_arbo'])) {
             if ($GLOBALS['niveau_arbo'] == "0") {
               $logout_path = "./logout.php";
@@ -126,8 +120,26 @@ class Session {
           } else {
             $logout_path = "../logout.php";
           }
+      	# On regarde s'il n'y a pas de timeout
+        if ($this->start && $this->timeout()) {
+           # timeout : on remet à zéro.
+          $debut_session = $_SESSION['start'];
+          $this->reset(3);
           header("Location:".$logout_path."?auto=3&debut_session=".$debut_session."&session_id=".session_id());
           exit();
+        } elseif (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y') {
+        	//echo ($_COOKIE['RNE'].' '.$this->rne);die;
+        	if ($_COOKIE['RNE'] != $this->rne){
+			  //le rne a été modifié en cours de session
+			  $this->reset(2);
+	          header("Location:".$logout_path."?auto=0&session_id=".session_id());
+	          exit();
+            } elseif (strtoupper($_COOKIE['RNE']) != strtoupper(getSettingValue('gepiSchoolRne'))){
+			  //le rne ne correspond pas à celui de la base
+			  $this->reset(2);
+	          header("Location:".$logout_path."?auto=2&session_id=".session_id());
+	          exit();
+            }
         } else {
           # Pas de timeout : on met à jour le log
           $this->update_log();
@@ -612,7 +624,7 @@ class Session {
 				$auth = new SimpleSAML_Auth_GepiSimple();				
 				if ($auth->isAuthenticated()) {
 					//on fait le logout de session avec simplesaml
-					$auth->logout();
+					$auth->logout($GLOBALS['gepiBaseUrl'].'/'.$GLOBALS['gepiPath'].'/logout.php?auto='.$_auto.'&session_id='.session_id());
 				}
 		}
 
@@ -1044,6 +1056,8 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 			$ldap = new LDAPServer;
 			$user = $ldap->get_user_profile($this->login);
 			$this->rne = $user["rne"][0];
+		} elseif (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y') {
+			$this->rne = $_COOKIE['RNE'];
 		}
 
 		/*
