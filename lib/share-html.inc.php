@@ -1065,7 +1065,7 @@ function liens_class_from_ele_login($ele_login){
  * @param type $tab_restriction Le tableau des répertoires à tester
  */
 function test_ecriture_dossier($tab_restriction=array()) {
-    global $gepiPath;
+    global $gepiPath, $multisite;
 
 	if(count($tab_restriction)>0) {
 		$tab_dossiers_rw=$tab_restriction;
@@ -1079,7 +1079,7 @@ function test_ecriture_dossier($tab_restriction=array()) {
         $multisite='y';
         $_COOKIE['RNE']="essai";
      /* */
-        if (($multisite=='y')&&(isset($_COOKIE['RNE']))) {
+        if ((isset($multisite) && $multisite=='y')&&(isset($_COOKIE['RNE']))) {
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'];
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/eleves';
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/personnels';
@@ -1117,7 +1117,7 @@ function test_ecriture_dossier($tab_restriction=array()) {
 		echo "</tr>\n";
 
 		if($tab_dossiers_rw[$i]=="documents/archives") {
-			if(getSettingValue('multisite')=='y') {
+			if($multisite=='y') {
 				$dossier_temp='documents/archives/'.$_COOKIE['RNE'];
 			}
 			else {
