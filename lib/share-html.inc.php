@@ -1072,6 +1072,18 @@ function test_ecriture_dossier($tab_restriction=array()) {
 	}
 	else {
 		$tab_dossiers_rw=array("artichow/cache","backup","documents","documents/archives","images","images/background","lib/standalone/HTMLPurifier/DefinitionCache/Serializer","mod_ooo/mes_modeles","mod_ooo/tmp","photos","temp");
+    /**
+     * Pour Debug : Décommenter les 2 lignes si pas en multisites
+     */
+    /* *
+        $multisite='y';
+        $_COOKIE['RNE']="essai";
+     /* */
+        if (($multisite=='y')&&(isset($_COOKIE['RNE']))) {
+          $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'];
+          $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/eleves';
+          $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/personnels';
+        }
 	}
 
 	$nom_fichier_test='test_acces_rw';
