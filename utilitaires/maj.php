@@ -285,10 +285,10 @@ echo "<hr />";
 
 if ($pb_maj_bd != 'yes') {
 	if (test_maj()) {
-		echo "<h2> class='grand center'>Mise à jour de la base de données vers la version GEPI " . $gepiVersion . $rc . $beta . "</h3>";
+		echo "<h2 class='grand center'>Mise à jour de la base de données vers la version GEPI " . $gepiVersion . $rc . $beta . "</h3>";
 		if (isset ($_SESSION['statut'])) {
 			echo "<p class='center'>Il est vivement conseillé de faire une sauvegarde de la base MySql avant de procéder à la mise à jour</p>";
-			echo "<form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php\" method=post name=formulaire><p classe='center'>";
+			echo "<form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php\" method='post' name='formulaire'><p class='center'>";
 			//echo add_token_field();
 			if (getSettingValue("mode_sauvegarde") == "mysqldump") {
 				echo "<input type='hidden' name='action' value='system_dump' />";
@@ -300,7 +300,7 @@ if ($pb_maj_bd != 'yes') {
 		echo "<p class='center'>Remarque : la procédure de mise à jour vers la version <strong>GEPI " . $gepiVersion . $rc . $beta . "</strong> est utilisable à partir d'une version GEPI 1.2 ou plus récente.</p>";
 		echo "<form action=\"maj.php\" method=\"post\">";
 		//echo add_token_field();
-		echo "<p class='rouge'><strong>ATTENTION : Votre base de données ne semble pas être à jour.";
+		echo "<p class='rouge center'><strong>ATTENTION : Votre base de données ne semble pas être à jour.";
 		if ($version_old != '')
 		echo " Numéro de version de la base de données : GEPI " . $version_old . $rc_old . $beta_old;
 		echo "</strong><br />";
