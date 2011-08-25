@@ -204,6 +204,7 @@ class Session {
 			case "ldap":
 			  # Authentification sur un serveur LDAP
 			  $auth = $this->authenticate_ldap($_login,$_password);
+			  break;
 		  	case "simpleSAML":
 		  		$auth = $this->authenticate_simpleSAML();
 		  	break;
