@@ -61,32 +61,8 @@ $gepiPath="/gepi";
 # UPDATE `nombase`.`setting` SET `VALUE` = 'y' WHERE NAME = 'multisite' LIMIT 1 ;
 #
 
-
-/*
-if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
-	$RNE = isset($_REQUEST['rne']) ? $_REQUEST['rne'] : (isset($_REQUEST['RNE']) ? $_REQUEST['RNE'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization'] : (isset($_COOKIE['RNE']) ? $_COOKIE['RNE'] : NULL)));
-	if (!isset($RNE) || $RNE == 'RNE') {
-		echo 'Erreur : Numéro d\'établissement manquant dans la requête (paramètre rne ou organization).'; die();
-	} else {
-		$init = parse_ini_file(dirname(__FILE__)."/multisite.ini.php", TRUE);
-		if (	!isset($init[$RNE]["nomhote"]) || 
-			!isset($init[$RNE]["nombase"]) || 
-			!isset($init[$RNE]["mysqluser"]) || 
-			!isset($init[$RNE]["mysqlmdp"]) || 
-			!isset($init[$RNE]["pathname"])
-			) {
-			echo 'Erreur : Numéro d\'établissement '.$RNE.' non trouvé dans la configuration'; die;
-		}
-		$dbHost		= $init[$RNE]["nomhote"];
-		$dbDb		= $init[$RNE]["nombase"];
-		$dbUser		= $init[$RNE]["mysqluser"];
-		$dbPass		= $init[$RNE]["mysqlmdp"];
-		$gepiPath	= $init[$RNE]["pathname"];
-	}
-}
-*/
-
-
 $mode_debug = false;
 $debug_log_file = '/var/log/gepi.log';
+
+require_once(dirname(__FILE__).'/../lib/multisite_initialisation.php');
 ?>
