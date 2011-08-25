@@ -54,7 +54,6 @@ class Session {
 	public $auth_simpleSAML = false; # false, cas, lemon, lcs
 	private $login_sso = false; //login (ou uid) du sso auquel on est connecté (peut être différent du login gepi, la correspondance est faite dans mod_sso_table) 
 	public $current_auth_mode = false;  # gepi, ldap, sso, ou false : le mode d'authentification
-	public $portal_return_url;	# configuration ssaml
 
 	private $etat = false; 	# actif/inactif. Utilisé simplement en interne pour vérifier que
 							# l'utilisateur authentifié de source externe est bien actif dans Gepi.
@@ -88,21 +87,6 @@ class Session {
 		$this->auth_ldap = getSettingValue("auth_ldap") == 'yes' ? true : false;
 		$this->auth_simpleSAML = getSettingValue("auth_simpleSAML") == 'yes' ? true : false;
 		$this->auth_sso = in_array(getSettingValue("auth_sso"), array("lemon", "cas", "lcs")) ? getSettingValue("auth_sso") : false;
-		$this->portal_return_url = getSettingValue('portal_return_url');
-		
-		//si on est sur une authentification simplesaml et que l'utilisateur n'est pas authentifié, on purge la session
-		if (getSettingValue("auth_simpleSAML") == 'yes') {
-				include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
-				$auth = new SimpleSAML_Auth_GepiSimple();
-				if (!$auth->isAuthenticated()) {
-						//on ne fait pas de retour au portail puisque l'utilisateur n'est pas authentifié sur un portail
-						$this->portal_return_url = null;
-						$this->reset(0);
-				}
-				if ($this->portal_return_url == null) {//si rien n'est précisé dans les settings, on utilise la configuration de la source ssaml
-					$this->portal_return_url = $auth->getPortalReturnUrl();
-				}
-		}
 
 		if (!$this->is_anonymous()) {
 		  # Il s'agit d'une session non anonyme qui existait déjà.
@@ -624,11 +608,13 @@ class Session {
 				include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
 				$auth = new SimpleSAML_Auth_GepiSimple();				
 				if ($auth->isAuthenticated()) {
-					//on fait le logout de session avec simplesaml
-					$auth->logout($GLOBALS['gepiBaseUrl'].'/'.$GLOBALS['gepiPath'].'/logout.php?auto='.$_auto.'&session_id='.session_id());
+					$auth->logout();
+					//attention, cette fonction ->logout() ne retourne, pas, le reste du script ne sera pas éxécuter à partir de cette ligne.
+					//Il à y avoir un refresh automatique de la page suite au ->logout(), et donc le script va être re-éxecuter, avec cette fois
+					//$auth->isAuthenticated() qui vaudra false, et donc le reste du reset va être éxecuter
 				}
 		}
-
+		
 	    // Détruit toutes les variables de session
 	    session_unset();
 	    $_SESSION = array();
@@ -647,8 +633,8 @@ class Session {
 		$this->login = null;
 		
 		//si une url de portail est donnée, on redirige
-		if ($this->portal_return_url != null) {
-			header('Location:'.$this->portal_return_url);
+		if (isset($_REQUEST['portal_return_url'])) {
+			header('Location:'.$_REQUEST['portal_return_url']);
 			die;
 		}
 		

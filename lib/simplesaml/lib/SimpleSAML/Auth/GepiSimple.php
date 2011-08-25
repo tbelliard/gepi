@@ -144,13 +144,10 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	public function logout($params = NULL) {
 		unset($_SESSION['utilisateur_saml_source']);
 		
-		
-		//if ($this->$authSourceConfig[]) 
+
 		if ($this->getDoSourceLogout()) {
 			parent::logout($params);
-			//la fonction ne retourne pas, donc ce n'est pas la peine de faire un branchement else.
 		} else {
-			print_r('not doing source logout');
 			assert('is_array($params) || is_string($params) || is_null($params)');
 	
 			if ($params === NULL) {
@@ -181,8 +178,20 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	
 				$params['LogoutCompletedHandler'] = array(get_class(), 'logoutCompleted');
 			}
-
-			//print_r($_SESSION);echo 'on est la';die;
+			
+			//on rajoute dans la requet le portal_return_url, ça sera utilisé dans un refresh ultérieur (logout.php ou Session.class.php)
+			if (isset($params["ReturnTo"])) {
+					$portal_return_url = $this->getPortalReturnUrl();
+					//echo $portal_return_url;die;
+					if ($portal_return_url != null) {
+				 		if (strpos($params["ReturnTo"],'?') === false)  {
+				 			$portal_parameter = '?portal_return_url='.$portal_return_url;
+				 		} else {
+				 			$portal_parameter = '&portal_return_url='.$portal_return_url;
+				 		}
+						$params["ReturnTo"] .=  $portal_parameter;
+					}
+			}
 			
 			self::logoutCompleted($params);
 		}
@@ -199,11 +208,14 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	}
 	
 	/**
-	 * retourne l'url de retour vers le portail
+	 * retourne l'url de retour vers le portail soit des préférences gepi, ou sinon des préférence de la source configurée dans authsource
 	 *
 	 * @return string
 	 */
 	public function getPortalReturnUrl() {
+		if (getSettingValue('portal_return_url') != null) {
+			return getSettingValue('portal_return_url');
+		}
 		$config = $this->getChosenSourceConfig();
 		if (isset($config['portal_return_url'])) {
 			return $config['portal_return_url'];
