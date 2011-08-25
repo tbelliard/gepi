@@ -59,10 +59,34 @@ $gepiPath="/gepi";
 # 3- Modifiez la valeur "multisite" de la table "settings"
 # en passant (via phpmyadmin par ex.) la commande sql suivante :
 # UPDATE `nombase`.`setting` SET `VALUE` = 'y' WHERE NAME = 'multisite' LIMIT 1 ;
+# décommentez toute la portion de code suivante pour le multisite
+/*
+if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
+	$RNE = isset($_REQUEST['rne']) ? $_REQUEST['rne'] : (isset($_REQUEST['RNE']) ? $_REQUEST['RNE'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization'] : (isset($_COOKIE['RNE']) ? $_COOKIE['RNE'] : NULL)));
+	if (!isset($RNE) || $RNE == 'RNE') {
+		echo 'Erreur : Numero d\'etablissement manquant dans la requete (parametre rne ou organization).'; die();
+	} else {
+		setcookie('RNE', $RNE, null, '/');
+		$_COOKIE['RNE'] = $RNE;
+		$init = parse_ini_file(dirname(__FILE__)."/../secure/multisite.ini.php", TRUE);
+		if (	!isset($init[$RNE]["nomhote"]) ||
+			!isset($init[$RNE]["nombase"]) ||
+			!isset($init[$RNE]["mysqluser"]) ||
+			!isset($init[$RNE]["mysqlmdp"]) ||
+			!isset($init[$RNE]["pathname"])
+			) {
+			echo 'Erreur : Numero d\'etablissement '.$RNE.' non trouve dans la configuration'; die();
+		}
+		$dbHost		= $init[$RNE]["nomhote"];
+		$dbDb		= $init[$RNE]["nombase"];
+		$dbUser		= $init[$RNE]["mysqluser"];
+		$dbPass		= $init[$RNE]["mysqlmdp"];
+		$gepiPath	= $init[$RNE]["pathname"];
+	}
+}
+ */
 #
 
 $mode_debug = false;
 $debug_log_file = '/var/log/gepi.log';
-
-require_once(dirname(__FILE__).'/../lib/multisite_initialisation.php');
 ?>
