@@ -126,8 +126,18 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 		if (isset($_POST['gepiSchoolRne'])) {
-			if (!saveSetting("gepiSchoolRne", $_POST['gepiSchoolRne'])) {
-				$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !";
+			$enregistrer_gepiSchoolRne='y';
+			if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
+				if(($_POST['gepiSchoolRne']!='')&&(strtoupper($_POST['gepiSchoolRne'])!=strtoupper($_COOKIE['RNE']))) {
+					$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !<br />Le paramètre choisi risque de vous empêcher de vous connecter.<br />Enregistrement refusé!";
+					$enregistrer_gepiSchoolRne='n';
+				}
+			}
+
+			if($enregistrer_gepiSchoolRne=='y') {
+				if (!saveSetting("gepiSchoolRne", $_POST['gepiSchoolRne'])) {
+					$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !";
+				}
 			}
 		}
 		if (isset($_POST['gepiYear'])) {
