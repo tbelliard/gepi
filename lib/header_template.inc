@@ -28,7 +28,7 @@
  * - $tbs_statut = array(class , texte , ajout ) : statut
  * - $donnees_enfant = array(nom_enfant , classe_enfant )
  * - $tbs_premier_menu = array(lien , confirme , image , alt , title , texte ) : menu du bandeau 1ère ligne
-*	$tbs_deux_menu = array(lien , onclick , texte ) : menu du bandeau 2ème ligne
+ * - $tbs_deux_menu = array(lien , onclick , texte ) : menu du bandeau 2ème ligne
  * 
  * 
  * @license GNU/GPL v2

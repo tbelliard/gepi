@@ -4573,6 +4573,12 @@ function get_resp_from_ele_login($ele_login) {
 	return $tab;
 }
 
+/**
+ *
+ * @param type $callback
+ * @param ArrayAccess $array
+ * @return type 
+ */
 function array_map_deep($callback, $array) {
     $new = array();
     if (is_array($array) || $array instanceof ArrayAccess) {
@@ -4588,6 +4594,11 @@ function array_map_deep($callback, $array) {
     return $new;
 } 
 
+/**
+ * Vérifie si une variable est en UTF8 et la réencode au besoin
+ * @param string $var La variable à vérifier
+ * @return string La variable décodée 
+ */
 function check_utf8_and_convert($var) {
 	if(function_exists("mb_check_encoding")) {
 		if (!mb_check_encoding($var, 'UTF-8')) {
