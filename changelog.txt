@@ -5,7 +5,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-trunk (12/08/2011)
+Gepi-1.5.5 (12/08/2011)
 ===========================
 Bulletins:
 - Possibilité de ne pas faire apparaître un enseignement sur les bulletins sans passer par les catégories de matières.

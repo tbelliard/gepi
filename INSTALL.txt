@@ -1,4 +1,4 @@
-GEPI-trunk -- Procédure d'installation
+GEPI-1.5.5 -- Procédure d'installation
 ==========================================
 
 ****************************************************
