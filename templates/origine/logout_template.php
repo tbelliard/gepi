@@ -35,7 +35,7 @@
 	echo $message;
 ?>
 	<br />
-	<a href="<?php echo $gepiPath;?>/login.php">Ouvrir une nouvelle session</a>
+	<a href="<?php echo $gepiPath;?>/login.php<?php if((isset($rne_courant))&&($rne_courant!='')) {echo "?rne=$rne_courant";}?>">Ouvrir une nouvelle session</a>
 
 <?php
 $agent = $_SERVER['HTTP_USER_AGENT'];

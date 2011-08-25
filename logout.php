@@ -34,6 +34,11 @@ if (isset($_SESSION['login'])){
   $temp_perso=NULL;
 }
 
+$rne_courant="";
+if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
+	$rne_courant=$_COOKIE['RNE'];
+}
+
 if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "cas") {
   $session_gepi->close(0);
   $session_gepi->logout_cas();
