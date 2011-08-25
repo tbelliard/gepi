@@ -134,7 +134,7 @@ class Session {
 			  $this->reset(2);
 	          header("Location:".$logout_path."?auto=0&session_id=".session_id());
 	          exit();
-            } elseif (strtoupper($_COOKIE['RNE']) != strtoupper(getSettingValue('gepiSchoolRne'))){
+            } elseif ((getSettingValue('gepiSchoolRne')!='')&&(strtoupper($_COOKIE['RNE']) != strtoupper(getSettingValue('gepiSchoolRne')))) {
 			  //le rne ne correspond pas à celui de la base
 			  $this->reset(2);
 	          header("Location:".$logout_path."?auto=2&session_id=".session_id());
