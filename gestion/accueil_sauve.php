@@ -1407,8 +1407,11 @@ if (isset($action) and ($action == 'zip'))  {
 						$chemin_stockage="";
 					}
 					else {
-						$dossier_a_traiter = '../documents/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
-						$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
+                                            if (!is_dir('../documents/'.$_COOKIE['RNE'])){
+                                                @mkdir('../documents/'.$_COOKIE['RNE']);
+                                            }
+                                            $dossier_a_traiter = '../documents/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
+                                            $dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
 					}
 				}
 				else {
