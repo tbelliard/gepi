@@ -714,7 +714,7 @@ if($etat_incident!='clos') {
 								$msg.="Nom de fichier ".$suppr_doc_joint[$loop]." invalide<br />";
 							}
 							else {
-								$fichier_courant="../documents/discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i]."/".$suppr_doc_joint[$loop];
+								$fichier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i]."/".$suppr_doc_joint[$loop];
 								if(!unlink($fichier_courant)) {
 									$msg.="Erreur lors de la suppression de $fichier_courant<br />";
 								}
@@ -761,7 +761,7 @@ if($etat_incident!='clos') {
 									//echo "<p>Le fichier a été uploadé.</p>\n";
 				
 									$source_file=$document_joint['tmp_name'];
-									$dossier_courant="../documents/discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
+									$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
 									if(!file_exists($dossier_courant)) {
 										mkdir($dossier_courant, 0770, true);
 									}
@@ -806,7 +806,7 @@ if($etat_incident!='clos') {
 							$tab_documents_joints=get_documents_joints($id_incident, "mesure", $mesure_ele_login[$i]);
 							if(count($tab_documents_joints)>0) {
 								for($loop=0;$loop<count($tab_documents_joints);$loop++) {
-									$fichier_courant="../documents/discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i]."/".$tab_documents_joints[$loop];
+									$fichier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i]."/".$tab_documents_joints[$loop];
 									if(!unlink($fichier_courant)) {
 										$msg.="Erreur lors de la suppression de $fichier_courant<br />";
 									}
@@ -2362,7 +2362,7 @@ new Ajax.Autocompleter (
 							echo "<td><input type='checkbox' name='suppr_doc_joint_".$i."[]' value=\"$tab_file[$loop]\" /></td>\n";
 							// PB: Est-ce qu'on ne risque pas de permettre d'aller supprimer des fichiers d'un autre incident?
 							//     Tester le nom de fichier et l'id_incident
-							//     Fichier en ../documents/discipline/incident_<$id_incident>/mesures/<LOGIN_ELE>
+							//     Fichier en ../$dossier_documents_discipline/incident_<$id_incident>/mesures/<LOGIN_ELE>
 							echo "</tr>\n";
 						}
 						echo "</table>\n";

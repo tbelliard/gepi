@@ -11,6 +11,16 @@ $largeur_survol_infobulle=100;
 // Délais en ms avant affichage:
 $delais_affichage_infobulle=500;
 
+$dossier_documents_discipline="documents/discipline";
+if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
+	if(isset($_COOKIE['RNE'])) {
+		$dossier_documents_discipline.="_".$_COOKIE['RNE'];
+		if(!file_exists("../$dossier_documents_discipline")) {
+			@mkdir("../$dossier_documents_discipline",0770);
+		}
+	}
+}
+
 function p_nom($ele_login,$mode="pn") {
 	$sql="SELECT * FROM eleves e WHERE e.login='".$ele_login."';";
 	$res_ele=mysql_query($sql);
@@ -107,6 +117,7 @@ function infobulle_photo($eleve_login) {
 }
 /*
 function affiche_mesures_incident($id_incident) {
+	global $dossier_documents_discipline;
 	global $possibilite_prof_clore_incident;
 	global $mesure_demandee_non_validee;
 	//global $exclusion_demandee_non_validee;
@@ -196,7 +207,7 @@ function affiche_mesures_incident($id_incident) {
 			// Documents joints à la mesure demandée
 			if($lig_t_incident->login_ele!=$login_ele_prec) {
 				$tab_doc_joints=get_documents_joints($id_incident, "mesure", $lig_t_incident->login_ele);
-				$chemin="../documents/discipline/incident_".$id_incident."/mesures/".$lig_t_incident->login_ele;
+				$chemin="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$lig_t_incident->login_ele;
 				if(count($tab_doc_joints)>0) {
 					$texte.="<td>\n";
 					for($loop=0;$loop<count($tab_doc_joints);$loop++) {
@@ -265,6 +276,7 @@ function affiche_mesures_incident($id_incident) {
 function affiche_mesures_incident($id_incident) {
 	global $possibilite_prof_clore_incident;
 	global $mesure_demandee_non_validee;
+	global $dossier_documents_discipline;
 	//global $exclusion_demandee_non_validee;
 	//global $retenue_demandee_non_validee;
 
@@ -375,7 +387,7 @@ function affiche_mesures_incident($id_incident) {
 
 					if($cpt_mes==0) {
 						$tab_doc_joints=get_documents_joints($id_incident, "mesure", $lig_t_incident->login_ele);
-						$chemin="../documents/discipline/incident_".$id_incident."/mesures/".$lig_t_incident->login_ele;
+						$chemin="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$lig_t_incident->login_ele;
 						if(count($tab_doc_joints)>0) {
 							$texte.="<td rowspan='$nb_mes_ele'>\n";
 							for($loop=0;$loop<count($tab_doc_joints);$loop++) {
@@ -1265,6 +1277,7 @@ function get_protagonistes($id_incident,$roles=array(),$statuts=array()) {
 }
 /*
 function get_documents_joints($id, $type) {
+	global $dossier_documents_discipline;
 	// $type: mesure ou sanction
 	$tab_file=array();
 
@@ -1280,7 +1293,7 @@ function get_documents_joints($id, $type) {
 			$lig=mysql_fetch_object($res);
 			$id_incident=$lig->id_incident;
 
-			if(file_exists("../documents/discipline/incident_".$id_incident."/".$type."_".$id)) {
+			if(file_exists("../$dossier_documents_discipline/incident_".$id_incident."/".$type."_".$id)) {
 				$handle=opendir($path);
 				$n=0;
 				while ($file = readdir($handle)) {
@@ -1301,6 +1314,7 @@ function get_documents_joints($id, $type) {
 function get_documents_joints($id, $type, $login_ele="") {
 	// $type: mesure ou sanction
 	// $login_ele doit être non vide pour les mesures
+	global $dossier_documents_discipline;
 	$tab_file=array();
 
 	$id_incident="";
@@ -1309,7 +1323,7 @@ function get_documents_joints($id, $type, $login_ele="") {
 		if($type=="mesure") {
 			$id_incident=$id;
 
-			$path="../documents/discipline/incident_".$id_incident."/mesures/$login_ele";
+			$path="../$dossier_documents_discipline/incident_".$id_incident."/mesures/$login_ele";
 		}
 		else {
 			$sql="SELECT id_incident FROM s_sanctions WHERE id_sanction='$id';";
@@ -1318,7 +1332,7 @@ function get_documents_joints($id, $type, $login_ele="") {
 				$lig=mysql_fetch_object($res);
 				$id_incident=$lig->id_incident;
 
-				$path="../documents/discipline/incident_".$id_incident."/sanction_".$id;
+				$path="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id;
 			}
 		}
 
@@ -1351,12 +1365,13 @@ function get_file_in_dir($path) {
 
 function sanction_documents_joints($id_incident, $ele_login) {
 	global $id_sanction;
+	global $dossier_documents_discipline;
 
 	if((isset($id_sanction))&&($id_sanction!='')) {
 		$tab_doc_joints=get_documents_joints($id_sanction, "sanction", $ele_login);
 		if(count($tab_doc_joints)>0) {
-			$chemin="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction;
-	
+			$chemin="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction;
+
 			echo "<table class='boireaus' width='100%'>\n";
 			echo "<tr>\n";
 			echo "<th>Fichiers joints</th>\n";
@@ -1370,7 +1385,7 @@ function sanction_documents_joints($id_incident, $ele_login) {
 				echo "<td><input type='checkbox' name='suppr_doc_joint[]' value=\"$tab_doc_joints[$loop]\" /></td>\n";
 				// PB: Est-ce qu'on ne risque pas de permettre d'aller supprimer des fichiers d'un autre incident?
 				//     Tester le nom de fichier et l'id_incident
-				//     Fichier en ../documents/discipline/incident_<$id_incident>/mesures/<LOGIN_ELE>
+				//     Fichier en ../$dossier_documents_discipline/incident_<$id_incident>/mesures/<LOGIN_ELE>
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
@@ -1395,7 +1410,7 @@ function sanction_documents_joints($id_incident, $ele_login) {
 
 		if($temoin_deja_tous_joints=="n") {
 			//echo "Joindre&nbsp;:<br />\n";
-			$chemin="../documents/discipline/incident_".$id_incident."/mesures/".$ele_login;
+			$chemin="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$ele_login;
 	
 			echo "<b>Fichiers proposés lors de la saisie des mesures demandées&nbsp;:</b>";
 			echo "<table class='boireaus' width='100%'>\n";
@@ -1424,6 +1439,7 @@ function sanction_documents_joints($id_incident, $ele_login) {
 }
 
 function liste_doc_joints_sanction($id_sanction) {
+	global $dossier_documents_discipline;
 	$retour="";
 
 	$tab_doc_joints=get_documents_joints($id_sanction, "sanction");
@@ -1434,7 +1450,7 @@ function liste_doc_joints_sanction($id_sanction) {
 			$lig=mysql_fetch_object($res);
 			$id_incident=$lig->id_incident;
 
-			$chemin="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction;
+			$chemin="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction;
 	
 			for($loop=0;$loop<count($tab_doc_joints);$loop++) {
 				$retour.="<a href='$chemin/$tab_doc_joints[$loop]' target='_blank'>$tab_doc_joints[$loop]</a><br />\n";
@@ -1446,6 +1462,7 @@ function liste_doc_joints_sanction($id_sanction) {
 }
 
 function suppr_doc_joints_incident($id_incident, $suppr_doc_sanction='n') {
+	global $dossier_documents_discipline;
 	$retour="";
 
 	$sql="SELECT login FROM s_protagonistes WHERE id_incident='$id_incident';";
@@ -1459,7 +1476,7 @@ function suppr_doc_joints_incident($id_incident, $suppr_doc_sanction='n') {
 			$tab_doc_joints=get_documents_joints($id_incident, "mesure", $lig->login);
 			//echo "count(\$tab_doc_joints)=".count($tab_doc_joints)."<br />";
 			if(count($tab_doc_joints)>0) {
-				$chemin="../documents/discipline/incident_".$id_incident."/mesures/".$lig->login;
+				$chemin="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$lig->login;
 				//echo "$chemin<br />";
 				$temoin_erreur="n";
 				for($loop=0;$loop<count($tab_doc_joints);$loop++) {
@@ -1485,8 +1502,8 @@ function suppr_doc_joints_incident($id_incident, $suppr_doc_sanction='n') {
 				}
 			}
 
-			if((file_exists("../documents/discipline/incident_".$id_incident."/mesures"))&&(rmdir("../documents/discipline/incident_".$id_incident."/mesures"))) {
-				if(file_exists("../documents/discipline/incident_".$id_incident)) {rmdir("../documents/discipline/incident_".$id_incident);}
+			if((file_exists("../$dossier_documents_discipline/incident_".$id_incident."/mesures"))&&(rmdir("../$dossier_documents_discipline/incident_".$id_incident."/mesures"))) {
+				if(file_exists("../$dossier_documents_discipline/incident_".$id_incident)) {rmdir("../$dossier_documents_discipline/incident_".$id_incident);}
 			}
 		}
 	}
@@ -1495,6 +1512,8 @@ function suppr_doc_joints_incident($id_incident, $suppr_doc_sanction='n') {
 }
 
 function suppr_doc_joints_sanction($id_sanction) {
+	global $dossier_documents_discipline;
+
 	$retour="";
 
 	$sql="SELECT id_incident FROM s_sanctions WHERE id_sanction='$id_sanction';";
@@ -1505,7 +1524,7 @@ function suppr_doc_joints_sanction($id_sanction) {
 
 		$tab_doc_joints=get_documents_joints($id_sanction, "sanction");
 		if(count($tab_doc_joints)>0) {
-			$chemin="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction;
+			$chemin="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction;
 			for($loop=0;$loop<count($tab_doc_joints);$loop++) {
 				if(!unlink($chemin."/".$tab_doc_joints[$loop])) {
 					$retour.="Erreur lors de la suppression de $chemin/$tab_doc_joints[$loop]<br />";
