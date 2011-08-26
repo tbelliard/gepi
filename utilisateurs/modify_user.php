@@ -455,11 +455,11 @@ check_token();
 					}
 
 					// filephoto
-					if(isset($HTTP_POST_FILES['filephoto']['tmp_name'])){
-						$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+					if(isset($_FILES['filephoto']['tmp_name'])){
+						$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
 						if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
-							$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
-							$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+							$filephoto_name=$_FILES['filephoto']['name'];
+							$filephoto_size=$_FILES['filephoto']['size'];
 							// Tester la taille max de la photo?
 
 							if(is_uploaded_file($filephoto_tmp)){

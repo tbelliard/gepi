@@ -122,10 +122,10 @@ if (!checkAccess()) {
 
 
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-	  // On récupère le RNE de l'établissement
-  $rep_photos="../photos/".$_COOKIE['RNE']."/eleves/";
+	// On récupère le RNE de l'établissement
+	$rep_photos="../photos/".$_COOKIE['RNE']."/eleves/";
 } else {
-  $rep_photos="../photos/eleves/";
+	$rep_photos="../photos/eleves/";
 }
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
@@ -671,8 +671,9 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 			// Envoi de la photo
 			if(isset($reg_no_gep)){
+				//echo "\$reg_no_gep=$reg_no_gep<br />";
 				if($reg_no_gep!=""){
-					if(strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0){
+					if(strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0) {
 						if(isset($_POST['suppr_filephoto'])){
 							if($_POST['suppr_filephoto']=='y'){
 
@@ -702,15 +703,16 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 						$nb_elenoet=mysql_num_rows($test);
 						if($nb_elenoet==1){
 							// filephoto
-							if(isset($HTTP_POST_FILES['filephoto'])){
-								$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+							if(isset($_FILES['filephoto'])){
+								$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
 								if($filephoto_tmp!=""){
-									$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
-									$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+									$filephoto_name=$_FILES['filephoto']['name'];
+									$filephoto_size=$_FILES['filephoto']['size'];
 									// Tester la taille max de la photo?
 
 									if(is_uploaded_file($filephoto_tmp)){
 										$dest_file=$rep_photos.$reg_no_gep.".jpg";
+										//echo "\$dest_file=$dest_file<br />";
 										$source_file=stripslashes("$filephoto_tmp");
 										$res_copy=copy("$source_file" , "$dest_file");
 										if($res_copy){
@@ -937,12 +939,12 @@ elseif($_SESSION['statut']=="professeur"){
 					$nb_elenoet=mysql_num_rows($test);
 					if($nb_elenoet==1){
 						// filephoto
-						if(isset($HTTP_POST_FILES['filephoto'])){
+						if(isset($_FILES['filephoto'])){
 							check_token();
-							$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+							$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
 							if($filephoto_tmp!=""){
-								$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
-								$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+								$filephoto_name=$_FILES['filephoto']['name'];
+								$filephoto_size=$_FILES['filephoto']['size'];
 								// Tester la taille max de la photo?
 
 								if(is_uploaded_file($filephoto_tmp)){
