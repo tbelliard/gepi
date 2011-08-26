@@ -695,7 +695,14 @@ $current_ordre='ASC';
 if(($action=='acces')||($action=='acces2')) {
 	$length = rand(35, 45);
 	for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-	$dirname = "acces_cdt_".$r;
+
+	if((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')&&(preg_match("/^[A-Za-z0-9]*$/", $_COOKIE['RNE']))) {
+		$dirname = "acces_cdt_".$_COOKIE['RNE']."_".$r;
+	}
+	else {
+		$dirname = "acces_cdt_".$r;
+	}
+
 	$create = mkdir("../documents/".$dirname, 0700);
 	if(!$create) {
 		echo "<p style='color:red;'>Problème avec le dossier temporaire../documents/".$dirname."</p>\n";
@@ -737,6 +744,10 @@ if($action=='acces2') {
 	}
 
 	$chemin_acces="documents/".$dirname."/index.php";
+	if((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')&&(preg_match("/^[A-Za-z0-9]*$/", $_COOKIE['RNE']))) {
+		$chemin_acces.="?rne=".$_COOKIE['RNE'];
+	}
+
 	$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
 	if(!$res) {
 		echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
