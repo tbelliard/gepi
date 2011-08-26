@@ -1957,6 +1957,8 @@ function debug_var() {
 
 	$debug_var_count['COOKIE']=0;
 
+	$debug_var_count['FILES']=0;
+
 	// Fonction destinée à afficher les variables transmises d'une page à l'autre: GET, POST et SESSION
 	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
 
