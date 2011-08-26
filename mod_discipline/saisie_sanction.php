@@ -591,7 +591,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				$msg.="Nom de fichier ".$suppr_doc_joint[$loop]." invalide<br />";
 			}
 			else {
-				$fichier_courant="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction."/".$suppr_doc_joint[$loop];
+				$fichier_courant="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction."/".$suppr_doc_joint[$loop];
 				if(!unlink($fichier_courant)) {
 					$msg.="Erreur lors de la suppression de $fichier_courant<br />";
 				}
@@ -605,8 +605,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 				$msg.="Nom de fichier ".$ajouter_doc_joint[$loop]." invalide<br />";
 			}
 			else {
-				$chemin_src="../documents/discipline/incident_".$id_incident."/mesures/".$ele_login;
-				$chemin_dest="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction;
+				$chemin_src="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$ele_login;
+				$chemin_dest="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction;
 
 				$fichier_src=$chemin_src."/".$ajouter_doc_joint[$loop];
 				$fichier_dest=$chemin_dest."/".$ajouter_doc_joint[$loop];
@@ -623,7 +623,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 				if((isset($tab_tmp_id_sanction))&&(count($tab_tmp_id_sanction)>0)) {
 					for($loop2=0;$loop2<count($tab_tmp_id_sanction);$loop2++) {
-						$chemin_dest="../documents/discipline/incident_".$id_incident."/sanction_".$tab_tmp_id_sanction[$loop2];
+						$chemin_dest="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$tab_tmp_id_sanction[$loop2];
 						$fichier_dest=$chemin_dest."/".$ajouter_doc_joint[$loop];
 						if(file_exists($fichier_src)) {
 							@mkdir($chemin_dest,0770,true);
@@ -650,7 +650,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//echo "<p>Le fichier a été uploadé.</p>\n";
 
 					$source_file=$document_joint['tmp_name'];
-					$dossier_courant="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction;
+					$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction;
 					if(!file_exists($dossier_courant)) {
 						mkdir($dossier_courant, 0770, true);
 					}
