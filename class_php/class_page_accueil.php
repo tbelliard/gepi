@@ -1576,14 +1576,13 @@ class class_page_accueil {
 
 		if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
 		  $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
-				supprimer_numero(iconv("utf-8","iso-8859-1",$menuItem->titre_item)),
-				iconv("utf-8","iso-8859-1",$menuItem->description_item));
+				supprimer_numero($menuItem->titre_item),
+				$menuItem->description_item);
 		}
 
 	  }
 
 	  if ($this->b>0){
-		//$descriptionPlugin= iconv("utf-8","iso-8859-1",$plugin->description);
         $descriptionPlugin = $plugin->description;
 		$this->creeNouveauTitre('accueil',"$descriptionPlugin",'images/icons/package.png');
 	  }
