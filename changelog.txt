@@ -5,7 +5,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.5.5 (12/08/2011)
+Gepi-1.5.5 (25/08/2011)
 ===========================
 Bulletins:
 - Possibilité de ne pas faire apparaître un enseignement sur les bulletins sans passer par les catégories de matières.
@@ -44,8 +44,6 @@ Examens blancs:
 - Organisation d'examens blancs possible en prof principal (selon le paramétrage en Droits d'accès).
 - Possibilité d'exporter le relevé de notes en PDF.
 - Copie de paramètres d'un autre examen blanc.
-
-- A compléter au fur et à mesure;)...
 
 Gepi-1.5.4 (17/04/2011)
 ===========================
