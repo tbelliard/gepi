@@ -1407,11 +1407,11 @@ if (isset($action) and ($action == 'zip'))  {
 						$chemin_stockage="";
 					}
 					else {
-                                            if (!is_dir('../documents/'.$_COOKIE['RNE'])){
-                                                @mkdir('../documents/'.$_COOKIE['RNE']);
-                                            }
-                                            $dossier_a_traiter = '../documents/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
-                                            $dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
+						if (!is_dir('../documents/'.$_COOKIE['RNE'])){
+							@mkdir('../documents/'.$_COOKIE['RNE']);
+						}
+						$dossier_a_traiter = '../documents/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
+						$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
 					}
 				}
 				else {
@@ -1423,6 +1423,53 @@ if (isset($action) and ($action == 'zip'))  {
 				$dossier_a_traiter = '../documents/'; //le dossier à traiter
 				$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
 			}
+
+			if ($chemin_stockage !='') {
+
+				$handle=opendir($dossier_a_traiter);
+				$tab_file = array();
+				$n=0;
+				$zip_error=0;
+				$zip_debug="n";
+				while ($file = readdir($handle)) {
+					if(preg_match("#^cl#", $file)) {
+						if($zip_debug=='y') {echo "<span style='color:green'>";}
+						$enregistrer="y";
+					}
+					else {
+						if($zip_debug=='y') {echo "<span style='color:red'>";}
+						$enregistrer="n";
+					}
+					if($zip_debug=='y') {echo "$file</span><br />";}
+
+					if($enregistrer=="y") {
+						if($n==0) {
+							$archive = new PclZip($chemin_stockage);
+							$v_list = $archive->create("$dossier_a_traiter/$file",
+								PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+								PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+							if($v_list==0) {$zip_error++;}
+						}
+						else {
+							$v_list = $archive->add("$dossier_a_traiter/$file",
+								PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+								PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+							if($v_list==0) {$zip_error++;}
+						}
+						$n++;
+					}
+				}
+				closedir($handle);
+			
+				if ($zip_error != 0) {
+					die("<p style='color:red; text-align:center'>Error : ".$archive->errorInfo(true)."</p>");
+				}
+				else {
+					echo "<p style='color:red; text-align:center;'>Le Zip a été créé.</p>";
+				}
+
+			}
+
 			break;
 		case "photos":
 			$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
@@ -1445,24 +1492,26 @@ if (isset($action) and ($action == 'zip'))  {
 					$chemin_stockage="";
 				}
 			}
+
+			if ($chemin_stockage !='') {
+				$archive = new PclZip($chemin_stockage);
+				$v_list = $archive->create($dossier_a_traiter,
+											PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+											PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+				if ($v_list == 0) {
+					die("<p style='color:red; text-align:center'>Error : ".$archive->errorInfo(true)."</p>");
+				}
+				else {
+					echo "<p style='color:red; text-align:center;'>Le Zip a été créé.</p>";
+				}
+			}
+
 			break;
 		default:
 			$chemin_stockage = '';
+			echo "<p style='color:red; text-align:center;'>La nature de l'archivage à effectuer est inconnue.</p>";
 		}
-
-        if ($chemin_stockage !='') {
-			$archive = new PclZip($chemin_stockage);
-			$v_list = $archive->create($dossier_a_traiter,
-										PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
-										PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
-			if ($v_list == 0) {
-				die("<p style='color:red; text-align:center'>Error : ".$archive->errorInfo(true)."</p>");
-			}
-			else {
-				echo "<p style='color:red; text-align:center;'>Le Zip a été créé.</p>";
-			}
-	    }
-  }
+	}
 }
 
 if(!isset($quitter_la_page)){
