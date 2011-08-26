@@ -102,8 +102,8 @@ class PlugInPeer extends BasePlugInPeer {
           $item_menu->setPluginId($new->getId());
           $item_menu->setUserStatut($liste_statuts[$marqueur]);
           $item_menu->setLienItem('mod_plugins/' . $new->getNom() . '/' .$item);
-          $item_menu->setDescriptionItem($attributes["description"]);
-          $item_menu->setTitreItem($attributes["titre"]);
+          $item_menu->setDescriptionItem(utf8_decode($attributes["description"]));
+          $item_menu->setTitreItem(utf8_decode($attributes["titre"]));
           $item_menu->save();
 
         }else{
