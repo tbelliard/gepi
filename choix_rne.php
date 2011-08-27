@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Il faudrait ajouter de la sécurité, mais je ne sais pas quoi :?
+// Il faudrait ajouter de la sÃ©curitÃ©, mais je ne sais pas quoi :?
 
 
 // ===================== Initialisation des variables ===================
@@ -33,7 +33,7 @@ $aff_options = NULL;
 $rne = explode("|", $lesrne);
 	for($a = 0 ; $a < $nbre ; $a++){
 
-		// On affiche les différentes propositions
+		// On affiche les diffÃ©rentes propositions
 		$aff_options .= '<option value="'.$rne[$a].'">'.$rne[$a].'</option>'."\n";
 
 	}
@@ -41,7 +41,7 @@ $rne = explode("|", $lesrne);
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Choix de son RNE</title>
 	</head>
 

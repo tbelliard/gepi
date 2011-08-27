@@ -6,7 +6,7 @@
 	// graphe_svg.php
 
 	header("Content-type: image/svg+xml");
-	echo '<?xml version="1.0" encoding="iso-8859-1"?>';
+	echo '<?xml version="1.0" encoding="utf-8"?>';
 	echo "\n";
 
 	echo "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\" \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n";
@@ -67,7 +67,7 @@
 		$xtext=$marge+$dx*$i-5;
 		$ytext=$hauteurTotale-5;
 		if ($note_sur_serie % $nb_tranches == 0) {
-			//si le nombre de tranche divise le référentiel de la note (note_sur) on affiche des label entier, sinon on affiche pas de légende pour le notes.
+			//si le nombre de tranche divise le rÃ©fÃ©rentiel de la note (note_sur) on affiche des label entier, sinon on affiche pas de lÃ©gende pour le notes.
 			$val=$i*$note_sur_serie/$nb_tranches;
 		} else {
 			$val = "";
@@ -114,7 +114,7 @@
 		$y1=$hauteur_utile+$marge-$tab_tranche[$i]*$dy;
 		$h_barre=$tab_tranche[$i]*$dy;
 
-		// Pour éviter de dépasser 20 (cas d'un interval qui n'est pas un diviseur de 20):
+		// Pour Ã©viter de dÃ©passer 20 (cas d'un interval qui n'est pas un diviseur de 20):
 		if($x1+$dx<=$marge+$largeur_utile) {
 			$l_barre=$dx;
 		}
@@ -131,12 +131,12 @@
 	echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:$axes; font-size:$fontsizetext;\">$titre</text>\n";
 
 
-	echo "<!-- Légende en abscisses -->\n";
+	echo "<!-- LÃ©gende en abscisses -->\n";
 	$xtext=$largeur_utile+$marge;
 	$ytext=$hauteur_utile+$marge+15;
 	echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:$axes; font-size:x-small;\">$v_legend1</text>\n";
 
-	echo "<!-- Légende en ordonnées -->\n";
+	echo "<!-- LÃ©gende en ordonnÃ©es -->\n";
 	$xtext=5;
 	$ytext=$marge-5;
 	echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:$axes; font-size:x-small;\">$v_legend2</text>\n";

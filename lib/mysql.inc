@@ -15,7 +15,7 @@
  * 
  */
 
-// Etablir la connexion à la base
+// Etablir la connexion Ã  la base
 if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
   // On utilise le module pdo de php pour entrer en contact avec la base
   $cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);
@@ -28,10 +28,11 @@ else
 
 if (!$db_c || !mysql_select_db ($dbDb))
 {
-    echo "\n<p>Erreur grave: Echec de la connexion à la base de données";
+    echo "\n<p>Erreur grave: Echec de la connexion Ã  la base de donnÃ©es";
     exit;
 }
 
+mysql_query("SET NAMES UTF8");
 
 /** Free a results handle. You need not call this if you call sql_row or
  * sql_row_keyed until the row returns 0, since sql_row frees the results

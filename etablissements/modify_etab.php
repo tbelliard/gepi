@@ -59,20 +59,20 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		if ($count == "0") {
 			$register_etab = mysql_query("INSERT INTO etablissements SET id = '".$id."', nom='".$nom_etab."', niveau='".$niveau_etab."', type='".$type_etab."', cp= '".$cp_etab."', ville= '".$ville_etab."'");
 			if (!$register_etab) {
-				$msg = "Une erreur s'est produite lors de l'enregistrement du nouvel établissement.";
+				$msg = "Une erreur s'est produite lors de l'enregistrement du nouvel Ã©tablissement.";
 			} else {
-				$msg = "Le nouvel établissement a bien été enregistré.";
+				$msg = "Le nouvel Ã©tablissement a bien Ã©tÃ© enregistrÃ©.";
 			}
 		} else {
 			if ($nouvel_etab == 'no') {
 				$register_etab = mysql_query("UPDATE etablissements SET nom='".$nom_etab."', niveau='".$niveau_etab."', type='".$type_etab."', cp= '".$cp_etab."', ville= '".$ville_etab."' WHERE id = '".$id."'");
 				if (!$register_etab) {
-					$msg = "Une erreur s'est produite lors de la modification de l'établissement.";
+					$msg = "Une erreur s'est produite lors de la modification de l'Ã©tablissement.";
 					} else {
-					$msg = "La fiche établissement a bien été modifiée.";
+					$msg = "La fiche Ã©tablissement a bien Ã©tÃ© modifiÃ©e.";
 				}
 			} else {
-				$msg = "Un établissement ayant le même identifiant RNE existe déjà dans la base. Enregistrement impossible !";
+				$msg = "Un Ã©tablissement ayant le mÃªme identifiant RNE existe dÃ©jÃ  dans la base. Enregistrement impossible !";
 				$id = '';
 			}
 		}
@@ -83,7 +83,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 }
 
 //**************** EN-TETE *******************************
-$titre_page = "Gestion des établissements | Ajouter, modifier un établissement";
+$titre_page = "Gestion des Ã©tablissements | Ajouter, modifier un Ã©tablissement";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 ?>
@@ -115,17 +115,17 @@ echo add_token_field();
 <table>
 <?php
 if (!(isset($id)) or ($id == '')) {
-	echo "<tr><td>Identifiant de l'établissement : </td><td><input type=text size=30 name=id value=\"\" />\n";
+	echo "<tr><td>Identifiant de l'Ã©tablissement : </td><td><input type=text size=30 name=id value=\"\" />\n";
 	echo "<input type='hidden' name='nouvel_etab' value='yes' /></td></tr>\n";
 } else {
-	echo "<tr><td>Identifiant RNE de l'établissement : $id</td>\n";
+	echo "<tr><td>Identifiant RNE de l'Ã©tablissement : $id</td>\n";
 	echo "<td><input type='hidden' name='id' value='$id' />\n";
 	echo "<input type='hidden' name='nouvel_etab' value='no' /></td></tr>\n";
 }
 ?>
 <!--div class='norme'-->
-<!--tr><td>Nom de l'établissement : </td><td><input type='text' size='30' name='nom_etab' value='"<?php echo $nom_etab; ?>"'></input></td></tr-->
-<tr><td>Nom de l'établissement : </td><td><input type='text' size='30' name='nom_etab' value="<?php echo $nom_etab; ?>"></input></td></tr>
+<!--tr><td>Nom de l'Ã©tablissement : </td><td><input type='text' size='30' name='nom_etab' value='"<?php echo $nom_etab; ?>"'></input></td></tr-->
+<tr><td>Nom de l'Ã©tablissement : </td><td><input type='text' size='30' name='nom_etab' value="<?php echo $nom_etab; ?>"></input></td></tr>
 <tr><td>Niveau : </td><td><select name='niveau_etab' size='1'>
 <?php
 foreach ($type_etablissement as $type => $nom_etab) {
@@ -139,7 +139,7 @@ foreach ($type_etablissement as $type => $nom_etab) {
 </select></td></tr>
 <tr><td>Type : </td><td><SELECT name=type_etab size=1>
 <option value='public' <?php if ($type_etab == "public") { echo "selected";}?>>Public</option>
-<option value='prive' <?php if ($type_etab == "prive") { echo "selected";}?>>Privé</option>
+<option value='prive' <?php if ($type_etab == "prive") { echo "selected";}?>>PrivÃ©</option>
 <option value='aucun' <?php if ($type_etab == "aucun") { echo "selected";}?>>(vide)</option>
 </select>
 </td></tr>

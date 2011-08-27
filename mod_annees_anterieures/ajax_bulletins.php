@@ -51,14 +51,14 @@ $id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
 //$logineleve=isset($_POST['logineleve']) ? $_POST['logineleve'] : NULL;
 $logineleve=isset($_GET['logineleve']) ? $_GET['logineleve'] : NULL;
 // Faire un filtrage sur $logineleve:
-// - Un ÈlËve ne doit accÈder qu'‡ ses infos personnelles
-// - Un responsable ne doit accÈder qu'aux infos des enfants dont il est (actuellement) responsable
-// - Un professeur ne doit accÈder, selon le mode choisi:
-//        . qu'aux donnÈes des ÈlËves qu'il a en groupe
-//        . qu'aux donnÈes de tous les ÈlËves dont il a les classes
-//        . ‡ toutes les donnÈes ÈlËves
-// - Un CPE, un compte scolaritÈ... comme pour les profs.
-// Il faut rendre ces choix paramÈtrables dans Droits d'accËs.
+// - Un √©l√®ve ne doit acc√©der qu'√† ses infos personnelles
+// - Un responsable ne doit acc√©der qu'aux infos des enfants dont il est (actuellement) responsable
+// - Un professeur ne doit acc√©der, selon le mode choisi:
+//        . qu'aux donn√©es des √©l√®ves qu'il a en groupe
+//        . qu'aux donn√©es de tous les √©l√®ves dont il a les classes
+//        . √† toutes les donn√©es √©l√®ves
+// - Un CPE, un compte scolarit√©... comme pour les profs.
+// Il faut rendre ces choix param√©trables dans Droits d'acc√®s.
 
 
 $annee_scolaire=isset($_GET['annee_scolaire']) ? $_GET['annee_scolaire'] : NULL;
@@ -69,11 +69,11 @@ $mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 // Faire un filtrage sur ces valeurs.
 
 
-// Si le module n'est pas activÈ...
+// Si le module n'est pas activ√©...
 if(getSettingValue('active_annees_anterieures')!="y") {
 	// A DEGAGER
-	// A VOIR: Comment enregistrer une tentative d'accËs illicite?
-	tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÈder au module AnnÈes antÈrieures qui n'est pas activÈ.");
+	// A VOIR: Comment enregistrer une tentative d'acc√®s illicite?
+	tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'acc√©der au module Ann√©es ant√©rieures qui n'est pas activ√©.");
 
 	//echo "1";
 
@@ -81,26 +81,26 @@ if(getSettingValue('active_annees_anterieures')!="y") {
 	die();
 }
 
-// Il faut arriver sur cette page avec un $logineleve passÈ en paramËtre.
+// Il faut arriver sur cette page avec un $logineleve pass√© en param√®tre.
 
-// Faire les filtrages selon le statut ‡ ce niveau en tenant compte:
-// - du fait que le statut est autorisÈ ‡ accÈder dans Droits d'accËs;
-// - du login ÈlËve fourni.
+// Faire les filtrages selon le statut √† ce niveau en tenant compte:
+// - du fait que le statut est autoris√© √† acc√©der dans Droits d'acc√®s;
+// - du login √©l√®ve fourni.
 
 require('fonctions_annees_anterieures.inc.php');
 
 $acces=check_acces_aa($logineleve);
 
 if($acces=="y") {
-	header('Content-Type: text/html; charset=ISO-8859-15');
+	header('Content-Type: text/html; charset=utf-8');
 	
-	// On a passÈ les barriËres, on passe au traitement
+	// On a pass√© les barri√®res, on passe au traitement
 
 		/*
-			$logineleve:      login actuel de l'ÈlËve
-			$id_classe:       identifiant de la classe actuelle de l'ÈlËve
-			$annee_scolaire:  nom de l'annÈe ‡ afficher
-			$num_periode:     numÈro de la pÈriode ‡ afficher
+			$logineleve:      login actuel de l'√©l√®ve
+			$id_classe:       identifiant de la classe actuelle de l'√©l√®ve
+			$annee_scolaire:  nom de l'ann√©e √† afficher
+			$num_periode:     num√©ro de la p√©riode √† afficher
 		*/
 
 		//global $gepiPath;
@@ -114,14 +114,14 @@ if($acces=="y") {
 		$res_ele=mysql_query($sql);
 	
 		if(mysql_num_rows($res_ele)==0) {
-			// On ne devrait pas arriver l‡.
-			echo "<p>L'ÈlËve dont le login serait '$logineleve' n'est pas dans la table 'eleves'.</p>\n";
+			// On ne devrait pas arriver l√†.
+			echo "<p>L'√©l√®ve dont le login serait '$logineleve' n'est pas dans la table 'eleves'.</p>\n";
 		}
 		else {
 			$lig_ele=mysql_fetch_object($res_ele);
 	
-			// Infos ÈlËve
-			//$ine: INE de l'ÈlËve (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
+			// Infos √©l√®ve
+			//$ine: INE de l'√©l√®ve (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
 			$ine=$lig_ele->no_gep;
 			$ele_nom=$lig_ele->nom;
 			$ele_prenom=$lig_ele->prenom;
@@ -143,13 +143,13 @@ if($acces=="y") {
 			}
 			echo "'>\n";
 
-			// Si l'annÈe scolaire n'a pas ÈtÈ passÈe en variable, on rÈcupËre la premiËre annÈe scolaire pour laquelle il y a des archives pour cet ÈlËve.
+			// Si l'ann√©e scolaire n'a pas √©t√© pass√©e en variable, on r√©cup√®re la premi√®re ann√©e scolaire pour laquelle il y a des archives pour cet √©l√®ve.
 			if(!isset($annee_scolaire)) {
 				$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
 				$res_annee=mysql_query($sql);
 
 				if(mysql_num_rows($res_annee)==0) {
-					echo "<p>Aucune annÈe archivÈe pour cet ÈlËve.</p>\n";
+					echo "<p>Aucune ann√©e archiv√©e pour cet √©l√®ve.</p>\n";
 					die();
 				}
 
@@ -157,7 +157,7 @@ if($acces=="y") {
 				$annee_scolaire=$lig_annee->annee;
 			}
 
-			// Si le num_periode n'a pas ÈtÈ passÈ en variable, on prend la premiËre pÈriode: 1
+			// Si le num_periode n'a pas √©t√© pass√© en variable, on prend la premi√®re p√©riode: 1
 			if(!isset($num_periode)) {
 				$num_periode=1;
 			}
@@ -167,7 +167,7 @@ if($acces=="y") {
 			$res_per=mysql_query($sql);
 	
 			if(mysql_num_rows($res_per)==0) {
-				$nom_periode="pÈriode $num_periode";
+				$nom_periode="p√©riode $num_periode";
 				$classe_ant="???";
 			}
 			else {
@@ -176,21 +176,21 @@ if($acces=="y") {
 				$classe_ant=$lig_per->classe;
 			}
 	
-			echo "<h2 style='color:black;'>AntÈcÈdents de $ele_prenom $ele_nom: millÈsime $annee_scolaire</h2>\n";
+			echo "<h2 style='color:black;'>Ant√©c√©dents de $ele_prenom $ele_nom: mill√©sime $annee_scolaire</h2>\n";
 	
-			//echo "<p>Bulletin simplifiÈ de $prenom $nom pour la pÈriode $num_periode de l'annÈe scolaire $annee_scolaire</p>";
-			echo "<p>Bulletin simplifiÈ de $ele_prenom $ele_nom: $nom_periode de l'annÈe scolaire $annee_scolaire en <strong>$classe_ant</strong> <em style='font-size: x-small;'>(actuellement en $classe)</em></p>\n";
+			//echo "<p>Bulletin simplifi√© de $prenom $nom pour la p√©riode $num_periode de l'ann√©e scolaire $annee_scolaire</p>";
+			echo "<p>Bulletin simplifi√© de $ele_prenom $ele_nom: $nom_periode de l'ann√©e scolaire $annee_scolaire en <strong>$classe_ant</strong> <em style='font-size: x-small;'>(actuellement en $classe)</em></p>\n";
 	
-			// Affichage des infos ÈlËve
+			// Affichage des infos √©l√®ve
 	
-			// Affichage des matiËres
-			//echo "<table class='table_annee_anterieure' width='100%' summary='MatiËres/notes'>\n";
-			echo "<table class='boireaus' width='100%' summary='MatiËres/notes'>\n";
+			// Affichage des mati√®res
+			//echo "<table class='table_annee_anterieure' width='100%' summary='Mati√®res/notes'>\n";
+			echo "<table class='boireaus' width='100%' summary='Mati√®res/notes'>\n";
 			echo "<tr style='color:black;'>\n";
-			echo "<th rowspan='2'>MatiËre</th>\n";
+			echo "<th rowspan='2'>Mati√®re</th>\n";
 			echo "<th colspan='3'>Classe</th>\n";
-			echo "<th rowspan='2'>ElËve</th>\n";
-			echo "<th rowspan='2'>ApprÈciations/Conseils</th>\n";
+			echo "<th rowspan='2'>El√®ve</th>\n";
+			echo "<th rowspan='2'>Appr√©ciations/Conseils</th>\n";
 			echo "</tr>\n";
 	
 			echo "<tr style='color:black;'>\n";
@@ -205,8 +205,8 @@ if($acces=="y") {
 			$res_mat=mysql_query($sql);
 	
 			if(mysql_num_rows($res_mat)==0) {
-				// On ne devrait pas arriver l‡.
-				echo "<tr><td colspan='6'>Aucun rÈsultat enregistrÈ???</td></tr>\n";
+				// On ne devrait pas arriver l√†.
+				echo "<tr><td colspan='6'>Aucun r√©sultat enregistr√©???</td></tr>\n";
 			}
 			else {
 				while($lig_mat=mysql_fetch_object($res_mat)) {
@@ -273,7 +273,7 @@ if($acces=="y") {
 				echo "<p>Aucune information sur les absences/retards.</p>\n";
 			}
 			elseif(mysql_num_rows($res_abs)>1) {
-				echo "<p>Bizarre: Il y a plus d'un enregistrement pour cette ÈlËve, cette pÈriode et cette annÈe.</p>\n";
+				echo "<p>Bizarre: Il y a plus d'un enregistrement pour cette √©l√®ve, cette p√©riode et cette ann√©e.</p>\n";
 			}
 			else {
 				$lig_abs=mysql_fetch_object($res_abs);
@@ -284,14 +284,14 @@ if($acces=="y") {
 	
 				echo "<p>";
 				if ($nb_absences=='0') {
-					echo "<i>Aucune demi-journÈe d'absence</i>.";
+					echo "<i>Aucune demi-journ√©e d'absence</i>.";
 				}
 				else {
-					echo "<i>Nombre de demi-journÈes d'absence ";
-					if ($non_justifie=='0') {echo "justifiÈes ";}
+					echo "<i>Nombre de demi-journ√©es d'absence ";
+					if ($non_justifie=='0') {echo "justifi√©es ";}
 					echo ": </i><b>$nb_absences</b>";
 					if ($non_justifie != '0') {
-						echo " (dont <b>$non_justifie</b> non justifiÈe"; if ($non_justifie != '1') {echo "s";}
+						echo " (dont <b>$non_justifie</b> non justifi√©e"; if ($non_justifie != '1') {echo "s";}
 						echo ")";
 					}
 					echo ".";
@@ -299,7 +299,7 @@ if($acces=="y") {
 				if ($nb_retards!='0') {
 					echo "<i> Nombre de retards : </i><b>$nb_retards</b>";
 				}
-				echo "  (C.P.E. chargÈ(e)";
+				echo "  (C.P.E. charg√©(e)";
 				echo " du suivi : ".$lig_abs->prof.")";
 				if ($lig_abs->appreciation!= "") {echo "<br />$lig_abs->appreciation";}
 				echo "</p>\n";
@@ -322,7 +322,7 @@ if($acces=="y") {
 				echo "Aucune information sur l'avis du conseil de classe.</p>\n";
 			}
 			elseif(mysql_num_rows($res_avis)>1) {
-				echo "Bizarre: Il y a plus d'un enregistrement pour cette ÈlËve, cette pÈriode et cette annÈe.</p>\n";
+				echo "Bizarre: Il y a plus d'un enregistrement pour cette √©l√®ve, cette p√©riode et cette ann√©e.</p>\n";
 				$prof_suivi="?";
 			}
 			else {
@@ -338,8 +338,8 @@ if($acces=="y") {
 			echo "</table>\n";
 	
 			echo "</div>\n";
-			// Afficher des liens permettant de passer rapidement ‡ la pÈriode suivante/prÈcÈdente
-			// + un tableau des annÈes/pÈriodes (annÈes sur une ligne en colspan=nb_per et num_periode en dessous)
+			// Afficher des liens permettant de passer rapidement √† la p√©riode suivante/pr√©c√©dente
+			// + un tableau des ann√©es/p√©riodes (ann√©es sur une ligne en colspan=nb_per et num_periode en dessous)
 		}
 	}
 //}

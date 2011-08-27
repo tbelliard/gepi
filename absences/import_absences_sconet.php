@@ -62,7 +62,7 @@ function get_nom_class_from_id($id){
 				$_SESSION['ad_retour']=$_GET['ad_retour'];
 			}
 
-			// Initialisation du répertoire actuel de sauvegarde
+			// Initialisation du rÃ©pertoire actuel de sauvegarde
 			//$dirname = getSettingValue("backup_directory");
 
 			echo "<h2 align='center'>Import des absences de Sconet</h2>\n";
@@ -79,7 +79,7 @@ function get_nom_class_from_id($id){
 			//echo "</p>\n";
 
 
-			// Il faudra pouvoir gérer id_classe comme un tableau
+			// Il faudra pouvoir gÃ©rer id_classe comme un tableau
 			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 			$num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
 			$max_per=isset($_POST['max_per']) ? $_POST['max_per'] : (isset($_GET['max_per']) ? $_GET['max_per'] : NULL);
@@ -103,29 +103,29 @@ function get_nom_class_from_id($id){
 				sort($tab_max_per);
 
 				if(count($tab_max_per)==0){
-					echo "<p><span style='color:red;'>ERREUR:</span> Il semble qu'aucune classe n'ait de période définie.</p>\n";
+					echo "<p><span style='color:red;'>ERREUR:</span> Il semble qu'aucune classe n'ait de pÃ©riode dÃ©finie.</p>\n";
 					require("../lib/footer.inc.php");
 					exit();
 				}
 				elseif(count($tab_max_per)==1){
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
-					echo "<p>Choisissez la période à importer:<br />\n";
+					echo "<p>Choisissez la pÃ©riode Ã  importer:<br />\n";
 
 					/*
 					$sql="SELECT DISTINCT num_periode FROM periodes WHERE MAX(num_periode)= ORDER BY num_periode;";
 					$res_per=mysql_query($sql);
 					while($lig_tmp=mysql_fetch_object($res_per)){
-						// Il ne faudrait proposer que les périodes ouvertes en saisie, non?
-						echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> Période $lig_tmp->num_periode<br />\n";
+						// Il ne faudrait proposer que les pÃ©riodes ouvertes en saisie, non?
+						echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> PÃ©riode $lig_tmp->num_periode<br />\n";
 					}
 					*/
 
 					$i=0;
 					for($j=1;$j<=$tab_max_per[$i];$j++){
-						//echo "<input type='radio' name='num_periode' value='$j' /> Période $j<br />\n";
+						//echo "<input type='radio' name='num_periode' value='$j' /> PÃ©riode $j<br />\n";
 						if($j==1){$checked=" checked";}else{$checked="";}
-						echo "<input type='radio' name='num_periode' id='num_periode_$j' value='$j'$checked /><label for='num_periode_$j' style='cursor: pointer;'> Période $j</label><br />\n";
+						echo "<input type='radio' name='num_periode' id='num_periode_$j' value='$j'$checked /><label for='num_periode_$j' style='cursor: pointer;'> PÃ©riode $j</label><br />\n";
 					}
 					echo "<input type='hidden' name='max_per' value='$tab_max_per[$i]' />\n";
 
@@ -134,7 +134,7 @@ function get_nom_class_from_id($id){
 				}
 				else{
 
-					echo "<p>Choisissez la période à importer:</p>\n";
+					echo "<p>Choisissez la pÃ©riode Ã  importer:</p>\n";
 					//echo "<ul>\n";
 					echo "<table class='boireaus'>\n";
 					$alt=1;
@@ -146,11 +146,11 @@ function get_nom_class_from_id($id){
 
 							echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 							echo "<table border='0'>\n";
-							echo "<tr><td valign='top' style='border:0px;'>Classes à $tab_max_per[$i] périodes:</td>\n";
+							echo "<tr><td valign='top' style='border:0px;'>Classes Ã  $tab_max_per[$i] pÃ©riodes:</td>\n";
 							echo "<td style='border:0px;'>\n";
 							for($j=1;$j<=$tab_max_per[$i];$j++){
 								if($j==1){$checked=" checked";}else{$checked="";}
-								echo "<input type='radio' name='num_periode' id='num_periode_".$j."_".$tab_max_per[$i]."' value='$j'$checked /><label for='num_periode_".$j."_".$tab_max_per[$i]."' style='cursor: pointer;'> Période $j</label><br />\n";
+								echo "<input type='radio' name='num_periode' id='num_periode_".$j."_".$tab_max_per[$i]."' value='$j'$checked /><label for='num_periode_".$j."_".$tab_max_per[$i]."' style='cursor: pointer;'> PÃ©riode $j</label><br />\n";
 							}
 							echo "</td>\n";
 
@@ -159,8 +159,8 @@ function get_nom_class_from_id($id){
 							echo "$sql<br />\n";
 							$res_per=mysql_query($sql);
 							while($lig_tmp=mysql_fetch_object($res_per)){
-								// Il ne faudrait proposer que les périodes ouvertes en saisie, non?
-								echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> Période $lig_tmp->num_periode<br />\n";
+								// Il ne faudrait proposer que les pÃ©riodes ouvertes en saisie, non?
+								echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> PÃ©riode $lig_tmp->num_periode<br />\n";
 							}
 							*/
 
@@ -179,7 +179,7 @@ function get_nom_class_from_id($id){
 					//echo "</ul>\n";
 					echo "</table>\n";
 
-					echo "<p><i>NOTE:</i> Il n'est pas possible d'importer simultanément des absences de classes dont le nombre de périodes diffère.</p>\n";
+					echo "<p><i>NOTE:</i> Il n'est pas possible d'importer simultanÃ©ment des absences de classes dont le nombre de pÃ©riodes diffÃ¨re.</p>\n";
 				}
 			}
 			else {
@@ -187,10 +187,10 @@ function get_nom_class_from_id($id){
 				// =======================================================================
 
 				if(!isset($id_classe)) {
-					echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre période</a>\n";
+					echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre pÃ©riode</a>\n";
 					echo "</p>\n";
 
-					// Il faudra pouvoir gérer les cpe responsables seulement dans certaines classes...
+					// Il faudra pouvoir gÃ©rer les cpe responsables seulement dans certaines classes...
 					//$sql="SELECT * FROM classes ORDER BY classe";
 					if ($_SESSION['statut']=="cpe") {
 						$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe)  ORDER BY classe";
@@ -203,12 +203,12 @@ function get_nom_class_from_id($id){
 
 					$nb_classes = mysql_num_rows($res_classe);
 					if ($nb_classes==0) {
-						echo "<p>Aucune classe n'a été trouvée.</p>\n";
+						echo "<p>Aucune classe n'a Ã©tÃ© trouvÃ©e.</p>\n";
 					}
 					else{
 						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
-						echo "<p>Choisissez les classes à importer.</p>\n";
+						echo "<p>Choisissez les classes Ã  importer.</p>\n";
 
 						$nb_class_par_colonne=round($nb_classes/3);
 						//echo "<table width='100%' border='1'>\n";
@@ -237,15 +237,15 @@ function get_nom_class_from_id($id){
 							$test=mysql_query($sql);
 
 							if(mysql_num_rows($test)==0){
-								echo "<tr><td>&nbsp;</td><td>Classe: $classe (<i>pas de période?</i>)</td></tr>\n";
+								echo "<tr><td>&nbsp;</td><td>Classe: $classe (<i>pas de pÃ©riode?</i>)</td></tr>\n";
 							}
 							else{
 								$lig_tmp=mysql_fetch_object($test);
 								if($lig_tmp->max_per!=$max_per){
-									echo "<tr><td>&nbsp;</td><td>Classe: $classe (<i>$lig_tmp->max_per périodes</i>)</td></tr>\n";
+									echo "<tr><td>&nbsp;</td><td>Classe: $classe (<i>$lig_tmp->max_per pÃ©riodes</i>)</td></tr>\n";
 								}
 								else{
-									// Un compte secours peut saisir en période partiellement close
+									// Un compte secours peut saisir en pÃ©riode partiellement close
 									if($_SESSION['statut']=='secours') {
 										$sql="SELECT verouiller FROM periodes WHERE (verouiller='N' OR verouiller='P') AND id_classe='$id_classe' AND num_periode='$num_periode';";
 									}
@@ -254,7 +254,7 @@ function get_nom_class_from_id($id){
 									}
 									$test=mysql_query($sql);
 									if(mysql_num_rows($test)==0){
-										echo "<tr><td>&nbsp;</td><td>Classe: $classe (<i>période close</i>)</td></tr>\n";
+										echo "<tr><td>&nbsp;</td><td>Classe: $classe (<i>pÃ©riode close</i>)</td></tr>\n";
 									}
 									else{
 										echo "<tr>\n";
@@ -279,12 +279,12 @@ function get_nom_class_from_id($id){
 						echo "<p><input type='submit' value='Valider' /></p>\n";
 						echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 
-						echo "<p><a href='#' onClick='Coche_ou_pas(true); return false;'>Tout cocher</a> / <a href='#' onClick='Coche_ou_pas(false); return false;'>Tout décocher</a></p>\n";
+						echo "<p><a href='#' onClick='Coche_ou_pas(true); return false;'>Tout cocher</a> / <a href='#' onClick='Coche_ou_pas(false); return false;'>Tout dÃ©cocher</a></p>\n";
 
 						echo "</form>\n";
 
 
-						echo "<p><i>NOTE:</i> Seules les absences des classes cochées seront importées (<i>même si l'ExportSconet contient les absences de toutes les classes</i>).</p>\n";
+						echo "<p><i>NOTE:</i> Seules les absences des classes cochÃ©es seront importÃ©es (<i>mÃªme si l'ExportSconet contient les absences de toutes les classes</i>).</p>\n";
 
 
 						echo "<script type='text/javascript' language='javascript'>
@@ -306,7 +306,7 @@ function get_nom_class_from_id($id){
 						if(!isset($_POST['is_posted'])) {
 							$etape=1;
 
-							//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
+							//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations Ã©lÃ¨ves, responsables,...<br />\n";
 							echo "<p>Cette page permet de remplir des tables temporaires avec les informations extraites du XML.<br />\n";
 							echo "</p>\n";
 							echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -314,7 +314,7 @@ function get_nom_class_from_id($id){
 
 							echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 
-							// Il faudrait ajouter un test ici... on pourrait injecter une classe pour laquelle la période $num_periode est close.
+							// Il faudrait ajouter un test ici... on pourrait injecter une classe pour laquelle la pÃ©riode $num_periode est close.
 							if(is_array($id_classe)){
 								for($i=0;$i<count($id_classe);$i++){
 									echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
@@ -335,11 +335,11 @@ function get_nom_class_from_id($id){
 
 							echo "<p><b>ATTENTION</b>:</p>\n";
 							echo "<ul>\n";
-							echo "<li><p>Fournir un export d'une seule période.<br />Si plusieurs périodes sont cochées lors de votre export, les informations importées risquent d'être erronées.</p></li>\n";
-							echo "<li><p>Pour récupérer l'export de Sconet:<br />\n";
+							echo "<li><p>Fournir un export d'une seule pÃ©riode.<br />Si plusieurs pÃ©riodes sont cochÃ©es lors de votre export, les informations importÃ©es risquent d'Ãªtre erronÃ©es.</p></li>\n";
+							echo "<li><p>Pour rÃ©cupÃ©rer l'export de Sconet:<br />\n";
 							echo "Sur le menu de gauche :<br />\n";
-							echo "IMPORT/EXPORT -> Export Absences et Retard -> Sélectionner la période (T1, T2, T3)<br />\n";
-							echo "Puis cliquer sur le bouton 'Exporter les périodes sélectionnées'.</p>\n";
+							echo "IMPORT/EXPORT -> Export Absences et Retard -> SÃ©lectionner la pÃ©riode (T1, T2, T3)<br />\n";
+							echo "Puis cliquer sur le bouton 'Exporter les pÃ©riodes sÃ©lectionnÃ©es'.</p>\n";
 							echo "</ul>\n";
 						}
 						else {
@@ -361,7 +361,7 @@ function get_nom_class_from_id($id){
 										$ligne[]=fgets($fp,4096);
 									}
 									fclose($fp);
-									//echo "<p>Terminé.</p>\n";
+									//echo "<p>TerminÃ©.</p>\n";
 									flush();
 
 
@@ -374,7 +374,7 @@ function get_nom_class_from_id($id){
 									$temoin_ele=0;
 									$temoin_options=0;
 									$temoin_scol=0;
-									//Compteur élève:
+									//Compteur Ã©lÃ¨ve:
 									$i=-1;
 
 									$tab_champs_parametres=array("uaj",
@@ -389,11 +389,11 @@ function get_nom_class_from_id($id){
 									while($cpt<count($ligne)){
 										//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
 										if(strstr($ligne[$cpt],"<PARAMETRES>")){
-											//echo "Début de la section PARAMETRES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+											//echo "DÃ©but de la section PARAMETRES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 											$temoin_parametres++;
 										}
 										if(strstr($ligne[$cpt],"</PARAMETRES>")){
-											//echo "Fin de la section PARAMETRES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+											//echo "Fin de la section PARAMETRES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 											$temoin_parametres++;
 											break;
 										}
@@ -429,11 +429,11 @@ function get_nom_class_from_id($id){
 									while($cpt<count($ligne)){
 										//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
 										if(strstr($ligne[$cpt],"<PERIODE>")){
-											//echo "Début de la section PERIODE à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+											//echo "DÃ©but de la section PERIODE Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 											$temoin_periode++;
 										}
 										if(strstr($ligne[$cpt],"</PERIODE>")){
-											//echo "Fin de la section PERIODE à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+											//echo "Fin de la section PERIODE Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 											$temoin_periode++;
 											break;
 										}
@@ -519,7 +519,7 @@ function get_nom_class_from_id($id){
 
 
 									echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-									// On a fait en sorte à l'étape précédente, qu'il n'y ait qu'une classe ou plusieurs, que l'on transmette un tableau id_classe[]
+									// On a fait en sorte Ã  l'Ã©tape prÃ©cÃ©dente, qu'il n'y ait qu'une classe ou plusieurs, que l'on transmette un tableau id_classe[]
 									for($i=0;$i<count($id_classe);$i++){
 										echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 									}
@@ -529,10 +529,10 @@ function get_nom_class_from_id($id){
 									echo "<th>&nbsp;</th>\n";
 									echo "<th>Elenoet</th>\n";
 									echo "<th>Nom</th>\n";
-									echo "<th>Prénom</th>\n";
+									echo "<th>PrÃ©nom</th>\n";
 									echo "<th>Classe</th>\n";
 									echo "<th>Nombre d'absences</th>\n";
-									echo "<th>Non justifiées</th>\n";
+									echo "<th>Non justifiÃ©es</th>\n";
 									echo "<th>Nombre de retards</th>\n";
 									echo "</tr>\n";
 
@@ -551,7 +551,7 @@ function get_nom_class_from_id($id){
 										$affiche_ligne="n";
 
 										if(isset($eleves[$i]['elenoet'])){
-											// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
+											// Est-ce que l'Ã©lÃ¨ve fait bien partie d'une des classes importÃ©es pour la pÃ©riode importÃ©e?
 											//$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND e.no_gep='".$eleves[$i]['elenoet']."' AND periode='$num_periode' AND $chaine_liste_classes;";
 											$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
 											//echo "<!--\n$sql\n-->\n";
@@ -564,25 +564,25 @@ function get_nom_class_from_id($id){
 												$ligne_tableau.="<td>$i</td>\n";
 												$ligne_tableau.="<td>".$eleves[$i]['elenoet']."</td>\n";
 
-												// Récupération des infos sur l'élève (on a au moins besoin du login pour tester si le CPE a cet élève.
+												// RÃ©cupÃ©ration des infos sur l'Ã©lÃ¨ve (on a au moins besoin du login pour tester si le CPE a cet Ã©lÃ¨ve.
 												$sql="SELECT e.login,e.nom,e.prenom,e.elenoet
 															FROM eleves e
 															WHERE (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."')";
 												//echo "<!--\n$sql\n-->\n";
 												$res1=mysql_query($sql);
 												if(mysql_num_rows($res1)==0){
-													$ligne_tableau.="<td style='color:red;' colspan='3'>Elève absent de votre table 'eleves'???</td>\n";
+													$ligne_tableau.="<td style='color:red;' colspan='3'>ElÃ¨ve absent de votre table 'eleves'???</td>\n";
 													$nb_err++;
 												}
 												elseif(mysql_num_rows($res1)>1){
-													$ligne_tableau.="<td style='color:red;' colspan='3'>Plus d'un élève correspond à cet ELENOET ???</td>\n";
+													$ligne_tableau.="<td style='color:red;' colspan='3'>Plus d'un Ã©lÃ¨ve correspond Ã  cet ELENOET ???</td>\n";
 													$nb_err++;
 												}
 												else{
 
 													$lig1=mysql_fetch_object($res1);
 
-													// Le CPE a-t-il bien cet élève:
+													// Le CPE a-t-il bien cet Ã©lÃ¨ve:
 													//$sql="SELECT 1=1 FROM j_eleves_cpe jec, eleves e WHERE jec.e_login=e.login AND jec.cpe_login='".$_SESSION['login']."'";
 													$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
 													//echo "<!--\n$sql\n-->\n";
@@ -684,7 +684,7 @@ function get_nom_class_from_id($id){
 									echo "<p align='center'><input type='submit' value='Importer' /></p>\n";
 									echo "</form>\n";
 
-									echo "<p><i>NOTE:</i> Si des lignes sont marquées d'un <span style='color:red;'>ERR</span>, les valeurs ne seront pas importées pour cet(s) élève(s).</p>\n";
+									echo "<p><i>NOTE:</i> Si des lignes sont marquÃ©es d'un <span style='color:red;'>ERR</span>, les valeurs ne seront pas importÃ©es pour cet(s) Ã©lÃ¨ve(s).</p>\n";
 
 								}
 								else{
@@ -701,11 +701,11 @@ function get_nom_class_from_id($id){
 								$nb_eleves=isset($_POST['nb_eleves']) ? $_POST['nb_eleves'] : NULL;
 
 
-								// On initialise à zéro les absences, retards,... pour tous les élèves des classes importées et les valeurs extraites du XML de Sconet écraseront ces initialisations.
-								// Si on ne fait pas cette initialisation, les élèves qui n'ont aucune absence ni retard apparaissent avec un '?' au lieu d'un Zéro/Aucune.
+								// On initialise Ã  zÃ©ro les absences, retards,... pour tous les Ã©lÃ¨ves des classes importÃ©es et les valeurs extraites du XML de Sconet Ã©craseront ces initialisations.
+								// Si on ne fait pas cette initialisation, les Ã©lÃ¨ves qui n'ont aucune absence ni retard apparaissent avec un '?' au lieu d'un ZÃ©ro/Aucune.
 								for($i=0;$i<count($id_classe);$i++){
 
-									// Ajout d'un test sur le caractère clos de la période pour la classe
+									// Ajout d'un test sur le caractÃ¨re clos de la pÃ©riode pour la classe
 									if($_SESSION['statut']=='secours'){
 										$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$num_periode' AND (verouiller='N' OR verouiller='P');";
 									}
@@ -719,7 +719,7 @@ function get_nom_class_from_id($id){
 											$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]' AND periode='$num_periode';";
 										}
 										else{
-											// Pour ne réinitialiser que les absences des élèves associés au CPE:
+											// Pour ne rÃ©initialiser que les absences des Ã©lÃ¨ves associÃ©s au CPE:
 											$sql="SELECT jecl.login FROM j_eleves_classes jecl, j_eleves_cpe jec WHERE jecl.id_classe='$id_classe[$i]' AND jecl.periode='$num_periode' AND jecl.login=jec.e_login AND jec.cpe_login='".$_SESSION['login']."';";
 										}
 	
@@ -751,11 +751,11 @@ function get_nom_class_from_id($id){
 										if($_SESSION['statut']=='secours'){
 											$test0=true;
 
-											// Requête pour tester que la période est bien close ou partiellement close pour cette classe
+											// RequÃªte pour tester que la pÃ©riode est bien close ou partiellement close pour cette classe
 											$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.num_periode='$num_periode' AND (p.verouiller='N' OR p.verouiller='P') AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
 										}
 										else{
-											// L'élève est-il associé au CPE:
+											// L'Ã©lÃ¨ve est-il associÃ© au CPE:
 											// Il faudrait vraiment une tentative frauduleuse pour que ce ne soit pas le cas...
 											$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='".$log_eleve[$i]."' AND jec.cpe_login='".$_SESSION['login']."';";
 											$res_test0=mysql_query($sql);
@@ -766,7 +766,7 @@ function get_nom_class_from_id($id){
 												$test0=false;
 											}
 
-											// Requête pour tester que la période est bien close pour cette classe
+											// RequÃªte pour tester que la pÃ©riode est bien close pour cette classe
 											$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.num_periode='$num_periode' AND p.verouiller='N' AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
 										}
 										//echo "$sql<br />";
@@ -822,7 +822,7 @@ function get_nom_class_from_id($id){
 									}
 								}
 								echo "</p>\n";
-								echo "<p>Importation effectuée";
+								echo "<p>Importation effectuÃ©e";
 								if($nb_err==0){
 									echo " sans erreur.</p>\n";
 								}
@@ -835,11 +835,11 @@ function get_nom_class_from_id($id){
 								echo "<p><br /></p>\n";
 
 								if(isset($liste_non_importes)) {
-									echo "<p>Aucune importation n'a été effectuée pour <span style='color:red'>$liste_non_importes</span>.<br />La période était peut-être close pour ces élèves.</p>\n";
+									echo "<p>Aucune importation n'a Ã©tÃ© effectuÃ©e pour <span style='color:red'>$liste_non_importes</span>.<br />La pÃ©riode Ã©tait peut-Ãªtre close pour ces Ã©lÃ¨ves.</p>\n";
 									echo "<p><br /></p>\n";
 								}
 
-								echo "<p>Contrôler les saisies pour la classe de:</p>\n";
+								echo "<p>ContrÃ´ler les saisies pour la classe de:</p>\n";
 								/*
 								echo "<ul>\n";
 								for($i=0;$i<count($id_classe);$i++){

@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// INSERT INTO droits VALUES ('/mod_annees_anterieures/popup_annee_anterieure.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'Consultation des données d années antérieures', '');
+// INSERT INTO droits VALUES ('/mod_annees_anterieures/popup_annee_anterieure.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'Consultation des donnÃ©es d annÃ©es antÃ©rieures', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -54,16 +54,16 @@ $id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
 //$logineleve=isset($_POST['logineleve']) ? $_POST['logineleve'] : NULL;
 $logineleve=isset($_GET['logineleve']) ? $_GET['logineleve'] : NULL;
 // Faire un filtrage sur $logineleve:
-// - Un élève ne doit accéder qu'à ses infos personnelles
-// - Un responsable ne doit accéder qu'aux infos des enfants dont il est (actuellement) responsable
-// - Un professeur ne doit accéder, selon le mode choisi:
-//        . qu'aux données des élèves qu'il a en groupe
-//        . qu'aux données de tous les élèves dont il a les classes
-//        . à toutes les données élèves
-// - Un CPE, un compte scolarité... comme pour les profs.
-// Il faut rendre ces choix paramétrables dans Droits d'accès.
+// - Un Ã©lÃ¨ve ne doit accÃ©der qu'Ã  ses infos personnelles
+// - Un responsable ne doit accÃ©der qu'aux infos des enfants dont il est (actuellement) responsable
+// - Un professeur ne doit accÃ©der, selon le mode choisi:
+//        . qu'aux donnÃ©es des Ã©lÃ¨ves qu'il a en groupe
+//        . qu'aux donnÃ©es de tous les Ã©lÃ¨ves dont il a les classes
+//        . Ã  toutes les donnÃ©es Ã©lÃ¨ves
+// - Un CPE, un compte scolaritÃ©... comme pour les profs.
+// Il faut rendre ces choix paramÃ©trables dans Droits d'accÃ¨s.
 
-// (pour le moment le checkAcess() ne permet que l'accès Administrateur)
+// (pour le moment le checkAcess() ne permet que l'accÃ¨s Administrateur)
 
 
 $annee_scolaire=isset($_GET['annee_scolaire']) ? $_GET['annee_scolaire'] : NULL;
@@ -79,22 +79,22 @@ $mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 
 
 
-// Si le module n'est pas activé...
+// Si le module n'est pas activÃ©...
 if(getSettingValue('active_annees_anterieures')!="y"){
 	// A DEGAGER
-	// A VOIR: Comment enregistrer une tentative d'accès illicite?
-	tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder au module Années antérieures qui n'est pas activé.");
+	// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
+	tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der au module AnnÃ©es antÃ©rieures qui n'est pas activÃ©.");
 
 	header("Location: ../logout.php?auto=1");
 	die();
 }
 
 
-// Il faut arriver sur cette page avec un $logineleve passé en paramètre.
+// Il faut arriver sur cette page avec un $logineleve passÃ© en paramÃ¨tre.
 
-// Faire les filtrages selon le statut à ce niveau en tenant compte:
-// - du fait que le statut est autorisé à accéder dans Droits d'accès;
-// - du login élève fourni.
+// Faire les filtrages selon le statut Ã  ce niveau en tenant compte:
+// - du fait que le statut est autorisÃ© Ã  accÃ©der dans Droits d'accÃ¨s;
+// - du login Ã©lÃ¨ve fourni.
 
 $acces="n";
 if($_SESSION['statut']=="administrateur"){
@@ -117,11 +117,11 @@ elseif($_SESSION['statut']=="professeur"){
 	//echo "\$AAProfGroupes=$AAProfGroupes<br />";
 
 	if($AAProfTout=="yes"){
-		// Le professeur a accès aux données antérieures de tous les élèves
+		// Le professeur a accÃ¨s aux donnÃ©es antÃ©rieures de tous les Ã©lÃ¨ves
 		$acces="y";
 	}
 	elseif($AAProfClasses=="yes"){
-		// Le professeur a accès aux données antérieures des élèves des classes pour lesquelles il fournit un enseignement (sans nécessairement avoir tous les élèves de la classe)
+		// Le professeur a accÃ¨s aux donnÃ©es antÃ©rieures des Ã©lÃ¨ves des classes pour lesquelles il fournit un enseignement (sans nÃ©cessairement avoir tous les Ã©lÃ¨ves de la classe)
 		/*
 		$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_professeurs jgp
 						WHERE jeg.login='$logineleve' AND
@@ -141,7 +141,7 @@ elseif($_SESSION['statut']=="professeur"){
 		}
 	}
 	elseif($AAProfGroupes=="yes"){
-		// Le professeur a accès aux données antérieures des élèves des groupes auxquels il enseigne
+		// Le professeur a accÃ¨s aux donnÃ©es antÃ©rieures des Ã©lÃ¨ves des groupes auxquels il enseigne
 		$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp
 						WHERE jeg.login='$logineleve' AND
 								jeg.id_groupe=jgp.id_groupe AND
@@ -153,7 +153,7 @@ elseif($_SESSION['statut']=="professeur"){
 		}
 	}
 	elseif($AAProfPrinc=="yes"){
-		// Le professeur a accès aux données antérieures des élèves dont il est Professeur Principal
+		// Le professeur a accÃ¨s aux donnÃ©es antÃ©rieures des Ã©lÃ¨ves dont il est Professeur Principal
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND
 														login='$logineleve';";
 		//echo "$sql<br />";
@@ -171,7 +171,7 @@ elseif($_SESSION['statut']=="cpe"){
 	$AACpeResp=getSettingValue('AACpeResp');
 
 	if($AACpeTout=="yes"){
-		// Le CPE a accès aux données antérieures de tous les élèves
+		// Le CPE a accÃ¨s aux donnÃ©es antÃ©rieures de tous les Ã©lÃ¨ves
 		$acces="y";
 	}
 	elseif($AACpeResp=="yes"){
@@ -191,7 +191,7 @@ elseif($_SESSION['statut']=="scolarite"){
 	$AAScolResp=getSettingValue('AAScolResp');
 
 	if($AAScolTout=="yes"){
-		// Les comptes Scolarité ont accès aux données antérieures de tous les élèves
+		// Les comptes ScolaritÃ© ont accÃ¨s aux donnÃ©es antÃ©rieures de tous les Ã©lÃ¨ves
 		$acces="y";
 	}
 	elseif($AAScolResp=="yes"){
@@ -209,7 +209,7 @@ elseif($_SESSION['statut']=="responsable"){
 	$AAResponsable=getSettingValue('AAResponsable');
 
 	if($AAResponsable=="yes"){
-		// Est-ce que le $logineleve est bien celui d'un élève dont le responsable est responsable?
+		// Est-ce que le $logineleve est bien celui d'un Ã©lÃ¨ve dont le responsable est responsable?
 		$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE rp.login='".$_SESSION['login']."' AND
 																			rp.pers_id=r.pers_id AND
 																			r.ele_id=e.ele_id AND
@@ -242,11 +242,11 @@ elseif($_SESSION['statut']=="autre"){
 
 if($acces!="y"){
 	// A DEGAGER
-	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+	// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
 	$ajout_info="";
 	if(isset($logineleve)) {$ajout_info=" de $logineleve";}
-	tentative_intrusion(1, "Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder à des données d'Années antérieures".$ajout_info.".");
-	//echo "DEBUG: Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder à des données d'Années antérieures".$ajout_info.".";
+	tentative_intrusion(1, "Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der Ã  des donnÃ©es d'AnnÃ©es antÃ©rieures".$ajout_info.".");
+	//echo "DEBUG: Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der Ã  des donnÃ©es d'AnnÃ©es antÃ©rieures".$ajout_info.".";
 
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -263,18 +263,18 @@ $style_specifique="mod_annees_anterieures/annees_anterieures";
 
 // ============================================================================
 // ============================================================================
-// On va écrire la section HEAD
+// On va Ã©crire la section HEAD
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="fr">
 <head>
-<meta HTTP-EQUIV="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8" />
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
 <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
 <META HTTP-EQUIV="Expires" CONTENT="0" />
 <meta HTTP-EQUIV="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;sessionid=<?php echo session_id();?>" />
-<title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves</title>
+<title><?php echo getSettingValue("gepiSchoolName"); ?> : base de donnÃ©es Ã©lÃ¨ves</title>
 <?php $style = getSettingValue("gepi_stylesheet");
 if (empty($style)) $style = "style";
 ?>
@@ -298,7 +298,7 @@ function show_message_deconnexion(){
     var secs=now.getSeconds();
 
     var heure = hrs + " H " + mins + "' " + secs + "'' ";
-    alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+    alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'Ãªtre dÃ©connectÃ© ! \nPour Ã©viter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
   }
   setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
 }
@@ -321,10 +321,10 @@ if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = 
 
 if(isset($style_specifique)){
 	// Il faudrait filtrer le contenu de la variable...
-	// ne doit contenir que certains types de caractères et se terminer par .css
+	// ne doit contenir que certains types de caractÃ¨res et se terminer par .css
 	// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
 	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
-		// Styles spécifiques à une page:
+		// Styles spÃ©cifiques Ã  une page:
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
 	}
 }
@@ -333,7 +333,7 @@ if(isset($javascript_specifique)){
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
 	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0){
-		// Javascript spécifique à une page:
+		// Javascript spÃ©cifique Ã  une page:
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$javascript_specifique.js' />\n";
 	}
 }
@@ -341,17 +341,17 @@ if(isset($javascript_specifique)){
 
 
 if(isset($style_screen_ajout)){
-	// Styles paramétrables depuis l'interface:
+	// Styles paramÃ©trables depuis l'interface:
 	if($style_screen_ajout=='y'){
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+		// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 	}
 }
 
 
 //===================================
-// Pour aérer les infobulles si jamais Javascript n'est pas actif.
+// Pour aÃ©rer les infobulles si jamais Javascript n'est pas actif.
 // Sinon, avec le position:absolute, les div se superposent.
 $posDiv_infobulle=0;
 // $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
@@ -359,14 +359,14 @@ $posDiv_infobulle=0;
 $tabdiv_infobulle=array();
 $tabid_infobulle=array();
 
-// Choix de l'unité pour les dimensions des DIV: em, px,...
+// Choix de l'unitÃ© pour les dimensions des DIV: em, px,...
 $unite_div_infobulle="em";
 // Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
 
 echo "<script type='text/javascript' src='$gepiPath/lib/brainjar_drag.js'></script>\n";
 echo "<script type='text/javascript' src='$gepiPath/lib/position.js'></script>\n";
 
-// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
+// Variable passÃ©e Ã  'ok' en fin de page via le /lib/footer.inc.php
 echo "<script type='text/javascript'>
 	temporisation_chargement='n';
 </script>\n";
@@ -376,14 +376,14 @@ echo "<script type='text/javascript'>
 echo "</head>\n";
 
 //**************** EN-TETE *****************
-//$titre_page = "Consultation des données antérieures";
+//$titre_page = "Consultation des donnÃ©es antÃ©rieures";
 //require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //echo "<div class='norme'><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>\n";
 
 echo "<!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->\n";
 
 echo "<body onLoad='show_message_deconnexion()'>\n";
@@ -392,7 +392,7 @@ echo "<div id='container'>\n";
 // ============================================================================
 // ============================================================================
 
-// - Choix de l'année/période et du mode 'bull_simp' ou 'avis_conseil'
+// - Choix de l'annÃ©e/pÃ©riode et du mode 'bull_simp' ou 'avis_conseil'
 // - Puis affichage correspondant
 
 require("fonctions_annees_anterieures.inc.php");
@@ -409,7 +409,7 @@ else{
 
 //if(!isset($logineleve)){
 if((!isset($logineleve))||(($mode!='bull_simp')&&($mode!='avis_conseil'))) {
-	echo "<h2 align='center'>Choix des informations antérieures</h2>\n";
+	echo "<h2 align='center'>Choix des informations antÃ©rieures</h2>\n";
 	tab_choix_anterieure($logineleve);
 }
 else{
@@ -417,31 +417,31 @@ else{
 	echo "<div style='float:left; width:5em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></div>\n";
 
 	if($mode=='bull_simp'){
-		echo "<h2 align='center'>Bulletin simplifié d'une année antérieure</h2>\n";
+		echo "<h2 align='center'>Bulletin simplifiÃ© d'une annÃ©e antÃ©rieure</h2>\n";
 		if(!isset($annee_scolaire)){
-			echo "<p><b>ERREUR:</b> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
+			echo "<p><b>ERREUR:</b> L'annÃ©e scolaire antÃ©rieure ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 		}
 		elseif(!isset($num_periode)){
-			echo "<p><b>ERREUR:</b> La période ne semble pas avoir été choisie.</p>\n";
+			echo "<p><b>ERREUR:</b> La pÃ©riode ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 		}
 		elseif(!isset($id_classe)){
-			echo "<p><b>ERREUR:</b> L'identifiant de la classe actuelle de l'élève ne semble pas avoir été fourni.</p>\n";
+			echo "<p><b>ERREUR:</b> L'identifiant de la classe actuelle de l'Ã©lÃ¨ve ne semble pas avoir Ã©tÃ© fourni.</p>\n";
 		}
 		else{
 			/*
 			if(!isset($num_periode)){
 				$num_periode=1;
 			}
-			// Il n'est pas certain que GEPI ait été mis en place dès la période 1 cette année là.
+			// Il n'est pas certain que GEPI ait Ã©tÃ© mis en place dÃ¨s la pÃ©riode 1 cette annÃ©e lÃ .
 			*/
 
 			bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode);
 		}
 	}
 	elseif($mode=='avis_conseil'){
-		echo "<h2 align='center'>Avis des Conseils de classe d'une année antérieure</h2>\n";
+		echo "<h2 align='center'>Avis des Conseils de classe d'une annÃ©e antÃ©rieure</h2>\n";
 		if(!isset($annee_scolaire)){
-			echo "<p><b>ERREUR:</b> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
+			echo "<p><b>ERREUR:</b> L'annÃ©e scolaire antÃ©rieure ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 		}
 		else{
 			avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire);

@@ -24,12 +24,12 @@
 
 /* Fichier qui permet de faire des recherches dans l'EdT*/
 
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 
-// Sécurité, on vérifie le paramétrage de cette fonctionnalité
+// SÃ©curitÃ©, on vÃ©rifie le paramÃ©trage de cette fonctionnalitÃ©
 $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	if ($aff_cherche_salle == "tous") {
 		$aff_ok = "oui";
@@ -57,7 +57,7 @@ if ($salle_libre == "ok") {
 	$auto_aff_1 = 1;
 }
 
-// On insère l'entête de Gepi
+// On insÃ¨re l'entÃªte de Gepi
 $ua = getenv("HTTP_USER_AGENT");
 if (strstr($ua, "MSIE 6.0")) {
 	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_ie6_param";
@@ -70,7 +70,7 @@ require_once("../lib/header.inc");
 
 
 if (strstr($ua, "MSIE 6.0")) {
-	echo "<div class=\"cadreInformation\">Votre navigateur (Internet Explorer 6) est obsolète et se comporte mal vis à vis de l'affichage des emplois du temps. Faites absolument une mise à jour vers les versions 7 ou 8 ou changez de navigateur (FireFox, Chrome, Opera, Safari)</div>";
+	echo "<div class=\"cadreInformation\">Votre navigateur (Internet Explorer 6) est obsolÃ¨te et se comporte mal vis Ã  vis de l'affichage des emplois du temps. Faites absolument une mise Ã  jour vers les versions 7 ou 8 ou changez de navigateur (FireFox, Chrome, Opera, Safari)</div>";
 }
 
 
@@ -96,7 +96,7 @@ if ($cherch_salle == "ok") {
 		$auto_aff_21 = 1;
 	}
 	else
-		echo ("<div class=\"cadreInformation\">Vous devez choisir un créneau !</div>");
+		echo ("<div class=\"cadreInformation\">Vous devez choisir un crÃ©neau !</div>");
 
 	if ($ch_jour_semaine != "rien") {
 		$auto_aff_22 = 1;
@@ -240,7 +240,7 @@ echo "<option value='rien'>Semaine</option>\n";
 		$tab_select_semaine[$d]["type_semaine"] = mysql_result($req_semaine, $d, "type_edt_semaine");
 
 
-		echo "<option value='".$tab_select_semaine[$d]["id_semaine"]."'>Semaine n° ".$tab_select_semaine[$d]["num_semaine"]." (".$tab_select_semaine[$d]["type_semaine"].") : ".$tab_select_semaine[$d]["lundis"]." - ".$tab_select_semaine[$d]["vendredis"]." </option>\n";
+		echo "<option value='".$tab_select_semaine[$d]["id_semaine"]."'>Semaine nÂ° ".$tab_select_semaine[$d]["num_semaine"]." (".$tab_select_semaine[$d]["type_semaine"].") : ".$tab_select_semaine[$d]["lundis"]." - ".$tab_select_semaine[$d]["vendredis"]." </option>\n";
 
 	}
 echo "</select>\n<br />\n<em><font size=\"2\"> * champs obligatoires  </font></em>\n";
@@ -250,13 +250,13 @@ echo "</form>\n";
 }
 
 if ($auto_aff_2 === 1) {
-		// On reprend les infos sur les horaires demandés
+		// On reprend les infos sur les horaires demandÃ©s
 		$requete_creneaux = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$ch_heure."'");
 		$reponse_tab_creneaux = mysql_fetch_array($requete_creneaux);
-	echo"<fieldset>\n<legend>Résultats</legend>\n";
-	echo "Les salles libres le <font color=\"green\">".$ch_jour_semaine."</font> de <font color=\"green\">".$reponse_tab_creneaux["heuredebut_definie_periode"]." à ".$reponse_tab_creneaux["heurefin_definie_periode"]." ( ".$reponse_tab_creneaux["nom_definie_periode"]." )</font> sont :\n";
+	echo"<fieldset>\n<legend>RÃ©sultats</legend>\n";
+	echo "Les salles libres le <font color=\"green\">".$ch_jour_semaine."</font> de <font color=\"green\">".$reponse_tab_creneaux["heuredebut_definie_periode"]." Ã  ".$reponse_tab_creneaux["heurefin_definie_periode"]." ( ".$reponse_tab_creneaux["nom_definie_periode"]." )</font> sont :\n";
 	echo "<br />\n";
-		// On cherche les identifiants des salles où l'EdT est vide
+		// On cherche les identifiants des salles oÃ¹ l'EdT est vide
 	$salles_libres = aff_salles_vides($ch_heure, $ch_jour_semaine);
 		// On affiche le nom des salles vides
 		foreach($salles_libres as $tab_salib){

@@ -1,6 +1,6 @@
 <?php
 /**
- * Extrait les données pour les relevés de notes
+ * Extrait les donnÃ©es pour les relevÃ©s de notes
  * 
  * $Id$
  * 
@@ -20,8 +20,8 @@
 
 	if($mode_bulletin!='pdf') {
 		echo "<script type='text/javascript'>
-	document.getElementById('titre_infodiv').innerHTML='Relevés de notes';
-	document.getElementById('td_info').innerHTML='Préparatifs';
+	document.getElementById('titre_infodiv').innerHTML='RelevÃ©s de notes';
+	document.getElementById('td_info').innerHTML='PrÃ©paratifs';
 	document.getElementById('td_classe').innerHTML='';
 	document.getElementById('td_periode').innerHTML='';
 	document.getElementById('td_ele').innerHTML='';
@@ -29,11 +29,11 @@
 	}
 	//========================================
 
-	// Tableau destiné à stocker toutes les infos
+	// Tableau destinÃ© Ã  stocker toutes les infos
 	$tab_releve=array();
 
 	//===================================
-	// Remplir $cat_names[$cat_id] hors des boucles classe/période
+	// Remplir $cat_names[$cat_id] hors des boucles classe/pÃ©riode
 	$get_cat = mysql_query("SELECT id FROM matieres_categories");
 	$categories = array();
 	while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
@@ -53,8 +53,8 @@
 
 	//debug_var();
 
-	// Récupération des paramètres
-	// Les valeurs des tableaux peuvent ne pas être affectées si aucune case n'est cochée
+	// RÃ©cupÃ©ration des paramÃ¨tres
+	// Les valeurs des tableaux peuvent ne pas Ãªtre affectÃ©es si aucune case n'est cochÃ©e
 	$tab_rn_nomdev=isset($_POST['rn_nomdev']) ? $_POST['rn_nomdev'] : array();
 	$tab_rn_toutcoefdev=isset($_POST['rn_toutcoefdev']) ? $_POST['rn_toutcoefdev'] : array();
 	$tab_rn_coefdev_si_diff=isset($_POST['rn_coefdev_si_diff']) ? $_POST['rn_coefdev_si_diff'] : array();
@@ -63,13 +63,13 @@
 	$tab_rn_sign_chefetab=isset($_POST['rn_sign_chefetab']) ? $_POST['rn_sign_chefetab'] : array();
 	$tab_rn_sign_pp=isset($_POST['rn_sign_pp']) ? $_POST['rn_sign_pp'] : array();
 	$tab_rn_sign_resp=isset($_POST['rn_sign_resp']) ? $_POST['rn_sign_resp'] : array();
-	// Les deux suivants doivent être affectés (éventuellement avec des chaines vides)
+	// Les deux suivants doivent Ãªtre affectÃ©s (Ã©ventuellement avec des chaines vides)
 	$tab_rn_sign_nblig=isset($_POST['rn_sign_nblig']) ? $_POST['rn_sign_nblig'] : array();
 	$tab_rn_formule=isset($_POST['rn_formule']) ? $_POST['rn_formule'] : array();
 
 	$tab_rn_adr_resp=isset($_POST['rn_adr_resp']) ? $_POST['rn_adr_resp'] : array();
 
-	// Bloc observation sur la droite pour le relevé PDF:
+	// Bloc observation sur la droite pour le relevÃ© PDF:
 	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : array();
 
 	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : array();
@@ -82,7 +82,7 @@
 
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
-	// Contrôler les paramètres reçus en fonction de
+	// ContrÃ´ler les paramÃ¨tres reÃ§us en fonction de
 	// GepiAccesOptionsReleveParent
 	// GepiAccesOptionsReleveEleve
 	//+++++++++++++++++++++++++++++++++++
@@ -91,7 +91,7 @@
      * Renvoie les conteneurs enfants dans un tableau
      * @global array
      * @param int $id_parent 
-     * @todo Déjà vu ailleurs
+     * @todo DÃ©jÃ  vu ailleurs
      */
 	function recherche_conteneurs_enfants($id_parent) {
 		global $tab_conteneurs_enfants;
@@ -123,7 +123,7 @@
 		$id_classe=$tab_id_classe[$loop_classe];
 
 
-		// Tableau destiné à stocker toutes les infos
+		// Tableau destinÃ© Ã  stocker toutes les infos
 		$tab_releve[$id_classe]=array();
 
 		// ++++++++++++++++++++++++++++++++++
@@ -136,7 +136,7 @@
 			$tab_periode_num[0]="intervalle";
 		}
 
-		// Boucle sur les périodes
+		// Boucle sur les pÃ©riodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 
 			//$periode_num=1;
@@ -153,18 +153,18 @@
 
 
 			//============================
-			// On vide les variables de la boucle précédente
+			// On vide les variables de la boucle prÃ©cÃ©dente
 			unset($current_eleve_login);
 
 			//+++++++++++++++
 			// LISTE A FAIRE
-			// Il faut essentiellement réinitialiser les tableaux pour ne pas risquer de récupérer des indices du tour précédent
+			// Il faut essentiellement rÃ©initialiser les tableaux pour ne pas risquer de rÃ©cupÃ©rer des indices du tour prÃ©cÃ©dent
 			//+++++++++++++++
 
 			//============================
 
 
-			// Tableau destiné à stocker toutes les infos
+			// Tableau destinÃ© Ã  stocker toutes les infos
 			$tab_releve[$id_classe][$periode_num]=array();
 
 
@@ -176,14 +176,14 @@
 
 			//+++++++++++++++++++++++++++++
 			// RECUPERER LES PARAMETRES ICI
-			// après l'initialisation de $tab_releve[$id_classe][$periode_num]
-			// Remarque: le $periode_num n'est pas discriminant pour les paramètres,
+			// aprÃ¨s l'initialisation de $tab_releve[$id_classe][$periode_num]
+			// Remarque: le $periode_num n'est pas discriminant pour les paramÃ¨tres,
 			//           mais on passe le sous-tableau $tab_releve[$id_classe][$periode_num]
-			//           à la génération de relevé si bien qu'on l'accède pas à $tab_releve[$id_classe]
+			//           Ã  la gÃ©nÃ©ration de relevÃ© si bien qu'on l'accÃ¨de pas Ã  $tab_releve[$id_classe]
 			//+++++++++++++++++++++++++++++
 			// ****************************************
 			// A FAIRE
-			// Dans le cas d'un appel depuis la génération de bulletin, il faudrait prendre les paramètres par défaut de la classe
+			// Dans le cas d'un appel depuis la gÃ©nÃ©ration de bulletin, il faudrait prendre les paramÃ¨tres par dÃ©faut de la classe
 			// ****************************************
 			$tab_releve[$id_classe][$periode_num]['rn_nomdev']=isset($tab_rn_nomdev[$loop_classe]) ? "y" : "n";
 			$tab_releve[$id_classe][$periode_num]['rn_toutcoefdev']=isset($tab_rn_toutcoefdev[$loop_classe]) ? "y" : "n";
@@ -199,7 +199,7 @@
 
 			$tab_releve[$id_classe][$periode_num]['rn_adr_resp']=isset($tab_rn_adr_resp[$loop_classe]) ? $tab_rn_adr_resp[$loop_classe] : "n";
 
-			// Bloc observation sur le relevé PDF
+			// Bloc observation sur le relevÃ© PDF
 			$tab_releve[$id_classe][$periode_num]['rn_bloc_obs']=isset($tab_rn_bloc_obs[$loop_classe]) ? $tab_rn_bloc_obs[$loop_classe] : "n";
 
 			$tab_releve[$id_classe][$periode_num]['rn_aff_classe_nom']=isset($tab_rn_aff_classe_nom[$loop_classe]) ? $tab_rn_aff_classe_nom[$loop_classe] : "n";
@@ -217,7 +217,7 @@
 
 			$_SESSION['pref_rn_rapport_standard_min_font']=$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font'];
 
-			// Informations sur la période
+			// Informations sur la pÃ©riode
 			if ($choix_periode=="intervalle") {
 				$tab_releve[$id_classe][$periode_num]['intervalle']['debut']=$display_date_debut;
 				$tab_releve[$id_classe][$periode_num]['intervalle']['fin']=$display_date_fin;
@@ -231,7 +231,7 @@
 				$tab_releve[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
 			}
 
-			// Liste des élèves à éditer/afficher/imprimer (sélection):
+			// Liste des Ã©lÃ¨ves Ã  Ã©diter/afficher/imprimer (sÃ©lection):
 			if($choix_periode=="intervalle") {
 				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_intervalle']) ? $_POST['tab_selection_ele_'.$loop_classe.'_intervalle'] : array();
 			}
@@ -266,7 +266,7 @@
 			$classe_nom_complet=$lig_classe->nom_complet;
 
 
-			// Récupérer l'effectif de la classe,...
+			// RÃ©cupÃ©rer l'effectif de la classe,...
 			if ($choix_periode=="intervalle") {
 				$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec WHERE id_classe='$id_classe';";
 			}
@@ -291,14 +291,14 @@
 				$date_fin=$tab_tmp_date[2]."-".$tab_tmp_date[1]."-".$tab_tmp_date[0]." 00:00:00";
 			}
 
-			// Contrairement au dispositif pour les bulletins, on récupère le $current_eleve_login d'après la liste POSTée
-			// Cette liste peut avoir été manipulée...
-			// il faut contrôler si les élèves de la liste sont bien dans la classe sur la période indiquée
+			// Contrairement au dispositif pour les bulletins, on rÃ©cupÃ¨re le $current_eleve_login d'aprÃ¨s la liste POSTÃ©e
+			// Cette liste peut avoir Ã©tÃ© manipulÃ©e...
+			// il faut contrÃ´ler si les Ã©lÃ¨ves de la liste sont bien dans la classe sur la pÃ©riode indiquÃ©e
 			$current_eleve_login=$tab_releve[$id_classe][$periode_num]['selection_eleves'];
 
-			// Boucle élèves de la classe $id_classe pour la période $periode_num
+			// Boucle Ã©lÃ¨ves de la classe $id_classe pour la pÃ©riode $periode_num
 			for($i=0;$i<count($current_eleve_login);$i++) {
-				// Réinitialisation pour ne pas récupérer des infos de l'élève précédent
+				// RÃ©initialisation pour ne pas rÃ©cupÃ©rer des infos de l'Ã©lÃ¨ve prÃ©cÃ©dent
 				unset($tab_ele);
 				$tab_ele=array();
 
@@ -312,9 +312,9 @@
 				//==============================
 
 				//++++++++++++++++++++++++++++++
-				// Contrairement au dispositif pour les bulletins, on récupère le $current_eleve_login d'après la liste POSTée
-				// Cette liste peut avoir été manipulée...
-				// il faut contrôler si les élèves de la liste sont bien dans la classe sur la période indiquée
+				// Contrairement au dispositif pour les bulletins, on rÃ©cupÃ¨re le $current_eleve_login d'aprÃ¨s la liste POSTÃ©e
+				// Cette liste peut avoir Ã©tÃ© manipulÃ©e...
+				// il faut contrÃ´ler si les Ã©lÃ¨ves de la liste sont bien dans la classe sur la pÃ©riode indiquÃ©e
 				if ($choix_periode=="intervalle") {
 					$sql="SELECT 1=1 FROM j_eleves_classes WHERE (login='".$current_eleve_login[$i]."' AND id_classe='$id_classe');";
 				}
@@ -330,17 +330,17 @@
 
 					//===============================================
 					// A FAIRE
-					// Contrôler qu'il n'y a pas d'usurpation d'accès
+					// ContrÃ´ler qu'il n'y a pas d'usurpation d'accÃ¨s
 					$autorisation_acces='n';
 					// Si c'est un prof
 					if($_SESSION['statut']=='professeur') {
-						// GepiAccesReleveProf               -> que les élèves de ses groupes
-						// GepiAccesReleveProfTousEleves     -> tous les élèves de ses classes
-						// GepiAccesReleveProfToutesClasses  -> tous les élèves de toutes les classes
+						// GepiAccesReleveProf               -> que les Ã©lÃ¨ves de ses groupes
+						// GepiAccesReleveProfTousEleves     -> tous les Ã©lÃ¨ves de ses classes
+						// GepiAccesReleveProfToutesClasses  -> tous les Ã©lÃ¨ves de toutes les classes
 
-						// GepiAccesReleveProfToutesClasses  -> tous les élèves de toutes les classes
+						// GepiAccesReleveProfToutesClasses  -> tous les Ã©lÃ¨ves de toutes les classes
 						if(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") {
-							// On vérifie seulement que c'est bien le login d'un élève d'une classe
+							// On vÃ©rifie seulement que c'est bien le login d'un Ã©lÃ¨ve d'une classe
 							$sql="SELECT 1=1 FROM j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND login='".$current_eleve_login[$i]."';";
 							$verif=mysql_query($sql);
 							if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
@@ -383,7 +383,7 @@
 						$verif=mysql_query($sql);
 						if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
 					}
-					// Si c'est un compte scolarité
+					// Si c'est un compte scolaritÃ©
 					elseif (($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) {
 						$sql="SELECT 1=1 FROM j_eleves_classes jec, j_scol_classes jsc
 								WHERE (jsc.id_classe=jec.id_classe AND
@@ -392,7 +392,7 @@
 						$verif=mysql_query($sql);
 						if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
 					}
-					// Si c'est un élève
+					// Si c'est un Ã©lÃ¨ve
 					elseif (($_SESSION['statut'] == 'eleve') AND
 							(getSettingValue("GepiAccesReleveEleve") == "yes") AND
 							strtolower($current_eleve_login[$i])==strtolower($_SESSION['login'])) {
@@ -417,7 +417,7 @@
 					if($autorisation_acces=='y') {
 
 						if ($affiche_categories) {
-							// On utilise les valeurs spécifiées pour la classe en question
+							// On utilise les valeurs spÃ©cifiÃ©es pour la classe en question
 							$sql="SELECT DISTINCT jgc.id_groupe, jgm.id_matiere matiere, jgc.categorie_id ".
 							"FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
 							"WHERE ( " .
@@ -484,7 +484,7 @@
 							$tab_ele['groupe'][$j]['matiere_nom_complet']=$current_matiere_nom_complet;
 
 							if($tab_releve[$id_classe][$periode_num]['rn_coefdev_si_diff']=='y') {
-								// On teste s'il y a des coeff différents
+								// On teste s'il y a des coeff diffÃ©rents
 								if ($choix_periode=="intervalle") {
 									$sql="SELECT DISTINCT d.coef FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 									nd.login = '".$current_eleve_login[$i]."' and
@@ -516,7 +516,7 @@
 								$tab_ele['groupe'][$j]['differents_coef']=$differents_coef;
 							}
 
-							// PB: en mode intervalle, on ne sait pas quel cahier de notes récupérer (quelle période?)
+							// PB: en mode intervalle, on ne sait pas quel cahier de notes rÃ©cupÃ©rer (quelle pÃ©riode?)
 							$sql="SELECT DISTINCT id_cahier_notes, periode FROM cn_cahier_notes WHERE id_groupe='$current_groupe' ORDER BY periode;";
 							//echo "$sql<br />\n";
 							if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
@@ -612,7 +612,7 @@
 							$query_notes = mysql_query($sql1);
 							//echo "$sql1<br />";
 							
-							// Date actuelle pour le test de la date de visibilité des devoirs
+							// Date actuelle pour le test de la date de visibilitÃ© des devoirs
 							$timestamp_courant=time();
 
 							$count_notes = mysql_num_rows($query_notes);
@@ -665,7 +665,7 @@
 									$tab_ele['groupe'][$j]['devoir'][$m]['id_cahier_notes']=@mysql_result($query_notes,$mm,'cn.id_cahier_notes');
 									$tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur']=@mysql_result($query_notes,$mm,'d.id_conteneur');
 
-									// On ne récupère pas le nom long du devoir?
+									// On ne rÃ©cupÃ¨re pas le nom long du devoir?
 									if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
 										echo "\$tab_ele['groupe'][$j]['devoir'][$m]['note']=".$tab_ele['groupe'][$j]['devoir'][$m]['note']." (\$current_id_devoir=$current_id_devoir et \$id_cahier_notes=".$tab_ele['groupe'][$j]['devoir'][$m]['id_cahier_notes']." et \$id_conteneur=".$tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur'].")<br />";
 									}
@@ -703,7 +703,7 @@
 						}
 
 
-						// Récup des infos sur l'élève, les responsables, le PP, le CPE,...
+						// RÃ©cup des infos sur l'Ã©lÃ¨ve, les responsables, le PP, le CPE,...
 						$sql="SELECT * FROM eleves e WHERE e.login='".$current_eleve_login[$i]."';";
 						$res_ele=mysql_query($sql);
 						$lig_ele=mysql_fetch_object($res_ele);
@@ -721,7 +721,7 @@
 						$tab_ele['id_classe']=$id_classe;
 						$tab_ele['classe_nom_complet']=$classe_nom_complet;
 
-						// Régime et redoublement
+						// RÃ©gime et redoublement
 						$sql="SELECT * FROM j_eleves_regime WHERE login='".$current_eleve_login[$i]."';";
 						$res_ele_reg=mysql_query($sql);
 						if(mysql_num_rows($res_ele_reg)>0) {
@@ -759,7 +759,7 @@
 							}
 						}
 
-						// Récup infos CPE
+						// RÃ©cup infos CPE
 						$sql="SELECT u.* FROM j_eleves_cpe jec, utilisateurs u WHERE e_login='".$current_eleve_login[$i]."' AND jec.cpe_login=u.login;";
 						$res_cpe=mysql_query($sql);
 						if(mysql_num_rows($res_cpe)>0) {
@@ -772,7 +772,7 @@
 							$tab_ele['cpe']['civilite']=$lig_cpe->civilite;
 						}
 
-						// Récup infos Prof Principal (prof_suivi)
+						// RÃ©cup infos Prof Principal (prof_suivi)
 						$sql="SELECT u.* FROM j_eleves_professeurs jep, utilisateurs u WHERE jep.login='".$current_eleve_login[$i]."' AND id_classe='$id_classe' AND jep.professeur=u.login;";
 						$res_pp=mysql_query($sql);
 						//echo "$sql<br />\n";
@@ -786,7 +786,7 @@
 							$tab_ele['pp']['civilite']=$lig_pp->civilite;
 						}
 
-						// Récup infos responsables
+						// RÃ©cup infos responsables
 						$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
 														resp_adr ra,
 														responsables2 r
@@ -828,20 +828,20 @@
 							}
 						}
 
-						// Vérification
+						// VÃ©rification
 						if(mysql_num_rows($res_resp)>2) {
 							if($mode_bulletin=="html") {
 								echo "<div class='alerte_erreur'><b style='color:red;'>Erreur:</b>";
-								echo $tab_ele['nom']." ".$tab_ele['prenom']." a plus de deux responsables légaux 1 et 2.<br />C'est une anomalie.<br />";
+								echo $tab_ele['nom']." ".$tab_ele['prenom']." a plus de deux responsables lÃ©gaux 1 et 2.<br />C'est une anomalie.<br />";
 								for ($z=0;$z<count($tab_ele['resp']);$z++) {
-									echo $tab_ele['resp'][$z]['nom']." ".$tab_ele['resp'][$z]['prenom']." (<i>responsable légal ".$tab_ele['resp'][$z]['resp_legal']."</i>)<br />";
+									echo $tab_ele['resp'][$z]['nom']." ".$tab_ele['resp'][$z]['prenom']." (<i>responsable lÃ©gal ".$tab_ele['resp'][$z]['resp_legal']."</i>)<br />";
 								}
-								echo "Seuls les deux premiers apparaîtront sur des bulletins.";
+								echo "Seuls les deux premiers apparaÃ®tront sur des bulletins.";
 								echo "</div>\n";
 							}
 						}
 
-						// On affecte la partie élève $tab_ele dans $tab_releve
+						// On affecte la partie Ã©lÃ¨ve $tab_ele dans $tab_releve
 						$tab_releve[$id_classe][$periode_num]['eleve'][]=$tab_ele;
 					}
 				}

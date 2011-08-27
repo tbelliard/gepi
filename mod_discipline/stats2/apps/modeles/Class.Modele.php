@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -32,7 +32,7 @@ class Modele {
     protected  function set_array($type,$res) {        
         unset($this->variable);
         if(mysql_num_rows($res)==0) {
-            $this->variable['error']='pas de résultats';
+            $this->variable['error']='pas de rÃ©sultats';
         }else {
             switch ($type) {
                 case 'array': while($this->row=mysql_fetch_array($res)) {

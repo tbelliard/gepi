@@ -1,13 +1,13 @@
 /*
 Cahier_texte.css
-Mise en page pou validation et accessibilité
+Mise en page pou validation et accessibilitÃ©
 */
 
 
 /***********************
-       Général
+       GÃ©nÃ©ral
 ***********************/
-/* --- Décoration du texte --- */
+/* --- DÃ©coration du texte --- */
 /*souligne le texte*/
 .souligne {
 	text-decoration: underline;
@@ -55,7 +55,7 @@ td.ct_col_droit{
 	width: 34%;
 	text-align:right;
 }
-/* place le tableau de droite à droite */
+/* place le tableau de droite Ã  droite */
 .ct_col_droit table {
 	margin-left: auto;
 	text-align:right;
@@ -168,7 +168,7 @@ td.cct_droit {
 
 /* --- Mise en page affichage des travaux personnel de cahier de texte --- */
 
-/* 	--- Travaux à faire "futurs" ---*/
+/* 	--- Travaux Ã  faire "futurs" ---*/
 td.cel_trav_futur {
 	border-style:solid;
 	border-width:1px;
@@ -287,7 +287,7 @@ table.a_faire_gauche {
 	padding:1px;
 	background-color:#C7FF99;
 }
-/*// Notices de type  travail à faire) */
+/*// Notices de type  travail Ã  faire) */
 .ct_sa_noti_taf {
 	border-style:solid;
 	border-width:1px;
@@ -305,7 +305,7 @@ table.a_faire_gauche {
 	padding:1px;
 	background-color:#ACACFF;
 }
-/* Travaux à faire "futurs" */
+/* Travaux Ã  faire "futurs" */
 .ct_sa_noti_fut {
 	border-style:solid;
 	border-width:1px;

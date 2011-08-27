@@ -55,7 +55,7 @@ class ajaxrequestAction extends Action {
     }
 /*******************************************************************
  *
- *					Validation de la modification d'une période
+ *					Validation de la modification d'une pÃ©riode
  *
  *******************************************************************/		
 	
@@ -82,7 +82,7 @@ class ajaxrequestAction extends Action {
 					$heurefin = "23:59:00";
 					$expdeb = explode(":", $heuredebut);
 					$expfin = explode(":", $heurefin);
-					// On insére ces dates en timestamp Unix GMT
+					// On insÃ©re ces dates en timestamp Unix GMT
 					$debut_ts = gmmktime($expdeb[0], $expdeb[1], 0, $detail_jourdeb[1], $detail_jourdeb[0], $detail_jourdeb[2]);
 					$fin_ts = gmmktime($expfin[0], $expfin[1], 0, $detail_jourfin[1], $detail_jourfin[0], $detail_jourfin[2]);
 					
@@ -109,10 +109,10 @@ class ajaxrequestAction extends Action {
 							$fin_periode = $fin[0];
 							$num_initial = $request->getParam('num_jour_initial');
 							$num_final = $request->getParam('num_jour_final');
-							header('Content-type: text/html;charset=iso-8859-1;');
+							header('Content-type: text/html;charset=utf-8;');
 							$content = '[{
 									"code": "success",
-									"message": "mise à jour de la période effectuée",
+									"message": "mise Ã  jour de la pÃ©riode effectuÃ©e",
 									"new_start": "'.$debut_periode.'",
 									"new_end": "'.$fin_periode.'",
 									"old_start": "'.$num_initial.'",
@@ -120,9 +120,9 @@ class ajaxrequestAction extends Action {
 									}]';
 						}
 						else {
-							header('Content-type: text/html;charset=iso-8859-1;');
+							header('Content-type: text/html;charset=utf-8;');
 							$code = "error";
-							$message = "impossible de mettre à jour la période";
+							$message = "impossible de mettre Ã  jour la pÃ©riode";
 							$content = '[{
 									"code": "'.$code.'",
 									"message": "'.$message.'"
@@ -130,9 +130,9 @@ class ajaxrequestAction extends Action {
 						}
 					}
 					else {
-						header('Content-type: text/html;charset=iso-8859-1;');
+						header('Content-type: text/html;charset=utf-8;');
 						$code = "error";
-						$message = "Le chevauchement des périodes n'est pas possible";
+						$message = "Le chevauchement des pÃ©riodes n'est pas possible";
 						$content = '[{
 								"code": "'.$code.'",
 								"message": "'.$message.'"
@@ -144,7 +144,7 @@ class ajaxrequestAction extends Action {
 
 				}
 				else {
-					header('Content-type: text/html;charset=iso-8859-1;');
+					header('Content-type: text/html;charset=utf-8;');
 					$content = '[{
 							"code": "error",
 							"message": "Le format des dates est non valide" 
@@ -153,10 +153,10 @@ class ajaxrequestAction extends Action {
 			}
 		}
 		else {
-			header('Content-type: text/html;charset=iso-8859-1;');
+			header('Content-type: text/html;charset=utf-8;');
 			$content = '[{
 					"code": "error",
-					"message": "Aucune période transmise" 
+					"message": "Aucune pÃ©riode transmise" 
 					}]';		
 		
 		}	
@@ -166,7 +166,7 @@ class ajaxrequestAction extends Action {
 	}
 /*******************************************************************
  *
- *					Suppression d'une période
+ *					Suppression d'une pÃ©riode
  *
  *******************************************************************/		
 	
@@ -175,15 +175,15 @@ class ajaxrequestAction extends Action {
 			$PeriodeCalendaire = new PeriodeCalendaire();
 			$PeriodeCalendaire->id = $request->getParam('periodid');
 			$success = $PeriodeCalendaire->delete();
-			header('Content-type: text/html;charset=iso-8859-1;');
+			header('Content-type: text/html;charset=utf-8;');
 			if ($success) {
 				
 				$code = "success";
-				$message = "suppression de la période effectuée";
+				$message = "suppression de la pÃ©riode effectuÃ©e";
 			}
 			else {
 				$code = "error";
-				$message = "impossible de supprimer la période";
+				$message = "impossible de supprimer la pÃ©riode";
 			}
 			$content = '[{
 					"code": "'.$code.'",
@@ -201,7 +201,7 @@ class ajaxrequestAction extends Action {
 	}
 /*******************************************************************
  *
- *			Edition d'une période - renvoie au format JSON
+ *			Edition d'une pÃ©riode - renvoie au format JSON
  *
  *******************************************************************/		
 	
@@ -226,7 +226,7 @@ class ajaxrequestAction extends Action {
 						$stop = true;
 					}
 				}
-				header('Content-type: text/html;charset=iso-8859-1;');
+				header('Content-type: text/html;charset=utf-8;');
 				//header('Content-type: application/x-json');
 				$content = '[{
 						"id": "'.$period['id'].'",
@@ -245,7 +245,7 @@ class ajaxrequestAction extends Action {
 	}
 /*******************************************************************
  *
- *			Insertion d'une période
+ *			Insertion d'une pÃ©riode
  *
  *******************************************************************/		
 	
@@ -283,7 +283,7 @@ class ajaxrequestAction extends Action {
 					$PeriodeCalendaire->id_calendar = $request->getParam('id_calendar');
 					if ($PeriodeCalendaire->insertable()) {
 						if (!$PeriodeCalendaire->save()) {
-							$content = "error Impossible d'enregistrer la période";
+							$content = "error Impossible d'enregistrer la pÃ©riode";
 						}
 						else {
 							$content = "success";
@@ -296,7 +296,7 @@ class ajaxrequestAction extends Action {
 			}
 		}
 		else {
-			$content = "error Veuillez entrer un nom de période";
+			$content = "error Veuillez entrer un nom de pÃ©riode";
 		}	
 	}
 }

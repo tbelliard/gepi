@@ -44,7 +44,7 @@ class edtAction extends Action {
 		if ($request->getParam('message') != "") {
 			$_SESSION["message"] = "";
 		}
-		// =================== Gérer la bascule entre emplois du temps périodes et emplois du temps semaines.
+		// =================== GÃ©rer la bascule entre emplois du temps pÃ©riodes et emplois du temps semaines.
 
 		if ($request->getParam('bascule_edt')) {
 			$_SESSION['bascule_edt'] = $bascule_edt;

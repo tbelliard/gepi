@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fichier destiné à permettre la modification d'un cours
+ * Fichier destinÃ© Ã  permettre la modification d'un cours
  *
  * @version $Id$
  *
@@ -46,17 +46,17 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 // INSERT INTO droits VALUES ('/edt_organisation/modifier_cours_popup.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Modifier un cours', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes" OR ( ($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") != 'y') )) {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// On vérifie que le droit soit le bon pour le profil scolarité
+// On vÃ©rifie que le droit soit le bon pour le profil scolaritÃ©
 	$autorise = "non";
 if ($_SESSION["statut"] == "administrateur") {
 	$autorise = "oui";
@@ -69,7 +69,7 @@ elseif(($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_p
 }
 else {
 	$autorise = "non";
-	exit('Vous n\'êtes pas autorisé à modifier les cours des emplois du temps, contacter l\'administrateur de Gepi');
+	exit('Vous n\'Ãªtes pas autorisÃ© Ã  modifier les cours des emplois du temps, contacter l\'administrateur de Gepi');
 }
 
 
@@ -141,7 +141,7 @@ elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 					 id_semaine = '$choix_semaine',
 					 id_calendrier = '$periode_calendrier',
 					 login_prof = '".$identite."'")
-				OR DIE('Erreur dans la création du cours : '.mysql_error());
+				OR DIE('Erreur dans la crÃ©ation du cours : '.mysql_error());
                 $_SESSION['edt_prof_enseignement'] = $enseignement;
                 $_SESSION['edt_prof_salle'] = $login_salle;
 			}
@@ -151,17 +151,17 @@ elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 	// On ne fait rien
 }
 
-// ======== récupérer le message transmis en cas de problème lors de la création/modification du cours
+// ======== rÃ©cupÃ©rer le message transmis en cas de problÃ¨me lors de la crÃ©ation/modification du cours
 
 $_SESSION["message"] = $message;
 
-/*/ CSS et js particulier à l'EdT
+/*/ CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
-// +++++++++++++++ entête de Gepi +++++++++
+// +++++++++++++++ entÃªte de Gepi +++++++++
 require_once("../lib/header.inc");
-// +++++++++++++++ entête de Gepi +++++++++
+// +++++++++++++++ entÃªte de Gepi +++++++++
 
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
@@ -192,9 +192,9 @@ if (isset($modifier_cours) AND ($modifier_cours == "ok" OR $modifier_cours == "n
 
 <?php
 
-// Si tout est ok, on affiche le cours reçu en GET ou POST
+// Si tout est ok, on affiche le cours reÃ§u en GET ou POST
 if ($autorise == "oui") {
-	// On récupère les infos sur le cours
+	// On rÃ©cupÃ¨re les infos sur le cours
 	if (isset($id_cours)) {
 		$req_cours = mysql_query("SELECT * FROM edt_cours WHERE id_cours = '".$id_cours."'");
 		$rep_cours = mysql_fetch_array($req_cours);
@@ -209,17 +209,17 @@ if ($autorise == "oui") {
 		$rep_cours["duree"] = 2;
 	}
 
-	// On récupère les infos sur le professeur
+	// On rÃ©cupÃ¨re les infos sur le professeur
 	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$identite."'"));
 
-	// On insère alors le message d'erreur s'il existe
+	// On insÃ¨re alors le message d'erreur s'il existe
 	if (isset($message)) {
 		$affmessage = $message;
 	}else {
 		$affmessage = "";
 	}
     $affmessage = NULL;
-	// On affiche les différents items du cours
+	// On affiche les diffÃ©rents items du cours
     echo '
 	    <fieldset>
 		    <legend>'.LESSON_MODIFICATION.'</legend>
@@ -303,9 +303,9 @@ if ($autorise == "oui") {
 			<td>
 				<select name="ch_jour_semaine">';
 
-	// Dans le cas de la création d'un cours, on propose le bon jour
+	// Dans le cas de la crÃ©ation d'un cours, on propose le bon jour
 	if ($cours == "aucun" AND isset($horaire)) {
-		// On récupère le jour et le créneau
+		// On rÃ©cupÃ¨re le jour et le crÃ©neau
 		$jour_creneau = explode("|", $horaire);
 		$jour_creer = $jour_creneau[0];
 		$id_creneau_creer = $jour_creneau[1];
@@ -387,10 +387,10 @@ if ($autorise == "oui") {
 	';
 
 
-	// On vérifie comment ce cours commence
+	// On vÃ©rifie comment ce cours commence
 	
 	if (isset($deb_creer)) {
-		// On vérifie comment ce nouveau cours commence
+		// On vÃ©rifie comment ce nouveau cours commence
 		if ($deb_creer == "debut") {
 			$rep_cours["heuredeb_dec"] = 0;
 		}
@@ -427,7 +427,7 @@ if ($autorise == "oui") {
 
 			</td>
 			<td>';
-	// On détermine le selected de la duree
+	// On dÃ©termine le selected de la duree
     $selected = array();
 	$selected[1] = $selected[2] = $selected[3] = $selected[4] = $selected[5] = $selected[6] = $selected[7] = $selected[8] = " ";
 	$selected[9] = $selected[10] = $selected[11] = $selected[12] = $selected[13] = $selected[14] = $selected[15] = $selected[16] = " ";
@@ -465,7 +465,7 @@ if ($autorise == "oui") {
 			<select name="choix_semaine">
 				<option value="0">'.ALL_WEEKS.'</option>
 		';
-		// on récupère les types de semaines
+		// on rÃ©cupÃ¨re les types de semaines
 
 	$req_semaines = mysql_query("SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines WHERE type_edt_semaine != '' LIMIT 5 ");
 	$nbre_semaines = mysql_num_rows($req_semaines);
@@ -520,7 +520,7 @@ if ($autorise == "oui") {
 			    $selected="";
 		    }
 		}
-			// On vérifie si le nom de l asalle existe vraiment
+			// On vÃ©rifie si le nom de l asalle existe vraiment
 			if ($tab_select_salle[$c]["nom_salle"] == "") {
 				$tab_select_salle[$c]["nom_salle"] = $tab_select_salle[$c]["numero_salle"];
 			}
@@ -562,11 +562,11 @@ if ($autorise == "oui") {
 				        <option value="0">'.ENTIRE_YEAR.'</option>
 	        ';
 		    
-	    // ================================================== Choix de la période définie dans le calendrier ================================
+	    // ================================================== Choix de la pÃ©riode dÃ©finie dans le calendrier ================================
     
         $req_id_classe = mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe = '".$rep_cours['id_groupe']."' ");
         
-        // ==== On récupère l'id de la classe concernée
+        // ==== On rÃ©cupÃ¨re l'id de la classe concernÃ©e
         if ($rep_id_classe = mysql_fetch_array($req_id_classe)) {
             $id_classe = $rep_id_classe['id_classe'];
         }
@@ -613,7 +613,7 @@ if ($autorise == "oui") {
 		<input type="hidden" name="identite" value="'.$identite.'" />
 		<input type="hidden" name="id_aid" value="'.$rep_cours["id_aid"].'" />
 	';
-	// Cas où il s'agit de la création d'un cours
+	// Cas oÃ¹ il s'agit de la crÃ©ation d'un cours
 	if ($cours == "aucun" OR $modifier_cours == "non") {
 		echo '		<input type="hidden" name="modifier_cours" value="non" />';
 	} else {

@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -53,16 +53,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_saisie = isset($_POST["id_saisie"]) ? $_POST["id_saisie"] :(isset($_GET["id_saisie"]) ? $_GET["id_saisie"] :(isset($_SESSION["id_saisie"]) ? $_SESSION["id_saisie"] : NULL));
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 if (isset($id_saisie) && $id_saisie != null) $_SESSION['id_saisie'] = $id_saisie;
@@ -92,7 +92,7 @@ if ($saisie == null) {
     $saisie_col = $utilisateur->getAbsenceEleveSaisiesJoinEdtCreneau($criteria);
     $saisie = $saisie_col->getFirst();
     if ($saisie == null) {
-	echo "Saisie non trouvée";
+	echo "Saisie non trouvÃ©e";
 	die();
     }
 }
@@ -105,8 +105,8 @@ if ($saisie != null) {
 
 
 //la saisie est-elle modifiable ?
-//Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session si c'est un prof,
-//elle date de moins d'une heure et l'option a ete coché partie admin
+//Une saisie est modifiable ssi : elle appartient Ã  l'utilisateur de la session si c'est un prof,
+//elle date de moins d'une heure et l'option a ete cochÃ© partie admin
 $modifiable = true;
 if ($utilisateur->getStatut() == 'professeur') {    
 	if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || !$saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() || !($saisie->getVersionCreatedAt('U') > (time() - 3600))) {
@@ -129,11 +129,11 @@ if (isset($message_enregistrement)) {
 echo '<table class="normal">';
 echo '<TBODY>';
 echo '<tr><TD>';
-echo 'N° de saisie : ';
+echo 'NÂ° de saisie : ';
 echo '</TD><TD>';
 echo $saisie->getPrimaryKey();
     if ($saisie->getDeletedAt()!=null) {
-    	echo ' <font color="red">(supprimée le ';
+    	echo ' <font color="red">(supprimÃ©e le ';
     	echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
     	$suppr_utilisateur = UtilisateurProfessionnelQuery::create()->findPK($saisie->getDeletedBy());
     	if ($suppr_utilisateur != null) {
@@ -176,10 +176,10 @@ echo '<TBODY>';
 echo '<tr>';
 if ($saisie->getEleve() == null) {
     echo '<TD colspan="3">';
-    echo "Marqueur d'appel effectué";
+    echo "Marqueur d'appel effectuÃ©";
     echo '</TD>';
 } else {
-    echo '<TD>Élève : </td>';
+    echo '<TD>Ã‰lÃ¨ve : </td>';
     echo '<TD colspan="2">';
     echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
     echo ' '.$saisie->getEleve()->getClasseNom();
@@ -237,14 +237,14 @@ if ($saisie->getEdtEmplacementCours() != null) {
 
 if ($saisie->getEdtCreneau() != null) {
     echo '<tr><TD>';
-    echo 'Créneau : ';
+    echo 'CrÃ©neau : ';
     echo '</TD><TD colspan="2">';
     echo $saisie->getEdtCreneau()->getDescription();
     echo '</TD></tr>';
 }
 
 echo '<tr><TD>';
-echo 'Début : ';
+echo 'DÃ©but : ';
 echo '</TD><TD colspan="2">';
 if (!$modifiable || $saisie->getDeletedAt() != null ) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
@@ -308,7 +308,7 @@ echo '</TD><TD style="background-color:#ebedb5;" colspan="2">';
 $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
 $total_traitements_modifiable = 0;
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-    //si c'est un traitement créé par un prof on va afficher une select box de modification si possible
+    //si c'est un traitement crÃ©Ã© par un prof on va afficher une select box de modification si possible
     echo "<nobr>";
     if ($utilisateur->getStatut() == 'professeur' && $traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $traitement->getModifiable()) {
 	$total_traitements_modifiable = $total_traitements_modifiable + 1;
@@ -391,7 +391,7 @@ echo '</TD></tr>';
 
 if ($saisie->getCreatedAt('U') != $saisie->getVersionCreatedAt('U')) {
     echo '<tr><TD>';
-    echo 'Modifiée le : ';
+    echo 'ModifiÃ©e le : ';
     echo '</TD><TD colspan="2">';
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getVersionCreatedAt('U')));
     $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($saisie->getVersionCreatedBy())->findOne();
@@ -452,14 +452,14 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
 
 if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") && $saisie->getAllVersions()->count()!=1) {
     echo '<tr><TD colspan="3" style="text-align : center;">';
-    echo 'Versions précédentes';
+    echo 'Versions prÃ©cÃ©dentes';
     echo '<table>';
     foreach($saisie->getAllVersions() as $version) {
     	echo '<tr>';
     	echo '<td>'.$version->getVersion().'</td>';
 	    echo '<TD>';
     	if ($saisie->getEleve() == null) {
-		    echo "Marqueur d'appel effectué";
+		    echo "Marqueur d'appel effectuÃ©";
 		} else {
 		    echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
 		    echo ' '.$saisie->getEleve()->getClasseNom();
@@ -468,9 +468,9 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
 		echo '<td>'.$version->getDateDescription().'</td>';
 	    echo '<TD>';
 	    if ($version->getVersion() == 1) {
-	    	echo 'Créée le : ';
+	    	echo 'CrÃ©Ã©e le : ';
 	    } else {
-	    	echo 'Modifiée le : ';
+	    	echo 'ModifiÃ©e le : ';
 	    }
 	    echo (strftime("%a %d/%m/%Y %H:%M", $version->getVersionCreatedAt('U')));
 	    $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($version->getVersionCreatedBy())->findOne();
@@ -484,7 +484,7 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
             if($menu){
                 echo'&menu=false';
             } 
-            echo' ">Revenir à cette version</a>';
+            echo' ">Revenir Ã  cette version</a>';
     	}
     	echo '</td>';
     	echo '</tr>';
@@ -517,7 +517,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 35;
              $taille_max_hauteur = 35;
 
@@ -526,7 +526,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 

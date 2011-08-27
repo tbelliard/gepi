@@ -2,15 +2,15 @@
 <!--  @version $Id: login_template.html $ -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
+<!-- correction Regis : dÃ©claration par dÃ©faut pour les scripts et les mises en page-->
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
 
-<title>[onshow.tbs_gepiSchoolName] : base de données élèves | Identifiez vous...</title>
+<title>[onshow.tbs_gepiSchoolName] : base de donnÃ©es Ã©lÃ¨ves | Identifiez vous...</title>
 
 <!-- Icones -->
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
@@ -26,7 +26,7 @@
 <!-- feuilles de style -->
 
 
-<!-- feuillesde style générale -->
+<!-- feuillesde style gÃ©nÃ©rale -->
 <link rel="stylesheet" type="text/css" href="./css/style.css" />
 
 <!-- feuilles de style normales -->
@@ -77,7 +77,7 @@
 				<input type="hidden" name="rne" value="[onshow.tbs_multisite]" />
 			</p>
 				
-<!-- Entête -->				
+<!-- EntÃªte -->				
 								
 			<div id='div_login_entete'>
 				<h1>[onshow.tbs_gepiSchoolName]</h1>
@@ -97,7 +97,7 @@
 				</div>		
 							
 <!-- Identifiant -->				
-				<p class='droite' title="Saisissez l'identifiant qui vous a été donné.">
+				<p class='droite' title="Saisissez l'identifiant qui vous a Ã©tÃ© donnÃ©.">
 					<label for='login'>Identifiant</label>
 					<input type='text' id='login' name='login' size='17' />
 				</p>
@@ -113,11 +113,11 @@
 					<input type='submit' name='submit' id='soumettre' value='Valider' />
 				</p>
 									
-<!-- Mot de passe oublié -->
+<!-- Mot de passe oubliÃ© -->
 				<p id='mot_passe' title="Cliquez pour demander un nouveau mot de passe">
 				&nbsp;
 					<a class='small' href='[onshow.tbs_password_recovery;magnet=a]'>
-						Mot de passe oublié ? 
+						Mot de passe oubliÃ© ? 
 					</a>
 				</p>
 			</div>
@@ -153,12 +153,12 @@
 			</a>
 		</p>
 		
-<!-- Information vie privée -->
+<!-- Information vie privÃ©e -->
 		<p>
 			<a href="gestion/info_vie_privee.php" onclick="centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes');return false;">
 			<!-- <a href="gestion/info_vie_privee.php" id="info_vie_privee"> -->
 				<img src='./images/icons/vie_privee.png' alt='' class='link' />
-				Informations vie privée
+				Informations vie privÃ©e
 			</a>
 		</p>
 
@@ -173,20 +173,20 @@
 
 
 	<div id="new_login_footer" class="center">
-		<a href="http://gepi.mutualibre.org/" title="vers le site de GEPI : Gestion des Élèves Par Internet" >
-			GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)
+		<a href="http://gepi.mutualibre.org/" title="vers le site de GEPI : Gestion des Ã‰lÃ¨ves Par Internet" >
+			GEPI : Outil de gestion, de suivi, et de visualisation graphique des rÃ©sultats scolaires (Ã©coles, collÃ¨ges, lycÃ©es)
 		</a>
 		<br />
 		Copyright &copy; 2001-2008
 		<a href="mailto:th&#111;mas%2eb%65lliard&#64;fr&#101;e&#46;%66r?subject=GEPI">Thomas Belliard</a> 
 , <a href="mailto:lau&#114;ent%2ed%65lin&#101;au&#64;ac%2dpo%69tiers&#46;fr?subject=GEPI">Laurent Delineau</a>
 , <a href="mailto:eric%2eebrun&#64;ac%2dpoitiers&#46;fr?subject=GEPI">Eric Lebrun</a>
-, <a href="mailto:st%65phane&#46;boireau%40ac%2drouen%2efr?subject=GEPI">Stéphane Boireau</a> 
+, <a href="mailto:st%65phane&#46;boireau%40ac%2drouen%2efr?subject=GEPI">StÃ©phane Boireau</a> 
 , <a href="mailto:coll%65gerb%40f&#114;ee.%66r?subject=GEPI">Julien Jocal</a>
 		<!--<a href="javascript:pigeon('thomas.belliard','free.fr');">Thomas Belliard</a>
 , <a href="javascript:pigeon('laurent.delineau','ac-poitiers.fr');">Laurent Delineau</a> 
 , <a href="javascript:pigeon('eric.lebrun','ac-poitiers.fr');">Eric Lebrun</a> 
-, <a href="javascript:pigeon('stephane.boireau','ac-rouen.fr');">Stéphane Boireau</a> 
+, <a href="javascript:pigeon('stephane.boireau','ac-rouen.fr');">StÃ©phane Boireau</a> 
 , <a href="javascript:pigeon('collegerb','free.fr');">Julien Jocal</a>  --> 
 		<br/><br/>
 		<img src='images/php-powered.png' alt="php powered" />&nbsp;

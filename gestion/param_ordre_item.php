@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Begin standart header
@@ -55,7 +55,7 @@ include "../class_php/class_accueil_change_menu.php";
 
 
 // on demande une validation quitte sans enregistrer les changements
-$messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?";
+$messageEnregistrer="Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?";
 
 // ====== Inclusion des balises head et du bandeau =====
 //$msg = "Essai message";
@@ -67,14 +67,14 @@ include_once("../lib/header_template.inc");
 ****************************************************************/
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 
 /****************************************************************
-			ENREGISTREMENT DES DONNÉES SI BESOIN
+			ENREGISTREMENT DES DONNÃ‰ES SI BESOIN
 ****************************************************************/
 
 
-/***** On vérifie si des données sont envoyées en POST *****/
+/***** On vÃ©rifie si des donnÃ©es sont envoyÃ©es en POST *****/
 $enregistrer=isset($_POST['btn_enregistrer']) ? TRUE : NULL;
 $initialiser=isset($_POST['btn_reinitialiser']) ? TRUE : NULL;
 $optimiser=isset($_POST['btn_optimiser']) ? TRUE : NULL;
@@ -92,7 +92,7 @@ if ($initialiser){
 
 }else if ($enregistrer){
 
-/***** On crée la table si elle n'existe pas *****/
+/***** On crÃ©e la table si elle n'existe pas *****/
 $sql="CREATE TABLE IF NOT EXISTS mn_ordre_accueil (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 statut VARCHAR( 25 ) NOT NULL ,
@@ -111,9 +111,9 @@ nouveau_nom VARCHAR( 50 ) NOT NULL
 );";
 
   if (!mysql_query($sql)){
-	$tbs_msg= "erreur lors de la création de la table mn_ordre_accueil";
+	$tbs_msg= "erreur lors de la crÃ©ation de la table mn_ordre_accueil";
   }else if (!mysql_query($sql2)){
-	$tbs_msg= "erreur lors de la création de la table mn_ordre_accueil_item";
+	$tbs_msg= "erreur lors de la crÃ©ation de la table mn_ordre_accueil_item";
   } else {
 // les tables existent
 	
@@ -168,20 +168,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/gestion/ordre_item_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----

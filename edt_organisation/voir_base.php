@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 // ajout de la ligne suivante dans 'sql/data_gepi.sql' et 'utilitaires/updates/access_rights.inc.php'
 // INSERT INTO droits VALUES ('/edt_organisation/voir_base.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'voir la table edt_cours', '');
 
@@ -61,7 +61,7 @@ if (!checkAccess()) {
 }
 
 if ($_SESSION["statut"] != "administrateur") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die('Vous devez demander Ã  votre administrateur l\'autorisation de voir cette page.');
 }
 
 
@@ -109,13 +109,13 @@ else {
 }
 
 
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
-//++++++++++ l'entête de Gepi +++++
+//++++++++++ l'entÃªte de Gepi +++++
 require_once("../lib/header.inc");
-//++++++++++ fin entête +++++++++++
+//++++++++++ fin entÃªte +++++++++++
 //++++++++++ le menu EdT ++++++++++
 require_once("./menu.inc.php");
 //++++++++++ fin du menu ++++++++++
@@ -171,7 +171,7 @@ require_once("./menu.inc.php");
     if ($previous_start < 0) {
         $previous_start = 0;
     }
-	echo "<div style=\"float:left;text-align:center;font-size:45%;padding:3px;margin:1px;border:1px solid black;width:20%;background-color:#FAFFBD;\"><a href=\"./voir_base.php?start_list=".$previous_start."&amp;trier=".$trier." \" >précédent</a></div>";
+	echo "<div style=\"float:left;text-align:center;font-size:45%;padding:3px;margin:1px;border:1px solid black;width:20%;background-color:#FAFFBD;\"><a href=\"./voir_base.php?start_list=".$previous_start."&amp;trier=".$trier." \" >prÃ©cÃ©dent</a></div>";
 	echo "<div style=\"float:left;text-align:center;font-size:45%;padding:3px;margin:1px;border:1px solid black;width:20%;background-color:#FAFFBD;\"><a href=\"./voir_base.php?start_list=".$next_start."&amp;trier=".$trier." \" >suivant</a></div>";    
     echo "<div style=\"clear:both;\"></div>";
 

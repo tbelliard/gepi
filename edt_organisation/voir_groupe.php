@@ -44,22 +44,22 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die('Vous devez demander Ã  votre administrateur l\'autorisation de voir cette page.');
 }
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
-//++++++++++ l'entête de Gepi +++++
+//++++++++++ l'entÃªte de Gepi +++++
 require_once("../lib/header.inc");
-//++++++++++ fin entête +++++++++++
+//++++++++++ fin entÃªte +++++++++++
 //++++++++++ le menu EdT ++++++++++
 require_once("./menu.inc.php");
 //++++++++++ fin du menu ++++++++++
@@ -72,7 +72,7 @@ require_once("./menu.inc.php");
 <?php
     require_once("./menu.inc.new.php");
 	echo'
-	<h3>Voici la liste de tous les enseignements enregistrés dans la base de Gepi</h3>
+	<h3>Voici la liste de tous les enseignements enregistrÃ©s dans la base de Gepi</h3>
 	<table class="tab_edt">
 	<tbody>
 	<tr>

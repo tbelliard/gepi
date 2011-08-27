@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /**
- * Entête de l'affichage html des relevé de notes
+ * EntÃªte de l'affichage html des relevÃ© de notes
  * 
  * @license GNU/GPL, 
  * @package Carnet_de_notes
@@ -23,39 +23,39 @@
 
 	echo "<html>
 <head>
-<meta HTTP-EQUIV='Content-Type' content='text/html; charset=iso-8859-1' />
+<meta HTTP-EQUIV='Content-Type' content='text/html; charset=utf-8' />
 <META HTTP-EQUIV='Pragma' CONTENT='no-cache' />
 <META HTTP-EQUIV='Cache-Control' CONTENT='no-cache' />
 <META HTTP-EQUIV='Expires' CONTENT='0' />
-<title>".$gepiSchoolName." : Edition des relevés de notes</title>
+<title>".$gepiSchoolName." : Edition des relevÃ©s de notes</title>
 <link rel='stylesheet' type='text/css' href='../style.css' />\n";
 
 
 	//========================================
 
-	// Portion des styles et initialisations à reprendre dans le cas d'une insertion des relevés de notes entre les bulletins
+	// Portion des styles et initialisations Ã  reprendre dans le cas d'une insertion des relevÃ©s de notes entre les bulletins
 	include("initialisations_header_releves_html.php");
 
-	echo "<!-- Styles du relevé HTML -->\n";
+	echo "<!-- Styles du relevÃ© HTML -->\n";
 	echo $style_releve_notes_html;
 
 	//======================================
-	// Portion des styles pouvant entrer en concurrence avec ceux du bulletin HTML dans le cas d'une insertion des relevés de notes entre les bulletins
+	// Portion des styles pouvant entrer en concurrence avec ceux du bulletin HTML dans le cas d'une insertion des relevÃ©s de notes entre les bulletins
 
 	echo "	<link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
 	<link rel='icon' type='image/ico' href='../favicon.ico' />\n";
 
 	if(isset($style_screen_ajout)){
-		// Styles paramétrables depuis l'interface:
+		// Styles paramÃ©trables depuis l'interface:
 		if($style_screen_ajout=='y'){
-			// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-			// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+			// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+			// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 		}
 	}
 
-	// Le $releve_body_marginleft n'est pas pris en compte dans le cas d'une insertion des relevés de notes entre les bulletins
-	// C'est le $bull_body_marginleft qui est alors utilisé pour le relévé et le bulletin.
+	// Le $releve_body_marginleft n'est pas pris en compte dans le cas d'une insertion des relevÃ©s de notes entre les bulletins
+	// C'est le $bull_body_marginleft qui est alors utilisÃ© pour le relÃ©vÃ© et le bulletin.
 
 	$releve_body_marginleft=getSettingValue("releve_body_marginleft") ? getSettingValue("releve_body_marginleft") : 1;
 

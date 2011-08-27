@@ -49,7 +49,7 @@ class calendriermanagerAction extends Action {
 											add_token_field(false)."
 											<input name=\"operation\" type=\"hidden\" value=\"delete\">
 											<input name=\"id_calendrier\" type=\"hidden\" value=\"".$request->getParam('id_calendrier')."\">
-											<p>La suppression d'un calendrier entraîne la suppression de toutes les périodes calendaires qui en dépendent !</p>
+											<p>La suppression d'un calendrier entraÃ®ne la suppression de toutes les pÃ©riodes calendaires qui en dÃ©pendent !</p>
 											<input name=\"confirm_delete\" type=\"submit\" style=\"width:200px;\" value=\"Confirmer la suppression\">
 										</form>";
 						}					
@@ -61,7 +61,7 @@ class calendriermanagerAction extends Action {
 						$calendrier = new Calendrier;
 						$calendrier->nom = $request->getParam('nom_calendrier');
 						if (!$calendrier->save()) {
-							$message = "Impossible de créer le calendrier";
+							$message = "Impossible de crÃ©er le calendrier";
 						}
 					}
 				}
@@ -101,10 +101,10 @@ class calendriermanagerAction extends Action {
 								$liste_classes.= $classe->getShortName().";";
 								$jointure->id_classe = $id_classe;
 								if (!$jointure->save_classe()) {
-									$message .= "Une classe est déjà affectée dans un autre calendrier<br/>";
+									$message .= "Une classe est dÃ©jÃ  affectÃ©e dans un autre calendrier<br/>";
 								}
 							}
-							// ================ Compatibilité pour les autres modules GEPi
+							// ================ CompatibilitÃ© pour les autres modules GEPi
 							$periodes->id_calendar = $id_calendrier;
 							$periodes->classes_concernees = $liste_classes;
 							$periodes->update_classes();

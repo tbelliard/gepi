@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -303,7 +303,7 @@ Class Modele_Incidents extends Modele {
         WHERE sin.date BETWEEN \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['du']).
             '\' AND \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['au']).'\'  ';
     if($liste)$this->sql.=" AND sin.id_incident IN ('".parent::make_list_for_request_in($liste)."')";
-    //$this->sql.=" OR sin.id_incident is null"; (je pense que les sanctions ne sont pas supprimées)
+    //$this->sql.=" OR sin.id_incident is null"; (je pense que les sanctions ne sont pas supprimÃ©es)
     return(mysql_fetch_row($this->res=mysql_query($this->sql)));
   }
   private function get_db_infos_crenaux() {

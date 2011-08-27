@@ -38,7 +38,7 @@ require_once("lib/header.inc");
 $indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : NULL);
 $annee_scolaire = isset($_POST["annee_scolaire"]) ? $_POST["annee_scolaire"] : (isset($_GET["annee_scolaire"]) ? $_GET["annee_scolaire"] : NULL);
 
-// Y-a-t-il le choix entre plusieurs années ?
+// Y-a-t-il le choix entre plusieurs annÃ©es ?
 if (!isset($annee_scolaire))  {
     $sql = "select distinct annee from archivage_aids where fiche_publique ='y'";
     $res = mysql_query($sql);
@@ -47,7 +47,7 @@ if (!isset($annee_scolaire))  {
         echo "<form name=\"form1\" action=\"index_fiches.php\" method=\"post\">\n";
         echo "<center><h1 class='gepi'>".getSettingValue("gepiSchoolName"). "<br />";
         echo "Consultation des fiches projet</h1>";
-        echo "<h2>Choisissez l'année :</h2>\n";
+        echo "<h2>Choisissez l'annÃ©e :</h2>\n";
         echo "<select name=\"annee_scolaire\" size=\"1\">\n";
         echo "<option value=\"annee_courante\">".getSettingValue("gepiYear")."</option>";
         $k = 0;
@@ -74,7 +74,7 @@ else
     $annee_courante=FALSE;
 
 if (($indice_aid =='') and ($annee_scolaire!=''))  {
-  echo "<center><h1 class='gepi'>".getSettingValue("gepiSchoolName"). " - année scolaire " . $annee_scolaire."<br />";
+  echo "<center><h1 class='gepi'>".getSettingValue("gepiSchoolName"). " - annÃ©e scolaire " . $annee_scolaire."<br />";
   if ($annee_courante)
     $call_aid = mysql_query("select * from aid_config where outils_complementaires='y' order by nom");
   else
@@ -123,15 +123,15 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
     die();
 }
 
-// Vérification de la validité de $indice_aid et $aid_id
+// VÃ©rification de la validitÃ© de $indice_aid et $aid_id
 if ($annee_courante) {
   if (!VerifAidIsAcive($indice_aid,"",""))  {
-    echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
+    echo "<p>Vous tentez d'accÃ©der Ã  des outils qui ne sont pas activÃ©s. veuillez contacter l'administrateur.</p></body></html>";
     die();
   }
 } else {
   if (!VerifAidIsAcive($indice_aid,"","y"))  {
-    echo "<p>* Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
+    echo "<p>* Vous tentez d'accÃ©der Ã  des outils qui ne sont pas activÃ©s. veuillez contacter l'administrateur.</p></body></html>";
     die();
   }
 }
@@ -142,7 +142,7 @@ if ($annee_courante) {
   $nb_fiches_publiques = sql_query1("SELECT count(id) FROM archivage_aids WHERE id_type_aid='".$indice_aid."' and fiche_publique='y'");
   $nom_projet = sql_query1("select nom from archivage_types_aid  where id='".$indice_aid."'");
 }
-echo "<center><h3 class='gepi'>".getSettingValue("gepiSchoolName"). " - année scolaire " . $annee_scolaire;
+echo "<center><h3 class='gepi'>".getSettingValue("gepiSchoolName"). " - annÃ©e scolaire " . $annee_scolaire;
 if ($nb_fiches_publiques ==0) {
      echo "<br />Aucune fiche projet n'est actuellement disponible.</h3></center>";
      include "../lib/footer.inc.php";
@@ -153,7 +153,7 @@ echo "<br />Liste des projets ".$nom_projet."</H3></center>";
 
 
 $_login = "";
-$message_avertissement = "Avertissement : le travail scolaire auquel vous allez accéder est en phase de construction, ce qui explique les défauts éventuels.";
+$message_avertissement = "Avertissement : le travail scolaire auquel vous allez accÃ©der est en phase de construction, ce qui explique les dÃ©fauts Ã©ventuels.";
 $non_defini = "-";
 if (!$annee_courante)
     $annee = $annee_scolaire;

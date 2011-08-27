@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -81,7 +81,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
   public function traite_incidents_evolutions($filtres_roles=Null,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null) {
 
     switch($_SESSION['choix_evolution']) {
-      case 'Catégories':
+      case 'CatÃ©gories':
         $this->traite_evolution_categories($filtres_roles,$filtres_categories,$filtres_mesures,$filtres_sanctions);
         break;
       case 'Mesures prises':
@@ -90,7 +90,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
       case 'Sanctions':
         $this->traite_evolution_sanctions($filtres_roles,$filtres_categories,$filtres_mesures,$filtres_sanctions);
         break;
-      case 'Rôles':
+      case 'RÃ´les':
         $this->traite_evolution_roles($filtres_roles,$filtres_categories,$filtres_mesures,$filtres_sanctions);
         break;
     }
@@ -117,7 +117,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
       $this->incidents_mois=$this->objet_incident->get_incidents();
       //puis selection par selection
       foreach( $this->incidents_mois as $selection=>$incidents) {
-        //on met les compteurs à 0
+        //on met les compteurs Ã  0
         foreach($this->liste_type as $categorie) {
           $this->evolution[$selection][$categorie][$key]=0;
           if(!isset($this->totaux_par_type[$selection][$categorie])) $this->totaux_par_type[$selection][$categorie]=0;
@@ -161,7 +161,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
       $this->mesures_mois=$this->objet_incident->get_mesures();
 
       foreach( $this->incidents_mois as $selection=>$incidents) {
-        //on met les compteurs à 0
+        //on met les compteurs Ã  0
         foreach($this->liste_type as $mesure) {
           $this->evolution[$selection][$mesure][$key]=0;
           if(!isset($this->totaux_par_type[$selection][$mesure])) $this->totaux_par_type[$selection][$mesure]=0;
@@ -174,19 +174,19 @@ class ClassEvolution_Incidents extends ClassIncidents {
             if (isset($this->mesures_mois[$incident->id_incident])) {
               foreach($this->mesures_mois[$incident->id_incident] as $protagoniste) {                  
                 foreach($protagoniste as $id_mesure) {
-                  if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
+                  if($selection !='L\'Etablissement' && $selection !='Tous les Ã©lÃ¨ves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
                      //on a une classe ou un eleve
                     if($this->is_classe($selection)){
                        if(!$this->is_in_classe($id_mesure->login_ele, $selection)){
-                         break;  //la mesure ne correspond pas à un eleve de la classe
+                         break;  //la mesure ne correspond pas Ã  un eleve de la classe
                        }
                     }else{
-                        //on a un eleve on verifie si la mesure est à lui
+                        //on a un eleve on verifie si la mesure est Ã  lui
                         if($id_mesure->login_ele!=$selection)break;
                     }
                   }
                   if($id_mesure->type=='prise') {
-                    //si le type n'est pas initialisée on le fait
+                    //si le type n'est pas initialisÃ©e on le fait
                     if(!in_array($id_mesure->mesure,$this->liste_type)) {
                       foreach($this->months as $key2=>$month2) {
                         $this->evolution[$selection][$id_mesure->mesure][$key2]=0;
@@ -243,7 +243,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
       $this->sanctions_mois=$this->objet_incident->get_sanctions();
 
       foreach( $this->incidents_mois as $selection=>$incidents) {
-        //on met les compteurs à 0
+        //on met les compteurs Ã  0
         foreach($this->liste_type as $sanction) {
           $this->evolution[$selection][$sanction][$key]=0;
           if(!isset($this->totaux_par_type[$selection][$sanction])) $this->totaux_par_type[$selection][$sanction]=0;
@@ -256,18 +256,18 @@ class ClassEvolution_Incidents extends ClassIncidents {
             if (isset($this->sanctions_mois[$incident->id_incident])) {
               foreach($this->sanctions_mois[$incident->id_incident] as $protagoniste) {
                 foreach($protagoniste as $id_sanction) {
-                   if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
+                   if($selection !='L\'Etablissement' && $selection !='Tous les Ã©lÃ¨ves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
                      //on a une classe ou un eleve
                     if($this->is_classe($selection)){
                        if(!$this->is_in_classe($id_sanction->login, $selection)){
-                         break;  //la sanction ne correspond pas à un eleve de la classe
+                         break;  //la sanction ne correspond pas Ã  un eleve de la classe
                        }
                     }else{
-                        //on a un eleve on verifie si la sanction est à lui
+                        //on a un eleve on verifie si la sanction est Ã  lui
                         if($id_sanction->login!=$selection)break;
                     }
                   }
-                  //si le type n'est pas initialisée on le fait
+                  //si le type n'est pas initialisÃ©e on le fait
                   if(!in_array($id_sanction->nature,$this->liste_type)) {
                     foreach($this->months as $key2=>$month2) {
                       $this->evolution[$selection][$id_sanction->nature][$key2]=0;
@@ -301,7 +301,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
       foreach($this->liste_roles as $role) {
         $this->liste_type[]=$role->qualite;
       }
-      $this->liste_type[]='Non défini';
+      $this->liste_type[]='Non dÃ©fini';
     }
 
     //On traite mois par mois
@@ -313,7 +313,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
       $this->protagonistes_mois=$this->objet_incident->get_protagonistes();
 
       foreach( $this->incidents_mois as $selection=>$incidents) {
-        //on met les compteurs à 0
+        //on met les compteurs Ã  0
         foreach($this->liste_type as $role) {
           $this->evolution[$selection][$role][$key]=0;
           if(!isset($this->totaux_par_type[$selection][$role])) $this->totaux_par_type[$selection][$role]=0;
@@ -325,8 +325,8 @@ class ClassEvolution_Incidents extends ClassIncidents {
           if(!$titre['error']) {
             if(isset($this->protagonistes_mois[$incident->id_incident])) {
               foreach($this->protagonistes_mois[$incident->id_incident] as $protagoniste) {
-                if ($protagoniste->qualite =='')$protagoniste->qualite='Non défini';
-                //si le type n'est pas initialisée on le fait
+                if ($protagoniste->qualite =='')$protagoniste->qualite='Non dÃ©fini';
+                //si le type n'est pas initialisÃ©e on le fait
                 if(!in_array($protagoniste->qualite,$this->liste_type)) {
                   foreach($this->months as $key2=>$month2) {
                     $this->evolution[$selection][$protagoniste->qualite][$key2]=0;
@@ -334,14 +334,14 @@ class ClassEvolution_Incidents extends ClassIncidents {
                   $this->totaux_par_type[$selection][$protagoniste->qualite]=0;
                   $this->liste_type[]=$protagoniste->qualite;
                 }
-                if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
+                if($selection !='L\'Etablissement' && $selection !='Tous les Ã©lÃ¨ves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
                      //on a une classe ou un eleve
                     if($this->is_classe($selection)){
                        if(!$this->is_in_classe($protagoniste->login, $selection)){
-                         break;  //le rôle ne correspond pas à un eleve de la classe
+                         break;  //le rÃ´le ne correspond pas Ã  un eleve de la classe
                        }
                     }else{
-                        //on a un eleve on verifie si le rôle est à lui
+                        //on a un eleve on verifie si le rÃ´le est Ã  lui
                         if($protagoniste->login!=$selection)break;
                     }
                   }

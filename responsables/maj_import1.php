@@ -37,14 +37,14 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// INSERT INTO `droits` VALUES ('/responsables/maj_import1.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour Sconet', '');
+// INSERT INTO `droits` VALUES ('/responsables/maj_import1.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise Ã  jour Sconet', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Mise à jour eleves/responsables";
+$titre_page = "Mise Ã  jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<p class=bold>";
@@ -52,32 +52,32 @@ echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' cla
 echo "</p>\n";
 
 
-// On fournit les fichiers CSV générés depuis les XML de SCONET...
+// On fournit les fichiers CSV gÃ©nÃ©rÃ©s depuis les XML de SCONET...
 //if (!isset($is_posted)) {
 if(!isset($step)) {
-	echo "<h2>Import/mise à jour des élèves</h2>\n";
+	echo "<h2>Import/mise Ã  jour des Ã©lÃ¨ves</h2>\n";
 
-	echo "<p>Cette page est destinée à effectuer l'import des élèves et responsables d'après les modifications et ajouts effectués sur Sconet.</p>\n";
+	echo "<p>Cette page est destinÃ©e Ã  effectuer l'import des Ã©lÃ¨ves et responsables d'aprÃ¨s les modifications et ajouts effectuÃ©s sur Sconet.</p>\n";
 
-	echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>générés</a> à partir des exports XML de Sconet</i>).<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ELEVES.CSV, puis les deux fichiers PERSONNES.CSV et ADRESSES.CSV, et enfin le fichier RESPONSABLES.CSV</p>\n";
+	echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>gÃ©nÃ©rÃ©s</a> Ã  partir des exports XML de Sconet</i>).<br />\nLes fichiers requis au cours de la procÃ©dure sont dans un premier temps ELEVES.CSV, puis les deux fichiers PERSONNES.CSV et ADRESSES.CSV, et enfin le fichier RESPONSABLES.CSV</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo add_token_field();
 	echo "<input type=hidden name='step' value='1' />\n";
 	//echo "<input type=hidden name='mode' value='1' />\n";
-	echo "<p>Sélectionnez le fichier <b>ELEVES.CSV</b>:<br /><input type=\"file\" size=\"80\" name=\"ele_file\" /></p>\n";
+	echo "<p>SÃ©lectionnez le fichier <b>ELEVES.CSV</b>:<br /><input type=\"file\" size=\"80\" name=\"ele_file\" /></p>\n";
 	/*
 	echo "<p>Et les fichiers de responsables:</p>\n";
-	echo "<p>Sélectionnez le fichier <b>PERSONNES.CSV</b>:<br /><input type='file' size='80' name='pers_file' />\n";
-	echo "<p>Sélectionnez le fichier <b>RESPONSABLES.CSV</b>:<br /><input type='file' size='80' name='resp_file' />\n";
-	echo "<p>Sélectionnez le fichier <b>ADRESSES.CSV</b>:<br /><input type='file' size='80' name='adr_file' />\n";
+	echo "<p>SÃ©lectionnez le fichier <b>PERSONNES.CSV</b>:<br /><input type='file' size='80' name='pers_file' />\n";
+	echo "<p>SÃ©lectionnez le fichier <b>RESPONSABLES.CSV</b>:<br /><input type='file' size='80' name='resp_file' />\n";
+	echo "<p>SÃ©lectionnez le fichier <b>ADRESSES.CSV</b>:<br /><input type='file' size='80' name='adr_file' />\n";
 	*/
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
-	echo "<p>Il est recommandé d'importer les informations élèves et de ne passer qu'ensuite à l'import des informations responsables.<br />\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=3".add_token_in_url()."'>Passer néanmoins à la page d'importation des responsables</a></p>";
+	echo "<p>Il est recommandÃ© d'importer les informations Ã©lÃ¨ves et de ne passer qu'ensuite Ã  l'import des informations responsables.<br />\n";
+	echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=3".add_token_in_url()."'>Passer nÃ©anmoins Ã  la page d'importation des responsables</a></p>";
 }
 else{
 	check_token();
@@ -85,10 +85,10 @@ else{
 	//if(!isset($_POST['step'])){
 	switch($step){
 		case 1:
-		// Affichage des informations élèves
-		echo "<h2>Import/mise à jour des élèves</h2>\n";
+		// Affichage des informations Ã©lÃ¨ves
+		echo "<h2>Import/mise Ã  jour des Ã©lÃ¨ves</h2>\n";
 
-			echo "<p>Dans le tableau, les classes ne sont mentionnées qu'à titre informatif.<br />L'affectation dans les classes n'est pas (<i>encore</i>) assurée depuis cette page.</p>\n";
+			echo "<p>Dans le tableau, les classes ne sont mentionnÃ©es qu'Ã  titre informatif.<br />L'affectation dans les classes n'est pas (<i>encore</i>) assurÃ©e depuis cette page.</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
@@ -116,7 +116,7 @@ else{
 					while(!feof($fp)) {
 						$ligne=fgets($fp, 4096);
 						if($nblignes==0){
-							// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+							// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 							// On ne retient pas ces ajouts pour $en_tete
 							$temp=explode(";",$ligne);
 							for($i=0;$i<sizeof($temp);$i++){
@@ -152,7 +152,7 @@ else{
 
 					//=========================
 					$fp=fopen($csv_file['tmp_name'],"r");
-					// On lit une ligne pour passer la ligne d'entête:
+					// On lit une ligne pour passer la ligne d'entÃªte:
 					$ligne = fgets($fp, 4096);
 					$cpt=0;
 					//$eleves=array();
@@ -164,19 +164,19 @@ else{
 					echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 					echo " / ";
 					echo "<a href=\"javascript:modifcase('decoche')\">";
-					echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+					echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 
 					echo "</td>\n";
 					echo "<td style='text-align: center; font-weight: bold;'>Statut</td>\n";
 					echo "<td style='text-align: center; font-weight: bold;'>elenoet</td>\n";
 					echo "<td style='text-align: center; font-weight: bold;'>ele_id</td>\n";
 					echo "<td style='text-align: center; font-weight: bold;'>Nom</td>\n";
-					echo "<td style='text-align: center; font-weight: bold;'>Prénom</td>\n";
+					echo "<td style='text-align: center; font-weight: bold;'>PrÃ©nom</td>\n";
 					echo "<td style='text-align: center; font-weight: bold;'>Sexe</td>\n";
 					echo "<td style='text-align: center; font-weight: bold;'>Naissance</td>\n";
 					echo "<td style='text-align: center; font-weight: bold;'>Doublement</td>\n";
-					echo "<td style='text-align: center; font-weight: bold;'>N°NAT</td>\n";
-					echo "<td style='text-align: center; font-weight: bold;'>Régime</td>\n";
+					echo "<td style='text-align: center; font-weight: bold;'>NÂ°NAT</td>\n";
+					echo "<td style='text-align: center; font-weight: bold;'>RÃ©gime</td>\n";
 					echo "<td style='text-align: center; font-weight: bold;'>Classe</td>\n";
 					echo "</tr>\n";
 					$cpt_modif=0;
@@ -204,7 +204,7 @@ else{
 								if(mysql_num_rows($res1)>0){
 									//$sql="UPDATE eleves SET ele_id='$affiche[5]' WHERE elenoet='$affiche[4]'";
 
-									// FAUT-IL FAIRE LES UPDATE SANS CONTRÔLE OU SIGNALER LES MODIFS SEULEMENT...
+									// FAUT-IL FAIRE LES UPDATE SANS CONTRÃ”LE OU SIGNALER LES MODIFS SEULEMENT...
 									//$sql="UPDATE eleves SET ele_id='$affiche[5]' WHERE elenoet='$affiche[4]'";
 
 									// STOCKER DANS UN TABLEAU ET AFFICHER SEULEMENT LES MODIFS DANS UN PREMIER TEMPS
@@ -229,7 +229,7 @@ else{
 									($lig_ele->naissance!=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2))){
 									*/
 
-									// On ne retient que le premier prénom:
+									// On ne retient que le premier prÃ©nom:
 									$tab_prenom = explode(" ",$affiche[1]);
 									$affiche[1] = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
 
@@ -246,7 +246,7 @@ else{
 									}
 									else{
 										if($lig_ele->ele_id!=$affiche[5]){
-											// GROS PROBLEME SI LES elenoet et ele_id ne sont plus des clés primaires
+											// GROS PROBLEME SI LES elenoet et ele_id ne sont plus des clÃ©s primaires
 										}
 									}
 
@@ -338,7 +338,7 @@ else{
 									// C'est un nouvel arrivant...
 
 									// AFFICHER ET STOCKER DANS UN TABLEAU...
-									// SUR VALIDATION, INSéRER DANS 'eleves' ET PAR LA SUITE AFFECTER DANS DES CLASSES POUR TELLES ET TELLES PERIODES ET COCHER LES OPTIONS POUR TELLES ET TELLES PERIODES.
+									// SUR VALIDATION, INSÃ©RER DANS 'eleves' ET PAR LA SUITE AFFECTER DANS DES CLASSES POUR TELLES ET TELLES PERIODES ET COCHER LES OPTIONS POUR TELLES ET TELLES PERIODES.
 
 									// TRANSMETTRE VIA UN FORMULAIRE POUR PROCEDER AUX AJOUTS, ET POUR LES eleves ENCHAINER AVEC LE CHOIX DE CLASSE ET D'OPTIONS
 								}
@@ -653,13 +653,13 @@ else{
 						}
 					}
 					echo "</table>\n";
-					echo "<p>On compte $cpt_modif champs modifiés et $cpt_new nouveaux élèves.</p>\n";
+					echo "<p>On compte $cpt_modif champs modifiÃ©s et $cpt_new nouveaux Ã©lÃ¨ves.</p>\n";
 					fclose($fp);
 				}
 
 			}
 			else{
-				echo "<p style='color:red;'>Le nom du fichier proposé ne coïncide pas avec ce qui est attendu: ELEVES.CSV</p>\n";
+				echo "<p style='color:red;'>Le nom du fichier proposÃ© ne coÃ¯ncide pas avec ce qui est attendu: ELEVES.CSV</p>\n";
 				echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du fichier ELEVES.CSV</a></p>\n";
 				echo "</form>\n";
 				echo "</div>\n";
@@ -688,11 +688,11 @@ else{
 
 			break;
 		case 2:
-			echo "<h2>Import/mise à jour des élèves</h2>\n";
+			echo "<h2>Import/mise Ã  jour des Ã©lÃ¨ves</h2>\n";
 
 			$erreur=0;
 			if(isset($modif)){
-				echo "<p>Mise à jour des informations pour \n";
+				echo "<p>Mise Ã  jour des informations pour \n";
 				for($i=0;$i<count($modif);$i++){
 					//echo "<p>\n";
 
@@ -716,9 +716,9 @@ else{
 					echo stripslashes(stripslashes($nom))." ".stripslashes(stripslashes($prenom));
 
 					// FAUT-IL UN stripslashes sur les noms pour les apostrophes?
-					// Dans le champ de formulaire soumis, on a des échappements:
+					// Dans le champ de formulaire soumis, on a des Ã©chappements:
 					// Ex.: L\'HERNAULT
-					// Après soumission du formulaire, ce qui est reçu, c'est L\\\'HERNAULT
+					// AprÃ¨s soumission du formulaire, ce qui est reÃ§u, c'est L\\\'HERNAULT
 					// Est-ce un effet de magic_quotes_gpc?
 					// Puis-je appliquer deux stripslashes() sans risque?
 					//$sql="UPDATE eleves SET nom='".$nom."',
@@ -773,7 +773,7 @@ else{
 					$regime=$_POST['new_'.$cpt.'_regime'];
 					$nonat=$_POST['new_'.$cpt.'_nonat'];
 
-					// Générer un login...
+					// GÃ©nÃ©rer un login...
 					$temp1 = strtoupper($nom);
 					$temp1 = strtr($temp1, " '-", "___");
 					$temp1 = substr($temp1,0,7);
@@ -782,7 +782,7 @@ else{
 					$temp2 = substr($temp2,0,1);
 					$login_eleve = $temp1.'_'.$temp2;
 
-					// On teste l'unicité du login que l'on vient de créer
+					// On teste l'unicitÃ© du login que l'on vient de crÃ©er
 					$k = 2;
 					$test_unicite = 'no';
 					$temp = $login_eleve;
@@ -852,24 +852,24 @@ else{
 
 			switch($erreur){
 				case 0:
-					echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+					echo "<p>Passer Ã  l'Ã©tape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise Ã  jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 					break;
 
 				case 1:
-					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer Ã  l'Ã©tape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise Ã  jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 					break;
 
 				default:
-					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer Ã  l'Ã©tape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise Ã  jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 					break;
 			}
 
 			break;
 		case 3:
-			echo "<h2>Import/mise à jour des personnes (<i>responsables</i>) et adresses</h2>\n";
+			echo "<h2>Import/mise Ã  jour des personnes (<i>responsables</i>) et adresses</h2>\n";
 
-			//echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>générés</a> à partir des exports XML de Sconet</i>).<br />\nLes fichiers requis ici sont les trois fichiers PERSONNES.CSV, RESPONSABLES.CSV et ADRESSES.CSV</p>\n";
-			echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>générés</a> à partir des exports XML de Sconet</i>).<br />\nLes fichiers requis ici sont les deux fichiers PERSONNES.CSV et ADRESSES.CSV</p>\n";
+			//echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>gÃ©nÃ©rÃ©s</a> Ã  partir des exports XML de Sconet</i>).<br />\nLes fichiers requis ici sont les trois fichiers PERSONNES.CSV, RESPONSABLES.CSV et ADRESSES.CSV</p>\n";
+			echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>gÃ©nÃ©rÃ©s</a> Ã  partir des exports XML de Sconet</i>).<br />\nLes fichiers requis ici sont les deux fichiers PERSONNES.CSV et ADRESSES.CSV</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
@@ -879,19 +879,19 @@ else{
 			echo "<input type=hidden name='step' value='4' />\n";
 			//echo "<input type=hidden name='mode' value='1' />\n";
 			echo "<p>Et les fichiers de responsables:</p>\n";
-			echo "<p>Sélectionnez le fichier <b>PERSONNES.CSV</b>:<br /><input type='file' size='80' name='pers_file' />\n";
-			//echo "<p>Sélectionnez le fichier <b>RESPONSABLES.CSV</b>:<br /><input type='file' size='80' name='resp_file' />\n";
-			echo "<p>Sélectionnez le fichier <b>ADRESSES.CSV</b>:<br /><input type='file' size='80' name='adr_file' />\n";
+			echo "<p>SÃ©lectionnez le fichier <b>PERSONNES.CSV</b>:<br /><input type='file' size='80' name='pers_file' />\n";
+			//echo "<p>SÃ©lectionnez le fichier <b>RESPONSABLES.CSV</b>:<br /><input type='file' size='80' name='resp_file' />\n";
+			echo "<p>SÃ©lectionnez le fichier <b>ADRESSES.CSV</b>:<br /><input type='file' size='80' name='adr_file' />\n";
 
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
 
-			echo "<p>Il est recommandé d'importer les informations élèves et de ne passer qu'ensuite à l'import des associations responsables/élèves.<br />\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=6".add_token_in_url()."'>Passer néanmoins à la page d'importation des associations responsables/élèves</a></p>";
+			echo "<p>Il est recommandÃ© d'importer les informations Ã©lÃ¨ves et de ne passer qu'ensuite Ã  l'import des associations responsables/Ã©lÃ¨ves.<br />\n";
+			echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=6".add_token_in_url()."'>Passer nÃ©anmoins Ã  la page d'importation des associations responsables/Ã©lÃ¨ves</a></p>";
 			break;
 		case 4:
 			// Affichage des informations
-			echo "<h2>Import/mise à jour des personnes (<i>responsables</i>) et adresses</h2>\n";
+			echo "<h2>Import/mise Ã  jour des personnes (<i>responsables</i>) et adresses</h2>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
@@ -921,18 +921,18 @@ else{
 					$adr_new=array();
 					$adr_modif=array();
 
-					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
+					// On vide la table avant traitement (au cas oÃ¹ il aurait fallu s'y prendre Ã  deux fois)
 					//$sql="TRUNCATE TABLE resp_adr";
 					//$res_truncate=mysql_query($sql);
 
-					// on constitue le tableau des champs à extraire
+					// on constitue le tableau des champs Ã  extraire
 					$tabchamps=array("adr_id","adr1","adr2","adr3","adr4","cp","pays","commune");
 
 					$nblignes=0;
 					while (!feof($fp)) {
 						$ligne = fgets($fp, 4096);
 						if($nblignes==0){
-							// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+							// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 							// On ne retient pas ces ajouts pour $en_tete
 							$temp=explode(";",$ligne);
 							for($i=0;$i<sizeof($temp);$i++){
@@ -969,7 +969,7 @@ else{
 
 					//=========================
 					$fp=fopen($csv_file['tmp_name'],"r");
-					// On lit une ligne pour passer la ligne d'entête:
+					// On lit une ligne pour passer la ligne d'entÃªte:
 					$ligne = fgets($fp, 4096);
 					//=========================
 					$nb_reg_no2=0;
@@ -1013,7 +1013,7 @@ else{
 								}
 								*/
 
-								// Stockage des données:
+								// Stockage des donnÃ©es:
 								$adresse[$affiche[0]]=array();
 								for($i=1;$i<count($tabchamps);$i++) {
 									$adresse[$affiche[0]]["$tabchamps[$i]"]=$affiche[$i];
@@ -1026,7 +1026,7 @@ else{
 								$res1=mysql_query($sql);
 								if(mysql_num_rows($res1)==0){
 									$adr_new[]=$affiche[0];
-										//echo "Ajout de l'adresse n°$affiche[0]<br />\n";
+										//echo "Ajout de l'adresse nÂ°$affiche[0]<br />\n";
 								}
 								else{
 									$lig=mysql_fetch_object($res1);
@@ -1038,7 +1038,7 @@ else{
 									(stripslashes($lig->pays)!=stripslashes($affiche[6]))||
 									(stripslashes($lig->commune)!=stripslashes($affiche[7]))){
 										$adr_modif[]=$affiche[0];
-										//echo "Modification de l'adresse n°$affiche[0]<br />\n";
+										//echo "Modification de l'adresse nÂ°$affiche[0]<br />\n";
 									}
 								}
 								*/
@@ -1054,13 +1054,13 @@ else{
 									if(mysql_num_rows($res2)==0){
 										$adr_new[]=$affiche[0];
 										$temoin_nouvelle_adresse="y";
-										//echo "Ajout de l'adresse n°$affiche[0]<br />\n";
+										//echo "Ajout de l'adresse nÂ°$affiche[0]<br />\n";
 									}
 								}
 
 								if($temoin_nouvelle_adresse=="y"){
 									$adr_new[]=$affiche[0];
-										//echo "Ajout de l'adresse n°$affiche[0]<br />\n";
+										//echo "Ajout de l'adresse nÂ°$affiche[0]<br />\n";
 								}
 								else{
 									$lig=mysql_fetch_object($res1);
@@ -1072,7 +1072,7 @@ else{
 									(stripslashes($lig->pays)!=stripslashes($affiche[6]))||
 									(stripslashes($lig->commune)!=stripslashes($affiche[7]))){
 										$adr_modif[]=$affiche[0];
-										//echo "Modification de l'adresse n°$affiche[0]<br />\n";
+										//echo "Modification de l'adresse nÂ°$affiche[0]<br />\n";
 									}
 								}
 							}
@@ -1083,23 +1083,23 @@ else{
 
 					/*
 					if ($nb_reg_no2 != 0) {
-						echo "<p>Lors de l'enregistrement des données de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
+						echo "<p>Lors de l'enregistrement des donnÃ©es de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
 					} else {
-						echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$nb_record2." enregistrements au total).</p>\n";
+						echo "<p>L'importation des adresses de responsables dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (".$nb_record2." enregistrements au total).</p>\n";
 					}
 					*/
 
 				}
 			} else if (trim($csv_file['name'])=='') {
-				echo "<p>Aucun fichier ADRESSES.CSV n'a été sélectionné !<br />\n";
+				echo "<p>Aucun fichier ADRESSES.CSV n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 				//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 				echo "</body>\n</html>\n";
 				die();
 
 			} else {
-				echo "<p>Le(s) fichier(s) sélectionné(s) n'est(ne sont) pas valide(s) !<br />\n";
-				echo "Contrôlez que le(s) nom(s) de fichier(s) coïncide(nt) avec ce qui est réclamé.<br />\n";
+				echo "<p>Le(s) fichier(s) sÃ©lectionnÃ©(s) n'est(ne sont) pas valide(s) !<br />\n";
+				echo "ContrÃ´lez que le(s) nom(s) de fichier(s) coÃ¯ncide(nt) avec ce qui est rÃ©clamÃ©.<br />\n";
 				//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 				echo "</body>\n</html>\n";
@@ -1123,11 +1123,11 @@ else{
 					$pers_new=array();
 					$pers_modif=array();
 
-					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
+					// On vide la table avant traitement (au cas oÃ¹ il aurait fallu s'y prendre Ã  deux fois)
 					//$sql="TRUNCATE TABLE resp_pers";
 					//$res_truncate=mysql_query($sql);
 
-					// on constitue le tableau des champs à extraire
+					// on constitue le tableau des champs Ã  extraire
 					//$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
 					$tabchamps=array("pers_id","nom","prenom","civilite","tel_pers","tel_port","tel_prof","mel","adr_id");
 					//echo "\$tabchamps=array(\"pers_id\",\"nom\",\"prenom\",\"civilite\",\"tel_pers\",\"tel_port\",\"tel_prof\",\"mel\",\"adr_id\");<br />\n";
@@ -1136,7 +1136,7 @@ else{
 					while (!feof($fp)) {
 						$ligne = fgets($fp, 4096);
 						if($nblignes==0){
-							// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+							// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 							// On ne retient pas ces ajouts pour $en_tete
 							$temp=explode(";",$ligne);
 							for($i=0;$i<sizeof($temp);$i++){
@@ -1170,7 +1170,7 @@ else{
 
 					//=========================
 					$fp=fopen($csv_file['tmp_name'],"r");
-					// On lit une ligne pour passer la ligne d'entête:
+					// On lit une ligne pour passer la ligne d'entÃªte:
 					$ligne = fgets($fp, 4096);
 					//=========================
 					$nb_reg_no3=0;
@@ -1209,7 +1209,7 @@ else{
 								}
 								*/
 
-								// Stockage des données:
+								// Stockage des donnÃ©es:
 								$personne[$affiche[0]]=array();
 								//echo "<p>\n";
 								for($i=1;$i<count($tabchamps);$i++) {
@@ -1250,21 +1250,21 @@ else{
 
 					/*
 					if ($nb_reg_no3 != 0) {
-						echo "<p>Lors de l'enregistrement des données de PERSONNES.CSV, il y a eu $nb_reg_no3 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
+						echo "<p>Lors de l'enregistrement des donnÃ©es de PERSONNES.CSV, il y a eu $nb_reg_no3 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
 					} else {
-						echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$nb_record3." enregistrements au total).</p>\n";
+						echo "<p>L'importation des personnes (responsables) dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (".$nb_record3." enregistrements au total).</p>\n";
 					}
 					*/
 				}
 			} else if (trim($csv_file['name'])=='') {
-				echo "<p>Aucun fichier PERSONNES.CSV n'a été sélectionné !<br />\n";
+				echo "<p>Aucun fichier PERSONNES.CSV n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 				//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 				echo "</body>\n</html>\n";
 				die();
 
 			} else {
-				echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+				echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />\n";
 				//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 				echo "</body>\n</html>\n";
@@ -1295,7 +1295,7 @@ else{
 						if(mysql_num_rows($res1)==0){
 							// PROBLEME: s'il y a modif de responsable...
 							// ... et que le responsable n'est pas dans la table resp_pers, c'est que c'est une nouvelle personne...
-							// Mais alors elle devrait être dans le tableau $personne
+							// Mais alors elle devrait Ãªtre dans le tableau $personne
 						}
 						else{
 							$lig1=mysql_fetch_object($res1);
@@ -1331,7 +1331,7 @@ else{
 					$sql="SELECT * FROM resp_pers WHERE (adr_id='".$adr_modif[$i]."')";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)==0){
-						// L'adresse n'est plus utilisée? Mais encore présente dans sconet? et aurait changé?
+						// L'adresse n'est plus utilisÃ©e? Mais encore prÃ©sente dans sconet? et aurait changÃ©?
 					}
 					else{
 						while($lig1=mysql_fetch_object($res1)){
@@ -1380,7 +1380,7 @@ else{
 
 
 
-			// On passe à l'affichage du tableau
+			// On passe Ã  l'affichage du tableau
 			echo "<table border='1'>\n";
 			echo "<tr>\n";
 
@@ -1390,24 +1390,24 @@ else{
 			echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 			echo " / ";
 			echo "<a href=\"javascript:modifcase('decoche')\">";
-			echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</td>\n";
 
 			echo "<td rowspan='2'>&nbsp;</td>\n";
 
 			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' colspan='5'>Responsable</td>\n";
 			echo "<td style='text-align:center; font-weight:bold; background-color:#FAFABE;' rowspan='2'>Adresse</td>\n";
-			//echo "<td style='text-align:center; font-weight:bold;' colspan='3'>Elève</td>\n";
+			//echo "<td style='text-align:center; font-weight:bold;' colspan='3'>ElÃ¨ve</td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>pers_id</td>\n";
 			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Nom</td>\n";
-			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Prénom</td>\n";
-			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Civilité</td>\n";
+			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>PrÃ©nom</td>\n";
+			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>CivilitÃ©</td>\n";
 			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Contact</td>\n";
 			//echo "<td style='text-align:center; font-weight:bold;'>ele_id</td>\n";
 			//echo "<td style='text-align:center; font-weight:bold;'>Nom</td>\n";
-			//echo "<td style='text-align:center; font-weight:bold;'>Prénom</td>\n";
+			//echo "<td style='text-align:center; font-weight:bold;'>PrÃ©nom</td>\n";
 			echo "</tr>\n";
 			$alt=1;
 			$cpt=0;
@@ -1935,11 +1935,11 @@ else{
 		case 5:
 			// Import des informations personnes et adresses
 
-			echo "<h2>Import/mise à jour des personnes (<i>responsables</i>) et adresses</h2>\n";
+			echo "<h2>Import/mise Ã  jour des personnes (<i>responsables</i>) et adresses</h2>\n";
 
 			$erreur=0;
 			if(isset($modif)){
-				echo "<p>Mise à jour des informations pour ";
+				echo "<p>Mise Ã  jour des informations pour ";
 				for($i=0;$i<count($modif);$i++){
 					$cpt=$modif[$i];
 
@@ -1975,7 +1975,7 @@ else{
 					}
 
 
-					// Partie adresse (contrôler si c'est une modif ou un ajout)
+					// Partie adresse (contrÃ´ler si c'est une modif ou un ajout)
 					$modif_adresse=isset($_POST['modif_'.$cpt.'_adr1']) ? 1 : NULL;
 					if(isset($modif_adresse)){
 						$adr1=$_POST['modif_'.$cpt.'_adr1'];
@@ -2066,7 +2066,7 @@ else{
 					}
 
 
-					// Partie adresse (contrôler si c'est une new ou un ajout)
+					// Partie adresse (contrÃ´ler si c'est une new ou un ajout)
 					$new_adresse=isset($_POST['new_'.$cpt.'_adr1']) ? 1 : NULL;
 					if(isset($new_adresse)){
 						$adr1=$_POST['new_'.$cpt.'_adr1'];
@@ -2122,25 +2122,25 @@ else{
 			}
 
 
-			//echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des responsables</a>.</p>\n";
+			//echo "<p>Passer Ã  l'Ã©tape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise Ã  jour des responsables</a>.</p>\n";
 			switch($erreur){
 				case 0:
-					echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise à jour des responsables</a>.</p>\n";
+					echo "<p>Passer Ã  l'Ã©tape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise Ã  jour des responsables</a>.</p>\n";
 					break;
 
 				case 1:
-					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise à jour des responsables</a>.</p>\n";
+					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer Ã  l'Ã©tape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise Ã  jour des responsables</a>.</p>\n";
 					break;
 
 				default:
-					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise à jour des responsables</a>.</p>\n";
+					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer Ã  l'Ã©tape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise Ã  jour des responsables</a>.</p>\n";
 					break;
 			}
 
 			break;
 		case 6:
 
-			echo "<h2>Import/mise à jour des responsables</h2>\n";
+			echo "<h2>Import/mise Ã  jour des responsables</h2>\n";
 
 			// Formulaire pour fournir le fichier RESPONSABLES.CSV
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -2150,7 +2150,7 @@ else{
 			//echo "<input type=hidden name='is_posted' value='yes' />\n";
 			echo "<input type=hidden name='step' value='7' />\n";
 			//echo "<input type=hidden name='mode' value='1' />\n";
-			echo "<p>Sélectionnez le fichier <b>RESPONSABLES.CSV</b>:<br /><input type='file' size='80' name='resp_file' />\n";
+			echo "<p>SÃ©lectionnez le fichier <b>RESPONSABLES.CSV</b>:<br /><input type='file' size='80' name='resp_file' />\n";
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
 
@@ -2159,7 +2159,7 @@ else{
 		case 7:
 			// Affichage des informations responsables
 
-			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
+			echo "<h2>Import/mise Ã  jour des associations responsables/Ã©lÃ¨ves</h2>\n";
 
 			$cpt=0;
 			$csv_file = isset($_FILES["resp_file"]) ? $_FILES["resp_file"] : NULL;
@@ -2183,18 +2183,18 @@ else{
 					$resp_new=array();
 					$resp_modif=array();
 
-					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
+					// On vide la table avant traitement (au cas oÃ¹ il aurait fallu s'y prendre Ã  deux fois)
 					//$sql="TRUNCATE TABLE responsables2";
 					//$res_truncate=mysql_query($sql);
 
-					// on constitue le tableau des champs à extraire
+					// on constitue le tableau des champs Ã  extraire
 					$tabchamps=array("ele_id","pers_id","resp_legal","pers_contact");
 
 					$nblignes=0;
 					while (!feof($fp)) {
 						$ligne = fgets($fp, 4096);
 						if($nblignes==0){
-							// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+							// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 							// On ne retient pas ces ajouts pour $en_tete
 							$temp=explode(";",$ligne);
 							for($i=0;$i<sizeof($temp);$i++){
@@ -2230,7 +2230,7 @@ else{
 
 					//=========================
 					$fp=fopen($csv_file['tmp_name'],"r");
-					// On lit une ligne pour passer la ligne d'entête:
+					// On lit une ligne pour passer la ligne d'entÃªte:
 					$ligne = fgets($fp, 4096);
 					//=========================
 
@@ -2242,26 +2242,26 @@ else{
 					echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 					echo " / ";
 					echo "<a href=\"javascript:modifcase('decoche')\">";
-					echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+					echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 					echo "</td>\n";
 
 					echo "<td rowspan='2'>&nbsp;</td>\n";
 
 					echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' colspan='5'>Responsable</td>\n";
 
-					echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;' colspan='3'>Elève</td>\n";
+					echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;' colspan='3'>ElÃ¨ve</td>\n";
 
 					echo "</tr>\n";
 
 					echo "<tr>\n";
 					echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>pers_id</td>\n";
 					echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Nom</td>\n";
-					echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Prénom</td>\n";
+					echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>PrÃ©nom</td>\n";
 					echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>resp_legal</td>\n";
 					echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>pers_contact</td>\n";
 
 					echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Nom</td>\n";
-					echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Prénom</td>\n";
+					echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>PrÃ©nom</td>\n";
 					echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>ele_id</td>\n";
 					echo "</tr>\n";
 
@@ -2296,7 +2296,7 @@ else{
 								}
 								*/
 
-								// Stockage des données:
+								// Stockage des donnÃ©es:
 								$responsable[$affiche[0]]=array();
 								for($i=1;$i<count($tabchamps);$i++) {
 									$responsable[$affiche[0]]["$tabchamps[$i]"]=$affiche[$i];
@@ -2330,14 +2330,14 @@ else{
 									$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
 									$res2=mysql_query($sql);
 									if(mysql_num_rows($res2)==0){
-										// Problème: On ne peut pas importer l'association sans que la personne existe.
-										// Est-ce que l'étape d'import de la personne a été refusée?
+										// ProblÃ¨me: On ne peut pas importer l'association sans que la personne existe.
+										// Est-ce que l'Ã©tape d'import de la personne a Ã©tÃ© refusÃ©e?
 										echo "<td>&nbsp;</td>\n";
 										echo "<td>&nbsp;</td>\n";
 
 										echo "<td style='background-color:red;'>&nbsp;</td>\n";
-										//echo "<td colspan='5'>Aucune personne associée???</td>\n";
-										echo "<td colspan='7'>Aucune personne associée???</td>\n";
+										//echo "<td colspan='5'>Aucune personne associÃ©e???</td>\n";
+										echo "<td colspan='7'>Aucune personne associÃ©e???</td>\n";
 									}
 									else{
 										$lig2=mysql_fetch_object($res2);
@@ -2362,7 +2362,7 @@ else{
 										echo "<input type='hidden' name='new_".$cpt."_resp_prenom' value=\"$lig2->prenom\" />\n";
 										echo "</td>\n";
 
-										// Existe-t-il déjà un numéro de responsable légal correspondant au nouvel arrivant?
+										// Existe-t-il dÃ©jÃ  un numÃ©ro de responsable lÃ©gal correspondant au nouvel arrivant?
 
 										echo "<td style='text-align:center;";
 										//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
@@ -2383,12 +2383,12 @@ else{
 										echo "<input type='hidden' name='new_".$cpt."_pers_contact' value='$pers_contact' />\n";
 										echo "</td>\n";
 
-										// Elève(s) associé(s)
+										// ElÃ¨ve(s) associÃ©(s)
 										$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 										$res4=mysql_query($sql);
 										if(mysql_num_rows($res4)==0){
 											echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
-											echo "Aucun élève pour ele_id=$ele_id ???";
+											echo "Aucun Ã©lÃ¨ve pour ele_id=$ele_id ???";
 											echo "</td>\n";
 										}
 										else{
@@ -2418,7 +2418,7 @@ else{
 									$lig1=mysql_fetch_object($res1);
 									if((stripslashes($lig1->resp_legal)!=stripslashes($affiche[2]))||
 									(stripslashes($lig1->pers_contact)!=stripslashes($affiche[3]))){
-										// L'un des champs resp_legal ou pers_contact au moins a changé
+										// L'un des champs resp_legal ou pers_contact au moins a changÃ©
 										$resp_modif[]="$affiche[0]:$affiche[1]";
 
 										/*
@@ -2443,13 +2443,13 @@ else{
 										$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
 										$res2=mysql_query($sql);
 										if(mysql_num_rows($res2)==0){
-											// Problème: On ne peut pas importer l'association sans que la personne existe.
-											// Est-ce que l'étape d'import de la personne a été refusée?
+											// ProblÃ¨me: On ne peut pas importer l'association sans que la personne existe.
+											// Est-ce que l'Ã©tape d'import de la personne a Ã©tÃ© refusÃ©e?
 											echo "<td>&nbsp;</td>\n";
 											echo "<td>&nbsp;</td>\n";
 
 											echo "<td style='background-color:red;'>&nbsp;</td>\n";
-											echo "<td colspan='5'>Aucune personne associée???</td>\n";
+											echo "<td colspan='5'>Aucune personne associÃ©e???</td>\n";
 										}
 										else{
 											$lig2=mysql_fetch_object($res2);
@@ -2476,7 +2476,7 @@ else{
 											echo "<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".$lig2->prenom."\" />\n";
 											echo "</td>\n";
 
-											// Existe-t-il déjà un numéro de responsable légal correspondant au nouvel arrivant?
+											// Existe-t-il dÃ©jÃ  un numÃ©ro de responsable lÃ©gal correspondant au nouvel arrivant?
 
 											echo "<td style='text-align:center;";
 											//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
@@ -2497,12 +2497,12 @@ else{
 											echo "<input type='hidden' name='modif_".$cpt."_pers_contact' value='$pers_contact' />\n";
 											echo "</td>\n";
 
-											// Elève(s) associé(s)
+											// ElÃ¨ve(s) associÃ©(s)
 											$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 											$res4=mysql_query($sql);
 											if(mysql_num_rows($res4)==0){
 												echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
-												echo "Aucun élève pour ele_id=$ele_id ???";
+												echo "Aucun Ã©lÃ¨ve pour ele_id=$ele_id ???";
 												echo "</td>\n";
 											}
 											else{
@@ -2528,7 +2528,7 @@ else{
 										}
 										echo "</tr>\n";
 									}
-									// Sinon, il n'est pas nécessaire de refaire l'inscription déjà présente.
+									// Sinon, il n'est pas nÃ©cessaire de refaire l'inscription dÃ©jÃ  prÃ©sente.
 								}
 
 								//echo "</tr>\n";
@@ -2559,10 +2559,10 @@ else{
 
 					/*
 					if ($nb_reg_no1 != 0) {
-						echo "<p>Lors de l'enregistrement des données de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
+						echo "<p>Lors de l'enregistrement des donnÃ©es de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
 					}
 					else {
-						echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$nb_record1." enregistrements au total).</p>\n";
+						echo "<p>L'importation des relations eleves/responsables dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (".$nb_record1." enregistrements au total).</p>\n";
 					}
 					*/
 
@@ -2571,14 +2571,14 @@ else{
 					echo "</form>\n";
 				}
 			} else if (trim($csv_file['name'])=='') {
-				echo "<p>Aucun fichier RESPONSABLES.CSV n'a été sélectionné !<br />\n";
+				echo "<p>Aucun fichier RESPONSABLES.CSV n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 				//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 				echo "</body>\n</html>\n";
 				die();
 
 			} else {
-				echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+				echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />\n";
 				//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 				echo "</body>\n</html>\n";
@@ -2598,11 +2598,11 @@ else{
 
 		case 8:
 			// Import des informations responsables
-			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
+			echo "<h2>Import/mise Ã  jour des associations responsables/Ã©lÃ¨ves</h2>\n";
 
 			$erreur=0;
 			if(isset($modif)){
-				echo "<p>Mise à jour des informations pour ";
+				echo "<p>Mise Ã  jour des informations pour ";
 				for($i=0;$i<count($modif);$i++){
 					$cpt=$modif[$i];
 
@@ -2674,7 +2674,7 @@ else{
 						//echo "$resp_prenom $resp_nom ($pers_id) / $ele_prenom $ele_nom ($ele_id)\n";
 						echo stripslashes("$resp_prenom $resp_nom")." ($pers_id) / ".stripslashes("$ele_prenom $ele_nom")." ($ele_id)\n";
 
-						// On supprime l'inscription précédente si elle existe:
+						// On supprime l'inscription prÃ©cÃ©dente si elle existe:
 						$sql="SELECT pers_id FROM responsables2 WHERE (pers_id='$pers_id' AND ele_id='$ele_id')";
 						//echo "$sql<br />\n";
 						$res1=mysql_query($sql);
@@ -2687,7 +2687,7 @@ else{
 							$res2=mysql_query($sql);
 						}
 
-						// On teste s'il faut supprimer un autre responsable de même rang resp_legal:
+						// On teste s'il faut supprimer un autre responsable de mÃªme rang resp_legal:
 						$sql="SELECT pers_id FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 						$res1=mysql_query($sql);
 						if(mysql_num_rows($res1)==0){
@@ -2734,10 +2734,10 @@ else{
 			}
 
 
-			//echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des responsables</a>.</p>\n";
+			//echo "<p>Passer Ã  l'Ã©tape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise Ã  jour des responsables</a>.</p>\n";
 			switch($erreur){
 				case 0:
-					echo "<p>L'importation s'est correctement passée.</p>\n";
+					echo "<p>L'importation s'est correctement passÃ©e.</p>\n";
 					break;
 
 				case 1:
@@ -2759,10 +2759,10 @@ else{
 
 /*
 			if(($nb_reg_no1==0)&&($nb_reg_no2==0)&&($nb_reg_no3==0)&&($erreur==0)){
-				echo "<p>L'opération s'est correctement déroulée.</p>\n";
-				echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
+				echo "<p>L'opÃ©ration s'est correctement dÃ©roulÃ©e.</p>\n";
+				echo "<center><p><a href='../accueil.php'>Retourner Ã  l'accueil</a></p></center>\n";
 
-				// On renseigne le témoin de mise à jour effectuée:
+				// On renseigne le tÃ©moin de mise Ã  jour effectuÃ©e:
 				saveSetting("conv_new_resp_table", 1);
 			}
 			else{
@@ -2777,14 +2777,14 @@ echo "<p><br /></p>\n";
 echo "<p><i>NOTES:</i></p>\n";
 echo "<ul>\n";
 echo "<li>\n";
-echo "<p>Les noms de fichiers fournis dans les champs de formulaires doivent coïncider avec le nom indiqué ELEVES.CSV, ADRESSES.CSV,...\n";
+echo "<p>Les noms de fichiers fournis dans les champs de formulaires doivent coÃ¯ncider avec le nom indiquÃ© ELEVES.CSV, ADRESSES.CSV,...\n";
 echo "</p>\n";
 echo "</li>\n";
 echo "<li>";
-echo "<p>Il reste aussi à assurer l'import de l'établissement d'origine avec les fichiers etablissements.csv et eleves_etablissements.csv<br />\n";
-echo "Par ailleurs, l'inscription des élèves dans telle ou telle classe, avec telle et telle option n'est pas encore assurée par cette page d'importation/mise à jour.<br />\n";
-echo "(<i>il faut donc par la suite affecter les nouveaux élèves dans les classes et les inscrire dans les groupes/options/matières</i>)<br />\n";
-echo "Il faut également, pour les nouveaux élèves inscrits (<i>s'il y en a</i>), faire l'association avec le CPE responsable et le ".getSettingValue('gepi_prof_suivi').".";
+echo "<p>Il reste aussi Ã  assurer l'import de l'Ã©tablissement d'origine avec les fichiers etablissements.csv et eleves_etablissements.csv<br />\n";
+echo "Par ailleurs, l'inscription des Ã©lÃ¨ves dans telle ou telle classe, avec telle et telle option n'est pas encore assurÃ©e par cette page d'importation/mise Ã  jour.<br />\n";
+echo "(<i>il faut donc par la suite affecter les nouveaux Ã©lÃ¨ves dans les classes et les inscrire dans les groupes/options/matiÃ¨res</i>)<br />\n";
+echo "Il faut Ã©galement, pour les nouveaux Ã©lÃ¨ves inscrits (<i>s'il y en a</i>), faire l'association avec le CPE responsable et le ".getSettingValue('gepi_prof_suivi').".";
 echo "</p>\n";
 echo "</li>\n";
 echo "</ul>\n";

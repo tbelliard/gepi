@@ -22,7 +22,7 @@
 	}
 
 	//**************** EN-TETE *****************
-	$titre_page = "Outil d'initialisation de l'année : Importation des élèves";
+	$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des Ã©lÃ¨ves";
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
@@ -43,7 +43,7 @@
 	}
 
 	function affiche_debug($texte){
-		// Passer à 1 la variable pour générer l'affichage des infos de debug...
+		// Passer Ã  1 la variable pour gÃ©nÃ©rer l'affichage des infos de debug...
 		$debug=0;
 		if($debug==1){
 			echo "<font color='green'>".$texte."</font>";
@@ -85,10 +85,10 @@
 	$remarques=array();
 
 
-	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
+	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolaritÃ© pour les mÃ j Sconet)
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
-		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?</p>\n";
 		// Il ne faut pas aller plus loin...
 		// SITUATION A GERER
 	}
@@ -111,7 +111,7 @@
 		echo "<a href='".$_SERVER['PHP_SELF']."'> | Autre import</a></p>\n";
 		//echo "</div>\n";
 
-		echo "<p>Si des fichiers XML existent, ils seront supprimés...</p>\n";
+		echo "<p>Si des fichiers XML existent, ils seront supprimÃ©s...</p>\n";
 		//$tabfich=array("f_ele.csv","f_ere.csv");
 		$tabfich=array("eleves.xml","nomenclature.xml");
 
@@ -119,10 +119,10 @@
 			if(file_exists("../temp/".$tempdir."/$tabfich[$i]")) {
 				echo "<p>Suppression de $tabfich[$i]... ";
 				if(unlink("../temp/".$tempdir."/$tabfich[$i]")){
-					echo "réussie.</p>\n";
+					echo "rÃ©ussie.</p>\n";
 				}
 				else{
-					echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+					echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 				}
 			}
 		}
@@ -132,11 +132,11 @@
 	}
 	// =======================================================
 	else{
-		echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Préparation des données élèves/classes/périodes/options</h3></center>\n";
-		//echo "<h2>Préparation des données élèves/classes/périodes/options</h2>\n";
+		echo "<center><h3 class='gepi'>PremiÃ¨re phase d'initialisation<br />PrÃ©paration des donnÃ©es Ã©lÃ¨ves/classes/pÃ©riodes/options</h3></center>\n";
+		//echo "<h2>PrÃ©paration des donnÃ©es Ã©lÃ¨ves/classes/pÃ©riodes/options</h2>\n";
 		echo "<p class=bold><a href='";
 		if(isset($_SESSION['ad_retour'])){
-			// On peut venir de l'index init_xml, de la page de conversion ou de la page de mise à jour Sconet
+			// On peut venir de l'index init_xml, de la page de conversion ou de la page de mise Ã  jour Sconet
 			echo $_SESSION['ad_retour'];
 		}
 		else{
@@ -151,7 +151,7 @@
 
 		//if(!isset($_POST['is_posted'])){
 		if(!isset($step)) {
-			echo "<p>Cette page permet de remplir des tables temporaires avec les informations élèves.<br />\n";
+			echo "<p>Cette page permet de remplir des tables temporaires avec les informations Ã©lÃ¨ves.<br />\n";
 			echo "</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -159,7 +159,7 @@
 			echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"eleves_xml_file\" /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
-				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesSansAdresses.zip)</p>";
+				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir Ã  Gepi le fichier compressÃ© issu directement de SCONET. (Ex : ElevesSansAdresses.zip)</p>";
 			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -177,9 +177,9 @@
 				$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
 
 				if(!is_uploaded_file($xml_file['tmp_name'])) {
-					echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+					echo "<p style='color:red;'>L'upload du fichier a Ã©chouÃ©.</p>\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "</p>\n";
@@ -191,9 +191,9 @@
 				}
 				else{
 					if(!file_exists($xml_file['tmp_name'])){
-						echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+						echo "<p style='color:red;'>Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.</p>\n";
 
-						echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+						echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 						echo "post_max_size=$post_max_size<br />\n";
 						echo "upload_max_filesize=$upload_max_filesize<br />\n";
 						echo "et le volume de ".$xml_file['name']." serait<br />\n";
@@ -205,13 +205,13 @@
 						die();
 					}
 
-					echo "<p>Le fichier a été uploadé.</p>\n";
+					echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 
 					/*
 					echo "\$xml_file['tmp_name']=".$xml_file['tmp_name']."<br />\n";
 					echo "\$tempdir=".$tempdir."<br />\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
@@ -228,7 +228,7 @@
 
 					$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
 					// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
-					// $unzipped_max_filesize < 0    extraction zip désactivée
+					// $unzipped_max_filesize < 0    extraction zip dÃ©sactivÃ©e
 					if($unzipped_max_filesize>=0) {
 						$fichier_emis=$xml_file['name'];
 						$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
@@ -257,7 +257,7 @@
 							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dÃ©passe la limite paramÃ©trÃ©e (<i>$unzipped_max_filesize octets</i>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
@@ -265,7 +265,7 @@
 							//unlink("$dest_file"); // Pour Wamp...
 							$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 							if ($res_extract != 0) {
-								echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+								echo "<p>Le fichier uploadÃ© a Ã©tÃ© dÃ©zippÃ©.</p>\n";
 								$fichier_extrait=$res_extract[0]['filename'];
 								unlink("$dest_file"); // Pour Wamp...
 								$res_copy=rename("$fichier_extrait" , "$dest_file");
@@ -281,14 +281,14 @@
 					//===============================================================
 
 					if(!$res_copy){
-						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a Ã©chouÃ©.<br />VÃ©rifiez que l'utilisateur ou le groupe apache ou www-data a accÃ¨s au dossier temp/$tempdir</p>\n";
 						// Il ne faut pas aller plus loin...
 						// SITUATION A GERER
 						require("../lib/footer.inc.php");
 						die();
 					}
 					else{
-						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+						echo "<p>La copie du fichier vers le dossier temporaire a rÃ©ussi.</p>\n";
 
 						$sql="DROP TABLE IF EXISTS temp_gep_import2;";
 						$suppr_table = mysql_query($sql);
@@ -338,13 +338,13 @@
 
 						$nom_racine=$ele_xml->getName();
 						if(strtoupper($nom_racine)!='BEE_ELEVES') {
-							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
+							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'Ãªtre un fichier XML ElÃ¨ves.<br />Sa racine devrait Ãªtre 'BEE_ELEVES'.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
 
 						echo "<p>\n";
-						echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
+						echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'Ã©lÃ¨ves affectÃ©s dans une classe...<br />\n";
 
 						$tab_champs_struct=array("CODE_STRUCTURE","TYPE_STRUCTURE");
 						$tab_ele_id=array();
@@ -359,7 +359,7 @@
 								//echo("$key=".$value."<br />");
 
 								if(strtoupper($key)=='ELEVE_ID') {
-									// On teste si l'ELEVE_ID existe déjà: ça ne devrait pas arriver
+									// On teste si l'ELEVE_ID existe dÃ©jÃ : Ã§a ne devrait pas arriver
 									if(in_array($value,$tab_ele_id)) {
 										echo "<b style='color:red;'>ANOMALIE&nbsp;:</b> Il semble qu'il y a plusieurs sections STRUCTURES_ELEVE pour l'ELEVE_ID '$value'.<br />";
 									}
@@ -420,14 +420,14 @@
 								//echo "$sql<br />\n";
 								$res_insert=mysql_query($sql);
 								if(!$res_insert){
-									echo "Erreur lors de la requête $sql<br />\n";
+									echo "Erreur lors de la requÃªte $sql<br />\n";
 									$nb_err++;
 								}
 								$id_tempo++;
 							}
 						}
 						if($nb_err==0) {
-							echo "<p>La première phase s'est passée sans erreur.</p>\n";
+							echo "<p>La premiÃ¨re phase s'est passÃ©e sans erreur.</p>\n";
 						}
 						elseif($nb_err==1) {
 							echo "<p>$nb_err erreur.</p>\n";
@@ -437,7 +437,7 @@
 						}
 
 						$stat=$id_tempo-1-$nb_err;
-						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
+						echo "<p>$stat associations identifiant Ã©lÃ¨ve/classe ont Ã©tÃ© insÃ©rÃ©(s) dans la table 'temp_gep_import2'.</p>\n";
 
 						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
 						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
@@ -467,7 +467,7 @@
 
 
 
-				// On récupère les ele_id des élèves qui sont affectés dans une classe
+				// On rÃ©cupÃ¨re les ele_id des Ã©lÃ¨ves qui sont affectÃ©s dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
 				$res_ele_id=mysql_query($sql);
 				affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
@@ -476,7 +476,7 @@
 				$tab_ele_id=array();
 				$cpt=0;
 				// Pourquoi est-ce que cela ne fonctionne pas en mysql_fetch_object()???
-				// TROUVé: C'EST SENSIBLE à LA CASSE: IL FAUDRAIT $lig->ELE_ID
+				// TROUVÃ©: C'EST SENSIBLE Ã  LA CASSE: IL FAUDRAIT $lig->ELE_ID
 				//while($lig=mysql_fetch_object($res_ele_id)){
 				while($lig=mysql_fetch_array($res_ele_id)){
 					//$tab_ele_id[$cpt]="$lig->ele_id";
@@ -491,7 +491,7 @@
 				$cpt=0;
 				$eleves=array();
 
-				//Compteur élève:
+				//Compteur Ã©lÃ¨ve:
 				$i=-1;
 
 				$tab_champs_eleve=array("ID_NATIONAL",
@@ -535,7 +535,7 @@
 
 				$nom_racine=$ele_xml->getName();
 				if(strtoupper($nom_racine)!='BEE_ELEVES') {
-					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
+					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'Ãªtre un fichier XML ElÃ¨ves.<br />Sa racine devrait Ãªtre 'BEE_ELEVES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
@@ -545,7 +545,7 @@
 				$objet_eleves=($ele_xml->DONNEES->ELEVES);
 				foreach ($objet_eleves->children() as $eleve) {
 					$i++;
-					//echo "<p><b>Elève $i</b><br />";
+					//echo "<p><b>ElÃ¨ve $i</b><br />";
 			
 					$eleves[$i]=array();
 			
@@ -627,17 +627,17 @@
 				$tab_list_etab=array();
 				$info_anomalie="";
 				for($i=0;$i<count($eleves);$i++){
-					// On ne traite que les élèves affectés dans une classe ($tab_ele_id)
+					// On ne traite que les Ã©lÃ¨ves affectÃ©s dans une classe ($tab_ele_id)
 					if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
 						/*
 						if(!isset($eleves[$i]["code_sexe"])){
-							$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
+							$remarques[]="Le sexe de l'Ã©lÃ¨ve <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseignÃ© dans Sconet.";
 						}
 						*/
 
 						$temoin_date_sortie="n";
 						if(isset($eleves[$i]['date_sortie'])) {
-							echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." a quitté l'établissement le ".$eleves[$i]['date_sortie']."<br />\n";
+							echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." a quittÃ© l'Ã©tablissement le ".$eleves[$i]['date_sortie']."<br />\n";
 
 							$tmp_tab_date=explode("/",$eleves[$i]['date_sortie']);
 							if(checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
@@ -662,7 +662,7 @@
 							$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
 							if(!isset($eleves[$i]["code_sexe"])) {
 								$eleves[$i]["code_sexe"]=1;
-								$info_anomalie.="Le sexe de ".$eleves[$i]['nom']." ".$eleves[$i]['prenom']." n'est pas renseigné dans le fichier XML.<br />\n";
+								$info_anomalie.="Le sexe de ".$eleves[$i]['nom']." ".$eleves[$i]['prenom']." n'est pas renseignÃ© dans le fichier XML.<br />\n";
 							}
 							$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 							$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
@@ -677,7 +677,7 @@
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "Erreur lors de la requÃªte $sql<br />\n";
 								$nb_err++;
 								flush();
 							}
@@ -686,7 +686,7 @@
 							}
 
 
-							// Insertion des informations de l'établissement précédent dans une table temporaire:
+							// Insertion des informations de l'Ã©tablissement prÃ©cÃ©dent dans une table temporaire:
 							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
 								$sql="INSERT INTO temp_etab_import SET ";
 								$cpt_debut_requete=0;
@@ -694,7 +694,7 @@
 
 								if($eleves[$i]["scolarite_an_dernier"]["code_rne"]!=""){
 
-									// Renseigner un tableau pour indiquer que c'est un RNE déjà traité... et tester le contenu du tableau
+									// Renseigner un tableau pour indiquer que c'est un RNE dÃ©jÃ  traitÃ©... et tester le contenu du tableau
 									if(!in_array($eleves[$i]["scolarite_an_dernier"]["code_rne"],$tab_list_etab)){
 										$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
 
@@ -769,8 +769,8 @@
 											$cpt_debut_requete++;
 										}
 
-										// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
-										//              Ca y est, il a été ajouté.
+										// CODE POSTAL: Non prÃ©sent dans le fichier ElevesSansAdresses.xml
+										//              Ca y est, il a Ã©tÃ© ajoutÃ©.
 										// ***************************************
 										// ERREUR: code_commune_insee!=code_postal
 										// ***************************************
@@ -799,7 +799,7 @@
 
 										$res_insert_etab=mysql_query($sql);
 										if(!$res_insert_etab){
-											echo "Erreur lors de la requête $sql<br />\n";
+											echo "Erreur lors de la requÃªte $sql<br />\n";
 											$nb_err_etab++;
 											flush();
 										}
@@ -813,7 +813,7 @@
 					}
 				}
 				if($nb_err==0) {
-					echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
+					echo "<p>La deuxiÃ¨me phase s'est passÃ©e sans erreur.</p>\n";
 				}
 				elseif($nb_err==1) {
 					echo "<p>$nb_err erreur.</p>\n";
@@ -826,7 +826,7 @@
 					echo "<p style='color:red;'>$info_anomalie</p>\n";
 				}
 
-				echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_gep_import2'.</p>\n";
+				echo "<p>$stat enregistrement(s) ont Ã©tÃ© mis Ã  jour dans la table 'temp_gep_import2'.</p>\n";
 
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=2'>Suite</a></p>\n";
 				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2".add_token_in_url()."'>Suite</a></p>\n";
@@ -837,7 +837,7 @@
 			elseif($step==2){
 				$dest_file="../temp/".$tempdir."/eleves.xml";
 
-				// On récupère les ele_id des élèves qui sont affectés dans une classe
+				// On rÃ©cupÃ¨re les ele_id des Ã©lÃ¨ves qui sont affectÃ©s dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
 				$res_ele_id=mysql_query($sql);
 				//echo "count(\$res_ele_id)=".count($res_ele_id)."<br />";
@@ -846,7 +846,7 @@
 				$tab_ele_id=array();
 				$cpt=0;
 				// Pourquoi est-ce que cela ne fonctionne pas en mysql_fetch_object()???
-				// TROUVé: C'EST SENSIBLE à LA CASSE: IL FAUDRAIT $lig->ELE_ID
+				// TROUVÃ©: C'EST SENSIBLE Ã  LA CASSE: IL FAUDRAIT $lig->ELE_ID
 				//while($lig=mysql_fetch_object($res_ele_id)){
 				while($lig=mysql_fetch_array($res_ele_id)){
 					//$tab_ele_id[$cpt]="$lig->ele_id";
@@ -856,13 +856,13 @@
 				}
 
 				/*
-				echo "<p>Lecture du fichier Elèves...<br />\n";
+				echo "<p>Lecture du fichier ElÃ¨ves...<br />\n";
 				//echo "<blockquote>\n";
 				while(!feof($fp)){
 					$ligne[]=fgets($fp,4096);
 				}
 				fclose($fp);
-				//echo "<p>Terminé.</p>\n";
+				//echo "<p>TerminÃ©.</p>\n";
 				*/
 				flush();
 
@@ -879,7 +879,7 @@
 
 				$nom_racine=$ele_xml->getName();
 				if(strtoupper($nom_racine)!='BEE_ELEVES') {
-					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
+					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'Ãªtre un fichier XML ElÃ¨ves.<br />Sa racine devrait Ãªtre 'BEE_ELEVES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
@@ -895,7 +895,7 @@
 					//echo "<p><b>Option</b><br />";
 
 					$i++;
-					//echo "<p><b>Elève $i</b><br />";
+					//echo "<p><b>ElÃ¨ve $i</b><br />";
 			
 					$eleves[$i]=array();
 			
@@ -906,7 +906,7 @@
 
 					$eleves[$i]["options"]=array();
 					$j=0;
-					// $option fait référence à un élève
+					// $option fait rÃ©fÃ©rence Ã  un Ã©lÃ¨ve
 					// Les enfants sont des OPTIONS_ELEVE
 					foreach($option->children() as $options_eleve) {
 						foreach($options_eleve->children() as $key => $value) {
@@ -927,7 +927,7 @@
 					}
 				}
 
-				// Insertion des codes numériques d'options
+				// Insertion des codes numÃ©riques d'options
 				$nb_err=0;
 				$stat=0;
 				for($i=0;$i<count($eleves);$i++){
@@ -940,7 +940,7 @@
 							affiche_debug("$sql<br />\n");
 							$res_update=mysql_query($sql);
 							if(!$res_update){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "Erreur lors de la requÃªte $sql<br />\n";
 								flush();
 								$nb_err++;
 							}
@@ -951,7 +951,7 @@
 					}
 				}
 				if($nb_err==0) {
-					echo "<p>La troisième phase s'est passée sans erreur.</p>\n";
+					echo "<p>La troisiÃ¨me phase s'est passÃ©e sans erreur.</p>\n";
 				}
 				elseif($nb_err==1) {
 					echo "<p>$nb_err erreur.</p>\n";
@@ -960,7 +960,7 @@
 					echo "<p>$nb_err erreurs</p>\n";
 				}
 
-				echo "<p>$stat option(s) ont été mises à jour dans la table 'temp_gep_import2'.</p>\n";
+				echo "<p>$stat option(s) ont Ã©tÃ© mises Ã  jour dans la table 'temp_gep_import2'.</p>\n";
 
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=3'>Suite</a></p>\n";
 				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>Suite</a></p>\n";
@@ -972,11 +972,11 @@
 
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 				echo add_token_field();
-				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<i>ex.: 030201 -&gt; AGL1</i>).</p>\n";
+				echo "<p>Les codes numÃ©riques des options doivent maintenant Ãªtre traduits en leurs Ã©quivalents alphabÃ©tiques (<i>ex.: 030201 -&gt; AGL1</i>).</p>\n";
 				echo "<p>Veuillez fournir le fichier Nomenclature.xml:<br />\n";
 				echo "<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /></p>\n";
 				if ($gepiSettings['unzipped_max_filesize']>=0) {
-					echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : Nomenclature.zip)</p>";
+					echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir Ã  Gepi le fichier compressÃ© issu directement de SCONET. (Ex : Nomenclature.zip)</p>";
 				}
 				//echo "<input type='hidden' name='etape' value='$etape' />\n";
 				echo "<input type='hidden' name='step' value='4' />\n";
@@ -991,9 +991,9 @@
 				$xml_file = isset($_FILES["nomenclature_xml_file"]) ? $_FILES["nomenclature_xml_file"] : NULL;
 
 				if(!is_uploaded_file($xml_file['tmp_name'])) {
-					echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+					echo "<p style='color:red;'>L'upload du fichier a Ã©chouÃ©.</p>\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "</p>\n";
@@ -1005,9 +1005,9 @@
 				}
 				else{
 					if(!file_exists($xml_file['tmp_name'])){
-						echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+						echo "<p style='color:red;'>Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.</p>\n";
 
-						echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+						echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 						echo "post_max_size=$post_max_size<br />\n";
 						echo "upload_max_filesize=$upload_max_filesize<br />\n";
 						echo "et le volume de ".$xml_file['name']." serait<br />\n";
@@ -1019,13 +1019,13 @@
 						die();
 					}
 
-					echo "<p>Le fichier a été uploadé.</p>\n";
+					echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 
 					/*
 					echo "\$xml_file['tmp_name']=".$xml_file['tmp_name']."<br />\n";
 					echo "\$tempdir=".$tempdir."<br />\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
@@ -1042,7 +1042,7 @@
 
 					$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
 					// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
-					// $unzipped_max_filesize < 0    extraction zip désactivée
+					// $unzipped_max_filesize < 0    extraction zip dÃ©sactivÃ©e
 					if($unzipped_max_filesize>=0) {
 						$fichier_emis=$xml_file['name'];
 						$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
@@ -1071,14 +1071,14 @@
 							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dÃ©passe la limite paramÃ©trÃ©e (<i>$unzipped_max_filesize octets</i>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
 
 							$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 							if ($res_extract != 0) {
-								echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+								echo "<p>Le fichier uploadÃ© a Ã©tÃ© dÃ©zippÃ©.</p>\n";
 								$fichier_extrait=$res_extract[0]['filename'];
 								unlink("$dest_file"); // Pour Wamp...
 								$res_copy=rename("$fichier_extrait" , "$dest_file");
@@ -1094,14 +1094,14 @@
 					//===============================================================
 
 					if(!$res_copy){
-						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a Ã©chouÃ©.<br />VÃ©rifiez que l'utilisateur ou le groupe apache ou www-data a accÃ¨s au dossier temp/$tempdir</p>\n";
 						// Il ne faut pas aller plus loin...
 						// SITUATION A GERER
 						require("../lib/footer.inc.php");
 						die();
 					}
 					else{
-						// Lecture du fichier Nomenclature... pour changer les codes numériques d'options dans 'temp_gep_import2' en leur code gestion
+						// Lecture du fichier Nomenclature... pour changer les codes numÃ©riques d'options dans 'temp_gep_import2' en leur code gestion
 
 						$dest_file="../temp/".$tempdir."/nomenclature.xml";
 
@@ -1114,7 +1114,7 @@
 	
 						$nom_racine=$nomenclature_xml->getName();
 						if(strtoupper($nom_racine)!='BEE_NOMENCLATURES') {
-							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Nomenclatures.<br />Sa racine devrait être 'BEE_NOMENCLATURES'.</p>\n";
+							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'Ãªtre un fichier XML Nomenclatures.<br />Sa racine devrait Ãªtre 'BEE_NOMENCLATURES'.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -1135,7 +1135,7 @@
 						$objet_matieres=($nomenclature_xml->DONNEES->MATIERES);
 						foreach ($objet_matieres->children() as $matiere) {
 							$i++;
-							//echo "<p><b>Matière $i</b><br />";
+							//echo "<p><b>MatiÃ¨re $i</b><br />";
 					
 							$matieres[$i]=array();
 					
@@ -1158,7 +1158,7 @@
 						$res1=mysql_query($sql);
 
 						if(mysql_num_rows($res1)==0) {
-							echo "<p>La table 'temp_gep_import2' est vide.<br />Ce n'est pas normal.<br />Auriez-vous sauté des étapes???</p>\n";
+							echo "<p>La table 'temp_gep_import2' est vide.<br />Ce n'est pas normal.<br />Auriez-vous sautÃ© des Ã©tapes???</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -1173,7 +1173,7 @@
 							//echo "$lig->ELEOPT2, ";
 							//echo "$lig->ELEOPT3, ";
 
-							// Témoin pour tester si une option au moins doit être corrigée:
+							// TÃ©moin pour tester si une option au moins doit Ãªtre corrigÃ©e:
 							$temoin=0;
 							$sql="UPDATE temp_gep_import2 SET ";
 							for($i=1;$i<12;$i++){
@@ -1205,7 +1205,7 @@
 								affiche_debug($sql."<br />\n");
 								$res2=mysql_query($sql);
 								if(!$res2){
-									echo "Erreur lors de la requête $sql<br />\n";
+									echo "Erreur lors de la requÃªte $sql<br />\n";
 									flush();
 									$nb_err++;
 								}
@@ -1217,7 +1217,7 @@
 						}
 
 						if($nb_err==0) {
-							echo "<p>La quatrième phase s'est passée sans erreur.</p>\n";
+							echo "<p>La quatriÃ¨me phase s'est passÃ©e sans erreur.</p>\n";
 						}
 						elseif($nb_err==1) {
 							echo "<p>$nb_err erreur.</p>\n";
@@ -1226,16 +1226,16 @@
 							echo "<p>$nb_err erreurs</p>\n";
 						}
 
-						echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_gep_import2'.</p>\n";
+						echo "<p>$stat enregistrement(s) ont Ã©tÃ© mis Ã  jour dans la table 'temp_gep_import2'.</p>\n";
 
 						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=5'>Suite</a></p>\n";
 
 						// PROBLEME AVEC LE code_commune_insee != code_postal
-						// On saute l'étape de remplissage de l'établissment précédent...
+						// On saute l'Ã©tape de remplissage de l'Ã©tablissment prÃ©cÃ©dent...
 						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=5'>Suite</a></p>\n";
-						// NON... traité autrement sans modifier la table 'etablissements'
+						// NON... traitÃ© autrement sans modifier la table 'etablissements'
 						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=5'>Suite</a></p>\n";
-						// SI: L'association élève/rne est faite en step3.php
+						// SI: L'association Ã©lÃ¨ve/rne est faite en step3.php
 						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7".add_token_in_url()."'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
@@ -1245,14 +1245,14 @@
 			}
 			elseif($step==5){
 
-				echo "<p>Etablissements d'origine des élèves.</p>\n";
+				echo "<p>Etablissements d'origine des Ã©lÃ¨ves.</p>\n";
 
 
 
 				$sql="SELECT * FROM temp_etab_import ORDER BY ville,nom";
 				$res_etab=mysql_query($sql);
 				if(mysql_num_rows($res_etab)==0){
-					echo "<p>Aucun établissement précédent n'a été trouvé.</p>\n";
+					echo "<p>Aucun Ã©tablissement prÃ©cÃ©dent n'a Ã©tÃ© trouvÃ©.</p>\n";
 
 					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7".add_token_in_url()."'>Suite</a></p>\n";
 				}
@@ -1260,11 +1260,11 @@
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 					echo add_token_field();
 
-					echo "<table class='boireaus' summary='Tableau des établissements'>\n";
+					echo "<table class='boireaus' summary='Tableau des Ã©tablissements'>\n";
 					echo "<tr>\n";
 					echo "<th>\n";
 					echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-					echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+					echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 					echo "</th>\n";
 					echo "<th>Statut</th>\n";
 					echo "<th>RNE</th>\n";
@@ -1281,7 +1281,7 @@
 						$sql="SELECT * FROM etablissements WHERE id='$lig->id'";
 						$res_etab2=mysql_query($sql);
 						if(mysql_num_rows($res_etab2)==0){
-							// Nouvelle entrée
+							// Nouvelle entrÃ©e
 
 							// #AAE6AA; vert
 							// #FAFABE; jaune
@@ -1329,7 +1329,7 @@
 
 						}
 						else{
-							// Entrée existante
+							// EntrÃ©e existante
 							$lig2=mysql_fetch_object($res_etab2);
 
 							//echo "<tr style='background-color: #AAE6AA;'>\n";
@@ -1403,9 +1403,9 @@
 					echo "<p><input type='submit' value='Valider' /></p>\n";
 					echo "</form>\n";
 
-					echo "<p><i>NOTE:</i> Les fichiers de SCONET contiennent le code_commune_insee, mais pas le code_postal (<i>les valeurs diffèrent</i>).<br />\n";
-					echo "Les établissements ne sont donc pas importés (<i>pour éviter des insertions erronées</i>).<br />\n";
-					echo "Seules les associations élève/RNE sont importées.</p>\n";
+					echo "<p><i>NOTE:</i> Les fichiers de SCONET contiennent le code_commune_insee, mais pas le code_postal (<i>les valeurs diffÃ¨rent</i>).<br />\n";
+					echo "Les Ã©tablissements ne sont donc pas importÃ©s (<i>pour Ã©viter des insertions erronÃ©es</i>).<br />\n";
+					echo "Seules les associations Ã©lÃ¨ve/RNE sont importÃ©es.</p>\n";
 
 
 					echo "<script type='text/javascript' language='javascript'>
@@ -1428,7 +1428,7 @@
 			}
 			elseif($step==6){
 
-				echo "<p>Etablissements d'origine des élèves.</p>\n";
+				echo "<p>Etablissements d'origine des Ã©lÃ¨ves.</p>\n";
 
 				$rne=isset($_POST['rne']) ? $_POST['rne'] : NULL;
 				$rne_modif=isset($_POST['rne_modif']) ? $_POST['rne_modif'] : NULL;
@@ -1442,7 +1442,7 @@
 						$res=mysql_query($sql);
 
 						if(!$res){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "Erreur lors de la requÃªte $sql<br />\n";
 							flush();
 							$nb_err++;
 						}
@@ -1453,14 +1453,14 @@
 				}
 
 				if($nb_err>0){
-					echo "<p>$nb_err erreur(s) lors de l'insertion des nouveaux établissements.</p>\n";
+					echo "<p>$nb_err erreur(s) lors de l'insertion des nouveaux Ã©tablissements.</p>\n";
 				}
 				if($stat>0){
 					if($stat==1){
-						echo "<p>$stat nouvel établissement ajouté.</p>\n";
+						echo "<p>$stat nouvel Ã©tablissement ajoutÃ©.</p>\n";
 					}
 					else{
-						echo "<p>$stat nouveaux établissements ajoutés.</p>\n";
+						echo "<p>$stat nouveaux Ã©tablissements ajoutÃ©s.</p>\n";
 					}
 				}
 
@@ -1477,7 +1477,7 @@
 						$res=mysql_query($sql);
 
 						if(!$res){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "Erreur lors de la requÃªte $sql<br />\n";
 							flush();
 							$nb_err++;
 						}
@@ -1488,14 +1488,14 @@
 				}
 
 				if($nb_err>0){
-					echo "<p>$nb_err erreur(s) lors de la modification des établissements.</p>\n";
+					echo "<p>$nb_err erreur(s) lors de la modification des Ã©tablissements.</p>\n";
 				}
 				if($stat>0){
 					if($stat==1){
-						echo "<p>$stat modification d'établissement effectuée.</p>\n";
+						echo "<p>$stat modification d'Ã©tablissement effectuÃ©e.</p>\n";
 					}
 					else{
-						echo "<p>$stat modifications d'établissements effectuées.</p>\n";
+						echo "<p>$stat modifications d'Ã©tablissements effectuÃ©es.</p>\n";
 					}
 				}
 
@@ -1505,30 +1505,30 @@
 				die();
 			}
 			else{
-				// TERMINé?
+				// TERMINÃ©?
 				// A LA DERNIERE ETAPE, IL FAUT SUPPRIMER LE FICHIER "../temp/".$tempdir."/eleves.xml"
 
 				if(file_exists("../temp/".$tempdir."/eleves.xml")) {
 					echo "<p>Suppression de eleves.xml... ";
 					if(unlink("../temp/".$tempdir."/eleves.xml")){
-						echo "réussie.</p>\n";
+						echo "rÃ©ussie.</p>\n";
 					}
 					else{
-						echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+						echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 					}
 				}
 
 				if(file_exists("../temp/".$tempdir."/nomenclature.xml")) {
 					echo "<p>Suppression de nomenclature.xml... ";
 					if(unlink("../temp/".$tempdir."/nomenclature.xml")){
-						echo "réussie.</p>\n";
+						echo "rÃ©ussie.</p>\n";
 					}
 					else{
-						echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+						echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 					}
 				}
 
-				echo "<p>Suite: <a href='step2.php'>Classes et périodes</a></p>\n";
+				echo "<p>Suite: <a href='step2.php'>Classes et pÃ©riodes</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -1540,10 +1540,10 @@
 			if(count($remarques)>0){
 				echo "<a name='remarques'></a><h3>Remarques</h3>\n";
 				if(count($remarques)==1){
-					echo "<p>Une anomalie a été notée lors du parcours de vos fichiers:</p>\n";
+					echo "<p>Une anomalie a Ã©tÃ© notÃ©e lors du parcours de vos fichiers:</p>\n";
 				}
 				else{
-					echo "<p>Des anomalies ont été notées lors du parcours de vos fichiers:</p>\n";
+					echo "<p>Des anomalies ont Ã©tÃ© notÃ©es lors du parcours de vos fichiers:</p>\n";
 				}
 				echo "<ul>\n";
 				for($i=0;$i<count($remarques);$i++){

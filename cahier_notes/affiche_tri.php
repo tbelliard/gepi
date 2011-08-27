@@ -74,13 +74,13 @@ $chaine2= isset($_POST["chaine2"]) ? $_POST["chaine2"] : (isset($_GET["chaine2"]
 
 $mode=isset($_GET['mode']) ? $_GET['mode'] : "";
 
-header('Content-Type: text/xml; charset=ISO-8859-1');
+header('Content-Type: text/xml; charset=utf-8');
 
 if($mode!="ajax") {
 	//**************** EN-TETE *****************
 	//$titre_page = "Saisie des notes";
   /**
-   * Entête de la page
+   * EntÃªte de la page
    */
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
@@ -100,7 +100,7 @@ echo "<td>\n";
 	$alt=1;
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
-	echo "<th>Elève</th>\n";
+	echo "<th>ElÃ¨ve</th>\n";
 	echo "<th>Note</th>\n";
 	echo "</tr>\n";
 	for($i=0;$i<count($tab1);$i++) {
@@ -134,7 +134,7 @@ echo "<td>\n";
 	$alt=1;
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
-	echo "<th>Elève</th>\n";
+	echo "<th>ElÃ¨ve</th>\n";
 	echo "<th>Note</th>\n";
 	echo "</tr>\n";
 	for($i=0;$i<count($tab1);$i++) {

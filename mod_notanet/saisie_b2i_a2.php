@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent ViÃ©not-Hauger
 *
 * This file is part of GEPI.
 *
@@ -21,7 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -62,8 +62,8 @@ if (isset($_POST['is_posted'])) {
 
 
 	for($i=0;$i<count($ele_login);$i++) {
-		// Vérifier si l'élève est bien dans la classe?
-		// Inutile si seul l'admin accède et qu'on ne limite pas l'accès à telle ou telle classe
+		// VÃ©rifier si l'Ã©lÃ¨ve est bien dans la classe?
+		// Inutile si seul l'admin accÃ¨de et qu'on ne limite pas l'accÃ¨s Ã  telle ou telle classe
 
 		if((isset($b2i[$i]))||(isset($a2[$i]))||(isset($lv[$i]))) {
 			//echo "<p>Traitement de ".$ele_login[$i]." avec \$b2i[$i]=".$b2i[$i].", \$a2[$i]=".$a2[$i]." et \$lv[$i]=".$lv[$i]."<br />\n";
@@ -144,13 +144,13 @@ if (isset($_POST['is_posted'])) {
 			//echo "$sql<br />";
 			$register=mysql_query($sql);
 			if (!$register) {
-				$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
+				$msg .= "Erreur lors de l'enregistrement des donnÃ©es pour $ele_login[$i]<br />";
 				//echo "ERREUR<br />";
 				$pb_record = 'yes';
 			}
 
 			if($maj_notanet=='y') {
-				// On met à jour la table notanet avec les corrections apportées sur notanet_socles
+				// On met Ã  jour la table notanet avec les corrections apportÃ©es sur notanet_socles
 				$register=mysql_query($sql2);
 				$register=mysql_query($sql3);
 			}
@@ -160,13 +160,13 @@ if (isset($_POST['is_posted'])) {
 
 	if ($pb_record == 'no') {
 		//$affiche_message = 'yes';
-		$msg="Les modifications ont été enregistrées !";
+		$msg="Les modifications ont Ã©tÃ© enregistrÃ©es !";
 	}
 }
 
 
-$themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_enregistrement = "Les modifications ont été enregistrées !";
+$themessage = 'Des modifications ont Ã©tÃ© effectuÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 
 //**************** EN-TETE *****************
 $titre_page = "Notanet | Saisie des notes de socles B2i et A2";
@@ -196,7 +196,7 @@ if(!isset($id_classe)) {
 
 	$nb_classes=mysql_num_rows($call_classes);
 	if($nb_classes==0){
-		echo "<p>Aucune classe ne semble encore définie.</p>\n";
+		echo "<p>Aucune classe ne semble encore dÃ©finie.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -256,9 +256,9 @@ else {
 	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 	echo add_token_field();
 
-	$tabdiv_infobulle[]=creer_div_infobulle('MS',"","","<center>Maîtrise du socle</center>","",10,0,'y','y','n','n');
-	$tabdiv_infobulle[]=creer_div_infobulle('ME',"","","<center>Maîtrise de certains éléments du socle</center>","",12,0,'y','y','n','n');
-	$tabdiv_infobulle[]=creer_div_infobulle('MN',"","","<center>Maîtrise du socle non évaluée</center>","",10,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('MS',"","","<center>MaÃ®trise du socle</center>","",10,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('ME',"","","<center>MaÃ®trise de certains Ã©lÃ©ments du socle</center>","",12,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('MN',"","","<center>MaÃ®trise du socle non Ã©valuÃ©e</center>","",10,0,'y','y','n','n');
 	$tabdiv_infobulle[]=creer_div_infobulle('AB',"","","<center>Absent</center>","",8,0,'y','y','n','n');
 
 	$cpt=0;
@@ -270,7 +270,7 @@ else {
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='".$id_classe[$i]."' AND jec.login=e.login) ORDER BY e.nom,e.prenom,e.naissance;";
 		$res_ele=mysql_query($sql);
 		if(mysql_num_rows($res_ele)==0) {
-			echo "Aucun élève dans cette classe.</p>\n";
+			echo "Aucun Ã©lÃ¨ve dans cette classe.</p>\n";
 		}
 		else {
 			echo "<table class='boireaus' border='1' summary='Saisie B2I A2'>\n";
@@ -282,7 +282,7 @@ else {
 			$nb_colspan_mat=4+mysql_num_rows($res_mat);
 
 			echo "<tr>\n";
-			echo "<th rowspan='3'>Elève</th>\n";
+			echo "<th rowspan='3'>ElÃ¨ve</th>\n";
 			echo "<th colspan='4'>Socle B2i</th>\n";
 			echo "<th colspan='".$nb_colspan_mat."'>Socle A2</th>\n";
 			echo "</tr>\n";
@@ -374,43 +374,43 @@ else {
 
 			// B2i
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('b2i_MS_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('b2i_MS_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('b2i_MS_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('b2i_MS_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('b2i_ME_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('b2i_ME_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('b2i_ME_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('b2i_ME_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('b2i_MN_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('b2i_MN_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('b2i_MN_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('b2i_MN_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('b2i_AB_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('b2i_AB_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('b2i_AB_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('b2i_AB_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 
 			// Niveau A2
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('a2_MS_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_MS_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('a2_MS_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_MS_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('a2_ME_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_ME_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('a2_ME_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_ME_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('a2_MN_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_MN_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('a2_MN_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_MN_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('a2_AB_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_AB_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('a2_AB_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_AB_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			// Liste des langues de la classe
 			for($j=0;$j<count($tab_mat);$j++) {
 				echo "<th>";
-				echo "<a href=\"javascript:CocheColonne('lv_".$tab_mat[$j]."_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('lv_".$tab_mat[$j]."_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+				echo "<a href=\"javascript:CocheColonne('lv_".$tab_mat[$j]."_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('lv_".$tab_mat[$j]."_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 				echo "</th>\n";
 			}
 			echo "</tr>\n";

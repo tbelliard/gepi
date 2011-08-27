@@ -47,7 +47,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Classes: Ajouter des périodes',
+description='Classes: Ajouter des pÃ©riodes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -62,18 +62,18 @@ $nb_ajout_periodes=isset($_POST['nb_ajout_periodes']) ? $_POST['nb_ajout_periode
 $nb_periodes_initial=isset($_POST['nb_periodes_initial']) ? $_POST['nb_periodes_initial'] : NULL;
 
 if(!isset($id_classe)) {
-	header("Location: index.php?msg=Aucun identifiant de classe n'a été proposé");
+	header("Location: index.php?msg=Aucun identifiant de classe n'a Ã©tÃ© proposÃ©");
 	die();
 }
 
 if((isset($nb_ajout_periodes))&&(!preg_match('/^[1-9]$/',$nb_ajout_periodes))) {
 	unset($nb_ajout_periodes);
-	$msg="Nombre de périodes à ajouter invalide.";
+	$msg="Nombre de pÃ©riodes Ã  ajouter invalide.";
 }
 
 if((isset($nb_periodes_initial))&&(!preg_match('/^[1-9]$/',$nb_periodes_initial))) {
 	unset($nb_periodes_initial);
-	$msg="Nombre initial de périodes invalide.";
+	$msg="Nombre initial de pÃ©riodes invalide.";
 }
 
 $call_data = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
@@ -123,9 +123,9 @@ if(mysql_num_rows($res_class_tmp)>0){
 }
 // =================================
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Gestion des classes - Ajout de périodes";
+$titre_page = "Gestion des classes - Ajout de pÃ©riodes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -133,7 +133,7 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
 echo "<p class='bold'><a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
 
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>\n";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>\n";}
 if($chaine_options_classes!="") {
 
 	echo "<script type='text/javascript'>
@@ -170,11 +170,11 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 $titre="Navigation";
 $texte="";
 
-//$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Périodes</a><br />";
-$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elèves</a><br />";
+//$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">PÃ©riodes</a><br />";
+$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ElÃ¨ves</a><br />";
 $texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
-$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
-$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
+$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiÃ©e</a><br />";
+$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ParamÃ¨tres</a>";
 
 $ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 
@@ -233,7 +233,7 @@ if(!isset($nb_ajout_periodes)) {
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe."' ORDER BY num_periode DESC LIMIT 1;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune période.</p>\n";
+		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune pÃ©riode.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -253,7 +253,7 @@ if(!isset($nb_ajout_periodes)) {
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "Aucune liaison n'a été trouvée.<br />L'ajout de période ne présente donc pas de difficulté.</p>\n";
+		echo "Aucune liaison n'a Ã©tÃ© trouvÃ©e.<br />L'ajout de pÃ©riode ne prÃ©sente donc pas de difficultÃ©.</p>\n";
 	}
 	else {
 		while($lig=mysql_fetch_object($res)) {
@@ -278,7 +278,7 @@ if(!isset($nb_ajout_periodes)) {
 	search_liaisons_classes_via_groupes($id_classe);
 	
 	if(count($tab_liaisons_classes)>0) {
-		echo "<p>La classe <b>$classe</b> est liée (<i>de façon directe ou indirecte (via une autre classe)</i>) aux classes suivantes&nbsp;: ";
+		echo "<p>La classe <b>$classe</b> est liÃ©e (<i>de faÃ§on directe ou indirecte (via une autre classe)</i>) aux classes suivantes&nbsp;: ";
 		$cpt=0;
 		for($i=0;$i<count($tab_liaisons_classes);$i++) {
 			if($tab_liaisons_classes[$i]!=$id_classe) {
@@ -288,18 +288,18 @@ if(!isset($nb_ajout_periodes)) {
 			}
 		}
 
-		echo "<p>La classe de <b>$classe</b> a actuellement <b>$max_per</b> périodes.</p>\n";
-		echo "<p>Combien de périodes voulez-vous ajouter pour <b>$classe</b> et la ou les classes liées?</p>\n";
+		echo "<p>La classe de <b>$classe</b> a actuellement <b>$max_per</b> pÃ©riodes.</p>\n";
+		echo "<p>Combien de pÃ©riodes voulez-vous ajouter pour <b>$classe</b> et la ou les classes liÃ©es?</p>\n";
 	}
 	else {
-		echo "<p>La classe de <b>$classe</b> a actuellement <b>$max_per</b> périodes.</p>\n";
-		echo "<p>Combien de périodes voulez-vous ajouter pour <b>$classe</b>?</p>\n";
+		echo "<p>La classe de <b>$classe</b> a actuellement <b>$max_per</b> pÃ©riodes.</p>\n";
+		echo "<p>Combien de pÃ©riodes voulez-vous ajouter pour <b>$classe</b>?</p>\n";
 	}
 	
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
 	
-	echo "<p>Nombre de périodes à ajouter&nbsp;: <select name='nb_ajout_periodes'>\n";
+	echo "<p>Nombre de pÃ©riodes Ã  ajouter&nbsp;: <select name='nb_ajout_periodes'>\n";
 	for($i=1;$i<10;$i++) {
 		echo "<option value='$i'>$i</option>\n";
 	}
@@ -316,16 +316,16 @@ if(!isset($nb_ajout_periodes)) {
 	
 	echo "<p class='bold'>Remarques&nbsp;:</p>\n";
 	echo "<div style='margin-left: 3em;'>\n";
-		echo "<p>L'ajout de période présente une difficulté lorsqu'il y a des enseignements/groupes à cheval sur plusieurs classes.<br />Deux classes partageant un enseignement doivent avoir le même nombre de périodes.<br />Si vous ajoutez des périodes à la classe ".$classe.", il faudra&nbsp:</p>\n";
+		echo "<p>L'ajout de pÃ©riode prÃ©sente une difficultÃ© lorsqu'il y a des enseignements/groupes Ã  cheval sur plusieurs classes.<br />Deux classes partageant un enseignement doivent avoir le mÃªme nombre de pÃ©riodes.<br />Si vous ajoutez des pÃ©riodes Ã  la classe ".$classe.", il faudra&nbsp:</p>\n";
 		echo "<ul>\n";
-			echo "<li>soit ajouter le même nombre de périodes aux classes liées à $classe</li>\n";
-			echo "<li>soit rompre les liaisons&nbsp;:<br />Cela signifierait que vous auriez alors deux enseignements distincts pour $classe et une classe partageant l'enseignement.<br />Pour le professeur les conséquences sont les suivantes&nbsp;:<br />\n";
+			echo "<li>soit ajouter le mÃªme nombre de pÃ©riodes aux classes liÃ©es Ã  $classe</li>\n";
+			echo "<li>soit rompre les liaisons&nbsp;:<br />Cela signifierait que vous auriez alors deux enseignements distincts pour $classe et une classe partageant l'enseignement.<br />Pour le professeur les consÃ©quences sont les suivantes&nbsp;:<br />\n";
 				echo "<ul>\n";
-					echo "<li>pour saisir les résultats d'un devoir, il faudra créer un devoir dans chacun des deux enseignements et y saisir les notes</li>\n";
-					echo "<li>la moyenne du groupe d'élève ne sera pas calculée; il y aura deux moyennes&nbsp: celles des deux enseignements<br />Même chose pour les moyennes min et max.</li>\n";
-					echo "<li>Pour les notes existantes, il faut créer un nouveau groupe, un nouveau carnet de notes, cloner les devoirs et boites pour y transférer les notes et provoquer le recalcul des moyennes de conteneurs.<br />Les saisies de cahier de textes, d'emploi du temps doivent être dupliquées, les saisies antérieures d'absences peuvent-elles être perturbées (?) ou l'association n'est-elle que élève/jour_heures_absence (?),...</li>";
+					echo "<li>pour saisir les rÃ©sultats d'un devoir, il faudra crÃ©er un devoir dans chacun des deux enseignements et y saisir les notes</li>\n";
+					echo "<li>la moyenne du groupe d'Ã©lÃ¨ve ne sera pas calculÃ©e; il y aura deux moyennes&nbsp: celles des deux enseignements<br />MÃªme chose pour les moyennes min et max.</li>\n";
+					echo "<li>Pour les notes existantes, il faut crÃ©er un nouveau groupe, un nouveau carnet de notes, cloner les devoirs et boites pour y transfÃ©rer les notes et provoquer le recalcul des moyennes de conteneurs.<br />Les saisies de cahier de textes, d'emploi du temps doivent Ãªtre dupliquÃ©es, les saisies antÃ©rieures d'absences peuvent-elles Ãªtre perturbÃ©es (?) ou l'association n'est-elle que Ã©lÃ¨ve/jour_heures_absence (?),...</li>";
 				echo "</ul>\n";
-				echo "<span style='color:red'>La deuxième solution n'est pas implémentée pour le moment</span>\n";
+				echo "<span style='color:red'>La deuxiÃ¨me solution n'est pas implÃ©mentÃ©e pour le moment</span>\n";
 			echo "</li>\n";
 		echo "</ul>\n";
 	echo "</div>\n";
@@ -340,9 +340,9 @@ else {
 
 	for($i=0;$i<count($tab_liaisons_classes);$i++) {
 		// Classe par classe
-			// Ajouter une période dans la table 'periodes'... à nommer...
-			// Insérer des enregistrements pour
-				// j_eleves_classes (vérifier qu'un élève n'est pas déjà dans une autre classe pour le même numéro de période... un élève peut-il passer d'une classe à 2 périodes à une classe à 3 périodes... pb de chevauchement pour les absences...)
+			// Ajouter une pÃ©riode dans la table 'periodes'... Ã  nommer...
+			// InsÃ©rer des enregistrements pour
+				// j_eleves_classes (vÃ©rifier qu'un Ã©lÃ¨ve n'est pas dÃ©jÃ  dans une autre classe pour le mÃªme numÃ©ro de pÃ©riode... un Ã©lÃ¨ve peut-il passer d'une classe Ã  2 pÃ©riodes Ã  une classe Ã  3 pÃ©riodes... pb de chevauchement pour les absences...)
 				// j_eleves_groupes en bouclant sur les groupes de la classe
 		$id_classe_courant=$tab_liaisons_classes[$i];
 		$classe_courante=get_class_from_id($tab_liaisons_classes[$i]);
@@ -353,7 +353,7 @@ else {
 		$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe_courant."' ORDER BY num_periode DESC LIMIT 1;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe_courante." n'a actuellement aucune période.</p>\n";
+			echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe_courante." n'a actuellement aucune pÃ©riode.</p>\n";
 		}
 		else {
 			//$lig=mysql_fetch_object($res);
@@ -361,12 +361,12 @@ else {
 
 			$num_periode=$nb_periodes_initial;
 
-			// Récupération de la liste des élèves de la classe pour la dernière période
+			// RÃ©cupÃ©ration de la liste des Ã©lÃ¨ves de la classe pour la derniÃ¨re pÃ©riode
 			$tab_ele=array();
 			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$id_classe_courant."' AND periode='$num_periode';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p>Aucun élève n'est inscrit dans la classe ".$classe_courante." sur la période $num_periode.</p>\n";
+				echo "<p>Aucun Ã©lÃ¨ve n'est inscrit dans la classe ".$classe_courante." sur la pÃ©riode $num_periode.</p>\n";
 			}
 			else {
 				while($lig=mysql_fetch_object($res)) {
@@ -390,12 +390,12 @@ else {
 				}
 			}
 
-			// Boucle sur le nombre de périodes à ajouter
+			// Boucle sur le nombre de pÃ©riodes Ã  ajouter
 			for($loop=0;$loop<$nb_ajout_periodes;$loop++) {
 				$num_periode++;
 
-				echo "Création de la période $num_periode&nbsp;: ";
-				$sql="INSERT INTO periodes SET nom_periode='Période $num_periode', num_periode='$num_periode', verouiller='O', id_classe='".$id_classe_courant."', date_verrouillage='0000-00-00 00:00:00';";
+				echo "CrÃ©ation de la pÃ©riode $num_periode&nbsp;: ";
+				$sql="INSERT INTO periodes SET nom_periode='PÃ©riode $num_periode', num_periode='$num_periode', verouiller='O', id_classe='".$id_classe_courant."', date_verrouillage='0000-00-00 00:00:00';";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 
@@ -409,7 +409,7 @@ else {
 					echo "<blockquote>\n";
 
 					if(count($tab_ele)>0) {
-						echo "Ajout des élèves dans la classe&nbsp;:";
+						echo "Ajout des Ã©lÃ¨ves dans la classe&nbsp;:";
 						for($j=0;$j<count($tab_ele);$j++) {
 							if($j>0) {echo ", ";}
 							$sql="INSERT INTO j_eleves_classes SET login='$tab_ele[$j]', id_classe='$id_classe_courant', periode='$num_periode';";
@@ -429,7 +429,7 @@ else {
 						$tab_champs=array();
 						$tmp_group=get_group($id_groupe,$tab_champs);
 
-						echo "Inscription dans l'enseignement ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) (<i>n°$id_groupe</i>)&nbsp;: ";
+						echo "Inscription dans l'enseignement ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) (<i>nÂ°$id_groupe</i>)&nbsp;: ";
 						$kk=0;
 						for($k=0;$k<count($tab_ele_groupe);$k++) {
 							$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$tab_ele_groupe[$k]' AND id_groupe='$id_groupe' AND periode='$num_periode';";
@@ -460,11 +460,11 @@ else {
 		echo "</blockquote>\n";
 	}
 
-	echo "<p class='bold'>Terminé.</p>\n";
+	echo "<p class='bold'>TerminÃ©.</p>\n";
 
 	if((substr(getSettingValue('autorise_edt_tous'),0,1)=='y')||(substr(getSettingValue('autorise_edt_admin'),0,1)=='y')||(substr(getSettingValue('autorise_edt_eleve'),0,1)=='y')) {
 		echo "<p><br /></p>\n";
-		echo "<p>Pensez à contrôler que vous avez bien défini les dates de périodes dans le <a href='../edt_organisation/edt_calendrier.php'>calendrier</a>.</p>\n";
+		echo "<p>Pensez Ã  contrÃ´ler que vous avez bien dÃ©fini les dates de pÃ©riodes dans le <a href='../edt_organisation/edt_calendrier.php'>calendrier</a>.</p>\n";
 		echo "<p><br /></p>\n";
 	}
 }

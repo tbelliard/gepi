@@ -21,7 +21,7 @@
 
 $niveau_arbo = 0;
 
-// On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut crÃ©e des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 // cela ici concerne le mot de passe
 $variables_non_protegees = 'yes';
 
@@ -42,7 +42,7 @@ if (isset($_POST['submit'])) {
         if ($num_row == 1) {
             $valid='yes';
         } else {
-            $message = "Identifiant ou mot de passe incorrect, ou bien vous n'êtes pas administrateur.";
+            $message = "Identifiant ou mot de passe incorrect, ou bien vous n'Ãªtes pas administrateur.";
         }
     }
 }
@@ -53,7 +53,7 @@ if (isset($_POST['submit'])) {
     <HTML>
     <HEAD>
     <link REL="stylesheet" href="style.css" type="text/css" />
-    <TITLE>Aide à la configuration de connect.inc.php</TITLE>
+    <TITLE>Aide Ã  la configuration de connect.inc.php</TITLE>
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
     <link rel="icon" type="image/ico" href="./favicon.ico" />
     </head>
@@ -63,7 +63,7 @@ if (($resultat_session == '0') and ($valid!='yes')) {
     ?>
     <form action="aide_gepipath.php" method='POST' style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
     <div class="center">
-    <H2><?php echo "Aide à la configuration de connect.inc.php<br />(Accès administrateur)"; ?></H2>
+    <H2><?php echo "Aide Ã  la configuration de connect.inc.php<br />(AccÃ¨s administrateur)"; ?></H2>
 
     <?php
     if (isset($message)) {
@@ -94,19 +94,19 @@ if (($resultat_session == '0') and ($valid!='yes')) {
 
 if ((isset($_SESSION['statut'])) and ($_SESSION['statut'] != 'administrateur')) {
 
-   echo "<center><p class=grand><font color=red>Vous n'avez pas les droits suffisants pour accéder à cette page.</font><p></center></body></html>";
+   echo "<center><p class=grand><font color=red>Vous n'avez pas les droits suffisants pour accÃ©der Ã  cette page.</font><p></center></body></html>";
 
    die();
 
 }
 
-echo "<center><p class=grand>Aide à la configuration du fichier connect.inc.php de GEPI<p></center>";
+echo "<center><p class=grand>Aide Ã  la configuration du fichier connect.inc.php de GEPI<p></center>";
 
 
 
 // Valeur actuelle de gepipath
 
-echo "<p>La valeur de la variable <b>\$gepiPath</b> actuellement enregistrée dans le fichier connect.inc.php
+echo "<p>La valeur de la variable <b>\$gepiPath</b> actuellement enregistrÃ©e dans le fichier connect.inc.php
 
 est : <b>".$gepiPath."</b><br /><br />";
 

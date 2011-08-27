@@ -39,7 +39,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil de visualisation | Evolution de l'élève sur l'année";
+$titre_page = "Outil de visualisation | Evolution de l'Ã©lÃ¨ve sur l'annÃ©e";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -56,7 +56,7 @@ if (!$id_classe) {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
 
     echo "</p>\n";
-	echo "<p>Sélectionnez la classe :<br />\n";
+	echo "<p>SÃ©lectionnez la classe :<br />\n";
     //$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     //$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 
@@ -199,7 +199,7 @@ if (!$id_classe) {
 
 	if($id_class_prec!=0){
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
-		echo "#graph'>Classe précédente</a> | ";
+		echo "#graph'>Classe prÃ©cÃ©dente</a> | ";
 	}
 	if($chaine_options_classes!="") {
 		echo "<select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
@@ -211,8 +211,8 @@ if (!$id_classe) {
 		echo "#graph'>Classe suivante</a> | ";
 	}
 
-	echo "<a href='evol_eleve_classe.php?id_classe=$id_classe&amp;prec=yes&amp;v_eleve=$v_eleve'>Elève précédent</a> | \n";
-	echo "<a href='evol_eleve_classe.php?id_classe=$id_classe&amp;suiv=yes&amp;v_eleve=$v_eleve'>Elève suivant</a>|\n";
+	echo "<a href='evol_eleve_classe.php?id_classe=$id_classe&amp;prec=yes&amp;v_eleve=$v_eleve'>ElÃ¨ve prÃ©cÃ©dent</a> | \n";
+	echo "<a href='evol_eleve_classe.php?id_classe=$id_classe&amp;suiv=yes&amp;v_eleve=$v_eleve'>ElÃ¨ve suivant</a>|\n";
 
 	echo "</p>\n";
 
@@ -248,10 +248,10 @@ if (!$id_classe) {
     $call_eleve_info = mysql_query("SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve'");
     $eleve_nom = mysql_result($call_eleve_info, "0", "nom");
     $eleve_prenom = mysql_result($call_eleve_info, "0", "prenom");
-    $graph_title = $eleve_nom." ".$eleve_prenom.", ".$classe.", évolution sur l'année";
-    echo "<p>$eleve_nom  $eleve_prenom, classe de $classe   |  Evolution sur l'année</p>\n";
-    echo "<table class='boireaus' border='1' cellspacing='2' cellpadding='5' summary='Matières/Notes'>\n";
-    echo "<tr><th width='100'><p>Matière</p></th>\n";
+    $graph_title = $eleve_nom." ".$eleve_prenom.", ".$classe.", Ã©volution sur l'annÃ©e";
+    echo "<p>$eleve_nom  $eleve_prenom, classe de $classe   |  Evolution sur l'annÃ©e</p>\n";
+    echo "<table class='boireaus' border='1' cellspacing='2' cellpadding='5' summary='MatiÃ¨res/Notes'>\n";
+    echo "<tr><th width='100'><p>MatiÃ¨re</p></th>\n";
     $k="1";
     while ($k < $nb_periode) {
         echo "<th width='100'><p>$nom_periode[$k]</p></th>\n";
@@ -267,7 +267,7 @@ if (!$id_classe) {
     }
 
     if ($affiche_categories) {
-        // On utilise les valeurs spécifiées pour la classe en question
+        // On utilise les valeurs spÃ©cifiÃ©es pour la classe en question
         $call_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe ".
         "FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
         "WHERE ( " .
@@ -306,13 +306,13 @@ if (!$id_classe) {
         $current_group = get_group($group_id);
 
             if ($affiche_categories) {
-            // On regarde si on change de catégorie de matière
+            // On regarde si on change de catÃ©gorie de matiÃ¨re
                 if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] != $prev_cat_id) {
                     $prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
-                    // On est dans une nouvelle catégorie
-                    // On récupère les infos nécessaires, et on affiche une ligne
+                    // On est dans une nouvelle catÃ©gorie
+                    // On rÃ©cupÃ¨re les infos nÃ©cessaires, et on affiche une ligne
                     $cat_name = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-                    // On détermine le nombre de colonnes pour le colspan
+                    // On dÃ©termine le nombre de colonnes pour le colspan
                     $nb_total_cols = 1;
                     $k="1";
                     while ($k < $nb_periode) {
@@ -365,7 +365,7 @@ if (!$id_classe) {
 
 	if($id_class_prec!=0){
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
-		echo "#graph'>préc.</a> | ";
+		echo "#graph'>prÃ©c.</a> | ";
 	}
 	if($chaine_options_classes!="") {
 		echo "<select name='id_classe' onchange=\"document.forms['form2'].submit();\">\n";
@@ -377,8 +377,8 @@ if (!$id_classe) {
 		echo "#graph'>suiv.</a> | ";
 	}
 
-    echo "<a href=\"evol_eleve.php?id_classe=$id_classe&amp;prec=yes&amp;v_eleve=$v_eleve#graph\">Elève précédent</a> | \n";
-    echo "<a href=\"evol_eleve.php?id_classe=$id_classe&amp;suiv=yes&amp;v_eleve=$v_eleve#graph\">Elève suivant</a> | \n";
+    echo "<a href=\"evol_eleve.php?id_classe=$id_classe&amp;prec=yes&amp;v_eleve=$v_eleve#graph\">ElÃ¨ve prÃ©cÃ©dent</a> | \n";
+    echo "<a href=\"evol_eleve.php?id_classe=$id_classe&amp;suiv=yes&amp;v_eleve=$v_eleve#graph\">ElÃ¨ve suivant</a> | \n";
 
 	echo "</p>\n";
 	echo "</form>\n";
@@ -394,7 +394,7 @@ if (!$id_classe) {
         echo "<option value=$eleve";
         if ($v_eleve == $eleve) {
 			echo " selected ";
-			// On récupère des infos sur l'élève courant:
+			// On rÃ©cupÃ¨re des infos sur l'Ã©lÃ¨ve courant:
 			$v_elenoet=mysql_result($call_eleve, $i, 'elenoet');
 			$v_naissance=mysql_result($call_eleve, $i, 'naissance');
 			$tmp_tab_naissance=explode("-",$v_naissance);
@@ -416,7 +416,7 @@ if (!$id_classe) {
 	//echo $v_eleve;
 
 	// ============================================
-	// Création de l'infobulle:
+	// CrÃ©ation de l'infobulle:
 
 	$titre=$v_eleve_nom_prenom;
 	//$texte="<table border='0'>\n";
@@ -432,7 +432,7 @@ if (!$id_classe) {
 		}
 	}
 	//$texte.="<td>\n";
-	$texte.="Né";
+	$texte.="NÃ©";
 	if($v_sexe=="F"){
 		$texte.="e";
 	}
@@ -451,7 +451,7 @@ if (!$id_classe) {
 	echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve','y',-100,20);\"";
 	//echo " onmouseout=\"cacher_div('info_popup_eleve');\"";
 	echo ">";
-	echo "<img src='../images/icons/buddy.png' alt='Informations élève' />";
+	echo "<img src='../images/icons/buddy.png' alt='Informations Ã©lÃ¨ve' />";
 	echo "</a>";
 
 	echo "</td>\n";

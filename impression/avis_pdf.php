@@ -24,15 +24,15 @@
 //INSERT INTO droits VALUES ('/impression/avis_pdf.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F','Impression des avis trimestrielles des conseils de classe. Module PDF', '');
  
 // Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
+// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 /*
 Header('Pragma: public');
 
 header('Content-Type: application/pdf');
 */
 //=============================
-// REMONTé:
+// REMONTÃ©:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -50,10 +50,10 @@ require_once("../lib/initialisations.inc.php");
 */
 
 require_once("./class_pdf.php");
-require_once ("./liste.inc.php"); //fonction qui retourne le nombre d'élèves par classe (ou groupe) pour une période donnée.
+require_once ("./liste.inc.php"); //fonction qui retourne le nombre d'Ã©lÃ¨ves par classe (ou groupe) pour une pÃ©riode donnÃ©e.
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -83,7 +83,7 @@ if (!isset($_SESSION['marge_bas'])) { $MargeBas = 10 ; } else {$MargeBas =  $_SE
 if (!isset($_SESSION['marge_reliure'])) { $avec_reliure = 1 ; } else {$avec_reliure =  $_SESSION['marge_reliure'];}
 if (!isset($_SESSION['avec_emplacement_trous'])) { $avec_emplacement_trous = 1 ; } else {$avec_emplacement_trous =  $_SESSION['avec_emplacement_trous'];}
 
-//Gestion de la marge à gauche pour une reliure éventuelle ou des feuilles perforées.
+//Gestion de la marge Ã  gauche pour une reliure Ã©ventuelle ou des feuilles perforÃ©es.
 if ($avec_reliure==1) {
   if ($MargeGauche < 18) {$MargeGauche = 18;}
 }
@@ -93,7 +93,7 @@ $EspaceX = LargeurPage - $MargeDroite - $MargeGauche ;
 $EspaceY = HauteurPage - $MargeHaut - $MargeBas;
 $X_tableau = $MargeGauche;
 
-//entête classe et année scolaire
+//entÃªte classe et annÃ©e scolaire
 $L_entete_classe = 65;
 $H_entete_classe = 14;
 $X_entete_classe = $EspaceX - $L_entete_classe + $MargeGauche;
@@ -106,14 +106,14 @@ $H_entete_discipline = 14;
 
 // LES OPTIONS suite
 if (!isset($_SESSION['h_ligne'])) { $h_cell = 8 ; } else {$h_cell =  $_SESSION['h_ligne'];} //hauteur d'une ligne du tableau
-if (!isset($_SESSION['l_nomprenom'])) { $l_cell_nom = 40 ; } else {$l_cell_nom =  $_SESSION['l_nomprenom'];} // la largeur de la colonne nom - prénom
+if (!isset($_SESSION['l_nomprenom'])) { $l_cell_nom = 40 ; } else {$l_cell_nom =  $_SESSION['l_nomprenom'];} // la largeur de la colonne nom - prÃ©nom
 if (!isset($_SESSION['affiche_pp'])) { $option_affiche_pp = 1 ; } else {$option_affiche_pp =  $_SESSION['affiche_pp'];}// 0 On n'affiche pas le PP 1 on l'affiche
 if (!isset($_SESSION['une_seule_page'])) { $option_tout_une_page = 1 ; } else {$option_tout_une_page =  $_SESSION['une_seule_page'];} // Faire tenir sur une seule page la classe 0 nom - 1 oui
 
 $ligne_texte = "Avis du conseil de classe." ;
 $texte = '';
 
-// Définition de la page
+// DÃ©finition de la page
 
 $pdf=new rel_PDF("P","mm","A4");
 $pdf->SetTopMargin($MargeHaut);
@@ -123,13 +123,13 @@ $pdf->SetAutoPageBreak(true, $MargeBas);
 
 
 
-//On recupère les variables pour l'affichage et on traite leur existance.
+//On recupÃ¨re les variables pour l'affichage et on traite leur existance.
 // DE   IMPRIME.PHP
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_groupe=isset($_GET['id_groupe']) ? $_GET["id_groupe"] : NULL;
 $id_periode=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 
-//On recupère les variables pour l'affichage
+//On recupÃ¨re les variables pour l'affichage
 // DE  IMPRIME_SERIE.PHP
 // les tableaux contienent la liste des id.
 $id_liste_classes=isset($_POST['id_liste_classes']) ? $_POST["id_liste_classes"] : NULL;
@@ -171,7 +171,7 @@ if ($id_liste_groupes!=NULL) {
 //IMPRESSION A LA CHAINE
 if (!isset($_GET['periode_num'])) {
 
-	//On récupère dans la session
+	//On rÃ©cupÃ¨re dans la session
 	if ($_SESSION['id_liste_periodes']!=NULL) {
 		$id_liste_periodes=$_SESSION['id_liste_periodes'];
 	//unset($_SESSION['id_liste_periodes']);
@@ -191,7 +191,7 @@ if (!isset($_GET['periode_num'])) {
 //echo " ".$nb_pages;
 //$nb_pages=$nb_pages*$nb_periodes;
 		
-	// Cette boucle crée les différentes pages du PDF (page = un entête et des lignes par élèves.
+	// Cette boucle crÃ©e les diffÃ©rentes pages du PDF (page = un entÃªte et des lignes par Ã©lÃ¨ves.
 	for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	
 	    $nb_eleves=0;
@@ -227,7 +227,7 @@ print_r($donnees_eleves);
 echo "</pre>";
 }	
 
-//Si plusieures périodes, on trie les données par nom et période.
+//Si plusieures pÃ©riodes, on trie les donnÃ©es par nom et pÃ©riode.
 if ($nb_periodes>1) {
 	foreach($donnees_eleves as $sortarray)
 	{
@@ -257,7 +257,7 @@ echo "</pre>";
 
 				$hauteur_disponible = $hauteur_disponible - 12.5;
 				
-			  // le nombre de lignes demandées.
+			  // le nombre de lignes demandÃ©es.
 			  $nb_ligne_demande = $nb_eleves;
 
 			  $h_cell = $hauteur_disponible / $nb_ligne_demande ;
@@ -267,13 +267,13 @@ echo "</pre>";
 		// Couleur des traits
 		$pdf->SetDrawColor(0,0,0);
 
-		// caractère utilisé dans le document
+		// caractÃ¨re utilisÃ© dans le document
 		$caractere_utilise = 'arial';
 
 		// on appelle une nouvelle page pdf
 		$nb_eleves_i = 0;
 
-//Entête du PDF
+//EntÃªte du PDF
 			$pdf->SetLineWidth(0.7);
 			$pdf->SetFont($caractere_utilise,'B',14);
 			$pdf->Setxy($X_entete_classe,$Y_entete_classe);
@@ -301,12 +301,12 @@ echo "</pre>";
 			   $call_profsuivi_eleve = mysql_query($sql);
 			   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
-			   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
+			   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'AnnÃ©e scolaire '.getSettingValue('gepiYear')
 			} else {
 
 			  if ($id_groupe != NULL) {
-				//$current_classe = $donnees_eleves['id_classe'][0]; // on suppose qu'il n'y a dans un groupe que des personnes d'une même classe ... Bof Bof
-				$current_classe = $donnees_eleves[0]['id_classe']; // on suppose qu'il n'y a dans un groupe que des personnes d'une même classe ... Bof Bof
+				//$current_classe = $donnees_eleves['id_classe'][0]; // on suppose qu'il n'y a dans un groupe que des personnes d'une mÃªme classe ... Bof Bof
+				$current_classe = $donnees_eleves[0]['id_classe']; // on suppose qu'il n'y a dans un groupe que des personnes d'une mÃªme classe ... Bof Bof
 			  }
 			  $pdf->CellFitScale($L_entete_classe,$H_entete_classe,'Classe de '.$current_classe,'LTRB',2,'C');
 			}
@@ -315,16 +315,16 @@ echo "</pre>";
 			$pdf->SetFont($caractere_utilise,'B',14);
 
 			
-			//Si on peut connaître le nom de la matière (id_groupe existe !)
+			//Si on peut connaÃ®tre le nom de la matiÃ¨re (id_groupe existe !)
 			if ($id_groupe != NULL) {
 				$current_group = get_group($id_groupe);
 				$matiere = $current_group["description"];
                  //echo $matiere."<br/>";
 				$pdf->CellFitScale($L_entete_discipline,$H_entete_discipline /2 ,$matiere,'LTR',2,'C');
 				$pdf->SetFont($caractere_utilise,'I',11);
-				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'LRB',2,'C');
+				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'AnnÃ©e scolaire '.getSettingValue('gepiYear'),'LRB',2,'C');
 			} else {
-			    // On demande une classe ==> on ajoute la période.
+			    // On demande une classe ==> on ajoute la pÃ©riode.
 				$pdf->SetFont($caractere_utilise,'I',11);
 				
 				
@@ -332,27 +332,27 @@ echo "</pre>";
 					$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='".$donnees_eleves[0]['id_periode']."' ORDER BY num_periode";
 					$res_per=mysql_query($sql);
 					if(mysql_num_rows($res_per)==0){
-						die("Problème avec les infos de la classe $id_classe</body></html>");
+						die("ProblÃ¨me avec les infos de la classe $id_classe</body></html>");
 					}
 					else{
 						$lig_tmp=mysql_fetch_object($res_per);
 						$periode=$lig_tmp->nom_periode;			
-						$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'TLR',2,'C');
+						$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'AnnÃ©e scolaire '.getSettingValue('gepiYear'),'TLR',2,'C');
 						$pdf->CellFitScale($L_entete_discipline,$H_entete_classe / 2 ,$periode,'LBR',2,'C');
 					}
 				} else {
-				    $pdf->Cell($L_entete_classe,$H_entete_classe ,'Année scolaire '.getSettingValue('gepiYear'),'LTRB',2,'C');
+				    $pdf->Cell($L_entete_classe,$H_entete_classe ,'AnnÃ©e scolaire '.getSettingValue('gepiYear'),'LTRB',2,'C');
 				}
 			}
 
 			$Y_courant=$pdf->GetY()+2.5;
 			$pdf->Setxy($MargeGauche,$Y_courant);
 
-		//La ligne de texte après les entêtes
+		//La ligne de texte aprÃ¨s les entÃªtes
 				$pdf->CellFitScale(0,10,$ligne_texte,'',2,'C');
 				$Y_courant=$pdf->GetY()+2.5;
 			
-// requete à faire pour récupérer les Avis pour la classe / la période !!!
+// requete Ã  faire pour rÃ©cupÃ©rer les Avis pour la classe / la pÃ©riode !!!
 		//debut tableau;
 			$pdf->SetLineWidth(0.3);
 			$pdf->SetFont($caractere_utilise,'',9);
@@ -387,7 +387,7 @@ echo "</pre>";
 					} else {
 					  $avis =' ';
 					}   				
-				} else { // Si plusieurs périodes, on indique la période concernée entre parenthèse à côté du nom.
+				} else { // Si plusieurs pÃ©riodes, on indique la pÃ©riode concernÃ©e entre parenthÃ¨se Ã  cÃ´tÃ© du nom.
 					$texte = "P".$donnees_eleves[$nb_eleves_i]['id_periode']." : ";
 					if ($current_eleve_avis != '') {
 					  $avis = $texte." ".$current_eleve_avis;
@@ -431,7 +431,7 @@ echo "</pre>";
 			$y_tmp = $pdf->GetY();
 	} // FOR
 		
-	// sortie PDF sur écran
+	// sortie PDF sur Ã©cran
 	$nom_releve=date("Ymd_Hi");
 	$nom_releve = 'Avis_conseil_'.$nom_releve.'.pdf';
 	$pdf->Output($nom_releve,'I');

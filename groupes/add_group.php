@@ -40,7 +40,7 @@ if (!checkAccess()) {
     die();
 }
 
-// Initialisation des variables utilisées dans le formulaire
+// Initialisation des variables utilisÃ©es dans le formulaire
 
 $reg_nom_groupe = '';
 $reg_nom_complet = '';
@@ -108,7 +108,7 @@ if (isset($_POST['is_posted'])) {
 
     if (empty($reg_clazz)) {
         $error = true;
-        $msg .= "Vous devez sélectionner au moins une classe.<br/>\n";
+        $msg .= "Vous devez sÃ©lectionner au moins une classe.<br/>\n";
     }
 
     if (!is_numeric($reg_categorie)) {
@@ -119,12 +119,12 @@ if (isset($_POST['is_posted'])) {
 	//$error=true;
 
     if (!$error) {
-        // pas d'erreur : on continue avec la création du groupe
+        // pas d'erreur : on continue avec la crÃ©ation du groupe
         $create = create_group($reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_categorie);
         if (!$create) {
-            $msg .= "Erreur lors de la création du groupe. ";
+            $msg .= "Erreur lors de la crÃ©ation du groupe. ";
         } else {
-            $msg = "L'enseignement a bien été créé. ";
+            $msg = "L'enseignement a bien Ã©tÃ© crÃ©Ã©. ";
             $msg = urlencode($msg);
 
             // On s'occupe des profs, s'il y en a.
@@ -161,12 +161,12 @@ if (isset($_POST['is_posted'])) {
                     //$res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, array());
                     $res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
 
-					//if($res){$msg.="Mise à jour des professeurs du groupe effectuée. ";}else{$msg.="Echec de la mise à jour des professeurs du groupe. ";}
+					//if($res){$msg.="Mise Ã  jour des professeurs du groupe effectuÃ©e. ";}else{$msg.="Echec de la mise Ã  jour des professeurs du groupe. ";}
 					if (count($reg_professeurs) == 1) {
-						if($res){$msg.="Affectation du professeur à l'enseignement effectuée. ";}else{$msg.="Echec de l'affectation du professeur à l'enseignement. ";}
+						if($res){$msg.="Affectation du professeur Ã  l'enseignement effectuÃ©e. ";}else{$msg.="Echec de l'affectation du professeur Ã  l'enseignement. ";}
 					}
 					else{
-						if($res){$msg.="Affectation des professeurs à l'enseignement effectuée. ";}else{$msg.="Echec de l'affectation des professeurs à l'enseignement. ";}
+						if($res){$msg.="Affectation des professeurs Ã  l'enseignement effectuÃ©e. ";}else{$msg.="Echec de l'affectation des professeurs Ã  l'enseignement. ";}
 					}
                     //header("Location: ./edit_class.php?id_classe=$id_classe");
                     header("Location: ./edit_class.php?id_classe=$id_classe&msg=$msg");
@@ -187,9 +187,9 @@ require_once("../lib/header.inc");
 </p>
 <?php
 if ($mode == "groupe") {
-    echo "<h3>Ajouter un groupe à une classe</h3>\n";
+    echo "<h3>Ajouter un groupe Ã  une classe</h3>\n";
 } elseif ($mode == "regroupement") {
-    echo "<h3>Ajouter un regroupement d'élèves de différentes classes</h3>\n";
+    echo "<h3>Ajouter un regroupement d'Ã©lÃ¨ves de diffÃ©rentes classes</h3>\n";
 }
 
 ?>
@@ -200,7 +200,7 @@ if ($mode == "groupe") {
 
 <p>Nom complet : <input type=text size=30 name=groupe_nom_complet value = "<?php echo $reg_nom_complet; ?>" /></p>
 
-<p>Matière enseignée à ce groupe :
+<p>MatiÃ¨re enseignÃ©e Ã  ce groupe :
 <?php
 
 echo add_token_field();
@@ -222,7 +222,7 @@ echo "</select>\n";
 echo "</p>\n";
 
 if ($mode == "groupe") {
-    echo "<p>Classe à laquelle appartient le nouvel enseignement :\n";
+    echo "<p>Classe Ã  laquelle appartient le nouvel enseignement :\n";
     echo "<select name='id_classe' size='1'>\n";
 
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -238,15 +238,15 @@ if ($mode == "groupe") {
         $i++;
         }
     } else {
-        echo "<option value='false'>Aucune classe définie !</option>\n";
+        echo "<option value='false'>Aucune classe dÃ©finie !</option>\n";
     }
     echo "</select>\n";
     echo "</p>\n";
 
 } else if ($mode == "regroupement") {
     echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
-    echo "<p>Sélectionnez les classes auxquelles appartient le nouvel enseignement :<br />\n";
-    echo "<span style='color: red;'>Note : n'apparaissent que les classes ayant le même nombre de périodes.</span>\n";
+    echo "<p>SÃ©lectionnez les classes auxquelles appartient le nouvel enseignement :<br />\n";
+    echo "<span style='color: red;'>Note : n'apparaissent que les classes ayant le mÃªme nombre de pÃ©riodes.</span>\n";
     $current_classe_period_num = get_period_number($id_classe);
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
     $nombre_lignes = mysql_num_rows($call_data);
@@ -321,10 +321,10 @@ if ($mode == "groupe") {
         echo "</tr>\n";
         echo "</table>\n";
     } else {
-        echo "<p>Aucune classe définie !</p>\n";
+        echo "<p>Aucune classe dÃ©finie !</p>\n";
     }
 }
-echo "<p>Catégorie de matière à laquelle appartient l'enseignement : ";
+echo "<p>CatÃ©gorie de matiÃ¨re Ã  laquelle appartient l'enseignement : ";
 echo "<select size='1' name='categorie'>\n";
 $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
 $test = mysql_num_rows($get_cat);
@@ -340,11 +340,11 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 echo "</select>\n";
 
 echo "</div>\n";
-// On affiche une sélection des profs si la matière a été choisie
+// On affiche une sÃ©lection des profs si la matiÃ¨re a Ã©tÃ© choisie
 
 if ($reg_matiere != null) {
     echo "<div style='width: 45%; float: right;'>\n";
-    echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
+    echo "<p>Cochez les professeurs qui participent Ã  cet enseignement : </p>\n";
 
     $sql="SELECT u.login, u.nom, u.prenom, u.civilite,u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
     //echo "$sql<br />";
@@ -365,7 +365,7 @@ if ($reg_matiere != null) {
     }
 
     if (count($prof_list["list"]) == "0") {
-        echo "<p><font color=red>ERREUR !</font> Aucun professeur n'a été défini comme compétent dans la matière considérée.</p>\n";
+        echo "<p><font color=red>ERREUR !</font> Aucun professeur n'a Ã©tÃ© dÃ©fini comme compÃ©tent dans la matiÃ¨re considÃ©rÃ©e.</p>\n";
     } else {
         $total_profs = array_unique($prof_list["list"]);
         $p = 0;
@@ -443,11 +443,11 @@ echo "</div>\n";
 echo "<div style='clear:both;'>&nbsp;</div>
 <p><i>NOTES</i>&nbsp;:</p>
 <ul>
-<li><p>Si vous associez un ou des professeurs à l'enseignement, tous les élèves de la classe seront inscrit dans l'enseignement.<br />
-Vous pourrez par la suite décocher certains élèves si nécessaire.</p></li>
-<li><p>Si vous n'associez aucun professeur à l'enseignement, les élèves ne seront pas affectés automatiquement dans l'enseignement.<br />
-Vous devrez affecter les élèves dans l'enseignement par la suite.</p></li>
-<li><p>Si vous n'associez aucun professeur à un enseignement, vous pouvez néanmoins saisir des moyennes et appréciations sur les bulletins avec un compte disposant du statut 'secours'.</p></li>
+<li><p>Si vous associez un ou des professeurs Ã  l'enseignement, tous les Ã©lÃ¨ves de la classe seront inscrit dans l'enseignement.<br />
+Vous pourrez par la suite dÃ©cocher certains Ã©lÃ¨ves si nÃ©cessaire.</p></li>
+<li><p>Si vous n'associez aucun professeur Ã  l'enseignement, les Ã©lÃ¨ves ne seront pas affectÃ©s automatiquement dans l'enseignement.<br />
+Vous devrez affecter les Ã©lÃ¨ves dans l'enseignement par la suite.</p></li>
+<li><p>Si vous n'associez aucun professeur Ã  un enseignement, vous pouvez nÃ©anmoins saisir des moyennes et apprÃ©ciations sur les bulletins avec un compte disposant du statut 'secours'.</p></li>
 </ul>\n";
 
 ?>

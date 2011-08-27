@@ -20,25 +20,25 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 
 ?>
 <div id='result'>
-    <h3><font class='red'>Organisation des natures d'incidents en catégories:</font></h3>
+    <h3><font class='red'>Organisation des natures d'incidents en catÃ©gories:</font></h3>
     <div id='wrap'>
     <div id='natures'>
         <form action='index.php?ctrl=categories&action=save' method='post' name='save' id='save'>
             <?php echo add_token_field();?>
             <fieldset>
                 <legend class='legend'>Affectation : </legend>
-                <h3>1. Sélectionner les incidents</h3>
+                <h3>1. SÃ©lectionner les incidents</h3>
                 <select  name='natures_incidents[]' multiple size=20 >
                     <?php  foreach($liste_natures as $nature) {?>
                     <option class='option' VALUE="<?php echo htmlspecialchars($nature->nature,ENT_QUOTES);?>">
-                    <?php if  (!$nature->nature) echo ' Pas de nature renseignée ('.$nature->categorie_sigle.')'; else echo $nature->nature.' ('.$nature->categorie_sigle.')';?></option>
+                    <?php if  (!$nature->nature) echo ' Pas de nature renseignÃ©e ('.$nature->categorie_sigle.')'; else echo $nature->nature.' ('.$nature->categorie_sigle.')';?></option>
                         <?php }?>
                 </select>
                 <br />
@@ -47,16 +47,16 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     <?php  foreach($liste_categories as $categorie) {?>
                     <option class='option' VALUE='<?php echo $categorie->id;  ?>'><?php echo $categorie->categorie;  ?></option>
                         <?php }?>
-                    <option class='option' VALUE='default'>Enlever les catégories</option>
+                    <option class='option' VALUE='default'>Enlever les catÃ©gories</option>
                 </select><br />
-                <h3>3. Mise à jour des données</h3>
-                <Input type='submit' value='Mettre à jour' class='submit'>
+                <h3>3. Mise Ã  jour des donnÃ©es</h3>
+                <Input type='submit' value='Mettre Ã  jour' class='submit'>
             </fieldset>
         </form>
     </div>
     <div id='categories'>
         <fieldset>
-            <legend class='legend'>Catégories des incidents</legend>
+            <legend class='legend'>CatÃ©gories des incidents</legend>
             <div id='Categories_incidents1' >
                 <?php                
                 $total=count($liste_categories);
@@ -69,7 +69,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                         foreach($liste_natures as $nature) { ?>
                     <ul class='selected_titre'>
                                 <?php if ($nature->categorie==$liste_categories[$i]->categorie) { ?>
-                        <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES).add_token_in_url() ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignée'; else echo $nature->nature;?></a></li>
+                        <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES).add_token_in_url() ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignÃ©e'; else echo $nature->nature;?></a></li>
                                     <?php }?>
                     </ul>
                             <?php }?>
@@ -85,7 +85,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                         foreach($liste_natures as $nature) {?>
                     <ul class='selected_titre'>
                                 <?php if ($nature->categorie==$liste_categories[$i]->categorie) { ?>
-                        <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES).add_token_in_url()  ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignée'; else echo $nature->nature;?></a></li>
+                        <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES).add_token_in_url()  ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignÃ©e'; else echo $nature->nature;?></a></li>
                                     <?php }?>
                     </ul>
                             <?php }?>

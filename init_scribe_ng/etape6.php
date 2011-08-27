@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. OrlÃ©ans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -45,7 +45,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -77,7 +77,7 @@ if ($_POST['step'] == "6") {
 
     $nombre_enseignements = 0;
     
-    # On initialise un tableau avec juste les données nécessaires
+    # On initialise un tableau avec juste les donnÃ©es nÃ©cessaires
     $donnees_equipes = array();
     
     for($cpt=0; $cpt<$equipes['count']; $cpt++) {
@@ -92,12 +92,12 @@ if ($_POST['step'] == "6") {
                   ->setFormatter(ModelCriteria::FORMAT_ON_DEMAND)
                   ->find();
     
-    // On boucle sur chaque équipe, ce qui revient à boucler sur les classes
+    // On boucle sur chaque Ã©quipe, ce qui revient Ã  boucler sur les classes
     foreach($classes as $classe_courante) {
         # On a une classe, on poursuit
         if (array_key_exists($classe_courante->getNom(), $donnees_equipes)) {
           
-          # On initialisation la liste des élèves de la classe
+          # On initialisation la liste des Ã©lÃ¨ves de la classe
           
           $students_query = mysql_query("SELECT login FROM j_eleves_classes WHERE 
                                         id_classe = '".$classe_courante->getId()."' AND
@@ -110,12 +110,12 @@ if ($_POST['step'] == "6") {
           }
           
           
-          # On passe tous les profs de l'équipe
+          # On passe tous les profs de l'Ã©quipe
           foreach($donnees_equipes[$classe_courante->getNom()] as $login_prof) {
             
             $prof = UtilisateurProfessionnelPeer::retrieveByPK($login_prof);
             if ($prof) {
-              # On a un prof. On créé un enseignement pour chacune des matières qui lui sont associées.
+              # On a un prof. On crÃ©Ã© un enseignement pour chacune des matiÃ¨res qui lui sont associÃ©es.
               $matieres = $prof->getMatieres();
               
               foreach($matieres as $matiere) {
@@ -133,7 +133,7 @@ if ($_POST['step'] == "6") {
                       login = '".$prof->getLogin()."',
                       id_groupe = '".$id_groupe."'");
                       
-                  # Maintenant il faut mettre les élèves
+                  # Maintenant il faut mettre les Ã©lÃ¨ves
                   foreach ($students as $student) {
                     
                     foreach ($classe_courante->getPeriodeNotes() as $periode) {
@@ -141,20 +141,20 @@ if ($_POST['step'] == "6") {
                                   login = '".$student."',
                                   id_groupe = '".$id_groupe."',
                                   periode = '".$periode->getNumPeriode()."'");
-                    } # Fin boucle périodes
-                  } # Fin boucle élèves
+                    } # Fin boucle pÃ©riodes
+                  } # Fin boucle Ã©lÃ¨ves
                   
                   
-                  # Association à la classe
+                  # Association Ã  la classe
                   $rec = mysql_query("INSERT INTO j_groupes_classes SET
                                   id_groupe = '".$id_groupe."',
                                   id_classe = '".$classe_courante->getId()."'");
                   
                   $nombre_enseignements++;                  
                   
-                #} # Fin test si enseignement existe déjà
+                #} # Fin test si enseignement existe dÃ©jÃ 
                 
-              } # Fin boucle matières du prof
+              } # Fin boucle matiÃ¨res du prof
 
               
             } # Fin test prof existant
@@ -163,12 +163,12 @@ if ($_POST['step'] == "6") {
           
         } else {
           # Pas de classe, on renvoie un message d'erreur.
-          echo "<p>La classe $code_classe n'a pas été trouvée. Les cours ne seront pas créés.</p>";          
+          echo "<p>La classe $code_classe n'a pas Ã©tÃ© trouvÃ©e. Les cours ne seront pas crÃ©Ã©s.</p>";          
         }
                 
     } // fin parcours des classes
     
-    echo "<br/><br/>Groupes créés : $nombre_enseignements"."<br/><br/>";
+    echo "<br/><br/>Groupes crÃ©Ã©s : $nombre_enseignements"."<br/><br/>";
 
     echo "<br/>";
 
@@ -186,14 +186,14 @@ if ($_POST['step'] == "6") {
 else {
     // Affichage de la page des explications de l'etape 6 (aucune donnee postee)
 
-    echo "<br/><p>L'&eacute;tape 6 vous permet de créer les enseignements dans les classes.</p>";
-    echo "<p><b>Attention !</b> En raison de l'absence de données détaillées dans l'annuaire LDAP, la procédure va extrapoler les enseignements à partir des équipes pédagogiques uniquement. En conséquences seront créés des enseignements pour toutes les matières associées à tous les enseignants de l'équipe pédagogique d'une classe donnée. Ensuite, tous les élèves de la classe seront associés à ces enseignements, pour toutes les périodes. Il sera donc indispensable de refaire une vérification complète des enseignements ainsi créés. Notez en outre que les enseignements multi-classes (groupes de langue, par exemple) seront créés pour chaque classe séparémment, et qu'il vous faudra donc les 'fusionner' manuellement.</p>";
-    echo "<p>Cette étape reste facultative, si vous préférez créer à la main les enseignements à travers les interfaces dédiées de Gepi.</p>";
-    echo "<p>Tous les groupes existants dans la base actuelle seront supprimés !</p>";
+    echo "<br/><p>L'&eacute;tape 6 vous permet de crÃ©er les enseignements dans les classes.</p>";
+    echo "<p><b>Attention !</b> En raison de l'absence de donnÃ©es dÃ©taillÃ©es dans l'annuaire LDAP, la procÃ©dure va extrapoler les enseignements Ã  partir des Ã©quipes pÃ©dagogiques uniquement. En consÃ©quences seront crÃ©Ã©s des enseignements pour toutes les matiÃ¨res associÃ©es Ã  tous les enseignants de l'Ã©quipe pÃ©dagogique d'une classe donnÃ©e. Ensuite, tous les Ã©lÃ¨ves de la classe seront associÃ©s Ã  ces enseignements, pour toutes les pÃ©riodes. Il sera donc indispensable de refaire une vÃ©rification complÃ¨te des enseignements ainsi crÃ©Ã©s. Notez en outre que les enseignements multi-classes (groupes de langue, par exemple) seront crÃ©Ã©s pour chaque classe sÃ©parÃ©mment, et qu'il vous faudra donc les 'fusionner' manuellement.</p>";
+    echo "<p>Cette Ã©tape reste facultative, si vous prÃ©fÃ©rez crÃ©er Ã  la main les enseignements Ã  travers les interfaces dÃ©diÃ©es de Gepi.</p>";
+    echo "<p>Tous les groupes existants dans la base actuelle seront supprimÃ©s !</p>";
     echo "<form enctype='multipart/form-data' action='etape6.php' method=post>";
 	echo add_token_field();
     echo "<input type=hidden name='step' value='6'>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
     echo "<br>";
 

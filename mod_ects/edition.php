@@ -44,28 +44,28 @@ $titre_page = "Edition des documents ECTS";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// On teste si un professeur principal peut effectuer l'Èdition
+// On teste si un professeur principal peut effectuer l'√©dition
 if (($_SESSION['statut'] == 'professeur') and $gepiSettings["GepiAccesEditionDocsEctsPP"] !='yes') {
-   die("Droits insuffisants pour effectuer cette opÈration");
+   die("Droits insuffisants pour effectuer cette op√©ration");
 }
 
-// On teste si le service scolaritÈ peut effectuer la saisie
+// On teste si le service scolarit√© peut effectuer la saisie
 if (($_SESSION['statut'] == 'scolarite') and $gepiSettings["GepiAccesEditionDocsEctsScolarite"] !='yes') {
-   die("Droits insuffisants pour effectuer cette opÈration");
+   die("Droits insuffisants pour effectuer cette op√©ration");
 }
 
-// Les autres statuts n'ont de toute faÁon pas accËs ‡ ce fichier (cf. table 'droits').
+// Les autres statuts n'ont de toute fa√ßon pas acc√®s √† ce fichier (cf. table 'droits').
 
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] : false);
 
-// Si aucune classe n'a ÈtÈ choisie, on affiche la liste des classes accessibles
+// Si aucune classe n'a √©t√© choisie, on affiche la liste des classes accessibles
 if (!$id_classe) {
 
     echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
 
-        // On ne sÈlectionne que les classes qui ont au moins un enseignement ouvrant ‡ crÈdits ECTS
+        // On ne s√©lectionne que les classes qui ont au moins un enseignement ouvrant √† cr√©dits ECTS
         if($_SESSION['statut']=='scolarite'){
             $call_classe = mysql_query("SELECT DISTINCT c.*
                                         FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
@@ -76,17 +76,17 @@ if (!$id_classe) {
 
         $nombre_classe = mysql_num_rows($call_classe);
         if($nombre_classe==0){
-            echo "<p>Aucune classe avec paramÈtrage ECTS ne vous est attribuÈe.<br />Contactez l'administrateur pour qu'il effectue le paramÈtrage appropriÈ dans la Gestion des classes.</p>\n";
+            echo "<p>Aucune classe avec param√©trage ECTS ne vous est attribu√©e.<br />Contactez l'administrateur pour qu'il effectue le param√©trage appropri√© dans la Gestion des classes.</p>\n";
         }
     } else {
         $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
         $nombre_classe = mysql_num_rows($call_classe);
         if ($nombre_classe == "0") {
-            echo "Vous n'Ítes pas ".$gepiSettings['gepi_prof_suivi']." dans des classes ayant des enseignements ouvrant droits ‡ des ECTS.";
+            echo "Vous n'√™tes pas ".$gepiSettings['gepi_prof_suivi']." dans des classes ayant des enseignements ouvrant droits √† des ECTS.";
         }
     }
 
-    echo "<p>Cliquez sur la classe pour laquelle vous souhaitez Èditer les documents ECTS :</p>\n";
+    echo "<p>Cliquez sur la classe pour laquelle vous souhaitez √©diter les documents ECTS :</p>\n";
     echo "<br/><p><a href='edition.php?id_classe=all'>Toutes les classes</a></p>";
 
     $i = 0;
@@ -103,17 +103,17 @@ if (!$id_classe) {
     echo "<p><br /></p>\n";
 
 } else {
-    // Si on arrive l‡, c'est qu'une classe a ÈtÈ choisie (ou bien toutes les classes).
-    // On affiche le formulaire d'Èdition des options
+    // Si on arrive l√†, c'est qu'une classe a √©t√© choisie (ou bien toutes les classes).
+    // On affiche le formulaire d'√©dition des options
     echo "<p class=bold><a href=\"edition.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
     echo "<form method='post' action='../mod_ooo/documents_ects.php' id='generer_documents' class='centre_texte'>\n";
     echo '<input type="hidden" name="id_classe" value="'.$id_classe.'"/>';
     
     if ($id_classe == 'all') {
-        // On a sÈlectionnÈ la totalitÈ des classes.
+        // On a s√©lectionn√© la totalit√© des classes.
         if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
-            // On ne sÈlectionne que les classes qui ont au moins un enseignement ouvrant ‡ crÈdits ECTS
+            // On ne s√©lectionne que les classes qui ont au moins un enseignement ouvrant √† cr√©dits ECTS
             if($_SESSION['statut']=='scolarite'){
                 $call_classes = mysql_query("SELECT DISTINCT c.*
                                             FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
@@ -135,11 +135,11 @@ if (!$id_classe) {
 
         echo '<h3>Classes de '.$noms_classes.'</h3>';
 
-        // On rÈcupËre les annÈes archivÈes, pour sÈlectionner celle qui correspond ‡ l'annÈe derniËre :
+        // On r√©cup√®re les ann√©es archiv√©es, pour s√©lectionner celle qui correspond √† l'ann√©e derni√®re :
         $annees = mysql_query('SELECT DISTINCT annee FROM archivage_ects');
         $nb_annees = mysql_num_rows($annees);
         if ($nb_annees == 0) {
-            echo "<p>Attention ! Aucun crÈdit ECTS n'est actuellement prÈsent dans les tables d'archivage. Les informations
+            echo "<p>Attention ! Aucun cr√©dit ECTS n'est actuellement pr√©sent dans les tables d'archivage. Les informations
                     des semestres 1 et 2 seront donc absentes.</p>";
         } else {
             echo "<select size=\"1\" id=\"select_annee_derniere\" name=\"annee_derniere\">\n";
@@ -151,9 +151,9 @@ if (!$id_classe) {
         }
 
     } else {
-        // On appelle une seule classe. On vÈrifie que l'utilisateur a bien le droit sur cette classe.
+        // On appelle une seule classe. On v√©rifie que l'utilisateur a bien le droit sur cette classe.
         if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
-            // On ne sÈlectionne que les classes qui ont au moins un enseignement ouvrant ‡ crÈdits ECTS
+            // On ne s√©lectionne que les classes qui ont au moins un enseignement ouvrant √† cr√©dits ECTS
             if($_SESSION['statut']=='scolarite'){
                 $call_classe = mysql_query("SELECT c.*
                                             FROM classes c, j_scol_classes jsc
@@ -171,33 +171,33 @@ if (!$id_classe) {
                                             jep.professeur='" . $_SESSION['login'] . "'");
         }
         if (mysql_num_rows($call_classe) == 0) {
-            echo 'Erreur avec la sÈlection de la classe. Avez-vous bien les droits sur cette classe ?';
+            echo 'Erreur avec la s√©lection de la classe. Avez-vous bien les droits sur cette classe ?';
             die();
         } else {
             $Classe = ClassePeer::retrieveByPK($id_classe);
 
             echo '<h3>Classe de '.$Classe->getNom().'</h3>';
 
-            // On propose de gÈnÈrer les documents pour toutes la classe, ou bien pour un seul ÈlËve
+            // On propose de g√©n√©rer les documents pour toutes la classe, ou bien pour un seul √©l√®ve
             echo "<div>\n";
                 echo "<input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" checked='checked' />\n";
                 echo "<label for='choix_edit_1' class='curseur_pointeur'>\n";
-                    echo "GÈnÈrer les documents ECTS de tous les ÈlËves de la classe\n";
+                    echo "G√©n√©rer les documents ECTS de tous les √©l√®ves de la classe\n";
                 echo "</label>\n";
             echo "</div>\n";
 
             echo "<div>\n";
                 echo "<input type=\"radio\" name=\"choix_edit\" id='choix_edit_2' value=\"2\" />\n";
                 echo "<label for='choix_edit_2' class='curseur_pointeur'>\n";
-                    echo "GÈnÈrer uniquement les documents ECTS de l'ÈlËve sÈlectionnÈ ci-contre : \n";
+                    echo "G√©n√©rer uniquement les documents ECTS de l'√©l√®ve s√©lectionn√© ci-contre : \n";
                 echo "</label>\n";
                 echo "<select size=\"1\" id=\"select_login_eleve\" name=\"login_eleve\" onchange=\"document.getElementById('choix_edit_2').checked=true;\">\n";
 
-                // On rÈcupËre la liste des ÈlËves s'il s'agit d'un professeur principal
+                // On r√©cup√®re la liste des √©l√®ves s'il s'agit d'un professeur principal
                 if ($_SESSION['statut'] == 'professeur') {
                     $Eleves = $Classe->getElevesByProfesseurPrincipal($_SESSION['login']);
                 } else {
-                    $Eleves = $Classe->getEleves('1'); // On prend la premiËre pÈriode, qui sert de rÈfÈrence.
+                    $Eleves = $Classe->getEleves('1'); // On prend la premi√®re p√©riode, qui sert de r√©f√©rence.
                 }
                 foreach ($Eleves as $Eleve) {
                     echo "<option value='".$Eleve->getLogin()."'>".$Eleve->getNom()." ".$Eleve->getPrenom()."</option>\n";
@@ -206,7 +206,7 @@ if (!$id_classe) {
         echo "</div>\n";
 
 
-        echo "<p>Document fait ‡ ";
+        echo "<p>Document fait √† ";
         echo "<input type='text' name='lieu_edition' value='".$gepiSettings['gepiSchoolCity']."'/> ";
         echo "le ";
         echo "<input type='text' name='date_edition' value='".date('d/m/Y')."' /></p>";
@@ -214,9 +214,9 @@ if (!$id_classe) {
 
     }
 
-    // On propose maintenant de choisir les documents qui doivent Ítre gÈnÈrÈs pour chaque ÈlËve
-    echo "<h3>Documents ‡ gÈnÈrer</h3>";
-    echo "<p>Cochez les documents que vous souhaitez gÈnÈrer :</p>";
+    // On propose maintenant de choisir les documents qui doivent √™tre g√©n√©r√©s pour chaque √©l√®ve
+    echo "<h3>Documents √† g√©n√©rer</h3>";
+    echo "<p>Cochez les documents que vous souhaitez g√©n√©rer :</p>";
     echo "<div>\n";
         echo "<input type=\"checkbox\" name=\"page_garde\" id='choix_page_garde' value=\"page_garde\" checked='checked' />\n";
         echo "<label for='choix_page_garde' class='curseur_pointeur'>\n";
@@ -226,7 +226,7 @@ if (!$id_classe) {
     echo "<div>\n";
         echo "<input type=\"checkbox\" name=\"releve\" id='choix_releve' value=\"releve\" checked='checked' />\n";
         echo "<label for='choix_releve' class='curseur_pointeur'>\n";
-            echo "Le relevÈ de crÈdits\n";
+            echo "Le relev√© de cr√©dits\n";
         echo "</label>\n";
     echo "</div>\n";
     echo "<div>\n";
@@ -243,7 +243,7 @@ if (!$id_classe) {
     echo "</div>\n";
 
     echo "<br/>";
-    echo '<input type="submit" name="Valider" value="GÈnÈrer les documents" style="margin-left: 50px;"/>';
+    echo '<input type="submit" name="Valider" value="G√©n√©rer les documents" style="margin-left: 50px;"/>';
     echo "</form>";
 }
 require("../lib/footer.inc.php");

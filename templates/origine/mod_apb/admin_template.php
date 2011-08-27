@@ -23,7 +23,7 @@
 */
 
 /**
-* Appelle les sous-modËles
+* Appelle les sous-mod√®les
 * templates/origine/header_template.php
 * templates/origine/bandeau_template.php
  *
@@ -36,7 +36,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entÍte -->
+<!-- on inclut l'ent√™te -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -79,7 +79,7 @@
 
 
 <!-- ************************* -->
-<!-- DÈbut du corps de la page -->
+<!-- D√©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -90,10 +90,10 @@
 
   <div id='container'>
 <!-- Fin haut de page -->
-<h2 class="colleHaut">Configuration gÈnÈrale</h2>
+<h2 class="colleHaut">Configuration g√©n√©rale</h2>
   <p>
 	<em>
-	  La dÈsactivation de ce module ne supprime pas les paramÈtrages dÈj‡ rÈalisÈs.
+	  La d√©sactivation de ce module ne supprime pas les param√©trages d√©j√† r√©alis√©s.
 	</em>
   </p>
   
@@ -118,7 +118,7 @@ echo add_token_field();
 			 value="n" 
 			<?php if (getSettingValue("active_mod_apb")=='n') echo " checked='checked'"; ?> />
 	  <label for='activer_n'>
-		DÈsactiver l'export "Admissions Post-Bac"
+		D√©sactiver l'export "Admissions Post-Bac"
 	  </label>
 	</fieldset>
 	<p class="center">
@@ -126,9 +126,9 @@ echo add_token_field();
 	</p>
   </form>
 
-  <h2>SÈlection des classes de terminale</h2>
-  <p>Le tableau ci-dessous vous permet de prÈciser quelles classes correspondent au niveau 'Terminale'. 
-	Seuls les ÈlËves des classes sÈlectionnÈes ici seront intÈgrÈs ‡ l'export vers le systËme APB.
+  <h2>S√©lection des classes de terminale</h2>
+  <p>Le tableau ci-dessous vous permet de pr√©ciser quelles classes correspondent au niveau 'Terminale'. 
+	Seuls les √©l√®ves des classes s√©lectionn√©es ici seront int√©gr√©s √† l'export vers le syst√®me APB.
   </p>
   <form action="admin.php" id="form2" method="post">
 <?php
@@ -138,7 +138,7 @@ echo add_token_field();
 	  <input type="hidden"
 			 name="posted_selection"
 			 value="1" />
-	  <input type="submit" value="Enregistrer la sÈlection"/>
+	  <input type="submit" value="Enregistrer la s√©lection"/>
 	</p>
 	<table class="centreTable" summary="Classes de niveau terminales">
 	  <tr>
@@ -161,7 +161,7 @@ echo add_token_field();
 		  <input type="checkbox"
 				 name="classe_<?php echo $classe->id; ?>"
 				 value="1"
-				 title="Ètat de la classe <?php echo $classe->id; ?>"
+				 title="√©tat de la classe <?php echo $classe->id; ?>"
 				 <?php if ($classe->apb_niveau == 'terminale') echo ' checked="checked"'; ?> />
 		</td>
 	  </tr>
@@ -170,7 +170,7 @@ echo add_token_field();
 ?>
 	</table>
 	<p class="center grandEspaceHaut">
-	  <input type="submit" value="Enregistrer la sÈlection"/>
+	  <input type="submit" value="Enregistrer la s√©lection"/>
 	</p>
 
 </form>
@@ -180,7 +180,7 @@ echo add_token_field();
 
 
 
-<!-- DÈbut du pied -->
+<!-- D√©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -202,7 +202,7 @@ echo add_token_field();
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page gÈnÈrÈe en ";
+   <p class='microtime'>Page g√©n√©r√©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

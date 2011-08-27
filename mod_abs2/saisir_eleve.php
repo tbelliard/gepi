@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -53,9 +53,9 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" && $utilisateur->getStatut()!="autre") {
@@ -64,7 +64,7 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" &
 }
 
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] :(isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
 $id_eleve = isset($_POST["id_eleve"]) ? $_POST["id_eleve"] :(isset($_GET["id_eleve"]) ? $_GET["id_eleve"] :(isset($_SESSION["id_eleve"]) ? $_SESSION["id_eleve"] : NULL));
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
@@ -175,7 +175,7 @@ if (!$groupe_col->isEmpty()) {
 	}
 	echo "</select>&nbsp;";
 
-	echo '<button type="submit">Afficher les élèves</button>';
+	echo '<button type="submit">Afficher les Ã©lÃ¨ves</button>';
 	echo '</p>';
 	echo "</form>";
 	echo "</td>";
@@ -203,12 +203,12 @@ if (!$classe_col->isEmpty()) {
 	}
 	echo "</select>&nbsp;";
 
-	echo '<button type="submit">Afficher les élèves</button>';
+	echo '<button type="submit">Afficher les Ã©lÃ¨ves</button>';
 	echo '</p>';
 	echo "</form>";
 	echo "</td>";
 } else {
-    echo '<td>Aucune classe avec élève affecté n\'a été trouvée</td>';
+    echo '<td>Aucune classe avec Ã©lÃ¨ve affectÃ© n\'a Ã©tÃ© trouvÃ©e</td>';
 }
 
 //on affiche une boite de selection avec les aid
@@ -233,7 +233,7 @@ if (!$aid_col->isEmpty()) {
 	}
 	echo "</select>&nbsp;";
 
-	echo '<button type="submit">Afficher les élèves</button>';
+	echo '<button type="submit">Afficher les Ã©lÃ¨ves</button>';
 echo '</p>';
 	echo "</form>";
 	echo "</td>";
@@ -319,7 +319,7 @@ if (!$eleve_col->isEmpty()) {
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
 
-<!-- Afichage du tableau de la liste des élèves -->
+<!-- Afichage du tableau de la liste des Ã©lÃ¨ves -->
 <!-- Legende du tableau-->
 	<?php echo ('<p>');
 	    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->filterByStatut($utilisateur->getStatut())->find();
@@ -340,12 +340,12 @@ if (!$eleve_col->isEmpty()) {
 <!-- Fin de la legende -->
 
 <table><tr><td style="vertical-align : top;">
-	<table class="tb_absences" style="width:750px;" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
+	<table class="tb_absences" style="width:750px;" summary="Liste des Ã©lÃ¨ves pour l'appel. Colonne 1 : Ã©lÃ¨ves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journÃ©e par crÃ©neaux, derniÃ¨re colonne : photos si actif">
 		<caption class="invisible no_print">Absences</caption>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
-				<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves.
-				Sélectionner :
+				<th style="text-align : center;" abbr="Ã©lÃ¨ves">Liste des &eacute;l&egrave;ves.
+				SÃ©lectionner :
 				<a href="#" onclick="SetAllCheckBoxes('liste_absence_eleve', 'active_absence_eleve[]', '', true); return false;">Tous</a>
 				<a href="#" onclick="SetAllCheckBoxes('liste_absence_eleve', 'active_absence_eleve[]', '', false); return false;">Aucun</a>
 				</th>
@@ -424,7 +424,7 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			echo '<br>';
 			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
 					if (!$('edt_".$eleve->getLogin()."').visible()) {
-					    new Ajax.Updater('edt_".$eleve->getLogin()."', './ajax_edt_eleve.php?eleve_login=".$eleve->getLogin()."', {encoding: 'ISO-8859-1'});
+					    new Ajax.Updater('edt_".$eleve->getLogin()."', './ajax_edt_eleve.php?eleve_login=".$eleve->getLogin()."', {encoding: 'utf-8'});
 					    $('edt_".$eleve->getLogin()."').show();
 					} else {
 					    $('edt_".$eleve->getLogin()."').hide();
@@ -448,7 +448,7 @@ echo "</td>";
 echo "<td style='width:270px; vertical-align: top;'>";
     echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
 	echo '<p>';
-    echo 'Début : <input size="9" id="date_absence_eleve_debut_saisir_eleve" name="date_absence_eleve_debut_saisir_eleve" value="'.$dt_date_absence_eleve_debut_saisir_eleve->format('d/m/Y').'" />&nbsp;';
+    echo 'DÃ©but : <input size="9" id="date_absence_eleve_debut_saisir_eleve" name="date_absence_eleve_debut_saisir_eleve" value="'.$dt_date_absence_eleve_debut_saisir_eleve->format('d/m/Y').'" />&nbsp;';
    echo '</p>';
      echo '
     <script type="text/javascript">
@@ -480,14 +480,14 @@ echo '<div style="border-width: 1px; border-style: solid; text-align: left; padd
 echo '<p>';
 echo 'De <input name="heure_debut_absence_eleve" value="';
 echo $edt_creneau_col->getFirst()->getHeuredebutDefiniePeriode("H:i");
-echo '" type="text" maxlength="5" size="4"/> à ';
+echo '" type="text" maxlength="5" size="4"/> Ã  ';
 echo '<input name="heure_fin_absence_eleve" value="';
 echo $edt_creneau_col->getLast()->getHeurefinDefiniePeriode("H:i");
 echo '" type="text" maxlength="5" size="4"/><br/>';
 echo '<input type="radio" name="multisaisie" value="n" checked="checked" />';
-echo '	Créer une seule saisie <br/>';
+echo '	CrÃ©er une seule saisie <br/>';
 echo '	<input type="radio" name="multisaisie" value="y"/>';
-echo '	Créer une saisie par jour';
+echo '	CrÃ©er une saisie par jour';
 echo '</p></div>';
 echo 'ou ';
 echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
@@ -495,7 +495,7 @@ echo '<div style="border-width: 1px; border-style: solid; text-align: left; padd
     echo ("<select name=\"id_creneau\" class=\"small\">");
 
 
-    echo "<option value='-1'>choisissez un créneau</option>\n";
+    echo "<option value='-1'>choisissez un crÃ©neau</option>\n";
     foreach ($edt_creneau_col as $edt_creneau) {
 	//$edt_creneau = new EdtCreneau();
 	    echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
@@ -517,7 +517,7 @@ if (!$cours_col->isEmpty()) {
 	foreach ($cours_col as $edt_cours) {
 	    //$edt_cours = new EdtEmplacementCours();
 		if ($edt_cours->getEdtCreneau() == NULL) {
-		    //on affiche pas le cours si il n'est associé avec aucun creneau
+		    //on affiche pas le cours si il n'est associÃ© avec aucun creneau
 		    continue;
 		}
 		if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
@@ -539,7 +539,7 @@ if (!$cours_col->isEmpty()) {
 	$col = EdtSemaineQuery::create()->find();
 	if (isset($_GET["affiche_toute_semaine"])) {
     echo '<p>';
-	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
+	    //on va commencer la liste Ã  la semaine 31 (milieu des vacances d'ete)
 	    for ($i = 0; $i < $col->count(); $i++) {
 		$pos = ($i + 30) % $col->count();
 		$semaine = $col[$pos];
@@ -557,7 +557,7 @@ if (!$cours_col->isEmpty()) {
     echo '</p>';
 	} else {
     echo '<p>';
-	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
+	    //on va commencer la liste Ã  la semaine 31 (milieu des vacances d'ete)
 	    for ($i = 0; $i < 10; $i++) {
 		$pos = ($i + date('W') + 2*$col->count() - 5) % $col->count();
 		$semaine = $col[$pos];
@@ -597,7 +597,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 45;
              $taille_max_hauteur = 45;
 
@@ -606,7 +606,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 

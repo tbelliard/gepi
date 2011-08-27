@@ -40,7 +40,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-//INSERT INTO droits SET id='/eleves/ajax_modif_eleve.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Enregistrement des modifications élève',statut='';
+//INSERT INTO droits SET id='/eleves/ajax_modif_eleve.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Enregistrement des modifications Ã©lÃ¨ve',statut='';
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -48,7 +48,7 @@ if (!checkAccess()) {
 
 check_token();
 
-header('Content-Type: text/html; charset=ISO-8859-15');
+header('Content-Type: text/html; charset=utf-8');
 
 /*
 $signalement_login_eleve=isset($_POST['signalement_login_eleve']) ? $_POST['signalement_login_eleve'] : "";

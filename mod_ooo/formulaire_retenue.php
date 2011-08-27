@@ -36,8 +36,8 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_ooo/formulaire_retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : formulaire retenue', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/formulaire_retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : formulaire retenue', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_ooo/formulaire_retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : formulaire retenue', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/formulaire_retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : formulaire retenue', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -47,7 +47,7 @@ if (!checkAccess()) {
 //debug_var();
 
 
-// recupération des parametres
+// recupÃ©ration des parametres
 $is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($_GET['is_posted']) ? $_GET['is_posted'] : NULL);
 
 if (isset($is_posted)) {
@@ -77,7 +77,7 @@ require_once("../lib/header.inc");
 
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo "<p>&nbsp;</p>";
-echo "<p class='bold'>Détails de la retenue";
+echo "<p class='bold'>DÃ©tails de la retenue";
 echo "&nbsp;</p>\n";
 
 echo "<form enctype='multipart/form-data' action='./formulaire_retenue.php' method='post' name='formulaire'>\n";
@@ -110,11 +110,11 @@ $alt=1;
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	//Nom et prénom de l'élève
+	//Nom et prÃ©nom de l'Ã©lÃ¨ve
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-	echo "Nom et prénom de l'élève&nbsp;:";
+	echo "Nom et prÃ©nom de l'Ã©lÃ¨ve&nbsp;:";
 	echo "</td>\n";
 	echo "<td style='text-align:left;'";
 	echo " colspan='2'";
@@ -123,11 +123,11 @@ $alt=1;
 	echo "</td>\n";
 
 	
-	//Classe de l'élève
+	//Classe de l'Ã©lÃ¨ve
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-	echo "Classe de l'élève&nbsp;:";
+	echo "Classe de l'Ã©lÃ¨ve&nbsp;:";
 	echo "</td>\n";
 	echo "<td style='text-align:left;'";
 	echo " colspan='2'";
@@ -151,7 +151,7 @@ $alt=1;
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-	echo "Travail donné&nbsp;:";
+	echo "Travail donnÃ©&nbsp;:";
 	echo "</td>\n";
 	echo "<td style='text-align:left;'";
 	echo " colspan='2'";
@@ -190,7 +190,7 @@ $alt=1;
 echo "<input type='hidden' name='is_posted' value='y' />\n";
 echo "</form>\n";
 echo "<p>&nbsp;</p>";
-echo "<p class='bold'>REMARQUE : Les retenues saisies par le formulaire ci-dessus ne sont pas enregistrée dans le module discipline.";
+echo "<p class='bold'>REMARQUE : Les retenues saisies par le formulaire ci-dessus ne sont pas enregistrÃ©e dans le module discipline.";
 echo "&nbsp;</p>\n";
 	
 

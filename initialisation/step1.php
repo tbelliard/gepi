@@ -44,26 +44,26 @@ if (!checkAccess()) {
     die();
 }
 
-// Page bourrinée... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
+// Page bourrinÃ©e... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
 check_token();
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 1";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des Ã©lÃ¨ves - Etape 1";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>|<a href="index.php">Retour accueil initialisation</a>|</p>
 <?php
 
-// On vérifie si l'extension d_base est active
+// On vÃ©rifie si l'extension d_base est active
 verif_active_dbase();
 
-echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves,  constitution des classes et affectation des élèves dans les classes</h3></center>";
+echo "<center><h3 class='gepi'>PremiÃ¨re phase d'initialisation<br />Importation des Ã©lÃ¨ves,  constitution des classes et affectation des Ã©lÃ¨ves dans les classes</h3></center>";
 
 
 if (!isset($is_posted)) {
-    echo "<p>Vous allez effectuer la première étape : elle consiste à importer le fichier <b>F_ELE.DBF</b> contenant toutes les données dans une table temporaire de la base de données de <b>GEPI</b>.";
-    echo "<p>Veuillez préciser le nom complet du fichier <b>F_ELE.DBF</b>.";
+    echo "<p>Vous allez effectuer la premiÃ¨re Ã©tape : elle consiste Ã  importer le fichier <b>F_ELE.DBF</b> contenant toutes les donnÃ©es dans une table temporaire de la base de donnÃ©es de <b>GEPI</b>.";
+    echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>F_ELE.DBF</b>.";
     echo "<form enctype='multipart/form-data' action='step1.php' method=post>";
     echo "<input type=hidden name='is_posted' value='yes'>";
     echo "<p><input type=\"file\" size=\"80\" name=\"dbf_file\">";
@@ -80,17 +80,17 @@ if (!isset($is_posted)) {
             echo "<p><a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
         } else {
             $del = @mysql_query("DELETE FROM temp_gep_import");
-            // on constitue le tableau des champs à extraire
+            // on constitue le tableau des champs Ã  extraire
             $tabchamps = array("ELENOM","ELEPRE","ELESEXE","ELEDATNAIS","ELENOET","ERENO","ELEDOUBL","ELENONAT","ELEREG","DIVCOD","ETOCOD_EP", "ELEOPT1", "ELEOPT2", "ELEOPT3", "ELEOPT4", "ELEOPT5", "ELEOPT6", "ELEOPT7", "ELEOPT8", "ELEOPT9", "ELEOPT10", "ELEOPT11", "ELEOPT12");
 
             $nblignes = dbase_numrecords($fp); //number of rows
             $nbchamps = dbase_numfields($fp); //number of fields
 
-            // On range dans un tableau les en-têtes des champs
+            // On range dans un tableau les en-tÃªtes des champs
             if (@dbase_get_record_with_names($fp,1)) {
                 $temp = @dbase_get_record_with_names($fp,1);
             } else {
-                echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+                echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
                 echo "<a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
                 die();
             }
@@ -141,19 +141,19 @@ if (!isset($is_posted)) {
 
             dbase_close($fp);
             if ($nb_reg_no != 0) {
-                echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs, vous ne pouvez pas procéder à la suite de l'initialisation. Trouvez la cause de l'erreur et recommencez la procédure, après avoir vidé la table temporaire.";
+                echo "<p>Lors de l'enregistrement des donnÃ©es il y a eu $nb_reg_no erreurs, vous ne pouvez pas procÃ©der Ã  la suite de l'initialisation. Trouvez la cause de l'erreur et recommencez la procÃ©dure, aprÃ¨s avoir vidÃ© la table temporaire.";
             } else {
-                echo "<p>Les $nblignes lignes du fichier F_ELE.DBF ont été analysées.<br />$nb_reg_ok lignes de données correspondant à des élèves de l'année en cours ont été enregistrées dans une table temporaire.<br />Il n'y a pas eu d'erreurs, vous pouvez procéder à l'étape suivante.</p>";
-                echo "<center><p><a href='step2.php'>Accéder à l'étape 2</a></p></center>";
+                echo "<p>Les $nblignes lignes du fichier F_ELE.DBF ont Ã©tÃ© analysÃ©es.<br />$nb_reg_ok lignes de donnÃ©es correspondant Ã  des Ã©lÃ¨ves de l'annÃ©e en cours ont Ã©tÃ© enregistrÃ©es dans une table temporaire.<br />Il n'y a pas eu d'erreurs, vous pouvez procÃ©der Ã  l'Ã©tape suivante.</p>";
+                echo "<center><p><a href='step2.php'>AccÃ©der Ã  l'Ã©tape 2</a></p></center>";
             }
         }
     } else if (trim($dbf_file['name'])=='') {
 
-        echo "<p>Aucun fichier n'a été sélectionné !<br />";
+        echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />";
         echo "<a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
 
     } else {
-        echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+        echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
         echo "<a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
     }
 }

@@ -1,20 +1,20 @@
 <?php
-# Une fois renseigné, pensez à renommer ce fichier connect-modele.inc.php
+# Une fois renseignÃ©, pensez Ã  renommer ce fichier connect-modele.inc.php
 # en connect.inc.php dans le repertoire secure
 #
 # ============
-# Premier cas : vous êtes en configuration mono-site
-# (une installation de Gepi / un établissement)
+# Premier cas : vous Ãªtes en configuration mono-site
+# (une installation de Gepi / un Ã©tablissement)
 #
-# 1- Laissez la variable $multisite à "n",
+# 1- Laissez la variable $multisite Ã  "n",
 $multisite = "n";
 #
 # 2- Renseignez les cinq variables suivantes
 # ($dbHost, $dbDb, $dbUser, $dbPass, et $gepiPath)
 # selon votre configuration
 #
-# Le nom du serveur qui héberge votre base mysql.
-# (si c'est le même que celui qui héberge les scripts php, mettre "localhost")
+# Le nom du serveur qui hÃ©berge votre base mysql.
+# (si c'est le mÃªme que celui qui hÃ©berge les scripts php, mettre "localhost")
 $dbHost="localhost";
 # Le nom de votre base mysql
 $dbDb="gepi";
@@ -26,9 +26,9 @@ $dbPass="gepi";
 $gepiPath="/gepi";
 
 /**
- * Connexion permanente à la base
+ * Connexion permanente Ã  la base
  * 
- * Décommenter la ligne et remplacer NULL par "oui" pour activer les connexions non permanentes
+ * DÃ©commenter la ligne et remplacer NULL par "oui" pour activer les connexions non permanentes
  *
  * @global int $GLOBALS['db_nopersist']
  * @name $db_nopersist
@@ -36,30 +36,30 @@ $gepiPath="/gepi";
 //$GLOBALS['db_nopersist']=NULL;
 
 
-/* Base de l'URL (sans le chemin relatif défini ci-dessus)
- * Cette variable est utile dans le cas de l'installation derrière un reverse proxy,
- * ce qui peut induire en erreur les mécanismes de détection automatique
- * de l'adresse. Si cette variable n'est pas défini, les mécanismes automatiques
- * seront utilisés.
+/* Base de l'URL (sans le chemin relatif dÃ©fini ci-dessus)
+ * Cette variable est utile dans le cas de l'installation derriÃ¨re un reverse proxy,
+ * ce qui peut induire en erreur les mÃ©canismes de dÃ©tection automatique
+ * de l'adresse. Si cette variable n'est pas dÃ©fini, les mÃ©canismes automatiques
+ * seront utilisÃ©s.
  */
 #$gepiBaseUrl = 'https://mongepi.fr'
 
 # ============
-# Deuxième cas : vous êtes en configuration multi-site
-# (une installation de Gepi / plusieurs établissements)
+# DeuxiÃ¨me cas : vous Ãªtes en configuration multi-site
+# (une installation de Gepi / plusieurs Ã©tablissements)
 #
-# 1- Passez la variable $multisite à "y",
+# 1- Passez la variable $multisite Ã  "y",
 #    Remplacez "n" par "y" dans la ligne [$multisite = "n";]
-#    située au 1- du premier cas ci-dessus
-#    ou dé-commentez -retirez le "# " en début de ligne- la ligne ci-dessous
+#    situÃ©e au 1- du premier cas ci-dessus
+#    ou dÃ©-commentez -retirez le "# " en dÃ©but de ligne- la ligne ci-dessous
 #$multisite = "y";
 #
-# 2- Renseignez le fichier /secure/multisite.ini comme indiqué
+# 2- Renseignez le fichier /secure/multisite.ini comme indiquÃ©
 #
 # 3- Modifiez la valeur "multisite" de la table "settings"
 # en passant (via phpmyadmin par ex.) la commande sql suivante :
 # UPDATE `nombase`.`setting` SET `VALUE` = 'y' WHERE NAME = 'multisite' LIMIT 1 ;
-# décommentez toute la portion de code suivante pour le multisite
+# dÃ©commentez toute la portion de code suivante pour le multisite
 /*
 if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
 	$RNE = isset($_REQUEST['rne']) ? $_REQUEST['rne'] : (isset($_REQUEST['RNE']) ? $_REQUEST['RNE'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization'] : (isset($_COOKIE['RNE']) ? $_COOKIE['RNE'] : NULL)));

@@ -25,7 +25,7 @@
 $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
-//les fonctions spécifiques
+//les fonctions spÃ©cifiques
 include("../lib/functions.php");
 include("../../edt_organisation/fonctions_calendrier.php");
 
@@ -45,7 +45,7 @@ if (!checkAccess()) {
     die();
 }
 // header
-$titre_page = "Définition des créneaux horaires";
+$titre_page = "DÃ©finition des crÃ©neaux horaires";
 require_once("../../lib/header.inc");
 
 	if (empty($_GET['action_sql']) and empty($_POST['action_sql'])) {$action_sql="";}
@@ -70,7 +70,7 @@ require_once("../../lib/header.inc");
 $jour_semaine = isset($_POST["jour_semaine"]) ? $_POST["jour_semaine"] : NULL;
 $demande_jour_semaine = isset($_POST["demande_jour_semaine"]) ? $_POST["demande_jour_semaine"] : NULL;
 
-// on prévoit de passer systématiquement vers les créneaux du jour différent si $cren est initialisé
+// on prÃ©voit de passer systÃ©matiquement vers les crÃ©neaux du jour diffÃ©rent si $cren est initialisÃ©
 // Dans ce cas, on appelle edt_creneaux_bis
 $cren = isset($_GET["cren"]) ? $_GET["cren"] : (isset($_POST["cren"]) ? $_POST["cren"] : NULL);
 if ($cren == "diff") {
@@ -84,12 +84,12 @@ $total = '0';
 $verification[0] = '1';
 $erreur = '0';
 
-// On commence par sauvegarder le réglage sur le jour où les créneaux sont différents si c'est demandé
-	$creneau_different = getSettingValue("creneau_different"); // on charge la variable pour éviter les prob avec la fonction getSettingValue
+// On commence par sauvegarder le rÃ©glage sur le jour oÃ¹ les crÃ©neaux sont diffÃ©rents si c'est demandÃ©
+	$creneau_different = getSettingValue("creneau_different"); // on charge la variable pour Ã©viter les prob avec la fonction getSettingValue
 if ($demande_jour_semaine == "ok_diff") {
 	// On compare la demande avec le setting actuel
 	if ($jour_semaine != getSettingValue("creneau_different")) {
-		// On met à jour le setting
+		// On met Ã  jour le setting
 		$query = mysql_query("UPDATE setting SET value = '".$jour_semaine."' WHERE name = 'creneau_different'");
 		$creneau_different = $jour_semaine;
 	}else{
@@ -99,7 +99,7 @@ if ($demande_jour_semaine == "ok_diff") {
 
 if ($action_sql == "ajouter" or $action_sql == "modifier") {
 	while ($total < $nb_ajout) {
-		// Vérification des variables
+		// VÃ©rification des variables
 		$nom_definie_periode_ins = $_POST['nom_definie_periode'][$total];
 		$heuredebut_definie_periode_ins = $_POST['heuredebut_definie_periode'][$total];
 		$heurefin_definie_periode_ins = $_POST['heurefin_definie_periode'][$total];
@@ -117,7 +117,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 		if ($action_sql == "modifier") {
 			$id_definie_periode_ins = $_POST['id_periode'][$total];
 		}
-		// Vérification des champs nom et prenom (si il ne sont pas vides ?)
+		// VÃ©rification des champs nom et prenom (si il ne sont pas vides ?)
 		if($nom_definie_periode_ins != "" && $heuredebut_definie_periode_ins != "" && $heurefin_definie_periode_ins != ""){
 			if($heuredebut_definie_periode_ins != "00:00") {
 				if($heurefin_definie_periode_ins != "00:00") {
@@ -134,7 +134,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 								$requete = "INSERT INTO ".$prefix_base."edt_creneaux".$choix_table." (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode,type_creneaux) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins', '$type_creneaux_ins')";
 							}
 							if($action_sql == "modifier") {
-								// Requete de mise à jour MYSQL
+								// Requete de mise Ã  jour MYSQL
 								$requete = "UPDATE ".$prefix_base."edt_creneaux".$choix_table." SET
 											nom_definie_periode = '$nom_definie_periode_ins',
 											heuredebut_definie_periode = '$heuredebut_definie_periode_ins',
@@ -147,27 +147,27 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 							mysql_query($requete) or die('Erreur SQL !'.$sql.'<br />'.mysql_error());
 							$verification[$total] = 1;
 						} else {
-							// vérification = 2 - Ce créneaux horaires existe déjas
+							// vÃ©rification = 2 - Ce crÃ©neaux horaires existe dÃ©jas
 							$verification[$total] = 2;
 							$erreur = 1;
 						}
 					} else {
-						// vérification = 5 - L'heure de fin n'est pas définie
+						// vÃ©rification = 5 - L'heure de fin n'est pas dÃ©finie
 						$verification[$total] = 6;
 						$erreur = 1;
 					}
 				} else {
-					// vérification = 5 - L'heure de fin n'est pas définie
+					// vÃ©rification = 5 - L'heure de fin n'est pas dÃ©finie
 					$verification[$total] = 5;
 					$erreur = 1;
 				}
 			} else {
-				// vérification = 4 - L'heure de début n'est pas définie
+				// vÃ©rification = 4 - L'heure de dÃ©but n'est pas dÃ©finie
 				$verification[$total] = 4;
 				$erreur = 1;
 			}
 		} else {
-			// vérification = 3 - Tous les champs ne sont pas remplie
+			// vÃ©rification = 3 - Tous les champs ne sont pas remplie
 			$verification[$total] = 3;
 			$erreur = 1;
 		}
@@ -231,10 +231,10 @@ if ($action=="modifier" or $action=="ajouter") {
 	echo $retour;
 }
 echo "	<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-// On regarde la table utilisée avant d'afficher le lien
+// On regarde la table utilisÃ©e avant d'afficher le lien
 	if ($cren == "diff") {
 		$cherche_table = '';
-		$texte_lien = ' Voir les créneaux de tous les jours';
+		$texte_lien = ' Voir les crÃ©neaux de tous les jours';
 	}else{
 		$cherche_table = '&amp;cren=diff';
 		$texte_lien = ' Voir les cr&eacute;neaux du jour diff&eacute;rent';
@@ -245,23 +245,23 @@ echo "	<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> R
 
 if ($action == "visualiser") {
 	if ($cren == "diff") {
-		// On peut cocher un seul jour différent des autres
+		// On peut cocher un seul jour diffÃ©rent des autres
 		// Si ce jour n'existe pas, on coche "aucun"
 		if ($creneau_different == 'n') {
 			$coche = ' checked="checked"';
 		}else{
 			$coche = '';
 		}
-		echo '<p>Vous devez choisir un seul jour où les créneaux sont différents des autres jours (comme le mercredi...)</p>';
+		echo '<p>Vous devez choisir un seul jour oÃ¹ les crÃ©neaux sont diffÃ©rents des autres jours (comme le mercredi...)</p>';
 
-		// On affiche alors une série de radio qui correspondent aux jours de la semaine
+		// On affiche alors une sÃ©rie de radio qui correspondent aux jours de la semaine
 		echo '
 		<form name="choisir_jour_diff" action="admin_periodes_absences.php" method="post">
 			<p>';
 		for($c = 0; $c < 7; $c++){
 			$id = $c;
-			$jour = retourneJour($c); // le jour de la semaine en Français
-			// On détermine le coche
+			$jour = retourneJour($c); // le jour de la semaine en FranÃ§ais
+			// On dÃ©termine le coche
 			if ($creneau_different == $c) {
 				$coched = ' checked="checked"';
 			}else{
@@ -282,26 +282,26 @@ if ($action == "visualiser") {
 		</p>
 		</form>';
 	}
-// On teste la table des emplois du temps et on envoie un message adéquat si elle est remplie
+// On teste la table des emplois du temps et on envoie un message adÃ©quat si elle est remplie
 $query = mysql_query("SELECT * FROM edt_cours LIMIT 5");
 $compter = mysql_num_rows($query);
 if ($compter >= 1) {
-	echo "<p class=\"red\">Attention, si vous modifiez les créneaux maintenant, les cours de l'emploi du temps seront perturbés !</p>";
+	echo "<p class=\"red\">Attention, si vous modifiez les crÃ©neaux maintenant, les cours de l'emploi du temps seront perturbÃ©s !</p>";
 }
 	/* div de centrage du tableau pour ie5 */
 ?>
 <div style="text-align: center;">
-<h2>Définition des créneaux horaires</h2>
+<h2>DÃ©finition des crÃ©neaux horaires</h2>
 	<p>
 		<a href="admin_periodes_absences.php?action=ajouter<?php echo $aff_creneau_diff; ?>">
-		<img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un créneau horaire
+		<img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un crÃ©neau horaire
 		</a>
 	</p><br />
 
-	<table cellpadding="0" cellspacing="1" class="tab_table" summary="Créneaux">
+	<table cellpadding="0" cellspacing="1" class="tab_table" summary="CrÃ©neaux">
 		<tr>
 			<th class="tab_th" style="width: 80px;">code</th>
-			<th class="tab_th" style="width: 90px;">heure de début</th>
+			<th class="tab_th" style="width: 90px;">heure de dÃ©but</th>
 			<th class="tab_th" style="width: 90px;">heure de fin</th>
 			<th class="tab_th" style="width: 90px;">type</th>
 			<th class="tab_th" style="width: 25px;"></th>
@@ -320,7 +320,7 @@ if ($compter >= 1) {
 			$couleur_cellule = 'couleur_ligne_2';
 			$i = '1';
 		}
-		// Pour l'affichage, on enlève les secondes qui ne servent à rien.
+		// Pour l'affichage, on enlÃ¨ve les secondes qui ne servent Ã  rien.
 		$expl_heuredebut = explode(":", $data_periode['heuredebut_definie_periode']);
 		$heuredebut_creneau = $expl_heuredebut[0].":".$expl_heuredebut[1];
 		$expl_heurefin = explode(":", $data_periode['heurefin_definie_periode']);
@@ -332,7 +332,7 @@ if ($compter >= 1) {
           <td><?php echo $heurefin_creneau; ?></td>
           <td><?php echo $data_periode['type_creneaux']; ?></td>
           <td><a href="admin_periodes_absences.php?action=modifier<?php echo $aff_creneau_diff; ?>&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="Modifier" /></a></td>
-          <td><a href="admin_periodes_absences.php?action=visualiser<?php echo $aff_creneau_diff; ?>&amp;action_sql=supprimer&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer ce créneau ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
+          <td><a href="admin_periodes_absences.php?action=visualiser<?php echo $aff_creneau_diff; ?>&amp;action_sql=supprimer&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer ce crÃ©neau ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
         </tr>
      <?php } ?>
     </table>
@@ -346,18 +346,18 @@ if ($compter >= 1) {
 <div style="text-align:center">
   <?php if ($action == "ajouter") { ?>
 
-	<h2>Ajout de créneaux horaires</h2>
+	<h2>Ajout de crÃ©neaux horaires</h2>
 
     <form name="form1" method="post" action="admin_periodes_absences.php?action=ajouter<?php echo $aff_creneau_diff; ?>">
-      <table class="tab_table" summary="Créneaux">
+      <table class="tab_table" summary="CrÃ©neaux">
         <tr>
-          <th class="tab_th">Nombre de créneaux horaires à ajouter</th>
+          <th class="tab_th">Nombre de crÃ©neaux horaires Ã  ajouter</th>
         </tr>
         <tr>
 			<td class="couleur_ligne_1" style="text-align: right;">
 			<select name="nb_ajout" onchange='document.form1.submit();'>
 <?php
-	// On propose le nombre de créneaux à ajouter
+	// On propose le nombre de crÃ©neaux Ã  ajouter
 for($a=1; $a<=15; $a++) {
 	if (isset($nb_ajout)) {
 		if ($a == $nb_ajout) {
@@ -385,14 +385,14 @@ echo '			</select>
   <?php }
 
     if ($action=="modifier") {
-		echo "<h2>Modifier un créneau horaire</h2>";
+		echo "<h2>Modifier un crÃ©neau horaire</h2>";
 	}
 	?>
     <form action="admin_periodes_absences.php?action=visualiser<?php echo $aff_creneau_diff; ?>&amp;action_sql=<?php if($action=="ajouter") { ?>ajouter<?php } if($action=="modifier") { ?>modifier<?php } ?>" method="post" name="form2" id="form2">
-      <table cellpadding="2" cellspacing="2" class="tab_table" summary="Créneaux">
+      <table cellpadding="2" cellspacing="2" class="tab_table" summary="CrÃ©neaux">
         <tr>
           <th class="tab_th">Code</th>
-          <th class="tab_th">Heure de début</th>
+          <th class="tab_th">Heure de dÃ©but</th>
           <th class="tab_th">Heure de fin</th>
           <th class="tab_th">Type</th>
           <th class="tab_th">Suite logique</th>
@@ -406,11 +406,11 @@ echo '			</select>
          <tr>
           <td><img src="../images/attention.png" width="28" height="28" alt="" /></td>
           <td colspan="3" class="erreur_rouge_jaune"><b>- Erreur -<br />
-          <?php if ($verification_erreur[$nb] == 2) { ?>Ce créneau horaire existe déja<?php } ?>
-          <?php if ($verification_erreur[$nb] == 5) { ?>L'heure de fin n'est pas définie<?php } ?>
-          <?php if ($verification_erreur[$nb] == 4) { ?>L'heure de début n'est pas définie<?php } ?>
+          <?php if ($verification_erreur[$nb] == 2) { ?>Ce crÃ©neau horaire existe dÃ©ja<?php } ?>
+          <?php if ($verification_erreur[$nb] == 5) { ?>L'heure de fin n'est pas dÃ©finie<?php } ?>
+          <?php if ($verification_erreur[$nb] == 4) { ?>L'heure de dÃ©but n'est pas dÃ©finie<?php } ?>
           <?php if ($verification_erreur[$nb] == 3) { ?>Tous les champs ne sont pas remplis<?php } ?>
-          <?php if ($verification_erreur[$nb] == 6) { ?>L'heure de fin ne peut pas être plus petite que l'heure de début<?php } ?>
+          <?php if ($verification_erreur[$nb] == 6) { ?>L'heure de fin ne peut pas Ãªtre plus petite que l'heure de dÃ©but<?php } ?>
           </b><br /></td>
          </tr>
         <?php } ?>

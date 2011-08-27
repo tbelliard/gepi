@@ -75,7 +75,7 @@ if (isset($_POST['enregistrer_param'])) {
 		}
 	}
 
-	if($msg==""){$msg="Enregistrement effectué.";}
+	if($msg==""){$msg="Enregistrement effectuÃ©.";}
 }
 
 
@@ -85,7 +85,7 @@ if (isset($_POST['enregistrer_param'])) {
 //echo '<link rel="stylesheet" type="text/css" media="print" href="impression.css">';
 
 //**************** EN-TETE *****************
-$titre_page = "Paramètres Fiches Brevet";
+$titre_page = "ParamÃ¨tres Fiches Brevet";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -97,11 +97,11 @@ echo " | <a href='index.php'>Accueil Notanet</a>";
 echo "</p>\n";
 echo "</div>\n";
 
-echo "<h2>Paramètres des Fiches Brevet</h2>\n";
+echo "<h2>ParamÃ¨tres des Fiches Brevet</h2>\n";
 
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form_param' method='post'>\n";
 echo add_token_field();
-echo "<table border='0' summary='Paramètres'>\n";
+echo "<table border='0' summary='ParamÃ¨tres'>\n";
 
 $alt=1;
 $fb_academie=getSettingValue("fb_academie");
@@ -109,7 +109,7 @@ $alt=$alt*(-1);
 echo "<tr";
 if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 echo ">\n";
-echo "<td>Académie de: </td>\n";
+echo "<td>AcadÃ©mie de: </td>\n";
 echo "<td><input type='text' name='fb_academie' value='$fb_academie' /></td>\n";
 echo "</tr>\n";
 
@@ -118,7 +118,7 @@ $alt=$alt*(-1);
 echo "<tr";
 if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 echo ">\n";
-echo "<td>Département de: </td>\n";
+echo "<td>DÃ©partement de: </td>\n";
 echo "<td><input type='text' name='fb_departement' value='$fb_departement' /></td>\n";
 echo "</tr>\n";
 
@@ -147,14 +147,14 @@ echo "</tr>\n";
 // MODE DE CALCUL POUR LES MOYENNES DES REGROUPEMENTS DE MATIERES:
 // - LV1: on fait la moyenne de toutes les LV1 (AGL1, ALL1)
 // ou
-// - LV1: on présente pour chaque élève, la moyenne qui correspond à sa LV1: ALL1 s'il fait ALL1,...
+// - LV1: on prÃ©sente pour chaque Ã©lÃ¨ve, la moyenne qui correspond Ã  sa LV1: ALL1 s'il fait ALL1,...
 // ****************************************************************************
 $fb_mode_moyenne=getSettingValue("fb_mode_moyenne");
 $alt=$alt*(-1);
 echo "<tr";
 if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 echo ">\n";
-echo "<td valign='top'>Mode de calcul des moyennes pour les options Notanet associées à plusieurs matières (<i>ex.: LV1 associée à AGL1 et ALL1</i>): </td>\n";
+echo "<td valign='top'>Mode de calcul des moyennes pour les options Notanet associÃ©es Ã  plusieurs matiÃ¨res (<i>ex.: LV1 associÃ©e Ã  AGL1 et ALL1</i>): </td>\n";
 echo "<td>";
 	echo "<table border='0' summary='Mode de calcul des moyennes'>\n";
 	echo "<tr>\n";
@@ -168,8 +168,8 @@ echo "<td>";
 	}
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<label for='fb_mode_moyenne_1'>Calculer la moyenne de toutes matières d'une même option Notanet confondues<br />\n";
-	echo "(<i>on compte ensemble les AGL1 et ALL1; c'est la moyenne de toute la LV1 qui est effectuée</i>)</label>\n";
+	echo "<label for='fb_mode_moyenne_1'>Calculer la moyenne de toutes matiÃ¨res d'une mÃªme option Notanet confondues<br />\n";
+	echo "(<i>on compte ensemble les AGL1 et ALL1; c'est la moyenne de toute la LV1 qui est effectuÃ©e</i>)</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -184,8 +184,8 @@ echo "<td>";
 	}
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<label for='fb_mode_moyenne_2'>Calculer les moyennes par matières<br />\n";
-	echo "(<i>on ne mélange pas AGL1 et ALL1 dans le calcul de la moyenne de classe pour un élève</i>)</label>\n";
+	echo "<label for='fb_mode_moyenne_2'>Calculer les moyennes par matiÃ¨res<br />\n";
+	echo "(<i>on ne mÃ©lange pas AGL1 et ALL1 dans le calcul de la moyenne de classe pour un Ã©lÃ¨ve</i>)</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";

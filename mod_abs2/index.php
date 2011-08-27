@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -53,16 +53,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
-//on va redirigé vers le bonee onglet
+//on va redirigÃ© vers le bonee onglet
 if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') {
     header("Location: ./".$_SESSION['abs2_onglet']);
     die();
@@ -102,7 +102,7 @@ include('menu_abs2.inc.php');
 
 echo "<div class='css-panes' id='containDiv'>\n";
     echo "<div style='display:block'>\n";
-    //echo "<p>Petit texte de présentation du module...</p>\n";
+    //echo "<p>Petit texte de prÃ©sentation du module...</p>\n";
     echo "</div>\n";
 echo "</div>\n";
 

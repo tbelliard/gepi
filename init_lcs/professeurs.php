@@ -72,7 +72,7 @@ function add_user($_login, $_nom, $_prenom, $_sexe, $_statut, $_email) {
         }
 
 
-    // Si l'utilisateur existe déjà, on met simplement à jour ses informations...
+    // Si l'utilisateur existe dÃ©jÃ , on met simplement Ã  jour ses informations...
     $test = mysql_query("SELECT login FROM utilisateurs WHERE login = '" . $_login . "'");
     if (mysql_num_rows($test) > 0) {
         $record = mysql_query("UPDATE utilisateurs SET
@@ -112,7 +112,7 @@ $lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
 $lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des professeurs";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des professeurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -121,7 +121,7 @@ echo "<p class='bold'><a href='../init_lcs/index.php'><img src='../images/icons/
 if (isset($_POST['is_posted'])) {
 	check_token();
 
-    // L'admin a validé la procédure, on procède donc...
+    // L'admin a validÃ© la procÃ©dure, on procÃ¨de donc...
 
     // On se connecte au LDAP
     $ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
@@ -138,12 +138,12 @@ if (isset($_POST['is_posted'])) {
         "gecos"             // Date de naissance,Sexe (F/M),
         );
 
-    echo "<table border=\"1\" cellpadding=\"3\" cellspacing=\"3\">\n<tr><td>Login Professeur</td><td>Nom </td><td>Prénom</td><td>Sexe</td><td>Email</td></tr>\n";
-    // On commence par récupérer tous les profs depuis le LDAP
+    echo "<table border=\"1\" cellpadding=\"3\" cellspacing=\"3\">\n<tr><td>Login Professeur</td><td>Nom </td><td>PrÃ©nom</td><td>Sexe</td><td>Email</td></tr>\n";
+    // On commence par rÃ©cupÃ©rer tous les profs depuis le LDAP
     $attr[] = "memberuid";
     $result = ldap_read ( $ds, "cn=Profs,".$lcs_ldap_groups_dn, "(objectclass=*)",$attr);
 
-    // On met tous les professeurs en état inactif
+    // On met tous les professeurs en Ã©tat inactif
     $update = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE statut='professeur'");
     $info = ldap_get_entries ( $ds, $result );
     if ( $info["count"]) {
@@ -160,18 +160,18 @@ if (isset($_POST['is_posted'])) {
                      $gecos = $info2[0]["gecos"][0];
                      $tmp = split ("[\,\]",$info2[0]["gecos"][0],4);
                      $ret_people = array (
-                     "nom"         => stripslashes( utf8_decode($info2[0]["sn"][0]) ),
-                     "fullname"        => stripslashes( utf8_decode($info2[0]["cn"][0]) ),
+                     "nom"         => stripslashes($info2[0]["sn"][0]),
+                     "fullname"    => stripslashes($info2[0]["cn"][0]),
                      "email"       => $info2[0]["mail"][0],
-                     "sexe"            => $tmp[2],
+                     "sexe"        => $tmp[2],
                      );
                      $long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
                      $prenom = substr($ret_people["fullname"], 0, $long) ;
                  }
                  @ldap_free_result ( $result2 );
              }
-             // On ajoute l'utilisateur. La fonction s'occupe toute seule de vérifier que
-             // le login n'existe pas déjà dans la base. S'il existe, on met simplement à jour
+             // On ajoute l'utilisateur. La fonction s'occupe toute seule de vÃ©rifier que
+             // le login n'existe pas dÃ©jÃ  dans la base. S'il existe, on met simplement Ã  jour
              // les informations
              // function add_user($_login, $_nom, $_prenom, $_statut) {
              $add = add_user($uid,$ret_people["nom"],$prenom,$ret_people["sexe"],"professeur",$ret_people["email"]);
@@ -181,24 +181,24 @@ if (isset($_POST['is_posted'])) {
          echo "<table>";
     }
 
-    echo "<p>Opération effectuée.</p>";
-    echo "<p>Vous pouvez vérifier l'importation en allant sur la page de <a href='../utilisateurs/index.php'>gestion des utilisateurs</a>.</p>";
+    echo "<p>OpÃ©ration effectuÃ©e.</p>";
+    echo "<p>Vous pouvez vÃ©rifier l'importation en allant sur la page de <a href='../utilisateurs/index.php'>gestion des utilisateurs</a>.</p>";
 
 } else {
-    echo "<p>L'opération d'importation des professeurs depuis le LDAP de LCS va effectuer les opérations suivantes :</p>";
+    echo "<p>L'opÃ©ration d'importation des professeurs depuis le LDAP de LCS va effectuer les opÃ©rations suivantes :</p>";
     echo "<ul>";
-    echo "<li>Passage à l'état 'inactif' de tous les professeurs déjà présents dans la base Gepi.</li>";
-    echo "<li>Tentative d'ajout de chaque utilisateur 'professeur' présent dans l'annuaire LDAP de LCS.</li>";
-    echo "<li>Si l'utilisateur n'existe pas, il est créé et est directement utilisable.</li>";
-    echo "<li>Si l'utilisateur existe déjà, ses informations de base sont mises à jour et il passe en état 'actif', devenant directement utilisable.</li>";
+    echo "<li>Passage Ã  l'Ã©tat 'inactif' de tous les professeurs dÃ©jÃ  prÃ©sents dans la base Gepi.</li>";
+    echo "<li>Tentative d'ajout de chaque utilisateur 'professeur' prÃ©sent dans l'annuaire LDAP de LCS.</li>";
+    echo "<li>Si l'utilisateur n'existe pas, il est crÃ©Ã© et est directement utilisable.</li>";
+    echo "<li>Si l'utilisateur existe dÃ©jÃ , ses informations de base sont mises Ã  jour et il passe en Ã©tat 'actif', devenant directement utilisable.</li>";
     echo "</ul>";
     echo "<form enctype='multipart/form-data' action='professeurs.php' method=post>";
 	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes'>";
 
-    echo "<p>Etes-vous sûr de vouloir importer tous les utilisateurs depuis l'annuaire du serveur LCS vers Gepi ?</p>";
+    echo "<p>Etes-vous sÃ»r de vouloir importer tous les utilisateurs depuis l'annuaire du serveur LCS vers Gepi ?</p>";
     echo "<br/>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
 }
 require("../lib/footer.inc.php");

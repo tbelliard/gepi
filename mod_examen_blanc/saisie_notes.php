@@ -59,7 +59,7 @@ $insert=mysql_query($sql);
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -81,7 +81,7 @@ $reg_eleves=isset($_POST['reg_eleves']) ? $_POST['reg_eleves'] : (isset($_GET['r
 $export_csv=isset($_GET['export_csv']) ? $_GET['export_csv'] : "n";
 $import_csv=isset($_POST['import_csv']) ? $_POST['import_csv'] : "n";
 
-// ATTENTION: Avec $id_exam/$id_groupe et $id_ex_grp on a une clé de trop...
+// ATTENTION: Avec $id_exam/$id_groupe et $id_ex_grp on a une clÃ© de trop...
 
 //$modif_exam=isset($_POST['modif_exam']) ? $_POST['modif_exam'] : (isset($_GET['modif_exam']) ? $_GET['modif_exam'] : NULL);
 
@@ -101,7 +101,7 @@ if($_SESSION['statut']=='professeur') {
 	}
 
 	if((isset($id_exam))&&(!is_pp_proprio_exb($id_exam))) {
-		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'êtes pas propriétaire de l'examen blanc n°$id_exam."));
+		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'Ãªtes pas propriÃ©taire de l'examen blanc nÂ°$id_exam."));
 		die();
 	}
 
@@ -127,7 +127,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			//echo "$sql<br />\n";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				$msg="Aucun groupe hors enseignement n'a été trouvé pour cet examen.<br />\n";
+				$msg="Aucun groupe hors enseignement n'a Ã©tÃ© trouvÃ© pour cet examen.<br />\n";
 				unset($reg_eleves);
 				unset($reg_notes);
 			}
@@ -159,7 +159,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					if($suppr) {$nb_suppr_ele++;}
 				}
 			}
-			if($nb_suppr_ele>0) {$msg.="$nb_suppr_ele élève(s) retiré(s).<br />";}
+			if($nb_suppr_ele>0) {$msg.="$nb_suppr_ele Ã©lÃ¨ve(s) retirÃ©(s).<br />";}
 
 			$nb_ajout_ele=0;
 			for($i=0;$i<count($login_ele);$i++) {
@@ -170,7 +170,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					if($insert) {$nb_ajout_ele++;}
 				}
 			}
-			if($nb_ajout_ele>0) {$msg.="$nb_ajout_ele élève(s) ajouté(s).<br />";}
+			if($nb_ajout_ele>0) {$msg.="$nb_ajout_ele Ã©lÃ¨ve(s) ajoutÃ©(s).<br />";}
 		}
 		elseif($reg_notes=='y') {
 			check_token();
@@ -218,7 +218,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			}
 		
 			if($msg=='') {
-				$msg="Enregistrement effectué.";
+				$msg="Enregistrement effectuÃ©.";
 			}
 
 		}
@@ -231,7 +231,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			$msg="Le groupe hors enseignement n'a pas été identifié???";
+			$msg="Le groupe hors enseignement n'a pas Ã©tÃ© identifiÃ©???";
 		}
 		else {
 			$lig=mysql_fetch_object($res);
@@ -241,7 +241,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			$res_classes=mysql_query($sql);
 			$nb_classes=mysql_num_rows($res_classes);
 			if($nb_classes==0) {
-				$msg="Aucune classe n'est associée à l'examen n°$id_exam???\n";
+				$msg="Aucune classe n'est associÃ©e Ã  l'examen nÂ°$id_exam???\n";
 			}
 			else {
 				$csv="";
@@ -282,7 +282,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			$msg="Le groupe hors enseignement n'a pas été identifié???";
+			$msg="Le groupe hors enseignement n'a pas Ã©tÃ© identifiÃ©???";
 		}
 		else {
 			$lig=mysql_fetch_object($res);
@@ -293,7 +293,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			$res_classes=mysql_query($sql);
 			$nb_classes=mysql_num_rows($res_classes);
 			if($nb_classes==0) {
-				$msg="Aucune classe n'est associée à l'examen n°$id_exam???\n";
+				$msg="Aucune classe n'est associÃ©e Ã  l'examen nÂ°$id_exam???\n";
 			}
 			else {
 				$tab_ele_inscrits=array();
@@ -316,9 +316,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				//}
 
 				if (trim($csv_file['name'])=='') {
-					//echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+					//echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 					//echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=import_csv'>Cliquer ici</a> pour recommencer !</center></p>\n";
-					$msg="Aucun fichier n'a été sélectionné !<br />\n";
+					$msg="Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 					$mode='import_csv';
 				}
 				else{
@@ -334,7 +334,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					}
 					else{
 		
-						// on constitue le tableau des champs à extraire
+						// on constitue le tableau des champs Ã  extraire
 						$tabchamps=array("LOGIN","NOTE");
 		
 						$ligne=fgets($fp, 4096);
@@ -358,19 +358,19 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						}
 		
 						if($temoin!=count($tabchamps)){
-							//echo "<p><b>ERREUR:</b> La ligne d'entête du fichier n'est pas conforme à ce qui est attendu.</p>\n";
+							//echo "<p><b>ERREUR:</b> La ligne d'entÃªte du fichier n'est pas conforme Ã  ce qui est attendu.</p>\n";
 							//echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=import_csv'>Cliquer ici</a> pour recommencer !</center></p>\n";
 							//require("../lib/footer.inc.php");
 							//die();
 
-							$msg="<b>ERREUR:</b> La ligne d'entête du fichier n'est pas conforme à ce qui est attendu.<br />\n";
+							$msg="<b>ERREUR:</b> La ligne d'entÃªte du fichier n'est pas conforme Ã  ce qui est attendu.<br />\n";
 							$mode='import_csv';
 						}
 
 						$msg="";
 
 						$fp=fopen($csv_file['tmp_name'],"r");
-						// On lit une ligne pour passer la ligne d'entête:
+						// On lit une ligne pour passer la ligne d'entÃªte:
 						$ligne = fgets($fp, 4096);
 						//=========================
 						unset($tab_dev);
@@ -387,7 +387,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 								$current_ele_login=$tabligne[$tabindice[0]];
 								if(!in_array($current_ele_login,$tab_ele_inscrits)) {
-									$msg.="L'élève ".$current_ele_login." n'est pas associé à ce groupe hors enseignement.<br />";
+									$msg.="L'Ã©lÃ¨ve ".$current_ele_login." n'est pas associÃ© Ã  ce groupe hors enseignement.<br />";
 								}
 								else {
 									$current_note=$tabligne[$tabindice[1]];
@@ -448,7 +448,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Examen blanc: Saisie";
 //echo "<div class='noprint'>\n";
@@ -465,7 +465,7 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Examens blancs</a>";
 echo " | <a href='index.php?id_exam=$id_exam&amp;mode=modif_exam'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo ">Examen n°$id_exam</a>";
+echo ">Examen nÂ°$id_exam</a>";
 //echo "</p>\n";
 //echo "</div>\n";
 
@@ -492,18 +492,18 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		if(!isset($mode)) {
 			echo "</p>\n";
 
-			echo "<p class='bold'>Groupe Hors Enseignement en $matiere pour l'examen n°$id_exam</p>";
+			echo "<p class='bold'>Groupe Hors Enseignement en $matiere pour l'examen nÂ°$id_exam</p>";
 
 			echo "<p>Saisie de notes pour un devoir hors enseignements.</p>\n";
 
 			echo "<p>Effectuez votre choix&nbsp;:</p>\n";
 			echo "<ul>\n";
-			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=choix_eleves'>Choisir les élèves</a></li>\n";
+			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=choix_eleves'>Choisir les Ã©lÃ¨ves</a></li>\n";
 			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=saisie_notes'>Saisir les notes</a></li>\n";
 			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;export_csv=y'>Exporter les notes saisies</a></li>\n";
 			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=import_csv'>Importer des notes depuis un CSV</a></li>\n";
-			echo "<li>A FAIRE&nbsp;: Permettre de nommer ces notes hors enseignement pour pouvoir les re-sélectionner la note par la suite pour un autre examen.</li>\n";
-			echo "<li>A FAIRE&nbsp;: Permettre de choisir un enseignement/période dans les Années antérieures si le module est actif.</li>\n";
+			echo "<li>A FAIRE&nbsp;: Permettre de nommer ces notes hors enseignement pour pouvoir les re-sÃ©lectionner la note par la suite pour un autre examen.</li>\n";
+			echo "<li>A FAIRE&nbsp;: Permettre de choisir un enseignement/pÃ©riode dans les AnnÃ©es antÃ©rieures si le module est actif.</li>\n";
 			echo "</ul>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -515,7 +515,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			if($nb_classes==0) {
 				echo "</p>\n";
 
-				echo "<p>Aucune classe n'est associée à l'examen???</p>\n";
+				echo "<p>Aucune classe n'est associÃ©e Ã  l'examen???</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -536,11 +536,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			}
 			echo "</p>\n";
 
-			echo "<p class='bold'>Groupe Hors Enseignement en $matiere pour l'examen n°$id_exam</p>";
+			echo "<p class='bold'>Groupe Hors Enseignement en $matiere pour l'examen nÂ°$id_exam</p>";
 
 			echo "<p>Saisie de notes pour un devoir hors enseignements.</p>\n";
 
-			echo "<p><a href='javascript:cocher_tous_eleves()'>Cocher</a> / <a href='javascript:decocher_tous_eleves()'>décocher</a> tous les élèves de toutes les classes associées à l'examen.</p>\n";
+			echo "<p><a href='javascript:cocher_tous_eleves()'>Cocher</a> / <a href='javascript:decocher_tous_eleves()'>dÃ©cocher</a> tous les Ã©lÃ¨ves de toutes les classes associÃ©es Ã  l'examen.</p>\n";
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
@@ -568,18 +568,18 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				$res_ele=mysql_query($sql);
 				$nb_ele=mysql_num_rows($res_ele);
 				if($nb_ele==0) {
-					echo "<p>Aucun élève dans cette classe???</p>\n";
+					echo "<p>Aucun Ã©lÃ¨ve dans cette classe???</p>\n";
 				}
 				else {
 					if($max_eff_classe<$nb_ele) {$max_eff_classe=$nb_ele;}
 
 					$alt=1;
-					echo "<table class='boireaus' border='1' summary='Elèves de $lig_class->classe'>\n";
+					echo "<table class='boireaus' border='1' summary='ElÃ¨ves de $lig_class->classe'>\n";
 					echo "<tr>\n";
-					echo "<th>Elève</th>\n";
+					echo "<th>ElÃ¨ve</th>\n";
 
 					echo "<th>\n";
-					echo "<a href=\"javascript:cocher_decocher($cpt_classe,true);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:cocher_decocher($cpt_classe,false);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+					echo "<a href=\"javascript:cocher_decocher($cpt_classe,true);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:cocher_decocher($cpt_classe,false);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 					echo "</th>\n";
 
 					echo "</tr>\n";
@@ -648,7 +648,7 @@ function decocher_tous_eleves() {
 
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=choix_eleves'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Sélectionner les élèves</a>";
+			echo ">SÃ©lectionner les Ã©lÃ¨ves</a>";
 	
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=saisie_notes&amp;export_csv=y'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -660,9 +660,9 @@ function decocher_tous_eleves() {
 	
 			echo "</p>\n";
 
-			echo "<p class='bold'>Groupe Hors Enseignement en $matiere pour l'examen n°$id_exam</p>";
+			echo "<p class='bold'>Groupe Hors Enseignement en $matiere pour l'examen nÂ°$id_exam</p>";
 
-			// Couleurs utilisées
+			// Couleurs utilisÃ©es
 			$couleur_devoirs = '#AAE6AA';
 			$couleur_fond = '#AAE6AA';
 			$couleur_moy_cn = '#96C8F0';
@@ -674,7 +674,7 @@ function decocher_tous_eleves() {
 			//echo "$sql<br />\n";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
-				echo "<p>Erreur&nbsp;: Aucun élève inscrit.</p>\n";
+				echo "<p>Erreur&nbsp;: Aucun Ã©lÃ¨ve inscrit.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -688,7 +688,7 @@ function decocher_tous_eleves() {
 			if($nb_classes==0) {
 				echo "</p>\n";
 	
-				echo "<p>Aucune classe n'est associée à l'examen???</p>\n";
+				echo "<p>Aucune classe n'est associÃ©e Ã  l'examen???</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -702,13 +702,13 @@ function decocher_tous_eleves() {
 				$res_ele=mysql_query($sql);
 				$nb_ele=mysql_num_rows($res_ele);
 				if($nb_ele==0) {
-					echo "<p>Aucun élève de cette classe n'est inscrit.</p>\n";
+					echo "<p>Aucun Ã©lÃ¨ve de cette classe n'est inscrit.</p>\n";
 				}
 				else {
 	
 					echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus' summary='Saisie'>\n";
 					echo "<tr>\n";
-					echo "<th>Nom Prénom</th>\n";
+					echo "<th>Nom PrÃ©nom</th>\n";
 					//echo "<th>Classe(s)</th>\n";
 					echo "<th style='width:5em;'>Note</th>\n";
 					echo "</tr>\n";
@@ -801,7 +801,7 @@ function verifcol(num_id){
 
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=choix_eleves'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Sélectionner les élèves</a>";
+			echo ">SÃ©lectionner les Ã©lÃ¨ves</a>";
 
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;id_groupe=0&amp;matiere=$matiere&amp;mode=saisie_notes'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -813,13 +813,13 @@ function verifcol(num_id){
 
 			echo "</p>\n";
 
-			echo "<p class='bold'>Groupe Hors Enseignement en $matiere pour l'examen n°$id_exam</p>";
+			echo "<p class='bold'>Groupe Hors Enseignement en $matiere pour l'examen nÂ°$id_exam</p>";
 
 			$sql="SELECT DISTINCT 1=1 FROM ex_notes en WHERE en.id_ex_grp='$id_ex_grp';";
 			//echo "$sql<br />\n";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
-				echo "<p>Erreur&nbsp;: Aucun élève inscrit.</p>\n";
+				echo "<p>Erreur&nbsp;: Aucun Ã©lÃ¨ve inscrit.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -831,13 +831,13 @@ function verifcol(num_id){
 			if($nb_classes==0) {
 				echo "</p>\n";
 	
-				echo "<p>Aucune classe n'est associée à l'examen???</p>\n";
+				echo "<p>Aucune classe n'est associÃ©e Ã  l'examen???</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
 
-			echo "<p>Pour importer les notes, vous devez fournir un fichier correctement formaté...</p>";
-			echo "<p>Veuillez préciser le nom complet du fichier <b>CSV</b> à importer.";
+			echo "<p>Pour importer les notes, vous devez fournir un fichier correctement formatÃ©...</p>";
+			echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>CSV</b> Ã  importer.";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo add_token_field();
@@ -859,22 +859,22 @@ function verifcol(num_id){
 			echo "</form>\n";
 		
 			echo "<p><br /</p>\n";
-			echo "<p><i>NOTE&nbsp;</i>: Le fichier CSV nécessite une une ligne d'entête pour repérer les champs.<br />\n";
+			echo "<p><i>NOTE&nbsp;</i>: Le fichier CSV nÃ©cessite une une ligne d'entÃªte pour repÃ©rer les champs.<br />\n";
 			echo "Les deux champs suivants sont requis&nbsp;:<br />\n";
 			echo "LOGIN;NOTE\n";
-			echo "Les autres champs éventuellement présents ne seront pas pris en compte.</p>\n";
+			echo "Les autres champs Ã©ventuellement prÃ©sents ne seront pas pris en compte.</p>\n";
 
 		}
 
 	}
 	else {
-		echo "<p style='color:red;'>Paramètres incorrects.</p>";
+		echo "<p style='color:red;'>ParamÃ¨tres incorrects.</p>";
 	}
 }
 
 echo "<p><br /></p>\n";
 
-echo "<p><i>Remarque&nbsp;:</i> Si un élève est inscrit pour une même matière à la fois avec un devoir (<i>ou une moyenne de bulletin</i>) et avec une note hors enseignement, c'est la note hors enseignement qui est prise en compte.</p>\n";
+echo "<p><i>Remarque&nbsp;:</i> Si un Ã©lÃ¨ve est inscrit pour une mÃªme matiÃ¨re Ã  la fois avec un devoir (<i>ou une moyenne de bulletin</i>) et avec une note hors enseignement, c'est la note hors enseignement qui est prise en compte.</p>\n";
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

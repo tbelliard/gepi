@@ -84,11 +84,11 @@ if (isset($_POST['ok'])) {
     }
 
     if (!$error) {
-    	$msg = "Les paramètres ont bien été enregistrés.";
+    	$msg = "Les paramÃ¨tres ont bien Ã©tÃ© enregistrÃ©s.";
     }
 }
 //**************** EN-TETE *****************
-$titre_page = "Outil de gestion | Impression des paramètres";
+$titre_page = "Outil de gestion | Impression des paramÃ¨tres";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -105,7 +105,7 @@ if (!loadSettings()) {
 echo add_token_field();
 
 echo "<br />";
-echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, le texte diffère selon le statut de l'utilisateur créé. Attention, ce texte est au format html !</p>\n";
+echo "<p>Lors de la crÃ©ation d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramÃ¨tres de connexion Ã  GEPI, le texte diffÃ¨re selon le statut de l'utilisateur crÃ©Ã©. Attention, ce texte est au format html !</p>\n";
 
 $fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET["fiche"] : "personnels");
 
@@ -118,9 +118,9 @@ case 'personnels' :
 		$impression = getSettingValue("Impression");
 		$nb_impression = getSettingValue("ImpressionNombre");
 
-		echo "<h3 class='gepi' align='center'>Fiche d'information : Personnels de l'établissement</h3>\n";
-		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'professeur', 'cpe', 'scolarite' .</p>\n";
-		echo "<p>Nombre de fiches à imprimer par page : \n";
+		echo "<h3 class='gepi' align='center'>Fiche d'information : Personnels de l'Ã©tablissement</h3>\n";
+		echo "<p>Cette fiche est imprimÃ©e lors de la crÃ©ation d'un nouvel utilisateur au statut 'professeur', 'cpe', 'scolarite' .</p>\n";
+		echo "<p>Nombre de fiches Ã  imprimer par page : \n";
 		echo "<select name='nb_impression' size='1'>\n";
 		for ($i=1;$i<25;$i++) {
 			echo "<option value='$i'";
@@ -129,7 +129,7 @@ case 'personnels' :
 		}
 		echo "</select>\n";
 		echo "<input type=\"hidden\" name=\"fiche\" value=\"$fiche\" />\n";
-		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br />Conseil : faites des tests pour Ã©viter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
 		$oFCKeditor = new FCKeditor('impression_personnelFCK') ;
@@ -147,8 +147,8 @@ case 'responsables' :
 		$nb_impression_parent = getSettingValue("ImpressionNombreParent");
 
 		echo "<h3 class='gepi' align='center'>Fiche d'information : ".$gepiSettings['denomination_responsables']."</h3>\n";
-		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'responsable'.</p>\n";
-		echo "<p>Nombre de fiches à imprimer par page : \n";
+		echo "<p>Cette fiche est imprimÃ©e lors de la crÃ©ation d'un nouvel utilisateur au statut 'responsable'.</p>\n";
+		echo "<p>Nombre de fiches Ã  imprimer par page : \n";
 		echo "<select name='nb_impression_parent' size='1'>\n";
 		for ($i=1;$i<25;$i++) {
 			echo "<option value='$i'";
@@ -157,7 +157,7 @@ case 'responsables' :
 		}
 		echo "</select>\n";
 		echo "<input type=\"hidden\" name=\"fiche\" value=\"$fiche\" />\n";
-		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br />Conseil : faites des tests pour Ã©viter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
 		$oFCKeditor = new FCKeditor('impression_parentFCK') ;
@@ -176,8 +176,8 @@ case 'eleves' :
 		$nb_impression_eleve = getSettingValue("ImpressionNombreEleve");
 
 		echo "<h3 class='gepi' align='center'>Fiche d'information : ".$gepiSettings['denomination_eleves']."</h3>\n";
-		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'eleve'.</p>\n";
-		echo "<p>Nombre de fiches à imprimer par page : \n";
+		echo "<p>Cette fiche est imprimÃ©e lors de la crÃ©ation d'un nouvel utilisateur au statut 'eleve'.</p>\n";
+		echo "<p>Nombre de fiches Ã  imprimer par page : \n";
 		echo "<select name='nb_impression_eleve' size='1'>\n";
 		for ($i=1;$i<25;$i++) {
 			echo "<option value='$i'";
@@ -186,7 +186,7 @@ case 'eleves' :
 		}
 		echo "</select>\n";
 		echo "<input type=\"hidden\" name=\"fiche\" value=\"$fiche\" />\n";
-		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br />Conseil : faites des tests pour Ã©viter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
 		$oFCKeditor = new FCKeditor('impression_eleveFCK') ;
@@ -202,9 +202,9 @@ case 'eleves' :
 echo "<input type='submit' name=\"ok\" value='Enregistrer' />\n";
 
 echo "<br /><br />\n";
-echo "<b><a href=\"./modele_fiche_information.php?fiche=$fiche\" target='_blank' >Aperçu de la fiche d'information</a></b><br />\n";
-echo "<i>Attention&nbsp;:</i> la mise en page des fiches est très différente à l'écran et à l'impression.";
-echo "Veillez à utiliser la fonction \"aperçu avant impression\" afin de vous rendre compte du résultat.<br />\n";
+echo "<b><a href=\"./modele_fiche_information.php?fiche=$fiche\" target='_blank' >AperÃ§u de la fiche d'information</a></b><br />\n";
+echo "<i>Attention&nbsp;:</i> la mise en page des fiches est trÃ¨s diffÃ©rente Ã  l'Ã©cran et Ã  l'impression.";
+echo "Veillez Ã  utiliser la fonction \"aperÃ§u avant impression\" afin de vous rendre compte du rÃ©sultat.<br />\n";
 
 //echo "</td>\n</tr>\n";
 //echo "</table>\n";
@@ -214,10 +214,10 @@ if($fiche=="responsables") {
 	echo "<br />\n";
 	echo "<p><b>ATTENTION&nbsp;:</b> Les dimensions et positionnement du bloc adresse des responsables sont ceux du ";
 	if(getSettingValue('GepiAdminImprBulSettings')=='yes') {
-		echo "<a href='../bulletins/param_bull.php'>Paramétrage d'impression des bulletins HTML</a>";
+		echo "<a href='../bulletins/param_bull.php'>ParamÃ©trage d'impression des bulletins HTML</a>";
 	}
 	else {
-		echo "Paramétrage d'impression des bulletins HTML";
+		echo "ParamÃ©trage d'impression des bulletins HTML";
 	}
 	echo ".</p>\n";
 
@@ -228,20 +228,20 @@ if($fiche=="responsables") {
 
 	echo "<p style='margin-left: 3em;'>\n";
 	echo "Espace entre la marge droite de la feuille et le bloc 'adresse' : ".$addressblock_padding_right."&nbsp;mm\n";
-	if($addressblock_padding_right>200) {echo " <span style='color='red'>Cette valeur parait élevée. Y aurait-il une erreur?</span>";}
+	if($addressblock_padding_right>200) {echo " <span style='color='red'>Cette valeur parait Ã©levÃ©e. Y aurait-il une erreur?</span>";}
 	echo "<br />\n";
 	echo "Espace entre la marge haute de la feuille et le bloc 'adresse' : ".$addressblock_padding_top."&nbsp;mm\n";
-	if($addressblock_padding_top>290) {echo " <span style='color='red'>Cette valeur parait élevée. Y aurait-il une erreur?</span>";}
+	if($addressblock_padding_top>290) {echo " <span style='color='red'>Cette valeur parait Ã©levÃ©e. Y aurait-il une erreur?</span>";}
 	echo "<br />\n";
-	echo "Espace vertical entre le bloc 'adresse' et le bloc des résultats : ".$addressblock_padding_text."&nbsp;mm\n";
-	if($addressblock_padding_text>100) {echo " <span style='color='red'>Cette valeur parait élevée. Y aurait-il une erreur?</span>";}
+	echo "Espace vertical entre le bloc 'adresse' et le bloc des rÃ©sultats : ".$addressblock_padding_text."&nbsp;mm\n";
+	if($addressblock_padding_text>100) {echo " <span style='color='red'>Cette valeur parait Ã©levÃ©e. Y aurait-il une erreur?</span>";}
 	echo "<br />\n";
 	echo "Longueur du bloc 'adresse' : ".$addressblock_length."&nbsp;mm\n";
-	if($addressblock_length>170) {echo " <span style='color='red'>Cette valeur parait élevée. Y aurait-il une erreur?</span>";}
+	if($addressblock_length>170) {echo " <span style='color='red'>Cette valeur parait Ã©levÃ©e. Y aurait-il une erreur?</span>";}
 	echo "<br />\n";
 	echo "</p>\n";
 
-	echo "<p>Si vous devez apporter des corrections, c'est dans 'Paramétrage d'impression des bulletins HTML' que cela se passe.</p>\n";
+	echo "<p>Si vous devez apporter des corrections, c'est dans 'ParamÃ©trage d'impression des bulletins HTML' que cela se passe.</p>\n";
 }
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Création d'évaluations cumules
+ * CrÃ©ation d'Ã©valuations cumules
  * 
  * @version: $Id$
  *
@@ -48,9 +48,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 require('cc_lib.php');
@@ -63,14 +63,14 @@ $id_racine = isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id
 */
 
 if(!isset($id_racine)) {
-	$mess="Racine non précisée pour $nom_cc.<br />";
+	$mess="Racine non prÃ©cisÃ©e pour $nom_cc.<br />";
 	header("Location: index.php?msg=$mess");
 	die();
 }
 
-// On teste si le carnet de notes appartient bien à la personne connectée
+// On teste si le carnet de notes appartient bien Ã  la personne connectÃ©e
 if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
-    $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+    $mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes qui ne vous appartient pas !");
     header("Location: index.php?msg=$mess");
     die();
 }
@@ -85,7 +85,7 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
-// enregistrement des données
+// enregistrement des donnÃ©es
 if (isset($_GET['action'])) {
 	check_token();
 
@@ -100,14 +100,14 @@ if (isset($_GET['action'])) {
 			//echo "$sql<br />";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
-				$msg="Le $nom_cc n°$id_dev n'est pas associé à ce Carnet de notes.<br />";
+				$msg="Le $nom_cc nÂ°$id_dev n'est pas associÃ© Ã  ce Carnet de notes.<br />";
 			}
 			else {
 				$sql="DELETE FROM cc_notes_eval WHERE id_eval IN (SELECT id FROM cc_eval WHERE id_dev='$id_dev');";
 				//echo "$sql<br />";
 				$del=mysql_query($sql);
 				if(!$del) {
-					$msg="Erreur lors de la suppression des notes associées au $nom_cc n°$id_dev.<br />";
+					$msg="Erreur lors de la suppression des notes associÃ©es au $nom_cc nÂ°$id_dev.<br />";
 				}
 				else {
 					// On poursuit
@@ -115,17 +115,17 @@ if (isset($_GET['action'])) {
 					//echo "$sql<br />";
 					$del=mysql_query($sql);
 					if(!$del) {
-						$msg="Erreur lors de la suppression des évaluations associées au $nom_cc n°$id_dev.<br />";
+						$msg="Erreur lors de la suppression des Ã©valuations associÃ©es au $nom_cc nÂ°$id_dev.<br />";
 					}
 					else {
 						$sql="DELETE FROM cc_dev WHERE id='$id_dev';";
 						//echo "$sql<br />";
 						$del=mysql_query($sql);
 						if(!$del) {
-							$msg="Erreur lors de la suppression du $nom_cc n°$id_dev.<br />";
+							$msg="Erreur lors de la suppression du $nom_cc nÂ°$id_dev.<br />";
 						}
 						else {
-							$msg="Suppression du $nom_cc n°$id_dev effectuée.<br />";
+							$msg="Suppression du $nom_cc nÂ°$id_dev effectuÃ©e.<br />";
 						}
 					}
 				}
@@ -143,20 +143,20 @@ if (isset($_GET['action'])) {
 			//echo "$sql<br />";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
-				$msg="Le $nom_cc n°$id_dev n'est pas associé à ce Carnet de notes.<br />";
+				$msg="Le $nom_cc nÂ°$id_dev n'est pas associÃ© Ã  ce Carnet de notes.<br />";
 			}
 			else {
 				$id_eval=isset($_GET['id_eval']) ? $_GET['id_eval'] : '';
 				$id_eval=preg_replace('/[^0-9]/','',$id_eval);
 				if($id_eval=='') {
-					$msg="Identifiant d'évaluation invalide.<br />";
+					$msg="Identifiant d'Ã©valuation invalide.<br />";
 				}
 				else {
 					$sql="DELETE FROM cc_notes_eval WHERE id_eval='$id_eval';";
 					//echo "$sql<br />";
 					$del=mysql_query($sql);
 					if(!$del) {
-						$msg="Erreur lors de la suppression des notes associées à l'évaluation n°$id_eval du $nom_cc n°$id_dev.<br />";
+						$msg="Erreur lors de la suppression des notes associÃ©es Ã  l'Ã©valuation nÂ°$id_eval du $nom_cc nÂ°$id_dev.<br />";
 					}
 					else {
 						// On poursuit
@@ -164,10 +164,10 @@ if (isset($_GET['action'])) {
 						//echo "$sql<br />";
 						$del=mysql_query($sql);
 						if(!$del) {
-							$msg="Erreur lors de la suppression de l'évaluation n°$id_eval du $nom_cc n°$id_dev.<br />";
+							$msg="Erreur lors de la suppression de l'Ã©valuation nÂ°$id_eval du $nom_cc nÂ°$id_dev.<br />";
 						}
 						else {
-							$msg="Suppression de l'évaluation n°$id_eval du $nom_cc n°$id_dev effectuée.<br />";
+							$msg="Suppression de l'Ã©valuation nÂ°$id_eval du $nom_cc nÂ°$id_dev effectuÃ©e.<br />";
 						}
 					}
 				}
@@ -180,7 +180,7 @@ if (isset($_GET['action'])) {
 $titre_page = "Carnet de notes - Ajout/modification d'un $nom_cc";
 
 /**
- * Entête de la page
+ * EntÃªte de la page
  */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
@@ -219,17 +219,17 @@ echo "</form>\n";
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 echo add_token_field();
 
-echo "<h2>".$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>période $periode_num</i>)</h2>\n";
+echo "<h2>".$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>pÃ©riode $periode_num</i>)</h2>\n";
 
 $liste_eleves = $current_group["eleves"][$periode_num]["users"];
 $nb_eleves=count($current_group["eleves"][$periode_num]["users"]);
 
-echo "<p>Liste des $nom_cc non rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
+echo "<p>Liste des $nom_cc non rattachÃ©es Ã  un devoir du carnet de notes&nbsp;: <br />\n";
 $sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe' AND id_cn_dev NOT IN (SELECT id FROM cn_devoirs);";
 //echo "$sql<br />\n";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "Aucun $nom_cc non rattachée n'est encore définie.</p>\n";
+	echo "Aucun $nom_cc non rattachÃ©e n'est encore dÃ©finie.</p>\n";
 }
 else {
 	echo "<ul>\n";
@@ -241,11 +241,11 @@ else {
 		echo " | ";
 		echo "<a href='add_modif_cc_dev.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Configuration</a>";
 		echo " | ";
-		echo "<a href='add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Ajouter une évaluation</a>";
+		echo "<a href='add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Ajouter une Ã©valuation</a>";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;action=suppr_dev".add_token_in_url()."'>Supprimer</a>";
 		echo " | ";
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id".add_token_in_url()."'></a>Transférer vers le carnet de notes (<span style='color:red'>A FAIRE</span>)";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id".add_token_in_url()."'></a>TransfÃ©rer vers le carnet de notes (<span style='color:red'>A FAIRE</span>)";
 		echo "<br />\n";
 		$sql="SELECT * FROM cc_eval WHERE id_dev='$lig->id' ORDER BY date, nom_court;";
 		$res2=mysql_query($sql);
@@ -272,7 +272,7 @@ else {
 	echo "</ul>\n";
 }
 
-echo "<p>Liste des $nom_cc rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
+echo "<p>Liste des $nom_cc rattachÃ©es Ã  un devoir du carnet de notes&nbsp;: <br />\n";
 echo "<span style='color:red'>A FAIRE</span>";
 
 echo "</form>\n";

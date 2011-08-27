@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ******************************************** *
-* Appelle les sous-modèles                     *
+* Appelle les sous-modÃ¨les                     *
 * templates/origine/header_template.php        *
 * templates/origine/bandeau_template.php       *
 * ******************************************** *
@@ -32,7 +32,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -76,7 +76,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -87,22 +87,22 @@
 
 	<div id='container'>
 
-	<a name="contenu" class="invisible">Début de la page</a>
+	<a name="contenu" class="invisible">DÃ©but de la page</a>
 
 	<form method="post" action="#">
 	<p class="center">
-	  Ce module permet de modifier l'ordre des menus de la page accueil ainsi que les intitulés.
+	  Ce module permet de modifier l'ordre des menus de la page accueil ainsi que les intitulÃ©s.
   	  <br /><span class="small">Remarque : si le nouveau nom du bloc est "bloc_invisible", ce dernier n'apparaitra pas dans le menu (ceci ne fonctionne pas pour les plugins).</span>
 	</p>
 	<p>
 	  <input type="submit" value="Enregistrer" name="btn_enregistrer" />
 	  <span class="ecarte">  </span>
-	  <input type="submit" value="Réinitialiser" name="btn_reinitialiser" title="Supprime toutes les entrées relatives à l'ordre des menus" />
-	  <input type="submit" value="Optimiser" name="btn_optimiser" title="Élimine les trous dans la numérotation des titres de menus" />
+	  <input type="submit" value="RÃ©initialiser" name="btn_reinitialiser" title="Supprime toutes les entrÃ©es relatives Ã  l'ordre des menus" />
+	  <input type="submit" value="Optimiser" name="btn_optimiser" title="Ã‰limine les trous dans la numÃ©rotation des titres de menus" />
 	  <br /><br />
 	</p>
 
-<!-- début corps menu	-->
+<!-- dÃ©but corps menu	-->
 
 <?php
   if (count($menuAffiche)) {
@@ -132,7 +132,7 @@
 </script>
 
 	<h2 class="center bold">
-	  <a name="<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" href="#container" title="retour début de page depuis <?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" >
+	  <a name="<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" href="#container" title="retour dÃ©but de page depuis <?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" >
 			<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>
 	  </a>
 	</h2>
@@ -218,7 +218,7 @@
 ?>
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -237,7 +237,7 @@
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

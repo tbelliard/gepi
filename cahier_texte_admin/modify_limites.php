@@ -43,17 +43,17 @@ if (isset($_POST['max_size_ko'])) {
 	check_token();
     if (my_ereg ("^[0-9]{1,}$", $_POST['max_size_ko'])) {
         $max_size = $_POST['max_size_ko']*1024;
-        if (!saveSetting("max_size", $max_size)) $msg = "Erreur lors de l'enregistrement de la taille maximale autorisée pour un fichier !";
+        if (!saveSetting("max_size", $max_size)) $msg = "Erreur lors de l'enregistrement de la taille maximale autorisÃ©e pour un fichier !";
     }
 }
 if (isset($_POST['total_max_size_ko'])) {
 	check_token();
     if (my_ereg ("^[0-9]{1,}$", $_POST['total_max_size_ko'])) {
         $total_max_size = $_POST['total_max_size_ko']*1024;
-        if (!saveSetting("total_max_size", $total_max_size)) $msg = "Erreur lors de l'enregistrement de la taille de l'espace disque maximal autorisé pour une rubrique !";
+        if (!saveSetting("total_max_size", $total_max_size)) $msg = "Erreur lors de l'enregistrement de la taille de l'espace disque maximal autorisÃ© pour une rubrique !";
     }
 }
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 
 // header
 $titre_page = "Gestion des cahiers de texte";
@@ -62,7 +62,7 @@ require_once("../lib/header.inc");
 <p class=bold>
 <a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
-<H2>Gestion des cahiers de texte - Téléchargement de documents</H2>
+<H2>Gestion des cahiers de texte - TÃ©lÃ©chargement de documents</H2>
 <form action="modify_limites.php" method="post" style="width: 100%;">
 <?php
 echo add_token_field();
@@ -70,14 +70,14 @@ echo add_token_field();
 <table style="width: 100%; border: 0;" cellpadding="5" cellspacing="5">
     <tr>
         <td style="font-variant: small-caps;">
-        Taille maximale autorisée pour un fichier en Ko :
+        Taille maximale autorisÃ©e pour un fichier en Ko :
         </td>
         <td><input type="text" name="max_size_ko" size="20" value="<?php echo(getSettingValue("max_size")/1024); ?>" />
         </td>
     </tr>
     <tr>
         <td style="font-variant: small-caps;">
-        Espace disque maximal autorisé pour une rubrique :
+        Espace disque maximal autorisÃ© pour une rubrique :
         </td>
         <td><input type="text" name="total_max_size_ko" size="20" value="<?php echo(getSettingValue("total_max_size")/1024); ?>" />
         </td>

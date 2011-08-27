@@ -47,7 +47,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Changement d\'année.',
+description='Changement d\'annÃ©e.',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -66,7 +66,7 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['gepiYear'])) {
 			if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
-				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
+				$msg .= "Erreur lors de l'enregistrement de l'annÃ©e scolaire !";
 			}
 		}
 
@@ -96,7 +96,7 @@ if (isset($_POST['is_posted'])) {
 			if(preg_match('/^[0-9]+$/',$_POST['log_day'])) {$log_day=$_POST['log_day'];}
 
 			if((isset($log_year))&&(isset($log_month))&&(isset($log_day))) {
-				// Pour éviter de flinguer la session en cours
+				// Pour Ã©viter de flinguer la session en cours
 				$hier_day=date('d', mktime() - 24*3600);
 				$hier_month=date('m', mktime() - 24*3600);
 				$hier_year=date('Y', mktime() - 24*3600);
@@ -109,11 +109,11 @@ if (isset($_POST['is_posted'])) {
 					$msg.="Echec du nettoyage.<br />\n";
 				}
 				else {
-					$msg.="Nettoyage effectué.<br />\n";
+					$msg.="Nettoyage effectuÃ©.<br />\n";
 				}
 			}
 			else {
-				$msg .= "La date proposée est invalide.<br />";
+				$msg .= "La date proposÃ©e est invalide.<br />";
 			}
 			//if (!)
 			//		$msg .= "Erreur lors de l'enregistrement de log_bookings !";
@@ -126,17 +126,17 @@ if (isset($_POST['is_posted'])) {
 if (!loadSettings()) {
 	die("Erreur chargement settings");
 }
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 
 if(isset($_SESSION['chgt_annee'])) {
 	unset($_SESSION['chgt_annee']);
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 // End standart header
-$titre_page = "Changement d'année";
+$titre_page = "Changement d'annÃ©e";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -144,41 +144,41 @@ require_once("../lib/header.inc");
 
 echo "<p class='bold'><a href='index.php#chgt_annee' ".insert_confirm_abandon()."><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
-echo "<p>Au changement d'année, avant d'initialiser la nouvelle année scolaire, il convient d'effectuer quelques opérations.<br />Elles sont en principe détaillées (<i>peut-être même plus à jour si des ajouts y ont été apportés après la sortie de votre version de GEPI</i>) sur le <a href='https://www.sylogix.org/projects/gepi/wiki/GuideAdministrateur' target='_blank'>Wiki</a>.</p>\n";
+echo "<p>Au changement d'annÃ©e, avant d'initialiser la nouvelle annÃ©e scolaire, il convient d'effectuer quelques opÃ©rations.<br />Elles sont en principe dÃ©taillÃ©es (<i>peut-Ãªtre mÃªme plus Ã  jour si des ajouts y ont Ã©tÃ© apportÃ©s aprÃ¨s la sortie de votre version de GEPI</i>) sur le <a href='https://www.sylogix.org/projects/gepi/wiki/GuideAdministrateur' target='_blank'>Wiki</a>.</p>\n";
 
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form1' style='width: 100%;'>\n";
 echo "<fieldset>\n";
 echo add_token_field();
 
-$msg_svg="Il est recommandé de faire une copie de sauvegarde sur un périphérique externe (à stocker au coffre par exemple)";
+$msg_svg="Il est recommandÃ© de faire une copie de sauvegarde sur un pÃ©riphÃ©rique externe (Ã  stocker au coffre par exemple)";
 $lien_svg="<a href='#svg_ext' ".insert_confirm_abandon()."><img src='../images/icons/ico_ampoule.png' width='15' height='25' title='$msg_svg' alt='$msg_svg' /></a>";
 
 echo "<p>Les points sont les suivants&nbsp;:</p>\n";
-echo "<p>La partie archivage de fin d'année&nbsp;:</p>\n";
+echo "<p>La partie archivage de fin d'annÃ©e&nbsp;:</p>\n";
 echo "<ol>\n";
 echo "<li><p><a href='accueil_sauve.php?chgt_annee=y'>Sauvegarder la base</a> $lien_svg</p></li>\n";
 if(strtolower(substr(getSettingValue('active_cahiers_texte'),0,1))=='y') {
 	echo "<li><p>Eventuellement, faire un <a href='../cahier_texte_2/export_cdt.php?chgt_annee=y'>export des cahiers de textes</a><br />et une <a href='accueil_sauve.php?chgt_annee=y#zip'>sauvegarde des documents du Cahier de textes</a> $lien_svg</p></li>\n";
-	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php?chgt_annee=y'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passés.</p></li>\n";
+	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php?chgt_annee=y'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passÃ©s.</p></li>\n";
 }
 if(getSettingValue('active_module_absence')=='2') {
 	echo "<li><p><a href='../mod_abs2/extraction_saisies.php?date_absence_eleve_debut=".(date('Y')-1)."-08-01&date_absence_eleve_fin=".date('Y')."-08-01&type_extrait=1&retour=../gestion/changement_d_annee.php'>Effectuer une extraction CSV des absences</a>,\n";
-	echo " puis <a onclick=\"return(confirm('Voulez vous vider les tables d\'absences ?'));\" href='../utilitaires/clean_tables.php?action=clean_absences&amp;date_limite=31/07/".date('Y')."&amp;chgt_annee=y".add_token_in_url()."'/>purger les tables absences pour les absences antérieures au 31/07/".date('Y')."</a></p></li>";
+	echo " puis <a onclick=\"return(confirm('Voulez vous vider les tables d\'absences ?'));\" href='../utilitaires/clean_tables.php?action=clean_absences&amp;date_limite=31/07/".date('Y')."&amp;chgt_annee=y".add_token_in_url()."'/>purger les tables absences pour les absences antÃ©rieures au 31/07/".date('Y')."</a></p></li>";
 }
 echo "<li><p>Sauvegarder l'arborescence Gepi (<em>par ftp, sftp,...</em>) $lien_svg</p></li>\n";
-echo "<li><p>Conserver les données de l'année passée via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php?chgt_annee=y'>module Années antérieures</a>.</p></li>\n";
+echo "<li><p>Conserver les donnÃ©es de l'annÃ©e passÃ©e via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php?chgt_annee=y'>module AnnÃ©es antÃ©rieures</a>.</p></li>\n";
 echo "</ol>\n";
 
-echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";
+echo "<p>La partie concernant la nouvelle annÃ©e&nbsp;:</p>\n";
 echo "<ol>\n";
-echo "<li><p>Modifier l'année scolaire&nbsp; (actuellement ".getSettingValue('gepiYear').") : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange='changement()' /></li>\n";
-echo "<li><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:<br />";
+echo "<li><p>Modifier l'annÃ©e scolaire&nbsp; (actuellement ".getSettingValue('gepiYear').") : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange='changement()' /></li>\n";
+echo "<li><p>Modifier les dates de dÃ©but et de fin des cahiers de textes&nbsp;:<br />";
 ?>
 
 <table>
 	<tr>
 		<td>
-		Date de début des cahiers de textes (actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("begin_bookings")); ?>) :
+		Date de dÃ©but des cahiers de textes (actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("begin_bookings")); ?>) :
 		</td>
 		<td><?php
 		$bday = strftime("%d", getSettingValue("begin_bookings"));
@@ -217,13 +217,13 @@ echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form1' style='
 echo "<fieldset>\n";
 echo add_token_field();
 echo "<p><em>Optionnel&nbsp;:</em> Nettoyer la table 'log'.<br />\n";
-echo "Cette table contient les dates de connexion/déconnexion des utilisateurs.<br />\n";
-echo "Conserver ces informations au-delà d'une année n'a pas vraiment d'intérêt.<br >\n";
+echo "Cette table contient les dates de connexion/dÃ©connexion des utilisateurs.<br />\n";
+echo "Conserver ces informations au-delÃ  d'une annÃ©e n'a pas vraiment d'intÃ©rÃªt.<br >\n";
 echo "Au besoin, si vous avez pris soin d'effectuer une sauvegarde de la base, les informations y sont.</p>\n";
 $lday = strftime("%d", getSettingValue("end_bookings"));
 $lmonth = strftime("%m", getSettingValue("end_bookings"));
 $lyear = date('Y')-1;
-echo "<p>Nettoyer les logs antérieurs au&nbsp;:&nbsp;\n";
+echo "<p>Nettoyer les logs antÃ©rieurs au&nbsp;:&nbsp;\n";
 genDateSelector("log_",$lday,$lmonth,$lyear,"more_years");
 echo "<input type='hidden' name='is_posted' value='2' />\n";
 echo "<input type='submit' name='Valider' value='Valider' />\n";
@@ -235,7 +235,7 @@ echo "<p><br /></p>\n";
 
 echo "<a name='svg_ext'></a>";
 echo "<p><em>NOTES&nbsp;:</em></p>\n";
-echo "<p style='margin-left:3em;'>La sauvegarde sur périphérique externe permet de remettre en place un GEPI si jamais votre GEPI en ligne subit des dégats (<em>crash du disque dur hébergeant votre GEPI, incendie du local serveur,...</em>).<br />Vous n'aurez normalement jamais besoin de ces sauvegardes, mais mieux vaut prendre des précautions.</p>\n";
+echo "<p style='margin-left:3em;'>La sauvegarde sur pÃ©riphÃ©rique externe permet de remettre en place un GEPI si jamais votre GEPI en ligne subit des dÃ©gats (<em>crash du disque dur hÃ©bergeant votre GEPI, incendie du local serveur,...</em>).<br />Vous n'aurez normalement jamais besoin de ces sauvegardes, mais mieux vaut prendre des prÃ©cautions.</p>\n";
 
 echo "<p><br /></p>\n";
 

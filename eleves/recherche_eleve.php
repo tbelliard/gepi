@@ -4,7 +4,7 @@
 	$Id$
 */
 if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")){
-	$string = "���������������������զ����ݾ�������������������������������";
+	$string = "ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕŠÛÜÙÚÝŸŽáàâäãåçéèêëîïìíñôöðòóõšûüùúýÿž";
 	$encoding = mb_detect_encoding($string, "UTF-8, ISO-8859-1");
 	$string = mb_convert_encoding($string, "UTF-8", $encoding);
 	//$string = mb_convert_encoding($string, "ISO-8859-1", $encoding);
@@ -16,20 +16,12 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 	$rech_nom=isset($_POST['rech_nom']) ? $_POST['rech_nom'] : (isset($_GET['rech_nom']) ? $_GET['rech_nom'] : NULL);
 	$rech_prenom=isset($_POST['rech_prenom']) ? $_POST['rech_prenom'] : (isset($_GET['rech_prenom']) ? $_GET['rech_prenom'] : NULL);
 
-	//$rech_nom=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕŠÛÜÙÚÝŸŽáàâäãåçéèêëîïìíñôöðòóõšûüùúýÿž]","",$rech_nom);
-
-	//$page=isset($_POST['page']) ? $_POST['page'] : "";
 	$page=isset($_POST['page']) ? $_POST['page'] : (isset($_GET['page']) ? $_GET['page'] : "");
 
-	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php.php")) {
-	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
 	if(($page!="fiche_eleve.php")&&($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
 		$page="../logout.php?auto=2";
 		// Remarque: Cela n'empêche pas de bricoler l'adresse destination des liens affichés...
 	}
-
-	//echo "rech_prenom=$rech_prenom<br />";
-	//echo "string=$string<br />";
 
 	$nb_ele=0;
 

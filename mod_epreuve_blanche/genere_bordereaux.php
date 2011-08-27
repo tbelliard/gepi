@@ -48,13 +48,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Epreuve blanche: Génération des bordereaux professeurs',
+description='Epreuve blanche: GÃ©nÃ©ration des bordereaux professeurs',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -94,7 +94,7 @@ if(isset($imprime)) {
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="L'épreuve n°$id_epreuve n'existe pas.";
+		$msg="L'Ã©preuve nÂ°$id_epreuve n'existe pas.";
 	}
 	else {
 		$lig_ep=mysql_fetch_object($res);
@@ -111,7 +111,7 @@ if(isset($imprime)) {
 		$profs=array();
 		$cpt=0;
 		$profs[$cpt]['login']="";
-		$profs[$cpt]['civ_n_p']="Copie(s) non attribuée(s)";
+		$profs[$cpt]['civ_n_p']="Copie(s) non attribuÃ©e(s)";
 		$cpt++;
 
 		$sql="SELECT u.login, u.nom, u.prenom, u.civilite FROM eb_profs ep, utilisateurs u WHERE u.login=ep.login_prof AND ep.id_epreuve='$id_epreuve' ORDER BY u.nom, u.prenom;";
@@ -230,7 +230,7 @@ if(isset($imprime)) {
 					//$this->Cell(0,5,'Page '.$this->PageNo().'-'.$decompte_page.'='.($this->PageNo()-$decompte_page),"0",1,'C');
 					//$this->Cell(0,5,'Page '.$num_page,"0",1,'C');
 
-					// Je ne parviens pas à faire reprendre la numérotation à 1 lors d'un changement de salle
+					// Je ne parviens pas Ã  faire reprendre la numÃ©rotation Ã  1 lors d'un changement de salle
 				}
 
 				function EnteteListe()
@@ -244,7 +244,7 @@ if(isset($imprime)) {
 
 					$this->SetFont($fonte,'B',14);
 					$this->Setxy(10,10);
-					$this->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
+					$this->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - AnnÃ©e scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
 					$x1=$this->GetX();
 					$y1=$this->GetY();
@@ -275,7 +275,7 @@ if(isset($imprime)) {
 				}
 			}
 
-			// Définition de la page
+			// DÃ©finition de la page
 			$pdf=new rel_PDF("P","mm","A4");
 			//$pdf=new FPDF("P","mm","A4");
 			$pdf->SetTopMargin($MargeHaut);
@@ -378,7 +378,7 @@ if(isset($imprime)) {
 
 					$larg_col[$cpt_col]=0;
 					if($avec_num_anonymat=='y') {
-						$texte='Numéro copie';
+						$texte='NumÃ©ro copie';
 						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
 						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
@@ -410,7 +410,7 @@ if(isset($imprime)) {
 
 					$larg_col[$cpt_col]=0;
 					if($avec_nom_prenom=='y') {
-						$texte='Nom prénom';
+						$texte='Nom prÃ©nom';
 						$larg_col[$cpt_col]=$larg_max+4;
 						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
@@ -477,7 +477,7 @@ if(isset($imprime)) {
 							$cpt_col++;
 
 							if($avec_num_anonymat=='y') {
-								$texte='Numéro copie';
+								$texte='NumÃ©ro copie';
 								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 							}
 							$cpt_col++;
@@ -501,7 +501,7 @@ if(isset($imprime)) {
 							$cpt_col++;
 		
 							if($avec_nom_prenom=='y') {
-								$texte='Nom prénom';
+								$texte='Nom prÃ©nom';
 								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 							}
 							$cpt_col++;
@@ -649,13 +649,13 @@ echo "<p class='bold'><a href='index.php?id_epreuve=$id_epreuve&amp;mode=modif_e
 if(!isset($imprime)) {
 	echo "</p>\n";
 
-	// Générer des fiches par professeur
+	// GÃ©nÃ©rer des fiches par professeur
 
-	echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
+	echo "<p class='bold'>Epreuve nÂ°$id_epreuve</p>\n";
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
+		echo "<p>L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -679,7 +679,7 @@ if(!isset($imprime)) {
 	$sql="SELECT DISTINCT n_anonymat FROM eb_copies WHERE id_epreuve='$id_epreuve';";
 	$test2=mysql_query($sql);
 	if(mysql_num_rows($test1)!=mysql_num_rows($test2)) {
-		echo "<p style='color:red;'>Les numéros anonymats ne sont pas uniques sur l'épreuve (<i>cela ne devrait pas arriver</i>).</p>\n";
+		echo "<p style='color:red;'>Les numÃ©ros anonymats ne sont pas uniques sur l'Ã©preuve (<i>cela ne devrait pas arriver</i>).</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -687,7 +687,7 @@ if(!isset($imprime)) {
 	$sql="SELECT login_ele FROM eb_copies WHERE n_anonymat='' AND id_epreuve='$id_epreuve';";
 	$test3=mysql_query($sql);
 	if(mysql_num_rows($test3)>0) {
-		echo "<p style='color:red;'>Un ou des numéros anonymats ne sont pas valides sur l'épreuve&nbsp;: ";
+		echo "<p style='color:red;'>Un ou des numÃ©ros anonymats ne sont pas valides sur l'Ã©preuve&nbsp;: ";
 		$cpt=0;
 		while($lig=mysql_fetch_object($test3)) {
 			if($cpt>0) {echo ", ";}
@@ -702,35 +702,35 @@ if(!isset($imprime)) {
 	//========================================================
 
 	//========================================================
-	//echo "<p style='color:red;'>A FAIRE&nbsp;: Contrôler si certains élèves n'ont pas été affectés dans des salles.</p>\n";
+	//echo "<p style='color:red;'>A FAIRE&nbsp;: ContrÃ´ler si certains Ã©lÃ¨ves n'ont pas Ã©tÃ© affectÃ©s dans des salles.</p>\n";
 	$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle='-1';";
 	//echo "$sql<br />\n";
 	$test=mysql_query($sql);
 	$nb_tmp=mysql_num_rows($test);
 	if($nb_tmp==1) {
-		echo "<p style='color:red;'>$nb_tmp élève n'est pas affecté dans une salle.</p>\n";
+		echo "<p style='color:red;'>$nb_tmp Ã©lÃ¨ve n'est pas affectÃ© dans une salle.</p>\n";
 	}
 	elseif($nb_tmp>1) {
-		echo "<p style='color:red;'>$nb_tmp élèves n'ont pas été affectés dans des salles.</p>\n";
+		echo "<p style='color:red;'>$nb_tmp Ã©lÃ¨ves n'ont pas Ã©tÃ© affectÃ©s dans des salles.</p>\n";
 	}
 	//========================================================
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 
-	echo "<p>Choisissez le type de bordereaux à imprimer&nbsp;:<br />\n";
+	echo "<p>Choisissez le type de bordereaux Ã  imprimer&nbsp;:<br />\n";
 	echo "<input type='radio' name='mode' id='mode_csv' value='csv' /><label for='mode_csv'>CSV</label><br />";
 	echo "<input type='radio' name='mode' id='mode_pdf' value='pdf' checked /><label for='mode_pdf'>PDF</label><br />";
-	echo "<p>Informations à inclure&nbsp;:<br />";
-	echo "<input type='checkbox' name='avec_num_anonymat' id='avec_num_anonymat' value='y' checked /><label for='avec_num_anonymat'>Avec le numéro anonymat</label><br />";
-	//echo "<input type='checkbox' name='avec_colonne_vide' id='avec_colonne_vide' value='y' checked/><label for='avec_colonne_vide'>Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide' value='Note sur $note_sur' /><br />";
-	echo "<input type='checkbox' name='avec_colonne_vide_1' id='avec_colonne_vide_1' value='y' checked /><label for='avec_colonne_vide_1'> Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_1' value='Note sur $note_sur' /><br />";
-	echo "<input type='checkbox' name='avec_colonne_vide_2' id='avec_colonne_vide_2' value='y' /><label for='avec_colonne_vide_2'> Avec une deuxième colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_2' value='Pointage départ' /><br />";
-	echo "<input type='checkbox' name='avec_colonne_vide_3' id='avec_colonne_vide_3' value='y' /><label for='avec_colonne_vide_3'> Avec une troisième colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_3' value='Pointage retour' /><br />";
-	echo "Normalement, les champs suivants ne devraient pas apparaitre sur des bordereaux professeurs, mais vous imaginerez peut-être des usages auxquels les développeurs n'avaient pas pensé.<br />";
-	echo "<input type='checkbox' name='avec_nom_prenom' id='avec_nom_prenom' value='y' /><label for='avec_nom_prenom'>Avec les nom/prénom des élèves</label><br />";
-	echo "<input type='checkbox' name='avec_naissance' id='avec_naissance' value='y' /><label for='avec_naissance'>Avec la date de naissance de l'élève</label><br />";
-	echo "<input type='checkbox' name='avec_classe' id='avec_classe' value='y' /><label for='avec_classe'>Avec la classe de l'élève</label><br />";
-	echo "<input type='checkbox' name='avec_salle' id='avec_salle' value='y' /><label for='avec_salle'>Avec le nom de salle dans laquelle l'élève a passé l'épreuve</label><br />";
+	echo "<p>Informations Ã  inclure&nbsp;:<br />";
+	echo "<input type='checkbox' name='avec_num_anonymat' id='avec_num_anonymat' value='y' checked /><label for='avec_num_anonymat'>Avec le numÃ©ro anonymat</label><br />";
+	//echo "<input type='checkbox' name='avec_colonne_vide' id='avec_colonne_vide' value='y' checked/><label for='avec_colonne_vide'>Avec une colonne vide dont l'intitulÃ© soit </label><input type='text' name='titre_colonne_vide' value='Note sur $note_sur' /><br />";
+	echo "<input type='checkbox' name='avec_colonne_vide_1' id='avec_colonne_vide_1' value='y' checked /><label for='avec_colonne_vide_1'> Avec une colonne vide dont l'intitulÃ© soit </label><input type='text' name='titre_colonne_vide_1' value='Note sur $note_sur' /><br />";
+	echo "<input type='checkbox' name='avec_colonne_vide_2' id='avec_colonne_vide_2' value='y' /><label for='avec_colonne_vide_2'> Avec une deuxiÃ¨me colonne vide dont l'intitulÃ© soit </label><input type='text' name='titre_colonne_vide_2' value='Pointage dÃ©part' /><br />";
+	echo "<input type='checkbox' name='avec_colonne_vide_3' id='avec_colonne_vide_3' value='y' /><label for='avec_colonne_vide_3'> Avec une troisiÃ¨me colonne vide dont l'intitulÃ© soit </label><input type='text' name='titre_colonne_vide_3' value='Pointage retour' /><br />";
+	echo "Normalement, les champs suivants ne devraient pas apparaitre sur des bordereaux professeurs, mais vous imaginerez peut-Ãªtre des usages auxquels les dÃ©veloppeurs n'avaient pas pensÃ©.<br />";
+	echo "<input type='checkbox' name='avec_nom_prenom' id='avec_nom_prenom' value='y' /><label for='avec_nom_prenom'>Avec les nom/prÃ©nom des Ã©lÃ¨ves</label><br />";
+	echo "<input type='checkbox' name='avec_naissance' id='avec_naissance' value='y' /><label for='avec_naissance'>Avec la date de naissance de l'Ã©lÃ¨ve</label><br />";
+	echo "<input type='checkbox' name='avec_classe' id='avec_classe' value='y' /><label for='avec_classe'>Avec la classe de l'Ã©lÃ¨ve</label><br />";
+	echo "<input type='checkbox' name='avec_salle' id='avec_salle' value='y' /><label for='avec_salle'>Avec le nom de salle dans laquelle l'Ã©lÃ¨ve a passÃ© l'Ã©preuve</label><br />";
 
 	echo add_token_field();
 

@@ -46,7 +46,7 @@
 									<div class="art-post-inner art-article">
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
-												<div style="font-size:12px;color:white;width:80%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[Gestionnaire de pÈriodes calendaires] : DÈfinissez ici vos diffÈrentes pÈriodes calendaires en cliquant directement dans le calendrier. Cliquez sur une pÈriode calendaire dÈj‡ existante pour l'Èditer.</div> 
+												<div style="font-size:12px;color:white;width:80%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[Gestionnaire de p√©riodes calendaires] : D√©finissez ici vos diff√©rentes p√©riodes calendaires en cliquant directement dans le calendrier. Cliquez sur une p√©riode calendaire d√©j√† existante pour l'√©diter.</div> 
                                                 <div class="cleared"></div>
                                                 <!-- /article-content -->
                                             </div>
@@ -79,7 +79,7 @@
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
 												<div style="padding:10px;margin:0px;position:relative;width:100%;">
-												<img style="display:block;padding:0px;margin:0 auto;border:0px;" src="./lib/template/images/bouton_vacances.png" alt="gÈnÈrer les pÈriodes de vacances" />
+												<img style="display:block;padding:0px;margin:0 auto;border:0px;" src="./lib/template/images/bouton_vacances.png" alt="g√©n√©rer les p√©riodes de vacances" />
 												</div>
 												<div class="calendar_container">
 
@@ -122,7 +122,7 @@
 </div>
 <div id="cache_modal" style="display:none;position:absolute;top:0px;left:0px;background-color:#000000;width:200px;height:200px;"> &nbsp;</div>
 <div id="new_period" class="new_period"> 
-	<p id="label_period" style="padding-left:40px;padding-top:40px;text-align:left;">Entrez le nom de la nouvelle pÈriode</p>
+	<p id="label_period" style="padding-left:40px;padding-top:40px;text-align:left;">Entrez le nom de la nouvelle p√©riode</p>
 	<p style="padding-top:10px;padding-left:50px;"><input id="period_input_field" style="width:200px;" type="text"/></p> 
 	<p style="padding-left:10px;padding-top:10px;"><img id="bouton_params" src="./lib/template/images/bouton_params.png" /></p>
 </div>
@@ -137,17 +137,17 @@
 									background-repeat:repeat-x;
 									background-position:left bottom;">
 	<?php if ($periodes_notes_autorisees) { ?> 
-	<p>PÈriode de notes associÈe :
+	<p>P√©riode de notes associ√©e :
 			<select id="params_periodes_notes" style="width:110px;" >
 			<?php echo $liste_periodes; ?>
 			</select>
 		</p>
 	
 	<?php } else { ?>
-	<p>PÈriode de notes associÈe :
+	<p>P√©riode de notes associ√©e :
 		
 			<select disabled id="params_periodes_notes" style="width:130px;" >
-				<option value="0">aucune pÈriode</option>
+				<option value="0">aucune p√©riode</option>
 			</select>
 		</p>
 	 	
@@ -158,7 +158,7 @@
 		<span style="padding-left:30px;"> <img id="params_checkbox_close" src="./lib/template/images/unchecked.gif" /></span><span style="padding-left:5px;"> non </span>
 	</p> 	
 	<p style="padding-bottom:20px;">
-		<span>Type de pÈriode : </span>
+		<span>Type de p√©riode : </span>
 		<span> <input id="params_type" type="hidden"/></span>
 		<span style="padding-left:20px;"> <img id="params_checkbox_cours" src="./lib/template/images/checked.gif" /></span><span style="padding-left:5px;"> cours </span>
 		<span style="padding-left:20px;"> <img id="params_checkbox_vacances" src="./lib/template/images/unchecked.gif" /></span><span style="padding-left:5px;"> vacances </span>
@@ -172,11 +172,11 @@
 	<input type="hidden" id="id_period" />
 	<input type="hidden" id="num_jour_initial" />
 	<input type="hidden" id="num_jour_final" />
-	<p><span>Nom de la pÈriode :</span><span> <input id="name_period" style="width:200px;" type="text"/></span></p>
-	<p><span>DÈbut de la pÈriode :</span><span> <input id="start_period" style="width:200px;" type="text"/></span></p> 
-	<p><span>Fin de la pÈriode :</span><span> <input id="end_period" style="width:200px;" type="text"/></span></p> 
+	<p><span>Nom de la p√©riode :</span><span> <input id="name_period" style="width:200px;" type="text"/></span></p>
+	<p><span>D√©but de la p√©riode :</span><span> <input id="start_period" style="width:200px;" type="text"/></span></p> 
+	<p><span>Fin de la p√©riode :</span><span> <input id="end_period" style="width:200px;" type="text"/></span></p> 
 	<?php if ($periodes_notes_autorisees) { ?> 
-	<p><span>PÈriode de notes associÈe :</span>
+	<p><span>P√©riode de notes associ√©e :</span>
 		<span> 
 			<select id="periodes_notes" style="width:200px;" >
 			<?php echo $liste_periodes; ?>
@@ -184,10 +184,10 @@
 		</span>
 	</p> 
 	<?php } else { ?>
-	<p><span>PÈriode de notes associÈe :</span>
+	<p><span>P√©riode de notes associ√©e :</span>
 		<span> 
 			<select disabled id="periodes_notes" style="width:200px;" >
-				<option value="0">aucune pÈriode</option>
+				<option value="0">aucune p√©riode</option>
 			</select>
 		</span>
 	</p> 	
@@ -197,7 +197,7 @@
 		<span style="padding-left:30px;"> <img id="checkbox_open" src="./lib/template/images/checked.gif" /></span><span style="padding-left:5px;"> oui </span>
 		<span style="padding-left:30px;"> <img id="checkbox_close" src="./lib/template/images/unchecked.gif" /></span><span style="padding-left:5px;"> non </span>
 	</p> 	
-	<p>	<span>Type de pÈriode : </span>
+	<p>	<span>Type de p√©riode : </span>
 		<span> <input id="type" type="hidden"/></span>
 		<span style="padding-left:30px;"> <img id="checkbox_cours" src="./lib/template/images/checked.gif" /></span><span style="padding-left:5px;"> cours </span>
 		<span style="padding-left:30px;"> <img id="checkbox_vacances" src="./lib/template/images/unchecked.gif" /></span><span style="padding-left:5px;"> vacances </span>

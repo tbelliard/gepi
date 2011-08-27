@@ -44,15 +44,15 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
 
 require('sanctions_func_lib.php');
 
-// Paramètre pour autoriser ou non une zone de saisie de commentaires pour un incident
+// ParamÃ¨tre pour autoriser ou non une zone de saisie de commentaires pour un incident
 $autorise_commentaires_mod_disc = getSettingValue("autorise_commentaires_mod_disc");
 
 function choix_heure($champ_heure,$div_choix_heure) {
@@ -93,7 +93,7 @@ function choix_heure($champ_heure,$div_choix_heure) {
 }
 
 function recherche_ele($rech_nom,$page) {
-	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]/","",$rech_nom);
+	$rech_nom=preg_replace("/[^A-Za-zÃ‚Ã„Ã€ÃÃƒÃ„Ã…Ã‡ÃŠÃ‹ÃˆÃ‰ÃÃÃŒÃÃ‘Ã”Ã–Ã’Ã“Ã•Â¦Ã›ÃœÃ™ÃšÃÂ¾Â´Ã¡Ã Ã¢Ã¤Ã£Ã¥Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã¬Ã­Ã±Ã´Ã¶Ã°Ã²Ã³ÃµÂ¨Ã»Ã¼Ã¹ÃºÃ½Ã¿Â¸]/","",$rech_nom);
 
 	$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
 	$res_ele=mysql_query($sql);
@@ -101,19 +101,19 @@ function recherche_ele($rech_nom,$page) {
 	$nb_ele=mysql_num_rows($res_ele);
 
 	if($nb_ele==0){
-		// On ne devrait pas arriver là.
-		//echo "<p>Aucun nom d'élève ne contient la chaine $rech_nom.</p>\n";
+		// On ne devrait pas arriver lÃ .
+		//echo "<p>Aucun nom d'Ã©lÃ¨ve ne contient la chaine $rech_nom.</p>\n";
 		echo "<p>Aucun nom d'&eacute;l&egrave;ve ne contient la chaine $rech_nom.</p>\n";
 	}
 	else{
-		//echo "<p>La recherche a retourné <b>$nb_ele</b> réponse(s):</p>\n";
+		//echo "<p>La recherche a retournÃ© <b>$nb_ele</b> rÃ©ponse(s):</p>\n";
 		echo "<p>La recherche a retourn&eacute; <b>$nb_ele</b> r&eacute;ponse";
 		if($nb_ele>1) {echo "s";}
 		echo ":</p>\n";
-		echo "<table border='1' class='boireaus' summary='Liste des élèves'>\n";
+		echo "<table border='1' class='boireaus' summary='Liste des Ã©lÃ¨ves'>\n";
 		echo "<tr>\n";
-		//echo "<th>Elève</th>\n";
-		echo "<th>Sélectionner</th>\n";
+		//echo "<th>ElÃ¨ve</th>\n";
+		echo "<th>SÃ©lectionner</th>\n";
 		echo "<th>El&egrave;ve</th>\n";
 		echo "<th>Classe(s)</th>\n";
 		echo "</tr>\n";
@@ -158,7 +158,7 @@ function recherche_ele($rech_nom,$page) {
 }
 
 function recherche_utilisateur($rech_nom,$page) {
-	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]/","",$rech_nom);
+	$rech_nom=preg_replace("/[^A-Za-zÃ‚Ã„Ã€ÃÃƒÃ„Ã…Ã‡ÃŠÃ‹ÃˆÃ‰ÃÃÃŒÃÃ‘Ã”Ã–Ã’Ã“Ã•Â¦Ã›ÃœÃ™ÃšÃÂ¾Â´Ã¡Ã Ã¢Ã¤Ã£Ã¥Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã¬Ã­Ã±Ã´Ã¶Ã°Ã²Ã³ÃµÂ¨Ã»Ã¼Ã¹ÃºÃ½Ã¿Â¸]/","",$rech_nom);
 
 	$sql="SELECT * FROM utilisateurs WHERE (nom LIKE '%$rech_nom%' AND statut!='responsable');";
 	$res_utilisateur=mysql_query($sql);
@@ -166,7 +166,7 @@ function recherche_utilisateur($rech_nom,$page) {
 	$nb_utilisateur=mysql_num_rows($res_utilisateur);
 
 	if($nb_utilisateur==0){
-		// On ne devrait pas arriver là.
+		// On ne devrait pas arriver lÃ .
 		echo "<p>Aucun nom d'utilisateur ne contient la chaine $rech_nom.</p>\n";
 	}
 	else{
@@ -175,7 +175,7 @@ function recherche_utilisateur($rech_nom,$page) {
 		echo ":</p>\n";
 		echo "<table border='1' class='boireaus' summary='Liste des utilisateurs'>\n";
 		echo "<tr>\n";
-		echo "<th>Sélectionner</th>\n";
+		echo "<th>SÃ©lectionner</th>\n";
 		echo "<th>Utilisateur</th>\n";
 		echo "</tr>\n";
 		$alt=1;
@@ -247,10 +247,10 @@ if(isset($id_incident)) {
 		$step=2;
 	}
 	elseif($_SESSION['statut']=='professeur') {
-		// Si le visiteur est un professeur et que l'incident a été ouvert par une autre personne, on fait comme si l'incident était clos.
-		// Aucune modification ne peut être effectuée par le professeur.
-		// Il doit s'adresser à un cpe, scol, admin ou au déclarant pour apporter un commentaire.
-		// Remarque: S'il arrive sur cette page c'est qu'il est protagoniste de l'incident ou déclarant... ou alors il a bricolé les valeurs en barre d'adresse... -> METTRE DES TESTS POUR L'INTERDIRE
+		// Si le visiteur est un professeur et que l'incident a Ã©tÃ© ouvert par une autre personne, on fait comme si l'incident Ã©tait clos.
+		// Aucune modification ne peut Ãªtre effectuÃ©e par le professeur.
+		// Il doit s'adresser Ã  un cpe, scol, admin ou au dÃ©clarant pour apporter un commentaire.
+		// Remarque: S'il arrive sur cette page c'est qu'il est protagoniste de l'incident ou dÃ©clarant... ou alors il a bricolÃ© les valeurs en barre d'adresse... -> METTRE DES TESTS POUR L'INTERDIRE
 		$sql="SELECT 1=1 FROM s_incidents WHERE id_incident='$id_incident' AND declarant!='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
@@ -273,14 +273,14 @@ if($etat_incident!='clos') {
 			$sql="SELECT 1=1 FROM s_sanctions WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
 			$test_sanction=mysql_query($sql);
 			if(mysql_num_rows($test_sanction)>0) {
-				$msg.="ERREUR: Il n'est pas possible de supprimer ".$suppr_ele_incident[$i]." pour l'incident $id_incident car une ou des sanctions sont prises. Vous devez d'abord supprimer les sanctions associées.<br />\n";
+				$msg.="ERREUR: Il n'est pas possible de supprimer ".$suppr_ele_incident[$i]." pour l'incident $id_incident car une ou des sanctions sont prises. Vous devez d'abord supprimer les sanctions associÃ©es.<br />\n";
 			}
 			else {
 				$sql="DELETE FROM s_traitement_incident WHERE login_ele='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
 				//echo "$sql<br />";
 				$menage=mysql_query($sql);
 				if(!$menage) {
-					$msg.="ERREUR lors de la suppression des traitements associés à ".$suppr_ele_incident[$i]." pour l'incident $id_incident. Les mesures demandées ou prises posent un problème.<br />\n";
+					$msg.="ERREUR lors de la suppression des traitements associÃ©s Ã  ".$suppr_ele_incident[$i]." pour l'incident $id_incident. Les mesures demandÃ©es ou prises posent un problÃ¨me.<br />\n";
 				}
 				else {
 					$sql="DELETE FROM s_protagonistes WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
@@ -379,7 +379,7 @@ if($etat_incident!='clos') {
 			//echo "Ce n'est pas une recherche_eleve ni recherche_utilisateur<br />";
 
 			if(!isset($id_incident)) {
-				//echo "Nouvel incident, \$id_incident n'est pas encore affecté<br />";
+				//echo "Nouvel incident, \$id_incident n'est pas encore affectÃ©<br />";
 				check_token();
 
 				if(!isset($display_date)) {
@@ -404,7 +404,7 @@ if($etat_incident!='clos') {
 					$mois = strftime("%m");
 					$jour = strftime("%d");
 	
-					$msg.="La date proposée n'était pas valide. Elle a été remplacée par la date du jour courant.";
+					$msg.="La date proposÃ©e n'Ã©tait pas valide. Elle a Ã©tÃ© remplacÃ©e par la date du jour courant.";
 				}
 	
 				if(!isset($display_heure)) {
@@ -419,7 +419,7 @@ if($etat_incident!='clos') {
 				if (isset($NON_PROTECT["description"])){
 					$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 	
-					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 					$description=preg_replace('/(\\\r\\\n)+/',"\r\n",$description);
 					$description=preg_replace('/(\\\r)+/',"\r",$description);
 					$description=preg_replace('/(\\\n)+/',"\n",$description);
@@ -433,7 +433,7 @@ if($etat_incident!='clos') {
 				if (isset($NON_PROTECT["commentaire"])){
 					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
 	
-					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 					$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
 					$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
 					$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
@@ -471,14 +471,14 @@ if($etat_incident!='clos') {
 				}
 				else {
 					$id_incident=mysql_insert_id();
-					$msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
+					$msg.="Enregistrement de l'incident nÂ°".$id_incident." effectuÃ©.<br />\n";
 				}
 	
-				$texte_mail="Saisie par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident) survenu le $jour/$mois/$annee à $display_heure:\n";
+				$texte_mail="Saisie par ".civ_nom_prenom($_SESSION['login'])." d'un incident (nÂ°$id_incident) survenu le $jour/$mois/$annee Ã  $display_heure:\n";
 				$texte_mail.="Nature: $nature\nDescription: $description\n";
 			}
 			else {
-				//echo "Incident n°$id_incident<br />";
+				//echo "Incident nÂ°$id_incident<br />";
 
 				//check_token();
 
@@ -504,7 +504,7 @@ if($etat_incident!='clos') {
 						$mois = strftime("%m");
 						$jour = strftime("%d");
 	
-						$msg.="La date proposée n'était pas valide. Elle a été remplacée par la date du jour courant.";
+						$msg.="La date proposÃ©e n'Ã©tait pas valide. Elle a Ã©tÃ© remplacÃ©e par la date du jour courant.";
 					}
 	
 					$sql.="date='$annee-$mois-$jour' ,";
@@ -519,7 +519,7 @@ if($etat_incident!='clos') {
 	
 				if(isset($nature)) {
 					$sql.="nature='".traitement_magic_quotes(corriger_caracteres($nature))."' ,";
-					//on vérifie si une catégorie est définie pour cette nature
+					//on vÃ©rifie si une catÃ©gorie est dÃ©finie pour cette nature
 					$sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' GROUP BY id_categorie";
 					$res2=mysql_query($sql2);
 					//if($res2) {
@@ -528,8 +528,8 @@ if($etat_incident!='clos') {
 							$tab_res[]=$lign_cat->id_categorie;
 						}
 						//il ne devrait pas y avoir plus d'un enregistrement; dans le cas contraire on envoi un message
-						if (count($tab_res)>1) {$msg.="Il y a plusieurs catégories affectées à cette nature. La première est retenue pour cet incident. Vous devriez mettre à jour vos catégories d'incidents.<br />";}
-						//on affecte la categorie a l'incident ou on met à null dans le cas contraire;
+						if (count($tab_res)>1) {$msg.="Il y a plusieurs catÃ©gories affectÃ©es Ã  cette nature. La premiÃ¨re est retenue pour cet incident. Vous devriez mettre Ã  jour vos catÃ©gories d'incidents.<br />";}
+						//on affecte la categorie a l'incident ou on met Ã  null dans le cas contraire;
 						if ($tab_res['0']==null) {$sql.="id_categorie=NULL ,";}
 						else {$sql.="id_categorie='".$tab_res['0']."' ,";}
 					} 
@@ -539,7 +539,7 @@ if($etat_incident!='clos') {
 				if (isset($NON_PROTECT["description"])){
 					$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 	
-					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 					$description=preg_replace('/(\\\r\\\n)+/',"\r\n",$description);
 					$description=preg_replace('/(\\\r)+/',"\r",$description);
 					$description=preg_replace('/(\\\n)+/',"\n",$description);
@@ -552,7 +552,7 @@ if($etat_incident!='clos') {
 				if (isset($NON_PROTECT["commentaire"])){
 					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
 	
-					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 					$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
 					$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
 					$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
@@ -594,10 +594,10 @@ if($etat_incident!='clos') {
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la mise à jour de l'incident ".$id_incident."<br />\n";
+						$msg.="ERREUR lors de la mise Ã  jour de l'incident ".$id_incident."<br />\n";
 					}
 					else {
-						$msg.="Mise à jour de l'incident n°".$id_incident." effectuée.<br />\n";
+						$msg.="Mise Ã  jour de l'incident nÂ°".$id_incident." effectuÃ©e.<br />\n";
 					}
 				}
 				
@@ -605,12 +605,12 @@ if($etat_incident!='clos') {
 		        $res_declarant=mysql_query($sql_declarant);
 		        if(mysql_num_rows($res_declarant)>0) {
 			        $lig_decclarant=mysql_fetch_object($res_declarant);
-			        $texte_mail= "Déclaration initiale de l'incident par ".u_p_nom($lig_decclarant->declarant)."\n";
+			        $texte_mail= "DÃ©claration initiale de l'incident par ".u_p_nom($lig_decclarant->declarant)."\n";
 		        }
 	
-				$texte_mail.="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident)";
+				$texte_mail.="Mise Ã  jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (nÂ°$id_incident)";
 				if(isset($display_heure)) {
-					$texte_mail.=" survenu le $jour/$mois/$annee à/en $display_heure:\n";
+					$texte_mail.=" survenu le $jour/$mois/$annee Ã /en $display_heure:\n";
 				}
 				if(isset($nature)) {
 					$texte_mail.="\nNature: $nature\nDescription: $description\n";
@@ -683,7 +683,7 @@ if($etat_incident!='clos') {
 					//echo "\$mesure_ele_login=$mesure_ele_login<br />";
 					check_token();
 
-					// Recherche des mesures déjà enregistrées:
+					// Recherche des mesures dÃ©jÃ  enregistrÃ©es:
 					for($i=0;$i<count($mesure_ele_login);$i++) {
 
 						//$msg.="\$mesure_ele_login[$i]=$mesure_ele_login[$i]<br />";
@@ -738,27 +738,27 @@ if($etat_incident!='clos') {
 
 							//$msg.="\$document_joint['tmp_name']=".$document_joint['tmp_name']."<br />";
 							if(!is_uploaded_file($document_joint['tmp_name'])) {
-								$msg.="L'upload du fichier a échoué.<br />\n";
+								$msg.="L'upload du fichier a Ã©chouÃ©.<br />\n";
 							}
 							else{
 								if(!file_exists($document_joint['tmp_name'])) {
 									if($document_joint['name']!="") {
 										$extension_tmp=substr(strrchr($document_joint['name'],'.'),1);
 										if(!in_array($extension, $AllowedFilesExtensions)) {
-											$msg.="Vous avez proposé : ".$document_joint['name']."<br />L'extension $extension n'est pas autorisée.<br />\n";
+											$msg.="Vous avez proposÃ© : ".$document_joint['name']."<br />L'extension $extension n'est pas autorisÃ©e.<br />\n";
 										}
 										else {
-											$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+											$msg.="Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.<br />\n";
 										}
 									}
 									else {
-										$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
-										$msg.="Il se peut que l'extension du fichier proposé ne soit pas autorisée.<br />\n";
-										$msg.="Les types autorisés sont ".array_to_chaine($AllowedFilesExtensions)."<br />";
+										$msg.="Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.<br />\n";
+										$msg.="Il se peut que l'extension du fichier proposÃ© ne soit pas autorisÃ©e.<br />\n";
+										$msg.="Les types autorisÃ©s sont ".array_to_chaine($AllowedFilesExtensions)."<br />";
 									}
 								}
 								else {
-									//echo "<p>Le fichier a été uploadé.</p>\n";
+									//echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 				
 									$source_file=$document_joint['tmp_name'];
 									$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
@@ -776,7 +776,7 @@ if($etat_incident!='clos') {
 							if (isset($NON_PROTECT["travail_pour_mesure_demandee_".$i])){
 								$texte_travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail_pour_mesure_demandee_".$i]));
 				
-								// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+								// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 								$texte_travail=preg_replace('/(\\\r\\\n)+/',"\r\n",$texte_travail);
 								$texte_travail=preg_replace('/(\\\r)+/',"\r",$texte_travail);
 								$texte_travail=preg_replace('/(\\\n)+/',"\n",$texte_travail);
@@ -802,7 +802,7 @@ if($etat_incident!='clos') {
 						/*
 						// Mis en commentaire pour ne pas supprimer trop hativement des fichiers
 						if(count($mesure_demandee)==0) {
-							// Supprimer d'éventuels fichiers associés? s'il ne reste plus aucune mesure, oui
+							// Supprimer d'Ã©ventuels fichiers associÃ©s? s'il ne reste plus aucune mesure, oui
 							$tab_documents_joints=get_documents_joints($id_incident, "mesure", $mesure_ele_login[$i]);
 							if(count($tab_documents_joints)>0) {
 								for($loop=0;$loop<count($tab_documents_joints);$loop++) {
@@ -831,7 +831,7 @@ if($etat_incident!='clos') {
 								if(in_array($lig_mes->id,$tab_mes_enregistree)) {
 									if((!in_array($lig_mes->id,$mesure_prise))&&
 										(!in_array($lig_mes->id,$mesure_demandee))) {
-										// Cette mesure n'a plus lieu d'être enregistrée
+										// Cette mesure n'a plus lieu d'Ãªtre enregistrÃ©e
 										//$sql="DELETE FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."' AND mesure='".$lig_mes->mesure."';";
 										$sql="DELETE FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."' AND id_mesure='".$lig_mes->id."';";
 										$suppr=mysql_query($sql);
@@ -846,7 +846,7 @@ if($etat_incident!='clos') {
 									//	(in_array($lig_mes->mesure,$mesure_demandee))) {
 									if((in_array($lig_mes->id,$mesure_prise))||
 										(in_array($lig_mes->id,$mesure_demandee))) {
-										// Cette mesure doit être enregistrée
+										// Cette mesure doit Ãªtre enregistrÃ©e
 										//$sql="INSERT INTO s_traitement_incident SET id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."', mesure='".$lig_mes->mesure."', login_u='".$_SESSION['login']."';";
 										$sql="INSERT INTO s_traitement_incident SET id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."', id_mesure='".$lig_mes->id."', login_u='".$_SESSION['login']."';";
 										$insert=mysql_query($sql);
@@ -869,16 +869,16 @@ if($etat_incident!='clos') {
 					$sql="UPDATE s_incidents SET etat='clos' WHERE id_incident='$id_incident';";
 					$update=mysql_query($sql);
 					if(!$update) {
-						$msg.="ERREUR lors de la clôture de l'incident n°$id_incident.<br />\n";
+						$msg.="ERREUR lors de la clÃ´ture de l'incident nÂ°$id_incident.<br />\n";
 					}
 					else {
-						$msg.="Clôture de l'incident n°$id_incident.<br />\n";
+						$msg.="ClÃ´ture de l'incident nÂ°$id_incident.<br />\n";
 					}
 				}
 	
 				$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 				if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-					$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+					$envoi_mail_actif='y'; // Passer Ã  'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 				}
 	
 				if($envoi_mail_actif=='y') {
@@ -959,7 +959,7 @@ if($etat_incident!='clos') {
 									$texte_mail.="\n";
 								}
 		
-								// On va avoir des personnes alertees inutilement pour les élèves qui ont changé de classe.
+								// On va avoir des personnes alertees inutilement pour les Ã©lÃ¨ves qui ont changÃ© de classe.
 								// NON
 								$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='$lig_prot->login' ORDER BY periode DESC LIMIT 1;";
 								$res_clas_prot=mysql_query($sql);
@@ -976,7 +976,7 @@ if($etat_incident!='clos') {
 	
 						if(count($tab_alerte_classe)>0) {
 							$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe);
-							// La liste des destinataires, admin inclus doivent être définis dans "Définition des destinataires d'alertes"
+							// La liste des destinataires, admin inclus doivent Ãªtre dÃ©finis dans "DÃ©finition des destinataires d'alertes"
 							//if($destinataires=="") {
 							//	$destinataires=getSettingValue("gepiAdminAdress");
 							//}
@@ -984,7 +984,7 @@ if($etat_incident!='clos') {
 							if($destinataires!="") {
 								$texte_mail=$texte_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
 						
-								$subject = "[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
+								$subject = "[GEPI][Incident nÂ°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
 								$headers = "";
 
 								if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
@@ -1020,7 +1020,7 @@ $javascript_specifique[]="lib/builder";
 $style_specifique[]="mod_discipline/mod_discipline";
 
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Signaler un incident";
 require_once("../lib/header.inc");
@@ -1066,7 +1066,7 @@ elseif (($_SESSION['statut']=='professeur')||
 		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
 	}
 
-	// Rechercher les incidents signalés par le prof ou ayant le prof pour protagoniste
+	// Rechercher les incidents signalÃ©s par le prof ou ayant le prof pour protagoniste
 	$sql="SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
@@ -1088,8 +1088,8 @@ elseif (($_SESSION['statut']=='professeur')||
 	}
 }
 
-// ERIC a décommenter pour la gestion des modele ooo des rapport d'incident.
-if ($step==2) {   //Eric Ajout génération du modèle Ooo pour imprimer le rapport d'incident.
+// ERIC a dÃ©commenter pour la gestion des modele ooo des rapport d'incident.
+if ($step==2) {   //Eric Ajout gÃ©nÃ©ration du modÃ¨le Ooo pour imprimer le rapport d'incident.
     echo " | <a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=$id_incident".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer le rapport d'incident</a>\n";
 }
 
@@ -1104,10 +1104,10 @@ if(isset($id_incident)) {
 		$step=2;
 	}
 	elseif($_SESSION['statut']=='professeur') {
-		// Si le visiteur est un professeur et que l'incident a été ouvert par une autre personne, on fait comme si l'incident était clos.
-		// Aucune modification ne peut être effectuée par le professeur.
-		// Il doit s'adresser à un cpe, scol, admin ou au déclarant pour apporter un commentaire.
-		// Remarque: S'il arrive sur cette page c'est qu'il est protagoniste de l'incident ou déclarant.
+		// Si le visiteur est un professeur et que l'incident a Ã©tÃ© ouvert par une autre personne, on fait comme si l'incident Ã©tait clos.
+		// Aucune modification ne peut Ãªtre effectuÃ©e par le professeur.
+		// Il doit s'adresser Ã  un cpe, scol, admin ou au dÃ©clarant pour apporter un commentaire.
+		// Remarque: S'il arrive sur cette page c'est qu'il est protagoniste de l'incident ou dÃ©clarant.
 		$sql="SELECT 1=1 FROM s_incidents WHERE id_incident='$id_incident' AND declarant!='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
@@ -1128,7 +1128,7 @@ if($etat_incident!='clos') {
 		if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
 		echo "'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">Ajouter des élèves</a>";
+		echo ">Ajouter des Ã©lÃ¨ves</a>";
 		echo "</li>\n";
 	}
 	if($step!=1) {
@@ -1146,7 +1146,7 @@ if($etat_incident!='clos') {
 		if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
 		echo "'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">Préciser l'incident</a>";
+		echo ">PrÃ©ciser l'incident</a>";
 		echo "</li>\n";
 	}
 	if((isset($id_incident))&&($_SESSION['statut']!='professeur')&&(($_SESSION['statut']!='autre'))) {
@@ -1164,9 +1164,9 @@ if($etat_incident!='clos') {
 }
 
 if(isset($id_incident)) {
-	// AFFICHAGE DES PROTAGONISTES (déjà enregistrés) DE L'INCIDENT
+	// AFFICHAGE DES PROTAGONISTES (dÃ©jÃ  enregistrÃ©s) DE L'INCIDENT
 
-	// Récupération des qualités
+	// RÃ©cupÃ©ration des qualitÃ©s
 	$tab_qualite=array();
 	$sql="SELECT * FROM s_qualites ORDER BY qualite;";
 	$res=mysql_query($sql);
@@ -1187,7 +1187,7 @@ if(isset($id_incident)) {
 			echo "<input type='hidden' name='step' value='$step' />\n";
 		}
 
-		echo "<p class='bold'>Protagonistes de l'incident n°$id_incident&nbsp;:</p>\n";
+		echo "<p class='bold'>Protagonistes de l'incident nÂ°$id_incident&nbsp;:</p>\n";
 
 		echo "<blockquote>\n";
 
@@ -1195,10 +1195,10 @@ if(isset($id_incident)) {
 		echo "<tr>\n";
 		echo "<th>Individu</th>\n";
 		echo "<th>Statut</th>\n";
-		//echo "<th>Qualité dans l'incident</th>\n";
-		echo "<th>Rôle dans l'incident</th>\n";
+		//echo "<th>QualitÃ© dans l'incident</th>\n";
+		echo "<th>RÃ´le dans l'incident</th>\n";
 
-		//Eric modèle Ooo
+		//Eric modÃ¨le Ooo
 		/*
 		if(($gepiSettings['active_mod_ooo'] == 'y')&&
 		((($_SESSION['statut']=='professeur')&&($gepiSettings['imprDiscProfRetenueOOo']=='yes'))||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
@@ -1210,7 +1210,7 @@ if(isset($id_incident)) {
 
 		if($_SESSION['statut']!='professeur') {
 			echo "<th>\n";
-			// Avertir la famille... et afficher les avertissements effectués.
+			// Avertir la famille... et afficher les avertissements effectuÃ©s.
 			echo "Famille avertie\n";
 			echo "</th>\n";
 		}
@@ -1218,7 +1218,7 @@ if(isset($id_incident)) {
 		if($etat_incident!='clos') {
 			echo "<th>\n";
 			echo "<input type='submit' name='supprimer' value='Supprimer' />\n";
-			// A FAIRE: Ajouter des liens Tout cocher/décocher
+			// A FAIRE: Ajouter des liens Tout cocher/dÃ©cocher
 			echo "</th>\n";
 		}
 
@@ -1248,7 +1248,7 @@ if(isset($id_incident)) {
 
 				echo "</td>\n";
 				echo "<td>";
-				echo "élève (<i>";
+				echo "Ã©lÃ¨ve (<i>";
 				$tmp_tab=get_class_from_ele_login($lig->login);
 				//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
 				if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
@@ -1332,7 +1332,7 @@ if(isset($id_incident)) {
 				}
 				echo "</td>\n";
 			}
-			//Eric  modèle Ooo
+			//Eric  modÃ¨le Ooo
 			/*
 			if(($gepiSettings['active_mod_ooo'] == 'y')&&
 			((($_SESSION['statut']=='professeur')&&($gepiSettings['imprDiscProfRetenueOOo']=='yes'))||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
@@ -1350,7 +1350,7 @@ if(isset($id_incident)) {
 			if($_SESSION['statut']!='professeur') {
 				echo "<td>\n";
 				if($lig->statut=='eleve') {
-					// Avertir la famille... et afficher les avertissements effectués.
+					// Avertir la famille... et afficher les avertissements effectuÃ©s.
 					/*
 					$sql="SELECT * FROM s_communication WHERE id_incident='$id_incident' AND login='$lig->login' ORDER BY nature;";
 					$res_comm=mysql_query($sql);
@@ -1396,7 +1396,7 @@ if(isset($id_incident)) {
 			}
 
 			if($etat_incident!='clos') {
-				// J'ai laissé le nom suppr_ELE_incident[] même pour la suppression de personnels protagonistes
+				// J'ai laissÃ© le nom suppr_ELE_incident[] mÃªme pour la suppression de personnels protagonistes
 				echo "<td><input type='checkbox' name='suppr_ele_incident[]' id='suppr_$cpt' value=\"$lig->login\" /></td>\n";
 			}
 
@@ -1424,7 +1424,7 @@ if(isset($id_incident)) {
 			}
 		}
 		if(temoin_qualite_protagoniste=='y') {
-			alert('Le rôle d\'un protagoniste n\'est pas renseigné.');
+			alert('Le rÃ´le d\'un protagoniste n\'est pas renseignÃ©.');
 		}
 
 		setTimeout('check_protagonistes_sans_qualite()',10000);
@@ -1451,7 +1451,7 @@ if(isset($id_incident)) {
 				if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
 				echo "'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">préciser l'incident</a> après ajout des protagonistes.</p>\n";
+				echo ">prÃ©ciser l'incident</a> aprÃ¨s ajout des protagonistes.</p>\n";
 			}
 		}
 		echo "</blockquote>\n";
@@ -1481,7 +1481,7 @@ if(isset($id_incident)) {
 		//csrf_alea=document.getElementById('csrf_alea').value;
 
 		//avertie=document.getElementById('avertie_'+cpt).value;
-		//+'&csrf_alea='+csrf_alea // inutile... dans sauve_famille_avertie.php, on propose un formulaire avant de générer/enregistrer quoi que ce soit
+		//+'&csrf_alea='+csrf_alea // inutile... dans sauve_famille_avertie.php, on propose un formulaire avant de gÃ©nÃ©rer/enregistrer quoi que ce soit
 		new Ajax.Updater($('div_svg_avertie'),'sauve_famille_avertie.php?id_incident='+id_incident+'&login='+login+'&avertie='+avertie+'".add_token_in_url(false)."',{method: 'get'});
 	}
 	//]]>
@@ -1492,13 +1492,13 @@ if(isset($id_incident)) {
 		}
 	}
 	else {
-		echo "<p style='color:red;'>Aucun protagoniste n'a (<i>encore</i>) été spécifié pour cet incident.</p>\n";
+		echo "<p style='color:red;'>Aucun protagoniste n'a (<i>encore</i>) Ã©tÃ© spÃ©cifiÃ© pour cet incident.</p>\n";
 	}
 }
 else {
 	echo "<p class='bold'>Protagonistes de l'incident&nbsp;:</p>\n";
 	echo "<blockquote>\n";
-	echo "<p style='color:red;'>Aucun protagoniste n'a (<i>encore</i>) été spécifié pour cet incident.</p>\n";
+	echo "<p style='color:red;'>Aucun protagoniste n'a (<i>encore</i>) Ã©tÃ© spÃ©cifiÃ© pour cet incident.</p>\n";
 	echo "</blockquote>\n";
 }
 
@@ -1511,7 +1511,7 @@ if($step==0) {
 
 	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire1'>
 	<p>
-	Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
+	Afficher les Ã©lÃ¨ves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
 	<input type='hidden' name='page' value='$page' />
 	<input type='hidden' name='step' value='$step' />
 	<input type='hidden' name='is_posted' value='y' />
@@ -1527,7 +1527,7 @@ if($step==0) {
 	echo add_token_field();
 
 	if(isset($_POST['recherche_eleve'])) {
-		//echo " | <a href='saisie_incident.php'>Choisir un autre élève</a>\n";
+		//echo " | <a href='saisie_incident.php'>Choisir un autre Ã©lÃ¨ve</a>\n";
 		//echo "</p>\n";
 		//echo "</div>\n";
 
@@ -1540,7 +1540,7 @@ if($step==0) {
 		//echo "$sql<br />";
 		$res_ele=mysql_query($sql);
 		if(mysql_num_rows($res_ele)>0) {
-			echo "<p>Elèves de la classe de ".get_class_from_id($id_classe)."&nbsp;:</p>\n";
+			echo "<p>ElÃ¨ves de la classe de ".get_class_from_id($id_classe)."&nbsp;:</p>\n";
 
 			echo "<blockquote>\n";
 
@@ -1551,7 +1551,7 @@ if($step==0) {
 			// Nombre de lignes dans chaque colonne:
 			$nb_par_colonne=round($nombreligne/$nbcol);
 
-			echo "<table width='100%' summary=\"Tableau de choix des élèves\">\n";
+			echo "<table width='100%' summary=\"Tableau de choix des Ã©lÃ¨ves\">\n";
 			echo "<tr valign='top' align='center'>\n";
 			echo "<td align='left'>\n";
 
@@ -1601,9 +1601,9 @@ if($step==0) {
 	echo "</form>\n";
 
 	// On adapte la liste des classes selon le visiteur
-	// Peut-être faudrait-il permettre d'accéder à toutes les classes...
-	// On peut signaler un incident survenu dans un couloir avec un élève que l'on n'a pas...
-	// ... on peut toujours le faire en faisant une recherche par nom de l'élève.
+	// Peut-Ãªtre faudrait-il permettre d'accÃ©der Ã  toutes les classes...
+	// On peut signaler un incident survenu dans un couloir avec un Ã©lÃ¨ve que l'on n'a pas...
+	// ... on peut toujours le faire en faisant une recherche par nom de l'Ã©lÃ¨ve.
 	if($_SESSION['statut']=='scolarite') {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
@@ -1620,7 +1620,7 @@ if($step==0) {
 	if ($_SESSION['statut']!='autre') { //statut autre : ajout Eric de la condition 
 		$res_clas=mysql_query($sql);
 		if(mysql_num_rows($res_clas)>0) {
-			echo "<p>Ou choisir un élève dans une classe:</p>\n";
+			echo "<p>Ou choisir un Ã©lÃ¨ve dans une classe:</p>\n";
 
 			$tab_txt=array();
 			$tab_lien=array();
@@ -1767,7 +1767,7 @@ elseif($step==1) {
 		echo "<p><br /></p>\n";
 	}
 
-	echo "<p class='bold'>Choisir une catégorie de personnels&nbsp;:</p>\n";
+	echo "<p class='bold'>Choisir une catÃ©gorie de personnels&nbsp;:</p>\n";
 	echo "<blockquote>\n";
 	while($lig=mysql_fetch_object($res)) {
 		echo "<p><a href='saisie_incident.php?step=1&amp;categ_u=".$lig->statut;
@@ -1783,15 +1783,15 @@ elseif($step==1) {
 elseif($step==2) {
 	//==========================================
 	// SAISIE DES DETAILS DE L'INCIDENT
-	echo "<p class='bold'>Détails de l'incident";
+	echo "<p class='bold'>DÃ©tails de l'incident";
 	if(isset($id_incident)) {
-		echo " n°$id_incident";
+		echo " nÂ°$id_incident";
 
 		$sql="SELECT declarant FROM s_incidents WHERE id_incident='$id_incident';";
 		$res_dec=mysql_query($sql);
 		if(mysql_num_rows($res_dec)>0) {
 			$lig_dec=mysql_fetch_object($res_dec);
-			echo " (<span style='font-size:x-small; font-style:italic; color:red;'>signalé par ".u_p_nom($lig_dec->declarant)."</span>)";
+			echo " (<span style='font-size:x-small; font-style:italic; color:red;'>signalÃ© par ".u_p_nom($lig_dec->declarant)."</span>)";
 		}
 	}
 	echo "&nbsp;:</p>\n";
@@ -1891,7 +1891,7 @@ elseif($step==2) {
 	echo ">\n";
 
 	if($etat_incident!='clos') {
-		$texte="ATTENTION&nbsp;: Il ne faut pas mettre une heure vide.<br />En cas d'incertitude sur l'heure, il vaut mieux mettre un point d'interrogation en guise d'heure.<br />Sinon, s'il n'y a pas d'incertitude, le créneau horaire M1, S2,... est préférable.";
+		$texte="ATTENTION&nbsp;: Il ne faut pas mettre une heure vide.<br />En cas d'incertitude sur l'heure, il vaut mieux mettre un point d'interrogation en guise d'heure.<br />Sinon, s'il n'y a pas d'incertitude, le crÃ©neau horaire M1, S2,... est prÃ©fÃ©rable.";
 		$tabdiv_infobulle[]=creer_div_infobulle("div_infobulle_avertissement_heure","Heure non vide","",$texte,"",30,0,'y','y','n','n',2);
 
 		//echo "<div id='div_avertissement_heure' style='float:right; text-align: center; border:1px solid black; margin-top: 2px; min-width: 19px;'>\n";
@@ -1920,7 +1920,7 @@ elseif($step==2) {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='lieu_incident' id='lieu_incident' value='$lieu_incident' onchange='changement();' />\n";
-	// Sélectionner parmi des lieux déjà saisis?
+	// SÃ©lectionner parmi des lieux dÃ©jÃ  saisis?
 	//$sql="SELECT DISTINCT lieu FROM s_retenues WHERE lieu!='' ORDER BY lieu;";
 	$sql="(SELECT DISTINCT lieu FROM s_incidents WHERE lieu!='')";
 	if(param_edt($_SESSION["statut"]) == 'yes') {
@@ -1977,9 +1977,9 @@ elseif($step==2) {
 	if($etat_incident!='clos') {echo " colspan='2'";}
 	echo ">\n";
 
-	// Pouvoir sélectionner une nature parmi les natures déjà saisies auparavant et parmi une liste type
+	// Pouvoir sÃ©lectionner une nature parmi les natures dÃ©jÃ  saisies auparavant et parmi une liste type
 	// insulte,violence,refus de travail,...
-	// Actuellement, la liste des propositions est uniquement recherchée dans les saisies précédentes.
+	// Actuellement, la liste des propositions est uniquement recherchÃ©e dans les saisies prÃ©cÃ©dentes.
 
 	//$nature="";
 
@@ -2045,7 +2045,7 @@ new Ajax.Autocompleter (
 	
 				echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_choix_nature','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
 	
-				$texte="Cliquez pour choisir une nature existante.<br />Ou si aucune nature n'est déjà définie, saisissez la nature d'incident de votre choix.";
+				$texte="Cliquez pour choisir une nature existante.<br />Ou si aucune nature n'est dÃ©jÃ  dÃ©finie, saisissez la nature d'incident de votre choix.";
 				$tabdiv_infobulle[]=creer_div_infobulle('div_explication_choix_nature',"Choix nature de l'incident","",$texte,"",18,0,'y','y','n','n');
 	
 				//====================================================
@@ -2063,7 +2063,7 @@ new Ajax.Autocompleter (
 				// Conteneur:
 				echo "<div id='$id_infobulle_nature2' class='infobulle_corps' style='color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_infobulle_nature2."em; left: 1600px;'>\n";
 			
-					// Ligne d'entête/titre
+					// Ligne d'entÃªte/titre
 					echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: ".$largeur_infobulle_nature2."em;' onmousedown=\"dragStart(event, '$id_infobulle_nature2')\">\n";
 	
 						echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
@@ -2135,7 +2135,7 @@ new Ajax.Autocompleter (
 	echo "<div id='div_avertissement_description' style='float:right;'>\n";
 	echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_description','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_description')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Description' /></a>";
     echo "</div>";
-	$texte="Récit détaillé des faits (paroles prononcées, gestes, réactions, ...)<br />";
+	$texte="RÃ©cit dÃ©taillÃ© des faits (paroles prononcÃ©es, gestes, rÃ©actions, ...)<br />";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_description',"Description de l'incident","",$texte,"",18,0,'y','y','n','n');
 	echo "</td>\n";
 	echo "<td style='text-align:left;'";
@@ -2146,14 +2146,14 @@ new Ajax.Autocompleter (
 		$chaine_avertissement="";
 		for($i=0;$i<count($ele_login);$i++) {
 			if(acces_ele_disc($ele_login[$i])) {
-				if($chaine_avertissement=='') {$chaine_avertissement.="Détails visibles de ";}
+				if($chaine_avertissement=='') {$chaine_avertissement.="DÃ©tails visibles de ";}
 				else {$chaine_avertissement.=", ";}
 				$chaine_avertissement.=get_nom_prenom_eleve($ele_login[$i]);
 			}
 			$tab_resp=get_resp_from_ele_login($ele_login[$i]);
 			for($j=0;$j<count($tab_resp);$j++) {
 				if(acces_resp_disc($tab_resp[$j]['login'])) {
-					if($chaine_avertissement=='') {$chaine_avertissement.="Détails visibles de ";}
+					if($chaine_avertissement=='') {$chaine_avertissement.="DÃ©tails visibles de ";}
 					else {$chaine_avertissement.=", ";}
 					$chaine_avertissement.=$tab_resp[$j]['designation'];
 				}
@@ -2179,7 +2179,7 @@ new Ajax.Autocompleter (
 	    echo "<td style='text-align:center;'>";
 		echo "<b>Zone de dialogue sur l'incident</b>";
 		echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_commentaires','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
-		$texte="Cette zone de texte est disponible pour dialoguer avec la vie scolaire des modalités particulières de traitement de l'incident ou suivre les suites de celui-ci.<br /> Horaire et lieu d'une retenue demandée, demande de convocation de l'élève par le CPE, ...";
+		$texte="Cette zone de texte est disponible pour dialoguer avec la vie scolaire des modalitÃ©s particuliÃ¨res de traitement de l'incident ou suivre les suites de celui-ci.<br /> Horaire et lieu d'une retenue demandÃ©e, demande de convocation de l'Ã©lÃ¨ve par le CPE, ...";
 		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_commentaires',"Zone de texte : dialogue","",$texte,"",18,0,'y','y','n','n');
 	    echo "<textarea id=\"commentaire\"  name=\"no_anti_inject_commentaire\" rows='8' cols='60' onchange=\"changement()\">$commentaire</textarea>\n";
 	    echo "</td>";
@@ -2226,34 +2226,34 @@ new Ajax.Autocompleter (
 			if((count($tab_mes_prise)>0)||(count($tab_mes_demandee)>0)) {
 				echo "<table class='boireaus' summary='Mesures' style='margin:2px;'>\n";
 				echo "<tr>\n";
-				echo "<th>Elève</th>\n";
+				echo "<th>ElÃ¨ve</th>\n";
 				if(count($tab_mes_prise)>0) {
 					echo "<th>Prises</th>\n";
 				}
 				if(count($tab_mes_demandee)>0) {
 					echo "<th>";
 
-					$texte="Les mesures demandées le sont par des professeurs.<br />";
-					$texte.="Un compte cpe ou scolarité peut ensuite saisir la sanction correspondante s'il juge la demande appropriée.<br />";
+					$texte="Les mesures demandÃ©es le sont par des professeurs.<br />";
+					$texte.="Un compte cpe ou scolaritÃ© peut ensuite saisir la sanction correspondante s'il juge la demande appropriÃ©e.<br />";
 					$texte.="<br />";
-					$texte.="Il n'y a pas d'intérêt pour un CPE à cocher une de ces cases.<br />";
-					$texte.="Il vaut mieux passer à la saisie en suivant le lien Traitement/sanction en haut à droite.<br />";
-					$tabdiv_infobulle[]=creer_div_infobulle("div_mesures_demandees","Mesures demandées","",$texte,"",30,0,'y','y','n','n');
+					$texte.="Il n'y a pas d'intÃ©rÃªt pour un CPE Ã  cocher une de ces cases.<br />";
+					$texte.="Il vaut mieux passer Ã  la saisie en suivant le lien Traitement/sanction en haut Ã  droite.<br />";
+					$tabdiv_infobulle[]=creer_div_infobulle("div_mesures_demandees","Mesures demandÃ©es","",$texte,"",30,0,'y','y','n','n');
 
 					echo "<a href='#' onmouseover=\"delais_afficher_div('div_mesures_demandees','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">";
-					echo "Demandées";
+					echo "DemandÃ©es";
 					echo "</a>\n";
 					echo "</th>\n";
 
 					echo "<th>\n";
-					//echo "Document(s) joint(s) à une mesure demandée";
-					echo "Travail et/ou document(s) joint(s) à une mesure demandée";
+					//echo "Document(s) joint(s) Ã  une mesure demandÃ©e";
+					echo "Travail et/ou document(s) joint(s) Ã  une mesure demandÃ©e";
 					echo "</th>\n";
 				}
 				echo "</tr>\n";
 
 				//echo "<tr><td>count(\$ele_login)=".count($ele_login)."</td></tr>";
-				// Boucle sur la liste des élèves
+				// Boucle sur la liste des Ã©lÃ¨ves
 				$alt2=1;
 				for($i=0;$i<count($ele_login);$i++) {
 					$alt2=$alt2*(-1);
@@ -2296,7 +2296,7 @@ new Ajax.Autocompleter (
 								}
 
 								echo " <a href='#' onmouseover=\"delais_afficher_div('div_commentaire_mesures_prise_$loop','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_commentaire_mesures_prise_$loop')\" onclick=\"return false;\">";
-								echo "<img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Précision' />";
+								echo "<img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='PrÃ©cision' />";
 								echo "</a>\n";
 							}
 
@@ -2324,7 +2324,7 @@ new Ajax.Autocompleter (
 								}
 
 								echo " <a href='#' onmouseover=\"delais_afficher_div('div_commentaire_mesures_demandee_$loop','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_commentaire_mesures_demandee_$loop')\" onclick=\"return false;\">";
-								echo "<img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Précision' />";
+								echo "<img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='PrÃ©cision' />";
 								echo "</a>\n";
 							}
 
@@ -2334,7 +2334,7 @@ new Ajax.Autocompleter (
 					}
 
 					echo "<td>\n";
-					//echo "Travail&nbsp;: <textarea name='travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>Nature du travail pour la mesure demandée</textarea>\n";
+					//echo "Travail&nbsp;: <textarea name='travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>Nature du travail pour la mesure demandÃ©e</textarea>\n";
 
 					$texte_travail="Travail: ";
 					$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$ele_login[$i]."';";
@@ -2346,7 +2346,7 @@ new Ajax.Autocompleter (
 
 					echo "<textarea name='no_anti_inject_travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>$texte_travail</textarea>\n";
 
-					// Liste des fichiers déjà joints
+					// Liste des fichiers dÃ©jÃ  joints
 					$tab_file=get_documents_joints($id_incident, "mesure", $ele_login[$i]);
 					if(count($tab_file)>0) {
 						echo "<table class='boireaus' width='100%'>\n";
@@ -2377,7 +2377,7 @@ new Ajax.Autocompleter (
 				echo "</table>\n";
 			}
 			else {
-				echo "<p>Aucun type de mesure n'est défini.</p>\n";
+				echo "<p>Aucun type de mesure n'est dÃ©fini.</p>\n";
 			}
 
 			echo "</td>\n";
@@ -2401,7 +2401,7 @@ new Ajax.Autocompleter (
 		echo "<p style='text-align:center;'><input type='checkbox' name='clore_incident' id='clore_incident' value='y' />\n";
 		echo "<label for='clore_incident' style='cursor:pointer;'>&nbsp;Clore l'incident.</label>\n";
 		//echo "<br />";
-		echo "<em style='font-size:x-small;'>(sous réserve de ne pas <strong>Demander</strong> de mesure)</em>\n";
+		echo "<em style='font-size:x-small;'>(sous rÃ©serve de ne pas <strong>Demander</strong> de mesure)</em>\n";
 		echo "</p>\n";
 		//echo "<p style='text-align:center;'><input type='submit' name='enregistrer2' value='Enregistrer' onclick='verif_details_incident();' /></p>\n";
 
@@ -2412,7 +2412,7 @@ new Ajax.Autocompleter (
 		//echo "<p style='text-align:center;'><input type='submit' name='enregistrer2' value='Enregistrer' onsubmit='verif_details_incident();' /></p>\n";
 
 
-		echo "<p><em>NOTE&nbsp;</em> <span style='color:red;'>(*)</span> Il est impératif de saisir une Nature d'incident pour des questions de facilité de traitement par la suite.</p>\n";
+		echo "<p><em>NOTE&nbsp;</em> <span style='color:red;'>(*)</span> Il est impÃ©ratif de saisir une Nature d'incident pour des questions de facilitÃ© de traitement par la suite.</p>\n";
 	}
 	echo "</blockquote>\n";
 
@@ -2428,12 +2428,12 @@ new Ajax.Autocompleter (
 			echo "if(document.getElementById('nature').options[document.getElementById('nature').selectedIndex].value=='') {";
 		}
 		echo "
-			alert(\"La nature de l'incident doit être précisée.\");
+			alert(\"La nature de l'incident doit Ãªtre prÃ©cisÃ©e.\");
 			return false;
 		}
 		else {
 			if(document.getElementById('display_heure').value=='') {
-				alert(\"L'heure de l'incident (non vide) doit être précisée. \\nEn cas de doute sur l'heure, mettre un '?'.\");
+				alert(\"L'heure de l'incident (non vide) doit Ãªtre prÃ©cisÃ©e. \\nEn cas de doute sur l'heure, mettre un '?'.\");
 				return false;
 			}
 			else {

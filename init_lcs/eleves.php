@@ -70,7 +70,7 @@ $lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
 $lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
 
 function add_eleve($_login, $_nom, $_prenom, $_civilite, $_naissance, $_elenoet = 0) {
-    // Fonction d'ajout d'un élève dans la base Gepi
+    // Fonction d'ajout d'un Ã©lÃ¨ve dans la base Gepi
     if ($_civilite != "M" && $_civilite != "F") {
         if ($_civilite == 1) {
             $_civilite = "M";
@@ -81,7 +81,7 @@ function add_eleve($_login, $_nom, $_prenom, $_civilite, $_naissance, $_elenoet 
         }
     }
 
-    // Si l'élève existe déjà, on met simplement à jour ses informations...
+    // Si l'Ã©lÃ¨ve existe dÃ©jÃ , on met simplement Ã  jour ses informations...
     $test = mysql_query("SELECT login FROM eleves WHERE login = '" . $_login . "'");
     if (mysql_num_rows($test) > 0) {
         $record = mysql_query("UPDATE eleves SET nom = '" . $_nom . "', prenom = '" . $_prenom . "', sexe = '" . $_civilite . "', naissance = '" . $_naissance . "', elenoet = '" . $_elenoet . "' WHERE login = '" . $_login . "'");
@@ -105,7 +105,7 @@ function add_eleve($_login, $_nom, $_prenom, $_civilite, $_naissance, $_elenoet 
 
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des élèves";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -158,7 +158,7 @@ echo "<p class='bold'><a href='../init_lcs/index.php'><img src='../images/icons/
 if (isset($_POST['step'])) {
 	check_token(false);
 
-    // L'admin a validé la procédure, on procède donc...
+    // L'admin a validÃ© la procÃ©dure, on procÃ¨de donc...
 
     // On se connecte au LDAP
     $ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
@@ -166,10 +166,10 @@ if (isset($_POST['step'])) {
     //----***** STEP 1 *****-----//
 
     if ($_POST['step'] == "1") {
-        // La première étape consiste à importer les classes
+        // La premiÃ¨re Ã©tape consiste Ã  importer les classes
 
         if ($_POST['record'] == "yes") {
-            // Les données ont été postées, on les traite donc immédiatement
+            // Les donnÃ©es ont Ã©tÃ© postÃ©es, on les traite donc immÃ©diatement
 
             $j=0;
             while ($j < count($liste_tables_del)) {
@@ -179,7 +179,7 @@ if (isset($_POST['step'])) {
                 $j++;
             }
 
-            // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
+            // On va enregistrer la liste des classes, ainsi que les pÃ©riodes qui leur seront attribuÃ©es
 
             $sr = ldap_search($ds,$lcs_ldap_groups_dn,"(cn=Classe*)");
             $data = ldap_get_entries($ds,$sr);
@@ -198,7 +198,7 @@ if (isset($_POST['step'])) {
                 }
                 if (!$reg_classe) echo "<p>Erreur lors de l'enregistrement de la classe $classe.";
 
-                // On enregistre les périodes pour cette classe
+                // On enregistre les pÃ©riodes pour cette classe
                 // On teste d'abord :
                 $id_classe = mysql_result(mysql_query("select id from classes where classe='$classe'"),0,'id');
                 $test = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
@@ -206,21 +206,21 @@ if (isset($_POST['step'])) {
                     $j = '0';
                     while ($j < $_POST['reg_periodes_num'][$classe]) {
                         $num = $j+1;
-                        $nom_per = "Période ".$num;
+                        $nom_per = "PÃ©riode ".$num;
                         if ($num == "1") { $ver = "N"; } else { $ver = 'O'; }
                         $register = mysql_query("INSERT INTO periodes SET num_periode='$num',nom_periode='$nom_per',verouiller='$ver',id_classe='$id_classe'");
-                        if (!$register) echo "<p>Erreur lors de l'enregistrement d'une période pour la classe $classe";
+                        if (!$register) echo "<p>Erreur lors de l'enregistrement d'une pÃ©riode pour la classe $classe";
                         $j++;
                     }
                 } else {
-                    // on "démarque" les périodes des classes qui ne sont pas à supprimer
+                    // on "dÃ©marque" les pÃ©riodes des classes qui ne sont pas Ã  supprimer
                     $sql = mysql_query("UPDATE periodes SET verouiller='N' where (id_classe='$id_classe' and num_periode='1')");
                     $sql = mysql_query("UPDATE periodes SET verouiller='O' where (id_classe='$id_classe' and num_periode!='1')");
                     //
                     $nb_per = mysql_num_rows(mysql_query("select num_periode from periodes where id_classe='$id_classe'"));
                     if ($nb_per > $_POST['reg_periodes_num'][$classe]) {
-                        // Le nombre de périodes de la classe est inférieur au nombre enregistré
-                        // On efface les périodes en trop
+                        // Le nombre de pÃ©riodes de la classe est infÃ©rieur au nombre enregistrÃ©
+                        // On efface les pÃ©riodes en trop
                         $k = 0;
                         for ($k=$_POST['reg_periodes_num'][$classe]+1; $k<$nb_per+1; $k++) {
                             $del = mysql_query("delete from periodes where (id_classe='$id_classe' and num_periode='$k')");
@@ -228,35 +228,35 @@ if (isset($_POST['step'])) {
                     }
                     if ($nb_per < $_POST['reg_periodes_num'][$classe]) {
 
-                        // Le nombre de périodes de la classe est supérieur au nombre enregistré
-                        // On enregistre les périodes
+                        // Le nombre de pÃ©riodes de la classe est supÃ©rieur au nombre enregistrÃ©
+                        // On enregistre les pÃ©riodes
                         $k = 0;
                         $num = $nb_per;
                         for ($k=$nb_per+1 ; $k < $_POST['reg_periodes_num'][$classe]+1; $k++) {
                             $num++;
-                            $nom_per = "Période ".$num;
+                            $nom_per = "PÃ©riode ".$num;
                             if ($num == "1") { $ver = "N"; } else { $ver = 'O'; }
                             $register = mysql_query("INSERT INTO periodes SET num_periode='$num',nom_periode='$nom_per',verouiller='$ver',id_classe='$id_classe'");
-                            if (!$register) echo "<p>Erreur lors de l'enregistrement d'une période pour la classe $classe";
+                            if (!$register) echo "<p>Erreur lors de l'enregistrement d'une pÃ©riode pour la classe $classe";
                         }
                     }
                 }
 
             }
 
-            // On efface les classes qui ne sont pas réutilisées cette année  ainsi que les entrées correspondantes dans  j_classes_matieres_professeurs
+            // On efface les classes qui ne sont pas rÃ©utilisÃ©es cette annÃ©e  ainsi que les entrÃ©es correspondantes dans  j_classes_matieres_professeurs
             $sql = mysql_query("select distinct id_classe from periodes where verouiller='T'");
             $k = 0;
             while ($k < mysql_num_rows($sql)) {
                $id_classe = mysql_result($sql, $k);
                $res1 = mysql_query("delete from classes where id='".$id_classe."'");
                $res2 = mysql_query("delete from j_classes_matieres_professeurs where id_classe='".$id_classe."'");
-               // On supprime les groupes qui étaient liées à la classe
+               // On supprime les groupes qui Ã©taient liÃ©es Ã  la classe
                $get_groupes = mysql_query("SELECT id_groupe FROM j_groupes_classes WHERE id_classe = '" . $id_classe . "'");
                for ($l=0;$l<$nb_groupes;$l++) {
                     $id_groupe = mysql_result($get_groupes, $l, "id_groupe");
                     $delete2 = mysql_query("delete from j_groupes_classes WHERE id_groupe = '" . $id_groupe . "'");
-                    // On regarde si le groupe est toujours lié à une autre classe ou pas
+                    // On regarde si le groupe est toujours liÃ© Ã  une autre classe ou pas
                     $check = mysql_result(mysql_query("SELECT count(*) FROM j_groupes_classes WHERE id_groupe = '" . $id_groupe . "'"), 0);
                     if ($check == "0") {
                         $delete1 = mysql_query("delete from groupes WHERE id = '" . $id_groupe . "'");
@@ -267,27 +267,27 @@ if (isset($_POST['step'])) {
                $k++;
             }
             $res = mysql_query("delete from periodes where verouiller='T'");
-            echo "<p>Vous venez d'effectuer l'enregistrement des données concernant les classes. S'il n'y a pas eu d'erreurs, vous pouvez aller à l'étape suivante pour enregistrer les données concernant les élèves.</p>";
-            echo "<p><b>ATTENTION</b> :<br>Les champs \"régime\" (demi-pensionnaire, externe, ...), \"doublant\"  et \"identifiant national\" ne sont pas présents dans l'annuaire LDAP.
-            Il en est de même de toutes les informations sur les responsables des élèves.
-            <br />A l'issue de cette étape, <b>vous devrez donc procéder à une opération consistant à convertir la table \"eleves\" et à importer les informations manquantes.</b>
-            <br />Vous devrez pour cela fournir des fichiers CSV (ELEVES.CSV, PERSONNES.CSV, RESPONSABLES.CSV et ADRESSES.CSV) <b><a href=\"../init_xml/lecture_xml_sconet.php\" target=\"_blank\">générés ici</a></b> depuis des fichiers XML extraits de SCONET.</p>";
+            echo "<p>Vous venez d'effectuer l'enregistrement des donnÃ©es concernant les classes. S'il n'y a pas eu d'erreurs, vous pouvez aller Ã  l'Ã©tape suivante pour enregistrer les donnÃ©es concernant les Ã©lÃ¨ves.</p>";
+            echo "<p><b>ATTENTION</b> :<br>Les champs \"rÃ©gime\" (demi-pensionnaire, externe, ...), \"doublant\"  et \"identifiant national\" ne sont pas prÃ©sents dans l'annuaire LDAP.
+            Il en est de mÃªme de toutes les informations sur les responsables des Ã©lÃ¨ves.
+            <br />A l'issue de cette Ã©tape, <b>vous devrez donc procÃ©der Ã  une opÃ©ration consistant Ã  convertir la table \"eleves\" et Ã  importer les informations manquantes.</b>
+            <br />Vous devrez pour cela fournir des fichiers CSV (ELEVES.CSV, PERSONNES.CSV, RESPONSABLES.CSV et ADRESSES.CSV) <b><a href=\"../init_xml/lecture_xml_sconet.php\" target=\"_blank\">gÃ©nÃ©rÃ©s ici</a></b> depuis des fichiers XML extraits de SCONET.</p>";
             echo "<center>";
             echo "<form enctype='multipart/form-data' action='eleves.php' method=post name='formulaire'>";
 			echo add_token_field();
             echo "<input type=\"hidden\" name=\"record\" value=\"no\" />";
             echo "<input type=\"hidden\" name=\"step\" value=\"2\" />";
-            echo "<input type=\"submit\" value=\"Accéder à l'étape 2\" />";
+            echo "<input type=\"submit\" value=\"AccÃ©der Ã  l'Ã©tape 2\" />";
             echo "</form>";
             echo "</center>";
 
-			// On sauvegarde le témoin du fait qu'il va falloir
-			// convertir pour générer l'ELE_ID et remplir ensuite les nouvelles tables responsables:
+			// On sauvegarde le tÃ©moin du fait qu'il va falloir
+			// convertir pour gÃ©nÃ©rer l'ELE_ID et remplir ensuite les nouvelles tables responsables:
 			saveSetting("conv_new_resp_table", 0);
 
 
         } else {
-            // Les données n'ont pas encore été postées, on affiche donc le tableau des classes
+            // Les donnÃ©es n'ont pas encore Ã©tÃ© postÃ©es, on affiche donc le tableau des classes
 
             // On commence par "marquer" les classes existantes dans la base
             $sql = mysql_query("UPDATE periodes SET verouiller='T'");
@@ -295,18 +295,18 @@ if (isset($_POST['step'])) {
             $sr = ldap_search($ds,$lcs_ldap_groups_dn,"(cn=Classe*)");
             $data = ldap_get_entries($ds,$sr);
 
-            // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
+            // On va enregistrer la liste des classes, ainsi que les pÃ©riodes qui leur seront attribuÃ©es
 
             echo "<form enctype='multipart/form-data' action='eleves.php' method=post name='formulaire'>";
 			echo add_token_field();
             echo "<input type=hidden name='record' value='yes'>";
             echo "<input type=hidden name='step' value='1'>";
 
-            echo "<p>Les classes en vert indiquent des classes déjà existantes dans la base GEPI.<br />Les classes en rouge indiquent des classes nouvelles et qui vont être ajoutées à la base GEPI.<br /></p>";
-            echo "<p>Pour les nouvelles classes, des noms standards sont utilisés pour les périodes (période 1, période 2...), et seule la première période n'est pas verrouillée. Vous pourrez modifier ces paramètres ultérieurement</p>";
-            echo "<p>Attention !!! Il n'y a pas de tests sur les champs entrés. Soyez vigilant à ne pas mettre des caractères spéciaux dans les champs ...</p>";
-            echo "<p>Essayez de remplir tous les champs, cela évitera d'avoir à le faire ultérieurement.</p>";
-            echo "<p>N'oubliez pas <b>d'enregistrer les données</b> en cliquant sur le bouton en bas de la page<br /><br />";
+            echo "<p>Les classes en vert indiquent des classes dÃ©jÃ  existantes dans la base GEPI.<br />Les classes en rouge indiquent des classes nouvelles et qui vont Ãªtre ajoutÃ©es Ã  la base GEPI.<br /></p>";
+            echo "<p>Pour les nouvelles classes, des noms standards sont utilisÃ©s pour les pÃ©riodes (pÃ©riode 1, pÃ©riode 2...), et seule la premiÃ¨re pÃ©riode n'est pas verrouillÃ©e. Vous pourrez modifier ces paramÃ¨tres ultÃ©rieurement</p>";
+            echo "<p>Attention !!! Il n'y a pas de tests sur les champs entrÃ©s. Soyez vigilant Ã  ne pas mettre des caractÃ¨res spÃ©ciaux dans les champs ...</p>";
+            echo "<p>Essayez de remplir tous les champs, cela Ã©vitera d'avoir Ã  le faire ultÃ©rieurement.</p>";
+            echo "<p>N'oubliez pas <b>d'enregistrer les donnÃ©es</b> en cliquant sur le bouton en bas de la page<br /><br />";
 
             ?>
             <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;">
@@ -323,12 +323,12 @@ if (isset($_POST['step'])) {
             <tr>
               <td>&nbsp;</td>
               <td colspan="5">Vous pouvez remplir les cases <font color="red">
-            une à une</font> et/ou <font color="red">globalement</font> grâce aux
-            fonctionnalités offertes ci-dessous :</td>
+            une Ã  une</font> et/ou <font color="red">globalement</font> grÃ¢ce aux
+            fonctionnalitÃ©s offertes ci-dessous :</td>
             </tr>
             <tr>
               <td colspan="2">&nbsp;</td>
-              <td colspan="4">1) D'abord, cochez les lignes une à une</td>
+              <td colspan="4">1) D'abord, cochez les lignes une Ã  une</td>
             </tr>
               <tr>
               <td colspan="3">&nbsp;</td>
@@ -338,11 +338,11 @@ if (isset($_POST['step'])) {
               <a href="javascript:CocheCase(false)">
               DECOCHER</a> toutes les lignes , ou
               <a href="javascript:InverseSel()">
-              INVERSER </a>la sélection</td>
+              INVERSER </a>la sÃ©lection</td>
             </tr>
             <tr>
               <td colspan="2">&nbsp;</td>
-              <td colspan="4">2) Puis, pour les lignes cochées :</td>
+              <td colspan="4">2) Puis, pour les lignes cochÃ©es :</td>
             </tr>
              <tr>
               <td colspan="4">&nbsp;</td>
@@ -363,7 +363,7 @@ if (isset($_POST['step'])) {
             </tr>
             <tr>
               <td colspan="2">&nbsp;</td>
-              <td colspan="4">3) Cliquez sur les boutons "Recopier" pour remplir les champs selectionnés.</td>
+              <td colspan="4">3) Cliquez sur les boutons "Recopier" pour remplir les champs selectionnÃ©s.</td>
             </tr>
 
             </table>
@@ -371,7 +371,7 @@ if (isset($_POST['step'])) {
             <br />
             <?php
             echo "<table border=1 cellpadding=2 cellspacing=2>";
-            echo "<tr><td><p class=\"small\"><center>Aide<br />Remplissage</center></p></td><td><p class=\"small\">Identifiant de la classe</p></td><td><p class=\"small\">Nom complet</p></td><td><p class=\"small\">Nom apparaissant au bas du bulletin</p></td><td><p class=\"small\">formule au bas du bulletin</p></td><td><p class=\"small\">Nombres de périodes</p></td></tr>";
+            echo "<tr><td><p class=\"small\"><center>Aide<br />Remplissage</center></p></td><td><p class=\"small\">Identifiant de la classe</p></td><td><p class=\"small\">Nom complet</p></td><td><p class=\"small\">Nom apparaissant au bas du bulletin</p></td><td><p class=\"small\">formule au bas du bulletin</p></td><td><p class=\"small\">Nombres de pÃ©riodes</p></td></tr>";
             for ($i=0;$i<$data["count"];$i++) {
                 $classe_id = preg_replace("/Classe_/","",$data[$i]["cn"][0]);
                 $description= $data[$i]["description"][0];
@@ -421,7 +421,7 @@ if (isset($_POST['step'])) {
             }
             echo "</table>\n";
             echo "<input type=hidden name='step2' value='y'>\n";
-            echo "<center><input type='submit' value='Enregistrer les données'></center>\n";
+            echo "<center><input type='submit' value='Enregistrer les donnÃ©es'></center>\n";
             echo "</form>\n";
 
         }
@@ -444,11 +444,11 @@ if (isset($_POST['step'])) {
         "employeenumber"    // identifiant gep
         );
 
-        // La deuxième étape consiste à importer les élèves et à les affecter dans les classes
+        // La deuxiÃ¨me Ã©tape consiste Ã  importer les Ã©lÃ¨ves et Ã  les affecter dans les classes
         $classes = mysql_query("SELECT id, classe FROM classes");
         $nb_classes = mysql_num_rows($classes);
         $eleves_de = array();
-        echo "<table border=\"1\" cellpadding=\"3\" cellspacing=\"3\">\n<tr><td>Nom de la classe</td><td>Login élève</td><td>Nom </td><td>Prénom</td><td>Sexe</td><td>Date de naissance</td><td>Numéro GEP</td></tr>\n";
+        echo "<table border=\"1\" cellpadding=\"3\" cellspacing=\"3\">\n<tr><td>Nom de la classe</td><td>Login Ã©lÃ¨ve</td><td>Nom </td><td>PrÃ©nom</td><td>Sexe</td><td>Date de naissance</td><td>NumÃ©ro GEP</td></tr>\n";
         for ($i=0;$i<$nb_classes;$i++) {
             $current_classe = mysql_result($classes, $i, "classe");
             $current_classe_id = mysql_result($classes, $i, "id");
@@ -460,7 +460,7 @@ if (isset($_POST['step'])) {
                   $uid = $info[0]["memberuid"][$u] ;
                   if (trim($uid) !="") {
                     $eleve_de[$current_classe_id]=$uid;
-                    // Extraction des infos sur l'élève :
+                    // Extraction des infos sur l'Ã©lÃ¨ve :
                     $result2 = @ldap_read ( $ds, "uid=".$uid.",".$lcs_ldap_people_dn, "(objectclass=posixAccount)", $ldap_people_attr );
                     if ($result2) {
                         $info2 = @ldap_get_entries ( $ds, $result2 );
@@ -469,13 +469,13 @@ if (isset($_POST['step'])) {
                             $gecos = $info2[0]["gecos"][0];
                             $tmp = split ("[\,\]",$info2[0]["gecos"][0],4);
                             $ret_people = array (
-                            "uid"         => $info2[0]["uid"][0],
-                            "nom"         => stripslashes( utf8_decode($info2[0]["sn"][0]) ),
-                            "fullname"        => stripslashes( utf8_decode($info2[0]["cn"][0]) ),
-                            "pseudo"      => utf8_decode($info2[0]["givenname"][0]),
-                            "email"       => $info2[0]["mail"][0],
+                            "uid"        			=> $info2[0]["uid"][0],
+                            "nom"        			=> stripslashes($info2[0]["sn"][0]),
+                            "fullname"        => stripslashes($info2[0]["cn"][0]),
+                            "pseudo"      		=> $info2[0]["givenname"][0],
+                            "email"       		=> $info2[0]["mail"][0],
                             "homedirectory"   => $info2[0]["homedirectory"][0],
-                            "description" => utf8_decode($info2[0]["description"][0]),
+                            "description" 		=> $info2[0]["description"][0],
                             "shell"           => $info2[0]["loginshell"][0],
                             "sexe"            => $tmp[2],
                             "naissance"       => $tmp[1],
@@ -509,19 +509,19 @@ if (isset($_POST['step'])) {
             }
             @ldap_free_result ( $result );
         }
-        echo "</table><p>Opération effectuée.</p>";
-        echo "<p>Avant de passer à l'étape suivante, vous devez procéder à la conversion de la table \"eleves\" et à l'importation des données manquantes :
-        <a href='../responsables/conversion.php?mode=1'>Conversion et importation des données manquantes</a>.</p>";
+        echo "</table><p>OpÃ©ration effectuÃ©e.</p>";
+        echo "<p>Avant de passer Ã  l'Ã©tape suivante, vous devez procÃ©der Ã  la conversion de la table \"eleves\" et Ã  l'importation des donnÃ©es manquantes :
+        <a href='../responsables/conversion.php?mode=1'>Conversion et importation des donnÃ©es manquantes</a>.</p>";
     }
 
 } else {
-    echo "<p>L'opération d'importation des élèves depuis le LDAP de LCS va effectuer les opérations suivantes :</p>";
+    echo "<p>L'opÃ©ration d'importation des Ã©lÃ¨ves depuis le LDAP de LCS va effectuer les opÃ©rations suivantes :</p>";
     echo "<ul>";
     echo "<li>Importation des classes.</li>";
-    echo "<li>Tentative d'ajout de chaque élèves présent dans l'annuaire de LCS.</li>";
-    echo "<li>Si l'élève n'existe pas, il est créé.</li>";
-    echo "<li>Si l'élève existe déjà, ses informations de base sont mises à jour.</li>";
-    echo "<li>Affectation des élèves aux classes.</li>";
+    echo "<li>Tentative d'ajout de chaque Ã©lÃ¨ves prÃ©sent dans l'annuaire de LCS.</li>";
+    echo "<li>Si l'Ã©lÃ¨ve n'existe pas, il est crÃ©Ã©.</li>";
+    echo "<li>Si l'Ã©lÃ¨ve existe dÃ©jÃ , ses informations de base sont mises Ã  jour.</li>";
+    echo "<li>Affectation des Ã©lÃ¨ves aux classes.</li>";
     echo "</ul>";
 
 
@@ -539,12 +539,12 @@ if (isset($_POST['step'])) {
     }
     if ($flag != 0){
         echo "<p><b>ATTENTION ...</b><br />";
-        echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>";
+        echo "Des donnÃ©es concernant la constitution des classes et l'affectation des Ã©lÃ¨ves dans les classes sont prÃ©sentes dans la base GEPI ! Si vous poursuivez la procÃ©dure, ces donnÃ©es seront dÃ©finitivement effacÃ©es !</p>";
     }
 
-    echo "<p>Etes-vous sûr de vouloir importer tous les élèves depuis l'annuaire du serveur LCS vers Gepi ?</p>";
+    echo "<p>Etes-vous sÃ»r de vouloir importer tous les Ã©lÃ¨ves depuis l'annuaire du serveur LCS vers Gepi ?</p>";
     echo "<br/>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
 }
 

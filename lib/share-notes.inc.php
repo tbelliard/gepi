@@ -11,11 +11,11 @@
 */
 
 /**
- * Détruit les conteneurs vides qui ne sont pas rattachés à un parent
+ * DÃ©truit les conteneurs vides qui ne sont pas rattachÃ©s Ã  un parent
  *
  * @param int $id_conteneur Id du conteneur
  * @param int $id_racine Id du conteneur racine
- * @todo à vérifier
+ * @todo Ã  vÃ©rifier
  */
 function test_conteneurs_vides($id_conteneur,$id_racine) {
         // On teste si le conteneur est vide
@@ -34,10 +34,10 @@ function test_conteneurs_vides($id_conteneur,$id_racine) {
 }
 
 /**
- * Met à jour les moyennes des conteneurs
+ * Met Ã  jour les moyennes des conteneurs
  *
- * @param array $_current_group les informations du groupes obtenues à partir de get_group()
- * @param int $periode_num le numéro de la période
+ * @param array $_current_group les informations du groupes obtenues Ã  partir de get_group()
+ * @param int $periode_num le numÃ©ro de la pÃ©riode
  * @param int $id_racine Id du conteneur racine
  * @param int $id_conteneur Id du conteneur
  * @param string $arret si yes, on ne recalcule pas les sous-conteneurs
@@ -45,8 +45,8 @@ function test_conteneurs_vides($id_conteneur,$id_racine) {
  * @see calcule_moyenne()
  */
 function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_conteneur,&$arret) {
-    //remarque : les variables $periode_num et id_racine auraient pus être récupérées
-    //à partir de $id_conteneur, mais on évite ainsi trop de calculs !
+    //remarque : les variables $periode_num et id_racine auraient pus Ãªtre rÃ©cupÃ©rÃ©es
+    //Ã  partir de $id_conteneur, mais on Ã©vite ainsi trop de calculs !
 
 	if(isset($_current_group["eleves"][$periode_num])) {
 		foreach ($_current_group["eleves"][$periode_num]["list"] as $_eleve_login) {
@@ -57,7 +57,7 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
 	
 		if ($arret != 'yes') {
 			//
-			// Détermination du conteneur parent
+			// DÃ©termination du conteneur parent
 			$query_id_parent = mysql_query("SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
 			$id_parent = mysql_result($query_id_parent, 0, 'parent');
 			if ($id_parent != 0) {
@@ -80,18 +80,18 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
 /**
  *Liste des sous-conteneurs d'un conteneur
  * 
- * Modifie les tableaux passer par référence
+ * Modifie les tableaux passer par rÃ©fÃ©rence
  * 
- * L'index de chaque tableau est identique  pour un sous-conteneur donné
+ * L'index de chaque tableau est identique  pour un sous-conteneur donnÃ©
  * 
  * Utilise fdebug() pour le suivi des actions
  * 
  * @param int $id_conteneur id du conteneur
- * @param int $nb_sous_cont nombre de sous-conteneurs (passé par référence)
- * @param array $nom_sous_cont nom des sous-conteneurs (passé par référence)
- * @param array $coef_sous_cont coef des sous-conteneurs (passé par référence)
+ * @param int $nb_sous_cont nombre de sous-conteneurs (passÃ© par rÃ©fÃ©rence)
+ * @param array $nom_sous_cont nom des sous-conteneurs (passÃ© par rÃ©fÃ©rence)
+ * @param array $coef_sous_cont coef des sous-conteneurs (passÃ© par rÃ©fÃ©rence)
  * @param array $id_sous_cont Id des sous-conteneurs
- * @param array $display_bulletin_sous_cont y si le sous conteneur doit être affiché (passé par référence)
+ * @param array $display_bulletin_sous_cont y si le sous conteneur doit Ãªtre affichÃ© (passÃ© par rÃ©fÃ©rence)
  * @param text $type all pour rechercher aussi les sous-sous-conteneurs
  * @see fdebug()
  */
@@ -121,7 +121,7 @@ function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sou
 /**
  * Calcul la moyenne d'un conteneur
  * 
- * @param text $login login de l"élève
+ * @param text $login login de l"Ã©lÃ¨ve
  * @param type $id_racine Id racine du conteneur
  * @param type $id_conteneur Id du conteneur
  * @see fdebug
@@ -142,27 +142,27 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 	fdebug("$sql\n");
     $delete = mysql_query($sql);
 
-    // Appel des paramètres du conteneur
+    // Appel des paramÃ¨tres du conteneur
     $appel_conteneur = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
     $arrondir =  mysql_result($appel_conteneur, 0, 'arrondir');
     $mode =  mysql_result($appel_conteneur, 0, 'mode');
     $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
 
-	fdebug("Conteneur n°$id_conteneur\n");
+	fdebug("Conteneur nÂ°$id_conteneur\n");
 	fdebug("\$arrondir=$arrondir\n");
 	fdebug("\$mode=$mode\n");
 	fdebug("\$ponderation=$ponderation\n");
 
-    // Détermination des sous-conteneurs à prendre en compte
+    // DÃ©termination des sous-conteneurs Ã  prendre en compte
     $nom_sous_cont = array();
     $id_sous_cont  = array();
     $coef_sous_cont = array();
     $nb_sous_cont = 0;
     if ($mode==1) {
-        //la moyenne s'effectue sur toutes les notes contenues à la racine ou dans les sous-conteneurs
-        // sans tenir compte des options définies dans cette(ces) boîte(s).
+        //la moyenne s'effectue sur toutes les notes contenues Ã  la racine ou dans les sous-conteneurs
+        // sans tenir compte des options dÃ©finies dans cette(ces) boÃ®te(s).
 
-        // on s'intéresse à tous les conteneurs fils, petit-fils, ...
+        // on s'intÃ©resse Ã  tous les conteneurs fils, petit-fils, ...
         sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
         //
         // On fait la moyenne des devoirs du conteneur et des sous-conteneurs
@@ -175,10 +175,10 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         }
 
     } else {
-        //la moyenne s'effectue sur toutes les notes contenues à la racine du conteneur
-        //et sur les moyennes du ou des sous-conteneurs, en tenant compte des options dans ce(s) boîte(s).
+        //la moyenne s'effectue sur toutes les notes contenues Ã  la racine du conteneur
+        //et sur les moyennes du ou des sous-conteneurs, en tenant compte des options dans ce(s) boÃ®te(s).
 
-        // On s'intéresse uniquement aux conteneurs fils
+        // On s'intÃ©resse uniquement aux conteneurs fils
         sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'');
         //
         // on ne fait la moyenne que des devoirs du conteneur
@@ -190,8 +190,8 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 
 
     //
-    // Prise en compte de la pondération
-    // Calcul de l'indice du coefficient à pondérer
+    // Prise en compte de la pondÃ©ration
+    // Calcul de l'indice du coefficient Ã  pondÃ©rer
     //
     if ($ponderation != 0) {
         $sql="SELECT * FROM cn_devoirs WHERE id_conteneur='$id_conteneur' ORDER BY date,id";
@@ -231,7 +231,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     // Calcul du total des points et de la somme des coefficients
     //
 /**
- * @todo Pour $mode==1, pour les devoirs à Bonus, il faudrait faire la liste de tous les devoirs situés dans le conteneur et les sous-conteneurs triés par date et parcourir ici ces devoirs au lieu de faire une boucle sur la liste des sous-conteneurs (while ($j < $nb_boucle))
+ * @todo Pour $mode==1, pour les devoirs Ã  Bonus, il faudrait faire la liste de tous les devoirs situÃ©s dans le conteneur et les sous-conteneurs triÃ©s par date et parcourir ici ces devoirs au lieu de faire une boucle sur la liste des sous-conteneurs (while ($j < $nb_boucle))
  */
     $j=0;
 	//=========================
@@ -260,7 +260,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
             $ramener_sur_referentiel[$k] = mysql_result($appel_dev, $k, 'ramener_sur_referentiel');
 			fdebug("\$ramener_sur_referentiel[$k]=$ramener_sur_referentiel[$k]\n");
 
-            // Prise en compte de la pondération
+            // Prise en compte de la pondÃ©ration
             if (($ponderation != 0) and ($j==0) and ($k==$indice_pond)) $coef[$k] = $coef[$k] + $ponderation;
 			fdebug("\$ponderation=$ponderation\n");
 
@@ -277,11 +277,11 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
             if (($statut == '') and ($note!='')) {
                 if ($note_sur[$k] != getSettingValue("referentiel_note")) {
                     if ($ramener_sur_referentiel[$k] != 'V') {
-                        //on ramene la note sur le referentiel mais on modifie le coefficient pour prendre en compte le référentiel
+                        //on ramene la note sur le referentiel mais on modifie le coefficient pour prendre en compte le rÃ©fÃ©rentiel
                         $note = $note * getSettingValue("referentiel_note") / $note_sur[$k];
                         $coef[$k] = $coef[$k] * $note_sur[$k] / getSettingValue("referentiel_note");
                     } else {
-                        //on fait comme si c'était une note sur le referentiel avec une regle de trois ;)
+                        //on fait comme si c'Ã©tait une note sur le referentiel avec une regle de trois ;)
                         $note = $note * getSettingValue("referentiel_note") / $note_sur[$k];
                     }
                 }
@@ -289,7 +289,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
                 fdebug("Correction note autre que sur referentiel : \$coef[$k]=$coef[$k]\n");
 
                 if ($facultatif[$k] == 'O') {
-                    // le devoir n'est pas facultatif (Obligatoire) et entre systématiquement dans le calcul de la moyenne si le coef est différent de zéro
+                    // le devoir n'est pas facultatif (Obligatoire) et entre systÃ©matiquement dans le calcul de la moyenne si le coef est diffÃ©rent de zÃ©ro
 					fdebug("\$total_point = $total_point + $coef[$k] * $note = ");
                     $total_point = $total_point + $coef[$k]*$note;
 					fdebug("$total_point\n");
@@ -298,18 +298,18 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
                     $somme_coef = $somme_coef + $coef[$k];
 					fdebug("$somme_coef\n");
                 } else if ($facultatif[$k] == 'B') {
-                    //le devoir est facultatif comme un bonus : seuls les points supérieurs à 10 sont pris en compte dans le calcul de la moyenne.
+                    //le devoir est facultatif comme un bonus : seuls les points supÃ©rieurs Ã  10 sont pris en compte dans le calcul de la moyenne.
                     if ($note > ($note_sur[$k]/2)) {
                         $total_point = $total_point + $coef[$k]*$note;
                         $somme_coef = $somme_coef + $coef[$k];
                     }
                 } else {
-                    //$facultatif == 'N' le devoir est facultatif comme une note : Le devoir est pris en compte dans la moyenne uniquement s'il améliore la moyenne de l'élève.
+                    //$facultatif == 'N' le devoir est facultatif comme une note : Le devoir est pris en compte dans la moyenne uniquement s'il amÃ©liore la moyenne de l'Ã©lÃ¨ve.
                     $exist_dev_fac = 'yes';
 					//=========================
 					// MODIF: boireaus 20080202
 					// On ne compte pas la note dans la moyenne pour le moment.
-					// On regardera plus loin si cela améliore la moyenne ou non.
+					// On regardera plus loin si cela amÃ©liore la moyenne ou non.
 					$f_coef[$m]=$coef[$k];
 					$points[$m] = $f_coef[$m]*$note;
 
@@ -366,12 +366,12 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 
 
     //
-    // calcul de la moyenne des évaluations
+    // calcul de la moyenne des Ã©valuations
     //
 	//=========================
 	// A FAIRE: boireaus 20080202
 /**
- * @todo Il faudrait considérer le cas vicieux: présence de note à bonus et pas d'autre note...
+ * @todo Il faudrait considÃ©rer le cas vicieux: prÃ©sence de note Ã  bonus et pas d'autre note...
  */
 
     if ($somme_coef != 0) {
@@ -384,7 +384,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         //
 		// Ca ne fonctionne bien que pour $mode==2
 /**
- * @todo  Pour $mode==1, il faudrait faire la liste de tous les devoirs situés dans le conteneur et les sous-conteneurs triés par date et parcourir ces devoirs plus haut au lieu de faire une boucle sur la liste des sous-conteneurs
+ * @todo  Pour $mode==1, il faudrait faire la liste de tous les devoirs situÃ©s dans le conteneur et les sous-conteneurs triÃ©s par date et parcourir ces devoirs plus haut au lieu de faire une boucle sur la liste des sous-conteneurs
  */
         if ($exist_dev_fac == 'yes') {
 			fdebug("\$exist_dev_fac=".$exist_dev_fac."\n");
@@ -413,7 +413,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         // Calcul des arrondis
         //
         if ($arrondir == 's1') {
-            // s1 : arrondir au dixième de point supérieur
+            // s1 : arrondir au dixiÃ¨me de point supÃ©rieur
 			fdebug("Mode s1:
    \$moyenne=$moyenne
    10*\$moyenne=".(10*$moyenne)."
@@ -424,13 +424,13 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
             //$moyenne = number_format(ceil(10*$moyenne)/10,1,'.','');
 			$moyenne = number_format(ceil(strval(10*$moyenne))/10,1,'.','');
         } else if ($arrondir == 's5') {
-            // s5 : arrondir au demi-point supérieur
+            // s5 : arrondir au demi-point supÃ©rieur
             $moyenne = number_format(ceil(strval(2*$moyenne))/2,1,'.','');
         } else if ($arrondir == 'se') {
-            // se : arrondir au point entier supérieur
+            // se : arrondir au point entier supÃ©rieur
             $moyenne = number_format(ceil(strval($moyenne)),1,'.','');
         } else if ($arrondir == 'p1') {
-            // s1 : arrondir au dixième le plus proche
+            // s1 : arrondir au dixiÃ¨me le plus proche
             $moyenne = number_format(round(strval(10*$moyenne))/10,1,'.','');
         } else if ($arrondir == 'p5') {
             // s5 : arrondir au demi-point le plus proche
@@ -454,11 +454,11 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 }
 
 /**
- * Vérifie qu'un carnet de notes appartient bien à enseignant
+ * VÃ©rifie qu'un carnet de notes appartient bien Ã  enseignant
  *
  * @param text $_login Login de l'enseignant
  * @param int $_id_racine Id du carnet de notes
- * @return bool TRUE si l'enseignant peut accéder au carnet de notes
+ * @return bool TRUE si l'enseignant peut accÃ©der au carnet de notes
  */
 function Verif_prof_cahier_notes ($_login,$_id_racine) {
     if(empty($_login) || empty($_id_racine)) {return FALSE;die();}
@@ -476,9 +476,9 @@ function Verif_prof_cahier_notes ($_login,$_id_racine) {
 }
 
 /**
- * Ajoute du code pour préparer un tableau pour calculer et afficher les statistiques sur les notes d'une classe 
+ * Ajoute du code pour prÃ©parer un tableau pour calculer et afficher les statistiques sur les notes d'une classe 
  * 
- * Fonction à appeler avec une portion de code du type:
+ * Fonction Ã  appeler avec une portion de code du type:
  * 
  * echo "<div style='position: fixed; top: 200px; right: 200px;'>\n";
  * 
@@ -508,13 +508,13 @@ function javascript_tab_stat($pref_id,$cpt) {
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
-	echo "<th>Médiane</th>\n";
+	echo "<th>MÃ©diane</th>\n";
 	echo "<td id='".$pref_id."mediane'></td>\n";
 	echo "</tr>\n";
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
-	echo "<th>3è quartile</th>\n";
+	echo "<th>3Ã¨ quartile</th>\n";
 	echo "<td id='".$pref_id."q3'></td>\n";
 	echo "</tr>\n";
 
@@ -555,7 +555,7 @@ function calcul_moy_med() {
 
 			if((valeur!='abs')&&(valeur!='disp')&&(valeur!='-')&&(valeur!='')) {
 				tab_valeur[j]=valeur;
-				// Tambouille pour éviter que 'valeur' soit pris pour une chaine de caractères
+				// Tambouille pour Ã©viter que 'valeur' soit pris pour une chaine de caractÃ¨res
 				total=eval((total*100+valeur*100)/100);
 				eff_utile++;
 				j++;
@@ -569,8 +569,8 @@ function calcul_moy_med() {
 		tab_valeur.sort((function(a,b){return a - b}));
 		n=tab_valeur.length;
 		if(n/2==Math.round(n/2)) {
-			// Les indices commencent à zéro
-			// Tambouille pour éviter que 'valeur' soit pris pour une chaine de caractères
+			// Les indices commencent Ã  zÃ©ro
+			// Tambouille pour Ã©viter que 'valeur' soit pris pour une chaine de caractÃ¨res
 			mediane=((eval(100*tab_valeur[n/2-1]+100*tab_valeur[n/2]))/100)/2;
 		}
 		else {
@@ -619,9 +619,9 @@ calcul_moy_med();
  * - 'min'     -> note minimale
  * - 'max'     -> note maximale
  * - 'q1'      -> premier quartile
- * - 'q3'      -> troisième quartile
+ * - 'q3'      -> troisiÃ¨me quartile
  *
- * @param array $tab Tableau de notes à traiter
+ * @param array $tab Tableau de notes Ã  traiter
  * @return array Tableau de statistiques
  */
 function calcule_moy_mediane_quartiles($tab) {
@@ -675,10 +675,10 @@ function calcule_moy_mediane_quartiles($tab) {
 }
 
 /**
- * Renvoie l'Id du carnet de notes d'un groupe pour une période
+ * Renvoie l'Id du carnet de notes d'un groupe pour une pÃ©riode
  *
  * @param int $id_groupe Id du groupe
- * @param int $periode_num numéro de la période
+ * @param int $periode_num numÃ©ro de la pÃ©riode
  * @return int Id du carnet de notes
  */
 function get_cn_from_id_groupe_periode_num($id_groupe, $periode_num) {
@@ -695,7 +695,7 @@ function get_cn_from_id_groupe_periode_num($id_groupe, $periode_num) {
 
 
 // Fonction de recherche des conteneurs derniers enfants (sans enfants (non parents, en somme))
-// avec recalcul des moyennes lancé...
+// avec recalcul des moyennes lancÃ©...
 /**
  *
  * @global int

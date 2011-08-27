@@ -2,7 +2,7 @@
 
 /**
  * ajax_appreciations.php
- * Fichier qui permet la sauvegarde automatique des apprÈciations au fur et ‡ mesure de leur saisie
+ * Fichier qui permet la sauvegarde automatique des appr√©ciations au fur et √† mesure de leur saisie
  *
  * @version $Id$
  * @copyright 2007-2011
@@ -38,7 +38,7 @@ function log_ajax_app($texte) {
 	}
 }
 
-// SÈcuritÈ
+// S√©curit√©
 if (!checkAccess()) {
 	log_ajax_app("Echec checkAccess().");
     header("Location: ../logout.php?auto=2");
@@ -51,14 +51,14 @@ if(isset($_SESSION['login'])) {
 	log_ajax_app($_SESSION['login']." (".$_SESSION['statut'].").");
 }
 
-// Le check_token doit Ítre ‡ false parce qu'il va se produire sans charger une nouvelle page, avec un header HTML dÈj‡ transmis
+// Le check_token doit √™tre √† false parce qu'il va se produire sans charger une nouvelle page, avec un header HTML d√©j√† transmis
 check_token(false);
 
 log_ajax_app("Test check_token() depasse.");
 
 //echo "C";
 
-header('Content-Type: text/html; charset=ISO-8859-1');
+header('Content-Type: text/html; charset=utf-8');
 
 // Initialisation des variables
 $var1 = isset($_POST["var1"]) ? $_POST["var1"] : (isset($_GET["var1"]) ? $_GET["var1"] : NULL);
@@ -70,10 +70,10 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : "";
 
 // ========== Fin de l'initialisation de la page =============
 
-// On dÈtermine si les variables envoyÈes sont bonnes ou pas
+// On d√©termine si les variables envoy√©es sont bonnes ou pas
 $verif_var1 = explode("_t", $var1);
 
-// On vÈrifie que le login de l'ÈlËve soit valable et qu'il corresponde ‡ l'enseignement envoyÈ par var2
+// On v√©rifie que le login de l'√©l√®ve soit valable et qu'il corresponde √† l'enseignement envoy√© par var2
 $temoin_eleve=0;
 if($_SESSION['statut']=='professeur') {
 	$sql="SELECT login FROM j_eleves_groupes
@@ -86,7 +86,7 @@ if($_SESSION['statut']=='professeur') {
 	log_ajax_app("Test passe.");
 	$temoin_eleve=mysql_num_rows($verif_eleve);
 
-	// On vÈrifie que le prof loguÈ peut saisir ces apprÈciations
+	// On v√©rifie que le prof logu√© peut saisir ces appr√©ciations
 	//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
 	if($mode!="verif") {
 		$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
@@ -113,7 +113,7 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($tem
 		log_ajax_app($sql);
 		$create_table=mysql_query($sql);
 		if(!$create_table) {
-			echo "<span style='color:red'>Erreur lors de la crÈation de la table 'vocabulaire'.</span>";
+			echo "<span style='color:red'>Erreur lors de la cr√©ation de la table 'vocabulaire'.</span>";
 		}
 		else {
 			$sql="SELECT * FROM vocabulaire;";
@@ -152,8 +152,8 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($tem
 		$test_app_enregistree=mysql_query($sql);
 		if(mysql_num_rows($test_app_enregistree)>0) {
 			$lig_app_enregistree=mysql_fetch_object($test_app_enregistree);
-			if($lig_app_enregistree->appreciation==utf8_decode($appreciation)) {
-				// On supprime l'enregistrement tempo pour Èviter de conserver un tempo qui est dÈj‡ enregistrÈ dans la table principale.
+			if($lig_app_enregistree->appreciation==$appreciation) {
+				// On supprime l'enregistrement tempo pour √©viter de conserver un tempo qui est d√©j√† enregistr√© dans la table principale.
 				$sql="DELETE FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
 				log_ajax_app($sql);
 				$menage=mysql_query($sql);
@@ -162,29 +162,29 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($tem
 		}
 	
 		if($insertion_ou_maj_tempo=="y") {
-			// On vÈrifie si cette apprÈciation existe dÈj‡ ou non
+			// On v√©rifie si cette appr√©ciation existe d√©j√† ou non
 			$verif_appreciation = mysql_query("SELECT appreciation FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
-			// Si elle existe, on la met ‡ jour
+			// Si elle existe, on la met √† jour
 			if (mysql_num_rows($verif_appreciation) == 1) {
-				$sql="UPDATE matieres_appreciations_tempo SET appreciation = '".utf8_decode($appreciation)."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'";
+				$sql="UPDATE matieres_appreciations_tempo SET appreciation = '".$appreciation."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'";
 				log_ajax_app($sql);
 				$miseajour = mysql_query($sql);
 			} else {
-				//sinon on crÈe une nouvelle apprÈciation si l'apprÈciation n'est pas vide
+				//sinon on cr√©e une nouvelle appr√©ciation si l'appr√©ciation n'est pas vide
 				if ($appreciation != "") {
-					$sql="INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".utf8_decode($appreciation)."'";
+					$sql="INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".$appreciation."'";
 					log_ajax_app($sql);
 					$sauvegarde = mysql_query($sql);
 				}
 			}
 		}
-		// et on renvoie une rÈponse valide
+		// et on renvoie une r√©ponse valide
 		header("HTTP/1.0 200 OK");
 		echo ' ';
 	}
 }
 else {
-	// et on renvoie une rÈponse valide
+	// et on renvoie une r√©ponse valide
 	header("HTTP/1.0 200 OK");
 	echo ' ';
 }

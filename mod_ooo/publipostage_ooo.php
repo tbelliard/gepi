@@ -34,8 +34,8 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_ooo/publipostage_ooo.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Modèle Ooo : Publipostage', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/publipostage_ooo.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Modèle Ooo : Publipostage', '');";
+// SQL : INSERT INTO droits VALUES ( '/mod_ooo/publipostage_ooo.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'ModÃ¨le Ooo : Publipostage', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/publipostage_ooo.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'ModÃ¨le Ooo : Publipostage', '');";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -43,8 +43,8 @@ if (!checkAccess()) {
 
 
 include_once('./lib/lib_mod_ooo.php'); //les fonctions
-$nom_fichier_modele_ooo =''; //variable à initialiser à blanc pour inclure le fichier suivant et éviter une notice. Pour les autres inclusions, cela est inutile.
-include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
+$nom_fichier_modele_ooo =''; //variable Ã  initialiser Ã  blanc pour inclure le fichier suivant et Ã©viter une notice. Pour les autres inclusions, cela est inutile.
+include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  modÃ¨les
 
 //$path=$nom_dossier_modele_a_utiliser."/".$_SESSION['login'];
 $path=$nom_dossier_modele_a_utiliser.$_SESSION['login'];
@@ -98,12 +98,12 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 					$tab_eleves_OOo[$nb_eleve]['elenoet']=$lig->elenoet;
 					$tab_eleves_OOo[$nb_eleve]['ele_id']=$lig->ele_id;
 					$tab_eleves_OOo[$nb_eleve]['fille']="";
-					if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
+					if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e Ã  nÃ©e si l'Ã©lÃ¨ve est une fille
 					$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
 					$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
 					if(getSettingValue('ele_lieu_naissance')=="y") {
 						$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
-					} // récupérer la commune
+					} // rÃ©cupÃ©rer la commune
 
 					$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
 
@@ -127,12 +127,12 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 					$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
 					$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
 					$tab_eleves_OOo[$nb_eleve]['fille']="";
-					if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
+					if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e Ã  nÃ©e si l'Ã©lÃ¨ve est une fille
 					$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
 					$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
 					if(getSettingValue('ele_lieu_naissance')=="y") {
 						$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
-					} // récupérer la commune
+					} // rÃ©cupÃ©rer la commune
 
 					$tab_eleves_OOo[$nb_eleve]['classe']=$current_group['classlist_string'];
 
@@ -152,7 +152,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 	$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
 
 	if($fb_dezip_ooo==2) {
-		$msg="Mode \$fb_dezip_ooo=$fb_dezip_ooo non traité pour le moment... désolé.<br />";
+		$msg="Mode \$fb_dezip_ooo=$fb_dezip_ooo non traitÃ© pour le moment... dÃ©solÃ©.<br />";
 	}
 	else {
 		$tempdirOOo="../temp/".$tempdir;
@@ -161,10 +161,10 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 		//par defaut content.xml
 		$nom_fichier_xml_a_traiter ='content.xml';
 
-		// Création d'une classe tinyDoc
+		// CrÃ©ation d'une classe tinyDoc
 		$OOo = new tinyDoc();
 		
-		// Choix du module de dézippage
+		// Choix du module de dÃ©zippage
 		$dezippeur=getSettingValue("fb_dezip_ooo");
 		if ($dezippeur==1){
 			$OOo->setZipMethod('shell');
@@ -177,15 +177,15 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 
 		
 		// setting the object
-		$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
+		$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier oÃ¹ se fait le traitement (dÃ©compression / traitement / compression)
 		// create a new openoffice document from the template with an unique id
-		$OOo->createFrom($path."/".$tab_file[$num_fich]); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+		$OOo->createFrom($path."/".$tab_file[$num_fich]); // le chemin du fichier est indiquÃ© Ã  partir de l'emplacement de ce fichier
 		// merge data with openoffice file named 'content.xml'
-		$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
+		$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit Ãªtre parsÃ© (il sera extrait)
 		
 		
 		// Traitement des tableaux
-		// On insère ici les lignes concernant la gestion des tableaux
+		// On insÃ¨re ici les lignes concernant la gestion des tableaux
 		
 		// $OOo->mergeXmlBlock('eleves',$tab_eleves_OOo);
 		
@@ -199,7 +199,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 		
 		$OOo->SaveXml(); //traitement du fichier extrait
 		
-		$OOo->sendResponse(); //envoi du fichier traité
+		$OOo->sendResponse(); //envoi du fichier traitÃ©
 		$OOo->remove(); //suppression des fichiers de travail
 		// Fin de traitement des tableaux
 		$OOo->close();
@@ -211,7 +211,7 @@ elseif(isset($_GET['suppr_fich'])) {
 	check_token();
 
 	if(!preg_match('/^[0-9]$/',$_GET['suppr_fich'])) {
-		$msg="Numéro de fichier invalide : ".$_GET['suppr_fich']."<br />\n";
+		$msg="NumÃ©ro de fichier invalide : ".$_GET['suppr_fich']."<br />\n";
 	}
 	else {
 		$tab_file=get_tab_file($path);
@@ -221,14 +221,14 @@ elseif(isset($_GET['suppr_fich'])) {
 		}
 		else {
 			$menage=unlink($path."/".$tab_file[$_GET['suppr_fich']]);
-			if($menage) {$msg="Fichier ".$tab_file[$_GET['suppr_fich']]." supprimé.<br />";}
+			if($menage) {$msg="Fichier ".$tab_file[$_GET['suppr_fich']]." supprimÃ©.<br />";}
 			else {$msg="Erreur lors de la suppression du fichier ".$tab_file[$_GET['suppr_fich']]."<br />";}
 		}
 	}
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Modèle Open Office - Publipostage";
+$titre_page = "ModÃ¨le Open Office - Publipostage";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -255,13 +255,13 @@ if(!isset($num_fich)) {
 		elseif(($_SESSION['statut']=='professeur')&&(getSettingValue('OOoUploadProf')=='yes')) {$upload_modele_ooo_autorise="y";}
 	
 		if($upload_modele_ooo_autorise!='y') {
-			echo "<p style='color:red'>Action non autorisée&nbsp;: Upload d'un modèle personnalisé.</p>\n";
-			tentative_intrusion(1, "Tentative non autorisée d'upload d'un modèle OOo (".$monfichiername.")");
+			echo "<p style='color:red'>Action non autorisÃ©e&nbsp;: Upload d'un modÃ¨le personnalisÃ©.</p>\n";
+			tentative_intrusion(1, "Tentative non autorisÃ©e d'upload d'un modÃ¨le OOo (".$monfichiername.")");
 		}
 		else {
 
 			if ($monfichiername=="") {
-				echo "<p style='color:red'>Pas de fichier indiqué ! Il faut recommencer...</p>\n";
+				echo "<p style='color:red'>Pas de fichier indiquÃ© ! Il faut recommencer...</p>\n";
 			}
 			else {
 				$fichiercopie=strtolower($monfichiername);
@@ -279,7 +279,7 @@ if(!isset($num_fich)) {
 						if(!file_exists($path_user)) {
 							$creation=mkdir($path_user);
 							if(!$creation) {
-								echo "<p style='color:red;'>ERREUR lors de la création du dossier de modèle OpenOffice.org pour ".$login_user[$i]."</p>\n";
+								echo "<p style='color:red;'>ERREUR lors de la crÃ©ation du dossier de modÃ¨le OpenOffice.org pour ".$login_user[$i]."</p>\n";
 								$temoin_erreur="y";
 							}
 						}
@@ -287,7 +287,7 @@ if(!isset($num_fich)) {
 						if($temoin_erreur=="n") {
 							if(!file_exists($path_user."/index.html")) {
 								if(!creation_index_redir_login($path_user,1)) {
-									echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle OpenOffice.org pour ".$login_user[$i]."</p>\n";
+									echo "<p style='color:red;'>ERREUR lors de la crÃ©ation d'un index dans votre dossier de modÃ¨le OpenOffice.org pour ".$login_user[$i]."</p>\n";
 								}
 							}
 
@@ -304,10 +304,10 @@ if(!isset($num_fich)) {
 					echo "<p style='color:red'>Erreur de copie<br />\n";
 					echo "Origine     : $monfichiername <br />\n";
 					echo "Destination : $cible<br />";
-					echo "La copie ne s'est pas effectuée !\n Vérifiez la taille du fichier (max 512ko)</p>\n";
+					echo "La copie ne s'est pas effectuÃ©e !\n VÃ©rifiez la taille du fichier (max 512ko)</p>\n";
 				}
 				else {
-					echo "<p style='color:red;'>Le fichier $cible a été copié correctement.</p>\n";
+					echo "<p style='color:red;'>Le fichier $cible a Ã©tÃ© copiÃ© correctement.</p>\n";
 				}
 				*/
 
@@ -331,7 +331,7 @@ if(!isset($num_fich)) {
 	
 		if(count($tab_file)==0) {
 			$upload_modele_ooo_autorise="n";
-			echo "<p style='color:red;'>Vous n'avez aucun modèle.";
+			echo "<p style='color:red;'>Vous n'avez aucun modÃ¨le.";
 
 			if($_SESSION['statut']=='administrateur') {$upload_modele_ooo_autorise="y";}
 			elseif(($_SESSION['statut']=='scolarite')&&(getSettingValue('OOoUploadScol')=='yes')) {$upload_modele_ooo_autorise="y";}
@@ -340,14 +340,14 @@ if(!isset($num_fich)) {
 
 			if($upload_modele_ooo_autorise!="y") {
 				echo "<br />\n";
-				echo "Et vous n'avez pas l'autorisation d'uploader vos modèles.";
+				echo "Et vous n'avez pas l'autorisation d'uploader vos modÃ¨les.";
 			}
 
 			echo "</p>\n";
 		}
 		else {
-			// Lister les modèles existants
-			echo "<p>Utiliser le modèle&nbsp;:<br />";
+			// Lister les modÃ¨les existants
+			echo "<p>Utiliser le modÃ¨le&nbsp;:<br />";
 			for($i=0;$i<count($tab_file);$i++) {
 				echo "<a href='".$_SERVER['PHP_SELF']."?num_fich=$i'>".$tab_file[$i]."</a> - <a href='".$_SERVER['PHP_SELF']."?suppr_fich=$i".add_token_in_url()."'><img src='../images/delete16.png' width='16' height='16' title=\"Supprimer le fichier ".$tab_file[$i]."\" /></a><br />";
 			}
@@ -357,7 +357,7 @@ if(!isset($num_fich)) {
 	else {
 		$creation=mkdir($path);
 		if(!$creation) {
-			echo "<p style='color:red;'>ERREUR lors de la création de votre dossier de modèle OpenOffice.org</p>\n";
+			echo "<p style='color:red;'>ERREUR lors de la crÃ©ation de votre dossier de modÃ¨le OpenOffice.org</p>\n";
 			require_once("../lib/footer.inc.php");
 			die();
 		}
@@ -365,7 +365,7 @@ if(!isset($num_fich)) {
 	
 	if(!file_exists($path."/index.html")) {
 		if(!creation_index_redir_login($path,1)) {
-			echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle OpenOffice.org</p>\n";
+			echo "<p style='color:red;'>ERREUR lors de la crÃ©ation d'un index dans votre dossier de modÃ¨le OpenOffice.org</p>\n";
 		}
 	}
 
@@ -378,11 +378,11 @@ if(!isset($num_fich)) {
 	if($upload_modele_ooo_autorise=='y') {
 		echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
 		echo add_token_field();
-		echo "<p>Mettre en place un nouveau modèle&nbsp;:</p>\n";
+		echo "<p>Mettre en place un nouveau modÃ¨le&nbsp;:</p>\n";
 		echo "<INPUT TYPE=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";
 	
 		if($_SESSION['statut']=='administrateur') {
-			echo "<p>Pour quel(s) utilisateur(s) souhaitez-vous mettre en place le modèle&nbsp;?</p>\n";
+			echo "<p>Pour quel(s) utilisateur(s) souhaitez-vous mettre en place le modÃ¨le&nbsp;?</p>\n";
 			$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE statut='administrateur' OR statut='scolarite' OR statut='cpe' OR statut='professeur' AND etat='actif' ORDER BY statut, login, nom, prenom;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -390,7 +390,7 @@ if(!isset($num_fich)) {
 				$nbcol=3;
 				$nb_par_colonne=round($nombreligne/$nbcol);
 	
-				echo "<table width='100%' summary=\"Tableau de choix des utilisateurs auxquels distribuer le modèle\">\n";
+				echo "<table width='100%' summary=\"Tableau de choix des utilisateurs auxquels distribuer le modÃ¨le\">\n";
 				echo "<tr valign='top' align='center'>\n";
 				echo "<td align='left'>\n";
 	
@@ -426,7 +426,7 @@ if(!isset($num_fich)) {
 			}
 		}
 	
-		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'><br />\n";
+		echo "<p>Fichier modÃ¨le&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliquÃ© le bougre'><br />\n";
 		echo "<input type='submit' name='btn' Align='middle' value='Envoyer' /></p>\n";
 		echo "</form>\n";
 
@@ -450,17 +450,17 @@ if(!isset($num_fich)) {
 				echo "</ul>\n";
 			echo "</li>\n";
 			echo "<li>\n";
-				echo "<p>Des exemples de modèles sont disponibles&nbsp;: <a href='http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo'>http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo</a></p>\n";
+				echo "<p>Des exemples de modÃ¨les sont disponibles&nbsp;: <a href='http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo'>http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo</a></p>\n";
 			echo "</li>\n";
 		echo "</ul>\n";
 
 		if($_SESSION['statut']=='administrateur') {
-			echo "<p style='color:red'>A FAIRE : Permettre à l'administrateur de faire le ménage dans les fichiers modèles des autres utilisateurs.<br />Permettre de limiter les champs auxquels ont accès les utilisateurs selon leur statut.</p>\n";
+			echo "<p style='color:red'>A FAIRE : Permettre Ã  l'administrateur de faire le mÃ©nage dans les fichiers modÃ¨les des autres utilisateurs.<br />Permettre de limiter les champs auxquels ont accÃ¨s les utilisateurs selon leur statut.</p>\n";
 		}
 	}
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre modèle</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre modÃ¨le</a>";
 	if((!isset($id_classe))&&(!isset($id_groupe))) {
 		echo "</p>\n";
 	

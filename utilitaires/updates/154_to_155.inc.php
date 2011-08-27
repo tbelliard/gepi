@@ -1,18 +1,18 @@
 <?php
 /**
- * Fichier de mise ‡ jour de la version 1.5.4 ‡ la version 1.5.5
+ * Fichier de mise √† jour de la version 1.5.4 √† la version 1.5.5
  * 
  * $Id$
  *
- * Le code PHP prÈsent ici est exÈcutÈ tel quel.
- * Pensez ‡ conserver le code parfaitement compatible pour une application
- * multiple des mises ‡ jour. Toute modification ne doit Ítre rÈalisÈe qu'aprËs
- * un test pour s'assurer qu'elle est nÈcessaire.
+ * Le code PHP pr√©sent ici est ex√©cut√© tel quel.
+ * Pensez √† conserver le code parfaitement compatible pour une application
+ * multiple des mises √† jour. Toute modification ne doit √™tre r√©alis√©e qu'apr√®s
+ * un test pour s'assurer qu'elle est n√©cessaire.
  *
- * Le rÈsultat de la mise ‡ jour est du html prÈformatÈ. Il doit Ítre concatÈnÈ
- * dans la variable $result, qui est dÈj‡ initialisÈ.
+ * Le r√©sultat de la mise √† jour est du html pr√©format√©. Il doit √™tre concat√©n√©
+ * dans la variable $result, qui est d√©j√† initialis√©.
  *
- * Exemple : $result .= msj_ok("Champ XXX ajoutÈ avec succËs");
+ * Exemple : $result .= msj_ok("Champ XXX ajout√© avec succ√®s");
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL,
@@ -23,7 +23,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise ‡ jour vers la version 1.5.5" . $rc . $beta . " :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise √† jour vers la version 1.5.5" . $rc . $beta . " :</h3>";
 
 //===================================================
 /*
@@ -37,12 +37,12 @@ $res_test=mysql_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('cas_attribut_prenom', '');");
   if ($result_inter == '') {
-    $result.=msj_ok("DÈfinition du paramËtre cas_attribut_prenom : Ok !");
+    $result.=msj_ok("D√©finition du param√®tre cas_attribut_prenom : Ok !");
   } else {
-    $result.=msj_erreur("DÈfinition du paramËtre cas_attribut_prenom : Erreur !");
+    $result.=msj_erreur("D√©finition du param√®tre cas_attribut_prenom : Erreur !");
   }
 } else {
-  $result .= msj_present("Le paramËtre cas_attribut_prenom existe dÈj‡ dans la table setting.");
+  $result .= msj_present("Le param√®tre cas_attribut_prenom existe d√©j√† dans la table setting.");
 }
 
 //===================================================
@@ -66,17 +66,17 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dÈj‡");
+		$result .= msj_present("La table existe d√©j√†");
 }
 
 //===================================================
 
-// Ajout d'un champ ‡ une table
+// Ajout d'un champ √† une table
 
-$result .= "&nbsp;->Ajout d'un champ id_lieu ‡ la table 'a_types'<br />";
+$result .= "&nbsp;->Ajout d'un champ id_lieu √† la table 'a_types'<br />";
 $test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'id_lieu';"));
 if ($test_date_decompte>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 }
 else {
 	$query = mysql_query("ALTER TABLE a_types ADD id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve' AFTER commentaire,
@@ -113,14 +113,14 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dÈj‡");
+		$result .= msj_present("La table existe d√©j√†");
 }
 
 //===================================================
 
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_documents LIKE 'visible';"));
 if ($test_champ>0) {
-	$result .= "&nbsp;->Ajout d'un champ visible ‡ la table 'ct_documents'<br />";
+	$result .= "&nbsp;->Ajout d'un champ visible √† la table 'ct_documents'<br />";
 	$query = mysql_query("ALTER TABLE ct_documents DROP visible;");
 	if ($query) {
 			$result .= msj_ok("Ok !");
@@ -129,13 +129,13 @@ if ($test_champ>0) {
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'visible_eleve_parent' ‡ la table 'ct_documents'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'visible_eleve_parent' √† la table 'ct_documents'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_documents LIKE 'visible_eleve_parent';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 }
 else {
-	$query = mysql_query("ALTER TABLE ct_documents ADD visible_eleve_parent BOOLEAN DEFAULT true COMMENT 'VisibilitÈ ÈlËve/parent du document joint' AFTER emplacement;");
+	$query = mysql_query("ALTER TABLE ct_documents ADD visible_eleve_parent BOOLEAN DEFAULT true COMMENT 'Visibilit√© √©l√®ve/parent du document joint' AFTER emplacement;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -154,13 +154,13 @@ if ($test_champ>0) {
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'visible_eleve_parent' ‡ la table 'ct_devoirs_documents'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'visible_eleve_parent' √† la table 'ct_devoirs_documents'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_devoirs_documents LIKE 'visible_eleve_parent';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 }
 else {
-	$query = mysql_query("ALTER TABLE ct_devoirs_documents ADD visible_eleve_parent BOOLEAN DEFAULT true COMMENT 'VisibilitÈ ÈlËve/parent du document joint' AFTER emplacement;");
+	$query = mysql_query("ALTER TABLE ct_devoirs_documents ADD visible_eleve_parent BOOLEAN DEFAULT true COMMENT 'Visibilit√© √©l√®ve/parent du document joint' AFTER emplacement;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -170,10 +170,10 @@ else {
 
 //===================================================
 
-$result .= "&nbsp;->Ajout d'un champ 'date_visibilite_eleve' ‡ la table 'ct_devoirs_entry'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'date_visibilite_eleve' √† la table 'ct_devoirs_entry'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_devoirs_entry LIKE 'date_visibilite_eleve';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 }
 else {
 	$query = mysql_query("ALTER TABLE ct_devoirs_entry ADD date_visibilite_eleve TIMESTAMP NOT NULL default now() COMMENT 'Timestamp precisant quand les devoirs sont portes a la conaissance des eleves' AFTER id_sequence;");
@@ -187,10 +187,10 @@ else {
 //===================================================
 
 $result .= "<br /><strong>Mots de passe :</strong><br />";
-$result .= "&nbsp;->Ajout d'un champ 'salt' ‡ la table 'utilisateur' et allongement du champs password<br />";
+$result .= "&nbsp;->Ajout d'un champ 'salt' √† la table 'utilisateur' et allongement du champs password<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 }
 else {
 	$query = mysql_query("ALTER TABLE utilisateurs ADD salt varchar(128) COMMENT 'sel pour le hmac du mot de passe' AFTER password;");
@@ -213,7 +213,7 @@ $result .= "<br /><strong>Messagerie :</strong><br />";
 $result .= "&nbsp;->Modification du champ 'destinataires' de la table 'messages' en 'statuts_destinataires'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messages LIKE 'statuts_destinataires';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ est dÈj‡ modifiÈ.");
+	$result .= msj_present("Le champ est d√©j√† modifi√©.");
 }
 else {
 	$query = mysql_query("ALTER TABLE messages CHANGE destinataires statuts_destinataires VARCHAR( 10 ) NOT NULL DEFAULT '';");
@@ -224,10 +224,10 @@ else {
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'login_destinataire' ‡ la table 'messages'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'login_destinataire' √† la table 'messages'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messages LIKE 'login_destinataire';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 }
 else {
 	$query = mysql_query("ALTER TABLE messages ADD login_destinataire VARCHAR( 50 ) NOT NULL default '' AFTER statuts_destinataires, ADD INDEX ( login_destinataire ) ;");
@@ -239,7 +239,7 @@ else {
 }
 
 // Ajout d'index
-$result .= "&nbsp;->Ajout de l'index 'login_destinataire' ‡ la table 'messages'<br />";
+$result .= "&nbsp;->Ajout de l'index 'login_destinataire' √† la table 'messages'<br />";
 $req_res=0;
 $req_test = mysql_query("SHOW INDEX FROM messages ");
 if (mysql_num_rows($req_test)!=0) {
@@ -255,7 +255,7 @@ if ($req_res == 0) {
 		$result .= msj_erreur();
 	}
 } else {
-	$result .= msj_present("L'index existe dÈj‡.");
+	$result .= msj_present("L'index existe d√©j√†.");
 }
 
 $result .= "<br /><strong>Ajout d'une table 's_travail_mesure' :</strong><br />";
@@ -269,14 +269,14 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dÈj‡");
+		$result .= msj_present("La table existe d√©j√†");
 }
 
 $result .= "<br /><strong>Absence 2 :</strong><br />";
 $result .= "&nbsp;->Ajout des champs versions a la table a_saisies<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'version';"));
 if ($test_champ>0) {
-	$result .= msj_present("Les versions de saisies existent dÈj‡.");
+	$result .= msj_present("Les versions de saisies existent d√©j√†.");
 } else {
 	 $query = mysql_query("ALTER TABLE a_saisies ADD (version INTEGER DEFAULT 0, version_created_at DATETIME, version_created_by VARCHAR(100));");
 	if ($query) {
@@ -303,13 +303,13 @@ if ($test_champ>0) {
 
 $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'a_saisies_version'"));
 if ($test!=0) {
-	$result .= msj_present("La table des versions de saisies existent dÈj‡.");
+	$result .= msj_present("La table des versions de saisies existent d√©j√†.");
 } else {
 	$query = mysql_query("CREATE TABLE a_saisies_version
 (
 	id INTEGER(11) NOT NULL,
 	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a saisi l\'absence',
-	eleve_id INTEGER(11) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal ‡ null si aucun eleve n\'est saisi',
+	eleve_id INTEGER(11) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal √† null si aucun eleve n\'est saisi',
 	commentaire TEXT COMMENT 'commentaire de l\'utilisateur',
 	debut_abs DATETIME COMMENT 'Debut de l\'absence en timestamp UNIX',
 	fin_abs DATETIME COMMENT 'Fin de l\'absence en timestamp UNIX',
@@ -320,7 +320,7 @@ if ($test!=0) {
 	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
-	deleted_by VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a supprimÈ la saisie',
+	deleted_by VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a supprim√© la saisie',
 	created_at DATETIME COMMENT 'Date de creation de la saisie',
 	updated_at DATETIME COMMENT 'Date de modification de la saisie, y compris suppression, restauration et changement de version',
 	deleted_at DATETIME,
@@ -366,75 +366,75 @@ if ($query) {
 		$result .= msj_ok();
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'deleted_at' ‡ la table 'a_saisies'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'deleted_at' √† la table 'a_saisies'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE `a_saisies` ADD deleted_at DATETIME AFTER updated_at;");
 	if ($query) {
-			$result .= msj_present("Le champ deleted_at de la table a_saisies a ÈtÈ ajoutÈ.");
+			$result .= msj_present("Le champ deleted_at de la table a_saisies a √©t√© ajout√©.");
 	} else {
-			$result .= msj_erreur("Erreur : Le champ deleted_at de la table a_saisies n'a pas ÈtÈ ajoutÈ");
+			$result .= msj_erreur("Erreur : Le champ deleted_at de la table a_saisies n'a pas √©t√© ajout√©");
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'deleted_at' ‡ la table 'a_saisies_version'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'deleted_at' √† la table 'a_saisies_version'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies_version LIKE 'deleted_at';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE `a_saisies_version` ADD deleted_at DATETIME AFTER updated_at;");
 	if ($query) {
-			$result .= msj_present("Le champ deleted_at de la table a_saisies_version a ÈtÈ ajoutÈ.");
+			$result .= msj_present("Le champ deleted_at de la table a_saisies_version a √©t√© ajout√©.");
 	} else {
-			$result .= msj_erreur(": Le champ deleted_at de la table a_saisies_version n'a pas ÈtÈ ajoutÈ");
+			$result .= msj_erreur(": Le champ deleted_at de la table a_saisies_version n'a pas √©t√© ajout√©");
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'deleted_by' ‡ la table 'a_saisies'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'deleted_by' √† la table 'a_saisies'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_by';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE `a_saisies` ADD deleted_by VARCHAR(100) AFTER id_lieu;");
 	if ($query) {
-			$result .= msj_present("Le champ deleted_by de la table a_saisies a ÈtÈ ajoutÈ.");
+			$result .= msj_present("Le champ deleted_by de la table a_saisies a √©t√© ajout√©.");
 	} else {
-			$result .= msj_erreur(": Le champ deleted_by de la table a_saisies n'a pas ÈtÈ ajoutÈ");
+			$result .= msj_erreur(": Le champ deleted_by de la table a_saisies n'a pas √©t√© ajout√©");
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'deleted_by' ‡ la table 'a_saisies_version'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'deleted_by' √† la table 'a_saisies_version'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies_version LIKE 'deleted_by';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE `a_saisies_version` ADD deleted_by VARCHAR(100) AFTER id_lieu;");
 	if ($query) {
-			$result .= msj_present("Le champ deleted_by de la table a_saisies_version a ÈtÈ ajoutÈ.");
+			$result .= msj_present("Le champ deleted_by de la table a_saisies_version a √©t√© ajout√©.");
 	} else {
-			$result .= msj_erreur(": Le champ deleted_by de la table a_saisies_version n'a pas ÈtÈ ajoutÈ");
+			$result .= msj_erreur(": Le champ deleted_by de la table a_saisies_version n'a pas √©t√© ajout√©");
 	}
 }
 
 
 $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'a_agregation_decompte'"));
 if ($test!=0) {
-	$result .= msj_present("La table des agrÈgation de dÈcompte de saisies existe dÈj‡.");
+	$result .= msj_present("La table des agr√©gation de d√©compte de saisies existe d√©j√†.");
 } else {
-	$result .= msj_present("Ajout de la table des agrÈgation de dÈcompte de saisies.");
+	$result .= msj_present("Ajout de la table des agr√©gation de d√©compte de saisies.");
 	$query = mysql_query("CREATE TABLE a_agregation_decompte
 (
 	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
-	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journÈe agrÈgÈe : 00:00 pour une matinÈe, 12:00 pour une aprËs midi',
-	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journÈe est comptÈe comme absence',
-	justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journÈe est comptÈ comme absence, y a-t-il une justification',
-	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journÈe est comptÈ comme absence, y a-t-il une notification ‡ la famille',
-	nb_retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards dÈcomptÈs dans la demi journÈe',
-	nb_retards_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards justifiÈs dÈcomptÈs dans la demi journÈe',
-	motifs_absences TEXT COMMENT 'Liste des motifs (table a_motifs) associÈs ‡ cette demi-journÈe d\'absence',
-	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associÈs aux retard de cette demi-journÈe',
+	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journ√©e agr√©g√©e : 00:00 pour une matin√©e, 12:00 pour une apr√®s midi',
+	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journ√©e est compt√©e comme absence',
+	justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journ√©e est compt√© comme absence, y a-t-il une justification',
+	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journ√©e est compt√© comme absence, y a-t-il une notification √† la famille',
+	nb_retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards d√©compt√©s dans la demi journ√©e',
+	nb_retards_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards justifi√©s d√©compt√©s dans la demi journ√©e',
+	motifs_absences TEXT COMMENT 'Liste des motifs (table a_motifs) associ√©s √† cette demi-journ√©e d\'absence',
+	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associ√©s aux retard de cette demi-journ√©e',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (eleve_id,date_demi_jounee),
@@ -451,58 +451,58 @@ if ($test!=0) {
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'deleted_at' ‡ la table 'a_traitements'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'deleted_at' √† la table 'a_traitements'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_traitements LIKE 'deleted_at';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE `a_traitements` ADD deleted_at DATETIME AFTER updated_at;");
 	if ($query) {
-			$result .= msj_present("Le champ deleted_at de la table a_traitements a ÈtÈ ajoutÈ.");
+			$result .= msj_present("Le champ deleted_at de la table a_traitements a √©t√© ajout√©.");
 	} else {
-			$result .= msj_erreur(": Le champ deleted_at de la table a_traitements n'a pas ÈtÈ ajoutÈ");
+			$result .= msj_erreur(": Le champ deleted_at de la table a_traitements n'a pas √©t√© ajout√©");
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' ‡ la table 'a_types'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' √† la table 'a_types'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'created_at';"));
 if ($test_champ>0) {
-	$result .= msj_present("Les champs existent dÈj‡.");
+	$result .= msj_present("Les champs existent d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE `a_types` ADD (created_at DATETIME, updated_at DATETIME);");
 	if ($query) {
-			$result .= msj_present("Les champs ont ÈtÈs ajoutÈs.");
+			$result .= msj_present("Les champs ont √©t√©s ajout√©s.");
 			$query = mysql_query("UPDATE a_types SET created_at = NOW(), updated_at = NOW();");
 	} else {
-			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_types n'ont pas ÈtÈs ajoutÈs");
+			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_types n'ont pas √©t√©s ajout√©s");
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' ‡ la table 'a_motifs'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' √† la table 'a_motifs'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_motifs LIKE 'created_at';"));
 if ($test_champ>0) {
-	$result .= msj_present("Les champs existent dÈj‡.");
+	$result .= msj_present("Les champs existent d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE `a_motifs` ADD (created_at DATETIME, updated_at DATETIME);");
 	if ($query) {
-			$result .= msj_present("Les champs ont ÈtÈs ajoutÈs.");
+			$result .= msj_present("Les champs ont √©t√©s ajout√©s.");
 			$query = mysql_query("UPDATE a_motifs SET created_at = NOW(), updated_at = NOW();");
 	} else {
-			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_motifs n'ont pas ÈtÈs ajoutÈs");
+			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_motifs n'ont pas √©t√©s ajout√©s");
 	}
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' ‡ la table 'a_justifications'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' √† la table 'a_justifications'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_justifications LIKE 'created_at';"));
 if ($test_champ>0) {
-	$result .= msj_present("Les champs existent dÈj‡.");
+	$result .= msj_present("Les champs existent d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE `a_justifications` ADD (created_at DATETIME, updated_at DATETIME);");
 	if ($query) {
-			$result .= msj_present("Les champs ont ÈtÈs ajoutÈs.");
+			$result .= msj_present("Les champs ont √©t√©s ajout√©s.");
 			$query = mysql_query("UPDATE a_justifications SET created_at = NOW(), updated_at = NOW();");
 	} else {
-			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_justifications n'ont pas ÈtÈs ajoutÈs");
+			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_justifications n'ont pas √©t√©s ajout√©s");
 	}
 }
 
@@ -524,7 +524,7 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dÈj‡");
+		$result .= msj_present("La table existe d√©j√†");
 }
 
 $result .= "<br /><strong>Ajout d'une table j_mentions_classes :</strong><br />";
@@ -542,19 +542,19 @@ ordre TINYINT(4) NOT NULL);");
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dÈj‡");
+		$result .= msj_present("La table existe d√©j√†");
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'id_mention' ‡ la table 'avis_conseil_classe'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'id_mention' √† la table 'avis_conseil_classe'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM avis_conseil_classe LIKE 'id_mention';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE avis_conseil_classe ADD id_mention INT( 11 ) NOT NULL DEFAULT '0' AFTER avis;");
 	if ($query) {
-		$result .= msj_present("Le champ id_mention de la table avis_conseil_classe a ÈtÈ ajoutÈ.");
+		$result .= msj_present("Le champ id_mention de la table avis_conseil_classe a √©t√© ajout√©.");
 	} else {
-		$result .= msj_erreur(": Le champ id_mention de la table avis_conseil_classe n'a pas ÈtÈ ajoutÈ");
+		$result .= msj_erreur(": Le champ id_mention de la table avis_conseil_classe n'a pas √©t√© ajout√©");
 	}
 }
 
@@ -569,19 +569,19 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dÈj‡");
+		$result .= msj_present("La table existe d√©j√†");
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'id_categorie' ‡ la table 's_natures'<br />";
+$result .= "&nbsp;->Ajout d'un champ 'id_categorie' √† la table 's_natures'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_natures LIKE 'id_categorie';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 } else {
 	$query = mysql_query("alter table s_natures add id_categorie int(11) not null default '0' after nature;");
 	if ($query) {
-		$result .= msj_present("Le champ id_categorie de la table s_natures a ÈtÈ ajoutÈ.");
+		$result .= msj_present("Le champ id_categorie de la table s_natures a √©t√© ajout√©.");
 	} else {
-		$result .= msj_erreur(": Le champ id_categorie de la table s_natures n'a pas ÈtÈ ajoutÈ");
+		$result .= msj_erreur(": Le champ id_categorie de la table s_natures n'a pas √©t√© ajout√©");
 	}
 }
 
@@ -605,7 +605,7 @@ PRIMARY KEY id (id)
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dÈj‡");
+		$result .= msj_present("La table existe d√©j√†");
 }
 
 $result .= "<br /><strong>Ajout d'une table udt_corresp :</strong><br />";
@@ -623,14 +623,14 @@ nom_gepi varchar(255) NOT NULL default ''
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dÈj‡");
+		$result .= msj_present("La table existe d√©j√†");
 }
 
 $result .= "<br /><strong>Mef :</strong><br />";
 $result .= "&nbsp;->Modification du champ 'ext_id' de la table 'mef' en 'mef_code'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM mef LIKE 'mef_code';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ est dÈj‡ modifiÈ.");
+	$result .= msj_present("Le champ est d√©j√† modifi√©.");
 }
 else {
 	$query = mysql_query("ALTER TABLE mef CHANGE ext_id mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve';");
@@ -643,7 +643,7 @@ else {
 $result .= "&nbsp;->Modification du champ 'id_mef' de la table 'eleves' en 'mef_code'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'mef_code';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ est dÈj‡ modifiÈ.");
+	$result .= msj_present("Le champ est d√©j√† modifi√©.");
 }
 else {
 	$query = mysql_query("ALTER TABLE eleves CHANGE id_mef mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve';");
@@ -672,16 +672,16 @@ if ($query) {
 		$result .= msj_erreur();
 }
 
-$result .= "<br />&nbsp;->Ajout d'un champ 'nom_requete' ‡ la table 'gc_affichages'<br />";
+$result .= "<br />&nbsp;->Ajout d'un champ 'nom_requete' √† la table 'gc_affichages'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM gc_affichages LIKE 'nom_requete';"));
 if ($test_champ>0) {
-	$result .= msj_present("Le champ existe dÈj‡.");
+	$result .= msj_present("Le champ existe d√©j√†.");
 } else {
 	$query = mysql_query("ALTER TABLE gc_affichages ADD nom_requete VARCHAR( 255 ) NOT NULL AFTER projet;");
 	if ($query) {
-		$result .= msj_present("Le champ 'nom_requete' de la table 'gc_affichages' a ÈtÈ ajoutÈ.");
+		$result .= msj_present("Le champ 'nom_requete' de la table 'gc_affichages' a √©t√© ajout√©.");
 	} else {
-		$result .= msj_erreur(": Le champ 'nom_requete' de la table 'gc_affichages' n'a pas ÈtÈ ajoutÈ");
+		$result .= msj_erreur(": Le champ 'nom_requete' de la table 'gc_affichages' n'a pas √©t√© ajout√©");
 	}
 }
 
@@ -691,16 +691,16 @@ $res_test=mysql_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('sso_cas_table', 'no');");
   if ($result_inter == '') {
-    $result.=msj_ok("DÈfinition du paramËtre sso_cas_table : Ok !");
+    $result.=msj_ok("D√©finition du param√®tre sso_cas_table : Ok !");
   } else {
-    $result.=msj_erreur(": DÈfinition du paramËtre sso_cas_table !");
+    $result.=msj_erreur(": D√©finition du param√®tre sso_cas_table !");
   }
 } else {
-  $result .= msj_present("Le paramËtre sso_cas_table existe dÈj‡ dans la table setting.");
+  $result .= msj_present("Le param√®tre sso_cas_table existe d√©j√† dans la table setting.");
 }
 
 //$result.="<br />";
-$result.="DÈfinition du champ 'reglage' de la table 'edt_setting' comme UNIQUE :";
+$result.="D√©finition du champ 'reglage' de la table 'edt_setting' comme UNIQUE :";
 $result.="<br />";
 $deja_cree = deja_unique('edt_setting','reglage' );
 if (!$deja_cree) {
@@ -711,10 +711,10 @@ if (!$deja_cree) {
       $result.=msj_erreur(" ! ".$result_inter);
   }
 } else {
-  $result.= msj_present(' le champ est dÈj‡ dÈfini comme UNIQUE');
+  $result.= msj_present(' le champ est d√©j√† d√©fini comme UNIQUE');
 }
 
-$result.="DÈfinition du champ 'ref' de la table 'ref_wiki' comme UNIQUE :";
+$result.="D√©finition du champ 'ref' de la table 'ref_wiki' comme UNIQUE :";
 $result.="<br />";
 $deja_cree = deja_unique('ref_wiki','ref' );
 if (!$deja_cree) {
@@ -725,7 +725,7 @@ if (!$deja_cree) {
       $result.=msj_erreur(" !".$result_inter);
   }
 } else {
-  $result.= msj_present(' le champ est dÈj‡ dÈfini comme UNIQUE');
+  $result.= msj_present(' le champ est d√©j√† d√©fini comme UNIQUE');
 }
 
 //$result.="<br />";
@@ -741,12 +741,12 @@ if ($result_inter == '') {
 $test_file = '../lib/global.inc';
 if (file_exists($test_file)) { 
     $result.="<br />";
-    $result.="Tentative de Suppression du fichier global.inc obsolËte :";
+    $result.="Tentative de Suppression du fichier global.inc obsol√®te :";
     unlink($test_file);
     if (file_exists($test_file)){
        $result.=msj_erreur(" !");
     }else{
-       $result.=msj_ok(" RÈussi !"); 
+       $result.=msj_ok(" R√©ussi !"); 
     }
 }             
 

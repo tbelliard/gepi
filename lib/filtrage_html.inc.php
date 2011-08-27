@@ -4,7 +4,7 @@ $Id$
 */
 	$enregistrer_filtrage_html="n";
 
-	// Récupération et si necessaire initialisation de la valeur de 'filtrage_html'
+	// RÃ©cupÃ©ration et si necessaire initialisation de la valeur de 'filtrage_html'
 	$sql="SELECT value FROM setting WHERE name='filtrage_html';";
 	$res_filtrage_html=mysql_query($sql);
 	if(mysql_num_rows($res_filtrage_html)==0) {
@@ -16,7 +16,7 @@ $Id$
 		$filtrage_html=$lig_fh->value;
 	}
 
-	// Test de validité de la valeur récupérée
+	// Test de validitÃ© de la valeur rÃ©cupÃ©rÃ©e
 	if(($filtrage_html!='inputfilter')&&
 		($filtrage_html!='htmlpurifier')&&
 		($filtrage_html!='pas_de_filtrage_html')) {
@@ -24,9 +24,9 @@ $Id$
 		$enregistrer_filtrage_html="y";
 	}
 
-	// Test de compatibilité de la valeur avec la configuration
+	// Test de compatibilitÃ© de la valeur avec la configuration
 	if($filtrage_html=="htmlpurifier") {
-		// HTMLPurifier fonctionne à partir de PHP 5.0.5
+		// HTMLPurifier fonctionne Ã  partir de PHP 5.0.5
 		$tab_version_php=explode(".",phpversion());
 		if($tab_version_php[0]==4) {
 			$filtrage_html='inputfilter';

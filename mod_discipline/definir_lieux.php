@@ -36,16 +36,16 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les lieux', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les lieux', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir les lieux', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir les lieux', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -66,11 +66,11 @@ if(isset($suppr_lieu)) {
 			$sql="DELETE FROM s_lieux_incidents WHERE id='$suppr_lieu[$i]';";
 			$suppr=mysql_query($sql);
 			if(!$suppr) {
-				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_lieu[$i].".<br />\n";
-				$msg.="ERREUR lors de la suppression du lieu n°".$suppr_lieu[$i].".<br />\n";
+				//$msg.="ERREUR lors de la suppression de la qualitÃ© nÂ°".$suppr_lieu[$i].".<br />\n";
+				$msg.="ERREUR lors de la suppression du lieu nÂ°".$suppr_lieu[$i].".<br />\n";
 			}
 			else {
-				$msg.="Suppression du lieu n°".$suppr_lieu[$i].".<br />\n";
+				$msg.="Suppression du lieu nÂ°".$suppr_lieu[$i].".<br />\n";
 			}
 		}
 	}
@@ -109,10 +109,10 @@ if((isset($lieu))&&($lieu!='')) {
 	}
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-//$titre_page = "Sanctions: Définition des qualités";
-$titre_page = "Discipline: Définition des lieux";
+//$titre_page = "Sanctions: DÃ©finition des qualitÃ©s";
+$titre_page = "Discipline: DÃ©finition des lieux";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -124,7 +124,7 @@ echo "</p>\n";
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 echo add_token_field();
 
-//echo "<p class='bold'>Saisie des qualités dans un incident&nbsp;:</p>\n";
+//echo "<p class='bold'>Saisie des qualitÃ©s dans un incident&nbsp;:</p>\n";
 echo "<p class='bold'>Saisie les lieux des incidents&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
@@ -132,16 +132,16 @@ $cpt=0;
 $sql="SELECT * FROM s_lieux_incidents ORDER BY lieu;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	//echo "<p>Aucune qualité n'est encore définie.</p>\n";
-	echo "<p>Aucun lieu n'est encore défini.</p>\n";
+	//echo "<p>Aucune qualitÃ© n'est encore dÃ©finie.</p>\n";
+	echo "<p>Aucun lieu n'est encore dÃ©fini.</p>\n";
 }
 else {
-	//echo "<p>Qualités existantes&nbsp;:</p>\n";
-	//echo "<table class='boireaus' border='1' summary='Tableau des qualités existantes'>\n";
+	//echo "<p>QualitÃ©s existantes&nbsp;:</p>\n";
+	//echo "<table class='boireaus' border='1' summary='Tableau des qualitÃ©s existantes'>\n";
 	echo "<p>Lieux existants&nbsp;:</p>\n";
 	echo "<table class='boireaus' border='1' summary='Tableau des lieux existants'>\n";
 	echo "<tr>\n";
-	//echo "<th>Qualité</th>\n";
+	//echo "<th>QualitÃ©</th>\n";
 	echo "<th>Lieu</th>\n";
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";

@@ -12,7 +12,7 @@
 
 
 /**
- * Classe pour préparer une impression PDF
+ * Classe pour prÃ©parer une impression PDF
  *
  * @global class $GLOBALS['pdf']
  * @name $pdf
@@ -39,7 +39,7 @@ $GLOBALS['pdf'] = NULL;
  * @param type $bordure LRBT
  * @param type $v_align C(enter) ou T(op)
  * @param type $align
- * @param type $increment nombre dont on réduit la police à chaque essai
+ * @param type $increment nombre dont on rÃ©duit la police Ã  chaque essai
  * @param type $r_interligne proportion de la taille de police pour les interlignes
  * @see PDF
  * @see getSettingValue()
@@ -50,7 +50,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 	global $pdf;
 
 	if(getSettingValue('cell_ajustee_old_way')=='y') {
-		// On vire les balises en utilisant l'ancienne fonction qui ne gérait pas les balises
+		// On vire les balises en utilisant l'ancienne fonction qui ne gÃ©rait pas les balises
 		$texte=preg_replace('/<(.*)>/U','',$texte);
 		cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align,$increment,$r_interligne);
 	}
@@ -76,13 +76,13 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
  * @param type $bordure LRBT
  * @param type $v_align C(enter) ou T(op)
  * @param type $align
- * @param type $increment nombre dont on réduit la police à chaque essai
+ * @param type $increment nombre dont on rÃ©duit la police Ã  chaque essai
  * @param type $r_interligne  proportion de la taille de police pour les interlignes
  * @see PDF
  */
 function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
 	
-	// Pour que la variable puisse être récupérée dans la fonction my_echo_debug(), il faut la déclarer comme globale:
+	// Pour que la variable puisse Ãªtre rÃ©cupÃ©rÃ©e dans la fonction my_echo_debug(), il faut la dÃ©clarer comme globale:
 	global $pdf, $my_echo_debug, $mode_my_echo_debug;
 
 
@@ -91,12 +91,12 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 	//================================
 	// Options de debug
-	// Passer à 1 pour débugger
+	// Passer Ã  1 pour dÃ©bugger
 	$my_echo_debug=0;
 	//$my_echo_debug=1;
 
-	// Les modes sont 'fichier' ou n'importe quoi d'autre qui provoque des echo... donc un échec de la génération de PDF... à ouvrir avec un bloc-notes, pas avec un lecteur PDF
-	// Voir la fonction my_echo_debug() pour l'emplacement du fichier généré
+	// Les modes sont 'fichier' ou n'importe quoi d'autre qui provoque des echo... donc un Ã©chec de la gÃ©nÃ©ration de PDF... Ã  ouvrir avec un bloc-notes, pas avec un lecteur PDF
+	// Voir la fonction my_echo_debug() pour l'emplacement du fichier gÃ©nÃ©rÃ©
 	$mode_my_echo_debug='fichier';
 	//$mode_my_echo_debug='';
 	//================================
@@ -106,20 +106,20 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 	if($my_echo_debug==1) my_echo_debug("\$texte=\"$texte\"\n");
 
-	// Pour réduire la taille du texte, il se peut qu'il faille supprimer les balises,...
+	// Pour rÃ©duire la taille du texte, il se peut qu'il faille supprimer les balises,...
 	$supprimer_balises="n";
 	$supprimer_retours_a_la_ligne="n";
 	$tronquer="n";
 
-	// On commence par essayer de remplir la cellule avec la taille de police proposée
-	// Et réduire la taille de police si cela ne tient pas.
-	// Si on arrive à une taille de police trop faible, on va supprimer des retours à la ligne, des balises ou même tronquer.
+	// On commence par essayer de remplir la cellule avec la taille de police proposÃ©e
+	// Et rÃ©duire la taille de police si cela ne tient pas.
+	// Si on arrive Ã  une taille de police trop faible, on va supprimer des retours Ã  la ligne, des balises ou mÃªme tronquer.
 
 	// Pour forcer en debug:
 	//$tronquer='y';
 
 	while($tronquer!='y') {
-		// On (re)démarre un essai avec une taille de police
+		// On (re)dÃ©marre un essai avec une taille de police
 
 		$pdf->SetFontSize($hauteur_texte);
 
@@ -137,14 +137,14 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		// Compteur des lignes
 		$cpt=0;
 
-		// On prévoit deux... trois espaces de marge en gras pour s'assurer que la ligne ne débordera pas
+		// On prÃ©voit deux... trois espaces de marge en gras pour s'assurer que la ligne ne dÃ©bordera pas
 		$pdf->SetFont('','B');
 		$un_espace_gras=$pdf->GetStringWidth(' ');
 		if($my_echo_debug==1) my_echo_debug("Un espace en gras mesure $un_espace_gras\n");
 		$marge_espaces=3*$un_espace_gras;
 		if($my_echo_debug==1) my_echo_debug("On compte trois espaces de marge, soit $marge_espaces\n");
 		$largeur_utile=$largeur_dispo-$marge_espaces;
-		if($my_echo_debug==1) my_echo_debug("D'où \$largeur_utile=$largeur_utile\n");
+		if($my_echo_debug==1) my_echo_debug("D'oÃ¹ \$largeur_utile=$largeur_utile\n");
 
 		// CONTROLER QUE \$largeur_utile>0
 		if($largeur_utile<=0) {
@@ -156,7 +156,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		$style_courant='';
 		$pdf->SetFont('',$style_courant);
 
-		// (Ré-)initialisation du témoin
+		// (RÃ©-)initialisation du tÃ©moin
 		$temoin_reduire_police="n";
 
 		if($supprimer_retours_a_la_ligne=="y") {
@@ -169,8 +169,8 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		foreach($tab as $i=>$valeur) {
 			// Avec $i pair on a le texte et les indices impairs correspondent aux balises (b et /b,...)
 
-			// On initialise la ligne courante si nécessaire pour le cas où on aurait $texte="<b>Blabla..."
-			// Il faut que la ligne soit initialisée pour pouvoir ajouter le <b> dans $i%2!=0
+			// On initialise la ligne courante si nÃ©cessaire pour le cas oÃ¹ on aurait $texte="<b>Blabla..."
+			// Il faut que la ligne soit initialisÃ©e pour pouvoir ajouter le <b> dans $i%2!=0
 			if(!isset($ligne[$cpt])) {
 				$ligne[$cpt]='';
 				$longueur_ligne_courante=0;
@@ -178,10 +178,10 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			}
 
 			if($i%2==0) {
-				if($my_echo_debug==1) my_echo_debug("\nParcours avec l'élément \$i=$i: \"$tab[$i]\"\n");
+				if($my_echo_debug==1) my_echo_debug("\nParcours avec l'Ã©lÃ©ment \$i=$i: \"$tab[$i]\"\n");
 
 				$tab2=explode(" ",$tab[$i]);
-				// Si on gère aussi les virgules et tirets, il y a une difficulté supplémentaire à gérer pour re-concaténer (normalement après une virgule, on doit avoir un espace)... donc on ne gère que les espaces
+				// Si on gÃ¨re aussi les virgules et tirets, il y a une difficultÃ© supplÃ©mentaire Ã  gÃ©rer pour re-concatÃ©ner (normalement aprÃ¨s une virgule, on doit avoir un espace)... donc on ne gÃ¨re que les espaces
 
 				if($my_echo_debug==1) my_echo_debug("_____________________________________________\n");
 				for($j=0;$j<count($tab2);$j++) {
@@ -192,14 +192,14 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 				for($j=0;$j<count($tab2);$j++) {
 					if($my_echo_debug==1) my_echo_debug("Mot \$tab2[$j]=\"$tab2[$j]\"\n");
 
-					// Si un des mots dépasse $largeur_dispo, il faut réduire la police (et si avec la police minimale, ça dépasse $largeur_dispo, il faudra couper n'importe où...)
+					// Si un des mots dÃ©passe $largeur_dispo, il faut rÃ©duire la police (et si avec la police minimale, Ã§a dÃ©passe $largeur_dispo, il faudra couper n'importe oÃ¹...)
 					if($pdf->GetStringWidth($tab2[$j])>$largeur_utile) {
 						$temoin_reduire_police="y";
 						break;
 					}
 
 					if($j>0) {
-						// Il ne faut ajouter un espace que si on a augmenté $j... (on n'est plus au premier mot de la ligne ~ voire... pb avec les découpes suivant les balises HTML)
+						// Il ne faut ajouter un espace que si on a augmentÃ© $j... (on n'est plus au premier mot de la ligne ~ voire... pb avec les dÃ©coupes suivant les balises HTML)
 						$largeur_espace=$pdf->GetStringWidth(' ');
 						$longueur_ligne_courante+=$largeur_espace;
 						$chaine_longueur_ligne_courante.="+".$largeur_espace;
@@ -208,10 +208,10 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 						if($my_echo_debug==1) my_echo_debug("\$chaine_longueur_ligne_courante=$chaine_longueur_ligne_courante\n");
 
 						if($longueur_ligne_courante>$largeur_utile) {
-							// En ajoutant un espace, on dépasse la largeur_dispo
+							// En ajoutant un espace, on dÃ©passe la largeur_dispo
 							$cpt++;
 							if($cpt+1>$nb_max_lig) {
-								// On dépasse le nombre max de lignes avec la taille de police courante
+								// On dÃ©passe le nombre max de lignes avec la taille de police courante
 								$temoin_reduire_police="y";
 								// On quitte la boucle sur les \n (boucle sur $tab3)
 								break;
@@ -223,8 +223,8 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 						}
 						else {
 							$ligne[$cpt].=' ';
-							if($my_echo_debug==1) my_echo_debug("On a ajouté un espace dans la longueur qui précède.\n");
-							if($my_echo_debug==1) my_echo_debug("Longueur calculée sans gérer les balises ".$pdf->GetStringWidth($ligne[$cpt])."\n");
+							if($my_echo_debug==1) my_echo_debug("On a ajoutÃ© un espace dans la longueur qui prÃ©cÃ¨de.\n");
+							if($my_echo_debug==1) my_echo_debug("Longueur calculÃ©e sans gÃ©rer les balises ".$pdf->GetStringWidth($ligne[$cpt])."\n");
 						}
 					}
 
@@ -234,9 +234,9 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 					$tab3=array();
 
 					if($my_echo_debug==1) my_echo_debug("\$supprimer_retours_a_la_ligne=$supprimer_retours_a_la_ligne\n");
-					// Prendre en compte à ce niveau les \n
+					// Prendre en compte Ã  ce niveau les \n
 					if($supprimer_retours_a_la_ligne=="n") {
-						if($my_echo_debug==1) my_echo_debug("On découpe si nécessaire les retours à la ligne\n");
+						if($my_echo_debug==1) my_echo_debug("On dÃ©coupe si nÃ©cessaire les retours Ã  la ligne\n");
 						$tab3=explode("\n",$tab2[$j]);
 						for($loop=0;$loop<count($tab3);$loop++) {if($my_echo_debug==1) my_echo_debug("   \$tab3[$loop]=\"$tab3[$loop]\"\n");}
 					}
@@ -255,7 +255,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 							$cpt++;
 							if($cpt+1>$nb_max_lig) {
-								// On dépasse le nombre max de lignes avec la taille de police courante
+								// On dÃ©passe le nombre max de lignes avec la taille de police courante
 								$temoin_reduire_police="y";
 								// On quitte la boucle sur les \n (boucle sur $tab3)
 								break;
@@ -270,7 +270,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 						if($test_longueur_ligne_courante>$largeur_utile) {
 							$cpt++;
 							if($cpt+1>$nb_max_lig) {
-								// On dépasse le nombre max de lignes avec la taille de police courante
+								// On dÃ©passe le nombre max de lignes avec la taille de police courante
 								$temoin_reduire_police="y";
 								// On quitte la boucle sur les \n (boucle sur $tab3)
 								break;
@@ -345,15 +345,15 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 				$hauteur_texte-=$increment;
 				//if($hauteur_texte<=0) {
 				if(($hauteur_texte<=0)||($hauteur_texte<$hauteur_min_font)) {
-					// Problème... il va falloir:
+					// ProblÃ¨me... il va falloir:
 					// - ne pas prendre en compte les \n
 					// - ne pas prendre en compte les balises
 					// - tronquer
 
 					if($supprimer_retours_a_la_ligne=='n') {
-						// On va virer les \n en les remplaçant par des espaces
+						// On va virer les \n en les remplaÃ§ant par des espaces
 						$supprimer_retours_a_la_ligne='y';
-						if($my_echo_debug==1) my_echo_debug("+++ On va supprimer les retours à la ligne.\n");
+						if($my_echo_debug==1) my_echo_debug("+++ On va supprimer les retours Ã  la ligne.\n");
 					}
 					elseif($supprimer_balises=='n') {
 						// On va un cran plus loin... en virant les balises... on ne gagnera que sur les mots en gras qui sont plus larges
@@ -369,16 +369,16 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 						if($my_echo_debug==1) my_echo_debug("+++ On va tronquer.\n");
 					}
 
-					// Réinitialiser la taille de police:
+					// RÃ©initialiser la taille de police:
 					$hauteur_texte=$hauteur_max_font;
 				}
 				else {
 					if($my_echo_debug==1) my_echo_debug("+++++++++++++++\n");
-					if($my_echo_debug==1) my_echo_debug("\nOn réduit la taille de police:\n");
+					if($my_echo_debug==1) my_echo_debug("\nOn rÃ©duit la taille de police:\n");
 					if($my_echo_debug==1) my_echo_debug("\$hauteur_texte=".$hauteur_texte."\n");
 				}
 
-				// On quitte la boucle sur le tableau des découpages de balises HTML (boucle sur $tab)
+				// On quitte la boucle sur le tableau des dÃ©coupages de balises HTML (boucle sur $tab)
 				break;
 			}
 		}
@@ -388,15 +388,15 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		if($temoin_reduire_police!="y") {
 			// On a fini par trouver une taille  de police convenable
 
-			if($my_echo_debug==1) my_echo_debug("\nOn a trouvé la bonne la taille de police:\n");
+			if($my_echo_debug==1) my_echo_debug("\nOn a trouvÃ© la bonne la taille de police:\n");
 
-			// On quitte la boucle pour procéder à l'affichage du contenu de $ligne plus bas
+			// On quitte la boucle pour procÃ©der Ã  l'affichage du contenu de $ligne plus bas
 			break;
 		}
 	}
 
 	if($tronquer=='y') {
-		// A FAIRE: On va remplir en coupant n'importe où dans les mots sans chercher à conserver des mots entiers
+		// A FAIRE: On va remplir en coupant n'importe oÃ¹ dans les mots sans chercher Ã  conserver des mots entiers
 		//          Faut-il faire la boucle sur la taille de police?
 		//          Ou prendre directement la taille minimale?
 
@@ -422,7 +422,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 		$longueur_max_atteinte="n";
 
-		// On prévoit deux... trois espaces de marge en gras pour s'assurer que la ligne ne débordera pas
+		// On prÃ©voit deux... trois espaces de marge en gras pour s'assurer que la ligne ne dÃ©bordera pas
 		$pdf->SetFont('','B');
 		$marge_espaces=3*$pdf->GetStringWidth(' ');
 		$largeur_utile=$largeur_dispo-$marge_espaces;
@@ -432,7 +432,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			$style_courant='';
 			$pdf->SetFont('',$style_courant);
 
-			// On va supprimer les retours à la ligne
+			// On va supprimer les retours Ã  la ligne
 			$texte=trim(preg_replace("/\n/"," ",$texte));
 			if($my_echo_debug==1) my_echo_debug("\$texte=$texte\n");
 
@@ -451,7 +451,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 				if($pdf->GetStringWidth($chaine)>$largeur_utile) {
 
-					if($my_echo_debug==1) my_echo_debug("Avec \$chaine, ça dépasse.\n");
+					if($my_echo_debug==1) my_echo_debug("Avec \$chaine, Ã§a dÃ©passe.\n");
 
 					if($cpt+1>$nb_max_lig) {
 						$longueur_max_atteinte="y";
@@ -463,7 +463,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 					$cpt++;
 					$ligne[$cpt]=substr($texte,$j,1);
-					if($my_echo_debug==1) my_echo_debug("On commence une nouvelle ligne avec le dernier caractère: \"".substr($texte,$j-1,1)."\"\n");
+					if($my_echo_debug==1) my_echo_debug("On commence une nouvelle ligne avec le dernier caractÃ¨re: \"".substr($texte,$j-1,1)."\"\n");
 					if($my_echo_debug==1) my_echo_debug("\$ligne[$cpt]=\"$ligne[$cpt]\"\n");
 				}
 				else {
@@ -499,7 +499,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	$pdf->SetXY($x,$y);
 	$pdf->Cell($largeur_dispo,$h_cell, '',$bordure,2,'');
 
-	// On va écrire les lignes avec la taille de police optimale déterminée (cf. $ifmax)
+	// On va Ã©crire les lignes avec la taille de police optimale dÃ©terminÃ©e (cf. $ifmax)
 	$nb_lig=count($ligne);
 	$h=$nb_lig*$hauteur_texte_mm*(1+$r_interligne);
 	$t=$h_cell-$h;
@@ -507,13 +507,13 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	$bord_debug='';
 	//$bord_debug='LRBT';
 
-	// On ne gère que les v_align Top et Center... et ajout d'un mode aéré
+	// On ne gÃ¨re que les v_align Top et Center... et ajout d'un mode aÃ©rÃ©
 	if($v_align=='E') {
-		// Mode aéré
+		// Mode aÃ©rÃ©
 		$espace_v=($h_cell-4*$marge_verticale-$nb_lig*$hauteur_texte_mm)/max(1,$nb_lig-1);
 	}
 	elseif($v_align!='T') {
-		// Par défaut c'est Center
+		// Par dÃ©faut c'est Center
 		//$decalage_v_top=($h_cell-$nb_lig*$hauteur_texte_mm-($nb_lig-1)*$marge_verticale)/2;
 		$decalage_v_top=($h_cell-($nb_lig+1)*$hauteur_texte_mm-$nb_lig*$marge_verticale)/2;
 	}
@@ -559,7 +559,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 
 /**
- * Ancienne fonction cell_ajustee() ne gérant pas les balises HTML B,I et U
+ * Ancienne fonction cell_ajustee() ne gÃ©rant pas les balises HTML B,I et U
  *
  * @global class
  * @param type $texte
@@ -572,7 +572,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
  * @param type $bordure LRBT
  * @param string $v_align C(enter) ou T(op)
  * @param type $align
- * @param int $increment nombre dont on réduit la police à chaque essai
+ * @param int $increment nombre dont on rÃ©duit la police Ã  chaque essai
  * @param type $r_interligne proportion de la taille de police pour les interlignes
  * @see PDF
  */
@@ -585,7 +585,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	$taille_texte_total=$pdf->GetStringWidth($texte);
 
 	// Ca nous donne le nombre max de lignes en hauteur avec la taille de police maxi
-	// Il faudrait plutôt déterminer ce nombre d'après une taille minimale acceptable de police
+	// Il faudrait plutÃ´t dÃ©terminer ce nombre d'aprÃ¨s une taille minimale acceptable de police
 	$nb_max_lig=max(1,floor($h_cell/((1+$r_interligne)*($hauteur_min_font*26/100))));
 	
 	$fmax=0;
@@ -635,14 +635,14 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			if($taille_texte_ligne<$l) {$taille_texte_ligne=$l;$num=$i;}
 		}
 
-		// On calcule la hauteur en mm de la police (proportionnalité: 100pt -> 26mm)
+		// On calcule la hauteur en mm de la police (proportionnalitÃ©: 100pt -> 26mm)
 		$hauteur_texte_mm=$hauteur_texte*26/100;
-		// Hauteur totale: Nombre de lignes multiplié par la hauteur de police avec les marges verticales
+		// Hauteur totale: Nombre de lignes multipliÃ© par la hauteur de police avec les marges verticales
 		$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
 
-		// echo "On calcule la taille de la police d'après \$ligne[$num]=".$ligne[$num]."<br/>";
+		// echo "On calcule la taille de la police d'aprÃ¨s \$ligne[$num]=".$ligne[$num]."<br/>";
 		// On ajuste la taille de police avec la plus grande ligne pour que cela tienne en largeur
-		// et on contrôle aussi que cela tient en hauteur, sinon on continue à réduire la police.
+		// et on contrÃ´le aussi que cela tient en hauteur, sinon on continue Ã  rÃ©duire la police.
 		$grandeur_texte='test';
 		while($grandeur_texte!='ok') {
 			if(($largeur_dispo<$taille_texte_ligne)||($hauteur_totale>$h_cell)) {
@@ -673,7 +673,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			$tab_lig[$j]['lignes']=$ligne;
 
 			// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur
-			// (la largeur a déjà été utilisée pour découper en lignes).
+			// (la largeur a dÃ©jÃ  Ã©tÃ© utilisÃ©e pour dÃ©couper en lignes).
 			if(($hauteur_texte>$fmax)&&($tab_lig[$j]['hauteur_totale']<=$h_cell)) {
 				$ifmax=$j;
 			}
@@ -681,7 +681,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	}
 
 	if((!isset($ifmax))||($tab_lig[$ifmax]['taille_police']<$hauteur_min_font)) {
-		// On relance en remplaçant les retours forcés à la ligne (\n) par des espaces.
+		// On relance en remplaÃ§ant les retours forcÃ©s Ã  la ligne (\n) par des espaces.
 
 		$fmax=0;
 
@@ -718,14 +718,14 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 				if($taille_texte_ligne<$l) {$taille_texte_ligne=$l;$num=$i;}
 			}
 
-			// On calcule la hauteur en mm de la police (proportionnalité: 100pt -> 26mm)
+			// On calcule la hauteur en mm de la police (proportionnalitÃ©: 100pt -> 26mm)
 			$hauteur_texte_mm=$hauteur_texte*26/100;
-			// Hauteur totale: Nombre de lignes multiplié par la hauteur de police avec les marges verticales
+			// Hauteur totale: Nombre de lignes multipliÃ© par la hauteur de police avec les marges verticales
 			$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
 
-			// echo "On calcule la taille de la police d'après \$ligne[$num]=".$ligne[$num]."<br/>";
+			// echo "On calcule la taille de la police d'aprÃ¨s \$ligne[$num]=".$ligne[$num]."<br/>";
 			// On ajuste la taille de police avec la plus grande ligne pour que cela tienne en largeur
-			// et on contrôle aussi que cela tient en hauteur, sinon on continue à réduire la police.
+			// et on contrÃ´le aussi que cela tient en hauteur, sinon on continue Ã  rÃ©duire la police.
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if(($largeur_dispo<$taille_texte_ligne)||($hauteur_totale>$h_cell)) {
@@ -756,7 +756,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 				$tab_lig[$j]['lignes']=$ligne;
 
 				// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur
-				// (la largeur a déjà été utilisée pour découper en lignes).
+				// (la largeur a dÃ©jÃ  Ã©tÃ© utilisÃ©e pour dÃ©couper en lignes).
 				if(($hauteur_texte>$fmax)&&($tab_lig[$j]['hauteur_totale']<=$h_cell)) {
 					$ifmax=$j;
 				}
@@ -764,7 +764,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		}
 
 
-		// Si ça ne passe toujours pas, on prend $hauteur_min_font sans retours à la ligne et on tronque
+		// Si Ã§a ne passe toujours pas, on prend $hauteur_min_font sans retours Ã  la ligne et on tronque
 		if(!isset($ifmax)) {
 			
 			$fmax=0;
@@ -798,7 +798,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 					$ligne[$cpt].=$tab[$i];
 				}
 				$i++;
-				if(!isset($tab[$i])) {break;} // On ne devrait pas quitter sur ça puisque le texte va être trop long
+				if(!isset($tab[$i])) {break;} // On ne devrait pas quitter sur Ã§a puisque le texte va Ãªtre trop long
 			}
 
 			$j=1;
@@ -822,7 +822,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	$pdf->SetXY($x,$y);
 	$pdf->Cell($largeur_dispo,$h_cell, '',$bordure,2,'');
 
-	// On va écrire les lignes avec la taille de police optimale déterminée (cf. $ifmax)
+	// On va Ã©crire les lignes avec la taille de police optimale dÃ©terminÃ©e (cf. $ifmax)
 	//$marge_h=round(($h_cell-(count($ligne)*$hauteur_texte_mm+(count($ligne)-1)*$marge_verticale))/2);
 	//$marge_h=round(($h_cell-$tab_lig[$ifmax]['hauteur_totale'])/2);
 	$nb_lig=count($tab_lig[$ifmax]['lignes']);

@@ -1,5 +1,5 @@
 <?php
-	header('Content-type: text/html; charset=iso-8859-1');
+	header('Content-type: text/html; charset=utf-8');
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
@@ -14,22 +14,22 @@
 		die();
 	};
 
-	//INSERT INTO `droits` VALUES ('/mod_annees_anterieures/liste_eleves_ajax.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Recherche d ÈlËves', '');
+	//INSERT INTO `droits` VALUES ('/mod_annees_anterieures/liste_eleves_ajax.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Recherche d √©l√®ves', '');
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=1");
 		die();
 	}
 
-	// ContrÙler que l'on accËde pas ‡ cette page de n'importe o˘?
+	// Contr√¥ler que l'on acc√®de pas √† cette page de n'importe o√π?
 
 
 	include("../secure/connect.inc.php");
 	$mysql_db = @mysql_connect("localhost", $dbUser, $dbPass);
 	@mysql_select_db($dbDb);
 
-	// CONTROLER CE QUI EST POSTÈ
-	if((strlen(my_ereg_replace("[A-Za-z¬ƒ¿¡√ƒ≈« À»…ŒœÃÕ—‘÷“”’¶€‹Ÿ⁄›æ¥·‡‚‰„ÂÁÈËÍÎÓÔÏÌÒÙˆÚÛı®˚¸˘˙˝ˇ∏ -]","",$_POST['nom_ele']))!=0)||(strlen(my_ereg_replace("[A-Za-z¬ƒ¿¡√ƒ≈« À»…ŒœÃÕ—‘÷“”’¶€‹Ÿ⁄›æ¥·‡‚‰„ÂÁÈËÍÎÓÔÏÌÒÙˆÚÛı®˚¸˘˙˝ˇ∏ -]","",$_POST['prenom_ele']))!=0)){
-		$chaine="Les caractËres proposÈs dans la recherche doivent Ítre des caractËres alphabÈtiques<br />(<i>ou Èventuellement le tiret '-' et l'espace ' '</i>).";
+	// CONTROLER CE QUI EST POST√©
+	if((strlen(my_ereg_replace("[A-Za-z√Ç√Ñ√Ä√Å√É√Ñ√Ö√á√ä√ã√à√â√é√è√å√ç√ë√î√ñ√í√ì√ï¬¶√õ√ú√ô√ö√ù¬æ¬¥√°√†√¢√§√£√•√ß√©√®√™√´√Æ√Ø√¨√≠√±√¥√∂√∞√≤√≥√µ¬®√ª√º√π√∫√Ω√ø¬∏ -]","",$_POST['nom_ele']))!=0)||(strlen(my_ereg_replace("[A-Za-z√Ç√Ñ√Ä√Å√É√Ñ√Ö√á√ä√ã√à√â√é√è√å√ç√ë√î√ñ√í√ì√ï¬¶√õ√ú√ô√ö√ù¬æ¬¥√°√†√¢√§√£√•√ß√©√®√™√´√Æ√Ø√¨√≠√±√¥√∂√∞√≤√≥√µ¬®√ª√º√π√∫√Ω√ø¬∏ -]","",$_POST['prenom_ele']))!=0)){
+		$chaine="Les caract√®res propos√©s dans la recherche doivent √™tre des caract√®res alphab√©tiques<br />(<i>ou √©ventuellement le tiret '-' et l'espace ' '</i>).";
 	}
 	else{
 		$sql="SELECT no_gep,nom,prenom,naissance FROM eleves WHERE nom LIKE '%".$_POST['nom_ele']."%' AND prenom LIKE '%".$_POST['prenom_ele']."%' ";
@@ -37,7 +37,7 @@
 		$res=@mysql_query($sql);
 
 		if(mysql_num_rows($res)==0){
-			$chaine="Aucun rÈsultat retournÈ.";
+			$chaine="Aucun r√©sultat retourn√©.";
 		}
 		else{
 			$chaine="<table class='table_annee_anterieure'>";
@@ -94,7 +94,7 @@
 					$chaine.='<a href=\'#\' onClick=\"document.getElementById(document.getElementById(\'ine_recherche\').value).value=\''.$lig->no_gep.'\';cacher_div(\'div_search\');return false;\">'.$lig->no_gep.'</a>';
 				}
 				else{
-					$chaine.="<span style='color:red'>Non renseignÈ</span>";
+					$chaine.="<span style='color:red'>Non renseign√©</span>";
 				}
 				$chaine.="</td>";
 
@@ -103,8 +103,8 @@
 			$chaine.="</table>";
 			//$chaine.="$sql";
 
-			// ATTENTION: IL NE FAUT PAS DE RETOUR A LA LIGNE DANS LA CHAINE RENVOYÈE (ne pas mettre de \n donc)
-			//            Et c'est vite coton de jouer avec les guillemets et apostrophes dans ce que l'on Ècrit.
+			// ATTENTION: IL NE FAUT PAS DE RETOUR A LA LIGNE DANS LA CHAINE RENVOY√©E (ne pas mettre de \n donc)
+			//            Et c'est vite coton de jouer avec les guillemets et apostrophes dans ce que l'on √©crit.
 		}
 	}
 	echo "document.getElementById('div_resultat').innerHTML=\"$chaine\";";

@@ -48,7 +48,7 @@ if ($resultat_session == 'c') {
 
 // ===============================================================
 //
-//                 Préparer les scripts, css, entête
+//                 PrÃ©parer les scripts, css, entÃªte
 //
 // ===============================================================
 $action = isset($_GET["action"]) ? $_GET["action"] : NULL;

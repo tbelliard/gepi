@@ -42,9 +42,9 @@ $msg = '';
 if (isset($_POST['activer'])) {
 	check_token();
     if (!saveSetting("active_mod_apb", $_POST['activer'])) {
-      $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+      $msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
     } else {
-      $msg = "Le statut d'activation du module a bien été enregistré.";
+      $msg = "Le statut d'activation du module a bien Ã©tÃ© enregistrÃ©.";
     }
 }
 
@@ -63,7 +63,7 @@ if (isset($_POST['posted_selection'])) {
 		}
 	}
 	if (!$errors) {
-		$msg .= "Les données ont été enregistrées avec succès.";
+		$msg .= "Les donnÃ©es ont Ã©tÃ© enregistrÃ©es avec succÃ¨s.";
 		$post_reussi=TRUE;
 	}
 }
@@ -81,7 +81,7 @@ $req_classes = mysql_query('SELECT id,classe,nom_complet,apb_niveau
 include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Export APB"))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -96,20 +96,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_apb/admin_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -121,24 +121,24 @@ include($nom_gabarit);
 ?>
 
 <p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<h2>Configuration générale</h2>
-<i>La désactivation de ce module ne supprime pas les paramétrages déjà réalisés.</i>
+<h2>Configuration gÃ©nÃ©rale</h2>
+<i>La dÃ©sactivation de ce module ne supprime pas les paramÃ©trages dÃ©jÃ  rÃ©alisÃ©s.</i>
 <br />
 <form action="admin.php" name="form1" method="post">
 
 <p>
 <input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_mod_apb")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer l'export "Admissions Post-Bac"</label><br />
-<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_mod_apb")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver l'export "Admissions Post-Bac"</label>
+<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_mod_apb")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>DÃ©sactiver l'export "Admissions Post-Bac"</label>
 </p>
 <input type="submit" value="Enregistrer le statut" style="font-variant: small-caps;"/>
 </form>
 <br/>
-<h2>Sélection des classes de terminale</h2>
-<p>Le tableau ci-dessous vous permet de préciser quelles classes correspondent au niveau 'Terminale'. Seuls les élèves des classes sélectionnées ici seront intégrés à l'export vers le système APB.</p>
+<h2>SÃ©lection des classes de terminale</h2>
+<p>Le tableau ci-dessous vous permet de prÃ©ciser quelles classes correspondent au niveau 'Terminale'. Seuls les Ã©lÃ¨ves des classes sÃ©lectionnÃ©es ici seront intÃ©grÃ©s Ã  l'export vers le systÃ¨me APB.</p>
 
 <form action="admin.php" name="form2" method="post">
 <input type="hidden" name="posted_selection" value="1" />
-<p><input type="submit" value="Enregistrer la sélection" style="font-variant: small-caps;"/></p>
+<p><input type="submit" value="Enregistrer la sÃ©lection" style="font-variant: small-caps;"/></p>
 <table style='border: 1px solid black; border-collapse: true;'>
   <tr>
     <td>Code</td>
@@ -158,7 +158,7 @@ while($classe = mysql_fetch_object($req_classes)) {
 }
 ?>
 </table>
-<p><input type="submit" value="Enregistrer la sélection" style="font-variant: small-caps;"/></p>
+<p><input type="submit" value="Enregistrer la sÃ©lection" style="font-variant: small-caps;"/></p>
 
 </form>
 

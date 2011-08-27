@@ -23,7 +23,7 @@
 */
 
 /**
-* Appelle les sous-modèles
+* Appelle les sous-modÃ¨les
 * templates/origine/header_template.php
 * templates/origine/bandeau_template.php
  *
@@ -36,7 +36,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 		$tbs_bouton_taille=$gepiPath;
 	  include('../../templates/origine/header_template.php');
@@ -79,7 +79,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -102,8 +102,8 @@ echo add_token_field();
 	<h2 class="colleHaut">Gestion des absences par les CPE</h2>
 	<p>
 	  <em>
-		La désactivation du module de la gestion des absences n'entraîne aucune suppression des données. 
-		Lorsque le module est désactivé, les CPE n'ont pas accès au module.
+		La dÃ©sactivation du module de la gestion des absences n'entraÃ®ne aucune suppression des donnÃ©es. 
+		Lorsque le module est dÃ©sactivÃ©, les CPE n'ont pas accÃ¨s au module.
 	  </em>
 	</p>
 	<fieldset class="no_bordure">
@@ -123,7 +123,7 @@ echo add_token_field();
 			 value="n"
 			<?php if (getSettingValue("active_module_absence")!='y') echo ' checked="checked"'; ?> />
 	  <label for="activerN">
-		Désactiver le module de la gestion des absences
+		DÃ©sactiver le module de la gestion des absences
 	  </label>
 	  <input type="hidden" name="is_posted" value="1" />
 	</fieldset>
@@ -131,9 +131,9 @@ echo add_token_field();
 	<h2>Saisie des absences par les professeurs</h2>
 	<p>
 	  <em>
-		La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies 
-		par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
-		Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.
+		La dÃ©sactivation du module de la gestion des absences n'entraÃ®ne aucune suppression des donnÃ©es saisies 
+		par les professeurs. Lorsque le module est dÃ©sactivÃ©, les professeurs n'ont pas accÃ¨s au module.
+		Normalement, ce module ne devrait Ãªtre activÃ© que si le module ci-dessus est lui-mÃªme activÃ©.
 	  </em>
 	</p>
 	<fieldset class="no_bordure">
@@ -147,7 +147,7 @@ echo add_token_field();
 		Activer le module de la saisie des absences par les professeurs
 	  </label>
 	  <a href="./interface_abs.php">
-		Paramétrer l'interface des professeurs
+		ParamÃ©trer l'interface des professeurs
 	  </a>
 	  <br />
 	  <input type="radio" 
@@ -156,27 +156,27 @@ echo add_token_field();
 			 value="n"
 			<?php if (getSettingValue("active_module_absence_professeur")=='n') echo " checked='checked'"; ?> />
 	  <label for="activerProfN">
-		Désactiver le module de la saisie des absences par les professeurs
+		DÃ©sactiver le module de la saisie des absences par les professeurs
 	  </label>
 	  <!-- <input type="hidden" name="is_posted" value="1" /> -->
 	</fieldset>
 	
-	<h2>Gérer l'accès des responsables d'élèves</h2>
+	<h2>GÃ©rer l'accÃ¨s des responsables d'Ã©lÃ¨ves</h2>
 	<p>
 	  <em>
-		Vous pouvez permettre aux responsables d'accéder aux données brutes entrées dans Gepi par le biais 
+		Vous pouvez permettre aux responsables d'accÃ©der aux donnÃ©es brutes entrÃ©es dans Gepi par le biais 
 		du module absences.
 	  </em>
 	</p>
 	<fieldset class="no_bordure">
-	  <legend class="invisible">Activation responsables d'élèves</legend>
+	  <legend class="invisible">Activation responsables d'Ã©lÃ¨ves</legend>
 	  <input type="radio" 
 			 id="activerRespOk" 
 			 name="activer_resp" 
 			 value="y"
 			<?php if (getSettingValue("active_absences_parents") == 'y') echo ' checked="checked"'; ?> />
 	  <label for="activerRespOk">
-		Permettre l'accès aux responsables
+		Permettre l'accÃ¨s aux responsables
 	  </label>
 	  <br />
 	  <input type="radio" 
@@ -185,11 +185,11 @@ echo add_token_field();
 			 value="n"
 			<?php if (getSettingValue("active_absences_parents") == 'n') echo ' checked="checked"'; ?> />
 	  <label for="activerRespKo">
-		Ne pas permettre cet accès
+		Ne pas permettre cet accÃ¨s
 	  </label>
 	</fieldset>
 	
-	<h2>Paramétrer le classement des absences (par défaut TOP 10)</h2>
+	<h2>ParamÃ©trer le classement des absences (par dÃ©faut TOP 10)</h2>
 	<p>
 	  <label for="classement">Nombre de lignes pour le classement</label>
 	  <select id="classement" name="classement">
@@ -206,15 +206,15 @@ echo add_token_field();
 	</p>
   </form>
   
-  <h2>Configuration avancée</h2>
+  <h2>Configuration avancÃ©e</h2>
 	<blockquote>
   <p>
 	  <a href="../../edt_organisation/admin_horaire_ouverture.php?action=visualiser">
-		Définir les horaires d'ouverture de l'établissement
+		DÃ©finir les horaires d'ouverture de l'Ã©tablissement
 	  </a>
 	  <br />
 	  <a href="../../edt_organisation/admin_periodes_absences.php?action=visualiser">
-		Définir les créneaux horaires
+		DÃ©finir les crÃ©neaux horaires
 	  </a>
 	  <br />
 <?php 
@@ -231,21 +231,21 @@ if (count($lien_sup)){
 }
 ?>
 	  <a href="../../edt_organisation/admin_config_semaines.php?action=visualiser">
-		Définir les types de semaine
+		DÃ©finir les types de semaine
 	  </a>
 	  <br />
 	  <a href="admin_motifs_absences.php?action=visualiser">
-		Définir les motifs des absences
+		DÃ©finir les motifs des absences
 	  </a>
 	  <br />
 	  <a href="admin_actions_absences.php?action=visualiser">
-		Définir les actions sur le suivi des élèves
+		DÃ©finir les actions sur le suivi des Ã©lÃ¨ves
 	  </a>
   </p>
 	</blockquote>
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -267,7 +267,7 @@ if (count($lien_sup)){
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

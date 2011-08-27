@@ -45,12 +45,12 @@ $mode_auto=isset($_POST['mode_auto']) ? $_POST['mode_auto'] : (isset($_GET['mode
 
 //==================================
 // header
-$titre_page = "Vérification/nettoyage des tables de la base de données GEPI";
+$titre_page = "VÃ©rification/nettoyage des tables de la base de donnÃ©es GEPI";
 require_once("../lib/header.inc");
 //==================================
 
 //======================================================
-// Fonctions à utiliser... juste stockées ici pour le moment.
+// Fonctions Ã  utiliser... juste stockÃ©es ici pour le moment.
 function get_tab_utilisateurs_responsables_fantomes() {
 	$retour=array();
 
@@ -122,7 +122,7 @@ if((isset($maj))||(isset($_REQUEST['action']))) {
 //if (($_POST['maj'])=="9") {
 if ($maj=="9") {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a></p>\n";
 }
 
 //debug_var();
@@ -159,7 +159,7 @@ function get_id_infos_action_nettoyage() {
 function new_id_infos_action_nettoyage() {
 	//$id_info="";
 
-	$titre="Nettoyage des tables : ".strftime("%d/%m/%Y à %H:%M:%S");
+	$titre="Nettoyage des tables : ".strftime("%d/%m/%Y Ã  %H:%M:%S");
 	$texte="Nettoyage des tables...<br />";
 	$destinataire="administrateur";
 	$mode="statut";
@@ -181,10 +181,10 @@ function update_infos_action_nettoyage($id_info, $texte) {
 		$sql="UPDATE infos_actions SET description='".addslashes($lig->description).addslashes($texte)."' WHERE id='$id_info';";
 		//echo "$sql<br />";
 		$res=mysql_query($sql);
-		if(!$res) {$retour="ERREUR lors de la mise à jour de la description de l'information n°$id_info.";}
+		if(!$res) {$retour="ERREUR lors de la mise Ã  jour de la description de l'information nÂ°$id_info.";}
 	}
 	else {
-		$retour="ERREUR : L'information n°$id_info n'existe pas.";
+		$retour="ERREUR : L'information nÂ°$id_info n'existe pas.";
 	}
 
 	//echo $retour;
@@ -224,7 +224,7 @@ function clean_table_matieres_appreciations() {
 		$id_groupe = mysql_result($req,$offset,'id_groupe');
 		$periode = mysql_result($req,$offset,'periode');
 
-		// Détection des doublons
+		// DÃ©tection des doublons
 		$req2 = mysql_query("SELECT login FROM matieres_appreciations
 		where
 		login ='$login_user' and
@@ -234,7 +234,7 @@ function clean_table_matieres_appreciations() {
 		$nb_lignes2 = mysql_num_rows($req2);
 		if ($nb_lignes2 > "1") {
 			$nb = $nb_lignes2-1;
-			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_appreciations where
 			login ='$login_user' and
@@ -244,7 +244,7 @@ function clean_table_matieres_appreciations() {
 			$cpt_2++;
 		}
 
-		// Détection des données inutiles
+		// DÃ©tection des donnÃ©es inutiles
 		/*
 		$test = mysql_query("select ma.login
 		from
@@ -283,7 +283,7 @@ function clean_table_matieres_appreciations() {
 		//echo "$sql<br />";
 		$nb_lignes2 = mysql_num_rows($test);
 		if ($nb_lignes2 == "0") {
-			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'une donnÃ©e orpheline : login = $login_user - identifiant matiÃ¨re = $id_matiere - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_appreciations where
 			login ='$login_user' and
@@ -292,14 +292,14 @@ function clean_table_matieres_appreciations() {
 			$cpt++;
 			$cpt_2++;
 		}
-		// on regarde si l'élève suit l'option pour la période donnée.
+		// on regarde si l'Ã©lÃ¨ve suit l'option pour la pÃ©riode donnÃ©e.
 		$test2 = mysql_query("select login from j_eleves_groupes where
 		login = '$login_user' and
 		id_groupe = '$id_groupe' and
 		periode = '$periode'");
 		$nb_lignes2 = mysql_num_rows($test2);
 		if ($nb_lignes2 == "0") {
-			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'une donnÃ©e orpheline : login = $login_user - identifiant matiÃ¨re = $id_matiere - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_appreciations where
 			login ='$login_user' and
@@ -338,7 +338,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 		$id_groupe = mysql_result($req,$offset,'id_groupe');
 		$periode = mysql_result($req,$offset,'periode');
 
-		// Détection des doublons
+		// DÃ©tection des doublons
 		$req2 = mysql_query("SELECT login FROM matieres_notes
 		where
 		login ='$login_user' and
@@ -348,7 +348,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 		$nb_lignes2 = mysql_num_rows($req2);
 		if ($nb_lignes2 > "1") {
 			$nb = $nb_lignes2-1;
-			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_notes where
 			login ='$login_user' and
@@ -359,7 +359,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 		}
 
 
-		// Détection des lignes inutiles
+		// DÃ©tection des lignes inutiles
 		/*
 		$test = mysql_query("select mn.login
 		from
@@ -395,7 +395,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 		//echo "$sql<br />";
 		$nb_lignes2 = mysql_num_rows($test);
 		if ($nb_lignes2 == "0") {
-			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'une donnÃ©e orpheline : login = $login_user - identifiant matiÃ¨re = $id_matiere - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_notes where
 			login ='$login_user' and
@@ -404,14 +404,14 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 			$cpt++;
 			$cpt_2++;
 		}
-		// on regarde si l'élève suit l'option pour la période donnée.
+		// on regarde si l'Ã©lÃ¨ve suit l'option pour la pÃ©riode donnÃ©e.
 		$test2 = mysql_query("select login from j_eleves_groupes where
 		login = '$login_user' and
 		id_groupe = '$id_groupe' and
 		periode = '$periode'");
 		$nb_lignes2 = mysql_num_rows($test2);
 		if ($nb_lignes2 == "0") {
-			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'une donnÃ©e orpheline : login = $login_user - identifiant matiÃ¨re = $id_matiere - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_notes where
 			login ='$login_user' and
@@ -437,77 +437,77 @@ function clean_tables_aid_et_autres() {
 
 	$retour="";
 
-	$tab["j_aid_eleves"][0] = "aid"; //1ère table
-	$tab["j_aid_eleves"][1] = "eleves"; // 2ème table
-	$tab["j_aid_eleves"][2] = "id_aid"; // nom du champ de la table de liaison lié à la première table
-	$tab["j_aid_eleves"][3] = "login";  // nom du champ de la table de liaison lié à la deuxième table
-	$tab["j_aid_eleves"][4] = "id";  // nom du champ de la première table lié à la table de liaison
-	$tab["j_aid_eleves"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+	$tab["j_aid_eleves"][0] = "aid"; //1Ã¨re table
+	$tab["j_aid_eleves"][1] = "eleves"; // 2Ã¨me table
+	$tab["j_aid_eleves"][2] = "id_aid"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+	$tab["j_aid_eleves"][3] = "login";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+	$tab["j_aid_eleves"][4] = "id";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+	$tab["j_aid_eleves"][5] = "login";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 
-	$tab["j_aid_eleves_resp"][0] = "aid"; //1ère table
-	$tab["j_aid_eleves_resp"][1] = "eleves"; // 2ème table
-	$tab["j_aid_eleves_resp"][2] = "id_aid"; // nom du champ de la table de liaison lié à la première table
-	$tab["j_aid_eleves_resp"][3] = "login";  // nom du champ de la table de liaison lié à la deuxième table
-	$tab["j_aid_eleves_resp"][4] = "id";  // nom du champ de la première table lié à la table de liaison
-	$tab["j_aid_eleves_resp"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+	$tab["j_aid_eleves_resp"][0] = "aid"; //1Ã¨re table
+	$tab["j_aid_eleves_resp"][1] = "eleves"; // 2Ã¨me table
+	$tab["j_aid_eleves_resp"][2] = "id_aid"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+	$tab["j_aid_eleves_resp"][3] = "login";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+	$tab["j_aid_eleves_resp"][4] = "id";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+	$tab["j_aid_eleves_resp"][5] = "login";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 
-	$tab["j_aid_utilisateurs"][0] = "aid"; //1ère table
-	$tab["j_aid_utilisateurs"][1] = "utilisateurs"; // 2ème table
-	$tab["j_aid_utilisateurs"][2] = "id_aid"; // nom du champ de la table de liaison lié à la première table
-	$tab["j_aid_utilisateurs"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
-	$tab["j_aid_utilisateurs"][4] = "id";  // nom du champ de la première table lié à la table de liaison
-	$tab["j_aid_utilisateurs"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+	$tab["j_aid_utilisateurs"][0] = "aid"; //1Ã¨re table
+	$tab["j_aid_utilisateurs"][1] = "utilisateurs"; // 2Ã¨me table
+	$tab["j_aid_utilisateurs"][2] = "id_aid"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+	$tab["j_aid_utilisateurs"][3] = "id_utilisateur";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+	$tab["j_aid_utilisateurs"][4] = "id";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+	$tab["j_aid_utilisateurs"][5] = "login";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 	if (getSettingValue("active_mod_gest_aid")=="y") {
-		$tab["j_aid_utilisateurs_gest"][0] = "aid"; //1ère table
-		$tab["j_aid_utilisateurs_gest"][1] = "utilisateurs"; // 2ème table
-		$tab["j_aid_utilisateurs_gest"][2] = "id_aid"; // nom du champ de la table de liaison lié à la première table
-		$tab["j_aid_utilisateurs_gest"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
-		$tab["j_aid_utilisateurs_gest"][4] = "id";  // nom du champ de la première table lié à la table de liaison
-		$tab["j_aid_utilisateurs_gest"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+		$tab["j_aid_utilisateurs_gest"][0] = "aid"; //1Ã¨re table
+		$tab["j_aid_utilisateurs_gest"][1] = "utilisateurs"; // 2Ã¨me table
+		$tab["j_aid_utilisateurs_gest"][2] = "id_aid"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+		$tab["j_aid_utilisateurs_gest"][3] = "id_utilisateur";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+		$tab["j_aid_utilisateurs_gest"][4] = "id";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+		$tab["j_aid_utilisateurs_gest"][5] = "login";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 	
-		$tab["j_aidcateg_super_gestionnaires"][0] = "aid_config"; //1ère table
-		$tab["j_aidcateg_super_gestionnaires"][1] = "utilisateurs"; // 2ème table
-		$tab["j_aidcateg_super_gestionnaires"][2] = "indice_aid"; // nom du champ de la table de liaison lié à la première table
-		$tab["j_aidcateg_super_gestionnaires"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
-		$tab["j_aidcateg_super_gestionnaires"][4] = "indice_aid";  // nom du champ de la première table lié à la table de liaison
-		$tab["j_aidcateg_super_gestionnaires"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+		$tab["j_aidcateg_super_gestionnaires"][0] = "aid_config"; //1Ã¨re table
+		$tab["j_aidcateg_super_gestionnaires"][1] = "utilisateurs"; // 2Ã¨me table
+		$tab["j_aidcateg_super_gestionnaires"][2] = "indice_aid"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+		$tab["j_aidcateg_super_gestionnaires"][3] = "id_utilisateur";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+		$tab["j_aidcateg_super_gestionnaires"][4] = "indice_aid";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+		$tab["j_aidcateg_super_gestionnaires"][5] = "login";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 	
 	}
-	$tab["j_aidcateg_utilisateurs"][0] = "aid_config"; //1ère table
-	$tab["j_aidcateg_utilisateurs"][1] = "utilisateurs"; // 2ème table
-	$tab["j_aidcateg_utilisateurs"][2] = "indice_aid"; // nom du champ de la table de liaison lié à la première table
-	$tab["j_aidcateg_utilisateurs"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
-	$tab["j_aidcateg_utilisateurs"][4] = "indice_aid";  // nom du champ de la première table lié à la table de liaison
-	$tab["j_aidcateg_utilisateurs"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+	$tab["j_aidcateg_utilisateurs"][0] = "aid_config"; //1Ã¨re table
+	$tab["j_aidcateg_utilisateurs"][1] = "utilisateurs"; // 2Ã¨me table
+	$tab["j_aidcateg_utilisateurs"][2] = "indice_aid"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+	$tab["j_aidcateg_utilisateurs"][3] = "id_utilisateur";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+	$tab["j_aidcateg_utilisateurs"][4] = "indice_aid";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+	$tab["j_aidcateg_utilisateurs"][5] = "login";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 
-	$tab["j_eleves_etablissements"][0] = "eleves"; //1ère table
-	$tab["j_eleves_etablissements"][1] = "etablissements"; // 2ème table
-	$tab["j_eleves_etablissements"][2] = "id_eleve"; // nom du champ de la table de liaison lié à la première table
-	$tab["j_eleves_etablissements"][3] = "id_etablissement";  // nom du champ de la table de liaison lié à la deuxième table
-	//$tab["j_eleves_etablissements"][4] = "login";  // nom du champ de la première table lié à la table de liaison
-	$tab["j_eleves_etablissements"][4] = "elenoet";  // nom du champ de la première table lié à la table de liaison
-	$tab["j_eleves_etablissements"][5] = "id";  // nom du champ de la deuxième table lié à la table de liaison
+	$tab["j_eleves_etablissements"][0] = "eleves"; //1Ã¨re table
+	$tab["j_eleves_etablissements"][1] = "etablissements"; // 2Ã¨me table
+	$tab["j_eleves_etablissements"][2] = "id_eleve"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+	$tab["j_eleves_etablissements"][3] = "id_etablissement";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+	//$tab["j_eleves_etablissements"][4] = "login";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+	$tab["j_eleves_etablissements"][4] = "elenoet";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+	$tab["j_eleves_etablissements"][5] = "id";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 
-	$tab["j_eleves_regime"][0] = "eleves"; //1ère table
-	$tab["j_eleves_regime"][1] = "eleves"; // 2ème table
-	$tab["j_eleves_regime"][2] = "login"; // nom du champ de la table de liaison lié à la première table
-	$tab["j_eleves_regime"][3] = "login";  // nom du champ de la table de liaison lié à la deuxième table
-	$tab["j_eleves_regime"][4] = "login";  // nom du champ de la première table lié à la table de liaison
-	$tab["j_eleves_regime"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+	$tab["j_eleves_regime"][0] = "eleves"; //1Ã¨re table
+	$tab["j_eleves_regime"][1] = "eleves"; // 2Ã¨me table
+	$tab["j_eleves_regime"][2] = "login"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+	$tab["j_eleves_regime"][3] = "login";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+	$tab["j_eleves_regime"][4] = "login";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+	$tab["j_eleves_regime"][5] = "login";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 
-	$tab["j_professeurs_matieres"][0] = "utilisateurs"; //1ère table
-	$tab["j_professeurs_matieres"][1] = "matieres"; // 2ème table
-	$tab["j_professeurs_matieres"][2] = "id_professeur"; // nom du champ de la table de liaison lié à la première table
-	$tab["j_professeurs_matieres"][3] = "id_matiere";  // nom du champ de la table de liaison lié à la deuxième table
-	$tab["j_professeurs_matieres"][4] = "login";  // nom du champ de la première table lié à la table de liaison
-	$tab["j_professeurs_matieres"][5] = "matiere";  // nom du champ de la deuxième table lié à la table de liaison
+	$tab["j_professeurs_matieres"][0] = "utilisateurs"; //1Ã¨re table
+	$tab["j_professeurs_matieres"][1] = "matieres"; // 2Ã¨me table
+	$tab["j_professeurs_matieres"][2] = "id_professeur"; // nom du champ de la table de liaison liÃ© Ã  la premiÃ¨re table
+	$tab["j_professeurs_matieres"][3] = "id_matiere";  // nom du champ de la table de liaison liÃ© Ã  la deuxiÃ¨me table
+	$tab["j_professeurs_matieres"][4] = "login";  // nom du champ de la premiÃ¨re table liÃ© Ã  la table de liaison
+	$tab["j_professeurs_matieres"][5] = "matiere";  // nom du champ de la deuxiÃ¨me table liÃ© Ã  la table de liaison
 
 	foreach ($tab as $key => $val) {
 		$cpt=0;
-		$retour.="<h2>Vérification de la table ".$key."</h2>\n";
+		$retour.="<h2>VÃ©rification de la table ".$key."</h2>\n";
 		// $key : le nom de la table de liaison
-		// $val[0] : le nom de la première table
-		// $val[1] : le nom de la deuxième table
+		// $val[0] : le nom de la premiÃ¨re table
+		// $val[1] : le nom de la deuxiÃ¨me table
 		// etc...
 		$req = mysql_query("SELECT * FROM $key order by $val[2],$val[3]");
 		$nb_lignes = mysql_num_rows($req);
@@ -558,20 +558,20 @@ function clean_tables_aid_et_autres() {
 			$i++;
 		}
 		if ($cpt != 0) {
-			$retour.="<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />\n";
+			$retour.="<font color=\"red\">Nombre de lignes supprimÃ©es : ".$cpt."</font><br />\n";
 		} else {
-			$retour.="<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />\n";
+			$retour.="<font color=\"green\">Aucune ligne n'a Ã©tÃ© supprimÃ©e.</font><br />\n";
 		}
 
 		if($key=='j_professeurs_matieres') {
-			// Le test plus haut ne fonctionne pas completement: s'il y a eu des collisions de logins (?) d'une année sur l'autre, et des tables non nettoyées, on peut se retrouver avec un login attribué à un parent alors que c'était le login d'un prof l'année précédente... et si j_professeurs_matieres n'a pas été nettoyée, on se retrouve avec un parent d'élève proposé comme professeur lors de l'ajout d'enseignement
+			// Le test plus haut ne fonctionne pas completement: s'il y a eu des collisions de logins (?) d'une annÃ©e sur l'autre, et des tables non nettoyÃ©es, on peut se retrouver avec un login attribuÃ© Ã  un parent alors que c'Ã©tait le login d'un prof l'annÃ©e prÃ©cÃ©dente... et si j_professeurs_matieres n'a pas Ã©tÃ© nettoyÃ©e, on se retrouve avec un parent d'Ã©lÃ¨ve proposÃ© comme professeur lors de l'ajout d'enseignement
 			//$sql="select * from j_professeurs_matieres j, resp_pers rp where rp.login=j.id_professeur AND j.id_professeur not in (select login from utilisateurs where statut='professeur');";
 			$sql="SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0) {
 				$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
 				$del=mysql_query($sql);
-				if($del) {$retour.="<font color=\"red\">Suppression de ".mysql_num_rows($test)." enregistrements supplémentaires.</font><br />";}
+				if($del) {$retour.="<font color=\"red\">Suppression de ".mysql_num_rows($test)." enregistrements supplÃ©mentaires.</font><br />";}
 			}
 		}
 
@@ -589,7 +589,7 @@ function clean_table_j_eleves_professeurs() {
 	$retour="";
 
 	// cas j_eleves_professeurs
-	$retour.="<h2>Vérification de la table j_eleves_professeurs</h2>\n";
+	$retour.="<h2>VÃ©rification de la table j_eleves_professeurs</h2>\n";
 	$req = mysql_query("SELECT * FROM j_eleves_professeurs order by login,professeur,id_classe");
 	$nb_lignes = mysql_num_rows($req);
 	$i = 0;
@@ -599,7 +599,7 @@ function clean_table_j_eleves_professeurs() {
 		$professeur = mysql_result($req,$i,'professeur');
 		$id_classe = mysql_result($req,$i,'id_classe');
 
-		// Détection des doublons
+		// DÃ©tection des doublons
 		$req2 = mysql_query("SELECT * FROM j_eleves_professeurs
 		where
 		login ='$login_user' and
@@ -609,7 +609,7 @@ function clean_table_j_eleves_professeurs() {
 		$nb_lignes2 = mysql_num_rows($req2);
 		if ($nb_lignes2 > "1") {
 			$nb = $nb_lignes2-1;
-			//$retour.="Suppression d'un doublon : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />";
+			//$retour.="Suppression d'un doublon : identifiant Ã©lÃ¨ve : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from j_eleves_professeurs where
 			login ='$login_user' and
@@ -618,7 +618,7 @@ function clean_table_j_eleves_professeurs() {
 			$cpt++;
 		}
 
-		// Détection des lignes inutiles
+		// DÃ©tection des lignes inutiles
 		$req3 = mysql_query("SELECT *
 		FROM j_eleves_professeurs j,
 		eleves e,
@@ -641,7 +641,7 @@ function clean_table_j_eleves_professeurs() {
 		$nb_lignes3 = mysql_num_rows($req3);
 		if ($nb_lignes3 == "0") {
 			$nb = $nb_lignes2-1;
-			//$retour.="Suppression d'une ligne inutile : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />";
+			//$retour.="Suppression d'une ligne inutile : identifiant Ã©lÃ¨ve : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from j_eleves_professeurs where
 			login ='$login_user' and
@@ -655,9 +655,9 @@ function clean_table_j_eleves_professeurs() {
 	$i++;
 	}
 	if ($cpt != 0) {
-		$retour.="<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />\n";
+		$retour.="<font color=\"red\">Nombre de lignes supprimÃ©es : ".$cpt."</font><br />\n";
 	} else {
-		$retour.="<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />\n";
+		$retour.="<font color=\"green\">Aucune ligne n'a Ã©tÃ© supprimÃ©e.</font><br />\n";
 	}
 	$retour.="<b>La table j_eleves_professeurs est OK.</b><br />\n";
 
@@ -671,9 +671,9 @@ function clean_table_j_eleves_classes() {
 
 	$retour="";
 
-	// Vérification de la table j_eleves_classes
+	// VÃ©rification de la table j_eleves_classes
 
-	$retour.="<h2>Vérification de la table j_eleves_classes</h2>\n";
+	$retour.="<h2>VÃ©rification de la table j_eleves_classes</h2>\n";
 	$req = mysql_query("SELECT * FROM j_eleves_classes");
 	$nb_lignes = mysql_num_rows($req);
 	$i = 0;
@@ -681,7 +681,7 @@ function clean_table_j_eleves_classes() {
 		$login_user = mysql_result($req,$i,'login');
 		$id_classe = mysql_result($req,$i,'id_classe');
 		$periode = mysql_result($req,$i,'periode');
-		// Détection des doublons
+		// DÃ©tection des doublons
 		$req2 = mysql_query("SELECT * FROM j_eleves_classes
 			where
 			login ='$login_user' and
@@ -691,7 +691,7 @@ function clean_table_j_eleves_classes() {
 		$nb_lignes2 = mysql_num_rows($req2);
 		if ($nb_lignes2 > "1") {
 			$nb = $nb_lignes2-1;
-			//$retour.="Suppression d'un doublon : login = $login_user - identifiant classe = $id_classe - Numéro période = $periode<br />";
+			//$retour.="Suppression d'un doublon : login = $login_user - identifiant classe = $id_classe - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from j_eleves_classes where
 			login ='$login_user' and
@@ -699,7 +699,7 @@ function clean_table_j_eleves_classes() {
 			periode ='$periode' LIMIT $nb");
 			$cpt++;
 		}
-		// Détection des lignes inutiles
+		// DÃ©tection des lignes inutiles
 		$req3 = mysql_query("SELECT * FROM j_eleves_classes j, eleves e, classes c, periodes p
 		where
 		j.login ='$login_user' and
@@ -715,7 +715,7 @@ function clean_table_j_eleves_classes() {
 		$nb_lignes3 = mysql_num_rows($req3);
 		if ($nb_lignes3 == "0") {
 			$nb = $nb_lignes2-1;
-			//$retour.="Suppression d'une ligne inutile : login = $login_user - identifiant classe = $id_classe - Numéro période = $periode<br />";
+			//$retour.="Suppression d'une ligne inutile : login = $login_user - identifiant classe = $id_classe - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from j_eleves_classes where
 			login ='$login_user' and
@@ -729,9 +729,9 @@ function clean_table_j_eleves_classes() {
 		$i++;
 	}
 	if ($cpt != 0) {
-		$retour.="<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />\n";
+		$retour.="<font color=\"red\">Nombre de lignes supprimÃ©es : ".$cpt."</font><br />\n";
 	} else {
-		$retour.="<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />\n";
+		$retour.="<font color=\"green\">Aucune ligne n'a Ã©tÃ© supprimÃ©e.</font><br />\n";
 	}
 	$retour.="<b>La table j_eleves_classes est OK.</b><br />\n";
 
@@ -746,7 +746,7 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 	$retour="";
 
 	// Cas de la table aid_appreciations
-	$retour.="<h2>Nettoyage de la table aid_appreciations (tables des appréciations AID)</h2>\n";
+	$retour.="<h2>Nettoyage de la table aid_appreciations (tables des apprÃ©ciations AID)</h2>\n";
 	$req = mysql_query("SELECT * FROM aid_appreciations order by login,id_aid,periode");
 	$nb_lignes = mysql_num_rows($req);
 	$i = 0;
@@ -783,7 +783,7 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 		");
 		$nb_lignes2 = mysql_num_rows($test);
 		if ($nb_lignes2 == "0") {
-			//$retour.="Suppression d'une donnée orpheline : login = $login_user - identifiant aid = $id_aid - Numéro période = $periode<br />";
+			//$retour.="Suppression d'une donnÃ©e orpheline : login = $login_user - identifiant aid = $id_aid - NumÃ©ro pÃ©riode = $periode<br />";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from aid_appreciations where
 			login ='$login_user' and
@@ -795,9 +795,9 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 		$i++;
 	}
 	if ($cpt != 0) {
-		$retour.="<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />\n";
+		$retour.="<font color=\"red\">Nombre de lignes supprimÃ©es : ".$cpt."</font><br />\n";
 	} else {
-		$retour.="<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />\n";
+		$retour.="<font color=\"green\">Aucune ligne n'a Ã©tÃ© supprimÃ©e.</font><br />\n";
 	}
 	$retour.="<b>La table aid_appreciations est OK.</b><br />\n";
 
@@ -831,7 +831,7 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 		");
 		$nb_lignes2 = mysql_num_rows($test);
 		if ($nb_lignes2 == "0") {
-			//$retour.="Suppression d'une donnée orpheline : login = $login_user - Numéro période = $periode<br />\n";
+			//$retour.="Suppression d'une donnÃ©e orpheline : login = $login_user - NumÃ©ro pÃ©riode = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from avis_conseil_classe where
 			login ='$login_user' and
@@ -856,14 +856,14 @@ function clean_table_XXX() {
 	return $retour;
 }
 
-// Voir s'il y a d'autres POST correspondant à des nettoyages lancés
+// Voir s'il y a d'autres POST correspondant Ã  des nettoyages lancÃ©s
 if(isset($_POST['maj'])) {
 	$id_info=get_id_infos_action_nettoyage();
 }
 
 if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and (($_GET['maj'])=="1"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 1/$total_etapes</h2>\n";
@@ -877,13 +877,13 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 	echo "<input type=\"hidden\" name=\"maj\" value=\"2\" />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
-	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></center>\n";
 	echo "</form>\n";
 
 	echo script_suite_submit();
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="2"))||(isset($_GET['maj']) and (($_GET['maj'])=="2"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 2/$total_etapes</h2>\n";
@@ -897,31 +897,31 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 	echo "<input type=\"hidden\" name=\"maj\" value=\"3\" />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
-	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></center>\n";
 	echo "</form>\n";
 
 	echo script_suite_submit();
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="3"))||(isset($_GET['maj']) and (($_GET['maj'])=="3"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 3/$total_etapes</h2>\n";
 	// Cas de la table j_classes_matieres_professeurs
-	echo "<h2>Vérification de la table j_classes_matieres_professeurs</h2>\n";
-	echo "<p>La table j_classes_matieres_professeurs n'existe plus et ne peut donc pas être nettoyée. Cette étape est remplacée plus loin par un nettoyage des tables de gestion des groupes.</p>\n";
+	echo "<h2>VÃ©rification de la table j_classes_matieres_professeurs</h2>\n";
+	echo "<p>La table j_classes_matieres_professeurs n'existe plus et ne peut donc pas Ãªtre nettoyÃ©e. Cette Ã©tape est remplacÃ©e plus loin par un nettoyage des tables de gestion des groupes.</p>\n";
 	echo "<form name='formulaire' action=\"clean_tables.php\" method=\"post\">\n";
 	echo add_token_field();
 	echo "<input type=\"hidden\" name=\"maj\" value=\"4\" />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
-	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></center>\n";
 	echo "</form>\n";
 
 	echo script_suite_submit();
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="4"))||(isset($_GET['maj']) and (($_GET['maj'])=="4"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 4/$total_etapes</h2>\n";
@@ -935,30 +935,30 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 	echo "<input type=\"hidden\" name=\"maj\" value=\"5\" />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
-	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
-	echo "<center><b>Attention : l'étape suivante peut être très longue.</b></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></center>\n";
+	echo "<center><b>Attention : l'Ã©tape suivante peut Ãªtre trÃ¨s longue.</b></center>\n";
 	echo "</form>\n";
 	echo script_suite_submit();
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="5")) or (isset($_GET['maj']) and (($_GET['maj'])=="5"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 5/$total_etapes</h2>\n";
 	echo "<h2>Nettoyage de la table j_eleves_matieres</h2>\n";
-	echo "<p>Cette table n'est plus utilisée. Cette étape a été remplacée plus loin par une étape de nettoyage des attributions d'élèves aux groupes...</p>\n";
+	echo "<p>Cette table n'est plus utilisÃ©e. Cette Ã©tape a Ã©tÃ© remplacÃ©e plus loin par une Ã©tape de nettoyage des attributions d'Ã©lÃ¨ves aux groupes...</p>\n";
 	echo "<form name='formulaire' action=\"clean_tables.php\" method=\"post\">\n";
 	echo add_token_field();
 	echo "<input type=\"hidden\" name=\"maj\" value=\"6\" />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
-	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></center>\n";
 	echo "</form>\n";
 	echo script_suite_submit();
 	//}
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="6"))||(isset($_GET['maj']) and (($_GET['maj'])=="6"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 6/$total_etapes</h2>\n";
@@ -973,25 +973,25 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 	//echo "<input type=\"hidden\" name=\"maj\" value=\"9\" />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
-	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
-	echo "<center><b>Attention : l'étape suivante peut être très longue.</b></center>\n";
+	echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></center>\n";
+	echo "<center><b>Attention : l'Ã©tape suivante peut Ãªtre trÃ¨s longue.</b></center>\n";
 	echo "</form>\n";
 	echo script_suite_submit();
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="7")) or (isset($_GET['maj']) and (($_GET['maj'])=="7"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 7/$total_etapes</h2>\n";
 
-	echo "<h2>Nettoyage de la table matieres_appreciations (tables des appréciations par discipline)</h2>\n";
+	echo "<h2>Nettoyage de la table matieres_appreciations (tables des apprÃ©ciations par discipline)</h2>\n";
 
 	init_time(); //initialise le temps
-	//début de fichier
+	//dÃ©but de fichier
 	if (!isset($_GET["offset"])) {
 		$offset=0;
 
-		$texte_info_action="<h2>Nettoyage de la table matieres_appreciations (tables des appréciations par discipline)</h2>\n";
+		$texte_info_action="<h2>Nettoyage de la table matieres_appreciations (tables des apprÃ©ciations par discipline)</h2>\n";
 		update_infos_action_nettoyage($id_info, $texte_info_action);
 	}
 	else {
@@ -1030,10 +1030,10 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 		}
 	} else {
 		if ($cpt != 0) {
-			$texte_info_action="<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />\n";
+			$texte_info_action="<font color=\"red\">Nombre de lignes supprimÃ©es : ".$cpt."</font><br />\n";
 			$texte_info_action.="<b>La table matieres_appreciations est OK.</b><br />\n";
 		} else {
-			$texte_info_action="<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />\n";
+			$texte_info_action="<font color=\"green\">Aucune ligne n'a Ã©tÃ© supprimÃ©e.</font><br />\n";
 			$texte_info_action.="<b>La table matieres_appreciations est OK.</b><br />\n";
 		}
 		echo $texte_info_action;
@@ -1044,23 +1044,23 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 		echo "<input type=\"hidden\" name=\"maj\" value=\"8\" />\n";
 		echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 		echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
-		echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
-		echo "<center><b>Attention : l'étape suivante peut être très longue.</b></center>\n";
+		echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></center>\n";
+		echo "<center><b>Attention : l'Ã©tape suivante peut Ãªtre trÃ¨s longue.</b></center>\n";
 		echo "</form>\n";
 		echo script_suite_submit();
 
-		// Enregistrer le bilan et passer à la suite... via javascript
+		// Enregistrer le bilan et passer Ã  la suite... via javascript
 
 	}
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="8")) or (isset($_GET['maj']) and (($_GET['maj'])=="8"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 8/$total_etapes</h2>\n";
 	echo "<h2>Nettoyage de la table matieres_notes (tables des notes par discipline)</h2>\n";
 	init_time(); //initialise le temps
-	//début de fichier
+	//dÃ©but de fichier
 	if (!isset($_GET["offset"])) {
 		$offset=0;
 
@@ -1101,23 +1101,23 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 		}
 	} else {
 		if ($cpt != 0) {
-			$texte_info_action="<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />\n";
+			$texte_info_action="<font color=\"red\">Nombre de lignes supprimÃ©es : ".$cpt."</font><br />\n";
 			$texte_info_action.="<b>La table matieres_notes est OK.</b><br />\n";
 		} else {
-			$texte_info_action="<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />\n";
+			$texte_info_action="<font color=\"green\">Aucune ligne n'a Ã©tÃ© supprimÃ©e.</font><br />\n";
 			$texte_info_action.="<b>La table matieres_notes est OK.</b><br />\n";
 		}
 		echo $texte_info_action;
 		update_infos_action_nettoyage($id_info, $texte_info_action);
 
-		//echo "<hr /><h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+		//echo "<hr /><h2 align=\"center\">Fin de la vÃ©rification des tables</h2>\n";
 		echo "<form name='formulaire' action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<input type=\"hidden\" name=\"maj\" value=\"9\" />\n";
 		echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 		echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
-		echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
-		//echo "<center><b>Attention : l'étape suivante peut être très longue.</b></center>\n";
+		echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></center>\n";
+		//echo "<center><b>Attention : l'Ã©tape suivante peut Ãªtre trÃ¨s longue.</b></center>\n";
 		echo "</form>\n";
 
 		echo script_suite_submit();
@@ -1126,12 +1126,12 @@ if ((isset($_POST['maj']) and (($_POST['maj'])=="1"))||(isset($_GET['maj']) and 
 }
 elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']) and (($_GET['maj'])=="9"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 9/$total_etapes</h2>\n";
 
-	//echo "<p><a href='index.php'>Retour à Outils de gestion</a> | <a href='index.php'>Retour à Vérification/nettoyage des tables</a></p>\n";
+	//echo "<p><a href='index.php'>Retour Ã  Outils de gestion</a> | <a href='index.php'>Retour Ã  VÃ©rification/nettoyage des tables</a></p>\n";
 
 	$temoin_aberrations_groupes=0;
 
@@ -1155,7 +1155,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 					if(mysql_num_rows($res_test)==0){
 						$sql="DELETE FROM $table[$i] WHERE id_groupe='$ligne[0]'";
-						$texte_info_action="Suppression d'une référence à un groupe d'identifiant $ligne[0] dans la table $table[$i] alors que le groupe n'existe pas dans la table 'groupes'.<br />\n";
+						$texte_info_action="Suppression d'une rÃ©fÃ©rence Ã  un groupe d'identifiant $ligne[0] dans la table $table[$i] alors que le groupe n'existe pas dans la table 'groupes'.<br />\n";
 						echo $texte_info_action;
 						update_infos_action_nettoyage($id_info, $texte_info_action);
 						//echo "$sql<br />\n";
@@ -1173,17 +1173,17 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		}
 	}
 
-	$texte_info_action="<h2>Nettoyage des erreurs d'appartenance à des groupes</h2>\n";
+	$texte_info_action="<h2>Nettoyage des erreurs d'appartenance Ã  des groupes</h2>\n";
 	echo $texte_info_action;
 	//update_infos_action_nettoyage($id_info, $texte_info_action);
 
-	// Elèves dans des groupes pour lesquels ils ne sont pas dans la classe sur la période
+	// ElÃ¨ves dans des groupes pour lesquels ils ne sont pas dans la classe sur la pÃ©riode
 	// Mais association classe/groupe OK dans j_groupes_classes
 	//===========
 	// A FAIRE
 	//===========
 	/*
-	// Problème la requête est très longue
+	// ProblÃ¨me la requÃªte est trÃ¨s longue
 	mysql> select * from j_eleves_groupes where concat(login,"|",periode) not in (select concat(login,"|",periode) from j_eleves_classes);
 	Empty set (3 min 1.34 sec)
 	
@@ -1191,9 +1191,9 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	*/
 
 	if(!isset($_POST['nettoyage_grp'])) {
-		// BOUCLE classes... récupérer le nombre de périodes... et supprimer ce qui est associé pour les périodes supérieures dans j_eleves_classes et j_eleves_groupes... contrôler avant si il y a des données dans matieres_appreciations, matieres_notes, avis_conseil_classe et cn_cahier_notes
+		// BOUCLE classes... rÃ©cupÃ©rer le nombre de pÃ©riodes... et supprimer ce qui est associÃ© pour les pÃ©riodes supÃ©rieures dans j_eleves_classes et j_eleves_groupes... contrÃ´ler avant si il y a des donnÃ©es dans matieres_appreciations, matieres_notes, avis_conseil_classe et cn_cahier_notes
 
-		$texte_info_action="<p class='bold'>Recherche des élèves affectés dans des groupes sur des périodes non associées à leur classe.</p>\n";
+		$texte_info_action="<p class='bold'>Recherche des Ã©lÃ¨ves affectÃ©s dans des groupes sur des pÃ©riodes non associÃ©es Ã  leur classe.</p>\n";
 		echo $texte_info_action;
 		update_infos_action_nettoyage($id_info, $texte_info_action);
 
@@ -1202,7 +1202,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			$texte_info_action="<p>Aucune classe n'est enregistrée dans la table 'classes'.</p>\n";
+			$texte_info_action="<p>Aucune classe n'est enregistrÃ©e dans la table 'classes'.</p>\n";
 			echo $texte_info_action;
 			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
@@ -1219,7 +1219,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
 					$nb_suppr=0;
-					$texte_info_action.=mysql_num_rows($res2)." inscriptions en erreur d'élèves dans 'j_eleves_groupes' pour une période non associée à la classe ".get_class_from_id($lig->id)."&nbsp;: ";
+					$texte_info_action.=mysql_num_rows($res2)." inscriptions en erreur d'Ã©lÃ¨ves dans 'j_eleves_groupes' pour une pÃ©riode non associÃ©e Ã  la classe ".get_class_from_id($lig->id)."&nbsp;: ";
 
 					while($lig2=mysql_fetch_object($res2)) {
 						$sql="SELECT * FROM matieres_notes WHERE login='$lig2->login' AND id_groupe='$lig2->id_groupe' AND periode='$lig2->periode';";
@@ -1238,7 +1238,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 						}
 						else {
 							$texte_info_action.="<br />\n";
-							$texte_info_action.="<span style='color:red'>Bulletins non vides pour $lig2->login sur la période $lig2->periode.</span><br />\n";
+							$texte_info_action.="<span style='color:red'>Bulletins non vides pour $lig2->login sur la pÃ©riode $lig2->periode.</span><br />\n";
 						}
 						//echo "$lig2->id_groupe $lig2->login $lig2->periode<br />\n";
 					}
@@ -1251,7 +1251,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		}
 	}
 
-	// Elèves dans des groupes pour lesquels l'association classe/groupe n'existe pas dans j_groupes_classes pour leurs classes
+	// ElÃ¨ves dans des groupes pour lesquels l'association classe/groupe n'existe pas dans j_groupes_classes pour leurs classes
 	//===========
 	// A FAIRE
 	//===========
@@ -1274,7 +1274,7 @@ col2 varchar(100) NOT NULL default ''
 		$sql="INSERT INTO tempo2 SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode;";
 		$insert=mysql_query($sql);
 
-		echo "<p>Vous allez rechercher les incohérences de groupes.</p>\n";
+		echo "<p>Vous allez rechercher les incohÃ©rences de groupes.</p>\n";
 
 		echo "<input type='hidden' name='maj' value='9' />\n";
 		//echo "<input type='submit' name='nettoyage_grp' value='Supprimer' />\n";
@@ -1289,13 +1289,13 @@ col2 varchar(100) NOT NULL default ''
 		$res0=mysql_query($sql);
 		$nb_assoc_login_periode=mysql_num_rows($res0);
 		if($nb_assoc_login_periode>0) {
-			echo "<p>$nb_assoc_login_periode association(s) login/période reste(nt) à contrôler.</p>\n";
+			echo "<p>$nb_assoc_login_periode association(s) login/pÃ©riode reste(nt) Ã  contrÃ´ler.</p>\n";
 		}
 
 		/*
 		$err_no=0;
-		// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
-		// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
+		// On commence par ne rÃ©cupÃ©rer que les login/periode pour ne pas risquer d'oublier d'Ã©lÃ¨ves
+		// (il peut y avoir des incohÃ©rences non dÃ©tectÃ©es si on essaye de rÃ©cupÃ©rer davantage d'infos dans un premier temps)
 		$sql="SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode;";
 		$res_ele=mysql_query($sql);
 		$ini="";
@@ -1303,8 +1303,8 @@ col2 varchar(100) NOT NULL default ''
 		*/
 
 		$tranche=20;
-		// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
-		// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
+		// On commence par ne rÃ©cupÃ©rer que les login/periode pour ne pas risquer d'oublier d'Ã©lÃ¨ves
+		// (il peut y avoir des incohÃ©rences non dÃ©tectÃ©es si on essaye de rÃ©cupÃ©rer davantage d'infos dans un premier temps)
 		$sql="SELECT col1 AS login,col2 AS periode FROM tempo2 LIMIT $tranche;";
 		//echo "$sql<br />\n";
 		$res_ele=mysql_query($sql);
@@ -1313,8 +1313,8 @@ col2 varchar(100) NOT NULL default ''
 			//$cpt_affichage_info=0;
 
 			$err_no=0;
-			// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
-			// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
+			// On commence par ne rÃ©cupÃ©rer que les login/periode pour ne pas risquer d'oublier d'Ã©lÃ¨ves
+			// (il peut y avoir des incohÃ©rences non dÃ©tectÃ©es si on essaye de rÃ©cupÃ©rer davantage d'infos dans un premier temps)
 			//$sql="SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode;";
 			//$res_ele=mysql_query($sql);
 			$ini="";
@@ -1323,24 +1323,24 @@ col2 varchar(100) NOT NULL default ''
 
 				if(strtoupper(substr($lig_ele->login,0,1))!=$ini){
 					$ini=strtoupper(substr($lig_ele->login,0,1));
-					echo "<p>\n<i>Parcours des logins commençant par la lettre $ini</i></p>\n";
+					echo "<p>\n<i>Parcours des logins commenÃ§ant par la lettre $ini</i></p>\n";
 				}
 
-				// Récupération de la liste des groupes auxquels l'élève est inscrit sur la période en cours d'analyse:
+				// RÃ©cupÃ©ration de la liste des groupes auxquels l'Ã©lÃ¨ve est inscrit sur la pÃ©riode en cours d'analyse:
 				$sql="SELECT id_groupe FROM j_eleves_groupes WHERE login='$lig_ele->login' AND periode='$lig_ele->periode'";
 				//echo "$sql<br />\n";
 				$res_jeg=mysql_query($sql);
 
 				if(mysql_num_rows($res_jeg)>0){
-					// On vérifie si l'élève est dans une classe pour cette période:
+					// On vÃ©rifie si l'Ã©lÃ¨ve est dans une classe pour cette pÃ©riode:
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$lig_ele->login' AND periode='$lig_ele->periode'";
 					$res_jec=mysql_query($sql);
 
 					if(mysql_num_rows($res_jec)==0){
-						// L'élève n'est dans aucune classe sur la période choisie.
+						// L'Ã©lÃ¨ve n'est dans aucune classe sur la pÃ©riode choisie.
 						$texte_info_action.="<p>\n";
-						$texte_info_action.="<b>$lig_ele->login</b> n'est dans aucune classe en période <b>$lig_ele->periode</b> et se trouve pourtant dans des groupes.<br />\n";
-						$texte_info_action.="Suppression de l'élève du(es) groupe(s) ";
+						$texte_info_action.="<b>$lig_ele->login</b> n'est dans aucune classe en pÃ©riode <b>$lig_ele->periode</b> et se trouve pourtant dans des groupes.<br />\n";
+						$texte_info_action.="Suppression de l'Ã©lÃ¨ve du(es) groupe(s) ";
 						$cpt_tmp=1;
 						while($lig_grp=mysql_fetch_object($res_jeg)){
 							$id_groupe=$lig_grp->id_groupe;
@@ -1356,7 +1356,7 @@ col2 varchar(100) NOT NULL default ''
 								$nom_groupe=$lig_grp_tmp->description;
 							}
 
-							// On va le supprimer du groupe après un dernier test:
+							// On va le supprimer du groupe aprÃ¨s un dernier test:
 							$test1=mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
 							$nb_test1 = mysql_num_rows($test1);
 
@@ -1364,11 +1364,11 @@ col2 varchar(100) NOT NULL default ''
 							$nb_test2 = mysql_num_rows($test2);
 
 							if (($nb_test1 != 0) or ($nb_test2 != 0)) {
-								$texte_info_action.="<br /><font color='red'>Impossible de supprimer cette option pour l'élève $lig_ele->login car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $lig_ele->periode !<br />\nCommencez par supprimer ces données !</font><br />\n";
+								$texte_info_action.="<br /><font color='red'>Impossible de supprimer cette option pour l'Ã©lÃ¨ve $lig_ele->login car des moyennes ou apprÃ©ciations ont dÃ©jÃ  Ã©tÃ© rentrÃ©es pour le groupe $nom_groupe pour la pÃ©riode $lig_ele->periode !<br />\nCommencez par supprimer ces donnÃ©es !</font><br />\n";
 							} else {
 								if($req=mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
 									if($cpt_tmp>1){echo ", ";}
-									$texte_info_action.="$nom_groupe (<i>n°$id_groupe</i>)";
+									$texte_info_action.="$nom_groupe (<i>nÂ°$id_groupe</i>)";
 									$cpt_tmp++;
 								}
 							}
@@ -1399,10 +1399,10 @@ col2 varchar(100) NOT NULL default ''
 									$grp_tmp=$lig_tmp->description;
 
 									$texte_info_action.="<p>\n";
-									$texte_info_action.="<b>$lig_ele->login</b> est inscrit en période $lig_ele->periode dans le groupe <b>$grp_tmp</b> (<i>groupe n°$lig_grp->id_groupe</i>) alors que ce groupe n'est pas associé à la classe <b>$clas_tmp</b> dans 'j_groupes_classes'.<br />\n";
+									$texte_info_action.="<b>$lig_ele->login</b> est inscrit en pÃ©riode $lig_ele->periode dans le groupe <b>$grp_tmp</b> (<i>groupe nÂ°$lig_grp->id_groupe</i>) alors que ce groupe n'est pas associÃ© Ã  la classe <b>$clas_tmp</b> dans 'j_groupes_classes'.<br />\n";
 
-									$texte_info_action.="Suppression de l'élève du groupe ";
-									// On va le supprimer du groupe après un dernier test:
+									$texte_info_action.="Suppression de l'Ã©lÃ¨ve du groupe ";
+									// On va le supprimer du groupe aprÃ¨s un dernier test:
 									$test1=mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
 									$nb_test1 = mysql_num_rows($test1);
 
@@ -1410,10 +1410,10 @@ col2 varchar(100) NOT NULL default ''
 									$nb_test2 = mysql_num_rows($test2);
 
 									if (($nb_test1 != 0) or ($nb_test2 != 0)) {
-										$texte_info_action.="<br /><font color='red'>Impossible de supprimer cette option pour l'élève $lig_ele->login car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $lig_ele->periode !<br />\nCommencez par supprimer ces données !</font><br />\n";
+										$texte_info_action.="<br /><font color='red'>Impossible de supprimer cette option pour l'Ã©lÃ¨ve $lig_ele->login car des moyennes ou apprÃ©ciations ont dÃ©jÃ  Ã©tÃ© rentrÃ©es pour le groupe $nom_groupe pour la pÃ©riode $lig_ele->periode !<br />\nCommencez par supprimer ces donnÃ©es !</font><br />\n";
 									} else {
 										if($req=mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
-											$texte_info_action.="$nom_groupe (<i>n°$id_groupe</i>)";
+											$texte_info_action.="$nom_groupe (<i>nÂ°$id_groupe</i>)";
 											//$cpt_tmp++;
 										}
 									}
@@ -1425,22 +1425,22 @@ col2 varchar(100) NOT NULL default ''
 						}
 						else{
 							$texte_info_action.="<p>\n";
-							$texte_info_action.="<b>$lig_ele->login</b> est inscrit dans plusieurs classes sur la période $lig_ele->periode:<br />\n";
+							$texte_info_action.="<b>$lig_ele->login</b> est inscrit dans plusieurs classes sur la pÃ©riode $lig_ele->periode:<br />\n";
 							while($lig_clas=mysql_fetch_object($res_jec)){
 								$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
 								$res_tmp=mysql_query($sql);
 								$lig_tmp=mysql_fetch_object($res_tmp);
 								$clas_tmp=$lig_tmp->classe;
-								$texte_info_action.="Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe&amp;quitter_la_page=y' target='_blank'>$clas_tmp</a> (<i>n°$lig_clas->id_classe</i>)<br />\n";
+								$texte_info_action.="Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe&amp;quitter_la_page=y' target='_blank'>$clas_tmp</a> (<i>nÂ°$lig_clas->id_classe</i>)<br />\n";
 							}
-							$texte_info_action.="Cela ne devrait pas être possible.<br />\n";
-							$texte_info_action.="Faites le ménage dans les effectifs des classes ci-dessus.\n";
+							$texte_info_action.="Cela ne devrait pas Ãªtre possible.<br />\n";
+							$texte_info_action.="Faites le mÃ©nage dans les effectifs des classes ci-dessus.\n";
 							$texte_info_action.="</p>\n";
 							$err_no++;
 						}
 					}
 
-					// Cette association login/periode a été parcourue:
+					// Cette association login/periode a Ã©tÃ© parcourue:
 					$sql="DELETE FROM tempo2 WHERE col1='$lig_ele->login' AND col2='$lig_ele->periode';";
 					//echo "$sql<br />\n";
 					$nettoyage=mysql_query($sql);
@@ -1449,14 +1449,14 @@ col2 varchar(100) NOT NULL default ''
 				echo $texte_info_action;
 				if($texte_info_action!="") {update_infos_action_nettoyage($id_info, $texte_info_action);}
 
-				// Pour envoyer ce qui a été écrit vers l'écran sans attendre la fin de la page...
+				// Pour envoyer ce qui a Ã©tÃ© Ã©crit vers l'Ã©cran sans attendre la fin de la page...
 				flush();
 			}
 			if($err_no==0){
-				$texte_info_action="<p>Aucune erreur d'affectation dans des groupes/classes n'a été détectée.</p>\n";
+				$texte_info_action="<p>Aucune erreur d'affectation dans des groupes/classes n'a Ã©tÃ© dÃ©tectÃ©e.</p>\n";
 			}
 			else{
-				$texte_info_action="<p>Une ou des erreurs ont été relevées.";
+				$texte_info_action="<p>Une ou des erreurs ont Ã©tÃ© relevÃ©es.";
 				$texte_info_action.="</p>\n";
 				update_infos_action_nettoyage($id_info, $texte_info_action);
 			}
@@ -1475,7 +1475,7 @@ col2 varchar(100) NOT NULL default ''
 
 		}
 		else {
-			$texte_info_action="<p>Vérification des groupes terminée.</p>\n";
+			$texte_info_action="<p>VÃ©rification des groupes terminÃ©e.</p>\n";
 			echo $texte_info_action;
 			update_infos_action_nettoyage($id_info, $texte_info_action);
 
@@ -1491,12 +1491,12 @@ col2 varchar(100) NOT NULL default ''
 }
 elseif ((isset($_POST['maj']) and (($_POST['maj'])=="10")) or (isset($_GET['maj']) and (($_GET['maj'])=="10"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 10/$total_etapes</h2>\n";
 
-	$texte_info_action="<h2>Nettoyage des comptes élèves/responsables</h2>\n";
+	$texte_info_action="<h2>Nettoyage des comptes Ã©lÃ¨ves/responsables</h2>\n";
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
 
@@ -1517,7 +1517,7 @@ col2 varchar(100) NOT NULL default ''
 		$sql="INSERT INTO tempo2 SELECT login,statut FROM utilisateurs WHERE statut='eleve' OR statut='responsable';";
 		$insert=mysql_query($sql);
 
-		echo "<p>Vous allez supprimer les comptes d'élèves ayant quitté l'établissement et de responsables n'ayant plus d'enfant scolarisé dans l'établissement.</p>\n";
+		echo "<p>Vous allez supprimer les comptes d'Ã©lÃ¨ves ayant quittÃ© l'Ã©tablissement et de responsables n'ayant plus d'enfant scolarisÃ© dans l'Ã©tablissement.</p>\n";
 
 		echo "<input type='hidden' name='maj' value='10' />\n";
 		echo "<input type='submit' name='nettoyage_ele_resp' value='Supprimer' />\n";
@@ -1531,7 +1531,7 @@ col2 varchar(100) NOT NULL default ''
 		$sql="SELECT 1=1 FROM tempo2;";
 		$res0=mysql_query($sql);
 		$nb_comptes=mysql_num_rows($res0);
-		if($nb_comptes>0) {echo "<p>$nb_comptes comptes reste(nt) à contrôler.</p>\n";}
+		if($nb_comptes>0) {echo "<p>$nb_comptes comptes reste(nt) Ã  contrÃ´ler.</p>\n";}
 
 		$tranche=20;
 		$sql="SELECT * FROM tempo2 LIMIT $tranche;";
@@ -1551,7 +1551,7 @@ col2 varchar(100) NOT NULL default ''
 					if(mysql_num_rows($res2)==0) {
 						if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
 
-						$texte_info_action.="L'élève $lig1->col1 est absent de la table 'eleves', son compte utilisateur doit être supprimé.<br />\n";
+						$texte_info_action.="L'Ã©lÃ¨ve $lig1->col1 est absent de la table 'eleves', son compte utilisateur doit Ãªtre supprimÃ©.<br />\n";
 						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
 						//echo "$sql<br />\n";
 						$suppr=mysql_query($sql);
@@ -1566,7 +1566,7 @@ col2 varchar(100) NOT NULL default ''
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)==0) {
 						if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
-						$texte_info_action.="Le responsable $lig1->col1 est absent de la table 'resp_pers', son compte utilisateur doit être supprimé.<br />\n";
+						$texte_info_action.="Le responsable $lig1->col1 est absent de la table 'resp_pers', son compte utilisateur doit Ãªtre supprimÃ©.<br />\n";
 						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
 						//echo "$sql<br />\n";
 						$suppr=mysql_query($sql);
@@ -1580,13 +1580,13 @@ col2 varchar(100) NOT NULL default ''
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)==0) {
 							if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
-							$texte_info_action.="Le responsable $lig1->col1 n'est pas associé à un élève; \n";
+							$texte_info_action.="Le responsable $lig1->col1 n'est pas associÃ© Ã  un Ã©lÃ¨ve; \n";
 							$sql="SELECT pers_id FROM resp_pers WHERE login='$lig1->col1';";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
 							if(mysql_num_rows($res3)>0) {
 								$lig3=mysql_fetch_object($res3);
-								$texte_info_action.="suppression des éventuelles associations fantomes dans 'responsables2'.<br />\n";
+								$texte_info_action.="suppression des Ã©ventuelles associations fantomes dans 'responsables2'.<br />\n";
 								$sql="DELETE FROM responsables2 WHERE pers_id='$lig3->pers_id';";
 								//echo "$sql<br />\n";
 								$suppr=mysql_query($sql);
@@ -1614,18 +1614,18 @@ col2 varchar(100) NOT NULL default ''
 				//echo "$sql<br />\n";
 				$suppr=mysql_query($sql);
 
-				//if($cpt_affichage_info==0) {echo "<p style='color:green; font-size:xx-small;'>Compte $lig1->col1 conservé.</p>";}
+				//if($cpt_affichage_info==0) {echo "<p style='color:green; font-size:xx-small;'>Compte $lig1->col1 conservÃ©.</p>";}
 			}
 
 
 			if($cpt_suppr_etape==0) {
-				echo "<p>Aucun compte n'a été supprimé à cette étape.</p>\n";
+				echo "<p>Aucun compte n'a Ã©tÃ© supprimÃ© Ã  cette Ã©tape.</p>\n";
 			}
 			elseif($cpt_suppr_etape==1) {
-				echo "<p>Un compte a été supprimé à cette étape.</p>\n";
+				echo "<p>Un compte a Ã©tÃ© supprimÃ© Ã  cette Ã©tape.</p>\n";
 			}
 			else {
-				$texte_info_action.="<p>$cpt_suppr_etape comptes ont été supprimés à cette étape.</p>\n";
+				$texte_info_action.="<p>$cpt_suppr_etape comptes ont Ã©tÃ© supprimÃ©s Ã  cette Ã©tape.</p>\n";
 
 				echo $texte_info_action;
 				update_infos_action_nettoyage($id_info, $texte_info_action);
@@ -1646,23 +1646,23 @@ col2 varchar(100) NOT NULL default ''
 			}
 		}
 		else {
-			$texte_info_action="<p>Nettoyage des comptes d'élèves ayant quitté l'établissement et de responsables n'ayant plus d'enfant scolarisé dans l'établissement terminé.</p>\n";
+			$texte_info_action="<p>Nettoyage des comptes d'Ã©lÃ¨ves ayant quittÃ© l'Ã©tablissement et de responsables n'ayant plus d'enfant scolarisÃ© dans l'Ã©tablissement terminÃ©.</p>\n";
 
 			if($cpt_suppr==0) {
-				$texte_info_action.="<p>Aucun compte n'a été supprimé.</p>\n";
+				$texte_info_action.="<p>Aucun compte n'a Ã©tÃ© supprimÃ©.</p>\n";
 			}
 			elseif($cpt_suppr==1) {
-				$texte_info_action.="<p>Un compte a été supprimé.</p>\n";
+				$texte_info_action.="<p>Un compte a Ã©tÃ© supprimÃ©.</p>\n";
 			}
 			else {
-				$texte_info_action.="<p>$cpt_suppr comptes ont été supprimés.</p>\n";
+				$texte_info_action.="<p>$cpt_suppr comptes ont Ã©tÃ© supprimÃ©s.</p>\n";
 			}
 
 			echo $texte_info_action;
 			update_infos_action_nettoyage($id_info, $texte_info_action);
 
 			//echo "<hr />\n";
-			//echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+			//echo "<h2 align=\"center\">Fin de la vÃ©rification des tables</h2>\n";
 
 			echo "<input type='hidden' name='maj' value='11' />\n";
 			echo "<input type='submit' name='suite' value='Poursuivre' />\n";
@@ -1681,25 +1681,25 @@ col2 varchar(100) NOT NULL default ''
 }
 elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj']) and (($_GET['maj'])=="11"))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 11/$total_etapes</h2>\n";
 
-	$texte_info_action="<h2>Nettoyage des modèles de grilles PDF</h2>\n";
+	$texte_info_action="<h2>Nettoyage des modÃ¨les de grilles PDF</h2>\n";
 
 	$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE login NOT IN (SELECT login FROM utilisateurs);";
 	$test=mysql_query($sql);
 	$nb_scories=mysql_num_rows($test);
 	if($nb_scories==0) {
-		$texte_info_action.="<p>Toutes les grilles sont associées à des utilisateurs existants.</p>\n";
+		$texte_info_action.="<p>Toutes les grilles sont associÃ©es Ã  des utilisateurs existants.</p>\n";
 	}
 	else {
-		$texte_info_action.="<p>$nb_scories grille(s) ne sont associées à aucun utilisateurs existants&nbsp;: ";
+		$texte_info_action.="<p>$nb_scories grille(s) ne sont associÃ©es Ã  aucun utilisateurs existants&nbsp;: ";
 
 		$sql="DELETE FROM modeles_grilles_pdf WHERE login NOT IN (SELECT login FROM utilisateurs);";
 		$del=mysql_query($sql);
-		if($del) {$texte_info_action.="<span style='color:green'>Nettoyées</span>";}
+		if($del) {$texte_info_action.="<span style='color:green'>NettoyÃ©es</span>";}
 		else {$texte_info_action.="<span style='color:red'>Echec du nettoyage</span>";}
 		$texte_info_action.="</p>\n";
 	}
@@ -1708,14 +1708,14 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 	$test=mysql_query($sql);
 	$nb_scories=mysql_num_rows($test);
 	if($nb_scories==0) {
-		$texte_info_action.="<p>Toutes les grilles sont associées à des paramètres de grilles.</p>\n";
+		$texte_info_action.="<p>Toutes les grilles sont associÃ©es Ã  des paramÃ¨tres de grilles.</p>\n";
 	}
 	else {
-		$texte_info_action.="<p>$nb_scories grille(s) ne sont associées à aucun paramètre de grille&nbsp;: ";
+		$texte_info_action.="<p>$nb_scories grille(s) ne sont associÃ©es Ã  aucun paramÃ¨tre de grille&nbsp;: ";
 
 		$sql="DELETE FROM modeles_grilles_pdf WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf_valeurs);";
 		$del=mysql_query($sql);
-		if($del) {$texte_info_action.="<span style='color:green'>Nettoyées</span>";}
+		if($del) {$texte_info_action.="<span style='color:green'>NettoyÃ©es</span>";}
 		else {$texte_info_action.="<span style='color:red'>Echec du nettoyage</span>";}
 		$texte_info_action.="</p>\n";
 	}
@@ -1724,14 +1724,14 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 	$test=mysql_query($sql);
 	$nb_scories=mysql_num_rows($test);
 	if($nb_scories==0) {
-		$texte_info_action.="<p>Tous les paramètres de grilles sont associés à des grilles existantes.</p>\n";
+		$texte_info_action.="<p>Tous les paramÃ¨tres de grilles sont associÃ©s Ã  des grilles existantes.</p>\n";
 	}
 	else {
-		$texte_info_action.="<p>$nb_scories paramètres de grilles ne sont associées à aucune grille&nbsp;: ";
+		$texte_info_action.="<p>$nb_scories paramÃ¨tres de grilles ne sont associÃ©es Ã  aucune grille&nbsp;: ";
 
 		$sql="DELETE FROM modeles_grilles_pdf_valeurs WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf);";
 		$del=mysql_query($sql);
-		if($del) {$texte_info_action.="<span style='color:green'>Nettoyées</span>";}
+		if($del) {$texte_info_action.="<span style='color:green'>NettoyÃ©es</span>";}
 		else {$texte_info_action.="<span style='color:red'>Echec du nettoyage</span>";}
 		$texte_info_action.="</p>\n";
 	}
@@ -1756,15 +1756,15 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 
 /*
 	echo "<hr />\n";
-	echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+	echo "<h2 align=\"center\">Fin de la vÃ©rification des tables</h2>\n";
 */
 
 }
 elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') {
-	// Le code de Stéphane concernant la vérification des auto_increment après le bug détecté
-	// concernant les backups réalisé avec la commande système mysqldump
+	// Le code de StÃ©phane concernant la vÃ©rification des auto_increment aprÃ¨s le bug dÃ©tectÃ©
+	// concernant les backups rÃ©alisÃ© avec la commande systÃ¨me mysqldump
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	if (isset($_POST['is_confirmed']) and $_POST['is_confirmed'] == "yes") {
@@ -1830,62 +1830,62 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 					if($temoin=='yes'){
 						echo "<font color='green'>OK</font>\n";
 					} else {
-						echo "<font color='red'>ERREUR (le champ a été ajouté à la liste des corrections).</font>\n";
+						echo "<font color='red'>ERREUR (le champ a Ã©tÃ© ajoutÃ© Ã  la liste des corrections).</font>\n";
 						// On enregistre les infos dans un tableau distinct
 						$corrections[] = array($liste_tab[$i], $liste_tab[$i+1], $liste_tab[$i+2]);
 
-						echo "<br /><b>Test d'intégrité :</b> ";
+						echo "<br /><b>Test d'intÃ©gritÃ© :</b> ";
 						$sql="SELECT 1=1 FROM $liste_tab[$i] WHERE ".$liste_tab[$i+1]."='0'";
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)==0){
-							echo "<font color='blue'>Aucun dégat ne semble encore fait sur cette table.</font><br />\n";
+							echo "<font color='blue'>Aucun dÃ©gat ne semble encore fait sur cette table.</font><br />\n";
 						} else {
 							$temoin_poursuivre_corrections='no';
-							echo "<font color='red'>Erreur : des dégâts ont déjà été faits sur cette table.</font> Aucune correction de la structure de la base de données n'aura lieu. Vous devez corriger les incohérences dans la base de données en recherchant les entrées ayant pour valeur '0' sur le champ supposé auto-incrémenté (champ ".$liste_tab[$i+1].")<br />\n";
+							echo "<font color='red'>Erreur : des dÃ©gÃ¢ts ont dÃ©jÃ  Ã©tÃ© faits sur cette table.</font> Aucune correction de la structure de la base de donnÃ©es n'aura lieu. Vous devez corriger les incohÃ©rences dans la base de donnÃ©es en recherchant les entrÃ©es ayant pour valeur '0' sur le champ supposÃ© auto-incrÃ©mentÃ© (champ ".$liste_tab[$i+1].")<br />\n";
 						}
 					}
 				}
 			}
 		}
 		echo "</p>\n";
-		// Si aucun dégât n'a été constaté et qu'on a des tables à corriger, on le fait maintenant
+		// Si aucun dÃ©gÃ¢t n'a Ã©tÃ© constatÃ© et qu'on a des tables Ã  corriger, on le fait maintenant
 		if ($temoin_poursuivre_corrections=='yes') {
 			echo "<h2>Corrections effectives</h2>\n";
 
 			if (empty($corrections)) {
-				// Si aucune table n'avait de problème, pas besoin de corriger.
+				// Si aucune table n'avait de problÃ¨me, pas besoin de corriger.
 				//echo "<br /><p>Aucune table n'a besoin de corrections.</p>\n";
 				echo "<p>Aucune table n'a besoin de corrections.</p>\n";
 			} else {
-				// On procède aux corrections
+				// On procÃ¨de aux corrections
 				foreach($corrections as $correct_table) {
 					echo "<br />Correction de la table ".$correct_table[0]." : ";
 					$sql="ALTER TABLE ".$correct_table[0]." CHANGE ".$correct_table[1]." ".$correct_table[2];
 					$res=mysql_query($sql);
 					if ($res) {
-						// La correction s'est bien passée
+						// La correction s'est bien passÃ©e
 						echo "<font color='green'>OK</font>\n";
 					} else {
 						echo "<font color='red'>ERREUR ! </font><br />\n";
-						echo "Vous devez vérifier la cause du dysfonctionnement et faire la correction à la main (le champ à passer en auto_increment est : ".$corrections[1].")<br />\n";
-						echo "Vous devriez interdire les connexions ('Gestion générale/Gestion des connexions/Désactiver les connexions') et contacter la liste de diffusion des utilisateurs pour prendre conseil.";
+						echo "Vous devez vÃ©rifier la cause du dysfonctionnement et faire la correction Ã  la main (le champ Ã  passer en auto_increment est : ".$corrections[1].")<br />\n";
+						echo "Vous devriez interdire les connexions ('Gestion gÃ©nÃ©rale/Gestion des connexions/DÃ©sactiver les connexions') et contacter la liste de diffusion des utilisateurs pour prendre conseil.";
 					}
 				}
 			}
 		} else {
-			// Des erreurs d'intégrité ont été détectées : on ne change rien...
-			echo "<p><font color='red'>Aucune correction n'a été tentée.</font> Des problèmes d'intégrité des données ont été détectés, la procédure ne peut pas continuer. Vous devez corriger les problèmes à la main (recherchez les entrées ayant la valeur '0' pour le champ supposé auto-incrémenté) et relancer cette procédure.</p>\n";
+			// Des erreurs d'intÃ©gritÃ© ont Ã©tÃ© dÃ©tectÃ©es : on ne change rien...
+			echo "<p><font color='red'>Aucune correction n'a Ã©tÃ© tentÃ©e.</font> Des problÃ¨mes d'intÃ©gritÃ© des donnÃ©es ont Ã©tÃ© dÃ©tectÃ©s, la procÃ©dure ne peut pas continuer. Vous devez corriger les problÃ¨mes Ã  la main (recherchez les entrÃ©es ayant la valeur '0' pour le champ supposÃ© auto-incrÃ©mentÃ©) et relancer cette procÃ©dure.</p>\n";
 		}
 
 	} else {
-		echo "<h2>Vérification des champs auto-incrémentés</h2>\n";
-		echo "<p>La procédure suivante vérifie l'intégrité de certains champs de la base de données et tente de corriger les erreurs rencontrées si elles existent.</p>\n";
-		echo "<p>Ce script ne doit être exécuté que si vous avez restauré sur votre Gepi une sauvegarde réalisée avec une version 1.4.4 en utilisant la méthode 'mysqldump' (et non la méthode classique de sauvegarde Gepi sans mysqldump).</p>\n";
-		echo "<p>La procédure débute par une série de tests sur les champs devant être auto-incrémentés. Si aucun problème n'est rencontré, aucune modification n'est faite. Si certains champs n'ont pas l'option d'auto-incrémentation, des tests sont faits sur l'intégrité des données. Si aucun problème d'intégrité des données n'a été détecté, la procédure corrigera les champs nécessaires. Sinon, un message d'erreur sera affiché et aucune modification ne sera effectuée sur la base de données.</p>\n";
-		echo "<p>Si vous êtes sûr de vouloir continuer, cliquez sur le bouton ci-dessous.</p>\n";
+		echo "<h2>VÃ©rification des champs auto-incrÃ©mentÃ©s</h2>\n";
+		echo "<p>La procÃ©dure suivante vÃ©rifie l'intÃ©gritÃ© de certains champs de la base de donnÃ©es et tente de corriger les erreurs rencontrÃ©es si elles existent.</p>\n";
+		echo "<p>Ce script ne doit Ãªtre exÃ©cutÃ© que si vous avez restaurÃ© sur votre Gepi une sauvegarde rÃ©alisÃ©e avec une version 1.4.4 en utilisant la mÃ©thode 'mysqldump' (et non la mÃ©thode classique de sauvegarde Gepi sans mysqldump).</p>\n";
+		echo "<p>La procÃ©dure dÃ©bute par une sÃ©rie de tests sur les champs devant Ãªtre auto-incrÃ©mentÃ©s. Si aucun problÃ¨me n'est rencontrÃ©, aucune modification n'est faite. Si certains champs n'ont pas l'option d'auto-incrÃ©mentation, des tests sont faits sur l'intÃ©gritÃ© des donnÃ©es. Si aucun problÃ¨me d'intÃ©gritÃ© des donnÃ©es n'a Ã©tÃ© dÃ©tectÃ©, la procÃ©dure corrigera les champs nÃ©cessaires. Sinon, un message d'erreur sera affichÃ© et aucune modification ne sera effectuÃ©e sur la base de donnÃ©es.</p>\n";
+		echo "<p>Si vous Ãªtes sÃ»r de vouloir continuer, cliquez sur le bouton ci-dessous.</p>\n";
 		echo "<form name='formulaire' action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
-		echo "<center><input type=submit value='Lancer la procédure' /></center>\n";
+		echo "<center><input type=submit value='Lancer la procÃ©dure' /></center>\n";
 		echo "<input type='hidden' name='action' value='check_auto_increment' />\n";
 		echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
 		//echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
@@ -1894,17 +1894,17 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 } elseif ((isset($_POST['action']) AND $_POST['action'] == 'check_jec_jep_point')||((isset($_POST['maj']))&&($_POST['maj']=='check_jec_jep_point'))||((isset($_GET['maj']))&&($_GET['maj']=='check_jec_jep_point'))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 
 	if (isset($_POST['is_confirmed']) and $_POST['is_confirmed'] == "yes") {
 		if($_POST['maj']=='check_jec_jep_point') {
-			$texte_info_action="<h2 align=\"center\">Etape 12/$total_etapes<br />Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+			$texte_info_action="<h2 align=\"center\">Etape 12/$total_etapes<br />VÃ©rification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
 		}
 		else {
-			$texte_info_action="<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+			$texte_info_action="<h2>VÃ©rification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
 		}
 		echo $texte_info_action;
 		update_infos_action_nettoyage($id_info, $texte_info_action);
@@ -1912,7 +1912,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		// Initialisation pour test
 		$texte_info_action="";
 
-		// Les champs vides pouvaient apparaitre avec le bug (désormais corrigé) sur les POINTS et TIRETS dans les noms de login.
+		// Les champs vides pouvaient apparaitre avec le bug (dÃ©sormais corrigÃ©) sur les POINTS et TIRETS dans les noms de login.
 		$sql="SELECT * FROM j_eleves_cpe WHERE cpe_login='' OR e_login='';";
 		$test=mysql_query($sql);
 		$nb_pb_cpe=mysql_num_rows($test);
@@ -1921,7 +1921,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$nettoyage=mysql_query($sql);
 
 			if($nettoyage){
-				$texte_info_action="<p>$nb_pb_cpe erreur(s) nettoyée(s) dans la table 'j_eleves_cpe'.</p>\n";
+				$texte_info_action="<p>$nb_pb_cpe erreur(s) nettoyÃ©e(s) dans la table 'j_eleves_cpe'.</p>\n";
 				echo $texte_info_action;
 				update_infos_action_nettoyage($id_info, $texte_info_action);
 			}
@@ -1932,12 +1932,12 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			}
 		}
 
-		// Problème de suppression de l'association eleve/cpe après suppression d'un élève de toutes les périodes... (plus dans aucune classe)
+		// ProblÃ¨me de suppression de l'association eleve/cpe aprÃ¨s suppression d'un Ã©lÃ¨ve de toutes les pÃ©riodes... (plus dans aucune classe)
 		$sql="SELECT jecpe.e_login FROM j_eleves_cpe jecpe LEFT JOIN j_eleves_classes jec ON jecpe.e_login=jec.login WHERE jec.login is NULL;";
 		$test=mysql_query($sql);
 		$nb_pb_cpe=mysql_num_rows($test);
 		if($nb_pb_cpe>0){
-			$texte_info_action="<p>Suppression d'associations CPE/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
+			$texte_info_action="<p>Suppression d'associations CPE/ElÃ¨ve pour un ou des Ã©lÃ¨ves qui ne sont affectÃ©s dans aucune classe: ";
 			$cpt_ele_cpe=0;
 			while($lig=mysql_fetch_object($test)){
 				if($cpt_ele_cpe>0){echo ", ";}
@@ -1977,7 +1977,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$nettoyage=mysql_query($sql);
 
 			if($nettoyage){
-				$texte_info_action="<p>$nb_pb_pp erreur(s) nettoyée(s) dans la table 'j_eleves_professeurs'.</p>\n";;
+				$texte_info_action="<p>$nb_pb_pp erreur(s) nettoyÃ©e(s) dans la table 'j_eleves_professeurs'.</p>\n";;
 			}
 			else{
 				$texte_info_action="<p style='color:red;'>Erreur lors du nettoyage de la table 'j_eleves_professeurs'.</p>\n";
@@ -1986,12 +1986,12 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
 
-		// Problème de suppression de l'association eleve/professeur après suppression d'un élève de toutes les périodes... (plus dans aucune classe)
+		// ProblÃ¨me de suppression de l'association eleve/professeur aprÃ¨s suppression d'un Ã©lÃ¨ve de toutes les pÃ©riodes... (plus dans aucune classe)
 		$sql="SELECT jep.login FROM j_eleves_professeurs jep LEFT JOIN j_eleves_classes jec ON jep.login=jec.login WHERE jec.login is NULL;";
 		$test=mysql_query($sql);
 		$nb_pb_pp=mysql_num_rows($test);
 		if($nb_pb_pp>0){
-			$texte_info_action="<p>Suppression d'associations Professeur/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
+			$texte_info_action="<p>Suppression d'associations Professeur/ElÃ¨ve pour un ou des Ã©lÃ¨ves qui ne sont affectÃ©s dans aucune classe: ";
 			$cpt_ele_pp=0;
 			while($lig=mysql_fetch_object($test)){
 				if($cpt_ele_pp>0){echo ", ";}
@@ -2021,7 +2021,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		if($texte_info_action=="") {
-			$texte_info_action.="<p>Aucune erreur n'a été trouvée.</p>\n";
+			$texte_info_action.="<p>Aucune erreur n'a Ã©tÃ© trouvÃ©e.</p>\n";
 			echo $texte_info_action;
 			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
@@ -2044,9 +2044,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		//=====================================
 
 	} else {
-		echo "<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+		echo "<h2>VÃ©rification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
 
-		echo "<p>La procédure suivante vérifie la présence d'enregistrements aberrants dans les tables 'j_eleves_cpe' et 'j_eleves_professeurs'.</p>\n";
+		echo "<p>La procÃ©dure suivante vÃ©rifie la prÃ©sence d'enregistrements aberrants dans les tables 'j_eleves_cpe' et 'j_eleves_professeurs'.</p>\n";
 
 		flush();
 
@@ -2055,15 +2055,15 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$test=mysql_query($sql);
 		$nb_pb_cpe=mysql_num_rows($test);
 		if($nb_pb_cpe==0){
-			echo "<p>Aucun enregistrement dans la table 'j_eleves_cpe' n'a de login élève ou de login CPE vide.</p>\n";
+			echo "<p>Aucun enregistrement dans la table 'j_eleves_cpe' n'a de login Ã©lÃ¨ve ou de login CPE vide.</p>\n";
 		}
 		elseif($nb_pb_cpe==1){
-			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_cpe' a un login élève ou un login CPE vide.<br />Cet enregistrement peut perturber la désignation de CPE responsable.<br />Vous devrier le supprimer.</p>\n";
+			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_cpe' a un login Ã©lÃ¨ve ou un login CPE vide.<br />Cet enregistrement peut perturber la dÃ©signation de CPE responsable.<br />Vous devrier le supprimer.</p>\n";
 			$temoin_pb="y";
 		}
 		else{
-			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_cpe' ont un login élève ou un login CPE vide.<br />\n";
-			echo "Ces enregistrements peuvent perturber la désignation de CPE responsable.<br />\n";
+			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_cpe' ont un login Ã©lÃ¨ve ou un login CPE vide.<br />\n";
+			echo "Ces enregistrements peuvent perturber la dÃ©signation de CPE responsable.<br />\n";
 			echo "Vous devrier les supprimer.</p>\n";
 			$temoin_pb="y";
 		}
@@ -2074,15 +2074,15 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$test=mysql_query($sql);
 		$nb_pb_cpe=mysql_num_rows($test);
 		if($nb_pb_cpe==0){
-			echo "<p>Aucun enregistrement dans la table 'j_eleves_cpe' n'associe un élève non scolarisé à un CPE.</p>\n";
+			echo "<p>Aucun enregistrement dans la table 'j_eleves_cpe' n'associe un Ã©lÃ¨ve non scolarisÃ© Ã  un CPE.</p>\n";
 		}
 		elseif($nb_pb_cpe==1){
-			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_cpe' associe un élève non scolarisé à un CPE.<br />Cet enregistrement peut perturber la désignation de CPE responsable.<br />Vous devrier le supprimer.</p>\n";
+			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_cpe' associe un Ã©lÃ¨ve non scolarisÃ© Ã  un CPE.<br />Cet enregistrement peut perturber la dÃ©signation de CPE responsable.<br />Vous devrier le supprimer.</p>\n";
 			$temoin_pb="y";
 		}
 		else{
-			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_cpe' associent des élèves non scolarisés à un ou des CPE.<br />\n";
-			echo "Ces enregistrements peuvent perturber la désignation de CPE responsable.<br />\n";
+			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_cpe' associent des Ã©lÃ¨ves non scolarisÃ©s Ã  un ou des CPE.<br />\n";
+			echo "Ces enregistrements peuvent perturber la dÃ©signation de CPE responsable.<br />\n";
 			echo "Vous devrier les supprimer.</p>\n";
 			$temoin_pb="y";
 		}
@@ -2091,17 +2091,17 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$test=mysql_query($sql);
 		$nb_pb_pp=mysql_num_rows($test);
 		if($nb_pb_pp==0){
-			echo "<p>Aucun enregistrement dans la table 'j_eleves_professeurs' n'a de login élève ou de login $gepi_prof_suivi vide.</p>\n";
+			echo "<p>Aucun enregistrement dans la table 'j_eleves_professeurs' n'a de login Ã©lÃ¨ve ou de login $gepi_prof_suivi vide.</p>\n";
 		}
 		elseif($nb_pb_pp==1){
-			echo "<p><b>$nb_pb_pp</b> enregistrement dans la table 'j_eleves_professeurs' a un login élève ou un login $gepi_prof_suivi vide.<br />\n";
-			echo "Cet enregistrement peut perturber la désignation de $gepi_prof_suivi.<br />\n";
+			echo "<p><b>$nb_pb_pp</b> enregistrement dans la table 'j_eleves_professeurs' a un login Ã©lÃ¨ve ou un login $gepi_prof_suivi vide.<br />\n";
+			echo "Cet enregistrement peut perturber la dÃ©signation de $gepi_prof_suivi.<br />\n";
 			echo "Vous devrier le supprimer.</p>\n";
 			$temoin_pb="y";
 		}
 		else{
-			echo "<p><b>$nb_pb_pp</b> enregistrements dans la table 'j_eleves_professeurs' ont un login élève ou un login $gepi_prof_suivi vide.<br />\n";
-			echo "Ces enregistrements peuvent perturber la désignation de $gepi_prof_suivi.<br />\n";
+			echo "<p><b>$nb_pb_pp</b> enregistrements dans la table 'j_eleves_professeurs' ont un login Ã©lÃ¨ve ou un login $gepi_prof_suivi vide.<br />\n";
+			echo "Ces enregistrements peuvent perturber la dÃ©signation de $gepi_prof_suivi.<br />\n";
 			echo "Vous devrier les supprimer.</p>\n";
 			$temoin_pb="y";
 		}
@@ -2110,37 +2110,37 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$test=mysql_query($sql);
 		$nb_pb_cpe=mysql_num_rows($test);
 		if($nb_pb_cpe==0){
-			echo "<p>Aucun enregistrement dans la table 'j_eleves_professeurs' n'associe un élève non scolarisé à un $gepi_prof_suivi.</p>\n";
+			echo "<p>Aucun enregistrement dans la table 'j_eleves_professeurs' n'associe un Ã©lÃ¨ve non scolarisÃ© Ã  un $gepi_prof_suivi.</p>\n";
 		}
 		elseif($nb_pb_cpe==1){
-			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_professeurs' associe un élève non scolarisé à un $gepi_prof_suivi.<br />Cet enregistrement peut perturber la désignation de $gepi_prof_suivi.<br />Vous devrier le supprimer.</p>\n";
+			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_professeurs' associe un Ã©lÃ¨ve non scolarisÃ© Ã  un $gepi_prof_suivi.<br />Cet enregistrement peut perturber la dÃ©signation de $gepi_prof_suivi.<br />Vous devrier le supprimer.</p>\n";
 			$temoin_pb="y";
 		}
 		else{
-			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_professeurs' associent des élèves non scolarisés à un ou des $gepi_prof_suivi.<br />\n";
-			echo "Ces enregistrements peuvent perturber la désignation de $gepi_prof_suivi.<br />\n";
+			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_professeurs' associent des Ã©lÃ¨ves non scolarisÃ©s Ã  un ou des $gepi_prof_suivi.<br />\n";
+			echo "Ces enregistrements peuvent perturber la dÃ©signation de $gepi_prof_suivi.<br />\n";
 			echo "Vous devrier les supprimer.</p>\n";
 			$temoin_pb="y";
 		}
 
 		if($temoin_pb=="y"){
-			echo "<p>Des erreurs ont été relevées.</p>\n";
-			echo "<p>Si vous voulez effectuer le nettoyage, cliquez sur le bouton ci-dessous.<br />Vous devriez contrôler par la suite si toutes vos associations CPE/élève et $gepi_prof_suivi/élève sont bien renseignées.</p>\n";
+			echo "<p>Des erreurs ont Ã©tÃ© relevÃ©es.</p>\n";
+			echo "<p>Si vous voulez effectuer le nettoyage, cliquez sur le bouton ci-dessous.<br />Vous devriez contrÃ´ler par la suite si toutes vos associations CPE/Ã©lÃ¨ve et $gepi_prof_suivi/Ã©lÃ¨ve sont bien renseignÃ©es.</p>\n";
 
 			echo "<form name='formulaire' action=\"clean_tables.php\" method=\"post\">\n";
 			echo add_token_field();
-			echo "<center><input type=submit value='Lancer la procédure' /></center>\n";
+			echo "<center><input type=submit value='Lancer la procÃ©dure' /></center>\n";
 			echo "<input type='hidden' name='action' value='check_jec_jep_point' />\n";
 			echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
 			echo "</form>\n";
 		}
 		else{
-			echo "<p>Aucune erreur n'a été relevée.</p>\n";
+			echo "<p>Aucune erreur n'a Ã©tÃ© relevÃ©e.</p>\n";
 		}
 	}
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_edt') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<p><b>Nettoyage des tables EDT&nbsp;:</b> \n";
@@ -2154,16 +2154,16 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 	echo "</p>\n";
 
-	echo "<p>Terminé.</p>\n";
+	echo "<p>TerminÃ©.</p>\n";
 
 } elseif (isset($_REQUEST['action']) AND $_REQUEST['action'] == 'clean_absences') {
 	echo "<p class=bold>";
 	if(isset($_GET['chgt_annee'])) {
-		echo "<a href='../gestion/changement_d_annee.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de Changement d'année</a> ";
+		echo "<a href='../gestion/changement_d_annee.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Ã  la page de Changement d'annÃ©e</a> ";
 	}
 	else {
 		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-		echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+		echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	}
 	echo "</p>\n";
 
@@ -2183,7 +2183,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 
 	if(!isset($date_limite)) {
-		echo "<p style='color:red;'>Abandon&nbsp;: Aucune date limite n'a été saisie.</p>\n";
+		echo "<p style='color:red;'>Abandon&nbsp;: Aucune date limite n'a Ã©tÃ© saisie.</p>\n";
 	}
 	else {
 		echo "<p><b>Nettoyage des tables absences&nbsp;:</b> \n";
@@ -2253,11 +2253,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		echo "</p>\n";
 
-		echo "<p>Terminé.</p>\n";
+		echo "<p>TerminÃ©.</p>\n";
 	}
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_cdt') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<p><b>Nettoyage des tables du module Cahier de textes&nbsp;:</b> \n";
@@ -2276,17 +2276,17 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 	echo "</p>\n";
 
-	echo "<p>Terminé.</p>\n";
+	echo "<p>TerminÃ©.</p>\n";
 } elseif((isset($_POST['action']) AND $_POST['action'] == 'verif_interclassements')||(isset($_POST['maj']) AND $_POST['maj'] == 'verif_interclassements')||(isset($_GET['maj']) AND $_GET['maj'] == 'verif_interclassements')) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='verif_interclassements')) {
-		$texte_info_action="<h2 align=\"center\">Etape 13/$total_etapes<br />Vérification des interclassements</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 13/$total_etapes<br />VÃ©rification des interclassements</h2>\n";
 	}
 	else {
-		$texte_info_action="<h2>Vérification des interclassements</h2>\n";
+		$texte_info_action="<h2>VÃ©rification des interclassements</h2>\n";
 	}
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
@@ -2294,7 +2294,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$sql="SHOW TABLES;";
 	$res_table=mysql_query($sql);
 	if(mysql_num_rows($res_table)==0) {
-		$texte_info_action="<p style='color:red;'>Aucune table n'a été trouvée???</p>\n";
+		$texte_info_action="<p style='color:red;'>Aucune table n'a Ã©tÃ© trouvÃ©e???</p>\n";
 	}
 	else {
 		$texte_info_action="";
@@ -2341,7 +2341,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$sql="SELECT DISTINCT collation($lig->Field) as c FROM $tab[0];";
 				$res_collation=mysql_query($sql);
 				if(mysql_num_rows($res_collation)==0) {
-					$texte_info_action.="Table vide... détection de l'interclassement impossible";
+					$texte_info_action.="Table vide... dÃ©tection de l'interclassement impossible";
 				}
 				else {
 					while($lig_collation=mysql_fetch_object($res_champs)) {
@@ -2367,11 +2367,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		$nb_collations=count($tab_collations);
 		if($nb_collations==1) {
-			$texte_info_action.="<p>Un seul interclassement a été trouvé dans vos tables.<br />Il n'y a pas de problème d'interclassement/collation.</p>\n";
+			$texte_info_action.="<p>Un seul interclassement a Ã©tÃ© trouvÃ© dans vos tables.<br />Il n'y a pas de problÃ¨me d'interclassement/collation.</p>\n";
 		}
 		elseif($nb_collations>1) {
-			$texte_info_action.="<p style='color:red;'>$nb_collations interclassements ont été trouvés dans vos tables.<br />Cela peut représenter un problème si deux interclassements différents sont utilisés sur une jointure de tables.<br />En cas de doute, signalez sur la liste de diffusion gepi-users les interclassements relevés (<i>en indiquant sur quels champs cela se produit</i>).</p>\n";
-			$texte_info_action.="<p>Voici la liste des interclassements trouvés&nbsp;: ";
+			$texte_info_action.="<p style='color:red;'>$nb_collations interclassements ont Ã©tÃ© trouvÃ©s dans vos tables.<br />Cela peut reprÃ©senter un problÃ¨me si deux interclassements diffÃ©rents sont utilisÃ©s sur une jointure de tables.<br />En cas de doute, signalez sur la liste de diffusion gepi-users les interclassements relevÃ©s (<i>en indiquant sur quels champs cela se produit</i>).</p>\n";
+			$texte_info_action.="<p>Voici la liste des interclassements trouvÃ©s&nbsp;: ";
 			for($loop=0;$loop<count($tab_collations);$loop++) {
 				if($loop>0) {$texte_info_action.=", ";}
 				$texte_info_action.="$tab_collations[$loop]";
@@ -2380,7 +2380,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 	}
 
-	$texte_info_action.="<p>Terminé.</p>";
+	$texte_info_action.="<p>TerminÃ©.</p>";
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
 
@@ -2404,17 +2404,17 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 } elseif ((isset($_POST['action']) AND $_POST['action'] == 'corrige_ordre_matieres_professeurs')||(isset($_POST['maj']) AND $_POST['maj'] == 'corrige_ordre_matieres_professeurs')||(isset($_GET['maj']) AND $_GET['maj'] == 'corrige_ordre_matieres_professeurs')) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='corrige_ordre_matieres_professeurs')) {
-		$texte_info_action="<h2 align=\"center\">Etape 14/$total_etapes<br />Vérification de l'ordre des matières des professeurs</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 14/$total_etapes<br />VÃ©rification de l'ordre des matiÃ¨res des professeurs</h2>\n";
 	}
 	else {
-		$texte_info_action="<h2>Vérification de l'ordre des matières des professeurs</h2>\n";
+		$texte_info_action="<h2>VÃ©rification de l'ordre des matiÃ¨res des professeurs</h2>\n";
 	}
 
-	$texte_info_action.="<p><b>Correction de l'ordre de matières des professeurs&nbsp;:</b> \n";
+	$texte_info_action.="<p><b>Correction de l'ordre de matiÃ¨res des professeurs&nbsp;:</b> \n";
 	$texte_info_action.="</p>\n";
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
@@ -2423,7 +2423,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$texte_info_action="<p>Aucune association professeur/matière n'est enregistrée dans la table 'j_professeurs_matieres'.</p>\n";
+		$texte_info_action="<p>Aucune association professeur/matiÃ¨re n'est enregistrÃ©e dans la table 'j_professeurs_matieres'.</p>\n";
 	}
 	else {
 		$texte_info_action="";
@@ -2440,7 +2440,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			}
 
 			if(in_array($lig->ordre_matieres,$tab_ordre_matieres)) {
-				$texte_info_action.="Rang $lig->ordre_matieres de matière en doublon pour $lig->id_professeur (<i>$lig->id_matiere</i>)<br />\n";
+				$texte_info_action.="Rang $lig->ordre_matieres de matiÃ¨re en doublon pour $lig->id_professeur (<i>$lig->id_matiere</i>)<br />\n";
 				$nb_corrections++;
 			}
 			$tab_ordre_matieres[]=$lig->ordre_matieres;
@@ -2450,8 +2450,8 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$cpt++;
 		}
 	}
-	$texte_info_action.="<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
-	$texte_info_action.="<p>Terminé.</p>\n";
+	$texte_info_action.="<p>$nb_corrections correction(s) effectuÃ©e(s) avec $nb_erreurs erreur(s).</p>";
+	$texte_info_action.="<p>TerminÃ©.</p>\n";
 
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
@@ -2476,31 +2476,31 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 } elseif ((isset($_POST['action']) AND $_POST['action'] == 'controle_categories_matieres')||(isset($_POST['maj']) AND $_POST['maj'] == 'controle_categories_matieres')||(isset($_GET['maj']) AND $_GET['maj'] == 'controle_categories_matieres')) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='controle_categories_matieres')) {
-		$texte_info_action="<h2 align=\"center\">Etape 15/$total_etapes<br />Vérification des catégories de matières</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 15/$total_etapes<br />VÃ©rification des catÃ©gories de matiÃ¨res</h2>\n";
 	}
 	else {
-		$texte_info_action="<h2>Vérification des catégories de matières</h2>\n";
+		$texte_info_action="<h2>VÃ©rification des catÃ©gories de matiÃ¨res</h2>\n";
 	}
 
-	$texte_info_action.="<p><b>Contrôler des catégories de matières&nbsp;:</b> \n";
+	$texte_info_action.="<p><b>ContrÃ´ler des catÃ©gories de matiÃ¨res&nbsp;:</b> \n";
 	$texte_info_action.="</p>\n";
 
 	$sql="SELECT id, classe FROM classes ORDER BY classe;";
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$texte_info_action.="<p>Aucune classe n'est enregistrée dans la table 'classes'.</p>\n";
+		$texte_info_action.="<p>Aucune classe n'est enregistrÃ©e dans la table 'classes'.</p>\n";
 	}
 	else {
 		$nb_corrections=0;
 		$nb_erreurs=0;
 		$prof_precedent="";
 		while($lig=mysql_fetch_object($res)) {
-			// categorie_id=='0' pour la "catégorie" Aucune... non présente dans matieres_categories
+			// categorie_id=='0' pour la "catÃ©gorie" Aucune... non prÃ©sente dans matieres_categories
 			$sql="SELECT DISTINCT categorie_id, id_classe FROM j_groupes_classes jgc WHERE id_classe='$lig->id' and categorie_id!='0' AND categorie_id not in (select categorie_id from j_matieres_categories_classes where classe_id='$lig->id');";
 			$res2=mysql_query($sql);
 			if(mysql_num_rows($res2)>0) {
@@ -2509,13 +2509,13 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 					$sql="SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id='$lig2->categorie_id'";
 					$res_cat=mysql_query($sql);
 					if(mysql_num_rows($res_cat)==0) {
-						$texte_info_action.="<span style='color:red'>La catégorie n°$lig2->categorie_id associée à la classe n°$lig->id ($lig->classe) n'existe pas dans la table 'matieres_categories'.</span><br />Vous devriez revoir le paramétrage des catégories.<br />Une solution consiste à forcer le même paramétrage pour toutes les classes depuis la page de <a href='../matieres/index.php' target='_blank'>Gestion des matières</a><br />Sinon, vous pouvez contrôler et Enregistrer dans la page <a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>Gestion des classes/&lt;$lig->classe&gt;/Enseignements</a> (<i>voir le ou les icones <img src='../images/icons/flag2.gif' width='17' height='18' /></i>).<br />";
+						$texte_info_action.="<span style='color:red'>La catÃ©gorie nÂ°$lig2->categorie_id associÃ©e Ã  la classe nÂ°$lig->id ($lig->classe) n'existe pas dans la table 'matieres_categories'.</span><br />Vous devriez revoir le paramÃ©trage des catÃ©gories.<br />Une solution consiste Ã  forcer le mÃªme paramÃ©trage pour toutes les classes depuis la page de <a href='../matieres/index.php' target='_blank'>Gestion des matiÃ¨res</a><br />Sinon, vous pouvez contrÃ´ler et Enregistrer dans la page <a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>Gestion des classes/&lt;$lig->classe&gt;/Enseignements</a> (<i>voir le ou les icones <img src='../images/icons/flag2.gif' width='17' height='18' /></i>).<br />";
 						$nb_erreurs++;
 					}
 					else {
 						$lig_cat=mysql_fetch_object($res_cat);
 	
-						$texte_info_action.="Insertion de l'association de la catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) avec la classe ".get_class_from_id($lig->id)."&nbsp;: ";
+						$texte_info_action.="Insertion de l'association de la catÃ©gorie de matiÃ¨re '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) avec la classe ".get_class_from_id($lig->id)."&nbsp;: ";
 						$sql="INSERT INTO j_matieres_categories_classes SET classe_id='$lig->id', categorie_id='$lig2->categorie_id', priority='$lig_cat->priority', affiche_moyenne='0';";
 						$res3=mysql_query($sql);
 						if(!$res3) {
@@ -2523,7 +2523,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 							$nb_erreurs++;
 						}
 						else {
-							$texte_info_action.="<span style='color:green'>Succès</span>";
+							$texte_info_action.="<span style='color:green'>SuccÃ¨s</span>";
 							$nb_corrections++;
 						}
 						$texte_info_action.="<br />";
@@ -2541,31 +2541,31 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
 		$lig_cat=mysql_fetch_object($test);
-		$texte_info_action.="<p><span style='color:red'>Anomalie&nbsp;:</span> Une catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) a l'identifiant 0 dans la table 'matieres_categories'.<br />Cet identifiant est réservé à la \"catégorie\" Aucune qui sert pour les matières ne devant être dans aucune catégorie (<i>une astuce qui permet de ne pas faire apparaitre certains enseignements sur les bulletins (demi-groupes de TP par exemple)</i>).</p>\n";
-		$texte_info_action.="<p>Suppression de cette catégorie&nbsp;: ";
+		$texte_info_action.="<p><span style='color:red'>Anomalie&nbsp;:</span> Une catÃ©gorie de matiÃ¨re '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) a l'identifiant 0 dans la table 'matieres_categories'.<br />Cet identifiant est rÃ©servÃ© Ã  la \"catÃ©gorie\" Aucune qui sert pour les matiÃ¨res ne devant Ãªtre dans aucune catÃ©gorie (<i>une astuce qui permet de ne pas faire apparaitre certains enseignements sur les bulletins (demi-groupes de TP par exemple)</i>).</p>\n";
+		$texte_info_action.="<p>Suppression de cette catÃ©gorie&nbsp;: ";
 		$sql="DELETE FROM matieres_categories WHERE id='0';";
 		$del=mysql_query($sql);
-		if($del) {$texte_info_action.="<span style='color:green'>Succès</span>";} else {echo "<span style='color:red'>Echec</span>";}
+		if($del) {$texte_info_action.="<span style='color:green'>SuccÃ¨s</span>";} else {echo "<span style='color:red'>Echec</span>";}
 		$texte_info_action.="</p>";
 	}
 
-	$texte_info_action.="<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
-	$texte_info_action.="<p>Terminé.</p>\n";
+	$texte_info_action.="<p>$nb_corrections correction(s) effectuÃ©e(s) avec $nb_erreurs erreur(s).</p>";
+	$texte_info_action.="<p>TerminÃ©.</p>\n";
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
 
 	$texte_info_action="<hr />\n";
-	$texte_info_action.="<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+	$texte_info_action.="<h2 align=\"center\">Fin de la vÃ©rification des tables</h2>\n";
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
 
 	if($mode_auto=="y") {
-		echo "<p><b>Pensez à parcourir le compte-rendu de nettoyage en page d'accueil.</b><br />Il peut s'y trouver des messages et liens concernant des opérations encore à effectuer, mais requérant un choix de votre part (<em>donc non effectuée automatiquement ici</em>).</p>\n";
+		echo "<p><b>Pensez Ã  parcourir le compte-rendu de nettoyage en page d'accueil.</b><br />Il peut s'y trouver des messages et liens concernant des opÃ©rations encore Ã  effectuer, mais requÃ©rant un choix de votre part (<em>donc non effectuÃ©e automatiquement ici</em>).</p>\n";
 	}
 
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'vidage_mod_discipline') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<p><b>Vidage des tables du module Discipline&nbsp;:</b> \n";
@@ -2588,11 +2588,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 	echo "</p>\n";
 
-	echo "<p>Terminé.</p>\n";
+	echo "<p>TerminÃ©.</p>\n";
 
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'nettoyage_mod_discipline') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a>\n";
 	echo "</p>\n";
 
 	echo "<p><b>Nettoyage des tables du module Discipline&nbsp;:</b><br />\n";
@@ -2604,7 +2604,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$sql="select * from s_traitement_incident str where str.login_ele not in (select login from s_protagonistes spr where spr.id_incident=str.id_incident);";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo mysql_num_rows($test)." protagonistes dans un traitement d'incident ne correspondent à aucun protagoniste d'incident&nbsp;: ";
+		echo mysql_num_rows($test)." protagonistes dans un traitement d'incident ne correspondent Ã  aucun protagoniste d'incident&nbsp;: ";
 
 		$nb_err=0;
 		$nb_suppr=0;
@@ -2615,11 +2615,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		if($nb_err==0) {
-			echo "<span style='color:green'>nettoyés</span>";
+			echo "<span style='color:green'>nettoyÃ©s</span>";
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
-			echo "<span style='color:green'>$nb_suppr nettoyés</span>, <span style='color:red'>$nb_err erreur lors du nettoyage</span>";
+			echo "<span style='color:green'>$nb_suppr nettoyÃ©s</span>, <span style='color:red'>$nb_err erreur lors du nettoyage</span>";
 		}
 		echo "<br />\n";
 	}
@@ -2629,7 +2629,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$sql="select * from s_sanctions san where san.login not in (select login from s_protagonistes spr where spr.id_incident=san.id_incident);";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo mysql_num_rows($test)." protagonistes dans une sanction ne correspondent à aucun protagoniste d'incident&nbsp;: ";
+		echo mysql_num_rows($test)." protagonistes dans une sanction ne correspondent Ã  aucun protagoniste d'incident&nbsp;: ";
 
 		$nb_err=0;
 		$nb_suppr=0;
@@ -2640,11 +2640,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 
 		if($nb_err==0) {
-			echo "<span style='color:green'>nettoyés</span>";
+			echo "<span style='color:green'>nettoyÃ©s</span>";
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
-			echo "<span style='color:green'>$nb_suppr nettoyés</span>, <span style='color:red'>$nb_err erreur lors du nettoyage</span>";
+			echo "<span style='color:green'>$nb_suppr nettoyÃ©s</span>, <span style='color:red'>$nb_err erreur lors du nettoyage</span>";
 		}
 		echo "<br />\n";
 	}
@@ -2652,11 +2652,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$sql="select * from s_traitement_incident where id_incident not in (select id_incident from s_incidents);";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo mysql_num_rows($test)." traitements ne correspondent à aucun incident&nbsp;: ";
+		echo mysql_num_rows($test)." traitements ne correspondent Ã  aucun incident&nbsp;: ";
 		$sql="delete from s_traitement_incident where id_incident not in (select id_incident from s_incidents);";
 		$del=mysql_query($sql);
 		if($del) {
-			echo "<span style='color:green'>nettoyés</span>";
+			echo "<span style='color:green'>nettoyÃ©s</span>";
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
@@ -2668,11 +2668,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$sql="select * from s_protagonistes where id_incident not in (select id_incident from s_incidents);";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo mysql_num_rows($test)." protagonistes ne correspondent à aucun incident&nbsp;: ";
+		echo mysql_num_rows($test)." protagonistes ne correspondent Ã  aucun incident&nbsp;: ";
 		$sql="delete from s_protagonistes where id_incident not in (select id_incident from s_incidents);";
 		$del=mysql_query($sql);
 		if($del) {
-			echo "<span style='color:green'>nettoyés</span>";
+			echo "<span style='color:green'>nettoyÃ©s</span>";
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
@@ -2684,11 +2684,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$sql="select * from s_sanctions where id_incident not in (select id_incident from s_incidents);";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo mysql_num_rows($test)." sanctions ne correspondent à aucun incident&nbsp;: ";
+		echo mysql_num_rows($test)." sanctions ne correspondent Ã  aucun incident&nbsp;: ";
 		$sql="delete from s_sanctions where id_incident not in (select id_incident from s_incidents);";
 		$del=mysql_query($sql);
 		if($del) {
-			echo "<span style='color:green'>nettoyés</span>";
+			echo "<span style='color:green'>nettoyÃ©s</span>";
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
@@ -2703,11 +2703,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$sql="select * from ".$tab_sanction[$loop]." where id_sanction not in (select id_sanction from s_sanctions);";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			echo mysql_num_rows($test)." ".$tab_txt_sanction[$loop]." ne correspondent à aucune sanction&nbsp;: ";
+			echo mysql_num_rows($test)." ".$tab_txt_sanction[$loop]." ne correspondent Ã  aucune sanction&nbsp;: ";
 			$sql="delete from s_sanctions where id_incident not in (select id_incident from s_incidents);";
 			$del=mysql_query($sql);
 			if($del) {
-				echo "<span style='color:green'>nettoyés</span>";
+				echo "<span style='color:green'>nettoyÃ©s</span>";
 				$cpt_nettoyage+=mysql_num_rows($test);
 			}
 			else {
@@ -2717,25 +2717,25 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 	}
 
-	if($cpt_nettoyage==0) {echo "Aucune scorie n'a été trouvée.";}
+	if($cpt_nettoyage==0) {echo "Aucune scorie n'a Ã©tÃ© trouvÃ©e.";}
 	echo "</p>\n";
 
-	echo "<p>Terminé.</p>\n";
+	echo "<p>TerminÃ©.</p>\n";
 }
 else {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-	//echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
+	//echo "| <a href='clean_tables.php'>Retour page VÃ©rification / Nettoyage des tables</a></p>\n";
 	echo "</p>\n";
 
-	echo "<h2>Sauvegarde préalable</h2>\n";
+	echo "<h2>Sauvegarde prÃ©alable</h2>\n";
 	echo "<div style='margin-left: 3em;'>\n";
 
-		echo "<p>Il est très vivement conseillé de <b>faire une sauvegarde de la base MySql avant de lancer la procédure.</b></p>\n";
+		echo "<p>Il est trÃ¨s vivement conseillÃ© de <b>faire une sauvegarde de la base MySql avant de lancer la procÃ©dure.</b></p>\n";
 		echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php?action=dump\" method=post name='formulaire'>\n";
 		echo add_token_field();
-		echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>\n";
-		echo "<p>Il est également vivement conseillé de <b><a href='../gestion/gestion_connect.php'>désactiver les connexions à GEPI</a> durant la phase de nettoyage</b>.</p>
-	<p align='center'><b><font size=\"+1\">Attention : selon la taille de la base, cette opération peut durer plusieurs heures.</font></b></p>\n";
+		echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de donnÃ©es\" /></form></center>\n";
+		echo "<p>Il est Ã©galement vivement conseillÃ© de <b><a href='../gestion/gestion_connect.php'>dÃ©sactiver les connexions Ã  GEPI</a> durant la phase de nettoyage</b>.</p>
+	<p align='center'><b><font size=\"+1\">Attention : selon la taille de la base, cette opÃ©ration peut durer plusieurs heures.</font></b></p>\n";
 
 	echo "</div>\n";
 
@@ -2745,22 +2745,22 @@ else {
 	echo "<h2>Nettoyages</h2>\n";
 	echo "<div style='margin-left: 3em;'>\n";
 
-		echo "<p>Cette procédure opère un <b>nettoyage</b> des lignes inutiles dans les <b>tables de liaison</b> de la base MySql de GEPI et dans les tables des données scolaires des élèves (notes, appréciations, absences).";
+		echo "<p>Cette procÃ©dure opÃ¨re un <b>nettoyage</b> des lignes inutiles dans les <b>tables de liaison</b> de la base MySql de GEPI et dans les tables des donnÃ©es scolaires des Ã©lÃ¨ves (notes, apprÃ©ciations, absences).";
 		echo "<br />Les tables de liaison contiennent des informations qui mettent en relation les tables principales de GEPI
-	(élèves, professeurs, matières, classes).<br /><br />
-	Du fait de bugs mineurs (éventuellement déjà réglés mais présents dans des versions antérieures de GEPI) ou de mauvaises manipulations,
-	ces tables de liaison peuvent contenir des données obsolètes ou des doublons qui peuvent nuire à un fonctionnement optimal de GEPI.";
+	(Ã©lÃ¨ves, professeurs, matiÃ¨res, classes).<br /><br />
+	Du fait de bugs mineurs (Ã©ventuellement dÃ©jÃ  rÃ©glÃ©s mais prÃ©sents dans des versions antÃ©rieures de GEPI) ou de mauvaises manipulations,
+	ces tables de liaison peuvent contenir des donnÃ©es obsolÃ¨tes ou des doublons qui peuvent nuire Ã  un fonctionnement optimal de GEPI.";
 	
 	
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<p><b>Cliquez sur le bouton suivant pour commencer le nettoyage des tables de la base</b></p>\n";
-		echo "<p>Cette procédure s'effectue en plusieurs étapes : à chaque étape, une page affiche le compte-rendu du nettoyage et un <b>bouton situé en bas de la page</b> vous permet de passer à l'étape suivante.</p>\n";
+		echo "<p>Cette procÃ©dure s'effectue en plusieurs Ã©tapes : Ã  chaque Ã©tape, une page affiche le compte-rendu du nettoyage et un <b>bouton situÃ© en bas de la page</b> vous permet de passer Ã  l'Ã©tape suivante.</p>\n";
 	
 		echo "<div align='center'>\n";
-		echo "<p><input type='checkbox' name='mode_auto' id='mode_auto' value='y' /><label for='mode_auto' style='cursor: pointer;'> Mode automatique : Cochez cette case pour laisser dérouler les étapes du nettoyage.<br />Le rapport sera rappelé en page d'accueil.</label>\n";
+		echo "<p><input type='checkbox' name='mode_auto' id='mode_auto' value='y' /><label for='mode_auto' style='cursor: pointer;'> Mode automatique : Cochez cette case pour laisser dÃ©rouler les Ã©tapes du nettoyage.<br />Le rapport sera rappelÃ© en page d'accueil.</label>\n";
 		echo "<br />\n";
-		echo "<input type=submit value='Procéder au nettoyage des tables' />\n";
+		echo "<input type=submit value='ProcÃ©der au nettoyage des tables' />\n";
 		echo "</div>\n";
 		echo "<input type=hidden name='maj' value='1' />\n";
 		echo "<input type=hidden name='valid' value='$valid' />\n";
@@ -2768,37 +2768,37 @@ else {
 	
 		echo "<p>Ou n'effectuer que certains des nettoyages de la liste&nbsp;:<br />\n";
 		echo "<a href='clean_tables.php?maj=1".add_token_in_url()."'>Tables AID, j_eleves_etablissements, j_eleves_regime et j_professeurs_matieres</a><br />\n";
-		echo "<a href='clean_tables.php?maj=2".add_token_in_url()."'>Table j_eleves_professeurs</a> (<i>associations élèves/".getSettingValue('gepi_prof_suivi')."</i>)<br />\n";
-		echo "<a href='clean_tables.php?maj=4".add_token_in_url()."'>Table j_eleves_classes</a> (<i>inscription des élèves dans les classes pour chaque période</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=2".add_token_in_url()."'>Table j_eleves_professeurs</a> (<i>associations Ã©lÃ¨ves/".getSettingValue('gepi_prof_suivi')."</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=4".add_token_in_url()."'>Table j_eleves_classes</a> (<i>inscription des Ã©lÃ¨ves dans les classes pour chaque pÃ©riode</i>)<br />\n";
 		echo "<a href='clean_tables.php?maj=6".add_token_in_url()."'>Tables aid_appreciations et avis_conseil_classe</a><br />\n";
-		echo "<a href='clean_tables.php?maj=7".add_token_in_url()."'>Table matieres_appreciations</a> (<i>appréciations des élèves sur les bulletins</i>)<br />\n";
-		echo "<a href='clean_tables.php?maj=8".add_token_in_url()."'>Table matieres_notes</a> (<i>notes des élèves sur les bulletins</i>)<br />\n";
-		echo "<a href='clean_tables.php?maj=9".add_token_in_url()."'>Tables concernant les groupes</a> (<i>associations élèves/enseignements/périodes/classes</i>)<br />\n";
-		echo "<a href='clean_tables.php?maj=10".add_token_in_url()."'>Tables concernant les comptes élèves et responsables</a><br />\n";
+		echo "<a href='clean_tables.php?maj=7".add_token_in_url()."'>Table matieres_appreciations</a> (<i>apprÃ©ciations des Ã©lÃ¨ves sur les bulletins</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=8".add_token_in_url()."'>Table matieres_notes</a> (<i>notes des Ã©lÃ¨ves sur les bulletins</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=9".add_token_in_url()."'>Tables concernant les groupes</a> (<i>associations Ã©lÃ¨ves/enseignements/pÃ©riodes/classes</i>)<br />\n";
+		echo "<a href='clean_tables.php?maj=10".add_token_in_url()."'>Tables concernant les comptes Ã©lÃ¨ves et responsables</a><br />\n";
 		echo "<a href='clean_tables.php?maj=11".add_token_in_url()."'>Tables concernant les grilles PDF.</a><br />\n";
-		echo "<a href='clean_tables.php?maj=check_jec_jep_point".add_token_in_url()."'>Contrôle des tables j_eleves_cpe et j_eleves_professeurs.</a><br />\n";
-		echo "<a href='clean_tables.php?maj=verif_interclassements".add_token_in_url()."'>Vérification des interclassements (<em>collation,...</em>).</a><br />\n";
-		echo "<a href='clean_tables.php?maj=corrige_ordre_matieres_professeurs".add_token_in_url()."'>Vérification de l'ordre des matières pour les professeurs.</a><br />\n";
-		echo "<a href='clean_tables.php?maj=controle_categories_matieres".add_token_in_url()."'>Vérification des catégories de matières.</a><br />\n";
+		echo "<a href='clean_tables.php?maj=check_jec_jep_point".add_token_in_url()."'>ContrÃ´le des tables j_eleves_cpe et j_eleves_professeurs.</a><br />\n";
+		echo "<a href='clean_tables.php?maj=verif_interclassements".add_token_in_url()."'>VÃ©rification des interclassements (<em>collation,...</em>).</a><br />\n";
+		echo "<a href='clean_tables.php?maj=corrige_ordre_matieres_professeurs".add_token_in_url()."'>VÃ©rification de l'ordre des matiÃ¨res pour les professeurs.</a><br />\n";
+		echo "<a href='clean_tables.php?maj=controle_categories_matieres".add_token_in_url()."'>VÃ©rification des catÃ©gories de matiÃ¨res.</a><br />\n";
 		//echo "<span style='color:red'>A DETAILLER...</span>";
 		echo "</p>\n";
 	
 		echo "<hr />\n";
 	
-		echo "<h2>Nettoyages complémentaires</h2>\n";
+		echo "<h2>Nettoyages complÃ©mentaires</h2>\n";
 	
-		echo "<p>Il est arrivé que des élèves puissent être inscrits à des groupes sur des périodes où ils ne sont plus dans la classe (<i>suite à des changements de classes, départs,... par exemple</i>).<br />Il en résulte des affichages d'erreur non fatales, mais disgracieuses.<br />Le problème n'est normalement plus susceptible de revenir, mais dans le cas où vous auriez des erreurs inexpliquées concernant /lib/groupes.inc.php, vous pouvez contrôler les appartenances aux groupes/classes en visitant la page suivante:</p>\n";
+		echo "<p>Il est arrivÃ© que des Ã©lÃ¨ves puissent Ãªtre inscrits Ã  des groupes sur des pÃ©riodes oÃ¹ ils ne sont plus dans la classe (<i>suite Ã  des changements de classes, dÃ©parts,... par exemple</i>).<br />Il en rÃ©sulte des affichages d'erreur non fatales, mais disgracieuses.<br />Le problÃ¨me n'est normalement plus susceptible de revenir, mais dans le cas oÃ¹ vous auriez des erreurs inexpliquÃ©es concernant /lib/groupes.inc.php, vous pouvez contrÃ´ler les appartenances aux groupes/classes en visitant la page suivante:</p>\n";
 	
-		//echo "<p><a href='verif_groupes.php'>Contrôler les appartenances d'élèves à des groupes/classes</a>.</p>\n";
+		//echo "<p><a href='verif_groupes.php'>ContrÃ´ler les appartenances d'Ã©lÃ¨ves Ã  des groupes/classes</a>.</p>\n";
 	
 		echo "<form action=\"verif_groupes.php\" method=\"post\">\n";
-		echo "<center><input type=submit value='Contrôler les groupes' /></center>\n";
+		echo "<center><input type=submit value='ContrÃ´ler les groupes' /></center>\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
 	
-		//echo "<p>Jusqu'à la version 1.4.3-1, GEPI a comporté un bug sur le calcul des moyennes de conteneurs (<i>boites/sous-matières</i>).<br />\nSi on déplaçait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problème est désormais corrigé, mais dans le cas où vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matières.<br />\nLes modifications effectuées seront affichées.</p>\n";
-		echo "<p>Jusqu'à la version 1.4.3-1, GEPI a comporté un bug sur le calcul des moyennes de conteneurs (<i>".getSettingValue("gepi_denom_boite")."s</i>).<br />\nSi on déplaçait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problème est désormais corrigé, mais dans le cas où vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matières.<br />\nLes modifications effectuées seront affichées.</p>\n";
+		//echo "<p>Jusqu'Ã  la version 1.4.3-1, GEPI a comportÃ© un bug sur le calcul des moyennes de conteneurs (<i>boites/sous-matiÃ¨res</i>).<br />\nSi on dÃ©plaÃ§ait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problÃ¨me est dÃ©sormais corrigÃ©, mais dans le cas oÃ¹ vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matiÃ¨res.<br />\nLes modifications effectuÃ©es seront affichÃ©es.</p>\n";
+		echo "<p>Jusqu'Ã  la version 1.4.3-1, GEPI a comportÃ© un bug sur le calcul des moyennes de conteneurs (<i>".getSettingValue("gepi_denom_boite")."s</i>).<br />\nSi on dÃ©plaÃ§ait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problÃ¨me est dÃ©sormais corrigÃ©, mais dans le cas oÃ¹ vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matiÃ¨res.<br />\nLes modifications effectuÃ©es seront affichÃ©es.</p>\n";
 	
 		echo "<form action=\"recalcul_moy_conteneurs.php\" method=\"post\">\n";
 		echo "<center><input type=submit value='Recalculer les moyennes de conteneurs' /></center>\n";
@@ -2806,57 +2806,57 @@ else {
 	
 		echo "<hr />\n";
 	
-		echo "<p>La procédure de sauvegarde avec la commande 'mysqldump' dans la version 1.4.4-stable contenait un bug aboutissant à la perte de la fonction auto_increment sur certains champs, ce qui peut aboutir très rapidement à des incohérences dans la base de données.</p>\n";
-		echo "<p>Si vous avez restauré une sauvegarde générée avec la méthode mysqldump, vous devez absolument lancer cette vérification le plus rapidement possible et corriger les erreurs si le script ne peut les corriger automatiquement.</p>\n";
-		echo "<p><b>Il est vivement recommandé de faire une sauvegarde de la base avant d'effectuer cette opération !</b></p>\n";
+		echo "<p>La procÃ©dure de sauvegarde avec la commande 'mysqldump' dans la version 1.4.4-stable contenait un bug aboutissant Ã  la perte de la fonction auto_increment sur certains champs, ce qui peut aboutir trÃ¨s rapidement Ã  des incohÃ©rences dans la base de donnÃ©es.</p>\n";
+		echo "<p>Si vous avez restaurÃ© une sauvegarde gÃ©nÃ©rÃ©e avec la mÃ©thode mysqldump, vous devez absolument lancer cette vÃ©rification le plus rapidement possible et corriger les erreurs si le script ne peut les corriger automatiquement.</p>\n";
+		echo "<p><b>Il est vivement recommandÃ© de faire une sauvegarde de la base avant d'effectuer cette opÃ©ration !</b></p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
-		echo "<center><input type=submit value='Contrôler les champs auto-incrémentés' /></center>\n";
+		echo "<center><input type=submit value='ContrÃ´ler les champs auto-incrÃ©mentÃ©s' /></center>\n";
 		echo "<input type='hidden' name='action' value='check_auto_increment' />\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
 	
-		echo "<p>Gepi a un temps contenu un bug sur le format des login.<br />La présence de 'point' dans un nom de login par exemple pouvait provoquer des dysfonctionnements.<br />Le contenu des tables 'j_eleves_cpe' et 'j_eleves_professeurs' pouvait être affecté.</p>\n";
-		echo "<p><b>Il est vivement recommandé de faire une sauvegarde de la base avant d'effectuer cette opération !</b></p>\n";
+		echo "<p>Gepi a un temps contenu un bug sur le format des login.<br />La prÃ©sence de 'point' dans un nom de login par exemple pouvait provoquer des dysfonctionnements.<br />Le contenu des tables 'j_eleves_cpe' et 'j_eleves_professeurs' pouvait Ãªtre affectÃ©.</p>\n";
+		echo "<p><b>Il est vivement recommandÃ© de faire une sauvegarde de la base avant d'effectuer cette opÃ©ration !</b></p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
-		echo "<center><input type=submit value=\"Contrôler les tables 'j_eleves_cpe' et 'j_eleves_professeurs'\" /></center>\n";
+		echo "<center><input type=submit value=\"ContrÃ´ler les tables 'j_eleves_cpe' et 'j_eleves_professeurs'\" /></center>\n";
 		echo "<input type='hidden' name='action' value='check_jec_jep_point' />\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
 	
-		echo "<p>Vérification de l'Emploi du temps.</p>\n";
-		echo "Pour vérifier votre emploi du temps en cas d'anomalies, suivez ce lien&nbsp;: <a href='../edt_organisation/verifier_edt.php?a=a".add_token_in_url()."'>Vérification de l'Emploi du temps</a></p>\n";
+		echo "<p>VÃ©rification de l'Emploi du temps.</p>\n";
+		echo "Pour vÃ©rifier votre emploi du temps en cas d'anomalies, suivez ce lien&nbsp;: <a href='../edt_organisation/verifier_edt.php?a=a".add_token_in_url()."'>VÃ©rification de l'Emploi du temps</a></p>\n";
 
 		echo "<hr />\n";
 
-		echo "<p>Contrôle de l'interclassement (<i>COLLATION</i>) des champs des tables.<br />Des interclassements différents sur des champs de deux tables intervenant dans une jointure peut provoquer des erreurs.<br />Un tel problème peut survenir avec des bases transférées d'une machine à une autre,...</p>\n";
+		echo "<p>ContrÃ´le de l'interclassement (<i>COLLATION</i>) des champs des tables.<br />Des interclassements diffÃ©rents sur des champs de deux tables intervenant dans une jointure peut provoquer des erreurs.<br />Un tel problÃ¨me peut survenir avec des bases transfÃ©rÃ©es d'une machine Ã  une autre,...</p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
-		echo "<input type=submit value=\"Contrôler les interclassements\" />\n";
+		echo "<input type=submit value=\"ContrÃ´ler les interclassements\" />\n";
 		echo "<input type='hidden' name='action' value='verif_interclassements' />\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
 	
-		echo "<p>Contrôle des ordres de matières pour les professeurs.<br />Si les ordres de matières ne sont pas correctement renseignés dans la table j_professeurs_matieres (<i>ordre_matieres tous à zéro par exemple</i>), il n'est pas possible de choisir la matière principale d'un professeur.</p>\n";
+		echo "<p>ContrÃ´le des ordres de matiÃ¨res pour les professeurs.<br />Si les ordres de matiÃ¨res ne sont pas correctement renseignÃ©s dans la table j_professeurs_matieres (<i>ordre_matieres tous Ã  zÃ©ro par exemple</i>), il n'est pas possible de choisir la matiÃ¨re principale d'un professeur.</p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
-		echo "<input type=submit value=\"Corriger les ordres de matières des professeurs\" />\n";
+		echo "<input type=submit value=\"Corriger les ordres de matiÃ¨res des professeurs\" />\n";
 		echo "<input type='hidden' name='action' value='corrige_ordre_matieres_professeurs' />\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
 	
-		echo "<p>Contrôle catégories de matières.<br />Si les vous n'obtenez aucune matière dans les relevés de notes quand les Catégories de matières sont cochées dans 'Gestion des bases/Gestion des classes/&lt;Une_classe&gt; Paramètres', les informations de la table 'j_matieres_categories_classes' sont probablement incomplètes.</p>\n";
+		echo "<p>ContrÃ´le catÃ©gories de matiÃ¨res.<br />Si les vous n'obtenez aucune matiÃ¨re dans les relevÃ©s de notes quand les CatÃ©gories de matiÃ¨res sont cochÃ©es dans 'Gestion des bases/Gestion des classes/&lt;Une_classe&gt; ParamÃ¨tres', les informations de la table 'j_matieres_categories_classes' sont probablement incomplÃ¨tes.</p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
-		echo "<input type=submit value=\"Contrôler les catégories de matières\" />\n";
+		echo "<input type=submit value=\"ContrÃ´ler les catÃ©gories de matiÃ¨res\" />\n";
 		echo "<input type='hidden' name='action' value='controle_categories_matieres' />\n";
 		echo "</form>\n";
 	
@@ -2877,20 +2877,20 @@ else {
 
 	//====================================================
 
-	echo "<h2>Nettoyage par le vide;) au changement d'année</h2>\n";
+	echo "<h2>Nettoyage par le vide;) au changement d'annÃ©e</h2>\n";
 	echo "<div style='margin-left: 3em;'>\n";
 
-		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'edt_classes', 'edt_cours', 'edt_calendrier' du module emploi du temps de Gepi.</p>\n";
+		echo "<p>Au changement d'annÃ©e, il est recommandÃ© de vider les entrÃ©es des tables 'edt_classes', 'edt_cours', 'edt_calendrier' du module emploi du temps de Gepi.</p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center><input type=submit value=\"Vider les tables Emploi du temps\" /></center>\n";
 		echo "<input type='hidden' name='action' value='clean_edt' />\n";
-		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des donnÃ©es antÃ©rieures</a> avant le changement d'annÃ©e.</p>\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
 	
-		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module abs1 de Gepi, ainsi que les tables a_agregation_decompte, a_notifications, a_saisies, a_saisies_version, a_traitements du module abs2 : </p>\n";
+		echo "<p>Au changement d'annÃ©e, il est recommandÃ© de vider les entrÃ©es des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module abs1 de Gepi, ainsi que les tables a_agregation_decompte, a_notifications, a_saisies, a_saisies_version, a_traitements du module abs2 : </p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
@@ -2898,34 +2898,34 @@ else {
 		$annee=strftime("%Y");
 		$mois=strftime("%m");
 		if($mois<=7) {$annee--;}
-		echo "pour les absences antérieures au <input type='text' name='date_limite' size='10' value='31/07/$annee' />\n";
+		echo "pour les absences antÃ©rieures au <input type='text' name='date_limite' size='10' value='31/07/$annee' />\n";
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='clean_absences' />\n";
-		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des donnÃ©es antÃ©rieures</a> avant le changement d'annÃ©e.</p>\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
 	
-		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables du module Discipline de Gepi.</p>\n";
+		echo "<p>Au changement d'annÃ©e, il est recommandÃ© de vider les entrÃ©es des tables du module Discipline de Gepi.</p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
 		echo "<input type=submit value=\"Vider les tables du module Discipline\" />\n";
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='vidage_mod_discipline' />\n";
-		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des donnÃ©es antÃ©rieures</a> avant le changement d'annÃ©e.</p>\n";
 		echo "</form>\n";
 
 		echo "<hr />\n";
 	
-		echo "<p>Au changement d'année, il faut <a href='../cahier_texte_2/archivage_cdt.php'>archiver les Cahiers de Textes</a>, puis le vider.</p>\n";
+		echo "<p>Au changement d'annÃ©e, il faut <a href='../cahier_texte_2/archivage_cdt.php'>archiver les Cahiers de Textes</a>, puis le vider.</p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
 		echo "<input type=submit value=\"Vider les tables du module Cahier de Textes\" />\n";
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='clean_cdt' />\n";
-		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des donnÃ©es antÃ©rieures</a> avant le changement d'annÃ©e.</p>\n";
 		echo "</form>\n";
 
 	echo "</div>\n";

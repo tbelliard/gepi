@@ -40,7 +40,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des professeurs";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des professeurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -49,20 +49,20 @@ echo "<p class='bold'><a href='../init_scribe/index.php'><img src='../images/ico
 if (isset($_POST['is_posted'])) {
 	check_token();
 
-	// L'admin a validé la procédure, on procède donc...
+	// L'admin a validÃ© la procÃ©dure, on procÃ¨de donc...
 	include "../lib/eole_sync_functions.inc.php";
-	// On commence par récupérer tous les profs depuis le LDAP
+	// On commence par rÃ©cupÃ©rer tous les profs depuis le LDAP
 	$ldap_server = new LDAPServer;
 	$sr = ldap_search($ldap_server->ds,$ldap_server->base_dn,"(&(uid=*)(objectclass=administrateur))");
 	$info = ldap_get_entries($ldap_server->ds,$sr);
 	
-	// On met tous les professeurs en état inactif
+	// On met tous les professeurs en Ã©tat inactif
 	$update = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE statut='professeur'");
 	
 	for($i=0;$i<$info["count"];$i++) {
 		
-		// On ajoute l'utilisateur. La fonction s'occupe toute seule de vérifier que
-		// le login n'existe pas déjà dans la base. S'il existe, on met simplement à jour
+		// On ajoute l'utilisateur. La fonction s'occupe toute seule de vÃ©rifier que
+		// le login n'existe pas dÃ©jÃ  dans la base. S'il existe, on met simplement Ã  jour
 		// les informations
 		
 		// function add_user($_login, $_nom, $_prenom, $_civilite, $_statut, $_email) {
@@ -73,7 +73,7 @@ if (isset($_POST['is_posted'])) {
 		}
 		
 		
-		// Le mail et le code civilité ne sont pas systématiquement renseignés...
+		// Le mail et le code civilitÃ© ne sont pas systÃ©matiquement renseignÃ©s...
 		
 		if (!array_key_exists("mail", $info[$i])) {
 			$info[$i]["mail"] = array();
@@ -99,26 +99,26 @@ if (isset($_POST['is_posted'])) {
 						//echo "</pre><br/><br/>";
 	}
 	
-	echo "<p>Opération effectuée.</p>";
-	echo "<p>Vous pouvez vérifier l'importation en allant sur la page de <a href='../utilisateurs/index.php'>gestion des utilisateurs</a>.</p>";
+	echo "<p>OpÃ©ration effectuÃ©e.</p>";
+	echo "<p>Vous pouvez vÃ©rifier l'importation en allant sur la page de <a href='../utilisateurs/index.php'>gestion des utilisateurs</a>.</p>";
 	echo "<br />";
-	echo "<p><center><a href='disciplines.php'>Phase suivante : importation des matières</a></center></p>";
+	echo "<p><center><a href='disciplines.php'>Phase suivante : importation des matiÃ¨res</a></center></p>";
 	
 } else {
-	echo "<p>L'opération d'importation des professeurs depuis le LDAP de Scribe va effectuer les opérations suivantes :</p>";
+	echo "<p>L'opÃ©ration d'importation des professeurs depuis le LDAP de Scribe va effectuer les opÃ©rations suivantes :</p>";
 	echo "<ul>";
-	echo "<li>Passage à l'état 'inactif' de tous les professeurs déjà présents dans la base Gepi</li>";
-	echo "<li>Tentative d'ajout de chaque utilisateur 'professeur' présent dans le LDAP</li>";
-	echo "<li>Si l'utilisateur n'existe pas, il est créé et est directement utilisable</li>";
-	echo "<li>Si l'utilisateur existe déjà, ses informations de base sont mises à jour et il passe en état 'actif', devenant directement utilisable</li>";
+	echo "<li>Passage Ã  l'Ã©tat 'inactif' de tous les professeurs dÃ©jÃ  prÃ©sents dans la base Gepi</li>";
+	echo "<li>Tentative d'ajout de chaque utilisateur 'professeur' prÃ©sent dans le LDAP</li>";
+	echo "<li>Si l'utilisateur n'existe pas, il est crÃ©Ã© et est directement utilisable</li>";
+	echo "<li>Si l'utilisateur existe dÃ©jÃ , ses informations de base sont mises Ã  jour et il passe en Ã©tat 'actif', devenant directement utilisable</li>";
 	echo "</ul>";
 	echo "<form enctype='multipart/form-data' action='professeurs.php' method=post>";
 	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes'>";
     
-    echo "<p>Etes-vous sûr de vouloir importer tous les utilisateurs depuis l'annuaire du serveur Scribe vers Gepi ?</p>";
+    echo "<p>Etes-vous sÃ»r de vouloir importer tous les utilisateurs depuis l'annuaire du serveur Scribe vers Gepi ?</p>";
     echo "<br/>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
 }
 require("../lib/footer.inc.php");

@@ -6,17 +6,17 @@
 	require_once("../lib/initialisations.inc.php");
 
 	header("Content-type: image/svg+xml");
-	echo '<?xml version="1.0" encoding="iso-8859-1"?>';
+	echo '<?xml version="1.0" encoding="utf-8"?>';
 	echo "\n";
 
-	// On précise de ne pas traiter les données avec la fonction anti_inject
+	// On prÃ©cise de ne pas traiter les donnÃ©es avec la fonction anti_inject
 	$traite_anti_inject = 'no';
 	// En quoi cela consiste-t-il?
 
 	// Initialisations files
 	//require_once("../lib/initialisations.inc.php");
 
-	// Récupération des valeurs:
+	// RÃ©cupÃ©ration des valeurs:
 	//$nb_data = $_GET['nb_data'];
 	$nb_series= $_GET['nb_series'];
 	if((strlen(preg_replace("/[0-9]/","",$nb_series))!=0)||($nb_series=="")){
@@ -45,11 +45,11 @@
 	}
 
 	/*
-	// Fonction déplacée vers /lib/share.inc.php avec ajout du remplacement des espaces et apostrophes par des tirets '_'
+	// Fonction dÃ©placÃ©e vers /lib/share.inc.php avec ajout du remplacement des espaces et apostrophes par des tirets '_'
 	function remplace_accents($chaine){
-		//$retour=strtr(my_ereg_replace("¼","OE",my_ereg_replace("½","oe",$chaine)),"ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü","AAAEEEEIIOOUUUCcaaaeeeeiioouuu");
-		//$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
-		$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine")))),"ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		//$retour=strtr(my_ereg_replace("Â¼","OE",my_ereg_replace("Â½","oe",$chaine)),"Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼","AAAEEEEIIOOUUUCcaaaeeeeiioouuu");
+		//$retour=strtr(my_ereg_replace("Ã†","AE",my_ereg_replace("Ã¦","ae",my_ereg_replace("Â¼","OE",my_ereg_replace("Â½","oe","$chaine"))))," 'Ã‚Ã„Ã€ÃÃƒÃ„Ã…Ã‡ÃŠÃ‹ÃˆÃ‰ÃŽÃÃŒÃÃ‘Ã”Ã–Ã’Ã“Ã•Â¦Ã›ÃœÃ™ÃšÃÂ¾Â´Ã¡Ã Ã¢Ã¤Ã£Ã¥Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã¬Ã­Ã±Ã´Ã¶Ã°Ã²Ã³ÃµÂ¨Ã»Ã¼Ã¹ÃºÃ½Ã¿Â¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		$retour=strtr(my_ereg_replace("Ã†","AE",my_ereg_replace("Ã¦","ae",my_ereg_replace("Â¼","OE",my_ereg_replace("Â½","oe","$chaine")))),"Ã‚Ã„Ã€ÃÃƒÃ„Ã…Ã‡ÃŠÃ‹ÃˆÃ‰ÃŽÃÃŒÃÃ‘Ã”Ã–Ã’Ã“Ã•Â¦Ã›ÃœÃ™ÃšÃÂ¾Â´Ã¡Ã Ã¢Ã¤Ã£Ã¥Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã¬Ã­Ã±Ã´Ã¶Ã°Ã²Ã³ÃµÂ¨Ã»Ã¼Ã¹ÃºÃ½Ã¿Â¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
 		return $retour;
 	}
 	*/
@@ -77,9 +77,9 @@
 
 
 	//============================================
-	writinfo('/tmp/infos_graphe.txt','w+',"Avant la récupération des moyennes.\n");
+	writinfo('/tmp/infos_graphe.txt','w+',"Avant la rÃ©cupÃ©ration des moyennes.\n");
 
-	// Récupération des moyennes:
+	// RÃ©cupÃ©ration des moyennes:
 	$moytmp=array();
 	$moyenne=array();
 	//$nb_series=$nb_data-1;
@@ -89,12 +89,12 @@
 		$moytmp[$k]=array();
 		$moytmp[$k]=explode("|",$_GET['temp'.$k]);
 		$moyenne[$k]=array();
-		// On décale pour commencer à compter à 1:
+		// On dÃ©cale pour commencer Ã  compter Ã  1:
 		for($i=1;$i<=count($moytmp[$k]);$i++){
 			$moyenne[$k][$i]=$moytmp[$k][$i-1];
 			//fwrite($fich,"\$moyenne[$k][$i]=".$moyenne[$k][$i]."\n");
-			// PROBLEME: en register_global=on, les 2ème, 3ème,... séries ne sont pas récupérées.
-			//           On obtient juste moyenne[2][1]=- et rien après.
+			// PROBLEME: en register_global=on, les 2Ã¨me, 3Ã¨me,... sÃ©ries ne sont pas rÃ©cupÃ©rÃ©es.
+			//           On obtient juste moyenne[2][1]=- et rien aprÃ¨s.
 			writinfo('/tmp/infos_graphe.txt','a+',"\$moyenne[$k][$i]=".$moyenne[$k][$i]."\n");
 		}
 	}
@@ -104,7 +104,7 @@
 
 	$periode=isset($_GET['periode']) ? $_GET['periode'] : '';
 
-	// Valeurs en dur, à modifier par la suite...
+	// Valeurs en dur, Ã  modifier par la suite...
 	//$largeurTotale=700;
 	//$hauteurTotale=600;
 
@@ -127,7 +127,7 @@
 	//settype($largeurTotale,'integer');
 	//settype($hauteurTotale,'integer');
 
-	// $taille_police de 1 à 6
+	// $taille_police de 1 Ã  6
 	//$taille_police=3;
 	$taille_police=isset($_GET['taille_police']) ? $_GET['taille_police'] : '3';
 	if((strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
@@ -144,14 +144,14 @@
 	$epaisseur_grad=1;
 
 
-	writinfo('/tmp/infos_graphe.txt','a+',"\nAvant la récupération des matières.\n");
+	writinfo('/tmp/infos_graphe.txt','a+',"\nAvant la rÃ©cupÃ©ration des matiÃ¨res.\n");
 
 	$eleve=array();
 
 	$legendy = array();
 
 	//============================================
-	// Récupération des matières:
+	// RÃ©cupÃ©ration des matiÃ¨res:
 	$mattmp=explode("|", $_GET['etiquette']);
 	for($i=1;$i<=count($mattmp);$i++){
 		$matiere[$i]=$mattmp[$i-1];
@@ -176,7 +176,7 @@
 		} else {
 			$legendy[$k]='' ;
 		}
-		// $eleve peut en fait être une moyenne de classe ou même un trimestre...
+		// $eleve peut en fait Ãªtre une moyenne de classe ou mÃªme un trimestre...
 		$eleve[$k]=$legendy[$k];
 		writinfo('/tmp/infos_graphe.txt','a+',"\$eleve[$k]=".$eleve[$k]."\n");
 		//$k++;
@@ -195,9 +195,9 @@
 	}
 	$nom_eleve[1]=remplace_accents($nom_eleve[1],'simple');
 
-	// Variable destinée à tenir compte de la moyenne annuelle...
+	// Variable destinÃ©e Ã  tenir compte de la moyenne annuelle...
 	$nb_series_bis=$nb_series;
-	if($legendy[2]=='Toutes_les_périodes'){
+	if($legendy[2]=='Toutes_les_pÃ©riodes'){
 		$eleve2="";
 
 		$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
@@ -211,18 +211,18 @@
 			$cpt++;
 		}
 
-		// Si la moyenne annuelle est demandée, on calcule:
+		// Si la moyenne annuelle est demandÃ©e, on calcule:
 		if(isset($_GET['affiche_moy_annuelle'])){
 			writinfo('/tmp/infos_graphe.txt','a+',"\nAvant la moyenne annuelle...\n");
 
-			// La moyenne annuelle amène une série de plus:
+			// La moyenne annuelle amÃ¨ne une sÃ©rie de plus:
 			$nb_series_bis++;
 
 			$moy_annee=array();
 			for($i=1;$i<=count($matiere);$i++){
 				$cpt=0;
 				$total_tmp[$i]=0;
-				// Boucle sur les périodes...
+				// Boucle sur les pÃ©riodes...
 				for($k=1;$k<=$nb_periode;$k++){
 					//if((strlen(preg_replace("/[0-9]/","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
 
@@ -249,7 +249,7 @@
 		}
 	}
 	else{
-		// Récupération des noms des élèves.
+		// RÃ©cupÃ©ration des noms des Ã©lÃ¨ves.
 		$eleve2=$_GET['v_legend2'];
 		switch($eleve2){
 			case 'moyclasse':
@@ -278,12 +278,12 @@
 
 	writinfo('/tmp/infos_graphe.txt','a+',"\nAvant seriemin, seriemax,...\n");
 
-	// Récupération des moyennes minimales et maximales
-	// si elles ont été transmises:
+	// RÃ©cupÃ©ration des moyennes minimales et maximales
+	// si elles ont Ã©tÃ© transmises:
 	if(isset($_GET['seriemin'])){
 		$seriemin=$_GET['seriemin'];
 		$moy_min_tmp=explode("|", $_GET['seriemin']);
-		// On décale pour commencer à compter à 1:
+		// On dÃ©cale pour commencer Ã  compter Ã  1:
 		for($i=1;$i<=count($moy_min_tmp);$i++){
 			$moy_min[$i]=$moy_min_tmp[$i-1];
 			writinfo('/tmp/infos_graphe.txt','a+',"\$moy_min[$i]=".$moy_min[$i]."\n");
@@ -293,7 +293,7 @@
 	if(isset($_GET['seriemax'])){
 		$seriemax=$_GET['seriemax'];
 		$moy_max_tmp=explode("|", $_GET['seriemax']);
-		// On décale pour commencer à compter à 1:
+		// On dÃ©cale pour commencer Ã  compter Ã  1:
 		for($i=1;$i<=count($moy_max_tmp);$i++){
 			$moy_max[$i]=$moy_max_tmp[$i-1];
 			writinfo('/tmp/infos_graphe.txt','a+',"\$moy_max[$i]=".$moy_max[$i]."\n");
@@ -318,16 +318,16 @@
 	$largeurBandeDroite=80;
 	$largeur=$largeurTotale-$largeurGrad-$largeurBandeDroite;
 
-	// Hauteur en haut pour les intitulés de matières et moyennes:
+	// Hauteur en haut pour les intitulÃ©s de matiÃ¨res et moyennes:
 	//$hauteurMoy=50;
 	//$hauteurMoy=5+($nb_series+1)*15;
-	// On met en haut les noms d'élèves aussi: -> +15
+	// On met en haut les noms d'Ã©lÃ¨ves aussi: -> +15
 	//$hauteurMoy=70;
 	$hauteurMoy=5+($nb_series+2)*15;
-	if(($legendy[2]=='Toutes_les_périodes')&&(isset($_GET['affiche_moy_annuelle']))){
+	if(($legendy[2]=='Toutes_les_pÃ©riodes')&&(isset($_GET['affiche_moy_annuelle']))){
 		$hauteurMoy=$hauteurMoy+15;
 	}
-	// Hauteur en bas pour les noms longs de matières
+	// Hauteur en bas pour les noms longs de matiÃ¨res
 	//$hauteurMat=50;
 	//$hauteurMat=5+15+15;
 	$hauteurMat=0;
@@ -337,7 +337,7 @@
 			$hauteurMat=$largeur_texte_long;
 		}
 	}
-	// Avec l'affichage à 30°, on peut réduire.
+	// Avec l'affichage Ã  30Â°, on peut rÃ©duire.
 	$hauteurMat=round($hauteurMat/2);
 	$hauteurMat=$hauteurMat+10;
 
@@ -348,7 +348,7 @@
 
 
 	//============================================
-	//Création de l'image:
+	//CrÃ©ation de l'image:
 	//$img=imageCreate($largeurTotale,$hauteurTotale);
 	// Epaisseur initiale des traits...
 	//imagesetthickness($img,2);
@@ -365,12 +365,12 @@
 
 	//============================================
 
-	writinfo('/tmp/infos_graphe.txt','a+',"\nAprès imageCreate, imagethickness...\n");
+	writinfo('/tmp/infos_graphe.txt','a+',"\nAprÃ¨s imageCreate, imagethickness...\n");
 
 
 
 	//============================================
-	// A récupérer d'une table MySQL... d'après un choix de l'utilisateur...
+	// A rÃ©cupÃ©rer d'une table MySQL... d'aprÃ¨s un choix de l'utilisateur...
 
 	$tab=array('Fond','Bande_1','Bande_2','Axes','Eleve_1','Eleve_2','Moyenne_classe','Periode_1','Periode_2','Periode_3');
 	$comp=array('R','V','B');
@@ -450,14 +450,14 @@
 
 	$transp=$bande1;
 
-	if($legendy[2]=='Toutes_les_périodes'){
+	if($legendy[2]=='Toutes_les_pÃ©riodes'){
 		$couleureleve[1]=$couleur['Periode_1'];
 		$couleureleve[2]=$couleur['Periode_2'];
 		$couleureleve[3]=$couleur['Periode_3'];
 	}
 
 	$i=4;
-	if(($legendy[2]=='Toutes_les_périodes')&&($nb_series>=4)){
+	if(($legendy[2]=='Toutes_les_pÃ©riodes')&&($nb_series>=4)){
 		for($i=4;$i<=$nb_series;$i++){
 			for($j=0;$j<count($comp);$j++){
 				$sql="SELECT value FROM setting WHERE name='couleur_Periode_".$i."_".$comp[$j]."'";
@@ -499,12 +499,12 @@
 	$nbMat=count($matiere);
 	//$nbMat=count($titre);
 
-	//Largeur de chaque colonne "matière":
+	//Largeur de chaque colonne "matiÃ¨re":
 	$largeurMat=round($largeur/$nbMat);
 	//$_SESSION['graphe_largeurMat']=$largeurMat;
 
 	//$_SESSION['graphe_x0']=$largeurGrad;
-	// ZUT! Je ne récupère pas la variable...
+	// ZUT! Je ne rÃ©cupÃ¨re pas la variable...
 	//===========================================
 
 
@@ -516,7 +516,7 @@
 	//===========================================
 	echo "\n<!-- Bandes verticales -->\n";
 	if((!isset($seriemin))||(!isset($seriemax))){
-		//Bandes verticales alternées:
+		//Bandes verticales alternÃ©es:
 		for($i=1;$i<$nbMat+1;$i++){
 			$x1=round($largeurGrad+($i-1)*$largeurMat);
 			$x2=round($largeurGrad+$i*$largeurMat);
@@ -542,12 +542,12 @@
 	else{
 		// Ou affichage des bandes min-max
 		for($i=1;$i<$nbMat+1;$i++){
-			// Les +2 et -2 servent à laisser un jour entre les bandes pour une meilleure lisibilité
+			// Les +2 et -2 servent Ã  laisser un jour entre les bandes pour une meilleure lisibilitÃ©
 			$x1=round($largeurGrad+($i-1)*$largeurMat)+2;
 			$x2=round($largeurGrad+$i*$largeurMat)-2;
 			$ordonneemin=round($hauteurMoy+$hauteur-$moy_min[$i]*$hauteur/20);
 			$ordonneemax=round($hauteurMoy+$hauteur-$moy_max[$i]*$hauteur/20);
-			//Note: Il faut veiller à ce que la bande2 ressorte sur le fond!
+			//Note: Il faut veiller Ã  ce que la bande2 ressorte sur le fond!
 			//imageFilledRectangle($img,$x1,$ordonneemax,$x2,$ordonneemin,$bande2);
 
 			//echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"".$hauteur+$hauteurMoy."\" style=\"fill:blue; stroke-width:1; stroke:black\" />";
@@ -574,7 +574,7 @@
 
 
 	//=============================================================================
-	//Tracé des graduations et des axes:
+	//TracÃ© des graduations et des axes:
 	//Graduations:
 	echo "\n<!-- Graduations -->\n";
 	$pas=2; //Prendre un diviseur non nul de 20.
@@ -630,8 +630,8 @@
 	$ytmp2=$hauteurMoy+$hauteur;
 	echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:$axes; stroke-width:$epaisseur_axes\"/>\n";
 
-	//Axe des ordonnées:
-	echo "\n<!-- Axe des ordonnées -->\n";
+	//Axe des ordonnÃ©es:
+	echo "\n<!-- Axe des ordonnÃ©es -->\n";
 	//imageLine($img,$largeurGrad,round($hauteurMoy/2),$largeurGrad,$hauteur+$hauteurMoy,$axes);
 	$xtmp1=$largeurGrad;
 	$ytmp1=round($hauteurMoy/2);
@@ -648,7 +648,7 @@
 	$ytmp2=round($hauteurMoy+$hauteur/2);
 	echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:$axes; stroke-width:$epaisseur_axes\"/>\n";
 
-	//imagedashedline pour pointillés
+	//imagedashedline pour pointillÃ©s
 	//imagedashedline($img,5,5,100,100,$axes);
 	//imageline($img,5,5,100,100,$axes);
 	//==============================================================================
@@ -666,7 +666,7 @@
 
 
 	//=============================================================================
-	// Préparation des abscisses et affichage des noms de matières et valeurs des moyennes:
+	// PrÃ©paration des abscisses et affichage des noms de matiÃ¨res et valeurs des moyennes:
 
 	//Epaisseur des traits:
 	//imagesetthickness($img,$epaisseur_traits);
@@ -693,8 +693,8 @@
 	$temoin_image_escalier=isset($_GET['temoin_image_escalier']) ? $_GET['temoin_image_escalier'] : "";
 
 	//===================================================================================
-	//Affichage des matières et des valeurs de moyenne:
-	echo "\n<!-- Noms de matières et moyennes -->\n";
+	//Affichage des matiÃ¨res et des valeurs de moyenne:
+	echo "\n<!-- Noms de matiÃ¨res et moyennes -->\n";
 	for($i=1;$i<$nbMat+1;$i++){
 	//for($i=0;$i<$nbMat+1;$i++){
 
@@ -702,7 +702,7 @@
 		$x2=$x[$i+1];
 
 		//===========================================================================
-		//Affichage des matières et des valeurs de moyenne dans la partie haute du graphique:
+		//Affichage des matiÃ¨res et des valeurs de moyenne dans la partie haute du graphique:
 		$ytmp=20;
 
 		if($tronquer_nom_court==0){
@@ -784,8 +784,8 @@
 
 			//font-family=\"Verdana\"
 
-			// Les & posent problème...
-			// ... peut-être d'autres caractères aussi?
+			// Les & posent problÃ¨me...
+			// ... peut-Ãªtre d'autres caractÃ¨res aussi?
 			echo "<g transform=\"translate($xtmp,$ytmp)\">
    <g transform=\"rotate(30)\">
       <text x=\"0\" y=\"0\" font-size=\"$fontsizetext\" fill=\"$axes\" >
@@ -811,7 +811,7 @@ BLA
 
 		}
 		else{
-			//Affichage des matières dans la partie basse du graphique:
+			//Affichage des matiÃ¨res dans la partie basse du graphique:
 			//$largeur_texte = strlen($matiere[$i]) * $l_txt_px;
 			//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+5, $matiere[$i], $axes);
 
@@ -831,7 +831,7 @@ BLA
 
 
 		//===========================================================================
-		// Pour afficher les noms longs de matières à la verticale en bas d'image:
+		// Pour afficher les noms longs de matiÃ¨res Ã  la verticale en bas d'image:
 
 
 
@@ -864,7 +864,7 @@ BLA
 
 
 	if($mgen[1]!=""){
-		echo "\n<!-- Colonne moyenne générale -->\n";
+		echo "\n<!-- Colonne moyenne gÃ©nÃ©rale -->\n";
 		$ytmp=20;
 
 		$largeur_texte = strlen("M.GEN") * $l_txt_px;
@@ -899,7 +899,7 @@ BLA
 			}
 		}
 
-		if(($legendy[2]=='Toutes_les_périodes')&&(isset($_GET['affiche_moy_annuelle']))){
+		if(($legendy[2]=='Toutes_les_pÃ©riodes')&&(isset($_GET['affiche_moy_annuelle']))){
 			if($cpt_tmp>0){
 				$mgen_annuelle=round($total_tmp/$cpt_tmp,1);
 			}
@@ -931,12 +931,12 @@ BLA
 
 
 	//=======================================================================
-	// On positionne les noms d'élèves en haut de l'image: y=5
+	// On positionne les noms d'Ã©lÃ¨ves en haut de l'image: y=5
 	// Pour en bas, ce serait: y=$hauteur+$hauteurMoy+25
 
 	echo "\n<!-- Informations du haut de l'image -->\n";
 
-	if($legendy[2]=='Toutes_les_périodes'){
+	if($legendy[2]=='Toutes_les_pÃ©riodes'){
 		$chaine=$nom_periode;
 	}
 	else{
@@ -945,7 +945,7 @@ BLA
 	}
 
 
-	// Calcul de la largeur occupée par les noms d'élèves:
+	// Calcul de la largeur occupÃ©e par les noms d'Ã©lÃ¨ves:
 	//$total_largeur_eleves=0;
 	$total_largeur_chaines=0;
 	//for($k=1;$k<$nb_data;$k++){
@@ -956,15 +956,15 @@ BLA
 		$total_largeur_chaines=$total_largeur_chaines+$largeur_chaine[$k];
 	}
 
-	// Calcul de l'espace entre ces noms d'élèves:
-	// Espace équilibré comme suit:
+	// Calcul de l'espace entre ces noms d'Ã©lÃ¨ves:
+	// Espace Ã©quilibrÃ© comme suit:
 	//     espace|Eleve1|espace|Eleve2|espace
-	// Il faudrait être sûr que l'espace ne va pas devenir négatif...
+	// Il faudrait Ãªtre sÃ»r que l'espace ne va pas devenir nÃ©gatif...
 	//$espace=($largeur-$total_largeur_eleves)/($nb_series+1);
 	//$espace=($largeur-$total_largeur_chaines)/($nb_series+1);
 	$espace=($largeurTotale-$total_largeur_chaines)/($nb_series+1);
 
-	// Positionnement des noms d'élèves:
+	// Positionnement des noms d'Ã©lÃ¨ves:
 	//$xtmp=$largeurGrad;
 	$xtmp=0;
 	//for($k=1;$k<$nb_data;$k++){
@@ -994,13 +994,13 @@ BLA
 	//imagestring ($img, $taille_police, 50, 120, "-".$eleves[2]."-", $couleureleve[2]);
 
 	//=====================================================================
-	//Tracé des courbes:
+	//TracÃ© des courbes:
 
-	echo "\n<!-- Tracé des courbes -->\n";
+	echo "\n<!-- TracÃ© des courbes -->\n";
 
 	//for($k=1;$k<=$nb_series;$k++){
 	for($k=1;$k<=$nb_series_bis;$k++){
-		echo "\n<!-- Courbe de la série $k -->\n";
+		echo "\n<!-- Courbe de la sÃ©rie $k -->\n";
 
 		//Placement des points de la courbe:
 		for($i=1;$i<$nbMat+1;$i++){
@@ -1023,7 +1023,7 @@ BLA
 			}
 		}
 
-		//Tracé de la courbe:
+		//TracÃ© de la courbe:
 		for($i=1;$i<$nbMat;$i++){
 			$x1=$x[$i];
 			$x2=$x[$i+1];

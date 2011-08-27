@@ -21,12 +21,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+header('Content-Type: text/html; charset=utf-8');
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interfÃ©rer avec fckeditor
 $traite_anti_inject = 'no';
 
 require_once("../lib/initialisationsPropel.inc.php");
@@ -40,7 +40,7 @@ if ($utilisateur == null) {
 
 check_token();
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
 $date_duplication = isset($_POST["date_duplication"]) ? $_POST["date_duplication"] :(isset($_GET["date_duplication"]) ? $_GET["date_duplication"] :NULL);
 $id_groupe = isset($_POST["id_groupe_duplication"]) ? $_POST["id_groupe_duplication"] :(isset($_GET["id_groupe_duplication"]) ? $_GET["id_groupe_duplication"] :NULL);
@@ -56,12 +56,12 @@ if ($type == 'CahierTexteTravailAFaire') {
 }
 
 if ($ctCompteRendu == null) {
-	echo ("Erreur duplacation denotice : pas de notice trouvée.");
+	echo ("Erreur duplacation denotice : pas de notice trouvÃ©e.");
 	die();
 }
 $groupe = GroupePeer::retrieveByPK($id_groupe);
 if ($groupe == null) {
-	echo("Pas de groupe spécifié");
+	echo("Pas de groupe spÃ©cifiÃ©");
 	die;
 }
 
@@ -72,5 +72,5 @@ $nouveauCompteRendu->setDateCt($date_duplication);
 
 $nouveauCompteRendu->save();
 $utilisateur->clearAllReferences();
-echo("Duplication effectuée");
+echo("Duplication effectuÃ©e");
 ?>

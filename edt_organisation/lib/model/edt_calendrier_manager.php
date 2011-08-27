@@ -81,7 +81,7 @@ class Calendrier {
 		$sql="DELETE FROM edt_calendrier_manager WHERE id = '".$this->id."' ";
 		$req = mysql_query($sql);
 		if ($req) {
-			// ======== Suppression des périodes calendaires
+			// ======== Suppression des pÃ©riodes calendaires
 			$PeriodesCalendaires = new PeriodeCalendaire;
 			$PeriodesCalendaires->id_calendar = $this->id;
 			if ($PeriodesCalendaires->deleteCalendar()) {

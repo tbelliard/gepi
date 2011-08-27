@@ -5,8 +5,8 @@
  */
 
 /*
- * Liste des tables à vider avant de procéder à l'importation
- * (ne pas modifier à moins de savoir précisément ce que vous faites)
+ * Liste des tables Ã  vider avant de procÃ©der Ã  l'importation
+ * (ne pas modifier Ã  moins de savoir prÃ©cisÃ©ment ce que vous faites)
   */
 
 $liste_tables_del = array(
@@ -37,13 +37,13 @@ $liste_tables_del = array(
 "j_aid_eleves_resp",
 "j_aid_utilisateurs_gest",
 
-// Par la suite, à voir si on efface les classes ou non...
+// Par la suite, Ã  voir si on efface les classes ou non...
 "classes",
 
 "j_eleves_classes",
 //==========================
-// On ne vide plus la table chaque année
-// Problème avec Sconet qui récupère seulement l'établissement de l'année précédente qui peut être l'établissement courant
+// On ne vide plus la table chaque annÃ©e
+// ProblÃ¨me avec Sconet qui rÃ©cupÃ¨re seulement l'Ã©tablissement de l'annÃ©e prÃ©cÃ©dente qui peut Ãªtre l'Ã©tablissement courant
 //"j_eleves_etablissements",
 //==========================
 "j_eleves_professeurs",
@@ -119,7 +119,7 @@ $liste_tables_del = array(
 );
 
 /*
- * Nom de la période ajoutée par défaut aux classes lors de l'import
+ * Nom de la pÃ©riode ajoutÃ©e par dÃ©faut aux classes lors de l'import
  */
 $nom_periode_defaut = "Periode";
 

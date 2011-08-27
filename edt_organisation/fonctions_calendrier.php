@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fichier de fonctions destinées au calendrier
+ * Fichier de fonctions destinÃ©es au calendrier
  * 
  * $Id$
  *
@@ -30,12 +30,12 @@
 
 
 /**
- * Renvoie le numéro de la dernière semaine de l'année civile (52 ou 53)
- * @return int numéro de la dernière semaine
+ * Renvoie le numÃ©ro de la derniÃ¨re semaine de l'annÃ©e civile (52 ou 53)
+ * @return int numÃ©ro de la derniÃ¨re semaine
  */
 function NumLastWeek() {
-/* On regarde si on est entre Aout ou décembre auquel cas on est en année scolaire AA - AA+1
-ou si on est avant auquel cas on est en année scolaire AA-1 - AA
+/* On regarde si on est entre Aout ou dÃ©cembre auquel cas on est en annÃ©e scolaire AA - AA+1
+ou si on est avant auquel cas on est en annÃ©e scolaire AA-1 - AA
 */
  if (date("m") >= 8) {
      $derniere_semaine=date("W",mktime(0, 0, 0, 12, 28, date("Y")));
@@ -46,7 +46,7 @@ ou si on est avant auquel cas on est en année scolaire AA-1 - AA
 } 
 
 /**
- *Affiche le nom de la période courante (si définie dans les edt)
+ *Affiche le nom de la pÃ©riode courante (si dÃ©finie dans les edt)
  * @param type $date_ts 
  */
 function AffichePeriode($date_ts) {
@@ -80,11 +80,11 @@ function AfficheDatesDebutFinSemaine() {
 /**
  * Calcule le timestamp d'un jour
  * 
- * Calcule à partir du N° de la semaine stocké dans $_SESSION['week_selected'] 
- * et du N° du jour dans la semaine
+ * Calcule Ã  partir du NÂ° de la semaine stockÃ© dans $_SESSION['week_selected'] 
+ * et du NÂ° du jour dans la semaine
  * @param type $jour
  * @return type
- * @todo à quoi sert le premier test ? il ne manquerait pas un + 1 ?
+ * @todo Ã  quoi sert le premier test ? il ne manquerait pas un + 1 ?
  */
 function RecupereTimestampJour ($jour) {
     if ((1<=$_SESSION['week_selected']) AND ($_SESSION['week_selected'] <= 28)) {
@@ -93,7 +93,7 @@ function RecupereTimestampJour ($jour) {
     else {
 	    $annee = date("Y");
     }
-    $ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+    $ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
     while (date("D", $ts) != "Mon") {
 	    $ts-=86400;
     }
@@ -108,7 +108,7 @@ function RecupereTimestampJour ($jour) {
 }
 
 /**
- * Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
+ * RÃ©cupÃ¨re les dates des lundis et vendredis de toutes les semaines de l'annÃ©e scolaire courante
  * 
  * Usage : 
  * - $tab = RecupereLundisVendredis();
@@ -127,7 +127,7 @@ function RecupereLundisVendredis () {
     else {
 	    $annee = date("Y")+1;
     }
-    $ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+    $ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
     while (date("D", $ts) != "Mon") {
 	    $ts-=86400;
     }
@@ -157,14 +157,14 @@ function RecupereLundisVendredis () {
 }
 
 /** 
- * Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
+ * RÃ©cupÃ¨re les dates des lundis et vendredis de toutes les semaines de l'annÃ©e scolaire courante
  * 
  * Usage : 
  * - $tab = RecupereJoursSemaine();
  * - echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01
  * - echo $tab[5]["vendredis"];      // renvoie la date du vendredi de la semaine 06 
  * @return array 
- * @todo Quelles différence avec RecupereLundisVendredis ()
+ * @todo Quelles diffÃ©rence avec RecupereLundisVendredis ()
  * @see RecupereLundisVendredis()
  */
 function RecupereJoursSemaine () {
@@ -178,7 +178,7 @@ function RecupereJoursSemaine () {
     else {
 	    $annee = date("Y")+1;
     }
-    $ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+    $ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
     while (date("D", $ts) != "Mon") {
 	    $ts-=86400;
     }
@@ -224,7 +224,7 @@ function RecupereJoursSemaine () {
 }
 
 /**
- * Renvoie "true" si des périodes sont définies
+ * Renvoie "true" si des pÃ©riodes sont dÃ©finies
  * @return boolean 
  */
 function PeriodesExistent() {
@@ -239,7 +239,7 @@ function PeriodesExistent() {
 }
 
 /**
- *Renvoie "true" si la période spécifiée existe
+ *Renvoie "true" si la pÃ©riode spÃ©cifiÃ©e existe
  * @param type $period
  * @return boolean 
  */
@@ -255,7 +255,7 @@ function PeriodExistsInDB($period) {
 }
 
 /**
- * Renvoie l'id de la première période de edt_calendrier
+ * Renvoie l'id de la premiÃ¨re pÃ©riode de edt_calendrier
  * @return int 
  */
 function ReturnFirstIdPeriod() {
@@ -268,7 +268,7 @@ function ReturnFirstIdPeriod() {
 }
 
 /**
- * Renvoie l'id de la période courante
+ * Renvoie l'id de la pÃ©riode courante
  * @param timestamp $date_ts
  * @return int 
  */
@@ -286,7 +286,7 @@ function ReturnIdPeriod($date_ts) {
 }
 
 /**
- * Renvoie l'id de la période suivant celle passée en argument
+ * Renvoie l'id de la pÃ©riode suivant celle passÃ©e en argument
  * @param int $current_id_period
  * @return int
  * @see ReturnIdPeriod()
@@ -312,7 +312,7 @@ function ReturnNextIdPeriod($current_id_period) {
 }
 
 /**
- * Renvoie l'id de la période précédant celle passée en argument
+ * Renvoie l'id de la pÃ©riode prÃ©cÃ©dant celle passÃ©e en argument
  * @param int $current_id_period
  * @return int
  * @see ReturnIdPeriod()
@@ -356,7 +356,7 @@ function typeSemaineActu(){
 }
 
 /**
- * Retourne le jour en français et en toutes lettres
+ * Retourne le jour en franÃ§ais et en toutes lettres
  * @param type $jour
  * @return string
  * @todo Pourquoi faire une boucle ?
@@ -377,13 +377,13 @@ function retourneJour($jour){
 }
 
 /**
- * Fonction qui retourne l'id du créneau actuel
+ * Fonction qui retourne l'id du crÃ©neau actuel
  * @return int 
  */
 function retourneCreneau(){
 		$retour = 'non';
 	$heure = date("H:i:s");
-	// On vérifie si on est dans un jour différent ou pas
+	// On vÃ©rifie si on est dans un jour diffÃ©rent ou pas
 	if (date("w") == getSettingValue("creneau_different")) {
 		$table = 'edt_creneaux_bis';
 	}else{
@@ -392,7 +392,7 @@ function retourneCreneau(){
 	$query = mysql_query("SELECT id_definie_periode FROM ".$table." WHERE
 			heuredebut_definie_periode <= '".$heure."' AND
 			heurefin_definie_periode > '".$heure."'")
-				OR DIE('Le creneau n\'est pas trouvé : '.mysql_error());
+				OR DIE('Le creneau n\'est pas trouvÃ© : '.mysql_error());
 	if ($query) {
 		$reponse = mysql_fetch_array($query);
 		$retour = $reponse["id_definie_periode"];
@@ -403,7 +403,7 @@ function retourneCreneau(){
 }
 
 /**
- * Fonction qui retourne si on est dans la première ou la seconde partie d'un créneau
+ * Fonction qui retourne si on est dans la premiÃ¨re ou la seconde partie d'un crÃ©neau
  * @return float 0 ou 0.5
  */
 function heureDeb(){
@@ -411,17 +411,17 @@ function heureDeb(){
 	// On compare des minutes car c'est plus simple
 	$heureMn = (date("H") * 60) + date("i");
 	$creneauId = retourneCreneau();
-	// On vérifie si il existe un jour différent et si c'est aujourd'hui
+	// On vÃ©rifie si il existe un jour diffÃ©rent et si c'est aujourd'hui
 	if (date("w") == getSettingValue("creneau_different")) {
 		$table = "edt_creneaux_bis";
 	}else {
 		$table = "edt_creneaux";
 	}
-	// On récupère l'heure de début et celle de fin du créneau
+	// On rÃ©cupÃ¨re l'heure de dÃ©but et celle de fin du crÃ©neau
 	$query = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM ".$table." WHERE id_definie_periode = '".$creneauId."'");
 	if ($query) {
 		$reponse = mysql_fetch_array($query);
-		// On enlève les secondes
+		// On enlÃ¨ve les secondes
 		$explodeDeb = explode(":", $reponse["heuredebut_definie_periode"]);
 		$explodeFin = explode(":", $reponse["heurefin_definie_periode"]);
 		$dureeCreneau = (($explodeFin[0] - $explodeDeb[0]) * 60) + ($explodeFin[1] - $explodeDeb[1]);
@@ -440,7 +440,7 @@ function heureDeb(){
 }
 
 /**
- * Fonction qui retourne l'id du cours d'un prof à un créneau, jour et type_semaine donnés
+ * Fonction qui retourne l'id du cours d'un prof Ã  un crÃ©neau, jour et type_semaine donnÃ©s
  * @param string $prof Login de l'enseignant
  * @return int l'id du cours
  */

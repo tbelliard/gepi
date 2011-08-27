@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ******************************************** *
-* Appelle les sous-modèles                     *
+* Appelle les sous-modÃ¨les                     *
 * templates/origine/header_template.php        *
 * templates/origine/bandeau_template.php       *
 * ******************************************** *
@@ -37,7 +37,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -80,7 +80,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -93,7 +93,7 @@
 <!-- Fin haut de page -->
 
   <p class="bold">
-	Cet outil permet d'autoriser la génération de flux 
+	Cet outil permet d'autoriser la gÃ©nÃ©ration de flux 
 	<acronym title="Really Simple Syndication">RSS</acronym> 
 	2.0 des cahiers de textes de Gepi. 
   </p>
@@ -129,7 +129,7 @@ echo add_token_field();
 			 onchange='document.getElementById("form_rss").submit();'
 			<?php echo $checked_ele; ?> />
 	  <label for="autoRssCdt">
-		Les élèves peuvent utiliser le flux RSS de leur cahier de textes
+		Les Ã©lÃ¨ves peuvent utiliser le flux RSS de leur cahier de textes
 	  </label>
 	</p>
   </form>
@@ -138,7 +138,7 @@ echo add_token_field();
   <div id="accesEle"<?php echo $style_ele; ?>>
 	<form id="form_rss_ele" action="rss_cdt_admin.php" method="post">
 	  <fieldset>
-		<legend>mode de récupération</legend>
+		<legend>mode de rÃ©cupÃ©ration</legend>
 <?php
 echo add_token_field();
 ?>
@@ -149,7 +149,7 @@ echo add_token_field();
 			   onchange='document.getElementById("form_rss_ele").submit();'
 			  <?php echo $style_ele_dir; ?> />
 		<label for="rssAccesEle">
-		  Les élèves récupèrent l'adresse (url) d'abonnement directement par leur accès à Gepi
+		  Les Ã©lÃ¨ves rÃ©cupÃ¨rent l'adresse (url) d'abonnement directement par leur accÃ¨s Ã  Gepi
 		</label>
 		<br />
 		<input type="radio"
@@ -159,7 +159,7 @@ echo add_token_field();
 			   onchange='document.getElementById("form_rss_ele").submit();'
 			  <?php echo $style_ele_csv; ?> />
 		<label for="rssAccesEle2">
-		  L'admin récupère un fichier csv de ces adresses (une par élève)
+		  L'admin rÃ©cupÃ¨re un fichier csv de ces adresses (une par Ã©lÃ¨ve)
 		</label>
 	  </fieldset>
 	</form>
@@ -170,7 +170,7 @@ echo add_token_field();
 
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -189,7 +189,7 @@ echo add_token_field();
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

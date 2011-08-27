@@ -59,7 +59,7 @@ $insert=mysql_query($sql);
 
 
 //======================================================================================
-// Section checkAccess() ‡ dÈcommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() √† d√©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -70,7 +70,7 @@ include('lib_eb.php');
 
 //=========================================================
 
-// CrÈation des tables
+// Cr√©ation des tables
 
 $sql="CREATE TABLE IF NOT EXISTS eb_epreuves (
 id int(11) unsigned NOT NULL auto_increment,
@@ -140,7 +140,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			$msg="L'Èpreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
+			$msg="L'√©preuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 		}
 		else {
 			$lig=mysql_fetch_object($res);
@@ -159,9 +159,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		}
 	}
 
-	// TÈmoin d'une modification de numÈros anonymat (pour informer qu'il faut regÈnÈrer les Ètiquettes,...)
+	// T√©moin d'une modification de num√©ros anonymat (pour informer qu'il faut reg√©n√©rer les √©tiquettes,...)
 	$temoin_n_anonymat='n';
-	// TÈmoin d'une erreur anonymat pour un ÈlËve au moins
+	// T√©moin d'une erreur anonymat pour un √©l√®ve au moins
 	$temoin_erreur_n_anonymat='n';
 
 	//if(isset($_POST['creer_epreuve'])) {
@@ -169,7 +169,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		check_token();
 		$msg="";
 
-		// Correction, modification des paramËtres d'une Èpreuve
+		// Correction, modification des param√®tres d'une √©preuve
 
 		$intitule=isset($_POST['intitule']) ? $_POST['intitule'] : "Epreuve blanche";
 		$date=isset($_POST['date']) ? $_POST['date'] : "";
@@ -181,7 +181,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$msg.="Valeur de note_sur invalide<br />";
 		}
 
-		if(strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-z¬ƒ¿¡√ƒ≈« À»…ŒœÃÕ—‘÷“”’¶€‹Ÿ⁄›æ¥·‡‚‰„ÂÁÈËÍÎÓÔÏÌÒÙˆÚÛı®˚¸˘˙˝ˇ∏0-9_.-]/"," ",$intitule);}
+		if(strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-z√Ç√Ñ√Ä√Å√É√Ñ√Ö√á√ä√ã√à√â√é√è√å√ç√ë√î√ñ√í√ì√ï¬¶√õ√ú√ô√ö√ù¬æ¬¥√°√†√¢√§√£√•√ß√©√®√™√´√Æ√Ø√¨√≠√±√¥√∂√∞√≤√≥√µ¬®√ª√º√π√∫√Ω√ø¬∏0-9_.-]/"," ",$intitule);}
 		if($intitule=="") {$intitule="Epreuve blanche";}
 
 		$tab_anonymat=array('elenoet','ele_id','no_gep','alea','chrono');
@@ -207,10 +207,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$sql="INSERT INTO eb_epreuves SET intitule='$intitule', description='$description', type_anonymat='$type_anonymat', date='$date', etat='', note_sur='$note_sur';";
 			if($insert=mysql_query($sql)) {
 				$id_epreuve=mysql_insert_id();
-				$msg.="Epreuve n∞$id_epreuve : '$intitule' crÈÈe.<br />";
+				$msg.="Epreuve n¬∞$id_epreuve : '$intitule' cr√©√©e.<br />";
 			}
 			else {
-				$msg.="ERREUR lors de la crÈation de l'Èpreuve '$intitule'.<br />";
+				$msg.="ERREUR lors de la cr√©ation de l'√©preuve '$intitule'.<br />";
 				//$msg.="<br />$sql";
 			}
 		}
@@ -226,30 +226,30 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			$sql="UPDATE eb_epreuves SET intitule='$intitule', description='$description', type_anonymat='$type_anonymat', date='$date', note_sur='$note_sur' WHERE id='$id_epreuve';";
 			if($update=mysql_query($sql)) {
-				$msg.="Epreuve n∞$id_epreuve : '$intitule' mise ‡ jour.";
+				$msg.="Epreuve n¬∞$id_epreuve : '$intitule' mise √† jour.";
 
 				if($type_anonymat!=$old_type_anonymat) {
 					$tab_n_anonymat_affectes=array();
 
-					// On commence par vider les numÈros d'anonymat avant de refaire l'affectation
+					// On commence par vider les num√©ros d'anonymat avant de refaire l'affectation
 					$sql="UPDATE eb_copies SET n_anonymat='' WHERE id='$id_epreuve';";
 					$nettoyage=mysql_query($sql);
 
-					// Mettre ‡ jour le type anonymat pour les copies dÈj‡ inscrites
-					// ERic : Ajout du order by pour numÈroter dans l'ordre alphabÈtique (Le id_elv est l‡ en cas d'homonyme)
+					// Mettre √† jour le type anonymat pour les copies d√©j√† inscrites
+					// ERic : Ajout du order by pour num√©roter dans l'ordre alphab√©tique (Le id_elv est l√† en cas d'homonyme)
 					$sql="SELECT e.* FROM eb_copies ec, eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login order by e.nom, e.prenom, e.id_eleve;";
 					//echo "$sql<br />";
 					$res=mysql_query($sql);
 					$cpt_ano = 1;
 					while($lig=mysql_fetch_object($res)) {
-						// TÈmoin d'une erreur anonymat pour l'ÈlËve courant
+						// T√©moin d'une erreur anonymat pour l'√©l√®ve courant
 						$temoin_erreur="n";
 						if($type_anonymat=='alea') {
 							$n_anonymat=chaine_alea(3,4);
 							while(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$n_anonymat=chaine_alea(3,4);}
 							$tab_n_anonymat_affectes[]=$n_anonymat;
 							
-						} else if ($type_anonymat=='chrono'){// Eric Ajout du numÈro d'anonymat chronologique
+						} else if ($type_anonymat=='chrono'){// Eric Ajout du num√©ro d'anonymat chronologique
 							 $n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
 							$tab_n_anonymat_affectes[]=$n_anonymat;
 							$cpt_ano += 1;		
@@ -257,7 +257,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						else {
 							$n_anonymat=$lig->$type_anonymat;
 							if(in_array($n_anonymat,$tab_n_anonymat_affectes)) {
-								$msg.="Erreur: Le numÈro '$n_anonymat' de $lig->login est dÈj‡ affectÈ ‡ un autre ÈlËve.<br />";
+								$msg.="Erreur: Le num√©ro '$n_anonymat' de $lig->login est d√©j√† affect√© √† un autre √©l√®ve.<br />";
 								$temoin_erreur="y";
 								$temoin_erreur_n_anonymat="y";
 							}
@@ -275,7 +275,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				}
 			}
 			else {
-				$msg.="ERREUR lors de la modification de l'Èpreuve '$intitule'.";
+				$msg.="ERREUR lors de la modification de l'√©preuve '$intitule'.";
 				//$msg.="<br />$sql";
 			}
 		}
@@ -284,7 +284,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	elseif((isset($id_epreuve))&&($mode=='suppr_epreuve')) {
 		check_token();
 
-		// Suppression d'une Èpreuve
+		// Suppression d'une √©preuve
 		//echo "gloups";
 		//$tab_tables=array('eb_profs', 'eb_salles', 'eb_groupes', 'eb_copies', 'eb_epreuves');
 		$tab_tables=array('eb_profs', 'eb_salles', 'eb_groupes', 'eb_copies');
@@ -293,7 +293,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$sql="DELETE FROM $tab_tables[$i] WHERE id_epreuve='$id_epreuve';";
 			$suppr=mysql_query($sql);
 			if(!$suppr) {
-				$msg="ERREUR lors de la suppression de l'Èpreuve $id_epreuve";
+				$msg="ERREUR lors de la suppression de l'√©preuve $id_epreuve";
 				//for($j=0;$j<$i;$j++) {$msg.=""}
 				unset($id_epreuve);
 				unset($mode);
@@ -304,10 +304,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$sql="DELETE FROM eb_epreuves WHERE id='$id_epreuve';";
 			$suppr=mysql_query($sql);
 			if(!$suppr) {
-				$msg="ERREUR lors de la suppression de l'Èpreuve $id_epreuve";
+				$msg="ERREUR lors de la suppression de l'√©preuve $id_epreuve";
 			}
 			else {
-				$msg="Suppression de l'Èpreuve $id_epreuve effectuÈe.";
+				$msg="Suppression de l'√©preuve $id_epreuve effectu√©e.";
 			}
 		}
 		unset($id_epreuve);
@@ -316,19 +316,19 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	elseif((isset($id_epreuve))&&($mode=='ajout_groupes')) {
 		check_token();
 
-		// Ajout de groupes pour l'Èpreuve sÈlectionnÈe
+		// Ajout de groupes pour l'√©preuve s√©lectionn√©e
 		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : array());
 
 		$sql="DELETE FROM eb_groupes WHERE id_epreuve='$id_epreuve';";
 		$suppr=mysql_query($sql);
 		if(!$suppr) {
-			$msg="ERREUR lors de la rÈinitialisation des groupes inscrits.";
+			$msg="ERREUR lors de la r√©initialisation des groupes inscrits.";
 		}
 		else {
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				$msg="L'Èpreuve n∞$id_epreuve n'existe pas.<br />";
+				$msg="L'√©preuve n¬∞$id_epreuve n'existe pas.<br />";
 			}
 			else {
 				$lig=mysql_fetch_object($res);
@@ -354,7 +354,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					$sql="INSERT INTO eb_groupes SET id_epreuve='$id_epreuve', id_groupe='$id_groupe[$i]';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
-						$msg.="Erreur lors de l'ajout du groupe n∞$id_groupe[$i]<br />";
+						$msg.="Erreur lors de l'ajout du groupe n¬∞$id_groupe[$i]<br />";
 					}
 
 					if(($type_anonymat=='alea') ||($type_anonymat=='chrono')) {
@@ -367,8 +367,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$sql="SELECT DISTINCT j.login,e.$type_anonymat, e.date_sortie FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login AND (e.date_sortie='0000-00-00 00:00:00' OR e.date_sortie IS NULL);";
 						//echo "$sql<br />\n";
 					}
-					// Il faudra voir comment gÈrer le cas d'ÈlËves partis en cours d'annÈe... faire choisir la pÈriode?
-					// Eric le 9-4-11 ==> utilisation de la date de sortie pour l'ÈlËve. ElËve prÈsent ==> date_sortie=0 ou null
+					// Il faudra voir comment g√©rer le cas d'√©l√®ves partis en cours d'ann√©e... faire choisir la p√©riode?
+					// Eric le 9-4-11 ==> utilisation de la date de sortie pour l'√©l√®ve. El√®ve pr√©sent ==> date_sortie=0 ou null
 					$res=mysql_query($sql);
 					$cpt_ano = 1;
 					while($lig=mysql_fetch_object($res)) {
@@ -379,14 +379,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 								$n_anonymat=chaine_alea(3,4);
 								while(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$n_anonymat=chaine_alea(3,4);}
 								$tab_n_anonymat_affectes[]=$n_anonymat;
-							} else if ($type_anonymat=='chrono'){// Eric Ajout du numÈro d'anonymat chronologique
+							} else if ($type_anonymat=='chrono'){// Eric Ajout du num√©ro d'anonymat chronologique
 							 $n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
 							$tab_n_anonymat_affectes[]=$n_anonymat;
 							$cpt_ano += 1;		
 						    }
 							else {
 								$n_anonymat=$lig->$type_anonymat;
-								if(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$msg.="Erreur: Le numÈro '$n_anonymat' de $lig->login est dÈj‡ affectÈ ‡ un autre ÈlËve.<br />";}
+								if(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$msg.="Erreur: Le num√©ro '$n_anonymat' de $lig->login est d√©j√† affect√© √† un autre √©l√®ve.<br />";}
 								$tab_n_anonymat_affectes[]=$n_anonymat;
 							}
 							
@@ -394,7 +394,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							$insert=mysql_query($sql);
 	
 							if(!$insert) {
-								$msg.="Erreur lors de l'ajout de l'ÈlËve $lig->login<br />";
+								$msg.="Erreur lors de l'ajout de l'√©l√®ve $lig->login<br />";
 							}
 							else {
 								$temoin_n_anonymat='y';
@@ -402,7 +402,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						}
 					}
 				}
-				if($msg=='') {$msg="Ajout de(s) groupe(s) effectuÈ.<br />";}
+				if($msg=='') {$msg="Ajout de(s) groupe(s) effectu√©.<br />";}
 			}
 		}
 		$mode='modif_epreuve';
@@ -410,17 +410,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	elseif((isset($id_epreuve))&&($mode=='suppr_groupe')) {
 		check_token();
 
-		// Ajout de groupes pour l'Èpreuve sÈlectionnÈe
+		// Ajout de groupes pour l'√©preuve s√©lectionn√©e
 		$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 
 		if(isset($id_groupe)) {
 			$sql="SELECT 1=1 FROM eb_copies ec, eb_groupes eg WHERE ec.id_epreuve='$id_epreuve' AND eg.id_epreuve='$id_epreuve' AND eg.id_groupe='$id_groupe' AND statut!='v';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==1) {
-				$msg="Une note a dÈj‡ ÈtÈ saisie pour une copie associÈe au groupe.";
+				$msg="Une note a d√©j√† √©t√© saisie pour une copie associ√©e au groupe.";
 			}
 			elseif(mysql_num_rows($test)>1) {
-				$msg=mysql_num_rows($test)." notes ont dÈj‡ ÈtÈ saisies pour des copies associÈes au groupe.";
+				$msg=mysql_num_rows($test)." notes ont d√©j√† √©t√© saisies pour des copies associ√©es au groupe.";
 			}
 			else {
 				//$sql="DELETE FROM eb_copies ec, eb_groupes eg WHERE ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve AND eg.id_groupe='$id_groupe';";
@@ -433,7 +433,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
-						// Pour ne pas supprimer un ÈlËve passÈ d'un groupe ‡ un autre lors d'un changement de classe
+						// Pour ne pas supprimer un √©l√®ve pass√© d'un groupe √† un autre lors d'un changement de classe
 						$sql="SELECT DISTINCT eg.id_groupe FROM eb_groupes eg, j_eleves_groupes jeg WHERE jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND jeg.login='$lig->login_ele';";
 						//echo "$sql<br />";
 						$test=mysql_query($sql);
@@ -451,17 +451,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				//$suppr=mysql_query($sql);
 				//if(!$suppr) {
 				if($nb_err_suppr>0) {
-					$msg="ERREUR lors de la suppression des copies associÈes au groupe n∞$id_groupe.";
+					$msg="ERREUR lors de la suppression des copies associ√©es au groupe n¬∞$id_groupe.";
 				}
 				else {
 					$sql="DELETE FROM eb_groupes WHERE id_epreuve='$id_epreuve' AND id_groupe='$id_groupe';";
 					//echo "$sql<br />";
 					$suppr=mysql_query($sql);
 					if(!$suppr) {
-						$msg="ERREUR lors de la suppression du groupe n∞$id_groupe.";
+						$msg="ERREUR lors de la suppression du groupe n¬∞$id_groupe.";
 					}
 					else {
-						$msg="Suppression du groupe n∞$id_groupe effectuÈe.";
+						$msg="Suppression du groupe n¬∞$id_groupe effectu√©e.";
 					}
 				}
 			}
@@ -471,25 +471,25 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	elseif((isset($id_epreuve))&&($mode=='ajout_profs')) {
 		check_token();
 
-		// Ajout de groupes pour l'Èpreuve sÈlectionnÈe
+		// Ajout de groupes pour l'√©preuve s√©lectionn√©e
 		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : array());
 
 		$sql="DELETE FROM eb_profs WHERE id_epreuve='$id_epreuve';";
 		$suppr=mysql_query($sql);
 		if(!$suppr) {
-			$msg="ERREUR lors de la rÈinitialisation des professeurs inscrits.";
+			$msg="ERREUR lors de la r√©initialisation des professeurs inscrits.";
 		}
 		else {
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				$msg="L'Èpreuve n∞$id_epreuve n'existe pas.<br />";
+				$msg="L'√©preuve n¬∞$id_epreuve n'existe pas.<br />";
 			}
 			else {
 				$tab_profs_inscrits=array();
 				$msg="";
 				for($i=0;$i<count($login_prof);$i++) {
-					// On peut sÈlectionner plusieurs fois le mÍme prof, mais il ne faut pas l'insÈrer plusieurs fois dans la table eb_profs
+					// On peut s√©lectionner plusieurs fois le m√™me prof, mais il ne faut pas l'ins√©rer plusieurs fois dans la table eb_profs
 					if(!in_array($login_prof[$i],$tab_profs_inscrits)) {
 						$tab_profs_inscrits[]=$login_prof[$i];
 						$sql="INSERT INTO eb_profs SET id_epreuve='$id_epreuve', login_prof='$login_prof[$i]';";
@@ -499,10 +499,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						}
 					}
 				}
-				if(($msg=='')&&(count($login_prof)>0)) {$msg="Ajout de(s) professeur(s) effectuÈ.";}
+				if(($msg=='')&&(count($login_prof)>0)) {$msg="Ajout de(s) professeur(s) effectu√©.";}
 
-				// VÈrification:
-				// A-t-on supprimÈ un prof qui Ètait associÈ ‡ des copies?
+				// V√©rification:
+				// A-t-on supprim√© un prof qui √©tait associ√© √† des copies?
 				$sql="SELECT DISTINCT login_prof FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof!='';";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
@@ -512,7 +512,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						if(!in_array($lig->login_prof,$tab_profs_inscrits)) {
 							$sql="UPDATE eb_copies SET login_prof='' WHERE id_epreuve='$id_epreuve' AND login_prof='$lig->login_prof';";
 							$update=mysql_query($sql);
-							$msg.="Suppression de professeur(s) qui Ètai(en)t associÈ(s) ‡ des copies.<br />";
+							$msg.="Suppression de professeur(s) qui √©tai(en)t associ√©(s) √† des copies.<br />";
 						}
 					}
 				}
@@ -523,33 +523,33 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	elseif((isset($id_epreuve))&&($mode=='clore')) {
 		check_token();
 
-		// Cloture d'une Èpreuve
+		// Cloture d'une √©preuve
 		$sql="UPDATE eb_epreuves SET etat='clos' WHERE id='$id_epreuve';";
 		$cloture=mysql_query($sql);
 		if(!$cloture) {
-			$msg="ERREUR lors de la cloture de l'Èpreuve $id_epreuve";
+			$msg="ERREUR lors de la cloture de l'√©preuve $id_epreuve";
 			unset($id_epreuve);
 			unset($mode);
 			break;
 		}
-		else {$msg="Cloture de l'Èpreuve n∞$id_epreuve effectuÈe.";}
+		else {$msg="Cloture de l'√©preuve n¬∞$id_epreuve effectu√©e.";}
 		unset($id_epreuve);
 		unset($mode);
 	}
 	elseif((isset($id_epreuve))&&($mode=='declore')) {
 		check_token();
 
-		// RÈouverture d'une Èpreuve
+		// R√©ouverture d'une √©preuve
 		$sql="UPDATE eb_epreuves SET etat='' WHERE id='$id_epreuve';";
 		$cloture=mysql_query($sql);
 		if(!$cloture) {
-			$msg="ERREUR lors de la rÈouverture de l'Èpreuve $id_epreuve";
+			$msg="ERREUR lors de la r√©ouverture de l'√©preuve $id_epreuve";
 			unset($id_epreuve);
 			unset($mode);
 			break;
 		}
 		else {
-			$msg="RÈouverture de l'Èpreuve n∞$id_epreuve effectuÈe.";
+			$msg="R√©ouverture de l'√©preuve n¬∞$id_epreuve effectu√©e.";
 			$mode='modif_epreuve';
 		}
 	}
@@ -580,7 +580,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
     $_POST[copie_affect_copie_prof]['1']=	BOIREAUS
     $_POST['id_epreuve']=	2
     $_POST['mode']=	copier_choix
-    $_POST['copier_les_parametres']=	Copier les paramËtres sÈlectionnÈs
+    $_POST['copier_les_parametres']=	Copier les param√®tres s√©lectionn√©s
 
     Nombre de valeurs en POST: 19
 
@@ -611,7 +611,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		}
 
 		// A REVOIR UN JOUR: La gestion des salles est mal foutue.
-		// Il faudrait avoir une table eb_salles ne dÈpendant pas de id_epreuve
+		// Il faudrait avoir une table eb_salles ne d√©pendant pas de id_epreuve
 		if(isset($id_salle)) {
 			$sql="DELETE FROM eb_salles WHERE id_epreuve='$id_epreuve';";
 			$del=mysql_query($sql);
@@ -642,7 +642,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			if(isset($copie_affect_ele_salle)) {
 				for($loop=0;$loop<count($copie_affect_ele_salle);$loop++) {
 					if(!in_array($copie_affect_ele_salle[$loop],$id_salle)) {
-						$msg.="Il n'est pas possible de copier les affectations ÈlËves/salles si la salle n'est pas copiÈe.<br />";
+						$msg.="Il n'est pas possible de copier les affectations √©l√®ves/salles si la salle n'est pas copi√©e.<br />";
 					}
 					else {
 						$sql="SELECT ec.login_ele FROM eb_copies ec WHERE ec.id_epreuve='$id_epreuve_modele' AND ec.id_salle='$copie_affect_ele_salle[$loop]';";
@@ -678,7 +678,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			}
 		}
 
-		// Si on n'a pas copiÈ les groupes, on ne doit pas pouvoir copier les affectations... sauf si ce sont des profs qui ont les mÍmes ÈlËves dans plusieurs groupes.
+		// Si on n'a pas copi√© les groupes, on ne doit pas pouvoir copier les affectations... sauf si ce sont des profs qui ont les m√™mes √©l√®ves dans plusieurs groupes.
 		if(isset($login_prof)) {
 			$sql="DELETE FROM eb_profs WHERE id_epreuve='$id_epreuve';";
 			$del=mysql_query($sql);
@@ -694,7 +694,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			if(isset($copie_affect_copie_prof)) {
 				for($loop=0;$loop<count($copie_affect_copie_prof);$loop++) {
 					if(!in_array($copie_affect_copie_prof[$loop],$login_prof)) {
-						$msg.="Il n'est pas possible de copier les affectations copies_ÈlËves/correcteurs si le correcteur n'est pas copiÈ.<br />";
+						$msg.="Il n'est pas possible de copier les affectations copies_√©l√®ves/correcteurs si le correcteur n'est pas copi√©.<br />";
 					}
 					else {
 						$sql="SELECT ec.login_ele FROM eb_copies ec WHERE ec.id_epreuve='$id_epreuve_modele' AND ec.login_prof='$copie_affect_copie_prof[$loop]';";
@@ -732,25 +732,25 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 	if($temoin_erreur_n_anonymat=='y') {
 		if(!isset($msg)) {$msg="";}
-		$msg.="<br />Une ou des erreurs se sont produites sur l'anonymat.<br />Vous devriez contrÙler les numÈros anonymat.";
+		$msg.="<br />Une ou des erreurs se sont produites sur l'anonymat.<br />Vous devriez contr√¥ler les num√©ros anonymat.";
 	}
 	elseif($temoin_n_anonymat=='y') {
 		if(!isset($msg)) {$msg="";}
-		$msg.="<br />Des numÈros anonymat ont ÈtÈ modifiÈs. RegÈnÈrez si nÈcessaire les Ètiquettes/listes d'Èmargement.";
+		$msg.="<br />Des num√©ros anonymat ont √©t√© modifi√©s. Reg√©n√©rez si n√©cessaire les √©tiquettes/listes d'√©margement.";
 	}
 }
 
 /*
 $truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 if($truncate_tables=='y') {
-	$msg="<p>Nettoyage des tables GÈnËse des classes... <font color='red'>A FAIRE</font></p>\n";
+	$msg="<p>Nettoyage des tables G√©n√®se des classes... <font color='red'>A FAIRE</font></p>\n";
 	$sql="TRUNCATE TABLE ...;";
 	//$del=mysql_query($sql);
 }
 */
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$themessage  = 'Des informations ont ÈtÈ modifiÈes. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont √©t√© modifi√©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Accueil";
 //echo "<div class='noprint'>\n";
@@ -781,12 +781,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "</p>\n";
 
 			echo "<ul>\n";
-			// CrÈer une Èpreuve blanche
+			// Cr√©er une √©preuve blanche
 			echo "<li>\n";
-			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=creer_epreuve'>CrÈer une nouvelle Èpreuve</a></p>\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=creer_epreuve'>Cr√©er une nouvelle √©preuve</a></p>\n";
 			echo "</li>\n";
 
-			// AccÈder aux Èpreuves blanches: closes ou non
+			// Acc√©der aux √©preuves blanches: closes ou non
 			$sql="SELECT * FROM eb_epreuves WHERE etat!='clos' ORDER BY date, intitule;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -798,14 +798,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					if($lig->description!='') {
 						echo " onmouseover=\"delais_afficher_div('div_epreuve_".$lig->id."','y',-100,20,1000,20,20)\" onmouseout=\"cacher_div('div_epreuve_".$lig->id."')\"";
 
-						$titre="Epreuve n∞$lig->id";
+						$titre="Epreuve n¬∞$lig->id";
 						$texte="<p><b>".$lig->intitule."</b><br />";
 						$texte.=$lig->description;
 						$tabdiv_infobulle[]=creer_div_infobulle('div_epreuve_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');
 
 					}
 					echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
-					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=suppr_epreuve".add_token_in_url()."' onclick=\"return confirm('Etes vous s˚r de vouloir supprimer l Èpreuve?')\">Supprimer</a><br />\n";
+					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=suppr_epreuve".add_token_in_url()."' onclick=\"return confirm('Etes vous s√ªr de vouloir supprimer l √©preuve?')\">Supprimer</a><br />\n";
 				}
 				echo "</li>\n";
 			}
@@ -827,29 +827,29 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=modif_epreuve'>Consulter</a>\n";
 
-					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=declore".add_token_in_url()."' onclick=\"return confirm('Etes vous s˚r de vouloir rouvrir l Èpreuve?')\">Rouvrir</a><br />\n";
+					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=declore".add_token_in_url()."' onclick=\"return confirm('Etes vous s√ªr de vouloir rouvrir l √©preuve?')\">Rouvrir</a><br />\n";
 				}
 
-				//echo "<p style='color:red'>Permettre par la suite de rouvrir une Èpreuve close (pour correction).</p>\n";
+				//echo "<p style='color:red'>Permettre par la suite de rouvrir une √©preuve close (pour correction).</p>\n";
 				echo "</li>\n";
 			}
 			echo "</ul>\n";
 
-			echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'Èpreuves blanches.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-Ítre ajouter une conservation dans les tables archivages (annÈes antÈrieures).</p>\n";
+			echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'√©preuves blanches.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-√™tre ajouter une conservation dans les tables archivages (ann√©es ant√©rieures).</p>\n";
 		}
 		//===========================================================================
-		// CrÈation d'une Èpreuve
+		// Cr√©ation d'une √©preuve
 		elseif($mode=='creer_epreuve') {
-			echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu Èpreuves blanches</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu √©preuves blanches</a>\n";
 			echo "</p>\n";
 
-			echo "<p class='bold'>CrÈation d'une Èpreuve blanche&nbsp;:</p>\n";
+			echo "<p class='bold'>Cr√©ation d'une √©preuve blanche&nbsp;:</p>\n";
 
 			echo "<blockquote>\n";
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
 
-			echo "<table summary='ParamËtres'>\n";
+			echo "<table summary='Param√®tres'>\n";
 			echo "<tr>\n";
 			echo "<td>Intitule&nbsp;:</td>\n";
 			echo "<td><input type='text' name='intitule' value='Epreuve blanche' /></td>\n";
@@ -865,7 +865,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$note_sur=20;
 
 			echo "<tr>\n";
-			echo "<td>Date de l'Èpreuve&nbsp;:</td>\n";
+			echo "<td>Date de l'√©preuve&nbsp;:</td>\n";
 			echo "<td>\n";
 			//echo "<input type='text' name='date' value='$date_defaut' />\n";
 			echo "<input type='text' name='date' id='date_epreuve' value='$date_defaut' size='10' onchange='changement()' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
@@ -894,9 +894,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<select name='type_anonymat'>\n";
 			echo "<option value='elenoet'>Identifiant Elenoet</option>\n";
 			echo "<option value='ele_id'>Identifiant Ele_id</option>\n";
-			echo "<option value='no_gep'>NumÈro INE</option>\n";
-			echo "<option value='alea'>Chaine alÈatoire</option>\n";
-			echo "<option value='chrono'>NumÈro Chronologique MC00nnn</option>\n";
+			echo "<option value='no_gep'>Num√©ro INE</option>\n";
+			echo "<option value='alea'>Chaine al√©atoire</option>\n";
+			echo "<option value='chrono'>Num√©ro Chronologique MC00nnn</option>\n";
 			echo "</select>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -913,23 +913,23 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			echo "<p style='color:red'>NOTES&nbsp;:</p>";
 			echo "<ul>";
-			echo "<li><p style='color:red'>Le type_anonymat devrait Ítre fixÈ une fois que l'on a contrÙlÈ si l'ELENOET, l'INE sont renseignÈs pour les ÈlËves choisis.</p></li>\n";
+			echo "<li><p style='color:red'>Le type_anonymat devrait √™tre fix√© une fois que l'on a contr√¥l√© si l'ELENOET, l'INE sont renseign√©s pour les √©l√®ves choisis.</p></li>\n";
 			echo "</ul>";
 		}
 	}
 	//===========================================================================
-	// Modification/complÈments sur une Èpreuve
+	// Modification/compl√©ments sur une √©preuve
 	elseif($mode=='modif_epreuve') {
-		echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu Èpreuves blanches</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu √©preuves blanches</a>\n";
 
 		if(isset($id_epreuve)) {
-		// VERIFIER: Il faut avoir saisi un intitulÈ,...
+		// VERIFIER: Il faut avoir saisi un intitul√©,...
 			$sql="SELECT 1=1 FROM eb_epreuves;";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0) {
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix".add_token_in_url()."'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">Copier des paramÈtrages depuis une autre Èpreuve blanche</a>\n";
+				echo ">Copier des param√©trages depuis une autre √©preuve blanche</a>\n";
 			}
 		}
 
@@ -937,12 +937,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		if(!isset($aff)) {
 			echo "</p>\n";
 
-			echo "<p><b>Modification d'une Èpreuve blanche&nbsp;:</b> Epreuve n∞$id_epreuve</p>\n";
+			echo "<p><b>Modification d'une √©preuve blanche&nbsp;:</b> Epreuve n¬∞$id_epreuve</p>\n";
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p style='color:red;'>ERREUR&nbsp;: L'Èpreuve $id_epreuve n'existe pas.</p>\n";
+				echo "<p style='color:red;'>ERREUR&nbsp;: L'√©preuve $id_epreuve n'existe pas.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -950,7 +950,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$etat=$lig->etat;
 
 			//==============================================
-			// RequÍtes exploitÈes plus bas
+			// Requ√™tes exploit√©es plus bas
 			$sql="SELECT g.* FROM eb_groupes eg, groupes g WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name;";
 			$res_groupes=mysql_query($sql);
 
@@ -967,52 +967,52 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "<a href='definir_salles.php?id_epreuve=$id_epreuve'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 				if($etat!='clos') {
-					echo ">DÈfinir les salles</a><br />\n";
+					echo ">D√©finir les salles</a><br />\n";
 				}
 				else {
 					echo ">Consulter les salles</a><br />\n";
 				}
-				// Proposer d'enregistrer des paramËtres
-				// Permettre d'organiser les ÈlËves en salles
-				// GÈnÈrer CSV, PDF
+				// Proposer d'enregistrer des param√®tres
+				// Permettre d'organiser les √©l√®ves en salles
+				// G√©n√©rer CSV, PDF
 				echo "</li>\n";
 				echo "<li>\n";
 				echo "<a href='genere_etiquettes.php?id_epreuve=$id_epreuve'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">GÈnÈrer les Ètiquettes</a><br />\n";
-				// Proposer d'enregistrer des paramËtres
-				// Choisir les champs supplÈmentaires ‡ afficher (date et lieu de naissance, INE, classe,...)
-				// Permettre d'organiser les ÈlËves en salles
-				// GÈnÈrer CSV, PDF
+				echo ">G√©n√©rer les √©tiquettes</a><br />\n";
+				// Proposer d'enregistrer des param√®tres
+				// Choisir les champs suppl√©mentaires √† afficher (date et lieu de naissance, INE, classe,...)
+				// Permettre d'organiser les √©l√®ves en salles
+				// G√©n√©rer CSV, PDF
 				echo "</li>\n";
 
-				// Il n'est pas possible de gÈnÈrer lesfeuilles d'Èmargement sans affecter les ÈlËves dans des salles
+				// Il n'est pas possible de g√©n√©rer lesfeuilles d'√©margement sans affecter les √©l√®ves dans des salles
 				$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle!='-1';";
 				$test_affect_salle=mysql_query($sql);
 				if(mysql_num_rows($test_affect_salle)>0) {
 					echo "<li>\n";
 					echo "<a href='genere_emargement.php?id_epreuve=$id_epreuve'";
 					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-					echo ">GÈnÈrer les feuilles d'Èmargement</a><br />\n";
+					echo ">G√©n√©rer les feuilles d'√©margement</a><br />\n";
 					// Fiches avec:
 					// - NOM_PRENOM;Champ_signature
 					// - NOM_PRENOM;N_ANONYMAT;Champ_signature
-					// Permettre d'organiser les ÈlËves en salles
-					// GÈnÈrer CSV, PDF
+					// Permettre d'organiser les √©l√®ves en salles
+					// G√©n√©rer CSV, PDF
 
 					$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle='-1';";
 					$test_affect_salle=mysql_query($sql);
-					if(mysql_num_rows($test_affect_salle)>0) {echo "<span style='color:red'>".mysql_num_rows($test_affect_salle)." ÈlËve(s) non affectÈ(s) dans une salle.</span>";}
+					if(mysql_num_rows($test_affect_salle)>0) {echo "<span style='color:red'>".mysql_num_rows($test_affect_salle)." √©l√®ve(s) non affect√©(s) dans une salle.</span>";}
 					echo "</li>\n";
 
 					echo "<li>\n";
 					echo "<a href='genere_liste_affichage.php?id_epreuve=$id_epreuve'";
 					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-					echo ">GÈnÈrer les listes d'affichage</a><br />\n";
-					// Proposer d'enregistrer des paramËtres
-					// Choisir les champs supplÈmentaires ‡ afficher (date et lieu de naissance, INE, classe,...)
-					// Permettre d'organiser les ÈlËves en salles
-					// GÈnÈrer CSV, PDF
+					echo ">G√©n√©rer les listes d'affichage</a><br />\n";
+					// Proposer d'enregistrer des param√®tres
+					// Choisir les champs suppl√©mentaires √† afficher (date et lieu de naissance, INE, classe,...)
+					// Permettre d'organiser les √©l√®ves en salles
+					// G√©n√©rer CSV, PDF
 					echo "</li>\n";
 
 				}
@@ -1035,7 +1035,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "<li>\n";
 				echo "<a href='genere_bordereaux.php?id_epreuve=$id_epreuve'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">GÈnÈrer les bordereaux professeurs</a><br />\n";
+				echo ">G√©n√©rer les bordereaux professeurs</a><br />\n";
 				echo "</li>\n";
 
 				echo "<li>\n";
@@ -1043,7 +1043,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				//echo "<a href='.php?id_epreuve=$id_epreuve'";
 				//echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 				//echo ">&nbsp;</a>";
-				echo "Passer l'Èpreuve en phase starting_block<br />\n";
+				echo "Passer l'√©preuve en phase starting_block<br />\n";
 				echo "</li>\n";
 
 				echo "<li>\n";
@@ -1062,7 +1062,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle!='-1';";
 					$test_affectation_salle=mysql_query($sql);
 					if(mysql_num_rows($test_affectation_salle)==0) {
-						$info_affectation_salle="<span style='color:red'>Aucun ÈlËve n'est encore affectÈ dans une salle.</span><br />\n";
+						$info_affectation_salle="<span style='color:red'>Aucun √©l√®ve n'est encore affect√© dans une salle.</span><br />\n";
 					}
 
 					//$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND statut='v' AND id_salle!='-1';";
@@ -1078,13 +1078,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						echo "<li>\n";
 						echo "<a href='bilan.php?id_epreuve=$id_epreuve'";
 						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-						echo ">Bilan de l'Èpreuve</a><br />\n";
+						echo ">Bilan de l'√©preuve</a><br />\n";
 						echo "</li>\n";
 
 						echo "<li>\n";
 						echo "<a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=clore".add_token_in_url()."'";
 						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-						echo ">Clore l'Èpreuve</a><br />\n";
+						echo ">Clore l'√©preuve</a><br />\n";
 						echo "</li>\n";
 					}
 					else {
@@ -1094,8 +1094,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						echo "Les choix suivants ne sont donc pas encore accessibles&nbsp;:";
 						echo "<ul>\n";
 						echo "<li>Transfert vers carnets de notes</li>\n";
-						echo "<li>Bilan de l'Èpreuve</li>\n";
-						echo "<li>Clore l'Èpreuve</li>\n";
+						echo "<li>Bilan de l'√©preuve</li>\n";
+						echo "<li>Clore l'√©preuve</li>\n";
 						echo "</ul>\n";
 					}
 				}
@@ -1105,7 +1105,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 				/*
 				echo "<div style='float:right; width:15em; border: 1px solid black;'>\n";
-				echo "Proposer de passer l'Èpreuve en phase starting_block";
+				echo "Proposer de passer l'√©preuve en phase starting_block";
 				echo "</div>\n";
 				*/
 			}
@@ -1115,7 +1115,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
 
-			echo "<table summary='ParamËtres'>\n";
+			echo "<table summary='Param√®tres'>\n";
 			echo "<tr>\n";
 			echo "<td style='font-weight:bold;'>Intitule&nbsp;:</td>\n";
 			if($etat!='clos') {
@@ -1143,7 +1143,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$note_sur=$lig->note_sur;
 
 			echo "<tr>\n";
-			echo "<td style='font-weight:bold;'>Date de l'Èpreuve&nbsp;:</td>\n";
+			echo "<td style='font-weight:bold;'>Date de l'√©preuve&nbsp;:</td>\n";
 			echo "<td>\n";
 
 			if($etat!='clos') {
@@ -1193,20 +1193,20 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		
 				echo "<option value='no_gep'";
 				if($lig->type_anonymat=='no_gep') {echo " selected='true'";}
-				echo ">NumÈro INE</option>\n";
+				echo ">Num√©ro INE</option>\n";
 		
 				echo "<option value='alea'";
 				if($lig->type_anonymat=='alea') {echo " selected='true'";}
-				echo ">Chaine alÈatoire</option>\n";
+				echo ">Chaine al√©atoire</option>\n";
 		
 				echo "<option value='chrono'";
 				if($lig->type_anonymat=='chrono') {echo " selected='true'";}
-				echo ">NumÈro Chronologique MC00nnn</option>\n";
+				echo ">Num√©ro Chronologique MC00nnn</option>\n";
 		
 				echo "</select>\n";
 			}
 			elseif($lig->type_anonymat=='no_gep') {
-				echo "NumÈro INE";
+				echo "Num√©ro INE";
 			}
 			else {
 				echo "Identifiant ".strtoupper($lig->type_anonymat);
@@ -1229,12 +1229,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "</blockquote>\n";
 
 			/*
-			echo "<p class='bold'>ComplÈter les ÈlÈments de l'Èpreuve&nbsp;:</p>\n";
+			echo "<p class='bold'>Compl√©ter les √©l√©ments de l'√©preuve&nbsp;:</p>\n";
 			echo "<ul>\n";
 			echo "<li><a href=''></a></li>\n";
 			echo "</ul>\n";
 
-			echo "<p><b>ComplÈter les ÈlÈments de l'Èpreuve&nbsp;:</b> <a href=''></a></p>\n";
+			echo "<p><b>Compl√©ter les √©l√©ments de l'√©preuve&nbsp;:</b> <a href=''></a></p>\n";
 			*/
 
 			//=====================================
@@ -1242,7 +1242,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			//$sql="SELECT g.* FROM eb_groupes eg, groupes g WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name;";
 			//$res_groupes=mysql_query($sql);
 			if(mysql_num_rows($res_groupes)>0) {
-				echo "<p><b>Liste des groupes inscrits ‡ l'Èpreuve&nbsp;:</b></p>\n";
+				echo "<p><b>Liste des groupes inscrits √† l'√©preuve&nbsp;:</b></p>\n";
 				echo "<blockquote>\n";
 				while($lig=mysql_fetch_object($res_groupes)) {
 
@@ -1262,15 +1262,15 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					//echo "<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
 					echo "<b>".$classlist_string."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
 					if($etat!='clos') {
-						echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=$lig->id&amp;mode=suppr_groupe".add_token_in_url()."' onclick=\"return confirm('Etes vous s˚r de vouloir supprimer le groupe de l Èpreuve?')\">Supprimer</a>\n";
+						echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=$lig->id&amp;mode=suppr_groupe".add_token_in_url()."' onclick=\"return confirm('Etes vous s√ªr de vouloir supprimer le groupe de l √©preuve?')\">Supprimer</a>\n";
 					}
 					echo "<br />\n";
-					// Afficher les ÈlËves inscrits/non inscrits en infobulle
-					// Permettre de cocher/dÈcocher les ÈlËves dans ces infobulles
+					// Afficher les √©l√®ves inscrits/non inscrits en infobulle
+					// Permettre de cocher/d√©cocher les √©l√®ves dans ces infobulles
 				}
 			}
 			else {
-				echo "<p><b>Aucun groupe n'est encore inscrit ‡ l'Èpreuve&nbsp;:</b></p>\n";
+				echo "<p><b>Aucun groupe n'est encore inscrit √† l'√©preuve&nbsp;:</b></p>\n";
 				echo "<blockquote>\n";
 			}
 			if($etat!='clos') {
@@ -1280,8 +1280,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			//=====================================
 
-			// Effectuer un contrÙle de l'anonymat:
-			// Nombre d'inscrits et nombre de numÈros distincts
+			// Effectuer un contr√¥le de l'anonymat:
+			// Nombre d'inscrits et nombre de num√©ros distincts
 			// Pouvoir modifier le type anonymat
 
 			//=====================================
@@ -1289,18 +1289,18 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			//$sql="SELECT u.* FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login ORDER BY u.nom,u.prenom;";
 			//$res_profs=mysql_query($sql);
 			if(mysql_num_rows($res_profs)>0) {
-				echo "<p><b>Liste des professeurs heureux correcteurs dÈsignÈs pour l'Èpreuve&nbsp;:</b></p>\n";
+				echo "<p><b>Liste des professeurs heureux correcteurs d√©sign√©s pour l'√©preuve&nbsp;:</b></p>\n";
 				echo "<blockquote>\n";
 				while($lig=mysql_fetch_object($res_profs)) {
 					//echo "<a href='#'>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1)."<br />\n";
 					echo $lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
-					//echo " <span style='color:red'>Compter les copies attribuÈes</span>";
+					//echo " <span style='color:red'>Compter les copies attribu√©es</span>";
 
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$lig->login."';";
 					$compte_total=mysql_num_rows(mysql_query($sql));
 
 					if($compte_total==0) {
-						echo " (<span style='font-style:italic;color:red;'>aucune copie attribuÈe</span>)";
+						echo " (<span style='font-style:italic;color:red;'>aucune copie attribu√©e</span>)";
 					}
 					else {
 						$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$lig->login."' AND statut!='v';";
@@ -1322,7 +1322,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				}
 			}
 			else {
-				echo "<p><b>Aucun correcteur n'est encore dÈsignÈ pour l'Èpreuve&nbsp;:</b></p>\n";
+				echo "<p><b>Aucun correcteur n'est encore d√©sign√© pour l'√©preuve&nbsp;:</b></p>\n";
 				echo "<blockquote>\n";
 
 				if($etat!='clos') {
@@ -1338,7 +1338,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$sql="SELECT * FROM eb_salles es WHERE es.id_epreuve='$id_epreuve' ORDER BY es.salle;";
 				$res_salles=mysql_query($sql);
 				if(mysql_num_rows($res_salles)>0) {
-					echo "<p><b>Liste des salles choisies pour l'Èpreuve&nbsp;:</b></p>\n";
+					echo "<p><b>Liste des salles choisies pour l'√©preuve&nbsp;:</b></p>\n";
 					echo "<blockquote>\n";
 					while($lig=mysql_fetch_object($res_salles)) {
 						$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle='$lig->id';";
@@ -1349,16 +1349,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					echo "</blockquote>\n";
 				}
 				else {
-					echo "<p><b>Aucun salle n'est encore choisie pour l'Èpreuve.</b></p>\n";
+					echo "<p><b>Aucun salle n'est encore choisie pour l'√©preuve.</b></p>\n";
 				}
 			}
 			echo "<p><br /></p>";
 
 			echo "<p style='color:red'>NOTES&nbsp;:</p>";
 			echo "<ul>";
-			echo "<li><p style='color:red'>A FAIRE: Pouvoir interdire (ou alerter) la modification du type_anonymat une fois les listings_Èmargement/etiquettes gÈnÈrÈs.<br />Mettre par exemple eb_epreuves.etat='starting_block' et interdire alors les modifs d'anonymat.</p></li>\n";
+			echo "<li><p style='color:red'>A FAIRE: Pouvoir interdire (ou alerter) la modification du type_anonymat une fois les listings_√©margement/etiquettes g√©n√©r√©s.<br />Mettre par exemple eb_epreuves.etat='starting_block' et interdire alors les modifs d'anonymat.</p></li>\n";
 			//echo "<li><p style='color:red'>Ajouter des changement() et confirm_abandon() quand on quitte la page sans valider une modif.</p></li>\n";
-			//echo "<li><p style='color:red'>A FAIRE: afficher la liste des salles associÈes et les effectifs dans les salles.</p></li>\n";
+			//echo "<li><p style='color:red'>A FAIRE: afficher la liste des salles associ√©es et les effectifs dans les salles.</p></li>\n";
 			echo "</ul>";
 
 		}
@@ -1372,7 +1372,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p style='color:red;'>ERREUR&nbsp;: L'Èpreuve $id_epreuve n'existe pas.</p>\n";
+				echo "<p style='color:red;'>ERREUR&nbsp;: L'√©preuve $id_epreuve n'existe pas.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1380,12 +1380,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$etat=$lig->etat;
 
 			if($etat=='clos') {
-				echo "<p class='bold'>L'Èpreuve $id_epreuve est close.</p>\n";
+				echo "<p class='bold'>L'√©preuve $id_epreuve est close.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
 
-			echo "<p class='bold'>Choix des classes pour l'Èpreuve $id_epreuve&nbsp;:</p>\n";
+			echo "<p class='bold'>Choix des classes pour l'√©preuve $id_epreuve&nbsp;:</p>\n";
 
 			if($_SESSION['statut']=='administrateur') {
 				$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
@@ -1397,10 +1397,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$classes_list = mysql_query($sql);
 			$nb = mysql_num_rows($classes_list);
 			if ($nb==0) {
-				echo "<p>Aucune classe ne semble dÈfinie.</p>\n";
+				echo "<p>Aucune classe ne semble d√©finie.</p>\n";
 			}
 			else {
-				// Liste des classes dÈj‡ associÈes ‡ l'Èpreuve via des groupes inscrits dans eb_groupes
+				// Liste des classes d√©j√† associ√©es √† l'√©preuve via des groupes inscrits dans eb_groupes
 				$tab_id_classe=array();
 				$sql="SELECT DISTINCT j.id_classe FROM eb_groupes eg, j_groupes_classes j WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=j.id_groupe";
 				$res=mysql_query($sql);
@@ -1499,7 +1499,7 @@ function checkbox_change(cpt) {
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p style='color:red;'>ERREUR&nbsp;: L'Èpreuve $id_epreuve n'existe pas.</p>\n";
+				echo "<p style='color:red;'>ERREUR&nbsp;: L'√©preuve $id_epreuve n'existe pas.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1507,7 +1507,7 @@ function checkbox_change(cpt) {
 			$etat=$lig->etat;
 
 			if($etat=='clos') {
-				echo "<p class='bold'>L'Èpreuve $id_epreuve est close.</p>\n";
+				echo "<p class='bold'>L'√©preuve $id_epreuve est close.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1516,28 +1516,28 @@ function checkbox_change(cpt) {
 			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 
 			if(!isset($id_classe)) {
-				echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'a ÈtÈ choisie.</p>\n";
+				echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'a √©t√© choisie.</p>\n";
 			}
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
 
-			echo "<p class='bold'>Choix des groupes pour l'Èpreuve $id_epreuve&nbsp;:</p>\n";
+			echo "<p class='bold'>Choix des groupes pour l'√©preuve $id_epreuve&nbsp;:</p>\n";
 
 			$sql="SELECT type_anonymat FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysql_query($sql);
 			$lig=mysql_fetch_object($res);
 			if($lig->type_anonymat=='alea') {
 				echo "<div style='float:right; width:20em; border: 1px solid black;'>\n";
-				echo "<p>Le type d'anonymat choisi est un numÈro 'alÈatoire'.</p>\n";
-				echo "<p><b>Attention</b>&nbsp;: Lors de la validation de ce formulaire, les numÈros d'anonymat sont gÈnÈrÈs/regÈnÈrÈs.<br />Vous ne devriez pas valider ce formulaire une fois que des Ètiquettes ont ÈtÈ collÈes ou des copies anonymÈes.</p>\n";
+				echo "<p>Le type d'anonymat choisi est un num√©ro 'al√©atoire'.</p>\n";
+				echo "<p><b>Attention</b>&nbsp;: Lors de la validation de ce formulaire, les num√©ros d'anonymat sont g√©n√©r√©s/reg√©n√©r√©s.<br />Vous ne devriez pas valider ce formulaire une fois que des √©tiquettes ont √©t√© coll√©es ou des copies anonym√©es.</p>\n";
 				echo "</div>\n";
 			}
 			// Ajout Eric Mode chrono
 			if($lig->type_anonymat=='chrono') {
 				echo "<div style='float:right; width:20em; border: 1px solid black;'>\n";
-				echo "<p>Le type d'anonymat choisi est un numÈro Chronologique.</p>\n";
-				echo "<p><b>Attention</b>&nbsp;: Lors de la validation de ce formulaire, les numÈros d'anonymat sont gÈnÈrÈs/regÈnÈrÈs.<br />Vous ne devriez pas valider ce formulaire une fois que des Ètiquettes ont ÈtÈ collÈes ou des copies anonymÈes.</p>\n";
+				echo "<p>Le type d'anonymat choisi est un num√©ro Chronologique.</p>\n";
+				echo "<p><b>Attention</b>&nbsp;: Lors de la validation de ce formulaire, les num√©ros d'anonymat sont g√©n√©r√©s/reg√©n√©r√©s.<br />Vous ne devriez pas valider ce formulaire une fois que des √©tiquettes ont √©t√© coll√©es ou des copies anonym√©es.</p>\n";
 				echo "</div>\n";
 			}
 
@@ -1551,7 +1551,7 @@ function checkbox_change(cpt) {
 				}
 			}
 
-			echo "<table class='boireaus' summary='Groupes triÈs par classes'>\n";
+			echo "<table class='boireaus' summary='Groupes tri√©s par classes'>\n";
 			echo "<tr>\n";
 			for($i=0;$i<count($id_classe);$i++) {
 				echo "<th>".get_class_from_id($id_classe[$i])."</th>\n";
@@ -1610,7 +1610,7 @@ function checkbox_change(cpt) {
 			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 
 			if(!isset($id_classe)) {
-				echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'a ÈtÈ choisie.</p>\n";
+				echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'a √©t√© choisie.</p>\n";
 			}
 
 			for($i=0;$i<count($id_classe);$i++) {
@@ -1631,7 +1631,7 @@ function checkbox_change(cpt) {
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p style='color:red;'>ERREUR&nbsp;: L'Èpreuve $id_epreuve n'existe pas.</p>\n";
+				echo "<p style='color:red;'>ERREUR&nbsp;: L'√©preuve $id_epreuve n'existe pas.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1639,7 +1639,7 @@ function checkbox_change(cpt) {
 			$etat=$lig->etat;
 
 			if($etat=='clos') {
-				echo "<p class='bold'>L'Èpreuve $id_epreuve est close.</p>\n";
+				echo "<p class='bold'>L'√©preuve $id_epreuve est close.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1662,7 +1662,7 @@ function checkbox_change(cpt) {
 			$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM eb_groupes eg, j_groupes_professeurs jgp, utilisateurs u WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=jgp.id_groupe AND u.login=jgp.login ORDER BY u.nom,u.prenom;";
 			$res_profs_groupes=mysql_query($sql);
 			if(mysql_num_rows($res_profs_groupes)>0) {
-				echo "<p>Les professeurs appelÈs ‡ corriger sont probablement les enseignants des groupes sÈlectionnÈs.</p>\n";
+				echo "<p>Les professeurs appel√©s √† corriger sont probablement les enseignants des groupes s√©lectionn√©s.</p>\n";
 				//$cpt=0;
 				while($lig=mysql_fetch_object($res_profs_groupes)) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
@@ -1679,7 +1679,7 @@ function checkbox_change(cpt) {
 			$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif' ORDER BY u.nom,u.prenom;";
 			$res_profs=mysql_query($sql);
 			if(mysql_num_rows($res_profs)>0) {
-				echo "<p>SÈlectionner des professeurs sans prÈoccupation de groupes&nbsp;:</p>\n";
+				echo "<p>S√©lectionner des professeurs sans pr√©occupation de groupes&nbsp;:</p>\n";
 
 				$nb=mysql_num_rows($res_profs);
 				$nb_prof_par_colonne=round($nb/3);
@@ -1746,15 +1746,15 @@ function checkbox_change(cpt) {
 
 
 	//===========================================================================
-	// Copie de paramÈtrages
+	// Copie de param√©trages
 	elseif($mode=='copier_choix') {
-		echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu Èpreuves blanches</a>\n";
-		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve'>Epreuve blanche n∞$id_epreuve</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu √©preuves blanches</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve'>Epreuve blanche n¬∞$id_epreuve</a>\n";
 
 // Classes
 // Salles
-	// Affectation des ÈlËves dans les salles
-// MatiËres
+	// Affectation des √©l√®ves dans les salles
+// Mati√®res
 	// Profs
 // Affectation des copies aux profs
 // Ou rotation de l'affectation des copies aux profs
@@ -1771,7 +1771,7 @@ eb_salles
 		if(mysql_num_rows($res)==0) {
 			echo "</p>\n";
 
-			echo "<p style='color:red'>L'Èpreuve n∞$id_epreuve n'existe pas.</p>\n";
+			echo "<p style='color:red'>L'√©preuve n¬∞$id_epreuve n'existe pas.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -1785,32 +1785,32 @@ eb_salles
 		if(!isset($id_epreuve_modele)) {
 			echo "</p>\n";
 
-			echo "<p>Choix d'un modËle pour l'Èpreuve n∞$id_epreuve</p>\n";
+			echo "<p>Choix d'un mod√®le pour l'√©preuve n¬∞$id_epreuve</p>\n";
 
-			echo "<p class='bold'>Liste des autres Èpreuves&nbsp;:</p>\n";
+			echo "<p class='bold'>Liste des autres √©preuves&nbsp;:</p>\n";
 			$sql="SELECT * FROM eb_epreuves WHERE id!='$id_epreuve';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p style='color:red'>Aucune autre Èpreuve n'a ÈtÈ trouvÈe.</p>\n";
+				echo "<p style='color:red'>Aucune autre √©preuve n'a √©t√© trouv√©e.</p>\n";
 			}
 			else {
 				echo "<ul>\n";
 				while($lig=mysql_fetch_object($res)) {
-					echo "<li><p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix&amp;id_epreuve_modele=$lig->id".add_token_in_url()."'>Epreuve n∞$lig->id</a>&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p></li>\n";
+					echo "<li><p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix&amp;id_epreuve_modele=$lig->id".add_token_in_url()."'>Epreuve n¬∞$lig->id</a>&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p></li>\n";
 				}
 				echo "</ul>\n";
 			}
 		}
 		else {
-			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=copier_choix&amp;id_epreuve=$id_epreuve'>Choix de l'Èpreuve modËle</a>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=copier_choix&amp;id_epreuve=$id_epreuve'>Choix de l'√©preuve mod√®le</a>\n";
 			echo "</p>\n";
 
-			echo "<h3>Copie de paramËtres pour l'Èpreuve n∞$id_epreuve: $intitule_epreuve (".formate_date($date_epreuve).")</h3>\n";
+			echo "<h3>Copie de param√®tres pour l'√©preuve n¬∞$id_epreuve: $intitule_epreuve (".formate_date($date_epreuve).")</h3>\n";
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve_modele';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p style='color:red'>L'Èpreuve n∞$id_epreuve_modele n'a pas ÈtÈ trouvÈe.</p>\n";
+				echo "<p style='color:red'>L'√©preuve n¬∞$id_epreuve_modele n'a pas √©t√© trouv√©e.</p>\n";
 			}
 			else {
 				$lig=mysql_fetch_object($res);
@@ -1819,19 +1819,19 @@ eb_salles
 				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_copie_param_modele'>\n";
 				echo add_token_field();
 
-				//echo "<p>ModËle&nbsp;: Epreuve n∞$lig->id&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p>";
-				//echo "<div style='width:11em; font-weight:bold; display:inline; border:1px solid black;'>ModËle&nbsp;:</div><div style='display:block; border:1px solid black; width:30em'>Epreuve n∞$lig->id&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</div>";
-				echo "<p><b>ModËle&nbsp;:</b> Epreuve n∞$lig->id&nbsp;:</p>\n";
+				//echo "<p>Mod√®le&nbsp;: Epreuve n¬∞$lig->id&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p>";
+				//echo "<div style='width:11em; font-weight:bold; display:inline; border:1px solid black;'>Mod√®le&nbsp;:</div><div style='display:block; border:1px solid black; width:30em'>Epreuve n¬∞$lig->id&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</div>";
+				echo "<p><b>Mod√®le&nbsp;:</b> Epreuve n¬∞$lig->id&nbsp;:</p>\n";
 				echo "<p style='margin-left: 3em;'>$lig->intitule<br />".nl2br($lig->description)."</p>";
 
 				// Liste des groupes
 				$sql="SELECT * FROM eb_groupes eg WHERE id_epreuve='$id_epreuve_modele';";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)==0) {
-					echo "<p>L'Èpreuve n∞$id_epreuve_modele n'est associÈe ‡ aucun groupe/enseignement.</p>\n";
+					echo "<p>L'√©preuve n¬∞$id_epreuve_modele n'est associ√©e √† aucun groupe/enseignement.</p>\n";
 				}
 				else {
-					echo "<p>Liste des enseignements de l'Èpreuve modËle&nbsp;:</p>\n";
+					echo "<p>Liste des enseignements de l'√©preuve mod√®le&nbsp;:</p>\n";
 					echo "<p style='margin-left: 3em;'>";
 					while($lig=mysql_fetch_object($res)) {
 						$tmp_grp=get_group($lig->id_groupe);
@@ -1844,7 +1844,7 @@ eb_salles
 				$sql="SELECT * FROM eb_salles es WHERE id_epreuve='$id_epreuve_modele' ORDER BY salle;";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)==0) {
-					echo "<p>L'Èpreuve n∞$id_epreuve_modele n'est associÈe ‡ aucune salle.</p>\n";
+					echo "<p>L'√©preuve n¬∞$id_epreuve_modele n'est associ√©e √† aucune salle.</p>\n";
 				}
 				else {
 					echo "<p>Liste des salles&nbsp;:</p>\n";
@@ -1855,11 +1855,11 @@ eb_salles
 					}
 					echo "</p>\n";
 
-					// Liste des associations ÈlËves/salles
+					// Liste des associations √©l√®ves/salles
 					$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve_modele' ORDER BY id_salle;";
 					$res_ele_salle=mysql_query($sql);
 					if(mysql_num_rows($res_ele_salle)==0) {
-						echo "<p>Aucun ÈlËve n'est affectÈ dans une salle pour l'Èpreuve n∞$id_epreuve_modele.</p>\n";
+						echo "<p>Aucun √©l√®ve n'est affect√© dans une salle pour l'√©preuve n¬∞$id_epreuve_modele.</p>\n";
 					}
 					else {
 						$current_id_salle="";
@@ -1882,14 +1882,14 @@ eb_salles
 									echo "<input type='checkbox' name='copie_affect_ele_salle[]' id='copie_affect_ele_salle_".$lig->id_salle."' value='".$lig->id_salle."' checked  />";
 									echo "<label for='copie_affect_ele_salle_".$lig->id_salle."'>";
 									//if($lig->id_salle!='-1') {
-										echo "Copier les affectations d'ÈlËves en ".$tab_salle[$lig->id_salle]."</label>";
+										echo "Copier les affectations d'√©l√®ves en ".$tab_salle[$lig->id_salle]."</label>";
 									/*
 									}
 									else {
-										echo "Copier la liste des ÈlËves affectÈs dans aucune salle</label>";
+										echo "Copier la liste des √©l√®ves affect√©s dans aucune salle</label>";
 									}
 									*/
-									//echo "<table class='boireaus' summary=\"Liste des ÈlËves affectÈs en Salle $tab_salle[$lig->id]\">\n";
+									//echo "<table class='boireaus' summary=\"Liste des √©l√®ves affect√©s en Salle $tab_salle[$lig->id]\">\n";
 									echo "<br />\n";
 									echo "<span class='infobulle_css'>\n";
 									$cpt=0;
@@ -1916,7 +1916,7 @@ eb_salles
 				$sql="SELECT * FROM eb_profs ep WHERE id_epreuve='$id_epreuve_modele' ORDER BY login_prof;";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)==0) {
-					echo "<p>L'Èpreuve n∞$id_epreuve_modele n'est associÈe ‡ aucun correcteur.</p>\n";
+					echo "<p>L'√©preuve n¬∞$id_epreuve_modele n'est associ√©e √† aucun correcteur.</p>\n";
 				}
 				else {
 					echo "<p>Liste des correcteurs&nbsp;:</p>\n";
@@ -1933,7 +1933,7 @@ eb_salles
 					//echo "$sql<br />";
 					$res_ele_prof=mysql_query($sql);
 					if(mysql_num_rows($res_ele_prof)==0) {
-						echo "<p>Aucun copie ÈlËve n'est affectÈe ‡ un correcteur pour l'Èpreuve n∞$id_epreuve_modele.</p>\n";
+						echo "<p>Aucun copie √©l√®ve n'est affect√©e √† un correcteur pour l'√©preuve n¬∞$id_epreuve_modele.</p>\n";
 					}
 					else {
 						$current_login_prof="";
@@ -1951,8 +1951,8 @@ eb_salles
 								echo "<p style='margin-left: 6em;'>";
 								echo "<span class='conteneur_infobulle_css'>\n";
 								echo "<input type='checkbox' name='copie_affect_copie_prof[]' id='copie_affect_copie_prof_".$lig->login_prof."' value='".$lig->login_prof."' checked  />";
-								echo "<label for='copie_affect_copie_prof_".$lig->login_prof."'>Copier les affectations copie d'ÈlËves au correcteur ".$tab_prof[$lig->login_prof]."</label>";
-								//echo "<table class='boireaus' summary=\"Liste des ÈlËves affectÈs en Salle $tab_salle[$lig->id]\">\n";
+								echo "<label for='copie_affect_copie_prof_".$lig->login_prof."'>Copier les affectations copie d'√©l√®ves au correcteur ".$tab_prof[$lig->login_prof]."</label>";
+								//echo "<table class='boireaus' summary=\"Liste des √©l√®ves affect√©s en Salle $tab_salle[$lig->id]\">\n";
 								echo "<br />\n";
 								echo "<span class='infobulle_css'>\n";
 								$cpt=0;
@@ -1977,7 +1977,7 @@ eb_salles
 				echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
 				echo "<input type='hidden' name='id_epreuve_modele' value='$id_epreuve_modele' />\n";
 				echo "<input type='hidden' name='mode' value='copier_choix' />\n";
-				echo "<input type='submit' name='copier_les_parametres' value='Copier les paramËtres sÈlectionnÈs' />\n";
+				echo "<input type='submit' name='copier_les_parametres' value='Copier les param√®tres s√©lectionn√©s' />\n";
 				echo "</form>\n";
 
 				// Espace pour que les infobulles CSS puissent s'afficher.
@@ -2000,14 +2000,14 @@ eb_salles
 elseif($_SESSION['statut']=='professeur') {
 	// Menu professeur
 
-	// AccÈder aux Èpreuves blanches qui lui sont affectÈes
+	// Acc√©der aux √©preuves blanches qui lui sont affect√©es
 	$sql="SELECT ee.* FROM eb_epreuves ee, eb_profs ep WHERE ep.login_prof='".$_SESSION['login']."' AND ee.id=ep.id_epreuve AND ee.etat!='clos' ORDER BY ee.date, ee.intitule;";
 	//echo "$sql<br />\n";
 
-	// Afficher les Èpreuves auxquelles est associÈ le prof
+	// Afficher les √©preuves auxquelles est associ√© le prof
 	// Pointer vers des pages:
 	// - saisie
-	// - gÈnÈration d'un listing n_anonymat,note,statut
+	// - g√©n√©ration d'un listing n_anonymat,note,statut
 
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -2022,12 +2022,12 @@ elseif($_SESSION['statut']=='professeur') {
 			$sql="SELECT DISTINCT n_anonymat FROM eb_copies WHERE id_epreuve='$lig->id';";
 			$test2=mysql_query($sql);
 			if(mysql_num_rows($test1)!=mysql_num_rows($test2)) {
-				echo "<span style='color:red;'>Les numÈros anonymats ne sont pas uniques sur l'Èpreuve (<i>cela ne devrait pas arriver</i>).<br />La saisie n'est pas possible sur l'Èpreuve </span>";
+				echo "<span style='color:red;'>Les num√©ros anonymats ne sont pas uniques sur l'√©preuve (<i>cela ne devrait pas arriver</i>).<br />La saisie n'est pas possible sur l'√©preuve </span>";
 				if($lig->description!='') {
 					echo "<a href='#'";
 					echo " onmouseover=\"delais_afficher_div('div_epreuve_".$lig->id."','y',-100,20,1000,20,20)\" onmouseout=\"cacher_div('div_epreuve_".$lig->id."')\"";
 	
-					$titre="Epreuve n∞$lig->id";
+					$titre="Epreuve n¬∞$lig->id";
 					$texte="<p><b>".$lig->intitule."</b><br />";
 					$texte.=$lig->description;
 					$tabdiv_infobulle[]=creer_div_infobulle('div_epreuve_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');
@@ -2044,7 +2044,7 @@ elseif($_SESSION['statut']=='professeur') {
 				if($lig->description!='') {
 					echo " onmouseover=\"delais_afficher_div('div_epreuve_".$lig->id."','y',-100,20,1000,20,20)\" onmouseout=\"cacher_div('div_epreuve_".$lig->id."')\"";
 	
-					$titre="Epreuve n∞$lig->id";
+					$titre="Epreuve n¬∞$lig->id";
 					$texte="<p><b>".$lig->intitule."</b><br />";
 					$texte.=$lig->description;
 					$tabdiv_infobulle[]=creer_div_infobulle('div_epreuve_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');

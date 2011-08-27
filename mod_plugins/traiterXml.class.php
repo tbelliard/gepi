@@ -23,23 +23,23 @@
 if (!$_SESSION["login"]){Die();}
 
 /**
- * Classe qui vérifie la structure du fichier plugin.xml des plugins de Gepi
+ * Classe qui vÃ©rifie la structure du fichier plugin.xml des plugins de Gepi
  *
  * @author jjocal
  */
 class traiterXml {
 
   /**
-   * Fichier plugin.xml parsé par simpleXML
+   * Fichier plugin.xml parsÃ© par simpleXML
    *
    * @var object simpleXMLElement
    */
   private $_xml = NULL;
 
   /**
-   * Liste des fichiers du répertoire du plugin
+   * Liste des fichiers du rÃ©pertoire du plugin
    *
-   * @var array (résultat du scandir du répertoire du plugin)
+   * @var array (rÃ©sultat du scandir du rÃ©pertoire du plugin)
    */
   private $_fichiers = NULL;
 
@@ -62,14 +62,14 @@ class traiterXml {
                            'administration');
 
   /**
-   * Réponse donnée après la vérification.
+   * RÃ©ponse donnÃ©e aprÃ¨s la vÃ©rification.
    *
    * @var boolean
    */
   private $_reponse = false;
 
   /**
-   * Message d'erreur renvoyé par les différentes vérifications
+   * Message d'erreur renvoyÃ© par les diffÃ©rentes vÃ©rifications
    *
    * @var string Message d'erreur
    */
@@ -96,12 +96,12 @@ class traiterXml {
   }
 
   /**
-   * Méthode qui vérifie si les noeuds de premier niveau sont bien présents dans le fichier plugin.xml
+   * MÃ©thode qui vÃ©rifie si les noeuds de premier niveau sont bien prÃ©sents dans le fichier plugin.xml
    *
    * @return boolean
    */
   private function verifNiveau1(){
-    // On vérifie tous les noeuds
+    // On vÃ©rifie tous les noeuds
     $nbre = count($this->_noeuds);
     for($a = 0 ; $a < $nbre ; $a++){
       $noeud = $this->_noeuds[$a];
@@ -115,7 +115,7 @@ class traiterXml {
   }
 
   /**
-   * Méthode qui vérifie si les fichiers déclarés dans plugin.xml sont bien dans le répoertoire du plugin
+   * MÃ©thode qui vÃ©rifie si les fichiers dÃ©clarÃ©s dans plugin.xml sont bien dans le rÃ©poertoire du plugin
    *
    * @return boolean
    */
@@ -134,7 +134,7 @@ class traiterXml {
   }
 
   /**
-   * Méthode qui vérifie si les fichiers du répertoire sont bien tous déclarés dans le fichier plugin.xml
+   * MÃ©thode qui vÃ©rifie si les fichiers du rÃ©pertoire sont bien tous dÃ©clarÃ©s dans le fichier plugin.xml
    *
    * @return boolean 
    */
@@ -143,7 +143,7 @@ class traiterXml {
   }
 
   /**
-   * Méthode qui retourne un type d'erreur et un message qui précise où se situe l'erreur.
+   * MÃ©thode qui retourne un type d'erreur et un message qui prÃ©cise oÃ¹ se situe l'erreur.
    *
    * @param integer $_e
    * @param string $_m
@@ -154,10 +154,10 @@ class traiterXml {
         $message = 'Il manque le noeud ' . $_m . ' dans le fichier plugin.xml';
         break;
       case 2:
-        $message = 'Le fichier ' . $_m . ' est déclaré dans plugin.xml mais est manquant dans le plugin.';
+        $message = 'Le fichier ' . $_m . ' est dÃ©clarÃ© dans plugin.xml mais est manquant dans le plugin.';
         break;
       case 3:
-        $message = 'Le fichier ' . $_m . ' est présent dans le plugin mais n\'a pas ses droits dans plugin.xml.';
+        $message = 'Le fichier ' . $_m . ' est prÃ©sent dans le plugin mais n\'a pas ses droits dans plugin.xml.';
         break;
 
       default:

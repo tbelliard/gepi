@@ -30,35 +30,35 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
 ?>
-<H1 class='gepi'>GEPI - Vie Privée</H1>
+<H1 class='gepi'>GEPI - Vie PrivÃ©e</H1>
 <?php
-echo "<h2>Cadre légal</h2>";
-echo "<p>Gepi est un logiciel de traitement de données entrant dans le cadre des Environnements Numériques de Travail (ENT).";
-echo "<br/>A ce titre, il est soumis à un encadrement légal particulier. Nous vous invitons à consulter <a href='http://www.cnil.fr/vos-responsabilites/declarer-a-la-cnil/declarer-un-fichier/declaration/mon-secteur-dactivite/mon-theme/je-dois-declarer/declaration-selectionnee/dec-mode/DISPLAYSINGLEFICHEDECL/dec-uid/30/'>l'Arrêté du 30 novembre 2006</a> relatif aux dispositifs de traitement de données au sein du ministère de l'éducation nationale.</p>";
+echo "<h2>Cadre lÃ©gal</h2>";
+echo "<p>Gepi est un logiciel de traitement de donnÃ©es entrant dans le cadre des Environnements NumÃ©riques de Travail (ENT).";
+echo "<br/>A ce titre, il est soumis Ã  un encadrement lÃ©gal particulier. Nous vous invitons Ã  consulter <a href='http://www.cnil.fr/vos-responsabilites/declarer-a-la-cnil/declarer-un-fichier/declaration/mon-secteur-dactivite/mon-theme/je-dois-declarer/declaration-selectionnee/dec-mode/DISPLAYSINGLEFICHEDECL/dec-uid/30/'>l'ArrÃªtÃ© du 30 novembre 2006</a> relatif aux dispositifs de traitement de donnÃ©es au sein du ministÃ¨re de l'Ã©ducation nationale.</p>";
 
 if (getSettingValue("num_enregistrement_cnil") != '')  {
 
-echo "<h2>Déclaration à la CNIL</h2>";
+echo "<h2>DÃ©claration Ã  la CNIL</h2>";
 
-echo "Conformément à l'article 16 de la loi 78-17 du 6 janvier 1978, dite loi informatique et liberté, nous vous informons
+echo "ConformÃ©ment Ã  l'article 16 de la loi 78-17 du 6 janvier 1978, dite loi informatique et libertÃ©, nous vous informons
 
- que le présent site a fait l'objet d'une déclaration de traitement automatisé d'informations nominatives auprès de la CNIL
+ que le prÃ©sent site a fait l'objet d'une dÃ©claration de traitement automatisÃ© d'informations nominatives auprÃ¨s de la CNIL
 
-  : le site est enregistré sous le n° ".getSettingValue("num_enregistrement_cnil");
+  : le site est enregistrÃ© sous le nÂ° ".getSettingValue("num_enregistrement_cnil");
 
 }
 
 echo "<H2>1/ Cookies</H2>";
 
-echo "A chacune de vos visites GEPI tente de générer un cookie de session. L'acceptation de ce cookie par votre navigateur est obligatoire pour accéder au site. Ce cookie de session est un cookie temporaire exigé pour des
+echo "A chacune de vos visites GEPI tente de gÃ©nÃ©rer un cookie de session. L'acceptation de ce cookie par votre navigateur est obligatoire pour accÃ©der au site. Ce cookie de session est un cookie temporaire exigÃ© pour des
 
-raisons de sécurité. Ce type de cookie n'enregistre pas d'information sur votre ordinateur, il vous attribue un numéro de session
+raisons de sÃ©curitÃ©. Ce type de cookie n'enregistre pas d'information sur votre ordinateur, il vous attribue un numÃ©ro de session
 
- qu'il communique au serveur pour pouvoir suivre votre session en toute sécurité. Il est mis temporairement dans la mémoire de
+ qu'il communique au serveur pour pouvoir suivre votre session en toute sÃ©curitÃ©. Il est mis temporairement dans la mÃ©moire de
 
-  votre ordinateur et est exploitable uniquement durant le temps de connexion. Il est ensuite détruit lorsque vous vous déconnectez ou
+  votre ordinateur et est exploitable uniquement durant le temps de connexion. Il est ensuite dÃ©truit lorsque vous vous dÃ©connectez ou
 
-  lorsque vous fermez toutes les fenêtres de votre navigateur.";
+  lorsque vous fermez toutes les fenÃªtres de votre navigateur.";
 
 
 
@@ -70,7 +70,7 @@ echo "Lors de l'ouverture d'une session certaines informations sont transmises a
 
 <ul>
 
-<li>le numéro de votre session (voir ci-dessus),</li>
+<li>le numÃ©ro de votre session (voir ci-dessus),</li>
 
 <li>votre identifiant,</li>
 
@@ -78,9 +78,9 @@ echo "Lors de l'ouverture d'une session certaines informations sont transmises a
 
 <li>le type de votre navigateur,
 
-<li>l'origine de la connexion au présent site,</li>
+<li>l'origine de la connexion au prÃ©sent site,</li>
 
-<li>les heures et dates de début et fin de la session.</li>
+<li>les heures et dates de dÃ©but et fin de la session.</li>
 
 </ul>";
 
@@ -112,13 +112,13 @@ break;
 
 }
 
-echo "Pour des raisons de sécurité, ces informations sont conservées pendant <b>".$duree."</b> à partir de leur enregistrement.";
+echo "Pour des raisons de sÃ©curitÃ©, ces informations sont conservÃ©es pendant <b>".$duree."</b> Ã  partir de leur enregistrement.";
 
 
 
-echo "<H2>3/ Sécurité</H2>";
+echo "<H2>3/ SÃ©curitÃ©</H2>";
 
-echo "<b>Par mesure de sécurité, pensez à vous déconnecter à la fin de votre visite sur le site (lien en haut à droite).</b>";
+echo "<b>Par mesure de sÃ©curitÃ©, pensez Ã  vous dÃ©connecter Ã  la fin de votre visite sur le site (lien en haut Ã  droite).</b>";
 
 require("../lib/footer.inc.php");
 ?>

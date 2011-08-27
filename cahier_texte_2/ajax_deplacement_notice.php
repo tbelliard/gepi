@@ -20,12 +20,12 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+header('Content-Type: text/html; charset=utf-8');
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interfÃ©rer avec fckeditor
 $traite_anti_inject = 'no';
 
 require_once("../lib/initialisationsPropel.inc.php");
@@ -39,7 +39,7 @@ if ($utilisateur == null) {
 
 check_token();
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
 $date_deplacement = isset($_POST["date_deplacement"]) ? $_POST["date_deplacement"] :(isset($_GET["date_deplacement"]) ? $_GET["date_duplication"] :NULL);
 $id_groupe = isset($_POST["id_groupe_deplacement"]) ? $_POST["id_groupe_deplacement"] :(isset($_GET["id_groupe_deplacement"]) ? $_GET["id_groupe_deplacement"] :NULL);
@@ -55,12 +55,12 @@ if ($type == 'CahierTexteTravailAFaire') {
 }
 
 if ($ctCompteRendu == null) {
-	echo ("Erreur deplacement de notice : Pas de notice trouvée.");
+	echo ("Erreur deplacement de notice : Pas de notice trouvÃ©e.");
 	die();
 }
 $groupe = GroupePeer::retrieveByPK($id_groupe);
 if ($groupe == null) {
-	echo ("Erreur deplacement de notice  : Pas de groupe spécifié");
+	echo ("Erreur deplacement de notice  : Pas de groupe spÃ©cifiÃ©");
 	die;
 }
 
@@ -69,5 +69,5 @@ $ctCompteRendu->setDateCt($date_deplacement);
 
 $ctCompteRendu->save();
 $utilisateur->clearAllReferences();
-echo("Deplacement effectué");
+echo("Deplacement effectuÃ©");
 ?>

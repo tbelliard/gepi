@@ -60,7 +60,7 @@ function sexeMF($nombre){
 }
 
 function affiche_debug($texte){
-	// Passer à 1 la variable pour générer l'affichage des infos de debug...
+	// Passer Ã  1 la variable pour gÃ©nÃ©rer l'affichage des infos de debug...
 	$debug=0;
 	if($debug==1){
 		echo "<font color='green'>".$texte."</font>";
@@ -117,7 +117,7 @@ echo "/> <a href='#' onmouseover=\"afficher_div('div_stop','y',10,20);\">Stop</a
 </form>\n";
 		echo "</div>\n";
 
-		echo creer_div_infobulle("div_stop","","","Ce bouton permet s'il est coché d'interrompre les passages automatiques à la page suivante","",12,0,"n","n","y","n");
+		echo creer_div_infobulle("div_stop","","","Ce bouton permet s'il est cochÃ© d'interrompre les passages automatiques Ã  la page suivante","",12,0,"n","n","y","n");
 
 		echo "<script type='text/javascript'>
 	temporisation_chargement='ok';
@@ -188,25 +188,25 @@ if(!isset($step)) {
 
 	echo "<h2>Fichier ElevesSansAdresses.xml</h2>\n";
 
-	echo "<p>Cette page est destinée à corriger les champs ELE_ID de la table 'eleves' et de la table 'responsables2' d'après le fichier ElevesSansAdresses.xml de Sconet.<br />La correction n'est possible que si les ELENOET sont corrects.</p>\n";
+	echo "<p>Cette page est destinÃ©e Ã  corriger les champs ELE_ID de la table 'eleves' et de la table 'responsables2' d'aprÃ¨s le fichier ElevesSansAdresses.xml de Sconet.<br />La correction n'est possible que si les ELENOET sont corrects.</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
 	echo "<input type=hidden name='step' value='0' />\n";
-	echo "<p>Sélectionnez le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
+	echo "<p>SÃ©lectionnez le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
 	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" /><br />\n";
 
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
-	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
+	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> DÃ©sactiver le mode automatique.</label></p>\n";
 	//==============================
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 	echo "<p><br /></p>\n";
-	echo "<p><i>NOTE:</i> Après une phase d'analyse, les corrections seront proposées.</p>\n";
+	echo "<p><i>NOTE:</i> AprÃ¨s une phase d'analyse, les corrections seront proposÃ©es.</p>\n";
 }
 else{
 	/*
@@ -218,10 +218,10 @@ else{
 
 	check_token();
 
-	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
+	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolaritÃ© pour les mÃ j Sconet)
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
-		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?</p>\n";
 		// Il ne faut pas aller plus loin...
 		// SITUATION A GERER
 	}
@@ -234,15 +234,15 @@ else{
 	//if(!isset($_POST['step'])){
 	switch($step){
 		case 0:
-			// Affichage des informations élèves
-			echo "<h2>Analyse du XML élèves</h2>\n";
+			// Affichage des informations Ã©lÃ¨ves
+			echo "<h2>Analyse du XML Ã©lÃ¨ves</h2>\n";
 
 			$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
 
 			if(!is_uploaded_file($xml_file['tmp_name'])) {
-				echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+				echo "<p style='color:red;'>L'upload du fichier a Ã©chouÃ©.</p>\n";
 
-				echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+				echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 				echo "post_max_size=$post_max_size<br />\n";
 				echo "upload_max_filesize=$upload_max_filesize<br />\n";
 				echo "</p>\n";
@@ -254,9 +254,9 @@ else{
 			}
 			else{
 				if(!file_exists($xml_file['tmp_name'])){
-					echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+					echo "<p style='color:red;'>Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.</p>\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "et le volume de ".$xml_file['name']." serait<br />\n";
@@ -268,13 +268,13 @@ else{
 					die();
 				}
 
-				echo "<p>Le fichier a été uploadé.</p>\n";
+				echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 
 				/*
 				echo "\$xml_file['tmp_name']=".$xml_file['tmp_name']."<br />\n";
 				echo "\$tempdir=".$tempdir."<br />\n";
 
-				echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+				echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 				echo "post_max_size=$post_max_size<br />\n";
 				echo "upload_max_filesize=$upload_max_filesize<br />\n";
 				echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
@@ -291,7 +291,7 @@ else{
 
 				$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
 				// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
-				// $unzipped_max_filesize < 0    extraction zip désactivée
+				// $unzipped_max_filesize < 0    extraction zip dÃ©sactivÃ©e
 				if($unzipped_max_filesize>=0) {
 					$fichier_emis=$xml_file['name'];
 					$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
@@ -320,14 +320,14 @@ else{
 						//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 						if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dÃ©passe la limite paramÃ©trÃ©e (<i>$unzipped_max_filesize octets</i>).</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
 
 						$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 						if ($res_extract != 0) {
-							echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+							echo "<p>Le fichier uploadÃ© a Ã©tÃ© dÃ©zippÃ©.</p>\n";
 							$fichier_extrait=$res_extract[0]['filename'];
 							unlink("$dest_file"); // Pour Wamp...
 							$res_copy=rename("$fichier_extrait" , "$dest_file");
@@ -343,14 +343,14 @@ else{
 				//===============================================================
 
 				if(!$res_copy){
-					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a Ã©chouÃ©.<br />VÃ©rifiez que l'utilisateur ou le groupe apache ou www-data a accÃ¨s au dossier temp/$tempdir</p>\n";
 					// Il ne faut pas aller plus loin...
 					// SITUATION A GERER
 					require("../lib/footer.inc.php");
 					die();
 				}
 				else{
-					echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+					echo "<p>La copie du fichier vers le dossier temporaire a rÃ©ussi.</p>\n";
 
 					$sql="DROP TABLE IF EXISTS temp_gep_import2;";
 					//echo "$sql<br />";
@@ -389,15 +389,15 @@ else{
 					$sql="TRUNCATE TABLE temp_gep_import2;";
 					$vide_table = mysql_query($sql);
 
-					// On va stocker dans cette deuxième table les correspondances ELE_ID/ELENOET à appliquer sur les tables 'eleves' et 'responsables2'
+					// On va stocker dans cette deuxiÃ¨me table les correspondances ELE_ID/ELENOET Ã  appliquer sur les tables 'eleves' et 'responsables2'
 					$sql="TRUNCATE TABLE tempo2;";
 					$vide_table = mysql_query($sql);
 
 					$fp=fopen($dest_file,"r");
 					if($fp){
-						// On commence par la section STRUCTURES pour ne récupérer que les ELE_ID d'élèves qui sont dans une classe.
+						// On commence par la section STRUCTURES pour ne rÃ©cupÃ©rer que les ELE_ID d'Ã©lÃ¨ves qui sont dans une classe.
 						echo "<p>\n";
-						echo "Analyse du fichier pour extraire les associations ELENOET/ELE_ID d'élèves affectés dans une classe...<br />\n";
+						echo "Analyse du fichier pour extraire les associations ELENOET/ELE_ID d'Ã©lÃ¨ves affectÃ©s dans une classe...<br />\n";
 
 						// PARTIE <STRUCTURES>
 						$cpt=0;
@@ -412,12 +412,12 @@ else{
 
 							//if(strstr($ligne[$cpt],"<STRUCTURES>")){
 							if(strstr($ligne,"<STRUCTURES>")){
-								echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+								echo "DÃ©but de la section STRUCTURES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 								$temoin_structures++;
 							}
 							//if(strstr($ligne[$cpt],"</STRUCTURES>")){
 							if(strstr($ligne,"</STRUCTURES>")){
-								echo "Fin de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+								echo "Fin de la section STRUCTURES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 								$temoin_structures++;
 								break;
 							}
@@ -463,7 +463,7 @@ else{
 												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 
 												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
-												// Suppression des guillemets éventuels
+												// Suppression des guillemets Ã©ventuels
 												$eleves[$i]["structures"][$j]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
 												//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
@@ -504,14 +504,14 @@ else{
 								//echo "$sql<br />\n";
 								$res_insert=mysql_query($sql);
 								if(!$res_insert){
-									echo "Erreur lors de la requête $sql<br />\n";
+									echo "Erreur lors de la requÃªte $sql<br />\n";
 									$nb_err++;
 								}
 								$id_tempo++;
 							}
 						}
 						if($nb_err==0) {
-							echo "<p>La première phase s'est passée sans erreur.</p>\n";
+							echo "<p>La premiÃ¨re phase s'est passÃ©e sans erreur.</p>\n";
 
 							echo "<script type='text/javascript'>
 	setTimeout(\"test_stop('1')\",3000);
@@ -525,7 +525,7 @@ else{
 						}
 
 						$stat=$id_tempo-1-$nb_err;
-						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
+						echo "<p>$stat associations identifiant Ã©lÃ¨ve/classe ont Ã©tÃ© insÃ©rÃ©(s) dans la table 'temp_gep_import2'.</p>\n";
 
 						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
 						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;stop=y".add_token_in_url()."'>Suite</a></p>\n";
@@ -534,7 +534,7 @@ else{
 						die();
 					}
 					else{
-						echo "<p>ERREUR: Il n'a pas été possible d'ouvrir le fichier en lecture...</p>\n";
+						echo "<p>ERREUR: Il n'a pas Ã©tÃ© possible d'ouvrir le fichier en lecture...</p>\n";
 
 						require("../lib/footer.inc.php");
 						die();
@@ -550,12 +550,12 @@ else{
 			$dest_file="../temp/".$tempdir."/eleves.xml";
 			$fp=fopen($dest_file,"r");
 			if(!$fp){
-				echo "<p>Le XML élève n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
+				echo "<p>Le XML Ã©lÃ¨ve n'a pas l'air prÃ©sent dans le dossier temporaire.<br />Auriez-vous sautÃ© une Ã©tape???</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
 			else{
-				// On récupère les ele_id des élèves qui sont affectés dans une classe
+				// On rÃ©cupÃ¨re les ele_id des Ã©lÃ¨ves qui sont affectÃ©s dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
 				$res_ele_id=mysql_query($sql);
 				affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
@@ -564,7 +564,7 @@ else{
 				$tab_ele_id=array();
 				$cpt=0;
 				// Pourquoi est-ce que cela ne fonctionne pas en mysql_fetch_object()???
-				// TROUVé: C'EST SENSIBLE à LA CASSE: IL FAUDRAIT $lig->ELE_ID
+				// TROUVÃ©: C'EST SENSIBLE Ã  LA CASSE: IL FAUDRAIT $lig->ELE_ID
 				//while($lig=mysql_fetch_object($res_ele_id)){
 				while($lig=mysql_fetch_array($res_ele_id)){
 					//$tab_ele_id[$cpt]="$lig->ele_id";
@@ -574,13 +574,13 @@ else{
 				}
 
 				/*
-				echo "<p>Lecture du fichier Elèves...<br />\n";
+				echo "<p>Lecture du fichier ElÃ¨ves...<br />\n";
 				//echo "<blockquote>\n";
 				while(!feof($fp)){
 					$ligne[]=fgets($fp,4096);
 				}
 				fclose($fp);
-				//echo "<p>Terminé.</p>\n";
+				//echo "<p>TerminÃ©.</p>\n";
 				*/
 
 				echo "<p>";
@@ -593,7 +593,7 @@ else{
 				$temoin_ele=0;
 				$temoin_options=0;
 				$temoin_scol=0;
-				//Compteur élève:
+				//Compteur Ã©lÃ¨ve:
 				$i=-1;
 
 				$tab_champs_eleve=array("ID_NATIONAL",
@@ -631,13 +631,13 @@ else{
 					//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
 					//if(strstr($ligne[$cpt],"<ELEVES>")){
 					if(strstr($ligne,"<ELEVES>")){
-						echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+						echo "DÃ©but de la section ELEVES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 						flush();
 						$temoin_eleves++;
 					}
 					//if(strstr($ligne[$cpt],"</ELEVES>")){
 					if(strstr($ligne,"</ELEVES>")){
-						echo "Fin de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+						echo "Fin de la section ELEVES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 						flush();
 						$temoin_eleves++;
 						break;
@@ -684,7 +684,7 @@ else{
 										$tmpmin=strtolower($tab_champs_eleve[$loop]);
 										//$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 
-										// Suppression des guillemets éventuels
+										// Suppression des guillemets Ã©ventuels
 										//$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
 										$eleves[$i]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 
@@ -694,7 +694,7 @@ else{
 								}
 								if(isset($eleves[$i]["date_naiss"])){
 									// A AMELIORER:
-									// On passe plusieurs fois dans la boucle (autant de fois qu'il y a de lignes pour l'élève en cours après le repérage de la date...)
+									// On passe plusieurs fois dans la boucle (autant de fois qu'il y a de lignes pour l'Ã©lÃ¨ve en cours aprÃ¨s le repÃ©rage de la date...)
 									//echo $eleves[$i]["date_naiss"]."<br />\n";
 									unset($naissance);
 									$naissance=explode("/",$eleves[$i]["date_naiss"]);
@@ -732,7 +732,7 @@ else{
 										//echo "$i - ";
 										$tmpmin=strtolower($tab_champs_scol_an_dernier[$loop]);
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-										// Suppression des guillemets éventuels
+										// Suppression des guillemets Ã©ventuels
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
 										$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
 										affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
@@ -761,7 +761,7 @@ else{
 
 				//===========================
 				// A FAIRE: boireaus 20071115
-				// Insérer ici un tableau comme dans la partie ADRESSES pour simuler une barre de progression
+				// InsÃ©rer ici un tableau comme dans la partie ADRESSES pour simuler une barre de progression
 				//===========================
 
 				$stat=0;
@@ -770,7 +770,7 @@ else{
 					if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
 						/*
 						if(!isset($eleves[$i]["code_sexe"])){
-							$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
+							$remarques[]="Le sexe de l'Ã©lÃ¨ve <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseignÃ© dans Sconet.";
 						}
 						*/
 
@@ -781,7 +781,7 @@ else{
 						$sql.="elenom='".addslashes(strtoupper($eleves[$i]['nom']))."', ";
 
 						//$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
-						// On ne retient que le premier prénom:
+						// On ne retient que le premier prÃ©nom:
 						$tab_prenom = explode(" ",$eleves[$i]['prenom']);
 						$sql.="elepre='".addslashes(maj_ini_prenom($tab_prenom[0]))."', ";
 
@@ -790,7 +790,7 @@ else{
 							$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 						}
 						else {
-							echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".strtoupper($eleves[$i]['nom'])."</span><br />\n";
+							echo "<span style='color:red'>Sexe non dÃ©fini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".strtoupper($eleves[$i]['nom'])."</span><br />\n";
 							$sql.="elesexe='M', ";
 						}
 						$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
@@ -802,7 +802,7 @@ else{
 						affiche_debug("$sql<br />\n");
 						$res_insert=mysql_query($sql);
 						if(!$res_insert){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "Erreur lors de la requÃªte $sql<br />\n";
 							$nb_err++;
 							flush();
 						}
@@ -812,7 +812,7 @@ else{
 					}
 				}
 				if($nb_err==0) {
-					echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
+					echo "<p>La deuxiÃ¨me phase s'est passÃ©e sans erreur.</p>\n";
 
 					echo "<script type='text/javascript'>
 	setTimeout(\"test_stop('2')\",3000);
@@ -826,7 +826,7 @@ else{
 				}
 			}
 
-			echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_gep_import2'.</p>\n";
+			echo "<p>$stat enregistrement(s) ont Ã©tÃ© mis Ã  jour dans la table 'temp_gep_import2'.</p>\n";
 
 			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2&amp;stop=y".add_token_in_url()."'>Suite</a></p>\n";
 
@@ -841,10 +841,10 @@ else{
 			if(file_exists("../temp/".$tempdir."/eleves.xml")) {
 				echo "<p>Suppression de eleves.xml... ";
 				if(unlink("../temp/".$tempdir."/eleves.xml")){
-					echo "réussie.</p>\n";
+					echo "rÃ©ussie.</p>\n";
 				}
 				else{
-					echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+					echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 				}
 			}
 
@@ -865,7 +865,7 @@ else{
 						if($elenoet[$i]!='') {
 							if((isset($ele_id[$i]))&&($ele_id[$i]!='')) {
 								//$sql="INSERT INTO tempo2 SET col1='$ele_id[$i]', col2='$elenoet[$i]';";
-								// Ou on fait les corrections dès maintenant.
+								// Ou on fait les corrections dÃ¨s maintenant.
 								//$sql="UPDATE eleves SET ele_id='$ele_id[$i]' WHERE elenoet='$elenoet[$i]';";
 								$sql="UPDATE eleves SET ele_id='$ele_id[$i]' WHERE elenoet='$elenoet[$i]' OR elenoet='".sprintf("%05d",$elenoet[$i])."';";
 								affiche_debug("$sql<br />\n");
@@ -887,7 +887,7 @@ else{
 							}
 						}
 					}
-					echo "<p>$cpt correction(s) effectuée(s).</p>\n";
+					echo "<p>$cpt correction(s) effectuÃ©e(s).</p>\n";
 				}
 			}
 
@@ -901,14 +901,14 @@ else{
 			$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe,e.elenoet, e.ele_id AS old_ele_id,t.ele_id FROM eleves e, temp_gep_import2 t WHERE LPAD(e.elenoet,5,'0')=LPAD(t.elenoet,5,'0') AND e.ele_id!=t.ele_id ORDER BY e.nom, e.prenom LIMIT 20;";
 			affiche_debug("$sql<br />\n");
 			if(!$res=mysql_query($sql)) {
-				echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
+				echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requÃªte&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 				//Illegal mix of collations
 				if(my_eregi("Illegal mix of collations",mysql_error())) {
 					//echo "<span style='color:red'>".mysql_error()."</span>\n";
-					echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'&nbsp;:<br />\n";
+					echo "Il semble qu'il y ait un problÃ¨me de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'&nbsp;:<br />\n";
 					echo "<span style='color:red'>".mysql_error()."</span><br />\n";
-					echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
-					echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+					echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la mÃªme collation que pour votre champ 'eleves.ele_id'.<br />\n";
+					echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exÃ©cuter une requÃªte du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe dÃ©jÃ  <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
 				}
 				echo "</p>\n";
 			}
@@ -916,14 +916,14 @@ else{
 				if(mysql_num_rows($res)==0){
 					if(isset($_POST['is_posted'])) {
 						echo "<p>Il n'y a plus d'ELENOET pour lequel effectuer une correction.</p>\n";
-						echo "<p>Terminé.</p>\n";
+						echo "<p>TerminÃ©.</p>\n";
 					}
 					else{
-						echo "<p>Aucun ELENOET trouvé pour effectuer une correction.</p>\n";
+						echo "<p>Aucun ELENOET trouvÃ© pour effectuer une correction.</p>\n";
 					}
 				}
 				else{
-					echo "<p>Cocher les lignes pour lesquelles corriger l'ELE_ID dans la table 'eleves' (<i>et éventuellement dans la table 'responsables2'</i>) d'après la proposition en dernière colonne.</p>\n";
+					echo "<p>Cocher les lignes pour lesquelles corriger l'ELE_ID dans la table 'eleves' (<i>et Ã©ventuellement dans la table 'responsables2'</i>) d'aprÃ¨s la proposition en derniÃ¨re colonne.</p>\n";
 					echo "<table class='boireaus'>\n";
 					echo "<tr>\n";
 					echo "<th>";
@@ -931,11 +931,11 @@ else{
 					echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 					echo " / ";
 					echo "<a href=\"javascript:modifcase('decoche')\">";
-					echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+					echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 					echo "</th>\n";
 					echo "<th>Login</th>\n";
 					echo "<th>Nom</th>\n";
-					echo "<th>Prénom</th>\n";
+					echo "<th>PrÃ©nom</th>\n";
 					echo "<th>Sexe</th>\n";
 					echo "<th>Naissance</th>\n";
 					echo "<th>ELENOET</th>\n";

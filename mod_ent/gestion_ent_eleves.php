@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, StÃ©phane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -39,7 +39,7 @@ if (!checkAccess()) {
 	die();
 }
 
-// Sécurité supplémentaire pour éviter d'aller voir ce fichier si on n'est pas dans un ent
+// SÃ©curitÃ© supplÃ©mentaire pour Ã©viter d'aller voir ce fichier si on n'est pas dans un ent
 if (getSettingValue("use_ent") != 'y') {
 	DIE('Fichier interdit.');
 }
@@ -51,17 +51,17 @@ $nbre_req = isset($_POST["nbre_req"]) ? $_POST["nbre_req"] : NULL;
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 
 
-// ======================= Traitement des données ================================
+// ======================= Traitement des donnÃ©es ================================
 if ($action == "modifier") {
 	check_token();
 
-	// L'utilisateur vient d'envoyer la liste des login à modifier
+	// L'utilisateur vient d'envoyer la liste des login Ã  modifier
 	for($i = 0; $i < $nbre_req ; $i++){
 
 		$login_a_modifier = isset($_POST["modifier_".$i]) ? $_POST["modifier_".$i] : NULL;
 		$id_col1 = isset($_POST["id_".$i]) ? $_POST["id_".$i] : NULL;
 
-		// On met à jour la base
+		// On met Ã  jour la base
 		$sql_u = "UPDATE tempo2 SET col2 = '".$login_a_modifier."' WHERE col1 = '".$id_col1."'";
 		$query_u = mysql_query($sql_u) OR DIE('Erreur dans '.$sql_u.'<br />'.mysql_error());
 
@@ -70,11 +70,11 @@ if ($action == "modifier") {
 	}
 
 } else {
-	// On récupère les données 'élèves' de la table eleve
+	// On rÃ©cupÃ¨re les donnÃ©es 'Ã©lÃ¨ves' de la table eleve
 	$sql = "SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP
 									FROM temp_gep_import2
 									ORDER BY DIVCOD,ELENOM,ELEPRE";
-	$call_data = mysql_query($sql) OR DIE('Erreur dans la requête '.$sql.' '.mysql_error());
+	$call_data = mysql_query($sql) OR DIE('Erreur dans la requÃªte '.$sql.' '.mysql_error());
 
     $nb = mysql_num_rows($call_data);
     $i = "0";
@@ -99,7 +99,7 @@ if ($action == "modifier") {
         if (strpos($reg_login, "erreur") === false) {
         	// On ne fait rien
         }else{
-        	// On vérifie quand même si il n'y a pas un nom qui correspond à celui-ci dans ldap_bx
+        	// On vÃ©rifie quand mÃªme si il n'y a pas un nom qui correspond Ã  celui-ci dans ldap_bx
         	$sql_r = "SELECT login_u, nom_u, prenom_u FROM ldap_bx WHERE nom_u = '".$reg_nom."' AND prenom_u = '".$reg_prenom."' AND statut_u = 'student'";
         	$query_r = mysql_query($sql_r);
         	$nbre_v = mysql_num_rows($query_r);
@@ -122,7 +122,7 @@ if ($action == "modifier") {
 			}
 
 			$aff_erreurs .= '
-			<p>Une erreur sur cet élève : '.$reg_nom.' '.$reg_prenom.' (num. int. '.$reg_eleonet.') - '.$reg_sexe.' - '.$reg_naissance.'
+			<p>Une erreur sur cet Ã©lÃ¨ve : '.$reg_nom.' '.$reg_prenom.' (num. int. '.$reg_eleonet.') - '.$reg_sexe.' - '.$reg_naissance.'
 			<input type="text" name="modifier_'.$j.'" value="'.$aff_rep_r.'" />'.$aff_rep_nomprenom_r.'
 			<input type="hidden" name="id_'.$j.'" value="'.$inc.'" />.</p>';
 			$j++;
@@ -131,13 +131,13 @@ if ($action == "modifier") {
     }
 }
 
-// =========== fichiers spéciaux ==========
+// =========== fichiers spÃ©ciaux ==========
 $style_specifique = "edt_organisation/style_edt";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des erreurs de login de l'ENT";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-//debug_var(); // à enlever en production
+//debug_var(); // Ã  enlever en production
 ?>
 
 <!-- page de gestion des erreurs -->
@@ -168,7 +168,7 @@ require_once("../lib/header.inc");
 			<input type="hidden" name="action" value="modifier" />
 		<input type="submit" name="enregistrer" value="Mettre &agrave; jour la liste des logins" />';
 	}else{
-		echo '<input type="submit" name="rien" value="Revenir à la vérification" />
+		echo '<input type="submit" name="rien" value="Revenir Ã  la vÃ©rification" />
 		';
 	} ?>
 	</p>

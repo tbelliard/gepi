@@ -17,14 +17,14 @@
  */
 
 /*
- * Attention ce fichier contient des fonctions spécifiques au module d'import "annuaire federateur",
- * il ne doit être inclu que depuis le module init_annuaire de GEPI
+ * Attention ce fichier contient des fonctions spÃ©cifiques au module d'import "annuaire federateur",
+ * il ne doit Ãªtre inclu que depuis le module init_annuaire de GEPI
  * sinon des erreurs d'inclusion apparaitront
  */
 
 /*
  * Fonction permettant de vider les tables avant l'import depuis l'annuaire federateur
- * (paramétrables dans le fichier config_init_annuaire.inc.php)
+ * (paramÃ©trables dans le fichier config_init_annuaire.inc.php)
  */
 function vider_tables_avant_import() {
     include("config_init_annuaire.inc.php");

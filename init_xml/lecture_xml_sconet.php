@@ -22,7 +22,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "XML de SCONET: Génération de CSV";
+$titre_page = "XML de SCONET: GÃ©nÃ©ration de CSV";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -33,21 +33,12 @@ function extr_valeur($lig){
 }
 
 ?>
-<!--!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<title>Lecture du XML Emploi du temps de Sts-web et génération de CSV</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
-	<meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
-	<link type="text/css" rel="stylesheet" href="../style.css" />
-</head>
-<body-->
 	<div class="content">
 		<?php
-			// Pour importer séparemment les ElevesAvecAdresses.xml, Nomenclature.xml et d'autre part le Responsables.xml,
+			// Pour importer sÃ©paremment les ElevesAvecAdresses.xml, Nomenclature.xml et d'autre part le Responsables.xml,
 			// une variable:
 			$etape=isset($_POST['etape']) ? $_POST['etape'] : (isset($_GET['etape']) ? $_GET['etape'] : NULL);
-			// Il y a un problème de volume des données transférées si on envoye tout d'un coup.
+			// Il y a un problÃšme de volume des donnÃ©es transfÃ©rÃ©es si on envoye tout d'un coup.
 
 
 			if(isset($_GET['ad_retour'])){
@@ -60,15 +51,15 @@ function extr_valeur($lig){
 			$remarques=array();
 
 
-			// Initialisation du répertoire actuel de sauvegarde
+			// Initialisation du rÃ©pertoire actuel de sauvegarde
 			$dirname = getSettingValue("backup_directory");
 			//$dirname="tmp";
 
 			if(!file_exists("../backup/$dirname/csv")){
 				//if(!mkdir("../backup/$dirname/csv","0770")){
 				if(!mkdir("../backup/$dirname/csv")){
-					echo "<p style='color:red;'>Erreur! Le dossier csv n'a pas pu être créé.</p>\n";
-					echo "<p>Retour à l'<a href='index.php'>index</a></p>\n";
+					echo "<p style='color:red;'>Erreur! Le dossier csv n'a pas pu Ãªtre crÃ©Ã©.</p>\n";
+					echo "<p>Retour Ã  l'<a href='index.php'>index</a></p>\n";
 					echo "</div></body></html>\n";
 					die();
 				}
@@ -97,24 +88,24 @@ function extr_valeur($lig){
 				echo "'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 				echo "<a href='".$_SERVER['PHP_SELF']."'> | Autre import</a></p>\n";
 
-				echo "<p>Si des fichiers CSV existent, ils seront supprimés...</p>\n";
+				echo "<p>Si des fichiers CSV existent, ils seront supprimÃ©s...</p>\n";
 				//$tabfich=array("f_ele.csv","f_ere.csv");
 				$tabfich=array("eleves.csv","etablissements.csv","eleve_etablissement.csv","adresses.csv","personnes.csv","responsables.csv");
 				for($i=0;$i<count($tabfich);$i++){
 					if(file_exists("../backup/$dirname/csv/$tabfich[$i]")){
 						echo "<p>Suppression de $tabfich[$i]... ";
 						if(unlink("../backup/$dirname/csv/$tabfich[$i]")){
-							echo "réussie.</p>\n";
+							echo "rÃ©ussie.</p>\n";
 						}
 						else{
-							echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+							echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 						}
 					}
 				}
 			}
 			else{
-				//echo "<h1 align='center'>Lecture des XML de Sconet et génération de CSV</h1>\n";
-				echo "<h2 align='center'>Lecture des XML de Sconet et génération de CSV</h2>\n";
+				//echo "<h1 align='center'>Lecture des XML de Sconet et gÃ©nÃ©ration de CSV</h1>\n";
+				echo "<h2 align='center'>Lecture des XML de Sconet et gÃ©nÃ©ration de CSV</h2>\n";
 				//echo "<p><a href='index.php'>Retour</a>|\n";
 				echo "<p class=bold><a href='";
 				if(isset($_SESSION['ad_retour'])){
@@ -127,15 +118,15 @@ function extr_valeur($lig){
 
 				if(!isset($etape)){
 					echo "</p>\n";
-					echo "<p>Pour éviter des problèmes de taille maximale des upload, les extractions se font en deux étapes.</p>";
+					echo "<p>Pour Ã©viter des problÃšmes de taille maximale des upload, les extractions se font en deux Ã©tapes.</p>";
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 					echo add_token_field();
-					echo "<input type='radio' name='etape' value='1' id='etape_eleves' checked /> <label for='etape_eleves'>Etape 1: Elèves</label><br />\n";
+					echo "<input type='radio' name='etape' value='1' id='etape_eleves' checked /> <label for='etape_eleves'>Etape 1: ElÃšves</label><br />\n";
 					echo "<input type='radio' name='etape' value='2' id='etape_resp' /> <label for='etape_resp'>Etape 2: Responsables</label><br />\n";
 
 					echo "<p><input type='submit' value='Valider' /></p>\n";
 
-					echo "<p>Les fichiers réclamés ici doivent être récupérés depuis Sconet.<br />Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers ElevesAvecAdresses.xml, Nomenclature.xml et ResponsablesAvecAdresses.xml.</p>\n";
+					echo "<p>Les fichiers rÃ©clamÃ©s ici doivent Ãªtre rÃ©cupÃ©rÃ©s depuis Sconet.<br />Demandez gentiment Ã  votre secrÃ©taire de se rendre dans 'Sconet/AccÃšs Base Ã©lÃšves mode normal/Exploitation/Exports standard/Exports XML gÃ©nÃ©riques' pour rÃ©cupÃ©rer les fichiers ElevesAvecAdresses.xml, Nomenclature.xml et ResponsablesAvecAdresses.xml.</p>\n";
 					echo "</form>\n";
 				}
 				else {
@@ -144,11 +135,11 @@ function extr_valeur($lig){
 					check_token(false);
 
 					if(!isset($_POST['is_posted'])) {
-						//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
-						echo "<p>Cette page permet de remplir des tables temporaires avec les informations élèves, responsables,...<br />\n";
+						//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations Ã©lÃšves, responsables,...<br />\n";
+						echo "<p>Cette page permet de remplir des tables temporaires avec les informations Ã©lÃšves, responsables,...<br />\n";
 						echo "</p>\n";
 						/*
-						echo "<p>Cette page génère des fichiers CSV:</p>\n";
+						echo "<p>Cette page gÃ©nÃšre des fichiers CSV:</p>\n";
 						echo "<ul>\n";
 							echo "<li>\n";
 								echo "<p><b>Pour SambaEdu3:</b></p>\n";
@@ -169,7 +160,7 @@ function extr_valeur($lig){
 								echo "</ul>\n";
 							echo "</li>\n";
 						echo "</ul>\n";
-						echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
+						echo "<p>Il faut lui fournir un Export XML rÃ©alisÃ© depuis l'application STS-web.<br />Demandez gentiment Ã  votre secrÃ©taire d'accÃ©der Ã  STS-web et d'effectuer 'Mise Ã  jour/Exports/Emplois du temps'.</p>\n";
 						*/
 						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 						echo add_token_field();
@@ -189,8 +180,8 @@ function extr_valeur($lig){
 						echo "</p>\n";
 						/*
 						echo "<p> Pour GEPI:<br />\n";
-						echo "<input type=\"radio\" name=\"mdp\" value=\"alea\" checked> Générer un mot de passe aléatoire pour chaque professeur.<br />\n";
-						echo "<input type=\"radio\" name=\"mdp\" value=\"date\"> Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>).</p>\n";
+						echo "<input type=\"radio\" name=\"mdp\" value=\"alea\" checked> GÃ©nÃ©rer un mot de passe alÃ©atoire pour chaque professeur.<br />\n";
+						echo "<input type=\"radio\" name=\"mdp\" value=\"date\"> Utiliser plutÃŽt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra Ãªtre modifiÃ© au premier login</i>).</p>\n";
 						echo "<input type='hidden' name='is_posted' value='yes'>\n";
 						//echo "</p>\n";
 						*/
@@ -372,24 +363,24 @@ function dragStop(event) {
 							$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
 							$fp=fopen($xml_file['tmp_name'],"r");
 							if($fp){
-								echo "<h3>Lecture du fichier Elèves...</h3>\n";
+								echo "<h3>Lecture du fichier ElÃšves...</h3>\n";
 								echo "<blockquote>\n";
 								while(!feof($fp)){
 									$ligne[]=fgets($fp,4096);
 								}
 								fclose($fp);
-								echo "<p>Terminé.</p>\n";
+								echo "<p>TerminÃ©.</p>\n";
 
-								echo "<p>Aller à la section <a href='#csv'>CSV</a>.<br />\n";
+								echo "<p>Aller Ã  la section <a href='#csv'>CSV</a>.<br />\n";
 
-								echo "Si vous patientez, des liens directs seront proposés (<i>dans un cadre jaune</i>) pour télécharger les fichiers.<br />Si la page finit son chargement sans générer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
+								echo "Si vous patientez, des liens directs seront proposÃ©s (<i>dans un cadre jaune</i>) pour tÃ©lÃ©charger les fichiers.<br />Si la page finit son chargement sans gÃ©nÃ©rer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
 								if($max_execution_time!=0){
 									echo " (<i>".$max_execution_time."s sur votre serveur</i>)";
 								}
 								else{
 									echo " (<i>consultez la valeur de la variable 'max_execution_time' dans votre 'php.ini'</i>)";
 								}
-								echo " ou une charge maximale trop réduite";
+								echo " ou une charge maximale trop rÃ©duite";
 								if("$memory_limit"!="0"){
 									echo " (<i>".$memory_limit." sur votre serveur</i>)\n";
 								}
@@ -400,7 +391,7 @@ function dragStop(event) {
 								echo "</blockquote>\n";
 
 
-								echo "<h3>Analyse du fichier pour extraire les informations élèves...</h3>\n";
+								echo "<h3>Analyse du fichier pour extraire les informations Ã©lÃšves...</h3>\n";
 								echo "<blockquote>\n";
 
 								$cpt=0;
@@ -409,7 +400,7 @@ function dragStop(event) {
 								$temoin_ele=0;
 								$temoin_options=0;
 								$temoin_scol=0;
-								//Compteur élève:
+								//Compteur Ã©lÃšve:
 								$i=-1;
 
 								$tab_champs_eleve=array("ID_NATIONAL",
@@ -462,11 +453,11 @@ function dragStop(event) {
 								while($cpt<count($ligne)){
 									//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
 									if(strstr($ligne[$cpt],"<ELEVES>")){
-										echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "DÃ©but de la section ELEVES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_eleves++;
 									}
 									if(strstr($ligne[$cpt],"</ELEVES>")){
-										echo "Fin de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "Fin de la section ELEVES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_eleves++;
 										break;
 									}
@@ -510,7 +501,7 @@ function dragStop(event) {
 												}
 												if(isset($eleves[$i]["date_naiss"])){
 													// A AMELIORER:
-													// On passe plusieurs fois dans la boucle (autant de fois qu'il y a de lignes pour l'élève en cours après le repérage de la date...)
+													// On passe plusieurs fois dans la boucle (autant de fois qu'il y a de lignes pour l'Ã©lÃšve en cours aprÃšs le repÃ©rage de la date...)
 													//echo $eleves[$i]["date_naiss"]."<br />\n";
 													unset($naissance);
 													$naissance=explode("/",$eleves[$i]["date_naiss"]);
@@ -580,11 +571,11 @@ function dragStop(event) {
 								$temoin_opt_ele="";
 								while($cpt<count($ligne)){
 									if(strstr($ligne[$cpt],"<OPTIONS>")){
-										echo "Début de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "DÃ©but de la section OPTIONS Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_options++;
 									}
 									if(strstr($ligne[$cpt],"</OPTIONS>")){
-										echo "Fin de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "Fin de la section OPTIONS Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_options++;
 										break;
 									}
@@ -659,11 +650,11 @@ function dragStop(event) {
 								$temoin_struct=-1;
 								while($cpt<count($ligne)){
 									if(strstr($ligne[$cpt],"<STRUCTURES>")){
-										echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "DÃ©but de la section STRUCTURES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_structures++;
 									}
 									if(strstr($ligne[$cpt],"</STRUCTURES>")){
-										echo "Fin de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "Fin de la section STRUCTURES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_structures++;
 										break;
 									}
@@ -730,17 +721,17 @@ function dragStop(event) {
 									$cpt++;
 								}
 
-								echo "<p>Terminé.</p>\n";
+								echo "<p>TerminÃ©.</p>\n";
 								echo "</blockquote>\n";
 
-								echo "<h3>Affichage (d'une partie) des données ELEVES extraites:</h3>\n";
+								echo "<h3>Affichage (d'une partie) des donnÃ©es ELEVES extraites:</h3>\n";
 								echo "<blockquote>\n";
 								echo "<table border='1'>\n";
 								echo "<tr>\n";
 								//echo "<th style='color: blue;'>&nbsp;</th>\n";
 								echo "<th>Elenoet</th>\n";
 								echo "<th>Nom</th>\n";
-								echo "<th>Prénom</th>\n";
+								echo "<th>PrÃ©nom</th>\n";
 								echo "<th>Sexe</th>\n";
 								echo "<th>Date de naissance</th>\n";
 								echo "<th>Division</th>\n";
@@ -758,7 +749,7 @@ function dragStop(event) {
 									}
 									else{
 										echo "<td style='background-color:red'>1<a name='sexe_manquant_".$i."'></a></td>\n";
-										//$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
+										//$remarques[]="Le sexe de l'Ã©lÃšve <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseignÃ© dans Sconet.";
 									}
 									echo "<td>".$eleves[$i]["date_naiss"]."</td>\n";
 									echo "<td>";
@@ -780,7 +771,7 @@ function dragStop(event) {
 												$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
 
 												if(!isset($eleves[$i]["code_sexe"])){
-													$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
+													$remarques[]="Le sexe de l'Ã©lÃšve <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseignÃ© dans Sconet.";
 												}
 											}
 										}
@@ -800,8 +791,8 @@ function dragStop(event) {
 
 							}
 							else{
-								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Elèves n'a pas pu être ouvert.<br />\n";
-								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+								echo "<p><span style='color:red'>ERREUR!</span> Le fichier ElÃšves n'a pas pu Ãªtre ouvert.<br />\n";
+								echo "ContrÃŽlez si la taille du fichier XML ne dÃ©passe pas la taille maximale autorisÃ©e par votre serveur: ".$upload_max_filesize."<br />\n";
 								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
 							}
 
@@ -816,7 +807,7 @@ function dragStop(event) {
 									$ligne[]=fgets($fp,4096);
 								}
 								fclose($fp);
-								echo "<p>Terminé.</p>\n";
+								echo "<p>TerminÃ©.</p>\n";
 								echo "</blockquote>\n";
 
 								echo "<h3>Analyse du fichier pour extraire les informations de Nomenclature...</h3>\n";
@@ -834,7 +825,7 @@ function dragStop(event) {
 								);
 
 								// PARTIE <MATIERES>
-								// Compteur matières:
+								// Compteur matiÃšres:
 								$i=-1;
 								// Compteur de lignes du fichier:
 								$cpt=0;
@@ -842,11 +833,11 @@ function dragStop(event) {
 									//echo htmlentities($ligne[$cpt])."<br />\n";
 
 									if(strstr($ligne[$cpt],"<MATIERES>")){
-										echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "DÃ©but de la section MATIERES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_matieres++;
 									}
 									if(strstr($ligne[$cpt],"</MATIERES>")){
-										echo "Fin de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "Fin de la section MATIERES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_matieres++;
 										break;
 									}
@@ -878,10 +869,10 @@ function dragStop(event) {
 									}
 									$cpt++;
 								}
-								echo "<p>Terminé.</p>\n";
+								echo "<p>TerminÃ©.</p>\n";
 								echo "</blockquote>\n";
 
-								echo "<h3>Affichage des données MATIERES extraites:</h3>\n";
+								echo "<h3>Affichage des donnÃ©es MATIERES extraites:</h3>\n";
 								echo "<blockquote>\n";
 								echo "<table border='1'>\n";
 								echo "<tr>\n";
@@ -903,8 +894,8 @@ function dragStop(event) {
 								echo "</blockquote>\n";
 							}
 							else{
-								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Nomenclature.xml n'a pas pu être ouvert.<br />\n";
-								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Nomenclature.xml n'a pas pu Ãªtre ouvert.<br />\n";
+								echo "ContrÃŽlez si la taille du fichier XML ne dÃ©passe pas la taille maximale autorisÃ©e par votre serveur: ".$upload_max_filesize."<br />\n";
 								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
 							}
 
@@ -916,11 +907,11 @@ function dragStop(event) {
 								if($nombre==2){return "F";}elseif($nombre==1){return "M";}else{return "";}
 							}
 
-							// Génération d'un eleves.csv
-							//echo "<h3><a name='csv'></a>Génération d'un fichier F_ELE.CSV</h3>\n";
-							echo "<h3><a name='csv'></a>Génération d'un fichier ELEVES.CSV</h3>\n";
+							// GÃ©nÃ©ration d'un eleves.csv
+							//echo "<h3><a name='csv'></a>GÃ©nÃ©ration d'un fichier F_ELE.CSV</h3>\n";
+							echo "<h3><a name='csv'></a>GÃ©nÃ©ration d'un fichier ELEVES.CSV</h3>\n";
 							echo "<blockquote>\n";
-							echo "<p>A la place de l'ERENO, je mets l'ELEVE_ID (<i>ce n'est pas l'équivalent, mais c'est lui qui est utilisé pour le lien entre le ElevesAvecAdresses.xml et le Responsables.xml</i>).</p>\n";
+							echo "<p>A la place de l'ERENO, je mets l'ELEVE_ID (<i>ce n'est pas l'Ã©quivalent, mais c'est lui qui est utilisÃ© pour le lien entre le ElevesAvecAdresses.xml et le Responsables.xml</i>).</p>\n";
 
 							$fich=fopen("../backup/$dirname/csv/eleves.csv","w+");
 							fwrite($fich,"ELENOM;ELEPRE;ELESEXE;ELEDATNAIS;ELENOET;ELE_ID;ELEDOUBL;ELENONAT;ELEREG;DIVCOD;ETOCOD_EP;ELEOPT1;ELEOPT2;ELEOPT3;ELEOPT4;ELEOPT5;ELEOPT6;ELEOPT7;ELEOPT8;ELEOPT9;ELEOPT10;ELEOPT11;ELEOPT12\n");
@@ -1074,8 +1065,8 @@ function dragStop(event) {
 							echo "</blockquote>\n";
 
 
-							// Génération d'un etablissements.csv
-							echo "<h3>Génération d'un fichier etablissements.csv</h3>\n";
+							// GÃ©nÃ©ration d'un etablissements.csv
+							echo "<h3>GÃ©nÃ©ration d'un fichier etablissements.csv</h3>\n";
 							echo "<blockquote>\n";
 
 							/*
@@ -1122,7 +1113,7 @@ function dragStop(event) {
 
 							//fwrite($fich,"CODE_RNE;DENOM_COMPL;niveau;type;code_postal;LL_COMMUNE_INSEE\n");
 							fwrite($fich,"CODE_RNE;DENOM_COMPL;niveau;type;CODE_COMMUNE_INSEE;LL_COMMUNE_INSEE\n");
-							// RNE, Nom étab, ecole/college/lycee, public/prive, CP, ville
+							// RNE, Nom Ã©tab, ecole/college/lycee, public/prive, CP, ville
 
 							echo "<table border='1'>\n";
 							echo "<tr>\n";
@@ -1140,7 +1131,7 @@ function dragStop(event) {
 							echo "</tr>\n";
 							$i=0;
 							while($i<count($eleves)){
-								// Ligne commentée pour ne pas exclure des établissements parce qu'un élève y est passé et a quitté le notre.
+								// Ligne commentÃ©e pour ne pas exclure des Ã©tablissements parce qu'un Ã©lÃšve y est passÃ© et a quittÃ© le notre.
 								//if($eleves[$i]["structures"][0]["code_structure"]!=""){
 									$temoin_tmp="";
 									$chaine="";
@@ -1263,11 +1254,11 @@ function dragStop(event) {
 												echo "</td>\n";
 												$chaine.=";";
 
-												// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
-												//              Ca y est, il a été ajouté.
+												// CODE POSTAL: Non prÃ©sent dans le fichier ElevesSansAdresses.xml
+												//              Ca y est, il a Ã©tÃ© ajoutÃ©.
 												// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
 												echo "<td>";
-												// ERREUR: Le code_commune_insee est différent du code postal
+												// ERREUR: Le code_commune_insee est diffÃ©rent du code postal
 												/*
 												if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
 													echo $eleves[$i]["scolarite_an_dernier"]["code_commune_insee"];
@@ -1314,7 +1305,7 @@ function dragStop(event) {
 							echo "</tr>\n";
 							$i=0;
 							while($i<count($eleves)){
-								// Ligne commentée pour ne pas exclure des établissements parce qu'un élève y est passé et a quitté le notre.
+								// Ligne commentÃ©e pour ne pas exclure des Ã©tablissements parce qu'un Ã©lÃšve y est passÃ© et a quittÃ© le notre.
 								//if($eleves[$i]["structures"][0]["code_structure"]!=""){
 									$temoin_tmp="";
 									$chaine="";
@@ -1361,8 +1352,8 @@ function dragStop(event) {
 							echo "</blockquote>\n";
 
 
-							// Génération d'un etablissements.csv
-							echo "<h3>Génération d'un fichier eleve_etablissement.csv</h3>\n";
+							// GÃ©nÃ©ration d'un etablissements.csv
+							echo "<h3>GÃ©nÃ©ration d'un fichier eleve_etablissement.csv</h3>\n";
 							echo "<blockquote>\n";
 
 							$fich=fopen("../backup/$dirname/csv/eleve_etablissement.csv","w+");
@@ -1410,16 +1401,16 @@ function dragStop(event) {
 							echo "<div id='boxInfo' style='position:absolute; top: 70px; left: 300px; width: 400px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0;'  onmousedown=\"dragStart(event, 'boxInfo')\">\n";
 							echo "<h4 style='margin:0; padding:0; text-align:center;'>GEPI</h4>\n";
 							//echo "<p style='margin-top: 0;'>Effectuez un Clic-droit/Enregistrer la cible du lien sous... pour chacun des fichiers ci-dessous.</p>\n";
-							echo "<p style='margin-top: 0;'>Récupérez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
+							echo "<p style='margin-top: 0;'>RÃ©cupÃ©rez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
 							echo "<table border='0'>\n";
-							echo "<tr><td>Fichier Elèves:</td><td><a href='save_csv.php?fileid=5'>eleves.csv</a></td></tr>\n";
+							echo "<tr><td>Fichier ElÃšves:</td><td><a href='save_csv.php?fileid=5'>eleves.csv</a></td></tr>\n";
 							echo "<tr><td>Fichier Etablissements:</td><td><a href='save_csv.php?fileid=9'>etablissements.csv</a></td></tr>\n";
-							echo "<tr><td>Fichier Elève/Etablissement:</td><td><a href='save_csv.php?fileid=10'>eleve_etablissement.csv</a></td></tr>\n";
+							echo "<tr><td>Fichier ElÃšve/Etablissement:</td><td><a href='save_csv.php?fileid=10'>eleve_etablissement.csv</a></td></tr>\n";
 							echo "</table>\n";
-							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Nettoyage</a></p>\n";
+							echo "<p>Pour supprimer les fichiers aprÃšs rÃ©cupÃ©ration: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Nettoyage</a></p>\n";
 
 							if(count($remarques)>0){
-								echo "<p><b>Attention:</b> Des anomalies ont été relevées.<br />Suivez ce lien pour en <a href='#remarques'>consulter le détail</a></p>";
+								echo "<p><b>Attention:</b> Des anomalies ont Ã©tÃ© relevÃ©es.<br />Suivez ce lien pour en <a href='#remarques'>consulter le dÃ©tail</a></p>";
 							}
 
 							echo "</div>\n";
@@ -1439,18 +1430,18 @@ function dragStop(event) {
 									$ligne[]=fgets($fp,4096);
 								}
 								fclose($fp);
-								echo "<p>Terminé.</p>\n";
+								echo "<p>TerminÃ©.</p>\n";
 
-								echo "<p>Aller à la section <a href='#csv'>CSV</a>.<br />\n";
+								echo "<p>Aller Ã  la section <a href='#csv'>CSV</a>.<br />\n";
 
-								echo "Si vous patientez, des liens directs seront proposés (<i>dans un cadre jaune</i>) pour télécharger les fichiers.<br />Si la page finit son chargement sans générer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
+								echo "Si vous patientez, des liens directs seront proposÃ©s (<i>dans un cadre jaune</i>) pour tÃ©lÃ©charger les fichiers.<br />Si la page finit son chargement sans gÃ©nÃ©rer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
 								if($max_execution_time!=0){
 									echo " (<i>".$max_execution_time."s sur votre serveur</i>)";
 								}
 								else{
 									echo " (<i>consultez la valeur de la variable 'max_execution_time' dans votre 'php.ini'</i>)";
 								}
-								echo " ou une charge maximale trop réduite";
+								echo " ou une charge maximale trop rÃ©duite";
 								if("$memory_limit"!="0"){
 									echo " (<i>".$memory_limit." sur votre serveur</i>)\n";
 								}
@@ -1531,11 +1522,11 @@ function dragStop(event) {
 									//echo htmlentities($ligne[$cpt])."<br />\n";
 
 									if(strstr($ligne[$cpt],"<PERSONNES>")){
-										echo "Début de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "DÃ©but de la section PERSONNES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_personnes++;
 									}
 									if(strstr($ligne[$cpt],"</PERSONNES>")){
-										echo "Fin de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "Fin de la section PERSONNES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_personnes++;
 										break;
 									}
@@ -1580,11 +1571,11 @@ function dragStop(event) {
 									//echo htmlentities($ligne[$cpt])."<br />\n";
 
 									if(strstr($ligne[$cpt],"<RESPONSABLES>")){
-										echo "Début de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "DÃ©but de la section RESPONSABLES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_responsables++;
 									}
 									if(strstr($ligne[$cpt],"</RESPONSABLES>")){
-										echo "Fin de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "Fin de la section RESPONSABLES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_responsables++;
 										break;
 									}
@@ -1625,11 +1616,11 @@ function dragStop(event) {
 									//echo htmlentities($ligne[$cpt])."<br />\n";
 
 									if(strstr($ligne[$cpt],"<ADRESSES>")){
-										echo "Début de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "DÃ©but de la section ADRESSES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_adresses++;
 									}
 									if(strstr($ligne[$cpt],"</ADRESSES>")){
-										echo "Fin de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+										echo "Fin de la section ADRESSES Ã  la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_adresses++;
 										break;
 									}
@@ -1664,10 +1655,10 @@ function dragStop(event) {
 
 
 
-								echo "<p>Terminé.</p>\n";
+								echo "<p>TerminÃ©.</p>\n";
 								echo "</blockquote>\n";
 
-								echo "<h3>Affichage des données Personnes extraites:</h3>\n";
+								echo "<h3>Affichage des donnÃ©es Personnes extraites:</h3>\n";
 								echo "<blockquote>\n";
 								echo "<table border='1'>\n";
 								echo "<tr>\n";
@@ -1694,7 +1685,7 @@ function dragStop(event) {
 								echo "</blockquote>\n";
 
 
-								echo "<h3>Affichage des données Responsables extraites:</h3>\n";
+								echo "<h3>Affichage des donnÃ©es Responsables extraites:</h3>\n";
 								echo "<blockquote>\n";
 								echo "<table border='1'>\n";
 								echo "<tr>\n";
@@ -1722,7 +1713,7 @@ function dragStop(event) {
 
 
 
-								echo "<h3>Affichage des données Adresses extraites:</h3>\n";
+								echo "<h3>Affichage des donnÃ©es Adresses extraites:</h3>\n";
 								echo "<blockquote>\n";
 								echo "<table border='1'>\n";
 								echo "<tr>\n";
@@ -1749,15 +1740,15 @@ function dragStop(event) {
 								echo "</blockquote>\n";
 							}
 							else{
-								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Responsables n'a pas pu être ouvert.<br />\n";
-								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Responsables n'a pas pu Ãªtre ouvert.<br />\n";
+								echo "ContrÃŽlez si la taille du fichier XML ne dÃ©passe pas la taille maximale autorisÃ©e par votre serveur: ".$upload_max_filesize."<br />\n";
 								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
 							}
 
 
 
 
-							echo "<h3><a name='csv'></a>Génération de trois fichiers CSV</h3>\n";
+							echo "<h3><a name='csv'></a>GÃ©nÃ©ration de trois fichiers CSV</h3>\n";
 							echo "<blockquote>\n";
 
 							echo "<p>Personnes:</p>\n";
@@ -1769,7 +1760,7 @@ function dragStop(event) {
 							echo "<th>Identifiant</th>\n";
 							echo "<th>Nom</th>\n";
 							echo "<th>Prenom</th>\n";
-							echo "<th>Civilité</th>\n";
+							echo "<th>CivilitÃ©</th>\n";
 							echo "<th>Tel_personnel</th>\n";
 							echo "<th>Tel_portable</th>\n";
 							echo "<th>Tel_professionnel</th>\n";
@@ -1952,15 +1943,15 @@ function dragStop(event) {
 
 							echo "<h4 style='margin:0; padding:0; text-align:center;'>GEPI</h4>\n";
 							//echo "<p style='margin-top: 0;'>Effectuez un Clic-droit/Enregistrer la cible du lien sous... pour chacun des fichiers ci-dessous.</p>\n";
-							echo "<p style='margin-top: 0;'>Récupérez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
+							echo "<p style='margin-top: 0;'>RÃ©cupÃ©rez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
 							echo "<table border='0'>\n";
 							echo "<tr><td>Fichier Personnes Responsables:</td><td><a href='save_csv.php?fileid=6'>personnes.csv</a></td></tr>\n";
 							echo "<tr><td>Fichier Responsables:</td><td><a href='save_csv.php?fileid=7'>responsables.csv</a></td></tr>\n";
 							echo "<tr><td>Fichier Adresses:</td><td><a href='save_csv.php?fileid=8'>adresses.csv</a></td></tr>\n";
 							echo "</table>\n";
-							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Nettoyage</a></p>\n";
+							echo "<p>Pour supprimer les fichiers aprÃšs rÃ©cupÃ©ration: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Nettoyage</a></p>\n";
 							if(count($remarques)>0){
-								echo "<p><b>Attention:</b> Des anomalies ont été relevées.<br />Suivez ce lien pour en <a href='#remarques'>consulter le détail</a></p>";
+								echo "<p><b>Attention:</b> Des anomalies ont Ã©tÃ© relevÃ©es.<br />Suivez ce lien pour en <a href='#remarques'>consulter le dÃ©tail</a></p>";
 							}
 							echo "</div>\n";
 
@@ -1970,10 +1961,10 @@ function dragStop(event) {
 						if(count($remarques)>0){
 							echo "<a name='remarques'></a><h3>Remarques</h3>\n";
 							if(count($remarques)==1){
-								echo "<p>Une anomalie a été notée lors du parcours de vos fichiers:</p>\n";
+								echo "<p>Une anomalie a Ã©tÃ© notÃ©e lors du parcours de vos fichiers:</p>\n";
 							}
 							else{
-								echo "<p>Des anomalies ont été notées lors du parcours de vos fichiers:</p>\n";
+								echo "<p>Des anomalies ont Ã©tÃ© notÃ©es lors du parcours de vos fichiers:</p>\n";
 							}
 							echo "<ul>\n";
 							for($i=0;$i<count($remarques);$i++){
@@ -1986,6 +1977,6 @@ function dragStop(event) {
 				}
 			}
 		?>
-		<!--p>Retour à l'<a href="index.php">index</a></p-->
+		<!--p>Retour Ã  l'<a href="index.php">index</a></p-->
 	</div>
 <?php require("../lib/footer.inc.php");?>

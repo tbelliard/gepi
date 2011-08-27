@@ -1,6 +1,6 @@
 <?php
 /**
- * Fonctions de évaluation cumule
+ * Fonctions de Ã©valuation cumule
  * 
 * $Id$
 *
@@ -34,7 +34,7 @@ if($nom_cc=='') {
 }
 /**
  *
- * @param float $moyenne note à arrondir
+ * @param float $moyenne note Ã  arrondir
  * @param string $arrondir
  * @return float
  */
@@ -43,16 +43,16 @@ function precision_arrondi($moyenne,$arrondir) {
 	// Calcul des arrondis
 	//
 	if ($arrondir == 's1') {
-		// s1 : arrondir au dixième de point supérieur
+		// s1 : arrondir au dixiÃ¨me de point supÃ©rieur
 		$moyenne = number_format(ceil(strval(10*$moyenne))/10,1,'.','');
 	} else if ($arrondir == 's5') {
-		// s5 : arrondir au demi-point supérieur
+		// s5 : arrondir au demi-point supÃ©rieur
 		$moyenne = number_format(ceil(strval(2*$moyenne))/2,1,'.','');
 	} else if ($arrondir == 'se') {
-		// se : arrondir au point entier supérieur
+		// se : arrondir au point entier supÃ©rieur
 		$moyenne = number_format(ceil(strval($moyenne)),1,'.','');
 	} else if ($arrondir == 'p1') {
-		// s1 : arrondir au dixième le plus proche
+		// s1 : arrondir au dixiÃ¨me le plus proche
 		$moyenne = number_format(round(strval(10*$moyenne))/10,1,'.','');
 	} else if ($arrondir == 'p5') {
 		// s5 : arrondir au demi-point le plus proche

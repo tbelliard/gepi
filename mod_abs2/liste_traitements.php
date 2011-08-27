@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -53,9 +53,9 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
@@ -359,7 +359,7 @@ echo 'border-width:1px;" alt="" name="order" value="des_id" onclick="this.form.o
 //echo '</nobr> ';
 echo '</span>';
 echo '<br/> ';
-echo 'N°';
+echo 'NÂ°';
 echo '<input type="text" name="filter_traitement_id" value="'.getFiltreRechercheParam('filter_traitement_id').'" size="3"/>';
 echo '</th>';
 
@@ -383,7 +383,7 @@ echo '</th>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Élève';
+echo 'Ã‰lÃ¨ve';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_eleve" onclick="this.form.order.value = this.value"/>';
@@ -480,7 +480,7 @@ echo '<th>';
 //echo '<input type="checkbox" value="y" name="filter_sous_responsabilite_etablissement" onchange="submit()"';
 //if (isFiltreRechercheParam('filter_sous_responsabilite_etablissement') && getFiltreRechercheParam('filter_sous_responsabilite_etablissement') == 'y') {echo "checked='checked'";}
 //echo '/><br/>sous resp. etab.';
-echo 'Sous resp. étab.';
+echo 'Sous resp. Ã©tab.';
 echo '</th>';
 //en tete motif d'absence
 echo '<th>';
@@ -579,7 +579,7 @@ echo '</th>';
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
-echo 'Date création';
+echo 'Date crÃ©ation';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_creation" onclick="this.form.order.value = this.value"/>';
@@ -648,7 +648,7 @@ echo '<span style="white-space: nowrap;"> ';
 echo '<input type="hidden" value="y" name="filter_checkbox_posted"/>';
 echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()"';
 if (isFiltreRechercheParam('filter_date_modification') != null && getFiltreRechercheParam('filter_date_modification') == 'y') {echo "checked";}
-echo '/> Modifié';
+echo '/> ModifiÃ©';
 echo '</span>';
 //echo '</nobr>';
 echo '</th>';
@@ -743,7 +743,7 @@ foreach ($results as $traitement) {
     }
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; Ã§argin : 0px; padding-top : 3px; font-size:100%;'>";
 	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."";
     if($menu){
                 echo"&menu=false";
@@ -850,7 +850,7 @@ foreach ($results as $traitement) {
     echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; min-width:150px; width: 100%;'>";
     foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; Ã§argin : 0px; padding-top : 3px; font-size:100%;'>";
 	echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."";
     if($menu){
                 echo"&menu=false";
@@ -922,7 +922,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 35;
              $taille_max_hauteur = 35;
 
@@ -931,7 +931,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 

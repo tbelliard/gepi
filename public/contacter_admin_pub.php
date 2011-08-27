@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On précise de ne pas traiter les données avec la fonction anti_inject
+// On prÃ©cise de ne pas traiter les donnÃ©es avec la fonction anti_inject
 $traite_anti_inject = 'no';
 // Initialisations files
 $niveau_arbo = "public";
@@ -48,7 +48,7 @@ require_once("./lib/header.inc");
 		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
 		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
 		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
-		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		chaine_mel += "&body=Pour que le mail parvienne Ã  son destinataire, pensez Ã  remplacer la chaine de caractÃ¨res _CHEZ_ par un @";
 		//chaine_mel += "&body=Bonjour";
 		location.href = chaine_mel;
 	}
@@ -63,7 +63,7 @@ require_once("./lib/header.inc");
 		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
 		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
 		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
-		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		chaine_mel += "&body=Pour que le mail parvienne Ã  son destinataire, pensez Ã  remplacer la chaine de caractÃ¨res _CHEZ_ par un @";
 		//chaine_mel += "&body=Bonjour";
 		location.href = chaine_mel;
 	}
@@ -79,7 +79,7 @@ require_once("./lib/header.inc");
 		chaine_mel = "mailto:"+chaine_tmp+"?subject=[GEPI]";
 		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
 		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
-		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		chaine_mel += "&body=Pour que le mail parvienne Ã  son destinataire, pensez Ã  remplacer la chaine de caractÃ¨res _CHEZ_ par un @";
 		//chaine_mel += "&body=Bonjour";
 		location.href = chaine_mel;
 	}
@@ -94,10 +94,10 @@ switch($action)
 
 //envoi du message
 case "envoi":
-    //N.B. pour peaufiner, mettre un script de vérification de l'adresse email et du contenu du message !
+    //N.B. pour peaufiner, mettre un script de vÃ©rification de l'adresse email et du contenu du message !
     $message = "Demandeur : ".$nama."\nEtablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
     if ($email_reponse == '') {
-        echo "<br /><br /><br /><P style=\"text-align: center\">Votre message n'a pas été envoyé : vous devez indiquer une adresse e-mail pour la réponse !</p>";
+        echo "<br /><br /><br /><P style=\"text-align: center\">Votre message n'a pas Ã©tÃ© envoyÃ© : vous devez indiquer une adresse e-mail pour la rÃ©ponse !</p>";
     } else {
 		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
@@ -121,7 +121,7 @@ case "envoi":
             $headers);
 
         if ($envoi) {
-            echo "<br /><br /><br /><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>";
+            echo "<br /><br /><br /><P style=\"text-align: center\">Votre message Ã©tÃ© envoyÃ©,vous recevrez rapidement<br />une rÃ©ponse dans votre ".($email_reponse =="" ? "casier" :"boÃ®te aux lettres Ã©lectronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter rÃ©guliÃ¨rement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>";
         } else {
             echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>";
         }
@@ -131,11 +131,11 @@ case "envoi":
 default://formulaire d'envoi
     echo "<form action='contacter_admin_pub.php' method='post' name='doc'>";
     echo "<table cellpadding='5'>";
-    echo "<tr><td>Message posté par&nbsp;:</td><td><input type='text' name='nama' value='Indiquez votre nom et votre prénom' size=40 maxlength='256' /></td></tr>";
-    echo "<tr><td>Votre e-mail pour la réponse (obligatoire)</td><td><input type='text' name='email_reponse' size='40' maxlength='256' /></td></tr>";
-    echo "<tr><td>Nom et prénom de l'administrateur&nbsp;: </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>";
+    echo "<tr><td>Message postÃ© par&nbsp;:</td><td><input type='text' name='nama' value='Indiquez votre nom et votre prÃ©nom' size=40 maxlength='256' /></td></tr>";
+    echo "<tr><td>Votre e-mail pour la rÃ©ponse (obligatoire)</td><td><input type='text' name='email_reponse' size='40' maxlength='256' /></td></tr>";
+    echo "<tr><td>Nom et prÃ©nom de l'administrateur&nbsp;: </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>";
 
-    echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>";
+    echo "<tr><td>Nom de l'Ã©tablissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>";
 
     echo "<tr><td colspan=2>Cliquer <b>";
 	
@@ -170,7 +170,7 @@ default://formulaire d'envoi
 		//echo("<a href=\"javascript:pigeon2(adm_adr);\">[Contacter l'administrateur]</a> \n");
 		echo("<a href=\"javascript:pigeon2();\"> ici </a>\n");
 	}
-	echo "</b> ou bien rédigez votre message ci-dessous : </td><td></tr>";
+	echo "</b> ou bien rÃ©digez votre message ci-dessous : </td><td></tr>";
     echo "</table>";
     ?>
 

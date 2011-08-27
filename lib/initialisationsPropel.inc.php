@@ -3,7 +3,7 @@
  * Appel des fichiers de configuration de Propel
  * @version $Id$
  *
- * @Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * @Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
  *
  * @license GNU/GPL, 
  * @package Initialisation
@@ -30,7 +30,7 @@
 $propel_conf_file_name = 'gepi-conf.php';
 //$propel_conf_file_name = 'gepi-conf_debug.php';
 
-// Pour les scripts situés à la racine de GEPI
+// Pour les scripts situÃ©s Ã  la racine de GEPI
 if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Database configuration file
    require_once("./secure/connect.inc.php");
@@ -39,7 +39,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    require_once("propel/Propel.php");
    Propel::init('./orm/propel-build/conf/'.$propel_conf_file_name);
 
-// Pour les scripts situés dans un sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
+// Pour les scripts situÃ©s dans un sous-rÃ©pertoire Ã  l'intÃ©rieur d'une sous-rÃ©pertoire de GEPI
 } else if (isset($niveau_arbo) and ($niveau_arbo == "2")) {
    // Database configuration file
    require_once("../../secure/connect.inc.php");
@@ -48,7 +48,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    require_once("propel/Propel.php");
    Propel::init('../../orm/propel-build/conf/'.$propel_conf_file_name);
 
-// Pour les scripts situés dans un sous-sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
+// Pour les scripts situÃ©s dans un sous-sous-rÃ©pertoire Ã  l'intÃ©rieur d'une sous-rÃ©pertoire de GEPI
 } else if (isset($niveau_arbo) and ($niveau_arbo == "3")) {
    // Database configuration file
    require_once("../../../secure/connect.inc.php");
@@ -57,7 +57,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    require_once("propel/Propel.php");
    Propel::init('../../../orm/propel-build/conf/'.$propel_conf_file_name);
 
-// Pour les scripts situés dans le sous-répertoire "public"
+// Pour les scripts situÃ©s dans le sous-rÃ©pertoire "public"
 // Ces scripts font appel au fichier /public/secure/connect.inc et non pas /secure/connect.inc
 } else if (isset($niveau_arbo) and ($niveau_arbo == "public")) {
     // Database configuration file
@@ -67,7 +67,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
     require_once("propel/Propel.php");
     Propel::init('../orm/propel-build/conf/'.$propel_conf_file_name);
 
-// Pour les scripts situés dans un sous-répertoire GEPI
+// Pour les scripts situÃ©s dans un sous-rÃ©pertoire GEPI
 } else {
    // Database configuration file
    require_once("../secure/connect.inc.php");

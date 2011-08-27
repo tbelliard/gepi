@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -53,16 +53,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :NULL);
 $modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GET["modif"] :null);
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
@@ -70,7 +70,7 @@ $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["m
 $message_enregistrement = '';
 $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
 if ($traitement == null) {
-    $message_enregistrement .= 'Modification impossible : traitement non trouvée.';
+    $message_enregistrement .= 'Modification impossible : traitement non trouvÃ©e.';
     include("visu_traitement.php");
     die();
 }
@@ -102,14 +102,14 @@ if ($modif == 'type') {
 
 if (!$traitement->isModified()) {
     if (isset($count_delete) && $count_delete > 0) {
-	$message_enregistrement .= 'Saisie supprimée';
+	$message_enregistrement .= 'Saisie supprimÃ©e';
     } else {
 	$message_enregistrement .= 'Pas de modifications';
     }
 } else {
     if ($traitement->validate()) {
 	$traitement->save();
-	$message_enregistrement .= 'Modification enregistrée';
+	$message_enregistrement .= 'Modification enregistrÃ©e';
     } else {
 	$no_br = true;
 	foreach ($traitement->getValidationFailures() as $erreurs) {

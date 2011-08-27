@@ -57,27 +57,27 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['activer'])) {
 			if (!saveSetting("active_module_absence", $_POST['activer'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 			}
 		}
 		if (isset($_POST['activer_prof'])) {
 			if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie par les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la saisie par les professeurs !";
 			}
 		}
 		if (isset($_POST['activer_resp'])) {
 			if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la consultation par les responsables élèves !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la consultation par les responsables Ã©lÃ¨ves !";
 			}
 		}
 		if (isset($_POST['gepiAbsenceEmail'])) {
 			if (!saveSetting("gepiAbsenceEmail", $_POST['gepiAbsenceEmail'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre gestion absence email !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre gestion absence email !";
 			}
 		}
 		if (isset($_POST['abs2_sms_prestataire'])) {
 			if (!saveSetting("abs2_sms_prestataire", $_POST['abs2_sms_prestataire'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre prestataire sms !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre prestataire sms !";
 			}
 		}
 		if (isset($_POST['abs2_sms_username'])) {
@@ -108,130 +108,130 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['abs2_alleger_abs_du_jour'])) {
 			if (!saveSetting("abs2_alleger_abs_du_jour", $_POST['abs2_alleger_abs_du_jour'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_alleger_abs_du_jour";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_alleger_abs_du_jour";
 			}
 		} else {
 			if (!saveSetting("abs2_alleger_abs_du_jour", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_alleger_abs_du_jour";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_alleger_abs_du_jour";
 			}
 		}
 
 		if (isset($_POST['abs2_import_manuel_bulletin'])) {
 			if (!saveSetting("abs2_import_manuel_bulletin", $_POST['abs2_import_manuel_bulletin'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_import_manuel_bulletin";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_import_manuel_bulletin";
 			}
 		} else {
 			if (!saveSetting("abs2_import_manuel_bulletin", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_import_manuel_bulletin";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_import_manuel_bulletin";
 			}
 		}
 
                 if (isset($_POST['abs2_saisie_prof_decale_journee'])) {
 			if (!saveSetting("abs2_saisie_prof_decale_journee", $_POST['abs2_saisie_prof_decale_journee'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sur la journée pour les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la saisie dÃ©calÃ©e sur la journÃ©e pour les professeurs !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_prof_decale_journee", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sur la journée pour les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la saisie dÃ©calÃ©e sur la journÃ©e pour les professeurs !";
 			}
 		}
 
 		if (isset($_POST['abs2_saisie_prof_decale'])) {
 			if (!saveSetting("abs2_saisie_prof_decale", $_POST['abs2_saisie_prof_decale'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sans limite pour les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la saisie dÃ©calÃ©e sans limite pour les professeurs !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_prof_decale", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sans limite pour les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la saisie dÃ©calÃ©e sans limite pour les professeurs !";
 			}
 		}
 
 		if (isset($_POST['abs2_saisie_prof_hors_cours'])) {
 			if (!saveSetting("abs2_saisie_prof_hors_cours", $_POST['abs2_saisie_prof_hors_cours'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie par les professeurs hors cours prévu !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la saisie par les professeurs hors cours prÃ©vu !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_prof_hors_cours", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie par les professeurs hors cours prévu !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la saisie par les professeurs hors cours prÃ©vu !";
 			}
 		}
 
 		if (isset($_POST['abs2_modification_saisie_une_heure'])) {
 			if (!saveSetting("abs2_modification_saisie_une_heure", $_POST['abs2_modification_saisie_une_heure'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		} else {
 			if (!saveSetting("abs2_modification_saisie_une_heure", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		}
 
 		if (isset($_POST['abs2_sms'])) {
 			if (!saveSetting("abs2_sms", $_POST['abs2_sms'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		} else {
 			if (!saveSetting("abs2_sms", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		}
 
 		if (isset($_POST['abs2_saisie_par_defaut_sans_manquement'])) {
 			if (!saveSetting("abs2_saisie_par_defaut_sans_manquement", $_POST['abs2_saisie_par_defaut_sans_manquement'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sans_manquement";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_par_defaut_sans_manquement";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_par_defaut_sans_manquement", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sans_manquement";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_par_defaut_sans_manquement";
 			}
 		}
 
 		if (isset($_POST['abs2_saisie_multi_type_sans_manquement'])) {
 			if (!saveSetting("abs2_saisie_multi_type_sans_manquement", $_POST['abs2_saisie_multi_type_sans_manquement'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sans_manquement !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_multi_type_sans_manquement !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_multi_type_sans_manquement", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sans_manquement !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_multi_type_sans_manquement !";
 			}
 		}
 
 		if (isset($_POST['abs2_saisie_par_defaut_sous_responsabilite_etab'])) {
 			if (!saveSetting("abs2_saisie_par_defaut_sous_responsabilite_etab", $_POST['abs2_saisie_par_defaut_sous_responsabilite_etab'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sous_responsabilite_etab !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_par_defaut_sous_responsabilite_etab !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_par_defaut_sous_responsabilite_etab", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sous_responsabilite_etab !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_par_defaut_sous_responsabilite_etab !";
 			}
 		}
 
 		if (isset($_POST['abs2_saisie_multi_type_sous_responsabilite_etab'])) {
 			if (!saveSetting("abs2_saisie_multi_type_sous_responsabilite_etab", $_POST['abs2_saisie_multi_type_sous_responsabilite_etab'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sous_responsabilite_etab !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_multi_type_sous_responsabilite_etab !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_multi_type_sous_responsabilite_etab", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sous_responsabilite_etab !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_multi_type_sous_responsabilite_etab !";
 			}
 		}
 
 		if (isset($_POST['abs2_saisie_multi_type_non_justifiee'])) {
 			if (!saveSetting("abs2_saisie_multi_type_non_justifiee", $_POST['abs2_saisie_multi_type_non_justifiee'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_justifiee !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_multi_type_non_justifiee !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_multi_type_non_justifiee", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_justifiee !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre abs2_saisie_multi_type_non_justifiee !";
 			}
 		}
 //		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
 //			if (!saveSetting("abs2_modification_saisie_sans_limite", $_POST['abs2_modification_saisie_sans_limite'])) {
-//				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+//				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
 //			}
 //		} else {
 //			if (!saveSetting("abs2_modification_saisie_sans_limite", 'n')) {
-//				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+//				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
 //			}
 //		}
 
@@ -241,19 +241,19 @@ if (isset($_POST['is_posted'])) {
 
 if (isset($_POST['classement'])) {
 	if (!saveSetting("absence_classement_top", $_POST['classement'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre de classement des absences (TOP 10) !";
+		$msg = "Erreur lors de l'enregistrement du paramÃ¨tre de classement des absences (TOP 10) !";
 	}
 }
 if (isset($_POST['installation_base'])) {
-            // Remise à zéro de la table des droits d'accès
+            // Remise Ã  zÃ©ro de la table des droits d'accÃ¨s
 	$result = "";
         require '../../utilitaires/updates/access_rights.inc.php';
 	require '../../utilitaires/updates/mod_abs2.inc.php';
 }
 
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 
-// A propos du TOP 10 : récupération du setting pour le select en bas de page
+// A propos du TOP 10 : rÃ©cupÃ©ration du setting pour le select en bas de page
 $selected10 = $selected20 = $selected30 = $selected40 = $selected50 = NULL;
 
 if (getSettingValue("absence_classement_top") == '10'){
@@ -276,14 +276,14 @@ require_once("../../lib/header.inc");
 echo "<p class='bold'><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
     if (isset ($result)) {
-	    echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
+	    echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='RÃ©sultat de mise Ã  jour'><tr><td><h2 align=\"center\">RÃ©sultat de la mise Ã  jour</h2>";
 	    echo $result;
 	    echo "</td></tr></table></center>";
     }
 ?>
 <h2>Gestion des absences par les CPE</h2>
-<p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
-suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>
+<p style="font-style: italic;">La dÃ©sactivation du module de la gestion des absences n'entraÃ®ne aucune
+suppression des donnÃ©es. Lorsque le module est dÃ©sactivÃ©, les CPE n'ont pas accÃ¨s au module.</p>
 
 <form action="index.php" name="form1" method="post">
 <?php
@@ -302,27 +302,27 @@ echo add_token_field();
 <p>
 	<input type="radio" id="activerN" name="activer" value="n"
 	<?php if (getSettingValue("active_module_absence")=='n') echo ' checked="checked"'; ?> />
-	<label for="activerN">&nbsp;Désactiver le module de la gestion des absences</label>
+	<label for="activerN">&nbsp;DÃ©sactiver le module de la gestion des absences</label>
 	<input type="hidden" name="is_posted" value="1" />
 </p>
 <p>
 	<input type="checkbox" name="abs2_import_manuel_bulletin" value="y"
 	<?php if (getSettingValue("abs2_import_manuel_bulletin")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_import_manuel_bulletin">&nbsp;Utiliser un import (manuel, gep ou sconet) pour les bulletins et fiches élève.</label>
+	<label for="abs2_import_manuel_bulletin">&nbsp;Utiliser un import (manuel, gep ou sconet) pour les bulletins et fiches Ã©lÃ¨ve.</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_alleger_abs_du_jour" value="y"
 	<?php if (getSettingValue("abs2_alleger_abs_du_jour")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
+	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : dÃ©sactive la recherche des saisies contradictoires et des prÃ©sences.</label>
 </p>
 <p>
-E-mail gestion absence établissement :
+E-mail gestion absence Ã©tablissement :
 <input type="text" name="gepiAbsenceEmail" size="20" value="<?php echo(getSettingValue("gepiAbsenceEmail")); ?>"/>
 </p>
 
 <h2>Saisie des absences par les professeurs</h2>
-<p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
-Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.</p>
+<p style="font-style: italic;">La dÃ©sactivation du module de la gestion des absences n'entraÃ®ne aucune suppression des donnÃ©es saisies par les professeurs. Lorsque le module est dÃ©sactivÃ©, les professeurs n'ont pas accÃ¨s au module.
+Normalement, ce module ne devrait Ãªtre activÃ© que si le module ci-dessus est lui-mÃªme activÃ©.</p>
 <p>
 	<input type="radio" id="activerProfY" name="activer_prof" value="y"
 	<?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked='checked'"; ?> />
@@ -331,28 +331,28 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <p>
 	<input type="radio" id="activerProfN" name="activer_prof" value="n"
 	<?php if (getSettingValue("active_module_absence_professeur")=='n') echo " checked='checked'"; ?> />
-	<label for="activerProfN">&nbsp;Désactiver le module de la saisie des absences par les professeurs</label>
+	<label for="activerProfN">&nbsp;DÃ©sactiver le module de la saisie des absences par les professeurs</label>
 	<input type="hidden" name="is_posted" value="1" />
 </p>
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_decale_journee" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale_journee")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie décalée sur une même journée par les professeurs</label>
+	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie dÃ©calÃ©e sur une mÃªme journÃ©e par les professeurs</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_decale" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie décalée sans limite de temps par les professeurs</label>
+	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie dÃ©calÃ©e sans limite de temps par les professeurs</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_hors_cours" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_hors_cours")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prévus dans l'emploi du temps du professeur</label>
+	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prÃ©vus dans l'emploi du temps du professeur</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_modification_saisie_une_heure" value="y"
 	<?php if (getSettingValue("abs2_modification_saisie_une_heure")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa création</label>
+	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa crÃ©ation</label>
 </p>
 <!--p>
 	<input type="checkbox" name="abs2_modification_saisie_sans_limite" value="y"
@@ -369,7 +369,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <?php
   $extensions = get_loaded_extensions();
   if(!in_array('curl',$extensions)) {
-      echo "<p style='font-style: italic; color:red'>ATTENTION : Il semble que votre serveur ne soit pas configuré pour l'envoi de SMS. Cette fonctionnalité nécéssite l'extension PHP CURL.";
+      echo "<p style='font-style: italic; color:red'>ATTENTION : Il semble que votre serveur ne soit pas configurÃ© pour l'envoi de SMS. Cette fonctionnalitÃ© nÃ©cÃ©ssite l'extension PHP CURL.";
       echo "</p>";
   };
  ?>
@@ -378,7 +378,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<select id="abs2_sms_prestataire" name="abs2_sms_prestataire">
 	<option value=''></option>
 	<option value='tm4b' <?php if (getSettingValue("abs2_sms_prestataire")=='tm4b') echo " selected "; ?> >www.tm4b.com</option>
-    <option value='pluriware' <?php if (getSettingValue("abs2_sms_prestataire")=='pluriware') echo " selected "; ?> >Pluriware (agréée EN)</option>
+    <option value='pluriware' <?php if (getSettingValue("abs2_sms_prestataire")=='pluriware') echo " selected "; ?> >Pluriware (agrÃ©Ã©e EN)</option>
 	<option value='123-sms' <?php if (getSettingValue("abs2_sms_prestataire")=='123-sms') echo " selected "; ?> >www.123-sms.net</option>
 	</select><br/>
 	Nom d'utilisateur du service <input type="text" name="abs2_sms_username" size="20" value="<?php echo(getSettingValue("abs2_sms_username")); ?>"/><br/>
@@ -389,33 +389,33 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <p>
 	<input type="checkbox" id="abs2_saisie_par_defaut_sans_manquement" name="abs2_saisie_par_defaut_sans_manquement" value="y"
 	<?php if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_par_defaut_sans_manquement">&nbsp;Dans le cas d'une saisie sans type, considérer que l'élève ne manque pas à ses obligations.
-	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
+	<label for="abs2_saisie_par_defaut_sans_manquement">&nbsp;Dans le cas d'une saisie sans type, considÃ©rer que l'Ã©lÃ¨ve ne manque pas Ã  ses obligations.
+	   (Donc ces saisies ne seront pas comptÃ©es dans les bulletins)</label>
 </p>
 <p>
 	<input type="checkbox" id="abs2_saisie_multi_type_sans_manquement" name="abs2_saisie_multi_type_sans_manquement" value="y"
 	<?php if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_multi_type_sans_manquement">&nbsp;Dans le cas de plusieurs saisies simultanées avec des types contradictoires, considérer que l'élève ne manque pas à ses obligations.
-	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
+	<label for="abs2_saisie_multi_type_sans_manquement">&nbsp;Dans le cas de plusieurs saisies simultanÃ©es avec des types contradictoires, considÃ©rer que l'Ã©lÃ¨ve ne manque pas Ã  ses obligations.
+	   (Donc ces saisies ne seront pas comptÃ©es dans les bulletins)</label>
 </p>
 <p>
 	<input type="checkbox" id="abs2_saisie_multi_type_non_justifiee" name="abs2_saisie_multi_type_non_justifiee" value="y"
 	<?php if (getSettingValue("abs2_saisie_multi_type_non_justifiee")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_multi_type_non_justifiee">&nbsp;Dans le cas de plusieurs saisies simultanées avec des types contradictoires, considérer que la saisie n'est pas justifiée.</label>
+	<label for="abs2_saisie_multi_type_non_justifiee">&nbsp;Dans le cas de plusieurs saisies simultanÃ©es avec des types contradictoires, considÃ©rer que la saisie n'est pas justifiÃ©e.</label>
 </p>
 <p>
 	<input type="checkbox" id="abs2_saisie_par_defaut_sous_responsabilite_etab" name="abs2_saisie_par_defaut_sous_responsabilite_etab" value="y"
 	<?php if (getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_par_defaut_sous_responsabilite_etab">&nbsp;Dans le cas d'une saisie sans type, considérer que l'élève est par défaut sous la responsabilité de l'établissement.</label>
+	<label for="abs2_saisie_par_defaut_sous_responsabilite_etab">&nbsp;Dans le cas d'une saisie sans type, considÃ©rer que l'Ã©lÃ¨ve est par dÃ©faut sous la responsabilitÃ© de l'Ã©tablissement.</label>
 </p>
 <p>
 	<input type="checkbox" id="abs2_saisie_multi_type_sous_responsabilite_etab" name="abs2_saisie_multi_type_sous_responsabilite_etab" value="y"
 	<?php if (getSettingValue("abs2_saisie_multi_type_sous_responsabilite_etab")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_multi_type_sous_responsabilite_etab">&nbsp;Dans le cas de plusieurs saisies simultanées avec des types contradictoires, considérer que l'élève est par défaut sous la responsabilité de l'établissement.</label>
+	<label for="abs2_saisie_multi_type_sous_responsabilite_etab">&nbsp;Dans le cas de plusieurs saisies simultanÃ©es avec des types contradictoires, considÃ©rer que l'Ã©lÃ¨ve est par dÃ©faut sous la responsabilitÃ© de l'Ã©tablissement.</label>
 </p>
 <p>
 	<?php if (getSettingValue("abs2_retard_critere_duree") == null || getSettingValue("abs2_retard_critere_duree") == '') saveSetting("abs2_retard_critere_duree", 30); ?>
-	Configuration du bulletin : Dans le décompte des demi-journées d'absence, considérer les saisie inférieures à
+	Configuration du bulletin : Dans le dÃ©compte des demi-journÃ©es d'absence, considÃ©rer les saisie infÃ©rieures Ã 
 	<select name="abs2_retard_critere_duree">
 		<option value="00" <?php if (getSettingValue("abs2_retard_critere_duree") == '00') echo " selected"; ?>>00</option>
 		<option value="10" <?php if (getSettingValue("abs2_retard_critere_duree") == '10') echo " selected"; ?>>10</option>
@@ -425,16 +425,16 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 		<option value="50" <?php if (getSettingValue("abs2_retard_critere_duree") == '50') echo " selected"; ?>>50</option>
 	</select>
 	min comme des retards.<br/>
-	Note : si les créneaux durent 45 minutes et que ce paramètre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
-	Note : sont considérées comme retard les saisies de durées inférieures au paramètre ci-dessus et les saisies dont le type est décompté comme retard
-	(voir la page <a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a>).<br/>
+	Note : si les crÃ©neaux durent 45 minutes et que ce paramÃ¨tre est rÃ©glÃ© sur 50 min, la plupart de vos saisies seront dÃ©comptÃ©es comme retard.<br/>
+	Note : sont considÃ©rÃ©es comme retard les saisies de durÃ©es infÃ©rieures au paramÃ¨tre ci-dessus et les saisies dont le type est dÃ©comptÃ© comme retard
+	(voir la page <a href="admin_types_absences.php?action=visualiser">DÃ©finir les types d'absence</a>).<br/>
 
 </p>
 <br/>
 <p>
 	<?php if (getSettingValue("abs2_heure_demi_journee") == null || getSettingValue("abs2_heure_demi_journee") == '') saveSetting("abs2_heure_demi_journee", '11:50'); ?>
 	<input style="font-size:88%;" name="abs2_heure_demi_journee" value="<?php echo getSettingValue("abs2_heure_demi_journee")?>" type="text" maxlength="5" size="4"/>
-	Heure de bascule de demi-journée pour le décompte des demi-journées
+	Heure de bascule de demi-journÃ©e pour le dÃ©compte des demi-journÃ©es
 </p>
 
 <!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
@@ -457,14 +457,14 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 </form>
 
 <br/><br/>
-<h2>Configuration avancée</h2>
+<h2>Configuration avancÃ©e</h2>
 <blockquote>
-	<a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a><br />
-	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
-    <a href="admin_lieux_absences.php?action=visualiser">Définir les lieux des absences</a><br />
-	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a><br />
-	<a href="../../mod_ooo/gerer_modeles_ooo.php">Gérer ses propres modèles de documents du module</a><br />
-    <a href="admin_table_agregation.php">Gérér la table d'agrégation des demi-journées d'absences</a>
+	<a href="admin_types_absences.php?action=visualiser">DÃ©finir les types d'absence</a><br />
+	<a href="admin_motifs_absences.php?action=visualiser">DÃ©finir les motifs des absences</a><br />
+    <a href="admin_lieux_absences.php?action=visualiser">DÃ©finir les lieux des absences</a><br />
+	<a href="admin_justifications_absences.php?action=visualiser">DÃ©finir les justifications</a><br />
+	<a href="../../mod_ooo/gerer_modeles_ooo.php">GÃ©rer ses propres modÃ¨les de documents du module</a><br />
+    <a href="admin_table_agregation.php">GÃ©rÃ©r la table d'agrÃ©gation des demi-journÃ©es d'absences</a>
 </blockquote>
 
 <?PHP

@@ -46,7 +46,7 @@ unset($login_eleve);
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_GET["login_eleve"]) ? $_GET["login_eleve"] : NULL);
 
 $error_login = false;
-// Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
+// Quelques filtrages de dÃ©part pour prÃ©-initialiser la variable qui nous importe ici : $login_eleve
 if ($_SESSION['statut'] == "responsable") {
 	$get_eleves = mysql_query("SELECT e.login " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
@@ -56,37 +56,37 @@ if ($_SESSION['statut'] == "responsable") {
 			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 
 	if (mysql_num_rows($get_eleves) == 1) {
-		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
+		// Un seul Ã©lÃ¨ve associÃ© : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
 	} elseif (mysql_num_rows($get_eleves) == 0) {
 		$error_login = true;
 	}
-	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter un choix.
+	// Si le nombre d'Ã©lÃ¨ves associÃ©s est supÃ©rieur Ã  1, alors soit $login_eleve a Ã©tÃ© dÃ©jÃ  dÃ©fini, soit il faut prÃ©senter un choix.
 
 } else if ($_SESSION['statut'] == "eleve") {
 	if ($login_eleve != null and (strtoupper($login_eleve) != strtoupper($_SESSION['login']))) {
-		tentative_intrusion(2, "Tentative d'un ".$gepiSettings['denomination_eleve']." de visualiser le bulletin simplifié d'un autre ".$gepiSettings['denomination_eleve'].".");
+		tentative_intrusion(2, "Tentative d'un ".$gepiSettings['denomination_eleve']." de visualiser le bulletin simplifiÃ© d'un autre ".$gepiSettings['denomination_eleve'].".");
 	}
-	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
+	// Si l'utilisateur identifiÃ© est un Ã©lÃ¨ve, pas le choix, il ne peut consulter que son Ã©quipe pÃ©dagogique
 	$login_eleve = $_SESSION['login'];
 }
 
 if ($login_eleve and $login_eleve != null) {
-	// On récupère la classe de l'élève, pour déterminer automatiquement le nombre de périodes
-	// On part du postulat que même si l'élève change de classe en cours d'année, c'est pour aller
-	// dans une classe qui a le même nombre de périodes...
+	// On rÃ©cupÃ¨re la classe de l'Ã©lÃ¨ve, pour dÃ©terminer automatiquement le nombre de pÃ©riodes
+	// On part du postulat que mÃªme si l'Ã©lÃ¨ve change de classe en cours d'annÃ©e, c'est pour aller
+	// dans une classe qui a le mÃªme nombre de pÃ©riodes...
 	$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
 }
 
 if (isset($id_classe)) {
 	// On regarde si le type est correct :
 	if (!is_numeric($id_classe)) {
-		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numérique.");
+		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numÃ©rique.");
 		echo "Erreur.";
 		require ("../lib/footer.inc.php");
 		die();
 	}
-	// On teste si un professeur a le droit d'accéder à cette classe
+	// On teste si un professeur a le droit d'accÃ©der Ã  cette classe
 	//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 
 	//echo "\$_SESSION['statut']=".$_SESSION['statut']."<br />";
@@ -99,8 +99,8 @@ if (isset($id_classe)) {
 		if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
 			$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 			if ($test == "0") {
-				tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
-				echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+				tentative_intrusion("2", "Tentative d'accÃ¨s par un prof Ã  une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
+				echo "Vous ne pouvez pas accÃ©der Ã  cette classe car vous n'y Ãªtes pas professeur !";
 				require ("../lib/footer.inc.php");
 				die();
 			}
@@ -111,8 +111,8 @@ if (isset($id_classe)) {
 
 			$test = mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_classes jec, j_eleves_professeurs jep WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe = '".$id_classe."')"));
 			if ($test == "0") {
-				tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'est pas $gepi_prof_suivi, sans en avoir l'autorisation.");
-				echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas $gepi_prof_suivi!";
+				tentative_intrusion("2", "Tentative d'accÃ¨s par un prof Ã  une classe dans laquelle il n'est pas $gepi_prof_suivi, sans en avoir l'autorisation.");
+				echo "Vous ne pouvez pas accÃ©der Ã  cette classe car vous n'y Ãªtes pas $gepi_prof_suivi!";
 				require ("../lib/footer.inc.php");
 				die();
 			}
@@ -122,7 +122,7 @@ if (isset($id_classe)) {
 
 
 //**************** EN-TETE *******************************
-$titre_page = "Edition simplifiée des bulletins";
+$titre_page = "Edition simplifiÃ©e des bulletins";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ****************************
 ?>
@@ -139,31 +139,31 @@ document.form_choix_edit.periode2.value=indi+1;
 <?php
 //echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
-// Si on a eu une erreur sur l'association responsable->élève
+// Si on a eu une erreur sur l'association responsable->Ã©lÃ¨ve
 if ($_SESSION['statut'] == "responsable" and $error_login == true) {
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
-	echo "<p>Il semble que vous ne soyez associé à aucun ".$gepiSettings['denomination_eleve'].". Contactez l'administrateur pour résoudre cette erreur.</p>";
+	echo "<p>Il semble que vous ne soyez associÃ© Ã  aucun ".$gepiSettings['denomination_eleve'].". Contactez l'administrateur pour rÃ©soudre cette erreur.</p>";
 	require "../lib/footer.inc.php";
 	die();
 }
 
-// Vérifications de sécurité
+// VÃ©rifications de sÃ©curitÃ©
 if (
 	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesBulletinSimpleParent") != "yes") OR
 	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesBulletinSimpleEleve") != "yes")
 	) {
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
-	tentative_intrusion(1, "Tentative d'accès aux bulletins simplifiés sans autorisation.");
-	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+	tentative_intrusion(1, "Tentative d'accÃ¨s aux bulletins simplifiÃ©s sans autorisation.");
+	echo "<p>Vous n'Ãªtes pas autorisÃ© Ã  visualiser cette page.</p>";
 	require "../lib/footer.inc.php";
 	die();
 }
 
 
 if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
-	// Le choix de la classe n'est pas encore fait et l'on n'est ni responsable, ni élève
+	// Le choix de la classe n'est pas encore fait et l'on n'est ni responsable, ni Ã©lÃ¨ve
 
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
@@ -176,7 +176,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//elseif(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiAccesReleveProf")=='yes')){
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes"){
 
-		// C'est un prof et l'accès "a accès aux bulletins simples des élèves de toutes les classes" n'est pas donné
+		// C'est un prof et l'accÃ¨s "a accÃ¨s aux bulletins simples des Ã©lÃ¨ves de toutes les classes" n'est pas donnÃ©
 		//$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 
 		if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
@@ -192,14 +192,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 									ORDER BY c.classe;";
 		}
 		else {
-			tentative_intrusion(1, "Tentative d'accès aux bulletins simplifiés sans autorisation.");
-			echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+			tentative_intrusion(1, "Tentative d'accÃ¨s aux bulletins simplifiÃ©s sans autorisation.");
+			echo "<p>Vous n'Ãªtes pas autorisÃ© Ã  visualiser cette page.</p>";
 			require "../lib/footer.inc.php";
 			die();
 		}
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") == "yes") {
-		// C'est un prof et l'accès "a accès aux bulletins simples des élèves de toutes les classes" est donné
+		// C'est un prof et l'accÃ¨s "a accÃ¨s aux bulletins simples des Ã©lÃ¨ves de toutes les classes" est donnÃ©
 		$sql="SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe";
 	}
 	//elseif(($_SESSION['statut'] == 'cpe')&&(getSettingValue("GepiAccesReleveCpe")=='yes')){
@@ -212,7 +212,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo " | Total : $nombreligne classes </p>\n";
 
 	if($nombreligne==0){
-		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Aucune classe ne vous est attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
 	}
 	else{
 		echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins</p>\n";
@@ -238,8 +238,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "</table>\n";
 	}
 } else if ($_SESSION['statut'] == "responsable" AND $login_eleve == null) {
-	// Si on est là, c'est que le responsable est responsable de plusieurs élèves. Il doit donc
-	// choisir celui pour lequel il souhaite visualiser le bulletin simplifié
+	// Si on est lÃ , c'est que le responsable est responsable de plusieurs Ã©lÃ¨ves. Il doit donc
+	// choisir celui pour lequel il souhaite visualiser le bulletin simplifiÃ©
 
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
@@ -249,15 +249,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"re.pers_id = r.pers_id AND " .
 				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 
-	echo "<p>Cliquez sur le nom d'un ".$gepiSettings['denomination_eleve']." pour visualiser son bulletin simplifié :</p>";
+	echo "<p>Cliquez sur le nom d'un ".$gepiSettings['denomination_eleve']." pour visualiser son bulletin simplifiÃ© :</p>";
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		echo "<p><a href='".$_SERVER['PHP_SELF']."?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
 } else if (!isset($choix_edit)) {
 	// ====================
 	// boireaus 20071207
-	// Je ne saisis pas bien comment $choix_edit peut être affecté sans register_globals=on
-	// Nulle part la variable n'a l'air récupérée en POST ou autre...
+	// Je ne saisis pas bien comment $choix_edit peut Ãªtre affectÃ© sans register_globals=on
+	// Nulle part la variable n'a l'air rÃ©cupÃ©rÃ©e en POST ou autre...
 	// ====================
 
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
@@ -267,7 +267,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
-		// Ajout lien classe précédente / classe suivante
+		// Ajout lien classe prÃ©cÃ©dente / classe suivante
 		if($_SESSION['statut']=='scolarite'){
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
@@ -288,8 +288,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 										ORDER BY c.classe;";
 			}
 			else {
-				tentative_intrusion(1, "Tentative d'accès aux bulletins simplifiés sans autorisation.");
-				echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+				tentative_intrusion(1, "Tentative d'accÃ¨s aux bulletins simplifiÃ©s sans autorisation.");
+				echo "<p>Vous n'Ãªtes pas autorisÃ© Ã  visualiser cette page.</p>";
 				require "../lib/footer.inc.php";
 				die();
 			}
@@ -306,7 +306,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 		elseif($_SESSION['statut'] == 'autre'){
 
-			// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donné les bons droits
+			// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donnÃ© les bons droits
 			$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 
 		}
@@ -367,7 +367,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		// =================================
 		if(isset($id_class_prec)){
-			if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+			if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe prÃ©cÃ©dente</a>";}
 		}
 
 		if($chaine_options_classes!="") {
@@ -379,7 +379,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		if(isset($id_class_suiv)){
 			if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a></p>";}
 		}
-		//fin ajout lien classe précédente / classe suivante
+		//fin ajout lien classe prÃ©cÃ©dente / classe suivante
 
 		echo "</form>\n";
 
@@ -388,14 +388,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$nom_classe = mysql_result($classe_eleve, 0, "classe");
 		echo "<p class='grand'>Classe de $nom_classe</p>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-		echo "<table summary='Choix des élèves'>\n";
+		echo "<table summary='Choix des Ã©lÃ¨ves'>\n";
 		echo "<tr>\n";
 		echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" ";
 		if((!isset($_SESSION['choix_edit']))||($_SESSION['choix_edit']==1)) {
 			echo "checked ";
 		}
 		echo "/></td>\n";
-		echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les ".$gepiSettings['denomination_eleves']." de la classe";
+		echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiÃ©s de tous les ".$gepiSettings['denomination_eleves']." de la classe";
 		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 			echo " (uniquement les ".$gepiSettings['denomination_eleves']." que j'ai en cours)";
 		}
@@ -411,7 +411,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "checked ";
 			}
 			echo "/></td>\n";
-			echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
+			echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiÃ©s des ".$gepiSettings['denomination_eleves']." dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
 			echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
 			$i=0;
 			while ($i < $nb_lignes) {
@@ -437,7 +437,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "checked ";
 		}
 		echo "/></td>\n";
-		echo "<td><label for='choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'".$gepiSettings['denomination_eleve']." sélectionné ci-contre : </label>\n";
+		echo "<td><label for='choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifiÃ© de l'".$gepiSettings['denomination_eleve']." sÃ©lectionnÃ© ci-contre : </label>\n";
 		echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
 		//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
@@ -473,7 +473,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "checked ";
 		}
 		echo "/></td>\n";
-		echo "<td><label for='choix_edit_4' style='cursor: pointer;'>Le bulletin simplifié des appréciations sur le groupe-classe";
+		echo "<td><label for='choix_edit_4' style='cursor: pointer;'>Le bulletin simplifiÃ© des apprÃ©ciations sur le groupe-classe";
 		echo "</label></td></tr>\n";
 
 		echo "</table>\n";
@@ -489,7 +489,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
 		echo "<input type=\"hidden\" name=\"login_eleve\" value=\"".$login_eleve."\" />\n";
 	}
-	echo "<p>Choisissez la(les) période(s) : </p><br />\n";
+	echo "<p>Choisissez la(les) pÃ©riode(s) : </p><br />\n";
 	include "../lib/periodes.inc.php";
 
 	$periode1_par_defaut=1;
@@ -497,7 +497,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$periode1_par_defaut=$_SESSION['periode1'];
 	}
 
-	echo "De la période : <select onchange=\"change_periode()\" size=1 name=\"periode1\">\n";
+	echo "De la pÃ©riode : <select onchange=\"change_periode()\" size=1 name=\"periode1\">\n";
 	$i = "1" ;
 	while ($i < $nb_periode) {
 	echo "<option value='$i'";
@@ -535,7 +535,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$max_per=$lig_per->num_periode;
 		}
 		else {
-			// La solution ci-dessous n'est pas fiable: si un groupe est à cheval sur plusieurs classes et que les périodes ouvertes sur les déifférentes classes ne sont pas les mêmes
+			// La solution ci-dessous n'est pas fiable: si un groupe est Ã  cheval sur plusieurs classes et que les pÃ©riodes ouvertes sur les dÃ©iffÃ©rentes classes ne sont pas les mÃªmes
 			$sql="SELECT max(periode) AS max_per FROM matieres_notes mn, j_groupes_classes jgc WHERE mn.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe';";
 			//echo "$sql<br />";
 			$res_per=mysql_query($sql);
@@ -545,7 +545,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	echo "&nbsp;à la période : <select size=1 name=\"periode2\">\n";
+	echo "&nbsp;Ã  la pÃ©riode : <select size=1 name=\"periode2\">\n";
 	$i = "1" ;
 	while ($i < $nb_periode) {
 	echo "<option value='$i'";

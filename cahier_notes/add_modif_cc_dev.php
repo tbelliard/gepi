@@ -1,6 +1,6 @@
 <?php
 /**
- * Ajouter, modifier un devoir dans une évaluation cumule
+ * Ajouter, modifier un devoir dans une Ã©valuation cumule
  * 
  * $Id$
  *
@@ -56,9 +56,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 /**
  * Calcul des arrondis
@@ -68,14 +68,14 @@ require('cc_lib.php');
 $id_racine = isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);
 
 if(!isset($id_racine)) {
-	$mess="Racine non précisée pour $nom_cc.<br />";
+	$mess="Racine non prÃ©cisÃ©e pour $nom_cc.<br />";
 	header("Location: index.php?msg=$mess");
 	die();
 }
 
-// On teste si le carnet de notes appartient bien à la personne connectée
+// On teste si le carnet de notes appartient bien Ã  la personne connectÃ©e
 if (!(Verif_prof_cahier_notes($_SESSION['login'],$id_racine))) {
-    $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+    $mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes qui ne vous appartient pas !");
     header("Location: index.php?msg=$mess");
     die();
 }
@@ -85,7 +85,7 @@ $id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
 /**
- * Gestion des périodes
+ * Gestion des pÃ©riodes
  */
 include "../lib/periodes.inc.php";
 
@@ -102,14 +102,14 @@ if ($id_dev)  {
 	    $precision = mysql_result($query, 0, 'arrondir');
 	}
 	else {
-		header("Location: index.php?msg=".rawurlencode("Le numéro de devoir n est pas associé à ce groupe."));
+		header("Location: index.php?msg=".rawurlencode("Le numÃ©ro de devoir n est pas associÃ© Ã  ce groupe."));
 		die();
 	}
 }
 else {
 
 	$nom_court = "CC";
-	$nom_complet = ucfirst($nom_cc)." n°";
+	$nom_complet = ucfirst($nom_cc)." nÂ°";
 	$description = "";
 	$precision="s1";
 }
@@ -118,7 +118,7 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
-// enregistrement des données
+// enregistrement des donnÃ©es
 if (isset($_POST['is_posted'])) {
 	check_token();
 
@@ -129,35 +129,35 @@ if (isset($_POST['is_posted'])) {
 	$description=traitement_magic_quotes($_POST['description']);
 	$precision=$_POST['precision'];
 	if(!my_ereg("^(s1|s5|se|p1|p5|pe)$", $precision)) {
-		$msg.="Précision '$precision' invalide; Elle a été remplacée par 's1'.";
+		$msg.="PrÃ©cision '$precision' invalide; Elle a Ã©tÃ© remplacÃ©e par 's1'.";
 	}
 
 	if(!isset($id_dev)) {
 		$sql="INSERT INTO cc_dev SET id_groupe='$id_groupe', nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision';";
 		$insert=mysql_query($sql);
 		if(!$insert) {
-			$msg.="Erreur lors de la création du $nom_cc.";
+			$msg.="Erreur lors de la crÃ©ation du $nom_cc.";
 		}
 		else {
 			$id_dev=mysql_insert_id();
-			$msg.="Création du $nom_cc effectuée.";
+			$msg.="CrÃ©ation du $nom_cc effectuÃ©e.";
 		}
 		header("Location: index_cc.php?id_racine=$id_racine&msg=$msg");
 		die();
 	}
 	else {
-		// Le devoir existe déjà
-		// S'il est rattaché à un devoir existant dans le carnet de notes, il ne doit pas pouvoir être modifié si la période correspondante est close.
+		// Le devoir existe dÃ©jÃ 
+		// S'il est rattachÃ© Ã  un devoir existant dans le carnet de notes, il ne doit pas pouvoir Ãªtre modifiÃ© si la pÃ©riode correspondante est close.
 
-		// Sinon, il faut mettre à jour le devoir associé
+		// Sinon, il faut mettre Ã  jour le devoir associÃ©
 		
 		$sql="UPDATE cc_dev SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision' WHERE id_groupe='$id_groupe' AND id='$id_dev';";
 		$update=mysql_query($sql);
 		if(!$update) {
-			$msg.="Erreur lors de la mise à jour du $nom_cc.";
+			$msg.="Erreur lors de la mise Ã  jour du $nom_cc.";
 		}
 		else {
-			$msg.="$nom_cc mis à jour.";
+			$msg.="$nom_cc mis Ã  jour.";
 		}
 		header("Location: index_cc.php?id_racine=$id_racine&msg=$msg");
 		die();
@@ -169,7 +169,7 @@ if (isset($_POST['is_posted'])) {
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Ajout/modification d'un $nom_cc";
 /**
- * Entête de la page
+ * EntÃªte de la page
  */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
@@ -249,7 +249,7 @@ else {
 
 if($aff_precision=='y') {
 	echo "<tr>\n";
-	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Précision&nbsp;:</td>\n";
+	echo "<td style='background-color: #aae6aa; font-weight: bold;'>PrÃ©cision&nbsp;:</td>\n";
 	echo "<td>\n";
 	
 		echo "<table>\n";
@@ -260,7 +260,7 @@ if($aff_precision=='y') {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_s1' style='cursor: pointer;'>";
-		echo "Arrondir au dixième de point supérieur";
+		echo "Arrondir au dixiÃ¨me de point supÃ©rieur";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -272,7 +272,7 @@ if($aff_precision=='y') {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_s5' style='cursor: pointer;'>";
-		echo "Arrondir au demi-point supérieur";
+		echo "Arrondir au demi-point supÃ©rieur";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -284,7 +284,7 @@ if($aff_precision=='y') {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_se' style='cursor: pointer;'>";
-		echo "Arrondir au point entier supérieur";
+		echo "Arrondir au point entier supÃ©rieur";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -296,7 +296,7 @@ if($aff_precision=='y') {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_p1' style='cursor: pointer;'>";
-		echo "Arrondir au dixième de point le plus proche";
+		echo "Arrondir au dixiÃ¨me de point le plus proche";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -331,7 +331,7 @@ if($aff_precision=='y') {
 }
 else {
 	echo "<tr style='display:none;'>\n";
-	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Précision&nbsp;:</td>\n";
+	echo "<td style='background-color: #aae6aa; font-weight: bold;'>PrÃ©cision&nbsp;:</td>\n";
 	echo "<td>\n";
 	echo "<input type='hidden' name='precision' value='$precision' />\n";
 	echo "</td>\n";

@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier req_database.php pour accéder à la base de données
+ * Fichier req_database.php pour accÃ©der Ã  la base de donnÃ©es
  *
  * @version     $Id$
  * @package		EmploisDuTemps

@@ -30,19 +30,19 @@ $couleur_entete_fond["c"] = getCouleurGlobal("entete_fond_c",$couleur_entete_fon
 $couleur_cellule["c"]=getCouleurGlobal("cellule_c",$couleur_cellule["c"]);
 $couleur_cellule_alt["c"] = getCouleurGlobal("cellule_alt_c",$couleur_cellule_alt["c"]);
 
-// Notices de type  travail à faire)
+// Notices de type  travail Ã  faire)
 $color_fond_notices["t"] = getCouleurGlobal("fond_notices_t",$color_fond_notices["t"]);
 $couleur_entete_fond["t"] = getCouleurGlobal("entete_fond_t",$couleur_entete_fond["t"]);
 $couleur_cellule["t"] =getCouleurGlobal("cellule_t",$couleur_cellule["t"]);
 $couleur_cellule_alt["t"] = getCouleurGlobal("cellule_alt_t",$couleur_cellule_alt["t"]);
 
-// Notice informations générales
+// Notice informations gÃ©nÃ©rales
 $color_fond_notices["i"] = getCouleurGlobal("fond_notices_i",$color_fond_notices["i"]);
 $couleur_entete_fond["i"] =getCouleurGlobal("entete_fond_i",$couleur_entete_fond["i"]) ;
 $couleur_cellule["i"]=getCouleurGlobal("cellule_i",$couleur_cellule["i"]);
 $couleur_cellule_alt["i"] = getCouleurGlobal("cellule_alt",$couleur_cellule_alt["i"]);
 
-// Travaux à faire "futurs"
+// Travaux Ã  faire "futurs"
 $color_fond_notices["f"] = getCouleurGlobal("fond_notices_f",$color_fond_notices["f"]);
 $couleur_cellule["f"] = getCouleurGlobal("cellule_f",$couleur_cellule["f"]);
 

@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php include('templates/origine/header_template.php');?>
 
 	<link rel="stylesheet" type="text/css" href="./templates/origine/css/accueil.css" media="screen" />
@@ -43,14 +43,14 @@
 </head>
 
 <!-- ******************************************** -->
-<!-- Appelle les sous-modèles                     -->
+<!-- Appelle les sous-modÃ¨les                     -->
 <!-- templates/origine/header_template.php        -->
 <!-- templates/origine/accueil_menu_template.php  -->
 <!-- templates/origine/bandeau_template.php      -->
 <!-- ******************************************** -->
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>">
 
@@ -95,7 +95,7 @@
 	if ($afficheAccueil->gere_connect==1) {
 ?>
 	  <p>
-		Nombre de personnes actuellement connectées :
+		Nombre de personnes actuellement connectÃ©es :
 		<?php
 			if($afficheAccueil->nb_connect>1) {
 				echo "<a style='font-weight:bold;' href='$afficheAccueil->nb_connect_lien' onmouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\">$afficheAccueil->nb_connect</a>";
@@ -114,26 +114,26 @@
 	}
 ?>
 
-<!-- Alertes sécurités	-->
+<!-- Alertes sÃ©curitÃ©s	-->
 <?php
 	if ($afficheAccueil->alert_sums>0) {
 ?>
 	  <p>
-		Alertes sécurité (niveaux cumulés) : <?php echo "<b>".$afficheAccueil->alert_sums."</b>"; ?> (
-		<a href='gestion/security_panel.php'>Panneau de contrôle</a>)
+		Alertes sÃ©curitÃ© (niveaux cumulÃ©s) : <?php echo "<b>".$afficheAccueil->alert_sums."</b>"; ?> (
+		<a href='gestion/security_panel.php'>Panneau de contrÃ´le</a>)
 	  </p>
 <?php
 	}
 ?>
 
-<!-- Référencement	-->
+<!-- RÃ©fÃ©rencement	-->
 
 <?php
 	if (count($afficheAccueil->referencement)) {
 	  foreach ($afficheAccueil->referencement as $value) {
 ?>
 		<p class='referencement'>
-		Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.
+		Votre Ã©tablissement n'est pas rÃ©fÃ©rencÃ© parmi les utilisateurs de Gepi.
 		<span>
 			<br />
 			<a href="javascript:ouvre_popup_reference('<?php echo $value['lien'];?>')" title="<?php echo $value['titre'];?>">
@@ -147,7 +147,7 @@
 	}
 ?>
 
-<!-- messages de sécurité -->
+<!-- messages de sÃ©curitÃ© -->
 <?php
 	if (count($afficheAccueil->probleme_dir)) {
 	
@@ -163,11 +163,11 @@
 	}
 ?>
 	
-<!-- erreurs d'affectation d'élèves -->
+<!-- erreurs d'affectation d'Ã©lÃ¨ves -->
 
 
 	</div>
-	<a name="contenu" class="invisible">Début de la page</a>
+	<a name="contenu" class="invisible">DÃ©but de la page</a>
 
 <!-- Signalements d'erreurs d'affectations -->
 <?php
@@ -181,12 +181,12 @@
 	}
 ?>
 
-<!-- Actions à effectuer -->
+<!-- Actions Ã  effectuer -->
 <?php
 	affiche_infos_actions();
 ?>
 
-<!-- Accès CDT ouverts -->
+<!-- AccÃ¨s CDT ouverts -->
 <?php
 	affiche_acces_cdt();
 ?>
@@ -260,10 +260,10 @@
 	}
 ?>
 
-<!-- début corps menu	-->
+<!-- dÃ©but corps menu	-->
 
 
-	<!-- menu	général -->
+	<!-- menu	gÃ©nÃ©ral -->
 
 	<?php
 	if (count($afficheAccueil->titre_Menu)) {
@@ -303,7 +303,7 @@
 			  Votre uri pour les cahiers de textes
 			</h3>
 			<p class="colonne ie_droite vert">
-			  Veuillez la demander à l'administration de votre établissement.
+			  Veuillez la demander Ã  l'administration de votre Ã©tablissement.
 			</p>
 <?php
 		  }
@@ -327,12 +327,12 @@
 					echo add_token_field();
 				?>
 				<input type='hidden' name='action' value='system_dump' />
-				<input type="submit" value="Lancer une sauvegarde de la base de données" />
+				<input type="submit" value="Lancer une sauvegarde de la base de donnÃ©es" />
 			</p>
 		</form>
 		<p class='small'>
-			Les répertoires "documents" (<em>contenant les documents joints aux cahiers de texte</em>) et "photos" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.<br />
-			Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a>.
+			Les rÃ©pertoires "documents" (<em>contenant les documents joints aux cahiers de texte</em>) et "photos" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardÃ©s.<br />
+			Un outil de sauvegarde spÃ©cifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a>.
 		</p>
 	</div>
 <?php
@@ -363,7 +363,7 @@
 	}
 ?>
 
-<!-- début RSS	-->
+<!-- dÃ©but RSS	-->
 		<?php
 /*
 
@@ -406,7 +406,7 @@
 			Votre uri pour les cahiers de textes
 	</h3>
 	<p class=\"colonne ie_droite vert\">
-					Veuillez la demander à l'administration de votre établissement.
+					Veuillez la demander Ã  l'administration de votre Ã©tablissement.
 	</p>
 				";
 		}
@@ -416,7 +416,7 @@
 ?>
 <!-- fin RSS	-->
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -439,7 +439,7 @@
 				</a>
 			</div>
 			<span style="padding-left: 1px;">
-				Personnes connectées
+				Personnes connectÃ©es
 			</span>
 		</div>
 		<div>
@@ -494,7 +494,7 @@
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

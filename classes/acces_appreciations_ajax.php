@@ -4,13 +4,13 @@
 
 	// Ajouter des tests sur le statut du visiteur
 	if(($_SESSION['statut']!='administrateur')&&($_SESSION['statut']!='scolarite')&&($_SESSION['statut']!="professeur")) {
-		echo "<p style='color:red;'>Accès non autorisé.</p>";
+		echo "<p style='color:red;'>AccÃ¨s non autorisÃ©.</p>";
 		die();
 	}
 
 	if($_SESSION['statut']=="professeur") {
 		if(getSettingValue('GepiAccesRestrAccesAppProfP')!="yes") {
-			$msg="Accès interdit au paramétrage des accès aux appréciatons/avis pour les parents et élèves.";
+			$msg="AccÃ¨s interdit au paramÃ©trage des accÃ¨s aux apprÃ©ciatons/avis pour les parents et Ã©lÃ¨ves.";
 			header("Location: ../accueil.php?msg=".rawurlencode($msg));
 			die();
 		}
@@ -23,7 +23,7 @@
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0){
 			$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
-			$msg="Vous n'êtes pas ".$gepi_prof_suivi." de la classe choisie.<br />Vous ne devriez donc pas accéder à cette page.";
+			$msg="Vous n'Ãªtes pas ".$gepi_prof_suivi." de la classe choisie.<br />Vous ne devriez donc pas accÃ©der Ã  cette page.";
 			header("Location: ../accueil.php?msg=".rawurlencode($msg));
 			die();
 		}
@@ -35,7 +35,7 @@
 							jsc.id_classe='$id_classe';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0){
-			$msg="Vous n'êtes pas responsable de la classe choisie.<br />Vous ne devriez donc pas accéder à cette page.";
+			$msg="Vous n'Ãªtes pas responsable de la classe choisie.<br />Vous ne devriez donc pas accÃ©der Ã  cette page.";
 			header("Location: ../accueil.php?msg=".rawurlencode($msg));
 			die();
 		}
@@ -91,7 +91,7 @@
 						//echo "$sql<br />";
 						$update=mysql_query($sql);
 
-						// On n'écrit le DIV de couleur qu'une fois
+						// On n'Ã©crit le DIV de couleur qu'une fois
 						if($i==0) {
 							echo "<div style='background-color:orangered;'>";
 							if($statut=='ele_resp') {
@@ -107,7 +107,7 @@
 						$update=mysql_query($sql);
 						//echo "$sql<br />";
 
-						// On n'écrit le DIV de couleur qu'une fois
+						// On n'Ã©crit le DIV de couleur qu'une fois
 						if($i==0) {
 							echo "<div style='background-color:lightgreen;'>";
 							if($statut=='ele_resp') {
@@ -123,7 +123,7 @@
 		}
 	}
 	elseif($_GET['mode']=='date') {
-		$choix_date=isset($_GET['choix_date']) ? $_GET['choix_date'] : NULL;  // Contrôler que la date est valide
+		$choix_date=isset($_GET['choix_date']) ? $_GET['choix_date'] : NULL;  // ContrÃ´ler que la date est valide
 
 		$poursuivre="y";
 		if($choix_date=='') {
@@ -167,7 +167,7 @@
 						$update=mysql_query($sql);
 					}
 	
-					// On n'écrit le DIV de couleur qu'une fois
+					// On n'Ã©crit le DIV de couleur qu'une fois
 					if($i==0) {
 						$timestamp_limite=mktime(0,0,0,$mois,$jour,$annee);
 						$timestamp_courant=time();
@@ -210,7 +210,7 @@
 				if($lig_per->verouiller!='O') {
 					$accessible="n";
 	
-					if($lig_per->verouiller='P') {$etat_periode="Période partiellement close";} else {$etat_periode="Période ouverte";}
+					if($lig_per->verouiller='P') {$etat_periode="PÃ©riode partiellement close";} else {$etat_periode="PÃ©riode ouverte";}
 				}
 				else {
 					$delais_apres_cloture=getSettingValue('delais_apres_cloture');
@@ -226,7 +226,7 @@
 					if($timestamp_courant>=$timestamp_limite) {
 						$accessible="y";
 						if($annee=='0000') {
-							$etat_periode="Accessible depuis la clôture de la période";
+							$etat_periode="Accessible depuis la clÃ´ture de la pÃ©riode";
 						}
 						else {
 							$etat_periode="Accessible depuis<br />le $jour/$mois/$annee";
@@ -242,10 +242,10 @@
 						$etat_periode="Acces possible<br />le $jour/$mois/$annee";
 					}
 	
-					//$etat_periode="Période close: $jour/$mois/$annee";
+					//$etat_periode="PÃ©riode close: $jour/$mois/$annee";
 				}
 
-				// On n'écrit le DIV de couleur qu'une fois
+				// On n'Ã©crit le DIV de couleur qu'une fois
 				if($i==0) {
 	
 					if($accessible=="y") {

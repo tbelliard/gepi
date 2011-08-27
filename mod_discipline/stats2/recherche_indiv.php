@@ -19,14 +19,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-header('Content-Type: text/html; charset=ISO-8859-1');
+header('Content-Type: text/html; charset=utf-8');
 $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
 
-// En multisite, on ajoute le répertoire RNE
+// En multisite, on ajoute le rÃ©pertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			  // On récupère le RNE de l'établissement
+			  // On rÃ©cupÃ¨re le RNE de l'Ã©tablissement
 		  $repertoire="../../photos/".$_COOKIE['RNE']."/eleves/";
 		}else{
 		  $repertoire="../../photos/eleves/";

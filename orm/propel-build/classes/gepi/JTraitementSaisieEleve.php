@@ -16,7 +16,7 @@
 class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 
 	/**
-	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications et jointures associées et calcul de la table d'agrégation
+	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications et jointures associÃ©es et calcul de la table d'agrÃ©gation
 	 *
 	 * @param      PropelPDO $con
 	 * @return     void
@@ -41,7 +41,7 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 	
 	/**
 	 * Ajout manuel : renseignement automatique de la date de modification du traitement correspondant.
-	 * Appel de la mise à jour de la table d'agrégation
+	 * Appel de la mise Ã  jour de la table d'agrÃ©gation
 	 *
 	 * If the object is new, it inserts it; otherwise an update is performed.
 	 * All modified related objects will also be persisted in the doSave()

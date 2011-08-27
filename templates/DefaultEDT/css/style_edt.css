@@ -259,7 +259,7 @@ table {
 }
 
 #saisie_new_periode, #modif_periode {
-	height: 400px; /* à agrandir pour des établissements avec beaucoup de classes*/
+	height: 400px; /* Ã  agrandir pour des Ã©tablissements avec beaucoup de classes*/
 }
 
 #saisie_new_periode label {
@@ -327,7 +327,7 @@ table {
 	background-color: rgb(200, 200, 255);
 }
 
-/* Le tableau des paramètres couleurs des matières */
+/* Le tableau des paramÃ¨tres couleurs des matiÃ¨res */
 #edt_table_couleurs {
 	border: 1px solid grey;
 }
@@ -1556,7 +1556,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-repeat: no-repeat;
 }
 
-/* ================= Affichage de la barre du commutateur de périodes ================= */
+/* ================= Affichage de la barre du commutateur de pÃ©riodes ================= */
 #ButtonBarArrows {
     width: 100%;
 }
@@ -1735,8 +1735,8 @@ position: absolute; background-color: yellow; border: 1px solid silver;
      margin:0px 0px 15px 0px;
 }
 /* ========================== couleurs pour les cours ==================== */
-/* pour conserver une compatibilité avec l'ancien système de gestion des couleurs */
-/* chaque div peut avoir deux noms : le nom numéroté (nouveau système) ou le nom avec sa couleur(ancien système) */
+/* pour conserver une compatibilitÃ© avec l'ancien systÃ¨me de gestion des couleurs */
+/* chaque div peut avoir deux noms : le nom numÃ©rotÃ© (nouveau systÃ¨me) ou le nom avec sa couleur(ancien systÃ¨me) */
 .cadreCouleur1 , .cadreCouleurblue{
      position:relative;
      border-left:1px solid #000000;
@@ -1979,7 +1979,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
      height:100%;
      overflow:hidden;
 }
-/* =================== Création d'un cadre blanc arrondi ============= */
+/* =================== CrÃ©ation d'un cadre blanc arrondi ============= */
 .droite {
 	background-image:url('../images/right.png');
 	background-repeat: repeat-y;
@@ -2061,7 +2061,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	background-image:url('../images/bottom_right.png');
 	float:right;
 }
-/* =================== Création d'un menu déroulant ============= */
+/* =================== CrÃ©ation d'un menu dÃ©roulant ============= */
 .menu_deroulant {
     white-space:nowrap /*IE hack*/; 
     float:left; 
@@ -2109,7 +2109,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
     background-color:rgb(210,210,210); 
     text-decoration:none;
 }
-/* ==== position des menus déroulant === */
+/* ==== position des menus dÃ©roulant === */
 .menu_deroulant ul li:hover ul {
     display:block; 
     width:10.0em; 

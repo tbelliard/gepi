@@ -47,7 +47,7 @@ $titre_page = "Aide en ligne Module Inscription";
 include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -62,20 +62,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_inscription/help_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -84,31 +84,31 @@ include($nom_gabarit);
 /*
 ?>
 <H1>Le module Inscription</H1>
-Le module Inscription permet de définir un ou plusieurs items (journée, stage, intervention, ...), au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
+Le module Inscription permet de dÃ©finir un ou plusieurs items (journÃ©e, stage, intervention, ...), au(x)quel(s) les utilisateurs pourront s'inscrire ou se dÃ©sinscrire en cochant ou dÃ©cochant une croix.
 <ul>
-<li>La configuration du module est accessible aux administrateurs et à la scolarité.</li>
-<li>L'interface d'inscription/désinscription est accessible aux professeurs, cpe, administrateurs et scolarit&eacute;.</li>
+<li>La configuration du module est accessible aux administrateurs et Ã  la scolaritÃ©.</li>
+<li>L'interface d'inscription/dÃ©sinscription est accessible aux professeurs, cpe, administrateurs et scolarit&eacute;.</li>
 </ul>
 
-<p>Après avoir activé le module, les administrateurs et la scolarit&eacute; disposent dans la page d'accueil
+<p>AprÃ¨s avoir activÃ© le module, les administrateurs et la scolarit&eacute; disposent dans la page d'accueil
  d'un nouveau module de configuration.</p>
-<p>La première étape consiste à configurer ce module :
+<p>La premiÃ¨re Ã©tape consiste Ã  configurer ce module :
 <ul>
-<li><b>Activation / Désactivation :</b>
-<br />Tant que le module n'est pas entièrement configuré, vous avez intérêt à ne pas activer la page autorisant
-les inscriptions. De cette façon, ce module reste invisible aux autres utilisateurs (professeurs et cpe).
-<br />De même, lorsque les inscriptions sont closes, vous pouvez désactiver les inscriptions, tout en gardant l'accès au module de configuration.
+<li><b>Activation / DÃ©sactivation :</b>
+<br />Tant que le module n'est pas entiÃ¨rement configurÃ©, vous avez intÃ©rÃªt Ã  ne pas activer la page autorisant
+les inscriptions. De cette faÃ§on, ce module reste invisible aux autres utilisateurs (professeurs et cpe).
+<br />De mÃªme, lorsque les inscriptions sont closes, vous pouvez dÃ©sactiver les inscriptions, tout en gardant l'accÃ¨s au module de configuration.
 </li>
 <li><b>Liste des items :</b>
-<br />C'est la liste des entités auxquelles les utilisateurs pourront s'incrire.
-<br />Chaque entité est caratérisée par un identifiant numérique, une date (format AAAA/MM/JJ), une heure (20 caractères max), une description (200 caractères max).
+<br />C'est la liste des entitÃ©s auxquelles les utilisateurs pourront s'incrire.
+<br />Chaque entitÃ© est caratÃ©risÃ©e par un identifiant numÃ©rique, une date (format AAAA/MM/JJ), une heure (20 caractÃ¨res max), une description (200 caractÃ¨res max).
 </li>
 <li><b>Titre du module :</b>
-<br />Vous avez ici la possibilité de personnaliser l'intitulé du module visible dans la page d'accueil.
+<br />Vous avez ici la possibilitÃ© de personnaliser l'intitulÃ© du module visible dans la page d'accueil.
 </li>
 <li><b>Texte explicatif :</b>
 <br />
-Ce texte sera visible par les personnes accédant au module d'inscription/désincription.
+Ce texte sera visible par les personnes accÃ©dant au module d'inscription/dÃ©sincription.
 </li>
 </ul>
 

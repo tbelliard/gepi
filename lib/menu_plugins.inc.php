@@ -16,18 +16,18 @@ function menu_plugins()
 {
 	global $gepiPath;
 	$menu_plugins="";
-	// quels sont les plugins ouverts et autorisés au statut de l'utilisateur?
+	// quels sont les plugins ouverts et autorisÃ©s au statut de l'utilisateur?
 	$r_sql="SELECT DISTINCT `plugins`.* FROM `plugins`,`plugins_autorisations`
 			WHERE (`plugins`.`ouvert`='y' AND `plugins`.`id`=`plugins_autorisations`.`plugin_id` AND `plugins_autorisations`.`user_statut`='".$_SESSION['statut']."')";
 	$R_plugins=mysql_query($r_sql);
 	if (mysql_num_rows($R_plugins)>0)
 		{
-		// abréviations statuts
+		// abrÃ©viations statuts
 		$t_abr_statuts=array('administrateur'=>'A', 'professeur'=>'P', 'cpe'=>'C', 'scolarite'=>'S', 'secours'=>'sec', 'eleve'=>'E', 'responsable'=>'R', 'autre'=>'autre');
 		while ($plugin=mysql_fetch_assoc($R_plugins))
 			{
 			$plugin_xml=$_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['repertoire']."/plugin.xml";
-			// on continue uniquement si le plugin est encore présent
+			// on continue uniquement si le plugin est encore prÃ©sent
 			if (file_exists($plugin_xml))
 				{
 				$tmp_menu_plugins="";
@@ -40,12 +40,12 @@ function menu_plugins()
 					$t_autorisations=explode("-",$menu_script->attributes()->autorisation);
 					if (in_array($t_abr_statuts[$_SESSION['statut']],$t_autorisations))
 						{
-						// si la fonction cacul_autorisation_... existe on vérifie si l'utilisateur est autorisé à accéder au script
-						$autorise=true; // a priori l'utilisateur a acces à ce script
+						// si la fonction cacul_autorisation_... existe on vÃ©rifie si l'utilisateur est autorisÃ© Ã  accÃ©der au script
+						$autorise=true; // a priori l'utilisateur a acces Ã  ce script
 						$nom_fonction_autorisation = "calcul_autorisation_".$plugin['nom'];
 						if (file_exists($_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['nom']."/functions_".$plugin['nom'].".php"))
 							{
-							// on évite de redéclarer la fonction $nom_fonction_autorisation
+							// on Ã©vite de redÃ©clarer la fonction $nom_fonction_autorisation
 							if (!function_exists($nom_fonction_autorisation))
 								include($_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['nom']."/functions_".$plugin['nom'].".php");
 							if (function_exists($nom_fonction_autorisation))
@@ -54,8 +54,8 @@ function menu_plugins()
 						if ($autorise)
 							{
 							$nb_items++;
-							$tmp_sous_menu_plugins.="						<li><a href=\"".$gepiPath."/mod_plugins/".$plugin['nom']."/".$menu_script."\" title=\"".utf8_decode($menu_script->attributes()->description)."\">".utf8_decode($menu_script->attributes()->titre)."</a></li>\n";
-							$tmp_sous_menu_plugins_solo="						<li><a href=\"".$gepiPath."/mod_plugins/".$plugin['nom']."/".$menu_script."\" title=\"".utf8_decode($menu_script->attributes()->description)."\">".$plugin['description']."&nbsp;"."</a></li>\n";
+							$tmp_sous_menu_plugins.="						<li><a href=\"".$gepiPath."/mod_plugins/".$plugin['nom']."/".$menu_script."\" title=\"".$menu_script->attributes()->description."\">".$menu_script->attributes()->titre."</a></li>\n";
+							$tmp_sous_menu_plugins_solo="						<li><a href=\"".$gepiPath."/mod_plugins/".$plugin['nom']."/".$menu_script."\" title=\"".$menu_script->attributes()->description."\">".$plugin['description']."&nbsp;"."</a></li>\n";
 							}
 						}
 					}

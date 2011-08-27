@@ -33,7 +33,7 @@ function observeur(){
 	
 	new Event.observe("template", 'change', changetemplate,false);	
   //new Event.observe("info_vie_privee", 'click', traiterEvenement,false);
-  // on stoppe l'évènement
+  // on stoppe l'Ã©vÃ¨nement
   
 }
 

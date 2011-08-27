@@ -49,7 +49,7 @@ if (file_exists("./secure/connect.inc.php")) {
             }
             */
             if ($flag == 'yes') {
-                $msg = "<p>La connexion au serveur Mysql est établie mais certaines tables sont absentes de la base $dbDb.</p>";
+                $msg = "<p>La connexion au serveur Mysql est Ã©tablie mais certaines tables sont absentes de la base $dbDb.</p>";
                 $correct_install = 'no';
                 $maj = 'yes';
             } else {
@@ -58,24 +58,24 @@ if (file_exists("./secure/connect.inc.php")) {
                 $req = mysql_query($sql);
                 $test = mysql_num_rows($req);
                 if ($test == '0') {
-                    //$msg = "<p>Il n'y a aucun utilisateur créé !</p>";
+                    //$msg = "<p>Il n'y a aucun utilisateur crÃ©Ã© !</p>";
                     $msg = "<p>Aucun utilisateur n'existe !</p>";
                     $correct_install = 'no';
                 }
 
             }
         } else {
-            $msg = "<p>La connexion au serveur Mysql est établie mais impossible de sélectionner la base contenant les tables GEPI.</p>";
+            $msg = "<p>La connexion au serveur Mysql est Ã©tablie mais impossible de sÃ©lectionner la base contenant les tables GEPI.</p>";
             $correct_install = 'no';
         }
     } else {
-        $msg = "<p>Erreur de connexion au serveur Mysql. Le fichier \"connect.inc.php\" ne contient peut-être pas les bonnes informations de connexion.</p>";
+        $msg = "<p>Erreur de connexion au serveur Mysql. Le fichier \"connect.inc.php\" ne contient peut-Ãªtre pas les bonnes informations de connexion.</p>";
         $correct_install = 'no';
     }
 } else {
-    $msg = "<p>Le fichier \"connect.inc.php\" contenant les informations de connexion est introuvable dans le répertoire /secure.</p>";
+    $msg = "<p>Le fichier \"connect.inc.php\" contenant les informations de connexion est introuvable dans le rÃ©pertoire /secure.</p>";
     if (file_exists("./secure/connect.inc")) {
-        $msg .= "<p>Un fichier \"connect.inc\" est présent dans le répertoire. Renommez ce fichier sous le nom \"connect.inc.php\" puis rechargez cette page.</p>";
+        $msg .= "<p>Un fichier \"connect.inc\" est prÃ©sent dans le rÃ©pertoire. Renommez ce fichier sous le nom \"connect.inc.php\" puis rechargez cette page.</p>";
         $maj = '';
     } else {
         $maj = 'no';
@@ -88,7 +88,7 @@ if ($correct_install=='no') {
     <html>
     <head>
     <title>GEPI</title>
-    <meta HTTP-EQUIV="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8" />
     <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
     <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
     <META HTTP-EQUIV="Expires" CONTENT="0" />
@@ -101,14 +101,14 @@ if ($correct_install=='no') {
     echo "<h1 class='gepi'>GEPI</h1>";
     echo $msg;
     if ($maj == 'no') {
-        echo "<p>L'installation de GEPI n'est peut-être pas terminée.</p>";
+        echo "<p>L'installation de GEPI n'est peut-Ãªtre pas terminÃ©e.</p>";
         echo "<center><a href='./utilitaires/install.php'>Installer la base Mysql</a></center>";
     } else if ($maj == 'yes') {
-        echo "<p>Il s'agit sans doute d'une mise à jour vers une nouvelle version de GEPI. Dans ce cas, vous devez procéder à une mise à jour de la base de données MySql.</p>";
-        echo "<center><b><a href='./utilitaires/maj.php'>Mettre à jour la base Mysql</a></b></center>";
+        echo "<p>Il s'agit sans doute d'une mise Ã  jour vers une nouvelle version de GEPI. Dans ce cas, vous devez procÃ©der Ã  une mise Ã  jour de la base de donnÃ©es MySql.</p>";
+        echo "<center><b><a href='./utilitaires/maj.php'>Mettre Ã  jour la base Mysql</a></b></center>";
         echo "<hr />";
-        echo "<p>Sinon, l'installation de GEPI n'est peut-être pas terminée. Vous pouvez procéder à une installation/réinstallation de la base.</p>";
-        echo "<center><a href='./utilitaires/install.php'>Installer/Réinstaller la base Mysql</a></center>";
+        echo "<p>Sinon, l'installation de GEPI n'est peut-Ãªtre pas terminÃ©e. Vous pouvez procÃ©der Ã  une installation/rÃ©installation de la base.</p>";
+        echo "<center><a href='./utilitaires/install.php'>Installer/RÃ©installer la base Mysql</a></center>";
     }
     ?>
     </body>

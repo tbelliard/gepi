@@ -8,7 +8,7 @@
 
 <head>
 
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php include('./../templates/origine/header_template.php');?>
 	
 	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/accessibilite.css" media="screen" />
@@ -61,7 +61,7 @@
 	<a href='#bas_de_page'><img src='../images/down.png' width='18' height='18' alt="bas de la page" title="Descendre en bas de la page" /></a>
 </div>
 
-<a name="contenu" class="invisible">Début de la page</a>	
+<a name="contenu" class="invisible">DÃ©but de la page</a>	
 	
 <?php	
 				if (count($tbs_menu)) {
@@ -85,7 +85,7 @@
 				unset($newentree);
 						}
 							echo "
-<!-- Fin menu	général -->
+<!-- Fin menu	gÃ©nÃ©ral -->
 				";
 					}
 					unset ($value);

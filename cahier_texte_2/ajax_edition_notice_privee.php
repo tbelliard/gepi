@@ -21,8 +21,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+header('Content-Type: text/html; charset=utf-8');
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -43,9 +43,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -54,12 +54,12 @@ if ($utilisateur == null) {
 	die();
 }
 
-//récupération des parametres
+//rÃ©cupÃ©ration des parametres
 //id du notice_privee
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
 //si on vient d'enregistrer des modification, on va afficher un message de confirmation
 $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_modification"] :(isset($_GET["succes_modification"]) ? $_GET["succes_modification"] :NULL);
-//si pas de notice_privee passé en paramètre, on récupère la date du jour pour se caler dessus, sinon on prendra la date du notice_privee
+//si pas de notice_privee passÃ© en paramÃ¨tre, on rÃ©cupÃ¨re la date du jour pour se caler dessus, sinon on prendra la date du notice_privee
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
 $ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] :NULL);
 
@@ -68,23 +68,23 @@ if ($cahierTexteNoticePrivee != null) {
 	$groupe = $cahierTexteNoticePrivee->getGroupe();
 	$today = $cahierTexteNoticePrivee->getDateCt();
 } else {
-	//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
-	//pas de notices, on lance une création de notice
+	//si pas de notice prÃ©cisÃ©, rÃ©cupÃ©ration du groupe dans la requete et recherche d'une notice pour la date prÃ©cisÃ©e ou crÃ©ation d'une nouvelle notice
+	//pas de notices, on lance une crÃ©ation de notice
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Erreur edition de notice privee : pas de groupe spécifié");
+		echo("Erreur edition de notice privee : pas de groupe spÃ©cifiÃ©");
 		die;
 	}
 
-	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
 		echo "Erreur edition de notice privee : le groupe n'appartient pas au professeur";
 		die();
 	}
 
 	if ($ajout_nouvelle_notice != "oui") {
-		//on cherche si il y a une notice pour le groupe à la date précisée
+		//on cherche si il y a une notice pour le groupe Ã  la date prÃ©cisÃ©e
 		$criteria = new Criteria(CahierTexteNoticePriveePeer::DATABASE_NAME);
 		$criteria->add(CahierTexteNoticePriveePeer::DATE_CT, $today, '=');
 		$criteria->add(CahierTexteNoticePriveePeer::ID_LOGIN, $utilisateur->getLogin());
@@ -102,9 +102,9 @@ if ($cahierTexteNoticePrivee != null) {
 
 }
 
-// Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
+// VÃ©rification : est-ce que l'utilisateur a le droit de modifier cette entrÃ© ?
 if (strtolower($cahierTexteNoticePrivee->getIdLogin()) != strtolower($utilisateur->getLogin())) {
-	echo("Erreur edition de notice privee : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
+	echo("Erreur edition de notice privee : vous n'avez pas le droit de modifier cette notice car elle appartient Ã  un autre professeur.");
 	die();
 }
 
@@ -112,7 +112,7 @@ if (strtolower($cahierTexteNoticePrivee->getIdLogin()) != strtolower($utilisateu
 $_SESSION['id_groupe_session'] = $cahierTexteNoticePrivee->getIdGroupe();
 
 // **********************************************
-// Affichage des différents groupes du professeur
+// Affichage des diffÃ©rents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
 echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" style=\"border: 0px; vertical-align : middle\" HEIGHT=\"16\" WIDTH=\"16\" src=\"../images/blank.gif\" alt=\"Lier\" title=\"Lier la liste avec la fenetre la liste des notices\" /></div>&nbsp;\n";
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
@@ -240,14 +240,14 @@ if ($cahierTexteNoticePrivee->getHeureEntry() == null) {
 echo "\" />\n";
 
 if (isset($info)) {
-	$titre = "Informations Générales : ";
+	$titre = "Informations GÃ©nÃ©rales : ";
 } elseif (!isset($info)) {
 	$titre = strftime("%A %d %B %Y", $cahierTexteNoticePrivee->getDateCt());
 }
 
-//si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
+//si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient SuccÃ¨s
 $label_enregistrer = "Enregistrer";
-if ($succes_modification == 'oui') $label_enregistrer='Succès';
+if ($succes_modification == 'oui') $label_enregistrer='SuccÃ¨s';
 ?>
 <table border="0" width="100%" summary="Tableau de saisie de notice">
 	<tr>
@@ -269,7 +269,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 			\"><img src=\"../images/icons/date.png\" width='16' height='16' alt='Calendrier' /></a>\n";
 		echo "</td>\n";
 
-		echo "<td><a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'>&lt;&lt;</a></td>
+		echo "<td><a title=\"Aller au jour prÃ©cÃ©dent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'>&lt;&lt;</a></td>
 				<td align=center>Aujourd'hui</td>
 				<td align=right><a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'>&gt;&gt;</a></td></tr>\n";	echo "\n";
 	}

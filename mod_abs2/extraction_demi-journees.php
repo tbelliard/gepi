@@ -50,9 +50,9 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
@@ -62,7 +62,7 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 include_once 'lib/function.php';
 
 // Initialisation des variables
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] :(isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :(isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
 $date_absence_eleve_debut = isset($_POST["date_absence_eleve_debut"]) ? $_POST["date_absence_eleve_debut"] :(isset($_GET["date_absence_eleve_debut"]) ? $_GET["date_absence_eleve_debut"] :(isset($_SESSION["date_absence_eleve_debut"]) ? $_SESSION["date_absence_eleve_debut"] : NULL));
@@ -91,7 +91,7 @@ if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format(
     $date2=clone $dt_date_absence_eleve_fin;
     $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
     $dt_date_absence_eleve_debut= $date2;
-    $message="Les dates de début et de fin ont été inversées.";
+    $message="Les dates de dÃ©but et de fin ont Ã©tÃ© inversÃ©es.";
     $inverse_date=true;
     $_SESSION['date_absence_eleve_debut'] = $dt_date_absence_eleve_debut->format('d/m/Y');
     $_SESSION['date_absence_eleve_fin'] = $dt_date_absence_eleve_fin->format('d/m/Y'); 
@@ -118,10 +118,10 @@ if ($affichage != 'ods') {// on affiche pas de html
           echo'<h2 class="no">'.$message.'</h2>';
         }?>
     <p>
-      <strong>Précision:</strong> Un manquement à l'obligation de présence sur une heure, entraine le décompte de la demi-journée correspondante pour l'élève.
+      <strong>PrÃ©cision:</strong> Un manquement Ã  l'obligation de prÃ©sence sur une heure, entraine le dÃ©compte de la demi-journÃ©e correspondante pour l'Ã©lÃ¨ve.
     </p>
     <form dojoType="dijit.form.Form" id="choix_extraction" name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
-    <h2>Les demi-journées
+    <h2>Les demi-journÃ©es
     du	
     <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
     au               
@@ -148,7 +148,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    }
 	    echo "</select> ";
     } else {
-	echo 'Aucune classe avec élève affecté n\'a été trouvée';
+	echo 'Aucune classe avec Ã©lÃ¨ve affectÃ© n\'a Ã©tÃ© trouvÃ©e';
     }
     ?>
     </p>
@@ -175,9 +175,9 @@ if ($affichage != null && $affichage != '') {
     
     $eleve_col = $eleve_query->find();
     $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
-    if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
+    if (!$table_synchro_ok) {//la table n'est pas synchronisÃ©e. On va vÃ©rifier individuellement les Ã©lÃ¨ves qui se sont pas synchronisÃ©s
 		if ($eleve_col->count()>150) {
-			echo 'Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administrateur de remplir la table d\'agrégation.';
+			echo 'Il semble que vous demander des statistiques sur trop d\'Ã©lÃ¨ves et votre table de statistiques n\'est pas synchronisÃ©e. Veuillez faire une demande pour moins d\'Ã©lÃ¨ves ou demander Ã  votre administrateur de remplir la table d\'agrÃ©gation.';
 			if (ob_get_contents()) {
 				ob_flush();
 			}
@@ -188,7 +188,7 @@ if ($affichage != null && $affichage != '') {
 		}
 	}
     
-    //on recommence la requetes, maintenant que la table est synchronisé, avec les données d'absence
+    //on recommence la requetes, maintenant que la table est synchronisÃ©, avec les donnÃ©es d'absence
     $eleve_query = EleveQuery::create()->filterByIdEleve($eleve_col->toKeyValue('IdEleve','IdEleve'));
     $eleve_query->useAbsenceAgregationDecompteQuery()->distinct()->filterByDateIntervalle($dt_date_absence_eleve_debut,  $dt_date_absence_eleve_fin)->endUse();
     $eleve_query->withColumn('SUM(AbsenceAgregationDecompte.ManquementObligationPresence)', 'NbAbsences')
@@ -202,13 +202,13 @@ if ($affichage != null && $affichage != '') {
 }
 
 if ($affichage == 'html') {
-    echo 'Total élèves : '.$eleve_col->count();
+    echo 'Total Ã©lÃ¨ves : '.$eleve_col->count();
     echo '<table style="border:1px solid">';
     $precedent_eleve_id = null;
     echo '<tr style="border:1px solid">';
 
     echo '<td style="border:1px solid;">';
-    echo 'Nom Prénom';
+    echo 'Nom PrÃ©nom';
     echo '</td>';
 
     echo '<td style="border:1px solid;">';
@@ -216,7 +216,7 @@ if ($affichage == 'html') {
     echo '</td>';
 
     echo '<td style="border:1px solid;">';
-    echo 'nbre de demi-journées d\'absence';
+    echo 'nbre de demi-journÃ©es d\'absence';
     echo '</td>';
 
     echo '<td style="border:1px solid;">';
@@ -263,7 +263,7 @@ if ($affichage == 'html') {
     echo '<tr style="border:1px solid">';
 
     echo '<td style="border:1px solid;">';
-    echo 'Total élèves : ';
+    echo 'Total Ã©lÃ¨ves : ';
     echo $eleve_col->count();
     echo '</td>';
 
@@ -297,7 +297,7 @@ if ($affichage == 'html') {
 	$extraction_demi_journees=repertoire_modeles('absence_extraction_demi-journees.ods');
     $TBS->LoadTemplate($extraction_demi_journees);
 
-    $titre = 'Extrait des demi-journées d\'absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
+    $titre = 'Extrait des demi-journÃ©es d\'absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
     $classe = null;
     if ($id_classe != null && $id_classe != '') {
 	$classe = ClasseQuery::create()->findOneById($id_classe);
@@ -306,7 +306,7 @@ if ($affichage == 'html') {
 	}
     }
     if ($nom_eleve != null && $nom_eleve != '' ) {
-	$titre .= ' pour les élèves dont le nom ou le prénom contient '.$nom_eleve;
+	$titre .= ' pour les Ã©lÃ¨ves dont le nom ou le prÃ©nom contient '.$nom_eleve;
     }
     $TBS->MergeField('titre', $titre);
 

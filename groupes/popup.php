@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-//INSERT INTO droits VALUES ('/groupes/popup.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation des équipes pédagogiques', '');
+//INSERT INTO droits VALUES ('/groupes/popup.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation des Ã©quipes pÃ©dagogiques', '');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -71,7 +71,7 @@ if(isset($periode_num)) {
 	$periode_num=preg_replace('/[^0-9]/','',$periode_num);
 	if($periode_num=='') {
 		unset($periode_num);
-		//$msg.="Numéro de période invalide.<br />\n";
+		//$msg.="NumÃ©ro de pÃ©riode invalide.<br />\n";
 	}
 }
 //echo "<!--\$id_classe=$id_classe-->\n";
@@ -110,10 +110,10 @@ if(isset($id_groupe)) {
 			$classe=$lig_classe->classe;
 		}
 		elseif(mysql_num_rows($res_classe)>1){
-			$msg.="ERREUR: Plus d'une classe semble correspondre à la classe n°$id_classe";
+			$msg.="ERREUR: Plus d'une classe semble correspondre Ã  la classe nÂ°$id_classe";
 		}
 		else{
-			$msg.="ERREUR: Aucune classe ne semble correspondre à la classe n°$id_classe.";
+			$msg.="ERREUR: Aucune classe ne semble correspondre Ã  la classe nÂ°$id_classe.";
 		}
 	}
 }
@@ -138,24 +138,24 @@ if($gepi_prof_suivi==""){
 	//$enseignement=rawurldecode($_GET['enseignement']);
 
 	if(isset($id_classe)) {
-		//echo "<title>Elèves de l'enseignement ".htmlentities($enseignement)." en ".htmlentities($classe)."</title>\n";
+		//echo "<title>ElÃ¨ves de l'enseignement ".htmlentities($enseignement)." en ".htmlentities($classe)."</title>\n";
 		echo "<title>".htmlentities($enseignement)." en ".htmlentities($classe)."</title>\n";
 	}
 	else {
-		//echo "<title>Elèves de l'enseignement ".htmlentities($enseignement)."</title>\n";
+		//echo "<title>ElÃ¨ves de l'enseignement ".htmlentities($enseignement)."</title>\n";
 		echo "<title>".htmlentities($enseignement)."</title>\n";
 	}
 ?>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
 	<!--link type="text/css" rel="stylesheet" href="../styles.css" /-->
 	<link type="text/css" rel="stylesheet" href="../style.css" />
 <?php
 	if(isset($style_screen_ajout)){
-		// Styles paramétrables depuis l'interface:
+		// Styles paramÃ©trables depuis l'interface:
 		if($style_screen_ajout=='y'){
-			// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-			// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+			// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+			// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 		}
 	}
@@ -166,11 +166,11 @@ if($gepi_prof_suivi==""){
 	$tabdiv_infobulle=array();
 	$tabid_infobulle=array();
 
-	// Choix de l'unité pour les dimensions des DIV: em, px,...
+	// Choix de l'unitÃ© pour les dimensions des DIV: em, px,...
 	$unite_div_infobulle="em";
 	// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
 
-	// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
+	// Variable passÃ©e Ã  'ok' en fin de page via le /lib/footer.inc.php
 	echo "<script type='text/javascript'>
 		var temporisation_chargement='n';
 	</script>\n";
@@ -188,13 +188,13 @@ if($gepi_prof_suivi==""){
 		echo "<p style='color:red; text-align:center;'>".$msg."</p>\n";
 	}
 
-	//echo "<h2>Elèves de l'enseignement $enseignement</h2>\n";
+	//echo "<h2>ElÃ¨ves de l'enseignement $enseignement</h2>\n";
 	if(isset($id_classe)){
-		//echo "<h2>Elèves de l'enseignement ".htmlentities($enseignement)." en ".htmlentities($classe)."</h2>\n";
+		//echo "<h2>ElÃ¨ves de l'enseignement ".htmlentities($enseignement)." en ".htmlentities($classe)."</h2>\n";
 		echo "<h2>".htmlentities($enseignement)." en ".htmlentities($classe)."</h2>\n";
 	}
 	else{
-		//echo "<h2>Elèves de l'enseignement ".htmlentities($enseignement)."</h2>\n";
+		//echo "<h2>ElÃ¨ves de l'enseignement ".htmlentities($enseignement)."</h2>\n";
 		echo "<h2>".htmlentities($enseignement)."</h2>\n";
 	}
 
@@ -205,7 +205,7 @@ if($gepi_prof_suivi==""){
 	if(isset($id_classe)) {echo "&amp;id_classe=$id_classe";}
 	if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
 	echo "'>";
-	if($avec_details=='y') {echo "<img src='../images/icons/remove.png' width='16' height='16' alt='Sans détails' />";} else {echo "<img src='../images/icons/add.png' width='16' height='16' alt='Avec détails' />";}
+	if($avec_details=='y') {echo "<img src='../images/icons/remove.png' width='16' height='16' alt='Sans dÃ©tails' />";} else {echo "<img src='../images/icons/add.png' width='16' height='16' alt='Avec dÃ©tails' />";}
 	echo "</a></div>";
 
 	$titre="Photo";
@@ -325,7 +325,7 @@ if($gepi_prof_suivi==""){
 				echo affiche_utilisateur($lig_prof->login,$id_classe);
 			//}
 
-			// Le prof est-il PP d'au moins un élève de la classe?
+			// Le prof est-il PP d'au moins un Ã©lÃ¨ve de la classe?
 			$sql="SELECT * FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$lig_prof->login'";
 			//echo " (<i>$sql</i>)\n";
 			$res_pp=mysql_query($sql);
@@ -435,7 +435,7 @@ if($gepi_prof_suivi==""){
 		echo "<p>Effectif: $nb_eleves</p>\n";
 		if($nb_eleves>0){
 			echo "<table class='boireaus' border='1'>\n";
-			echo "<tr><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></th>\n";
+			echo "<tr><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>ElÃ¨ve</a></th>\n";
 			echo "<th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></th>\n";
 			if($avec_details=='y') {
 				// Ajouter un test sur le trombino actif ou non
@@ -502,8 +502,8 @@ if($gepi_prof_suivi==""){
 					$tabmail2[]=$tabmail[$i];
 				}
 			}
-			//echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves de l'enseignement</a>.</p>\n";
-			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves</a>.</p>\n";
+			//echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail Ã  tous les Ã©lÃ¨ves de l'enseignement</a>.</p>\n";
+			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail Ã  tous les Ã©lÃ¨ves</a>.</p>\n";
 		}
 	}
 ?>

@@ -30,7 +30,7 @@ $id_eleve = isset($_POST["id_eleve"]) ? $_POST["id_eleve"] : NULL;
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] : NULL;
 
 if ($id_eleve = '') {
-	// On quitte s'il n'y a pas d'élève
+	// On quitte s'il n'y a pas d'Ã©lÃ¨ve
 	exit('coucou 1');
 //}
 //elseif($id_aid = '') {
@@ -39,7 +39,7 @@ if ($id_eleve = '') {
 }
 else {
 	// Traitement des demandes
-	// On insère le nouveau nom après avoir vérifier s'il est déjà membre de l'AID
+	// On insÃ¨re le nouveau nom aprÃ¨s avoir vÃ©rifier s'il est dÃ©jÃ  membre de l'AID
 	echo 'fraise';
 }
 ?>

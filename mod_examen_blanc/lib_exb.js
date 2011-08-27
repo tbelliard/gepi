@@ -2,7 +2,7 @@
 $Id$
 */
 
-// fonction permettant d'augmenter/réduire un nombre via onKeyDown
+// fonction permettant d'augmenter/rÃ©duire un nombre via onKeyDown
 // Pour relever les keyCode: http://www.asquare.net/javascript/tests/KeyCode.html
 function nombre_plus_moins(id,e){
 
@@ -13,15 +13,15 @@ function nombre_plus_moins(id,e){
 		if((touche == '40')||(touche == '38')) {
 			var nombre=document.getElementById(id).value;
 
-			// Touche + -> PB: Le + est écrit quand même
+			// Touche + -> PB: Le + est Ã©crit quand mÃªme
 			//if (touche == '61') {
-			// Touche Flèche Haut
+			// Touche FlÃ¨che Haut
 			if (touche == '40') {
 				nombre=eval(eval(nombre)+1);
 			}
 			// Touche -
 			//if (touche == '109') {
-			// Touche Flèche Bas
+			// Touche FlÃ¨che Bas
 			if (touche == '38') {
 				nombre=eval(eval(nombre)-1);
 			}

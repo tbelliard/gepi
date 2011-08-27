@@ -16,7 +16,7 @@
  * @see nb_saisies_bulletin()
  * @see retourneCours()
  * @todo Proposer aussi les emplois du temps de ses classes
- * @todo Ajouter Paramètres des bulletins et Impression des bulletins (pour les PP)
+ * @todo Ajouter ParamÃ¨tres des bulletins et Impression des bulletins (pour les PP)
  */
 // ====== SECURITE =======
 
@@ -28,7 +28,7 @@ if (!$_SESSION["login"]) {
 //include('./barre_menu_css_js.php');
 echo '<!--[if lt IE 7]>
 <script type=text/javascript>
-	// Fonction destinée à remplacer le "li:hover" pour IE 6
+	// Fonction destinÃ©e Ã  remplacer le "li:hover" pour IE 6
 	sfHover = function() {
 		var sfEls = document.getElementById("menu_barre").getElementsByTagName("li");
 		for (var i=0; i<sfEls.length; i++) {
@@ -64,13 +64,13 @@ echo '<!--[if lt IE 7]>
 	// Pour permettre d'utiliser le module EdT avec les autres modules
 	$groupe_abs = $groupe_text = '';
 	if (getSettingValue("autorise_edt_tous") == "y") {
-		// Actuellement, ce professeur à ce cours (id_cours):
+		// Actuellement, ce professeur Ã  ce cours (id_cours):
 		$cours_actu = retourneCours($_SESSION["login"]);
-		// Qui correspond à cet id_groupe :
+		// Qui correspond Ã  cet id_groupe :
 		if ($cours_actu != "non") {
 			$queryG = mysql_query("SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'");
 			$groupe_actu = mysql_fetch_array($queryG);
-			// Il faudrait vérifier si ce n'est pas une AID
+			// Il faudrait vÃ©rifier si ce n'est pas une AID
 			if ($groupe_actu["id_aid"] != NULL) {
 				$groupe_abs = '?groupe=AID|'.$groupe_actu["id_aid"].'&amp;menuBar=ok';
 				$groupe_text = '';
@@ -124,10 +124,10 @@ echo '<!--[if lt IE 7]>
 					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
 						$barre_note.= '				<li><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
 						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="PÃ©riode non verrouillÃ©e: Saisie possible" title="PÃ©riode non verrouillÃ©e: Saisie possible" />';
 						}
 						else {
-							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="PÃ©riode verrouillÃ©e: Saisie impossible" title="PÃ©riode verrouillÃ©e: Saisie impossible" />';
 						}
 						$barre_note.='</a>';
 						$barre_note.='</li>'."\n";
@@ -139,7 +139,7 @@ echo '<!--[if lt IE 7]>
 				if((getSettingValue("GepiAccesReleveProf") == "yes") OR
 				(getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
 				(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes")) {
-					$barre_note.= '		<li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_bis.php"'.insert_confirm_abandon().'>Relevés de notes</a></li>'."\n";
+					$barre_note.= '		<li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_bis.php"'.insert_confirm_abandon().'>RelevÃ©s de notes</a></li>'."\n";
 				}
 
 				if((getSettingValue("GepiAccesMoyennesProf") == "yes") OR
@@ -173,10 +173,10 @@ echo '<!--[if lt IE 7]>
 						$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_notes.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
 						$barre_note.=' '.nb_saisies_bulletin("notes", $tmp_group["id"], $loop, "couleur");
 						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="PÃ©riode non verrouillÃ©e: Saisie possible" title="PÃ©riode non verrouillÃ©e: Saisie possible" />';
 						}
 						else {
-							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="PÃ©riode verrouillÃ©e: Saisie impossible" title="PÃ©riode verrouillÃ©e: Saisie impossible" />';
 						}
 						$barre_note.='</a>';
 						$barre_note.='</li>'."\n";
@@ -188,7 +188,7 @@ echo '<!--[if lt IE 7]>
 			$barre_note.= '	</li>'."\n";
 
 
-			$barre_note .= '	<li class="plus"><a href="'.$gepiPath.'/saisie/index.php"'.insert_confirm_abandon().'>Appréciations</a>'."\n";
+			$barre_note .= '	<li class="plus"><a href="'.$gepiPath.'/saisie/index.php"'.insert_confirm_abandon().'>ApprÃ©ciations</a>'."\n";
 				$barre_note .= '		<ul class="niveau3">'."\n";
 	
 				foreach($mes_groupes as $tmp_group) {
@@ -200,10 +200,10 @@ echo '<!--[if lt IE 7]>
 						$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_appreciations.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
 						$barre_note.=' '.nb_saisies_bulletin("appreciations", $tmp_group["id"], $loop, "couleur");
 						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="PÃ©riode non verrouillÃ©e: Saisie possible" title="PÃ©riode non verrouillÃ©e: Saisie possible" />';
 						}
 						else {
-							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="PÃ©riode verrouillÃ©e: Saisie impossible" title="PÃ©riode verrouillÃ©e: Saisie impossible" />';
 						}
 						$barre_note.='</a>';
 						$barre_note.='</li>'."\n";
@@ -215,7 +215,7 @@ echo '<!--[if lt IE 7]>
 			$barre_note.= '	</li>'."\n";
 
 
-			$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index1.php"'.insert_confirm_abandon().'>Mes moyennes et appréciations</a>';
+			$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index1.php"'.insert_confirm_abandon().'>Mes moyennes et apprÃ©ciations</a>';
 				$barre_note .= '		<ul class="niveau3">'."\n";
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
@@ -255,7 +255,7 @@ echo '<!--[if lt IE 7]>
 			}
 
 			if($affiche_li_bull_simp=="y") {
-				$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a>'."\n";
+				$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiÃ©s</a>'."\n";
 					$barre_note .= '		<ul class="niveau3">'."\n";
 					foreach($tmp_mes_classes as $key => $value) {
 						$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index3.php?id_classe='.$key.'"'.insert_confirm_abandon().'>'.$value.'</a>'."\n";
@@ -275,7 +275,7 @@ echo '<!--[if lt IE 7]>
 
 
 
-			// Ajouter Paramètres des bulletins et Impression des bulletins (pour les PP)
+			// Ajouter ParamÃ¨tres des bulletins et Impression des bulletins (pour les PP)
 
 
 		$barre_note.= '	</ul>'."\n";
@@ -302,7 +302,7 @@ echo '<!--[if lt IE 7]>
 	}else{ $barre_notanet = '';}
 
 	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
-		$barre_consult_eleve = '<li class="li_inline"><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consult.élève</a></li>'."\n";
+		$barre_consult_eleve = '<li class="li_inline"><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consult.Ã©lÃ¨ve</a></li>'."\n";
 	}
 	else{ $barre_consult_eleve = '';}
 	

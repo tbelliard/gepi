@@ -21,8 +21,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+header('Content-Type: text/html; charset=utf-8');
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -42,12 +42,12 @@ if (!checkAccess()) {
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
-// Vérification : est-ce que l'utilisateur a le droit de supprimer cette entrée ?
+// VÃ©rification : est-ce que l'utilisateur a le droit de supprimer cette entrÃ©e ?
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
@@ -56,7 +56,7 @@ if ($utilisateur == null) {
 
 check_token();
 
-//récupération de la notice
+//rÃ©cupÃ©ration de la notice
 $id_objet = isset($_POST["id_objet"]) ? $_POST["id_objet"] :(isset($_GET["id_objet"]) ? $_GET["id_objet"] :NULL);
 $type = isset($_POST["type"]) ? $_POST["type"] :(isset($_GET["type"]) ? $_GET["type"] :NULL);
 echo $id_objet."; ";
@@ -76,7 +76,7 @@ if ($type == 'CahierTexteTravailAFaire') {
 
 //si pas d'objet trouve, erreur du script
 if ($objet == null) {
-  echo("Erreur : pas d'objet trouvé.");
+  echo("Erreur : pas d'objet trouvÃ©.");
   die();
 }
 

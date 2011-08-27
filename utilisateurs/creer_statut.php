@@ -22,7 +22,7 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
@@ -31,7 +31,7 @@ if (!checkAccess()) {
 //debug_var();
 
 if (getSettingValue("statuts_prives") != "y") {
-	trigger_error('Impossible d\'accéder à ce module de Gepi.', E_USER_ERROR);
+	trigger_error('Impossible d\'accÃ©der Ã  ce module de Gepi.', E_USER_ERROR);
 }
 
 
@@ -42,9 +42,9 @@ $login_user = isset($_POST["userid"]) ? $_POST["userid"] : NULL;
 $statut_user = isset($_POST["userstat"]) ? $_POST["userstat"] : NULL;
 $msg = $msg2 = $msg3 = NULL;
 
-// Ces tableaux définissent les différents fichiers à autoriser en fonction du statut
+// Ces tableaux dÃ©finissent les diffÃ©rents fichiers Ã  autoriser en fonction du statut
 $values_b = '';
-// La liste des fichiers à traiter
+// La liste des fichiers Ã  traiter
 require_once('./creer_statut_autorisation.php');
 
 //print_r($autorise);
@@ -52,12 +52,12 @@ require_once('./creer_statut_autorisation.php');
 // Fonction qui permet d'afficher  le selected de l'affichage
 function verifChecked($id){
 
-	// On utilise les variables définies dans /creer_statut_autorisation.php
+	// On utilise les variables dÃ©finies dans /creer_statut_autorisation.php
 	global $autorise;
 	global $iter;
 
 	for($i = 1 ; $i < $iter ; $i++){
-		// On récupère les droits de ce statut privé
+		// On rÃ©cupÃ¨re les droits de ce statut privÃ©
 		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise[$i][0]."'";
 		$query_ds = mysql_query($sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
 		$count = mysql_num_rows($query_ds);
@@ -81,18 +81,18 @@ function verifChecked($id){
 if ($action == 'ajouter') {
 	check_token();
 
-	// on fait quelques vérifications sur le nom du statut (si il existe déjà, longueur du nom, enlever les ' et les ",...)
-	// On ne garde que les 12 premières lettres
+	// on fait quelques vÃ©rifications sur le nom du statut (si il existe dÃ©jÃ , longueur du nom, enlever les ' et les ",...)
+	// On ne garde que les 12 premiÃ¨res lettres
 	$stat_1 = substr(trim($nouveau_statut), 0, 12);
-	// On enlève les accents, les apostrophes et les guillemets
+	// On enlÃ¨ve les accents, les apostrophes et les guillemets
 	$stat_2 = str_replace("\\", "", $stat_1);
 	$stat_2b = str_replace('"', '', $stat_2);
 	$stat_3 = remplace_accents($stat_2b, "all");
 
-	// On refait une ultime vérification
+	// On refait une ultime vÃ©rification
 	$insert_statut = htmlentities($stat_3, ENT_QUOTES);
 
-	// On ajoute le statut privé après avoir vérifié qu'il n'existe pas déjà
+	// On ajoute le statut privÃ© aprÃ¨s avoir vÃ©rifiÃ© qu'il n'existe pas dÃ©jÃ 
 	$query_v = mysql_query("SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
 	$verif = mysql_num_rows($query_v);
 
@@ -109,11 +109,11 @@ if ($action == 'ajouter') {
 
 		if ($enregistre) {
 
-			// On enregistre les droits généraux adéquats avec la virgule qui va bien entre chaque value
-			// Chaque droit correspond à un ensemble d'autorisations sur un ou plusieurs fichiers
+			// On enregistre les droits gÃ©nÃ©raux adÃ©quats avec la virgule qui va bien entre chaque value
+			// Chaque droit correspond Ã  un ensemble d'autorisations sur un ou plusieurs fichiers
 			// Pour ajouter des droits, il suffit d'ajouter des branches au tableau $autorise du fichier creer_statut_autorisation avec tous les fichiers utiles
 
-			for($a = 0 ; $a < $iter ; $a++){ // $iter est définie dans creer_statut_autorisation.php
+			for($a = 0 ; $a < $iter ; $a++){ // $iter est dÃ©finie dans creer_statut_autorisation.php
 				$nbre = count($autorise[$a]);
 				// On met V pour les autorisations de base mais F pour les autres
 				if ($a != 0) {
@@ -130,7 +130,7 @@ if ($action == 'ajouter') {
 					}
 
 				}
-				// On ajoute une virgule entre chaque droit sauf à la fin
+				// On ajoute une virgule entre chaque droit sauf Ã  la fin
 				if ($a < ($iter - 1)) {
 					$values_b .= ', ';
 				}
@@ -152,7 +152,7 @@ if ($action == 'ajouter') {
 if ($action == 'modifier') {
 	check_token();
 
-	// On initialise toutes les variables envoyées
+	// On initialise toutes les variables envoyÃ©es
 	$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
 	//echo "$sql<br />";
 	$query = mysql_query($sql) OR trigger_error('Erreur '.$sql, E_USER_ERROR);
@@ -187,13 +187,13 @@ if ($action == 'modifier') {
         $test[$a][21] = isset($_POST["abs_bilan|".$b]) ? $_POST["abs_bilan|".$b] : NULL;
         $test[$a][22] = isset($_POST["abs_totaux|".$b]) ? $_POST["abs_totaux|".$b] : NULL;
 
-		// On assure les différents traitements
+		// On assure les diffÃ©rents traitements
 		if ($test[$a][0] == 'on') {
-			// On supprime le statut demandé
+			// On supprime le statut demandÃ©
 			$sql_d = "DELETE FROM droits_statut WHERE id = '".$b."'";
 			$query_d = mysql_query($sql_d) OR trigger_error('Impossible de supprimer ce statut : '.mysql_error(), E_USER_NOTICE);
 
-			// Il faut aussi effacer toutes les références à ce statut dans les autres tables
+			// Il faut aussi effacer toutes les rÃ©fÃ©rences Ã  ce statut dans les autres tables
 			$sql_d = "DELETE FROM droits_utilisateurs WHERE id_statut = '".$b."'";
 			$query_d = mysql_query($sql_d) OR trigger_error('Impossible de supprimer ce statut du : '.mysql_error(), E_USER_NOTICE);
 
@@ -201,23 +201,23 @@ if ($action == 'modifier') {
 			$query_d = mysql_query($sql_d) OR trigger_error('Impossible de supprimer ce statut ds : '.mysql_error(), E_USER_NOTICE);
 
 		}else{
-                  // On va vérifier les droits un par un
-                  // ne = notes élèves ; bs = bulletins simplifiés ; va = voir absences ; sa = saisir absences
-                  // cdt = cahier de textes ; ee = emploi du temps des élèves ; te = tous les emplois du temps
+                  // On va vÃ©rifier les droits un par un
+                  // ne = notes Ã©lÃ¨ves ; bs = bulletins simplifiÃ©s ; va = voir absences ; sa = saisir absences
+                  // cdt = cahier de textes ; ee = emploi du temps des Ã©lÃ¨ves ; te = tous les emplois du temps
 
                   for($m = 1 ; $m < $iter ; $m++){
 
                     $nbre2 = count($autorise[$m]);
-                    // On vérifie si le droit est coché ou non
+                    // On vÃ©rifie si le droit est cochÃ© ou non
                     if ($test[$a][$m] == 'on') {
                       $vf = 'V';
                     }else{
                       $vf = 'F';
                     }
-                    // On n'oublie pas de mettre à jour tous les fichiers adéquats
+                    // On n'oublie pas de mettre Ã  jour tous les fichiers adÃ©quats
                     for($i = 0 ; $i < $nbre2 ; $i++){
                       //$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
-                      //$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
+                      //$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise Ã  jour  : ".mysql_error(), E_USER_WARNING);
                       $query_select = mysql_query("SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
                       $result = mysql_fetch_array($query_select);
                       if (!empty ($result)){
@@ -234,15 +234,15 @@ if ($action == 'modifier') {
 		}
 	}
 //print_r($test);
-	// On assure un message de confirmation si les modifications se sont bien passées
+	// On assure un message de confirmation si les modifications se sont bien passÃ©es
 	if ($msg3 === NULL) {
-		$msg3 .= '<p style="color: green">Les modifications sont bien enregistrées.</p>';
+		$msg3 .= '<p style="color: green">Les modifications sont bien enregistrÃ©es.</p>';
 	}
 }
 
 
 
-// On récupère tous les statuts nouveaux qui existent
+// On rÃ©cupÃ¨re tous les statuts nouveaux qui existent
 $aff_tableau = $aff_select = $aff_users = $selected = '';
 $sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
 $query = mysql_query($sql);
@@ -270,10 +270,10 @@ if ($query) {
 
 	while($rep = mysql_fetch_array($query)){
 
-		// On vérifie s'il faut le cocher par défaut ou pas
+		// On vÃ©rifie s'il faut le cocher par dÃ©faut ou pas
 		$checked = verifChecked($rep["id"]);
 
-	// On affiche les droits des statuts personnalisés verticalement
+	// On affiche les droits des statuts personnalisÃ©s verticalement
 
 	for($b = 0 ; $b <= $iter ; $b++){
 
@@ -303,18 +303,18 @@ if ($query) {
 	}
 }
 
-// On traite la partie sur les utilisateurs 'autre' pour leur définir le bon statut
+// On traite la partie sur les utilisateurs 'autre' pour leur dÃ©finir le bon statut
 
-	// On traite les demandes de l'admin sur la définition des statuts des utilisateurs 'autre'
+	// On traite les demandes de l'admin sur la dÃ©finition des statuts des utilisateurs 'autre'
 	if ($action == "defStatut") {
 		check_token();
 
-		// On vérifie si cet utilisateur existe déjà
+		// On vÃ©rifie si cet utilisateur existe dÃ©jÃ 
 		$query_v2 = mysql_query("SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$login_user."'")
-									OR trigger_error('Impossible de vérifier le statut privé de cet utilisateur.', E_USER_WARNING);
+									OR trigger_error('Impossible de vÃ©rifier le statut privÃ© de cet utilisateur.', E_USER_WARNING);
 		$verif_v2 = mysql_num_rows($query_v2);
 		if ($verif_v2 >= 1) {
-			// alors le statut de cet utilisateur existe, on va donc le mettre à jour
+			// alors le statut de cet utilisateur existe, on va donc le mettre Ã  jour
 			$sql_d = "UPDATE droits_utilisateurs SET id_statut = '".$statut_user."' WHERE login_user = '".$login_user."'";
 		}else{
 			$sql_d = "INSERT INTO droits_utilisateurs (id, id_statut, login_user) VALUES ('', '".$statut_user."', '".$login_user."')";
@@ -323,23 +323,23 @@ if ($query) {
 		$query_statut = mysql_query($sql_d) OR trigger_error('Impossible d\'enregistrer dans la base.'.mysql_error(), E_USER_WARNING);
 
 		if ($query_statut) {
-			$msg2 .= '<h4 style="color: green;">Modification enregistrée.</h4>';
+			$msg2 .= '<h4 style="color: green;">Modification enregistrÃ©e.</h4>';
 		}
 
 	}
 
-	// On récupère les utilisateurs qui ont un statut 'autre'
+	// On rÃ©cupÃ¨re les utilisateurs qui ont un statut 'autre'
 	$sql_u = "SELECT nom, prenom, login  FROM utilisateurs
 											WHERE statut = 'autre'
 											AND etat = 'actif'
 											ORDER BY nom, prenom";
 	$query_u = mysql_query($sql_u);
 
-	// On affiche la liste des utilisateurs avec un select des statuts privés
+	// On affiche la liste des utilisateurs avec un select des statuts privÃ©s
 	$i = 1;
 	while($tab = mysql_fetch_array($query_u)){
 
-		// On récupère son statut s'il existe
+		// On rÃ©cupÃ¨re son statut s'il existe
 		$query_s = mysql_query("SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$tab["login"]."'");
 		$statut = mysql_fetch_array($query_s);
 
@@ -389,7 +389,7 @@ include("../lib/header.inc");
 //debug_var();
 
 ?>
-<!-- Début de la page sur les statut privés -->
+<!-- DÃ©but de la page sur les statut privÃ©s -->
 
 <br />
 
@@ -397,8 +397,8 @@ include("../lib/header.inc");
 <a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 
-<p>Vous pouvez définir des statuts personnalisés, ayant une combinaison particulière de droits.
- Pour pouvoir ensuite attribuer (ci-dessous) un statut personnalisé à un utilisateur, il faut d'abord l'enregistrer avec un statut générique "autre"
+<p>Vous pouvez dÃ©finir des statuts personnalisÃ©s, ayant une combinaison particuliÃ¨re de droits.
+ Pour pouvoir ensuite attribuer (ci-dessous) un statut personnalisÃ© Ã  un utilisateur, il faut d'abord l'enregistrer avec un statut gÃ©nÃ©rique "autre"
  (<a href="./modify_user.php">CREER un personnel</a> ou <a href="./index.php?mode=personnels">MODIFIER un personnel</a>).</p>
 
 <!-- Quel statut pour quelle personne ? -->

@@ -43,28 +43,28 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 ?>
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-echo "<center><h3 class='gepi'>Cinquième phase d'initialisation<br />Importation des associations élèves-options</h3></center>";
+echo "<center><h3 class='gepi'>CinquiÃ¨me phase d'initialisation<br />Importation des associations Ã©lÃ¨ves-options</h3></center>";
 
 
 if (!isset($_POST["action"])) {
 	//
-	// On sélectionne le fichier à importer
+	// On sÃ©lectionne le fichier Ã  importer
 	//	
 	
-	echo "<p>Vous allez effectuer la cinquième et dernière étape : elle consiste à importer le fichier <b>eleves_options.csv</b> contenant les associations des élèves et des enseignements de type 'groupe', c'est-à-dire qui ne corerespondent pas à un enseignement de classe entière.";
-	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : ";
-	echo "<ul><li>Login de l'élève</li>" .
-			"<li>Identifiant(s) de matière (séparés par un point d'exclamation)</li>" .
+	echo "<p>Vous allez effectuer la cinquiÃ¨me et derniÃ¨re Ã©tape : elle consiste Ã  importer le fichier <b>eleves_options.csv</b> contenant les associations des Ã©lÃ¨ves et des enseignements de type 'groupe', c'est-Ã -dire qui ne corerespondent pas Ã  un enseignement de classe entiÃ¨re.";
+	echo "<p>Les champs suivants doivent Ãªtre prÃ©sents, dans l'ordre, et <b>sÃ©parÃ©s par un point-virgule</b> : ";
+	echo "<ul><li>Login de l'Ã©lÃ¨ve</li>" .
+			"<li>Identifiant(s) de matiÃ¨re (sÃ©parÃ©s par un point d'exclamation)</li>" .
 			"</ul>";
-	echo "<p>Remarque : vous pouvez ne spécifier qu'une seule ligne par élève, en indiquant toutes les matières suivies dans le deuxième champ en séparant les identifiants de matières avec un point d'exclamation, mais vous pouvez également avoir une ligne pour une association simple, et avoir autant de lignes que d'enseignements suivis par l'élève.</p>";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>eleves_options.csv</b>.";
+	echo "<p>Remarque : vous pouvez ne spÃ©cifier qu'une seule ligne par Ã©lÃ¨ve, en indiquant toutes les matiÃ¨res suivies dans le deuxiÃ¨me champ en sÃ©parant les identifiants de matiÃ¨res avec un point d'exclamation, mais vous pouvez Ã©galement avoir une ligne pour une association simple, et avoir autant de lignes que d'enseignements suivis par l'Ã©lÃ¨ve.</p>";
+	echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>eleves_options.csv</b>.";
 	echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />";
@@ -76,12 +76,12 @@ if (!isset($_POST["action"])) {
 	check_token(false);
 
 	//
-	// Quelque chose a été posté
+	// Quelque chose a Ã©tÃ© postÃ©
 	//
 	if ($_POST['action'] == "save_data") {
 		//
-		// On enregistre les données dans la base.
-		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
+		// On enregistre les donnÃ©es dans la base.
+		// Le fichier a dÃ©jÃ  Ã©tÃ© affichÃ©, et l'utilisateur est sÃ»r de vouloir enregistrer
 		//
 
 		$go = true;
@@ -95,19 +95,19 @@ if (!isset($_POST["action"])) {
 			$reg_login = $_POST["ligne".$i."_login"];
 			$reg_options = $_POST["ligne".$i."_options"];
 			
-			// On nettoie et on vérifie :
+			// On nettoie et on vÃ©rifie :
 			$reg_login = preg_replace("/[^0-9A-Za-z_\.\-]/","",trim($reg_login));
 			$reg_login = preg_replace("/\./", "_", $reg_login);
 			$reg_options = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($reg_options));
-			if (strlen($reg_options) > 2000) $reg_options = substr($reg_options, 0, 2000); // Juste pour éviter une tentative d'overflow...
+			if (strlen($reg_options) > 2000) $reg_options = substr($reg_options, 0, 2000); // Juste pour Ã©viter une tentative d'overflow...
 
 
-			// Première étape : on s'assure que l'élève existe... S'il n'existe pas, on laisse tomber.
+			// PremiÃ¨re Ã©tape : on s'assure que l'Ã©lÃ¨ve existe... S'il n'existe pas, on laisse tomber.
 			$test = mysql_query("SELECT login FROM eleves WHERE login = '" . $reg_login . "'");
 			if (mysql_num_rows($test) == 1) {
 				$login_eleve = $reg_login;
 				
-				// Maintenant on récupère les différentes matières, et on vérifie qu'elles existent
+				// Maintenant on rÃ©cupÃ¨re les diffÃ©rentes matiÃ¨res, et on vÃ©rifie qu'elles existent
 				$reg_options = explode("!", $reg_options);
 				$valid_options = array();
 				foreach ($reg_options as $option) {
@@ -118,29 +118,29 @@ if (!isset($_POST["action"])) {
 					}
 				}
 				
-				// On a maintenant un tableau avec les options que l'élève doit suivre.
+				// On a maintenant un tableau avec les options que l'Ã©lÃ¨ve doit suivre.
 				
-				// On récupère la classe de l'élève.
+				// On rÃ©cupÃ¨re la classe de l'Ã©lÃ¨ve.
 				
 				$test = mysql_query("SELECT DISTINCT(id_classe) FROM j_eleves_classes WHERE login = '" . $login_eleve . "'");
 				
 				if (mysql_num_rows($test) != 0) {
-					// L'élève fait bien parti d'une classe
+					// L'Ã©lÃ¨ve fait bien parti d'une classe
 	
 					$id_classe = mysql_result($test, 0, "id_classe");
 					
-					// Maintenant on a tout : les options, la classe de l'élève, et son login
-					// Enfin il reste quand même un truc à récupérer : le nombre de périodes :
+					// Maintenant on a tout : les options, la classe de l'Ã©lÃ¨ve, et son login
+					// Enfin il reste quand mÃªme un truc Ã  rÃ©cupÃ©rer : le nombre de pÃ©riodes :
 					
 					$num_periods = mysql_result(mysql_query("SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 					
-					// Bon cette fois c'est bon, on a tout. On va donc procéder de la manière suivante :
-					// - on regarde s'il existe un groupe pour la classe dans la matière considérée
-					// - on teste pour voir si l'élève n'est pas déjà inscrit dans ce groupe
+					// Bon cette fois c'est bon, on a tout. On va donc procÃ©der de la maniÃ¨re suivante :
+					// - on regarde s'il existe un groupe pour la classe dans la matiÃ¨re considÃ©rÃ©e
+					// - on teste pour voir si l'Ã©lÃ¨ve n'est pas dÃ©jÃ  inscrit dans ce groupe
 					// - s'il ne l'est pas, on l'inscrit !
 					// Simple, non ?
 					
-					// On procède matière par matière :
+					// On procÃ¨de matiÃ¨re par matiÃ¨re :
 					
 					foreach ($valid_options as $matiere) {
 						$test = mysql_query("SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE (" .
@@ -149,15 +149,15 @@ if (!isset($_POST["action"])) {
 								"jgm.id_matiere = '" . $matiere . "')");
 						if (mysql_num_rows($test) > 0) {
 							// Au moins un groupe existe, c'est bon signe
-							// On passe groupe par groupe pour vérifier si l'élève est déjà inscrit ou pas
-							// Si plusieurs groupes existent, l'élève sera inscrit à tous les groupes...
+							// On passe groupe par groupe pour vÃ©rifier si l'Ã©lÃ¨ve est dÃ©jÃ  inscrit ou pas
+							// Si plusieurs groupes existent, l'Ã©lÃ¨ve sera inscrit Ã  tous les groupes...
 							for ($j=0;$j<mysql_num_rows($test);$j++) {
 								// On extrait l'ID du groupe
 								$group_id = mysql_result($test, $j, "id_groupe");
-								// On regarde si l'élève est inscrit
+								// On regarde si l'Ã©lÃ¨ve est inscrit
 								$res = mysql_result(mysql_query("SELECT count(login) FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' AND login = '" . $login_eleve . "')"), 0);
 								if ($res == 0) {
-									// L'élève ne fait pas encore parti du groupe. On l'inscrit pour les périodes de la classe
+									// L'Ã©lÃ¨ve ne fait pas encore parti du groupe. On l'inscrit pour les pÃ©riodes de la classe
 									for ($p=1;$p<=$num_periods;$p++) {
 										// On enregistre
 										$reg = mysql_query("INSERT INTO j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $login_eleve . "', periode = '" . $p . "'");
@@ -180,29 +180,29 @@ if (!isset($_POST["action"])) {
 		}
 		
 		if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>";
-		if ($total > 0) echo "<p>" . $total . " associations élèves-options ont été enregistrées.</p>";
+		if ($total > 0) echo "<p>" . $total . " associations Ã©lÃ¨ves-options ont Ã©tÃ© enregistrÃ©es.</p>";
 		
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>";		
+		echo "<p><a href='index.php'>Revenir Ã  la page prÃ©cÃ©dente</a></p>";		
 		
 	
 	} else if ($_POST['action'] == "upload_file") {
 		//
-		// Le fichier vient d'être envoyé et doit être traité
-		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
-		// en proposant des champs de saisie pour modifier les données si on le souhaite
+		// Le fichier vient d'Ãªtre envoyÃ© et doit Ãªtre traitÃ©
+		// On va donc afficher le contenu du fichier tel qu'il va Ãªtre enregistrÃ© dans Gepi
+		// en proposant des champs de saisie pour modifier les donnÃ©es si on le souhaite
 		//
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
-		// autant forcer l'utilisateur à être rigoureux
+		// On vÃ©rifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
+		// autant forcer l'utilisateur Ã  Ãªtre rigoureux
 		if(strtolower($csv_file['name']) == "eleves_options.csv") {
 			
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
 	
 			if(!$fp) {
-				// Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
+				// Aie : on n'arrive pas Ã  ouvrir le fichier... Pas bon.
 				echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
 				echo "<p><a href='eleves_options.php'>Cliquer ici </a> pour recommencer !</center></p>";
 			} else {
@@ -210,11 +210,11 @@ if (!isset($_POST["action"])) {
 				// Fichier ouvert ! On attaque le traitement
 				
 				// On va stocker toutes les infos dans un tableau
-				// Une ligne du CSV pour une entrée du tableau
+				// Une ligne du CSV pour une entrÃ©e du tableau
 				$data_tab = array();
 	
 				//=========================
-				// On lit une ligne pour passer la ligne d'entête:
+				// On lit une ligne pour passer la ligne d'entÃªte:
 				$ligne = fgets($fp, 4096);
 				//=========================
 				
@@ -225,11 +225,11 @@ if (!isset($_POST["action"])) {
 
 							$tabligne=explode(";",$ligne);
 
-							// 0 : Login de l'élève
-							// 1 : Identifiants de matières
+							// 0 : Login de l'Ã©lÃ¨ve
+							// 1 : Identifiants de matiÃ¨res
 							
 
-							// On nettoie et on vérifie :
+							// On nettoie et on vÃ©rifie :
 							$tabligne[0] = preg_replace("/[^0-9A-Za-z_\.\-]/","",trim($tabligne[0]));
 							if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 							$tabligne[1] = preg_replace("/[^A-Za-z0-9\.\-!]/","",trim($tabligne[1]));
@@ -250,13 +250,13 @@ if (!isset($_POST["action"])) {
 				fclose($fp);
 				
 				// Fin de l'analyse du fichier.
-				// Maintenant on va afficher tout ça.
+				// Maintenant on va afficher tout Ã§a.
 				
 				echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>";
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />";
 				echo "<table>";
-				echo "<tr><td>Login de l'élève</td><td>Matières</td></tr>";
+				echo "<tr><td>Login de l'Ã©lÃ¨ve</td><td>MatiÃ¨res</td></tr>";
 				
 				for ($i=0;$i<$k-1;$i++) {
 					echo "<tr>";
@@ -280,11 +280,11 @@ if (!isset($_POST["action"])) {
 
 		} else if (trim($csv_file['name'])=='') {
 	
-			echo "<p>Aucun fichier n'a été sélectionné !<br />";
+			echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />";
 			echo "<a href='eleves_options.php'>Cliquer ici </a> pour recommencer !</center></p>";
 	
 		} else {
-			echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+			echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
 			echo "<a href='eleves_options.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		}
 	}

@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) || isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 $niveau_arbo = "2";
@@ -36,7 +36,7 @@ $logger = new StackLogger();
 Propel::setLogger($logger);
 
 
-// On met le header en petit par défaut
+// On met le header en petit par dÃ©faut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 
@@ -132,7 +132,7 @@ $absenceSaisie2 = UnitTestAbsenceSaise::getAbsenceSaisie();
 $absenceSaisie2->setDebutAbs(new DateTime('2010-01-01 13:00'));
 $absenceSaisie2->setFinAbs(new DateTime('2010-01-01 13:01'));
 $absenceSaisie2->setEleve($newEleve);
-$absenceSaisie2->save();//normalement cette saisie va ètre comptée en retard et non en manquementObligationPresence
+$absenceSaisie2->save();//normalement cette saisie va Ã¨tre comptÃ©e en retard et non en manquementObligationPresence
 
 $absenceSaisies = $newEleve->getAbsenceEleveSaisiesManquementObligationPresence();
 if ($absenceSaisies->count() != 2) {
@@ -147,7 +147,7 @@ purgeDonneesTest($logger);
 Propel::setLogger(null);
 
 function purgeDonneesTest($logger) {
-	echo "Purge des données<br/><br/>";
+	echo "Purge des donnÃ©es<br/><br/>";
 	//purge de l'utilisateur
 	echo "<br/>Purge de l'utilisateur : <br/>";
 	$utilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK(UnitTestUtilisateurProfessionnel::getUtilisateurProfessionnel()->getLogin());
@@ -169,7 +169,7 @@ function purgeDonneesTest($logger) {
 	}
 	echo ($logger->getDisplay());
 
-	echo "<br/>Fin Purge des données<br/><br/>";
+	echo "<br/>Fin Purge des donnÃ©es<br/><br/>";
 }
 
 ?>

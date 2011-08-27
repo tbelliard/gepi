@@ -92,10 +92,10 @@ class Classe extends BaseClasse {
 
 	/**
 	 *
-	 * Retourne tous les emplacements de cours pour la periode pr�cis�e du calendrier.
+	 * Retourne tous les emplacements de cours pour la periode précisée du calendrier.
 	 * On recupere aussi les emplacements dont la periode n'est pas definie ou vaut 0.
 	 *
-	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonn�e chronologiquement
+	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
 	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
 		if ( getSettingValue("autorise_edt_tous") != 'y') {
@@ -124,9 +124,9 @@ class Classe extends BaseClasse {
 
 	
   public function getEctsGroupesByCategories() {
-      // On commence par récupérer tous les groupes
+      // On commence par rÃ©cupÃ©rer tous les groupes
       $groupes = $this->getGroupes();
-      // Ensuite, il nous faut les catégories.
+      // Ensuite, il nous faut les catÃ©gories.
       $categories = array();
       $c = new Criteria();
       $c->add(JCategoriesMatieresClassesPeer::CLASSE_ID,$this->getId());
@@ -135,7 +135,7 @@ class Classe extends BaseClasse {
           $cat = $j->getCategorieMatiere();
           $categories[$cat->getId()] = array(0 => $cat, 1 => array());
       }
-      // Maintenant, on mets tout ça ensemble
+      // Maintenant, on mets tout Ã§a ensemble
       foreach($groupes as $groupe) {
           if ($groupe->allowsEctsCredits($this->getId())) {
               $cat = $groupe->getCategorieMatiere($this->getId());
@@ -150,8 +150,8 @@ class Classe extends BaseClasse {
           }
       }
 
-      // On renvoie un table multi-dimensionnel, qui contient les catégories
-      // dans le bon ordre, et les groupes sous chaque catégorie.
+      // On renvoie un table multi-dimensionnel, qui contient les catÃ©gories
+      // dans le bon ordre, et les groupes sous chaque catÃ©gorie.
       return $categories;
   }
 
@@ -269,7 +269,7 @@ class Classe extends BaseClasse {
 	}
 
  	/**
-	 * Retourne la collection de periode de note priv�e a des fins d'optimisation
+	 * Retourne la collection de periode de note privée a des fins d'optimisation
 	 *
 	 * @return     PropelObjectCollection
 	 */
@@ -280,7 +280,7 @@ class Classe extends BaseClasse {
 
         	/**
 	 *
-	 * Renvoi une collection des mefs des eleves de ce groupe. Un seul mef de chaque type sera retourn�.
+	 * Renvoi une collection des mefs des eleves de ce groupe. Un seul mef de chaque type sera retourné.
 	 *
 	 * @periode integer numero de la periode
 	 * @return     PropelObjectCollection Eleves[]

@@ -34,8 +34,8 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_ooo/gerer_modeles_ooo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Index', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/gerer_modeles_ooo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Index', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_ooo/gerer_modeles_ooo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : Index', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/gerer_modeles_ooo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : Index', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -43,11 +43,11 @@ if (!checkAccess()) {
 
 
 include_once('./lib/lib_mod_ooo.php'); //les fonctions
-$nom_fichier_modele_ooo =''; //variable à initialiser à blanc pour inclure le fichier suivant et éviter une notice. Pour les autres inclusions, cela est inutile.
-include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
+$nom_fichier_modele_ooo =''; //variable Ã  initialiser Ã  blanc pour inclure le fichier suivant et Ã©viter une notice. Pour les autres inclusions, cela est inutile.
+include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  modÃ¨les
 
-//Liste des fichiers à compléter à la main (3 données par fichier)
-    // L'entête de la section pour le 1er fichier de la section sinon "" (vide)
+//Liste des fichiers Ã  complÃ©ter Ã  la main (3 donnÃ©es par fichier)
+    // L'entÃªte de la section pour le 1er fichier de la section sinon "" (vide)
     //Le nom du fichier en minuscule avec son extension
 	//La description du document
 	
@@ -62,12 +62,12 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 	//Exclusion temporaire
     $entete_section[]="";
 	$fich[]="discipline_exclusion.odt";
-    $utilisation[]="Exclusion temporaire de l'établissement";
+    $utilisation[]="Exclusion temporaire de l'Ã©tablissement";
 
-    //modèle ABS2
+    //modÃ¨le ABS2
 	$entete_section[]="MODULE ABSENCE";
     $fich[]="absence_extraction_demi-journees.ods";
-    $utilisation[]="ABS2 : Tableau des demi-journées d'absences";
+    $utilisation[]="ABS2 : Tableau des demi-journÃ©es d'absences";
 	
 	$entete_section[]="";
     $fich[]="absence_extraction_saisies.ods";
@@ -79,70 +79,70 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     
     $entete_section[]="";
     $fich[]="absence_taux_absenteisme.ods";
-    $utilisation[]="ABS2 : Tableau des taux d'absentéisme";
+    $utilisation[]="ABS2 : Tableau des taux d'absentÃ©isme";
 
     $entete_section[]="";
     $fich[]="absence_extraction_bilan.ods";
-    $utilisation[]="ABS2 : Tableau bilan par jour par élève au format tableur";
+    $utilisation[]="ABS2 : Tableau bilan par jour par Ã©lÃ¨ve au format tableur";
 
     $entete_section[]="";
     $fich[]="absence_extraction_bilan.odt";
-    $utilisation[]="ABS2 : Tableau bilan par jour par élève au format traitement de textes";
+    $utilisation[]="ABS2 : Tableau bilan par jour par Ã©lÃ¨ve au format traitement de textes";
 
 	$entete_section[]="";
     $fich[]="absence_modele_lettre_parents.odt";
-    $utilisation[]="ABS2 : Modèle de lettre aux parents";
+    $utilisation[]="ABS2 : ModÃ¨le de lettre aux parents";
 	
 	$entete_section[]="";
     $fich[]="absence_modele_impression_par_lot.odt";
-    $utilisation[]="ABS2 : Modèle d'impression par lot";
+    $utilisation[]="ABS2 : ModÃ¨le d'impression par lot";
 
 	$entete_section[]="";
     $fich[]="absence_email.txt";
-    $utilisation[]="ABS2 : Modèle du courriel envoyé aux parents";
+    $utilisation[]="ABS2 : ModÃ¨le du courriel envoyÃ© aux parents";
 	
 	$entete_section[]="";
     $fich[]="absence_sms.txt";
-    $utilisation[]="ABS2 : Modèle de SMS envoyé aux parents";
+    $utilisation[]="ABS2 : ModÃ¨le de SMS envoyÃ© aux parents";
 
 
     //Fiches brevet
 	$entete_section[]="MODULE NOTANET";
     $fich[]="fb_CLG_lv2.ods";
-    $utilisation[]="Fiche brevet série collège LV2";
+    $utilisation[]="Fiche brevet sÃ©rie collÃ¨ge LV2";
 	
 	$entete_section[]="";
     $fich[]="fb_CLG_dp6.ods";
-    $utilisation[]="Fiche brevet série collège ODP 6 heures";
+    $utilisation[]="Fiche brevet sÃ©rie collÃ¨ge ODP 6 heures";
 	
 	$entete_section[]="";
     $fich[]="fb_PRO.ods";
-    $utilisation[]="Fiche brevet série professionnelle sans ODP";
+    $utilisation[]="Fiche brevet sÃ©rie professionnelle sans ODP";
 	
 	$entete_section[]="";
     $fich[]="fb_PRO_dp6.ods";
-    $utilisation[]="Fiche brevet série professionnelle ODP 6 heures";
+    $utilisation[]="Fiche brevet sÃ©rie professionnelle ODP 6 heures";
 	
 	$entete_section[]="";
     $fich[]="fb_PRO_agri.ods";
-    $utilisation[]="Fiche brevet série professionnelle option agricole";
+    $utilisation[]="Fiche brevet sÃ©rie professionnelle option agricole";
 	
 	$entete_section[]="";
     $fich[]="fb_TECHNO.ods";
-    $utilisation[]="Fiche brevet série technologique sans ODP";
+    $utilisation[]="Fiche brevet sÃ©rie technologique sans ODP";
 	
 	$entete_section[]="";
     $fich[]="fb_TECHNO_dp6.ods";
-    $utilisation[]="Fiche brevet série technologique ODP 6 heures";
+    $utilisation[]="Fiche brevet sÃ©rie technologique ODP 6 heures";
 	
 	$entete_section[]="";
     $fich[]="fb_TECHNO_agri.ods";
-    $utilisation[]="Fiche brevet série technologique option agricole";
+    $utilisation[]="Fiche brevet sÃ©rie technologique option agricole";
 
     //rapport incident
 	$entete_section[]="MODULE ECTS";
     $fich[]="documents_ects.odt";
-    $utilisation[]="Documents ECTS (pour BTS, prépas...)";
+    $utilisation[]="Documents ECTS (pour BTS, prÃ©pas...)";
 	
 	
     $nbfich=sizeof($fich);
@@ -161,7 +161,7 @@ else {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Modèle Open Office - gérer ses modèles";
+$titre_page = "ModÃ¨le Open Office - gÃ©rer ses modÃ¨les";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<SCRIPT LANGUAGE=\"Javascript\" SRC=\"./lib/mod_ooo.js\"> </SCRIPT>";
@@ -177,7 +177,7 @@ if(isset($btn)) {echo "?retour_apres_upload=y";}
 echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 echo "<br />\n";
-echo "<p>Ce module est destiné à gérer les modèles Open Office de Gepi.</p>\n";
+echo "<p>Ce module est destinÃ© Ã  gÃ©rer les modÃ¨les Open Office de Gepi.</p>\n";
 echo "</p>\n";
 echo "<br />\n";
 
@@ -190,23 +190,23 @@ echo "<body>";
 
 
 if (!isset($btn)) { //premier passage : formulaire
-    echo "<p >Un modèle personnalisé, envoyé sur le serveur sera utilisé par Gepi</p><hr>\n";
-    echo "<p >Peu importe le nom actuel (gardez le format Open Office : ODT - texte, ODS - tableur ou txt - texte), chaque fichier sera renommé correctement.<br />\n";
-    echo "Les fichiers personnalisés peuvent être supprimés (icône poubelle), contrairement à ceux par défaut.<br />\n";
-	echo "L'ensemble des fichiers peut être consulté en cliquant sur leur icône.</p><br />\n";
-	echo "Lorsque vous créez un nouveau modèle, bien faire attention à la syntaxe des variables utilisées dans le modèle par défaut.</p><br />\n";
-    echo "Elles sont sensibles à la case. Le format d'une variable est [var.xxxxx]</p><br /><br />\n";
-    echo "<p><u>Cas particulier du modèle de lettre aux parents pour le module absence 2 : </u><br />\n";
-    echo "Une modification trop importante de ce modèle peut entrainer des disfonctionnements ou des problèmes de mise en page avec la fonctionnalité d'impression par lot des courriers. </u><br />\n";
-    echo "C'est pourquoi il est recommandé, dans ce cas là, de se limiter a des modifications simple (nature du texte par exemple) du modèle de base proposé dans Gépi.</p><br /><br />\n";
-    //Tableau des différents fichiers à envoyer
+    echo "<p >Un modÃ¨le personnalisÃ©, envoyÃ© sur le serveur sera utilisÃ© par Gepi</p><hr>\n";
+    echo "<p >Peu importe le nom actuel (gardez le format Open Office : ODT - texte, ODS - tableur ou txt - texte), chaque fichier sera renommÃ© correctement.<br />\n";
+    echo "Les fichiers personnalisÃ©s peuvent Ãªtre supprimÃ©s (icÃ´ne poubelle), contrairement Ã  ceux par dÃ©faut.<br />\n";
+	echo "L'ensemble des fichiers peut Ãªtre consultÃ© en cliquant sur leur icÃ´ne.</p><br />\n";
+	echo "Lorsque vous crÃ©ez un nouveau modÃ¨le, bien faire attention Ã  la syntaxe des variables utilisÃ©es dans le modÃ¨le par dÃ©faut.</p><br />\n";
+    echo "Elles sont sensibles Ã  la case. Le format d'une variable est [var.xxxxx]</p><br /><br />\n";
+    echo "<p><u>Cas particulier du modÃ¨le de lettre aux parents pour le module absence 2 : </u><br />\n";
+    echo "Une modification trop importante de ce modÃ¨le peut entrainer des disfonctionnements ou des problÃ¨mes de mise en page avec la fonctionnalitÃ© d'impression par lot des courriers. </u><br />\n";
+    echo "C'est pourquoi il est recommandÃ©, dans ce cas lÃ , de se limiter a des modifications simple (nature du texte par exemple) du modÃ¨le de base proposÃ© dans GÃ©pi.</p><br /><br />\n";
+    //Tableau des diffÃ©rents fichiers Ã  envoyer
     echo "<table class='boireaus' align='center'>\n";
     echo "<tr>\n";
-    echo "<td>Modèle initial<br/>Visualiser</td>\n";
-    echo "<td>Modèle personnel <br/>Supprimer / Visualiser</td>\n";
+    echo "<td>ModÃ¨le initial<br/>Visualiser</td>\n";
+    echo "<td>ModÃ¨le personnel <br/>Supprimer / Visualiser</td>\n";
     echo "<td>Nom du fichier</td>\n";
     echo "<td>Description du fichier</td>\n";
-    echo "<td>Choisir le fichier <br/>à télécharger</td>\n";
+    echo "<td>Choisir le fichier <br/>Ã  tÃ©lÃ©charger</td>\n";
     echo "<td>Action</td>\n";
     echo "</tr>\n";
 	$alt=1;
@@ -214,7 +214,7 @@ if (!isset($btn)) { //premier passage : formulaire
 	  $alt=$alt*(-1);
       //Une ligne du tableau
       //paire ou impaire	  
-	  if ($entete_section[$i] != "") { // Cas d'un entête
+	  if ($entete_section[$i] != "") { // Cas d'un entÃªte
 	      echo "<tr>";
 	      echo "<td colspan=\"6\"></br></br><b>$entete_section[$i]</br></br></b></br></br></td>";
 		  echo "</tr>";
@@ -223,11 +223,11 @@ if (!isset($btn)) { //premier passage : formulaire
 	echo add_token_field();
 	  echo "<input type=\"hidden\" name=fich_cible value=$fich[$i] >\n";
 		 $type_ext = renvoi_nom_image(extension_nom_fichier($fich[$i]));
-		 echo "<td align='center'><a href=\"$nom_dossier_modeles_ooo_par_defaut$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le modèle par défaut\"></a>\n";
+		 echo "<td align='center'><a href=\"$nom_dossier_modeles_ooo_par_defaut$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le modÃ¨le par dÃ©faut\"></a>\n";
 		 echo "</td>\n";
 	  if  (file_exists($nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]))   {
-		 echo "<td align='center'><a href=\"$PHP_SELF?op=supp&fic=$fich[$i]".add_token_in_url()."\" onclick='return confirmer()'><img src=\"./images/poubelle.gif\" border=\"0\" title=\"ATTENTION, suppression immédiate !\"></a>\n";
-		 echo "&nbsp;&nbsp;<a HREF=\"$nom_dossier_modeles_ooo_mes_modeles$rne$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";
+		 echo "<td align='center'><a href=\"$PHP_SELF?op=supp&fic=$fich[$i]".add_token_in_url()."\" onclick='return confirmer()'><img src=\"./images/poubelle.gif\" border=\"0\" title=\"ATTENTION, suppression immÃ©diate !\"></a>\n";
+		 echo "&nbsp;&nbsp;<a HREF=\"$nom_dossier_modeles_ooo_mes_modeles$rne$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modÃ¨le\"></a>\n";
 		 echo "</td>\n";
 	  } else {
 		 echo "</td>\n<td>&nbsp;</td>\n";
@@ -236,7 +236,7 @@ if (!isset($btn)) { //premier passage : formulaire
 	  echo "<td>$fich[$i]</td><td>\n";
 	  echo "$utilisation[$i]</td><td>\n";
 	  echo "<INPUT TYPE=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";
-	  echo "<input type='file' name='monfichier' value='il a cliqué le bougre'>&nbsp;</td><td>\n";
+	  echo "<input type='file' name='monfichier' value='il a cliquÃ© le bougre'>&nbsp;</td><td>\n";
 	  echo "&nbsp;&nbsp;<input type='submit' name='btn' Align='middle' value='Envoyer' />&nbsp;&nbsp;  \n";
 	  echo "</td></form>\n";
 	  echo "</tr>\n";
@@ -244,15 +244,15 @@ if (!isset($btn)) { //premier passage : formulaire
     echo "</table>\n";
 
 }
-else { // passage 2 : le nom du fichier a été choisi
+else { // passage 2 : le nom du fichier a Ã©tÃ© choisi
     //print_r($_FILES['monfichier']);
-	echo "<h2>fichier envoyé : ".$_FILES['monfichier']['name']." </h2>\n";
+	echo "<h2>fichier envoyÃ© : ".$_FILES['monfichier']['name']." </h2>\n";
 	check_token();
     $desterreur=$PHP_SELF;
     $dest=$desterreur;
     //alert($dest);
 
-    //Récup du fichier téléchargé
+    //RÃ©cup du fichier tÃ©lÃ©chargÃ©
     $t=$_FILES['monfichier'];
     //print_r($t);
 
@@ -262,11 +262,11 @@ else { // passage 2 : le nom du fichier a été choisi
     $monfichiertmp_name=$t['tmp_name'];
 
     if ($monfichiername=="") {
-       alert ("Pas de fichier indiqué ! Il faut recommencer...");
+       alert ("Pas de fichier indiquÃ© ! Il faut recommencer...");
        $dest=$desterreur;
        echo "<script language='JavaScript'>\n";
        echo "<!-- \n";
-       echo "w=window.open('','mafenetre');\n"; //récupérer le même objet fenêtre
+       echo "w=window.open('','mafenetre');\n"; //rÃ©cupÃ©rer le mÃªme objet fenÃªtre
        echo "w.document.writeln('<h3>Fermeture en cours...</h3>');\n";
        echo "// - JavaScript - -->\n";
        echo "</script>\n";
@@ -275,14 +275,14 @@ else { // passage 2 : le nom du fichier a été choisi
     else {
         echo "<script language='JavaScript'>\n";
         echo "<!-- \n";
-        echo "w=window.open('','mafenetre');\n"; //récupérer le même objet fenêtre
+        echo "w=window.open('','mafenetre');\n"; //rÃ©cupÃ©rer le mÃªme objet fenÃªtre
         echo "w.document.writeln('<h3>copie en cours...</h3>');\n";
         echo "// - JavaScript - -->\n";
         echo "</script>\n";
 
 
         $fichiercopie=strtolower($monfichiername);
-        //alert("fichier copié : ".$fichiercopie);
+        //alert("fichier copiÃ© : ".$fichiercopie);
 
         $cible=$nom_dossier_modeles_ooo_mes_modeles.$rne.$fich_cible;
         //alert("avant la copie".$cible);
@@ -290,14 +290,14 @@ else { // passage 2 : le nom du fichier a été choisi
             echo "Erreur de copie<br />\n";
             echo "origine     : $monfichiername <br />\n";
             echo "destination : $nom_dossier_modeles_ooo_mes_modeles$rne".$fichiercopie;
-            $me="La copie ne s'est pas effectuée !\n Vérifiez la taille du fichier (max 512ko)\n";
+            $me="La copie ne s'est pas effectuÃ©e !\n VÃ©rifiez la taille du fichier (max 512ko)\n";
             alert($me);
             $dest=$desterreur;
         }
         else {
-            //echo "<p>$cible a été copié</p>";
+            //echo "<p>$cible a Ã©tÃ© copiÃ©</p>";
             $dest.="?fichier=$cible";
-            echo($fich_cible." a été copié correctement :<br />");
+            echo($fich_cible." a Ã©tÃ© copiÃ© correctement :<br />");
             echo "<p align='center'>";
             unset($monfichiername);
             echo "<form name='retour' method='POST' action='$PHP_SELF'>\n";

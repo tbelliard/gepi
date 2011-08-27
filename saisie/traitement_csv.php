@@ -55,24 +55,24 @@ include "../lib/periodes.inc.php";
 
 if ($_SESSION['statut'] != "secours") {
     if (!(check_prof_groupe($_SESSION['login'],$current_group["id"]))) {
-        $mess=rawurlencode("Vous n'êtes pas professeur de cet enseignement !");
+        $mess=rawurlencode("Vous n'Ãªtes pas professeur de cet enseignement !");
         header("Location: index.php?msg=$mess");
         die();
     }
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Saisie des moyennes et appréciations | Importation";
+$titre_page = "Saisie des moyennes et apprÃ©ciations | Importation";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a>";
 
 if((($_SESSION['statut']!='secours')&&($current_group["classe"]["ver_periode"]['all'][$periode_num]<2))||
 (($_SESSION['statut']=='secours')&&($current_group["classe"]["ver_periode"]['all'][$periode_num]==0))) {
-	echo "<p class = 'grand'>Importation de moyennes et appréciations - $nom_periode[$periode_num]</p>";
-	echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | Matière : " . $current_group["matiere"]["nom_complet"]."</p>\n";
+	echo "<p class = 'grand'>Importation de moyennes et apprÃ©ciations - $nom_periode[$periode_num]</p>";
+	echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | MatiÃ¨re : " . $current_group["matiere"]["nom_complet"]."</p>\n";
 
-	echo "<p>La période est close.</p>\n";
+	echo "<p>La pÃ©riode est close.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -83,7 +83,7 @@ if($_SESSION['statut']=='professeur'){
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 
 
-    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matiÃ¨re");
     //$tab_groups = get_groups_for_prof($_SESSION["login"]);
 
 	if(!empty($tab_groups)) {
@@ -110,7 +110,7 @@ if($_SESSION['statut']=='professeur'){
 		if(isset($id_grp_prec)){
 			if($id_grp_prec!=0){
 				echo " | <a href='import_note_app.php?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
-				echo "'>Enseignement précédent</a>";
+				echo "'>Enseignement prÃ©cÃ©dent</a>";
 			}
 		}
 		if(isset($id_grp_suiv)){
@@ -125,8 +125,8 @@ if($_SESSION['statut']=='professeur'){
 //====================================
 echo "</p>\n";
 
-echo "<p class = 'grand'>Importation de moyennes et appréciations - $nom_periode[$periode_num]</p>";
-echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | Matière : " . $current_group["matiere"]["nom_complet"];
+echo "<p class = 'grand'>Importation de moyennes et apprÃ©ciations - $nom_periode[$periode_num]</p>";
+echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | MatiÃ¨re : " . $current_group["matiere"]["nom_complet"];
 echo "<p>";
 $modif = 'no';
 $nb_row++;
@@ -161,7 +161,7 @@ for ($row=1; $row<$nb_row; $row++) {
     $test = mysql_num_rows($call_login);
     if ($test != 0) {
         //
-        // Si l'élève ne suit pas l'enseignement, échec
+        // Si l'Ã©lÃ¨ve ne suit pas l'enseignement, Ã©chec
         //
         if (in_array($reg_login, $current_group["eleves"][$periode_num]["list"]))  {
 			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$periode_num]["users"][$reg_login]["classe"]]["id"];
@@ -226,18 +226,18 @@ for ($row=1; $row<$nb_row; $row++) {
         }
     }
 	if($temoin_periode_close=="y") {
-		echo "<font color='red'>La période est close pour l'utilisateur $reg_login !</font><br />\n";
+		echo "<font color='red'>La pÃ©riode est close pour l'utilisateur $reg_login !</font><br />\n";
 	}
 	else {
 		if ((!$reg_data1) or (!$reg_data2)) {
-				echo "<font color='red'>Erreur lors de la modification de données de l'utilisateur $reg_login !</font><br />\n";
+				echo "<font color='red'>Erreur lors de la modification de donnÃ©es de l'utilisateur $reg_login !</font><br />\n";
 		} else {
-			echo "Les données de l'utilisateur $reg_login ont été modifiées avec succès !<br />\n";
+			echo "Les donnÃ©es de l'utilisateur $reg_login ont Ã©tÃ© modifiÃ©es avec succÃ¨s !<br />\n";
 		}
 	}
 }
 
-// on indique que qu'il faut le cas échéant procéder à un recalcul du rang des élèves
+// on indique que qu'il faut le cas Ã©chÃ©ant procÃ©der Ã  un recalcul du rang des Ã©lÃ¨ves
 if ($modif == 'yes') {
     $recalcul_rang = sql_query1("select recalcul_rang from groupes
     where id='".$id_groupe."' limit 1 ");
@@ -254,7 +254,7 @@ if ($modif == 'yes') {
 }
 
 echo "</p>\n";
-echo "<p><a href='saisie_notes.php?id_groupe=$id_groupe&amp;order_by=nom'>Accéder à la page de saisie des moyennes pour vérification</a>";
-echo "<br /><a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom'>Accéder à la page de saisie des appréciations pour vérification</a></p>\n";
+echo "<p><a href='saisie_notes.php?id_groupe=$id_groupe&amp;order_by=nom'>AccÃ©der Ã  la page de saisie des moyennes pour vÃ©rification</a>";
+echo "<br /><a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom'>AccÃ©der Ã  la page de saisie des apprÃ©ciations pour vÃ©rification</a></p>\n";
 require("../lib/footer.inc.php");
 ?>

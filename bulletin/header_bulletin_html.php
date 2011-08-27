@@ -23,7 +23,7 @@
 
 	echo "<html>
 <head>
-<meta HTTP-EQUIV='Content-Type' content='text/html; charset=iso-8859-1' />
+<meta HTTP-EQUIV='Content-Type' content='text/html; charset=utf-8' />
 <META HTTP-EQUIV='Pragma' CONTENT='no-cache' />
 <META HTTP-EQUIV='Cache-Control' CONTENT='no-cache' />
 <META HTTP-EQUIV='Expires' CONTENT='0' />
@@ -117,9 +117,9 @@
       padding-right: 20%;
 }\n";
 
-	// Récupération des variables du bloc adresses:
-	// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
-	// Il y a d'autres récupération de largeur et de positionnement du bloc adresse à extraire...
+	// RÃ©cupÃ©ration des variables du bloc adresses:
+	// Liste de rÃ©cupÃ©ration Ã  extraire de la boucle Ã©lÃ¨ves pour limiter le nombre de requÃªtes... A FAIRE
+	// Il y a d'autres rÃ©cupÃ©ration de largeur et de positionnement du bloc adresse Ã  extraire...
 	// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
 	$largeur1=getSettingValue("addressblock_logo_etab_prop") ? getSettingValue("addressblock_logo_etab_prop") : 40;
 	$largeur2=100-$largeur1;
@@ -127,18 +127,18 @@
 	// Taille des polices sur le bloc adresse:
 	$addressblock_font_size=getSettingValue("addressblock_font_size") ? getSettingValue("addressblock_font_size") : 12;
 
-	// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
+	// Taille de la cellule Classe et AnnÃ©e scolaire sur le bloc adresse:
 	$addressblock_classe_annee=getSettingValue("addressblock_classe_annee") ? getSettingValue("addressblock_classe_annee") : 35;
-	// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
+	// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, AnnÃ©e,...
 	$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
 
-	// Débug sur l'entête pour afficher les cadres
+	// DÃ©bug sur l'entÃªte pour afficher les cadres
 	$addressblock_debug=getSettingValue("addressblock_debug") ? getSettingValue("addressblock_debug") : "n";
 
-	// Nombre de sauts de lignes entre le tableau logo+etab et le nom, prénom,... de l'élève
+	// Nombre de sauts de lignes entre le tableau logo+etab et le nom, prÃ©nom,... de l'Ã©lÃ¨ve
 	$bull_ecart_bloc_nom=getSettingValue("bull_ecart_bloc_nom") ? getSettingValue("bull_ecart_bloc_nom") : 0;
 
-	// Afficher l'établissement d'origine de l'élève:
+	// Afficher l'Ã©tablissement d'origine de l'Ã©lÃ¨ve:
 	$bull_affiche_etab=getSettingValue("bull_affiche_etab") ? getSettingValue("bull_affiche_etab") : "n";
 
 	// Bordure classique ou trait-noir:
@@ -157,7 +157,7 @@
 
 
 
-	// Affichage ou non du nom et de l'adresse de l'établissement
+	// Affichage ou non du nom et de l'adresse de l'Ã©tablissement
 	$bull_affich_nom_etab=getSettingValue("bull_affich_nom_etab") ? getSettingValue("bull_affich_nom_etab") : "y";
 	$bull_affich_adr_etab=getSettingValue("bull_affich_adr_etab") ? getSettingValue("bull_affich_adr_etab") : "y";
 	if(($bull_affich_nom_etab!="n")&&($bull_affich_nom_etab!="y")) {$bull_affich_nom_etab="y";}
@@ -184,7 +184,7 @@
 	$bull_affiche_appreciations=getSettingValue("bull_affiche_appreciations") ? getSettingValue("bull_affiche_appreciations") : "y";
 
 	$bull_affiche_formule=getSettingValue("bull_affiche_formule") ? getSettingValue("bull_affiche_formule") : "n";
-	$bull_formule_bas=getSettingValue("bull_formule_bas") ? getSettingValue("bull_formule_bas") : "Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.";
+	$bull_formule_bas=getSettingValue("bull_formule_bas") ? getSettingValue("bull_formule_bas") : "Bulletin Ã  conserver prÃ©cieusement. Aucun duplicata ne sera dÃ©livrÃ©. - GEPI : solution libre de gestion et de suivi des rÃ©sultats scolaires.";
 
 	$bull_affiche_absences=getSettingValue("bull_affiche_absences") ? getSettingValue("bull_affiche_absences") : "y";
 	$bull_affiche_aid=getSettingValue("bull_affiche_aid") ? getSettingValue("bull_affiche_aid") : "y";
@@ -211,7 +211,7 @@
 	$bull_categ_font_size=getSettingValue("bull_categ_font_size") ? getSettingValue("bull_categ_font_size") : 10;
 	$bull_categ_bgcolor=getSettingValue("bull_categ_bgcolor") ? getSettingValue("bull_categ_bgcolor") : "";
 
-	$bull_intitule_app=getSettingValue("bull_intitule_app") ? getSettingValue("bull_intitule_app") : "Appréciations/Conseils";
+	$bull_intitule_app=getSettingValue("bull_intitule_app") ? getSettingValue("bull_intitule_app") : "ApprÃ©ciations/Conseils";
 
 	$bull_affiche_tel=getSettingValue("bull_affiche_tel") ? getSettingValue("bull_affiche_tel") : "n";
 	$bull_affiche_fax=getSettingValue("bull_affiche_fax") ? getSettingValue("bull_affiche_fax") : "n";
@@ -236,7 +236,7 @@
 
 	switch ($option_affichage_bulletin) {
 	case 1:
-		// La seule différence entre le 0 et le 1, c'est un ajout de "Pour la classe" au-dessus de min/classe/max
+		// La seule diffÃ©rence entre le 0 et le 1, c'est un ajout de "Pour la classe" au-dessus de min/classe/max
 		$fichier_bulletin = "bull_html_edit_0.inc";
 		break;
 	case 2:
@@ -258,10 +258,10 @@
     <link rel='icon' type='image/ico' href='../favicon.ico' />\n";
 
 	if(isset($style_screen_ajout)){
-		// Styles paramétrables depuis l'interface:
+		// Styles paramÃ©trables depuis l'interface:
 		if($style_screen_ajout=='y'){
-			// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-			// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+			// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+			// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 		}
 	}
@@ -309,7 +309,7 @@
 </style>\n";
 
 	if(isset($style_releve_notes_html)) {
-		echo "<!-- Styles du relevé HTML -->\n";
+		echo "<!-- Styles du relevÃ© HTML -->\n";
 		echo $style_releve_notes_html;
 	}
 

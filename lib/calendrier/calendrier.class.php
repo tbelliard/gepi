@@ -1,6 +1,6 @@
 <?php
 /**
- * Définition de la classe Calendrier
+ * DÃ©finition de la classe Calendrier
  * 
  * @package General
  * @subpackage Calendrier
@@ -19,42 +19,42 @@ class Calendrier {
     /**
      * Variables concernant le format de la date
      *
-     * @var boolean A true, on met les zéros devant mois ou jour s'ils sont plus petit que 10
+     * @var boolean A true, on met les zÃ©ros devant mois ou jour s'ils sont plus petit que 10
      */
     var $zeros = true;
     /**
      * Variables concernant le format de la date
      *
-     * @var array L'ordre de la date, soit l'année (a), le mois (m) et le jour (j)
+     * @var array L'ordre de la date, soit l'annÃ©e (a), le mois (m) et le jour (j)
      */
     var $format = array("j", "m", "a");
     /**
      * Variables concernant le format de la date
      *
-     * @var string Le séparateur entre l'année, le mois et le jour
+     * @var string Le sÃ©parateur entre l'annÃ©e, le mois et le jour
      */
     var $sep = "/";
 
     /**
-     * Propriétés concernant les années disponibles dans le calendrier
+     * PropriÃ©tÃ©s concernant les annÃ©es disponibles dans le calendrier
      *
-     * @var integer Le nombre d'années de moins que celle actuelle
+     * @var integer Le nombre d'annÃ©es de moins que celle actuelle
      */
     var $aMoins = 1;
     /**
-     * Propriétés concernant les années disponibles dans le calendrier
+     * PropriÃ©tÃ©s concernant les annÃ©es disponibles dans le calendrier
      *
-     * @var integer Le nombre d'années de plus que celle actuelle
+     * @var integer Le nombre d'annÃ©es de plus que celle actuelle
      */
     var $aPlus = 2;
 
     /**
-     * Propriétés à renseigner si $popup est à true
+     * PropriÃ©tÃ©s Ã  renseigner si $popup est Ã  true
      *
-     * Si $popup est à false, c'est que le calendrier va s'afficher dans la même page. Il faut
-     * donc spécifier le nom du formulaire, le nom du champ ainsi que celui de la page. Pour
+     * Si $popup est Ã  false, c'est que le calendrier va s'afficher dans la mÃªme page. Il faut
+     * donc spÃ©cifier le nom du formulaire, le nom du champ ainsi que celui de la page. Pour
      * customiser un peu l'affichage, on peut jouer sur la largeur et les marges.
-     * - $largeurCal     La largeur du calendrier (spécifier l'unité px, %, etc)
+     * - $largeurCal     La largeur du calendrier (spÃ©cifier l'unitÃ© px, %, etc)
      * - $margesCal      Les marges du calendrier (genre 15px 10px 0 10px)
      * - string      $form           Le nom du formulaire
      * - string      $champ          Le nom du champ
@@ -64,7 +64,7 @@ class Calendrier {
     var $popup = true;
     
     /**
-     * La largeur du calendrier (spécifier l'unité px, %, etc)
+     * La largeur du calendrier (spÃ©cifier l'unitÃ© px, %, etc)
      * @var     string
      */
     var $largeurCal = "100%";
@@ -128,25 +128,25 @@ class Calendrier {
         "D&eacute;cembre"
     );
     /**
-     * Le mois choisi à afficher
+     * Le mois choisi Ã  afficher
      * @var     integer
      */
     var $mois = null;
     /**
-     * L'année choisie à afficher
+     * L'annÃ©e choisie Ã  afficher
      * @var     integer
      */
     var $annee = null;
 
     /**
-     * Tableau de string représentant les styles disponibles
+     * Tableau de string reprÃ©sentant les styles disponibles
      * @var     array       $stylesDispo
      */
     var $stylesDispo = array("fr", "en"); 
     /**
      * Style d'affichage du calendrier
      *
-     * Par exemple, le style "fr" (français) commencera par lundi, alors que le style "en" (anglais)
+     * Par exemple, le style "fr" (franÃ§ais) commencera par lundi, alors que le style "en" (anglais)
      * commencera lui par dimanche.
      * @var     string
      */
@@ -158,7 +158,7 @@ class Calendrier {
     //---------------------------------------------------------------------------------------------------------------//
 
     /**
-     * Assigne le nom du formulaire et du champ et récupère la date de maintenant
+     * Assigne le nom du formulaire et du champ et rÃ©cupÃ¨re la date de maintenant
      *
      * @param   string      $form       Le nom du formulaire
      * @param   string      $champ      Le nom du champ
@@ -178,7 +178,7 @@ class Calendrier {
     /**
      * Change le style d'affichage du calendrier
      *
-     * Un style fr commencera par lundi, alors qu'un style "en" débutera par dimanche
+     * Un style fr commencera par lundi, alors qu'un style "en" dÃ©butera par dimanche
      *
      * @param   string      $style       Le type d'affichage (fr ou en)
      */
@@ -194,10 +194,10 @@ class Calendrier {
     /**
      * Set le nom de la page qu'il faut reloader
      *
-     * A utiliser dans le seul cas où le calendrier est inclu dans une page (donc pas une
-     * popup pour lui tout seul) et qu'il y a des autres paramètres en GET.
+     * A utiliser dans le seul cas oÃ¹ le calendrier est inclu dans une page (donc pas une
+     * popup pour lui tout seul) et qu'il y a des autres paramÃ¨tres en GET.
      *
-     * @param   string      $page       Le nom de la page à reloader
+     * @param   string      $page       Le nom de la page Ã  reloader
      */
     function set_page($page){
         $tab = explode("?", $page);
@@ -211,23 +211,23 @@ class Calendrier {
     }
 
     /**
-     * Affiche ou non les zéros devant jours et mois < 10
+     * Affiche ou non les zÃ©ros devant jours et mois < 10
      *
-     * @param   boolean     $zeros      A true, affiche les zéros devant jours et mois < 10
+     * @param   boolean     $zeros      A true, affiche les zÃ©ros devant jours et mois < 10
      */
     function set_zeros($zeros){
         $this->zeros = $zeros;
     }
 
     /**
-     * Fixe le format de la date à avoir dans le champ de formulaire
+     * Fixe le format de la date Ã  avoir dans le champ de formulaire
      *
-     * L'ordre (année, mois, jour) peut être fourni dans un tableau (array("a", "m", "j")) ou
-     * dans une string ("amj") ou ("a,m,j") éventuellement.
+     * L'ordre (annÃ©e, mois, jour) peut Ãªtre fourni dans un tableau (array("a", "m", "j")) ou
+     * dans une string ("amj") ou ("a,m,j") Ã©ventuellement.
      *
-     * @param   array|string    $format     L'ordre d'affichage des années, mois et jours
-     * @param   string          $sep        La séparation entre années, mois et jours
-     * @return  boolean                     True en cas de succès, false sinon
+     * @param   array|string    $format     L'ordre d'affichage des annÃ©es, mois et jours
+     * @param   string          $sep        La sÃ©paration entre annÃ©es, mois et jours
+     * @return  boolean                     True en cas de succÃ¨s, false sinon
      */
     function set_format($format, $sep){
         if (!is_array($format)){
@@ -247,12 +247,12 @@ class Calendrier {
     }
 
     /**
-     * Détermine le mois et l'année en cours
+     * DÃ©termine le mois et l'annÃ©e en cours
      *
-     * Par défaut, prend les valeurs d'aujourd'hui.
+     * Par dÃ©faut, prend les valeurs d'aujourd'hui.
      *
-     * @param   integer     $mois       Le numéro du mois (1 = janvier)
-     * @param   integer     $annee      L'année en 4 chiffres
+     * @param   integer     $mois       Le numÃ©ro du mois (1 = janvier)
+     * @param   integer     $annee      L'annÃ©e en 4 chiffres
      */
     function set_date($mois, $annee){
         $this->mois = $mois;
@@ -260,15 +260,15 @@ class Calendrier {
     }
 
     /**
-     * Détermine le mois et l'année en cours
+     * DÃ©termine le mois et l'annÃ©e en cours
      *
-     * Par défaut, prend les valeurs d'aujourd'hui. En fonction de la variable d'environnement
+     * Par dÃ©faut, prend les valeurs d'aujourd'hui. En fonction de la variable d'environnement
      * $_POST. Le tableau doit en tout cas contenir ces valeurs :
      *      - $_POST['change_date'] : true ou false
-     *      - $_POST['mois']        : le numéro du mois
-     *      - $_POST['annee']       : l'année
+     *      - $_POST['mois']        : le numÃ©ro du mois
+     *      - $_POST['annee']       : l'annÃ©e
      *
-     * @param   array     $_POST        Le numéro du mois (1 = janvier)
+     * @param   array     $_POST        Le numÃ©ro du mois (1 = janvier)
      * @return  boolean                 False si change_date n'existe pas, true sinon
      */
     function auto_set_date($_POST){
@@ -280,14 +280,14 @@ class Calendrier {
     }
 
     /**
-     * Assigne le spectre d'années à prendre en compte dans le calendrier
+     * Assigne le spectre d'annÃ©es Ã  prendre en compte dans le calendrier
      *
-     * @param   integer     $aMoins     Le nb d'années en moins que la courante
-     * @param   integer     $aPlus      Le nb d'années en plus que la courante
+     * @param   integer     $aMoins     Le nb d'annÃ©es en moins que la courante
+     * @param   integer     $aPlus      Le nb d'annÃ©es en plus que la courante
      */
     function set_annees($aMoins, $aPlus){
         $this->aMoins = $aMoins;
-        //+1 parce que l'année courante est comprise dedans
+        //+1 parce que l'annÃ©e courante est comprise dedans
         $this->aPlus = $aPlus + 1;
     }
 
@@ -319,13 +319,13 @@ class Calendrier {
     }
 
     /**
-     * Détermine si l'affichage du calendrier
+     * DÃ©termine si l'affichage du calendrier
      *
-     * S'il est sous forme de popup, il faudra afficher toutes les entêtes html et insérer
-     * tous les fichiers css et js. S'il est contenu dans une page où il y a d'autres
-     * choses, il n'y a plus besoin des balises d'entêtes.
+     * S'il est sous forme de popup, il faudra afficher toutes les entÃªtes html et insÃ©rer
+     * tous les fichiers css et js. S'il est contenu dans une page oÃ¹ il y a d'autres
+     * choses, il n'y a plus besoin des balises d'entÃªtes.
      *
-     * @param   boolean     $estPop     A true, affiche dans une popup, à false, non
+     * @param   boolean     $estPop     A true, affiche dans une popup, Ã  false, non
      */
     function set_popup($estPop){
         $this->popup = $estPop;
@@ -345,7 +345,7 @@ class Calendrier {
     }
 
     /**
-     * Récupère la string pour ouvrir dans une popup
+     * RÃ©cupÃ¨re la string pour ouvrir dans une popup
      *
      * @param   string      $page       La page dans laquelle s'ouvrira le calendrier
      * @param   integer     $l          La largeur de la popup
@@ -397,9 +397,9 @@ class Calendrier {
     /**
      * Affiche l'insertion du fichier de javascript
      *
-     * Utile seulement dans le cas où le calendrier n'est pas sous forme de popup, que la page hôte
+     * Utile seulement dans le cas oÃ¹ le calendrier n'est pas sous forme de popup, que la page hÃ´te
      * n'a pas de fichier js inclu dans le <head> et/ou que les fonctions js du calendrier n'ont
-     * pas été copiées-collées dans le fichier js de la page
+     * pas Ã©tÃ© copiÃ©es-collÃ©es dans le fichier js de la page
      */
     function affiche_js(){
         echo '<script type="text/javascript" src="'.$this->js.'"></script>'."\n";
@@ -411,9 +411,9 @@ class Calendrier {
     //---------------------------------------------------------------------------------------------------------------//
 
     /**
-     * Affiche les entêtes html
+     * Affiche les entÃªtes html
      *
-     * Il s'agit concrétement des balises html, head, title, link, et ouverture de body
+     * Il s'agit concrÃ©tement des balises html, head, title, link, et ouverture de body
      *
      * @param   string      $titre      Le titre de la page
      * @param   string      $css        Le lien vers la feuille de style
@@ -432,7 +432,7 @@ class Calendrier {
     /**
      * Affiche les fins de balises html
      *
-     * Il s'agit concrétement des balises /html et /body
+     * Il s'agit concrÃ©tement des balises /html et /body
      */
     function _affiche_basPage(){
         echo "</body>\n";
@@ -442,16 +442,16 @@ class Calendrier {
     /**
      * Affiche le javascript de la page
      *
-     * Concerne toutes les données utilisées dans les fonctions js du fichier js.
+     * Concerne toutes les donnÃ©es utilisÃ©es dans les fonctions js du fichier js.
      *
      * @param   string      $frm        Le nom du formulaire
      * @param   string      $chm        Le nom du champ
      * @param   boolean     $zeros      Affiche ou non le 0 devant jours et mois < 10
-     * @param   string      $sep        Le séparateur entre année, mois et jour
-     * @param   boolean     $popup      Détermine si on va fermer la popup ou non
-     * @param   array       $ordre      L'ordre de la date (année - mois - jour)
-     * @param   integer     $mois       Le numéro du mois
-     * @param   integer     $annee      L'année
+     * @param   string      $sep        Le sÃ©parateur entre annÃ©e, mois et jour
+     * @param   boolean     $popup      DÃ©termine si on va fermer la popup ou non
+     * @param   array       $ordre      L'ordre de la date (annÃ©e - mois - jour)
+     * @param   integer     $mois       Le numÃ©ro du mois
+     * @param   integer     $annee      L'annÃ©e
      */
     function _affiche_js($frm, $chm, $zeros, $sep, $popup, $ordre, $mois, $annee){
         if ($zeros){
@@ -466,7 +466,7 @@ class Calendrier {
         echo "\tvar anneec = ".$annee.";\n";
         echo "\t".'var ordre = new Array("'.strtoupper(implode('", "', $ordre)).'");'."\n\n";
         echo "\t/**\n";
-        echo "\t * Insère la valeur dans le champ et ferme la fenêtre si c'était une popup\n";
+        echo "\t * InsÃ¨re la valeur dans le champ et ferme la fenÃªtre si c'Ã©tait une popup\n";
         echo "\t *\n";
         echo "\t * @param   string  val     La valeur du champ de date\n";
         echo "\t */\n";
@@ -485,11 +485,11 @@ class Calendrier {
      * Affiche le calendrier
      *
      * @param   string      $largeur    La largeur du calendrier
-     * @param   string      $marges     Les éventuelles marges du calendrier
-     * @param   string      $link       Le nom de la page où il y a le calendrier avec les valeurs GET
+     * @param   string      $marges     Les Ã©ventuelles marges du calendrier
+     * @param   string      $link       Le nom de la page oÃ¹ il y a le calendrier avec les valeurs GET
      * @param   array       $nomm       Le noms des mois
-     * @param   integer     $anneeMin   Le nb d'année en moins que celle actuelle
-     * @param   integer     $anneeMax   Le nb d'année en plus que celle actuelle
+     * @param   integer     $anneeMin   Le nb d'annÃ©e en moins que celle actuelle
+     * @param   integer     $anneeMax   Le nb d'annÃ©e en plus que celle actuelle
      * @param   array       $ajd        Le tableau getdate() d'aujourd'hui
      * @param   string      $affichage  Le style d'affichage (fr, en)
      */
@@ -521,7 +521,7 @@ class Calendrier {
         echo "\t</select>\n";
         echo "\t".'<select name="annee" id="annee" onChange="reload(this.form)">'."\n";
         /**
-         * Affichage des années
+         * Affichage des annÃ©es
          */
         for ($i = $ajd["year"] - $anneeMin; $i < $ajd["year"] + $anneeMax; $i++){
             $selected = $this->_get_selected($annee, $i);
@@ -541,7 +541,7 @@ class Calendrier {
         }
         echo "\t\t<tr>\n";
         /**
-         * Affichage des cellules vides en début de mois, s'il y en a
+         * Affichage des cellules vides en dÃ©but de mois, s'il y en a
          */
         for ($prems = 0; $prems < $premierJour; $prems++){
             $classe = $this->_get_classe($prems, 2, $affichage);
@@ -585,12 +585,12 @@ class Calendrier {
     /**
      * Renvoie la position du 1er et dernier jour du mois
      *
-     * En fonction du mois et de l'année, retourne exactement le numéro du jour dans la
+     * En fonction du mois et de l'annÃ©e, retourne exactement le numÃ©ro du jour dans la
      * semaine. Le tableau de retour est comme suit :
-     *      - $tab[0] : le numéro du 1er jour
-     *      - $tab[1] : le numéro du dernier jour
+     *      - $tab[0] : le numÃ©ro du 1er jour
+     *      - $tab[1] : le numÃ©ro du dernier jour
      *
-     * @param   integer     $annee      L'année choisie
+     * @param   integer     $annee      L'annÃ©e choisie
      * @param   integer     $mois       Le mois choisi
      * @return  array                   Le tableau du 1er et dernier jour du mois
     */
@@ -622,7 +622,7 @@ class Calendrier {
                 $temp[] = $nomj[$j];
                 $j++;
             }
-            //On décale le 1er jour en conséquence
+            //On dÃ©cale le 1er jour en consÃ©quence
             $premierJour -= $origine;
             if ($premierJour < 0){
                 $premierJour = 6 - (abs($premierJour) - 1);
@@ -635,9 +635,9 @@ class Calendrier {
     /**
      * Renvoie une string qui vaut selected ou non, pour un champs SELECT
      *
-     * @param   integer     $temps      L'année ou le mois choisi
+     * @param   integer     $temps      L'annÃ©e ou le mois choisi
      * @param   integer     $i          L'annee en cours
-     * @return  string                  La string nécessaire pour sélectionner une OPTION
+     * @return  string                  La string nÃ©cessaire pour sÃ©lectionner une OPTION
      */
     function _get_selected($temps, $i){
         $selected = "";
@@ -648,16 +648,16 @@ class Calendrier {
     }
 
     /**
-     * Renvoie une string représentant l'appel à une classe CSS
+     * Renvoie une string reprÃ©sentant l'appel Ã  une classe CSS
      *
-     * Pour les valeurs par défaut :
+     * Pour les valeurs par dÃ©faut :
      *      - 1 : ' class="aut"'
      *      - 2 : ''
      *
      * @param   integer     $jour       Le jour en cours
-     * @param   integer     $index      La valeur par défaut de la string
+     * @param   integer     $index      La valeur par dÃ©faut de la string
      * @param   string      $mode       Le mode d'affichage du calendrier ("fr" ou "en")
-     * @return  string                  La string nécessaire pour appeller la classe CSS voulue
+     * @return  string                  La string nÃ©cessaire pour appeller la classe CSS voulue
      */
     function _get_classe($jour, $index, $mode){
         switch ($index) {
@@ -685,18 +685,18 @@ class Calendrier {
     }
 
     /**
-     * Détermine si on est sur un dimanche ou un samedi, à partir du 1er du mois
+     * DÃ©termine si on est sur un dimanche ou un samedi, Ã  partir du 1er du mois
      *
-     * @param   array       $ajd            Le jour, mois et année de maintenant
-     * @param   integer     $annee          L'année en cours
+     * @param   array       $ajd            Le jour, mois et annÃ©e de maintenant
+     * @param   integer     $annee          L'annÃ©e en cours
      * @param   integer     $mois           Le mois en cours
      * @param   integer     $jour           Le jour en cours
-     * @param   integer     $cptJour        Le numéro du jour en cours de la semaine
-     * @param   integer     $premierJour    Le numéro du 1er jour (dans la semaine) du mois
+     * @param   integer     $cptJour        Le numÃ©ro du jour en cours de la semaine
+     * @param   integer     $premierJour    Le numÃ©ro du 1er jour (dans la semaine) du mois
      * @param   array       $nomj           Le tableau des noms des jours
-     * @param   integer     $prems          Le numéro du dernier jour de la semaine du mois précédent
+     * @param   integer     $prems          Le numÃ©ro du dernier jour de la semaine du mois prÃ©cÃ©dent
      * @param   string      $mode           Le mode d'affichage du calendrier ("fr" ou "en")
-     * @return  string                      La string nécessaire pour appeller la classe CSS voulue
+     * @return  string                      La string nÃ©cessaire pour appeller la classe CSS voulue
      */
     function _get_classeJour($ajd, $annee, $mois, $jour, $cptJour, $premierJour, $nomj, $prems, $mode){
         $classe = "";
@@ -720,12 +720,12 @@ class Calendrier {
     }
 
     /**
-     * Détermine si on est sur un samedi, lorsqu'on complète le tableau
+     * DÃ©termine si on est sur un samedi, lorsqu'on complÃ¨te le tableau
      *
      * @param   integer     $i              Le jour en cours
-     * @param   integer     $cptJour        Le numéro du dernier jour (dans la semaine) du mois
+     * @param   integer     $cptJour        Le numÃ©ro du dernier jour (dans la semaine) du mois
      * @param   string      $mode           Le mode d'affichage du calendrier ("fr" ou "en")
-     * @return  string                      La string nécessaire pour appeller la classe CSS voulue
+     * @return  string                      La string nÃ©cessaire pour appeller la classe CSS voulue
      */
     function _get_classeJourReste($i, $cptJour, $mode){
         $classe = "";

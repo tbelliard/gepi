@@ -42,7 +42,7 @@ if (!checkAccess()) {
 
 	include("../lib/functions.php");
 
-// uid pour ne pas refaire renvoyer plusieurs fois le même formulaire
+// uid pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
  if(empty($_SESSION['uid_prime'])) { $_SESSION['uid_prime']=''; }
  if(empty($_GET['uid_post']) and empty($_POST['uid_post'])) {$uid_post='';}
@@ -53,19 +53,19 @@ if (!checkAccess()) {
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
 
-// fonction pour connaitre l'age de la personne par rapport à une date au format SQL AAAA-MM-JJ
+// fonction pour connaitre l'age de la personne par rapport Ã  une date au format SQL AAAA-MM-JJ
 function age($date_de_naissance_fr)
 {
-            //à partir de la date de naissance, retourne l'âge dans la variable $age
+            //Ã  partir de la date de naissance, retourne l'Ã¢ge dans la variable $age
 
-            // date de naissance (partie à modifier)
+            // date de naissance (partie Ã  modifier)
               $ddn = $date_de_naissance_fr;
 
             // enregistrement de la date du jour
               $DATEDUJOUR = date("Y-m-d");
               $DATEFRAN = date("d/m/Y");
 
-            // calcul de mon age d'après la date de naissance $ddn
+            // calcul de mon age d'aprÃ¨s la date de naissance $ddn
               $annais = substr("$ddn", 0, 4);
               $anjour = substr("$DATEFRAN", 6, 4);
               $moisnais = substr("$ddn", 4, 2);
@@ -89,7 +89,7 @@ function pp($classe_choix)
                return($suivi_par);
 }
 
-// variable non définie
+// variable non dÃ©finie
 	if(empty($_GET['select_fiche_eleve']) and empty($_POST['select_fiche_eleve'])) {$select_fiche_eleve="";}
 	 else { if (isset($_GET['select_fiche_eleve'])) {$select_fiche_eleve=$_GET['select_fiche_eleve'];} if (isset($_POST['select_fiche_eleve'])) {$select_fiche_eleve=$_POST['select_fiche_eleve'];} }
 	if(empty($_GET['action']) and empty($_POST['action'])) {$action="";}
@@ -103,7 +103,7 @@ function pp($classe_choix)
 //ajout des fiche_suivi des eleve
 if(($action_sql === "ajouter" or $action_sql === "modifier") and $valide_form === 'yes')
 {
-     // Vérifcation des variable
+     // VÃ©rifcation des variable
         $date_fiche = date('Y-m-d');
         $heure_fiche = date('H:i:s');
         $data_info_suivi = nl2br(htmlspecialchars(traitement_magic_quotes($_POST['data_info_suivi'])));
@@ -113,7 +113,7 @@ if(($action_sql === "ajouter" or $action_sql === "modifier") and $valide_form ==
 
         if ($action_sql === 'modifier') { $id_suivi_eleve_cpe = $_POST['id_suivi_eleve_cpe']; }
 
-            // Vérification des champs nom et prenom (si il ne sont pas vides ?)
+            // VÃ©rification des champs nom et prenom (si il ne sont pas vides ?)
             if($data_info_suivi != '')
             {
                  $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE eleve_suivi_eleve_cpe = '".$eleve_suivi_eleve_cpe."' AND date_suivi_eleve_cpe = '".$date_fiche."' AND komenti_suivi_eleve_cpe = '".$data_info_suivi."'"),0);
@@ -126,19 +126,19 @@ if(($action_sql === "ajouter" or $action_sql === "modifier") and $valide_form ==
                       }
                      if($action_sql === 'modifier')
                       {
-                            // Requete de mise à jour MYSQL
+                            // Requete de mise Ã  jour MYSQL
                               $requete = "UPDATE ".$prefix_base."suivi_eleve_cpe SET parqui_suivi_eleve_cpe='".$_SESSION['login']."', komenti_suivi_eleve_cpe = '$data_info_suivi', niveau_message_suivi_eleve_cpe = '$niveau_urgent', action_suivi_eleve_cpe = '$action_suivi' WHERE id_suivi_eleve_cpe = '".$id_suivi_eleve_cpe."'";
                       }
                             // Execution de cette requete dans la base cartouche
                              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
                              $verification = '1';
                     } else {
-                               // vérification = 2 - C'est initiale pour les motif existe déjas
+                               // vÃ©rification = 2 - C'est initiale pour les motif existe dÃ©jas
                                  $verification = '2';
                                  $erreur = '1';
                             }
             } else {
-                     // vérification = 3 - Tous les champs ne sont pas remplie
+                     // vÃ©rification = 3 - Tous les champs ne sont pas remplie
                      $verification = '3';
                      $erreur = '1';
                    }
@@ -166,8 +166,8 @@ if ($action === 'modifier')
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="fr">
 <head>
-  <title>Fiche élève</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <title>Fiche Ã©lÃ¨ve</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Pragma" CONTENT="no-cache" />
   <meta http-equiv="Cache-Control" CONTENT="no-cache" />
   <meta http-equiv="Expires" CONTENT="0" />
@@ -222,7 +222,7 @@ if ($action === 'modifier')
     ?>
 
 <div class="couleur_ligne_3" style="width: 500px; height: 135px; margin: auto; border: solid 2px #2F4F4F;">
-	<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identité élève</div>
+	<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">IdentitÃ© Ã©lÃ¨ve</div>
 	<div style="width: 90px; float: right; padding: 2px; text-align: center;">
 		<?php
 		if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
@@ -238,7 +238,7 @@ if ($action === 'modifier')
 	</div>
 	<div style="text-align: left; margin: 2px;">
 		Nom : <?php echo $nom_eleve; ?><br />
-		Prénom : <?php echo $prenom_eleve; ?><br />
+		PrÃ©nom : <?php echo $prenom_eleve; ?><br />
 		Date de naissance : <?php echo $naissance_eleve; ?><br />
 		Age : <?php echo age($date_de_naissance); ?> ans <br /><br />
 		Classe : <?php echo classe_de($login_eleve); ?> (Suivi par : <?php echo pp(classe_court_de($login_eleve)); ?>)
@@ -253,9 +253,9 @@ if ($action === 'modifier')
 			{
 				echo $responsable_eleve[$cpt_responsable]['civilite'].' '.strtoupper($responsable_eleve[$cpt_responsable]['nom']).' '.ucfirst($responsable_eleve[$cpt_responsable]['prenom']).'<br />';
 				$telephone = '';
-					if ( !empty($responsable_eleve[$cpt_responsable]['tel_pers']) ) { $telephone = $telephone.'Tél. <strong>'.$responsable_eleve[$cpt_responsable]['tel_pers'].'</strong> '; }
+					if ( !empty($responsable_eleve[$cpt_responsable]['tel_pers']) ) { $telephone = $telephone.'TÃ©l. <strong>'.$responsable_eleve[$cpt_responsable]['tel_pers'].'</strong> '; }
 					if ( !empty($responsable_eleve[$cpt_responsable]['tel_prof']) ) { $telephone = $telephone.'Prof. <strong>'.$responsable_eleve[$cpt_responsable]['tel_prof'].'</strong> '; }
-					if ( !empty($responsable_eleve[$cpt_responsable]['tel_port']) ) { $telephone = $telephone.'Port. '.$responsable_eleve[$cpt_responsable]['tel_port'].'<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="13" width="13" />'; }
+					if ( !empty($responsable_eleve[$cpt_responsable]['tel_port']) ) { $telephone = $telephone.'Port. '.$responsable_eleve[$cpt_responsable]['tel_port'].'<img src="../images/attention.png" alt="Attention numÃ©ro surtaxÃ©" title="Attention numÃ©ro surtaxÃ©" border="0" height="13" width="13" />'; }
 				echo $telephone;
 				$cpt_responsable = $cpt_responsable + 1;
 			}
@@ -267,7 +267,7 @@ if ($action === 'modifier')
 
 <table class="entete_tableau_selection" cellspacing="0" cellpadding="2">
        <tr>
-           <td class="titre_tableau_gestion" colspan="2"><b>Information élève</b></td>
+           <td class="titre_tableau_gestion" colspan="2"><b>Information Ã©lÃ¨ve</b></td>
        </tr>
        <tr>
            <td class="td_tableau_fiche" style="width: 400px; vertical-align: top">
@@ -284,11 +284,11 @@ if ($action === 'modifier')
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='3') { $couleur='#FFDFDF'; $couleur2='#FF0000'; $drapeau='[prioritaire]'; }
 			  } else { $couleur='#FFFFFF'; $couleur2='#4DFF2F'; $drapeau=''; } ?>
-                    <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe'].$action_pour_eleve; ?><br /><br /><span class="dimi_texte">écrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />[ <a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action=modifier#formulaire">modifier</a> | <a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=supprimer&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>">supprimer</a> ]</span></p>
+                    <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe'].$action_pour_eleve; ?><br /><br /><span class="dimi_texte">Ã©crit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />[ <a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action=modifier#formulaire">modifier</a> | <a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=supprimer&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>">supprimer</a> ]</span></p>
            <?php } ?>
 
 	<div style="text-align: center;">
-	  <?php if($debut_selection_suivi!='0') { ?><a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi-'2'; ?>">Page précédente</a><?php } ?>
+	  <?php if($debut_selection_suivi!='0') { ?><a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi-'2'; ?>">Page prÃ©cÃ©dente</a><?php } ?>
 	  <?php $debut_selection_suivi_suivant = $debut_selection_suivi+'2'; if($debut_selection_suivi!='0' and $debut_selection_suivi_suivant<=$cpt_komenti) { ?> | <?php } ?>
 	  <?php if($debut_selection_suivi_suivant<=$cpt_komenti) { ?><a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi+'2'; ?>">Page suivant</a><?php } ?>
 	</div>
@@ -298,8 +298,8 @@ if ($action === 'modifier')
                <fieldset>
                  <legend>Ajouter un suivi</legend>
                  <select id="info_suivi" onchange="data_info_suivi.value += info_suivi.options[info_suivi.selectedIndex].text + '\n'" style="width: 210px;">
-                   <option>Sélectionné un texte rapide</option>
-		   <option>[Exclusion du cours] A été exclus du cours de:   à:</option>
+                   <option>SÃ©lectionnÃ© un texte rapide</option>
+		   <option>[Exclusion du cours] A Ã©tÃ© exclus du cours de:   Ã :</option>
                    <option>Rencontre avec les parents</option>
                    <option>Avertissement</option>
                  </select>
@@ -319,7 +319,7 @@ if ($action === 'modifier')
 				</td>
 				<td>
 				<div style="font-family: Arial; font-size: 0.8em; background-color: #FFFFFF; border : 1px solid #0061BD; height: 70px; padding: 0px;">
-				Niveau de priorité<br />
+				Niveau de prioritÃ©<br />
 				<input name="niveau_urgent" id="nur1" value="1" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='1') { ?>checked="checked"<?php } else { ?>checked="checked"<?php } ?> /><label for="nur1" style="cursor: pointer;">Information</label><br />
 				<input name="niveau_urgent" id="nur2" value="2" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='2') { ?>checked="checked"<?php } ?> /><label for="nur2" style="cursor: pointer;">Important</label><br />
 				<input name="niveau_urgent" id="nur3" value="3" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='3') { ?>checked="checked"<?php } ?> /><label for="nur3" style="cursor: pointer;">Prioritaire</label><br />
@@ -358,7 +358,7 @@ if ($action === 'modifier')
            </td>
        </tr>
     </table>
-	<br /><a href="javascript:window.close();">Fermer la fenêtre</a>
+	<br /><a href="javascript:window.close();">Fermer la fenÃªtre</a>
   </div>
 </body>
 

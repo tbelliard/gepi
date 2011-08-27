@@ -1,5 +1,5 @@
 <?php
-/** Outils complémentaires de gestion des AID
+/** Outils complÃ©mentaires de gestion des AID
  * 
  * $Id$
  * 
@@ -12,46 +12,46 @@
 
 
 /**
- * Fonction vérifiant les droits d'accès au module selon l'identifiant
+ * Fonction vÃ©rifiant les droits d'accÃ¨s au module selon l'identifiant
  *
- * $champ : si non vide, on vérifie le droit sur ce champ en particulier, si $champ='', on vérifie le droit de modifier la fiche projet
+ * $champ : si non vide, on vÃ©rifie le droit sur ce champ en particulier, si $champ='', on vÃ©rifie le droit de modifier la fiche projet
  * 
  * Cas particulier : $champ = 'eleves_profs'
- * Cette valeur permet de gérer le fait que n'apparaissent pas sur les fiches publiques :
- * - Les elèves responsables du projet,
+ * Cette valeur permet de gÃ©rer le fait que n'apparaissent pas sur les fiches publiques :
+ * - Les elÃ¨ves responsables du projet,
  * - les professeurs responsables du projet,
- * - les élèves faisant partie du projet.
+ * - les Ã©lÃ¨ves faisant partie du projet.
  * 
- * $_login : identifiant de la personne pour laquelle on vérifie les droits, 
- * si le login n'est pas précisé, on est dans l'interface publique
+ * $_login : identifiant de la personne pour laquelle on vÃ©rifie les droits, 
+ * si le login n'est pas prÃ©cisÃ©, on est dans l'interface publique
  * 
- * $mode : utilisé uniquement si $champ est non vide
- * - $mode = W -> l'utilisateur a-t-il accès en écriture ?
- * - Autres valeurs de W -> l'utilisateur a-t-il accès en lecture ?
+ * $mode : utilisÃ© uniquement si $champ est non vide
+ * - $mode = W -> l'utilisateur a-t-il accÃ¨s en Ã©criture ?
+ * - Autres valeurs de W -> l'utilisateur a-t-il accÃ¨s en lecture ?
  * 
- * @param type $_login Login à vérifier
+ * @param type $_login Login Ã  vÃ©rifier
  * @param type $aid_id identifiant de l'AID
- * @param type $indice_aid identifiant de la catégorie d'AID
- * @param type $champ champ à vérifier
- * @param type $mode mode recherché
+ * @param type $indice_aid identifiant de la catÃ©gorie d'AID
+ * @param type $champ champ Ã  vÃ©rifier
+ * @param type $mode mode recherchÃ©
  * @param type $annee
  * @return type 
  */
 function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='') {
- //$annee='' signifie qu'il s'agit de l'année courante
+ //$annee='' signifie qu'il s'agit de l'annÃ©e courante
  if ($annee=='') {
-    // Les outils complémetaires sont-ils activés ?
+    // Les outils complÃ©metaires sont-ils activÃ©s ?
     $test_active = sql_query1("select indice_aid from aid_config WHERE outils_complementaires = 'y' and indice_aid='".$indice_aid."'");
-    // Les outils complémenatires ne sont activés pour aucune AID, on renvoie FALSE
+    // Les outils complÃ©menatires ne sont activÃ©s pour aucune AID, on renvoie FALSE
     if ($test_active == -1) {
         return FALSE;
         die();
     }
 
-    // Si le champ n'est pas activé, on ne l'affiche pas !
+    // Si le champ n'est pas activÃ©, on ne l'affiche pas !
     // Deux valeurs possibles :
-    // 0 -> le champ n'est pas utilisé
-    // 1 -> Le champ est utilisé
+    // 0 -> le champ n'est pas utilisÃ©
+    // 1 -> Le champ est utilisÃ©
     if ($champ != "") {
         $statut_champ = sql_query1("select statut from droits_aid where id = '".$champ."'");
         if ($statut_champ == 0) {
@@ -61,12 +61,12 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
     }
 
     // Dans la suite,
-    // Les outils complémentaires sont activés
+    // Les outils complÃ©mentaires sont activÃ©s
 
     if ($_login!='') {
         $statut_login = sql_query1("select statut from utilisateurs where login='".$_login."' and etat='actif' ");
     } else {
-        // si le login n'est pas précisé, on est dans l'interface publique
+        // si le login n'est pas prÃ©cisÃ©, on est dans l'interface publique
         $statut_login = "public";
     }
     // Admin ?
@@ -82,17 +82,17 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
         die();
     }
 
-    // S'agit-il d'un utilisateurs ayant des droits sur l'ensemble des AID de la catégorie
+    // S'agit-il d'un utilisateurs ayant des droits sur l'ensemble des AID de la catÃ©gorie
     $test_droits_special = sql_query1("select count(id_utilisateur) from j_aidcateg_utilisateurs where indice_aid='".$indice_aid."' and id_utilisateur='".$_login."'");
-    // Cas d'un élève
+    // Cas d'un Ã©lÃ¨ve
     if (($statut_login=="eleve")) {
-        // s'il s'agit d'un élève, les élèves ont-ils accès en modification ?
-        // Si l'utilisateur a des droits spéciaux, il peut modifier
+        // s'il s'agit d'un Ã©lÃ¨ve, les Ã©lÃ¨ves ont-ils accÃ¨s en modification ?
+        // Si l'utilisateur a des droits spÃ©ciaux, il peut modifier
         $CheckAccessEleve = sql_query1("select eleve_peut_modifier from aid where id = '".$aid_id."' and indice_aid = '".$indice_aid."'");
         if ($CheckAccessEleve != "y") {
             if ($champ == "") {return FALSE; die();}
         }
-        // L'élève est-il responsable de cet AID ?
+        // L'Ã©lÃ¨ve est-il responsable de cet AID ?
         $CheckAccessEleve2 = sql_query1("select count(login) from j_aid_eleves_resp WHERE (login='".$_SESSION['login']."' and indice_aid='".$indice_aid."' and id_aid='".$aid_id."')");
         if ($CheckAccessEleve2 == 0) {
              if ($champ == "") {return FALSE; die();}
@@ -101,7 +101,7 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
     // Cas d'un professeur
     if (($statut_login=="professeur")) {
 
-        // s'il s'agit d'un prof, les profs ont-ils accès en modification ?
+        // s'il s'agit d'un prof, les profs ont-ils accÃ¨s en modification ?
         $CheckAccessProf = sql_query1("select prof_peut_modifier from aid where id = '".$aid_id."' and indice_aid = '".$indice_aid."'");
         if (($CheckAccessProf != "y") and ($test_droits_special==0) ) {
             if ($champ == "") {return FALSE; die();}
@@ -115,32 +115,32 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
     }
     // Cas d'un CPE
     if (($statut_login=="cpe")) {
-        // s'il s'agit d'un CPE, les cpe ont-ils accès en modification ?
-        // Si l'utilisateur a des droits spéciaux, il peut modifier
+        // s'il s'agit d'un CPE, les cpe ont-ils accÃ¨s en modification ?
+        // Si l'utilisateur a des droits spÃ©ciaux, il peut modifier
         $CheckAccessCPE = sql_query1("select cpe_peut_modifier from aid where id = '".$aid_id."' and indice_aid = '".$indice_aid."'");
         if (($CheckAccessCPE != "y") and ($test_droits_special==0)) {
             if ($champ == "") {return FALSE; die();}
         }
     }
-    // S'il s'agit d'un responsable, de la scolarité ou de secours, pas d'accès
+    // S'il s'agit d'un responsable, de la scolaritÃ© ou de secours, pas d'accÃ¨s
     if (($statut_login=="responsable") or ($statut_login=="scolarite") or ($statut_login=="secours")) {
         return FALSE;
         die();
     }
-    // Si le champ n'est pas précisé, c'est terminé
-    // Si le champ est précisé, on regarde si l'utilisateur a les droits de modif de ce champ
+    // Si le champ n'est pas prÃ©cisÃ©, c'est terminÃ©
+    // Si le champ est prÃ©cisÃ©, on regarde si l'utilisateur a les droits de modif de ce champ
     //
     if ($champ == "") {
-        // Si $champ == "", cela signifie qu'on demande l'accès à une page privée de modif ou de visualisation
+        // Si $champ == "", cela signifie qu'on demande l'accÃ¨s Ã  une page privÃ©e de modif ou de visualisation
         if ($_login !="")
             return TRUE;
         else
             return FALSE;
     } else {
-        // Le champ est précisé. On cherche à savoir si l'utilisateur a le droit de voir et/ou de modifier ce champ
+        // Le champ est prÃ©cisÃ©. On cherche Ã  savoir si l'utilisateur a le droit de voir et/ou de modifier ce champ
         $CheckAccess = sql_query1("select ".$statut_login." from droits_aid where id = '".$champ."'");
-        // $CheckAccess='V' -> possibilité de modifier et de voir le champ
-        // $CheckAccess='F' -> possibilité de voir le champ mais pas de le modifier
+        // $CheckAccess='V' -> possibilitÃ© de modifier et de voir le champ
+        // $CheckAccess='F' -> possibilitÃ© de voir le champ mais pas de le modifier
         // $CheckAccess='-' -> Interdiction de voir et ou de modifier le champ
         if (($mode != 'W') and ($CheckAccess != '-'))
             return (TRUE);
@@ -151,10 +151,10 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
 
     }
   } else {
-  // il s'agit de projets d'une année passée...
-    // Les outils complémetaires sont-ils activés ?
+  // il s'agit de projets d'une annÃ©e passÃ©e...
+    // Les outils complÃ©metaires sont-ils activÃ©s ?
     $test_active = sql_query1("select id from archivage_types_aid WHERE outils_complementaires = 'y' and id='".$indice_aid."'");
-    // Les outils complémenatires ne sont activés pour aucune AID, on renvoie FALSE
+    // Les outils complÃ©menatires ne sont activÃ©s pour aucune AID, on renvoie FALSE
     if ($test_active == -1) {
         return FALSE;
         die();
@@ -163,24 +163,24 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
     if ($_login!='') {
         $statut_login = sql_query1("select statut from utilisateurs where login='".$_login."' and etat='actif' ");
     } else {
-        // si le login n'est pas précisé, on est dans l'interface publique
+        // si le login n'est pas prÃ©cisÃ©, on est dans l'interface publique
         $statut_login = "public";
     }
 
     if ($champ == 'eleves_profs') {
-    # Cas particulier du champ eleves_profs : ce champ permet de gérer le fait que n'apparaissent pas sur les fiches publiques :
-    # Les elèves responsables du projet,
+    # Cas particulier du champ eleves_profs : ce champ permet de gÃ©rer le fait que n'apparaissent pas sur les fiches publiques :
+    # Les elÃ¨ves responsables du projet,
     # les professeurs responsables du projet,
-    # les élèves faisant partie du projet.
+    # les Ã©lÃ¨ves faisant partie du projet.
         if ($statut_login == "public")
             return FALSE;
         else
             return TRUE;
     } else if ($champ != "") {
-    // Si le champ n'est pas activé, on ne l'affiche pas !
+    // Si le champ n'est pas activÃ©, on ne l'affiche pas !
     // Deux valeurs possibles :
-    // 0 -> le champ n'est pas utilisé
-    // 1 -> Le champ est utilisé
+    // 0 -> le champ n'est pas utilisÃ©
+    // 1 -> Le champ est utilisÃ©
 
         $statut_champ = sql_query1("select statut from droits_aid where id = '".$champ."'");
         if ($statut_champ == 0) {
@@ -194,14 +194,14 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
         die();
     }
     if ($champ == "") {
-    // Si $champ == "", cela signifie qu'on demande l'accès à une page privée de modif ou de visualisation
+    // Si $champ == "", cela signifie qu'on demande l'accÃ¨s Ã  une page privÃ©e de modif ou de visualisation
        return FALSE;
-    // Si le champ est précisé, on regarde si l'utilisateur a les droits de modif de ce champ
+    // Si le champ est prÃ©cisÃ©, on regarde si l'utilisateur a les droits de modif de ce champ
     } else {
-        // Le champ est précisé. On cherche à savoir si l'utilisateur a le droit de voir et/ou de modifier ce champ
+        // Le champ est prÃ©cisÃ©. On cherche Ã  savoir si l'utilisateur a le droit de voir et/ou de modifier ce champ
         $CheckAccess = sql_query1("select ".$statut_login." from droits_aid where id = '".$champ."'");
-        // $CheckAccess='V' -> possibilité de modifier et de voir le champ
-        // $CheckAccess='F' -> possibilité de voir le champ mais pas de le modifier
+        // $CheckAccess='V' -> possibilitÃ© de modifier et de voir le champ
+        // $CheckAccess='F' -> possibilitÃ© de voir le champ mais pas de le modifier
         // $CheckAccess='-' -> Interdiction de voir et ou de modifier le champ
         if (($mode != 'W') and ($CheckAccess != '-'))
             return (TRUE);
@@ -214,11 +214,11 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
 }
 
 /**
- * vérifie si un Aid est actif
+ * vÃ©rifie si un Aid est actif
  * 
  * @param int $indice_aid Indice de l'aid
  * @param string $aid_id Id de l'aid
- * @param string $annee l'année de recherche (année courante si vide)
+ * @param string $annee l'annÃ©e de recherche (annÃ©e courante si vide)
  * @return boolean 
  */
 function VerifAidIsAcive($indice_aid,$aid_id,$annee='') {
@@ -245,10 +245,10 @@ function VerifAidIsAcive($indice_aid,$aid_id,$annee='') {
 }
 
 /**
- * renvoie le libellé du champ
+ * renvoie le libellÃ© du champ
  * 
- * @param string $champ Id du champ à tester
- * @return string Le libellé
+ * @param string $champ Id du champ Ã  tester
+ * @return string Le libellÃ©
  */
 function LibelleChampAid($champ) {
     $nom = sql_query1("select description from droits_aid where id = '".$champ."'");
@@ -259,8 +259,8 @@ function LibelleChampAid($champ) {
  * Calcule le niveau de gestion des AIDs
  * 
  * - 0 : aucun droit
- * - 1 : peut uniquement ajouter / supprimer des élèves
- * - 2 : (pas encore implémenter) peut uniquement ajouter / supprimer des élèves et des professeurs responsables
+ * - 1 : peut uniquement ajouter / supprimer des Ã©lÃ¨ves
+ * - 2 : (pas encore implÃ©menter) peut uniquement ajouter / supprimer des Ã©lÃ¨ves et des professeurs responsables
  * - 3 : ...
  * - 10 : Peut tout faire
  *
@@ -275,7 +275,7 @@ function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
         die();
     }
     if (getSettingValue("active_mod_gest_aid")=="y") {
-      // l'id de l'aid n'est pas défini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catégorie
+      // l'id de l'aid n'est pas dÃ©fini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catÃ©gorie
       if ($_id_aid == "") {
         $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
         $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
@@ -286,7 +286,7 @@ function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
         } else
           return 0;
       } else {
-      // l'id de l'aid est défini : on regarde si l'utilisateur est gestionnaire de cette aid
+      // l'id de l'aid est dÃ©fini : on regarde si l'utilisateur est gestionnaire de cette aid
         $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."' and id_aid = '".$_id_aid."')");
         $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
         if ($test2 >= 1) {
@@ -301,11 +301,11 @@ function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
 }
 
 /**
- * Vérifie si un utilisateurs à des droits de suppression sur un Aid
+ * VÃ©rifie si un utilisateurs Ã  des droits de suppression sur un Aid
  * 
  * @param string $_login Login de l'utilisateur
- * @param string $_action Action à tester
- * @param string $_cible1 Non utilisé mais obligatoire
+ * @param string $_action Action Ã  tester
+ * @param string $_cible1 Non utilisÃ© mais obligatoire
  * @param int $_cible2 id_aid
  * @param int $_cible3 indice_aid
  * @return bool TRUE si l'utilisateur a les droits

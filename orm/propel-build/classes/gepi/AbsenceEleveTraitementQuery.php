@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for performing query and update operations on the 'a_traitements' table.
  *
- * Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies
+ * Un traitement peut gerer plusieurs saisies et consiste Ã  definir les motifs/justifications... de ces absences saisies
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -16,7 +16,7 @@
 class AbsenceEleveTraitementQuery extends BaseAbsenceEleveTraitementQuery {
 
 	/**
-	 * Filtre la requete sur les traitements qui montrent un manquement � l'obligation de presence de la part de l'eleve
+	 * Filtre la requete sur les traitements qui montrent un manquement à l'obligation de presence de la part de l'eleve
 	 *
 	 * @param     boolean $value
 	 *

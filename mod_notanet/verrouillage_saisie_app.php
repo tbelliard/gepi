@@ -40,8 +40,8 @@ if ($resultat_session == 'c') {
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-//INSERT INTO droits VALUES('/mod_notanet/verrouillage_saisie_app.php','V','F','F','F','F','F','F','F','Notanet: (Dé)Verrouillage des saisies','');
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
+//INSERT INTO droits VALUES('/mod_notanet/verrouillage_saisie_app.php','V','F','F','F','F','F','F','F','Notanet: (DÃ©)Verrouillage des saisies','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -92,7 +92,7 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if($msg=="") {
-		$msg="$nb_enr enregistrement(s) effectué(s).";
+		$msg="$nb_enr enregistrement(s) effectuÃ©(s).";
 	}
 }
 
@@ -106,7 +106,7 @@ require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
-// Bibliothèque pour Notanet et Fiches brevet
+// BibliothÃ¨que pour Notanet et Fiches brevet
 include("lib_brevets.php");
 
 echo "<div class='noprint'>\n";
@@ -115,7 +115,7 @@ echo " | <a href='index.php'>Accueil Notanet</a>";
 echo "</p>\n";
 echo "</div>\n";
 
-echo "<p>Cette page permet de (dé)verrouiller la saisie des appréciations pour les fiches brevet.</p>\n";
+echo "<p>Cette page permet de (dÃ©)verrouiller la saisie des apprÃ©ciations pour les fiches brevet.</p>\n";
 
 $sql="CREATE TABLE notanet_verrou (
 id_classe TINYINT NOT NULL ,
@@ -132,7 +132,7 @@ $res1=mysql_query($sql);
 $nb_type_brevet1=mysql_num_rows($res1);
 if($nb_type_brevet1==0) {
 
-	echo "<p>Aucune association élève/type de brevet n'a encore été réalisée.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a></p>\n";
+	echo "<p>Aucune association Ã©lÃ¨ve/type de brevet n'a encore Ã©tÃ© rÃ©alisÃ©e.<br />Commencez par <a href='select_eleves.php'>sÃ©lectionner les Ã©lÃ¨ves</a></p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -144,7 +144,7 @@ $nb_type_brevet2=mysql_num_rows($res2);
 //if(mysql_num_rows($res)==0) {
 if($nb_type_brevet2==0) {
 
-	echo "<p>Aucune association matières/type de brevet n'a encore été réalisée.<br />Commencez par <a href='select_matieres.php'>sélectionner les matières</a></p>\n";
+	echo "<p>Aucune association matiÃ¨res/type de brevet n'a encore Ã©tÃ© rÃ©alisÃ©e.<br />Commencez par <a href='select_matieres.php'>sÃ©lectionner les matiÃ¨res</a></p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -157,7 +157,7 @@ $sql="SELECT DISTINCT net.type_brevet FROM notanet_ele_type net, notanet_corresp
 $res3=mysql_query($sql);
 $nb_type_brevet=mysql_num_rows($res3);
 if($nb_type_brevet==0) {
-	echo "<p>Aucun type_brevet n'est encore paramétré avec association matières/type de brevet et associations élèves/type de brevet.<br />Commencez par <a href='index.php'>réaliser ces opérations</a></p>\n";
+	echo "<p>Aucun type_brevet n'est encore paramÃ©trÃ© avec association matiÃ¨res/type de brevet et associations Ã©lÃ¨ves/type de brevet.<br />Commencez par <a href='index.php'>rÃ©aliser ces opÃ©rations</a></p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -191,7 +191,7 @@ $res4=mysql_query($sql);
 if(mysql_num_rows($res4)==0) {
 	echo "</table>\n";
 
-	echo "<p>Aucune classe n'a été trouvée???</p>\n";
+	echo "<p>Aucune classe n'a Ã©tÃ© trouvÃ©e???</p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -246,7 +246,7 @@ echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 echo "</form>\n";
 
-echo "<p><i>NOTE:</i> 'O' correspond à un verrouillage/interdiction des saisies, tandis que le 'N' permet la saisie.</p>\n";
+echo "<p><i>NOTE:</i> 'O' correspond Ã  un verrouillage/interdiction des saisies, tandis que le 'N' permet la saisie.</p>\n";
 
 require("../lib/footer.inc.php");
 ?>

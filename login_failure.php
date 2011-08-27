@@ -26,82 +26,82 @@ $niveau_arbo = 0;
 require_once("./lib/initialisations.inc.php");
 
 
-# On arrive sur cette page en cas d'échec de la procédure d'authentification.
-# Le principe est simple : on affiche un message d'erreur selon le code passé
+# On arrive sur cette page en cas d'Ã©chec de la procÃ©dure d'authentification.
+# Le principe est simple : on affiche un message d'erreur selon le code passÃ©
 # en URL, et on propose un lien vers le formulaire de login.
 
 # On initialise les messages :
 
-# Compte bloqué : trop de tentatives infructueuses.
+# Compte bloquÃ© : trop de tentatives infructueuses.
 if ($_GET['error'] == '2') {
-	$message = 'Trop de tentatives de connexion infructueuses : votre compte est momentanément verrouillé.';
+	$message = 'Trop de tentatives de connexion infructueuses : votre compte est momentanÃ©ment verrouillÃ©.';
 
 # IP liste noire
 } elseif ($_GET['error'] == '3') {
-	$message = 'Connexion impossible : vous tentez de vous connecter à partir d\'une adresse IP interdite.';
+	$message = 'Connexion impossible : vous tentez de vous connecter Ã  partir d\'une adresse IP interdite.';
 
-# Auth externe réussie, mais utilisateur 'inactif'
+# Auth externe rÃ©ussie, mais utilisateur 'inactif'
 } elseif ($_GET['error'] == '4') {
-	$message = 'Vous avez bien été identifié mais <b>votre compte a été désactivé</b>. Impossible de continuer. Veuillez signaler ce problème à l\'administrateur du site.';
+	$message = 'Vous avez bien Ã©tÃ© identifiÃ© mais <b>votre compte a Ã©tÃ© dÃ©sactivÃ©</b>. Impossible de continuer. Veuillez signaler ce problÃ¨me Ã  l\'administrateur du site.';
 
-# Auth externe réussie, mais inconsistence dans le mode d'authentification
+# Auth externe rÃ©ussie, mais inconsistence dans le mode d'authentification
 } elseif ($_GET['error'] == '5') {
-	$message = 'Vous avez bien été identifié mais votre compte utilisateur est paramétré pour utiliser un autre mode d\'authentification. Si vous pensez qu\'il s\'agit d\'une erreur, veuillez signaler ce problème à l\'administrateur du site.';
+	$message = 'Vous avez bien Ã©tÃ© identifiÃ© mais votre compte utilisateur est paramÃ©trÃ© pour utiliser un autre mode d\'authentification. Si vous pensez qu\'il s\'agit d\'une erreur, veuillez signaler ce problÃ¨me Ã  l\'administrateur du site.';
     if ($_GET['mode'] == "sso" && ($session_gepi->auth_locale || $block_sso)) {
-		$message .= "<br /><br />Si vous possédez un compte local d'accès à GEPI, vous pouvez néanmoins <b><a href='./login.php'>accéder à la page de connexion de GEPI</a></b>.";
+		$message .= "<br /><br />Si vous possÃ©dez un compte local d'accÃ¨s Ã  GEPI, vous pouvez nÃ©anmoins <b><a href='./login.php'>accÃ©der Ã  la page de connexion de GEPI</a></b>.";
     }
-# Auth externe réussie, mais compte inexistant en local et import impossible
+# Auth externe rÃ©ussie, mais compte inexistant en local et import impossible
 } elseif ($_GET['error'] == '6') {
-	$message = 'Vous avez bien été identifié mais la mise à jour de votre profil dans GEPI n\'a pas pu s\'effectuer correctement. Impossible de continuer. Veuillez signaler ce problème à l\'administrateur du site.';
+	$message = 'Vous avez bien Ã©tÃ© identifiÃ© mais la mise Ã  jour de votre profil dans GEPI n\'a pas pu s\'effectuer correctement. Impossible de continuer. Veuillez signaler ce problÃ¨me Ã  l\'administrateur du site.';
 
-# L'administrateur a désactivé les connexions à Gepi
+# L'administrateur a dÃ©sactivÃ© les connexions Ã  Gepi
 } elseif ($_GET['error'] == '7') {
-	$message = 'GEPI est momentanément inaccessible.';
+	$message = 'GEPI est momentanÃ©ment inaccessible.';
 
-# Multisite : impossible de déterminer le RNE
+# Multisite : impossible de dÃ©terminer le RNE
 } elseif ($_GET['error'] == '8') {
-	$message = 'Vous avez été correctement authentifié, mais votre compte n\'a pas pu être associé avec un établissement configuré sur ce Gepi. Impossible de continuer. Veuillez signaler ce problème à l\'administrateur du site.';
+	$message = 'Vous avez Ã©tÃ© correctement authentifiÃ©, mais votre compte n\'a pas pu Ãªtre associÃ© avec un Ã©tablissement configurÃ© sur ce Gepi. Impossible de continuer. Veuillez signaler ce problÃ¨me Ã  l\'administrateur du site.';
 
-# Simple échec de l'authentification.
+# Simple Ã©chec de l'authentification.
 } elseif ($_GET['error'] == '9') {
-	$message = 'Vous n\'avez pas été authentifié. Vérifiez votre login/mot de passe.';
+	$message = 'Vous n\'avez pas Ã©tÃ© authentifiÃ©. VÃ©rifiez votre login/mot de passe.';
 
-// Quand un statut 'autre' n'a pas de statut personnalisé
+// Quand un statut 'autre' n'a pas de statut personnalisÃ©
 } elseif ($_GET['error'] == '10') {
 	$message = 'Vous n\'avez pas de droits suffisants pour entrer, veuillez contacter l\'administrateur de Gepi.';
 
 } elseif ($_GET['error'] == '11') {
-	$message = 'Vous avez bien été identifié mais votre compte Gépi ne semble pas configuré correctement pour le SSO avec table . Contactez votre administrateur GEPI pour corriger le problème ';
+	$message = 'Vous avez bien Ã©tÃ© identifiÃ© mais votre compte GÃ©pi ne semble pas configurÃ© correctement pour le SSO avec table . Contactez votre administrateur GEPI pour corriger le problÃ¨me ';
 
 } else {
-	$message = 'Une erreur indéterminée s\'est produite lors de votre authentification.';
+	$message = 'Une erreur indÃ©terminÃ©e s\'est produite lors de votre authentification.';
 }
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="fr">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>Échec de la connexion à Gepi</title>
+<title>Ã‰chec de la connexion Ã  Gepi</title>
 <link rel="stylesheet" type="text/css" href="./<?php echo getSettingValue("gepi_stylesheet");?>.css" />
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 <link rel="icon" type="image/ico" href="./favicon.ico" />
 <?php
-	// Styles paramétrables depuis l'interface:
+	// Styles paramÃ©trables depuis l'interface:
 	//if($style_screen_ajout=='y'){
 	if(($style_screen_ajout=='y')&&(file_exists('./style_screen_ajout.css'))) {
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+		// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />";
 	}
 ?>
 </head>
 <body>
 <div class="center">
-<h1>Échec de la connexion à Gepi</h1>
+<h1>Ã‰chec de la connexion Ã  Gepi</h1>
 <p style="color: red;">
 <?php
 echo $message;
@@ -110,14 +110,14 @@ echo $message;
 <p>
 <?php
 if (isset($_GET['mode']) && $_GET['mode'] == "sso") {
-	echo "<a href='login_sso.php'>Retourner à la page d'authentification</a>";
+	echo "<a href='login_sso.php'>Retourner Ã  la page d'authentification</a>";
 	if ($session_gepi->auth_locale || $session_gepi->auth_ldap) {
-		echo "</p><p><a href='login.php'>Accéder au formulaire d'authentification locale</a>";
+		echo "</p><p><a href='login.php'>AccÃ©der au formulaire d'authentification locale</a>";
 	}
 }elseif(isset($_GET['mode']) && $_GET['mode'] == "sso_table"){
     exit;
 }else {
-	echo "<a href='login.php'>Retourner à la page d'authentification</a>";
+	echo "<a href='login.php'>Retourner Ã  la page d'authentification</a>";
 }
 ?>
 </p>

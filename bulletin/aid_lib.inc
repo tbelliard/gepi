@@ -30,7 +30,7 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         $n++;
     }
     //------
-    // On appelle l'appréciation de l'élève, et sa note
+    // On appelle l'apprÃ©ciation de l'Ã©lÃ¨ve, et sa note
     //------
     $current_eleve_aid_appreciation_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
     $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
@@ -84,7 +84,7 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 
     }
     //------
-    // On affiche l'appréciation aid :
+    // On affiche l'apprÃ©ciation aid :
     //------
     echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$AID_NOM_COMPLET</b><br />";
     $chaine_prof="";
@@ -199,7 +199,7 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         $n++;
     }
     //------
-    // On appelle l'appréciation de l'élève, et sa note
+    // On appelle l'apprÃ©ciation de l'Ã©lÃ¨ve, et sa note
     //------
     $current_eleve_aid_appreciation_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
     $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
@@ -253,7 +253,7 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 
     }
     //------
-    // On affiche l'appréciation aid :
+    // On affiche l'apprÃ©ciation aid :
     //------
     echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$AID_NOM_COMPLET</b><br />";
     $chaine_prof="";
@@ -370,7 +370,7 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         $n++;
     }
     //------
-    // On appelle l'appréciation de l'élève, et sa note
+    // On appelle l'apprÃ©ciation de l'Ã©lÃ¨ve, et sa note
     //------
     $current_eleve_aid_appreciation_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
     $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
@@ -424,7 +424,7 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 
     }
     //------
-    // On affiche l'appréciation aid :
+    // On affiche l'apprÃ©ciation aid :
     //------
     echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$AID_NOM_COMPLET</b><br />";
     $chaine_prof="";

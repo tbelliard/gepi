@@ -16,7 +16,7 @@
 class PlugIn extends BasePlugIn {
 
   /**
-   * Ouvre le plugin aux utilisateurs autorisés
+   * Ouvre le plugin aux utilisateurs autorisÃ©s
    */
   public function ouvrePlugin(){
     $this->setOuvert("y");
@@ -24,7 +24,7 @@ class PlugIn extends BasePlugIn {
   }
 
   /**
-   * Ferme le plugin à tous les utilisateurs
+   * Ferme le plugin Ã  tous les utilisateurs
    */
   public function fermePlugin(){
     $this->setOuvert("n");

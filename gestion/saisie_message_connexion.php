@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protÈgÈes (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non prot√©g√©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -108,7 +108,7 @@ elseif(isset($valide_import_message)) {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 	if (trim($csv_file['name'])=='') {
-		echo "<p>Aucun fichier n'a ÈtÈ sÈlectionnÈ !<br />\n";
+		echo "<p>Aucun fichier n'a √©t√© s√©lectionn√© !<br />\n";
 		echo "<a href='".$_SERVER['PHP_SELF']."?import_message=y'>Cliquer ici</a> pour recommencer !</p>\n";
 	}
 	else{
@@ -158,7 +158,7 @@ elseif(isset($valide_import_message)) {
 				}
 				fclose($fp);
 
-				if(($nb_reg>0)&&($temoin_erreur=='n')) {echo "<span style='color:red;'>Import effectuÈ.</span><br />";}
+				if(($nb_reg>0)&&($temoin_erreur=='n')) {echo "<span style='color:red;'>Import effectu√©.</span><br />";}
 			}
 		}
 	}
@@ -207,7 +207,7 @@ if(isset($compteur_nb_messages)){
 }
 
 
-// Recherche des messages dÈj‡ saisis:
+// Recherche des messages d√©j√† saisis:
 $sql="SELECT * FROM message_login ORDER BY texte;";
 //echo "$sql";
 $resultat_messages=mysql_query($sql);

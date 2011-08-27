@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. OrlÃ©ans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -45,7 +45,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des responsables";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -62,7 +62,7 @@ if ($_POST['step'] == "3") {
     $ldap->connect();
 
     /*
-     * Recherche de tous les responsables d'eleves de l'établissement
+     * Recherche de tous les responsables d'eleves de l'Ã©tablissement
      */
     $responsables = $ldap->get_all_responsables();
     $nb_responsables = $responsables['count'];
@@ -74,7 +74,7 @@ if ($_POST['step'] == "3") {
     if (!is_table_vide("resp_pers")) { vider_table_seule("resp_pers"); }
     if (!is_table_vide("resp_adr")) { vider_table_seule("resp_adr"); }
     
-    // On supprime tous les comptes d'accès de type responsable (vu qu'on a de toute façon supprimé tous les responsables...
+    // On supprime tous les comptes d'accÃ¨s de type responsable (vu qu'on a de toute faÃ§on supprimÃ© tous les responsables...
 /*
     UtilisateurProfessionelQuery::create()
       ->filterByStatut('responsable')
@@ -88,7 +88,7 @@ if ($_POST['step'] == "3") {
     // avertissement si un eleve a plus de 2 responsables legaux
     $avertissement_trop_de_responsables = 0;
     for($nb=0; $nb<$nb_responsables; $nb++) {
-        // On créé les responsables en base (avec les classes ORM)
+        // On crÃ©Ã© les responsables en base (avec les classes ORM)
         // Table resp_pers
 
         $resp = new ResponsableEleve();
@@ -113,7 +113,7 @@ if ($_POST['step'] == "3") {
         $resp->setPersId($pers_id);
         
         
-        // On créé l'adresse associée
+        // On crÃ©Ã© l'adresse associÃ©e
         
         $resp_addr = array_key_exists('entpersonadresse', $responsables[$nb]) ? $responsables[$nb]['entpersonadresse'][0] : null;
         $resp_ville = array_key_exists('entpersonville', $responsables[$nb]) ? $responsables[$nb]['entpersonville'][0] : '';
@@ -151,7 +151,7 @@ if ($_POST['step'] == "3") {
             
             $req_eleid = mysql_query("SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
             
-            // On s'assure qu'on a bien un élève correspondant !
+            // On s'assure qu'on a bien un Ã©lÃ¨ve correspondant !
             if (mysql_num_rows($req_eleid) == 1) {
               $eleve_associe_ele_id = mysql_result($req_eleid, 0);
               /*
@@ -193,12 +193,12 @@ if ($_POST['step'] == "3") {
         }
         
         if ($nb_eleves_a_charge > 0 && $valid_associations > 0) {
-            // On créé maintenant son compte d'accès à Gepi
+            // On crÃ©Ã© maintenant son compte d'accÃ¨s Ã  Gepi
             // On test si l'uid est deja connu de GEPI
             $compte_utilisateur_resp = UtilisateurProfessionnelPeer::retrieveByPK($resp->getLogin());
             if ($compte_utilisateur_resp != null) {
-                // Un compte d'accès avec le même identifiant existe déjà. On ne touche à rien.
-                echo "Un compte existe déjà pour l'identifiant ".$resp->getLogin().".<br/>";
+                // Un compte d'accÃ¨s avec le mÃªme identifiant existe dÃ©jÃ . On ne touche Ã  rien.
+                echo "Un compte existe dÃ©jÃ  pour l'identifiant ".$resp->getLogin().".<br/>";
             }
             else {
                 $new_compte_utilisateur = new UtilisateurProfessionnel();
@@ -222,9 +222,9 @@ if ($_POST['step'] == "3") {
     }
 
     /*
-     * Affichage du résumé de l'étape
+     * Affichage du rÃ©sumÃ© de l'Ã©tape
      */
-    echo "<h3> Résumé de l'étape 3 </h3>";
+    echo "<h3> RÃ©sumÃ© de l'Ã©tape 3 </h3>";
 
     echo "<p><b>$resp_inseres</b> responsables d'&eacute;l&egrave;ves ins&eacute;r&eacute;s en base<br> (sur $nb_responsables trouv&eacute;(s))</p>";
     if ($avertissement_trop_de_responsables) {
@@ -243,7 +243,7 @@ if ($_POST['step'] == "3") {
 
 else {
     // Affichage de la page des explications de l'etape 3 (aucune donnee postee)
-    // La troisieme étape consiste a importer les responsables d'eleves, les associer a leur(s) eleve(s)
+    // La troisieme Ã©tape consiste a importer les responsables d'eleves, les associer a leur(s) eleve(s)
     echo "<br><p>L'&eacute;tape 3 vous permet d'importer les reponsables d'&eacute;l&egrave;ve et de les associer &agrave; leur(s) &eacute;l&egrave;ve(s).</p>";
     echo "<br><p>Les donn&eacute;es concernant les reponsables d'&eacute;l&egrave;ves actuellement en base seront remplac&eacute;es par ces nouvelles donn&eacute;es</p>";
 
@@ -256,7 +256,7 @@ else {
     echo "<form enctype='multipart/form-data' action='etape3.php' method=post>";
 	echo add_token_field();
     echo "<input type=hidden name='step' value='3'>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
     echo "<br>";
     require("../lib/footer.inc.php");

@@ -21,7 +21,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -119,7 +119,7 @@ class ClassIncidents {
     }
 
 //fin des accesseurs
-// On recupère les id des incidents en fonction des filtres activés et on traite les données pour affichage
+// On recupÃ¨re les id des incidents en fonction des filtres activÃ©s et on traite les donnÃ©es pour affichage
     public function traite_incidents_criteres($du, $au, $filtres_categories=Null, $filtres_mesures=Null, $filtres_sanctions=Null, $filtres_roles=Null) {
         $this->traite_incidents($du, $au, $filtres_categories, $filtres_mesures, $filtres_sanctions, $filtres_roles);
         $this->traite_protagonistes();
@@ -145,11 +145,11 @@ class ClassIncidents {
             $this->sanctions_from_db = $this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
         }
         if (isset($_SESSION['eleve_all'])) {
-            $this->incidents_from_db['Tous les élèves'] = $this->modele_incidents->get_incidents('eleves_all', 'Tous les élèves', $du, $au, Null, $filtres_categories, $filtres_mesures, $filtres_sanctions, $filtres_roles);
-            if (!isset($this->incidents_from_db['Tous les élèves']['error'])) {
-                $this->liste_id_incidents_selected = $this->make_liste_id($this->incidents_from_db['Tous les élèves']);
+            $this->incidents_from_db['Tous les Ã©lÃ¨ves'] = $this->modele_incidents->get_incidents('eleves_all', 'Tous les Ã©lÃ¨ves', $du, $au, Null, $filtres_categories, $filtres_mesures, $filtres_sanctions, $filtres_roles);
+            if (!isset($this->incidents_from_db['Tous les Ã©lÃ¨ves']['error'])) {
+                $this->liste_id_incidents_selected = $this->make_liste_id($this->incidents_from_db['Tous les Ã©lÃ¨ves']);
                 $this->protagonistes_from_db = $this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
-                if(isset($this->protagonistes_from_db)) $this->liste_eleves_par_classe['Tous les élèves'] = $this->make_liste_protagonistes($this->protagonistes_from_db, 'eleve',$this->array_id_incidents);
+                if(isset($this->protagonistes_from_db)) $this->liste_eleves_par_classe['Tous les Ã©lÃ¨ves'] = $this->make_liste_protagonistes($this->protagonistes_from_db, 'eleve',$this->array_id_incidents);
                 $this->mesures_from_db = $this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
                 $this->sanctions_from_db = $this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
             }
@@ -254,7 +254,7 @@ class ClassIncidents {
     }
 
 // Fin traitement des id incidents
-// On récupère les protagonistes correspondants aux incidents selectionnés et on traite les données pour affichage
+// On rÃ©cupÃ¨re les protagonistes correspondants aux incidents selectionnÃ©s et on traite les donnÃ©es pour affichage
 
     private function traite_protagonistes() {
         if (isset($this->protagonistes_from_db))
@@ -264,7 +264,7 @@ class ClassIncidents {
     private function traite_donnees_protagonistes($tableau_protagonistes) {
         foreach ($tableau_protagonistes as $incident) {
             foreach ($incident as $protagoniste) {
-                if ($protagoniste !== 'pas de résultats') {
+                if ($protagoniste !== 'pas de rÃ©sultats') {
                     $this->statut = $this->test_statut($protagoniste->statut);
                     $this->infos_utilisateur = $this->modele_select->get_db_individu_identite($protagoniste->login, $this->statut);
                     $protagoniste->nom = $this->infos_utilisateur['nom'];
@@ -283,7 +283,7 @@ class ClassIncidents {
     }
 
 //fin traitement des protagonistes
-// On traite les mesures correspondants aux incidents selectionnés
+// On traite les mesures correspondants aux incidents selectionnÃ©s
     private function traite_mesures() {
         if (isset($this->mesures_from_db)
 
@@ -302,7 +302,7 @@ class ClassIncidents {
     }
 
 // fin traitement mesures
-// On traite les sanctions correspondants aux incidents selectionnés
+// On traite les sanctions correspondants aux incidents selectionnÃ©s
 
     private function traite_sanctions() {
         if (isset($this->sanctions_from_db))
@@ -358,7 +358,7 @@ class ClassIncidents {
     private function make_liste_incidents($array_incidents) {
         foreach ($array_incidents as $key => $incident) {
             foreach ($incident as $value) {
-                if ($value !== 'pas de résultats')
+                if ($value !== 'pas de rÃ©sultats')
                     $this->id[$key][] = $value->id_incident;
             }
         }
@@ -545,7 +545,7 @@ class ClassIncidents {
     }
 
 // fin du calcul des totaux par classe
-    //on recupère les divers Top 10 et on les traite
+    //on recupÃ¨re les divers Top 10 et on les traite
     private function get_top_incidents_from_db($du, $au, $filtres_categories=Null, $filtres_mesures=Null, $filtres_sanctions=Null, $filtres_roles=Null) {
 
         $this->top_incidents = $this->modele_incidents->get_top_incidents($du, $au, $filtres_categories, $filtres_mesures, $filtres_sanctions, $filtres_roles);

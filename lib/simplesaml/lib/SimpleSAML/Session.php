@@ -8,7 +8,7 @@
  * information about all the currently logged in SPs. This is used when the user initiate a 
  * Single-Log-Out.
  *
- * @author Andreas Åkre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
+ * @author Andreas Ã…kre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
  * @package simpleSAMLphp
  * @version $Id$
  */

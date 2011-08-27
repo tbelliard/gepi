@@ -22,7 +22,7 @@
 	}
 
 	//**************** EN-TETE *****************
-	$titre_page = "Outil d'initialisation de l'année : Importation des responsables des élèves";
+	$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des responsables des Ã©lÃ¨ves";
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
@@ -58,7 +58,7 @@
 	}
 
 	function affiche_debug($texte){
-		// Passer à 1 la variable pour générer l'affichage des infos de debug...
+		// Passer Ã  1 la variable pour gÃ©nÃ©rer l'affichage des infos de debug...
 		$debug=0;
 		if($debug==1){
 			echo "<font color='green'>".$texte."</font>";
@@ -70,7 +70,7 @@
 
 	$verif_tables_non_vides=isset($_POST['verif_tables_non_vides']) ? $_POST['verif_tables_non_vides'] : NULL;
 
-	// Passer à 'y' pour afficher les requêtes
+	// Passer Ã  'y' pour afficher les requÃªtes
 	$debug_resp='n';
 
 	if(isset($_GET['ad_retour'])){
@@ -82,10 +82,10 @@
 	$liste_tables_del = $liste_tables_del_etape_resp;
 
 
-	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
+	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolaritÃ© pour les mÃ j Sconet)
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
-		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?</p>\n";
 		// Il ne faut pas aller plus loin...
 		// SITUATION A GERER
 	}
@@ -108,7 +108,7 @@
 		echo "<a href='".$_SERVER['PHP_SELF']."'> | Autre import</a></p>\n";
 		//echo "</div>\n";
 
-		echo "<p>Si des fichiers XML existent, ils seront supprimés...</p>\n";
+		echo "<p>Si des fichiers XML existent, ils seront supprimÃ©s...</p>\n";
 		//$tabfich=array("f_ele.csv","f_ere.csv");
 		$tabfich=array("responsables.xml");
 
@@ -116,10 +116,10 @@
 			if(file_exists("../temp/".$tempdir."/$tabfich[$i]")) {
 				echo "<p>Suppression de $tabfich[$i]... ";
 				if(unlink("../temp/".$tempdir."/$tabfich[$i]")){
-					echo "réussie.</p>\n";
+					echo "rÃ©ussie.</p>\n";
 				}
 				else{
-					echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+					echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 				}
 			}
 		}
@@ -129,10 +129,10 @@
 	}
 	// =======================================================
 	else {
-		echo "<center><h3 class='gepi'>Deuxième phase d'initialisation<br />Importation des responsables</h3></center>\n";
+		echo "<center><h3 class='gepi'>DeuxiÃ¨me phase d'initialisation<br />Importation des responsables</h3></center>\n";
 		echo "<p class=bold><a href='";
 		if(isset($_SESSION['ad_retour'])){
-			// On peut venir de l'index init_xml, de la page de conversion ou de la page de mise à jour Sconet
+			// On peut venir de l'index init_xml, de la page de conversion ou de la page de mise Ã  jour Sconet
 			echo $_SESSION['ad_retour'];
 		}
 		else{
@@ -166,15 +166,15 @@
 
 				if ($flag != 0){
 					echo "<p><b>ATTENTION ...</b><br />\n";
-					echo "Des données concernant les responsables sont actuellement présentes dans la base GEPI<br /></p>\n";
-					echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>\n";
+					echo "Des donnÃ©es concernant les responsables sont actuellement prÃ©sentes dans la base GEPI<br /></p>\n";
+					echo "<p>Si vous poursuivez la procÃ©dure ces donnÃ©es seront effacÃ©es.</p>\n";
 
-					echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
+					echo "<p>Les tables vidÃ©es seront&nbsp;: $chaine_tables</p>\n";
 
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 					echo add_token_field();
 					echo "<input type=hidden name='verif_tables_non_vides' value='y' />\n";
-					echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
+					echo "<input type='submit' name='confirm' value='Poursuivre la procÃ©dure' />\n";
 					echo "</form>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -203,7 +203,7 @@
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$nettoyage=mysql_query($sql);
 
-			// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			// Il faut faire cette Ã©tape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
 			$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,rp.pers_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND rp.login!='' AND u.statut='responsable';";
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$svg_insert=mysql_query($sql);
@@ -228,14 +228,14 @@
 				$del=mysql_query($sql);
 			}
 
-			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>\n";
+			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procÃ©der Ã  cette opÃ©ration uniquement si la constitution des classes a Ã©tÃ© effectuÃ©e !</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo add_token_field();
 			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"responsables_xml_file\" /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
-				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ResponsablesAvecAdresses.zip)</p>";
+				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir Ã  Gepi le fichier compressÃ© issu directement de SCONET. (Ex : ResponsablesAvecAdresses.zip)</p>";
 			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -253,9 +253,9 @@
 			if($step==0){
 				$xml_file = isset($_FILES["responsables_xml_file"]) ? $_FILES["responsables_xml_file"] : NULL;
 				if(!is_uploaded_file($xml_file['tmp_name'])) {
-					echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+					echo "<p style='color:red;'>L'upload du fichier a Ã©chouÃ©.</p>\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "</p>\n";
@@ -267,9 +267,9 @@
 				}
 				else{
 					if(!file_exists($xml_file['tmp_name'])){
-						echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+						echo "<p style='color:red;'>Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.</p>\n";
 
-						echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+						echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 						echo "post_max_size=$post_max_size<br />\n";
 						echo "upload_max_filesize=$upload_max_filesize<br />\n";
 						echo "et le volume de ".$xml_file['name']." serait<br />\n";
@@ -281,7 +281,7 @@
 						die();
 					}
 
-					echo "<p>Le fichier a été uploadé.</p>\n";
+					echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 
 					//$source_file=stripslashes($xml_file['tmp_name']);
 					$source_file=$xml_file['tmp_name'];
@@ -293,7 +293,7 @@
 
 					$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
 					// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
-					// $unzipped_max_filesize < 0    extraction zip désactivée
+					// $unzipped_max_filesize < 0    extraction zip dÃ©sactivÃ©e
 					if($unzipped_max_filesize>=0) {
 						$fichier_emis=$xml_file['name'];
 						$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
@@ -322,14 +322,14 @@
 							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dÃ©passe la limite paramÃ©trÃ©e (<i>$unzipped_max_filesize octets</i>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
 
 							$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 							if ($res_extract != 0) {
-								echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+								echo "<p>Le fichier uploadÃ© a Ã©tÃ© dÃ©zippÃ©.</p>\n";
 								$fichier_extrait=$res_extract[0]['filename'];
 								unlink("$dest_file"); // Pour Wamp...
 								$res_copy=rename("$fichier_extrait" , "$dest_file");
@@ -345,14 +345,14 @@
 					//===============================================================
 
 					if(!$res_copy){
-						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a Ã©chouÃ©.<br />VÃ©rifiez que l'utilisateur ou le groupe apache ou www-data a accÃ¨s au dossier temp/$tempdir</p>\n";
 						// Il ne faut pas aller plus loin...
 						// SITUATION A GERER
 						require("../lib/footer.inc.php");
 						die();
 					}
 					else{
-						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+						echo "<p>La copie du fichier vers le dossier temporaire a rÃ©ussi.</p>\n";
 
 						//$sql="CREATE TABLE IF NOT EXISTS temp_resp_pers_import (
 						$sql="CREATE TABLE IF NOT EXISTS resp_pers (
@@ -383,7 +383,7 @@
 								$ligne[]=fgets($fp,4096);
 							}
 							fclose($fp);
-							//echo "<p>Terminé.</p>\n";
+							//echo "<p>TerminÃ©.</p>\n";
 						}
 						*/
 						flush();
@@ -397,7 +397,7 @@
 
 						$nom_racine=$resp_xml->getName();
 						if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
-							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
+							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'Ãªtre un fichier XML Responsables.<br />Sa racine devrait Ãªtre 'BEE_RESPONSABLES'.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -481,13 +481,13 @@
 								$sql.="adr_id='';";
 								// IL FAUDRAIT PEUT-ETRE REMPLIR UN TABLEAU
 								// POUR SIGNALER QUE CE RESPONSABLE RISQUE DE POSER PB...
-								// ... CEPENDANT, CEUX QUE J'AI REPéRéS ETAIENT resp_legal=0
+								// ... CEPENDANT, CEUX QUE J'AI REPÃ©RÃ©S ETAIENT resp_legal=0
 								// ILS NE DEVRAIENT PAS ETRE DESTINATAIRES DE BULLETINS,...
 							}
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "Erreur lors de la requÃªte $sql<br />\n";
 								flush();
 								$nb_err++;
 							}
@@ -507,7 +507,7 @@
 									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 									$insert_u=mysql_query($sql);
 									if(!$insert_u) {
-										echo "Erreur lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"].".<br />";
+										echo "Erreur lors de la crÃ©ation du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"].".<br />";
 									}
 									else {
 										$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
@@ -527,13 +527,13 @@
 						}
 
 						if ($nb_err != 0) {
-							echo "<p>Lors de l'enregistrement des données PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+							echo "<p>Lors de l'enregistrement des donnÃ©es PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.</p>\n";
 						} else {
-							echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+							echo "<p>L'importation des personnes (responsables) dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (".$stat." enregistrements au total).</p>\n";
 						}
 
-						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
-						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
+						//echo "<p>$stat enregistrement(s) ont Ã©tÃ© insÃ©rÃ©(s) dans la table 'temp_resp_pers_import'.</p>\n";
+						//echo "<p>$stat enregistrement(s) ont Ã©tÃ© insÃ©rÃ©(s) dans la table 'resp_pers'.</p>\n";
 
 						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
 
@@ -556,7 +556,7 @@
 
 				$nom_racine=$resp_xml->getName();
 				if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
-					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
+					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'Ãªtre un fichier XML Responsables.<br />Sa racine devrait Ãªtre 'BEE_RESPONSABLES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
@@ -643,7 +643,7 @@
 						affiche_debug("$sql<br />\n");
 						$res_insert=mysql_query($sql);
 						if(!$res_insert){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "Erreur lors de la requÃªte $sql<br />\n";
 							flush();
 							$nb_err++;
 						}
@@ -657,7 +657,7 @@
 						$res_ele_anomalie=mysql_query($sql);
 						if(mysql_num_rows($res_ele_anomalie)>0){
 							$lig_ele_anomalie=mysql_fetch_object($res_ele_anomalie);
-							echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->prenom." ".$lig_ele_anomalie->nom."<br />Seule la première responsabilité a été enregistrée.<br />Vous devriez faire le ménage dans Sconet et faire une mise à jour par la suite.</p>\n";
+							echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables lÃ©gaux nÂ°<b>".$responsables[$i]["resp_legal"]."</b> sont dÃ©clarÃ©s pour l'Ã©lÃ¨ve ".$lig_ele_anomalie->prenom." ".$lig_ele_anomalie->nom."<br />Seule la premiÃ¨re responsabilitÃ© a Ã©tÃ© enregistrÃ©e.<br />Vous devriez faire le mÃ©nage dans Sconet et faire une mise Ã  jour par la suite.</p>\n";
 
 							$nb_err++;
 						}
@@ -667,17 +667,17 @@
 							affiche_debug("$sql<br />\n");
 							$res_ele_anomalie=mysql_query($sql);
 							if(mysql_num_rows($res_ele_anomalie)>0){
-								// Si l'élève associé n'est ni dans 'eleves', ni dans 'temp_gep_import2', on ne s'en occupe pas.
+								// Si l'Ã©lÃ¨ve associÃ© n'est ni dans 'eleves', ni dans 'temp_gep_import2', on ne s'en occupe pas.
 
 								$sql="SELECT civilite,nom,prenom FROM temp_resp_pers_import WHERE pers_id='".$responsables[$i]["personne_id"]."';";
 								$res_resp_anomalie=mysql_query($sql);
 								if(mysql_num_rows($res_resp_anomalie)>0){
 									$lig_resp_anomalie=mysql_fetch_object($res_resp_anomalie);
 
-									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>).<br />L'un d'eux est: ".$lig_resp_anomalie->civilite." ".$lig_resp_anomalie->nom." ".$lig_resp_anomalie->prenom."</p>\n";
+									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables lÃ©gaux nÂ°<b>".$responsables[$i]["resp_legal"]."</b> sont dÃ©clarÃ©s pour l'Ã©lÃ¨ve ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>).<br />L'un d'eux est: ".$lig_resp_anomalie->civilite." ".$lig_resp_anomalie->nom." ".$lig_resp_anomalie->prenom."</p>\n";
 								}
 								else {
-									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>)<br />L'élève n'a semble-t-il pas été ajouté à la table 'eleves'.<br />Par ailleurs, la personne responsable semble inexistante, mais l'association avec l'identifiant de responsable n°".$responsables[$i]["personne_id"]." existe dans le XML fourni???<br />L'anomalie n'est pas grave pour Gepi; par contre il serait bon de corriger dans Sconet.</p>\n";
+									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables lÃ©gaux nÂ°<b>".$responsables[$i]["resp_legal"]."</b> sont dÃ©clarÃ©s pour l'Ã©lÃ¨ve ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>)<br />L'Ã©lÃ¨ve n'a semble-t-il pas Ã©tÃ© ajoutÃ© Ã  la table 'eleves'.<br />Par ailleurs, la personne responsable semble inexistante, mais l'association avec l'identifiant de responsable nÂ°".$responsables[$i]["personne_id"]." existe dans le XML fourni???<br />L'anomalie n'est pas grave pour Gepi; par contre il serait bon de corriger dans Sconet.</p>\n";
 								}
 
 								$nb_err++;
@@ -692,7 +692,7 @@
 				$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)>0){
-					echo "<p>Suppression de responsabilités sans élève.\n";
+					echo "<p>Suppression de responsabilitÃ©s sans Ã©lÃ¨ve.\n";
 					flush();
 					$cpt_nett=0;
 					while($lig_nett=mysql_fetch_object($test)){
@@ -704,17 +704,17 @@
 						$cpt_nett++;
 					}
 					//echo ".</p>\n";
-					echo "<br />$cpt_nett associations aberrantes supprimées.</p>\n";
+					echo "<br />$cpt_nett associations aberrantes supprimÃ©es.</p>\n";
 				}
 
 				if ($nb_err!=0) {
-					echo "<p>Lors de l'enregistrement des données de RESPONSABLES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+					echo "<p>Lors de l'enregistrement des donnÃ©es de RESPONSABLES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.</p>\n";
 				}
 				else {
-					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (".$stat." enregistrements au total).</p>\n";
 				}
 
-				//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_responsables2_import'.</p>\n";
+				//echo "<p>$stat enregistrement(s) ont Ã©tÃ© insÃ©rÃ©(s) dans la table 'temp_responsables2_import'.</p>\n";
 
 				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2".add_token_in_url()."'>Suite</a></p>\n";
 
@@ -734,7 +734,7 @@
 
 				$nom_racine=$resp_xml->getName();
 				if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
-					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
+					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'Ãªtre un fichier XML Responsables.<br />Sa racine devrait Ãªtre 'BEE_RESPONSABLES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
@@ -846,7 +846,7 @@
 					affiche_debug("$sql<br />\n");
 					$res_insert=mysql_query($sql);
 					if(!$res_insert){
-						echo "Erreur lors de la requête $sql<br />\n";
+						echo "Erreur lors de la requÃªte $sql<br />\n";
 						flush();
 						$nb_err++;
 					}
@@ -858,11 +858,11 @@
 				}
 
 				if ($nb_err != 0) {
-					echo "<p>Lors de l'enregistrement des données ADRESSES des responsables, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+					echo "<p>Lors de l'enregistrement des donnÃ©es ADRESSES des responsables, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.</p>\n";
 				} else {
-					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+					echo "<p>L'importation des adresses de responsables dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (".$stat." enregistrements au total).</p>\n";
 				}
-				//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
+				//echo "<p>$stat enregistrement(s) ont Ã©tÃ© mis Ã  jour dans la table 'temp_resp_adr_import'.</p>\n";
 
 				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>Suite</a></p>\n";
 
@@ -871,29 +871,29 @@
 			}
 			else{
 				check_token(false);
-				// TERMINé?
+				// TERMINÃ©?
 				// A LA DERNIERE ETAPE, IL FAUT SUPPRIMER LE FICHIER "../temp/".$tempdir."/responsables.xml"
 
 				if(file_exists("../temp/".$tempdir."/responsables.xml")) {
 					echo "<p>Suppression de responsables.xml... ";
 					if(unlink("../temp/".$tempdir."/responsables.xml")){
-						echo "réussie.</p>\n";
+						echo "rÃ©ussie.</p>\n";
 					}
 					else{
-						echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+						echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 					}
 				}
 
 				/*
 				if(($nb_reg_no1==0)&&($nb_reg_no2==0)&&($nb_reg_no3==0)){
-					echo "<p>Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troixième phase d'importation des matières et de définition des options suivies par les élèves.</p>\n";
-					echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
-					echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>\n";
+					echo "<p>Vous pouvez Ã  prÃ©sent retourner Ã  l'accueil et effectuer toutes les autres opÃ©rations d'initialisation manuellement ou bien procÃ©der Ã  la troixiÃ¨me phase d'importation des matiÃ¨res et de dÃ©finition des options suivies par les Ã©lÃ¨ves.</p>\n";
+					echo "<center><p><a href='../accueil.php'>Retourner Ã  l'accueil</a></p></center>\n";
+					echo "<center><p><a href='disciplines_csv.php'>ProcÃ©der Ã  la troisiÃ¨me phase</a>.</p></center>\n";
 				}
 				*/
 
-				//echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
-				echo "<center><p><a href='matieres.php'>Procéder à la troisième phase</a>.</p></center>\n";
+				//echo "<center><p><a href='../accueil.php'>Retourner Ã  l'accueil</a></p></center>\n";
+				echo "<center><p><a href='matieres.php'>ProcÃ©der Ã  la troisiÃ¨me phase</a>.</p></center>\n";
 
 				require("../lib/footer.inc.php");
 				die();

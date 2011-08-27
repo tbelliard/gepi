@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for representing a row from the 'a_traitements' table.
  *
- * Un traitement peut gerer plusieurs saisies et consiste Ã  definir les motifs/justifications... de ces absences saisies
+ * Un traitement peut gerer plusieurs saisies et consiste ÃƒÂ  definir les motifs/justifications... de ces absences saisies
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -29,8 +29,8 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 */
 	public function getDescription() {
 	    if (!isset($description) || $description === null) {
-		$desc = 'n° '.$this->getId();
-		$desc .= ' créé le ';
+		$desc = 'nÂ° '.$this->getId();
+		$desc .= ' crÃ©Ã© le ';
 		$desc .= strftime("%a %d/%m/%Y", $this->getUpdatedAt('U'));
 		$eleve_col = new PropelCollection();
 		foreach ($this->getAbsenceEleveSaisies() as $abs_saisie) {
@@ -65,7 +65,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		    }
 		}
 		if ($notif) {
-		    $desc .= "; Notifié";
+		    $desc .= "; NotifiÃ©";
 		}
 		if ($this->getCommentaire() != null && $this->getCommentaire() != '') {
 		    $desc .= "; Commentaire : ".$this->getCommentaire();
@@ -105,7 +105,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 */
 	public function getModifiable() {
 
-	    //modifiable uniquement si aucune notifications n'a été envoyé
+	    //modifiable uniquement si aucune notifications n'a Ã©tÃ© envoyÃ©
 	    foreach ($this->getAbsenceEleveNotifications() as $notification) {
 		if ($notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL) {
 		    return false;
@@ -116,7 +116,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 
 	/**
 	 *
-	 * Renvoi la liste de tout les responsables légaux des saisies associees a ce traitement
+	 * Renvoi la liste de tout les responsables lÃ©gaux des saisies associees a ce traitement
 	 *
 	 * @return     PropelObjectCollection collection d'objets de la classe ResponsableInformation
 	 *
@@ -141,7 +141,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 * Renvoi true ou false si l'eleve est en manque de ses obligation de presence
 	 * une saisie qui n'est pas un manquement ne sera pas comptee dans le bulletin
 	 * une saisie qui est un manquement sera comptee dans le bulletin
-	 * Cette propriété est calculé avec par l'intermediaire des types de traitement
+	 * Cette propriÃ©tÃ© est calculÃ© avec par l'intermediaire des types de traitement
 	 * si on a un type de manquement specifie a non_precise (comme le type 'erreur de saisie'),
 	 * on renvoi un non manquement (sinon l'utilisateur aurait specifier un type MANQU_OBLIG_PRESE_VRAI)
 	 *
@@ -162,7 +162,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 * Renvoi true ou false si l'eleve etait sous la responsabilite de l'etablissement (infirmerie ou autre)
 	 * une saisie qui n'est pas sous la responsabilite de l'etablissement sere comptee dans le bulletin
 	 * une saisie qui est sous la responsabilite de l'etablissement ne sera pas comptee dans le bulletin
-	 * si on a un type de responsabilite specifié a non_precisé (comme le type 'erreur de saisie'),
+	 * si on a un type de responsabilite specifiÃ© a non_precisÃ© (comme le type 'erreur de saisie'),
 	 * on renvoi une resp etab a vrai (sinon l'utilisateur aurait specifier un type MANQU_OBLIG_PRESE_VRAI)
 	 * @return     boolean
 	 *
@@ -179,7 +179,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 
 
 	/**
-	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie
+	 * Ajout manuel : renseignement automatique de l'utilisateur qui a crÃ©Ã© ou modifiÃ© la saisie
 	 * Persists this object to the database.
 	 *
 	 * If the object is new, it inserts it; otherwise an update is performed.
@@ -215,7 +215,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	}
 	
 	/**
-	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications et jointures associées et calcul de la table d'agrégation
+	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications et jointures associÃ©es et calcul de la table d'agrÃ©gation
 	 *
 	 * @param      PropelPDO $con
 	 * @return     void
@@ -227,7 +227,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	{
 		$saisieColOld = $this->getAbsenceEleveSaisies();
 		AbsenceEleveNotificationQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
-		//JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete(); //ne pas supprimer pour pourvoir faire la jointure entre le traitement supprimé et l'élève saisi
+		//JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete(); //ne pas supprimer pour pourvoir faire la jointure entre le traitement supprimÃ© et l'Ã©lÃ¨ve saisi
 		parent::delete();
 		foreach($saisieColOld as $saisie) {
 			if ($saisie->getEleve() != null) {
@@ -238,7 +238,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	}
 	
 	/**
-	 * Met à jour la table d'agrégation pour toutes les saisies de ce traitement
+	 * Met Ã  jour la table d'agrÃ©gation pour toutes les saisies de ce traitement
 	 *
 	 * @return     void
 	 */

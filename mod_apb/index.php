@@ -39,24 +39,24 @@ require_once("../lib/header.inc");
 
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
-<h2>Options générales</h2>
+<h2>Options gÃ©nÃ©rales</h2>
 <form action="export_xml.php" name="form1" method="post">
-<p>Numéro de l'export : <select name="num_export">
+<p>NumÃ©ro de l'export : <select name="num_export">
 <?php
 for($i=1;$i<5;$i++) {
   echo '<option value="'.$i.'">'.$i.'</option>';
 }
 ?>
 </select><br/>
-<i>Note : vous ne devriez avoir que deux exports à réaliser (le premier dans le courant de l'année, à l'ouverture des remontées de notes, le second pour transmettre les résultats de la dernière période).</i></p>
+<i>Note : vous ne devriez avoir que deux exports Ã  rÃ©aliser (le premier dans le courant de l'annÃ©e, Ã  l'ouverture des remontÃ©es de notes, le second pour transmettre les rÃ©sultats de la derniÃ¨re pÃ©riode).</i></p>
 
 
-<h2>Périodes à exporter</h2>
-<p>Veuillez indiquer ci-dessous la dernière période pour laquelle les bulletins ont déjà été édités.<br/>
-Attention ! Les données exportées vont ensuite être intégrées dans la plateforme de gestion des admissions post-bac. Ne sélectionnez pas une période pour laquelle toutes les moyennes n'auraient pas été saisies.</p>
+<h2>PÃ©riodes Ã  exporter</h2>
+<p>Veuillez indiquer ci-dessous la derniÃ¨re pÃ©riode pour laquelle les bulletins ont dÃ©jÃ  Ã©tÃ© Ã©ditÃ©s.<br/>
+Attention ! Les donnÃ©es exportÃ©es vont ensuite Ãªtre intÃ©grÃ©es dans la plateforme de gestion des admissions post-bac. Ne sÃ©lectionnez pas une pÃ©riode pour laquelle toutes les moyennes n'auraient pas Ã©tÃ© saisies.</p>
 
 <?php
-// Sélection des classes concernées par l'export
+// SÃ©lection des classes concernÃ©es par l'export
 $req_classes = mysql_query("SELECT id,classe,nom_complet, MAX(p.num_periode) periodes FROM classes c, periodes p WHERE c.apb_niveau = 'terminale' AND p.id_classe = c.id GROUP BY c.id");
 
 $all_classes = array();
@@ -68,20 +68,20 @@ while($classe = mysql_fetch_object($req_classes)) {
 }
 
 while (list($key, $val) = each($all_classes)) {
-    echo '<h3>Classes à '.$key.' périodes</h3>';
-    echo '<p>Classes concernées : ';
+    echo '<h3>Classes Ã  '.$key.' pÃ©riodes</h3>';
+    echo '<p>Classes concernÃ©es : ';
     echo implode(', ',$val);
     echo '</p>';
-    echo '<p>Dernière période définitivement saisie :<br/>';
+    echo '<p>DerniÃ¨re pÃ©riode dÃ©finitivement saisie :<br/>';
     for($i=1;$i<=$key;$i++) {
-      echo '<input type="radio" name="'.$key.'per" value="'.$i.'" /> Période '.$i.'<br/>';
+      echo '<input type="radio" name="'.$key.'per" value="'.$i.'" /> PÃ©riode '.$i.'<br/>';
     }
     echo '</p>';
 }
 
 
 ?>
-<p style='margin-top: 50px;'><input type="submit" value="Générer le fichier XML" style="font-variant: small-caps;"/></p>
+<p style='margin-top: 50px;'><input type="submit" value="GÃ©nÃ©rer le fichier XML" style="font-variant: small-caps;"/></p>
 
 <?php
 	echo "<p><br /></p>\n";

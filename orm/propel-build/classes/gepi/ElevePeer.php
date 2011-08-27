@@ -16,7 +16,7 @@
 class ElevePeer extends BaseElevePeer {
 
 	/**
-	 * Récupère un élève à partir de son login.
+	 * RÃ©cupÃ¨re un Ã©lÃ¨ve Ã  partir de son login.
 	 *
 	 * @param      int $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
@@ -62,7 +62,7 @@ class ElevePeer extends BaseElevePeer {
       // On ajoute deux clauses d'ordre
       $critere->addAscendingOrderByColumn(ElevePeer::NOM);
       $critere->addAscendingOrderByColumn(ElevePeer::PRENOM);
-      // et on demande à ElevePeer de renvoyer ce dont on a besoin
+      // et on demande Ã  ElevePeer de renvoyer ce dont on a besoin
       self::$_liste_eleves_all_order_by_nom_prenom = ElevePeer::doSelect($critere);
     }
 
@@ -70,10 +70,10 @@ class ElevePeer extends BaseElevePeer {
   }
 
   /**
-   * Appelle la liste de tous les eleves de l'etablissement sous la forme d'un objet étendu (classe, responsable, ...)
+   * Appelle la liste de tous les eleves de l'etablissement sous la forme d'un objet Ã©tendu (classe, responsable, ...)
    *
    * @access public
-   * @return array Tableau d'objets de tous les eleves étendus
+   * @return array Tableau d'objets de tous les eleves Ã©tendus
    */
   public static function FindAllElevesAvecCLasse($periode = 1){
 

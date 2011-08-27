@@ -5,27 +5,27 @@ $Id$
  */
 
 $tab_type_brevet=array();
-$tab_type_brevet[0]="COLLEGE, option de sÈrie LV2";
-$tab_type_brevet[1]="COLLEGE, option de sÈrie DP6";
-//$tab_type_brevet[2]="COLLEGE, option de sÈrie TECHNOLOGIE traditionnelle";
-//$tab_type_brevet[3]="COLLEGE, option de sÈrie TECHNOLOGIE DP6";
-$tab_type_brevet[2]="PROFESSIONNELLE, sans option de sÈrie";
-$tab_type_brevet[3]="PROFESSIONNELLE, option de sÈrie DP6";
-$tab_type_brevet[4]="PROFESSIONNELLE, option de sÈrie AGRICOLE";
-//$tab_type_brevet[4]="TECHNOLOGIQUE, sans option de sÈrie";
-//$tab_type_brevet[5]="TECHNOLOGIQUE, option de sÈrie AGRICOLE";
-$tab_type_brevet[5]="TECHNOLOGIQUE, sans option de sÈrie";
-$tab_type_brevet[6]="TECHNOLOGIQUE, option de sÈrie DP6";
-$tab_type_brevet[7]="TECHNOLOGIQUE, option de sÈrie AGRICOLE";
+$tab_type_brevet[0]="COLLEGE, option de s√©rie LV2";
+$tab_type_brevet[1]="COLLEGE, option de s√©rie DP6";
+//$tab_type_brevet[2]="COLLEGE, option de s√©rie TECHNOLOGIE traditionnelle";
+//$tab_type_brevet[3]="COLLEGE, option de s√©rie TECHNOLOGIE DP6";
+$tab_type_brevet[2]="PROFESSIONNELLE, sans option de s√©rie";
+$tab_type_brevet[3]="PROFESSIONNELLE, option de s√©rie DP6";
+$tab_type_brevet[4]="PROFESSIONNELLE, option de s√©rie AGRICOLE";
+//$tab_type_brevet[4]="TECHNOLOGIQUE, sans option de s√©rie";
+//$tab_type_brevet[5]="TECHNOLOGIQUE, option de s√©rie AGRICOLE";
+$tab_type_brevet[5]="TECHNOLOGIQUE, sans option de s√©rie";
+$tab_type_brevet[6]="TECHNOLOGIQUE, option de s√©rie DP6";
+$tab_type_brevet[7]="TECHNOLOGIQUE, option de s√©rie AGRICOLE";
 
-// Indice max des matiËres
+// Indice max des mati√®res
 $indice_max_matieres=130;
 
 $indice_premiere_matiere=5;
 
 // *****************
 // A FAIRE:
-// Ajouter un traitement/test pour permettre l'affichage de la ligne Option DP6 sur la fiche brevet sans exiger de saisie en 'non dispensÈe dans l'Ètablissement' au niveau de notanet
+// Ajouter un traitement/test pour permettre l'affichage de la ligne Option DP6 sur la fiche brevet sans exiger de saisie en 'non dispens√©e dans l'√©tablissement' au niveau de notanet
 // *****************
 
 
@@ -34,8 +34,8 @@ function get_classe_from_id($id){
 	$sql="SELECT * FROM classes WHERE id='$id'";
 	$resultat_classe=mysql_query($sql);
 	if(mysql_num_rows($resultat_classe)!=1){
-		//echo "<p>ERREUR! La classe d'identifiant '$id_classe[0]' n'a pas pu Ítre identifiÈe.</p>";
-		echo "<p>ERREUR! La classe d'identifiant '$id' n'a pas pu Ítre identifiÈe.</p>";
+		//echo "<p>ERREUR! La classe d'identifiant '$id_classe[0]' n'a pas pu √™tre identifi√©e.</p>";
+		echo "<p>ERREUR! La classe d'identifiant '$id' n'a pas pu √™tre identifi√©e.</p>";
 	}
 	else{
 		$ligne_classe=mysql_fetch_object($resultat_classe);
@@ -46,11 +46,11 @@ function get_classe_from_id($id){
 
 
 function accent_min($texte){
-	return strtr($texte,"¬ƒ¿¡√≈« À»…ŒœÃÕ—‘÷“”’€‹Ÿ⁄›æ","‚‰‡·„ÂÁÍÎËÈÓÔÏÌÒÙˆÚÛı˚¸˘˙˝ˇ");
+	return strtr($texte,"√Ç√Ñ√Ä√Å√É√Ö√á√ä√ã√à√â√é√è√å√ç√ë√î√ñ√í√ì√ï√õ√ú√ô√ö√ù¬æ","√¢√§√†√°√£√•√ß√™√´√®√©√Æ√Ø√¨√≠√±√¥√∂√≤√≥√µ√ª√º√π√∫√Ω√ø");
 }
 
 function accent_maj($texte){
-	return strtr($texte,"‚‰‡·„ÂÁÍÎËÈÓÔÏÌÒÙˆÚÛı˚¸˘˙˝ˇ","¬ƒ¿¡√≈« À»…ŒœÃÕ—‘÷“”’€‹Ÿ⁄›æ");
+	return strtr($texte,"√¢√§√†√°√£√•√ß√™√´√®√©√Æ√Ø√¨√≠√±√¥√∂√≤√≥√µ√ª√º√π√∫√Ω√ø","√Ç√Ñ√Ä√Å√É√Ö√á√ä√ã√à√â√é√è√å√ç√ë√î√ñ√í√ì√ï√õ√ú√ô√ö√ù¬æ");
 }
 /*
 function get_commune($code_commune_insee,$mode){
@@ -84,7 +84,7 @@ function tabmatieres($type_brevet){
 
 	switch($type_brevet){
 		case 0:
-			// COLLEGE, option de sÈrie LV2
+			// COLLEGE, option de s√©rie LV2
 
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
@@ -94,8 +94,8 @@ function tabmatieres($type_brevet){
 			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
 			//$tabmatieres[101][0]='FRANCAIS';
-			$tabmatieres[101][0]='FRAN«AIS';
-			$tabmatieres[102][0]='MATH…MATIQUES';
+			$tabmatieres[101][0]='FRAN√áAIS';
+			$tabmatieres[102][0]='MATH√âMATIQUES';
 			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			$tabmatieres[104][0]='SCIENCES DE LA VIE ET DE LA TERRE';
@@ -121,7 +121,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[118][0]='';
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
-			$tabmatieres[121][0]='HISTOIRE-G…OGRAPHIE';
+			$tabmatieres[121][0]='HISTOIRE-G√âOGRAPHIE';
 			$tabmatieres[122][0]='EDUCATION CIVIQUE';
 
 			$tabmatieres[130][0]='NIVEAU A2 DE LANGUE REGIONALE'; // 20100425
@@ -150,7 +150,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[121][-2]=0;
 			$tabmatieres[122][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-3]='AB';
@@ -182,17 +182,17 @@ function tabmatieres($type_brevet){
 			// LV2 ou DP6
 			$tabmatieres[110]['fb_col'][1]=20;
 			$tabmatieres[110]['fb_col'][2]=40;
-			// L'option facultative en PTSUP est traitÈe autrement...
+			// L'option facultative en PTSUP est trait√©e autrement...
 
 			/*
 			$num_fb_col=1;
 			$fb_intitule_col[1]="LV2";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			*/
 
 			$tabmatieres["num_fb_col"]=1;
 			$tabmatieres["fb_intitule_col"][1]="LV2";
-			//$tabmatieres["fb_intitule_col"][2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			//$tabmatieres["fb_intitule_col"][2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			$tabmatieres["fb_intitule_col"][2]="DP6h";
 
 			//$tabmatieres[110]["lig_speciale"]="DEUXIEME LANGUE VIVANTE OU DECOUVERTE PROFESSIONNELLE (module de 6 heures)";
@@ -211,7 +211,7 @@ function tabmatieres($type_brevet){
 
 			/*
 			$tabmatieres['liste_mat_fb']=array();
-			$tabmatieres['liste_mat_fb'][]='FRAN«AIS';
+			$tabmatieres['liste_mat_fb'][]='FRAN√áAIS';
 			$tabmatieres['liste_mat_fb'][]='MATHEMATIQUES';
 			$tabmatieres['liste_mat_fb'][]='LANGUE VIVANTE 1';
 			$tabmatieres['liste_mat_fb'][]='SCIENCES DE LA VIE ET DE LA TERRE';
@@ -222,9 +222,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres['liste_mat_fb'][]='TECHNOLOGIE';
 			$tabmatieres['liste_mat_fb'][]='LANGUE VIVANTE 2';
 			$tabmatieres['liste_mat_fb'][]='VIE SCOLAIRE';
-			$tabmatieres['liste_mat_fb'][]='DÈcouverte professionnelle 6 heures';
+			$tabmatieres['liste_mat_fb'][]='D√©couverte professionnelle 6 heures';
 			//$tabmatieres['liste_mat_fb'][]='OPTION FACULTATIVE';
-			$tabmatieres['liste_mat_fb'][]='Latin ou grec ou dÈcouverte professionnelle 3h';
+			$tabmatieres['liste_mat_fb'][]='Latin ou grec ou d√©couverte professionnelle 3h';
 			$tabmatieres['liste_mat_fb'][]='Latin ou grec ou langue vivante 2';
 			$tabmatieres['liste_mat_fb'][]='HISTOIRE-GEOGRAPHIE';
 			$tabmatieres['liste_mat_fb'][]='EDUCATION CIVIQUE';
@@ -232,7 +232,7 @@ function tabmatieres($type_brevet){
 
 			break;
 		case 1:
-			// COLLEGE, option de sÈrie DP6
+			// COLLEGE, option de s√©rie DP6
 
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
@@ -241,8 +241,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
-			$tabmatieres[101][0]='FRAN«AIS';
-			$tabmatieres[102][0]='MATH…MATIQUES';
+			$tabmatieres[101][0]='FRAN√áAIS';
+			$tabmatieres[102][0]='MATH√âMATIQUES';
 			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			$tabmatieres[104][0]='SCIENCES DE LA VIE ET DE LA TERRE';
@@ -254,7 +254,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[110][0]='DEUXIEME LANGUE VIVANTE';
 			//$tabmatieres[110][0]='DEUXIEME LANGUE VIVANTE OU DECOUVERTE PROFESSIONNELLE (module de 6 heures)';
 			//$tabmatieres[110][0]='DECOUVERTE PROFESSIONNELLE (module de 6 heures)';
-			$tabmatieres[110][0]='D…COUVERTE PROFESSIONNELLE 6 heures';
+			$tabmatieres[110][0]='D√âCOUVERTE PROFESSIONNELLE 6 heures';
 			$tabmatieres[111][0]='';
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 			//$tabmatieres[113][0]='OPTION FACULTATIVE (1)';
@@ -268,7 +268,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[118][0]='';
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
-			$tabmatieres[121][0]='HISTOIRE-G…OGRAPHIE';
+			$tabmatieres[121][0]='HISTOIRE-G√âOGRAPHIE';
 			$tabmatieres[122][0]='EDUCATION CIVIQUE';
 
 			$tabmatieres[130][0]='NIVEAU A2 DE LANGUE REGIONALE'; // 20100425
@@ -298,7 +298,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[121][-2]=0;
 			$tabmatieres[122][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-3]='AB';
@@ -331,17 +331,17 @@ function tabmatieres($type_brevet){
 			// LV2 ou DP6
 			$tabmatieres[110]['fb_col'][1]=20;
 			$tabmatieres[110]['fb_col'][2]=40;
-			// L'option facultative en PTSUP est traitÈe autrement...
+			// L'option facultative en PTSUP est trait√©e autrement...
 
 			/*
 			$num_fb_col=2;
 			$fb_intitule_col[1]="LV2";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			*/
 
 			$tabmatieres["num_fb_col"]=2;
 			$tabmatieres["fb_intitule_col"][1]="LV2";
-			//$tabmatieres["fb_intitule_col"][2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			//$tabmatieres["fb_intitule_col"][2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			$tabmatieres["fb_intitule_col"][2]="DP6h";
 
 			// POUR NE PAS FAIRE D'ASSOCIATION AVEC DES MATIERES
@@ -359,7 +359,7 @@ function tabmatieres($type_brevet){
 			break;
 /*
 		case 2:
-			// COLLEGE, option de sÈrie TECHNOLOGIQUE
+			// COLLEGE, option de s√©rie TECHNOLOGIQUE
 			$tabmatieres[101][0]='FRANCAIS';
 			$tabmatieres[102][0]='MATHEMATIQUES';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
@@ -402,7 +402,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[121][-2]=0;
 			$tabmatieres[122][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			for($j=101;$j<=122;$j++){
 				$tabmatieres[$j][-3]='AB';
 			}
@@ -424,17 +424,17 @@ function tabmatieres($type_brevet){
 			// Technologie
 			$tabmatieres[109]['fb_col'][1]=40;
 			$tabmatieres[109]['fb_col'][2]=20;
-			// DP6: Je n'ai pas le numÈro pour la DP6... est-ce bien le 110
+			// DP6: Je n'ai pas le num√©ro pour la DP6... est-ce bien le 110
 			$tabmatieres[110]['fb_col'][1]="X";
 			$tabmatieres[110]['fb_col'][2]=40;
 			// Pas d'option facultative
 
 			$num_fb_col=1;
 			$fb_intitule_col[1]="Traditionnelle";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			break;
 		case 2:
-			// COLLEGE, option de sÈrie TECHNOLOGIQUE AGRICOLE
+			// COLLEGE, option de s√©rie TECHNOLOGIQUE AGRICOLE
 			$tabmatieres[101][0]='FRANCAIS';
 			$tabmatieres[102][0]='MATHEMATIQUES';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
@@ -477,7 +477,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[121][-2]=0;
 			$tabmatieres[122][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			for($j=101;$j<=122;$j++){
 				$tabmatieres[$j][-3]='AB';
 			}
@@ -499,18 +499,18 @@ function tabmatieres($type_brevet){
 			// Technologie
 			$tabmatieres[109]['fb_col'][1]=40;
 			$tabmatieres[109]['fb_col'][2]=20;
-			// DP6: Je n'ai pas le numÈro pour la DP6... est-ce bien le 110
+			// DP6: Je n'ai pas le num√©ro pour la DP6... est-ce bien le 110
 			$tabmatieres[110]['fb_col'][1]="X";
 			$tabmatieres[110]['fb_col'][2]=40;
 			// Pas d'option facultative
 
 			$num_fb_col=1;
 			$fb_intitule_col[1]="Traditionnelle";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			break;
 */
 		case 2:
-			// PROFESSIONNELLE, sans option de sÈrie
+			// PROFESSIONNELLE, sans option de s√©rie
 
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
@@ -519,8 +519,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
-			$tabmatieres[101][0]='FRAN«AIS';
-			$tabmatieres[102][0]='MATH…MATIQUES';
+			$tabmatieres[101][0]='FRAN√áAIS';
+			$tabmatieres[102][0]='MATH√âMATIQUES';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			//$tabmatieres[103][0]='LANGUE VIVANTE';
@@ -547,7 +547,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
-			$tabmatieres[121][0]='HISTOIRE-G…OGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-G√âOGRAPHIE EDUCATION CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 			$tabmatieres[122][0]='';
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
@@ -570,7 +570,7 @@ function tabmatieres($type_brevet){
 			//           Il faudrait donc multiplier par trois...
 
 			// Par ailleurs, les candidats sont inscrits soit en LV1 soit en Sciences-physiques
-			// Il faudrait donc considÈrer les deux matiËres commme optionnelles et on a alors un problËme pour relever une note manquante...
+			// Il faudrait donc consid√©rer les deux mati√®res commme optionnelles et on a alors un probl√®me pour relever une note manquante...
 
 			// Coefficients:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -583,7 +583,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[108][-2]=3;
 			$tabmatieres[121][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-3]='AB';
@@ -613,7 +613,7 @@ function tabmatieres($type_brevet){
 			// Technologie
 			$tabmatieres[108]['fb_col'][1]=60;
 			$tabmatieres[108]['fb_col'][2]=40;
-			// DP6: Je n'ai pas le numÈro pour la DP6... est-ce bien le 110
+			// DP6: Je n'ai pas le num√©ro pour la DP6... est-ce bien le 110
 			//$tabmatieres[111]['fb_col'][1]="X";
 			//$tabmatieres[111]['fb_col'][2]=60;
 			// Pas d'option facultative
@@ -621,31 +621,31 @@ function tabmatieres($type_brevet){
 			/*
 			$num_fb_col=1;
 			$fb_intitule_col[1]="Traditionnelle";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			*/
 
 			$tabmatieres["num_fb_col"]=1;
 			//$tabmatieres["fb_intitule_col"][1]="Traditionnelle";
-			//$tabmatieres["fb_intitule_col"][2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			//$tabmatieres["fb_intitule_col"][2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			$tabmatieres["fb_intitule_col"][1]="sans option";
 			$tabmatieres["fb_intitule_col"][2]="DP6h";
 
 
-			// Les deux matiËres en une seule ligne
-			// Je n'utilise finalement pas le texte correspondant... parce qu'il faut prÈciser la LV sous la forme:
+			// Les deux mati√®res en une seule ligne
+			// Je n'utilise finalement pas le texte correspondant... parce qu'il faut pr√©ciser la LV sous la forme:
 			//       Langue vivante: Anglais
 			//       ou sciences physiques
 			$tabmatieres[103]["lig_speciale"]='PREMIERE LANGUE VIVANTE OU SCIENCES PHYSIQUES';
 			$tabmatieres[104]["lig_speciale"]='PREMIERE LANGUE VIVANTE OU SCIENCES PHYSIQUES';
 
-			// Il faudrait ajouter une ligne spÈciale pour la DP6 alors que ce n'est pas comptÈ dans cette sÈrie
-			//$tabmatieres[111]["lig_speciale"]="D…COUVERTE PROFESSIONNELLE<br />(module de 6 heures)";
-			//$tabmatieres[111]["lig_speciale"]="D…COUVERTE PROFESSIONNELLE 6 heures";
+			// Il faudrait ajouter une ligne sp√©ciale pour la DP6 alors que ce n'est pas compt√© dans cette s√©rie
+			//$tabmatieres[111]["lig_speciale"]="D√âCOUVERTE PROFESSIONNELLE<br />(module de 6 heures)";
+			//$tabmatieres[111]["lig_speciale"]="D√âCOUVERTE PROFESSIONNELLE 6 heures";
 
 
-			// IntitulÈ de la ligne pour la fiche brevet option DP6h
-			//$tabmatieres[111]['fb_lig_alt']="DÈcouverte professionnelle 6 heures";
-			// L'indice 111 n'est pas prÈsent sinon en PROFESSIONNELLE sans option de sÈrie
+			// Intitul√© de la ligne pour la fiche brevet option DP6h
+			//$tabmatieres[111]['fb_lig_alt']="D√©couverte professionnelle 6 heures";
+			// L'indice 111 n'est pas pr√©sent sinon en PROFESSIONNELLE sans option de s√©rie
 
 
 			// POUR NE PAS FAIRE D'ASSOCIATION AVEC DES MATIERES
@@ -661,7 +661,7 @@ function tabmatieres($type_brevet){
 
 			break;
 		case 3:
-			// PROFESSIONNELLE, option de sÈrie DP6
+			// PROFESSIONNELLE, option de s√©rie DP6
 
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
@@ -670,8 +670,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
-			$tabmatieres[101][0]='FRAN«AIS';
-			$tabmatieres[102][0]='MATH…MATIQUES';
+			$tabmatieres[101][0]='FRAN√áAIS';
+			$tabmatieres[102][0]='MATH√âMATIQUES';
 			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
@@ -686,7 +686,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[109][0]='';
 			// DP6 A PLACER....
 			$tabmatieres[110][0]='';
-			$tabmatieres[111][0]='D…COUVERTE PROFESSIONNELLE (module 6 heures)';
+			$tabmatieres[111][0]='D√âCOUVERTE PROFESSIONNELLE (module 6 heures)';
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 			$tabmatieres[113][0]='';
 
@@ -700,7 +700,7 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
-			$tabmatieres[121][0]='HISTOIRE-G…OGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-G√âOGRAPHIE EDUCATION CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 			$tabmatieres[122][0]='';
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
@@ -724,7 +724,7 @@ function tabmatieres($type_brevet){
 			//           Il faudrait donc multiplier par trois...
 
 			// Par ailleurs, les candidats sont inscrits soit en LV1 soit en Sciences-physiques
-			// Il faudrait donc considÈrer les deux matiËres commme optionnelles et on a alors un problËme pour relever une note manquante...
+			// Il faudrait donc consid√©rer les deux mati√®res commme optionnelles et on a alors un probl√®me pour relever une note manquante...
 
 			// Coefficients:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -739,7 +739,7 @@ function tabmatieres($type_brevet){
 			// DP6: $tabmatieres[???][-2]=3;
 			$tabmatieres[121][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-3]='AB';
@@ -778,22 +778,22 @@ function tabmatieres($type_brevet){
 			/*
 			$num_fb_col=2;
 			$fb_intitule_col[1]="Traditionnelle";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			*/
 
 			$tabmatieres["num_fb_col"]=2;
 			//$tabmatieres["fb_intitule_col"][1]="Traditionnelle";
-			//$tabmatieres["fb_intitule_col"][2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			//$tabmatieres["fb_intitule_col"][2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			$tabmatieres["fb_intitule_col"][1]="sans option";
 			$tabmatieres["fb_intitule_col"][2]="DP6h";
 
-			// Les deux matiËres en une seule ligne
+			// Les deux mati√®res en une seule ligne
 			$tabmatieres[103]["lig_speciale"]='PREMIERE LANGUE VIVANTE OU SCIENCES PHYSIQUES';
 			$tabmatieres[104]["lig_speciale"]='PREMIERE LANGUE VIVANTE OU SCIENCES PHYSIQUES';
 
 			// Pour mettre le saut de ligne au bon niveau:
-			//$tabmatieres[111]["lig_speciale"]="D…COUVERTE PROFESSIONNELLE<br />(module de 6 heures)";
-			$tabmatieres[111]["lig_speciale"]="D…COUVERTE PROFESSIONNELLE 6 heures";
+			//$tabmatieres[111]["lig_speciale"]="D√âCOUVERTE PROFESSIONNELLE<br />(module de 6 heures)";
+			$tabmatieres[111]["lig_speciale"]="D√âCOUVERTE PROFESSIONNELLE 6 heures";
 
 
 			// POUR NE PAS FAIRE D'ASSOCIATION AVEC DES MATIERES
@@ -809,7 +809,7 @@ function tabmatieres($type_brevet){
 
 			break;
 		case 4:
-			// PROFESSIONNELLE, option de sÈrie AGRICOLE
+			// PROFESSIONNELLE, option de s√©rie AGRICOLE
 
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
@@ -818,15 +818,15 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
-			$tabmatieres[101][0]='FRAN«AIS';
-			$tabmatieres[102][0]='MATH…MATIQUES';
+			$tabmatieres[101][0]='FRAN√áAIS';
+			$tabmatieres[102][0]='MATH√âMATIQUES';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='';
 			$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
 			$tabmatieres[107][0]='EDUCATION SOCIO-CULTURELLE';
-			// CES TROIS L‡ DEVRAIENT ETRE SUR UNE MEME LIGNE POUR LES FICHES BREVET
+			// CES TROIS L√† DEVRAIENT ETRE SUR UNE MEME LIGNE POUR LES FICHES BREVET
 			$tabmatieres[108][0]='TECHNOLOGIE';
 			$tabmatieres[109][0]='SCIENCES BIOLOGIQUES';
 			$tabmatieres[110][0]='SCIENCES PHYSIQUES';
@@ -843,7 +843,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
-			$tabmatieres[121][0]='HISTOIRE-G…OGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-G√âOGRAPHIE EDUCATION CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 			$tabmatieres[122][0]='';
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
@@ -877,7 +877,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[121][-2]=0;
 			//$tabmatieres[122][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-3]='AB';
@@ -921,14 +921,14 @@ function tabmatieres($type_brevet){
 			// Technologie
 			$tabmatieres[109]['fb_col'][1]=40;
 			$tabmatieres[109]['fb_col'][2]=20;
-			// DP6: Je n'ai pas le numÈro pour la DP6... est-ce bien le 110
+			// DP6: Je n'ai pas le num√©ro pour la DP6... est-ce bien le 110
 			$tabmatieres[110]['fb_col'][1]="X";
 			$tabmatieres[110]['fb_col'][2]=40;
 			// Pas d'option facultative
 
 			$num_fb_col=1;
 			$fb_intitule_col[1]="Traditionnelle";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 
 
 
@@ -940,11 +940,11 @@ function tabmatieres($type_brevet){
 			// LV2 ou DP6
 			$tabmatieres[110]['fb_col'][1]=20;
 			$tabmatieres[110]['fb_col'][2]=40;
-			// L'option facultative en PTSUP est traitÈe autrement...
+			// L'option facultative en PTSUP est trait√©e autrement...
 
 			$tabmatieres["num_fb_col"]=1;
 			$tabmatieres["fb_intitule_col"][1]="LV2";
-			$tabmatieres["fb_intitule_col"][2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$tabmatieres["fb_intitule_col"][2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 
 			$tabmatieres[110]["lig_speciale"]="DEUXIEME LANGUE VIVANTE OU DECOUVERTE PROFESSIONNELLE (module de 6 heures)";
 
@@ -963,7 +963,7 @@ function tabmatieres($type_brevet){
 
 			break;
 		case 5:
-			// TECHNOLOGIQUE, sans option de sÈrie
+			// TECHNOLOGIQUE, sans option de s√©rie
 
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
@@ -972,8 +972,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
-			$tabmatieres[101][0]='FRAN«AIS';
-			$tabmatieres[102][0]='MATH…MATIQUES';
+			$tabmatieres[101][0]='FRAN√áAIS';
+			$tabmatieres[102][0]='MATH√âMATIQUES';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
@@ -997,7 +997,7 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
-			$tabmatieres[121][0]='HISTOIRE-G…OGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-G√âOGRAPHIE EDUCATION CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 			$tabmatieres[122][0]='';
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
@@ -1031,7 +1031,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[121][-2]=0;
 			//$tabmatieres[122][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-3]='AB';
@@ -1061,7 +1061,7 @@ function tabmatieres($type_brevet){
 			// Technologie
 			$tabmatieres[108]['fb_col'][1]=40;
 			$tabmatieres[108]['fb_col'][2]=20;
-			// DP6: Je n'ai pas le numÈro pour la DP6... est-ce bien le 110
+			// DP6: Je n'ai pas le num√©ro pour la DP6... est-ce bien le 110
 			$tabmatieres[110]['fb_col'][1]="X";
 			$tabmatieres[110]['fb_col'][2]=40;
 			// Pas d'option facultative
@@ -1069,19 +1069,19 @@ function tabmatieres($type_brevet){
 			/*
 			$num_fb_col=1;
 			$fb_intitule_col[1]="Traditionnelle";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			*/
 
 			$tabmatieres["num_fb_col"]=1;
 			//$tabmatieres["fb_intitule_col"][1]="Traditionnelle";
-			//$tabmatieres["fb_intitule_col"][2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			//$tabmatieres["fb_intitule_col"][2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			$tabmatieres["fb_intitule_col"][1]="sans option";
 			$tabmatieres["fb_intitule_col"][2]="option DP6h";
 
-			// Il faudrait ajouter une ligne spÈciale pour la DP6 alors que ce n'est pas comptÈ dans cette sÈrie
-			//$tabmatieres[110]["lig_speciale"]="D…COUVERTE PROFESSIONNELLE<br />(module de 6 heures)";
-			$tabmatieres[110]["lig_speciale"]="DÈcouverte professionnelle 6 heures";
-			$tabmatieres[110]['fb_lig_alt']="DÈcouverte professionnelle 6 heures";
+			// Il faudrait ajouter une ligne sp√©ciale pour la DP6 alors que ce n'est pas compt√© dans cette s√©rie
+			//$tabmatieres[110]["lig_speciale"]="D√âCOUVERTE PROFESSIONNELLE<br />(module de 6 heures)";
+			$tabmatieres[110]["lig_speciale"]="D√©couverte professionnelle 6 heures";
+			$tabmatieres[110]['fb_lig_alt']="D√©couverte professionnelle 6 heures";
 
 			// POUR NE PAS FAIRE D'ASSOCIATION AVEC DES MATIERES
 			// ET NE PAS FAIRE L'EXTRATION DES MOYENNES DANS LES MEMES TABLES
@@ -1096,7 +1096,7 @@ function tabmatieres($type_brevet){
 
 			break;
 		case 6:
-			// TECHNOLOGIQUE, option de sÈrie DP6
+			// TECHNOLOGIQUE, option de s√©rie DP6
 
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
@@ -1105,8 +1105,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
-			$tabmatieres[101][0]='FRAN«AIS';
-			$tabmatieres[102][0]='MATH…MATIQUES';
+			$tabmatieres[101][0]='FRAN√áAIS';
+			$tabmatieres[102][0]='MATH√âMATIQUES';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
@@ -1115,7 +1115,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[107][0]='EDUCATION ARTISTIQUE';
 			$tabmatieres[108][0]='TECHNOLOGIE';
 			$tabmatieres[109][0]='';
-			$tabmatieres[110][0]='D…COUVERTE PROFESSIONNELLE (module 6 heures)';
+			$tabmatieres[110][0]='D√âCOUVERTE PROFESSIONNELLE (module 6 heures)';
 			$tabmatieres[111][0]='';
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 			$tabmatieres[113][0]='';
@@ -1129,7 +1129,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100512
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
-			$tabmatieres[121][0]='HISTOIRE-G…OGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-G√âOGRAPHIE EDUCATION CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 			$tabmatieres[122][0]='';
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
@@ -1162,7 +1162,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[121][-2]=0;
 			//$tabmatieres[122][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-3]='AB';
@@ -1194,24 +1194,24 @@ function tabmatieres($type_brevet){
 			// Technologie
 			$tabmatieres[108]['fb_col'][1]=40;
 			$tabmatieres[108]['fb_col'][2]=20;
-			// DP6: Je n'ai pas le numÈro pour la DP6... est-ce bien le 110
+			// DP6: Je n'ai pas le num√©ro pour la DP6... est-ce bien le 110
 			$tabmatieres[110]['fb_col'][1]="X";
 			$tabmatieres[110]['fb_col'][2]=40;
 			// Pas d'option facultative
 
 
-			$tabmatieres[110]["lig_speciale"]="DÈcouverte professionnelle 6 heures";
+			$tabmatieres[110]["lig_speciale"]="D√©couverte professionnelle 6 heures";
 
 
 			/*
 			$num_fb_col=2;
 			$fb_intitule_col[1]="Traditionnelle";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			*/
 
 			$tabmatieres["num_fb_col"]=2;
 			//$tabmatieres["fb_intitule_col"][1]="Traditionnelle";
-			//$tabmatieres["fb_intitule_col"][2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			//$tabmatieres["fb_intitule_col"][2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			$tabmatieres["fb_intitule_col"][1]="sans option";
 			$tabmatieres["fb_intitule_col"][2]="option DP6h";
 
@@ -1228,7 +1228,7 @@ function tabmatieres($type_brevet){
 
 			break;
 		case 7:
-			// TECHNOLOGIQUE, option de sÈrie AGRICOLE
+			// TECHNOLOGIQUE, option de s√©rie AGRICOLE
 
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
@@ -1237,8 +1237,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
-			$tabmatieres[101][0]='FRAN«AIS';
-			$tabmatieres[102][0]='MATH…MATIQUES';
+			$tabmatieres[101][0]='FRAN√áAIS';
+			$tabmatieres[102][0]='MATH√âMATIQUES';
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
@@ -1260,7 +1260,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
-			$tabmatieres[121][0]='HISTOIRE-G…OGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-G√âOGRAPHIE EDUCATION CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 			$tabmatieres[122][0]='';
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
@@ -1289,7 +1289,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[109][-2]=2;
 			$tabmatieres[121][-2]=0;
 
-			// Notes spÈciales autorisÈes:
+			// Notes sp√©ciales autoris√©es:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-3]='AB';
@@ -1321,14 +1321,14 @@ function tabmatieres($type_brevet){
 			// Technologie
 			$tabmatieres[109]['fb_col'][1]=40;
 			$tabmatieres[109]['fb_col'][2]=20;
-			// DP6: Je n'ai pas le numÈro pour la DP6... est-ce bien le 110
+			// DP6: Je n'ai pas le num√©ro pour la DP6... est-ce bien le 110
 			$tabmatieres[110]['fb_col'][1]="X";
 			$tabmatieres[110]['fb_col'][2]=40;
 			// Pas d'option facultative
 
 			$num_fb_col=1;
 			$fb_intitule_col[1]="Traditionnelle";
-			$fb_intitule_col[2]="A module<br />dÈcouverte<br />professionnelle<br />6 heures";
+			$fb_intitule_col[2]="A module<br />d√©couverte<br />professionnelle<br />6 heures";
 			*/
 
 			// POUR NE PAS FAIRE D'ASSOCIATION AVEC DES MATIERES
@@ -1406,16 +1406,16 @@ function tab_extract_moy($tab_ele,$id_clas) {
 
 	//$sql="SELECT * FROM notanet_corresp WHERE type_brevet='".$tab_ele['type_brevet']."'";
 
-	// TÈmoin destinÈ ‡ signaler les ÈlËves pour lesquels une erreur se produit.
+	// T√©moin destin√© √† signaler les √©l√®ves pour lesquels une erreur se produit.
 	$temoin_notanet_eleve="";
 	$info_erreur="";
 
 	echo "<p>\n";
 	echo "<a name='tableau_des_moyennes_eleve_$num_eleve'></a>";
 	if($tab_ele['no_gep']==""){
-		echo "<b style='color:red;'>ERREUR:</b> NumÈro INE non attribuÈ: ".$tab_ele['nom']." ".$tab_ele['prenom']."<br />";
+		echo "<b style='color:red;'>ERREUR:</b> Num√©ro INE non attribu√©: ".$tab_ele['nom']." ".$tab_ele['prenom']."<br />";
 		$temoin_notanet_eleve="ERREUR";
-		$info_erreur="Pas de numÈro INE";
+		$info_erreur="Pas de num√©ro INE";
 		echo "INE: <input type='text' name='INE[$num_eleve]' value='' onchange='changement()' />\n";
 	}
 	else{
@@ -1423,12 +1423,12 @@ function tab_extract_moy($tab_ele,$id_clas) {
 		$INE=$tab_ele['no_gep'];
 		echo "INE: <input type='text' name='INE[$num_eleve]' value='$INE' onchange='changement()' />\n";
 	}
-	// Guillemets sur la valeur ‡ cause des apostrophes dans des noms...
+	// Guillemets sur la valeur √† cause des apostrophes dans des noms...
 	echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']." ($classe)\" />\n";
 	echo "</p>\n";
 
 
-	// Tableau destinÈ ‡ prÈsenter ‡ gauche, le tableau des notes, moyennes,... et ‡ droite les commentaires/erreurs et Èventuellement les lignes du fichier d'export.
+	// Tableau destin√© √† pr√©senter √† gauche, le tableau des notes, moyennes,... et √† droite les commentaires/erreurs et √©ventuellement les lignes du fichier d'export.
 	//echo "<table border='1'>\n";
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
@@ -1442,7 +1442,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	echo "<table class='boireaus'>\n";
 	echo "<tr style='font-weight: bold; text-align:center;'>\n";
 	echo "<th>Id</th>\n";
-	echo "<th>MatiËre</th>\n";
+	echo "<th>Mati√®re</th>\n";
 	echo "<th>Moyenne</th>\n";
 	while($ligne_periodes=mysql_fetch_object($resultat_periodes)){
 		echo "<th>T $ligne_periodes->num_periode</th>\n";
@@ -1451,7 +1451,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	echo "<th>Correction</th>\n";
 	if($affiche_enregistrements_precedents=="y") {
 		echo "<th>\n";
-		echo "EnregistrÈ<br />auparavant";
+		echo "Enregistr√©<br />auparavant";
 		echo "</th>\n";
 	}
 	echo "</tr>\n";
@@ -1460,17 +1460,17 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 
 
-		// Initialisation de la moyenne pour la matiËre NOTANET courante.
+		// Initialisation de la moyenne pour la mati√®re NOTANET courante.
 		$moy_NOTANET[$j]="";
 
 //echo "<tr><td colspan='5'>\$tabmatieres[$j][0]=".$tabmatieres[$j][0]."</td></tr>";
 //echo "<tr><td colspan='5'>\$statut_matiere[$j]=".$statut_matiere[$j]."</td></tr>";
 
-		// Compteur destinÈ ‡ repÈrer des matiËres pour lesquelles l'ÈlËve aurait des notes dans plus d'une option.
+		// Compteur destin√© √† rep√©rer des mati√®res pour lesquelles l'√©l√®ve aurait des notes dans plus d'une option.
 		// On ne sait alors pas quelle valeur retenir
 		$cpt=0;
-		// TÈmoin de la liste des matiËres trouvÈes pour une mÍme matiËre notanet
-		// Utile pour repÈrer les matiËres Notanet associÈes ‡ deux matiËres Gepi pour lesquelles l'ÈlËve a une note
+		// T√©moin de la liste des mati√®res trouv√©es pour une m√™me mati√®re notanet
+		// Utile pour rep√©rer les mati√®res Notanet associ√©es √† deux mati√®res Gepi pour lesquelles l'√©l√®ve a une note
 		$liste_matieres_gepi="";
 		//if($tabmatieres[$j][0]!=''){
 		if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')){
@@ -1487,7 +1487,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					//echo $id_matiere[$j][$k]."<br />\n";
-					// A FAIRE: REQUETE moyenne pour la matiËre... si non vide... (test si note!="-" aussi?)
+					// A FAIRE: REQUETE moyenne pour la mati√®re... si non vide... (test si note!="-" aussi?)
 
 					//$sql="SELECT round(avg(n.note),1) as moyenne FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
 
@@ -1511,12 +1511,12 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					}
 					else{
 						//echo "X<br />\n";
-						// On ne passe jamais par l‡.
+						// On ne passe jamais par l√†.
 						// Le calcul de la moyenne avec $resultat_moy retourne NULL et on a toujours mysql_num_rows($resultat_moy)=1
 						echo "<td style='font-weight:bold; text-align:center;'>X</td>\n";
 					}
 					echo "<!--\$temoin_moyenne=$temoin_moyenne-->\n";
-					// Cette solution donne les infos, mais ne permet pas de contrÙler si tout est OK...
+					// Cette solution donne les infos, mais ne permet pas de contr√¥ler si tout est OK...
 					//======================================================================
 
 					$total=0;
@@ -1530,7 +1530,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='' AND periode='$ligne_periodes->num_periode')";
 
 						//===================================================================
-						// SUR LE STATUT... IL FAUDRAIT VOIR CE QUE DONNENT LES dispensÈs,...
+						// SUR LE STATUT... IL FAUDRAIT VOIR CE QUE DONNENT LES dispens√©s,...
 						// POUR POUVOIR LES CODER DANS L'EXPORT NOTANET
 						//===================================================================
 						//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='' AND periode='$ligne_periodes->num_periode')";
@@ -1542,20 +1542,20 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						//echo "<!-- mysql_num_rows(\$resultat_notes)=".mysql_num_rows($resultat_notes)." -->\n";
 						if(mysql_num_rows($resultat_notes)>0){
 							if(mysql_num_rows($resultat_notes)>1){
-								//$infos="Erreur? Il y a plusieurs notes/moyennes pour une mÍme pÈriode! ";
-								$infos="<p>Erreur? Il y a plusieurs notes/moyennes pour une mÍme pÈriode! <br />";
+								//$infos="Erreur? Il y a plusieurs notes/moyennes pour une m√™me p√©riode! ";
+								$infos="<p>Erreur? Il y a plusieurs notes/moyennes pour une m√™me p√©riode! <br />";
 
 								//$infos.="<br />$sql<br />";
 
 								$temoin_notanet_eleve="ERREUR";
 								if($info_erreur==""){
-									$info_erreur="Plusieurs notes/moyennes pour une mÍme pÈriode.";
+									$info_erreur="Plusieurs notes/moyennes pour une m√™me p√©riode.";
 
-									$info_erreur.="<br />Dans ce cas, la moyenne est la somme des moyennes affichÈes divisÈe par le nombre de moyennes.<br />La valeur est correcte, s'il y a le mÍme nombre de moyennes sur chaque trimestre et si on donne le mÍme poids aux diffÈrentes moyennes.<br />";
+									$info_erreur.="<br />Dans ce cas, la moyenne est la somme des moyennes affich√©es divis√©e par le nombre de moyennes.<br />La valeur est correcte, s'il y a le m√™me nombre de moyennes sur chaque trimestre et si on donne le m√™me poids aux diff√©rentes moyennes.<br />";
 
 								}
 								else{
-									$info_erreur=$info_erreur." - Plusieurs notes/moyennes pour une mÍme pÈriode.";
+									$info_erreur=$info_erreur." - Plusieurs notes/moyennes pour une m√™me p√©riode.";
 								}
 								$chaine_couleur=" bgcolor='red'";
 							}
@@ -1579,9 +1579,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 									echo $ligne_notes->note." ";
 								}
 
-								// Le test devrait toujours Ítre vrai puisqu'on a exclu les moyennes avec un statut non vide
+								// Le test devrait toujours √™tre vrai puisqu'on a exclu les moyennes avec un statut non vide
 								if(($ligne_notes->note!="")&&($ligne_notes->note!="-")){
-									// PROBLEME: S'il y a plusieurs notes pour une mÍme pÈriode, le total est faussÈ et la moyenne itou...
+									// PROBLEME: S'il y a plusieurs notes pour une m√™me p√©riode, le total est fauss√© et la moyenne itou...
 									// ... mais cela ne devrait pas arriver, ou alors la base GEPI n'est pas nette.
 									$total=$total+$ligne_notes->note;
 									$nbnotes++;
@@ -1607,7 +1607,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 							}
 
 							//echo "<td>X</td>\n";
-							// S'il n'y a pas de moyenne avec statut vide, on cherche si un statut dispensÈ ou autre est dans la table 'matieres_notes':
+							// S'il n'y a pas de moyenne avec statut vide, on cherche si un statut dispens√© ou autre est dans la table 'matieres_notes':
 							//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND periode='$ligne_periodes->num_periode')";
 							$sql="SELECT mn.* FROM matieres_notes mn, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."' AND mn.periode='$ligne_periodes->num_periode' AND mn.id_groupe=jgm.id_groupe)";
 							$resultat_notes=mysql_query($sql);
@@ -1650,7 +1650,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 							}
 							else{
 								//$tabmatieres[$j][-1]="NOTNONCA";
-								// On ne modifie pas... euh si... une ligne est insÈrÈe, mais elle n'intervient pas dans le calcul du TOTal.
+								// On ne modifie pas... euh si... une ligne est ins√©r√©e, mais elle n'intervient pas dans le calcul du TOTal.
 								if($tabmatieres[$j][-1]=="NOTNONCA"){
 									$ligne_NOTANET=$ligne_NOTANET."|$moyenne|";
 								}
@@ -1665,7 +1665,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='$moyenne' size='6'></td>\n";
 
 						//$moyenne_arrondie=round($moyenne*2)/2;
-						//La note globale attribuÈe aux ÈlËves dans chaque discipline, ‡ l'issue des deux classes, est calculÈe sur la base de la moyenne des deux notes attribuÈes en quatriËme et en troisiËme. Chaque note globale est affectÈe du coefficient dÈfini par l'arrÍtÈ du 18 ao˚t 1999. Les notes globales, arrondies au demi point supÈrieur, sont arrÍtÈes par le conseil des professeurs du troisiËme trimestre.
+						//La note globale attribu√©e aux √©l√®ves dans chaque discipline, √† l'issue des deux classes, est calcul√©e sur la base de la moyenne des deux notes attribu√©es en quatri√®me et en troisi√®me. Chaque note globale est affect√©e du coefficient d√©fini par l'arr√™t√© du 18 ao√ªt 1999. Les notes globales, arrondies au demi point sup√©rieur, sont arr√™t√©es par le conseil des professeurs du troisi√®me trimestre.
 						$moyenne_arrondie=ceil($moyenne*2)/2;
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' /></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' />";
@@ -1705,10 +1705,10 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						if($statut_matiere[$j]=='imposee'){
 							$temoin_notanet_eleve="ERREUR";
 							if($info_erreur==""){
-								$info_erreur="Pas de moyenne ‡ une matiËre non optionnelle.";
+								$info_erreur="Pas de moyenne √† une mati√®re non optionnelle.";
 							}
 							else{
-								$info_erreur=$info_erreur." - Pas de moyenne ‡ une matiËre non optionnelle.";
+								$info_erreur=$info_erreur." - Pas de moyenne √† une mati√®re non optionnelle.";
 							}
 						}
 					}
@@ -1731,7 +1731,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 							$lig_enr=mysql_fetch_object($enr);
 
 							if($moyenne_arrondie!=$lig_enr->note) {
-								echo "<a href=\"#tableau_des_moyennes_eleve_$num_eleve\" onclick=\"document.getElementById('n".$compteur_champs_notes."').value='$lig_enr->note'; return false;\"><img src='../images/icons/back.png' width='16' height='16' alt='RÈtablir la valeur enregistrÈe' /></a>";
+								echo "<a href=\"#tableau_des_moyennes_eleve_$num_eleve\" onclick=\"document.getElementById('n".$compteur_champs_notes."').value='$lig_enr->note'; return false;\"><img src='../images/icons/back.png' width='16' height='16' alt='R√©tablir la valeur enregistr√©e' /></a>";
 								echo "&nbsp;";
 							}
 
@@ -1755,18 +1755,18 @@ function tab_extract_moy($tab_ele,$id_clas) {
 
 				//echo "<tr><td>\$cpt=$cpt</td><td>\$statut_matiere[$j]=$statut_matiere[$j]</td></tr>";
 				if($cpt==0){
-					// Pas de moyenne trouvÈe pour cet ÈlËve.
+					// Pas de moyenne trouv√©e pour cet √©l√®ve.
 					if($statut_matiere[$j]=='imposee'){
-						// Si la matiËre est imposÈe, alors il y a un problËme ‡ rÈgler...
+						// Si la mati√®re est impos√©e, alors il y a un probl√®me √† r√©gler...
 						$temoin_notanet_eleve="ERREUR";
 						if($info_erreur==""){
-							//$info_erreur="Pas de moyenne ‡ une matiËre non optionnelle: ".$id_matiere[$j][0];
-							$info_erreur="Pas de moyenne ‡ une matiËre non optionnelle: <b>".$id_matiere[$j][0]."</b><br />(<i><span style='font-size:xx-small;'>valeurs non numÈriques autorisÈes: ".$tabmatieres[$j][-3]."</span></i>)<br />";
+							//$info_erreur="Pas de moyenne √† une mati√®re non optionnelle: ".$id_matiere[$j][0];
+							$info_erreur="Pas de moyenne √† une mati√®re non optionnelle: <b>".$id_matiere[$j][0]."</b><br />(<i><span style='font-size:xx-small;'>valeurs non num√©riques autoris√©es: ".$tabmatieres[$j][-3]."</span></i>)<br />";
 							//$tabmatieres[$j][-3]
 						}
 						else{
-							//$info_erreur=$info_erreur." - Pas de moyenne ‡ une matiËre non optionnelle: ".$id_matiere[$j][0];
-							$info_erreur=$info_erreur."Pas de moyenne ‡ une matiËre non optionnelle: <b>".$id_matiere[$j][0]."</b><br />(<i><span style='font-size:xx-small;'>valeurs non numÈriques autorisÈes: ".$tabmatieres[$j][-3]."</span></i>)<br />";
+							//$info_erreur=$info_erreur." - Pas de moyenne √† une mati√®re non optionnelle: ".$id_matiere[$j][0];
+							$info_erreur=$info_erreur."Pas de moyenne √† une mati√®re non optionnelle: <b>".$id_matiere[$j][0]."</b><br />(<i><span style='font-size:xx-small;'>valeurs non num√©riques autoris√©es: ".$tabmatieres[$j][-3]."</span></i>)<br />";
 						}
 					}
 				}
@@ -1926,21 +1926,21 @@ function tab_extract_moy($tab_ele,$id_clas) {
 
 		if($cpt>1){
 			$temoin_notanet_eleve="ERREUR";
-			// Un ÈlËve a des notes dans deux options d'un mÍme choix NOTANET (par exemple AGL1 et ALL1)
+			// Un √©l√®ve a des notes dans deux options d'un m√™me choix NOTANET (par exemple AGL1 et ALL1)
 			if($info_erreur==""){
-				//$info_erreur="Plusieurs options d'une mÍme matiËre.";
-				$info_erreur="Plusieurs options d'une mÍme matiËre: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant ‡ la matiËre ‡ abandonner</i></span>)<br />";
+				//$info_erreur="Plusieurs options d'une m√™me mati√®re.";
+				$info_erreur="Plusieurs options d'une m√™me mati√®re: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant √† la mati√®re √† abandonner</i></span>)<br />";
 			}
 			else{
-				//$info_erreur=$info_erreur." - Plusieurs options d'une mÍme matiËre.";
-				$info_erreur=$info_erreur."Plusieurs options d'une mÍme matiËre: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant ‡ la matiËre ‡ abandonner</i></span>)<br />";
+				//$info_erreur=$info_erreur." - Plusieurs options d'une m√™me mati√®re.";
+				$info_erreur=$info_erreur."Plusieurs options d'une m√™me mati√®re: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant √† la mati√®re √† abandonner</i></span>)<br />";
 			}
 		}
 	}
 	echo "</table>\n";
 
 
-	// Pour prÈsenter ‡ cÙtÈ, le rÈsultat:
+	// Pour pr√©senter √† c√¥t√©, le r√©sultat:
 	echo "</td>\n";
 	echo "<td valign='top' style='vertical-align:top;'>\n";
 	//echo "\$temoin_notanet_eleve=$temoin_notanet_eleve<br />";
@@ -1954,12 +1954,12 @@ function tab_extract_moy($tab_ele,$id_clas) {
 
 
 		echo "<p>\n";
-		echo "Portion de fichier gÈnÈrÈe:<br />";
+		echo "Portion de fichier g√©n√©r√©e:<br />";
 		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
-			// Pour les matiËres NOTANET existantes:
+			// Pour les mati√®res NOTANET existantes:
 			if($tabmatieres[$j][0]!=''){
-				// Si une moyenne a ÈtÈ extraite
-				// (c'est-‡-dire si l'ÈlËve a la matiËre et que l'extraction a rÈussi (donc pas d'ERREUR))
+				// Si une moyenne a √©t√© extraite
+				// (c'est-√†-dire si l'√©l√®ve a la mati√®re et que l'extraction a r√©ussi (donc pas d'ERREUR))
 				//echo "\$tabmatieres[$j][-1]=".$tabmatieres[$j][-1]."<br />\n";
 				//echo "\$moy_NOTANET[$j]=".$moy_NOTANET[$j]."<br />\n";
 				if($moy_NOTANET[$j]!=""){
@@ -1994,7 +1994,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						}
 						else{
 							//$tabmatieres[$j][-1]="NOTNONCA";
-							// On ne modifie pas... euh si... une ligne est insÈrÈe, mais elle n'intervient pas dans le calcul du TOTal.
+							// On ne modifie pas... euh si... une ligne est ins√©r√©e, mais elle n'intervient pas dans le calcul du TOTal.
 							if($tabmatieres[$j][-1]=="NOTNONCA"){
 								//$ligne_NOTANET=$ligne_NOTANET."|$moy_NOTANET[$j]|";
 								$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
@@ -2010,7 +2010,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 			}
 		}
 
-		// Dans le cas brevet PRO, il ne faut retenir qu'une seule des deux matiËres 103 et 104
+		// Dans le cas brevet PRO, il ne faut retenir qu'une seule des deux mati√®res 103 et 104
 		if(($tab_ele['type_brevet']==2)||($tab_ele['type_brevet']==3)) {
 			$num_matiere_LV1=103;
 			$num_matiere_ScPhy=104;
@@ -2031,7 +2031,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 		echo colore_ligne_notanet("$INE|TOT|".sprintf("%02.2f",$TOT)."|")."<br />\n";
 		$tabnotanet[]="$INE|TOT|".sprintf("%02.2f",$TOT)."|";
 		//$fichtmp=fopen($fich_notanet,"a+");
-		// PROBLEME: $TOT peut dÈpasser 100... quel doit Ítre le formatage ‡ gauche quand on est en dessous de 100?
+		// PROBLEME: $TOT peut d√©passer 100... quel doit √™tre le formatage √† gauche quand on est en dessous de 100?
 		//fwrite($fichtmp,"$INE|TOT|$TOT|\n");
 		//fwrite($fichtmp,"$INE|TOT|".formate_note_notanet($TOT)."|\n");
 		//fwrite($fichtmp,"$INE|TOT|".sprintf("%02.2f",$TOT)."|\n");
@@ -2100,7 +2100,7 @@ function adjust_size_font($texte,$largeur_dispo,$h_max_font,$increment,$multilig
 function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
 	global $pdf;
 
-	// $increment:     nombre dont on rÈduit la police ‡ chaque essai
+	// $increment:     nombre dont on r√©duit la police √† chaque essai
 	// $r_interligne:  proportion de la taille de police pour les interlignes
 	// $bordure:       LRBT
 	// $v_align:       C(enter) ou T(op)
@@ -2111,7 +2111,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 	$taille_texte_total=$pdf->GetStringWidth($texte);
 
 	// Ca nous donne le nombre max de lignes en hauteur avec la taille de police maxi
-	// Il faudrait plutÙt dÈterminer ce nombre d'aprËs une taille minimale acceptable de police
+	// Il faudrait plut√¥t d√©terminer ce nombre d'apr√®s une taille minimale acceptable de police
 	$nb_max_lig=max(1,floor($h_cell/((1+$r_interligne)*($hauteur_min_font*26/100))));
 	// echo "\$nb_max_lig=$nb_max_lig<br />";
 
@@ -2165,14 +2165,14 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			if($taille_texte_ligne<$l) {$taille_texte_ligne=$l;$num=$i;}
 		}
 
-		// On calcule la hauteur en mm de la police (proportionnalitÈ: 100pt -> 26mm)
+		// On calcule la hauteur en mm de la police (proportionnalit√©: 100pt -> 26mm)
 		$hauteur_texte_mm=$hauteur_texte*26/100;
-		// Hauteur totale: Nombre de lignes multipliÈ par la hauteur de police avec les marges verticales
+		// Hauteur totale: Nombre de lignes multipli√© par la hauteur de police avec les marges verticales
 		$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
 	
-		// echo "On calcule la taille de la police d'aprËs \$ligne[$num]=".$ligne[$num]."<br/>";
+		// echo "On calcule la taille de la police d'apr√®s \$ligne[$num]=".$ligne[$num]."<br/>";
 		// On ajuste la taille de police avec la plus grande ligne pour que cela tienne en largeur
-		// et on contrÙle aussi que cela tient en hauteur, sinon on continue ‡ rÈduire la police.
+		// et on contr√¥le aussi que cela tient en hauteur, sinon on continue √† r√©duire la police.
 		$grandeur_texte='test';
 		while($grandeur_texte!='ok') {
 			//if($largeur_dispo<$taille_texte_ligne) {
@@ -2206,7 +2206,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 			$tab_lig[$j]['lignes']=$ligne;
 	
 			// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur 
-			// (la largeur a dÈj‡ ÈtÈ utilisÈe pour dÈcouper en lignes).
+			// (la largeur a d√©j√† √©t√© utilis√©e pour d√©couper en lignes).
 			if(($hauteur_texte>$fmax)&&($tab_lig[$j]['hauteur_totale']<=$h_cell)) {
 				$ifmax=$j;
 			}
@@ -2214,7 +2214,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 	}
 
 	if((!isset($ifmax))||($tab_lig[$ifmax]['taille_police']<$hauteur_min_font)) {
-		// On relance en remplaÁant les retours forcÈs ‡ la ligne (\n) par des espaces.
+		// On relance en rempla√ßant les retours forc√©s √† la ligne (\n) par des espaces.
 
 		$fmax=0;
 
@@ -2251,14 +2251,14 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 				if($taille_texte_ligne<$l) {$taille_texte_ligne=$l;$num=$i;}
 			}
 
-			// On calcule la hauteur en mm de la police (proportionnalitÈ: 100pt -> 26mm)
+			// On calcule la hauteur en mm de la police (proportionnalit√©: 100pt -> 26mm)
 			$hauteur_texte_mm=$hauteur_texte*26/100;
-			// Hauteur totale: Nombre de lignes multipliÈ par la hauteur de police avec les marges verticales
+			// Hauteur totale: Nombre de lignes multipli√© par la hauteur de police avec les marges verticales
 			$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
 		
-			// echo "On calcule la taille de la police d'aprËs \$ligne[$num]=".$ligne[$num]."<br/>";
+			// echo "On calcule la taille de la police d'apr√®s \$ligne[$num]=".$ligne[$num]."<br/>";
 			// On ajuste la taille de police avec la plus grande ligne pour que cela tienne en largeur
-			// et on contrÙle aussi que cela tient en hauteur, sinon on continue ‡ rÈduire la police.
+			// et on contr√¥le aussi que cela tient en hauteur, sinon on continue √† r√©duire la police.
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				//if($largeur_dispo<$taille_texte_ligne) {
@@ -2292,7 +2292,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 				$tab_lig[$j]['lignes']=$ligne;
 		
 				// On choisit la hauteur de police la plus grande possible pour laquelle les lignes tiennent en hauteur 
-				// (la largeur a dÈj‡ ÈtÈ utilisÈe pour dÈcouper en lignes).
+				// (la largeur a d√©j√† √©t√© utilis√©e pour d√©couper en lignes).
 				if(($hauteur_texte>$fmax)&&($tab_lig[$j]['hauteur_totale']<=$h_cell)) {
 					$ifmax=$j;
 				}
@@ -2300,7 +2300,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 		}
 
 
-		// Si Áa ne passe toujours pas, on prend $hauteur_min_font sans retours ‡ la ligne et on tronque
+		// Si √ßa ne passe toujours pas, on prend $hauteur_min_font sans retours √† la ligne et on tronque
 		if(!isset($ifmax)) {
 			
 		//	$tab_lig=array();
@@ -2351,7 +2351,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 					$ligne[$cpt].=$tab[$i];
 				}
 				$i++;
-				if(!isset($tab[$i])) {break;} // On ne devrait pas quitter sur Áa puisque le texte va Ítre trop long
+				if(!isset($tab[$i])) {break;} // On ne devrait pas quitter sur √ßa puisque le texte va √™tre trop long
 			}
 
 			$j=1;
@@ -2375,7 +2375,7 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 	$pdf->SetXY($x,$y);
 	$pdf->Cell($largeur_dispo,$h_cell, '',$bordure,2,'');
 
-	// On va Ècrire les lignes avec la taille de police optimale dÈterminÈe (cf. $ifmax)	
+	// On va √©crire les lignes avec la taille de police optimale d√©termin√©e (cf. $ifmax)	
 	//$marge_h=round(($h_cell-(count($ligne)*$hauteur_texte_mm+(count($ligne)-1)*$marge_verticale))/2);
 	//$marge_h=round(($h_cell-$tab_lig[$ifmax]['hauteur_totale'])/2);
 	$nb_lig=count($tab_lig[$ifmax]['lignes']);
@@ -2403,18 +2403,18 @@ function cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hau
 }
 */
 function fs_pt2mm($fs) {
-	//(proportionnalitÈ: 100pt -> 26mm)
+	//(proportionnalit√©: 100pt -> 26mm)
 	return $fs*26/100;
 }
 
 /*
 // Liste de codes du module OOo
-	[eleves.101.0]  ->      note de l'ÈlËve non coefficientÈe
-	[eleves.101.1]  ->      note de l'ÈlËve coefficientÈe
-	[eleves.101.2]  ->      Nom de matiËre Gepi
+	[eleves.101.0]  ->      note de l'√©l√®ve non coefficient√©e
+	[eleves.101.1]  ->      note de l'√©l√®ve coefficient√©e
+	[eleves.101.2]  ->      Nom de mati√®re Gepi
 	[eleves.101.3]  ->      moyenne de la classe
-	[eleves.101.4]  ->      apprÈciation
-	o˘ 101 est le numÈro de matiËre
+	[eleves.101.4]  ->      appr√©ciation
+	o√π 101 est le num√©ro de mati√®re
 	[eleves.totalpoints] /[eleves.totalcoef]
 	[eleves.appreciation]	->	Avis du chef d'etablissement
 	...

@@ -36,8 +36,8 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_app.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie d appréciation', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_app.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie d appréciation', '');;";
+// SQL : INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_app.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie d apprÃ©ciation', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_app.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie d apprÃ©ciation', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -51,7 +51,7 @@ $is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($_GET['is_p
 $display_date_limite=isset($_POST['display_date_limite']) ? $_POST['display_date_limite'] : (isset($_GET['display_date_limite']) ? $_GET['display_date_limite'] : NULL);
 $display_heure_limite=isset($_POST['display_heure_limite']) ? $_POST['display_heure_limite'] : (isset($_GET['display_heure_limite']) ? $_GET['display_heure_limite'] : NULL);
 
-// Pour refermer la page plutôt que proposer un lien retour dans certains cas
+// Pour refermer la page plutÃ´t que proposer un lien retour dans certains cas
 $refermer_page=isset($_POST['refermer_page']) ? $_POST['refermer_page'] : (isset($_GET['refermer_page']) ? $_GET['refermer_page'] : NULL);
 
 
@@ -67,17 +67,17 @@ if((isset($is_posted))&&(isset($_POST['no_anti_inject_message_autorisation_excep
 		$message_autorisation_exceptionnelle="";
 	}
 
-	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+	// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 	//$message_autorisation_exceptionnelle=my_ereg_replace('(\\\r\\\n)+',"\r\n",$message_autorisation_exceptionnelle);
 	$message_autorisation_exceptionnelle=preg_replace('/(\\\r\\\n)+/',"\r\n",$message_autorisation_exceptionnelle);
 	$message_autorisation_exceptionnelle=preg_replace('/(\\\r)+/',"\r",$message_autorisation_exceptionnelle);
 	$message_autorisation_exceptionnelle=preg_replace('/(\\\n)+/',"\n",$message_autorisation_exceptionnelle);
 
 	if(!saveSetting('message_autorisation_exceptionnelle',$message_autorisation_exceptionnelle)) {
-		$msg="Erreur lors de l'enregistrement du message personnalisé.<br />";
+		$msg="Erreur lors de l'enregistrement du message personnalisÃ©.<br />";
 	}
 	else {
-		$msg="Enregistrement du message personnalisé effectué.<br />";
+		$msg="Enregistrement du message personnalisÃ© effectuÃ©.<br />";
 	}
 }
 
@@ -104,18 +104,18 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 					$sql="DELETE FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$periode';";
 					$res=mysql_query($sql);
 
-					$date_limite_email="$annee/$mois/$jour à $heure:$minute";
+					$date_limite_email="$annee/$mois/$jour Ã  $heure:$minute";
 					$sql="INSERT INTO matieres_app_delais SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
 					$res=mysql_query($sql);
 					if(!$res) {
 						$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
 					}
 					else {
-						$msg.="Enregistrement de l'autorisation effectué.<br />";
+						$msg.="Enregistrement de l'autorisation effectuÃ©.<br />";
 
 						$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 						if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-							$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+							$envoi_mail_actif='y'; // Passer Ã  'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 						}
 			
 						if($envoi_mail_actif=='y') {
@@ -139,7 +139,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								$email_destinataires.=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace')." <".$lig_u->email.">";
 								while($lig_u=mysql_fetch_object($req)) {$email_destinataires.=",".$lig_u->email;}
 
-								$sujet_mail="[GEPI] Autorisation exceptionnelle de saisie/correction d'appréciation";
+								$sujet_mail="[GEPI] Autorisation exceptionnelle de saisie/correction d'apprÃ©ciation";
 				
 								//$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 								//if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
@@ -154,13 +154,13 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								$tab_champs=array('classes');
 								$current_group=get_group($id_groupe,$tab_champs);
 
-								//$texte_mail="Vous avez jusqu'au $date_limite_email pour saisir/corriger une ou des appréciations pour l'enseignement ".$current_group['name']." (".$current_group['description']." en ".$current_group['classlist_string'].") en période $periode.\n\nCette autorisation est exceptionnelle.\nIl conviendra de veiller à effectuer les saisies dans les temps une prochaine fois.\n";
+								//$texte_mail="Vous avez jusqu'au $date_limite_email pour saisir/corriger une ou des apprÃ©ciations pour l'enseignement ".$current_group['name']." (".$current_group['description']." en ".$current_group['classlist_string'].") en pÃ©riode $periode.\n\nCette autorisation est exceptionnelle.\nIl conviendra de veiller Ã  effectuer les saisies dans les temps une prochaine fois.\n";
 
-								$texte_mail="Vous avez jusqu'au $date_limite_email pour saisir/corriger une ou des appréciations pour l'enseignement ".$current_group['name']." (".$current_group['description']." en ".$current_group['classlist_string'].") en période $periode.\n\n";
+								$texte_mail="Vous avez jusqu'au $date_limite_email pour saisir/corriger une ou des apprÃ©ciations pour l'enseignement ".$current_group['name']." (".$current_group['description']." en ".$current_group['classlist_string'].") en pÃ©riode $periode.\n\n";
 								$message_autorisation_exceptionnelle=getSettingValue('message_autorisation_exceptionnelle');
 
 								if($message_autorisation_exceptionnelle=='') {
-									$texte_mail.="Cette autorisation est exceptionnelle.\nIl conviendra de veiller à effectuer les saisies dans les temps une prochaine fois.\n";
+									$texte_mail.="Cette autorisation est exceptionnelle.\nIl conviendra de veiller Ã  effectuer les saisies dans les temps une prochaine fois.\n";
 								}
 								else {
 									$texte_mail.=$message_autorisation_exceptionnelle."\n";
@@ -171,7 +171,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 
 								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 
-								if($envoi) {$msg.="Email expédié à ".htmlentities($email_destinataires)."<br />";}
+								if($envoi) {$msg.="Email expÃ©diÃ© Ã  ".htmlentities($email_destinataires)."<br />";}
 							}
 			
 						}
@@ -190,7 +190,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 
 
 //**************** EN-TETE *****************
-$titre_page = "Autorisation exceptionnelle de saisie d'appréciations";
+$titre_page = "Autorisation exceptionnelle de saisie d'apprÃ©ciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -200,28 +200,28 @@ if($refermer_page=='y') {
 	echo "<a href='../accueil.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a>\n";
 }
 else {
-	echo "<a href=\"../accueil.php\" ><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>\n";
+	echo "<a href=\"../accueil.php\" ><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Ã  l'accueil</a>\n";
 }
 
 if(($_SESSION['statut']=='administrateur')&&(isset($_GET['definir_message']))) {
 	echo " | <a href=\"".$_SERVER['PHP_SELF']."\" > Autorisation exceptionnelle</a>";
 	echo "</p>\n";
 
-	echo "<p>Par défaut le message reçu par un professeur exceptionnellement autorisé à saisir en retard ou corriger ses notes/appréciations est le suivant&nbsp;:<br />\n";
+	echo "<p>Par dÃ©faut le message reÃ§u par un professeur exceptionnellement autorisÃ© Ã  saisir en retard ou corriger ses notes/apprÃ©ciations est le suivant&nbsp;:<br />\n";
 
-	$texte_mail="Bonjour/Bonsoir\n\nVous avez jusqu'au TELLE DATE TELLE HEURE\npour saisir/corriger une ou des appréciations pour l'enseignement XXXXXXXXXX\nen TELLE(S) CLASSE(S) en période NUMERO_PERIODE.\n\n";
-	$texte_mail.="<b>Cette autorisation est exceptionnelle.\nIl conviendra de veiller à effectuer les saisies dans les temps une prochaine fois.</b>\n";
+	$texte_mail="Bonjour/Bonsoir\n\nVous avez jusqu'au TELLE DATE TELLE HEURE\npour saisir/corriger une ou des apprÃ©ciations pour l'enseignement XXXXXXXXXX\nen TELLE(S) CLASSE(S) en pÃ©riode NUMERO_PERIODE.\n\n";
+	$texte_mail.="<b>Cette autorisation est exceptionnelle.\nIl conviendra de veiller Ã  effectuer les saisies dans les temps une prochaine fois.</b>\n";
 	$texte_mail.="\nCordialement.";
 
 	echo "<pre style='color:blue;'>".$texte_mail."</pre>\n";
 
-	echo "<p>Ce message peut être partiellement personnalisé.<br />Vous pouvez intervenir sur la partie en gras du message.</p>\n";
+	echo "<p>Ce message peut Ãªtre partiellement personnalisÃ©.<br />Vous pouvez intervenir sur la partie en gras du message.</p>\n";
 
 	$message_autorisation_exceptionnelle=getSettingValue('message_autorisation_exceptionnelle');
 
 	if($message_autorisation_exceptionnelle!='') {
-		echo "<p>Votre message est actuellement personnalisé de la façon suivante&nbsp;:";
-		$texte_mail="Bonjour/Bonsoir\n\nVous avez jusqu'au TELLE DATE TELLE HEURE\npour saisir/corriger une ou des appréciations pour l'enseignement XXXXXXXXXX\nen TELLE(S) CLASSE(S) en période NUMERO_PERIODE.\n\n";
+		echo "<p>Votre message est actuellement personnalisÃ© de la faÃ§on suivante&nbsp;:";
+		$texte_mail="Bonjour/Bonsoir\n\nVous avez jusqu'au TELLE DATE TELLE HEURE\npour saisir/corriger une ou des apprÃ©ciations pour l'enseignement XXXXXXXXXX\nen TELLE(S) CLASSE(S) en pÃ©riode NUMERO_PERIODE.\n\n";
 		$texte_mail.="<b>$message_autorisation_exceptionnelle</b>\n";
 		$texte_mail.="\nCordialement.";
 	
@@ -232,7 +232,7 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['definir_message']))) {
 	}
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
-	echo "<p><b>Message personnalisé&nbsp;:</b><br />\n";
+	echo "<p><b>Message personnalisÃ©&nbsp;:</b><br />\n";
 	echo "<textarea name='no_anti_inject_message_autorisation_exceptionnelle' rows='2' cols='100'>$message_autorisation_exceptionnelle</textarea>\n";
 	echo "<br />\n";
 	echo add_token_field();
@@ -247,7 +247,7 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['definir_message']))) {
 
 if(!isset($id_classe)) {
 	if($_SESSION['statut']=='administrateur') {
-		echo " | <a href=\"".$_SERVER['PHP_SELF']."?definir_message=y\" > Définir le message</a>";
+		echo " | <a href=\"".$_SERVER['PHP_SELF']."?definir_message=y\" > DÃ©finir le message</a>";
 	}
 	echo "</p>\n";
 
@@ -261,8 +261,8 @@ if(!isset($id_classe)) {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 	else {
-		// On ne doit pas arriver là
-		echo "<p style='color:red;'>Statut non autorisé.</p>";
+		// On ne doit pas arriver lÃ 
+		echo "<p style='color:red;'>Statut non autorisÃ©.</p>";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -293,7 +293,7 @@ if(!isset($id_classe)) {
 elseif((!isset($id_groupe))||(!isset($periode))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
 	echo "</p>\n";
-	echo "<p>Pour quel enseignement souhaitez-vous autoriser un enseignant à proposer des saisies/corrections d'appréciations?</p>\n";
+	echo "<p>Pour quel enseignement souhaitez-vous autoriser un enseignant Ã  proposer des saisies/corrections d'apprÃ©ciations?</p>\n";
 	$groups=get_groups_for_class($id_classe,"","n");
 
 	include("../lib/periodes.inc.php");
@@ -301,12 +301,12 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 	$date_courante=time();
 
 	$alt=1;
-	echo "<table class='boireaus' summary='Tableau des enseignements et périodes'>\n";
+	echo "<table class='boireaus' summary='Tableau des enseignements et pÃ©riodes'>\n";
 	echo "<tr>\n";
 	echo "<th>Enseignements</th>\n";
 	echo "<th>Classe(s)</th>\n";
 	echo "<th>Enseignants</th>\n";
-	echo "<th colspan='$nb_periode'>Périodes</th>\n";
+	echo "<th colspan='$nb_periode'>PÃ©riodes</th>\n";
 	echo "</tr>\n";
 	foreach($groups as $current_group)	{
 		$alt=$alt*(-1);
@@ -334,23 +334,23 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 			if($ver_periode[$i]=='P') {
 				//echo "<td><input type='checkbox' name='periode_grp_".$current_group['id']."[]' value='$i' /></td>\n";
 				echo "<td>\n";
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=".$current_group['id']."&amp;periode=$i'>Période $i</a>\n";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=".$current_group['id']."&amp;periode=$i'>PÃ©riode $i</a>\n";
 				$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$current_group['id']."' AND periode='$i';";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
 					$lig=mysql_fetch_object($res);
 					if($lig->date_limite>$date_courante) {
 						echo "<br />";
-						echo "Autorisation jusqu'au<br />".strftime("%d/%m/%Y à %H:%M",$lig->date_limite);
+						echo "Autorisation jusqu'au<br />".strftime("%d/%m/%Y Ã  %H:%M",$lig->date_limite);
 					}
 				}
 				echo "</td>\n";
 			}
 			elseif($ver_periode[$i]=='O') {
-				echo "<td><img src='../images/disabled.png' width='20' height='20' alt='Période $i close' title='Période $i close' /></td>\n";
+				echo "<td><img src='../images/disabled.png' width='20' height='20' alt='PÃ©riode $i close' title='PÃ©riode $i close' /></td>\n";
 			}
 			else {
-				echo "<td><img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title='Période $i ouverte en saisie' /></td>\n";
+				echo "<td><img src='../images/enabled.png' width='20' height='20' alt='PÃ©riode $i ouverte en saisie' title='PÃ©riode $i ouverte en saisie' /></td>\n";
 			}
 		}
 		echo "</tr>\n";
@@ -366,7 +366,7 @@ else {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 		echo add_token_field();
 		$group=get_group($id_groupe);
-		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'apprécations pour l'enseignement ".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']."</span>) en période $periode.</p>\n";
+		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant Ã  proposer des saisies/corrections d'apprÃ©cations pour l'enseignement ".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']."</span>) en pÃ©riode $periode.</p>\n";
 
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$group['id']."' AND periode='$periode';";
 		$res=mysql_query($sql);
@@ -377,12 +377,12 @@ else {
 			$date_courante=time();
 
 			//$tab_date_limite=get_date($date_limite);
-			echo "<p class='bold'>Une autorisation exceptionnelle de proposition de saisie existe pour cet enseignement/période&nbsp;: ".strftime("%d/%m/%Y à %H:%M",$date_limite)."</p>\n";
+			echo "<p class='bold'>Une autorisation exceptionnelle de proposition de saisie existe pour cet enseignement/pÃ©riode&nbsp;: ".strftime("%d/%m/%Y Ã  %H:%M",$date_limite)."</p>\n";
 			$display_date_limite=strftime("%d/%m/%Y",$date_limite);
 			$display_heure_limite=strftime("%H:%M",$date_limite);
 
 			if($date_courante>$date_limite) {
-				echo "<p class='bold' style='color:red;'>Le délais imparti pour la proposition de saisie/correction est dépassé.</p>\n";
+				echo "<p class='bold' style='color:red;'>Le dÃ©lais imparti pour la proposition de saisie/correction est dÃ©passÃ©.</p>\n";
 			}
 		}
 		else {
@@ -412,7 +412,7 @@ else {
 			$display_heure_limite="$heure_limite:$minute_limite";
 		}
 
-		echo "<p>Quelle doit être la date/heure limite de cette autorisation de proposition d'appréciation&nbsp;?<br />\n";
+		echo "<p>Quelle doit Ãªtre la date/heure limite de cette autorisation de proposition d'apprÃ©ciation&nbsp;?<br />\n";
 		include("../lib/calendrier/calendrier.class.php");
 		$cal = new Calendrier("formulaire", "display_date_limite");
 
@@ -425,7 +425,7 @@ else {
 		echo "<input type='hidden' name='periode' value='$periode' />\n";
 		echo "<input type='text' name = 'display_date_limite' id = 'display_date_limite' size='8' value = \"".$display_date_limite."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 		echo "<a href=\"#\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
-		echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
+		echo " Ã  <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
 		echo "<input type='submit' name='Valider' value='Valider' />\n";
 		echo "</p>\n";
 	
@@ -436,8 +436,8 @@ else {
 /*
 	}
 	else {
-		// Si le mail n'a pas pu être envoyé, proposer un lien mailto
-			$message="Vous avez jusqu'au $date_limite_email pour saisir/corriger une ou des appréciations pour l'enseignement ".$current_group['name']." ($current_group['description']) en période $periode.\n\nCette autorisation est exceptionnelle.\nIl conviendra de veiller à effectuer les saisies dans les temps une prochaine fois.\n";
+		// Si le mail n'a pas pu Ãªtre envoyÃ©, proposer un lien mailto
+			$message="Vous avez jusqu'au $date_limite_email pour saisir/corriger une ou des apprÃ©ciations pour l'enseignement ".$current_group['name']." ($current_group['description']) en pÃ©riode $periode.\n\nCette autorisation est exceptionnelle.\nIl conviendra de veiller Ã  effectuer les saisies dans les temps une prochaine fois.\n";
 
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";

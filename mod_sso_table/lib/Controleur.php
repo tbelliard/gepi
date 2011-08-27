@@ -22,10 +22,10 @@
 */
 /**
  * Une classe implantant un controleur
- * Code adapté du controleur de Philippe Rigaux:
+ * Code adaptÃ© du controleur de Philippe Rigaux:
  * http://www.lamsade.dauphine.fr/rigaux/mysqlphp
  */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -43,8 +43,8 @@ abstract class Controleur {
     function __construct ()
     {
         /*
-     * Le contrôleur initialise plusieurs objets utilitaires:
-    * une instance du moteur de templates pour gérer la vue
+     * Le contrÃ´leur initialise plusieurs objets utilitaires:
+    * une instance du moteur de templates pour gÃ©rer la vue
      */
         // Instanciation du moteur de templates
         $this->vue = new clsTinyButStrong ;

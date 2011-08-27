@@ -21,10 +21,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// INSERT INTO `droits` VALUES ('/utilisateurs/creer_remplacant.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'script de création d''un remplaçant', '');
+// INSERT INTO `droits` VALUES ('/utilisateurs/creer_remplacant.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'script de crÃ©ation d''un remplaÃ§ant', '');
 
 
-// On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut crÃ©e des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -81,9 +81,9 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		}
 		else {
 
-			// Ajout au remplaçant des classes et matières enseignées du prof remplacé.
+			// Ajout au remplaÃ§ant des classes et matiÃ¨res enseignÃ©es du prof remplacÃ©.
 
-			// On recheche les matières du prof remplacé qui ne sont pas déjà affectées au prof
+			// On recheche les matiÃ¨res du prof remplacÃ© qui ne sont pas dÃ©jÃ  affectÃ©es au prof
 			//$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace'";
 			$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace' AND id_matiere NOT IN (SELECT id_matiere FROM j_professeurs_matieres where id_professeur='$compte_existant');";
 			$result_matieres = mysql_query($sql_matieres);
@@ -96,7 +96,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 			}
 
-			// On affecte les matières au prof remplaçant
+			// On affecte les matiÃ¨res au prof remplaÃ§ant
 			for ($i=0;$i<sizeof($id_matiere_prof_remplace);$i++) {
 				$sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$compte_existant', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
 				//echo "<br>".$sql_matieres;
@@ -105,7 +105,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			}
 
 			/*
-			// On recheche les groupes du prof remplacé qui ne sont pas déjà associés au remplaçant
+			// On recheche les groupes du prof remplacÃ© qui ne sont pas dÃ©jÃ  associÃ©s au remplaÃ§ant
 			//$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace'";
 			$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace' AND id_groupe NOT IN (SELECT id_groupe FROM j_groupes_professeurs WHERE login='$compte_existant');";
 			$result_groupes = mysql_query($sql_groupes);
@@ -117,7 +117,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 			}
 
-			//on affecte les groupes au prof remplaçant
+			//on affecte les groupes au prof remplaÃ§ant
 			for ($i=0;$i<sizeof($id_groupes_prof_remplace);$i++) {
 				$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupes_prof_remplace[$i]', login='$compte_existant', ordre_prof='$ordre_groupes_prof_remplace[$i]'";
 				//echo "<br>".$sql_groupes;
@@ -155,7 +155,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				}
 			}
 	//
-	// actions si un nouvel utilisateur a été défini
+	// actions si un nouvel utilisateur a Ã©tÃ© dÃ©fini
 	//
 			if (true) {
 	
@@ -210,7 +210,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	
 	
 					if ($exist == 'no') {
-						// Aucun professeur ne porte le même nom dans la base GEPI. On va donc rentrer ce professeur dans la base
+						// Aucun professeur ne porte le mÃªme nom dans la base GEPI. On va donc rentrer ce professeur dans la base
 	
 						$affiche[1] = traitement_magic_quotes(corriger_caracteres($affiche[1]));
 	
@@ -309,7 +309,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						}
 						$login_prof = $temp1;
 						//$login_prof = remplace_accents($temp1,"all");
-						// On teste l'unicité du login que l'on vient de créer
+						// On teste l'unicitÃ© du login que l'on vient de crÃ©er
 						$m = 2;
 						$test_unicite = 'no';
 						$temp = $login_prof;
@@ -328,13 +328,13 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
 							$mess_mdp = $pwd;
 							//echo "<tr><td colspan='4'>Choix 2: $pwd</td></tr>";
-				//                       $mess_mdp = "Inconnu (compte bloqué)";
+				//                       $mess_mdp = "Inconnu (compte bloquÃ©)";
 						} elseif ($_POST['sso'] == "yes") {
 							$pwd = '';
 							$mess_mdp = "aucun (sso)";
 							//echo "<tr><td colspan='4'>sso</td></tr>";
 						}
-	// Fin code génération login de init_xml
+	// Fin code gÃ©nÃ©ration login de init_xml
 	
 	
 						//choix du format
@@ -343,7 +343,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$nombreligne = mysql_num_rows($test);
 						if ($nombreligne != 0) {
 							$resultat = "NON";
-							$msg = "*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
+							$msg = "*** Attention ! Un utilisateur ayant le mÃªme identifiant existe dÃ©jÃ . Enregistrement impossible ! ***";
 						}
 	
 						if ($resultat != "NON") {
@@ -352,16 +352,16 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							else
 								$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='n'");
 						}
-						$msg="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
-						//$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
-						$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$login_prof."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
-						$msg = $msg."<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
+						$msg="Vous venez de crÃ©er un nouvel utilisateur !<br />Par dÃ©faut, cet utilisateur est considÃ©rÃ© comme actif.";
+						//$msg = $msg."<br />Pour imprimer les paramÃ¨tres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
+						$msg = $msg."<br />Pour imprimer les paramÃ¨tres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$login_prof."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
+						$msg = $msg."<br />Attention : ultÃ©rieurement, il vous sera impossible d'imprimer Ã  nouveau le mot de passe d'un utilisateur ! ";
 						$user_login = $login_prof;
 	
 	
-						// Ajout au remplaçant des classes et matières enseignées du prof remplacé.
+						// Ajout au remplaÃ§ant des classes et matiÃ¨res enseignÃ©es du prof remplacÃ©.
 	
-						//on recheche les matières du prof remplacé
+						//on recheche les matiÃ¨res du prof remplacÃ©
 						$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace'";
 	
 						$result_matieres = mysql_query($sql_matieres);
@@ -373,7 +373,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 						}
 	
-						//on affecte les matières au prof remplaçant
+						//on affecte les matiÃ¨res au prof remplaÃ§ant
 						for ($i=0;$i<sizeof($id_matiere_prof_remplace);$i++) {
 							$sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$login_prof', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
 							//echo "<br>".$sql_matieres;
@@ -381,7 +381,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						}
 
 						/*
-						// On recheche les groupes du prof remplacé
+						// On recheche les groupes du prof remplacÃ©
 						$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace'";
 	
 						$result_groupes = mysql_query($sql_groupes);
@@ -393,7 +393,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 						}
 	
-						// On affecte les groupes au prof remplaçant
+						// On affecte les groupes au prof remplaÃ§ant
 						for ($i=0;$i<sizeof($id_groupes_prof_remplace);$i++) {
 							$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupes_prof_remplace[$i]', login='$login_prof', ordre_prof='$ordre_groupes_prof_remplace[$i]'";
 							//echo "<br>".$sql_groupes;
@@ -414,14 +414,14 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	
 					}
 					else {
-						$msg="La personne existe déjà dans la base (même nom et même prénom)";
+						$msg="La personne existe dÃ©jÃ  dans la base (mÃªme nom et mÃªme prÃ©nom)";
 					}
 				}
 	//
 	//action s'il s'agit d'une modification
 	//
 			}  else {
-				$msg = "L'identifiant de l'utilisateur doit être constitué uniquement de lettres et de chiffres !";
+				$msg = "L'identifiant de l'utilisateur doit Ãªtre constituÃ© uniquement de lettres et de chiffres !";
 	
 			}
 		}
@@ -429,7 +429,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des utilisateurs | Créer un remplaçant";
+$titre_page = "Gestion des utilisateurs | CrÃ©er un remplaÃ§ant";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -471,7 +471,7 @@ if ($valid!='yes') {
 		$user_civilite = mysql_result($call_user_info, "0", "civilite");
 	}
 
-	echo "<br /><p>Création d'un remplaçant pour l'identifiant : <b>".$login_prof_remplace."</b> (".$user_civilite." ".$user_prenom." ".$user_nom.")</p>";
+	echo "<br /><p>CrÃ©ation d'un remplaÃ§ant pour l'identifiant : <b>".$login_prof_remplace."</b> (".$user_civilite." ".$user_prenom." ".$user_nom.")</p>";
 	echo "<br />";
 	//Affichage formulaire
 	echo "<form enctype=\"multipart/form-data\" action=\"creer_remplacant.php?login_prof_remplace=".$login_prof_remplace."\" method=post>";
@@ -480,8 +480,8 @@ if ($valid!='yes') {
 	echo "<div class = \"norme\">\n";
 	echo "<table>\n";
 	echo "<tr><td>Nom : </td><td><input type=text name=form_nom size=20 /></td></tr>\n";
-	echo "<tr><td>Prénom : </td><td><input type=text name=form_prenom size=20 /></td></tr>\n";
-	echo "<tr><td>Civilité : </td><td><select name=\"form_civilite\" size=\"1\">\n";
+	echo "<tr><td>PrÃ©nom : </td><td><input type=text name=form_prenom size=20 /></td></tr>\n";
+	echo "<tr><td>CivilitÃ© : </td><td><select name=\"form_civilite\" size=\"1\">\n";
 	echo "<option value='M.' >M.</option>\n";
 	echo "<option value='Mme' >Mme</option>\n";
 	echo "<option value='Mlle' >Mlle</option>\n";
@@ -494,17 +494,17 @@ if ($valid!='yes') {
 		if (getSettingValue("use_sso") == "lcs") {
 			echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\"><tr><td>";
 			echo "<input type=\"radio\" name=\"is_lcs\" value=\"y\" checked /> Utilisateur LCS";
-			echo "<br /><i>Un utilisateur LCS est un utilisateur authentifié par LCS : dans ce cas, ne pas remplir les champs \"mot de passe\" ci-dessous.</i>";
+			echo "<br /><i>Un utilisateur LCS est un utilisateur authentifiÃ© par LCS : dans ce cas, ne pas remplir les champs \"mot de passe\" ci-dessous.</i>";
 			echo "</td></tr><tr><td>";
 			echo "<input type=\"radio\" name=\"is_lcs\" value=\"n\" /> Utilisateur local";
-			echo "<br /><i>Un utilisateur local doit systématiquement s'identifier sur GEPI avec le mot de passe ci-dessous, même s'il est un utilisateur authentifié par LCS.</i>";
+			echo "<br /><i>Un utilisateur local doit systÃ©matiquement s'identifier sur GEPI avec le mot de passe ci-dessous, mÃªme s'il est un utilisateur authentifiÃ© par LCS.</i>";
 			echo "<br /><i><b>Remarque</b> : l'adresse pour se connecter localement est du type : http://mon.site.fr/gepi/login.php?local=y (ne pas omettre \"<b>?local=y</b>\").</i>";
 			echo "<br /><br />";
 		}
-		echo "<table><tr><td>Mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) : </td><td><input type=password name=no_anti_inject_password1 size=20 /></td></tr>";
-		echo "<tr><td>Mot de passe (à confirmer) : </td><td><input type=password name=reg_password2 size=20 /></td></tr></table>";
-		echo "<br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum et doit être composé à la fois de lettres et de chiffres.</b>";
-		echo "<br /><b>Remarque</b> : lors de la création d'un utilisateur, il est recommandé de choisir le NUMEN comme mot de passe.<br />";
+		echo "<table><tr><td>Mot de passe (".getSettingValue("longmin_pwd") ." caractÃ¨res minimum) : </td><td><input type=password name=no_anti_inject_password1 size=20 /></td></tr>";
+		echo "<tr><td>Mot de passe (Ã  confirmer) : </td><td><input type=password name=reg_password2 size=20 /></td></tr></table>";
+		echo "<br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractÃ¨res minimum et doit Ãªtre composÃ© Ã  la fois de lettres et de chiffres.</b>";
+		echo "<br /><b>Remarque</b> : lors de la crÃ©ation d'un utilisateur, il est recommandÃ© de choisir le NUMEN comme mot de passe.<br />";
 		if (getSettingValue("use_sso") == "lcs") echo "</td></tr></table>";
 	}
 	echo "<br />\n";
@@ -512,7 +512,7 @@ if ($valid!='yes') {
 	echo "<input type=hidden name=valid value=\"yes\" />\n";
 	if (isset($user_login)) echo "<input type=hidden name=user_login value=\"".$user_login."\" />\n";
 
-	echo "<p>Liste des enseignements remplacés&nbsp;:<br />";
+	echo "<p>Liste des enseignements remplacÃ©s&nbsp;:<br />";
 	$cpt=0;
 	foreach($groups as $current_group) {
 		echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' checked /><label for='id_groupe_$cpt'>".$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']."</label><br />\n";
@@ -520,7 +520,7 @@ if ($valid!='yes') {
 	}
 	echo "</p>\n";
 
-	echo "<center><input type=submit value=\"Créer le remplaçant\" /></center>\n";
+	echo "<center><input type=submit value=\"CrÃ©er le remplaÃ§ant\" /></center>\n";
 	echo "<!--/span-->\n";
 	echo "</div>\n";
 	echo "</fieldset>\n";
@@ -529,7 +529,7 @@ if ($valid!='yes') {
 	//============================================================================
 	echo "<br />\n";
 
-	echo "<p class='bold'>Ou sélectionnez un utilisateur existant&nbsp:</p>\n";
+	echo "<p class='bold'>Ou sÃ©lectionnez un utilisateur existant&nbsp:</p>\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"creer_remplacant.php?login_prof_remplace=".$login_prof_remplace."\" method=post>";
 	echo "<fieldset>\n";
 	echo add_token_field();
@@ -554,7 +554,7 @@ if ($valid!='yes') {
 	echo "</select>\n";
 	echo "<br />\n";
 
-	echo "<p>Liste des enseignements remplacés&nbsp;:<br />";
+	echo "<p>Liste des enseignements remplacÃ©s&nbsp;:<br />";
 	$cpt=0;
 	foreach($groups as $current_group) {
 		echo "<input type='checkbox' name='id_groupe[]' id='id_groupe2_$cpt' value='".$current_group['id']."' checked /><label for='id_groupe2_$cpt'>".$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']."</label><br />\n";
@@ -564,7 +564,7 @@ if ($valid!='yes') {
 	echo "<input type='hidden' name='valid' value=\"yes\" />\n";
 	echo "<input type='hidden' name='utiliser_compte_existant' value=\"y\" />\n";
 	//if (isset($user_login)) {echo "<input type=hidden name=user_login value=\"".$user_login."\" />\n";}
-	echo "<input type=submit value=\"Déclarer cet utilisateur remplaçant\" />\n";
+	echo "<input type=submit value=\"DÃ©clarer cet utilisateur remplaÃ§ant\" />\n";
 	echo "<!--/span-->\n";
 	echo "</div>\n";
 	echo "<p>Si un compte que vous savez existant n'apparait pas dans la liste, il se peut qu'il soit inactif.<br />Commencez alors par activer le compte ou bien cliquez <a href='".$_SERVER['PHP_SELF']."?login_prof_remplace=$login_prof_remplace&amp;afficher_inactifs=y'>ici</a> pour afficher aussi les comptes inactifs.</p>\n";
@@ -575,14 +575,14 @@ if ($valid!='yes') {
 }
 elseif(isset($temoin_erreur_affect_compte_existant)) {
 	if($temoin_erreur_affect_compte_existant=="y") {
-		echo "<p style='color:red'>Une erreur s'est produite lors de la déclaration de '<b>$compte_existant</b>' comme remplaçant de '<b>$login_prof_remplace</b>'.</p>\n";
+		echo "<p style='color:red'>Une erreur s'est produite lors de la dÃ©claration de '<b>$compte_existant</b>' comme remplaÃ§ant de '<b>$login_prof_remplace</b>'.</p>\n";
 	}
 	else {
-		echo "<p>Le compte '<b>$compte_existant</b>' a été déclaré remplaçant de '<b>$login_prof_remplace</b>'.</p>\n";
+		echo "<p>Le compte '<b>$compte_existant</b>' a Ã©tÃ© dÃ©clarÃ© remplaÃ§ant de '<b>$login_prof_remplace</b>'.</p>\n";
 	}
 }
 else {// fin affichage formulaire
-  echo "<center><br/><br/><b>Remplaçant créé</b></center>";
+  echo "<center><br/><br/><b>RemplaÃ§ant crÃ©Ã©</b></center>";
 }
 
 require("../lib/footer.inc.php");

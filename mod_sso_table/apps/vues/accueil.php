@@ -20,17 +20,17 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 ?>
  [onload;file=menu.php]
   <ol>
-  <li><a href="index.php?ctrl=import">Peupler la table de correspondance à partir d'un fichier csv</a></li>
-  <li><a href="index.php?ctrl=maj">Mettre à jour la correspondance pour un compte donné</a></li>
-  <li><a href="index.php?ctrl=cvsent">Peupler la table de correspondance à partir d'un fichier csv issu d'un ENT</a></li>
-  <li><a href="index.php?ctrl=nettoyage">Nettoyage de la table de correspondance (changement d'année, test...)</a></li>
+  <li><a href="index.php?ctrl=import">Peupler la table de correspondance Ã  partir d'un fichier csv</a></li>
+  <li><a href="index.php?ctrl=maj">Mettre Ã  jour la correspondance pour un compte donnÃ©</a></li>
+  <li><a href="index.php?ctrl=cvsent">Peupler la table de correspondance Ã  partir d'un fichier csv issu d'un ENT</a></li>
+  <li><a href="index.php?ctrl=nettoyage">Nettoyage de la table de correspondance (changement d'annÃ©e, test...)</a></li>
   <li><a href="index.php?ctrl=help">Aide sur le fonctionnement du module</a></li>
   </ol>
  </body>

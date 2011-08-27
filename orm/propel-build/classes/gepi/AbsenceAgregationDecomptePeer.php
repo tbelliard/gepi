@@ -16,9 +16,9 @@
 class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	/**
 	 *
-	 * VÈrifie que l'ensemble de la table d'agrÈgation est ‡ jours, pour tous les ÈlËves. Corrige automatiquement la table dans certain cas non couteux, sinon renvoi faux
+	 * V√©rifie que l'ensemble de la table d'agr√©gation est √† jours, pour tous les √©l√®ves. Corrige automatiquement la table dans certain cas non couteux, sinon renvoi faux
 	 *
-	 * @param      DateTime $dateDebut date de dÈbut pour la prise en compte du test
+	 * @param      DateTime $dateDebut date de d√©but pour la prise en compte du test
 	 * @param      DateTime $dateFin date de fin pour la prise en compte du test
 	 * @return		Boolean
 	 *
@@ -29,13 +29,13 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			print_r('AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable() called<br/>');
 		}
 		
-		//on initialise les date clone qui seront manipulÈs dans l'algoritme, c'est nÈcessaire pour ne pas modifier les dates passÈes en paramÍtre.
+		//on initialise les date clone qui seront manipul√©s dans l'algoritme, c'est n√©cessaire pour ne pas modifier les dates pass√©es en param√™tre.
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
 		if ($dateDebut != null) {
 			if ($debug) {
-				print_r('Date dÈbut '.$dateDebut->format('Y-m-d').'<br/>');
+				print_r('Date d√©but '.$dateDebut->format('Y-m-d').'<br/>');
 			}
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
@@ -48,7 +48,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			$dateFinClone->setTime(23,59);
 		}
 		
-		//on va vÈrifier que tout les marqueurs de fin des calculs de mise ‡ jour sont bien prÈsents pour tout les ÈlËves
+		//on va v√©rifier que tout les marqueurs de fin des calculs de mise √† jour sont bien pr√©sents pour tout les √©l√®ves
 		$query = '
 			SELECT distinct eleves.ID_ELEVE
 			FROM `eleves` 
@@ -64,7 +64,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			if ($debug) {
 				print_r('Il manque des marqueurs de fin de calcul<br/>');
 			}
-			//on va corriger la table pour ces ÈlËves l‡
+			//on va corriger la table pour ces √©l√®ves l√†
 			while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 				$eleve = EleveQuery::create()->findOneByIdEleve($row[0]);
 				if ($debug) {
@@ -72,7 +72,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 				}
 				$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dateDebutClone,$dateFinClone);
 			}
-			//aprËs avoir corrigÈ on relance le test
+			//apr√®s avoir corrig√© on relance le test
 			return(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dateDebutClone, $dateFinClone));
 		} elseif ($num_rows>0) {
 			if ($debug) {
@@ -93,7 +93,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			$date_agregation_selection .= ' and a_agregation_decompte.DATE_DEMI_JOUNEE <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 		}
 				
-		//on va vÈrifier que tout les ÈlËves ont bien le bon nombres entrÈes dans la table d'agrÈgation pour cette pÈriode
+		//on va v√©rifier que tout les √©l√®ves ont bien le bon nombres entr√©es dans la table d'agr√©gation pour cette p√©riode
 		$query = '
 			SELECT eleves.ID_ELEVE, count(*) as count_entrees
 			FROM `eleves` 
@@ -115,7 +115,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			}
 		}
 		if (count($wrong_eleve) > 0 && count($wrong_eleve) < 50) {
-			//on va corriger la table pour ces ÈlËves l‡
+			//on va corriger la table pour ces √©l√®ves l√†
 			foreach($wrong_eleve as $idEleve) {
 				$eleve = EleveQuery::create()->findOneByIdEleve($idEleve);
 				if ($debug) {
@@ -123,7 +123,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 				}
 				$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dateDebutClone,$dateFinClone);
 			}
-			//aprËs avoir corrigÈ on relance le test
+			//apr√®s avoir corrig√© on relance le test
 			return(AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dateDebutClone, $dateFinClone));
 		} elseif (!empty($wrong_eleve) > 0) {
 			if ($debug) {
@@ -133,10 +133,10 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		}
 		
 		
-		/* on va rÈcupÈrÈ trois informations en base de donnÈe :
-		 * - est-ce qu'il y a bien le marqueur de fin de calcul (entrÈe avec a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL)
-		 * - est-ce que la date updated_at de mise ‡ jour de la table est bien postÈrieure aux date de modification des saisies et autres entrÈes
-		 * - on va compter le nombre de demi journÈe, elle doivent Ítre toutes remplies
+		/* on va r√©cup√©r√© trois informations en base de donn√©e :
+		 * - est-ce qu'il y a bien le marqueur de fin de calcul (entr√©e avec a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL)
+		 * - est-ce que la date updated_at de mise √† jour de la table est bien post√©rieure aux date de modification des saisies et autres entr√©es
+		 * - on va compter le nombre de demi journ√©e, elle doivent √™tre toutes remplies
 		 */
 		$query = 'select union_date, updated_at
 		
@@ -167,7 +167,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		}
 		$row = mysql_fetch_array($result_query);
 		mysql_free_result($result_query);
-		if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrÈgation, ou si la date de mise ‡ jour des saisies est postÈrieure ‡ updated_at ou 
+		if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agr√©gation, ou si la date de mise √† jour des saisies est post√©rieure √† updated_at ou 
 			if ($debug) {
 				print_r('retourne faux : Les date de mise a jour de la table sont trop anciennes<br/>');
 			}
@@ -176,7 +176,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			if ($debug) {
 				print_r('retourne vrai<br/>');
 			}
-			return true;//on ne vÈrifie pas le nombre d'entrÈe car les dates ne sont pas prÈcisÈe
+			return true;//on ne v√©rifie pas le nombre d'entr√©e car les dates ne sont pas pr√©cis√©e
 		}
 	}
 } // AbsenceAgregationDecomptePeer

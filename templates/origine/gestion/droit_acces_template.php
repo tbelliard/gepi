@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php include('../templates/origine/header_template.php');?>
 
   <script type="text/javascript" src="../templates/origine/lib/fonction_change_ordre_menu.js"></script>
@@ -46,13 +46,13 @@
 </head>
 
 <!-- ******************************************** -->
-<!-- Appelle les sous-modèles                     -->
+<!-- Appelle les sous-modÃ¨les                     -->
 <!-- templates/origine/header_template.php        -->
 <!-- templates/origine/bandeau_template.php      -->
 <!-- ******************************************** -->
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -66,10 +66,10 @@
 <div  id='container'>
 
   <a name="contenu" class="invisible">
-	Début de la page
+	DÃ©but de la page
   </a>
   
-<!-- début corps -->
+<!-- dÃ©but corps -->
 
   <form action="droits_acces.php" method="post" id="form1">
 	<input type='hidden' name='onglet_courant' id='onglet_courant' value='' />
@@ -91,7 +91,7 @@
 		if (my_strtolower($StatutItem) =='responsable') echo ucfirst($gepiSettings['denomination_responsable']);
 		elseif (my_strtolower($StatutItem) =='eleve') echo ucfirst($gepiSettings['denomination_eleve']);
 		elseif (my_strtolower($StatutItem) =='professeur_principal') echo ucfirst(getSettingValue("gepi_prof_suivi"));
-		elseif (my_strtolower($StatutItem) =='scolarite') echo "Scolarité";
+		elseif (my_strtolower($StatutItem) =='scolarite') echo "ScolaritÃ©";
 		else echo $StatutItem ;
 	 ?>
 	  </a>
@@ -116,19 +116,19 @@
 <noscript></noscript>
 
 	  <h2 class="center">
-	  <a name="<?php echo $StatutItem ;?>" href="#container" title="retour début de page depuis <?php echo $StatutItem ;?>" >
+	  <a name="<?php echo $StatutItem ;?>" href="#container" title="retour dÃ©but de page depuis <?php echo $StatutItem ;?>" >
 
 	  <?php
 		if (my_strtolower($StatutItem) =='responsable') echo $gepiSettings['denomination_responsable'];
 		elseif (my_strtolower($StatutItem) =='eleve') echo $gepiSettings['denomination_eleve'];
 		elseif (my_strtolower($StatutItem) =='professeur_principal') echo getSettingValue("gepi_prof_suivi");
-		elseif (my_strtolower($StatutItem) =='scolarite') echo "Scolarité";
+		elseif (my_strtolower($StatutItem) =='scolarite') echo "ScolaritÃ©";
 		else echo $StatutItem ;
 	  ?>
 	  </a>
 	</h2>
 	<h3 class="accueil">
-	  Paramétrage des droits d'accès
+	  ParamÃ©trage des droits d'accÃ¨s
 	</h3>
 	<ul class='div_tableau'>
 	<?php foreach ($droitAffiche->get_item() as $AfficheItem){ 
@@ -174,7 +174,7 @@
 </script>
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -195,7 +195,7 @@
 <?php
   if ($tbs_microtime!="") {
 ?>
-<p class='microtime'>Page générée en
+<p class='microtime'>Page gÃ©nÃ©rÃ©e en
 <?php
   echo $tbs_microtime;
 ?>

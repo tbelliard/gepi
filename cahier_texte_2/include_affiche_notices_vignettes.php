@@ -60,11 +60,11 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 								\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 	
 			if(($devoir->getDateVisibiliteEleve()!="")&&(mysql_date_to_unix_timestamp($devoir->getDateVisibiliteEleve())>time())) {
-				$html_balise .=("<img src=\"../images/icons/visible.png\" width=\"19\" height=\"16\" alt=\"Date de visibilité de la notice pour les élèves\" title=\"Date de visibilité de la notice pour les élèves\" /><span style='font-size: xx-small; color:red;'>&nbsp;".get_date_heure_from_mysql_date($devoir->getDateVisibiliteEleve())."</span>\n");
+				$html_balise .=("<img src=\"../images/icons/visible.png\" width=\"19\" height=\"16\" alt=\"Date de visibilitÃ© de la notice pour les Ã©lÃ¨ves\" title=\"Date de visibilitÃ© de la notice pour les Ã©lÃ¨ves\" /><span style='font-size: xx-small; color:red;'>&nbsp;".get_date_heure_from_mysql_date($devoir->getDateVisibiliteEleve())."</span>\n");
 			}
 		}
 	} else {
-		$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+		$html_balise .= "<i><span  class=\"red\">Notice signÃ©e</span></i>";
 	}
 	$html_balise .= '</div>';
 	echo($html_balise);
@@ -157,7 +157,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 			$html_balise = " ";
 		} else {
 			if ($compte_rendu->getVise() == 'y') {
-				$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+				$html_balise .= "<i><span  class=\"red\">Notice signÃ©e</span></i>";
 			}
 		}
 		$html_balise .= '</div>';
@@ -165,7 +165,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 
 		//affichage contenu
 		echo "<br/>";
-    // On ajoute le nom de la séquence si elle existe
+    // On ajoute le nom de la sÃ©quence si elle existe
     $aff_seq = NULL;
     if ($compte_rendu->getIdSequence() != "0"){
       $aff_seq = '<p class="bold" title="'.$compte_rendu->getCahierTexteSequence()->getDescription().'"> - <em>' . $compte_rendu->getCahierTexteSequence()->getTitre() . '</em> - </p>';
@@ -186,7 +186,7 @@ function afficheDocuments ($documents) {
 		//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
 		$html .= "<ul style=\"padding-left: 15px;\">";
 		foreach ($documents as $document) {
-			// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
+			// Ouverture dans une autre fenÃªtre conservÃ©e parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
 			// alternative, utiliser un javascript
 			$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"".$document->getEmplacement()."\">".$document->getTitre()."</a></li>";
 
