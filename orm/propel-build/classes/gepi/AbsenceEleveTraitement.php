@@ -250,4 +250,8 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 			}
 		}
 	}
+	
+	public function getAlreadyInSave() {
+		return $this->alreadyInSave;
+	}
 } // AbsenceEleveTraitement
