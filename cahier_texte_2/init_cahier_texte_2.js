@@ -105,7 +105,7 @@ function getWinEditionNotice() {
 	if (typeof winEditionNotice=="undefined") {
 		winEditionNotice = new Window(
 				{id: 'win_edition_notice',
-				title: 'Edition de Notice',
+				title: 'Édition de Notice',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
 				top:160,

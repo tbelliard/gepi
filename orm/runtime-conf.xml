@@ -76,8 +76,9 @@
 					</attributes>
 					
 					<settings>
-						<!--  Set the character set for client connection -->
-						<setting id="charset">Latin1</setting>
+						<!--  Set the character set for client connection
+						<!-- <setting id="charset">Latin1</setting> -->
+						<setting id="charset">utf8</setting>
 						<!-- you can also execute arbitrary queries after the connection is created
 						<setting id="queries">
 							<query>SELECT * FROM foo</query>
