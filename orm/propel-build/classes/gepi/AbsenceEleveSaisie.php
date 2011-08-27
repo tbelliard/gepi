@@ -1001,13 +1001,52 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 		//on regarde les changements avec l'ancienne version pour mettre à jour la table d'agrégation
 		$oldVersionNumber = $this->version;
+		$oldEleve = $this->getEleve();
 		
 		$result = parent::save($con);
 		
+		if ($result) {
+			//mais avant on met à jour l'updated_at de l'ancienne version : ça nous permettra à partir des dates de vérifier que la table à bien été mise à jour lorsque cette version a été remplacté par une nouvelle
+			$oldVersion = $this->getOneVersion($oldVersionNumber);
+			if ($oldVersion != null) {
+				$oldVersion->setUpdatedAt('now');
+				$oldVersion->save();
+				
+				if ($oldEleve != null) {
+					//mise à jour serrée sur les dates de l'ancienne version
+					$oldEleve->updateAbsenceAgregationTable($oldVersion->getDebutAbs(null),$oldVersion->getFinAbs(null));
+				}
+			}
+			
+			if ($this->getEleve() != null) {
+				//mise à jour serrée sur les dates de la nouvelle version
+				$this->getEleve()->updateAbsenceAgregationTable($this->getDebutAbs(null),$this->getFinAbs(null));
+			}
+			
+			
+			
+			if ($oldEleve != null) {
+				//vérification et mise à jour large (donc aussi avant et après l'ancienne version)
+				$oldEleve->checkAndUpdateSynchroAbsenceAgregationTable($oldVersion->getDebutAbs(null),$oldVersion->getFinAbs(null));
+			}
+			
+			//vérification et mise à jour large (donc aussi avant et après la nouvelle version)
+			$this->checkAndUpdateSynchroAbsenceAgregationTable();
+			
+			//on va faire une dernière vérification entre les deux versions
+			if ($oldEleve != null && $oldEleve->getIdEleve() == $this->getEleveId()) {
+				if ($this->getFinAbs(null) < $oldVersion->getDebutAbs(null)) {
+					if (!$oldEleve->checkSynchroAbsenceAgregationTable($this->getFinAbs(null), $oldVersion->getDebutAbs(null))) {
+						$this->updateAbsenceAgregationTable($this->getFinAbs(null), $oldVersion->getDebutAbs(null));
+					}
+				} else if ($this->getDebutAbs(null) > $oldVersion->getFinAbs(null)) {
+					if (!$oldEleve->checkSynchroAbsenceAgregationTable($oldVersion->getFinAbs(null), $this->getDebutAbs(null))) {
+						$this->updateAbsenceAgregationTable($oldVersion->getFinAbs(null), $this->getDebutAbs(null));
+					}
+				}
+			}
+		}
 		
-		$this->thinCheckAndUpdateSynchroAbsenceAgregationTableOtherVersion($oldVersionNumber);//on mets à jour sur les dates de la version précédente
-		$this->checkAndUpdateSynchroAbsenceAgregationTable();//on mets à jour sur les date de cette version
-
 		return $result;
 	}
 	
@@ -1024,31 +1063,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		}
 	}
 
-		/**
-	 *
-	 * Mets à jour la table d'agrégation pour cette saisie
-	 *
-	 * @param		$version_number int le numéro de version.
-	 * @return     AbsenceEleveLieu
-	 *
-	 */
-	public function thinCheckAndUpdateSynchroAbsenceAgregationTableOtherVersion($oldVersionNumber) {
-		if ($this->getEleve() != null) {
-			//on va mettre à jour la table d'agrégation pour cet élève. Il faut mettre à jour cette table
-			//sur les date de l'ancienne version et de la nouvelle version
-			$oldDebutAbs = null;
-			$oldFinAbs = null;
-			//si $oldVersionNumber = 0 c'est qu'il n'y avait pas d'ancienne version
-			$oldVersion = $this->getOneVersion($oldVersionNumber);
-			if ($oldVersion != null) {
-				$eleve = EleveQuery::create()->findOneByIdEleve($oldVersion->getEleveId());
-				if ($eleve != null) {
-					$eleve->checkAndUpdateSynchroAbsenceAgregationTable($oldVersion->getDebutAbs(null),$oldVersion->getFinAbs(null));
-				}
-			}
-		}
-	}
-	
 	/**
 	 *
 	 * Renvoi le lieu de l'absence ou le lieu de plus petit rang des types d'absence associé.
