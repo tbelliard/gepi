@@ -230,10 +230,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		//JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete(); //ne pas supprimer pour pourvoir faire la jointure entre le traitement supprimé et l'élève saisi
 		parent::delete();
 		foreach($saisieColOld as $saisie) {
-			if ($saisie->getEleve() != null) {
-				$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-				$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-			}
+			$saisie->checkAndUpdateSynchroAbsenceAgregationTable();
 		}
 	}
 	
@@ -244,10 +241,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 */
 	public function updateAgregationTable() {
 		foreach($this->getAbsenceEleveSaisies() as $saisie) {
-			if ($saisie->getEleve() != null) {
-				$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-				$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-			}
+			$saisie->checkAndUpdateSynchroAbsenceAgregationTable();
 		}
 	}
 	
