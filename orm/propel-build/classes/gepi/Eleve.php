@@ -1623,13 +1623,16 @@ class Eleve extends BaseEleve {
 		//on vérifie en comparant des dates que aucune mise a jour de la table d'agrégation n'a été oubliée 
 		//on va rechercher la date de dernière modification des saisies, traitements, etc...
 		$date_saisies_selection = ' 1=1 ';
+		$date_saisies_version_selection = ' 1=1 ';
 		$date_agregation_selection = ' 1=1 ';
 		if ($dateDebutClone != null) {
 			$date_saisies_selection .= ' and a_saisies.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
+			$date_saisies_version_selection .= ' and a_saisies_version.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
 			$date_agregation_selection .= ' and a_agregation_decompte.DATE_DEMI_JOUNEE >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
 		}
 		if ($dateFinClone != null) {
 			$date_saisies_selection .= ' and a_saisies.debut_abs <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
+			$date_saisies_version_selection .= ' and a_saisies_version.debut_abs <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 			$date_agregation_selection .= ' and a_agregation_decompte.DATE_DEMI_JOUNEE <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 		}
 		
@@ -1672,9 +1675,13 @@ class Eleve extends BaseEleve {
 		
 		LEFT JOIN (
 			(SELECT union_date from 
-				(SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
+				(	SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
 				UNION ALL
 					SELECT deleted_at as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
+				UNION ALL
+					SELECT a_saisies_version.updated_at as union_date FROM a_saisies_version WHERE a_saisies_version.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.'
+				UNION ALL
+					SELECT a_saisies_version.deleted_at as union_date  FROM a_saisies_version WHERE a_saisies_version.deleted_at is not null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.'
 				UNION ALL
 					SELECT a_traitements.updated_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
 				UNION ALL
@@ -1687,7 +1694,10 @@ class Eleve extends BaseEleve {
 			
 		$result_query = mysql_query($query);
 		if ($result_query === false) {
-			echo 'Erreur sur la requete : '.$query.'<br/>'.mysql_error().'<br/>';
+			if ($debug) {
+				echo $query;
+			}
+			echo 'Erreur sur la requete : '.mysql_error().'<br/>';
 			return false;
 		}
 		$row = mysql_fetch_array($result_query, MYSQL_ASSOC);
@@ -1965,7 +1975,7 @@ class Eleve extends BaseEleve {
 	 * @param      DateTime $dateFin date de fin pour la prise en compte de la mise à jours
 	 *
 	 */
-	private function thinCheckAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+	public function thinCheckAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
 		if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateFin)) {
 			$this->updateAbsenceAgregationTable($dateDebut, $dateFin);
 		}
