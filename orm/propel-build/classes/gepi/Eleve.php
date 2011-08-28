@@ -1662,7 +1662,7 @@ class Eleve extends BaseEleve {
 		 * - on va compter le nombre de demi journée, elle doivent être toutes remplies
 		 */
 		//$query = 'select ELEVE_ID is not null, union_date <= as updated_at, count_demi_jounee
-		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee
+		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, now() as now
 		
 		FROM
 			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
@@ -1708,9 +1708,19 @@ class Eleve extends BaseEleve {
                 $this->affiche_duree();
 			}
 			return false;
+		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
+			if ($debug) {
+				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
+			}
+			return false;
+		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+			if ($debug) {
+				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
+			}
+			return false;
 		} else if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
 			if ($this->debug) {
-				print_r('faux : Date de mise a jour antérieur aux dates de saisies<br/>');
+				print_r('faux : Date de mise a jour des agregations antérieure aux dates de saisies<br/>');
                 $this->affiche_duree();
 			}
             
