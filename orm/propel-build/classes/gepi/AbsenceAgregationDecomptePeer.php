@@ -193,4 +193,36 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		}
 	}
+	
+	/**
+	 *
+	 * Purge l'ensemble des décomptes pour les saisies précisées et met la table à jour
+	 * 
+	 * @param      PropelObjectCollectionDateTime $saisie_col
+	 *
+	 */
+	public static function updateAgregationTable(PropelObjectCollection $saisie_col) {
+		$eleveEtDate = Array();
+		foreach($saisie_col as $saisie) {
+			if (!isset($eleveEtDate[$saisie->getEleveId()])) {
+				$eleveArray = Array('dateDebut' => null,'dateFin' => null, 'eleve' => $saisie->getEleve());
+			} else {
+				$eleveArray = $eleveEtDate[$saisie->getEleveId()];
+			}
+			if ($eleveArray['dateDebut'] == null || $saisie->getDebutAbs(null) < $eleveArray['dateDebut']) {
+			    $eleveArray['dateDebut'] = clone $saisie->getDebutAbs(null);
+			}
+			if ($eleveArray['dateFin'] == null || $saisie->getFinAbs(null) > $eleveArray['dateFin']) {
+			    $eleveArray['dateFin'] = clone $saisie->getFinAbs(null);
+			}
+			$eleveEtDate[$saisie->getEleveId()] = $eleveArray;
+		}
+		foreach ($eleveEtDate as $id => $array_eleve) {
+			if ($array_eleve['eleve'] != null) {
+				AbsenceAgregationDecompteQuery::create()->filterByEleveId($id)->filterByDateIntervalle($array_eleve['dateDebut'],$array_eleve['dateFin'])->delete();
+				$array_eleve['eleve']->updateAbsenceAgregationTable($array_eleve['dateDebut'],$array_eleve['dateFin']);
+			}
+		}
+	}
+	
 } // AbsenceAgregationDecomptePeer
