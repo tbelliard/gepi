@@ -85,7 +85,7 @@ login varchar(50) NOT NULL default '',
 nom_modele varchar(255) NOT NULL,
 par_defaut ENUM('y','n') DEFAULT 'n',
 PRIMARY KEY (id_modele)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 
@@ -94,7 +94,7 @@ id_modele INT(11) NOT NULL,
 nom varchar(255) NOT NULL default '',
 valeur varchar(255) NOT NULL,
 INDEX id_modele_champ (id_modele, nom)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 

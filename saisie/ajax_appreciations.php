@@ -108,8 +108,9 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($tem
 		$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
 			terme VARCHAR(255) NOT NULL DEFAULT '',
 			terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
-			PRIMARY KEY (id)) ENGINE=MyISAM;";
-		//echo "$sql<br />";
+			PRIMARY KEY (id)
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		
 		log_ajax_app($sql);
 		$create_table=mysql_query($sql);
 		if(!$create_table) {

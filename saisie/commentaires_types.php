@@ -60,7 +60,7 @@ $sql="CREATE TABLE IF NOT EXISTS `commentaires_types` (
 `commentaire` TEXT NOT NULL ,
 `num_periode` INT NOT NULL ,
 `id_classe` INT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $resultat_creation_table=mysql_query($sql);
 
 

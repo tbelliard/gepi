@@ -240,7 +240,7 @@ $sql="CREATE TABLE IF NOT EXISTS notanet (
   note varchar(4) NOT NULL default '',
   note_notanet varchar(4) NOT NULL,
   id_classe smallint(6) NOT NULL default '0'
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_app (
@@ -250,7 +250,7 @@ $sql="CREATE TABLE IF NOT EXISTS notanet_app (
   appreciation text NOT NULL,
   id int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_corresp (
@@ -261,21 +261,21 @@ $sql="CREATE TABLE IF NOT EXISTS notanet_corresp (
   matiere varchar(50) NOT NULL default '',
   statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL default 'imposee',
   PRIMARY KEY  (id)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_ele_type (
   login varchar(50) NOT NULL,
   type_brevet tinyint(4) NOT NULL,
   PRIMARY KEY  (login)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_verrou (
 id_classe TINYINT NOT NULL ,
 type_brevet TINYINT NOT NULL ,
 verrouillage CHAR( 1 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_socles (
@@ -284,7 +284,7 @@ b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 lv VARCHAR( 50 ) NOT NULL ,
 PRIMARY KEY ( login )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_avis (
@@ -292,14 +292,14 @@ login VARCHAR( 50 ) NOT NULL ,
 favorable ENUM( 'O', 'N', '' ) NOT NULL ,
 avis TEXT NOT NULL ,
 PRIMARY KEY ( login )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_lvr (
 id int(11) NOT NULL auto_increment,
 intitule VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_lvr_ele (
@@ -308,7 +308,7 @@ login VARCHAR( 255 ) NOT NULL ,
 id_lvr INT( 11 ) NOT NULL ,
 note ENUM ('', 'VA','NV') NOT NULL DEFAULT '',
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_socle_commun (
@@ -317,7 +317,7 @@ login VARCHAR( 50 ) NOT NULL ,
 champ VARCHAR( 10 ) NOT NULL ,
 valeur ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 

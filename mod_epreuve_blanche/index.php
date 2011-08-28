@@ -81,7 +81,7 @@ date DATE NOT NULL default '0000-00-00',
 etat VARCHAR( 255 ) NOT NULL ,
 note_sur int(11) unsigned not null default '20',
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_copies (
@@ -94,7 +94,7 @@ note float(10,1) NOT NULL default '0.0',
 statut VARCHAR(255) NOT NULL default '',
 id_epreuve int(11) unsigned NOT NULL,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_salles (
@@ -102,7 +102,7 @@ id int(11) unsigned NOT NULL auto_increment,
 salle VARCHAR( 255 ) NOT NULL ,
 id_epreuve int(11) unsigned NOT NULL,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_groupes (
@@ -111,7 +111,7 @@ id_epreuve int(11) unsigned NOT NULL,
 id_groupe int(11) unsigned NOT NULL,
 transfert varchar(1) NOT NULL DEFAULT 'n',
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 
@@ -120,7 +120,7 @@ id int(11) unsigned NOT NULL auto_increment,
 id_epreuve int(11) unsigned NOT NULL,
 login_prof VARCHAR(255) NOT NULL default '',
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 

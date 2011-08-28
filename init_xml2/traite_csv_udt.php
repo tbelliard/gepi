@@ -300,7 +300,7 @@
 						champ varchar(255) $chaine_mysql_collate NOT NULL default '',
 						nom_udt varchar(255) $chaine_mysql_collate NOT NULL default '',
 						nom_gepi varchar(255) $chaine_mysql_collate NOT NULL default ''
-						);";
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						$create_table = mysql_query($sql);
 
 						//$sql="TRUNCATE TABLE udt_corresp;";
@@ -321,7 +321,7 @@
 						regroup varchar(255) $chaine_mysql_collate NOT NULL default '',
 						mo varchar(255) $chaine_mysql_collate NOT NULL default '', 
 						PRIMARY KEY id (id)
-						);";
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						//echo "$sql<br />";
 						$create_table = mysql_query($sql);
 

@@ -271,7 +271,7 @@
 								libelle_court varchar(40) NOT NULL default '',
 								libelle_long varchar(255) NOT NULL default '',
 								libelle_edition varchar(255) NOT NULL default ''
-								);";
+								) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						$create_table = mysql_query($sql);
 
 						$sql="TRUNCATE TABLE temp_matieres_import;";

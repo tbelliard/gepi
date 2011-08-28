@@ -181,9 +181,6 @@
 				}
 			}
 
-			//echo "<p>Cette page permet de remplir des tables temporaires avec les informations responsables.<br />\n";
-			//echo "</p>\n";
-
 			// Sauvegarde temporaire:
 			$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
 			(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
@@ -192,10 +189,7 @@
 			statut VARCHAR( 20 ) NOT NULL ,
 			auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
 			temoin VARCHAR( 50 ) NOT NULL
-			);";
-			//auth_mode ENUM('gepi','ldap','sso') NOT NULL ,
-			//auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-			//auth_mode VARCHAR( 4 ) NOT NULL ,
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$creation_table=mysql_query($sql);
 
@@ -354,7 +348,6 @@
 					else{
 						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
-						//$sql="CREATE TABLE IF NOT EXISTS temp_resp_pers_import (
 						$sql="CREATE TABLE IF NOT EXISTS resp_pers (
 								`pers_id` varchar(10) NOT NULL,
 								`login` varchar(50) NOT NULL,
@@ -366,7 +359,8 @@
 								`tel_prof` varchar(255) NOT NULL,
 								`mel` varchar(100) NOT NULL,
 								`adr_id` varchar(10) NOT NULL,
-							PRIMARY KEY  (`pers_id`));";
+								PRIMARY KEY  (`pers_id`)
+								) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						$create_table = mysql_query($sql);
 
 						//$sql="TRUNCATE TABLE temp_resp_pers_import;";
@@ -561,13 +555,12 @@
 					die();
 				}
 
-				//$sql="CREATE TABLE IF NOT EXISTS temp_responsables2_import (
 				$sql="CREATE TABLE IF NOT EXISTS responsables2 (
 						`ele_id` varchar(10) NOT NULL,
 						`pers_id` varchar(10) NOT NULL,
 						`resp_legal` varchar(1) NOT NULL,
 						`pers_contact` varchar(1) NOT NULL
-						);";
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$create_table = mysql_query($sql);
 
 				//$sql="TRUNCATE TABLE temp_responsables2_import;";
@@ -739,7 +732,6 @@
 					die();
 				}
 
-				//$sql="CREATE TABLE IF NOT EXISTS temp_resp_adr_import (
 				$sql="CREATE TABLE IF NOT EXISTS resp_adr (
 						`adr_id` varchar(10) NOT NULL,
 						`adr1` varchar(100) NOT NULL,
@@ -749,7 +741,8 @@
 						`cp` varchar(6) NOT NULL,
 						`pays` varchar(50) NOT NULL,
 						`commune` varchar(50) NOT NULL,
-					PRIMARY KEY  (`adr_id`));";
+						PRIMARY KEY  (`adr_id`)
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$create_table = mysql_query($sql);
 
 				//$sql="TRUNCATE TABLE temp_resp_adr_import;";

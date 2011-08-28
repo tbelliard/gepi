@@ -249,7 +249,7 @@ else {
 		a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 		lv VARCHAR( 50 ) NOT NULL ,
 		PRIMARY KEY ( login )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$create_table=mysql_query($sql);
 
 

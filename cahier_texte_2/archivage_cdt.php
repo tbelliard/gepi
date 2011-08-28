@@ -191,7 +191,6 @@ else {
 			die();
 		}
 
-		//$sql="INSERT INTO tempo2 SELECT id,name FROM groupes;";
 		// On ne retient que les groupes associés à des classes... les autres sont des scories qui devraient être supprimées par un Nettoyage de la base
 		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes WHERE id IN (SELECT DISTINCT id_groupe FROM j_groupes_classes);";
 		$res=mysql_query($sql);
@@ -202,8 +201,7 @@ else {
 			die();
 		}
 
-		//$sql="CREATE TABLE tempo3 (id_classe int(11) NOT NULL default '0', name varchar(60) NOT NULL default '');";
-		$sql="CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '');";
+		$sql="CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$res=mysql_query($sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Erreur lors de la création de la table temporaire 'tempo3_cdt'.</p>\n";

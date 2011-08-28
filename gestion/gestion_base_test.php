@@ -354,13 +354,6 @@ function debug_pb($ligne) {
 
 function get_def($db, $table) {
     $def="\n\n#\n# table $table\n#\n";
-    //$def .="DROP TABLE IF EXISTS `$table`;\n";
-    // requete de creation de la table
-//    $query = "SHOW CREATE TABLE $table";
-//    $resCreate = mysql_query($query);
-//    $row = mysql_fetch_array($resCreate);
-//    $schema = $row[1].";";
-//    $def .="$schema\n";
     return $def;
 }
 
