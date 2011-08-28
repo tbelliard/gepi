@@ -48,13 +48,18 @@ class Eleve extends BaseEleve {
     /**
 	 * @var        timestamp de lancement du débug
 	 */
-    private $timestamp_start=Null;
+    private $timestamp_start=null;
     /**
 	 * @var        mode de debuggage pour abs2
 	 */
     private $debug=false;
      
 
+    function __construct() {
+        parent::__construct();
+        $this->timestamp_start=microtime(true);
+    }
+    
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
