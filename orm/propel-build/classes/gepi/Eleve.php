@@ -52,7 +52,7 @@ class Eleve extends BaseEleve {
     /**
 	 * @var        mode de debuggage pour abs2
 	 */
-    private $debug=true;
+    private $debug=false;
      
 
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
@@ -1601,7 +1601,7 @@ class Eleve extends BaseEleve {
 	 */
     private function affiche_duree(){
         $timestamp = microtime(true);
-        print_r('Temps d\'execution depuis le lancement : '.round($timestamp - $this->timestamp_start, 3).'<br />');        
+        print_r('Temps d\'execution depuis le lancement : '.($timestamp - $this->timestamp_start).'<br />');        
     }
 	/**
 	 *
