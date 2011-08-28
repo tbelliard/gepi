@@ -141,7 +141,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		 * - est-ce que la date updated_at de mise à jour de la table est bien postérieure aux date de modification des saisies et autres entrées
 		 * - on va compter le nombre de demi journée, elle doivent être toutes remplies
 		 */
-		$query = 'select union_date, updated_at
+		$query = 'select union_date, updated_at, now() as now
 		
 		FROM
 			(SELECT max(updated_at) as updated_at
@@ -171,7 +171,17 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		}
 		$row = mysql_fetch_array($result_query);
 		mysql_free_result($result_query);
-		if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
+		if ($row['union_date'] && $row['union_date']  > $row['now']) {
+			if ($debug) {
+				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
+			}
+			return false;
+		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+			if ($debug) {
+				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
+			}
+			return false;
+		} else if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
 			if ($debug) {
 				print_r('retourne faux : Les date de mise a jour de la table sont trop anciennes<br/>');
 			}
