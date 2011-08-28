@@ -1001,14 +1001,15 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 		//on regarde les changements avec l'ancienne version pour mettre à jour la table d'agrégation
 		$oldVersionNumber = $this->version;
-		$oldEleve = $this->getEleve();
 		
 		$result = parent::save($con);
 		
 		if ($result) {
 			//mais avant on met à jour l'updated_at de l'ancienne version : ça nous permettra à partir des dates de vérifier que la table à bien été mise à jour lorsque cette version a été remplacté par une nouvelle
 			$oldVersion = $this->getOneVersion($oldVersionNumber);
+			$oldEleve = null;
 			if ($oldVersion != null) {
+				$oldEleve = EleveQuery::create()->findOneByIdEleve($oldVersion->getEleveId());
 				$oldVersion->setUpdatedAt('now');
 				$oldVersion->save();
 				
