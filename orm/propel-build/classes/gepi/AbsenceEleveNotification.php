@@ -67,6 +67,7 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
 	    
 		if ($this->getAbsenceEleveTraitement() != null) {
 			$this->getAbsenceEleveTraitement()->updateAgregationTable();
+			$this->getAbsenceEleveTraitement()->checkAgregationTable();
 		}
 	    
 	    return $result;

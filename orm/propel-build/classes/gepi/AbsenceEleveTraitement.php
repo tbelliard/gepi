@@ -210,6 +210,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    $result = parent::save($con);
 	    
 	    $this->updateAgregationTable();
+	    $this->checkAgregationTable();
 	    
 	    return $result;
 	}
@@ -235,13 +236,24 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	}
 	
 	/**
+	 * Vérifie et met à jour la table d'agrégation pour toutes les saisies de ce traitement
+	 *
+	 * @return     void
+	 */
+	public function checkAgregationTable() {
+		foreach($this->getAbsenceEleveSaisies() as $saisie) {
+			$saisie->checkAndUpdateSynchroAbsenceAgregationTable();
+		}
+	}
+	
+	/**
 	 * Met à jour la table d'agrégation pour toutes les saisies de ce traitement
 	 *
 	 * @return     void
 	 */
 	public function updateAgregationTable() {
 		foreach($this->getAbsenceEleveSaisies() as $saisie) {
-			$saisie->checkAndUpdateSynchroAbsenceAgregationTable();
+			$saisie->updateSynchroAbsenceAgregationTable();
 		}
 	}
 	

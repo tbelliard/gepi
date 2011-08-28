@@ -1038,11 +1038,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			if ($oldEleve != null && $oldEleve->getIdEleve() == $this->getEleveId()) {
 				if ($this->getFinAbs(null) < $oldVersion->getDebutAbs(null)) {
 					if (!$oldEleve->checkSynchroAbsenceAgregationTable($this->getFinAbs(null), $oldVersion->getDebutAbs(null))) {
-						$this->updateAbsenceAgregationTable($this->getFinAbs(null), $oldVersion->getDebutAbs(null));
+						$this->getEleve()->updateAbsenceAgregationTable($this->getFinAbs(null), $oldVersion->getDebutAbs(null));
 					}
 				} else if ($this->getDebutAbs(null) > $oldVersion->getFinAbs(null)) {
 					if (!$oldEleve->checkSynchroAbsenceAgregationTable($oldVersion->getFinAbs(null), $this->getDebutAbs(null))) {
-						$this->updateAbsenceAgregationTable($oldVersion->getFinAbs(null), $this->getDebutAbs(null));
+						$this->getEleve()->updateAbsenceAgregationTable($oldVersion->getFinAbs(null), $this->getDebutAbs(null));
 					}
 				}
 			}
@@ -1053,7 +1053,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	
 	/**
 	 *
-	 * Mets à jour la table d'agrégation pour cette saisie
+	 * Vérifie et met à jour la table d'agrégation pour cette saisie
 	 *
 	 * @return     AbsenceEleveLieu
 	 *
@@ -1064,6 +1064,19 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		}
 	}
 
+	/**
+	 *
+	 * Mets à jour la table d'agrégation pour cette saisie
+	 *
+	 * @return     AbsenceEleveLieu
+	 *
+	 */
+	public function updateSynchroAbsenceAgregationTable() {
+		if ($this->getEleve() != null) {
+			$this->getEleve()->updateAbsenceAgregationTable($this->getDebutAbs(null),$this->getFinAbs(null));
+		}
+	}
+	
 	/**
 	 *
 	 * Renvoi le lieu de l'absence ou le lieu de plus petit rang des types d'absence associé.
