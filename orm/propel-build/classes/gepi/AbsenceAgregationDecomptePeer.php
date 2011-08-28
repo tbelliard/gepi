@@ -98,7 +98,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 				
 		//on va vérifier que tout les élèves ont bien le bon nombres entrées dans la table d'agrégation pour cette période
 		$query = '
-			SELECT eleves.ID_ELEVE, count(*) as count_entrees
+			SELECT eleves.ID_ELEVE, count(eleves.ID_ELEVE) as count_entrees
 			FROM `eleves` 
 			LEFT JOIN (
 				SELECT ELEVE_ID
@@ -144,23 +144,17 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		$query = 'select union_date, updated_at
 		
 		FROM
-			(SELECT updated_at 
+			(SELECT max(updated_at) as updated_at
 			FROM a_agregation_decompte WHERE '.$date_agregation_selection.'	
-			ORDER BY updated_at DESC LIMIT 1) as updated_at_select
+			) as updated_at_select
 
 		LEFT JOIN (
 			(SELECT union_date from 
-				(	SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and '.$date_saisies_selection.'
+				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE '.$date_saisies_selection.'
 				UNION ALL
-					SELECT deleted_at as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and '.$date_saisies_selection.'
+					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE '.$date_saisies_version_selection.'
 				UNION ALL
-					SELECT a_saisies_version.updated_at as union_date FROM a_saisies_version WHERE a_saisies_version.deleted_at is null and '.$date_saisies_version_selection.'
-				UNION ALL
-					SELECT a_saisies_version.deleted_at as union_date  FROM a_saisies_version WHERE a_saisies_version.deleted_at is not null and '.$date_saisies_version_selection.'
-				UNION ALL
-					SELECT a_traitements.updated_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and '.$date_saisies_selection.'
-				UNION ALL
-					SELECT a_traitements.deleted_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and '.$date_saisies_selection.'
+					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE '.$date_saisies_selection.'
 				
 				ORDER BY union_date DESC LIMIT 1
 				) AS union_date_union_all_select
