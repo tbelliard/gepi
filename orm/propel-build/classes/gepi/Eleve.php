@@ -1642,51 +1642,32 @@ class Eleve extends BaseEleve {
 		 * - on va compter le nombre de demi journée, elle doivent être toutes remplies
 		 */
 		//$query = 'select ELEVE_ID is not null, union_date <= as updated_at, count_demi_jounee
-		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, count_manquement
+		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee
 		
 		FROM
 			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
 			) as a_agregation_decompte_null_select
 			
 		LEFT JOIN (
-			(SELECT updated_at 
+			(SELECT count(a_agregation_decompte.eleve_id) as count_demi_jounee, max(updated_at) as updated_at
 			FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getIdEleve().' and '.$date_agregation_selection.'	
-			ORDER BY updated_at DESC LIMIT 1) as updated_at_select
-		) ON 1=1
-
-		LEFT JOIN (';
-		if ($dateDebutClone != null && $dateFinClone != null) {
-			$query .= '
-			(SELECT count(*) as count_demi_jounee from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' and '.$date_agregation_selection;
-		} else {
-			$query .= '
-			(SELECT -1 as count_demi_jounee from  a_agregation_decompte limit 1';
-		}
-			$query .= '
-			) as count_select
-		) ON 1=1
-		
-		LEFT JOIN (
-			(SELECT count(*) as count_manquement from  a_agregation_decompte 
-			WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' and '.$date_agregation_selection.'
-			AND manquement_obligation_presence=1
-			) as count_select_manquement
+			group by eleve_id) as updated_at_select
 		) ON 1=1
 		
 		LEFT JOIN (
 			(SELECT union_date from 
-				(	SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
+				(	SELECT max(updated_at) as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
 				UNION ALL
-					SELECT deleted_at as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
+					SELECT max(deleted_at) as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
 				UNION ALL
-					SELECT a_saisies_version.updated_at as union_date FROM a_saisies_version WHERE a_saisies_version.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.'
+					SELECT max(a_saisies_version.updated_at) as union_date FROM a_saisies_version WHERE a_saisies_version.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.' group by eleve_id
 				UNION ALL
-					SELECT a_saisies_version.deleted_at as union_date  FROM a_saisies_version WHERE a_saisies_version.deleted_at is not null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.'
+					SELECT max(a_saisies_version.deleted_at) as union_date  FROM a_saisies_version WHERE a_saisies_version.deleted_at is not null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.' group by eleve_id
 				UNION ALL
-					SELECT a_traitements.updated_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
+					SELECT max(a_traitements.updated_at) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
 				UNION ALL
-					SELECT a_traitements.deleted_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
-				
+					SELECT max(a_traitements.deleted_at) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by a_saisies.eleve_id
+
 				ORDER BY union_date DESC LIMIT 1
 				) AS union_date_union_all_select
 			) AS union_date_select
@@ -1716,7 +1697,7 @@ class Eleve extends BaseEleve {
 				print_r('faux : Date de mise a jour antérieur aux dates de saisies<br/>');
 			}
 			return false;
-		} else if ($row['count_demi_jounee']==-1){
+		} else if ($dateDebutClone == null || $dateFinClone == null){
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		} else {
 			$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600*6-$dateDebutClone->format('U'))/(3600*12)); // on compte les tranches de 12h
