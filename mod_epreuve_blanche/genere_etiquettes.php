@@ -71,7 +71,7 @@ type VARCHAR( 255 ) NOT NULL ,
 nom VARCHAR( 255 ) NOT NULL ,
 valeur smallint(6) unsigned NOT NULL ,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 // Enregistrement des valeurs

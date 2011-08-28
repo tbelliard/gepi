@@ -1115,9 +1115,6 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 	$retour="";
 
-	//DROP TABLE IF EXISTS s_alerte_mail;
-	//CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));
-
 	$tab_dest=array();
     $temoin=false;
 	for($i=0;$i<count($tab_id_classe);$i++) {

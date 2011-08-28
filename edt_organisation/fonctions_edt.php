@@ -249,13 +249,15 @@ function VerifierTablesDelestage()
     $sql = "CREATE TABLE IF NOT EXISTS j_eleves_groupes_delestage (
                 login VARCHAR(50),
                 id_groupe INT(11),
-                periode INT(11))";
+                periode INT(11)
+                ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
     $req_creation = mysql_query($sql) or die(mysql_error());
 	// ======= table pour optimiser les requêtes sql
     $sql = "CREATE TABLE IF NOT EXISTS j_eleves_groupes_delestage2 (
                 login VARCHAR(50),
                 id_groupe INT(11),
-                periode INT(11))";
+                periode INT(11)
+                ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
     $req_creation = mysql_query($sql) or die(mysql_error());
 }	
 

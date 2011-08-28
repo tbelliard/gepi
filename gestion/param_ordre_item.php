@@ -99,7 +99,7 @@ statut VARCHAR( 25 ) NOT NULL ,
 bloc VARCHAR( 50 ) NOT NULL ,
 num_menu INT NOT NULL ,
 nouveau_nom VARCHAR( 50 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 
 $sql2="CREATE TABLE IF NOT EXISTS mn_ordre_accueil_item (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -108,7 +108,7 @@ bloc VARCHAR( 50 ) NOT NULL ,
 num_menu INT NOT NULL ,
 num_item INT NOT NULL ,
 nouveau_nom VARCHAR( 50 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 
   if (!mysql_query($sql)){
 	$tbs_msg= "erreur lors de la création de la table mn_ordre_accueil";

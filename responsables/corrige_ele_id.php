@@ -383,7 +383,7 @@ else{
 					`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
-					);";
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 					$create_table = mysql_query($sql);
 
 					$sql="TRUNCATE TABLE temp_gep_import2;";

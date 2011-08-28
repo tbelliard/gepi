@@ -218,7 +218,7 @@ else {
 						matiere VARCHAR( 50 ) NOT NULL ,
 						statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL ,
 						PRIMARY KEY  (id)
-						)";
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 	$res_creation_table=mysql_query($sql);
 	if(!$res_creation_table){
 		echo "<p><b style='color:red;'>ERREUR</b> lors de la création de la table 'notanet_corresp'.</p>\n";

@@ -502,7 +502,8 @@ require_once("'.$pref_arbo.'/entete.php");
 					chemin VARCHAR(255) NOT NULL DEFAULT '',
 					date1 DATETIME NOT NULL default '0000-00-00 00:00:00',
 					date2 DATETIME NOT NULL default '0000-00-00 00:00:00',
-					PRIMARY KEY (id));";
+					PRIMARY KEY (id)
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$create_table=mysql_query($sql);
 			if(!$create_table) {
 				echo "<p style='color:red'>Erreur lors de la création de la table 'acces_cdt':<br />$sql</p>\n";
@@ -512,7 +513,8 @@ require_once("'.$pref_arbo.'/entete.php");
 				$sql="CREATE TABLE IF NOT EXISTS acces_cdt_groupes (id INT(11) NOT NULL auto_increment,
 						id_acces INT(11) NOT NULL,
 						id_groupe INT(11) NOT NULL,
-						PRIMARY KEY (id));";
+						PRIMARY KEY (id)
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$create_table=mysql_query($sql);
 				if(!$create_table) {
 					echo "<p style='color:red'>Erreur lors de la création de la table 'acces_cdt_groupes':<br />$sql</p>\n";

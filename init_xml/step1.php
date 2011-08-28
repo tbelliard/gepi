@@ -104,7 +104,7 @@ if (!isset($is_posted)) {
 			`ELEOPT10` varchar(40) NOT NULL default '',
 			`ELEOPT11` varchar(40) NOT NULL default '',
 			`ELEOPT12` varchar(40) NOT NULL default ''
-			);";
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$create_table = mysql_query($sql);
 
 			$del = @mysql_query("DELETE FROM temp_gep_import2");

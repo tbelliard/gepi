@@ -658,7 +658,7 @@ $insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
 if ($insert_mass_appreciation_type=="y") {
 	// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
 
-	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '');";
+	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$create_table=mysql_query($sql);
 
 	// Pour tester:

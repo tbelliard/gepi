@@ -84,7 +84,8 @@ if ($etape == 2) {
 					`prenom_u` VARCHAR( 200 ) NOT NULL ,
 					`statut_u` VARCHAR( 50 ) NOT NULL ,
 					`identite_u` VARCHAR( 50 ) NOT NULL ,
-					PRIMARY KEY ( `id` ));";
+					PRIMARY KEY ( `id` )
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$query = mysql_query($sql);
 		if ($query) {
 			$msg = "<font style=\"color: green;\">Ok !</font><br />";

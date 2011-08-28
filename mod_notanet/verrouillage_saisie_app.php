@@ -121,7 +121,7 @@ $sql="CREATE TABLE notanet_verrou (
 id_classe TINYINT NOT NULL ,
 type_brevet TINYINT NOT NULL ,
 verrouillage CHAR( 1 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 

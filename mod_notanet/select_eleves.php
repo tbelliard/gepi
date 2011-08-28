@@ -84,7 +84,7 @@ if((isset($type_brevet))&&(isset($choix_eleves))&&(isset($ele_login))) {
 login VARCHAR( 50 ) NOT NULL ,
 type_brevet TINYINT NOT NULL ,
 PRIMARY KEY ( login )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res=mysql_query($sql);
 	if(!$res) {
 		$msg.="ERREUR lors de la création de la table 'notanet_ele_type'.<br />";

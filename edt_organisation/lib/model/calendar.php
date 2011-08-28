@@ -54,12 +54,14 @@ class calendar {
 		// ===============================================================
 		$sql = "CREATE TABLE IF NOT EXISTS edt_j_calendar_classes (
 					id_calendar INT,
-					id_classe INT)";
+					id_classe INT
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 		$req_creation = mysql_query($sql);
 		$sql = "CREATE TABLE IF NOT EXISTS edt_calendrier_manager (
 					id INT AUTO_INCREMENT,
 					nom_calendrier TEXT,
-					PRIMARY KEY (id))";
+					PRIMARY KEY (id)
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 		$req_creation = mysql_query($sql);
 		$sql = "SELECT id FROM edt_calendrier_manager";
 		$req_calendar = mysql_query($sql);

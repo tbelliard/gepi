@@ -112,7 +112,7 @@ if($temoin==1){
 	`pers_id` varchar(10) NOT NULL,
 	`resp_legal` varchar(1) NOT NULL,
 	`pers_contact` varchar(1) NOT NULL
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res_create=mysql_query($sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_adr` (
@@ -125,7 +125,7 @@ if($temoin==1){
 	`pays` varchar(50) NOT NULL,
 	`commune` varchar(50) NOT NULL,
 	PRIMARY KEY  (`adr_id`)
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res_create=mysql_query($sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_pers` (
@@ -140,7 +140,7 @@ if($temoin==1){
 	`mel` varchar(100) NOT NULL,
 	`adr_id` varchar(10) NOT NULL,
 	PRIMARY KEY  (`pers_id`)
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res_create=mysql_query($sql);
 
 

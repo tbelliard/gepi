@@ -118,7 +118,7 @@ else {
 		col1 VARCHAR(255) NOT NULL,
 		col2 TEXT,
 		PRIMARY KEY  (id)
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$create_table=mysql_query($sql);
 
 		$sql="TRUNCATE tempo3;";

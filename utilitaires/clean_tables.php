@@ -1265,7 +1265,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		$sql="CREATE TABLE tempo2 (
 col1 varchar(100) NOT NULL default '',
 col2 varchar(100) NOT NULL default ''
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$create_table=mysql_query($sql);
 
 		$sql="TRUNCATE tempo2;";
@@ -1508,7 +1508,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="10")) or (isset($_GET['maj'
 		$sql="CREATE TABLE tempo2 (
 col1 varchar(100) NOT NULL default '',
 col2 varchar(100) NOT NULL default ''
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$create_table=mysql_query($sql);
 
 		$sql="TRUNCATE tempo2;";

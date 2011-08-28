@@ -1094,7 +1094,7 @@ if (isset($action) and ($action == 'restaure'))  {
 
 			$sql="CREATE TABLE a_tmp_setting (
 name VARCHAR(255) NOT NULL,
-value VARCHAR(255) NOT NULL);";
+value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$res=mysql_query($sql);
 
 			$sql="INSERT INTO a_tmp_setting SET name='offset', value='0';";

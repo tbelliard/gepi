@@ -62,7 +62,8 @@ periode int(11) NOT NULL default '0',
 nature varchar(50) NOT NULL default '',
 valeur varchar(50) NOT NULL default '',
 declarant varchar(50) NOT NULL default '',
-PRIMARY KEY (id_groupe,login,periode,nature), INDEX (login));";
+PRIMARY KEY (id_groupe,login,periode,nature), INDEX (login)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $test=mysql_query($sql);
 
 // Initialisation des variables utilisées dans le formulaire

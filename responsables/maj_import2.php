@@ -626,7 +626,7 @@ else{
 					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default '',
 					`MEL` varchar(255) $chaine_mysql_collate NOT NULL default ''
-					);";
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
 
@@ -3548,7 +3548,7 @@ else{
 				$sql="CREATE TABLE IF NOT EXISTS temp_ele_classe (
 				`ele_id` varchar(40) $chaine_mysql_collate NOT NULL default '',
 				`divcod` varchar(40) $chaine_mysql_collate NOT NULL default ''
-				);";
+				) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				info_debug($sql);
 				$create_table = mysql_query($sql);
 
@@ -4785,21 +4785,6 @@ else{
 				else{
 					echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
-					//$sql="CREATE TABLE IF NOT EXISTS resp_pers (
-					/*
-					$sql="CREATE TABLE IF NOT EXISTS temp_resp_pers_import (
-							`pers_id` varchar(10) NOT NULL,
-							`login` varchar(50) NOT NULL,
-							`nom` varchar(30) NOT NULL,
-							`prenom` varchar(30) NOT NULL,
-							`civilite` varchar(5) NOT NULL,
-							`tel_pers` varchar(255) NOT NULL,
-							`tel_port` varchar(255) NOT NULL,
-							`tel_prof` varchar(255) NOT NULL,
-							`mel` varchar(100) NOT NULL,
-							`adr_id` varchar(10) NOT NULL,
-						PRIMARY KEY  (`pers_id`));";
-					*/
 					$sql="DROP TABLE IF EXISTS temp_resp_pers_import;";
 					info_debug($sql);
 					$nettoyage = mysql_query($sql);
@@ -4816,7 +4801,8 @@ else{
 							`mel` varchar(100) $chaine_mysql_collate NOT NULL,
 							`adr_id` varchar(10) $chaine_mysql_collate NOT NULL,
 							`statut` varchar(100) $chaine_mysql_collate NOT NULL,
-						PRIMARY KEY  (`pers_id`));";
+							PRIMARY KEY  (`pers_id`)
+							) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
 
@@ -5034,13 +5020,12 @@ else{
 				info_debug($sql);
 				$nettoyage = mysql_query($sql);
 
-				//$sql="CREATE TABLE IF NOT EXISTS responsables2 (
 				$sql="CREATE TABLE IF NOT EXISTS temp_responsables2_import (
 						`ele_id` varchar(10) $chaine_mysql_collate NOT NULL,
 						`pers_id` varchar(10) $chaine_mysql_collate NOT NULL,
 						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL,
 						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL
-						);";
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				info_debug($sql);
 				$create_table = mysql_query($sql);
 
@@ -5202,7 +5187,8 @@ else{
 						`pays` varchar(50) $chaine_mysql_collate NOT NULL,
 						`commune` varchar(50) $chaine_mysql_collate NOT NULL,
 						`statut` varchar(100) $chaine_mysql_collate NOT NULL,
-					PRIMARY KEY  (`adr_id`));";
+						PRIMARY KEY  (`adr_id`)
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				info_debug($sql);
 				//echo "$sql<br />";
 				$create_table = mysql_query($sql);

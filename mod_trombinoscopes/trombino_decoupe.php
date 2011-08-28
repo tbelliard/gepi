@@ -84,7 +84,8 @@ $sql="CREATE TABLE IF NOT EXISTS trombino_decoupe (
 	y TINYINT(1) NOT NULL,
 	page TINYINT(1) NOT NULL,
 	page_global SMALLINT(6) NOT NULL,
-	PRIMARY KEY (id_grille, elenoet));";
+	PRIMARY KEY (id_grille, elenoet)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $test=mysql_query("SHOW COLUMNS FROM trombino_decoupe LIKE 'id_grille';");
@@ -101,7 +102,8 @@ $sql="CREATE TABLE IF NOT EXISTS trombino_decoupe_param (
 	id_grille INT(11) NOT NULL,
 	nom VARCHAR(255) NOT NULL default '',
 	valeur VARCHAR(255) NOT NULL default '',
-	PRIMARY KEY (id_grille, nom));";
+	PRIMARY KEY (id_grille, nom)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 //=================================================
 
