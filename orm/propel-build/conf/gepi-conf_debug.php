@@ -44,7 +44,7 @@ $conf = array (
         array (
           'charset' => 
           array (
-            'value' => 'Latin1',
+            'value' => 'utf8',
           ),
         ),
       ),

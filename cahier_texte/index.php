@@ -664,60 +664,6 @@ if (($id_groupe == null)) {
     die();
 }
 
-/*/ Deuxième tableau
-echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
-echo "<tr>\n";
-// Première colonne du tableau
-echo "<td valign=\"top\" width=\"20%\">\n";
-// Nombre total de notices :
-$nb_total_notices = sql_query1("select count(id_ct) from ct_entry where contenu != '' and id_groupe = '" . $current_group["id"] ."'");
-$nb_total_notices += sql_query1("select count(id_ct) from ct_devoirs_entry where contenu != '' and id_groupe = '" . $current_group["id"] ."'");
-if ($nb_total_notices > 1)
-    $legend = "Actuellement : ".$nb_total_notices." notices.<br />";
-else if ($nb_total_notices == 1)
-    $legend = "Actuellement : 1 notice.<br />";
-else
-    $legend = "";
-if ($nb_total_notices > 15) {
-  echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
-  echo "<legend style=\"font-variant: small-caps;\">".$legend."</legend>";
-  if ($_SESSION['type_display_notices'] == "all")  {
-    echo "<b>>>&nbsp;&nbsp;Afficher&nbsp;toutes&nbsp;les&nbsp;notices<<</b><br />\n";
-    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=".$current_group["id"]."&amp;type_display_notices=15\">Afficher&nbsp;15&nbsp;notices&nbsp;max.</a>\n";
-  } else {
-    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=".$current_group["id"]."&amp;type_display_notices=all\">Afficher&nbsp;toutes&nbsp;les&nbsp;notices</a><br />\n";
-    echo "<b>>>&nbsp;Afficher&nbsp;15&nbsp;notices&nbsp;max.<<</b>\n";
-  }
- echo "</fieldset>";
-} else {
-  $_SESSION['type_display_notices'] = "all";
-  echo $legend;
-}
-
-echo "</td>\n";
-// Deuxième colonne
-echo "<td valign=\"top\" width=\"60%\">\n";
-echo "<center>\n";
-echo "<p class='grand'>".strftime("%A %d %B %Y", $today)."</p>";
-if ($delai > 0) {
-    if (isset($edit_devoir)) {
-    	//echo "<a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveaux travaux personnels à effectuer</a> - \n";
-        echo "<b>>> Travaux personnels à effectuer<<</b> - \n";
-        echo "<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les comptes rendus de s&eacute;ance de cours\">Comptes rendus de séance</a>\n";
-    } else {
-        echo "<a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">Travaux personnels à effectuer</a> - \n";
-        echo "<b>>> Comptes rendus de séance <<</b>\n";
-    }
-}
-echo "</center>\n";
-echo "</td>\n";
-// Troisième colonne
-echo "<td valign=\"top\" width=\"20%\">\n";
-echo "</td>\n";
-echo "</tr></table>\n";
-
-echo "<hr />";
-*/ // ============================== fin modif
 // Début tableau d'affichage des notices
 echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\" summary=\"Tableau d'affichage des notices\">\n";
 echo "<tr>\n";
@@ -752,22 +698,6 @@ foreach ($current_group["classes"]["list"] as $_id_classe) {
         echo "</a> jusqu'au <strong>" . strftime("%a %d %b %y", $date[$_id_classe]) . "</strong>.</p>\n";
     }
 }
-
-//================================================
-/*
-$sql="select * FROM ct_entry WHERE id_ct='5';";
-$res_test=mysql_query($sql);
-if(mysql_num_rows($res_test)>0) {
-	$lig=mysql_fetch_object($res_test);
-	if(strstr($lig->contenu,"<![endif]-->")) {
-		echo "<div style='background-color:white; border: 1px dashed black;'>\n";
-		// Pour dépolluer les copier/coller depuis M$Office
-		echo ereg_replace('.*<\!\[endif\]-->',"",$lig->contenu);
-		echo "</div>\n";
-	}
-}
-*/
-//================================================
 
 //Modif vise ==> ERIC ajout champs vise visa dans les requetes
 // recherche et affichage des prochains travaux futurs pour la matière en cours

@@ -105,7 +105,7 @@ function getWinEditionNotice() {
 	if (typeof winEditionNotice=="undefined") {
 		winEditionNotice = new Window(
 				{id: 'win_edition_notice',
-				title: 'Edition de Notice',
+				title: 'Édition de Notice',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
 				top:160,
@@ -379,7 +379,7 @@ function initWysiwyg() {
 			skin : 'kama',
 			resize_enabled : false,
 			startupFocus : true,
-                        removePlugins : 'elementspath',
+      removePlugins : 'elementspath',
 			toolbar :
 			[
 			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
@@ -511,11 +511,6 @@ function completeEnregistrementCompteRenduCallback(response) {
 		id_ct_en_cours = response;
 		var url;
 		if ($F('passer_a') == 'passer_devoir') {
-			/*
-			url = './ajax_edition_devoir.php?today=' + getTomorrowCalendarUnixDate() +'&id_groupe=' + id_groupe;
-			object_en_cours_edition = 'devoir';
-			updateCalendarWithUnixDate(getTomorrowCalendarUnixDate());
-			*/
 			url = './ajax_edition_devoir.php?today=' + GetNextOpenDayUnixDate() +'&id_groupe=' + id_groupe;
 			object_en_cours_edition = 'devoir';
 			updateCalendarWithUnixDate(GetNextOpenDayUnixDate());

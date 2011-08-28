@@ -130,32 +130,24 @@ if (!isset($_POST["action"])) {
 			// On nettoie et on vérifie :
 			$reg_id_eleve = preg_replace("/[^0-9]/","",trim($reg_id_eleve));
 
-			//$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
 			$reg_nom = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
 			if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
-			//$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
 			$reg_prenom = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
-
-			// ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸
 
 			if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
 
-			//if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") $reg_civilite = "M.";
 			if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
 
-			//$reg_adresse1 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse1));
 			$reg_adresse1 = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse1,"'"," ")))))));
 
 			if (strlen($reg_adresse1) > 50) $reg_adresse1 = substr($reg_adresse1, 0, 50);
 
-			//$reg_adresse2 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse2));
 			$reg_adresse2 = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse2,"'"," ")))))));
 			if (strlen($reg_adresse2) > 50) $reg_adresse2 = substr($reg_adresse2, 0, 50);
 
 			$reg_code_postal = preg_replace("/[^0-9]/","",trim($reg_code_postal));
 			if (strlen($reg_code_postal) > 6) $reg_code_postal = substr($reg_code_postal, 0, 6);
 
-			//$reg_commune = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_commune));
 			$reg_commune = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_commune,"'"," ")))))));
 			if (strlen($reg_commune) > 50) $reg_commune = substr($reg_commune, 0, 50);
 
