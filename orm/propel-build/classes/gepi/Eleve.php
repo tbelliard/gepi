@@ -1770,8 +1770,6 @@ class Eleve extends BaseEleve {
 		$dateFinClone = null;
         if($this->debug){
             print_r('Début de la mise à jour pour la saisie entre les dates :<br />');
-            print_r('Date Début '.$dateDebut->format('Y-m-d H:i').' à ');
-            print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
         }
         
 		if ($dateDebut != null && $dateFin != null && $dateDebut->format('U') > $dateFin->format('U')) {
@@ -1780,10 +1778,16 @@ class Eleve extends BaseEleve {
 		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
+	        if($this->debug){
+	            print_r('Date Début '.$dateDebut->format('Y-m-d H:i').' à ');
+	        }
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
 		}
 		if ($dateFin != null) {
+	        if($this->debug){
+	            print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
+	        }
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
 		}
