@@ -45,6 +45,15 @@ class Eleve extends BaseEleve {
 	 * @var        PeriodeNote object.
 	 */
 	protected $periodeNoteOuverte;
+    /**
+	 * @var        timestamp de lancement du débug
+	 */
+    private $timestamp_start=Null;
+    /**
+	 * @var        mode de debuggage pour abs2
+	 */
+    private $debug=true;
+     
 
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
@@ -1585,6 +1594,15 @@ class Eleve extends BaseEleve {
 	    }
 	}
 
+    /**
+	 *
+	 * Affiche la durée d'execution pour le debug * 
+	 * 
+	 */
+    private function affiche_duree(){
+        $timestamp = microtime(true);
+        print_r('Temps d\'execution depuis le lancement : '.round($timestamp - $this->timestamp_start, 3).'<br />');        
+    }
 	/**
 	 *
 	 * Mets à jour la table d'agrégation des absences pour cet élève
@@ -1596,9 +1614,11 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		$debug = false;
 		
-		if ($debug) {
+        if ($this->debug) {
+            if(is_null($this->timestamp_start)){
+                $this->timestamp_start = microtime(true);
+            }
 			print_r('<br/>Vérification pour l eleve '.$this->getIdEleve().'<br/>');
 		}
 		$dateDebutClone = null;
@@ -1606,15 +1626,15 @@ class Eleve extends BaseEleve {
 		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
-			if ($debug) {
-				print_r('Date début '.$dateDebut->format('Y-m-d').'<br/>');
+			if ($this->debug) {
+				print_r('Date début '.$dateDebut->format('Y-m-d H:i').'<br/>');
 			}
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
 		}
 		if ($dateFin != null) {
-			if ($debug) {
-				print_r('Date fin '.$dateFin->format('Y-m-d').'<br/>');
+			if ($this->debug) {
+				print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
 			}
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
@@ -1675,29 +1695,36 @@ class Eleve extends BaseEleve {
 			
 		$result_query = mysql_query($query);
 		if ($result_query === false) {
-			if ($debug) {
+			if ($this->debug) {
 				echo $query;
+                $this->affiche_duree();
 			}
 			echo 'Erreur sur la requete : '.mysql_error().'<br/>';
 			return false;
 		}
 		$row = mysql_fetch_array($result_query, MYSQL_ASSOC);
-		if ($debug) {
+		if ($this->debug) {
 			print_r($row);
 			print_r('<br/>');
 		}
 		mysql_free_result($result_query);
 		if (!$row['marqueur_calcul']) {//si il n'y a pas le marqueur de calcul fini, on retourne faux
-			if ($debug) {
+			if ($this->debug) {
 				print_r('faux : Pas de marqueur de fin de calcul<br/>');
+                $this->affiche_duree();
 			}
 			return false;
 		} else if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
-			if ($debug) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour antérieur aux dates de saisies<br/>');
+                $this->affiche_duree();
 			}
+            
 			return false;
 		} else if ($dateDebutClone == null || $dateFinClone == null){
+            if ($this->debug) {
+                $this->affiche_duree();
+                }            
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		} else {
 			$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600*6-$dateDebutClone->format('U'))/(3600*12)); // on compte les tranches de 12h
@@ -1705,12 +1732,16 @@ class Eleve extends BaseEleve {
             //si on a un debut à 00:00 et une fin la même journée à 23:59, en ajoutant une heure à la fin on a largement deux tranches de 12h completes
             //donc bien deux demi journées de décomptées
             if ($row['count_demi_jounee'] == $nbre_demi_journees) {
+                if ($this->debug) {
+                $this->affiche_duree();
+                } 
 				return true;
             } else {
-            	if ($debug) {
+            	if ($this->debug) {
 	            	print_r('faux : $nbre_demi_journees dans la table : '.$row['count_demi_jounee'].'<br/>');
 	            	print_r('$nbre_demi_journees calculé : '.$nbre_demi_journees.'<br/>');
-            	}
+                    $this->affiche_duree();
+                    }
             	return false;
             }
 		}
@@ -1728,7 +1759,12 @@ class Eleve extends BaseEleve {
 		
 		$dateDebutClone = null;
 		$dateFinClone = null;
-		
+        if($this->debug){
+            print_r('Début de la mise à jour pour la saisie entre les dates :<br />');
+            print_r('Date Début '.$dateDebut->format('Y-m-d H:i').' à ');
+            print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
+        }
+        
 		if ($dateDebut != null && $dateFin != null && $dateDebut->format('U') > $dateFin->format('U')) {
 			throw new PropelException('Erreur: la date de debut ne peut être postérieure à la date de fin');
 		}
@@ -1889,6 +1925,10 @@ class Eleve extends BaseEleve {
 		$newAgregation->setEleve($this);
 		$newAgregation->setDateDemiJounee(null);
 		$newAgregation->save();
+        if($this->debug){
+            print_r('Fin de la mise à jour :');
+            $this->affiche_duree();
+        }        
 	}
 	
 	/**
