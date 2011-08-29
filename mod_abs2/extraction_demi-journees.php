@@ -172,33 +172,13 @@ if ($affichage != null && $affichage != '') {
     if ($nom_eleve !== null && $nom_eleve != '') {
 		$eleve_query->filterByNomOrPrenomLike($nom_eleve);
     }
-    
-    $eleve_col = $eleve_query->find();
-    $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
-    if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
-		if ($eleve_col->count()>150) {
-			echo 'Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administrateur de remplir la table d\'agrégation.';
-			if (ob_get_contents()) {
-				ob_flush();
-			}
-			flush();
-		}
-		foreach ($eleve_col as $eleve) {
-			$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
-		}
-	}
-    
-    //on recommence la requetes, maintenant que la table est synchronisé, avec les données d'absence
-    $eleve_query = EleveQuery::create()->filterByIdEleve($eleve_col->toKeyValue('IdEleve','IdEleve'));
-    $eleve_query->useAbsenceAgregationDecompteQuery()->distinct()->filterByDateIntervalle($dt_date_absence_eleve_debut,  $dt_date_absence_eleve_fin)->endUse();
-    $eleve_query->withColumn('SUM(AbsenceAgregationDecompte.ManquementObligationPresence)', 'NbAbsences')
-    	->withColumn('SUM(AbsenceAgregationDecompte.Justifiee)', 'NbJustifiees')
-    	->withColumn('SUM(AbsenceAgregationDecompte.NbRetards)', 'NbRetards')
-   		->withColumn('SUM(AbsenceAgregationDecompte.ManquementObligationPresence) - SUM(AbsenceAgregationDecompte.Justifiee)', 'NbNonJustifiees')
-    	->groupBy('Eleve.IdEleve');
-    
-    $eleve_col = $eleve_query->find();
-    
+    $eleve_col = $eleve_query->distinct()->find();
+
+    foreach ($eleve_col as $eleve) {
+	$eleve->setVirtualColumn('DemiJourneesAbsencePreRempli', $eleve->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count());
+	$eleve->setVirtualColumn('DemiJourneesNonJustifieesPreRempli', $eleve->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count());
+	$eleve->setVirtualColumn('RetardsPreRempli', $eleve->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count());
+    }
 }
 
 if ($affichage == 'html') {
@@ -244,18 +224,18 @@ if ($affichage == 'html') {
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
-	    echo $eleve->getNbAbsences();
-	    $nb_demijournees = $nb_demijournees + $eleve->getNbAbsences();
+	    echo $eleve->getDemiJourneesAbsencePreRempli();
+	    $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
-	    echo $eleve->getNbNonJustifiees();
-	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbNonJustifiees();
+	    echo $eleve->getDemiJourneesNonJustifieesPreRempli();
+	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
-	    echo $eleve->getNbRetards();
-	    $nb_retards = $nb_retards + $eleve->getNbRetards();
+	    echo $eleve->getRetardsPreRempli();
+	    $nb_retards = $nb_retards + $eleve->getRetardsPreRempli();
 	    echo '</td>';
 
 	    echo '</tr>';
@@ -317,14 +297,14 @@ if ($affichage == 'html') {
     foreach ($eleve_col as $eleve) {
 	$eleve_array_avec_data[$eleve->getPrimaryKey()] = Array(
 	    'eleve' => $eleve
-	    , 'getDemiJourneesAbsencePreRempli' => $eleve->getNbAbsences()
-	    , 'getDemiJourneesNonJustifieesPreRempli' => $eleve->getNbJustifiees()
-	    , 'getRetardsPreRempli' => $eleve->getNbRetards()
+	    , 'getDemiJourneesAbsencePreRempli' => $eleve->getDemiJourneesAbsencePreRempli()
+	    , 'getDemiJourneesNonJustifieesPreRempli' => $eleve->getDemiJourneesNonJustifieesPreRempli()
+	    , 'getRetardsPreRempli' => $eleve->getRetardsPreRempli()
 		);
 
-	    $nb_demijournees = $nb_demijournees + $eleve->getNbAbsences();
-	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbJustifiees();
-	    $nb_retards = $nb_retards + $eleve->getNbRetards();
+	    $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
+	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
+	    $nb_retards = $nb_retards + $eleve->getRetardsPreRempli();
     }
 
 
