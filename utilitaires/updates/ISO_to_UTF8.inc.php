@@ -79,7 +79,10 @@ foreach ($donneesBase as $donnees) {
 }
 unset ($donnees);
 
-if ($continue) {
+/**
+ * @todo revoir le test, si on récupère une ancienne base il faudrait initialisé $forceUtf8 plutôt que de le forcer dans maj.php
+ */
+if ($continue || $forceUtf8) {
 /* On vient de passer la base en UTF-8, on s'occupe des tables */
 
 	/* Passage des tables en UTF8 */
