@@ -1461,7 +1461,7 @@ function remplace_accents($chaine,$mode=''){
 	}
 	elseif($mode == 'all_nospace'){
 		// On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour1=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine")))),"'$liste_caracteres_accentues"," $liste_caracteres_desaccentues");
+		$retour1=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine")))),"'$liste_caracteres_accentues","_$liste_caracteres_desaccentues");
 		// On enlève aussi les guillemets
 		$retour = preg_replace('/"/', '', $retour1);
 	}
@@ -1469,6 +1469,7 @@ function remplace_accents($chaine,$mode=''){
 		// On remplace les caractères accentués par leurs équivalents non accentués.
 		$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine")))),"$liste_caracteres_accentues","$liste_caracteres_desaccentues");
 	}
+	return $chaine;
 	return $retour;
 }
 
@@ -2933,17 +2934,17 @@ function my_echo_debug($texte) {
  */
 function casse_mot($mot,$mode='maj') {
 	if($mode=='maj') {
-		return strtr(strtoupper($mot),"äâàáåãéèëêòóôõöøìíîïùúûüýñçþÿæœðø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜÝÑÇÞÝÆŒÐØ");
+		return strtoupper($mot);
 	}
 	elseif($mode=='min') {
-		return strtr(strtolower($mot),"ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜÝÑÇÞÝÆŒÐØ","äâàáåãéèëêòóôõöøìíîïùúûüýñçþÿæœðø");
+		return strtolower($mot);
 	}
 	elseif($mode=='majf') {
 		if(strlen($mot)>1) {
-			return strtr(strtoupper(substr($mot,0,1)),"äâàáåãéèëêòóôõöøìíîïùúûüýñçþÿæœðø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜÝÑÇÞÝÆŒÐØ").strtr(strtolower(substr($mot,1)),"ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜÝÑÇÞÝÆŒÐØ","äâàáåãéèëêòóôõöøìíîïùúûüýñçþÿæœðø");
+			return strtoupper(substr($mot,0,1));
 		}
 		else {
-			return strtr(strtoupper($mot),"äâàáåãéèëêòóôõöøìíîïùúûüýñçþÿæœðø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜÝÑÇÞÝÆŒÐØ");
+			return strtoupper($mot);
 		}
 	}
 	elseif($mode=='majf2') {
@@ -2955,10 +2956,10 @@ function casse_mot($mot,$mode='maj') {
 			for($j=0;$j<count($tab2);$j++) {
 				if($j>0) {$chaine.="-";}
 				if(strlen($tab2[$j])>1) {
-					$chaine.=strtr(strtoupper(substr($tab2[$j],0,1)),"äâàáåãéèëêòóôõöøìíîïùúûüýñçþÿæœðø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜÝÑÇÞÝÆŒÐØ").strtr(strtolower(substr($tab2[$j],1)),"ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜÝÑÇÞÝÆŒÐØ","äâàáåãéèëêòóôõöøìíîïùúûüýñçþÿæœðø");
+					$chaine.=strtoupper(substr($tab2[$j],0,1));
 				}
 				else {
-					$chaine.=strtr(strtoupper($tab2[$j]),"äâàáåãéèëêòóôõöøìíîïùúûüýñçþÿæœðø","ÄÂÀÁÅÃÉÈËÊÒÓÔÕÖØÌÍÎÏÙÚÛÜÝÑÇÞÝÆŒÐØ");
+					$chaine.=strtoupper($tab2[$j]);
 				}
 			}
 		}

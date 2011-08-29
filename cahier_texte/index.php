@@ -48,7 +48,6 @@ if ($resultat_session == 'c') {
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
-    //header("Location: ../logout.php?auto=1&amp;pb_checkAccess=y");
     die();
 }
 
@@ -986,8 +985,7 @@ if (isset($edit_devoir)) {
     else
         echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte rendu ";
 	if (isset($num_notice)) echo " <b>N° ".$num_notice."</b> ";
-//    echo "de la séance du " . strftime("%A %d %B %Y", $today);
-    if (isset($id_ct)) {
+	if (isset($id_ct)) {
         echo " - <b><font color=\"red\">Modification de la notice</font></b>";
         if (!isset($info))
         echo " - <a href=\"index.php?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_groupe=".$current_group["id"]."&amp;ajout=oui\" title=\"Cliquer pour ajouter un compte rendu pour ce jour\">Ajouter une notice</a>\n";
@@ -1035,7 +1033,6 @@ $ty = date("Y",$i);
 $tm = date("m",$i);
 $td = date("d",$i);
 
-//echo "id_ct=$id_ct<br />";
 
 // Si c'est une notice de devoir
 if (isset($edit_devoir)) {
@@ -1107,9 +1104,6 @@ $oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
 $oFCKeditor->ToolbarSet = 'Basic' ;
 $oFCKeditor->Value = $contenu ;
 $oFCKeditor->Create() ;
-
-//echo "<a href=\"#\" onclick=\"javascript: document.getElementById('notes').value='TRUC'; return false;\">CLIC</a>";
-//echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('notes').value); return false;\">CLOC</a>";
 
 // gestion des fichiers attachés
 echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">
