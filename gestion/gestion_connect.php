@@ -231,13 +231,24 @@ echo "<h3 class='gepi'>Utilisateurs connectés en ce moment</h3>";
 echo "<div title=\"Utilisateurs connectés\">";
 echo "<ul>";
 // compte le nombre d'enregistrement dans la table
-$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
+//$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
+$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email, u.auth_mode from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
 
 $res = sql_query($sql);
 if ($res) {
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
 		echo("<li>" . $row[1]. " | <a href=\"mailto:" . $row[2] . "\">Envoyer un mail</a> |");
-		if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
+
+		$afficher_deconnecter_et_changer_mdp="n";
+		//if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
+		if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("auth_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
+			$afficher_deconnecter_et_changer_mdp="y";
+		}
+		elseif((getSettingValue("auth_sso") == "lcs")&&($row[3]=='gepi')) {
+			$afficher_deconnecter_et_changer_mdp="y";
+		}
+
+		if($afficher_deconnecter_et_changer_mdp=="y") {
 			echo "<a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\">Déconnecter en changeant le mot de passe</a>";
 		}
 		echo "</li>";
