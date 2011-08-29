@@ -2,8 +2,8 @@
   // Envoi des en-têtes HTTP
   send_file_download_headers('application/pdf','bulletin.pdf');
 
-	require('../fpdf/fpdf.php');
-	require('../fpdf/ex_fpdf.php');
+	require_once('../fpdf/fpdf.php');
+	require_once('../fpdf/ex_fpdf.php');
 	require_once("../fpdf/class.multicelltag.php");
 
 	// Fichier d'extension de fpdf pour le bulletin

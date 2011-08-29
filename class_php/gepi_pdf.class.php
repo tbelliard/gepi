@@ -322,7 +322,27 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 			$i++;
 		}
 	}
-    
+ 
+/** On passe en iso
+ * 
+ * @todo passer à tFPDF
+ * @link http://www.fpdf.org/
+ * @param type $w
+ * @param type $h
+ * @param type $txt
+ * @param type $border
+ * @param type $ln
+ * @param type $align
+ * @param type $fill
+ * @param type $link 
+ */   	
+function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
+{
+    if (getSettingValue('decode_pdf_utf8') == 'y') {
+	  $txt = utf8_decode($txt);
+    }
+	FPDF_MULTICELLTAG::Cell($w, $h, $txt, $border, $ln, $align, $fill, $link);
+}
 /**
  * En-tête du document
  */

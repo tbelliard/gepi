@@ -3,7 +3,7 @@
 $Id$
 */
 
-// fonction qui recoit une date heure est recompose la date en français
+// fonction qui recoit une date heure et recompose la date en français
 function date_fr_dh($var)
 {
 
@@ -43,48 +43,7 @@ function date_frc($var)
 	return($var);
 
 }
-/*
-function unhtmlentities($chaineHtml)
-{
 
-		$tmp = get_html_translation_table(HTML_ENTITIES);
-		$tmp = array_flip ($tmp);
-		$chaineTmp = strtr ($chaineHtml, $tmp);
-
-		return $chaineTmp;
-
-}
-
-// fonction de redimensionnement d'image
-function redimensionne_image($photo, $L_max, $H_max)
-{
-
-	// prendre les informations sur l'image
-	$info_image = getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur = $info_image[0];
-	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
-	$taille_max_largeur = $L_max;
-	$taille_max_hauteur = $H_max;
-
-	// calcule le ratio de redimensionnement
-	$ratio_l = $largeur / $taille_max_largeur;
-	$ratio_h = $hauteur / $taille_max_hauteur;
-	$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
-
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur = $largeur / $ratio;
-	$nouvelle_hauteur = $hauteur / $ratio;
-
-	// des Pixels vers Millimetres
-	$nouvelle_largeur = $nouvelle_largeur / 2.8346;
-	$nouvelle_hauteur = $nouvelle_hauteur / 2.8346;
-
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-
-}
-*/
 //============================================================
 
 // class rel_PDF
@@ -349,16 +308,6 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 	// Caractéres utilisée
 	$caractere_utilse = 'arial';
-
-
-
-/*
-		$nom_releve=date("Ymd_Hi");
-		$nom_releve = 'Releve_'.$nom_releve.'.pdf';
-		$pdf->Output($nom_releve,'I');
-*/
-
-
 
 
 	$releve_affiche_formule=getSettingValue("releve_affiche_formule") ? getSettingValue("releve_affiche_formule") : "y";

@@ -55,20 +55,11 @@ if (!checkAccess()) {
 //+++++++++++++++++++++++++
 
 $contexte_document_produit="releve_notes";
-/*
-$deux_releves_par_page=isset($_POST('deux_releves_par_page']) ? $_POST('deux_releves_par_page'] : "non";
-
-if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-	$deux_releves_par_page="non";
-	//$un_seul_bull_par_famille="oui";
-}
-*/
 
 $releve_pdf_debug=isset($_POST['releve_pdf_debug']) ? $_POST['releve_pdf_debug'] : "n";
 
 //====================================================
 //=============== ENTETE STANDARD ====================
-//if (!isset($_POST['valide_select_eleves'])) {
 if(!isset($_POST['choix_parametres'])) {
 	//**************** EN-TETE *********************
 	$titre_page = "Visualisation relevé de notes";
@@ -1930,11 +1921,9 @@ else {
 	
 									}
 	
-									//$compteur_releve++;
 									$compteur_releve_bis++;
 	
 								}
-							//}
 						}
 					}
 				}
@@ -1942,31 +1931,7 @@ else {
 		}
 	}
 
-	/*
-	echo "<style type='text/css'>
-	@media screen{
-		.espacement_bulletins {
-			width: 100%;
-			height: 50px;
-			border:1px solid red;
-			background-color: white;
-		}
-	}
-	@media print{
-		.espacement_bulletins {
-			display:none;
-		}
-
-		#remarques_bas_de_page {
-			display:none;
-		}
-
-		.alerte_erreur {
-			display:none;
-		}
-	}
-</style>\n";
-*/
+	
 
 	if($mode_bulletin!="pdf") {
 		echo "<script type='text/javascript'>
