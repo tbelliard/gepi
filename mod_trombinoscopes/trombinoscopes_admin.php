@@ -166,10 +166,10 @@ if(isset($_POST['is_posted'])) {
 	if(isset ($_POST['voirPerso']) && $_POST['voirPerso']=="yes"){
 		// Affichage du personnel sans photo
 		if (!recherche_personnel_sans_photo()){
-		$msg = "Erreur lors de la sélection du personnel sans photo";
+		$msg = "Erreur lors de la sélection de professeur(s) sans photo";
 		}else{
 		$personnel_sans_photo=recherche_personnel_sans_photo();
-		$msg.="liste des personnels sans photo en bas de page <br/>";
+		$msg.="liste des professeurs sans photo en bas de page <br/>";
 		}
 	}
 	
