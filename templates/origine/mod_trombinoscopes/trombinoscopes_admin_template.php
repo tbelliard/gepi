@@ -535,7 +535,7 @@ echo add_token_field();
   if (isset ($personnel_sans_photo)){
   ?>
 	<table class="boireaus">
-	  <caption>Enseignants sans photos</caption>
+	  <caption>Personnels sans photos</caption>
 	  <tr>
 		<th>Nom</th>
 		<th>Prénom</th>
@@ -551,7 +551,7 @@ echo add_token_field();
   ?>
 	  <tr class="<?php echo $lig ;?>" >
 		<td><?php echo $pas_photo->nom ;?></td>
-		<td><?php echo $pas_photo->prenom ;?></td>
+		<td><?php echo casse_mot($pas_photo->prenom,"majf2") ;?></td>
 	  </tr>
   <?php 
 	}
