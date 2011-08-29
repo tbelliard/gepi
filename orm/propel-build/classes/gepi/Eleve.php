@@ -52,7 +52,7 @@ class Eleve extends BaseEleve {
     /**
 	 * @var        mode de debuggage pour abs2
 	 */
-    private $debug=false;
+    private $debug=true;
      
 
     function __construct() {
@@ -1619,6 +1619,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		throw new Exception('Not fully tested');
 		
         if ($this->debug) {
             if(is_null($this->timestamp_start)){
@@ -1765,6 +1766,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function updateAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		throw new Exception('Not fully tested');
 		
 		$dateDebutClone = null;
 		$dateFinClone = null;
@@ -1958,6 +1960,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		throw new Exception('Not fully tested');
 		//on va vérifier que avant et après les dates précisées, la table est bien synchronisée sur l'année en cours
 		require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
 		assert('$dateDebut == null || $dateFin == null || $dateDebut <= $dateFin');

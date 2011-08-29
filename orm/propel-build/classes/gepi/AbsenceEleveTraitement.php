@@ -210,7 +210,6 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		
 		$result = parent::save($con);
 	    
-	    $this->updateAgregationTable();
 	    
 	    return $result;
 	}
@@ -231,7 +230,6 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		AbsenceEleveNotificationQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
 		//JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete(); //ne pas supprimer pour pourvoir faire la jointure entre le traitement supprimé et l'élève saisi
 		parent::delete();
-		AbsenceAgregationDecomptePeer::updateAgregationTable($saisieColOld);
 	}
 	
 	/**
