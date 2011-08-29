@@ -382,7 +382,9 @@ if(!isset($num_fich)) {
 		echo "<INPUT TYPE=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";
 	
 		if($_SESSION['statut']=='administrateur') {
-			echo "<p>Pour quel(s) utilisateur(s) souhaitez-vous mettre en place le modèle&nbsp;?</p>\n";
+			echo "<p>Pour quel(s) utilisateur(s) souhaitez-vous mettre en place le modèle&nbsp;? ";
+			echo "<a href='javascript:cocher_decocher(true)'>Tout cocher</a> / <a href='javascript:cocher_decocher(false)'>Tout décocher</a>\n";
+			echo "</p>\n";
 			$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE statut='administrateur' OR statut='scolarite' OR statut='cpe' OR statut='professeur' AND etat='actif' ORDER BY statut, login, nom, prenom;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -430,6 +432,18 @@ if(!isset($num_fich)) {
 		echo "<input type='submit' name='btn' Align='middle' value='Envoyer' /></p>\n";
 		echo "</form>\n";
 
+		echo "<script type='text/javascript'>
+function cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('login_user_'+k)){
+			document.getElementById('login_user_'+k).checked=mode;
+			checkbox_change('login_user_'+k);
+		}
+	}
+}
+
+</script>\n";
+
 		echo "<p><i>NOTES&nbsp;:</i></p>\n";
 		echo "<ul>\n";
 			echo "<li>\n";
@@ -469,16 +483,18 @@ else {
 		// Choix de la classe/groupe
 	
 		if($_SESSION['statut']=='professeur') {
-			$sql="SELECT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND j_groupes_professeurs.login='".$_SESSION['login']."' ORDER BY c.classe;";
+			$sql="SELECT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe;";
 		}
 		else {
 			$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
 		}
-	
+		//echo "$sql<br />";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
 			echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
-			echo "<p>Pour quelle(s) classe(s) souhaitez-vous imprimer le document <b>".$tab_file[$num_fich]."</b>&nbsp;?</p>\n";
+			echo "<p>Pour quelle(s) classe(s) souhaitez-vous imprimer le document <b>".$tab_file[$num_fich]."</b>&nbsp;?";
+			echo " <a href=\"javascript:cocher_decocher('id_classe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_classe_', false)\">décocher</a> toutes les classes\n";
+			echo "</p>\n";
 			echo add_token_field();
 			echo "<input type='hidden' name='num_fich' value='$num_fich' />\n";
 
@@ -515,7 +531,9 @@ else {
 			$groups=get_groups_for_prof($_SESSION['login']);
 			if(count($groups)>0) {
 				echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
-				echo "<p>Pour quel enseignement souhaitez-vous imprimer le document ".$tab_file[$num_fich]."&nbsp;?</p>\n";
+				echo "<p>Pour quel enseignement souhaitez-vous imprimer le document ".$tab_file[$num_fich]."&nbsp;?";
+				echo " <a href=\"javascript:cocher_decocher('id_groupe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_groupe_', false)\">décocher</a> tous les enseignements\n";
+				echo "</p>\n";
 				echo add_token_field();
 				echo "<input type='hidden' name='num_fich' value='$num_fich' />\n";
 
@@ -545,6 +563,18 @@ else {
 				echo "</form>\n";
 			}
 		}
+
+		echo "<script type='text/javascript'>
+function cocher_decocher(prefixe_id, mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById(prefixe_id+k)){
+			document.getElementById(prefixe_id+k).checked=mode;
+			checkbox_change(prefixe_id+k);
+		}
+	}
+}
+
+</script>\n";
 
 	}
 	else {
