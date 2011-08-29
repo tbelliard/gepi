@@ -3172,7 +3172,7 @@ function recherche_eleves_sans_photo() {
 function recherche_personnel_sans_photo($statut='professeur') {
   $personnel=NULL;
   $requete_liste_personnel = "SELECT login,nom,prenom FROM utilisateurs u
-	WHERE u.statut='".$statut."'
+	WHERE u.statut='".$statut."' AND u.etat='actif' 
 	ORDER BY nom, prenom ASC";
   $res_personnel = mysql_query($requete_liste_personnel);
   while ($row = mysql_fetch_object($res_personnel)) {

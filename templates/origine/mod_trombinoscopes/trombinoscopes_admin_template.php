@@ -446,7 +446,7 @@ if (!isset($aid_trouve)) {
 			   id='voir_personnel'
 			   value="yes" />
 		<label for="voir_personnel">
-		  Voir les personnels n'ayant pas de photos
+		  Voir les professeurs n'ayant pas de photos
 		</label>
   <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
 		<br/>
@@ -535,7 +535,7 @@ echo add_token_field();
   if (isset ($personnel_sans_photo)){
   ?>
 	<table class="boireaus">
-	  <caption>Enseignants sans photos</caption>
+	  <caption>Professeurs sans photos</caption>
 	  <tr>
 		<th>Nom</th>
 		<th>Prénom</th>
@@ -549,9 +549,9 @@ echo add_token_field();
 		$lig="lig1";
 	  }
   ?>
-	  <tr class="<?php echo $lig ;?>" >
+	  <tr class="<?php echo $lig ;?> white_hover" >
 		<td><?php echo $pas_photo->nom ;?></td>
-		<td><?php echo $pas_photo->prenom ;?></td>
+		<td><?php echo casse_mot($pas_photo->prenom,"majf2") ;?></td>
 	  </tr>
   <?php 
 	}
