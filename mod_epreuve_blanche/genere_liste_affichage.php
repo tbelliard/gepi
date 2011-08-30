@@ -134,7 +134,9 @@ if(isset($imprime)) {
 		}
 		elseif($mode=='pdf') {
 
-			require('../fpdf/fpdf.php');
+if (!defined('FPDF_VERSION')) {
+	require_once('../fpdf/fpdf.php');
+}
 			require('../fpdf/ex_fpdf.php');
 			
 			define('FPDF_FONTPATH','../fpdf/font/');
