@@ -6,7 +6,7 @@ Installation - Etape 0 : téléchargement de l'archive
 ****************************************************
 
 L'ensemble des fichiers nécessaires à l'installation sont rassemblés dans
-l'archive que vous avez téléchargée.
+l'archive que vous avez téléchargée (secure/modeles/).
 Parmi ces fichiers figure le fichier "connect.cfg". La configuration
 de ce fichier n'est pas obligatoire si vous optez pour une
 installation automatisée de la base de donnée. En effet, la procédure
@@ -22,7 +22,7 @@ Dans le cas contraire, vous devez impérativement renseigner ce fichier :
 -  $gepiPath : il s'agit du chemin relatif du dossier dans lequel sont stockés
 les fichiers gepi, à partir du répertoire www (htdocs dans le  cas d'apache).
 
-Une fois que le fichier connect.cfg est renseigné et sauvegardé, renommer ce fichier en : "connect.inc.php".
+Une fois que le fichier connect.cfg est renseigné et sauvegardé dans le répertoire secure, renommez ce fichier en : "connect.inc.php".
 
 Certains fonctionnalités requièrent les dépendances suivantes :
 - Accès LDAP :
@@ -122,7 +122,7 @@ Pour installer et faire fonctionner GEPI, vous avez besoin de :
 machine)
 
 -> Nécessité de disposer d'une version de php version supérieure ou égale à
-5.1
+5.2
 
 -> [optionnel] Le module php_dbase (importation de fichier GEP/DBF) doit être activé sur le serveur PHP
 Note : ce module n'est nécessaire que dans l'hypothèse où vous souhaitez importer des données
