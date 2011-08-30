@@ -1,18 +1,6 @@
 <?php
 /* $Id$ */
-/*
-function get_nom_prenom_eleve($login_ele) {
-	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
-		return "Elève inconnu";
-	}
-	else {
-		$lig=mysql_fetch_object($res);
-		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
-	}
-}
-*/
+
 function bull_exb($tab_ele,$i) {
 	global
 		//= = = == = = == = = == = = == = = == = = == = = == = = == = = == = = == = = =
@@ -135,9 +123,7 @@ function bull_exb($tab_ele,$i) {
 					if($tab_ele['resp'][0]['adr3']!=""){
 						$tab_adr_ligne4[0]=$tab_ele['resp'][0]['adr3'];
 					}
-					//if($tab_ele['resp'][0]['adr4']!=""){
-					//	$tab_adr_ligne2[0]=$tab_ele['resp'][0]['adr4'];
-					//}
+					
 					$tab_adr_ligne5[0]=$tab_ele['resp'][0]['cp']." ".$tab_ele['resp'][0]['commune'];
 
 
@@ -175,11 +161,7 @@ function bull_exb($tab_ele,$i) {
 						if($tab_ele['resp'][$cpt]['adr3']!=""){
 							$tab_adr_ligne4[$cpt]=$tab_ele['resp'][$cpt]['adr3'];
 						}
-						/*
-						if($tab_ele['resp'][$cpt]['adr4']!=""){
-							$tab_adr_ligne2[$cpt].="<br />\n".$tab_ele['resp'][$cpt]['adr4'];
-						}
-						*/
+						
 						$tab_adr_ligne5[$cpt]=$tab_ele['resp'][$cpt]['cp']." ".$tab_ele['resp'][$cpt]['commune'];
 
 						if(($tab_ele['resp'][$cpt]['pays']!="")&&(strtolower($tab_ele['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
@@ -214,11 +196,7 @@ function bull_exb($tab_ele,$i) {
 					if($tab_ele['resp'][$cpt]['adr3']!=""){
 						$tab_adr_ligne4[$cpt]=$tab_ele['resp'][$cpt]['adr3'];
 					}
-					/*
-					if($tab_ele['resp'][$cpt]['adr4']!=""){
-						$tab_adr_ligne2[$cpt].="<br />\n".$tab_ele['resp'][$cpt]['adr4'];
-					}
-					*/
+					
 					$tab_adr_ligne5[$cpt]=$tab_ele['resp'][$cpt]['cp']." ".$tab_ele['resp'][$cpt]['commune'];
 
 					if(($tab_ele['resp'][$cpt]['pays']!="")&&(strtolower($tab_ele['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
@@ -245,11 +223,7 @@ function bull_exb($tab_ele,$i) {
 			if($tab_ele['resp'][0]['adr3']!=""){
 				$tab_adr_ligne4[0]=$tab_ele['resp'][0]['adr3'];
 			}
-			/*
-			if($tab_ele['resp'][0]['adr4']!=""){
-				$tab_adr_ligne2[0].="<br />\n".$tab_ele['resp'][0]['adr4'];
-			}
-			*/
+			
 			$tab_adr_ligne5[0]=$tab_ele['resp'][0]['cp']." ".$tab_ele['resp'][0]['commune'];
 
 			if(($tab_ele['resp'][0]['pays']!="")&&(strtolower($tab_ele['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
@@ -259,9 +233,6 @@ function bull_exb($tab_ele,$i) {
 	}
 	//= = = == = = == = = == = = == = = == = = == = = == = = == = = == = = ==
 
-//echo $tab_adr_ligne1[0]." ".$tab_adr_ligne2[0];
-
-	//echo "\$i=$i et \$nb_bulletins=$nb_bulletins<br />";
 
 	//+++++++++++++++++++++++++++++++++++++++++++
 	// A FAIRE
@@ -485,9 +456,9 @@ function bull_exb($tab_ele,$i) {
 		$pdf->SetFont('Arial','B',12);
 
 		// gestion des styles
-		$pdf->SetStyle("b","arial","B",8,"0,0,0");
-		$pdf->SetStyle("i","arial","I",8,"0,0,0");
-		$pdf->SetStyle("u","arial","U",8,"0,0,0");
+		$pdf->SetStyle2("b","arial","B",8,"0,0,0");
+		$pdf->SetStyle2("i","arial","I",8,"0,0,0");
+		$pdf->SetStyle2("u","arial","U",8,"0,0,0");
 
 		// style pour la case appréciation générale
 		// identité du professeur principal
@@ -498,8 +469,8 @@ function bull_exb($tab_ele,$i) {
 			$taille = '10';
 		}
 		//$taille = '10';
-		$pdf->SetStyle("bppc","arial","B",$taille,"0,0,0");
-		$pdf->SetStyle("ippc","arial","I",$taille,"0,0,0");
+		$pdf->SetStyle2("bppc","arial","B",$taille,"0,0,0");
+		$pdf->SetStyle2("ippc","arial","I",$taille,"0,0,0");
 
 		// bloc affichage de l'adresse des parents
 		//if($tab_modele_pdf["active_bloc_adresse_parent"][$classe_id]=='1') {
