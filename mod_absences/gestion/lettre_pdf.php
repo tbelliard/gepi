@@ -374,24 +374,24 @@ $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(255,255,255);
 
 	// gestion des styles
-	$pdf->SetStyle("p","times","",11,"0,0,0");
-	$pdf->SetStyle("g","times","B",11,"0,0,0");
-	$pdf->SetStyle("b","times","B",11,"0,0,0");
-	$pdf->SetStyle("i","times","I",11,"0,0,0");
-	$pdf->SetStyle("u","times","U",11,"0,0,0");
-	$pdf->SetStyle("decal","times","",11,"0,0,120");
-	$pdf->SetStyle("pb","times","B",11,"0,0,0");
-	$pdf->SetStyle("t1","arial","",11,"254,252,222");
-	$pdf->SetStyle("t1","arial","",11,"0,151,200");
-	$pdf->SetStyle("t2","arial","",11,"0,151,200");
-	$pdf->SetStyle("t3","times","B",14,"203,0,48");
-	$pdf->SetStyle("t4","arial","BI",11,"0,151,200");
-	$pdf->SetStyle("hh","times","B",11,"255,189,12");
-	$pdf->SetStyle("ss","arial","",7,"203,0,48");
-	$pdf->SetStyle("font","helvetica","",10,"0,0,255");
-	$pdf->SetStyle("style","helvetica","BI",10,"0,0,220");
-	$pdf->SetStyle("size","times","BI",13,"0,0,120");
-	$pdf->SetStyle("color","times","BI",13,"0,255,255");
+	$pdf->SetStyle2("p","times","",11,"0,0,0");
+	$pdf->SetStyle2("g","times","B",11,"0,0,0");
+	$pdf->SetStyle2("b","times","B",11,"0,0,0");
+	$pdf->SetStyle2("i","times","I",11,"0,0,0");
+	$pdf->SetStyle2("u","times","U",11,"0,0,0");
+	$pdf->SetStyle2("decal","times","",11,"0,0,120");
+	$pdf->SetStyle2("pb","times","B",11,"0,0,0");
+	$pdf->SetStyle2("t1","arial","",11,"254,252,222");
+	$pdf->SetStyle2("t1","arial","",11,"0,151,200");
+	$pdf->SetStyle2("t2","arial","",11,"0,151,200");
+	$pdf->SetStyle2("t3","times","B",14,"203,0,48");
+	$pdf->SetStyle2("t4","arial","BI",11,"0,151,200");
+	$pdf->SetStyle2("hh","times","B",11,"255,189,12");
+	$pdf->SetStyle2("ss","arial","",7,"203,0,48");
+	$pdf->SetStyle2("font","helvetica","",10,"0,0,255");
+	$pdf->SetStyle2("style","helvetica","BI",10,"0,0,220");
+	$pdf->SetStyle2("size","times","BI",13,"0,0,120");
+	$pdf->SetStyle2("color","times","BI",13,"0,255,255");
 
 $cpt_i_cadre = '0';
 
