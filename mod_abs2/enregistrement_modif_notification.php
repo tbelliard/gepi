@@ -87,6 +87,9 @@ if ( isset($_POST["creation_notification"])) {
 	$notification->setUtilisateurProfessionnel($utilisateur);
 	$notification->setAbsenceEleveTraitement($traitement);
 
+	//on met le type courrier par défaut
+	$notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
+
 	$responsable_eleve1 = null;
 	$responsable_eleve2 = null;
 	foreach ($traitement->getResponsablesInformationsSaisies() as $responsable_information) {
