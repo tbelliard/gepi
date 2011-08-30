@@ -319,13 +319,13 @@
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 	// gestion des styles
-	$pdf->SetStyle("b","arial","B",8,"0,0,0");
-	$pdf->SetStyle("i","arial","I",8,"0,0,0");
-	$pdf->SetStyle("u","arial","U",8,"0,0,0");
+	$pdf->SetStyle2("b","arial","B",8,"0,0,0");
+	$pdf->SetStyle2("i","arial","I",8,"0,0,0");
+	$pdf->SetStyle2("u","arial","U",8,"0,0,0");
 
 	$taille=10;
-	$pdf->SetStyle("bppc","arial","B",$taille,"0,0,0");
-	$pdf->SetStyle("ippc","arial","I",$taille,"0,0,0");
+	$pdf->SetStyle2("bppc","arial","B",$taille,"0,0,0");
+	$pdf->SetStyle2("ippc","arial","I",$taille,"0,0,0");
 
 
 	/*

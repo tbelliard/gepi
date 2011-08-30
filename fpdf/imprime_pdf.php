@@ -33,7 +33,9 @@ define('LargeurPage','210');
 require_once("../lib/initialisations.inc.php");
 //=============================
 
-require('../fpdf/fpdf.php');
+if (!defined('FPDF_VERSION')) {
+	require_once('../fpdf/fpdf.php');
+}
 //require('../fpdf/fpdf15.php');
 
 // Il faut récupérer l'info sur le mode avant l'appel à ex_fpdf.php pour que les accents de l'entête soient corrects
