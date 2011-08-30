@@ -382,8 +382,8 @@ echo add_token_field();
 	<p>
 	  Si vous souhaitez n'utiliser que le module Cahier de textes dans Gepi, consultez la page suivante&nbsp;:
 	  <br />
-	  <a href='https://www.sylogix.org/wiki/gepi/Use_only_cdt'>
-		https://www.sylogix.org/wiki/gepi/Use_only_cdt
+	  <a href='http://www.sylogix.org/projects/gepi/wiki/Use_only_cdt'>
+		http://www.sylogix.org/projects/gepi/wiki/Use_only_cdt
 	  </a>
 	</p>
 
