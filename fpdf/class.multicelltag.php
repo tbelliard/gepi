@@ -31,7 +31,9 @@ Modifications:
     - these modifications does not affect the main class behavior, they are used for further developement and class extensions
 */
 
-require_once('fpdf.php');
+if (!defined('FPDF_VERSION')) {
+	require_once('fpdf.php');
+}
 require_once("class.string_tags.php");
 
 if (!defined('PARAGRAPH_STRING')) define('PARAGRAPH_STRING', '~~~');
@@ -74,7 +76,7 @@ var $wt_TempData; //some temporary info
         			$color - text color
         @return 	nothing
 	*/
-    function SetStyle($tag,$family,$style,$size,$color)
+    function SetStyle2($tag,$family,$style,$size,$color)
 	{
 
 		if ($tag == "ttags") $this->Error (">> ttags << is reserved TAG Name.");
