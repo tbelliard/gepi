@@ -485,9 +485,9 @@ function bull_exb($tab_ele,$i) {
 		$pdf->SetFont('Arial','B',12);
 
 		// gestion des styles
-		$pdf->SetStyle("b","arial","B",8,"0,0,0");
-		$pdf->SetStyle("i","arial","I",8,"0,0,0");
-		$pdf->SetStyle("u","arial","U",8,"0,0,0");
+		$pdf->SetStyle2("b","arial","B",8,"0,0,0");
+		$pdf->SetStyle2("i","arial","I",8,"0,0,0");
+		$pdf->SetStyle2("u","arial","U",8,"0,0,0");
 
 		// style pour la case appréciation générale
 		// identité du professeur principal
@@ -498,8 +498,8 @@ function bull_exb($tab_ele,$i) {
 			$taille = '10';
 		}
 		//$taille = '10';
-		$pdf->SetStyle("bppc","arial","B",$taille,"0,0,0");
-		$pdf->SetStyle("ippc","arial","I",$taille,"0,0,0");
+		$pdf->SetStyle2("bppc","arial","B",$taille,"0,0,0");
+		$pdf->SetStyle2("ippc","arial","I",$taille,"0,0,0");
 
 		// bloc affichage de l'adresse des parents
 		//if($tab_modele_pdf["active_bloc_adresse_parent"][$classe_id]=='1') {

@@ -65,7 +65,9 @@ mais il se peut que vous ayez des précisions sur ce qui pose problème.<br />
 //================================
 // Inclusion des librairies spécifiques pour la génération du pdf
 
-require_once('../fpdf/fpdf.php');
+if (!defined('FPDF_VERSION')) {
+  require_once('../fpdf/fpdf.php');
+}
 require_once('../fpdf/ex_fpdf.php');
 require_once("../fpdf/class.multicelltag.php");
 

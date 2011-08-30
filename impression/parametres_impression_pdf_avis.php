@@ -32,7 +32,9 @@ Header('Pragma: public');
 require_once("../lib/initialisations.inc.php");
 //=============================
 
-require_once('../fpdf/fpdf.php');
+if (!defined('FPDF_VERSION')) {
+  require_once('../fpdf/fpdf.php');
+}
 require_once('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');

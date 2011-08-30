@@ -356,7 +356,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 					}
 					if($mode=='pdf') {
-						require('../fpdf/fpdf.php');
+						if (!defined('FPDF_VERSION')) {
+							require_once('../fpdf/fpdf.php');
+						}
 						require('../fpdf/ex_fpdf.php');
 						require_once("../fpdf/class.multicelltag.php");
 					

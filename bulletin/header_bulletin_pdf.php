@@ -5,7 +5,6 @@
 if (!defined('FPDF_VERSION')) {
   require_once('../fpdf/fpdf.php');
 }
-	// require_once('../fpdf/fpdf.php');
 	require_once("../fpdf/class.multicelltag.php");
 	require_once('../fpdf/ex_fpdf.php');
 
