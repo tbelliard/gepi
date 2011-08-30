@@ -33,10 +33,6 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 			$traitement->setUpdatedAt('now'); //au lieu d'utiliser un champ supplémentaire pour la date de mise à jours des jointures entre saisies et traitement, on précise la date de mise à jour des jointure dans le traitement directement
 			$traitement->save();
 		}
-		if ($saisie != null && $saisie->getEleve() != null) {
-			$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-			$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-		}
 	}
 	
 	/**
