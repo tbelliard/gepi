@@ -160,17 +160,7 @@ if(isset($_GET['mode'])){
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
 		$nom_fic=$chaine_titre."_".$now.".csv";
 
-		header('Content-Type: text/x-csv');
-		header('Expires: ' . $now);
-		// lem9 & loic1: IE need specific headers
-		if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-			header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header('Pragma: public');
-		} else {
-			header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-			header('Pragma: no-cache');
-		}
+		send_file_download_headers('text/x-csv',$nom_fic);
 
 		$nb_ligne = count($ligne_csv);
 
@@ -231,14 +221,25 @@ echo "<h3 class='gepi'>Utilisateurs connectés en ce moment</h3>";
 echo "<div title=\"Utilisateurs connectés\">";
 echo "<ul>";
 // compte le nombre d'enregistrement dans la table
-$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
+//$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
+$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email, u.auth_mode from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
 
 $res = sql_query($sql);
 if ($res) {
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
-		echo("<li>" . $row[1]. " | <a href=\"mailto:" . $row[2] . "\">Envoyer un mail</a> |");
-		if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
-			echo "<a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\">Déconnecter en changeant le mot de passe</a>";
+		echo("<li>" . $row[1]. " | <a href=\"mailto:" . $row[2] . "\">Envoyer un mail</a>");
+
+		$afficher_deconnecter_et_changer_mdp="n";
+		//if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
+		if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("auth_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
+			$afficher_deconnecter_et_changer_mdp="y";
+		}
+		elseif((getSettingValue("auth_sso") == "lcs")&&($row[3]=='gepi')) {
+			$afficher_deconnecter_et_changer_mdp="y";
+		}
+
+		if($afficher_deconnecter_et_changer_mdp=="y") {
+			echo " | <a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\">Déconnecter en changeant le mot de passe</a>";
 		}
 		echo "</li>";
     }

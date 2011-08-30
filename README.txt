@@ -82,9 +82,10 @@ L'EQUIPE DE DEVELOPPEMENT DE GEPI NE SAURAIT EN AUCUN CAS ETRE TENUE
 POUR RESPONSABLE EN CAS D'INTRUSION EXTERIEURE LIEE A UNE FAIBLESSE DE GEPI OU
 DE SON SUPPORT SERVEUR.
 
-Abonnez-vous à la liste de diffusion 'gepi-news' pour être tenu informé des
-mises à jours en matière de sécurité, et à la liste 'gepi-users' pour participer
+Abonnez-vous à la liste de diffusion 'gepi-users' pour être tenu informé des
+mises à jours en matière de sécurité et pour participer
 aux discussions relatives à l'utilisation et au développement de Gepi.
+https://lists.sylogix.net/mailman/listinfo/gepi-users
 
 
 4. Développements en cours
