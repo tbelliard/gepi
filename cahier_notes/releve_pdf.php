@@ -28,8 +28,8 @@ Header('Pragma: public');
 // On ajoute le bon en tête sur le type de document envoyé sinon FF3 se plante
 header('Content-type: application/pdf');
 
-require('../fpdf/fpdf.php');
-require('../fpdf/ex_fpdf.php');
+require_once('../fpdf/fpdf.php');
+require_once('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('TopMargin','5');

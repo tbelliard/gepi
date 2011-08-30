@@ -125,8 +125,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	// Extraire les infos générales sur l'établissement
 	//require("../bulletin/header_bulletin_pdf.php");
 
-	require('../fpdf/fpdf.php');
-	require('../fpdf/ex_fpdf.php');
+	require_once('../fpdf/fpdf.php');
+	require_once('../fpdf/ex_fpdf.php');
 	require_once("../fpdf/class.multicelltag.php");
 
 	// Fichier d'extension de fpdf pour le bulletin

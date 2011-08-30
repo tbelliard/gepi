@@ -33,13 +33,13 @@ define('LargeurPage','210');
 require_once("../lib/initialisations.inc.php");
 //=============================
 
-require('../fpdf/fpdf.php');
+require_once('../fpdf/fpdf.php');
 //require('../fpdf/fpdf15.php');
 
 // Il faut récupérer l'info sur le mode avant l'appel à ex_fpdf.php pour que les accents de l'entête soient corrects
 $mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
 if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
-require('../fpdf/ex_fpdf.php');
+require_once('../fpdf/ex_fpdf.php');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.

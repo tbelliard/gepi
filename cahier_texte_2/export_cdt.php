@@ -65,14 +65,9 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
 
-//$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : NULL;
-//$display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : NULL;
-
 //=======================
 //Configuration du calendrier
 include("../lib/calendrier/calendrier.class.php");
-//$cal1 = new Calendrier("form_choix_edit", "display_date_debut");
-//$cal2 = new Calendrier("form_choix_edit", "display_date_fin");
 $cal1 = new Calendrier("formulaire", "display_date_debut");
 $cal2 = new Calendrier("formulaire", "display_date_fin");
 $cal3 = new Calendrier("formulaire", "date2_acces");
@@ -88,13 +83,11 @@ $minute = strftime("%M");
 
 if($mois>7) {$date_debut_tmp="01/09/$annee";} else {$date_debut_tmp="01/09/".($annee-1);}
 
-//$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_SESSION['display_date_debut']) ? $_SESSION['display_date_debut'] : $jour."/".$mois."/".$annee);
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_SESSION['display_date_debut']) ? $_SESSION['display_date_debut'] : $date_debut_tmp);
 
 $display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : (isset($_SESSION['display_date_fin']) ? $_SESSION['display_date_fin'] : $jour."/".$mois."/".$annee);
 //=======================
 
-//$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL;
 
 if(isset($_GET['id_groupe'])) {
@@ -139,9 +132,6 @@ else {
 	}
 	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
-
-// Création d'un espace entre le bandeau et le reste 
-//echo "<p></p>\n";
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
@@ -218,7 +208,6 @@ if(!isset($id_groupe)) {
 				die();
 			}
 	
-			//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 			echo "<p>Ou choisissez un professeur&nbsp;:</p>\n";
 	
 			$nb_prof_par_colonne=round($nb_profs/3);
@@ -237,7 +226,6 @@ if(!isset($id_groupe)) {
 					echo "<td align='left'>\n";
 				}
 		
-				//echo "<label id='label_tab_prof_$cpt' for='tab_prof_$cpt' style='cursor: pointer;'><input type='radio' name='login_prof' id='tab_prof_$cpt' value='$lig_prof->login' onchange='change_style_prof($cpt)' /> $lig_prof->nom $lig_prof->prenom</label>";
 				echo "<a href='".$_SERVER['PHP_SELF']."?login_prof=$lig_prof->login'>$lig_prof->nom $lig_prof->prenom</a>";
 				echo "<br />\n";
 				$cpt++;
@@ -246,10 +234,7 @@ if(!isset($id_groupe)) {
 			echo "</tr>\n";
 			echo "</table>\n";
 	
-			//echo "<p><input type='submit' value='Valider' /></p>\n";
-			//echo "</form>\n";
-	
-	
+			
 			echo "<script type='text/javascript'>
 	function ModifCase(mode) {
 		for (var k=0;k<$cpt;k++) {
@@ -281,7 +266,6 @@ if(!isset($id_groupe)) {
 			echo "<p class='bold'>Choix des matières/enseignements&nbsp;:</p>\n";
 			echo "<blockquote>\n";
 	
-			//echo "<p></p>\n";
 			if(isset($login_prof)) {
 	
 				echo "<p class='bold'>Enseignements de ".civ_nom_prenom($login_prof)."&nbsp;:</p>\n";
@@ -325,9 +309,6 @@ if(!isset($id_groupe)) {
 				}
 				echo "</table>\n";
 			
-				//echo "<input type='hidden' name='choix_enseignements' value='y' />\n";
-			
-				//echo "<p style='color:red'>A FAIRE: Ajouter le choix Du/Au à ce niveau</p>\n";
 				echo "<p>";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'> \nExporter le(s) cahier(s) de textes de la date : </label>";
 			
@@ -459,10 +440,6 @@ if(!isset($id_groupe)) {
 
 				echo "</blockquote>\n";
 	
-				//echo "<input type='hidden' name='choix_enseignements' value='y' />\n";
-			
-				//echo "<p style='color:red'>A FAIRE: Ajouter le choix Du/Au à ce niveau</p>\n";
-
 				echo "<p>";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'> \nExporter le(s) cahier(s) de textes de la date : </label>";
 			
@@ -479,10 +456,7 @@ if(!isset($id_groupe)) {
 				echo "<p><b>Action à réaliser&nbsp;:</b><br />\n";
 				echo "<input type='radio' name='action' id='action_export_zip' value='export_zip' checked onchange='modif_param_affichage()' /><label for='action_export_zip'> Générer un export de cahier(s) de textes et le zipper</label><br />\n";
 				echo "<input type='radio' name='action' id='action_acces' value='acces' onchange='modif_param_affichage()' /><label for='action_acces'> Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)</label><br />L'accès mis en place est 'statique', c'est-à-dire que seules les notices saisies à ce jour pourront être consultées.";
-				/*
-				echo "<br />\n";
-				echo "<input type='radio' name='action' id='action_acces2' value='acces2' onchange='modif_param_affichage()' /><label for='action_acces2'> Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)<br />L'accès mis en place est 'dynamique', c'est-à-dire que les notices éventuellement saisies dans le futur pourront être consultées (<i>jusqu'à la date ci-dessus</i>).</label>";
-				*/
+				
 				echo "</p>\n";
 
 				echo "<div id='div_param_action_acces' style='margin-left: 3em;'>\n";
@@ -589,9 +563,6 @@ if(!isset($id_groupe)) {
 		}
 		echo "</table>\n";
 	
-		//echo "<input type='hidden' name='choix_enseignements' value='y' />\n";
-	
-		//echo "<p style='color:red'>A FAIRE: Ajouter le choix Du/Au à ce niveau</p>\n";
 		echo "<p>";
 		echo "<label for='choix_periode_dates' style='cursor: pointer;'> \nExporter le(s) cahier(s) de textes de la date : </label>";
 	
@@ -689,9 +660,6 @@ $timestamp_fin_export=max(getSettingValue("end_bookings"),$date_fin_tmp);
 // Permettre de choisir l'ordre dans lequel exporter?
 $current_ordre='ASC';
 
-//echo "\$action=$action<br />";
-
-//if($action=='acces') {
 if(($action=='acces')||($action=='acces2')) {
 	$length = rand(35, 45);
 	for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
@@ -718,15 +686,6 @@ if(($action=='acces')||($action=='acces2')) {
 
 	$description_acces=isset($_POST['description_acces']) ? $_POST['description_acces'] : "Test";
 
-	/*
-	$chemin_acces="documents/".$dirname."/index.html";
-	$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
-	if(!$res) {
-		echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-	*/
 }
 
 if($action=='acces2') {
@@ -825,8 +784,6 @@ require($prefixe_arbo_acces_cdt."/cahier_texte_2/acces_cdt.inc.php");
 	die();
 }
 
-//echo "\$dirname=$dirname<br />";
-
 if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 
 	$chaine_info_prof="";
@@ -856,7 +813,6 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 
 	// Générer la page d'index
 	$html="";
-	//$html.=html_entete();
 	$html.="<h1 style='text-align:center;'>Cahiers de textes $chaine_info_prof(".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 	$html.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
 	$html.="<ul>\n";
@@ -891,7 +847,6 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 		$html.="<li><a id='lien_id_groupe_$id_groupe[$i]' href='cahier_texte/$nom_page_html_groupe'>".$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)</a></li>\n";
 	}
 	$html.="</ul>\n";
-	//$html.=html_pied_de_page();
 	
 	//================================================================
 	// Affichage dans la page d'export de ce qui va être fourni en zip
@@ -946,7 +901,6 @@ else {
 	}
 
 	// Créer une page index.html de la liste des classes
-	//if(count($id_classe)>1) {
 
 		// Préparation de l'arborescence
 		$nom_export="export_cdt_classes_".$chaine_info_classes."_".strftime("%Y%m%d_%H%M%S");
@@ -965,7 +919,6 @@ else {
 
 		// Générer la page d'index
 		$html="";
-		//$html.=html_entete();
 		$html.="<h1 style='text-align:center;'>Cahiers de textes de $chaine_classes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 		$html.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
 		$html.="<ul>\n";
@@ -1006,9 +959,6 @@ else {
 		
 		$tab_fichiers_a_zipper[]=$dossier_export."/index.html";
 		
-	//}
-
-
 	// Créer une page index_$classe.html pour chaque classe
 	for($j=0;$j<count($id_classe);$j++) {
 
@@ -1021,15 +971,13 @@ else {
 
 		// Générer la page d'index
 		$html="";
-		//$html.=html_entete();
 		$html.="<h1 style='text-align:center;'>Cahiers de textes de ".$nom_classe[$j]."(".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 		$html.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
 		$html.="<ul>\n";
 		for($i=0;$i<count($groups);$i++) {
 			$current_group=$groups[$i];
 			if(in_array($current_group['id'],$id_groupe)) {
-				//$current_group=get_group($id_groupe[$i]);
-			
+				
 				if($i>0) {
 					$chaine_id_groupe.=", ";
 					$chaine_lien_id_groupe.=", ";
@@ -1052,7 +1000,6 @@ else {
 			}
 		}
 		$html.="</ul>\n";
-		//$html.=html_pied_de_page();
 		
 		//================================================================
 		// Affichage dans la page d'export de ce qui va être fourni en zip
@@ -1081,7 +1028,6 @@ else {
 		$html=html_entete("Index des cahiers de textes de ".$nom_classe[$j],0).$html;
 		$html.=html_pied_de_page();
 
-		//echo "Ecriture de ".$dossier_export."/".$nom_fichier_index[$id_classe[$j]]."<br />";
 		$f=fopen($dossier_export."/".$nom_fichier_index[$id_classe[$j]],"w+");
 		fwrite($f,$html);
 		fclose($f);
@@ -1096,7 +1042,6 @@ echo "<hr width='200px' />\n";
 
 // Dans la page générée, permettre de masquer via JavaScript telle ou telle catégorie Notices ou devoirs,...
 for($i=0;$i<count($id_groupe);$i++) {
-	//echo "\$id_groupe[$i]=$id_groupe[$i]<br />";
 
 	unset($chaine_cpt_classe);
 
@@ -1108,8 +1053,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 	$tab_dev=array();
 
 	$html="";
-	//$html.=html_entete();
-
+	
 	if(isset($id_classe)) {
 		// On a choisi une liste de classes/enseignements
 
@@ -1147,63 +1091,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 	$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 	$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin</p>\n";
 	$html.="<h2 style='text-align:center;'>Cahier de textes de ".$nom_detaille_groupe[$id_groupe[$i]]." (<i>$display_date_debut - $display_date_fin</i>)&nbsp;:</h2>\n";
-	/*
-	$sql="SELECT cte.* FROM ct_entry cte WHERE (contenu != ''
-		AND date_ct != ''
-		AND date_ct >= '".$timestamp_debut_export."'
-		AND date_ct <= '".$timestamp_fin_export."'
-		AND id_groupe='".$id_groupe[$i]."'
-		) ORDER BY date_ct DESC, heure_entry DESC;";
-	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
 
-		//echo "$lig->date_ct<br />";
-		$date_notice=strftime("%a %d %b %y", $lig->date_ct);
-		if(!in_array($date_notice,$tab_dates)) {
-			$tab_dates[]=$date_notice;
-			$tab_dates2[]=$lig->date_ct;
-		}
-		$tab_notices[$date_notice][$cpt]['id_ct']=$lig->id_ct;
-		$tab_notices[$date_notice][$cpt]['id_login']=$lig->id_login;
-		$tab_notices[$date_notice][$cpt]['contenu']=$lig->contenu;
-		//echo " <span style='color:red'>\$tab_notices[$date_notice][$cpt]['contenu']=$lig->contenu</span><br />";
-		$cpt++;
-
-	}
-
-	$sql="SELECT ctd.* FROM ct_devoirs_entry ctd WHERE (contenu != ''
-		AND date_ct != ''
-		AND date_ct >= '".$timestamp_debut_export."'
-		AND date_ct <= '".$timestamp_fin_export."'
-		AND id_groupe='".$id_groupe[$i]."'
-		) ORDER BY date_ct DESC;";
-	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
-		//echo "$lig->date_ct<br />";
-		$date_dev=strftime("%a %d %b %y", $lig->date_ct);
-		if(!in_array($date_dev,$tab_dates)) {
-			$tab_dates[]=$date_dev;
-			$tab_dates2[]=$lig->date_ct;
-		}
-		$tab_dev[$date_dev][$cpt]['id_ct']=$lig->id_ct;
-		$tab_dev[$date_dev][$cpt]['id_login']=$lig->id_login;
-		$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu;
-		//echo " <span style='color:green'>\$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu</span><br />";
-		$cpt++;
-	}
-	//echo "\$current_ordre=$current_ordre<br />";
-	//sort($tab_dates);
-	if($current_ordre=='ASC') {
-		array_multisort ($tab_dates, SORT_DESC, SORT_NUMERIC, $tab_dates2, SORT_ASC, SORT_NUMERIC);
-	}
-	else {
-		array_multisort ($tab_dates, SORT_ASC, SORT_NUMERIC, $tab_dates2, SORT_DESC, SORT_NUMERIC);
-	}
-	*/
 	unset($tmp_tab);
 	$tmp_tab=get_dates_notices_et_dev($id_groupe[$i], "", "", $timestamp_debut_export, $timestamp_fin_export, "y", "y");
 	$tab_dates=$tmp_tab[0];
@@ -1268,7 +1156,6 @@ for($i=0;$i<count($id_groupe);$i++) {
 
 if(isset($_SERVER['HTTP_REFERER'])) {
 	$tmp=explode("?",$_SERVER['HTTP_REFERER']);
-	//$chemin_site=my_ereg_replace("/cahier_texte_2/export_cdt.php$","",$tmp[0]);
 	$chemin_site=preg_replace("#/cahier_texte_2#","",dirname($tmp[0]));
 
 	$fichier_url_site=$dossier_export."/url_site.txt";
@@ -1305,8 +1192,6 @@ if($action=='export_zip') {
 
 	// On fait le ménage
 	for($i=0;$i<count($tab_fichiers_a_zipper);$i++) {
-		//echo "unlink($tab_fichiers_a_zipper[$i]);<br />";
-		//unlink($tab_fichiers_a_zipper[$i]);
 		if(file_exists($tab_fichiers_a_zipper[$i])) {unlink($tab_fichiers_a_zipper[$i]);}
 	}
 	
@@ -1333,75 +1218,6 @@ elseif($action=='acces') {
 </script>\n";
 
 }
-
-
-
-/*
-require('../fpdf/fpdf.php');
-require('../fpdf/ex_fpdf.php');
-
-define('FPDF_FONTPATH','../fpdf/font/');
-define('LargeurPage','210');
-define('HauteurPage','297');
-
-require_once("../impression/class_pdf.php");
-require_once ("../impression/liste.inc.php");
-
-$marge_haut = 10 ;
-$marge_droite = 10 ;
-$marge_gauche = 10 ;
-$marge_bas = 10 ;
-$marge_reliure = 1 ;
-$avec_emplacement_trous = 1 ;
-
-if ($marge_reliure==1) {
-  if ($marge_gauche < 18) {$marge_gauche = 18;}
-}
-
-
-//Calcul de la Zone disponible
-$EspaceX = LargeurPage - $marge_droite - $marge_gauche ;
-$EspaceY = HauteurPage - $marge_haut - $marge_bas;
-
-$X_tableau = $marge_gauche;
-
-
-//entête classe et année scolaire
-$L_entete_classe = 65;
-$H_entete_classe = 14;
-$X_entete_classe = $EspaceX - $L_entete_classe + $marge_gauche;
-$Y_entete_classe = $marge_haut;
-
-$X_entete_matiere = $marge_gauche;
-$Y_entete_matiere = $marge_haut;
-$L_entete_discipline = 65;
-$H_entete_discipline = 14;
-
-$pdf=new rel_PDF("P","mm","A4");
-$pdf->SetTopMargin($marge_haut);
-$pdf->SetRightMargin($marge_droite);
-$pdf->SetLeftMargin($marge_gauche);
-$pdf->SetAutoPageBreak(true, $marge_bas);
-
-$pdf->AddPage("P"); //ajout d'une page au document
-$pdf->SetDrawColor(0,0,0);
-$pdf->SetFont('Arial');
-$pdf->SetXY(20,20);
-$pdf->SetFontSize(14);
-$pdf->Cell(90,7, "TEST",0,2,'');
-
-$pdf->SetXY(20,40);
-$pdf->SetFontSize(10);
-$pdf->Cell(150,7, "Blablabla.",0,2,'');
-
-$nom_releve=date("Ymd_Hi");
-$nom_releve = 'Test'.'.pdf';
-//send_file_download_headers('application/pdf',$nom_releve);
-$pdf->Output("../temp/".get_user_temp_directory()."/".$nom_releve,'F');
-
-echo "<p><a href='../temp/".get_user_temp_directory()."/".$nom_releve."'>$nom_releve</a></p>";
-//die();
-*/
 
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
