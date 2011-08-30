@@ -174,7 +174,9 @@ if((isset($mode))&&($mode=='imprime')) {
 			$id_salle[]=$lig_salle->id;
 		}
 
-		require('../fpdf/fpdf.php');
+if (!defined('FPDF_VERSION')) {
+	require_once('../fpdf/fpdf.php');
+}
 		require('../fpdf/ex_fpdf.php');
 		
 		define('FPDF_FONTPATH','../fpdf/font/');

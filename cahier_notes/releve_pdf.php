@@ -28,7 +28,9 @@ Header('Pragma: public');
 // On ajoute le bon en tête sur le type de document envoyé sinon FF3 se plante
 header('Content-type: application/pdf');
 
-require('../fpdf/fpdf.php');
+if (!defined('FPDF_VERSION')) {
+	require('../fpdf/fpdf.php');
+}
 require('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
