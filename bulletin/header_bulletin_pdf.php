@@ -2,9 +2,12 @@
   // Envoi des en-têtes HTTP
   send_file_download_headers('application/pdf','bulletin.pdf');
 
-	require_once('../fpdf/fpdf.php');
-	require_once('../fpdf/ex_fpdf.php');
+if (!defined('FPDF_VERSION')) {
+  require_once('../fpdf/fpdf.php');
+}
+	// require_once('../fpdf/fpdf.php');
 	require_once("../fpdf/class.multicelltag.php");
+	require_once('../fpdf/ex_fpdf.php');
 
 	// Fichier d'extension de fpdf pour le bulletin
 	require_once("../class_php/gepi_pdf.class.php");
