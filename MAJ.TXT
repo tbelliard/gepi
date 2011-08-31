@@ -1,4 +1,4 @@
-GEPI-trunk -- Procédure de mise à jour
+GEPI-developpement -- Procédure de mise à jour
 ==========================================
 
 *************

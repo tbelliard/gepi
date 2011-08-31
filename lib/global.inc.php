@@ -166,7 +166,7 @@ $couleur_cellule_gen = "#F6F7EF";
 ##################################################################################
 
 // Version de GEPI
-$gepiVersion = "";
+$gepiVersion = "developpement";
 
 // Cette variable est utilisée par le système de packaging
 // automatique du site web de Gepi. Elle n'est vraiment utile que pour les

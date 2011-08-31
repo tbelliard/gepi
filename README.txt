@@ -1,4 +1,4 @@
-GEPI-trunk
+GEPI-developpement
 ==============
 
 Eric ABGRALL <eric.abgrall@free.fr>
@@ -15,7 +15,7 @@ Eric LEBRUN <eric.lebrun@ac-poitiers.fr>
 
 http://gepi.mutualibre.org/
 
-ATTENTION! Ce paquetage contient la version en cours de développement de Gepi, dite "trunk", c'est-à-dire une version
+ATTENTION! Ce paquetage contient la version en cours de développement de Gepi, c'est-à-dire une version
 destinée à identifier et corriger les bugs induits par les nouvelles fonctionnalités.
 
 NE PAS UTILISER CETTE VERSION EN PRODUCTION ! Vous exposeriez votre base de données à des incohérences
@@ -87,9 +87,10 @@ L'EQUIPE DE DEVELOPPEMENT DE GEPI NE SAURAIT EN AUCUN CAS ETRE TENUE
 POUR RESPONSABLE EN CAS D'INTRUSION EXTERIEURE LIEE A UNE FAIBLESSE DE GEPI OU
 DE SON SUPPORT SERVEUR.
 
-Abonnez-vous à la liste de diffusion 'gepi-news' pour être tenu informé des
-mises à jours en matière de sécurité, et à la liste 'gepi-users' pour participer
+Abonnez-vous à la liste de diffusion 'gepi-users' pour être tenu informé des
+mises à jours en matière de sécurité et pour participer
 aux discussions relatives à l'utilisation et au développement de Gepi.
+https://lists.sylogix.net/mailman/listinfo/gepi-users
 
 
 4. Développements en cours
