@@ -155,6 +155,9 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	} elseif ($niveau_arbo == "3") {
 		$chemin_sound="../../../sounds/".$footer_sound;
 	}
+	else {
+		$chemin_sound="../sounds/".$footer_sound;
+	}
 
 	if(file_exists($chemin_sound)) {
 		echo "<audio id='id_footer_sound' preload='auto' autobuffer>
