@@ -363,6 +363,11 @@ if(!isset($step)) {
 
 	echo "<p>Cette page est destinée à effectuer l'import des élèves et responsables d'après les modifications et ajouts effectués sur Sconet.</p>\n";
 
+	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+	if($suhosin_post_max_totalname_length!='') {
+		echo "<p class='color:red'>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire.<br />Cela peut empêcher le bon fonctionnement de la Mise à jour d'après Sconet.</p>\n";
+	}
+
 	echo "<p>Vous allez importer des fichiers d'exports XML de Sconet.<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ElevesAvecAdresses.xml, puis le fichier ResponsablesAvecAdresses.xml</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
