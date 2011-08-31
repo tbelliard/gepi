@@ -1303,9 +1303,9 @@ if(isset($quelles_classes)) {
 			}
 			//echo "$sql<br />";
 			$test_elenoet_ok=mysql_query($sql);
+			$tab_eleve=array();
 			if(mysql_num_rows($test_elenoet_ok)!=0){
 				//$chaine_photo_manquante="";
-				$tab_eleve=array();
 				$i=0;
 				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)) {
 					$test_photo=nom_photo($lig_tmp->elenoet);
@@ -1565,6 +1565,7 @@ if(isset($quelles_classes)) {
 	else{
 		$nombreligne = count($tab_eleve);
 	}
+	//echo "\$nombreligne=$nombreligne<br />";
 /*
 	echo "<p>Total : $nombreligne éleves</p>\n";
 	echo "<p>Remarque : le login ne permet pas aux élèves de se connecter à Gepi. Il sert simplement d'identifiant unique.</p>\n";
