@@ -168,11 +168,9 @@ $couleur_cellule_gen = "#F6F7EF";
 // Version de GEPI
 $gepiVersion = "developpement";
 
-// Cette variable est utilisée par le système de packaging
-// automatique du site web de Gepi. Elle n'est vraiment utile que pour les
-// branches stables, pas pour le trunk, qui correspond de toute façon à la
-// version la plus récente.
-$gepiSvnRev = "";
+// Ces deux variable est utilisée par le système de packaging
+$gepiSvnRev = ""; //contient soit une révision svn, soit un raccourci de commit git (6 premières lettres)
+$gepiGitCommit = "";
 
 
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI

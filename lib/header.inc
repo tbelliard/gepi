@@ -713,22 +713,13 @@ if (isset($titre_page)) {
 
 		 //=== Affichage de la version de Gepi ===
 				if ($_SESSION['statut'] == "administrateur") {
-					  $version_gepi = '';
-					  if ($gepiVersion == 'trunk') {
-							// On a une version trunk
-							$version_gepi .= "gepi-trunk";
-					  } else {
-							// On a une version numérotée
-							$version_gepi .= "v".$gepiVersion;
-							if ($gepiRcVersion != '') $version_gepi .= "-RC".$gepiRcVersion;
-							if ($gepiBetaVersion != '') $version_gepi .= "-beta".$gepiBetaVersion;
-							if ($gepiVersionMaintenance != '') $version_gepi .= ".".$gepiVersionMaintenance;
-					  }
-					  if ($gepiSvnRev != '') $version_gepi .= " r".$gepiSvnRev;
-
+					if ($gepiVersion != null) {
+						$version_gepi = 'version '.$gepiVersion.' '.$gepiSvnRev;
+					} else {
+						$version_gepi = '';
+					}
 					echo "<p id='num_version'>".$version_gepi."</p>";
-				}
-				else{
+				} else {
 					echo "<p id='num_version'>&nbsp;</p>"; // nécessaire pour recaler le bandeau dans tous les navigateurs
 				}
 
