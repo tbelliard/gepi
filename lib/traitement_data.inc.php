@@ -5,7 +5,15 @@
 @set_magic_quotes_runtime(0);
 
 // Corrige les caracteres degoutants utilises par les Windozeries
+/**
+ * Corrige les caracteres degoutants utilises par les Windozeries
+ *
+ * @param type $texte
+ * @return type 
+ * @todo Fout le bazar et inutile en UTF-8
+ */
 function corriger_caracteres($texte) {
+  return $texte;
     // 145,146,180 = simple quote ; 147,148 = double quote ; 150,151 = tiret long
     $texte = strtr($texte, chr(145).chr(146).chr(180).chr(147).chr(148).chr(150).chr(151), "'''".'""--');
     return my_ereg_replace( chr(133), "...", $texte );

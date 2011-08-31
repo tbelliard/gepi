@@ -387,7 +387,8 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
     } else {
         // Cas d'une notice
         isset($_POST['info']) ? $temp = '' : $temp = $today;
-        $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
+        //$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
+        $contenu_cor = traitement_magic_quotes(($_POST['notes']),'');
         if ($contenu_cor == '') $contenu_cor="...";
         if (isset($id_ct)) {
             $req = mysql_query("UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct='$id_ct' AND id_groupe='".$current_group["id"]."'");
