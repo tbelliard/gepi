@@ -1079,7 +1079,7 @@ function test_ecriture_dossier($tab_restriction=array()) {
         $multisite='y';
         $_COOKIE['RNE']="essai";
      /* */
-        if ((isset($multisite) && $multisite=='y')&&(isset($_COOKIE['RNE']))) {
+        if (isset($multisite) && ($multisite=='y')&&(isset($_COOKIE['RNE']))) {
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'];
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/eleves';
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/personnels';
