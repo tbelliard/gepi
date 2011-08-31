@@ -3209,7 +3209,7 @@ elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
 	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
 
-echo "\$bull_pdf_debug=$bull_pdf_debug<br />\n";
+	//echo "\$bull_pdf_debug=$bull_pdf_debug<br />\n";
 	if((isset($bull_pdf_debug))&&($bull_pdf_debug=='y')) {
 		echo $pdf->Output($nom_bulletin,'S');
 		die();
