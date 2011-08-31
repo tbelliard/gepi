@@ -2971,7 +2971,7 @@ else {
 		/*****************************************
 		* début de la génération du fichier PDF  *
 		* ****************************************/
-		if((isset($bull_pdf_debug))&&($bull_pdf_debug!='y')) {
+		if((!isset($bull_pdf_debug))||($bull_pdf_debug!='y')) {
 			send_file_download_headers('application/pdf','bulletin.pdf');
 		}
 		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
@@ -3208,7 +3208,15 @@ On a aussi ajouté des champs dans la table 'classes' pour les relevés de notes,.
 elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
 	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
-	$pdf->Output($nom_bulletin,'I');
+
+echo "\$bull_pdf_debug=$bull_pdf_debug<br />\n";
+	if((isset($bull_pdf_debug))&&($bull_pdf_debug=='y')) {
+		echo $pdf->Output($nom_bulletin,'S');
+		die();
+	}
+	else {
+		$pdf->Output($nom_bulletin,'I');
+	}
 }
 
 ?>
