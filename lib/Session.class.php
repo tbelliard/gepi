@@ -887,6 +887,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 						// Il est en effet probable que la chaîne d'origine soit en UTF-8.
 						// $valeur = ensure_iso8859_1($valeur);
 						$valeur = ensure_utf_8($valeur);
+
 						$this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
 					}
         }

@@ -2246,6 +2246,12 @@ else {
 					$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$tab_ele['elenoet']."' AND e.id = j.id_etablissement);";
 					//echo "$sql<br />";
 					$data_etab = mysql_query($sql);
+					$tab_ele['etab_id']="";
+					$tab_ele['etab_nom']="";
+					$tab_ele['etab_niveau']="";
+					$tab_ele['etab_type']="";
+					$tab_ele['etab_cp']="";
+					$tab_ele['etab_ville']="";
 					if(mysql_num_rows($data_etab)>0) {
 						$tab_ele['etab_id'] = @mysql_result($data_etab, 0, "id");
 						$tab_ele['etab_nom'] = @mysql_result($data_etab, 0, "nom");

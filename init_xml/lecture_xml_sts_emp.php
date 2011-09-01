@@ -56,7 +56,15 @@ function createRandomPassword() {
 //================================================
 
 ?>
-
+<!--!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Lecture du XML Emploi du temps de Sts-web et génération de CSV</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
+    <meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
+    <link type="text/css" rel="stylesheet" href="../style.css" />
+</head>
+<body-->
     <div class="content">
         <?php
 

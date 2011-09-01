@@ -143,6 +143,7 @@ if(isset($imprime)) {
 			if (!defined('FPDF_VERSION')) {
 				require_once('../fpdf/fpdf.php');
 			}
+
 			require('../fpdf/ex_fpdf.php');
 			
 			define('FPDF_FONTPATH','../fpdf/font/');

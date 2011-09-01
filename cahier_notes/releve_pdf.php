@@ -29,9 +29,9 @@ Header('Pragma: public');
 header('Content-type: application/pdf');
 
 if (!defined('FPDF_VERSION')) {
-  require_once('../fpdf/fpdf.php');
+	require('../fpdf/fpdf.php');
 }
-require_once('../fpdf/ex_fpdf.php');
+require('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('TopMargin','5');

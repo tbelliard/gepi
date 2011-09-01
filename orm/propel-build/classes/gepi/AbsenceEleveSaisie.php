@@ -1003,39 +1003,38 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$oldVersionNumber = $this->version;
 		
 		$result = parent::save($con);
-		
-		if ($this->getEleve() != null) {
-			//on va mettre à jour la table d'agrégation pour cet élève. Il faut mettre à jour cette table
-			//sur les date de l'ancienne version et de la nouvelle version
-			$oldDebutAbs = null;
-			$oldFinAbs = null;
-			//si $oldVersionNumber = 0 c'est qu'il n'y avait pas d'ancienne version
-			if ($oldVersionNumber != 0 && $oldVersionNumber != $this->version) {
-				$oldVersion = $this->getOneVersion($oldVersionNumber);
-				if ($oldVersion != null) {
-					$oldDebutAbs = $oldVersion->getDebutAbs(null);
-					$oldFinAbs = $oldVersion->getFinAbs(null);
-				}
-			}
-			
-			if ($oldDebutAbs != null && $oldDebutAbs->format('U') < $this->getDebutAbs('U')) {
-				$debut = $oldDebutAbs;
-			} else {
-				$debut = $this->getDebutAbs(null);
-			}
-			
-			if ($oldFinAbs != null && $oldFinAbs->format('U') > $this->getFinAbs('U')) {
-				$fin = $oldFinAbs;
-			} else {
-				$fin = $this->getFinAbs(null);
-			}
-			
-			$this->getEleve()->updateAbsenceAgregationTable($debut,$fin);
-			$this->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($debut,$fin);
-		}
+				
 		return $result;
 	}
+	
+	/**
+	 *
+	 * Vérifie et met à jour la table d'agrégation pour cette saisie
+	 *
+	 * @return     AbsenceEleveLieu
+	 *
+	 */
+	public function checkAndUpdateSynchroAbsenceAgregationTable() {
+		if ($this->getEleve() != null) {
 
+			$this->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($this->getDebutAbs(null),$this->getFinAbs(null));
+
+		}
+	}
+
+	/**
+	 *
+	 * Mets à jour la table d'agrégation pour cette saisie
+	 *
+	 * @return     AbsenceEleveLieu
+	 *
+	 */
+	public function updateSynchroAbsenceAgregationTable() {
+		if ($this->getEleve() != null) {
+			$this->getEleve()->updateAbsenceAgregationTable($this->getDebutAbs(null),$this->getFinAbs(null));
+		}
+	}
+	
 	/**
 	 *
 	 * Renvoi le lieu de l'absence ou le lieu de plus petit rang des types d'absence associé.

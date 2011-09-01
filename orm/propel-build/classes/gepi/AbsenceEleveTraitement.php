@@ -207,9 +207,9 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 				$this->setModifieParUtilisateur($utilisateur);
 			}
 		}
-	    $result = parent::save($con);
+		
+		$result = parent::save($con);
 	    
-	    $this->updateAgregationTable();
 	    
 	    return $result;
 	}
@@ -226,15 +226,10 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	public function delete(PropelPDO $con = null)
 	{
 		$saisieColOld = $this->getAbsenceEleveSaisies();
+		
 		AbsenceEleveNotificationQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
 		//JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete(); //ne pas supprimer pour pourvoir faire la jointure entre le traitement supprimé et l'élève saisi
 		parent::delete();
-		foreach($saisieColOld as $saisie) {
-			if ($saisie->getEleve() != null) {
-				$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-				$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-			}
-		}
 	}
 	
 	/**
@@ -243,11 +238,14 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 * @return     void
 	 */
 	public function updateAgregationTable() {
-		foreach($this->getAbsenceEleveSaisies() as $saisie) {
-			if ($saisie->getEleve() != null) {
-				$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-				$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-			}
-		}
+		AbsenceAgregationDecomptePeer::updateAgregationTable($this->getAbsenceEleveSaisies());
+	}
+	
+	public function getAlreadyInSave() {
+		return $this->alreadyInSave;
+	}
+	
+	public function getAlreadyInSave() {
+		return $this->alreadyInSave;
 	}
 } // AbsenceEleveTraitement

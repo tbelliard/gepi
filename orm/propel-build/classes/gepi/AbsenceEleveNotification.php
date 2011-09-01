@@ -63,11 +63,8 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
 	 */
 	public function save(PropelPDO $con = null)
 	{
-	    $result = parent::save($con);
+		$result = parent::save($con);
 	    
-		if ($this->getAbsenceEleveTraitement() != null) {
-			$this->getAbsenceEleveTraitement()->updateAgregationTable();
-		}
 	    
 	    return $result;
 	}
@@ -86,10 +83,6 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
 		$oldTraitement = $this->getAbsenceEleveTraitement();
 		
 		parent::delete();
-		
-		if ($oldTraitement != null) {
-			$oldTraitement->updateAgregationTable();
-		}
 	}
     
 } // AbsenceEleveNotification

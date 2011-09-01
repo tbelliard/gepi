@@ -825,7 +825,7 @@ class CASClient
 				$old_session = $_SESSION;
 				session_destroy();
 				// set up a new session, of name based on the ticket
-				$session_id = preg_replace('/[^\w]/', '', $ticket);
+				$session_id = preg_replace('/[^\w]|_/', '', $ticket);
 				phpCAS :: trace("Session ID: ".$session_id);
 				session_id($session_id);
 				session_start();

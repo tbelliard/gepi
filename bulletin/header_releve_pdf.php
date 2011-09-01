@@ -3,7 +3,7 @@
 $Id$
 */
 
-// fonction qui recoit une date heure et recompose la date en français
+// fonction qui recoit une date heure est recompose la date en français
 function date_fr_dh($var)
 {
 
@@ -43,6 +43,7 @@ function date_frc($var)
 	return($var);
 
 }
+
 
 //============================================================
 

@@ -29,13 +29,9 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 		$saisie = $this->getAbsenceEleveSaisie();
 		$traitement = $this->getAbsenceEleveTraitement();
 		parent::delete($con);
-		if ($traitement != null) {
-			$traitement->setUpdatedAt('now');
+		if ($traitement != null && !$traitement->getAlreadyInSave()) {
+			$traitement->setUpdatedAt('now'); //au lieu d'utiliser un champ supplémentaire pour la date de mise à jours des jointures entre saisies et traitement, on précise la date de mise à jour des jointure dans le traitement directement
 			$traitement->save();
-		}
-		if ($saisie != null && $saisie->getEleve() != null) {
-			$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-			$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
 		}
 	}
 	
@@ -54,17 +50,15 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 	 * @see        doSave()
 	 */
 	public function save(PropelPDO $con = null) {
+		//$this->
 		$result = parent::save();
 		$saisie = $this->getAbsenceEleveSaisie();
 		$traitement = $this->getAbsenceEleveTraitement();
-		if ($traitement != null) {
-			$traitement->setUpdatedAt('now');
+		if ($traitement != null && !$traitement->getAlreadyInSave()) {
+			$traitement->setUpdatedAt('now'); //au lieu d'utiliser un champ supplémentaire pour la date de mise à jours des jointures entre saisies et traitement, on précise la date de mise à jour des jointure dans le traitement directement
 			$traitement->save();
 		}
-		if ($saisie != null && $saisie->getEleve() != null) {
-			$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-			$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-		}
+		//le traitement est sauvé ci dessus, ou alors il est en cours de sauvegarde. La table d'agrégation va être recalculé pour les saisies de ce traitement, ce n'est donc pas necessaire de le faire ici
 		return $result;
 	}
 } // JTraitementSaisieEleve

@@ -24,6 +24,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	 *
 	 */
 	public static function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		throw new Exception('Not fully tested');
 		$debug = false;
 		if ($debug) {
 			print_r('AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable() called<br/>');
@@ -83,19 +84,22 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		
 		//conditions sql sur les dates
 		$date_saisies_selection = ' 1=1 ';
+		$date_saisies_version_selection = ' 1=1 ';
 		$date_agregation_selection = ' 1=1 ';
 		if ($dateDebutClone != null) {
 			$date_saisies_selection .= ' and a_saisies.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
+			$date_saisies_version_selection .= ' and a_saisies_version.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
 			$date_agregation_selection .= ' and a_agregation_decompte.DATE_DEMI_JOUNEE >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
 		}
 		if ($dateFinClone != null) {
 			$date_saisies_selection .= ' and a_saisies.debut_abs <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
+			$date_saisies_version_selection .= ' and a_saisies_version.debut_abs <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 			$date_agregation_selection .= ' and a_agregation_decompte.DATE_DEMI_JOUNEE <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 		}
 				
 		//on va vérifier que tout les élèves ont bien le bon nombres entrées dans la table d'agrégation pour cette période
 		$query = '
-			SELECT eleves.ID_ELEVE, count(*) as count_entrees
+			SELECT eleves.ID_ELEVE, count(eleves.ID_ELEVE) as count_entrees
 			FROM `eleves` 
 			LEFT JOIN (
 				SELECT ELEVE_ID
@@ -138,22 +142,20 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		 * - est-ce que la date updated_at de mise à jour de la table est bien postérieure aux date de modification des saisies et autres entrées
 		 * - on va compter le nombre de demi journée, elle doivent être toutes remplies
 		 */
-		$query = 'select union_date, updated_at
+		$query = 'select union_date, updated_at, now() as now
 		
 		FROM
-			(SELECT updated_at 
+			(SELECT max(updated_at) as updated_at
 			FROM a_agregation_decompte WHERE '.$date_agregation_selection.'	
-			ORDER BY updated_at DESC LIMIT 1) as updated_at_select
+			) as updated_at_select
 
 		LEFT JOIN (
 			(SELECT union_date from 
-				(SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and '.$date_saisies_selection.'
+				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE '.$date_saisies_selection.'
 				UNION ALL
-					SELECT deleted_at as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and '.$date_saisies_selection.'
+					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE '.$date_saisies_version_selection.'
 				UNION ALL
-					SELECT a_traitements.updated_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and '.$date_saisies_selection.'
-				UNION ALL
-					SELECT a_traitements.deleted_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and '.$date_saisies_selection.'
+					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE '.$date_saisies_selection.'
 				
 				ORDER BY union_date DESC LIMIT 1
 				) AS union_date_union_all_select
@@ -162,12 +164,25 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			
 		$result_query = mysql_query($query);
 		if ($result_query === false) {
-			echo 'Erreur sur la requete : '.$query.'<br/>'.mysql_error().'<br/>';
+			if ($debug) {
+				echo $query;
+			}
+			echo 'Erreur sur la requete : '.mysql_error().'<br/>';
 			return false;
 		}
 		$row = mysql_fetch_array($result_query);
 		mysql_free_result($result_query);
-		if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
+		if ($row['union_date'] && $row['union_date']  > $row['now']) {
+			if ($debug) {
+				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
+			}
+			return false;
+		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+			if ($debug) {
+				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
+			}
+			return false;
+		} else if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
 			if ($debug) {
 				print_r('retourne faux : Les date de mise a jour de la table sont trop anciennes<br/>');
 			}
@@ -179,4 +194,36 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		}
 	}
+	
+	/**
+	 *
+	 * Purge l'ensemble des décomptes pour les saisies précisées et met la table à jour
+	 * 
+	 * @param      PropelObjectCollectionDateTime $saisie_col
+	 *
+	 */
+	public static function updateAgregationTable(PropelObjectCollection $saisie_col) {
+		$eleveEtDate = Array();
+		foreach($saisie_col as $saisie) {
+			if (!isset($eleveEtDate[$saisie->getEleveId()])) {
+				$eleveArray = Array('dateDebut' => null,'dateFin' => null, 'eleve' => $saisie->getEleve());
+			} else {
+				$eleveArray = $eleveEtDate[$saisie->getEleveId()];
+			}
+			if ($eleveArray['dateDebut'] == null || $saisie->getDebutAbs(null) < $eleveArray['dateDebut']) {
+			    $eleveArray['dateDebut'] = clone $saisie->getDebutAbs(null);
+			}
+			if ($eleveArray['dateFin'] == null || $saisie->getFinAbs(null) > $eleveArray['dateFin']) {
+			    $eleveArray['dateFin'] = clone $saisie->getFinAbs(null);
+			}
+			$eleveEtDate[$saisie->getEleveId()] = $eleveArray;
+		}
+		foreach ($eleveEtDate as $id => $array_eleve) {
+			if ($array_eleve['eleve'] != null) {
+				AbsenceAgregationDecompteQuery::create()->filterByEleveId($id)->filterByDateIntervalle($array_eleve['dateDebut'],$array_eleve['dateFin'])->delete();
+				$array_eleve['eleve']->updateAbsenceAgregationTable($array_eleve['dateDebut'],$array_eleve['dateFin']);
+			}
+		}
+	}
+	
 } // AbsenceAgregationDecomptePeer

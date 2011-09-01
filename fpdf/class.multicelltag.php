@@ -32,7 +32,7 @@ Modifications:
 */
 
 if (!defined('FPDF_VERSION')) {
-  require_once('fpdf.php');
+	require_once('fpdf.php');
 }
 require_once("class.string_tags.php");
 

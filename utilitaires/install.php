@@ -97,6 +97,7 @@ if (file_exists($nom_fic)) {
 					echo "<p class='center'><a href = '../login.php'>Se connecter à GEPI</a></p>\n";
 				} else {
 					echo "<h1 class='gepi'>Espace interdit - GEPI est déjà installé.</h1>\n";
+
 				}
 				end_html();
 				die();
@@ -390,6 +391,7 @@ else if ($etape == 1) {
 			echo "<p>Le répertoire \"/secure\" n'est pas accessible en écriture.</p>\n";
 			echo "<p>Utilisez votre client FTP afin de régler ce problème ou bien contactez l'administrateur technique. Une fois cette manipulation effectuée, vous pourrez continuer en cliquant sur le bouton en bas de la page.</p>\n";
 			echo "<p><input type='hidden' name='etape' value='' />\n";
+
 		} else {
 			echo "<input type='hidden' name='etape' value='1' /></p>\n";
 		}
@@ -398,6 +400,7 @@ else if ($etape == 1) {
 			echo "<p>Un fichier nommé <strong>\"connect.inc.php\"</strong> est actuellement présent dans le répertoire \"/secure\".
 			C'est peut-être la trace d'une ancienne installation. Par ailleurs, ce fichier contient peut-être les informations de connexion à la base MySql que vous souhaitez conserver.
 			<br /><strong>Attention : ce fichier et ce qu'il contient sera supprimé lors de cette nouvelle installation</strong>.</p>\n";
+
 		}
 
 

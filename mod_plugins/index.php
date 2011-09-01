@@ -280,6 +280,7 @@ foreach($liste_plugins as $plugin){
       <td>'.$xml->description.'</td>
       <td>'.$xml->auteur.'</td>
       <td>'.$xml->version.'</td>
+
       <td><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller'.add_token_in_url().'" title="Voulez-vous le d&eacute;sinstaller ?" onclick="return confirm('."'La desinstallation d\'un plugin entraîne la suppression des tables éventuellement associées et des données qu\'elles contiennent. Etes-vous sûr de vouloir désinstaller ce plugin ?'".');">OUI</a></td>
       <td>'.$aff_ouvert.'</td>
     </tr>';

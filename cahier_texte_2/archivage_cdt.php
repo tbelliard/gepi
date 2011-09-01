@@ -191,6 +191,7 @@ else {
 			die();
 		}
 
+		//$sql="INSERT INTO tempo2 SELECT id,name FROM groupes;";
 		// On ne retient que les groupes associés à des classes... les autres sont des scories qui devraient être supprimées par un Nettoyage de la base
 		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes WHERE id IN (SELECT DISTINCT id_groupe FROM j_groupes_classes);";
 		$res=mysql_query($sql);

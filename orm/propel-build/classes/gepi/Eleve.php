@@ -45,7 +45,21 @@ class Eleve extends BaseEleve {
 	 * @var        PeriodeNote object.
 	 */
 	protected $periodeNoteOuverte;
+    /**
+	 * @var        timestamp de lancement du débug
+	 */
+    private $timestamp_start=null;
+    /**
+	 * @var        mode de debuggage pour abs2
+	 */
+    private $debug=true;
+     
 
+    function __construct() {
+        parent::__construct();
+        $this->timestamp_start=microtime(true);
+    }
+    
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
@@ -1585,6 +1599,15 @@ class Eleve extends BaseEleve {
 	    }
 	}
 
+    /**
+	 *
+	 * Affiche la durée d'execution pour le debug * 
+	 * 
+	 */
+    private function affiche_duree(){
+        $timestamp = microtime(true);
+        print_r('Temps d\'execution depuis le lancement : '.($timestamp - $this->timestamp_start).'<br />');        
+    }
 	/**
 	 *
 	 * Mets à jour la table d'agrégation des absences pour cet élève
@@ -1596,9 +1619,12 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		$debug = false;
-		
-		if ($debug) {
+		throw new Exception('Not fully tested');
+	
+        if ($this->debug) {
+            if(is_null($this->timestamp_start)){
+                $this->timestamp_start = microtime(true);
+            }
 			print_r('<br/>Vérification pour l eleve '.$this->getIdEleve().'<br/>');
 		}
 		$dateDebutClone = null;
@@ -1606,15 +1632,15 @@ class Eleve extends BaseEleve {
 		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
-			if ($debug) {
-				print_r('Date début '.$dateDebut->format('Y-m-d').'<br/>');
+			if ($this->debug) {
+				print_r('Date début '.$dateDebut->format('Y-m-d H:i').'<br/>');
 			}
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
 		}
 		if ($dateFin != null) {
-			if ($debug) {
-				print_r('Date fin '.$dateFin->format('Y-m-d').'<br/>');
+			if ($this->debug) {
+				print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
 			}
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
@@ -1623,13 +1649,16 @@ class Eleve extends BaseEleve {
 		//on vérifie en comparant des dates que aucune mise a jour de la table d'agrégation n'a été oubliée 
 		//on va rechercher la date de dernière modification des saisies, traitements, etc...
 		$date_saisies_selection = ' 1=1 ';
+		$date_saisies_version_selection = ' 1=1 ';
 		$date_agregation_selection = ' 1=1 ';
 		if ($dateDebutClone != null) {
 			$date_saisies_selection .= ' and a_saisies.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
+			$date_saisies_version_selection .= ' and a_saisies_version.fin_abs >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
 			$date_agregation_selection .= ' and a_agregation_decompte.DATE_DEMI_JOUNEE >= "'.$dateDebutClone->format('Y-m-d H:i:s').'" ';
 		}
 		if ($dateFinClone != null) {
 			$date_saisies_selection .= ' and a_saisies.debut_abs <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
+			$date_saisies_version_selection .= ' and a_saisies_version.debut_abs <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 			$date_agregation_selection .= ' and a_agregation_decompte.DATE_DEMI_JOUNEE <= "'.$dateFinClone->format('Y-m-d H:i:s').'" ';
 		}
 		
@@ -1639,47 +1668,26 @@ class Eleve extends BaseEleve {
 		 * - on va compter le nombre de demi journée, elle doivent être toutes remplies
 		 */
 		//$query = 'select ELEVE_ID is not null, union_date <= as updated_at, count_demi_jounee
-		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, count_manquement
+		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, now() as now
 		
 		FROM
 			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
 			) as a_agregation_decompte_null_select
 			
 		LEFT JOIN (
-			(SELECT updated_at 
+			(SELECT count(a_agregation_decompte.eleve_id) as count_demi_jounee, max(updated_at) as updated_at
 			FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getIdEleve().' and '.$date_agregation_selection.'	
-			ORDER BY updated_at DESC LIMIT 1) as updated_at_select
-		) ON 1=1
-
-		LEFT JOIN (';
-		if ($dateDebutClone != null && $dateFinClone != null) {
-			$query .= '
-			(SELECT count(*) as count_demi_jounee from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' and '.$date_agregation_selection;
-		} else {
-			$query .= '
-			(SELECT -1 as count_demi_jounee from  a_agregation_decompte limit 1';
-		}
-			$query .= '
-			) as count_select
-		) ON 1=1
-		
-		LEFT JOIN (
-			(SELECT count(*) as count_manquement from  a_agregation_decompte 
-			WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' and '.$date_agregation_selection.'
-			AND manquement_obligation_presence=1
-			) as count_select_manquement
+			group by eleve_id) as updated_at_select
 		) ON 1=1
 		
 		LEFT JOIN (
 			(SELECT union_date from 
-				(SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
+				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
 				UNION ALL
-					SELECT deleted_at as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
+					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.' group by eleve_id
 				UNION ALL
-					SELECT a_traitements.updated_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
-				UNION ALL
-					SELECT a_traitements.deleted_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.'
-				
+					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
+
 				ORDER BY union_date DESC LIMIT 1
 				) AS union_date_union_all_select
 			) AS union_date_select
@@ -1687,26 +1695,46 @@ class Eleve extends BaseEleve {
 			
 		$result_query = mysql_query($query);
 		if ($result_query === false) {
-			echo 'Erreur sur la requete : '.$query.'<br/>'.mysql_error().'<br/>';
+			if ($this->debug) {
+				echo $query;
+                $this->affiche_duree();
+			}
+			echo 'Erreur sur la requete : '.mysql_error().'<br/>';
 			return false;
 		}
 		$row = mysql_fetch_array($result_query, MYSQL_ASSOC);
-		if ($debug) {
+		if ($this->debug) {
 			print_r($row);
 			print_r('<br/>');
 		}
 		mysql_free_result($result_query);
 		if (!$row['marqueur_calcul']) {//si il n'y a pas le marqueur de calcul fini, on retourne faux
-			if ($debug) {
+			if ($this->debug) {
 				print_r('faux : Pas de marqueur de fin de calcul<br/>');
+                $this->affiche_duree();
+			}
+			return false;
+		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
+			if ($debug) {
+				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
+			}
+			return false;
+		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+			if ($debug) {
+				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
 			}
 			return false;
 		} else if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
-			if ($debug) {
-				print_r('faux : Date de mise a jour antérieur aux dates de saisies<br/>');
+			if ($this->debug) {
+				print_r('faux : Date de mise a jour des agregations antérieure aux dates de saisies<br/>');
+                $this->affiche_duree();
 			}
+            
 			return false;
-		} else if ($row['count_demi_jounee']==-1){
+		} else if ($dateDebutClone == null || $dateFinClone == null){
+            if ($this->debug) {
+                $this->affiche_duree();
+                }          
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		} else {
 			$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600*6-$dateDebutClone->format('U'))/(3600*12)); // on compte les tranches de 12h
@@ -1714,12 +1742,16 @@ class Eleve extends BaseEleve {
             //si on a un debut à 00:00 et une fin la même journée à 23:59, en ajoutant une heure à la fin on a largement deux tranches de 12h completes
             //donc bien deux demi journées de décomptées
             if ($row['count_demi_jounee'] == $nbre_demi_journees) {
+                if ($this->debug) {
+                $this->affiche_duree();
+                } 
 				return true;
             } else {
-            	if ($debug) {
+            	if ($this->debug) {
 	            	print_r('faux : $nbre_demi_journees dans la table : '.$row['count_demi_jounee'].'<br/>');
 	            	print_r('$nbre_demi_journees calculé : '.$nbre_demi_journees.'<br/>');
-            	}
+                    $this->affiche_duree();
+                    }
             	return false;
             }
 		}
@@ -1734,20 +1766,30 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function updateAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		throw new Exception('Not fully tested');
 		
 		$dateDebutClone = null;
 		$dateFinClone = null;
-		
+        if($this->debug){
+            print_r('Début de la mise à jour pour la saisie entre les dates :<br />');
+        }
+        
 		if ($dateDebut != null && $dateFin != null && $dateDebut->format('U') > $dateFin->format('U')) {
 			throw new PropelException('Erreur: la date de debut ne peut être postérieure à la date de fin');
 		}
 		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
+	        if($this->debug){
+	            print_r('Date Début '.$dateDebut->format('Y-m-d H:i').' à ');
+	        }
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
 		}
 		if ($dateFin != null) {
+	        if($this->debug){
+	            print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
+	        }
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
 		}
@@ -1898,6 +1940,10 @@ class Eleve extends BaseEleve {
 		$newAgregation->setEleve($this);
 		$newAgregation->setDateDemiJounee(null);
 		$newAgregation->save();
+        if($this->debug){
+            print_r('Fin de la mise à jour :');
+            $this->affiche_duree();
+        }        
 	}
 	
 	/**
@@ -1914,6 +1960,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		throw new Exception('Not fully tested');
 		//on va vérifier que avant et après les dates précisées, la table est bien synchronisée sur l'année en cours
 		require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
 		assert('$dateDebut == null || $dateFin == null || $dateDebut <= $dateFin');
@@ -1921,10 +1968,13 @@ class Eleve extends BaseEleve {
 		//on va vérifier antérieurement à la date de début
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;
+			$dateDebutClone->modify("-1 day");
 			$premier_jour_annee_scolaire_large = EdtHelper::getPremierJourAnneeScolaire($dateDebutClone);
-			$premier_jour_annee_scolaire_large->modify("-1 month");
+			$premier_jour_annee_scolaire_large->modify("-1 month");//on enleve 1 mois pour etre large
 			if ($premier_jour_annee_scolaire_large < $dateDebutClone) {//si l'année débute avant la date précisée, on va faire deux mise à jour, comme ça on est sur que à partir du début de l'année la table sera remplie
+				$premier_jour_annee_scolaire_large->modify("-1 day");//on évite aux dates de se chevaucher sur une même journée
 				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(null, $premier_jour_annee_scolaire_large);
+				$premier_jour_annee_scolaire_large->modify("+1 day");
 				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($premier_jour_annee_scolaire_large, $dateDebutClone);
 			} else {
 				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(null, $dateDebutClone);
@@ -1932,16 +1982,19 @@ class Eleve extends BaseEleve {
 		} else {//si la date de début est nulle, on prend le début de l'année en cours
 			$dateDebutClone = EdtHelper::getPremierJourAnneeScolaire($dateFin);
 			$dateDebutClone->modify("-1 month");
+			$dateDebutClone->modify("-1 day");
 			$this->thinCheckAndUpdateSynchroAbsenceAgregationTable(null, $dateDebutClone);
 		}
 		
 		//on va vérifier postérieurement à la date de fin
 		if ($dateFin != null) {
 			$dateFinClone = clone $dateFin;
+			$dateFinClone->modify("+1 day");
 			$dernier_jour_annee_scolaire_large = EdtHelper::getDernierJourAnneeScolaire($dateFinClone);
 			$dernier_jour_annee_scolaire_large->modify("+1 month");
 			if ($dernier_jour_annee_scolaire_large > $dateFinClone) {
 				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateFinClone, $dernier_jour_annee_scolaire_large);
+				$dernier_jour_annee_scolaire_large->modify("+1 day");
 				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dernier_jour_annee_scolaire_large, null);
 			} else {
 				$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateFinClone, null);
@@ -1949,10 +2002,14 @@ class Eleve extends BaseEleve {
 		} else {//si la date de fin est nulle, on va prendre comme date de fin la fin de l'année
 			$dateFinClone = EdtHelper::getDernierJourAnneeScolaire($dateDebut);
 			$dateFinClone->modify("+1 month");
+			$dateFinClone->modify("+1 day");
 			$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateFinClone, null);
 		}
 		
 		//on regarde sur les dates de début et de fin choisies
+		//les dates ont été décalé pour les vérification antérieures et postérieures, donc on rétabli les bonnes dates
+		$dateDebutClone->modify("+1 day");
+		$dateFinClone->modify("-1 day");
 		$this->thinCheckAndUpdateSynchroAbsenceAgregationTable($dateDebutClone, $dateFinClone);
 	}
 	
@@ -1966,7 +2023,7 @@ class Eleve extends BaseEleve {
 	 * @param      DateTime $dateFin date de fin pour la prise en compte de la mise à jours
 	 *
 	 */
-	private function thinCheckAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+	public function thinCheckAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
 		if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateFin)) {
 			$this->updateAbsenceAgregationTable($dateDebut, $dateFin);
 		}

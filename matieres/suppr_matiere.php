@@ -122,6 +122,19 @@ else {
 	// Suppression proprement dite... avec une boucle sur les groupes pour ne pas risquer un timeout
 	// Et finir par la suppression de la matière
 
+	/*
+	$sql="CREATE TABLE IF NOT EXISTS temp_suppr_matiere (
+	id int(11) NOT NULL auto_increment,
+	col1 VARCHAR(255) NOT NULL,
+	col2 TEXT,
+	PRIMARY KEY  (id)
+	);";
+	$create_table=mysql_query($sql);
+
+	$sql="TRUNCATE temp_suppr_matiere;";
+	$nettoyage=mysql_query($sql);
+	*/
+
 	$sql="SELECT id_groupe FROM j_groupes_matieres WHERE id_matiere='$matiere' LIMIT 1;";
 	$res_grp=mysql_query($sql);
 

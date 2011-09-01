@@ -38,9 +38,9 @@ require_once("../lib/initialisations.inc.php");
 //=============================
 //debug_var();
 if (!defined('FPDF_VERSION')) {
-  require_once('../fpdf/fpdf.php');
+	require_once('../fpdf/fpdf.php');
 }
-require_once('../fpdf/ex_fpdf.php');
+require('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');

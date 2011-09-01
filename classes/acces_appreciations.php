@@ -70,9 +70,95 @@ $sql="CREATE TABLE IF NOT EXISTS `matieres_appreciations_acces` (
 `acces` ENUM( 'y', 'n', 'date', 'd' ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation_table=mysql_query($sql);
+/*
+if(isset($_POST['submit'])) {
+	$max_per=isset($_POST['max_per']) ? $_POST['max_per'] : 0;
+	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
+	$nb_classe=isset($_POST['nb_classe']) ? $_POST['nb_classe'] : 0;
+
+	unset($tab);
+	$tab=array();
+	$tab['ele']='eleve';
+	$tab['resp']='responsable';
+
+	$cpt=0;
+
+	foreach($tab as $pref => $statut) {
+		for($j=0;$j<$nb_classe;$j++){
+			if(isset($id_classe[$j])) {
+				for($i=1;$i<=$max_per;$i++){
+					if(isset($_POST[$pref.'_mode_'.$j.'_'.$i])) {
+						$mode=$_POST[$pref.'_mode_'.$j.'_'.$i];
+						if($mode=="manuel") {
+							if(isset($_POST[$pref.'_acces_'.$j.'_'.$i])) {
+								$accessible="y";
+							}
+							else {
+								$accessible="n";
+							}
+							$sql="DELETE FROM matieres_appreciations_acces
+									WHERE id_classe='$id_classe[$j]' AND
+											statut='$statut' AND
+											periode='$i';";
+							$suppr=mysql_query($sql);
+
+							$sql="INSERT INTO matieres_appreciations_acces
+									SET id_classe='$id_classe[$j]',
+											statut='$statut',
+											periode='$i',
+											acces='$accessible';";
+							$insert=mysql_query($sql);
+							if(!$insert) {$msg.="Erreur sur l'accès aux appréciations de la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";}else{$cpt++;}
+						}
+						else {
+							if(isset($_POST[$pref.'_display_date_'.$j.'_'.$i])) {
+								$tmp_date=$_POST[$pref.'_display_date_'.$j.'_'.$i];
+								// Contrôler le format de la date et sa validité.
+
+								$tabdate=explode("/",$tmp_date);
+
+								if(checkdate($tabdate[1],$tabdate[0],$tabdate[2])) {
+									$date=sprintf("%04d",$tabdate[2])."-".$tabdate[1]."-".$tabdate[0];
+
+									$sql="DELETE FROM matieres_appreciations_acces
+											WHERE id_classe='$id_classe[$j]' AND
+													statut='$statut' AND
+													periode='$i';";
+									$suppr=mysql_query($sql);
+
+									$sql="INSERT INTO matieres_appreciations_acces
+											SET id_classe='$id_classe[$j]',
+													statut='$statut',
+													periode='$i',
+													date='$date',
+													acces='date';";
+									$insert=mysql_query($sql);
+									if(!$insert) {$msg.="Erreur sur l'accès aux appréciations de la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";}else{$cpt++;}
+								}
+								else {
+									$msg.="La date $tmp_date n'est pas valide pour la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if(($msg=="")&&($cpt>0)) {
+		if($cpt==1) {
+			$msg="Enregistrement effectué.<br />\n";
+		}
+		else{
+			$msg="Enregistrements effectués ($cpt).<br />\n";
+		}
+	}
+}
+*/
 
 $javascript_specifique="classes/acces_appreciations";
 
+//include "../lib/periodes.inc.php";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Accès aux appréciations";

@@ -259,7 +259,7 @@ echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>";
 echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_compte_rendu.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementCompteRenduCallback})\" style=\"width: 100%;\">\n";
 echo add_token_field();
-// uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
+// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid = md5(uniqid(microtime(), 1));
 echo("<input type='hidden' name='uid_post' value='".$uid."' />");
@@ -282,6 +282,7 @@ if (isset($info)) {
 }
 
 //si on vient d'effectuer un enregistrement, le label du bouton enregistrer devient Succès
+
 $label_enregistrer = "Enregistrer";
 if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 ?>
@@ -308,7 +309,15 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 		if (!isset($info)) {
 			$hier = $today - 3600*24;
 			$demain = $today + 3600*24;
-			
+			/*
+			if(count($tab_jours_ouverture)>0) {
+				$cpt_jo=0; // Pour éviter une boucle infinie en cas de blague
+				while((!in_array(strtolower(strftime("%a",$demain)),$tab_jours_ouverture))&&($cpt_jo<7)) {
+					$demain = $today + 3600*24;
+					$cpt_jo++;
+				}
+			}
+			*/
 			echo "</td>\n";
 
 			echo "<td>\n";

@@ -34,6 +34,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
+//INSERT INTO `droits` VALUES ('/classes/scol_resp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Affectation des comptes scolarité aux classes', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();

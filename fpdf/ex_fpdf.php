@@ -64,10 +64,12 @@ function Header()
     $x=$this->GetX();
     $y=$this->GetY();
     // on imprime du texte à gauche
+    //$this->MultiCell($l, 5, $gepi_text,$bord, "L",0);
     $this->MultiCell($l, 5, traite_accents_utf8($gepi_text),$bord, "L",0);
     // déplace le curseur
     $this->SetXY($x+$l,$y);
     // on imprime du texte à droite
+    //$this->MultiCell($l, 5, $etab_text,$bord, "R",0);
     $this->MultiCell($l, 5, traite_accents_utf8($etab_text),$bord, "R",0);
 
     $this->MultiCell($l, 5, traite_accents_utf8($nom." - ".$user_statut), $bord, "L",0);
@@ -211,6 +213,23 @@ function Header()
             if ($fill_t == '') $fill2 = 'DF';
             if ($fill_t == 'DF') $fill2 = '';
         }
+
+        /*
+        // Méthode 2 : toutes les lignes sont de largeur 5
+        foreach($data as $row)
+        {
+            $k=0;
+            foreach($row as $val) {
+               // On élimine les retours à la ligne
+               $val = str_replace("\n", " ", $val);
+               $this->Cell($w[$k],5,$val,'LR',0,'L',$fill1);
+               $k++;
+            }
+            $this->Ln();
+            $fill1=!$fill1;
+        }
+        $this->Cell(array_sum($w),0,'','T');
+        */
     }
 
     function CheckPageBreak($h)
