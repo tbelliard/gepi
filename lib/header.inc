@@ -713,19 +713,31 @@ if (isset($titre_page)) {
 
 		 //=== Affichage de la version de Gepi ===
 				if ($_SESSION['statut'] == "administrateur") {
-					  $version_gepi = '';
-					  if ($gepiVersion == 'trunk') {
-							// On a une version trunk
-							$version_gepi .= "gepi-trunk";
-					  } else {
-							// On a une version numérotée
-							$version_gepi .= "v".$gepiVersion;
-							if ($gepiRcVersion != '') $version_gepi .= "-RC".$gepiRcVersion;
-							if ($gepiBetaVersion != '') $version_gepi .= "-beta".$gepiBetaVersion;
-							if ($gepiVersionMaintenance != '') $version_gepi .= ".".$gepiVersionMaintenance;
-					  }
-					  if ($gepiSvnRev != '') $version_gepi .= " r".$gepiSvnRev;
-
+					$version_gepi = '';
+					if ($gepiVersion != null || $gepiSvnRev != null) {
+						$version_gepi = 'version '.$gepiVersion.' '.$gepiSvnRev;
+					} else {
+						//rien n'as été rempli, il y a peut être un répertoire .git qui va nous renseigner
+						if (file_exists(dirname(__FILE__).'/../.git/HEAD')) {
+							$git_ref = file_get_contents((dirname(__FILE__).'/../.git/HEAD'));
+							if ($git_ref != null) {
+								if (substr($git_ref,0,4) == 'ref:') {
+									//on a une référence de branche git
+									$gepiVersion = trim(substr($git_ref, 1+strrpos( $git_ref  , '/')));
+									$gepiGitCommit = file_get_contents((dirname(__FILE__).'/../.git/refs/heads/'.$gepiVersion));
+									$gepiSvnRev = substr($gepiGitCommit, 0, 6);
+									$version_gepi = 'version '.$gepiVersion.' '.$gepiSvnRev;
+								} else {
+									//on a un commit git dans le HEAD
+									$gepiVersion = 'git détachée';
+									$gepiGitCommit = $git_ref;
+									$gepiSvnRev = substr($gepiGitCommit, 0, 6);
+									$version_gepi = 'version '.$gepiVersion.' '.$gepiSvnRev;
+								}
+								
+							}
+						}
+					}
 					echo "<p id='num_version'>".$version_gepi."</p>";
 				}
 				else{
