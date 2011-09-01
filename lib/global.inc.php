@@ -166,12 +166,10 @@ $couleur_cellule_gen = "#F6F7EF";
 ##################################################################################
 
 // Version de GEPI
-$gepiVersion = "developpement";
-
-// Ces deux variable est utilisée par le système de packaging
-$gepiSvnRev = ""; //contient soit une révision svn, soit un raccourci de commit git (6 premières lettres)
+//les commentaires trois variables suivant vont être rempli par un script de build
+$gepiVersion = ""; //contien soit une branche svn, soit une branche git
+$gepiSvnRev = ""; //contient soit un numéro de révision svn, soit un raccourci (6 premiers caractères) de commit git
 $gepiGitCommit = "";
-
 
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI
 //
