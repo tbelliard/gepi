@@ -166,8 +166,10 @@ $couleur_cellule_gen = "#F6F7EF";
 ##################################################################################
 
 // Version de GEPI
-//les commentaires trois variables suivant vont être rempli par un script de build
-$gepiVersion = ""; //contien soit une branche svn, soit une branche git
+//les trois variables suivantes vont être remplies par un script de build
+//dans le cas ou les variables ne sont pas remplies (donc pas de script de build), on regarde dans header.inc et header_template.inc
+//si on peut obtenir des informations sur la version dans le répertoire .git
+$gepiVersion = ""; //contient soit une branche svn, soit une branche git
 $gepiSvnRev = ""; //contient soit un numéro de révision svn, soit un raccourci (6 premiers caractères) de commit git
 $gepiGitCommit = "";
 
