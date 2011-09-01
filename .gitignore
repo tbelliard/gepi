@@ -1,3 +1,4 @@
+
 # Ignore configuration files that may contain sensitive information.
 secure/*
 !secure/modeles/
