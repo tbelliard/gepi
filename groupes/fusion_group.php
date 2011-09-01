@@ -42,7 +42,7 @@ if (!checkAccess()) {
 }
 
 
-// Initialisation des variables utilisées dans le formulaire
+// Initialisation des variables utilisÃ©es dans le formulaire
 $chemin_retour=isset($_GET['chemin_retour']) ? $_GET['chemin_retour'] : (isset($_POST['chemin_retour']) ? $_POST["chemin_retour"] : NULL);
 
 $msg="";
@@ -115,12 +115,12 @@ if(isset($step)){
 			$tab_classe[]=$id_classe;
 		}
 
-		// On contrôle si des classes ont été décochées...
+		// On contrÃ´le si des classes ont Ã©tÃ© dÃ©cochÃ©es...
 		for($i=0;$i<$nb_classes;$i++){
 			if(isset($precclasse[$i])) {
 				if(!isset($tab_classe[$i])){
-					// La classe $tab_classe[$i] a été décochée.
-					// Ce n'est possible que si il n'y a pas de notes associées
+					// La classe $tab_classe[$i] a Ã©tÃ© dÃ©cochÃ©e.
+					// Ce n'est possible que si il n'y a pas de notes associÃ©es
 
 					$tmpid=$tab_classe[$i];
 
@@ -186,13 +186,13 @@ if(isset($step)){
 						*/
 
 						$error = true;
-						$msg .= "Des données existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.<br />\n";
-						$msg.="Aucune note de devoir ne doit être saisie pour des élèves de la classe.<br />";
+						$msg .= "Des donnÃ©es existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucune note ni apprÃ©ciation du bulletin ne doit avoir Ã©tÃ© saisie pour les Ã©lÃ¨ves de ce groupe pour permettre la suppression du groupe.<br />\n";
+						$msg.="Aucune note de devoir ne doit Ãªtre saisie pour des Ã©lÃ¨ves de la classe.<br />";
 						if(count($tabtmp)==1){
-							$msg.="L'élève ayant des moyennes ou appréciations saisies est $tabtmp[0].<br />\n";
+							$msg.="L'Ã©lÃ¨ve ayant des moyennes ou apprÃ©ciations saisies est $tabtmp[0].<br />\n";
 						}
 						else{
-							$msg.="Les élèves ayant des moyennes ou appréciations saisies sont $tabtmp[0]";
+							$msg.="Les Ã©lÃ¨ves ayant des moyennes ou apprÃ©ciations saisies sont $tabtmp[0]";
 							for($i=1;$i<count($tabtmp);$i++){
 								$msg.=", $tabtmp[$i]";
 							}
@@ -203,7 +203,7 @@ if(isset($step)){
 						$tab_classe[]=$tmpid;
 					}
 					else{
-						// On teste aussi si il y a des élèves de la classe dans le groupe.
+						// On teste aussi si il y a des Ã©lÃ¨ves de la classe dans le groupe.
 						$sql="SELECT jeg.login FROM j_eleves_groupes jeg, j_eleves_classes jec WHERE
 									jeg.login=jec.login AND
 									jeg.periode=jec.periode AND
@@ -213,7 +213,7 @@ if(isset($step)){
 						$res_ele_clas_grp=mysql_query($sql);
 						if(mysql_num_rows($res_ele_clas_grp)>0){
 							$error = true;
-							$msg .= "Des données existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucun élève de la classe ne doit être inscrit dans le groupe.<br />\n<a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=$tmpid'>Enlevez les élèves du groupe</a> avant.<br />\n";
+							$msg .= "Des donnÃ©es existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucun Ã©lÃ¨ve de la classe ne doit Ãªtre inscrit dans le groupe.<br />\n<a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=$tmpid'>Enlevez les Ã©lÃ¨ves du groupe</a> avant.<br />\n";
 							// Et on remet la classe dans la liste des classes:
 							//$clazz[] = $tmpid;
 							$tab_classe[]=$tmpid;
@@ -258,7 +258,7 @@ if(isset($step)){
 		$test3=0;
 		$error=false;
 		for($j=0;$j<count($tab_grp);$j++) {
-			// Récupération des classes, professeurs, élèves des groupes à fusionner
+			// RÃ©cupÃ©ration des classes, professeurs, Ã©lÃ¨ves des groupes Ã  fusionner
 
 			$tmp_grp=get_group($tab_grp[$j]);
 
@@ -286,7 +286,7 @@ if(isset($step)){
 					$test++;
 					//============
 					// DEBUG
-					//echo "Une ou des moyennes trouvées.<br />";
+					//echo "Une ou des moyennes trouvÃ©es.<br />";
 					//============
 					$error=true;
 				}
@@ -297,7 +297,7 @@ if(isset($step)){
 					$test2++;
 					//============
 					// DEBUG
-					//echo "Une ou des appréciations trouvées.<br />";
+					//echo "Une ou des apprÃ©ciations trouvÃ©es.<br />";
 					//============
 					$error=true;
 				}
@@ -314,14 +314,14 @@ if(isset($step)){
 					$test3++;
 					//============
 					// DEBUG
-					//echo "Une ou des notes de devoirs trouvées.<br />";
+					//echo "Une ou des notes de devoirs trouvÃ©es.<br />";
 					//============
 					$error=true;
 				}
 
 				if(($test>0)||($test2>0)||($test3>0)){
 					$error = true;
-					$msg.="Des appréciations, moyennes ou notes de devoir ne permettent pas de supprimer le groupe n°".$tmp_grp['id'].".<br />";
+					$msg.="Des apprÃ©ciations, moyennes ou notes de devoir ne permettent pas de supprimer le groupe nÂ°".$tmp_grp['id'].".<br />";
 				}
 			}
 
@@ -361,14 +361,14 @@ if(isset($step)){
 
 		if (empty($tab_classe)) {
 			$error = true;
-			$msg .= "Vous devez sélectionner au moins une classe.<br />\n";
+			$msg .= "Vous devez sÃ©lectionner au moins une classe.<br />\n";
 		}
 
 		if (!$error) {
-			// pas d'erreur : on continue avec la mise à jour du groupe
+			// pas d'erreur : on continue avec la mise Ã  jour du groupe
 			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $tab_classe, $tab_professeurs, $tab_eleves);
 			if (!$create) {
-				$msg .= "Erreur lors de la mise à jour du groupe.";
+				$msg .= "Erreur lors de la mise Ã  jour du groupe.";
 			} else {
 
 				for($i=0;$i<count($tab_grp);$i++) {
@@ -397,8 +397,8 @@ if(isset($step)){
 
 				//======================================
 				// MODIF: boireaus
-				//$msg = "Le groupe a bien été mis à jour.";
-				$msg = "L'enseignement ". stripslashes($reg_nom_complet) . " a bien été mis à jour.";
+				//$msg = "Le groupe a bien Ã©tÃ© mis Ã  jour.";
+				$msg = "L'enseignement ". stripslashes($reg_nom_complet) . " a bien Ã©tÃ© mis Ã  jour.";
 				$msg = urlencode($msg);
 
 				if(isset($chemin_retour)){
@@ -428,7 +428,7 @@ if(isset($step)){
 	}
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc");
@@ -448,7 +448,7 @@ echo "<h3>Fusion de groupes</h3>\n";
 
 if(!isset($tab_classe)) {
 
-	echo "<p>Choisissez les classes à associer au groupe:</p>\n";
+	echo "<p>Choisissez les classes Ã  associer au groupe:</p>\n";
 
 	//$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 	//$sql="SELECT * FROM classes ORDER BY classe";
@@ -502,8 +502,8 @@ if(!isset($tab_classe)) {
 					echo "<img src='../images/enabled.png' width='20' height='20' alt='Classe originelle du groupe' title='Classe originelle du groupe' /> <b>$classe</b>";
 				}
 				if (in_array($id_classe_temp, $reg_clazz)){
-					// Pour contrôler les suppressions de classes.
-					// On conserve la liste des classes précédemment cochées:
+					// Pour contrÃ´ler les suppressions de classes.
+					// On conserve la liste des classes prÃ©cÃ©demment cochÃ©es:
 					//echo "<input type='hidden' name='precclasse_".$id_classe_temp."' value='y' />\n";
 					echo "<input type='hidden' name='precclasse[$i]' value='$id_classe_temp' />\n";
 				}
@@ -535,18 +535,18 @@ if(!isset($tab_classe)) {
 </script>\n";
 
 	} else {
-		echo "<p>Aucune classe définie !</p>\n";
+		echo "<p>Aucune classe dÃ©finie !</p>\n";
 	}
 }
 else {
 	// Les classes sont choisies
 	/*
-	// On contrôle si des classes ont été décochées...
+	// On contrÃ´le si des classes ont Ã©tÃ© dÃ©cochÃ©es...
 	for($i=0;$i<$nb_classes;$i++){
 		if(isset($precclasse[$i])) {
 			if(!isset($tab_classe[$i])){
-				// La classe $tab_classe[$i] a été décochée.
-				// Ce n'est possible que si il n'y a pas de notes associées
+				// La classe $tab_classe[$i] a Ã©tÃ© dÃ©cochÃ©e.
+				// Ce n'est possible que si il n'y a pas de notes associÃ©es
 
 
 			}
@@ -568,13 +568,13 @@ else {
 	}
 	*/
 
-	// On va proposer les groupes à associer (même matière)
+	// On va proposer les groupes Ã  associer (mÃªme matiÃ¨re)
 	$sql="SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe='$id_groupe';";
 	$res_mat=mysql_query($sql);
 	$lig_tmp=mysql_fetch_object($res_mat);
 	$id_matiere=$lig_tmp->id_matiere;
 
-	echo "<p>Cocher les groupes à fusionner avec $reg_nom_complet (<i>$reg_nom_groupe</i>)</p>\n";
+	echo "<p>Cocher les groupes Ã  fusionner avec $reg_nom_complet (<i>$reg_nom_groupe</i>)</p>\n";
 
 	//sort($tab_classe);
 	//array_unique($tab_classe);
@@ -658,7 +658,7 @@ echo "<p><br /></p>\n";
 echo "<p><i>NOTES:</i></p>\n";
 echo "<ul>\n";
 echo "<li>Il n'est possible de fusionner des groupes que si aucune note n'est encore saisie pour les groupes rejoignant le groupe choisi.</li>\n";
-echo "<li>Il n'est possible de fusionner des groupes que pour une même matière.</li>\n";
+echo "<li>Il n'est possible de fusionner des groupes que pour une mÃªme matiÃ¨re.</li>\n";
 echo "</ul>\n";
 
 require("../lib/footer.inc.php");

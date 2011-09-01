@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -45,7 +45,7 @@ if (!checkAccess()) {
     die();
 }
 
-// On n'autorise que les profs à accéder à cette page
+// On n'autorise que les profs Ã  accÃ©der Ã  cette page
 if($_SESSION['statut']!='professeur') {
     header("Location: ../logout.php?auto=1");
     die();
@@ -83,15 +83,15 @@ echo "<script type='text/javascript'>
 
 //echo "<p class='bold'><a href='../accueil.php' onClick='refresh_opener();self.close();return false;'>Refermer</a>";
 echo "<p class='bold'><a href='../accueil.php' onClick='self.close();return false;'>Refermer</a>";
-echo " | <a href='".$_SERVER['PHP_SELF']."?import_cmnt=y'>Importer un fichier d'appréciations</a>";
-echo " | <a href='export_cmnt_type_prof.php'>Exporter le fichier d'appréciations</a>";
+echo " | <a href='".$_SERVER['PHP_SELF']."?import_cmnt=y'>Importer un fichier d'apprÃ©ciations</a>";
+echo " | <a href='export_cmnt_type_prof.php'>Exporter le fichier d'apprÃ©ciations</a>";
 echo "</p>\n";
 
 $import_cmnt=isset($_GET['import_cmnt']) ? $_GET['import_cmnt'] : NULL;
 $valide_import_cmnt=isset($_POST['valide_import_cmnt']) ? $_POST['valide_import_cmnt'] : NULL;
 
 if(isset($import_cmnt)) {
-	echo "<h3 class='gepi'>Import d'un fichier d'appréciations:</h3>\n";
+	echo "<h3 class='gepi'>Import d'un fichier d'apprÃ©ciations:</h3>\n";
 
 	echo "<p>Le fichier doit contenir un commentaire-type par ligne.</p>\n";
 
@@ -111,7 +111,7 @@ elseif(isset($valide_import_cmnt)) {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 	if (trim($csv_file['name'])=='') {
-		echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+		echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 		echo "<a href='".$_SERVER['PHP_SELF']."?import_cmnt=y'>Cliquer ici</a> pour recommencer !</p>\n";
 	}
 	else{
@@ -154,19 +154,19 @@ elseif(isset($valide_import_cmnt)) {
 								$nb_reg++;
 							}
 							else {
-								echo "<span style='color:red;'><b>Erreur lors de l'insertion de l'appréciation:</b> $ligne</span><br />\n";
+								echo "<span style='color:red;'><b>Erreur lors de l'insertion de l'apprÃ©ciation:</b> $ligne</span><br />\n";
 								$temoin_erreur='y';
 							}
 						}
 					}
 					if($nb_reg>=$nb_max_reg) {
-						echo "<p style='color:red;'>On n'enregistre pas plus de $nb_max_reg appréciations lors d'un import.</p>";
+						echo "<p style='color:red;'>On n'enregistre pas plus de $nb_max_reg apprÃ©ciations lors d'un import.</p>";
 						break;
 					}
 				}
 				fclose($fp);
 
-				if(($nb_reg>0)&&($temoin_erreur=='n')) {echo "<span style='color:red;'>Import effectué.</span><br />";}
+				if(($nb_reg>0)&&($temoin_erreur=='n')) {echo "<span style='color:red;'>Import effectuÃ©.</span><br />";}
 			}
 		}
 	}
@@ -181,7 +181,7 @@ $compteur_nb_commentaires=isset($_POST['compteur_nb_commentaires']) ? $_POST['co
 
 if(isset($compteur_nb_commentaires)) {
 	check_token(false);
-	// Nettoyage des commentaires déjà saisis pour cette classe et ces périodes:
+	// Nettoyage des commentaires dÃ©jÃ  saisis pour cette classe et ces pÃ©riodes:
 	$sql="DELETE FROM commentaires_types_profs WHERE login='".$_SESSION['login']."';";
 	//echo "sql=$sql<br />";
 	$resultat_nettoyage=mysql_query($sql);
@@ -204,7 +204,7 @@ if(isset($compteur_nb_commentaires)) {
 }
 
 
-// Recherche des commentaires déjà saisis:
+// Recherche des commentaires dÃ©jÃ  saisis:
 $sql="SELECT DISTINCT app,id FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' ORDER BY app;";
 //echo "$sql";
 $resultat_commentaires=mysql_query($sql);
@@ -212,7 +212,7 @@ $cpt=1;
 if(mysql_num_rows($resultat_commentaires)!=0){
 	echo "<p>Voici la liste de vos commentaires-types:</p>\n";
 	echo "<blockquote>\n";
-	echo "<table class='boireaus' border='1' summary='Appréciations-types saisies'>\n";
+	echo "<table class='boireaus' border='1' summary='ApprÃ©ciations-types saisies'>\n";
 	echo "<tr style='text-align:center;'>\n";
 	echo "<th>Commentaire</th>\n";
 	echo "<th>Supprimer</th>\n";
@@ -261,13 +261,13 @@ echo "<p><br /></p>\n";
 
 echo "<p><i>NOTES:</i></p>\n";
 echo "<ul>
-	<li>Les appréciations-types apparaissent dans la page de saisie des appréciations pour un enseignement lors du survol de l'icone qui vous a mené à cette page.</li>
-	<li>Il est possible d'utiliser la chaine de caractères '_PRENOM_' dans un commentaire-type.<br />
-	Lors de l'insertion, la chaine sera remplacée par le prénom de l'élève.</li>
-	<li>Le genre n'est pas encore géré:<br />
-	Le genre de l'élève dans des phrases comme 'Il doit se mettre au travail' ou 'Elle doit se mettre au travail' doit encore être corrigé à la main.<br />
-	Il doit être possible de résoudre ce problème de la même façon que pour le prénom de l'élève en ajoutant des champs de formulaires cachés...</li>
-	<li>Après modification des appréciations-types, il faut mettre à jour la page de saisie des appréciations pour que les modifications effectuées ici soient prises en compte.<br />Prenez soin de sauvegarder les appréciations éventuellement saisies avant de recharger la page.</li>
+	<li>Les apprÃ©ciations-types apparaissent dans la page de saisie des apprÃ©ciations pour un enseignement lors du survol de l'icone qui vous a menÃ© Ã  cette page.</li>
+	<li>Il est possible d'utiliser la chaine de caractÃ¨res '_PRENOM_' dans un commentaire-type.<br />
+	Lors de l'insertion, la chaine sera remplacÃ©e par le prÃ©nom de l'Ã©lÃ¨ve.</li>
+	<li>Le genre n'est pas encore gÃ©rÃ©:<br />
+	Le genre de l'Ã©lÃ¨ve dans des phrases comme 'Il doit se mettre au travail' ou 'Elle doit se mettre au travail' doit encore Ãªtre corrigÃ© Ã  la main.<br />
+	Il doit Ãªtre possible de rÃ©soudre ce problÃ¨me de la mÃªme faÃ§on que pour le prÃ©nom de l'Ã©lÃ¨ve en ajoutant des champs de formulaires cachÃ©s...</li>
+	<li>AprÃ¨s modification des apprÃ©ciations-types, il faut mettre Ã  jour la page de saisie des apprÃ©ciations pour que les modifications effectuÃ©es ici soient prises en compte.<br />Prenez soin de sauvegarder les apprÃ©ciations Ã©ventuellement saisies avant de recharger la page.</li>
 </ul>\n";
 echo "<p><br /></p>\n";
 

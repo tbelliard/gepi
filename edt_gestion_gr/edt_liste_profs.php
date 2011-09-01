@@ -23,14 +23,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$titre_page = "GÈrer les groupes de l'EdT<br />Professeurs";
+$titre_page = "G√©rer les groupes de l'EdT<br />Professeurs";
 $affiche_connexion = "oui";
 $niveau_arbo = 1;
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complÈmentaires et/ou librairies utiles
+// fonctions compl√©mentaires et/ou librairies utiles
 
 
 // Resume session
@@ -43,7 +43,7 @@ if ($resultat_session == "c") {
     die();
 }
 
-// SÈcuritÈ
+// S√©curit√©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
@@ -56,7 +56,7 @@ $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ?
 $choix_prof = isset($_POST["choix_prof"]) ? $_POST["choix_prof"] : (isset($_GET["choix_prof"]) ? $_GET["choix_prof"] : NULL);
 $msg = $aff_liste_profs = $aff_select_profs = $titre = NULL;
 
-// ============================ Traitement des donnÈes ========================== //
+// ============================ Traitement des donn√©es ========================== //
 
 	// Les renseignements sur cet edt_gr
 	$sql_t = "SELECT * FROM edt_gr_nom WHERE id = '".$id_gr."'";
@@ -65,7 +65,7 @@ $msg = $aff_liste_profs = $aff_select_profs = $titre = NULL;
 
 	$titre .= '<p>EDT : '.$rep["nom"].'&nbsp;('.$rep["nom_long"].')&nbsp;-&nbsp;Liste des professeurs.</p>';
 
-	// La liste des professeurs de l'Ètablissement
+	// La liste des professeurs de l'√©tablissement
 $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
 						OR trigger_error('Impossible de lire la liste des professeurs.', E_USER_ERROR);
 	$nbre_p = mysql_num_rows($query_p);
@@ -88,63 +88,63 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 	}
 	$aff_select_profs .= '</select>';
 
-	// On ajoute un prof si c'est demandÈ
+	// On ajoute un prof si c'est demand√©
 	if ($action == "ajouter") {
 
-		// On vÈrifie si ce prof existe et si il n'est pas dÈj‡ membre de ce edt_gr
+		// On v√©rifie si ce prof existe et si il n'est pas d√©j√† membre de ce edt_gr
 		$verif_exist = mysql_query("SELECT etat FROM utilisateurs WHERE login = '".$choix_prof."'");
 		$test1 = mysql_result($verif_exist,0, "etat");
 
 		if ($test1) {
 
-			// On vÈrifie alors s'il n'est pas dÈj‡ membre de cet edt_gr
+			// On v√©rifie alors s'il n'est pas d√©j√† membre de cet edt_gr
 			$query_v = mysql_query("SELECT id FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'");
 			$test2 = mysql_result($query_v, 0,"id");
 
 			if ($test2 AND is_numeric($test2) AND $test2 >= 1) {
 
-				$msg .= '<p style="color: red;">Ce professeur n\'a pas ÈtÈ enregistrÈ car il est dÈj‡ membre de cet edt_gr.</p>';
+				$msg .= '<p style="color: red;">Ce professeur n\'a pas √©t√© enregistr√© car il est d√©j√† membre de cet edt_gr.</p>';
 
 			}else{
 
-				// On peut alors insÈrer cet utilisateur dans la table
+				// On peut alors ins√©rer cet utilisateur dans la table
 				$sql_insert = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs) VALUES('', '".$id_gr."', '".$choix_prof."')";
 				$query_insert = mysql_query($sql_insert);
 
 				if ($query_insert) {
 
-					$msg .= '<p style="color: green;">Ce professeur a bien ÈtÈ enregistrÈ.</p>';
+					$msg .= '<p style="color: green;">Ce professeur a bien √©t√© enregistr√©.</p>';
 
 				}else{
 
-					// On peut alors insÈrer cet utilisateur dans la table
+					// On peut alors ins√©rer cet utilisateur dans la table
 					$sql_insert = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs) VALUES('', '".$id_gr."', '".$choix_prof."')";
 					$query_insert = mysql_query($sql_insert);
 
 					if ($query_insert) {
 
-						$msg .= '<p style="color: green;">Ce professeur n\'a pas ÈtÈ enregistrÈ : '.$sql_insert.'</p>';
+						$msg .= '<p style="color: green;">Ce professeur n\'a pas √©t√© enregistr√© : '.$sql_insert.'</p>';
 
 					}
 				}
 			}
 		}else{
 
-			$msg .= '<p style="color: red;">Ce professeur n\'a pas ÈtÈ enregistrÈ car il n\'existe pas dans la base.</p>';
+			$msg .= '<p style="color: red;">Ce professeur n\'a pas √©t√© enregistr√© car il n\'existe pas dans la base.</p>';
 
 		}
 	}
 
-	// On enlËve un prof si c'est demandÈ
+	// On enl√®ve un prof si c'est demand√©
 	if ($action == "effacer") {
 
-		// On efface le prof car c'est demandÈ ;)
+		// On efface le prof car c'est demand√© ;)
 		$sql_del = "DELETE FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'";
 		$query_del = mysql_query($sql_del) OR trigger_error('Impossible de supprimer ce professeur : '.$sql_del, E_USER_WARNING);
 
 		if ($query_del) {
 
-			$msg .= '<p style="color: green;">Ce professeur a ÈtÈ effacÈ de cet edt_gr.</p>';
+			$msg .= '<p style="color: green;">Ce professeur a √©t√© effac√© de cet edt_gr.</p>';
 
 		}else{
 
@@ -169,7 +169,7 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 	}
 
 
-// =========================== Fin du traitement des donnÈes ==================== //
+// =========================== Fin du traitement des donn√©es ==================== //
 
 
 // ======================== CSS et js particuliers ========================

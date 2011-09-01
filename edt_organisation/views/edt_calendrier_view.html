@@ -12,16 +12,16 @@
 		</a>
 		<div style="display: none;" id="aide_calendar">
 			<hr />
-			<p><span class="red">Attention</span>, ces lignes de calendrier ne sont pas en phase avec les pÈriodes des notes. Si vous voulez faire un
-			 lien entre les pÈriodes de notes et celles du calendrier, vous devez prÈciser lors de la crÈation de ces derniËres
-			 ‡ quelle pÈriode de notes elles sont rattachÈes en choisissant celle-ci dans le menu <em>PÈriode de notes ?</em></p>
+			<p><span class="red">Attention</span>, ces lignes de calendrier ne sont pas en phase avec les p√©riodes des notes. Si vous voulez faire un
+			 lien entre les p√©riodes de notes et celles du calendrier, vous devez pr√©ciser lors de la cr√©ation de ces derni√®res
+			 √† quelle p√©riode de notes elles sont rattach√©es en choisissant celle-ci dans le menu <em>P√©riode de notes ?</em></p>
 			 <hr />
 		</div>
 		
 		<?php if (isset($data['calendrier']) AND isset($data['modifier'])) { ?>
 		<form name="nouvelle_periode" action="edt_calendrier.php" method="post">
 			<fieldset id="modif_periode">
-			<legend>Modifier la pÈriode pour le calendrier</legend>
+			<legend>Modifier la p√©riode pour le calendrier</legend>
 			<input type="hidden" name="calendrier" value="ok" />
 			<input type="hidden" name="modif_ok" value="<?php echo $rep_modif["id_calendrier"]; ?>" />
 			<p>
@@ -32,7 +32,7 @@
 				<p>
 					<b>
 						<a href="javascript:CocheCase(true)">Tout cocher</a> -
-						<a href="javascript:CocheCase(false)">Tout dÈcocher</a>
+						<a href="javascript:CocheCase(false)">Tout d√©cocher</a>
 					</b>
 				</p>
 				<table>
@@ -100,7 +100,7 @@
 				<label for="jourDebPer">Premier jour</label>
 
 				<input type="text" id="heureDeb" name="heure_deb" maxlenght="5" size="5" value="'.$aff_heuredeb.'" />
-				<label for="heureDeb">Heure de dÈbut</label>
+				<label for="heureDeb">Heure de d√©but</label>
 			</p>
 			<p>
 				<input type="text" id="jourFinPer" name="jour_fperiode" maxlenght="10" size="10" value="'.$aff_jourfin.'" />
@@ -114,7 +114,7 @@
 			<p>
 				<select id="choixPer" name="choix_periode">
 					<option value="rien">Non</option>'."\n";
-		// Proposition de dÈfinition des pÈriodes dÈj‡ existantes de la table periodes
+		// Proposition de d√©finition des p√©riodes d√©j√† existantes de la table periodes
 
 			$rep_periodes[] = array();
 			for ($i=0; $i<$nbre_periodes; $i++) {
@@ -128,12 +128,12 @@
 			}
 		echo '
 				</select>
-				<label for="choixPer">PÈriodes de notes ?</label>
+				<label for="choixPer">P√©riodes de notes ?</label>
 			</p>
 			<p>
 				<select id="etabFerm" name="etabferme">
 			';
-			// On vÈrifie le ouvert - fermÈ
+			// On v√©rifie le ouvert - ferm√©
 			if ($rep_modif["etabferme_calendrier"] == "1") {
 				$selected1 = " selected='selected'";
 			} else $selected1 = "";
@@ -142,14 +142,14 @@
 			} else $selected2 = "";
 		echo '
 					<option value="1"'.$selected1.'>Ouvert</option>
-					<option value="2"'.$selected2.'>FermÈ</option>
+					<option value="2"'.$selected2.'>Ferm√©</option>
 				</select>
 				<label for="etabFerm">Etablissement</label>
 			</p>
 			<p>
 				<select id="selectVac" name="vacances">
 			';
-			// On vÈrifie le vacances - cours
+			// On v√©rifie le vacances - cours
 			if ($rep_modif["etabvacances_calendrier"] == "0") {
 				$selected1v = " selected='selected'";
 			} else $selected1v = "";
@@ -183,9 +183,9 @@
 				<td>Nom</td>
 				<td>Classes</td>
 				<td class="bonnelargeur">Premier jour</td>
-				<td class="bonnelargeur">‡</td>
+				<td class="bonnelargeur">√†</td>
 				<td class="bonnelargeur">Dernier jour</td>
-				<td class="bonnelargeur">‡</td>
+				<td class="bonnelargeur">√†</td>
 				<td class="bonnelargeur">Etablissement</td>
 				<td>Cours<br />Vacances</td>
 				<td></td>
@@ -222,7 +222,7 @@
 		<div id="div_classes_concernees">
 			<p>
 				<a href="javascript:CocheCase(true)">Tout cocher</a> -
-				<a href="javascript:CocheCase(false)">Tout dÈcocher</a>
+				<a href="javascript:CocheCase(false)">Tout d√©cocher</a>
 			</p>
 <?php
 	$tab_select = renvoie_liste("classe");
@@ -233,7 +233,7 @@
 			';
 	// Choix des classes sur 3 (ou 4) colonnes
 		$modulo = count($tab_select) % 3;
-			// Calcul du nombre d'entrÈe par colonne ($ligne)
+			// Calcul du nombre d'entr√©e par colonne ($ligne)
 		if ($modulo !== 0) {
 			$calcul = count($tab_select) / 3;
 			$expl = explode(".", $calcul);
@@ -242,10 +242,10 @@
 			$ligne = count($tab_select) / 3;
 		}
 
-	// Par dÈfaut, tous les checkbox sont cochÈs
+	// Par d√©faut, tous les checkbox sont coch√©s
 	$aff_checked = " checked='checked'";
 
-	// On affiche la premiËre colonne
+	// On affiche la premi√®re colonne
 for($i=0; $i<$ligne; $i++) {
 
 	echo '
@@ -260,7 +260,7 @@ echo '
 	';
 
 for($i=$ligne; $i<($ligne*2); $i++) {
-	// On affiche la deuxiËme colonne
+	// On affiche la deuxi√®me colonne
 	echo '
 		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
@@ -272,7 +272,7 @@ echo '
 		</td><td>
 	';
 for($i=($ligne*2); $i<($ligne*3); $i++) {
-	// On affiche la troisiËme colonne
+	// On affiche la troisi√®me colonne
 	echo '
 		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
@@ -282,7 +282,7 @@ for($i=($ligne*2); $i<($ligne*3); $i++) {
 echo '
 		</td>
 	';
-// s'il y a une quatriËme colonne, on l'affiche
+// s'il y a une quatri√®me colonne, on l'affiche
 if ($modulo !== 0) {
 	echo '
 		<td>
@@ -303,7 +303,7 @@ if ($modulo !== 0) {
 	</table>
 	</div>
 		<p>
-			<input type="text" name="nom_periode" maxlenght="100" size="30" value="Nouvelle pÈriode" />
+			<input type="text" name="nom_periode" maxlenght="100" size="30" value="Nouvelle p√©riode" />
 			<span class="legende">Nom</span>
 		</p>
 		<p>
@@ -314,7 +314,7 @@ if ($modulo !== 0) {
 			<span class="legende">Premier jour</span>
 
 			<input type="text" name="heure_deb" maxlenght="5" size="5" value="00:00" />
-			<span class="legende">Heure de dÈbut</span>
+			<span class="legende">Heure de d√©but</span>
 		</p>
 		<p>
 
@@ -329,7 +329,7 @@ if ($modulo !== 0) {
 		<p>
 			<select name="choix_periode">
 				<option value="rien">Non</option>';
-	// Proposition de dÈfinition des pÈriodes dÈj‡ existantes de la table periodes
+	// Proposition de d√©finition des p√©riodes d√©j√† existantes de la table periodes
 	$req_periodes = mysql_query("SELECT DISTINCT nom_periode, num_periode FROM periodes");
 	$nbre_periodes = mysql_num_rows($req_periodes);
 		$rep_periodes[] = array();
@@ -342,12 +342,12 @@ if ($modulo !== 0) {
 		}
 	echo '
 			</select>
-			<span class="legende">PÈriode de notes ?</span>
+			<span class="legende">P√©riode de notes ?</span>
 		</p>
 		<p>
 			<select id="etabFerm" name="etabferme">
 				<option value="1">Ouvert</option>
-				<option value="2">FermÈ</option>
+				<option value="2">Ferm√©</option>
 			</select>
 			<label for="etabFerm">Etablissement</label>
 		</p>
@@ -368,7 +368,7 @@ if ($modulo !== 0) {
 
 
 
-// On vÈrifie le retour en session pour savoir si il faut l'afficher
+// On v√©rifie le retour en session pour savoir si il faut l'afficher
 if (isset($_SESSION["retour"]) AND $_SESSION["retour"] == "../mod_absences/admin/index.php") {
 	echo '<p class=bold><a href="'.$_SESSION["retour"].'"><img src="../images/icons/back.png" alt="Retour" class="back_link"/> Retour vers le module absences</a>';
 }

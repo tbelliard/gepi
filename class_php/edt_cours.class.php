@@ -30,28 +30,28 @@ if (!$_SESSION["login"]) {
 // ============================= classe php de construction des emplois du temps =================================== //
 
 /**
- * la classe edt implémente tous les paramètres indispensables sur les informations utiles
- * à l'organisation des emplois du temps.
+ * la classe edt implÃ©mente tous les paramÃ¨tres indispensables sur les informations utiles
+ * Ã  l'organisation des emplois du temps.
  */
 
 class edt{
 
-	public $id; // permet de préciser l'id du cours en question
-	public $edt_gr; // les élèves {enseignements AID edt_gr}
-	public $type_grpe; // le type de groupe d'élèves {ENS AID EDT}
-	public $id_grpe; // l'identifiant de l'id_groupe après traitement par type_gr();
+	public $id; // permet de prÃ©ciser l'id du cours en question
+	public $edt_gr; // les Ã©lÃ¨ves {enseignements AID edt_gr}
+	public $type_grpe; // le type de groupe d'Ã©lÃ¨ves {ENS AID EDT}
+	public $id_grpe; // l'identifiant de l'id_groupe aprÃ¨s traitement par type_gr();
 	public $edt_jour; // voir table horaires_etablissement
 	public $edt_creneau; // voir table
-	public $edt_debut; // 0 = début du créneau 0.5 = milieu d'un créneau
-	public $edt_duree; //  en nbre de demis-créneaux
+	public $edt_debut; // 0 = dÃ©but du crÃ©neau 0.5 = milieu d'un crÃ©neau
+	public $edt_duree; //  en nbre de demis-crÃ©neaux
 	public $edt_salle; // voir table salle_cours
-	public $edt_semaine; // type de semaine comme défini dans la table edt_semaines
-	public $edt_calend; // cours rattaché à une période précise définie dans le calendrier
-	public $edt_modif; // pour savoir s'il s'agit d'un cours temporaire sur une semaine précise =0 si ce n'est pas le cas.
+	public $edt_semaine; // type de semaine comme dÃ©fini dans la table edt_semaines
+	public $edt_calend; // cours rattachÃ© Ã  une pÃ©riode prÃ©cise dÃ©finie dans le calendrier
+	public $edt_modif; // pour savoir s'il s'agit d'un cours temporaire sur une semaine prÃ©cise =0 si ce n'est pas le cas.
 	public $edt_prof; // qui est le professeur qui anime le cours (login)
-	public $type; // permet de définir s'il s'agit d'un type {prof, eleve, classe, salle)
+	public $type; // permet de dÃ©finir s'il s'agit d'un type {prof, eleve, classe, salle)
 
-	public $sem = 0; // permet de récupérer un numéro de semaine autre que l'actuel $sem incrémente ou décrémente par rapport à la semaine actuelle
+	public $sem = 0; // permet de rÃ©cupÃ©rer un numÃ©ro de semaine autre que l'actuel $sem incrÃ©mente ou dÃ©crÃ©mente par rapport Ã  la semaine actuelle
 
 	public function __construct($id = NULL){
 
@@ -65,15 +65,15 @@ class edt{
 	public function infos(){
 
 		/**
-		* Si le cours est connu, on peut afficher toutes ses caractéristiques
-		* On définit tous les attributs de l'objet
+		* Si le cours est connu, on peut afficher toutes ses caractÃ©ristiques
+		* On dÃ©finit tous les attributs de l'objet
 		*/
 
 		$sql = "SELECT edt_cours.*, numero_salle FROM edt_cours, salle_cours
 												WHERE id_cours = '".$this->id."'
 												AND edt_cours.id_salle = salle_cours.id_salle
 												LIMIT 1";
-		$query = mysql_query($sql) OR trigger_error('Impossible de récupérer les infos du cours.', E_USER_ERROR);
+		$query = mysql_query($sql) OR trigger_error('Impossible de rÃ©cupÃ©rer les infos du cours.', E_USER_ERROR);
 		$rep = mysql_fetch_array($query);
 
 		// on charge les variables de classe
@@ -93,9 +93,9 @@ class edt{
 	public function semaine_actu(){
 
 		/**
-		* On cherche à déterminer à quel type de semaine se rattache la semaine actuelle
-		* Il y a deux possibilités : soit l'établissement utilise les semaines classiques ISO soit il a défini
-		* des numéros spéciaux.
+		* On cherche Ã  dÃ©terminer Ã  quel type de semaine se rattache la semaine actuelle
+		* Il y a deux possibilitÃ©s : soit l'Ã©tablissement utilise les semaines classiques ISO soit il a dÃ©fini
+		* des numÃ©ros spÃ©ciaux.
  		*/
 
 		//
@@ -118,13 +118,13 @@ class edt{
 
 	public function jours_de_la_semaine(){
 		/**
-		* Affiche les dates de la semaine demandée
+		* Affiche les dates de la semaine demandÃ©e
 		* */
-		return 'Il faut que j\'ajoute cette méthode publique edt::jours_de_la_semaine() pour afficher les dates de la semaine vue ;)';
+		return 'Il faut que j\'ajoute cette mÃ©thode publique edt::jours_de_la_semaine() pour afficher les dates de la semaine vue ;)';
 	}
 
 	public function creneau($cren){
-		// On cherche le créneau de début du cours
+		// On cherche le crÃ©neau de dÃ©but du cours
 		$sql_c = "SELECT * FROM edt_creneaux WHERE type_creneau != 'pause' AND id_definie_periode = '".$cren."' LIMIT 1";
 		$query_c = mysql_query($sql_c);
 		$verif = mysql_num_rows($query_c);
@@ -152,8 +152,8 @@ class edt{
 	}
 
 	public function debut(){
-		// On cherche si ce cours commence au début ou au milieu d'un cours $this->edt_debut
-		// n veut dire qu'il commence au milieu du cours et y veut dir qu'il commence au début du cours
+		// On cherche si ce cours commence au dÃ©but ou au milieu d'un cours $this->edt_debut
+		// n veut dire qu'il commence au milieu du cours et y veut dir qu'il commence au dÃ©but du cours
 		if ($this->edt_debut == '0.5') {
 			$debut = 'n';
 		}elseif($this->edt_debut == '0'){
@@ -164,7 +164,7 @@ class edt{
 	}
 
 	public function duree(){
-		// La durée doit être connu en nombre de demi-créneaux et en nombre de créneaux
+		// La durÃ©e doit Ãªtre connu en nombre de demi-crÃ©neaux et en nombre de crÃ©neaux
 		if (isset($this->edt_duree)) {
 			$duree["demis"] = $this->edt_duree;
 			$test_duree = $this->edt_duree / 2;
@@ -180,11 +180,11 @@ class edt{
 	}
 
 	public function calend(){
-		// Pour tout savoir sur la période du cours si = 0, pas de période rattachée
+		// Pour tout savoir sur la pÃ©riode du cours si = 0, pas de pÃ©riode rattachÃ©e
 		if (isset($this->edt_calend)) {
 			$calend = $this->edt_calend;
 			if ($calend != 0) {
-				// On recherche les infos sur la période existante
+				// On recherche les infos sur la pÃ©riode existante
 				$query = mysql_query("SELECT nom_calendrier, debut_calendrier_ts, fin_calendrier_ts
 															FROM edt_calendrier
 															WHERE id_calendrier = '".$calend."'");
@@ -229,8 +229,8 @@ class edt{
 	}
 
 	public function eleves(){
-		$eleves = NULL; // en attendant d'implémenter cette méthode
-		// pour connaitre la liste des élèves concernés par ce cours
+		$eleves = NULL; // en attendant d'implÃ©menter cette mÃ©thode
+		// pour connaitre la liste des Ã©lÃ¨ves concernÃ©s par ce cours
 		if ($this->edt_gr != NULL) {
 			// C'est donc un 'groupe'
 			// $sql = "SELECT .....";
@@ -240,11 +240,11 @@ class edt{
 	}
 
 	public function couleur_cours(){
-		// On récupère la matière
+		// On rÃ©cupÃ¨re la matiÃ¨re
 		//$test_grp = $this->type_gr($this->edt_gr);
 		$sql = '';
 		if ($this->edt_gr != NULL) {
-			// on peut alors récupérer la matière et la couleur rattachées à cette matière
+			// on peut alors rÃ©cupÃ©rer la matiÃ¨re et la couleur rattachÃ©es Ã  cette matiÃ¨re
 			$sql = "SELECT matiere FROM matieres m, j_groupes_matieres jgm
 									WHERE jgm.id_matiere = m.matiere
 									AND jgm.id_groupe = '".$this->edt_gr."' LIMIT 1";
@@ -254,7 +254,7 @@ class edt{
 			$query = mysql_query($sql);
 			$matiere = mysql_fetch_array($query);
 
-			// on cherche la couleur rattachée
+			// on cherche la couleur rattachÃ©e
 			$sql2 = "SELECT valeur FROM edt_setting WHERE reglage = 'M_".$matiere["matiere"]."' LIMIT 1";
 			$query2 = mysql_query($sql2);
 			$verif = mysql_num_rows($query2);
@@ -284,8 +284,8 @@ class edtAfficher{
 	public $largeur_jour = 60;
 	public $hauteur_entete = 60;
 	public $hauteur_creneau = 100;
-	public $aff_jour = 'gauche'; // peut être modifiée pour enlever le jour à gauche du div
-	public $type_edt = 'prof'; // peut être modifiée pour un élève
+	public $aff_jour = 'gauche'; // peut Ãªtre modifiÃ©e pour enlever le jour Ã  gauche du div
+	public $type_edt = 'prof'; // peut Ãªtre modifiÃ©e pour un Ã©lÃ¨ve
 	/**
 	 * Constructor
 	 * @access protected
@@ -295,7 +295,7 @@ class edtAfficher{
 	}
 
 	public function liste_creneaux(){
-		// Renvoie la liste des créneaux d'une journée
+		// Renvoie la liste des crÃ©neaux d'une journÃ©e
 		$sql = "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode FROM edt_creneaux
 							WHERE type_creneaux != 'pause'
 							AND type_creneaux != 'repas'
@@ -333,7 +333,7 @@ class edtAfficher{
 			}elseif($reglage == 'noms'){
 				$cren = $liste_creneaux[$a]["nom"];
 			}else{
-				// Par défaut, le réglage est 'heures'
+				// Par dÃ©faut, le rÃ©glage est 'heures'
 				$cren = $liste_creneaux[$a]["horaire"];
 			}
 
@@ -384,8 +384,8 @@ class edtAfficher{
 			$aff_jour_gauche = 'non';
 
 		}else{
-			echo 'le mode '.$this->aff_jour.' n\'est pas implémenté => ERREUR.';
-			echo '<br />Vous avez le choix entre "gauche" et "cache" (par défaut, c\'est gauche).';
+			echo 'le mode '.$this->aff_jour.' n\'est pas implÃ©mentÃ© => ERREUR.';
+			echo '<br />Vous avez le choix entre "gauche" et "cache" (par dÃ©faut, c\'est gauche).';
 			exit();
 		}
 
@@ -419,7 +419,7 @@ class edtAfficher{
 	protected function ordre_creneau(edt $cours){
 
 		$creneaux = $this->liste_creneaux();
-		// On cherche le numéro du créneau en question (premier, deuxièmre, troisième, ...)
+		// On cherche le numÃ©ro du crÃ©neau en question (premier, deuxiÃ¨mre, troisiÃ¨me, ...)
 		$test = 'n';
 		for($o = 0 ; $o < $creneaux['nbre'] ; $o++){
 			if ($creneaux[$o]["id"] == $cours->edt_creneau) {
@@ -431,7 +431,7 @@ class edtAfficher{
 
 	protected function placer_cours(edt $cours){
 
-		// $cours doit être une instance de la classe edt... Il faudra peut-être vérifier cela
+		// $cours doit Ãªtre une instance de la classe edt... Il faudra peut-Ãªtre vÃ©rifier cela
 		$test = $this->ordre_creneau($cours);
 
 		if ($test == 1) {
@@ -441,7 +441,7 @@ class edtAfficher{
 			if ($cours->edt_debut == '0') {
 				$rep["margin"] = 'margin-left: '.(((($test - 1) * $this->largeur_creneau) + $this->largeur_creneau) - ($this->largeur_creneau - $this->largeur_jour)).'px;';
 			}elseif($cours->edt_debut == '0.5'){
-				// C'est le même calcul que sur le précédent mais on y ajoute un demi-créneau
+				// C'est le mÃªme calcul que sur le prÃ©cÃ©dent mais on y ajoute un demi-crÃ©neau
 				$rep["margin"] = 'margin-left: '.(((($test - 1) * $this->largeur_creneau) + $this->largeur_creneau) - ($this->largeur_creneau - $this->largeur_jour) + ($this->largeur_creneau / 2)).'px;';
 			}else{
 				$rep["margin"] = 'Il manque une info.';
@@ -456,8 +456,8 @@ class edtAfficher{
 
 	protected function edt_jour($jour, $user_login){
 		/**
-		* méthode qui renvoie l'edt d'un prof
-		* sur un jour donné Il faudra ajouter les aid
+		* mÃ©thode qui renvoie l'edt d'un prof
+		* sur un jour donnÃ© Il faudra ajouter les aid
 		*
 		*/
 
@@ -510,10 +510,10 @@ class edtAfficher{
 
 	protected function contenu_cours(edt $cours){
 		/**
-		* méthode qui gère l'affichage d'un cours dans le div
+		* mÃ©thode qui gÃ¨re l'affichage d'un cours dans le div
 		*
 		*/
-		// $cours doit être une instance de la classe edt... Il faudra peut-être vérifier cela
+		// $cours doit Ãªtre une instance de la classe edt... Il faudra peut-Ãªtre vÃ©rifier cela
 		// Le professeur
 		$contenu = '';
 
@@ -530,7 +530,7 @@ class edtAfficher{
 
 	public function aujourdhui(){
 		/**
-		* méthode qui donne le jour d'aujourd'hui en toute lettre et en Français
+		* mÃ©thode qui donne le jour d'aujourd'hui en toute lettre et en FranÃ§ais
 		*
 		*/
 		$jour_num = date("N") - 1;

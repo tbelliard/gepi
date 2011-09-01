@@ -20,19 +20,19 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 ?>
 <div id="result">
   <div id="wrap">
-    <h3><font class='red'>Sélection des données à traiter et de la période de traitement:</font></h3>
+    <h3><font class='red'>SÃ©lection des donnÃ©es Ã  traiter et de la pÃ©riode de traitement:</font></h3>
     <div id="select">
       <div id="periode">
         <form action="index.php?ctrl=select&choix=<?php echo $_SESSION['stats_choix']; ?>" method="post" name="select_donnees" id="select_donnees">
           <fieldset id="bloc_periode">
-            <legend class="legend">Période de traitement</legend>
+            <legend class="legend">PÃ©riode de traitement</legend>
             <?php if ($periodes_calendrier) :?>
               <?php for($i=0;$i<count($periodes_calendrier);$i++) :?>
             <p class="selected">
@@ -64,13 +64,13 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             <input type="submit" value="Enregistrer" class="submit"/>
           </fieldset>
           <div>
-            <fieldset class="individus"><legend class="individus">Sélection</legend>
-              <p class="selected">Données complètes :
+            <fieldset class="individus"><legend class="individus">SÃ©lection</legend>
+              <p class="selected">DonnÃ©es complÃ¨tes :
               </p>
               <p class="selected">
                 &Eacute;tablissement
                 <input type="checkbox"  name="etab_all" id="etab_all0" <?php if (isset($_SESSION['etab_all']))echo'checked'; ?>/>                
-                &Eacute;lèves
+                &Eacute;lÃ¨ves
                 <input type="checkbox"  name="eleve_all" id="eleve_all" <?php if (isset($_SESSION['eleve_all']))echo'checked'; ?>/>
                 Personnels
                 <input type="checkbox"  name="pers_all" id="pers_all" <?php if (isset($_SESSION['pers_all']))echo'checked'; ?>/>                
@@ -86,7 +86,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
               <?php if ($_SESSION['stats_choix']=='eleves'||$_SESSION['stats_choix']=='personnels') {?>
               <div id="recherche_indiv">
                 <input type="radio" name="choix" id="choix" value="eleves" <?php if ($_SESSION['stats_choix']=='eleves'||!isset($_SESSION['choix']))echo'checked'; ?> />
-                &Eacute;lèves                  
+                &Eacute;lÃ¨ves                  
                 <input type="radio" name="choix" id="choix2" value="personnels" <?php if ($_SESSION['stats_choix']=='personnels')echo'checked'; ?> />
                 Personnels                 
                 <br /><br />
@@ -102,7 +102,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
               <div id="recherche_classe">
                   <?php $max=count($classes); ?>
                 <a href="javascript:modif_case('classes',true,<?php echo $max; ?>)"><img src='../../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>/
-                <a href="javascript:modif_case('classes',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher'/></a>
+                <a href="javascript:modif_case('classes',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' title='Tout dÃ©cocher'/></a>
                 <br />
                   <?php
                   $cpt=0;
@@ -119,25 +119,25 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
       </div>
     </div>
     <div id="selected">
-      <p>Ce module permet d'effectuer des statistiques/suivies sur les incidents déclarés dans l'établissement. <br /> Pour cela vous devez au préalable :
+      <p>Ce module permet d'effectuer des statistiques/suivies sur les incidents dÃ©clarÃ©s dans l'Ã©tablissement. <br /> Pour cela vous devez au prÃ©alable :
       </p>
       <ul>
-        <li>ajuster si nécessaire la période de traitement</li>
-        <li>sélectionner les données à  traiter (données globales , selection par individu ou classe)</li>
+        <li>ajuster si nÃ©cessaire la pÃ©riode de traitement</li>
+        <li>sÃ©lectionner les donnÃ©es Ã Â  traiter (donnÃ©es globales , selection par individu ou classe)</li>
       </ul>
       <div >
-        <p class="selected_titre">Période de Traitement:</p>
+        <p class="selected_titre">PÃ©riode de Traitement:</p>
         <ul class="selected_titre">
           <li id="selected"><?php echo'Du '.$_SESSION['stats_periodes']['du'].' au '.$_SESSION['stats_periodes']['au'];?></li>
         </ul>
         <?php if (isset($_SESSION['etab_all'])|| isset($_SESSION['eleve_all'] )|| isset($_SESSION['pers_all'])) :?>
-        <p class="selected_titre">Données complètes :</p>           
+        <p class="selected_titre">DonnÃ©es complÃ¨tes :</p>           
         <ul class="selected_titre">
             <?php if (isset($_SESSION['etab_all'])) :?>
           <li id="selected"> &Eacute;tablissement </li>
             <?php endif ?>
             <?php if (isset($_SESSION['eleve_all'])) :?>
-          <li id="selected"> &Eacute;lèves </li>
+          <li id="selected"> &Eacute;lÃ¨ves </li>
             <?php endif ?>
             <?php if (isset($_SESSION['pers_all'])):?>
           <li id="selected">Personnels </li>

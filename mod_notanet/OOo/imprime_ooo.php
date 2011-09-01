@@ -31,7 +31,7 @@ include('init_secure.inc.php');
 
 
 
-include('fiches_brevet.php');		// calcul du tableau de données
+include('fiches_brevet.php');		// calcul du tableau de donnÃ©es
 
 
 

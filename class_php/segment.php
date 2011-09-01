@@ -24,7 +24,7 @@ class Segment implements IteratorAggregate, Countable
     /**
      * Constructeur
      *
-     * @param string $name nom du segment à construire
+     * @param string $name nom du segment Ã  construire
      * @param string $xml structure xml du segment
      */
     public function __construct($name, $xml)
@@ -71,7 +71,7 @@ class Segment implements IteratorAggregate, Countable
     }
     /**
      * Remplace les variables de template dans le XML,
-     * tous les enfants sont aussi appelés
+     * tous les enfants sont aussi appelÃ©s
      *
      * @return string
      */
@@ -107,7 +107,7 @@ class Segment implements IteratorAggregate, Countable
         return $this;
     }
     /**
-     * Affecte une variable de template à remplacer
+     * Affecte une variable de template Ã  remplacer
      *
      * @param string $key
      * @param string $value
@@ -123,7 +123,7 @@ class Segment implements IteratorAggregate, Countable
         return $this;
     }
     /**
-     * Raccourci pour récupérer un enfant
+     * Raccourci pour rÃ©cupÃ©rer un enfant
      *
      * @param string $prop
      * @return Segment
@@ -153,7 +153,7 @@ class Segment implements IteratorAggregate, Countable
         }
     }
     /**
-     * Retourne le XML parsé
+     * Retourne le XML parsÃ©
      *
      * @return string
      */

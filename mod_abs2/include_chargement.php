@@ -31,11 +31,11 @@ if (!is_int($compteur)) {
     die();
 }
 if ($compteur == "0") {
-    echo 'Chargement débuté';
+    echo 'Chargement dÃ©butÃ©';
 } elseif ($compteur == "100") {
-    echo 'Chargement terminé';
+    echo 'Chargement terminÃ©';
 } else {
-    echo 'Chargement effectué à ' . $compteur . ' %';
+    echo 'Chargement effectuÃ© Ã  ' . $compteur . ' %';
 }
 echo'<table style="border:1px solid black;width:215px;">
 <tr style="border:1px solid black">';

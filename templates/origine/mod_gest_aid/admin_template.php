@@ -23,7 +23,7 @@
 */
 
 /**
-* Appelle les sous-modèles
+* Appelle les sous-modÃ¨les
 * templates/origine/header_template.php
 * templates/origine/bandeau_template.php
  *
@@ -36,7 +36,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -79,7 +79,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -98,11 +98,11 @@
 <?php
 echo add_token_field();
 ?>
-      En activant le module, l'administrateur peut définir :
+      En activant le module, l'administrateur peut dÃ©finir :
 	  </p>
       <ul>
-      <li> pour chaque catégorie d'AID, un ou plusieurs "super-gestionnaires" parmi les utilisateurs. Ces utilisateurs auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter, supprimer ou modifier des AID, ainsi que des  élèves ou professeurs appartenant à ces AID.</li>
-      <li> pour chaque AID un ou plusieurs gestionnaires parmi les utilisateurs. Ces gestionnaires auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter ou de supprimer des élèves.</li>
+      <li> pour chaque catÃ©gorie d'AID, un ou plusieurs "super-gestionnaires" parmi les utilisateurs. Ces utilisateurs auront alors dans leur menu une rubrique supplÃ©mentaire leur permettant d'ajouter, supprimer ou modifier des AID, ainsi que des  Ã©lÃ¨ves ou professeurs appartenant Ã  ces AID.</li>
+      <li> pour chaque AID un ou plusieurs gestionnaires parmi les utilisateurs. Ces gestionnaires auront alors dans leur menu une rubrique supplÃ©mentaire leur permettant d'ajouter ou de supprimer des Ã©lÃ¨ves.</li>
       </ul>
 
 	  <fieldset class="no_bordure">
@@ -113,7 +113,7 @@ echo add_token_field();
 			   value='y'
 			   <?php if (getSettingValue('active_mod_gest_aid')=='y') echo ' checked="checked"'; ?>/>
 		<label for='activer_y'>
-		  Activer la possibilité de définir des gestionnaires d'AID ou des "super-gestionnaires" de cat&eacute;gorie d'AID
+		  Activer la possibilitÃ© de dÃ©finir des gestionnaires d'AID ou des "super-gestionnaires" de cat&eacute;gorie d'AID
 		</label>
 		<br />
 		<input type='radio'
@@ -122,7 +122,7 @@ echo add_token_field();
 			   value='n'
 			   <?php if (getSettingValue('active_mod_gest_aid')=='n') echo ' checked="checked"'; ?>/>
 		<label for='activer_n'>
-		  Désactiver la possibilité de définir des gestionnaires d'AID ou des "super-gestionnaires" de cat&eacute;gorie d'AID
+		  DÃ©sactiver la possibilitÃ© de dÃ©finir des gestionnaires d'AID ou des "super-gestionnaires" de cat&eacute;gorie d'AID
 		</label>
 	  </fieldset>
 	  <p class="center">
@@ -132,7 +132,7 @@ echo add_token_field();
 
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -154,7 +154,7 @@ echo add_token_field();
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

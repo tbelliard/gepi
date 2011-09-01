@@ -61,7 +61,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 				//echo "$sql<br />\n";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)==0){
-					// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
+					// On vÃ©rifie que la personne existe et on en rÃ©cupÃ¨re l'identifiant d'adresse (Ã©ventuellement vide)
 					$sql="SELECT adr_id, login FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 					//echo "$sql<br />\n";
 					$res1=mysql_query($sql);
@@ -82,11 +82,11 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 									$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login.<br />\n";
 								}
 								else {
-									$msg.="Compte d'utilisateur $lig1->login supprimé.<br />\n";
+									$msg.="Compte d'utilisateur $lig1->login supprimÃ©.<br />\n";
 								}
 							}
 							else {
-								$msg.="ANOMALIE: Un compte d'utilisateur existe associé au login $lig1->login, mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
+								$msg.="ANOMALIE: Un compte d'utilisateur existe associÃ© au login $lig1->login, mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
 							}
 						}
 
@@ -98,7 +98,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 							$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 						}
 						else{
-							// On supprime l'adresse si elle n'est plus associée à aucun parent
+							// On supprime l'adresse si elle n'est plus associÃ©e Ã  aucun parent
 							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
@@ -136,7 +136,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 				//echo "$sql<br />\n";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)==0){
-					// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
+					// On vÃ©rifie que la personne existe et on en rÃ©cupÃ¨re l'identifiant d'adresse (Ã©ventuellement vide)
 					$sql="SELECT adr_id, login FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 					//echo "$sql<br />\n";
 					$res1=mysql_query($sql);
@@ -158,11 +158,11 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 									$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login.<br />\n";
 								}
 								else {
-									$msg.="Compte d'utilisateur $lig1->login supprimé.<br />\n";
+									$msg.="Compte d'utilisateur $lig1->login supprimÃ©.<br />\n";
 								}
 							}
 							else {
-								$msg.="ANOMALIE: Un compte d'utilisateur existe associé au login $lig1->login, mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
+								$msg.="ANOMALIE: Un compte d'utilisateur existe associÃ© au login $lig1->login, mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
 							}
 						}
 
@@ -175,7 +175,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 							$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 						}
 						else{
-							// On supprime l'adresse si elle n'est plus associée à aucun parent
+							// On supprime l'adresse si elle n'est plus associÃ©e Ã  aucun parent
 							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
@@ -206,10 +206,10 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 	}
 
 	if(isset($suppr_resp0)){
-		// Suppression des personnes non responsables d'élèves
+		// Suppression des personnes non responsables d'Ã©lÃ¨ves
 		$suppr_resp=$suppr_resp0;
 		for($i=0;$i<count($suppr_resp);$i++){
-			// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
+			// On vÃ©rifie que la personne existe et on en rÃ©cupÃ¨re l'identifiant d'adresse (Ã©ventuellement vide)
 			$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 			//echo "$sql<br />\n";
 			$res1=mysql_query($sql);
@@ -243,7 +243,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 
 
 	if($msg==''){
-		$msg="Suppression(s) réussie(s).";
+		$msg="Suppression(s) rÃ©ussie(s).";
 	}
 }
 
@@ -259,7 +259,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$test=mysql_query($sql);
 	//echo "mysql_num_rows($test)=".mysql_num_rows($test)."<br />";
 	if(mysql_num_rows($test)>0){
-		echo "<p>Une conversion des données ".$gepiSettings['denomination_responsables']." est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es ".$gepiSettings['denomination_responsables']." est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -268,7 +268,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
-		echo "<p>Une conversion des données ".$gepiSettings['denomination_eleves']."/".$gepiSettings['denomination_responsables']." est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es ".$gepiSettings['denomination_eleves']."/".$gepiSettings['denomination_responsables']." est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -284,7 +284,7 @@ if(!getSettingValue('conv_new_resp_table')){
 				echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 			}
 
-			echo "<p>Une conversion des données ".$gepiSettings['denomination_eleves']."/".$gepiSettings['denomination_responsables']." est requise.</p>\n";
+			echo "<p>Une conversion des donnÃ©es ".$gepiSettings['denomination_eleves']."/".$gepiSettings['denomination_responsables']." est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -303,17 +303,17 @@ if ($_SESSION['statut'] == 'administrateur') {
 	echo "<a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href=\"modify_resp.php\">Ajouter un ".$gepiSettings['denomination_responsable']."</a>\n";
 	if(getSettingValue("import_maj_xml_sconet")==1){
-		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+		echo " | <a href=\"maj_import.php\">Mettre Ã  jour depuis Sconet</a>\n";
 	}
 
 	if($num_resp!=0){
-		echo " | <a href=\"index.php?num_resp=0&amp;order_by=nom,prenom\">Personnes non associées</a>\n";
+		echo " | <a href=\"index.php?num_resp=0&amp;order_by=nom,prenom\">Personnes non associÃ©es</a>\n";
 	}
 	else{
-		echo " | <a href=\"index.php?num_resp=1&amp;order_by=nom,prenom\">Personnes associées</a>\n";
+		echo " | <a href=\"index.php?num_resp=1&amp;order_by=nom,prenom\">Personnes associÃ©es</a>\n";
 	}
 
-	echo " | <a href=\"gerer_adr.php\">Gérer les adresses</a>\n";
+	echo " | <a href=\"gerer_adr.php\">GÃ©rer les adresses</a>\n";
 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 	$test_resp=mysql_query($sql);
@@ -391,19 +391,19 @@ if($val_rech!=""){
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=1;
 
-					$chaine_info_recherche.="le $crit_rech du responsable légal 1 $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech du responsable lÃ©gal 1 $mode_rech $val_rech";
 				break;
 			case "resp2":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=2;
 
-					$chaine_info_recherche.="le $crit_rech du responsable légal 2 $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech du responsable lÃ©gal 2 $mode_rech $val_rech";
 				break;
 			case "eleves":
 					$chaine_recherche="e.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp="ele";
 
-					$chaine_info_recherche.="le $crit_rech de l'élève $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech de l'Ã©lÃ¨ve $mode_rech $val_rech";
 				break;
 		}
 	}
@@ -442,7 +442,7 @@ if($val_rech!=""){
 		$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
-			echo "<p>Suppression de responsabilités sans ".$gepiSettings['denomination_eleve'].".<br />Voici la liste des identifiants de ".$gepiSettings['denomination_responsables']." qui étaient associés à des ".$gepiSettings['denomination_eleves']." inexistants: \n";
+			echo "<p>Suppression de responsabilitÃ©s sans ".$gepiSettings['denomination_eleve'].".<br />Voici la liste des identifiants de ".$gepiSettings['denomination_responsables']." qui Ã©taient associÃ©s Ã  des ".$gepiSettings['denomination_eleves']." inexistants: \n";
 			$cpt_nett=0;
 			while($lig_nett=mysql_fetch_object($test)){
 				if($cpt_nett>0){echo ", ";}
@@ -453,7 +453,7 @@ if($val_rech!=""){
 				$cpt_nett++;
 			}
 			echo ".</p>\n";
-			echo "<p>$cpt_nett associations aberrantes supprimées.</p>\n";
+			echo "<p>$cpt_nett associations aberrantes supprimÃ©es.</p>\n";
 		}
 
 		$sql="SELECT 1=1 FROM resp_pers rp
@@ -477,7 +477,7 @@ if($val_rech!=""){
 		//echo "\$cpt2=$cpt2<br />";
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp==1)){
-		// Pour ne récupérer qu'une seule occurence de pers_id:
+		// Pour ne rÃ©cupÃ©rer qu'une seule occurence de pers_id:
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
 				r.resp_legal='$num_resp' ";
@@ -514,10 +514,10 @@ if($val_rech!=""){
 
 
 	if($cpt==0){
-		echo "<p>Aucun ".$gepiSettings['denomination_responsable']." trouvé.</p>\n";
+		echo "<p>Aucun ".$gepiSettings['denomination_responsable']." trouvÃ©.</p>\n";
 		//if($chaine_recherche!="") {
 		if((isset($chaine_recherche))&&($chaine_recherche!="")) {
-			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour à l'index ".$gepiSettings['denomination_responsables']."</a></p>\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour Ã  l'index ".$gepiSettings['denomination_responsables']."</a></p>\n";
 		}
 		require("../lib/footer.inc.php");
 		die();
@@ -532,16 +532,16 @@ if($val_rech!=""){
 
 echo "<p style='font-weight:bold; text-align:center;'>";
 if("$num_resp"=="0"){
-	echo ucfirst($gepiSettings['denomination_responsables'])." sans ".$gepiSettings['denomination_eleve']." associé";
+	echo ucfirst($gepiSettings['denomination_responsables'])." sans ".$gepiSettings['denomination_eleve']." associÃ©";
 }
 elseif(($order_by=="nom,prenom")&&("$num_resp"=="1")) {
-	echo $gepiSettings['denomination_responsables']." triés par nom du ".$gepiSettings['denomination_responsable']." 1";
+	echo $gepiSettings['denomination_responsables']." triÃ©s par nom du ".$gepiSettings['denomination_responsable']." 1";
 }
 elseif(($order_by=="nom,prenom")&&("$num_resp"=="2")) {
-	echo ucfirst($gepiSettings['denomination_responsables'])." triés par nom du ".$gepiSettings['denomination_responsable']." 2";
+	echo ucfirst($gepiSettings['denomination_responsables'])." triÃ©s par nom du ".$gepiSettings['denomination_responsable']." 2";
 }
 elseif(($order_by=="nom,prenom")&&("$num_resp"=="ele")) {
-	echo ucfirst($gepiSettings['denomination_responsables'])." triés par nom d'élève";
+	echo ucfirst($gepiSettings['denomination_responsables'])." triÃ©s par nom d'Ã©lÃ¨ve";
 }
 
 if($chaine_info_recherche!=""){
@@ -586,7 +586,7 @@ for($i=100;$i<=500;$i+=100){
 	echo "<option value='$i'$selected>$i</option>\n";
 }
 echo "<option value='TOUS'>TOUS</option>\n";
-echo "</select> enregistrements à partir de l'enregistrement n°\n";
+echo "</select> enregistrements Ã  partir de l'enregistrement nÂ°\n";
 echo "<input type='text' name='debut' value='$debut' size='5' /> \n";
 
 
@@ -629,7 +629,7 @@ echo "<script type='text/javascript'>
 			document.forms.liste_resp.debut.value=0;
 		}
 		else{
-			// Il faudrait récupérer le nombre de lignes du tableau...\n";
+			// Il faudrait rÃ©cupÃ©rer le nombre de lignes du tableau...\n";
 
 if(isset($cpt)){
 	echo "			document.forms.liste_resp.debut.value=Math.min(eval(debut)+eval(limit),eval($cpt)-eval(limit));\n";
@@ -671,7 +671,7 @@ if($num_resp==0){
 			echo " checked";
 		}
 	}
-	echo " /> prénom\n";
+	echo " /> prÃ©nom\n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
@@ -724,15 +724,15 @@ else{
 	echo "<table border='0' summary='Recherche'><tr><td>parmi les </td>\n";
 	echo "<td>\n";
 	echo "<label for='champ_rech_resp1' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='champ_rech' id='champ_rech_resp1' value='resp1' checked /> responsables (<i>légal 1</i>)\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_resp1' value='resp1' checked /> responsables (<i>lÃ©gal 1</i>)\n";
 	echo "</label>\n";
 	echo "<br />\n";
 	echo "<label for='champ_rech_resp2' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='champ_rech' id='champ_rech_resp2' value='resp2' /> responsables (<i>légal 2</i>)\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_resp2' value='resp2' /> responsables (<i>lÃ©gal 2</i>)\n";
 	echo "</label>\n";
 	echo "<br />\n";
 	echo "<label for='champ_rech_eleves' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='champ_rech' id='champ_rech_eleves' value='eleves' /> élèves\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_eleves' value='eleves' /> Ã©lÃ¨ves\n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
@@ -745,7 +745,7 @@ else{
 	echo "</label>\n";
 	echo "<br />\n";
 	echo "<label for='crit_rech_prenom' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom' /> prénom\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom' /> prÃ©nom\n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
@@ -788,7 +788,7 @@ else{
 			echo " checked";
 		}
 	}
-	echo " /> prénom\n";
+	echo " /> prÃ©nom\n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
@@ -850,7 +850,7 @@ $cpt_suppr=0;
 
 //if($num_resp==0){
 if("$num_resp"=="0"){
-	// Afficher les personnes non associées à des élèves.
+	// Afficher les personnes non associÃ©es Ã  des Ã©lÃ¨ves.
 
 	//echo "<tr><td colspan='3'>TEMOIN: $num_resp</td></tr>";
 
@@ -860,7 +860,7 @@ if("$num_resp"=="0"){
 	/*
 	$ligne_titre="";
 	$ligne_titre.="<tr>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Nom prénom</td>\n";
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Nom prÃ©nom</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Supprimer</td>\n";
 	$ligne_titre.="</tr>\n";
@@ -897,7 +897,7 @@ if("$num_resp"=="0"){
 
 		$ligne_titre="";
 		$ligne_titre.="<tr>\n";
-		$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Nom prénom</td>\n";
+		$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Nom prÃ©nom</td>\n";
 		$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Adresse</td>\n";
 		$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Supprimer";
 		$ligne_titre.="<br />\n";
@@ -906,7 +906,7 @@ if("$num_resp"=="0"){
 		$ligne_titre.="<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>\n";
 		$ligne_titre.=" / ";
 		$ligne_titre.="<a href=\"javascript:modifcase('decoche')\">";
-		$ligne_titre.="<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		$ligne_titre.="<img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 
 		$ligne_titre.="</td>\n";
 		$ligne_titre.="</tr>\n";
@@ -1026,7 +1026,7 @@ if("$num_resp"=="0"){
 
 	}
 	else{
-		echo "<p>Aucun ". $gepiSettings['denomination_responsable']." n'a été trouvé dans la table 'resp_pers'.</p>\n";
+		echo "<p>Aucun ". $gepiSettings['denomination_responsable']." n'a Ã©tÃ© trouvÃ© dans la table 'resp_pers'.</p>\n";
 	}
 
 }
@@ -1035,15 +1035,15 @@ else{
 
 	// Pour pouvoir faire la recherche en suivant les liens <a href...
 	if(isset($champ_rech)){$champ_rech=my_ereg_replace("[^a-zA-Z]","",remplace_accents($champ_rech,'all'));}
-	// Une alternative commode serait de transformer les liens de tri en JavaScripts soumettant un formulaire (pas le même selon que la chaine_recherche est vide ou non)
+	// Une alternative commode serait de transformer les liens de tri en JavaScripts soumettant un formulaire (pas le mÃªme selon que la chaine_recherche est vide ou non)
 
 	echo "<table class='boireaus' align='center' summary='Responsables'>\n";
 
 	$ligne_titre="";
 	$ligne_titre.="<tr>\n";
-	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='2'>Responsable légal 1</td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='3'>Responsable légal 1</td>\n";
-	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;tri=ele'>Elève(s)</a></td>\n";
+	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='2'>Responsable lÃ©gal 1</td>\n";
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='3'>Responsable lÃ©gal 1</td>\n";
+	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;tri=ele'>ElÃ¨ve(s)</a></td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;num_resp=ele&amp;debut=$debut&amp;limit=$limit";
 	if(isset($val_rech)) {
 		$ligne_titre.="&amp;val_rech=$val_rech";
@@ -1057,9 +1057,9 @@ else{
 	if(isset($champ_rech)) {
 		$ligne_titre.="&amp;champ_rech=$champ_rech";
 	}
-	$ligne_titre.="'>Elève(s)</a></td>\n";
-	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='2'>Responsable légal 2</td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='3'>Responsable légal 2</td>\n";
+	$ligne_titre.="'>ElÃ¨ve(s)</a></td>\n";
+	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='2'>Responsable lÃ©gal 2</td>\n";
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='3'>Responsable lÃ©gal 2</td>\n";
 	$ligne_titre.="</tr>\n";
 	$ligne_titre.="<tr>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><a href='index.php?order_by=nom,prenom&amp;num_resp=1&amp;debut=$debut&amp;limit=$limit";
@@ -1075,10 +1075,10 @@ else{
 	if(isset($champ_rech)) {
 		$ligne_titre.="&amp;champ_rech=$champ_rech";
 	}
-	$ligne_titre.="'>Nom prénom</a></td>\n";
+	$ligne_titre.="'>Nom prÃ©nom</a></td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Supprimer</td>\n";
-	//$ligne_titre.="<td>Elève</td>\n";
+	//$ligne_titre.="<td>ElÃ¨ve</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><a href='index.php?order_by=nom,prenom&amp;num_resp=2&amp;debut=$debut&amp;limit=$limit";
 	if(isset($val_rech)) {
 		$ligne_titre.="&amp;val_rech=$val_rech";
@@ -1092,7 +1092,7 @@ else{
 	if(isset($champ_rech)) {
 		$ligne_titre.="&amp;champ_rech=$champ_rech";
 	}
-	$ligne_titre.="'>Nom prénom</a></td>\n";
+	$ligne_titre.="'>Nom prÃ©nom</a></td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'>Supprimer</td>\n";
 	$ligne_titre.="</tr>\n";
@@ -1100,7 +1100,7 @@ else{
 	$max_cpt_res4=0;
 
 	if(($order_by=="nom,prenom")&&($num_resp==1)){
-		// Pour ne récupérer qu'une seule occurence de pers_id:
+		// Pour ne rÃ©cupÃ©rer qu'une seule occurence de pers_id:
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
 				r.resp_legal='$num_resp'";
@@ -1281,7 +1281,7 @@ else{
 		}
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp==2)){
-		// Pour ne récupérer qu'une seule occurence de pers_id:
+		// Pour ne rÃ©cupÃ©rer qu'une seule occurence de pers_id:
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
 				r.resp_legal='$num_resp'";
@@ -1657,7 +1657,7 @@ if($cpt>0){
 	echo "<center><input type='submit' value='Valider' /></center>\n";
 }
 else{
-	echo "<p align='center'>Aucun ". $gepiSettings['denomination_responsable']." n'a été trouvé.</p>\n";
+	echo "<p align='center'>Aucun ". $gepiSettings['denomination_responsable']." n'a Ã©tÃ© trouvÃ©.</p>\n";
 }
 echo "<p><br /></p>\n";
 

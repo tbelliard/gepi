@@ -5,8 +5,8 @@
 
 //$min_max_moyclas=1;
 
-// On initialise le tableau des notes et appréciations :
-echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et appréciations'>\n";
+// On initialise le tableau des notes et apprÃ©ciations :
+echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et apprÃ©ciations'>\n";
 echo "<thead>\n";
 if($min_max_moyclas!=1) {
 	$chaine_rowspan=" rowspan='2'";
@@ -19,14 +19,14 @@ echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px; vertical-align: top;\
 if ($bull_affiche_numero == 'yes'){
 	// En attendant de corriger le bug sur $k
 	if(isset($k)) {
-		echo "Bulletin N° ".$k."/".$tab_bull['eff_classe'];
+		echo "Bulletin NÂ° ".$k."/".$tab_bull['eff_classe'];
 	}
 	else {
-		echo "Bulletin N° .../".$tab_bull['eff_classe'];
+		echo "Bulletin NÂ° .../".$tab_bull['eff_classe'];
 	}
 }
 else{
-	echo "Effectif : ".$tab_bull['eff_classe']." élèves";
+	echo "Effectif : ".$tab_bull['eff_classe']." Ã©lÃ¨ves";
 }
 echo "</font></span></td>\n";
 
@@ -39,7 +39,7 @@ if($tab_bull['affiche_nbdev']=="y"){
 	echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>Nb.dev</span></td>\n";
 }
 
-echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>&Eacute;lève</span></td>\n";
+echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>&Eacute;lÃ¨ve</span></td>\n";
 
 if ($tab_bull['affiche_graph'] == 'y')  {
 	echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>Niveaux<br />ABC<font size=\"-2\">+</font>C<font size=\"-2\">-</font>DE</span></td>\n";
@@ -49,13 +49,13 @@ if ($tab_bull['affiche_rang'] == 'y'){
 	echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'><i>Rang</i></span></td>\n";
 }
 
-// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+// Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
 if ($bull_affiche_appreciations == 'y'){
 	echo "<td colspan=\"2\"$chaine_rowspan><span class='bulletin'>".$bull_intitule_app."</span></td>\n";
 }
 
 if($min_max_moyclas!=1) {
-	// Trois colonnes séparées pour min/moy/max
+	// Trois colonnes sÃ©parÃ©es pour min/moy/max
 	echo "<td style=\"text-align: center;\" colspan=\"3\"><span class='bulletin'>Pour la classe</span></td>\n";
 }
 else{
@@ -84,10 +84,10 @@ echo "</thead>\n";
 
 
 //===============================================================================
-// Début de la partie AID de début de bulletin
-// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+// DÃ©but de la partie AID de dÃ©but de bulletin
+// Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
 if ($bull_affiche_aid == 'y') {
-	// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
+	// On attaque maintenant l'affichage des apprÃ©ciations des ActivitÃ©s Interdisciplinaires devant apparaÃ®tre en tÃªte des bulletins :
 
 	if(isset($tab_bull['eleve'][$i]['aid_b'])) {
 		for($z=0;$z<count($tab_bull['eleve'][$i]['aid_b']);$z++) {
@@ -112,7 +112,7 @@ if ($bull_affiche_aid == 'y') {
 				echo "<td>-</td>\n";
 			}
 
-			// Moyenne de l'élève
+			// Moyenne de l'Ã©lÃ¨ve
 			echo "<td style='font-weight:bold;'><span class='bulletin'>";
 			if($tab_bull['eleve'][$i]['aid_b'][$z]['aid_statut']=="") {
 				echo $tab_bull['eleve'][$i]['aid_b'][$z]['aid_note'];
@@ -147,7 +147,7 @@ if ($bull_affiche_aid == 'y') {
 				echo "<td>-</td>\n";
 			}
 
-			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+			// Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
 				//echo "<b>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
@@ -164,7 +164,7 @@ if ($bull_affiche_aid == 'y') {
 
 			// Moyenne min/classe/max de la classe
 			if($min_max_moyclas!=1) {
-				// Trois colonnes séparées pour min/moy/max
+				// Trois colonnes sÃ©parÃ©es pour min/moy/max
 				echo "<td><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']."</span></td>\n";
 				echo "<td><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']."</span></td>\n";
 				echo "<td><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']."</span></td>\n";
@@ -180,14 +180,14 @@ if ($bull_affiche_aid == 'y') {
 		}
 	}
 }
-// Fin de la partie AID de début de bulletin
+// Fin de la partie AID de dÃ©but de bulletin
 //===============================================================================
 
 //===============================================================================
-// Partie matières/groupes
+// Partie matiÃ¨res/groupes
 $categorie_precedente="";
 for($j=0;$j<count($tab_bull['groupe']);$j++) {
-	// Si l'élève suit l'option, sa note est affectée (éventuellement vide)
+	// Si l'Ã©lÃ¨ve suit l'option, sa note est affectÃ©e (Ã©ventuellement vide)
 	if(isset($tab_bull['note'][$j][$i])) {
 
 		if($tab_bull['affiche_categories']) {
@@ -204,35 +204,35 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 					if($tab_bull['affiche_coef']=='y') {$colspan++;}
 					if($tab_bull['affiche_nbdev']=='y') {$colspan++;}
 
-					// Nom de la catégorie
+					// Nom de la catÃ©gorie
 					echo "<td colspan='$colspan'><p style='padding: 0; margin:0; font-size: ".$bull_categ_font_size."px;'>".$tab_bull['nom_cat_complet'][$j]."</p></td>\n";
 
-					// Moyenne catégorie élève
+					// Moyenne catÃ©gorie Ã©lÃ¨ve
 					echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 
-					// Après la moyenne de l'élève pour la catégorie et avant la moyenne de classe
+					// AprÃ¨s la moyenne de l'Ã©lÃ¨ve pour la catÃ©gorie et avant la moyenne de classe
 					$colspan=2;
 					if($tab_bull['affiche_graph']=='y') {$colspan++;}
 					if($tab_bull['affiche_rang']=='y') {$colspan++;}
 					if ($bull_affiche_appreciations != 'y') {$colspan-=2;}
 					if($colspan>0) {
-						// Appréciation
+						// ApprÃ©ciation
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: left;' colspan='$colspan'>&nbsp;</td>\n";
 					}
 
-					// Moyenne(s) de la classe pour la catégorie
+					// Moyenne(s) de la classe pour la catÃ©gorie
 					if($min_max_moyclas!=1) {
 						// Min
 						//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
-						// Moyenne catégorie classe
+						// Moyenne catÃ©gorie classe
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 						// Max
 						//echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_max'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 					}
 					else {
-						// Moyenne catégorie classe
+						// Moyenne catÃ©gorie classe
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]])."</td>\n";
 					}
 				}
@@ -260,17 +260,17 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 					if($min_max_moyclas!=1) {
 						// Min
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
-						// Moyenne catégorie classe
+						// Moyenne catÃ©gorie classe
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]]."</td>\n";
 						// Max
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>-</td>\n";
 					}
 					else {
-						// Moyenne catégorie classe
+						// Moyenne catÃ©gorie classe
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$j]]."</td>\n";
 					}
 
-					// Moyenne catégorie élève
+					// Moyenne catÃ©gorie Ã©lÃ¨ve
 					echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$j]]."</td>\n";
 
 					$colspan=2;
@@ -278,7 +278,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 					if($tab_bull['affiche_rang']=='y') {$colspan++;}
 					if ($bull_affiche_appreciations != 'y') {$colspan-=2;}
 					if($colspan>0) {
-						// Appréciation
+						// ApprÃ©ciation
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: left;' colspan='$colspan'>-</td>\n";
 					}
 				}
@@ -318,7 +318,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 			$info_nom_matiere=$tab_bull['groupe'][$j]['description'];
 		}
 		else {
-			// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
+			// Pour parer au bug sur la suppression de matiÃ¨re alors que des groupes sont conservÃ©s:
 			if(isset($tab_bull['groupe'][$j]['matiere']['nom_complet'])) {
 				$info_nom_matiere=$tab_bull['groupe'][$j]['matiere']['nom_complet'];
 			}
@@ -390,7 +390,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		if ($bull_affiche_appreciations == 'y') {
 
 			if(!isset($tab_bull['groupe'][$j][$i]['cn_note'])) {
-				// Appréciation
+				// ApprÃ©ciation
 				echo "<td colspan='2' style='text-align: left;'><span class='bulletin'>";
 				echo texte_html_ou_pas($tab_bull['app'][$j][$i]);
 				echo "</span></td>\n";
@@ -408,13 +408,13 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 			}
 			else {
 				$n = 0;
-				// Première boite
+				// PremiÃ¨re boite
 				echo "<td style='text-align: left; height: ".$col_hauteur."px; width: ".$col_boite_largeur."px;'><span class='bulletin'>";
 				echo $tab_bull['groupe'][$j][$i]['cn_nom'][$n].":".nf($tab_bull['groupe'][$j][$i]['cn_note'][$n]);
 				echo "</span></td>\n";
 				$n++;
 
-				// Appréciation
+				// ApprÃ©ciation
 				echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>";
 				echo texte_html_ou_pas($tab_bull['app'][$j][$i]);
 				echo "</span></td>\n";
@@ -456,14 +456,14 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		echo "</tr>\n";
 	}
 }
-// Fin de la partie Matières/groupes
+// Fin de la partie MatiÃ¨res/groupes
 //===============================================================================
 
 //===============================================================================
-// Début de la partie AID de fin de bulletin
-// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+// DÃ©but de la partie AID de fin de bulletin
+// Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
 if ($bull_affiche_aid == 'y') {
-	// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en fin des bulletins :
+	// On attaque maintenant l'affichage des apprÃ©ciations des ActivitÃ©s Interdisciplinaires devant apparaÃ®tre en fin des bulletins :
 
 	if(isset($tab_bull['eleve'][$i]['aid_e'])) {
 		for($z=0;$z<count($tab_bull['eleve'][$i]['aid_e']);$z++) {
@@ -488,7 +488,7 @@ if ($bull_affiche_aid == 'y') {
 				echo "<td style='text-align: center;'>-</td>\n";
 			}
 
-			// Moyenne de l'élève
+			// Moyenne de l'Ã©lÃ¨ve
 			echo "<td style='text-align: center; font-weight:bold;'><span class='bulletin'>";
 			if($tab_bull['eleve'][$i]['aid_e'][$z]['aid_statut']=="") {
 				echo $tab_bull['eleve'][$i]['aid_e'][$z]['aid_note'];
@@ -523,7 +523,7 @@ if ($bull_affiche_aid == 'y') {
 				echo "<td style='text-align: center;'>-</td>\n";
 			}
 
-			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+			// Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
 				//echo "<b>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
@@ -540,7 +540,7 @@ if ($bull_affiche_aid == 'y') {
 
 			// Moyenne min/classe/max de la classe
 			if($min_max_moyclas!=1) {
-				// Trois colonnes séparées pour min/moy/max
+				// Trois colonnes sÃ©parÃ©es pour min/moy/max
 				echo "<td style='text-align: center;'><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']."</span></td>\n";
 				echo "<td style='text-align: center;'><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']."</span></td>\n";
 				echo "<td style='text-align: center;'><span class='bulletin'>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']."</span></td>\n";
@@ -560,14 +560,14 @@ if ($bull_affiche_aid == 'y') {
 //===============================================================================
 
 //===============================================================================
-// Début de la partie moyenne générale
+// DÃ©but de la partie moyenne gÃ©nÃ©rale
 if($tab_bull['display_moy_gen']=='y') {
-	// Affichage des moyennes générales
+	// Affichage des moyennes gÃ©nÃ©rales
 	if ($tab_bull['test_coef']!=0) {
 
 		$total_coeff_eleve=0;
 		for($j=0;$j<count($tab_bull['groupe']);$j++) {
-			// Si l'élève suit l'option
+			// Si l'Ã©lÃ¨ve suit l'option
 			if(isset($tab_bull['coef_eleve'][$i][$j])) {
 				$total_coeff_eleve+=$tab_bull['coef_eleve'][$i][$j];
 			}
@@ -575,7 +575,7 @@ if($tab_bull['display_moy_gen']=='y') {
 
 		if ($total_coeff_eleve) {
 			echo "<tr>\n";
-			echo "<td style='text-align: left;'><span class='bulletin'><b>Moyenne générale</b></span></td>\n";
+			echo "<td style='text-align: left;'><span class='bulletin'><b>Moyenne gÃ©nÃ©rale</b></span></td>\n";
 
 			// Coef
 			if($tab_bull['affiche_coef']=='y') {
@@ -644,19 +644,19 @@ if($tab_bull['display_moy_gen']=='y') {
 		}
 	}
 }
-// Fin de la partie moyenne générale
+// Fin de la partie moyenne gÃ©nÃ©rale
 //===============================================================================
 
 if($affiche_deux_moy_gen==1) {
 	//===============================================================================
-	// Début de la partie moyenne générale avec coef à 1
+	// DÃ©but de la partie moyenne gÃ©nÃ©rale avec coef Ã  1
 	if($tab_bull['display_moy_gen']=='y') {
-		// Affichage des moyennes générales
+		// Affichage des moyennes gÃ©nÃ©rales
 		if ($tab_bull['test_coef']!=0) {
 	
 			$total_coeff_eleve=0;
 			for($j=0;$j<count($tab_bull['groupe']);$j++) {
-				// Si l'élève suit l'option
+				// Si l'Ã©lÃ¨ve suit l'option
 				if(isset($tab_bull['coef_eleve'][$i][$j])) {
 					$total_coeff_eleve+=$tab_bull['coef_eleve'][$i][$j];
 				}
@@ -664,7 +664,7 @@ if($affiche_deux_moy_gen==1) {
 	
 			if ($total_coeff_eleve) {
 				echo "<tr>\n";
-				echo "<td style='text-align: left;'><span class='bulletin'><b>Moy.gén.non coef.</b></span></td>\n";
+				echo "<td style='text-align: left;'><span class='bulletin'><b>Moy.gÃ©n.non coef.</b></span></td>\n";
 	
 				// Coef
 				if($tab_bull['affiche_coef']=='y') {
@@ -737,7 +737,7 @@ if($affiche_deux_moy_gen==1) {
 			}
 		}
 	}
-	// Fin de la partie moyenne générale avec coef à 1
+	// Fin de la partie moyenne gÃ©nÃ©rale avec coef Ã  1
 	//===============================================================================
 }
 

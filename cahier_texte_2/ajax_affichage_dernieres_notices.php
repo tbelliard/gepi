@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Initialisations files
@@ -45,9 +45,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 //commente, uniquement utile pour la completion
@@ -64,7 +64,7 @@ $groups = $utilisateur->getGroupes();
 
 echo "<table width='100%' cellspacing='5px'>";
 $i = 0;
-//pour chaque groupe, on récupère un compte rendu et un travail à  faire
+//pour chaque groupe, on rÃ©cupÃ¨re un compte rendu et un travail Ã Â  faire
 foreach ($groups as $group) {
 	$i = $i + 1;
 	//on affiche sur deux colonne : % est l'operateur pour modulo
@@ -85,7 +85,7 @@ foreach ($groups as $group) {
 	echo $group->getDescriptionAvecClasses();
 	echo "</a></td></tr>";
 
-	//récupération des derniers compte rendu
+	//rÃ©cupÃ©ration des derniers compte rendu
 	$criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
 	$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, "0", "!=");
 	$criteria->add(CahierTexteCompteRenduPeer::DATE_CT, null, Criteria::ISNOTNULL);
@@ -105,7 +105,7 @@ foreach ($groups as $group) {
 	}
 	echo "</td>";
 
-	//récupération et affichage du dernier travail à faire
+	//rÃ©cupÃ©ration et affichage du dernier travail Ã  faire
 	$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
 	$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $debutCdt, ">=");
 	$criteria->addDescendingOrderByColumn(CahierTexteTravailAFairePeer::DATE_CT);
@@ -121,7 +121,7 @@ foreach ($groups as $group) {
 	echo "</tr>\n";
 
 	echo "<tr>";
-	//récupération et affichage du deuxieme compte rendu
+	//rÃ©cupÃ©ration et affichage du deuxieme compte rendu
 	echo "<td style=\"width:50%;\" valign=\"top\">";
 	if ($ctCompteRendus && $ctCompteRendus->count() > 1) {
 		$compte_rendu = $ctCompteRendus->getNext();
@@ -129,7 +129,7 @@ foreach ($groups as $group) {
 	}
 	echo "</td>";
 
-	//récupération et affichage de la derniere notice privee
+	//rÃ©cupÃ©ration et affichage de la derniere notice privee
 	$criteria = new Criteria();
 	$criteria->add(CahierTexteNoticePriveePeer::DATE_CT, $debutCdt, ">=");
 	$criteria->addDescendingOrderByColumn(CahierTexteNoticePriveePeer::DATE_CT);

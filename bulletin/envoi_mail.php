@@ -20,7 +20,7 @@ if ($resultat_session == 'c') {
 }
 
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
@@ -59,6 +59,6 @@ $envoi=mail($destinataire,
 	$message_mail,
 	"From: $expediteur\r\n"."Reply-to: $expediteur\r\n"."X-Mailer: PHP/" . phpversion());
 
-if($envoi) {echo " <img src='../images/enabled.png' width='20' height='20' alt='Message envoyé avec succès' title='Message envoyé avec succès' />";}
+if($envoi) {echo " <img src='../images/enabled.png' width='20' height='20' alt='Message envoyÃ© avec succÃ¨s' title='Message envoyÃ© avec succÃ¨s' />";}
 else {echo " <img src='../images/icons/flag.png' width='17' height='18' alt='Echec de l envoi du message' title='Echec de l envoi du message' />";}
 ?>

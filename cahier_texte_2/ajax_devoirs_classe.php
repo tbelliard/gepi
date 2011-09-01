@@ -22,7 +22,7 @@
  */
 
 header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -44,9 +44,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -55,13 +55,13 @@ if ($utilisateur == null) {
 	die();
 }
 
-// Récupération des variables
+// RÃ©cupÃ©ration des variables
 $id_classe=isset($_GET["id_classe"]) ? $_GET["id_classe"] : NULL;
 $today=isset($_GET["today"]) ? $_GET["today"] : NULL;
 
 //debug_var();
 
-// Contrôler que le prof est associé à cette classe?
+// ContrÃ´ler que le prof est associÃ© Ã  cette classe?
 
 $id_classe=preg_replace("/[^0-9]/","",$id_classe);
 $today=preg_replace("/[^0-9]/","",$today);

@@ -46,12 +46,12 @@ include("../lib/initialisation_annee.inc.php");
 $liste_tables_del = $liste_tables_del_etape_eleves;
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 1";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des Ã©lÃ¨ves - Etape 1";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 
 //==================================
-// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+// RNE de l'Ã©tablissement pour comparer avec le RNE de l'Ã©tablissement de l'annÃ©e prÃ©cÃ©dente
 $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 //==================================
 
@@ -63,47 +63,47 @@ $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves</h3></center>\n";
+echo "<center><h3 class='gepi'>PremiÃ¨re phase d'initialisation<br />Importation des Ã©lÃ¨ves</h3></center>\n";
 
 
 if (!isset($_POST["action"])) {
 	//
-	// On sélectionne le fichier à importer
+	// On sÃ©lectionne le fichier Ã  importer
 	//
 
-	echo "<p>Vous allez effectuer la première étape : elle consiste à importer le fichier <b>g_eleves.csv</b> contenant les données élèves.</p>\n";
-	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
+	echo "<p>Vous allez effectuer la premiÃ¨re Ã©tape : elle consiste Ã  importer le fichier <b>g_eleves.csv</b> contenant les donnÃ©es Ã©lÃ¨ves.</p>\n";
+	echo "<p>Les champs suivants doivent Ãªtre prÃ©sents, dans l'ordre, et <b>sÃ©parÃ©s par un point-virgule</b> : </p>\n";
 	echo "<ul><li>Nom</li>\n" .
-			"<li>Prénom</li>\n" .
+			"<li>PrÃ©nom</li>\n" .
 			"<li>Date de naissance au format JJ/MM/AAAA</li>\n" .
-			"<li>n° identifiant interne à l'établissement (indispensable : c'est ce numéro qui est utilisé pour faire la liaison lors des autres importations)</li>\n" .
-			"<li>n° identifiant national</li>\n" .
-			"<li>Code établissement précédent</li>\n" .
+			"<li>nÂ° identifiant interne Ã  l'Ã©tablissement (indispensable : c'est ce numÃ©ro qui est utilisÃ© pour faire la liaison lors des autres importations)</li>\n" .
+			"<li>nÂ° identifiant national</li>\n" .
+			"<li>Code Ã©tablissement prÃ©cÃ©dent</li>\n" .
 			"<li>Doublement (OUI ou NON)</li>\n" .
-			"<li>Régime (INTERN ou EXTERN ou IN.EX. ou DP DAN)</li>\n" .
+			"<li>RÃ©gime (INTERN ou EXTERN ou IN.EX. ou DP DAN)</li>\n" .
 			"<li>Sexe (F ou M)</li>\n" .
 			"</ul>\n";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves.csv</b>.</p>\n";
+	echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>g_eleves.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
-	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier Ã  importer comporte une premiÃ¨re ligne d'en-tÃªte (non vide) Ã  ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' />\n";
 	echo "</form>\n";
 
 } else {
 	//
-	// Quelque chose a été posté
+	// Quelque chose a Ã©tÃ© postÃ©
 	//
 	if ($_POST['action'] == "save_data") {
 		check_token(false);
 		//
-		// On enregistre les données dans la base.
-		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
+		// On enregistre les donnÃ©es dans la base.
+		// Le fichier a dÃ©jÃ  Ã©tÃ© affichÃ©, et l'utilisateur est sÃ»r de vouloir enregistrer
 		//
 
-		// Première étape : on vide les tables
+		// PremiÃ¨re Ã©tape : on vide les tables
 
 		$j=0;
 		while ($j < count($liste_tables_del)) {
@@ -119,7 +119,7 @@ if (!isset($_POST["action"])) {
 			$j++;
 		}
 
-		// Suppression des comptes d'élèves:
+		// Suppression des comptes d'Ã©lÃ¨ves:
 		$sql="DELETE FROM utilisateurs WHERE statut='eleves';";
 		$del=mysql_query($sql);
 
@@ -147,15 +147,15 @@ if (!isset($_POST["action"])) {
 			//echo "\$reg_id_int=$reg_id_int<br />\n";
 			//==========================
 
-			// On nettoie et on vérifie :
+			// On nettoie et on vÃ©rifie :
 			//$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
-			//$reg_nom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)));
-			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
+			//$reg_nom = preg_replace("/[^A-Za-z .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim(strtoupper($reg_nom)));
+			$reg_nom = preg_replace("/Ã†/","AE",preg_replace("/Ã¦/","ae",preg_replace("/Â¼/","OE",preg_replace("/Â½/","oe",preg_replace("/[^A-Za-z .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim(strtoupper($reg_nom)))))));
 
 			if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
-			//$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
-			//$reg_prenom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom));
-			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+			//$reg_prenom = preg_replace("/[^A-Za-z .\-Ã©Ã¨Ã¼Ã«Ã¯Ã¤Ãª]/","",trim($reg_prenom));
+			//$reg_prenom = preg_replace("/[^A-Za-z .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim($reg_prenom));
+			$reg_prenom = preg_replace("/Ã†/","AE",preg_replace("/Ã¦/","ae",preg_replace("/Â¼/","OE",preg_replace("/Â½/","oe",preg_replace("/[^A-Za-z .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim($reg_prenom))))));
 
 			if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
 			$naissance = explode("/", $reg_naissance);
@@ -185,8 +185,8 @@ if (!isset($_POST["action"])) {
 
 			if ($reg_sexe != "F" AND $reg_sexe != "M") $reg_sexe = "F";
 
-			// Maintenant que tout est propre, on fait un test sur la table eleves pour s'assurer que l'élève n'existe pas déjà.
-			// Ca permettra d'éviter d'enregistrer des élèves en double
+			// Maintenant que tout est propre, on fait un test sur la table eleves pour s'assurer que l'Ã©lÃ¨ve n'existe pas dÃ©jÃ .
+			// Ca permettra d'Ã©viter d'enregistrer des Ã©lÃ¨ves en double
 
 			$test = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_int . "'"), 0);
 
@@ -197,20 +197,20 @@ if (!isset($_POST["action"])) {
 			//==========================
 
 			if ($test == 0) {
-				// Test négatif : aucun élève avec cet ID... on enregistre !
+				// Test nÃ©gatif : aucun Ã©lÃ¨ve avec cet ID... on enregistre !
 
-				// On génère un login
+				// On gÃ©nÃ¨re un login
 				$reg_login = preg_replace("/\040/","_", $reg_nom);
 				//====================================
 				// AJOUT: boireaus
-				$reg_login = strtr($reg_login,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+				$reg_login = strtr($reg_login,"Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
 				//====================================
 				$reg_login = preg_replace("/[^a-zA-Z]/", "", $reg_login);
 				if (strlen($reg_login) > 9) $reg_login = substr($reg_login, 0, 9);
 				//====================================
 				// MODIF: boireaus
 				//$reg_login .= "_" . substr($reg_prenom, 0, 1);
-				$reg_login .= "_" . strtr(substr($reg_prenom, 0, 1),"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+				$reg_login .= "_" . strtr(substr($reg_prenom, 0, 1),"Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
 				//====================================
 				$reg_login = strtoupper($reg_login);
 
@@ -218,7 +218,7 @@ if (!isset($_POST["action"])) {
 				while (true) {
 					$test_login = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE login = '" . $reg_login . "'"), 0);
 					if ($test_login != 0) {
-						$reg_login .= strtr(substr($reg_prenom, $p, 1), "àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ", "aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+						$reg_login .= strtr(substr($reg_prenom, $p, 1), "Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡", "aaaeeeeiioouuucAAAEEEEIIOOUUUC");
 						$p++;
 					} else {
 						break 1;
@@ -226,14 +226,14 @@ if (!isset($_POST["action"])) {
 					$reg_login = strtoupper($reg_login);
 				}
 
-				// Normalement on a maintenant un login dont on est sûr qu'il est unique...
+				// Normalement on a maintenant un login dont on est sÃ»r qu'il est unique...
 
 				//==========================
 				// DEBUG
-				//echo "On va enregistrer l'élève avec le login \$reg_login=$reg_login</p>\n";
+				//echo "On va enregistrer l'Ã©lÃ¨ve avec le login \$reg_login=$reg_login</p>\n";
 				//==========================
 
-				// On insert les données
+				// On insert les donnÃ©es
 
 				$insert = mysql_query("INSERT INTO eleves SET " .
 						"no_gep = '" . $reg_id_nat . "', " .
@@ -251,7 +251,7 @@ if (!isset($_POST["action"])) {
 				} else {
 					$total++;
 
-					// On enregistre l'établissement d'origine, le régime, et si l'élève est redoublant
+					// On enregistre l'Ã©tablissement d'origine, le rÃ©gime, et si l'Ã©lÃ¨ve est redoublant
 					//============================================
 					if (($reg_etab_prec != '')&&($reg_id_int != '')) {
 						/*
@@ -271,7 +271,7 @@ if (!isset($_POST["action"])) {
 									$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_id_int', id_etablissement='$reg_etab_prec';";
 									$insert_etab=mysql_query($sql);
 									if (!$insert_etab) {
-										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
+										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'Ã©lÃ¨ve $reg_nom $reg_prenom Ã  l'Ã©tablissement $reg_etab_prec.</p>\n";
 										$error++;
 										echo mysql_error();
 									}
@@ -280,7 +280,7 @@ if (!isset($_POST["action"])) {
 									$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab_prec' WHERE id_eleve='$reg_id_int';";
 									$update_etab=mysql_query($sql);
 									if (!$update_etab) {
-										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
+										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'Ã©lÃ¨ve $reg_nom $reg_prenom Ã  l'Ã©tablissement $reg_etab_prec.</p>\n";
 										$error++;
 										echo mysql_error();
 									}
@@ -288,17 +288,17 @@ if (!isset($_POST["action"])) {
 							}
 						}
 						else {
-							// Si le RNE de l'établissement courant (celui du GEPI) n'est pas renseigné, on insère les nouveaux enregistrements, mais on ne met pas à jour au risque d'écraser un enregistrement correct avec l'info que l'élève de 1ère était en 2nde dans le même établissement.
+							// Si le RNE de l'Ã©tablissement courant (celui du GEPI) n'est pas renseignÃ©, on insÃ¨re les nouveaux enregistrements, mais on ne met pas Ã  jour au risque d'Ã©craser un enregistrement correct avec l'info que l'Ã©lÃ¨ve de 1Ã¨re Ã©tait en 2nde dans le mÃªme Ã©tablissement.
 							// Il suffira de faire un
 							//       DELETE FROM j_eleves_etablissements WHERE id_etablissement='$gepiSchoolRne';
-							// une fois le RNE renseigné.
+							// une fois le RNE renseignÃ©.
 							$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_id_int';";
 							$test_etab=mysql_query($sql);
 							if(mysql_num_rows($test_etab)==0){
 								$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_id_int', id_etablissement='$reg_etab_prec';";
 								$insert_etab=mysql_query($sql);
 								if (!$insert_etab) {
-									//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
+									//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'Ã©lÃ¨ve $reg_nom $reg_prenom Ã  l'Ã©tablissement $reg_etab_prec.</p>\n";
 									$error++;
 									echo mysql_error();
 								}
@@ -337,32 +337,32 @@ if (!isset($_POST["action"])) {
 		}
 
 		if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>\n";
-		if ($total > 0) echo "<p>" . $total . " élèves ont été enregistrés.</p>\n";
+		if ($total > 0) echo "<p>" . $total . " Ã©lÃ¨ves ont Ã©tÃ© enregistrÃ©s.</p>\n";
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php'>Revenir Ã  la page prÃ©cÃ©dente</a></p>\n";
 
-		// On sauvegarde le témoin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
+		// On sauvegarde le tÃ©moin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
 		saveSetting("conv_new_resp_table", 0);
 
 	} else if ($_POST['action'] == "upload_file") {
 		check_token(false);
 		//
-		// Le fichier vient d'être envoyé et doit être traité
-		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
-		// en proposant des champs de saisie pour modifier les données si on le souhaite
+		// Le fichier vient d'Ãªtre envoyÃ© et doit Ãªtre traitÃ©
+		// On va donc afficher le contenu du fichier tel qu'il va Ãªtre enregistrÃ© dans Gepi
+		// en proposant des champs de saisie pour modifier les donnÃ©es si on le souhaite
 		//
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
-		// autant forcer l'utilisateur à être rigoureux
+		// On vÃ©rifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
+		// autant forcer l'utilisateur Ã  Ãªtre rigoureux
 		if(strtolower($csv_file['name']) == "g_eleves.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
 
 			if(!$fp) {
-				// Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
+				// Aie : on n'arrive pas Ã  ouvrir le fichier... Pas bon.
 				echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
 				echo "<p><a href='eleves.php'>Cliquer ici </a> pour recommencer !</p>\n";
 			} else {
@@ -370,11 +370,11 @@ if (!isset($_POST["action"])) {
 				// Fichier ouvert ! On attaque le traitement
 
 				// On va stocker toutes les infos dans un tableau
-				// Une ligne du CSV pour une entrée du tableau
+				// Une ligne du CSV pour une entrÃ©e du tableau
 				$data_tab = array();
 
 				//=========================
-				// On lit une ligne pour passer la ligne d'entête:
+				// On lit une ligne pour passer la ligne d'entÃªte:
 				if($en_tete=="yes") {
 					$ligne = fgets($fp, 4096);
 				}
@@ -389,29 +389,29 @@ if (!isset($_POST["action"])) {
 							$tabligne=explode(";",$ligne);
 
 							// 0 : Nom
-							// 1 : Prénom
+							// 1 : PrÃ©nom
 							// 2 : Date de naissance
 							// 3 : identifiant interne
 							// 4 : identifiant national
-							// 5 : établissement précédent
+							// 5 : Ã©tablissement prÃ©cÃ©dent
 							// 6 : Doublement (OUI || NON)
-							// 7 : Régime : INTERN || EXTERN || IN.EX. || DP DAN
+							// 7 : RÃ©gime : INTERN || EXTERN || IN.EX. || DP DAN
 							// 8 : Sexe : F || M
 
-							// On nettoie et on vérifie :
+							// On nettoie et on vÃ©rifie :
 							//=====================================
 							// MODIF: boireaus
 							//$tabligne[0] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[0])));
-							//$tabligne[0] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])));
-							$tabligne[0] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
+							//$tabligne[0] = preg_replace("/[^A-Za-z .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim(strtoupper($tabligne[0])));
+							$tabligne[0] = preg_replace("/Ã†/","AE",preg_replace("/Ã¦/","ae",preg_replace("/Â¼/","OE",preg_replace("/Â½/","oe",preg_replace("/[^A-Za-z .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim(strtoupper($tabligne[0])))))));
 							//=====================================
 							if (strlen($tabligne[0]) > 50) {$tabligne[0] = substr($tabligne[0], 0, 50);}
 
 							//=====================================
 							// MODIF: boireaus
-							//$tabligne[1] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[1]));
-							//$tabligne[1] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]));
-							$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
+							//$tabligne[1] = preg_replace("/[^A-Za-z .\-Ã©Ã¨Ã¼Ã«Ã¯Ã¤Ãª]/","",trim($tabligne[1]));
+							//$tabligne[1] = preg_replace("/[^A-Za-z .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim($tabligne[1]));
+							$tabligne[1] = preg_replace("/Ã†/","AE",preg_replace("/Ã¦/","ae",preg_replace("/Â¼/","OE",preg_replace("/Â½/","oe",preg_replace("/[^A-Za-z .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim($tabligne[1]))))));
 							//=====================================
 							if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
@@ -419,7 +419,7 @@ if (!isset($_POST["action"])) {
 							if (!preg_match("/[0-9]/", $naissance[0]) OR strlen($naissance[0]) > 2 OR strlen($naissance[0]) == 0) $naissance[0] = "00";
 							if (strlen($naissance[0]) == 1) $naissance[0] = "0" . $naissance[0];
 
-							// Au cas où la date de naissance serait vraiment mal fichue:
+							// Au cas oÃ¹ la date de naissance serait vraiment mal fichue:
 							if(!isset($naissance[1])) {
 								$naissance[1]="00";
 							}
@@ -427,7 +427,7 @@ if (!isset($_POST["action"])) {
 							if (!preg_match("/[0-9]/", $naissance[1]) OR strlen($naissance[1] OR strlen($naissance[1]) == 0) > 2) $naissance[1] = "00";
 							if (strlen($naissance[1]) == 1) $naissance[1] = "0" . $naissance[1];
 
-							// Au cas où la date de naissance serait vraiment mal fichue:
+							// Au cas oÃ¹ la date de naissance serait vraiment mal fichue:
 							if(!isset($naissance[2])) {
 								$naissance[2]="0000";
 							}
@@ -469,7 +469,7 @@ if (!isset($_POST["action"])) {
 								$data_tab[$k]["doublement"] = $tabligne[6];
 								$data_tab[$k]["regime"] = $tabligne[7];
 								$data_tab[$k]["sexe"] = $tabligne[8];
-								// On incrémente pour le prochain enregistrement
+								// On incrÃ©mente pour le prochain enregistrement
 								$k++;
 							}
 						}
@@ -478,13 +478,13 @@ if (!isset($_POST["action"])) {
 				fclose($fp);
 
 				// Fin de l'analyse du fichier.
-				// Maintenant on va afficher tout ça.
+				// Maintenant on va afficher tout Ã§a.
 
 				echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>\n";
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
-				echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
-				echo "<tr><th>Nom</th><th>Prénom</th><th>Sexe</th><th>Date de naissance</th><th>n° étab.</th><th>n° nat.</th><th>Code étab.</th><th>Double.</th><th>Régime</th></tr>\n";
+				echo "<table class='boireaus' border='1' summary='Tableau des Ã©lÃ¨ves'>\n";
+				echo "<tr><th>Nom</th><th>PrÃ©nom</th><th>Sexe</th><th>Date de naissance</th><th>nÂ° Ã©tab.</th><th>nÂ° nat.</th><th>Code Ã©tab.</th><th>Double.</th><th>RÃ©gime</th></tr>\n";
 
 				$alt=1;
 				for ($i=0;$i<$k;$i++) {
@@ -530,7 +530,7 @@ if (!isset($_POST["action"])) {
 				}
 
 				echo "</table>\n";
-				echo "$k élèves ont été détectés dans le fichier.<br />\n";
+				echo "$k Ã©lÃ¨ves ont Ã©tÃ© dÃ©tectÃ©s dans le fichier.<br />\n";
 				echo "<input type='submit' value='Enregistrer' />\n";
 
 				echo "</form>\n";
@@ -538,11 +538,11 @@ if (!isset($_POST["action"])) {
 
 		} else if (trim($csv_file['name'])=='') {
 
-			echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+			echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 			echo "<a href='eleves.php'>Cliquer ici </a> pour recommencer !</p>\n";
 
 		} else {
-			echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+			echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
 			echo "<a href='eleves.php'>Cliquer ici </a> pour recommencer !</p>";
 		}
 	}

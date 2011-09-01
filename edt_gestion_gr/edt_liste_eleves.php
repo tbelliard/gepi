@@ -26,7 +26,7 @@
 
 // ========== Initialisation =============
 
-$titre_page = "Gérer les groupes de l'EdT<br />Elèves";
+$titre_page = "GÃ©rer les groupes de l'EdT<br />ElÃ¨ves";
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
@@ -43,7 +43,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=2");
     die();
@@ -71,22 +71,22 @@ $rep_gr = mysql_fetch_array($query_i);
 
 $aff_entete = '<p style="color: brown; border: 1px solid brown; padding: 2px;">'.$rep_gr["nom"].' :</p>'."\n";
 
-// On traite les entrées dans le groupe
+// On traite les entrÃ©es dans le groupe
 if ($id_eleve != NULL AND $action != 'del_eleve_gr') {
-	// On vérifie s'il s'agit de la classe entière
+	// On vÃ©rifie s'il s'agit de la classe entiÃ¨re
 	if ($id_eleve == "tous") {
-		// la classe $classe_e doit alors être entrée entièrement dans ce groupe
-		echo 'Cette fonctionnalité n\'est pas encore prête, désolé';
+		// la classe $classe_e doit alors Ãªtre entrÃ©e entiÃ¨rement dans ce groupe
+		echo 'Cette fonctionnalitÃ© n\'est pas encore prÃªte, dÃ©solÃ©';
 
 	}else{
 
-		// Un seul élève est appelé : $id_eleve
+		// Un seul Ã©lÃ¨ve est appelÃ© : $id_eleve
 		if (is_numeric($id_eleve)) {
 
 			$sql_el = "INSERT INTO edt_gr_eleves (id, id_gr_nom, id_eleve) VALUES ('', '".$id_gr."', '".$id_eleve."')";
-			$query_el = mysql_query($sql_el) OR trigger_error('Impossible d\'enregistrer cet élève.', E_USER_ERROR);
+			$query_el = mysql_query($sql_el) OR trigger_error('Impossible d\'enregistrer cet Ã©lÃ¨ve.', E_USER_ERROR);
 			//echo $sql_el;
-			// On vérifie si sa classe est déjà enregistrée dans la base sinon on l'enregistre
+			// On vÃ©rifie si sa classe est dÃ©jÃ  enregistrÃ©e dans la base sinon on l'enregistre
 			$id_classe_ele = get_class_from_ele_login(get_login_eleve($id_eleve));
 			$test = mysql_query("SELECT id_classe, id FROM edt_gr_classes WHERE id_gr_nom = '".$id_gr."' LIMIT 1");
 			if (mysql_num_rows($test) >= 1) {
@@ -116,20 +116,20 @@ if ($id_eleve != NULL AND $action != 'del_eleve_gr') {
 	}
 } // if ($id_eleve != NULL)
 elseif($action == "del_eleve_gr"){
-	// Il est demandé d'effacer un élève d'un groupe
+	// Il est demandÃ© d'effacer un Ã©lÃ¨ve d'un groupe
 	if (is_numeric($id_eleve) AND is_numeric($id_gr)) {
-		// Après cette petite vérfication, on efface
+		// AprÃ¨s cette petite vÃ©rfication, on efface
 		$sql_del = "DELETE FROM edt_gr_eleves WHERE id_gr_nom = '".$id_gr."' AND id_eleve = '".$id_eleve."' LIMIT 1";
-		$query_del = mysql_query($sql_del) OR trigger_error('Impossible d\'effacer cet élève !', E_USER_ERROR);
+		$query_del = mysql_query($sql_del) OR trigger_error('Impossible d\'effacer cet Ã©lÃ¨ve !', E_USER_ERROR);
 
 	}
 }
 
 
 // On affiche les trois colonnes :
-// à droite : la liste actuelle des élèves de ce gr
-// à gauche la liste des classes
-// au milieu, la liste des élèves d'une classe
+// Ã  droite : la liste actuelle des Ã©lÃ¨ves de ce gr
+// Ã  gauche la liste des classes
+// au milieu, la liste des Ã©lÃ¨ves d'une classe
 
 // ------------------------------------------- DIV de gauche ------------------------------------------ //
 
@@ -145,25 +145,25 @@ elseif($action == "del_eleve_gr"){
 		$aff_classes_g .= "
 			<tr>
 				<td style=\"width: 196px;\">
-					<a href=\"./edt_liste_eleves.php?id_gr=".$id_gr."&amp;cla=".$liste_classe[$a]["id"]."\">Elèves de la ".$liste_classe[$a]["classe"]."</a>
+					<a href=\"./edt_liste_eleves.php?id_gr=".$id_gr."&amp;cla=".$liste_classe[$a]["id"]."\">ElÃ¨ves de la ".$liste_classe[$a]["classe"]."</a>
 				</td>
 			</tr>\n";
 	}
 
 // ------------------------------------------- DIV du milieu ------------------------------------------ //
 
-// Affichage de la liste des élèves de la classe choisie
+// Affichage de la liste des Ã©lÃ¨ves de la classe choisie
 if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "classe") {
 
 
 	$aff_nom_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$classe_e."'"));
 
-	// Récupérer la liste des élèves de la classe en question
+	// RÃ©cupÃ©rer la liste des Ã©lÃ¨ves de la classe en question
 	$req_ele = mysql_query("SELECT DISTINCT e.login, e.id_eleve, nom, prenom, sexe
 					FROM j_eleves_classes jec, eleves e
 					WHERE id_classe = '".$classe_e."'
 					AND jec.login = e.login ORDER BY nom, prenom")
-						OR DIE('Erreur dans la requête $req_ele : '.mysql_error());
+						OR DIE('Erreur dans la requÃªte $req_ele : '.mysql_error());
 	$nbre_ele_m = mysql_num_rows($req_ele);
 
 	$aff_classes_m .= "
@@ -171,9 +171,9 @@ if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "clas
 
 	<table class=\"aid_tableau\" summary=\"Liste des &eacute;l&egrave;ves\">
 	";
-		// Ligne paire, ligne impaire (inutile dans un premier temps), on s'en sert pour faire la différence avec une ligne vide.
+		// Ligne paire, ligne impaire (inutile dans un premier temps), on s'en sert pour faire la diffÃ©rence avec une ligne vide.
 			$aff_tr_css = "gr_lignepaire";
-		// On ajoute un lien qui permet d'intégrer toute la classe d'un coup
+		// On ajoute un lien qui permet d'intÃ©grer toute la classe d'un coup
 		$aff_classes_m .= "
 		<tr class=\"".$aff_tr_css."\">
 			<td>
@@ -183,20 +183,20 @@ if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "clas
 			</td>
 		</tr>
 		<tr>
-			<td>Liste des élèves
+			<td>Liste des Ã©lÃ¨ves
 			</td>
 		</tr>
 						";
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
-		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysql_error());
+		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requÃªte liste_eleves : '.mysql_error());
 
 			$aff_ele_m[$b]["id_eleve"] = mysql_result($req_ele, $b, "id_eleve");
 			$aff_ele_m[$b]["nom"] = mysql_result($req_ele, $b, "nom");
 			$aff_ele_m[$b]["prenom"] = mysql_result($req_ele, $b, "prenom");
 			$aff_ele_m[$b]["sexe"] = mysql_result($req_ele, $b, "sexe");
 
-			// On vérifie que cet élève n'est pas déjà membre de l'AID
+			// On vÃ©rifie que cet Ã©lÃ¨ve n'est pas dÃ©jÃ  membre de l'AID
 			$req_verif = mysql_query("SELECT id_eleve FROM edt_gr_eleves WHERE id_eleve = '".$aff_ele_m[$b]["id_eleve"]."' AND id_gr_nom = '".$id_gr."'");
 			$nbre_verif = mysql_num_rows($req_verif);
 
@@ -223,23 +223,23 @@ if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "clas
 }elseif($rep_gr["subdivision_type"] == "classe"){
 
 	$aff_classes_m = '
-		<p>Vous ne pouvez pas modifier la liste des élèves de ce groupe car elle correspond à l\'effectif de la classe</p>
-		<p>Si vous voulez modifier cette liste, vous devez d\'abord modifier le type du groupe à la page précédente</p>';
+		<p>Vous ne pouvez pas modifier la liste des Ã©lÃ¨ves de ce groupe car elle correspond Ã  l\'effectif de la classe</p>
+		<p>Si vous voulez modifier cette liste, vous devez d\'abord modifier le type du groupe Ã  la page prÃ©cÃ©dente</p>';
 }
 
 // ------------------------------------------- DIV de droite ------------------------------------------ //
 
-// Pour terminer on se charge de l'affichage du div de droite qui liste les élèves de ce groupe
+// Pour terminer on se charge de l'affichage du div de droite qui liste les Ã©lÃ¨ves de ce groupe
 
-// On récupère la liste des élèves
+// On rÃ©cupÃ¨re la liste des Ã©lÃ¨ves
 if ($rep_gr["subdivision_type"] == 'classe') {
-	// Alors la liste des élèves est celle de la classe sus-dite $rep_gr["subdivision"]
+	// Alors la liste des Ã©lÃ¨ves est celle de la classe sus-dite $rep_gr["subdivision"]
 	$sql_e = "SELECT DISTINCT e.nom, e.prenom, e.login, e.id_eleve, c.classe, c.id FROM eleves e, j_eleves_classes jec, classes c
 									WHERE jec.login = e.login
 									AND	jec.id_classe = '".$rep_gr["subdivision"]."'
 									AND jec.id_classe = c.id
 									ORDER BY nom, prenom";
-	$req_ele_gr = mysql_query($sql_e) OR trigger_error('Impossible de récupérer la liste des élèves', E_USER_ERROR);
+	$req_ele_gr = mysql_query($sql_e) OR trigger_error('Impossible de rÃ©cupÃ©rer la liste des Ã©lÃ¨ves', E_USER_ERROR);
 
 
 }else{
@@ -251,7 +251,7 @@ if ($rep_gr["subdivision_type"] == 'classe') {
 										e.login = jec.login AND
 										jec.id_classe = c.id
 										ORDER BY c.classe, e.nom, e.prenom")
-									OR trigger_error('Impossible de récupérer la liste des élèves : '.mysql_error(), E_USER_ERROR);
+									OR trigger_error('Impossible de rÃ©cupÃ©rer la liste des Ã©lÃ¨ves : '.mysql_error(), E_USER_ERROR);
 
 }
 
@@ -263,13 +263,13 @@ if ($rep_gr["subdivision_type"] == 'classe') {
 		else {
 			$s = "";
 		}
-		$aff_gr_d .= "\n<br />".$nbre." élève".$s.".<br />";
+		$aff_gr_d .= "\n<br />".$nbre." Ã©lÃ¨ve".$s.".<br />";
 
 	while($rep_ele_gr = mysql_fetch_array($req_ele_gr)){
 
 		$aff_gr_d .= "<br />
 			<a href='./edt_liste_eleves.php?id_eleve=".$rep_ele_gr["id_eleve"]."&amp;id_gr=".$id_gr."&amp;cla=".$rep_ele_gr["id"]."&amp;action=del_eleve_gr'>
-				<img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" />
+				<img src=\"../images/icons/delete.png\" title=\"Supprimer cet Ã©lÃ¨ve\" alt=\"Supprimer\" />
 			</a>".$rep_ele_gr["nom"]." ".$rep_ele_gr["prenom"]." ".$rep_ele_gr["classe"]."\n";
 
 	}

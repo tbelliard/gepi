@@ -65,11 +65,11 @@ require_once("../lib/header.inc");
     <font face="Verdana, Arial, Helvetica, sans-serif"><b><font size="2">500<br />
     </font></b><font size="1">Sciences</font></font></p><p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="1">de la nature</font></p><p style="margin-top: 0pt; margin-bottom: 0pt;">
-    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">Mathématiques</font></p></td>
+    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">MathÃ©matiques</font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#ffdfff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif"><b><font size="2">600<br />
-    </font></b><font size="1">Sciences appliquées</font></font></p></td>
+    </font></b><font size="1">Sciences appliquÃ©es</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#ffdfff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif"><b><font size="2">700<br />
@@ -77,11 +77,11 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#ffdfff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif"><b><font size="2">800<br />
-    </font></b><font size="1">Littérature</font></font></p></td>
+    </font></b><font size="1">LittÃ©rature</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#ffdfff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif"><b><font size="2">900<br />
-    </font></b><font size="1">Histoire Géographie</font></font></p></td>
+    </font></b><font size="1">Histoire GÃ©ographie</font></font></p></td>
   </tr>
   <tr valign="top">
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="95">
@@ -92,7 +92,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">110<br />
-    <font size="1">Métaphysique</font></font></p></td>
+    <font size="1">MÃ©taphysique</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">210<br />
@@ -108,11 +108,11 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">510<br />
-    <font size="1">Mathématiques</font></font></p></td>
+    <font size="1">MathÃ©matiques</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">610<br />
-    <font size="1">Médecine Hygiène</font></font></p></td>
+    <font size="1">MÃ©decine HygiÃ¨ne</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">710<br />
@@ -120,18 +120,18 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">810<br />
-    <font size="1">Littérature américaine</font></font></p></td>
+    <font size="1">LittÃ©rature amÃ©ricaine</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">910<br />
-    <font size="1">Géographie voyages</font></font></p></td>
+    <font size="1">GÃ©ographie voyages</font></font></p></td>
   </tr>
   <tr valign="top">
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">020<br />
     </font>
-    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">Bibliothèques&nbsp;
+    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">BibliothÃ¨ques&nbsp;
     Documentation </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
@@ -168,7 +168,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">820<br />
-    <font size="1">Littérature anglais</font></font><font face="Verdana, Arial, Helvetica, sans-serif" size="1">e </font></p></td>
+    <font size="1">LittÃ©rature anglais</font></font><font face="Verdana, Arial, Helvetica, sans-serif" size="1">e </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">920</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
@@ -180,7 +180,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">030<br />
-    <font size="1">Encyclopédies générales </font></font></p></td>
+    <font size="1">EncyclopÃ©dies gÃ©nÃ©rales </font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">130<br />
@@ -188,7 +188,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">230<br />
-    <font size="1">Théologie chrétienne </font></font></p></td>
+    <font size="1">ThÃ©ologie chrÃ©tienne </font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="99">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">330<br />
@@ -213,7 +213,7 @@ require_once("../lib/header.inc");
     <font size="1">Agriculture</font> </font>
     </p><p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="1">
-    Forêt</font></p></td>
+    ForÃªt</font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">730</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
@@ -223,7 +223,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">830</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
-    Littérature</font></p><p style="margin-top: 0pt; margin-bottom: 0pt;">
+    LittÃ©rature</font></p><p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="1">allemande </font>
     </p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
@@ -249,7 +249,7 @@ require_once("../lib/header.inc");
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">240</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
     </font>
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
-    <font size="1">Théologie</font> <font size="1">spirituelle</font></font></p></td>
+    <font size="1">ThÃ©ologie</font> <font size="1">spirituelle</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="99">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">340</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
@@ -263,31 +263,31 @@ require_once("../lib/header.inc");
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">440</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
     </font>
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
-    <font size="1">Langue</font> <font size="1">française</font></font></p></td>
+    <font size="1">Langue</font> <font size="1">franÃ§aise</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">540<br />
     <font size="1">Chimie<br />
-    Minéralogie</font></font></p></td>
+    MinÃ©ralogie</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">640<br />
     <font size="1">Arts</font></font>
     </p><p style="margin-top: 0pt; margin-bottom: 0pt;">
-    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">ménagers </font></p></td>
+    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">mÃ©nagers </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">740</font></p><p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="1">&nbsp;Dessins </font>
     </p><p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="1">Arts </font>
-    <font face="Verdana, Arial, Helvetica, sans-serif" size="2"> <font size="1">déco</font>
+    <font face="Verdana, Arial, Helvetica, sans-serif" size="2"> <font size="1">dÃ©co</font>
     </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">840<font size="1"><br />
-    Littérature</font> </font>
-    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">française </font>
+    LittÃ©rature</font> </font>
+    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">franÃ§aise </font>
     </p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
@@ -302,7 +302,7 @@ require_once("../lib/header.inc");
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">050<br />
     </font>
-    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">Périodiques </font></p></td>
+    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">PÃ©riodiques </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">150<br />
@@ -310,12 +310,12 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">250<br />
-    <font size="1">Théologie pastorale</font></font></p></td>
+    <font size="1">ThÃ©ologie pastorale</font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="99">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">350<br />
     <font size="1">Administration</font></font></p><p style="margin-top: 0pt; margin-bottom: 0pt;">
-    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">Armée </font></p></td>
+    <font face="Verdana, Arial, Helvetica, sans-serif" size="1">ArmÃ©e </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="93">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">450</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
@@ -347,7 +347,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">850<br />
-    <font size="1">Littérature</font></font>
+    <font size="1">LittÃ©rature</font></font>
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2"> <font size="1">italienne</font>
     </font>
     </p></td>
@@ -362,7 +362,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">060<br />
-    <font size="1">Musées </font></font></p></td>
+    <font size="1">MusÃ©es </font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">160<br />
@@ -370,7 +370,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">260<br />
-    <font size="1">Eglise et Société </font></font></p></td>
+    <font size="1">Eglise et SociÃ©tÃ© </font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="99">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">360<br />
@@ -384,7 +384,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">560<br />
-    <font size="1">Paléontologie</font></font></p><p style="margin-top: 0pt; margin-bottom: 0pt;">
+    <font size="1">PalÃ©ontologie</font></font></p><p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="1">Fossiles </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
@@ -399,7 +399,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">860<br />
-    <font size="1">Littérature espagnole portugaise </font></font></p></td>
+    <font size="1">LittÃ©rature espagnole portugaise </font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">960<br />
@@ -454,13 +454,13 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">870<br />
-    <font size="1">Littérature</font></font>
+    <font size="1">LittÃ©rature</font></font>
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2"> <font size="1">latine</font> </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">970<br />
     <font size="1">Histoire</font></font><font face="Verdana, Arial, Helvetica, sans-serif" size="1">
-    Amérique </font>
+    AmÃ©rique </font>
     </p><p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="1">du Nord </font></p></td>
   </tr>
@@ -468,7 +468,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">080<br />
-    <font size="1">Recueils généraux </font></font></p></td>
+    <font size="1">Recueils gÃ©nÃ©raux </font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="95">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">180<br />
@@ -494,7 +494,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">680<br />
-    <font size="1">Articles manufacturés </font></font></p></td>
+    <font size="1">Articles manufacturÃ©s </font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">780</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
@@ -506,12 +506,12 @@ require_once("../lib/header.inc");
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">880</font><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br />
     </font>
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
-    <font size="1">Littérature</font> <font size="1">grecque</font> </font></p></td>
+    <font size="1">LittÃ©rature</font> <font size="1">grecque</font> </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">980<br />
     <font size="1">Histoire</font></font><font face="Verdana, Arial, Helvetica, sans-serif" size="1">
-    Amérique </font>
+    AmÃ©rique </font>
     </p><p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="1">du Sud </font></p></td>
   </tr>
@@ -549,7 +549,7 @@ require_once("../lib/header.inc");
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">690<br />
-    <font size="1">Bâtiment </font></font></p></td>
+    <font size="1">BÃ¢timent </font></font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">790<br />
@@ -558,12 +558,12 @@ require_once("../lib/header.inc");
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">890<br />
     <font size="1">Autres</font></font>
-    <font face="Verdana, Arial, Helvetica, sans-serif" size="2"> <font size="1">littératures</font> </font></p></td>
+    <font face="Verdana, Arial, Helvetica, sans-serif" size="2"> <font size="1">littÃ©ratures</font> </font></p></td>
     <td style="border-style: solid; border-width: 1px; padding: 1px 4px;" align="center" bgcolor="#f2f2ff" height="60" valign="top" width="96">
     <p style="margin-top: 0pt; margin-bottom: 0pt;">
     <font face="Verdana, Arial, Helvetica, sans-serif" size="2">990<br />
     <font size="1">Histoire</font> <font size="1">
-    Océanie</font> </font></p></td>
+    OcÃ©anie</font> </font></p></td>
   </tr>
 </tbody></table>
 

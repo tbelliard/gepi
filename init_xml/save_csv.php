@@ -41,7 +41,7 @@ if (!checkAccess()) {
     die();
 }
 
-// Initialisation du répertoire actuel de sauvegarde
+// Initialisation du rÃ©pertoire actuel de sauvegarde
 $dirname = getSettingValue("backup_directory");
 
 

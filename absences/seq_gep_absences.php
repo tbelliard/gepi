@@ -41,15 +41,15 @@ if (!checkAccess()) {
 //**************** EN-TETE *****************
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<h2>Intitulé des séquences</h2>";
-echo "<p>Le tableau suivant indique quelles séquences correspondent à la matinée ou à l'après-midi.
-Ces données sont issues du fichier GEP : F_NOMA.DBF";
+echo "<h2>IntitulÃ© des sÃ©quences</h2>";
+echo "<p>Le tableau suivant indique quelles sÃ©quences correspondent Ã  la matinÃ©e ou Ã  l'aprÃ¨s-midi.
+Ces donnÃ©es sont issues du fichier GEP : F_NOMA.DBF";
 
-echo "<table cellpadding=2 cellspacing=0 border=1><tr><td><b>Intitulé de la séquence</b></td><td><b>Type</b></td></tr>";
+echo "<table cellpadding=2 cellspacing=0 border=1><tr><td><b>IntitulÃ© de la sÃ©quence</b></td><td><b>Type</b></td></tr>";
 $sql = "select id_seq, type  from absences_gep order by id_seq";
 $res = sql_query($sql);
 for ($i = 0; ($row = sql_row($res, $i)); $i++) {
-    if ($row[1] == 'M') $temp ="Matinée"; else $temp = "Après-midi";
+    if ($row[1] == 'M') $temp ="MatinÃ©e"; else $temp = "AprÃ¨s-midi";
     echo "<tr><td>".$row[0]."</td><td>".$temp."</td></tr>";
 }
 echo "</table>";

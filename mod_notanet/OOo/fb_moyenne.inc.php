@@ -4,7 +4,7 @@
 	//=====================
 	$tab_eleves_OOo[$nb_eleve][$j][3]="";		// on initialise le champ pour ne pas avoir d'erreur
 	
-	// on calcule la moyenne de la matière
+	// on calcule la moyenne de la matiÃ¨re
 	if($fb_mode_moyenne==1){
 		$tab_eleves_OOo[$nb_eleve][$j][3] = $moy_classe[$j];
 	}

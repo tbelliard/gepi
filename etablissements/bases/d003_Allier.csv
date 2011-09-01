@@ -1,7 +1,7 @@
 0030001K;Jean-Baptiste Desfilhes;college;public;03330;Bellenaves
 0030002L;Jean Rostand;college;public;03700;Bellerive-sur-Allier
 0030004N;Achille Allier;college;public;03160;Bourbon-l'Archambault
-0030005P;François Péron;college;public;03350;Cérilly
+0030005P;FranÃ§ois PÃ©ron;college;public;03350;CÃ©rilly
 0030009U;Emile Guillaumin;college;public;03430;Cosne-d'Allier
 0030010V;Maurice Constantin-Weyer;college;public;03300;Cusset
 0030013Y;Louis Pergaud;college;public;03290;Dompierre-sur-Besbre
@@ -9,46 +9,46 @@
 0030015A;Ferdinand Dubreuil;college;public;03170;Doyet
 0030017C;Joseph Hennequin;college;public;03800;Gannat
 0030018D;George Sand;college;public;03380;Huriel
-0030019E;Les Chenevières;college;public;03220;Jaligny-sur-Besbre
-0030021G;André Boutry;college;public;03320;Lurcy-Lévis
+0030019E;Les CheneviÃ¨res;college;public;03220;Jaligny-sur-Besbre
+0030021G;AndrÃ© Boutry;college;public;03320;Lurcy-LÃ©vis
 0030022H;de la Combraille;college;public;03420;Marcillat-en-Combraille
 0030023J;Jules Verne;college;public;03250;Le-Mayet-de-Montagne
-0030030S;Jean Zay;college;public;03100;Montluçon
+0030030S;Jean Zay;college;public;03100;MontluÃ§on
 0030035X;Jeanne Cluzel;college;public;03390;Montmarault
-0030039B;Charles Péguy;college;public;03000;Moulins
-0030042E;François Rabelais;college;public;03310;Néris-les-Bains
-0030043F;Jean De La Fontaine;college;public;03260;Saint-Germain-des-Fossés
+0030039B;Charles PÃ©guy;college;public;03000;Moulins
+0030042E;FranÃ§ois Rabelais;college;public;03310;NÃ©ris-les-Bains
+0030043F;Jean De La Fontaine;college;public;03260;Saint-Germain-des-FossÃ©s
 0030046J;Charlotte Delbo;college;public;03240;Tronget
 0030047K;Alain Fournier;college;public;03190;Vallon-en-Sully
-0030048L;Antoine De Saint-Exupéry;college;public;03150;Varennes-sur-Allier
-0030049M;des Célestins;college;public;03200;Vichy
+0030048L;Antoine De Saint-ExupÃ©ry;college;public;03150;Varennes-sur-Allier
+0030049M;des CÃ©lestins;college;public;03200;Vichy
 0030050N;Jules Ferry;college;public;03200;Vichy
 0030062B;Anne De Beaujeu;college;public;03000;Moulins
 0030070K;Saint-Dominique;college;prive;03200;Vichy
-0030081X;Saint-Benoît;college;prive;03000;Moulins
-0030091H;Jean-Jacques Soulier;college;public;03100;Montluçon
+0030081X;Saint-BenoÃ®t;college;prive;03000;Moulins
+0030091H;Jean-Jacques Soulier;college;public;03100;MontluÃ§on
 0030092J;Lucien Colon;college;public;03120;Lapalisse
 0030103W;Saint-Joseph;college;prive;03250;Le-Mayet-de-Montagne
-0030104X;Notre-Dame des Victoires;college;prive;03500;Saint-Pourçain-sur-Sioule
-0030119N;Jules Verne;college;public;03100;Montluçon
-0030150X;Michelet;ecole;public;03500;Saint-Pourçain-sur-Sioule
-0030151Y;Marcelin Berthelot;ecole;public;03500;Saint-Pourçain-sur-Sioule
-0030152Z;-;ecole;public;03290;Saint-Pourçain-sur-Besbre
+0030104X;Notre-Dame des Victoires;college;prive;03500;Saint-PourÃ§ain-sur-Sioule
+0030119N;Jules Verne;college;public;03100;MontluÃ§on
+0030150X;Michelet;ecole;public;03500;Saint-PourÃ§ain-sur-Sioule
+0030151Y;Marcelin Berthelot;ecole;public;03500;Saint-PourÃ§ain-sur-Sioule
+0030152Z;-;ecole;public;03290;Saint-PourÃ§ain-sur-Besbre
 0030154B;-;ecole;public;03110;Saint-Pont
 0030156D;-;ecole;public;03160;Saint-Plaisir
-0030158F;-;ecole;public;03110;Saint-Rémy-en-Rollat
+0030158F;-;ecole;public;03110;Saint-RÃ©my-en-Rollat
 0030165N;-;ecole;public;03380;Saint-Martinien
 0030168S;-;ecole;public;03210;Saint-Menoux
 0030170U;-;ecole;public;03150;Saint-Loup
-0030172W;-;ecole;public;03160;Saint-Léopardin-d'Augy
-0030174Y;-;ecole;public;03220;Saint-Léon
-0030175Z;-;ecole;public;03130;Saint-Léger-sur-Vouzance
+0030172W;-;ecole;public;03160;Saint-LÃ©opardin-d'Augy
+0030174Y;-;ecole;public;03220;Saint-LÃ©on
+0030175Z;-;ecole;public;03130;Saint-LÃ©ger-sur-Vouzance
 0030178C;-;ecole;public;03440;Saint-Hilaire
 0030180E;-;ecole;public;03140;Saint-Germain-de-Salles
-0030182G;des Aures;ecole;public;03260;Saint-Germain-des-Fossés
-0030183H;Charles-Louis Philippe;ecole;public;03260;Saint-Germain-des-Fossés
-0030184J;-;ecole;public;03150;Saint-Gérand-le-Puy
-0030187M;-;ecole;public;03340;Saint-Gérand-de-Vaux
+0030182G;des Aures;ecole;public;03260;Saint-Germain-des-FossÃ©s
+0030183H;Charles-Louis Philippe;ecole;public;03260;Saint-Germain-des-FossÃ©s
+0030184J;-;ecole;public;03150;Saint-GÃ©rand-le-Puy
+0030187M;-;ecole;public;03340;Saint-GÃ©rand-de-Vaux
 0030191S;-;ecole;public;03300;Saint-Etienne-de-Vicq
 0030192T;Daniel Renault;ecole;public;03250;Saint-Nicolas-des-Biefs
 0030198Z;Nicolas Larbaud - Marie Curie;ecole;public;03270;Saint-Yorre
@@ -64,71 +64,71 @@
 0030221Z;-;ecole;public;03240;Le-Theil
 0030225D;-;ecole;public;03230;Thiel-sur-Acolin
 0030226E;-;ecole;public;03230;Thiel-sur-Acolin
-0030229H;Antoine De Saint-Exupéry;ecole;public;03400;Toulon-sur-Allier
+0030229H;Antoine De Saint-ExupÃ©ry;ecole;public;03400;Toulon-sur-Allier
 0030231K;-;ecole;public;03240;Treban
 0030233M;-;ecole;public;03380;Treignat
 0030236R;-;ecole;public;03220;Treteau
-0030237S;René Fallet;ecole;public;03460;Trévol
-0030238T;Henri Matisse;ecole;public;03460;Trévol
-0030239U;-;ecole;public;03220;Trézelles
+0030237S;RenÃ© Fallet;ecole;public;03460;TrÃ©vol
+0030238T;Henri Matisse;ecole;public;03460;TrÃ©vol
+0030239U;-;ecole;public;03220;TrÃ©zelles
 0030240V;-;ecole;public;03240;Tronget
 0030247C;-;ecole;public;03000;Neuvy
 0030254K;-;ecole;public;03500;Paray-sous-Briailles
-0030256M;-;ecole;public;03120;Périgny
+0030256M;-;ecole;public;03120;PÃ©rigny
 0030259R;-;ecole;public;03470;Pierrefitte-sur-Loire
-0030263V;-;ecole;public;03320;Pouzy-Mésangy
+0030263V;-;ecole;public;03320;Pouzy-MÃ©sangy
 0030267Z;-;ecole;public;03380;Quinssaines
 0030268A;-;ecole;public;03190;Reugny
 0030269B;-;ecole;public;03240;Rocles
-0030270C;-;ecole;public;03150;Rongères
+0030270C;-;ecole;public;03150;RongÃ¨res
 0030271D;-;ecole;public;03420;Ronnet
 0030272E;-;ecole;public;03170;Saint-Angel
 0030276J;-;ecole;public;03800;Saint-Bonnet-de-Rochefort
-0030279M;-;ecole;public;03360;Saint-Bonnet-Tronçais
-0030284T;-;ecole;public;03250;Saint-Clément
-0030286V;-;ecole;public;03370;Saint-Désiré
+0030279M;-;ecole;public;03360;Saint-Bonnet-TronÃ§ais
+0030284T;-;ecole;public;03250;Saint-ClÃ©ment
+0030286V;-;ecole;public;03370;Saint-DÃ©sirÃ©
 0030288X;-;ecole;public;03130;Saint-Didier-en-Donjon
 0030294D;-;ecole;public;03400;Saint-Ennemond
 0030295E;-;ecole;public;03190;Nassigny
-0030297G;-;ecole;public;03310;Néris-les-Bains
-0030302M;Jean Renoir;ecole;public;03100;Montluçon
-0030306S;Jean Moulin;ecole;public;03100;Montluçon
+0030297G;-;ecole;public;03310;NÃ©ris-les-Bains
+0030302M;Jean Renoir;ecole;public;03100;MontluÃ§on
+0030306S;Jean Moulin;ecole;public;03100;MontluÃ§on
 0030308U;Pierre et Marie Curie;ecole;public;03390;Montmarault
 0030310W;des Tilleuls;ecole;public;03150;Montoldre
 0030312Y;-;ecole;public;03170;Montvicq
 0030314A;du Jeu de Paume;ecole;public;03000;Moulins
-0030316C;François Truffaut;ecole;public;03000;Moulins
+0030316C;FranÃ§ois Truffaut;ecole;public;03000;Moulins
 0030317D;Gaspard Roux;ecole;public;03000;Moulins
 0030321H;Alain Fournier;ecole;public;03000;Moulins
 0030323K;Jean Moulin;ecole;public;03000;Moulins
-0030326N;Jean Macé;ecole;public;03000;Moulins
+0030326N;Jean MacÃ©;ecole;public;03000;Moulins
 0030328R;Achille Roche;ecole;public;03000;Moulins
-0030331U;des Gâteaux;ecole;public;03000;Moulins
+0030331U;des GÃ¢teaux;ecole;public;03000;Moulins
 0030335Y;des Champins;ecole;public;03000;Moulins
 0030336Z;-;ecole;public;03390;Murat
-0030342F;-;ecole;public;03340;Neuilly-le-Réal
-0030345J;Frédéric Mistral;ecole;public;03100;Montluçon
+0030342F;-;ecole;public;03340;Neuilly-le-RÃ©al
+0030345J;FrÃ©dÃ©ric Mistral;ecole;public;03100;MontluÃ§on
 0030348M;-;ecole;public;03300;Molles
 0030350P;-;ecole;public;03140;Monestier
-0030351R;-;ecole;public;03500;Monétay-sur-Allier
-0030352S;-;ecole;public;03470;Monétay-sur-Loire
-0030354U;-;ecole;public;03130;Montaiguët-en-Forez
+0030351R;-;ecole;public;03500;MonÃ©tay-sur-Allier
+0030352S;-;ecole;public;03470;MonÃ©tay-sur-Loire
+0030354U;-;ecole;public;03130;MontaiguÃ«t-en-Forez
 0030356W;-;ecole;public;03150;Montaigu-le-Blin
 0030358Y;-;ecole;public;03340;Montbeugny
 0030360A;-;ecole;public;03130;Montcombroux-les-Mines
 0030363D;-;ecole;public;03800;Monteignet-sur-l'Andelot
 0030364E;-;ecole;public;03240;Le-Montet
 0030366G;-;ecole;public;03000;Montilly
-0030370L;Jules Ferry;ecole;public;03100;Montluçon
-0030371M;Honoré De Balzac;ecole;public;03100;Montluçon
-0030373P;Anatole France;ecole;public;03100;Montluçon
-0030374R;Lamartine;ecole;public;03100;Montluçon
-0030381Y;Jean Racine;ecole;public;03100;Montluçon
-0030382Z;Voltaire;ecole;public;03100;Montluçon
-0030384B;Emile Zola;ecole;public;03100;Montluçon
-0030387E;Henri Wallon;ecole;public;03100;Montluçon
-0030390H;Paul Lafargue;ecole;public;03100;Montluçon
-0030393L;Aristide Briand;ecole;public;03100;Montluçon
+0030370L;Jules Ferry;ecole;public;03100;MontluÃ§on
+0030371M;HonorÃ© De Balzac;ecole;public;03100;MontluÃ§on
+0030373P;Anatole France;ecole;public;03100;MontluÃ§on
+0030374R;Lamartine;ecole;public;03100;MontluÃ§on
+0030381Y;Jean Racine;ecole;public;03100;MontluÃ§on
+0030382Z;Voltaire;ecole;public;03100;MontluÃ§on
+0030384B;Emile Zola;ecole;public;03100;MontluÃ§on
+0030387E;Henri Wallon;ecole;public;03100;MontluÃ§on
+0030390H;Paul Lafargue;ecole;public;03100;MontluÃ§on
+0030393L;Aristide Briand;ecole;public;03100;MontluÃ§on
 0030399T;-;ecole;public;03130;Lenax
 0030402W;-;ecole;public;03130;Liernolles
 0030403X;-;ecole;public;03410;Lignerolles
@@ -138,7 +138,7 @@
 0030409D;-;ecole;public;03330;Louroux-de-Bouble
 0030410E;-;ecole;public;03190;Louroux-Hodement
 0030411F;-;ecole;public;03130;Luneau
-0030413H;-;ecole;public;03320;Lurcy-Lévis
+0030413H;-;ecole;public;03320;Lurcy-LÃ©vis
 0030419P;-;ecole;public;03230;Lusigny
 0030422T;-;ecole;public;03260;Magnet
 0030424V;-;ecole;public;03190;Maillet
@@ -152,10 +152,10 @@
 0030438K;-;ecole;public;03360;Meaulne
 0030439L;-;ecole;public;03500;Meillard
 0030443R;-;ecole;public;03510;Molinet
-0030446U;Saint-Paul;college;prive;03100;Montluçon
+0030446U;Saint-Paul;college;prive;03100;MontluÃ§on
 0030449X;Jules Ferry;ecole;public;03400;Yzeure
 0030451Z;-;ecole;public;03160;Ygrande
-0030453B;Georges Méchin;ecole;public;03200;Vichy
+0030453B;Georges MÃ©chin;ecole;public;03200;Vichy
 0030458G;-;ecole;public;03430;Vieure
 0030462L;-;ecole;public;03310;Villebret
 0030463M;-;ecole;public;03430;Villefranche-d'Allier
@@ -164,21 +164,21 @@
 0030469U;-;ecole;public;03190;Vallon-en-Sully
 0030472X;George Sand;ecole;public;03150;Varennes-sur-Allier
 0030474Z;Louise Michel;ecole;public;03400;Yzeure
-0030477C;-;ecole;public;03220;Varennes-sur-Tèche
+0030477C;-;ecole;public;03220;Varennes-sur-TÃ¨che
 0030478D;Les Ecureuils;ecole;public;03220;Vaumas
 0030479E;Les Libellules;ecole;public;03220;Vaumas
-0030480F;Antoine De Saint-Exupéry;ecole;public;03190;Vaux
+0030480F;Antoine De Saint-ExupÃ©ry;ecole;public;03190;Vaux
 0030483J;-;ecole;public;03190;Venas
 0030484K;-;ecole;public;03110;Vendat
 0030486M;-;ecole;public;03190;Verneix
 0030488P;Marcel Guillaumin;ecole;public;03200;Le-Vernet
 0030490S;-;ecole;public;03500;Verneuil-en-Bourbonnais
-0030496Y;Mme De Sévigné - Fernand Lafaye;ecole;public;03200;Vichy
+0030496Y;Mme De SÃ©vignÃ© - Fernand Lafaye;ecole;public;03200;Vichy
 0030497Z;Paul Bert;ecole;public;03200;Vichy
 0030499B;Jacques Laurent;ecole;public;03200;Vichy
 0030501D;Pierre Coulon;ecole;public;03200;Vichy
-0030504G;-;ecole;public;03500;Châtel-de-Neuvre
-0030508L;Clotilde Dejoux;ecole;public;03210;Châtillon
+0030504G;-;ecole;public;03500;ChÃ¢tel-de-Neuvre
+0030508L;Clotilde Dejoux;ecole;public;03210;ChÃ¢tillon
 0030511P;-;ecole;public;03220;Chavroches
 0030513S;-;ecole;public;03370;Chazemais
 0030515U;-;ecole;public;03210;Chemilly
@@ -192,22 +192,22 @@
 0030539V;-;ecole;public;03000;Coulandon
 0030541X;-;ecole;public;03470;Coulanges
 0030544A;-;ecole;public;03320;Couleuvre
-0030546C;-;ecole;public;03370;Courçais
+0030546C;-;ecole;public;03370;CourÃ§ais
 0030548E;-;ecole;public;03140;Charroux
 0030549F;-;ecole;public;03510;Chassenard
-0030551H;Claudius Meunier;ecole;public;03250;Châtel-Montagne
+0030551H;Claudius Meunier;ecole;public;03250;ChÃ¢tel-Montagne
 0030552J;-;ecole;public;03190;Estivareilles
 0030554L;-;ecole;public;03140;Etroussat
-0030556N;-;ecole;public;03250;Ferrières-sur-Sichon
-0030558R;-;ecole;public;03340;La-Ferté-Hauterive
+0030556N;-;ecole;public;03250;FerriÃ¨res-sur-Sichon
+0030558R;-;ecole;public;03340;La-FertÃ©-Hauterive
 0030559S;-;ecole;public;03140;Fleuriel
-0030563W;Jean Jaurès;ecole;public;03800;Gannat
+0030563W;Jean JaurÃ¨s;ecole;public;03800;Gannat
 0030564X;Louis Pasteur;ecole;public;03800;Gannat
-0030569C;-;ecole;public;03230;Garnat-sur-Engièvre
-0030570D;-;ecole;public;03230;Garnat-sur-Engièvre
+0030569C;-;ecole;public;03230;Garnat-sur-EngiÃ¨vre
+0030570D;-;ecole;public;03230;Garnat-sur-EngiÃ¨vre
 0030571E;-;ecole;public;03400;Gennetines
 0030577L;-;ecole;public;03270;Hauterive
-0030579N;-;ecole;public;03190;Hérisson
+0030579N;-;ecole;public;03190;HÃ©risson
 0030582S;Antoine Pizon;ecole;public;03380;Huriel
 0030584U;-;ecole;public;03600;Hyds
 0030589Z;-;ecole;public;03220;Jaligny-sur-Besbre
@@ -216,20 +216,20 @@
 0030598J;-;ecole;public;03120;Lapalisse
 0030601M;-;ecole;public;03250;Laprugne
 0030603P;-;ecole;public;03160;Couzon
-0030604R;-;ecole;public;03150;Créchy
+0030604R;-;ecole;public;03150;CrÃ©chy
 0030605S;-;ecole;public;03240;Cressanges
 0030607U;-;ecole;public;03300;Creuzier-le-Neuf
 0030608V;des Arloings;ecole;public;03300;Creuzier-le-Vieux
 0030611Y;Louis Liandon;ecole;public;03300;Cusset
-0030613A;L. Aime - J. Jutier;ecole;public;03150;Boucé
+0030613A;L. Aime - J. Jutier;ecole;public;03150;BoucÃ©
 0030617E;-;ecole;public;03300;Cusset
-0030621J;Emile Guillaumin;ecole;public;03630;Désertines
-0030623L;Elsa Triolet;ecole;public;03630;Désertines
+0030621J;Emile Guillaumin;ecole;public;03630;DÃ©sertines
+0030623L;Elsa Triolet;ecole;public;03630;DÃ©sertines
 0030624M;-;ecole;public;03240;Deux-Chaises
-0030628S;Paul Langevin;ecole;public;03410;Domérat
-0030629T;Victor Hugo;ecole;public;03410;Domérat
-0030630U;Marcel Pagnol;ecole;public;03410;Domérat
-0030631V;Denis Diderot;ecole;public;03410;Domérat
+0030628S;Paul Langevin;ecole;public;03410;DomÃ©rat
+0030629T;Victor Hugo;ecole;public;03410;DomÃ©rat
+0030630U;Marcel Pagnol;ecole;public;03410;DomÃ©rat
+0030631V;Denis Diderot;ecole;public;03410;DomÃ©rat
 0030632W;du Tivoli;ecole;public;03290;Dompierre-sur-Besbre
 0030633X;George Sand;ecole;public;03290;Dompierre-sur-Besbre
 0030635Z;-;ecole;public;03130;Le-Donjon
@@ -237,16 +237,16 @@
 0030639D;-;ecole;public;03120;Droiturier
 0030641F;de Larequille;ecole;public;03310;Durdat-Larequille
 0030643H;-;ecole;public;03450;Ebreuil
-0030647M;-;ecole;public;03330;Echassières
+0030647M;-;ecole;public;03330;EchassiÃ¨res
 0030648N;-;ecole;public;03110;Escurolles
 0030650R;-;ecole;public;03110;Espinasse-Vozelle
 0030652T;-;ecole;public;03800;Biozat
 0030657Y;-;ecole;public;03130;Le-Bouchaud
 0030658Z;-;ecole;public;03160;Bourbon-l'Archambault
-0030659A;Charles-Louis Philippe;ecole;public;03350;Cérilly
+0030659A;Charles-Louis Philippe;ecole;public;03350;CÃ©rilly
 0030661C;-;ecole;public;03500;Cesset
 0030663E;-;ecole;public;03250;La-Chabanne
-0030664F;-;ecole;public;03370;Chambérat
+0030664F;-;ecole;public;03370;ChambÃ©rat
 0030666H;-;ecole;public;03170;Chamblet
 0030667J;-;ecole;public;03140;Chantelle
 0030670M;Philippe Fargin-Fayolle;ecole;public;03380;La-Chapelaude
@@ -260,23 +260,23 @@
 0030684C;-;ecole;public;03000;Bressolles
 0030686E;Jean-Charles Varennes;ecole;public;03350;Le-Brethon
 0030688G;-;ecole;public;03120;Le-Breuil
-0030690J;-;ecole;public;03110;Broût-Vernet
+0030690J;-;ecole;public;03110;BroÃ»t-Vernet
 0030692L;-;ecole;public;03700;Brugheas
 0030694N;-;ecole;public;03700;Brugheas
 0030695P;-;ecole;public;03270;Busset
 0030696R;-;ecole;public;03270;Busset
-0030697S;-;ecole;public;03440;Buxières-les-Mines
+0030697S;-;ecole;public;03440;BuxiÃ¨res-les-Mines
 0030699U;-;ecole;public;03600;La-Celle
 0030701W;-;ecole;public;03200;Abrest
 0030703Y;-;ecole;public;03210;Agonges
-0030705A;-;ecole;public;03360;Ainay-le-Château
+0030705A;-;ecole;public;03360;Ainay-le-ChÃ¢teau
 0030711G;-;ecole;public;03640;Arfeuilles
 0030715L;-;ecole;public;03420;Arpheuilles-Saint-Priest
 0030716M;-;ecole;public;03250;Arronnes
 0030718P;-;ecole;public;03190;Audes
-0030719R;-;ecole;public;03460;Aurouër
+0030719R;-;ecole;public;03460;AurouÃ«r
 0030721T;-;ecole;public;03210;Autry-Issards
-0030722U;François Revéret;ecole;public;03000;Avermes
+0030722U;FranÃ§ois RevÃ©ret;ecole;public;03000;Avermes
 0030723V;Jean Moulin;ecole;public;03000;Avermes
 0030729B;-;ecole;public;03500;Bayet
 0030730C;-;ecole;public;03230;Beaulon
@@ -288,51 +288,51 @@
 0030740N;-;ecole;public;03130;Bert
 0030741P;-;ecole;public;03340;Bessay-sur-Allier
 0030743S;-;ecole;public;03210;Besson
-0030745U;-;ecole;public;03170;Bézenet
+0030745U;-;ecole;public;03170;BÃ©zenet
 0030747W;-;ecole;public;03120;Billezois
 0030748X;-;ecole;public;03260;Billy
 0030751A;-;ecole;public;03140;Voussac
 0030753C;-;ecole;public;03370;Viplaix
-0030756F;André-Marie Ampère;ecole;public;03400;Yzeure
-0030758H;Jules Ferry;college;public;03100;Montluçon
+0030756F;AndrÃ©-Marie AmpÃ¨re;ecole;public;03400;Yzeure
+0030758H;Jules Ferry;college;public;03100;MontluÃ§on
 0030760K;de Presles;ecole;public;03300;Cusset
-0030765R;Louis Pergaud;ecole;public;03100;Montluçon
+0030765R;Louis Pergaud;ecole;public;03100;MontluÃ§on
 0030772Y;des Cladets;ecole;public;03400;Yzeure
 0030810P;Notre-Dame;ecole;prive;03300;Cusset
 0030812S;Saint-Joseph;ecole;prive;03130;Le-Donjon
 0030814U;Sainte-Procule;ecole;prive;03800;Gannat
 0030817X;Notre-Dame;ecole;prive;03250;Le-Mayet-de-Montagne
-0030819Z;Saint-Paul;ecole;prive;03100;Montluçon
-0030820A;Notre-Dame;ecole;prive;03100;Montluçon
-0030821B;Sainte-Philomène;ecole;prive;03100;Montluçon
-0030822C;Sainte-Thérèse;ecole;prive;03390;Montmarault
-0030825F;Saint-Benoît;ecole;prive;03000;Moulins
-0030828J;Notre-Dame des Victoires;ecole;prive;03500;Saint-Pourçain-sur-Sioule
+0030819Z;Saint-Paul;ecole;prive;03100;MontluÃ§on
+0030820A;Notre-Dame;ecole;prive;03100;MontluÃ§on
+0030821B;Sainte-PhilomÃ¨ne;ecole;prive;03100;MontluÃ§on
+0030822C;Sainte-ThÃ©rÃ¨se;ecole;prive;03390;Montmarault
+0030825F;Saint-BenoÃ®t;ecole;prive;03000;Moulins
+0030828J;Notre-Dame des Victoires;ecole;prive;03500;Saint-PourÃ§ain-sur-Sioule
 0030829K;Saint-Mayeul - Saint-Odilon;ecole;prive;03210;Souvigny
 0030831M;Jeanne D'Arc;ecole;prive;03200;Vichy
 0030833P;Saint-Pierre;ecole;prive;03400;Yzeure
 0030834R;du Malcourlet;ecole;public;03800;Gannat
 0030835S;-;ecole;public;03120;Isserpent
-0030837U;François Villon;college;public;03400;Yzeure
+0030837U;FranÃ§ois Villon;college;public;03400;Yzeure
 0030838V;Emile Guillaumin;college;public;03000;Moulins
 0030842Z;des Rives d'Allier;ecole;public;03000;Moulins
-0030860U;Marie Curie;college;public;03630;Désertines
+0030860U;Marie Curie;college;public;03630;DÃ©sertines
 0030862W;des Trois Champs;ecole;public;03310;Lavault-Sainte-Anne
-0030890B;Emile Mâle;college;public;03600;Commentry
-0030892D;Blaise De Vigenère;college;public;03500;Saint-Pourçain-sur-Sioule
-0030913B;Alain Fournier;ecole;public;03410;Domérat
-0030914C;Jacques Prévert;ecole;public;03100;Montluçon
+0030890B;Emile MÃ¢le;college;public;03600;Commentry
+0030892D;Blaise De VigenÃ¨re;college;public;03500;Saint-PourÃ§ain-sur-Sioule
+0030913B;Alain Fournier;ecole;public;03410;DomÃ©rat
+0030914C;Jacques PrÃ©vert;ecole;public;03100;MontluÃ§on
 0030927S;des Darcins;ecole;public;03300;Cusset
 0030928T;-;ecole;public;03490;Diou
-0030931W;-;ecole;public;03230;Paray-le-Frésil
+0030931W;-;ecole;public;03230;Paray-le-FrÃ©sil
 0030932X;-;ecole;public;03410;Saint-Victor
 0030933Y;-;ecole;public;03320;Le-Veurdre
-0030934Z;Jean Rostand;ecole;public;03100;Montluçon
-0030956Y;Louis Aragon;college;public;03410;Domérat
-0030957Z;Jacques Prévert;ecole;public;03400;Yzeure
+0030934Z;Jean Rostand;ecole;public;03100;MontluÃ§on
+0030956Y;Louis Aragon;college;public;03410;DomÃ©rat
+0030957Z;Jacques PrÃ©vert;ecole;public;03400;Yzeure
 0030979Y;Saint-Joseph;college;prive;03300;Cusset
 0030980Z;Sainte-Procule;college;prive;03800;Gannat
-0030981A;-;college;prive;03100;Montluçon
+0030981A;-;college;prive;03100;MontluÃ§on
 0030988H;-;ecole;public;03210;Noyant-d'Allier
-0030989J;-;ecole;public;03410;Prémilhat
+0030989J;-;ecole;public;03410;PrÃ©milhat
 0031010G;Victor Hugo;college;public;03270;Saint-Yorre

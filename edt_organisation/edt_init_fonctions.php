@@ -8,7 +8,7 @@
  * Ensemble des fonctions qui renvoient la concordance pour le fichier txt
  * de l'import des EdT.
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -51,7 +51,7 @@ function renvoiLoginProf($numero){
 function renvoiIdSalle($chiffre){
 	// On cherche l'Id de la salle
 		$retour = 'erreur_salle';
-	// On ne prend que les 10 premières lettres du numéro ($chiffre)
+	// On ne prend que les 10 premiÃ¨res lettres du numÃ©ro ($chiffre)
 	$cherche = substr($chiffre, 0, 10);
 	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$cherche."'");
 	if ($query) {
@@ -100,19 +100,19 @@ function renvoiJour($diminutif){
 	return $retour;
 }
 
-// renvoie le nom de la bonne table des créneaux
+// renvoie le nom de la bonne table des crÃ©neaux
 function nomTableCreneau($jour){
 	$jour_semaine = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 		$numero_jour = NULL;
 	for($t = 0; $t < 7; $t++){
-		// On cherche à faire correspondre le numero_jour avec ce que donne la fonction php date("w")
+		// On cherche Ã  faire correspondre le numero_jour avec ce que donne la fonction php date("w")
 		if ($jour == $jour_semaine[$t]) {
 			$numero_jour = $t;
 		}else{
-			// A priori il n'y a rien à faire
+			// A priori il n'y a rien Ã  faire
 		}
 	}
-	// Ensuite, en fonction du résultat, on teste et on renvoie la bonne table des créneaux
+	// Ensuite, en fonction du rÃ©sultat, on teste et on renvoie la bonne table des crÃ©neaux
 	if ($numero_jour == getSettingValue("jour_different")) {
 		$retour = 'edt_creneaux_bis';
 	}else{
@@ -121,7 +121,7 @@ function nomTableCreneau($jour){
 
 	return $retour;
 }
-// Id du créneau de début
+// Id du crÃ©neau de dÃ©but
 function renvoiIdCreneau($heure_brute, $jour){
 	// On transforme $heure_brute en un horaire de la forme hh:mm:ss
 	$minutes = substr($heure_brute, 2);
@@ -147,9 +147,9 @@ function renvoiIdCreneau($heure_brute, $jour){
 	return $retour;
 }
 
-// durée d'un créneau dans Gepi
+// durÃ©e d'un crÃ©neau dans Gepi
 function dureeCreneau(){
-	// On récupère les infos sur un créneau
+	// On rÃ©cupÃ¨re les infos sur un crÃ©neau
 	$creneau = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux LIMIT 1"));
 	$deb = $creneau["heuredebut_definie_periode"];
 	$fin = $creneau["heurefin_definie_periode"];
@@ -160,24 +160,24 @@ function dureeCreneau(){
 	return $retour;
 }
 
-// La durée pour les imports texte
+// La durÃ©e pour les imports texte
 function renvoiDuree($deb, $fin){
-	// On détermine la durée d'un cours
+	// On dÃ©termine la durÃ©e d'un cours
 	$duree_cours_base = dureeCreneau();
 	$nombre_mn_deb = (substr($deb, 0, -2) * 60) + (substr($deb, 2));
 	$nombre_mn_fin = (substr($fin, 0, -2) * 60) + (substr($fin, 2));
 	$duree_mn = $nombre_mn_fin - $nombre_mn_deb;
-	// le nombre d'heures entières
+	// le nombre d'heures entiÃ¨res
 	$nbre = $duree_mn / $duree_cours_base;
 	settype($nbre, 'integer');
 	// le nombre de minutes qui restent
 	$mod = $duree_mn % $duree_cours_base;
-	// Et on analyse ce dernier (attention, la durée se compte en demi-créneaux)
+	// Et on analyse ce dernier (attention, la durÃ©e se compte en demi-crÃ©neaux)
 	if ($mod >= (($duree_cours_base * 2) / 3)) {
-		// Si c'est supérieur au 2/3 de la durée du cours, alors c'est une heure entière
+		// Si c'est supÃ©rieur au 2/3 de la durÃ©e du cours, alors c'est une heure entiÃ¨re
 		$retour = ($nbre * 2) + 2;
 	}elseif($mod > (($duree_cours_base) / 3)) {
-		// Si c'est supérieur au tiers de la durée d'un cours, alors c'est un demi-créneau de plus
+		// Si c'est supÃ©rieur au tiers de la durÃ©e d'un cours, alors c'est un demi-crÃ©neau de plus
 		$retour = ($nbre * 2) + 1;
 	}else{
 		// sinon, c'est un souci de quelques minutes sans importance
@@ -187,9 +187,9 @@ function renvoiDuree($deb, $fin){
 	return $retour;
 }
 
-// Heure debut decalée ou pas
+// Heure debut decalÃ©e ou pas
 function renvoiDebut($id_creneau, $heure_deb, $jour){
-	// On détermine la durée d'un cours
+	// On dÃ©termine la durÃ©e d'un cours
 	$duree_cours_base = dureeCreneau();
 	// nbre de mn de l'heure de l'import
 	$nombre_mn_deb = (substr($heure_deb, 0, -2) * 60) + (substr($heure_deb, 2));
@@ -199,9 +199,9 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 			$heure = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM ".$table." WHERE id_definie_periode = '".$id_creneau."'"));
 		$decompose = explode(":", $heure["heuredebut_definie_periode"]);
 		$nbre_mn_gepi = ($decompose[0] * 60) + $decompose[1];
-		// On fait la différence entre les deux horaires qui ont été convertis en nombre de minutes
+		// On fait la diffÃ©rence entre les deux horaires qui ont Ã©tÃ© convertis en nombre de minutes
 		$diff = $nombre_mn_deb - $nbre_mn_gepi;
-		// et on analyse cette différence
+		// et on analyse cette diffÃ©rence
 		if ($diff === 0 OR $diff < ($duree_cours_base / 4)) {
 			$retour = '0';
 		}elseif($diff > ($duree_cours_base / 3) AND $diff < (($duree_cours_base / 3) * 2)){
@@ -210,7 +210,7 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 			$retour = '0';
 		}
 	}else{
-		// par défaut, on renvoie un début classique
+		// par dÃ©faut, on renvoie un dÃ©but classique
 		$retour = '0';
 	}
 
@@ -219,9 +219,9 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 
 // Renvoi des concordances
 function renvoiConcordances($chiffre, $etape){
-	// On récupère dans la table edt_init la bonne concordance
-	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières pour IndexEducation
-	// 1=créneaux 2=classe 3=matière 4=professeurs 7=regroupements 10=fréquence pour UDT de OMT
+	// On rÃ©cupÃ¨re dans la table edt_init la bonne concordance
+	// 2=Classe 3=GROUPE 4=PARTIE 5=MatiÃ¨res pour IndexEducation
+	// 1=crÃ©neaux 2=classe 3=matiÃ¨re 4=professeurs 7=regroupements 10=frÃ©quence pour UDT de OMT
 	if ($chiffre != '') {
 		$sql = "SELECT nom_gepi FROM edt_init WHERE
 								(nom_export = '".$chiffre."' OR nom_export = '".remplace_accents($chiffre, 'all_nospace')."')
@@ -235,7 +235,7 @@ function renvoiConcordances($chiffre, $etape){
 		$test = mysql_num_rows($query);
 		if ($test >= 1) {
 			$reponse = mysql_fetch_array($query)
-				OR trigger_error('Erreur dans le $reponse pour le '.$chiffre.'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> sur la requête '.$sql, E_USER_WARNING);
+				OR trigger_error('Erreur dans le $reponse pour le '.$chiffre.'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> sur la requÃªte '.$sql, E_USER_WARNING);
 		}else{
 			$reponse["nom_gepi"] = '';
 		}
@@ -254,18 +254,18 @@ function renvoiConcordances($chiffre, $etape){
 
 // L'id_groupe
 function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt, $type_import){
-	// $prof est le login du prof tel qu'il existe dans Gepi, alors que les autres infos ne sont pas encore "concordés"
+	// $prof est le login du prof tel qu'il existe dans Gepi, alors que les autres infos ne sont pas encore "concordÃ©s"
 
 	if ($type_import == 'texte') {
-		// On se préoccupe de la partie qui arrive de edt_init_texte.php et edt_init_concordance.php
-		// Les autres variables sont explicites dans leur désignation (c'est leur nom dans l'export texte)
+		// On se prÃ©occupe de la partie qui arrive de edt_init_texte.php et edt_init_concordance.php
+		// Les autres variables sont explicites dans leur dÃ©signation (c'est leur nom dans l'export texte)
 		$classe = renvoiConcordances($classe_txt, 2);
 		$matiere = renvoiConcordances($matiere_txt, 5);
 		$partie = $partie_txt; //renvoiConcordances($partie_txt, 4);
 		$grp = renvoiConcordances($grp_txt, 3);
 		//echo $classe.'|'.$matiere.'|'.$prof.'&nbsp;&nbsp;->&nbsp;&nbsp;';
 	}elseif($type_import == 'csv2'){
-		// On se préoccupe de la partie csv2 venant de edt_init_csv2.php et edt_init_concordance2.php
+		// On se prÃ©occupe de la partie csv2 venant de edt_init_csv2.php et edt_init_concordance2.php
 		$classe = $classe_txt;
 		$matiere = $matiere_txt;
 		$partie = '';
@@ -295,7 +295,7 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 		return $grp;
 
 	}else{
-		// On récupère la classe, la matière et le professeur
+		// On rÃ©cupÃ¨re la classe, la matiÃ¨re et le professeur
 		// et on cherche un enseignement qui pourrait correspondre avec
 		$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE
 						jgp.login = '".$prof."' AND
@@ -308,7 +308,7 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 			//print_r($rep_groupe);
 			//echo '<br />';
     	$nbre_rep = mysql_num_rows($req_groupe);
-    	// On vérifie ce qu'il y a dans la réponse
+    	// On vÃ©rifie ce qu'il y a dans la rÃ©ponse
     	if ($nbre_rep == 0) {
 			$retour = "aucun";
 		} elseif ($nbre_rep > 1) {
@@ -324,12 +324,12 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 
 /*
  * Fonction qui teste si une salle existe dans Gepi et qui l'enregistre si elle n'existe pas
- * $numero est le numéro de la salle
+ * $numero est le numÃ©ro de la salle
 */
 function testerSalleCsv2($numero){
 	// On teste la table
 	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'")
-				OR trigger_error('Erreur dans la requête '.$query.' : '.mysql_error());
+				OR trigger_error('Erreur dans la requÃªte '.$query.' : '.mysql_error());
 	$rep = @mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "ok"
@@ -345,14 +345,14 @@ function testerSalleCsv2($numero){
 
 /*
  * Fonction qui teste si une salle existe dans Gepi
- * $numero est le numéro de la salle
+ * $numero est le numÃ©ro de la salle
 */
 function salleifexists($numero){
 	// On teste la table
 	$sql = "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'";
 	$query = mysql_query($sql)
-				OR trigger_error('Impossible de vérifier l\'existence de cette salle : la requête '.$sql.' a échoué : '.mysql_error(), E_USER_WARNING);
-	// On force tout de même le résultat
+				OR trigger_error('Impossible de vÃ©rifier l\'existence de cette salle : la requÃªte '.$sql.' a Ã©chouÃ© : '.mysql_error(), E_USER_WARNING);
+	// On force tout de mÃªme le rÃ©sultat
 	$rep = @mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "oui"
@@ -364,13 +364,13 @@ function salleifexists($numero){
 
 
 /*
- * Fonction qui fonction renvoie l'id du créneau de départ, la durée et le moment du début du cours (CSV2)
+ * Fonction qui fonction renvoie l'id du crÃ©neau de dÃ©part, la durÃ©e et le moment du dÃ©but du cours (CSV2)
  * sous la forme d'un tableau id_creneau, duree et debut
 */
 function rechercheCreneauCsv2($creneau){
 	$duree_base = dureeCreneau();
 
-	// On fait attention à la construction de ce créneau
+	// On fait attention Ã  la construction de ce crÃ©neau
 	$test1 = explode(" - ", $creneau);
 
 	// Pour le id du creneau
@@ -378,7 +378,7 @@ function rechercheCreneauCsv2($creneau){
 	if ($id_creneau != 'inc') {
 		$retour["id_creneau"] = $id_creneau;
 	}else{
-		// Il faut chercher d'une autre façon le bon id de cours avec $test1[0]
+		// Il faut chercher d'une autre faÃ§on le bon id de cours avec $test1[0]
 		$test2 = explode("h", $test1[0]); // $test2[0] = 8 et $test2[1] = 00
 		if (strlen($test2[0]) < 2) {
 			// On ajoute un '0' devant l'heure
@@ -391,21 +391,21 @@ function rechercheCreneauCsv2($creneau){
 						WHERE heuredebut_definie_periode <= '".$heure_reconstruite."'
 						ORDER BY heuredebut_definie_periode ASC LIMIT 1");
 		if ($query) {
-			// On a trouvé
+			// On a trouvÃ©
 			$reponse_id = mysql_fetch_array($query);
 			if ($reponse_id["id_definie_periode"] != '') {
 				$retour["id_creneau"] = $id_creneau = $reponse_id["id_definie_periode"];
 			}else{
-				// Si on n'a pas de réponse valide, on ne peut pas définir le cours
+				// Si on n'a pas de rÃ©ponse valide, on ne peut pas dÃ©finir le cours
 				return 'erreur';
 			}
 		}
 	}
 
-	// la durée et le début
+	// la durÃ©e et le dÃ©but
 	if (isset($test1[1])) {
-		// ça veut dire que le créneau étudié est de la forme 8h00 - 9h35 : $test1[0] = 8h00 et $test1(1] = 9h00
-		// on recherche si le début est bon ou pas pour savoir si le cours commence au début du créneau ou pas
+		// Ã§a veut dire que le crÃ©neau Ã©tudiÃ© est de la forme 8h00 - 9h35 : $test1[0] = 8h00 et $test1(1] = 9h00
+		// on recherche si le dÃ©but est bon ou pas pour savoir si le cours commence au dÃ©but du crÃ©neau ou pas
 		$heure_debut = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$id_creneau."'"));
 		$test3 = explode(":", $heure_debut["heuredebut_definie_periode"]);
 		if (substr($test3[0], 0, -1) == "0") {
@@ -414,35 +414,35 @@ function rechercheCreneauCsv2($creneau){
 			$heu = $test3[0];
 		}
 
-		// On définit le moment de début du cours
+		// On dÃ©finit le moment de dÃ©but du cours
 		if (($heu.'h'.$test3[1]) == $test1[0]) {
-			// Le cours commence au début du créneau
+			// Le cours commence au dÃ©but du crÃ©neau
 			$retour["debut"] = '0';
 		}else{
-			// Le cours commence au milieu du créneau
+			// Le cours commence au milieu du crÃ©neau
 			$retour["debut"] = 'O.5';
 		}
 
-		// On définit la durée
-		$he0 = explode("h", $test1[0]); // l'heure de début de la demande
+		// On dÃ©finit la durÃ©e
+		$he0 = explode("h", $test1[0]); // l'heure de dÃ©but de la demande
 		$he1 = explode("h", $test1[1]); // l'heure de fin de la demande
 		if (!isset($he0[1])) { $he0[1] = '00';	}
 		if (!isset($he1[1])) { $he1[1] = '00';	}
 		$duree_demandee = (60 * ($he1[0] - $he0[0])) + ($he1[1] - $he0[1]);
 		if ($duree_demandee == $duree_base) {
-			// ALors la durée est de 1 créneau donc 2 pour Gepi
+			// ALors la durÃ©e est de 1 crÃ©neau donc 2 pour Gepi
 			$retour["duree"] = 2;
 		}elseif($duree_demandee < $duree_base){
-			// Alors le cours la moitié d'un créneau
+			// Alors le cours la moitiÃ© d'un crÃ©neau
 			$retour["duree"] = 1;
 		}else{
-			// Le cours dure plus de 1 créneau
-			// On détermine la durée exacte
+			// Le cours dure plus de 1 crÃ©neau
+			// On dÃ©termine la durÃ©e exacte
 			$test_duree = $duree_demandee / $duree_base;
-			// On récupère le nombre de créneaux entiers
-			$nbre_t = explode(".", $test_duree); // $nbre_t[0] est donc le nombre créneaux entiers
+			// On rÃ©cupÃ¨re le nombre de crÃ©neaux entiers
+			$nbre_t = explode(".", $test_duree); // $nbre_t[0] est donc le nombre crÃ©neaux entiers
 			if (isset($nbre_t[1])) {
-				$test2 = substr($nbre_t[1], 0, 1); // on ne garde que le premier chiffre après la virgule
+				$test2 = substr($nbre_t[1], 0, 1); // on ne garde que le premier chiffre aprÃ¨s la virgule
 			}else{
 				$test2 = 0;
 			}
@@ -451,17 +451,17 @@ function rechercheCreneauCsv2($creneau){
 				// c'est fini
 				$retour["duree"] = $nbre_t[0] * 2;
 			}elseif($test2 > 7){
-				// On ajoute 1 créneau entier en plus
+				// On ajoute 1 crÃ©neau entier en plus
 				$retour["duree"] = ($nbre_t[0] * 2) + 2;
 			}else{
-				// On ajoute un demi créneau en plus
+				// On ajoute un demi crÃ©neau en plus
 				$retour["duree"] = ($nbre_t[0] * 2) + 1;
 			}
 
 		}
 
 	}else{
-		// ça veut dire que le cours commence au début du créneau et dure 1 créneau (donc 2 pour Gepi)
+		// Ã§a veut dire que le cours commence au dÃ©but du crÃ©neau et dure 1 crÃ©neau (donc 2 pour Gepi)
 		$retour["duree"] = '2';
 		$retour["debut"] = '0';
 	}
@@ -473,27 +473,27 @@ function rechercheCreneauCsv2($creneau){
 */
 function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, $groupe, $regroupement, $effectif, $modalite, $frequence, $aire){
 	$retour["msg_erreur"] = '';
-	// Les étapes vont de 0 à 11 en suivant l'ordre des variables ci-dessus
-	// Si un cours est enregistré, on renvoie 'oui', sinon on renvoie 'non'
+	// Les Ã©tapes vont de 0 Ã  11 en suivant l'ordre des variables ci-dessus
+	// Si un cours est enregistrÃ©, on renvoie 'oui', sinon on renvoie 'non'
 
-	// le jour => il est bon, il faut juste l'écrire en minuscule
+	// le jour => il est bon, il faut juste l'Ã©crire en minuscule
 	$jour_e = strtolower($jour);
-	// Cette fonction renvoie l'id du créneau de départ, la durée et le moment du début du cours
+	// Cette fonction renvoie l'id du crÃ©neau de dÃ©part, la durÃ©e et le moment du dÃ©but du cours
 	$test_creneau = rechercheCreneauCsv2($creneau);
 	$creneau_e = $test_creneau["id_creneau"];
 	$duree_e = $test_creneau["duree"];
 	$heuredeb_dec = $test_creneau["debut"];
-	// On récupère les concordances
+	// On rÃ©cupÃ¨re les concordances
 	$classe_e = renvoiConcordances($classe, 2);
 	$matiere_e = renvoiConcordances($matiere, 3);
 	$prof_e = renvoiConcordances($prof, 4);
-	$salle_e = renvoiIdSalle($salle); // on peut se le permettre puisque le travail sur les salles a déjà été effectué
+	$salle_e = renvoiIdSalle($salle); // on peut se le permettre puisque le travail sur les salles a dÃ©jÃ  Ã©tÃ© effectuÃ©
 	$type_semaine = renvoiConcordances($frequence, 10);
 	if ($type_semaine == '' OR $type_semaine == 'erreur') {
 		$type_semaine = '0';
 	}
 
-	// Il reste à déterminer le groupe
+	// Il reste Ã  dÃ©terminer le groupe
 	if ($regroupement != '') {
 
 		$test = explode("|", $regroupement);
@@ -519,7 +519,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 		$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $regrp, $groupe, 'csv2');
 	}
 
-	// On vérifie si tous les champs importants sont précisés ou non
+	// On vÃ©rifie si tous les champs importants sont prÃ©cisÃ©s ou non
 	if ($jour_e == '' OR $creneau_e == 'erreur'
 		OR $groupe_e == 'aucun' OR $groupe_e == 'plusieurs' OR $groupe_e == 'erreur'
 		OR $matiere_e == 'inc' OR $classe_e == 'inc'
@@ -530,7 +530,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 		$retour["msg_erreur"] .= $jour_e.'|'.$creneau_e.'|'.$groupe_e.'|'.$matiere_e.'|'.$classe_e.'|'.$prof_e;
 
 	}else{
-		// On vérifie que cette ligne n'existe pas déjà
+		// On vÃ©rifie que cette ligne n'existe pas dÃ©jÃ 
 		// On ne tient pas compte du type de semaine car on estime que si un enseignement a lieu sur deux types de semaines, c'est qu'il a lieu toutes les semaines
 		$ifexists = mysql_query("SELECT id_cours FROM edt_cours WHERE
 							id_groupe = '".$groupe_e."' AND
@@ -542,10 +542,10 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 							id_calendrier = '0' AND
 							modif_edt = '0' AND
 							login_prof = '".$prof_e."'")
-							OR DIE('erreur dans la requête '.$ifexists.' : '.mysql_error());
+							OR DIE('erreur dans la requÃªte '.$ifexists.' : '.mysql_error());
 
 		$erreur_report = mysql_fetch_array($ifexists);
-		$retour["msg_erreur"] .= 'Ce cours existe déjà ('.$erreur_report["id_cours"].').';
+		$retour["msg_erreur"] .= 'Ce cours existe dÃ©jÃ  ('.$erreur_report["id_cours"].').';
 
 		if (mysql_num_rows($ifexists) < 1) {
 			// On enregistre la ligne
@@ -574,7 +574,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 
 			$retour["msg_erreur"] .= '<br />&nbsp;&nbsp;&nbsp;&nbsp;'.$sql;
 
-			$envoi = mysql_query($sql) OR DIE('Erreur dans la requête '.$sql);
+			$envoi = mysql_query($sql) OR DIE('Erreur dans la requÃªte '.$sql);
 			if ($envoi) {
 				// et on renvoie 'ok'
 				$retour["reponse"] = 'ok';
@@ -588,13 +588,13 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 	return $retour;
 }
 
-// fonction qui permet de vérifier si on doit / peut créer un edt_gr pour les emplois de temps
+// fonction qui permet de vÃ©rifier si on doit / peut crÃ©er un edt_gr pour les emplois de temps
 function gestion_edt_gr($tab){
 
 	$retour = '';
-// On va regarder si on peut créer un edt_gr avec pour nom $tab[7] et pour nom long $tab[3]
+// On va regarder si on peut crÃ©er un edt_gr avec pour nom $tab[7] et pour nom long $tab[3]
 if ($tab[4] != '') {
-	// le professeur est précisé, donc il s'agit d'un cours
+	// le professeur est prÃ©cisÃ©, donc il s'agit d'un cours
 	if ($tab[8] == 'CG') {
 
 		$type_sub = 'classe';
@@ -605,7 +605,7 @@ if ($tab[4] != '') {
 
 		$type_sub = 'demi';
 		$subdivision = renvoiConcordances($tab[2], 2);
-		// On vérifie que les regroupements soient bien précisé sinon, c'est le groupe qui est choisi
+		// On vÃ©rifie que les regroupements soient bien prÃ©cisÃ© sinon, c'est le groupe qui est choisi
 		if ($tab[7] != '') {
 			$nom = $tab[7];
 		}else{
@@ -620,8 +620,8 @@ if ($tab[4] != '') {
 
 	$nom_long = $tab[3];
 
-	// On vérifie si ce edt_gr n'existe pas déjà... s'il existe, on précise que le type de subdivision passe à 'autre'
-	// et on passe subdivision à 'plusieurs'
+	// On vÃ©rifie si ce edt_gr n'existe pas dÃ©jÃ ... s'il existe, on prÃ©cise que le type de subdivision passe Ã  'autre'
+	// et on passe subdivision Ã  'plusieurs'
 	$query_verif = mysql_query("SELECT id FROM edt_gr_nom
 										WHERE nom = '".$nom."'
 										AND nom_long = '".$nom_long."'
@@ -630,7 +630,7 @@ if ($tab[4] != '') {
 
 	if ($nbre >= 1) {
 
-		// alors il existe déjà, on le met à jour et on s'en va
+		// alors il existe dÃ©jÃ , on le met Ã  jour et on s'en va
 		//$rep_id = mysql_result($query_verif, 0,"id");
 		$rep_id = mysql_fetch_array($query_verif);
 		$maj = mysql_query("UPDATE edt_gr_nom SET subdivision_type = 'autre', subdivision = 'plusieurs' WHERE id = '".$rep_id["id"]."'");
@@ -639,10 +639,10 @@ if ($tab[4] != '') {
 
 	}else{
 
-		// on crée cet edt_gr
+		// on crÃ©e cet edt_gr
 		$query_create = mysql_query("INSERT INTO edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
 												VALUES ('', '".$nom."', '".$nom_long."', '".$type_sub."', '".$subdivision."')");
-		// On récupère son id
+		// On rÃ©cupÃ¨re son id
 		$query_id = mysql_query("SELECT id FROM edt_gr_nom
 												WHERE nom = '".$nom."'
 												AND nom_long = '".$nom_long."'
@@ -658,7 +658,7 @@ if ($tab[4] != '') {
 
 }else{
 
-	// on n'a pas créé de edt_gr donc on renvoie 'non
+	// on n'a pas crÃ©Ã© de edt_gr donc on renvoie 'non
 	$retour = 'non';
 }
 

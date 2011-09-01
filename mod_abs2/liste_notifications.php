@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -53,9 +53,9 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
@@ -201,7 +201,7 @@ echo "&nbsp;&nbsp;&nbsp;";
 		document.liste_notifications.appendChild(element);
 		document.liste_notifications.submit();
 				">
-		Réinitialiser les filtres
+		RÃ©initialiser les filtres
 	    </button>
 	    <button type="submit" name="generer_notifications_par_lot" value="y" dojoType="dijit.MenuItem" onClick="
 		//Create an input type dynamically.
@@ -213,12 +213,12 @@ echo "&nbsp;&nbsp;&nbsp;";
 		document.liste_notifications.action = 'generer_notifications_par_lot.php';
 		document.liste_notifications.submit();
 				">
-		Generer par lot les notifications sélectionnées
+		Generer par lot les notifications sÃ©lectionnÃ©es
 	    </button>
 	</div>
     </div>
 <script language="javascript">
-   //on cache les boutons pas très jolis en attendant le parsing dojo
+   //on cache les boutons pas trÃ¨s jolis en attendant le parsing dojo
    dojo.byId("action_bouton").hide();
 </script>
 <?php
@@ -236,7 +236,7 @@ echo '</th>';
 echo '<th>';
 echo '<input type="hidden" name="order" value="'.$order.'" />'; 
 echo '<span style="white-space: nowrap;"> ';
-echo 'N°';
+echo 'NÂ°';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_id" onclick="this.form.order.value = this.value"/>';
@@ -428,7 +428,7 @@ echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
 echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()"';
 if (getFiltreRechercheParam('filter_date_modification') == 'y') {echo "checked";}
-echo '/> modifié';
+echo '/> modifiÃ©';
 echo '</span>';
 //echo '</nobr>';
 echo '</th>';
@@ -525,7 +525,7 @@ foreach ($results as $notification) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
 	foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
 	    echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	    echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	    echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; Ã§argin : 0px; padding-top : 3px; font-size:100%;'>";
 	    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
 	    echo $saisie->getDescription();
 	    echo "</a>";
@@ -636,7 +636,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
         menu.addChild(menuItem0);
 	
         var menuItem1 = new dijit.MenuItem({
-            label: "Selectionner pret à envoyer",
+            label: "Selectionner pret Ã  envoyer",
             onClick: function() {
 		var query_string = \'input[type=checkbox][name="select_notification[]"]\';
 		dojo.query(query_string).attr(\'checked\', false);
@@ -679,7 +679,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 35;
              $taille_max_hauteur = 35;
 
@@ -688,7 +688,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 

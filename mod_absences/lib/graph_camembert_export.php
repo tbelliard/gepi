@@ -5,11 +5,11 @@ require_once "../../artichow/Pie.class.php";
 // Mes fonctions
 //	include("functions.php");
 
-// Variable prédéfinit
+// Variable prÃ©dÃ©finit
 	date_default_timezone_set('Europe/Paris');
 	$date_act = date('Y-m-d');
 
-// Variable non définit
+// Variable non dÃ©finit
 	if (empty($_GET['donnee_titre']) and empty($_POST['donnee_titre'])) { $donnee_titre = ''; }
 	   else { if (isset($_GET['donnee_titre'])) { $donnee_titre = $_GET['donnee_titre']; } if (isset($_POST['donnee_titre'])) { $donnee_titre = $_POST['donnee_titre']; } }
 	if (empty($_GET['echelle_x']) and empty($_POST['echelle_x'])) { $echelle_x = ''; }
@@ -37,7 +37,7 @@ $graph->setBackgroundGradient(
 
 $gx = array(
 	'Janvier'	=> 60,
-	'Février'	=> 135,
+	'FÃ©vrier'	=> 135,
 	'Mars'		=> 30,
 	'Avril'		=> 60,
 	'Mai'		=> 15,
@@ -47,7 +47,7 @@ $gx = array(
 	'Septembre'	=> 60,
 	'Octobre'	=> 15,
 	'Novembre'	=> 60,
-	'Décembre'	=> 15,
+	'DÃ©cembre'	=> 15,
 );
 $donnee_titre[0] = '';
 $_SESSION['donnee_e'] = $gx;
@@ -84,24 +84,24 @@ $pie = new Pie(array_values($_SESSION['donnee_e']), Pie::COLORED);
 
 // remarque Pie::COLORED autre variable : COLORED, AQUA, DARK, EARTH
 
-// les étiquettes
-	// précision de l'étiquette, nombre de chiffre après la virgule
+// les Ã©tiquettes
+	// prÃ©cision de l'Ã©tiquette, nombre de chiffre aprÃ¨s la virgule
 	$pie->setLabelPrecision(1);
-	// position de l'étiquette
+	// position de l'Ã©tiquette
 	$pie->setLabelPosition(-5);
-	// n'affiché que les étiquettes supérieur à 5
+	// n'affichÃ© que les Ã©tiquettes supÃ©rieur Ã  5
 	//$pie->setLabelMinimum(5);
-	// police de caractère des étiquettes
+	// police de caractÃ¨re des Ã©tiquettes
 	$pie->label->setFont(new Tuffy(8));
-	// fond de couleur des étiquettes
+	// fond de couleur des Ã©tiquettes
 	$pie->label->setBackgroundColor(new White(50));
-	// padding des étiquettes
+	// padding des Ã©tiquettes
 	$pie->label->setPadding(2, 2, 2, 2);
 
-// la légende
-	// tableau des noms dans la légende
+// la lÃ©gende
+	// tableau des noms dans la lÃ©gende
 	$pie->setLegend($x);
-	// positionement de la légende
+	// positionement de la lÃ©gende
 	$pie->legend->setPosition(1.45, .45);
 
 // le camember
@@ -109,7 +109,7 @@ $pie = new Pie(array_values($_SESSION['donnee_e']), Pie::COLORED);
 	$pie->setCenter(.35, .50);
 	// taille du camembert
 	$pie->setSize(.60, .70);
-	// encadrement des différentes partie du camembert
+	// encadrement des diffÃ©rentes partie du camembert
 		// remplacer 1.0.9 par setBorderColor
 		// $pie->setBorder(new Black());
 	$pie->setBorderColor(new Black());
@@ -117,7 +117,7 @@ $pie = new Pie(array_values($_SESSION['donnee_e']), Pie::COLORED);
 	$pie->set3D(15);
 	// couleur de fond du camembert
 	//$pie->setBackgroundColor(new White(0));
-	// part à séparer ?
+	// part Ã  sÃ©parer ?
 	//$pie->explode();
 
 // le titre
@@ -125,7 +125,7 @@ $pie = new Pie(array_values($_SESSION['donnee_e']), Pie::COLORED);
 	$pie->title->set($donnee_titre[0]);
 	// emplacement du titre
 	$pie->title->move(10, -20);
-	// police de caractère du titre
+	// police de caractÃ¨re du titre
 	$pie->title->setFont(new TuffyBold(10));
 	// le fond de couleur du titre
 	$pie->title->setBackgroundColor(new White(50));

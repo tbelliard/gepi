@@ -50,7 +50,7 @@ class Odf
      *
      * @param string $key nom de la variable dans le template
      * @param string $value valeur de remplacement
-     * @param bool $encode si true, les caractères spéciaux XML seront encodés
+     * @param bool $encode si true, les caractÃ¨res spÃ©ciaux XML seront encodÃ©s
      * @throws OdfException
      * @return odf
      */
@@ -91,7 +91,7 @@ IMG;
     }
     /**
      * Fusionne les variables de template
-     * Appelée automatiquement lors d'une sauvegarde
+     * AppelÃ©e automatiquement lors d'une sauvegarde
      *
      * @return void
      */
@@ -100,7 +100,7 @@ IMG;
         $this->contentXml = str_replace(array_keys($this->vars), array_values($this->vars), $this->contentXml);
     }
     /**
-     * Rajoute le segment fusionné au document
+     * Rajoute le segment fusionnÃ© au document
      *
      * @param Segment $segment
      * @throws OdfException
@@ -127,7 +127,7 @@ IMG;
     }
     /**
      * Affiche le fichier de contenu xml du document odt
-     * tel qu'il est à cet instant
+     * tel qu'il est Ã  cet instant
      *
      * @return string
      */
@@ -136,7 +136,7 @@ IMG;
         return $this->contentXml;
     }
     /**
-     * Affiche les segments de boucles déclarés avec setSegment()
+     * Affiche les segments de boucles dÃ©clarÃ©s avec setSegment()
      * 
      * @return string
      */
@@ -145,7 +145,7 @@ IMG;
         return '<pre>' . print_r(implode(' ', array_keys($this->segments)), true) . '</pre>';
     }
     /**
-     * Déclare un segment pour une utilisation en boucle
+     * DÃ©clare un segment pour une utilisation en boucle
      *
      * @param string $segment
      * @throws OdfException
@@ -166,7 +166,7 @@ IMG;
     /**
      * Sauvegarde le fichier odt sur le disque
      * 
-     * @param string $file nom du fichier désiré
+     * @param string $file nom du fichier dÃ©sirÃ©
      * @return void
      */
     public function saveToDisk($file = null)
@@ -197,7 +197,7 @@ IMG;
         $this->file->close(); // seems to bug on windows CLI sometimes
     }
     /**
-     * Exporte le fichier en fichier attaché via HTTP
+     * Exporte le fichier en fichier attachÃ© via HTTP
      *
      * @throws OdfException
      * @return void

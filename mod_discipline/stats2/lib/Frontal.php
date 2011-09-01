@@ -22,12 +22,12 @@
  */
 
 /**
- * Classe gérant les requêtes HTTP et les routant
- * vers le controleur et l'action appropriée
- * Code adapté du controleur de Philippe Rigaux:
+ * Classe gÃ©rant les requÃªtes HTTP et les routant
+ * vers le controleur et l'action appropriÃ©e
+ * Code adaptÃ© du controleur de Philippe Rigaux:
  *  http://www.lamsade.dauphine.fr/rigaux/mysqlphp
  */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -44,12 +44,12 @@ class Frontal {
         return self::$instance;
     }
     /**
-     * Execution d'une requête HTTP
+     * Execution d'une requÃªte HTTP
      */
 
     function execute ()
     {
-        // D'abord, on récupère les noms du contrôleur et de l'action
+        // D'abord, on rÃ©cupÃ¨re les noms du contrÃ´leur et de l'action
         if (isSet($_GET[Frontal::NOM_CTRL]))
             $controleur = ucfirst($_GET[Frontal::NOM_CTRL]) . "Ctrl";
         else
@@ -64,15 +64,15 @@ class Frontal {
         if (file_exists("apps" . DIRECTORY_SEPARATOR . $chemin)) {
             require_once($chemin);
         } else {
-            throw new Exception ("Le contrôleur <b>$controleur</b> n'existe pas");
+            throw new Exception ("Le contrÃ´leur <b>$controleur</b> n'existe pas");
         }
         // On instancie un objet
         eval ("\$ctrl = new $controleur();");
-        // Il faut vérifier que l'action existe
+        // Il faut vÃ©rifier que l'action existe
         if (!method_exists($ctrl, $action)) {
             throw new Exception ("L'action <b>$action</b> n'existe pas");
         }
-        // Et pour finir il n'y a plus qu'à exécuter l'action
+        // Et pour finir il n'y a plus qu'Ã  exÃ©cuter l'action
         call_user_func(array($ctrl, $action));
     }
 

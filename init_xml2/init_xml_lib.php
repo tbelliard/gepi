@@ -11,16 +11,16 @@ function traite_utf8($chaine) {
 	// mb_detect_encoding($chaine . 'a' , 'UTF-8, ISO-8859-1');
 
 	//$retour=utf8_decode($chaine);
-	// utf8_decode() va donner de l'iso-8859-1 d'ou probleme sur quelques caracteres oe et OE essentiellement (7 caracteres diffèrent).
+	// utf8_decode() va donner de l'iso-8859-1 d'ou probleme sur quelques caracteres oe et OE essentiellement (7 caracteres diffÃ¨rent).
 
 	/*
-	Différences ISO 8859-15 ? ISO 8859-1
+	DiffÃ©rences ISO 8859-15 ? ISO 8859-1
 	Position
 			0xA4  0xA6  0xA8  0xB4  0xB8  0xBC  0xBD  0xBE
 	8859-1
 			?     ?     ?     ?     ?     ?     ?     ?
 	8859-15
-			¤     ¦     ¨     ´     ¸     ¼     ½     ¾
+			Â¤     Â¦     Â¨     Â´     Â¸     Â¼     Â½     Â¾
 	*/
 
 	//$retour=recode_string("utf8..iso-8859-15", $chaine);
@@ -33,14 +33,14 @@ function traite_utf8($chaine) {
 
 /*
 //================================================
-// Correspondances de caractères accentués/désaccentués
-$liste_caracteres_accentues   ="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõø¨ûüùúıÿ¸";
+// Correspondances de caractÃ¨res accentuÃ©s/dÃ©saccentuÃ©s
+$liste_caracteres_accentues   ="Ã‚Ã„Ã€ÃÃƒÃ…Ã‡ÃŠÃ‹ÃˆÃ‰ÃÃÃŒÃÃ‘Ã”Ã–Ã’Ã“Ã•Ã˜Â¦Ã›ÃœÃ™ÃšÃÂ¾Â´Ã¡Ã Ã¢Ã¤Ã£Ã¥Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã¬Ã­Ã±Ã´Ã¶Ã°Ã²Ã³ÃµÃ¸Â¨Ã»Ã¼Ã¹ÃºÃ½Ã¿Â¸";
 $liste_caracteres_desaccentues="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
 //================================================
 
 function remplace_accents($chaine) {
 	global $liste_caracteres_accentues, $liste_caracteres_desaccentues;
-	$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine"))))," '$liste_caracteres_accentues","__$liste_caracteres_desaccentues");
+	$retour=strtr(preg_replace("/Ã†/","AE",preg_replace("/Ã¦/","ae",preg_replace("/Â¼/","OE",preg_replace("/Â½/","oe","$chaine"))))," '$liste_caracteres_accentues","__$liste_caracteres_desaccentues");
 	return $retour;
 }
 */
@@ -90,7 +90,7 @@ function champ_select_prof($defaut='', $avec_nb_mat='n', $form_onchange_submit='
 		if($avec_nb_mat=='y') {
 			$retour.=" ";
 			for($loop=0;$loop<$l_max-strlen($tab[$i]['nom_prenom']);$loop++) {$retour.="&nbsp;";}
-			if($tab[$i]['nb_matieres']>0) {$retour.="(".$tab[$i]['nb_matieres']." matière(s))";}
+			if($tab[$i]['nb_matieres']>0) {$retour.="(".$tab[$i]['nb_matieres']." matiÃ¨re(s))";}
 		}
 		$retour.="</option>\n";
 	}
@@ -145,7 +145,7 @@ function reordonner_matieres($login_prof='', $avec_echo='n') {
 
 			if($avec_echo=='y') {
 				if(in_array($lig->ordre_matieres,$tab_ordre_matieres)) {
-					$retour.="Rang $lig->ordre_matieres de matière en doublon pour $lig->id_professeur (<i>$lig->id_matiere</i>)<br />\n";
+					$retour.="Rang $lig->ordre_matieres de matiÃ¨re en doublon pour $lig->id_professeur (<i>$lig->id_matiere</i>)<br />\n";
 					$nb_corrections++;
 				}
 			}

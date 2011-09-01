@@ -47,7 +47,7 @@ $max_periode = mysql_result($periode_query, 0, 'max');
 $classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
 $nb_classe = mysql_num_rows($classes_list);
 
-// On va chercher les matières existantes
+// On va chercher les matiÃ¨res existantes
 $matieres_list = mysql_query("SELECT * FROM matieres ORDER BY matiere");
 $nb_matieres = mysql_num_rows($matieres_list);
 
@@ -62,7 +62,7 @@ if (isset($_POST['is_posted'])) {
         $id_classe = mysql_result($classes_list,$nbc,'id');
         $temp = "case_".$id_classe;
         if (isset($_POST[$temp])) {
-            // boucle sur les matières
+            // boucle sur les matiÃ¨res
             $i = 0;
             while ($i < $nb_matieres) {
                 $current_matiere = @mysql_result($matieres_list, $i, "matiere");
@@ -88,7 +88,7 @@ if (isset($_POST['is_posted'])) {
                     if (!$reg_data) $reg_ok = 'no'; else $reg_ok = 'yes' ;
                 }
 
-                // La catégorie de matière
+                // La catÃ©gorie de matiÃ¨re
                 if (isset($_POST[$current_matiere.'_categorie']) and ($_POST[$current_matiere.'_categorie']!='') and is_numeric($_POST[$current_matiere.'_categorie'])) {
                 $sql="UPDATE j_groupes_classes jgc, j_groupes_matieres jgm
                     SET jgc.categorie_id='".$_POST[$current_matiere.'_categorie']."'
@@ -114,35 +114,35 @@ if (isset($_POST['is_posted'])) {
         $nbc++;
     }
     if ($reg_ok=='') {
-        $message_enregistrement = "Aucune modification n'a été effectuée !";
+        $message_enregistrement = "Aucune modification n'a Ã©tÃ© effectuÃ©e !";
         $affiche_message = 'yes';
     } else if ($reg_ok=='yes') {
-        $message_enregistrement = "Les modifications ont été effectuées avec succès.";
+        $message_enregistrement = "Les modifications ont Ã©tÃ© effectuÃ©es avec succÃ¨s.";
         $affiche_message = 'yes';
     } else {
-        $message_enregistrement = "Il y a eu un problème lors de l'enregistrement des modification.";
+        $message_enregistrement = "Il y a eu un problÃ¨me lors de l'enregistrement des modification.";
         $affiche_message = 'yes';
     }
 }
 //**************** EN-TETE *****************
-$titre_page = "Outil de gestion - Paramétrage des matières par lots";
+$titre_page = "Outil de gestion - ParamÃ©trage des matiÃ¨res par lots";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 if ($max_periode <= 0) {
-   echo "Aucune classe comportant des périodes n'a été définie.";
+   echo "Aucune classe comportant des pÃ©riodes n'a Ã©tÃ© dÃ©finie.";
    die();
 }
 
 echo "<form method=\"post\" action=\"matieres_param.php\">\n";
 echo add_token_field();
 echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type='submit' value='Enregistrer' /></p>\n";
-echo "<p>Sur cette page, vous pouvez modifier les coefficients et les priorités d'affichage d'une ou plusieurs matières
-par lots de classes cochées ci-dessous.</p>\n";
+echo "<p>Sur cette page, vous pouvez modifier les coefficients et les prioritÃ©s d'affichage d'une ou plusieurs matiÃ¨res
+par lots de classes cochÃ©es ci-dessous.</p>\n";
 
 //================================================
 // AJOUT:boireaus
-echo "<p><input type='button' name='cochetout' value='Tout cocher' onClick='coche_tout();' /> / <input type='button' name='decochetout' value='Tout décocher' onClick='decoche_tout();' /></p>";
+echo "<p><input type='button' name='cochetout' value='Tout cocher' onClick='coche_tout();' /> / <input type='button' name='decochetout' value='Tout dÃ©cocher' onClick='decoche_tout();' /></p>";
 //============================================
 
 
@@ -224,16 +224,16 @@ echo "<script type='text/javascript' language='javascript'>
 //============================================
 
 ?>
-<p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus : </p>
-<p>Remarque : Aucune modification n'est apportée aux champs laissés vides.</p>
+<p class='bold'>Pour la ou les classe(s) sÃ©lectionnÃ©e(s) ci-dessus : </p>
+<p>Remarque : Aucune modification n'est apportÃ©e aux champs laissÃ©s vides.</p>
 
-<table width='100%' border='1' cellpadding='5' class='boireaus' summary='Paramétrage des matières'>
+<table width='100%' border='1' cellpadding='5' class='boireaus' summary='ParamÃ©trage des matiÃ¨res'>
 <tr>
-    <th><p class='bold'>Identifiant matière</p></th>
+    <th><p class='bold'>Identifiant matiÃ¨re</p></th>
     <th><p class='bold'>Nom complet</p></th>
     <th><p class='bold'>Ordre d'affichage</p></th>
     <th><p class='bold'>Coefficient</p></th>
-    <th><p class='bold'>Catégorie</p></th>
+    <th><p class='bold'>CatÃ©gorie</p></th>
 </tr>
 
 <?php
@@ -271,7 +271,7 @@ while ($i < $nb_matieres){
         echo "</td>\n";
         echo "<td><input type=\"text\" name=\"".$current_matiere."_coef\" value=\"\" size=\"5\" /></td>\n";
 
-        // Catégorie de matière
+        // CatÃ©gorie de matiÃ¨re
         echo "<td>";
         echo "<select size=1 name=\"".$current_matiere."_categorie\">\n";
         $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
@@ -299,7 +299,7 @@ while ($i < $nb_matieres){
         echo "<DIV ID=\"".$current_matiere."\" STYLE=\"position:absolute; visibility: hidden; left: 300px; top: 10px;\">";
     echo "<table width=\"200\" border=\"1\" cols=\"1\" cellpadding=\"1\" cellspacing=\"1\" bgcolor=\"#FFFFFF\">";
     echo "<tr><td>
-    <i><b>".$current_matiere_nom." - Matière présente dans les classes suivantes :</b></i>
+    <i><b>".$current_matiere_nom." - MatiÃ¨re prÃ©sente dans les classes suivantes :</b></i>
     </td></tr>";
 
     $matquery = mysql_query("select c.classe from j_classes_matieres_professeurs j, classes c

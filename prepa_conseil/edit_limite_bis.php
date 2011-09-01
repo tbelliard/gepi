@@ -53,7 +53,7 @@ require_once("../lib/header.inc");
 
 echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>";
 
-echo "<p style='color:red'>Cette page est obsolète.</p>\n";
+echo "<p style='color:red'>Cette page est obsolÃ¨te.</p>\n";
 
 require("../lib/footer.inc.php");
 ?>

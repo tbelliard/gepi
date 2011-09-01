@@ -21,7 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -44,7 +44,7 @@ if (!checkAccess()) {
 }
 
 if ($_SESSION['statut'] != "secours") {
-	$mess=rawurlencode("Vous n'avez pas accès à cette page !");
+	$mess=rawurlencode("Vous n'avez pas accÃ¨s Ã  cette page !");
 	header("Location: index.php?msg=$mess");
 	die();
 }
@@ -67,18 +67,18 @@ if((isset($_POST['is_posted']))&&
 
 	$msg="";
 
-	// vérifier si l'élève est bien dans la classe et si la période est ouverte en saisie
+	// vÃ©rifier si l'Ã©lÃ¨ve est bien dans la classe et si la pÃ©riode est ouverte en saisie
 
 	$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$ele_login' AND id_classe='$id_classe' AND periode='$periode_num';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0) {
-		$msg.="L'élève $ele_login n'est pas dans la classe n°$id_classe sur la période choisie $periode_num.\n";
+		$msg.="L'Ã©lÃ¨ve $ele_login n'est pas dans la classe nÂ°$id_classe sur la pÃ©riode choisie $periode_num.\n";
 	}
 
 	include "../lib/periodes.inc.php";
 
 	if($ver_periode[$periode_num]=="O") {
-		$msg.="La période choisie ".$nom_periode[$periode_num]." est close.\n";
+		$msg.="La pÃ©riode choisie ".$nom_periode[$periode_num]." est close.\n";
 	}
 
 	if($msg=="") {
@@ -118,18 +118,18 @@ if((isset($_POST['is_posted']))&&
 				$test = mysql_num_rows($test_eleve_note_query);
 				if ($test != "0") {
 					$register = mysql_query("UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$ele_login' AND id_groupe='".$id_groupe[$k]."' AND periode='$periode_num')");
-					if (!$register) {$msg.="Erreur lors de la mise à jour de la note de l'enseignement n°".$id_groupe[$k];}
+					if (!$register) {$msg.="Erreur lors de la mise Ã  jour de la note de l'enseignement nÂ°".$id_groupe[$k];}
 				} else {
 					$register = mysql_query("INSERT INTO matieres_notes SET login='$ele_login', id_groupe='".$id_groupe[$k]."', periode='$periode_num', note='$note', statut='$elev_statut', rang='0'");
-					if (!$register) {$msg.="Erreur lors de l'insertion de la note de l'enseignement n°".$id_groupe[$k];}
+					if (!$register) {$msg.="Erreur lors de l'insertion de la note de l'enseignement nÂ°".$id_groupe[$k];}
 				}
 			} else {
 				$register = mysql_query("DELETE FROM matieres_notes WHERE (login='$ele_login' AND id_groupe='".$id_groupe[$k]."' AND periode='$periode_num')");
-				if (!$register) {$msg.="Erreur lors de la suppression de la note de l'enseignement n°".$id_groupe[$k];}
+				if (!$register) {$msg.="Erreur lors de la suppression de la note de l'enseignement nÂ°".$id_groupe[$k];}
 			}
 
 
-			// Appréciation
+			// ApprÃ©ciation
 			if (isset($NON_PROTECT["app_grp_".$k])){
 				$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp_".$k]));
 			}
@@ -137,7 +137,7 @@ if((isset($_POST['is_posted']))&&
 				$app = "";
 			}
 			//echo "$k: $app<br />";
-			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+			// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 			//$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
 			$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
 			$app=preg_replace('/(\\\r)+/',"\r",$app);
@@ -148,15 +148,15 @@ if((isset($_POST['is_posted']))&&
 			if ($test != "0") {
 				if ($app != "") {
 					$register = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $app . "' WHERE (id_groupe='" . $id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
-					if (!$register) {$msg.="Erreur lors de la mise à jour de l'appréciation de l'enseignement n°".$id_groupe[$k];}
+					if (!$register) {$msg.="Erreur lors de la mise Ã  jour de l'apprÃ©ciation de l'enseignement nÂ°".$id_groupe[$k];}
 				} else {
 					$register = mysql_query("DELETE FROM matieres_appreciations WHERE (id_groupe='".$id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
-					if (!$register) {$msg.="Erreur lors de la suppression de l'appréciation de l'enseignement n°".$id_groupe[$k];}
+					if (!$register) {$msg.="Erreur lors de la suppression de l'apprÃ©ciation de l'enseignement nÂ°".$id_groupe[$k];}
 				}
 			} else {
 				if ($app != "") {
 					$register = mysql_query("INSERT INTO matieres_appreciations SET id_groupe='" . $id_groupe[$k]."',periode='$periode_num',appreciation='" . $app . "',login='$ele_login'");
-					if (!$register) {$msg.="Erreur lors de l'insertion de l'appréciation de l'enseignement n°".$id_groupe[$k];}
+					if (!$register) {$msg.="Erreur lors de l'insertion de l'apprÃ©ciation de l'enseignement nÂ°".$id_groupe[$k];}
 				}
 			}
 		}
@@ -167,12 +167,12 @@ if((isset($_POST['is_posted']))&&
 	}
 }
 
-$themessage = 'Des modifications ont été apportées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_enregistrement = "Les modifications ont été enregistrées !";
+$themessage = 'Des modifications ont Ã©tÃ© apportÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 $utilisation_prototype = "ok";
 //$javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
-$titre_page = "Saisie des notes et appréciations";
+$titre_page = "Saisie des notes et apprÃ©ciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -201,7 +201,7 @@ if(!isset($id_classe)) {
 	echo "</p>\n";
 
 	if($nombreligne==0){
-		echo "<p>Aucune classe n'est définie.</p>\n";
+		echo "<p>Aucune classe n'est dÃ©finie.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -235,7 +235,7 @@ elseif(!isset($periode_num)) {
 
 	include "../lib/periodes.inc.php";
 
-	echo "<p>Choisissez la période:</p>\n";
+	echo "<p>Choisissez la pÃ©riode:</p>\n";
 
 	echo "<ul>\n";
 	for($i=1;$i<=count($nom_periode);$i++) {
@@ -243,7 +243,7 @@ elseif(!isset($periode_num)) {
 			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$i'>".$nom_periode[$i]."</a></li>\n";
 		}
 		else {
-			echo "<li>".$nom_periode[$i].": Période close</li>\n";
+			echo "<li>".$nom_periode[$i].": PÃ©riode close</li>\n";
 		}
 	}
 	echo "</ul>\n";
@@ -257,13 +257,13 @@ elseif(!isset($ele_login)) {
 	// Choisir une autre classe
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choix classe</a>";
 
-	// Choisir une autre période
-	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choix période</a>";
+	// Choisir une autre pÃ©riode
+	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choix pÃ©riode</a>";
 
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Choisissez un élève:</p>\n";
+	echo "<p>Choisissez un Ã©lÃ¨ve:</p>\n";
 
 	echo "<blockquote>\n";
 
@@ -311,11 +311,11 @@ else {
 	// Choisir une autre classe
 	echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix classe</a>";
 
-	// Choisir une autre période
-	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix période</a>";
+	// Choisir une autre pÃ©riode
+	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix pÃ©riode</a>";
 
-	// Choisir un autre élève de la même classe
-	//echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix élève</a>";
+	// Choisir un autre Ã©lÃ¨ve de la mÃªme classe
+	//echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix Ã©lÃ¨ve</a>";
 
 	$sql="SELECT DISTINCT jec.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves e
 							WHERE jec.login=e.login AND
@@ -361,7 +361,7 @@ else {
 	if("$login_eleve_prec"!="0"){
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num&amp;ele_login=$login_eleve_prec'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">Elève précédent</a>";
+		echo ">ElÃ¨ve prÃ©cÃ©dent</a>";
 	}
 
 
@@ -401,7 +401,7 @@ else {
 	if("$login_eleve_suiv"!="0"){
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num&amp;ele_login=$login_eleve_suiv'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">Elève suivant</a>";
+		echo ">ElÃ¨ve suivant</a>";
 	}
 
 	echo "</p>\n";
@@ -414,7 +414,7 @@ else {
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$ele_login';";
 	$res_ele=mysql_query($sql);
 	if(mysql_num_rows($res_ele)==0) {
-		echo "<p>L'élève $ele_login est inconnu.</p>\n";
+		echo "<p>L'Ã©lÃ¨ve $ele_login est inconnu.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -424,12 +424,12 @@ else {
 	include "../lib/periodes.inc.php";
 
 	if($ver_periode[$periode_num]=="O") {
-		echo "<p>$info_ele sur la période ".$nom_periode[$periode_num].": La période choisie est close.</p>\n";
+		echo "<p>$info_ele sur la pÃ©riode ".$nom_periode[$periode_num].": La pÃ©riode choisie est close.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	echo "<p>Saisie des notes et appréciations pour $info_ele sur la période ".$nom_periode[$periode_num]."</p>\n";
+	echo "<p>Saisie des notes et apprÃ©ciations pour $info_ele sur la pÃ©riode ".$nom_periode[$periode_num]."</p>\n";
 
 	$sql="SELECT jeg.id_groupe, g.name, g.description, m.nom_complet
 			FROM groupes g,
@@ -444,7 +444,7 @@ else {
 	//echo "$sql<br />\n";
 	$res_grp=mysql_query($sql);
 	if(mysql_num_rows($res_grp)==0) {
-		echo "<p>L'élève n'est inscrit dans aucun enseignement sur la période.</p>\n";
+		echo "<p>L'Ã©lÃ¨ve n'est inscrit dans aucun enseignement sur la pÃ©riode.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -464,7 +464,7 @@ else {
 		echo "<tr>\n";
 		echo "<th>Enseignement</th>\n";
 		echo "<th>Note</th>\n";
-		echo "<th>Appréciation</th>\n";
+		echo "<th>ApprÃ©ciation</th>\n";
 		echo "</tr>\n";
 		while($lig_grp=mysql_fetch_object($res_grp)) {
 			$id_groupe=$lig_grp->id_groupe;

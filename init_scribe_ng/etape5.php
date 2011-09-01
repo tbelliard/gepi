@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. OrlÃ©ans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -45,7 +45,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -62,14 +62,14 @@ if ($_POST['step'] == "5") {
 
     // Si on a bien les donnees dans la session, on peut continuer
     /*
-     * Recherche de tous les profs de l'établissement (pour ce RNE)
+     * Recherche de tous les profs de l'Ã©tablissement (pour ce RNE)
     */
     $matieres = $ldap->get_all_matieres();
     $nb_matieres = $matieres['count'];
 
 
    /*
-    * Ajout des matières
+    * Ajout des matiÃ¨res
     */
 
     for($cpt=0; $cpt<$matieres['count']; $cpt++) {
@@ -77,10 +77,10 @@ if ($_POST['step'] == "5") {
         $code_matiere = $matieres[$cpt]['cn'][0];
         $nom_matiere = $matieres[$cpt]['description'][0];
         
-        // On test si on a déjà cette matière
+        // On test si on a dÃ©jÃ  cette matiÃ¨re
         $nouvelle_matiere = MatierePeer::retrieveByPK($code_matiere);
         if ($nouvelle_matiere != null) {
-            echo "La matière "
+            echo "La matiÃ¨re "
             .$nouvelle_matiere->getMatiere()." ("
             .$nouvelle_matiere->getNomComplet()
             .") existe d&eacute;ja<br/>";
@@ -93,21 +93,21 @@ if ($_POST['step'] == "5") {
         }
         
         
-        // Maintenant on associe les profs à cette matiere
+        // Maintenant on associe les profs Ã  cette matiere
         $nb_profs = $matieres[$cpt]['memberuid']['count'];
         
         $matiere_profs = $nouvelle_matiere->getProfesseurs();
                 
         if ($nb_profs > 0) {
           for ($i=0;$i<$nb_profs;$i++){
-            // On vérifie que le prof existe, quand même...
+            // On vÃ©rifie que le prof existe, quand mÃªme...
             $prof = UtilisateurProfessionnelPeer::retrieveByPK($matieres[$cpt]['memberuid'][$i]);
             
-            // Le prof existe, on créer l'association, si elle n'existe pas encore
+            // Le prof existe, on crÃ©er l'association, si elle n'existe pas encore
             if ($prof != null) {
               
-              // L'association n'existe pas, on la créé
-              // Pour ça, on doit déterminer l'ordre
+              // L'association n'existe pas, on la crÃ©Ã©
+              // Pour Ã§a, on doit dÃ©terminer l'ordre
               if (!$matiere_profs->contains($prof)) {
                 $assoc = JProfesseursMatieresQuery::create()
                   ->filterByProfesseur($prof)
@@ -123,16 +123,16 @@ if ($_POST['step'] == "5") {
                 $new_assoc->save();
               }
             } else {
-              echo "Le prof associé (".$matieres[$cpt]['memberuid'][$i].") n'existe pas dans la base !<br/>";
+              echo "Le prof associÃ© (".$matieres[$cpt]['memberuid'][$i].") n'existe pas dans la base !<br/>";
             }
           }
         }
         
-    } // fin parcours des matières
+    } // fin parcours des matiÃ¨res
         /*
-         * Résumé des matières trouvées :
+         * RÃ©sumÃ© des matiÃ¨res trouvÃ©es :
          */
-    echo "<br/><br/>Matières trouvées : $nb_matieres"."<br/><br/>";
+    echo "<br/><br/>MatiÃ¨res trouvÃ©es : $nb_matieres"."<br/><br/>";
 
     echo "<br/>";
 
@@ -149,11 +149,11 @@ if ($_POST['step'] == "5") {
 else {
     // Affichage de la page des explications de l'etape 5 (aucune donnee postee)
 
-    echo "<br/><p>L'&eacute;tape 5 vous permet d'importer les matières et de les associés aux professeurs qui vont avoir la charge de les enseigner. Les matières déjà présentes ne seront pas supprimées.</p>";
+    echo "<br/><p>L'&eacute;tape 5 vous permet d'importer les matiÃ¨res et de les associÃ©s aux professeurs qui vont avoir la charge de les enseigner. Les matiÃ¨res dÃ©jÃ  prÃ©sentes ne seront pas supprimÃ©es.</p>";
     echo "<form enctype='multipart/form-data' action='etape5.php' method=post>";
 	echo add_token_field();
     echo "<input type=hidden name='step' value='5'>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
     echo "<br>";
 

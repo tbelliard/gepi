@@ -34,8 +34,8 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_ooo/rapport_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : Rapport incident', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/rapport_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : Rapport Incident', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_ooo/rapport_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : Rapport incident', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/rapport_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : Rapport Incident', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -54,11 +54,11 @@ include_once('../mod_discipline/sanctions_func_lib.php'); // la librairie de fon
 //debug_var();
 
 //
-// Zone de traitement des données qui seront fusionnées au modèle
-// ATTENTION S'il y a des TABLEAUX à TRAITER Voir en BAS DU FICHIER PARTIE TABLEAU (Merge)
-// Chacune correspond à une variable définie dans le modèle
+// Zone de traitement des donnÃ©es qui seront fusionnÃ©es au modÃ¨le
+// ATTENTION S'il y a des TABLEAUX Ã  TRAITER Voir en BAS DU FICHIER PARTIE TABLEAU (Merge)
+// Chacune correspond Ã  une variable dÃ©finie dans le modÃ¨le
 //
-//On récupère les coordonnées du collège dans Gepi ==> $gepiSettings['nom_setting']
+//On rÃ©cupÃ¨re les coordonnÃ©es du collÃ¨ge dans Gepi ==> $gepiSettings['nom_setting']
 $ets_anne_scol = $gepiSettings['gepiSchoolName'];
 $ets_nom = $gepiSettings['gepiSchoolName'];
 $ets_adr1 = $gepiSettings['gepiSchoolAdress1'];
@@ -71,13 +71,13 @@ $ets_email = $gepiSettings['gepiSchoolEmail'];
 $gepiyear =  $gepiSettings['gepiYear'];
  
  
-// recupération des parametres
-$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL); // Les informations viennent d'où ? si mode = module_discipline ==> du module discipline
+// recupÃ©ration des parametres
+$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL); // Les informations viennent d'oÃ¹ ? si mode = module_discipline ==> du module discipline
 $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET['id_incident']) ? $_GET['id_incident'] : NULL); 
 //$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL); 
 //$id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : (isset($_GET['id_sanction']) ? $_GET['id_sanction'] : NULL); 
 
-//Initialisation des données du modèle Ooo Retenue
+//Initialisation des donnÃ©es du modÃ¨le Ooo Retenue
 $date ='';
 $objet_rapport ='';
 $motif = '';
@@ -98,7 +98,7 @@ if ($mode=='module_discipline') {
 	$res2=mysql_query($sql);
 	$cpt=0;
 	$tab_protagonistes=array(); //le tableau des login
-	$donnee_tab_protagonistes=array(); //le tableau des données
+	$donnee_tab_protagonistes=array(); //le tableau des donnÃ©es
 
 	while($lig2=mysql_fetch_object($res2)) {
 		$tab_protagonistes[]=$lig2->login;
@@ -151,7 +151,7 @@ if ($mode=='module_discipline') {
 		$cpt++;
 	}
 
-	//affichage des donnée pour débug
+	//affichage des donnÃ©e pour dÃ©bug
 	/*
 				echo "<pre>";
 				print_r($donnee_tab_protagonistes);
@@ -162,7 +162,7 @@ if ($mode=='module_discipline') {
 	*/
 
 
-	// on récupère les données à transmettre au modèle de retenue open office.
+	// on rÃ©cupÃ¨re les donnÃ©es Ã  transmettre au modÃ¨le de retenue open office.
 	$sql_incident="SELECT * FROM `s_incidents` WHERE `id_incident`=$id_incident";
 	$res_incident=mysql_query($sql_incident);
 	if(mysql_num_rows($res_incident)>0) {
@@ -171,7 +171,7 @@ if ($mode=='module_discipline') {
 		//traitement de la date mysql
 		$date=datemysql_to_jj_mois_aaaa($lig_incident->date,'-','o');
 		
-		// Créneau horaire
+		// CrÃ©neau horaire
 		$creneau = $lig_incident->heure;
 		
 		//traitement du motif
@@ -189,13 +189,13 @@ if ($mode=='module_discipline') {
 			$lieu_incident = $lig_lieu->lieu;
 		}
 
-		//le déclarant On récupère le nom et le prénom (et la qualité)
+		//le dÃ©clarant On rÃ©cupÃ¨re le nom et le prÃ©nom (et la qualitÃ©)
 		$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig_incident->declarant';";
 		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
 			$lig=mysql_fetch_object($res);
-			//var modèle
+			//var modÃ¨le
 			$nom_resp = $lig->civilite." ".strtoupper($lig->nom)." ".ucfirst(substr($lig->prenom,0,1)).".";
 		}
 		else {
@@ -207,7 +207,7 @@ if ($mode=='module_discipline') {
 											AND du.id_statut = ds.id;";
 			$query = mysql_query($sql);
 			$result = mysql_fetch_array($query);
-			//var modèle
+			//var modÃ¨le
 			$fct_resp = $result['nom_statut'] ;
 		}
 		else {
@@ -219,13 +219,13 @@ if ($mode=='module_discipline') {
 		return "INCIDENT INCONNU";
 	}
 	
-	//var modèle
+	//var modÃ¨le
 	$num_incident = $id_incident;
 
 } //if mode = module discipline  
 
 /*
-if ($mode=='formulaire_rapport_incident') { //les donnée provenant du formulaire 
+if ($mode=='formulaire_rapport_incident') { //les donnÃ©e provenant du formulaire 
    
     $date = datemysql_to_jj_mois_aaaa($_SESSION['retenue_date'],'/','n');
 	session_unregister("retenue_date");
@@ -236,13 +236,13 @@ if ($mode=='formulaire_rapport_incident') { //les donnée provenant du formulaire
 	
 	$motif = $_SESSION['retenue_motif'];
 	$motif=traitement_magic_quotes(corriger_caracteres($motif));
-	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+	// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 	$motif=my_ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
 	session_unregister("retenue_motif");
 	
 	$travail = $_SESSION['retenue_travail'];
 	$travail=traitement_magic_quotes(corriger_caracteres($travail));
-	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+	// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 	$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
 	session_unregister("retenue_travail");
 	
@@ -259,13 +259,13 @@ if ($mode=='formulaire_rapport_incident') { //les donnée provenant du formulaire
 } // formulaire_rapport_incident
 */
 //
-// Fin zone de traitement Les données qui seront fusionnées au modèle
+// Fin zone de traitement Les donnÃ©es qui seront fusionnÃ©es au modÃ¨le
 //
 
 //
-//Les variables à modifier pour le traitement  du modèle ooo
+//Les variables Ã  modifier pour le traitement  du modÃ¨le ooo
 //
-//Le chemin et le nom du fichier ooo à traiter (le modèle de document)
+//Le chemin et le nom du fichier ooo Ã  traiter (le modÃ¨le de document)
 $nom_fichier_modele_ooo ='rapport_incident.odt';
 // Par defaut tmp
 $nom_dossier_temporaire ='tmp';
@@ -273,22 +273,22 @@ $nom_dossier_temporaire ='tmp';
 $nom_fichier_xml_a_traiter ='content.xml';
 
 
-//Procédure du traitement à effectuer
-//les chemins contenant les données
+//ProcÃ©dure du traitement Ã  effectuer
+//les chemins contenant les donnÃ©es
 include_once ("./lib/chemin.inc.php");
 
 
 // instantiate a TBS OOo class
 $OOo = new clsTinyButStrongOOo;
 // setting the object
-$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
+$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier oÃ¹ se fait le traitement (dÃ©compression / traitement / compression)
 // create a new openoffice document from the template with an unique id 
-$OOo->NewDocFromTpl($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+$OOo->NewDocFromTpl($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiquÃ© Ã  partir de l'emplacement de ce fichier
 // merge data with openoffice file named 'content.xml'
-$OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
+$OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit Ãªtre parsÃ© (il sera extrait)
 
 // Traitement des tableaux
-// On insère ici les lignes concernant la gestion des tableaux
+// On insÃ¨re ici les lignes concernant la gestion des tableaux
 $OOo->MergeBlock('blk1',$donnee_tab_protagonistes) ; 
 // Fin de traitement des tableaux
 
@@ -296,10 +296,10 @@ $OOo->MergeBlock('blk1',$donnee_tab_protagonistes) ;
 $OOo->SaveXmlToDoc(); //traitement du fichier extrait
 
 
-//Génération du nom du fichier
+//GÃ©nÃ©ration du nom du fichier
 $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
-//$nom_fic = $nom_fichier_modele[0]."_N°_".$num_incident."_généré_le_".$now.".".$nom_fichier_modele[1];
+//$nom_fic = $nom_fichier_modele[0]."_NÂ°_".$num_incident."_gÃ©nÃ©rÃ©_le_".$now.".".$nom_fichier_modele[1];
 $nom_fic = $nom_fichier_modele[0]."_N_".$num_incident."_genere_le_".$now.".".$nom_fichier_modele[1];
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
@@ -316,7 +316,7 @@ if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 // display
 header('Content-type: '.$OOo->GetMimetypeDoc());
 header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
-$OOo->FlushDoc(); //envoi du fichier traité
+$OOo->FlushDoc(); //envoi du fichier traitÃ©
 $OOo->RemoveDoc(); //suppression des fichiers de travail
 // Fin de traitement des tableaux
 ?>

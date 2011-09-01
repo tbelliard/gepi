@@ -42,7 +42,7 @@ class class_accueil_change_menu {
   function __construct($ordreDemande){
 	
 	if (!$this->chargeNouvelOrdre($ordreDemande)){
-	  $this->message="Erreur lors de la récupération de l'ordre des menus" ;
+	  $this->message="Erreur lors de la rÃ©cupÃ©ration de l'ordre des menus" ;
 	}else if (!$this->chargeAncienOrdre()){
 	  $this->message="Erreur lors de la lecture de la table mn_ordre_accueil" ;
 	  }else if (!$this->doublonMenu()){
@@ -90,7 +90,7 @@ class class_accueil_change_menu {
 	  if (count($this->ordreActuelItem)){
 		foreach ($this->ordreActuelItem as $AncienOrdre){
 		  if ($AncienOrdre['num_menu']==$nouvelOrdre['ancienNum']){
-			// On a déjà un enregistrement
+			// On a dÃ©jÃ  un enregistrement
 			$miseAJour=true;
 			break;
 		  }
@@ -147,7 +147,7 @@ $ordreDemande=$this->ordreFuturMenu ;
 
   public function optimiseMenu(){
 	/**
-	* Supprime les trous dans la numérotation des menus
+	* Supprime les trous dans la numÃ©rotation des menus
 	 *
 	 */
 	$numActuel = 0;
@@ -172,7 +172,7 @@ $ordreDemande=$this->ordreFuturMenu ;
 			AND `statut`= '".$nouvelOrdre['statut']."' ;";
 		 //$resp2 = mysql_query($sql2);
 		 if (!mysql_query($sql2))
-		   echo 'ça coince <br />';
+		   echo 'Ã§a coince <br />';
 	  }
 	  unset($nouvelOrdre) ;
 	}

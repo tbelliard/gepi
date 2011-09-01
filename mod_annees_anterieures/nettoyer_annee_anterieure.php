@@ -34,23 +34,23 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// INSERT INTO droits VALUES ('/mod_annees_anterieures/nettoyer_annee_anterieure.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Suppression de données antérieures', '');
+// INSERT INTO droits VALUES ('/mod_annees_anterieures/nettoyer_annee_anterieure.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Suppression de donnÃ©es antÃ©rieures', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
 
 
-// Si le module n'est pas activé...
+// Si le module n'est pas activÃ©...
 if(getSettingValue('active_annees_anterieures')!="y"){
 	// A DEGAGER
-	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+	// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
 
 	header("Location: ../logout.php?auto=1");
 	die();
 }
 
-// si le plugin "port_folio" existe et est activé
+// si le plugin "port_folio" existe et est activÃ©
 $test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
 if ($test_plugin=='y') $flag_port_folio='y';
 
@@ -91,21 +91,21 @@ if(isset($confirmer)) {
 	}
 	if($nb_suppr>0){
 		if($nb_suppr==1){$s="";}else{$s="s";}
-		$msg.="Les données antérieures de $nb_suppr ancien$s élève$s ont été supprimées.";
+		$msg.="Les donnÃ©es antÃ©rieures de $nb_suppr ancien$s Ã©lÃ¨ve$s ont Ã©tÃ© supprimÃ©es.";
 	}
 	if($nb_err>0){
 		if($nb_err==1){$s="";}else{$s="s";}
 		if($msg!=""){$msg.="<br />";}
-		$msg.="Pour $nb_err ancien$s élève$s, des problèmes ont été rencontrés.";
+		$msg.="Pour $nb_err ancien$s Ã©lÃ¨ve$s, des problÃ¨mes ont Ã©tÃ© rencontrÃ©s.";
 	}
 }
 
 $style_specifique="mod_annees_anterieures/annees_anterieures";
 
-$themessage="Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer?";
+$themessage="Des modifications ont Ã©tÃ© effectuÃ©es. Voulez-vous vraiment quitter sans enregistrer?";
 
 //**************** EN-TETE *****************
-$titre_page = "Nettoyage des données antérieures";
+$titre_page = "Nettoyage des donnÃ©es antÃ©rieures";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -124,28 +124,28 @@ $sql="SELECT DISTINCT a.nom,a.prenom,a.ine,a.naissance
 $res1=mysql_query($sql);
 $nb_ele=mysql_num_rows($res1);
 if($nb_ele==0){
-	echo "<p>Tous les élèves présents dans la table 'annees_anterieures' sont dans la table 'eleves'.</p>\n";
+	echo "<p>Tous les Ã©lÃ¨ves prÃ©sents dans la table 'annees_anterieures' sont dans la table 'eleves'.</p>\n";
 }
 else{
-	echo "<p>Voici la liste des élèves présents dans la table 'archivage_eleves', mais absents de la table 'eleves'.<br />
-	Il s'agit normalement d'élèves ayant quitté l'établissement.<br />
-	Il peut cependant arriver que des élèves dont le numéro INE n'était pas (<i>correctement</i>) rempli lors de la conservation de l'année soit proposés dans la liste ci-dessous.<br />
-	Dans ce cas, le numéro INE utilisé a un préfixe LOGIN_.<br />
-	Ce n'est pas un identifiant correct parce que le login d'un élève n'est pas nécessairement fixe d'une année sur l'autre (<i>dans le cas des doublons</i>).<br />
-	Vous pouvez également choisir de <a href='corriger_ine.php'>corriger des INE non renseignés ou mal renseignés</a></p>\n";
+	echo "<p>Voici la liste des Ã©lÃ¨ves prÃ©sents dans la table 'archivage_eleves', mais absents de la table 'eleves'.<br />
+	Il s'agit normalement d'Ã©lÃ¨ves ayant quittÃ© l'Ã©tablissement.<br />
+	Il peut cependant arriver que des Ã©lÃ¨ves dont le numÃ©ro INE n'Ã©tait pas (<i>correctement</i>) rempli lors de la conservation de l'annÃ©e soit proposÃ©s dans la liste ci-dessous.<br />
+	Dans ce cas, le numÃ©ro INE utilisÃ© a un prÃ©fixe LOGIN_.<br />
+	Ce n'est pas un identifiant correct parce que le login d'un Ã©lÃ¨ve n'est pas nÃ©cessairement fixe d'une annÃ©e sur l'autre (<i>dans le cas des doublons</i>).<br />
+	Vous pouvez Ã©galement choisir de <a href='corriger_ine.php'>corriger des INE non renseignÃ©s ou mal renseignÃ©s</a></p>\n";
 
 	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 	echo add_token_field();
 
-	echo "<table align='center' class='table_annee_anterieure boireaus' summary='Tableau des élèves'>\n";
+	echo "<table align='center' class='table_annee_anterieure boireaus' summary='Tableau des Ã©lÃ¨ves'>\n";
 	echo "<tr style='background-color:white;'>\n";
 	echo "<th>Supprimer<br />";
 	echo "<a href='javascript:modif_coche(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-	echo "<a href='javascript:modif_coche(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+	echo "<a href='javascript:modif_coche(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 	echo "</th>\n";
-	echo "<th>Elève</th>\n";
+	echo "<th>ElÃ¨ve</th>\n";
 	echo "<th>Date de naissance</th>\n";
-	echo "<th>N°INE</th>\n";
+	echo "<th>NÂ°INE</th>\n";
 	echo "</tr>\n";
 	$cpt=0;
 	$alt=1;

@@ -3,7 +3,7 @@
 /**
  * @version $Id$
  *
- * Fichier de paramétrage de l'interface professeur pour la saisie des absences
+ * Fichier de paramÃ©trage de l'interface professeur pour la saisie des absences
  *
  * @copyright 2008
  *
@@ -55,7 +55,7 @@ $module_edt = isset($_POST["module_edt"]) ? $_POST["module_edt"] : "n";
 $memorisation = isset($_POST["memorisation"]) ? $_POST["memorisation"] : "n";
 //$ = isset($_POST[""]) ? $_POST[""] : "n";
 // ===================== Fin de l'initialisation ============
-// On initialise aussi les réglages et les checked pour l'affichage
+// On initialise aussi les rÃ©glages et les checked pour l'affichage
 $test_query = array();
 $test_query[0]["value"] = $date_phase1;
 $test_query[0]["name"] = "date_phase1";
@@ -75,21 +75,21 @@ $test_query[4]["name"] = "module_edt";
 $test_query[5]["value"] = $memorisation;
 $test_query[5]["name"] = "memorisation";
 
-// Traitement des réglages
+// Traitement des rÃ©glages
 if ($clic == "ok") {
 				$message = "";
-	// On fait tous les tests pour tous les réglages
+	// On fait tous les tests pour tous les rÃ©glages
 	for($a = 0; $a < 6; $a++) {
 		$query = mysql_query("SELECT value FROM setting WHERE name = '".$test_query[$a]."'");
 		$verif = mysql_num_rows($query);
 
-			// Si le setting n'existe pas, on le crée
+			// Si le setting n'existe pas, on le crÃ©e
 		if ($verif == 0) {
 			$creationSetting = mysql_query("INSERT INTO setting (name, value) values ('".$test_query[$a]["name"]."', '".$test_query[$a]["value"]."')");
-			// On recharge la requête car elle a été mise à jour
+			// On recharge la requÃªte car elle a Ã©tÃ© mise Ã  jour
 			$query = mysql_query("SELECT value FROM setting WHERE name = '".$test_query[$a]."'");
 		}
-		// et on récupère sa valeur
+		// et on rÃ©cupÃ¨re sa valeur
 		$rep_phase1 = mysql_fetch_array($query);
 
 		if ($rep_phase1["value"] == $test_query[$a]["value"]) {
@@ -99,7 +99,7 @@ if ($clic == "ok") {
 			if (!$modif) {
 				$message .= "<p style=\"color: red;\">Une erreur est survenue lors de l'enregistrement !(".$test_query[$a]["name"].")</p>";
 			}else{
-				$message .= "<p style=\"color: green;\">La modification est bien enregistrée(".$test_query[$a]["name"].")</p>";
+				$message .= "<p style=\"color: green;\">La modification est bien enregistrÃ©e(".$test_query[$a]["name"].")</p>";
 			}
 		}
 	}
@@ -118,7 +118,7 @@ $test_query[3]["checked"] = isset($_POST["renseigner_retard"]) ? $_POST["renseig
 $test_query[4]["checked"] = isset($_POST["module_edt"]) ? $_POST["module_edt"] : getSettingValue("module_edt");
 $test_query[5]["checked"] = isset($_POST["memorisation"]) ? $_POST["memorisation"] : getSettingValue("memorisation");
 
-// On décide de l'affichage des checked
+// On dÃ©cide de l'affichage des checked
 		$checked = array();
 for($a = 0; $a < 6; $a++) {
 	if ($test_query[$a]["checked"] == "n") {
@@ -128,7 +128,7 @@ for($a = 0; $a < 6; $a++) {
 	}
 }
 
-// ===================== Header et ses réglages =============
+// ===================== Header et ses rÃ©glages =============
 $titre_page = "L'interface de saisie des absences";
 require_once("../../lib/header.inc");
 // ===================== fin du header ======================

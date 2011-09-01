@@ -1,9 +1,9 @@
 function centrerpopup(page,largeur,hauteur,options)
 {
 // les options :
-//	* left=100 : Position de la fenêtre par rapport au bord gauche de l'écran.
-//    * top=50 : Position de la fenêtre par rapport au haut de l'écran.
-//    * resizable=x : Indique si la fenêtre est redimensionnable.
+//	* left=100 : Position de la fenÃªtre par rapport au bord gauche de l'Ã©cran.
+//    * top=50 : Position de la fenÃªtre par rapport au haut de l'Ã©cran.
+//    * resizable=x : Indique si la fenÃªtre est redimensionnable.
 //    * scrollbars=x : Indique si les barres de navigations sont visibles.
 //    * menubar=x : Indique si la barre des menus est visible.
 //    * toolbar=x : Indique si la barre d'outils est visible.

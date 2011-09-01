@@ -31,7 +31,7 @@ function redimensionne_image($photo, $L_max, $H_max)
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
+	// largeur et/ou hauteur maximum Ã  afficher en pixel
 	$taille_max_largeur = $L_max;
 	$taille_max_hauteur = $H_max;
 
@@ -40,7 +40,7 @@ function redimensionne_image($photo, $L_max, $H_max)
 	$ratio_h = $hauteur / $taille_max_hauteur;
 	$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	$nouvelle_largeur = $largeur / $ratio;
 	$nouvelle_hauteur = $hauteur / $ratio;
 
@@ -111,7 +111,7 @@ function calcul_toute_moyenne_aid ($indice_aid, $periode_select) {
 	return array($moyenne_groupe, $moyenne_mini, $moyenne_maxi);
 }
 
-//permet de transformer les caractères html
+//permet de transformer les caractÃ¨res html
 function unhtmlentities($chaineHtml) {
 
 	$tmp = get_html_translation_table(HTML_ENTITIES);
@@ -119,12 +119,12 @@ function unhtmlentities($chaineHtml) {
 	$chaineTmp = strtr ($chaineHtml, $tmp);
 
 /*
-	// La deuxième solution ci-dessous pose des problèmes
+	// La deuxiÃ¨me solution ci-dessous pose des problÃ¨mes
 	$string=$chaineHtml;
-	// Remplace les entités numériques
+	// Remplace les entitÃ©s numÃ©riques
 	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
 	$string = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $string);
-	// Remplace les entités littérales
+	// Remplace les entitÃ©s littÃ©rales
 	$trans_tbl = get_html_translation_table (HTML_ENTITIES);
 	$trans_tbl = array_flip ($trans_tbl);
 	$chaineTmp = strtr ($string, $trans_tbl);
@@ -133,7 +133,7 @@ function unhtmlentities($chaineHtml) {
 }
 
 
-// format de date en français
+// format de date en franÃ§ais
 function date_fr($var)
 {
 		$var = explode("-",$var);
@@ -141,7 +141,7 @@ function date_fr($var)
 		return($var);
 }
 
-// fonction affiche les moyennes avec les arrondies et le nombre de chiffre après la virgule
+// fonction affiche les moyennes avec les arrondies et le nombre de chiffre aprÃ¨s la virgule
 // precision '0.01' '0.1' '0.25' '0.5' '1'
 function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_zero)
 {

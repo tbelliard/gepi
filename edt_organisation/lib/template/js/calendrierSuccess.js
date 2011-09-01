@@ -7,7 +7,7 @@
 	var CellNotFree = false;
 	// ========================================================================================
 	//
-	//					Valider les modifications d'une période calendaire
+	//					Valider les modifications d'une pÃ©riode calendaire
 	//
 	// ========================================================================================
 	var validate_period = function() {
@@ -51,7 +51,7 @@
 							$('div'+i).className = 'calendar_cell';
 							i++;
 						}
-						// ======= afficher la période dans son nouvel état
+						// ======= afficher la pÃ©riode dans son nouvel Ã©tat
 						//
 
 						var i = parseInt(period[0].new_start,10);
@@ -60,7 +60,7 @@
 							i++;
 						}
 						repaint_cells();
-					// ======= effacer la période dans son état initial
+					// ======= effacer la pÃ©riode dans son Ã©tat initial
 
 
 					}
@@ -77,13 +77,13 @@
 					alert('gloups');								
 				}
 			},
-			onFailure: function(){ alert('Impossible de transmettre votre requête') }
+			onFailure: function(){ alert('Impossible de transmettre votre requÃªte') }
 		  });	
 	
 	}
 	// ========================================================================================
 	//
-	//					Edition d'une période du calendrier
+	//					Edition d'une pÃ©riode du calendrier
 	//
 	// ========================================================================================
 	var edit_period = function() {
@@ -139,7 +139,7 @@
 					alert('gloups');								
 				}
 			},
-			onFailure: function(){ alert('Impossible de transmettre votre requête') }
+			onFailure: function(){ alert('Impossible de transmettre votre requÃªte') }
 		  });
 		if (Prototype.Browser.IE) {
 			document.documentElement.scroll = "no";
@@ -171,7 +171,7 @@
 	}
 	// ========================================================================================
 	//
-	//					Suppression d'une période du calendrier
+	//					Suppression d'une pÃ©riode du calendrier
 	//
 	// ========================================================================================
 	var delete_period = function() {
@@ -209,7 +209,7 @@
 					alert('gloups');								
 				}
 			},
-			onFailure: function(){ alert('Impossible de transmettre votre requête') }
+			onFailure: function(){ alert('Impossible de transmettre votre requÃªte') }
 		  });
 	
 	
@@ -240,7 +240,7 @@
 	}
 	// ========================================================================================
 	//
-	//					Création des observers mouseover, mousedown, sur chaque cellule
+	//					CrÃ©ation des observers mouseover, mousedown, sur chaque cellule
 	//
 	// ========================================================================================
 	var mylistener = function(div) {
@@ -305,7 +305,7 @@
 		}
 	// ========================================================================================
 	//
-	//					Création des observers généraux mousedown, mouseup
+	//					CrÃ©ation des observers gÃ©nÃ©raux mousedown, mouseup
 	//
 	// ========================================================================================
 	window.onload = function() {
@@ -386,7 +386,7 @@
 											type:$('params_type').value,
 											csrf_alea:$('csrf_alea').value},
 								onSuccess: function(transport){
-									var response = transport.responseText || "Le serveur ne répond pas";
+									var response = transport.responseText || "Le serveur ne rÃ©pond pas";
 									var message = response.substring(0,5);
 									if (message == "error") {
 										message = response.substring(5,response.length);
@@ -413,7 +413,7 @@
 										}										
 									}
 								},
-								onFailure: function(){ alert('Impossible de transmettre votre requête') }
+								onFailure: function(){ alert('Impossible de transmettre votre requÃªte') }
 							  });
 
 							  $('period_input_field').value = "";

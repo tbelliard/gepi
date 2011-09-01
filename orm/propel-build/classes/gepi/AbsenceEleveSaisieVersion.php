@@ -17,7 +17,7 @@ class AbsenceEleveSaisieVersion extends BaseAbsenceEleveSaisieVersion {
 	
 	/**
 	 *
-	 * Renvoi une chaine de caractere compréhensible concernant les dates de debut et de fin
+	 * Renvoi une chaine de caractere comprÃ©hensible concernant les dates de debut et de fin
 	 *
 	 * @return     string
 	 *

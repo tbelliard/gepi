@@ -49,13 +49,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Affichage de listes',
+description='GÃ©nÃ¨se des classes: Affichage de listes',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -85,13 +85,13 @@ if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele'])
 			$msg="ERREUR lors du changement de classe de ".get_nom_prenom_eleve($_POST['login_ele'])."<br />\n";
 		}
 		else {
-			$msg="Changement de classe de <b>".get_nom_prenom_eleve($_POST['login_ele'])."</b> vers <b>".$_POST['classe_fut']."</b> effectué.<br />\n";
+			$msg="Changement de classe de <b>".get_nom_prenom_eleve($_POST['login_ele'])."</b> vers <b>".$_POST['classe_fut']."</b> effectuÃ©.<br />\n";
 		}
 	}
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: affichage de listes";
+$titre_page = "GÃ©nÃ¨se classe: affichage de listes";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -136,13 +136,13 @@ echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
 
 $afficher_listes=isset($_POST['afficher_listes']) ? $_POST['afficher_listes'] : (isset($_GET['afficher_listes']) ? $_GET['afficher_listes'] : NULL);
 
-// Choix des élèves à afficher:
+// Choix des Ã©lÃ¨ves Ã  afficher:
 if(!isset($afficher_listes)) {
 	echo "</p>\n";
 
 	echo "<h2>Projet $projet</h2>\n";
 
-	// Affichage déjà choisi ou non
+	// Affichage dÃ©jÃ  choisi ou non
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
 	if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 
@@ -157,13 +157,13 @@ if(!isset($afficher_listes)) {
 				$del=mysql_query($sql);
 			}
 
-			// Si plus aucune requête ne reste, il faudrait peut-être supprimer le $id_aff... non... il sera réutilisé si on rajoute une requête et il sera perdu et absent de la base si on quitte la page sans ajouter de requête
+			// Si plus aucune requÃªte ne reste, il faudrait peut-Ãªtre supprimer le $id_aff... non... il sera rÃ©utilisÃ© si on rajoute une requÃªte et il sera perdu et absent de la base si on quitte la page sans ajouter de requÃªte
 		}
 	}
 
 
 
-	// Ajout d'une requête pour l'affichage en cours
+	// Ajout d'une requÃªte pour l'affichage en cours
 	if(isset($_POST['ajouter'])) {
 	//if((isset($_POST['ajouter']))||
 	//((isset($_POST['modifier_requete']))&&($_POST['modifier_requete']=='y'))) {
@@ -203,7 +203,7 @@ if(!isset($afficher_listes)) {
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p style='color:red'>La requête n°$id_req n'est pas associée à l'affichage n°$id_aff sur le projet $projet.</p>\n";
+				echo "<p style='color:red'>La requÃªte nÂ°$id_req n'est pas associÃ©e Ã  l'affichage nÂ°$id_aff sur le projet $projet.</p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -212,7 +212,7 @@ if(!isset($afficher_listes)) {
 			$sql="DELETE FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
 			$menage=mysql_query($sql);
 			if(!$menage) {
-				echo "<p style='color:red'>ERREUR lors du ménage préalable de la requête n°$id_req de l'affichage n°$id_aff sur le projet $projet.</p>\n";
+				echo "<p style='color:red'>ERREUR lors du mÃ©nage prÃ©alable de la requÃªte nÂ°$id_req de l'affichage nÂ°$id_aff sur le projet $projet.</p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -311,7 +311,7 @@ if(!isset($afficher_listes)) {
 
 
 	//========================================================================
-	// Récupération de la liste des classes et options pour le projet en cours
+	// RÃ©cupÃ©ration de la liste des classes et options pour le projet en cours
 	$sql="SELECT DISTINCT id_classe, classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle' ORDER BY classe;";
 	$res_clas_act=mysql_query($sql);
 	$nb_clas_act=mysql_num_rows($res_clas_act);
@@ -325,7 +325,7 @@ if(!isset($afficher_listes)) {
 	$res_clas_fut=mysql_query($sql);
 	$nb_clas_fut=mysql_num_rows($res_clas_fut);
 	if($nb_clas_fut==0) {
-		echo "<p>Aucune classe future n'est encore définie pour ce projet.</p>\n";
+		echo "<p>Aucune classe future n'est encore dÃ©finie pour ce projet.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -349,13 +349,13 @@ if(!isset($afficher_listes)) {
 
 
 	//=========================================================
-	// Liste des affichages précédemment programmés pour ce projet:
+	// Liste des affichages prÃ©cÃ©demment programmÃ©s pour ce projet:
 	$sql="SELECT DISTINCT id_aff,projet FROM gc_affichages WHERE projet='$projet' ORDER BY id_aff;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		echo "<div id='div_autres_aff' style='width:10em; float: right; text-align:center;'>\n";
 		//echo "Autres affichages&nbsp;: ";
-		echo "<p>Liste des affichages définis&nbsp;: ";
+		echo "<p>Liste des affichages dÃ©finis&nbsp;: ";
 		$cpt=0;
 		while($lig_tmp=mysql_fetch_object($res)) {
 			if($cpt>0) {echo ", ";}
@@ -370,7 +370,7 @@ if(!isset($afficher_listes)) {
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 			echo "<input type='hidden' name='projet' value='$projet' />\n";
 			echo "<input type='hidden' name='id_aff' value='$id_aff' />\n";
-			echo "<p align='center'><b>Affichage n°$id_aff&nbsp;:</b> <input type='submit' name='afficher_listes' value='Afficher les listes' /></p>\n";
+			echo "<p align='center'><b>Affichage nÂ°$id_aff&nbsp;:</b> <input type='submit' name='afficher_listes' value='Afficher les listes' /></p>\n";
 			echo "</form>\n";
 			echo "</div>\n";
 		}
@@ -380,16 +380,16 @@ if(!isset($afficher_listes)) {
 	//=========================================================
 
 	if(isset($id_aff)) {
-		echo "<p class='bold'>Liste de requêtes pour l'affichage n°$id_aff</p>\n";
+		echo "<p class='bold'>Liste de requÃªtes pour l'affichage nÂ°$id_aff</p>\n";
 	}
 
 	//================================
-	// Formulaire d'ajout de requêtes:
+	// Formulaire d'ajout de requÃªtes:
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
 	if((isset($_GET['editer_requete']))&&(isset($_GET['id_req'])&&($_GET['id_req']!="")&&(strlen(my_ereg_replace("[0-9]","",$_GET['id_req']))==0))) {
 		$id_req=$_GET['id_req'];
-		echo "<p class='bold'>Modification de la requête n°$id_req</p>\n";
+		echo "<p class='bold'>Modification de la requÃªte nÂ°$id_req</p>\n";
 		echo "<input type='hidden' name='modifier_requete' value='y' />\n";
 
 		$tab_ed_req=array();
@@ -411,7 +411,7 @@ if(!isset($afficher_listes)) {
 		echo "<input type='hidden' name='id_req' value='$id_req' />\n";
 	}
 
-	echo "<table class='boireaus' border='1' summary='Choix des paramètres'>\n";
+	echo "<table class='boireaus' border='1' summary='Choix des paramÃ¨tres'>\n";
 	echo "<tr>\n";
 	echo "<th>Classe actuelle</th>\n";
 	echo "<th>Classe future</th>\n";
@@ -476,12 +476,12 @@ if(!isset($afficher_listes)) {
 	if((isset($tab_ed_req['clas_fut']))&&(in_array("",$tab_ed_req['clas_fut']))) {
 		echo "checked ";
 	}
-	echo "/><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
+	echo "/><label for='clas_fut_$cpt'>Non encore affectÃ©</label><br />\n";
 	$cpt++;
 
 	$classe_fut[]="Red";
 	$classe_fut[]="Dep";
-	$classe_fut[]=""; // Vide pour les Non Affectés
+	$classe_fut[]=""; // Vide pour les Non AffectÃ©s
 
 	/*
 	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='Red' /><label for='clas_fut_$cpt'>Red</label><br />\n";
@@ -665,7 +665,7 @@ if(!isset($afficher_listes)) {
 	echo "<input type='hidden' name='projet' value='$projet' />\n";
 	//echo "<input type='hidden' name='is_posted' value='y' />\n";
 	if(isset($_GET['editer_requete'])) {
-		echo "<p align='center'><input type='submit' name='ajouter' value='Modifier la requête' /></p>\n";
+		echo "<p align='center'><input type='submit' name='ajouter' value='Modifier la requÃªte' /></p>\n";
 	}
 	else {
 		echo "<p align='center'><input type='submit' name='ajouter' value='Ajouter' /></p>\n";
@@ -676,7 +676,7 @@ if(!isset($afficher_listes)) {
 
 
 	//================================
-	// Suite du formulaire avec la liste des requêtes déjà effectuées:
+	// Suite du formulaire avec la liste des requÃªtes dÃ©jÃ  effectuÃ©es:
 	if(isset($id_aff)) {
 
 		$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' ORDER BY id_req;";
@@ -685,15 +685,15 @@ if(!isset($afficher_listes)) {
 			while($lig=mysql_fetch_object($res)) {
 				//$txt_requete="<div style='display:inline; width:20em; margin: 2px; border: 1px solid black;'>\n";
 				$txt_requete="";
-				$txt_requete.="<table summary='Requête n°$lig->id_req'>\n";
+				$txt_requete.="<table summary='RequÃªte nÂ°$lig->id_req'>\n";
 				$txt_requete.="<tr>\n";
 				$txt_requete.="<td valign='top'>\n";
 				$txt_requete.="<input type='checkbox' name='suppr[]' id='suppr_$lig->id_req' value='$lig->id_req' /> ";
 				$txt_requete.="</td>\n";
 				$txt_requete.="<td>\n";
-				//$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label></b>";
-				$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'><img src ='../images/edit16.png'
-width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
+				//$txt_requete.="<b><label for='suppr_$lig->id_req'>RequÃªte nÂ°$lig->id_req</label></b>";
+				$txt_requete.="<b><label for='suppr_$lig->id_req'>RequÃªte nÂ°$lig->id_req</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'><img src ='../images/edit16.png'
+width='16' height='16' alt='Editer les paramÃ¨tres de la requÃªte' /></a></b>";
 
 				//===========================================
 				$id_req=$lig->id_req;
@@ -839,7 +839,7 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 			}
 
 			// Ajouter un bouton pour supprimer
-			echo "<p>Cochez les requêtes à supprimer.</p>\n";
+			echo "<p>Cochez les requÃªtes Ã  supprimer.</p>\n";
 
 		}
 	}
@@ -855,9 +855,9 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 
 	echo "<p><i>NOTES&nbsp;:</i></p>\n";
 	echo "<ul>\n";
-	echo "<li>Les colonnes Classe actuelle et Classe future sont traitées suivant le mode OU<br />
-	Si vous cochez deux classes, les élèves pris en compte seront '<i>membre de Classe 1 OU membre de Classe 2</i>'</li>\n";
-	echo "<li>Les colonnes d'options sont traitées suivant le mode ET.<br />
+	echo "<li>Les colonnes Classe actuelle et Classe future sont traitÃ©es suivant le mode OU<br />
+	Si vous cochez deux classes, les Ã©lÃ¨ves pris en compte seront '<i>membre de Classe 1 OU membre de Classe 2</i>'</li>\n";
+	echo "<li>Les colonnes d'options sont traitÃ©es suivant le mode ET.<br />
 	Ce sera par exemple '<i>Avec AGL1 ET Avec ESP2 ET Avec LATIN ET Sans DECP3</i>'</li>\n";
 	//echo "<li></li>\n";
 	echo "</ul>\n";
@@ -867,27 +867,27 @@ else {
 	//=============================================================================================
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//=============================================================================================
-	// Les requêtes sont choisies, on va procéder à l'affichage des élèves correspondants
+	// Les requÃªtes sont choisies, on va procÃ©der Ã  l'affichage des Ã©lÃ¨ves correspondants
 	// Affichage des listes pour $projet et $id_aff
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Autre sélection</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Autre sÃ©lection</a>";
 
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
 	if((preg_replace("/[0-9]/","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 	if(!isset($id_aff)) {
-		echo "<p>ERREUR: La variable 'id_aff' n'est pas affectée.</p>\n";
+		echo "<p>ERREUR: La variable 'id_aff' n'est pas affectÃ©e.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Modifier la liste de requêtes pour l'affichage n°$id_aff</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Modifier la liste de requÃªtes pour l'affichage nÂ°$id_aff</a>";
 	echo "</p>\n";
 
 	echo "<h2>Projet $projet</h2>\n";
 
 
 	//=========================================================
-	// Liste des affichages précédemment programmés pour ce projet:
+	// Liste des affichages prÃ©cÃ©demment programmÃ©s pour ce projet:
 	$sql="SELECT DISTINCT id_aff,projet FROM gc_affichages WHERE projet='$projet' ORDER BY id_aff;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -910,7 +910,7 @@ else {
 		echo "<hr />\n";
 
 		echo "<div id='div_divers' style='text-align:center;'>\n";
-		echo "<a href='#' onclick=\"afficher_div('recap_eff','y',-100,20);return false;\">Effectifs des requêtes</a>";
+		echo "<a href='#' onclick=\"afficher_div('recap_eff','y',-100,20);return false;\">Effectifs des requÃªtes</a>";
 		echo "</div>\n";
 
 		echo "</div>\n";
@@ -919,7 +919,7 @@ else {
 
 
 	// Affichage...
-	//Construire la requête SQL et l'afficher
+	//Construire la requÃªte SQL et l'afficher
 
 	$eff_lv1=-1;
 	$eff_lv2=-1;
@@ -939,7 +939,7 @@ else {
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
 	if((preg_replace("/[0-9]/","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 	if(!isset($id_aff)) {
-		echo "<p>ERREUR: La variable 'id_aff' n'est pas affectée.</p>\n";
+		echo "<p>ERREUR: La variable 'id_aff' n'est pas affectÃ©e.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -964,13 +964,13 @@ else {
 //============================================================
 //============================================================
 //============================================================
-	//On n'effectue qu'une fois ces requêtes communes hors de la boucle sur la liste des requêtes associées à l'affichage choisi
+	//On n'effectue qu'une fois ces requÃªtes communes hors de la boucle sur la liste des requÃªtes associÃ©es Ã  l'affichage choisi
 
 	$classe_fut=array();
 	$sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucune classe future n'est encore définie pour ce projet.</p>\n";
+		echo "<p>Aucune classe future n'est encore dÃ©finie pour ce projet.</p>\n";
 		// Est-ce que cela doit vraiment bloquer la saisie des options?
 		require("../lib/footer.inc.php");
 		die();
@@ -999,7 +999,7 @@ else {
 		}
 		$classe_fut[]="Red";
 		$classe_fut[]="Dep";
-		$classe_fut[]=""; // Vide pour les Non Affectés
+		$classe_fut[]=""; // Vide pour les Non AffectÃ©s
 
 		$chaine_classes_fut.=",'Red','Dep','')";
 	}
@@ -1009,7 +1009,7 @@ else {
 	$sql="SELECT DISTINCT id_classe,classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle' ORDER BY classe;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucune classe actuelle n'est encore sélectionnée pour ce projet.</p>\n";
+		echo "<p>Aucune classe actuelle n'est encore sÃ©lectionnÃ©e pour ce projet.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -1093,13 +1093,13 @@ else {
 	//=============================
 	include("lib_gc.php");
 	// On y initialise les couleurs
-	// Il faut que le tableaux $classe_fut soit initialisé.
+	// Il faut que le tableaux $classe_fut soit initialisÃ©.
 	//=============================
 
 	necessaire_bull_simple();
 
 	//=============================
-	$titre="Sélection du profil";
+	$titre="SÃ©lection du profil";
 	$texte="<p style='text-align:center;'>";
 	for($loop=0;$loop<count($tab_profil);$loop++) {
 		if($loop>0) {$texte.=" - ";}
@@ -1165,7 +1165,7 @@ else {
 		// Initialisation:
 		$contenu_affichage_requete_courante="";
 
-		// Pour lister les classes futures dans la requête courante
+		// Pour lister les classes futures dans la requÃªte courante
 		$tab_classes_fut_de_cette_requete=array();
 
 		$id_req=$tab_id_req[$loop];
@@ -1181,12 +1181,12 @@ else {
 		$sans_lv3=array();
 		$sans_autre=array();
 
-		//echo "<p><b>Requête n°$id_req</b><br />";
-		$fich_csv.="Requête n°$id_req\n";
+		//echo "<p><b>RequÃªte nÂ°$id_req</b><br />";
+		$fich_csv.="RequÃªte nÂ°$id_req\n";
 
 		$lien_affect="<p><a name='requete_$id_req'></a><a href='affect_eleves_classes.php?projet=$projet&amp;choix_affich=1";
-		$fin_lien_affect="' target='_blank' alt='Modifier la requête n°$id_req' title='Modifier la requête n°$id_req'><b>Requête n°$id_req</b></a>";
-		$fin_lien_affect.=" - <a href='#' onclick=\"afficher_div('div_requete_$id_req','y',100,100); return false;\"><img src='../images/vert.png' width='16' height='16' title='Afficher la requête n°$id_req en infobulle' /></a>";
+		$fin_lien_affect="' target='_blank' alt='Modifier la requÃªte nÂ°$id_req' title='Modifier la requÃªte nÂ°$id_req'><b>RequÃªte nÂ°$id_req</b></a>";
+		$fin_lien_affect.=" - <a href='#' onclick=\"afficher_div('div_requete_$id_req','y',100,100); return false;\"><img src='../images/vert.png' width='16' height='16' title='Afficher la requÃªte nÂ°$id_req en infobulle' /></a>";
 		$fin_lien_affect.="<br />";
 
 
@@ -1194,7 +1194,7 @@ else {
 		$tab_requete_csv=array();
 
 		//=========================
-		// Début de la requête à forger pour ne retenir que les élèves souhaités
+		// DÃ©but de la requÃªte Ã  forger pour ne retenir que les Ã©lÃ¨ves souhaitÃ©s
 		$sql_ele="SELECT DISTINCT login FROM gc_eleves_options WHERE projet='$projet' AND classe_future!='Dep' AND classe_future!='Red'";
 
 		$sql_ele_id_classe_act="";
@@ -1355,7 +1355,7 @@ else {
 		else {
 			$lignes_requetes.="<p>";
 		}
-		$lignes_requetes.="<a href='#requete_$id_req'>Requête n°$id_req</a> (<i>\n";
+		$lignes_requetes.="<a href='#requete_$id_req'>RequÃªte nÂ°$id_req</a> (<i>\n";
 
 		for($m=0;$m<4;$m++) {
 			if(isset($tab_requete[$m])) {
@@ -1368,7 +1368,7 @@ else {
 		}
 		$lignes_requetes.="</i>)&nbsp;: \n";
 
-		// On réinitialise le tableau pour faire table rase des logins de la requête précédente
+		// On rÃ©initialise le tableau pour faire table rase des logins de la requÃªte prÃ©cÃ©dente
 		$tab_ele=array();
 
 		if($sql_ele_id_classe_act!='') {$sql_ele.=" AND ($sql_ele_id_classe_act)";}
@@ -1396,24 +1396,24 @@ else {
 
 		//=========================================================================
 		// $tab_ele est rempli
-		// On va parcourir toutes les classes pour présenter les élèves retenus ($tab_ele) dans l'ordre des classes d'origine
+		// On va parcourir toutes les classes pour prÃ©senter les Ã©lÃ¨ves retenus ($tab_ele) dans l'ordre des classes d'origine
 
-		// Début du tableau des élèves pour la requête courante
+		// DÃ©but du tableau des Ã©lÃ¨ves pour la requÃªte courante
 
 		$contenu_affichage_requete_courante.="<table class='boireaus' border='1' summary='Tableau des options'>\n";
 	
 		//==========================================
 		$contenu_affichage_requete_courante.="<tr>\n";
 
-		//$contenu_affichage_requete_courante.="<th style='width:15em;'>Elève</th>\n";
-		$contenu_affichage_requete_courante.="<th>Elève</th>\n";
+		//$contenu_affichage_requete_courante.="<th style='width:15em;'>ElÃ¨ve</th>\n";
+		$contenu_affichage_requete_courante.="<th>ElÃ¨ve</th>\n";
 
 		$contenu_affichage_requete_courante.="<th>Profil</th>\n";
 		$contenu_affichage_requete_courante.="<th>Niveau</th>\n";
 		$contenu_affichage_requete_courante.="<th>Absences</th>\n";
 		$contenu_affichage_requete_courante.="<th>Classe<br />actuelle</th>\n";
-		//$fich_csv.="Elève;Classe actuelle;";
-		$fich_csv.="Elève;Clas.act;";
+		//$fich_csv.="ElÃ¨ve;Classe actuelle;";
+		$fich_csv.="ElÃ¨ve;Clas.act;";
 
 		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th>LV1</th>\n";$fich_csv.="LV1;";}
 		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th>LV2</th>\n";$fich_csv.="LV2;";}
@@ -1450,10 +1450,10 @@ else {
 		$eff_tot_select_M=0;
 		$eff_tot_select_F=0;
 
-		// Pour effectuer des moyennes, médiane,...
+		// Pour effectuer des moyennes, mÃ©diane,...
 		$tab_moy_eleves=array();
 
-		// Pour lister les classes futures dans la requête courante
+		// Pour lister les classes futures dans la requÃªte courante
 		//$tab_classes_fut_de_cette_requete=array();
 
 		$chaine_id_classe="";
@@ -1527,7 +1527,7 @@ else {
 						$non_justifie="-";
 						$nb_retards="-";
 
-						// On récupère les classe future, lv1, lv2, lv3 et autres options de l'élève $lig->login
+						// On rÃ©cupÃ¨re les classe future, lv1, lv2, lv3 et autres options de l'Ã©lÃ¨ve $lig->login
 						$fut_classe="";
 
 						$tab_ele_opt=array();
@@ -1552,7 +1552,7 @@ else {
 							}
 						}
 						else {
-							// On récupère les options de l'année écoulée (année qui se termine)
+							// On rÃ©cupÃ¨re les options de l'annÃ©e Ã©coulÃ©e (annÃ©e qui se termine)
 							$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='$lig->login';";
 							$res_opt=mysql_query($sql);
 							if(mysql_num_rows($res_opt)>0) {
@@ -1727,14 +1727,14 @@ else {
 		if(count($tab_moy_eleves)>0) {
 			$contenu_affichage_requete_courante.="&nbsp;<br />";
 			$contenu_affichage_requete_courante.="<div style='float:left; width:10em;'>\n";
-			$contenu_affichage_requete_courante.="<table class='boireaus' summary='Tableau des moyenne, médiane, min et max'>\n";
+			$contenu_affichage_requete_courante.="<table class='boireaus' summary='Tableau des moyenne, mÃ©diane, min et max'>\n";
 			$contenu_affichage_requete_courante.="<tr class='lig1'>\n";
 			$contenu_affichage_requete_courante.="<th>Moyenne</th>\n";
 			$contenu_affichage_requete_courante.="<td>".moyenne($tab_moy_eleves)."</td>\n";
 			$contenu_affichage_requete_courante.="</tr>\n";
 	
 			$contenu_affichage_requete_courante.="<tr class='lig-1'>\n";
-			$contenu_affichage_requete_courante.="<th>Médiane</th>\n";
+			$contenu_affichage_requete_courante.="<th>MÃ©diane</th>\n";
 			$contenu_affichage_requete_courante.="<td>".mediane($tab_moy_eleves)."</td>\n";
 			$contenu_affichage_requete_courante.="</tr>\n";
 	
@@ -1768,7 +1768,7 @@ else {
 		echo $contenu_affichage_requete_courante;
 
 		//=============================
-		$titre="Requête n°$id_req";
+		$titre="RequÃªte nÂ°$id_req";
 		//$contenu_affichage_requete_courante=preg_replace("/div_profil_/","div_profil_bis_",$contenu_affichage_requete_courante);
 		$contenu_affichage_requete_courante=preg_replace("/nb_absences_/","nb_absences_bis_",$contenu_affichage_requete_courante);
 		$contenu_affichage_requete_courante=preg_replace("/nb_retards_/","nb_retards_bis_",$contenu_affichage_requete_courante);
@@ -1820,7 +1820,7 @@ else {
 	$tmp_array=$tab_ele_toutes_requetes;
 	$tab_ele_toutes_requetes=array_unique($tmp_array);
 
-	// Liste des élèves non retenus dans les listes
+	// Liste des Ã©lÃ¨ves non retenus dans les listes
 	$tab_exclus=array();
 	//$sql="SELECT DISTINCT geo.login FROM gc_eleves_options geo WHERE geo.projet='$projet' ORDER BY geo.login;";
 	$sql="SELECT DISTINCT geo.login FROM gc_eleves_options geo WHERE geo.projet='$projet' ORDER BY geo.login;";
@@ -1831,14 +1831,14 @@ else {
 		}
 	}
 
-	echo "<p>Effectif de ces sélections&nbsp;: ".count($tab_ele_toutes_requetes)."</p>\n";
+	echo "<p>Effectif de ces sÃ©lections&nbsp;: ".count($tab_ele_toutes_requetes)."</p>\n";
 
 	if(count($tab_exclus)>0) {
-		echo "<p><a href='#' onclick=\"modif_div_exclus();return false;\">Liste des élèves hors sélection</a></p>\n";
+		echo "<p><a href='#' onclick=\"modif_div_exclus();return false;\">Liste des Ã©lÃ¨ves hors sÃ©lection</a></p>\n";
 		echo "<div id='div_exclus'>\n";
-		echo "<p>Effectif hors des sélections&nbsp;: ".count($tab_exclus)."</p>\n";
-		echo "<table class='boireaus' border='1' summary='Liste des élèves hors sélection'>\n";
-		echo "<tr><th>Elève</th><th>Options</th></tr>\n";
+		echo "<p>Effectif hors des sÃ©lections&nbsp;: ".count($tab_exclus)."</p>\n";
+		echo "<table class='boireaus' border='1' summary='Liste des Ã©lÃ¨ves hors sÃ©lection'>\n";
+		echo "<tr><th>ElÃ¨ve</th><th>Options</th></tr>\n";
 		$alt=1;
 		for($loop=0;$loop<count($tab_exclus);$loop++) {
 			$alt=$alt*(-1);
@@ -1924,25 +1924,25 @@ else {
 
 		echo "Fichiers <a href='../temp/".$user_temp_directory."/listes_".$projet."_".$date_fichier.".csv'>CSV</a>\n";
 		echo " - ";
-		echo "<a href='genere_ods.php?fichier_csv=listes_".$projet."_".$date_fichier.".csv&amp;projet=$projet&amp;detail=oui' target='_blank'>ODS_detaillé</a>\n";
+		echo "<a href='genere_ods.php?fichier_csv=listes_".$projet."_".$date_fichier.".csv&amp;projet=$projet&amp;detail=oui' target='_blank'>ODS_detaillÃ©</a>\n";
 		echo " - ";
 		echo "<a href='genere_ods.php?fichier_csv=listes_".$projet."_".$date_fichier.".csv&amp;projet=$projet&amp;detail=non' target='_blank'>ODS</a>\n";
 	
 		echo "<script type='text/javascript'>
-	document.getElementById('div_ods').innerHTML=\"Fichiers <a href='../temp/".$user_temp_directory."/listes_".$projet."_".$date_fichier.".csv'>CSV</a> <a href='genere_ods.php?fichier_csv=listes_".$projet."_".$date_fichier.".csv&amp;projet=$projet&amp;detail=non' target='_blank'>ODS</a> <a href='genere_ods.php?fichier_csv=listes_".$projet."_".$date_fichier.".csv&amp;projet=$projet&amp;detail=oui' target='_blank'>ODS_detaillé</a>\";
+	document.getElementById('div_ods').innerHTML=\"Fichiers <a href='../temp/".$user_temp_directory."/listes_".$projet."_".$date_fichier.".csv'>CSV</a> <a href='genere_ods.php?fichier_csv=listes_".$projet."_".$date_fichier.".csv&amp;projet=$projet&amp;detail=non' target='_blank'>ODS</a> <a href='genere_ods.php?fichier_csv=listes_".$projet."_".$date_fichier.".csv&amp;projet=$projet&amp;detail=oui' target='_blank'>ODS_detaillÃ©</a>\";
 </script>\n";
 	}
 	else {
-		echo "<p style='color:red'>Le dossier temporaire de l'utilisateur n'existe pas.<br />On ne génère pas de fichier CSV.</p>\n";
+		echo "<p style='color:red'>Le dossier temporaire de l'utilisateur n'existe pas.<br />On ne gÃ©nÃ¨re pas de fichier CSV.</p>\n";
 
 		echo "<script type='text/javascript'>
-	document.getElementById('div_ods').innerHTML=\"<p style='color:red'>Le dossier temporaire de l'utilisateur n'existe pas.<br />On ne génère pas de fichier CSV.</p>\";
+	document.getElementById('div_ods').innerHTML=\"<p style='color:red'>Le dossier temporaire de l'utilisateur n'existe pas.<br />On ne gÃ©nÃ¨re pas de fichier CSV.</p>\";
 </script>\n";
 	}
 	//=================================
 
 	//=================================
-	$titre="<span id='entete_div_photo_eleve'>Elève</span>";
+	$titre="<span id='entete_div_photo_eleve'>ElÃ¨ve</span>";
 	$texte="<div id='corps_div_photo_eleve' align='center'>\n";
 	$texte.="<br />\n";
 	$texte.="</div>\n";
@@ -2036,10 +2036,10 @@ echo "
 	</script>\n";
 
 	// A METTRE DANS UNE INFOBULLE?
-	echo "<p style='bold'>Récapitulatif des effectifs&nbsp;:</p>\n";
+	echo "<p style='bold'>RÃ©capitulatif des effectifs&nbsp;:</p>\n";
 	echo $lignes_requetes;
 
-	$titre="Récapitulatif des effectifs";
+	$titre="RÃ©capitulatif des effectifs";
 	$texte=$lignes_requetes;
 	$tabdiv_infobulle[]=creer_div_infobulle('recap_eff',$titre,"",$texte,"",30,0,'y','y','n','n');
 

@@ -44,13 +44,13 @@ if (!checkAccess()) {
 }
 
 
-// réglage pour le utf8
+// rÃ©glage pour le utf8
 $decode = isset($_POST["decode"]) ? $_POST["decode"] : 'n';
 $ok = isset($_POST["ok"]) ? $_POST["ok"] : NULL;
 if ($ok == "Enregistrer") {
 	check_token();
-	// On peut alors tester les variables envoyées et mettre à jour les réglages pour l'utf8
-		// On vérifie si le setting existe
+	// On peut alors tester les variables envoyÃ©es et mettre Ã  jour les rÃ©glages pour l'utf8
+		// On vÃ©rifie si le setting existe
 	$operation = saveSetting('decode_pdf_utf8', $decode) OR DIE('Erreur dans le saveSetting().');
 }
 
@@ -58,7 +58,7 @@ $reg_ok = 'yes';
 $msg = '';
 if (isset($_POST['option_modele_bulletin'])) {
 	check_token();
-	// Sauvegarde des paramétrages par défaut des choix de modèles pour les classes
+	// Sauvegarde des paramÃ©trages par dÃ©faut des choix de modÃ¨les pour les classes
 	if (!saveSetting("option_modele_bulletin", $_POST['option_modele_bulletin'])) {
 		$msg .= "Erreur lors de l'enregistrement de option_modele_bulletin !";
 		$reg_ok = 'no';
@@ -92,9 +92,9 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
 
 	$message_erreur = '';
-	if ( !empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les période(s) !'; }
-	if ( empty($classe[0]) and !empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les classe(s) !'; }
-	if ( empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les classe(s) et la ou les période(s) !'; }
+	if ( !empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sÃ©lectionner la ou les pÃ©riode(s) !'; }
+	if ( empty($classe[0]) and !empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sÃ©lectionner la ou les classe(s) !'; }
+	if ( empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sÃ©lectionner la ou les classe(s) et la ou les pÃ©riode(s) !'; }
 
 	$_SESSION['classe'] = $classe;
 	$_SESSION['eleve'] = $eleve;
@@ -455,7 +455,7 @@ include('bulletin_pdf.inc.php');
 //==============================
 
 //===================================================
-// début de la validation ajouter/modifier/supprimer des modèles
+// dÃ©but de la validation ajouter/modifier/supprimer des modÃ¨les
 if(!empty($valide_modif_model))
 {
 	check_token();
@@ -478,9 +478,9 @@ if(!empty($valide_modif_model))
 				$insert=mysql_query($sql);
 			}
 			else {
-				// Normalement, cela ne devrait pas arriver si on récupère correctement les valeurs soumises du formulaire.
-				// Il faudrait insérer une valeur par défaut.
-				// Prendre celle du modèle Standard?
+				// Normalement, cela ne devrait pas arriver si on rÃ©cupÃ¨re correctement les valeurs soumises du formulaire.
+				// Il faudrait insÃ©rer une valeur par dÃ©faut.
+				// Prendre celle du modÃ¨le Standard?
 			}
 		}
 	}
@@ -523,7 +523,7 @@ if(!empty($valide_modif_model))
 		if($action_model==='supprimer') {
 			$requete_model="DELETE FROM ".$prefix_base."modele_bulletin WHERE id_model_bulletin ='".$id_model_bulletin."';";
 
-			//AJOUT ERIC Si on supprime un modèle, s'il est utilisé pour une classe on réinitialise pour la classe la valeur à NULL du champs modele_bulletin_pdf
+			//AJOUT ERIC Si on supprime un modÃ¨le, s'il est utilisÃ© pour une classe on rÃ©initialise pour la classe la valeur Ã  NULL du champs modele_bulletin_pdf
 			$requete_classe="UPDATE classes SET modele_bulletin_pdf=NULL WHERE (modele_bulletin_pdf='$id_model_bulletin')";
 			//echo $requete_classe;
 			mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br>'.mysql_error());
@@ -533,23 +533,23 @@ if(!empty($valide_modif_model))
 	}
 	//mysql_query($requete_model) or die('Erreur SQL !'.$requete_model.'<br>'.mysql_error());
 }
-// fin ajouter/modifier/supprimer des modèles
+// fin ajouter/modifier/supprimer des modÃ¨les
 //===================================================
 
 
 //===================================================
-// DEBUT import de modèle de bulletin pdf par fichier csv
+// DEBUT import de modÃ¨le de bulletin pdf par fichier csv
 if ( isset($action) and $action === 'importmodelcsv' ) {
 	check_token();
 	if($_FILES['fichier']['type'] != "")
 	{
 			$fichiercsv = isset($_FILES["fichier"]) ? $_FILES["fichier"] : NULL;
 		if (!isset($fichiercsv['tmp_name']) or ($fichiercsv['tmp_name'] === '')) {
-			$msg = "Erreur de téléchargement niveau 1.";
+			$msg = "Erreur de tÃ©lÃ©chargement niveau 1.";
 		} else if (!file_exists($fichiercsv['tmp_name'])) {
-				$msg = "Erreur de téléchargement niveau 2.";
+				$msg = "Erreur de tÃ©lÃ©chargement niveau 2.";
 		} else if ((!preg_match('/csv$/',$fichiercsv['name'])) and $fichiercsv['type'] === "application/x-csv"){
-				$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
+				$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisÃ©s.";
 		} else {
 
 			if(!isset($msg)) {$msg="";}
@@ -568,19 +568,19 @@ if ( isset($action) and $action === 'importmodelcsv' ) {
 					//echo "\$tab_champs_csv[$i]=".$tab_champs_csv[$i];
 					if($tab_champs_csv[$i]=='id_model_bulletin') {
 						$indice=$i;
-						//echo " TROUVé: \$indice=$indice";
+						//echo " TROUVÃ©: \$indice=$indice";
 						break;
 					}
 					//echo "<br />";
 				}
 
 				$indice_nom_modele=-1;
-				// Recherche de l'indice du champ nom du modèle
+				// Recherche de l'indice du champ nom du modÃ¨le
 				for($i=0;$i<count($tab_champs_csv);$i++) {
 					//echo "\$tab_champs_csv[$i]=".$tab_champs_csv[$i];
 					if($tab_champs_csv[$i]=='nom_model_bulletin') {
 						$indice_nom_modele=$i;
-						//echo " TROUVé: \$indice_nom_modele=$indice_nom_modele";
+						//echo " TROUVÃ©: \$indice_nom_modele=$indice_nom_modele";
 						break;
 					}
 					//echo "<br />";
@@ -596,8 +596,8 @@ if ( isset($action) and $action === 'importmodelcsv' ) {
 						//$tab_valeurs_csv[]=explode(";",$ligne);
 						$tab_valeurs_csv=explode(";",$ligne);
 
-						// Si $tab_valeurs_csv[$indice] est vide, il faut tester le nom du modèle pour retrouver l'id_model_bulletin ou en affecter un nouveau
-						// Normalement, si on repart d'un export fait avec la version modifiée de export_modele_pdf.php, les id_model_bulletin sont bien exportés aussi.
+						// Si $tab_valeurs_csv[$indice] est vide, il faut tester le nom du modÃ¨le pour retrouver l'id_model_bulletin ou en affecter un nouveau
+						// Normalement, si on repart d'un export fait avec la version modifiÃ©e de export_modele_pdf.php, les id_model_bulletin sont bien exportÃ©s aussi.
 
 						if($tab_valeurs_csv[$indice]=="") {
 							$sql="SELECT DISTINCT id_model_bulletin FROM modele_bulletin WHERE nom='nom_model_bulletin' AND valeur='".$tab_valeurs_csv[$indice_nom_modele]."';";
@@ -619,7 +619,7 @@ if ( isset($action) and $action === 'importmodelcsv' ) {
 									$tab_valeurs_csv[$indice]=$tmp_lig_max->max_id_model_bulletin+1;
 								}
 								else {
-									// Ca ne devrait pas arriver à moins d'avoir supprimé tous les modèles.
+									// Ca ne devrait pas arriver Ã  moins d'avoir supprimÃ© tous les modÃ¨les.
 									$tab_valeurs_csv[$indice]=1;
 								}
 							}
@@ -648,23 +648,23 @@ if ( isset($action) and $action === 'importmodelcsv' ) {
 					*/
 				}
 				else {
-					$msg="Erreur: Le champ 'id_model_bulletin' n'a pas été trouvé dans le fichier CSV.";
+					$msg="Erreur: Le champ 'id_model_bulletin' n'a pas Ã©tÃ© trouvÃ© dans le fichier CSV.";
 				}
 			}
 			fclose($fp);
 		}
 	}
 }
-// FIN import de modèle de bulletin pdf par fichier csv
+// FIN import de modÃ¨le de bulletin pdf par fichier csv
 //===================================================
 
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
-	$msg = "Enregistrement réussi !";
+	$msg = "Enregistrement rÃ©ussi !";
 }
 
 //**************** EN-TETE *********************
-$titre_page = "Paramètres de configuration des bulletins scolaires PDF";
+$titre_page = "ParamÃ¨tres de configuration des bulletins scolaires PDF";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -709,19 +709,19 @@ function DecocheCheckbox() {
 
 	if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 	{
-		die("Droits insuffisants pour effectuer cette opération");
+		die("Droits insuffisants pour effectuer cette opÃ©ration");
 	}
 
-	echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>\n";
+	echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Ã  l'accueil</a>\n";
 	//echo " | <a href=\"./index.php?format=pdf\"> Impression des bulletins PDF</a>\n";
 	echo " | <a href=\"./bull_index.php\"> Impression des bulletins</a>\n";
-	echo " | <a href=\"./param_bull.php\"> Paramètres d'impression des bulletins HTML</a>\n";
+	echo " | <a href=\"./param_bull.php\"> ParamÃ¨tres d'impression des bulletins HTML</a>\n";
 	//echo "</p>\n";
 	//echo "<br /><br />\n";
 
 	//=========================================================
 	// $action_model peut valoir: ajouter/modifier/supprimer
-	if((empty($action_model) or !empty($valide_modif_model))) //affiche la liste des modèles
+	if((empty($action_model) or !empty($valide_modif_model))) //affiche la liste des modÃ¨les
 	{
 
 		echo "</p>\n";
@@ -730,14 +730,14 @@ function DecocheCheckbox() {
 		echo "<center>
 		<form name ='form3' method='post' action='export_modele_pdf.php'>\n";
 		echo add_token_field();
-		echo "<table style='text-align: left; width: 400px; border: 1px solid #74748F;' border='0' cellpadding='1' cellspacing='1' summary='Tableau des modèles existants'>
+		echo "<table style='text-align: left; width: 400px; border: 1px solid #74748F;' border='0' cellpadding='1' cellspacing='1' summary='Tableau des modÃ¨les existants'>
 		<tbody>
 		<tr>
-			<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 100%;' colspan='4' rowspan='1'><a href='".$_SERVER['PHP_SELF']."?modele=aff&amp;action_model=ajouter'>Ajouter un nouveau modèle</a></td>
+			<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 100%;' colspan='4' rowspan='1'><a href='".$_SERVER['PHP_SELF']."?modele=aff&amp;action_model=ajouter'>Ajouter un nouveau modÃ¨le</a></td>
 		</tr>
 		<tr>
 			<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 12px; background: #333333; font: normal 10pt Arial; color: #E0EDF1;'></td>
-			<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 50%; background: #333333; font: normal 10pt Arial; color: #E0EDF1;'>Modèle</td>
+			<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 50%; background: #333333; font: normal 10pt Arial; color: #E0EDF1;'>ModÃ¨le</td>
 			<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: #333333; font: normal 10pt Arial; color: #E0EDF1;'>Modifier</td>
 			<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: #333333; font: normal 10pt Arial; color: #E0EDF1;'>Supprimer</td>
 		</tr>\n";
@@ -748,12 +748,12 @@ function DecocheCheckbox() {
 		//$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin');
 		$requete_model = mysql_query("SELECT id_model_bulletin, valeur FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin;");
         if(mysql_num_rows($requete_model)==0) {
-            $message_alerte="<p style='text-align:center; color:red;'>Il semble qu'aucun modèle ne soit défini.<br />Ce n'est pas normal.<br />";
+            $message_alerte="<p style='text-align:center; color:red;'>Il semble qu'aucun modÃ¨le ne soit dÃ©fini.<br />Ce n'est pas normal.<br />";
             if($_SESSION['login']=='administrateur') {
-                $message_alerte.="Vous devriez effectuer/forcer une <a href='../utilitaires/maj.php'>mise à jour de la base</a> pour corriger.<br />Prenez tout de même soin de vérifier que personne d'autre que vous n'est connecté.\n";
+                $message_alerte.="Vous devriez effectuer/forcer une <a href='../utilitaires/maj.php'>mise Ã  jour de la base</a> pour corriger.<br />Prenez tout de mÃªme soin de vÃ©rifier que personne d'autre que vous n'est connectÃ©.\n";
             }
             else {
-                $message_alerte.="Contactez l'administrateur pour qu'il effectue une mise à jour de la base.\n";
+                $message_alerte.="Contactez l'administrateur pour qu'il effectue une mise Ã  jour de la base.\n";
             }
             $message_alerte.="</p>\n";
         }
@@ -799,12 +799,12 @@ function DecocheCheckbox() {
 		$varcoche = $varcoche."'form3'";
 
 		echo "<tr>\n";
-		echo "<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 100%;' colspan='4' rowspan='1'><a href='".$_SERVER['PHP_SELF']."?modele=aff&amp;action_model=ajouter'>Ajouter un nouveau modèle</a><br /></td>\n";
+		echo "<td style='vertical-align: center; white-space: nowrap; text-align: center; width: 100%;' colspan='4' rowspan='1'><a href='".$_SERVER['PHP_SELF']."?modele=aff&amp;action_model=ajouter'>Ajouter un nouveau modÃ¨le</a><br /></td>\n";
 		echo "</tr>\n";
 		echo "</tbody>\n";
 		echo "</table>\n";
 
-		echo "<a href=\"javascript:CocheCheckbox($varcoche)\">Cocher</a> | <a href=\"javascript:DecocheCheckbox($varcoche)\">Décocher</a>\n";
+		echo "<a href=\"javascript:CocheCheckbox($varcoche)\">Cocher</a> | <a href=\"javascript:DecocheCheckbox($varcoche)\">DÃ©cocher</a>\n";
 		echo "<input type='submit' value='Exporter' style='border: 0px; color: #0000AA; text-decoration: none;' />\n";
 		echo "<span style='background : #FFFFF1; padding-left: 2px;'><a href='".$_SERVER['PHP_SELF']."?action=import' class='submit'>Importer</a></span>\n";
 		echo "</form>\n";
@@ -835,12 +835,12 @@ function DecocheCheckbox() {
 		$bgcolor = "#DEDEDE";
 		echo "<form name=\"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%\">\n";
 		echo add_token_field();
-		echo "<h3>Options gestion des modèles d'impression PDF</h3>\n";
+		echo "<h3>Options gestion des modÃ¨les d'impression PDF</h3>\n";
 		echo "<table cellpadding=\"8\" cellspacing=\"0\" width=\"100%\" border=\"0\" summary=\"Tableau des options d'impression par classe\">\n";
 
 		echo "<tr ";  if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; echo " >\n"; $nb_ligne++;
 		echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
-		echo "Interdire la sélection du modèle de bulletin lors de l'impression. Le modèle doit être défini dans les paramètres de chaque classe. <i>(En cas d'absence de modèle, le modèle standard est utilisé.)</i><br />\n";
+		echo "Interdire la sÃ©lection du modÃ¨le de bulletin lors de l'impression. Le modÃ¨le doit Ãªtre dÃ©fini dans les paramÃ¨tres de chaque classe. <i>(En cas d'absence de modÃ¨le, le modÃ¨le standard est utilisÃ©.)</i><br />\n";
 		echo "</td>\n";
 		echo "<td style=\"text-align: center;\">\n";
 			echo "<input type=\"radio\" name=\"option_modele_bulletin\" value=\"1\" ";
@@ -851,7 +851,7 @@ function DecocheCheckbox() {
 
 		echo "<tr ";  if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; echo " >\n"; $nb_ligne++;
 		echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
-		echo "Le modèle utilisé par défaut est celui défini dans les paramètres de la classe. Un autre modèle pourra être choisi lors de l'impression des bulletins. Il s'appliquera à toutes les classes sélectionnées.<br />\n";
+		echo "Le modÃ¨le utilisÃ© par dÃ©faut est celui dÃ©fini dans les paramÃ¨tres de la classe. Un autre modÃ¨le pourra Ãªtre choisi lors de l'impression des bulletins. Il s'appliquera Ã  toutes les classes sÃ©lectionnÃ©es.<br />\n";
 		echo "</td>\n";
 		echo "<td style=\"text-align: center;\">\n";
 			echo "<input type=\"radio\" name=\"option_modele_bulletin\" value=\"2\" ";
@@ -862,7 +862,7 @@ function DecocheCheckbox() {
 
 		echo "<tr ";  if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; echo " >\n"; $nb_ligne++;
 		echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
-		echo "Le modèle devra être choisi au moment de l'impression indépendamment du modèle paramétré dans les paramètres de la classe. Il s'appliquera à toutes les classes sélectionnées.<br />\n";
+		echo "Le modÃ¨le devra Ãªtre choisi au moment de l'impression indÃ©pendamment du modÃ¨le paramÃ©trÃ© dans les paramÃ¨tres de la classe. Il s'appliquera Ã  toutes les classes sÃ©lectionnÃ©es.<br />\n";
 		echo "</td>\n";
 		echo "<td style=\"text-align: center;\">\n";
 			echo "<input type=\"radio\" name=\"option_modele_bulletin\" value=\"3\" ";
@@ -870,8 +870,8 @@ function DecocheCheckbox() {
 			echo " />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
-		// Possibilité d'ajouter la fonction utf8-decode() dans certains cas sur les bulletins pdf.
-		// Ce réglage est ensuite directement récupéré dans fpdf.php et ex_fpdf.php
+		// PossibilitÃ© d'ajouter la fonction utf8-decode() dans certains cas sur les bulletins pdf.
+		// Ce rÃ©glage est ensuite directement rÃ©cupÃ©rÃ© dans fpdf.php et ex_fpdf.php
 		if (getSettingValue("decode_pdf_utf8") == "y") {
 			$selected = ' checked="checked"';
 		}
@@ -880,7 +880,7 @@ function DecocheCheckbox() {
 		}
 		echo '
 		<tr><td style="font-variant: small-caps; color: brown;">
-		<label for="decodeUtf8">Sur certains serveurs web, il y a un problème d\'encodage dans la génération des pdf, ce coche devrait résoudre le problème :</label>
+		<label for="decodeUtf8">Sur certains serveurs web, il y a un problÃ¨me d\'encodage dans la gÃ©nÃ©ration des pdf, ce coche devrait rÃ©soudre le problÃ¨me :</label>
 		</td><td style="text-align: center;">
 		<input type="checkbox" id="decodeUtf8" name="decode" value="y"'.$selected.' />
 		</td></tr>
@@ -888,13 +888,13 @@ function DecocheCheckbox() {
 		echo "</table>\n<hr />\n";
 
 		/*
-		// Commenté parce que j'ai un soucis sur le bulletin PDF pour tout positionner.
+		// CommentÃ© parce que j'ai un soucis sur le bulletin PDF pour tout positionner.
 		echo "<p>";
 		echo "<input name='bull_pdf_INE_eleve' style='border: 1px solid #74748F;' type='checkbox' value='y'";
 		if(getSettingValue('bull_pdf_INE_eleve')=='y') {
 			echo " checked='checked'";
 		}
-		echo " />&nbsp;Afficher le numéro INE de l'élève sur le bulletin PDF.";
+		echo " />&nbsp;Afficher le numÃ©ro INE de l'Ã©lÃ¨ve sur le bulletin PDF.";
 		echo "</p>\n";
 
 		echo "<hr />\n";
@@ -910,9 +910,9 @@ function DecocheCheckbox() {
 
 	unset($nom_model_bulletin_ecrased);
 
-	if($modele==='aff' and ($action_model==='ajouter' or $action_model==='modifier' or $action_model==='supprimer') and empty($valide_modif_model)) //affiche la liste des modèles
+	if($modele==='aff' and ($action_model==='ajouter' or $action_model==='modifier' or $action_model==='supprimer') and empty($valide_modif_model)) //affiche la liste des modÃ¨les
 	{
-		// $modele_action contient l'id_model_bulletin du modèle à modifier/supprimer
+		// $modele_action contient l'id_model_bulletin du modÃ¨le Ã  modifier/supprimer
 		if(empty($modele_action)) {
 			// On est dans le cas d'un ajout
 			$model_bulletin='';
@@ -928,25 +928,25 @@ function DecocheCheckbox() {
 			if($action_model==='ajouter') {
 				$id_model_courant='';
 				if($copie_model==='') {
-					// On prend le modèle standard comme modèle pour le nouveau modèle ajouté
+					// On prend le modÃ¨le standard comme modÃ¨le pour le nouveau modÃ¨le ajoutÃ©
 					$id_model_bulletin=1;
 				}
 				else {
-					// On prend le modèle id_model_bulletin=$type_bulletin comme modèle pour le nouveau modèle ajouté
-					// $type_bulletin est transmis par le formulaire "Copier les paramètres du modèle"
+					// On prend le modÃ¨le id_model_bulletin=$type_bulletin comme modÃ¨le pour le nouveau modÃ¨le ajoutÃ©
+					// $type_bulletin est transmis par le formulaire "Copier les paramÃ¨tres du modÃ¨le"
 					$id_model_bulletin=$type_bulletin;
 
-					// On récupère le nom du modèle qui avait peut-être déjà été saisi
+					// On rÃ©cupÃ¨re le nom du modÃ¨le qui avait peut-Ãªtre dÃ©jÃ  Ã©tÃ© saisi
 					$nom_model_bulletin=isset($_POST['nom_model_bulletin']) ? $_POST['nom_model_bulletin'] : "Nouveau";
-					// En effet $nom_model_bulletin va être par la suite écrasé par la récupération des valeurs enregistrées pour $id_model_bulletin
+					// En effet $nom_model_bulletin va Ãªtre par la suite Ã©crasÃ© par la rÃ©cupÃ©ration des valeurs enregistrÃ©es pour $id_model_bulletin
 
-					// On met de côté le nom du nouveau modèle:
+					// On met de cÃ´tÃ© le nom du nouveau modÃ¨le:
 					$nom_model_bulletin_ecrased=$nom_model_bulletin;
 				}
 			}
 
 			if($action_model==='modifier') {
-				// On conserve le $model_bulletin=$model_action à modifier
+				// On conserve le $model_bulletin=$model_action Ã  modifier
 				$id_model_courant=$model_bulletin;
 
 				if($copie_model==='') {
@@ -959,7 +959,7 @@ function DecocheCheckbox() {
 				}
 			}
 
-			// On récupère les valeurs du modèle $id_model_bulletin (que ce soit le modèle actuellement modifié ou celui qui sert de modèle pour une recopie)
+			// On rÃ©cupÃ¨re les valeurs du modÃ¨le $id_model_bulletin (que ce soit le modÃ¨le actuellement modifiÃ© ou celui qui sert de modÃ¨le pour une recopie)
 			$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='".$id_model_bulletin."';";
 			//echo "$sql<br />\n";
 			$res_modele=mysql_query($sql);
@@ -969,7 +969,7 @@ function DecocheCheckbox() {
 
 				$$nom=$valeur;
 				//echo "\$$nom=$valeur<br />";
-				// La valeur de $nom_model_bulletin est écrasée ici par $valeur quand $nom='nom_model_bulletin'
+				// La valeur de $nom_model_bulletin est Ã©crasÃ©e ici par $valeur quand $nom='nom_model_bulletin'
 			}
 
 
@@ -978,7 +978,7 @@ function DecocheCheckbox() {
 					$nom_model_bulletin="Nouveau";
 				}
 				else {
-					// On restaure le nom de modèle écrasé lors de la recopie
+					// On restaure le nom de modÃ¨le Ã©crasÃ© lors de la recopie
 					$nom_model_bulletin=$nom_model_bulletin_ecrased;
 				}
 			}
@@ -986,10 +986,10 @@ function DecocheCheckbox() {
 
 			if ( $action_model==='modifier' and $copie_model != '' ) {
 				/*
-				// id du modèle
+				// id du modÃ¨le
 				$id_model_bulletin = $modele_action;
 				//echo "\$id_model_bulletin=$id_model_bulletin<br />";
-				// nom du modèle
+				// nom du modÃ¨le
 				$nom_model_bulletin = $nom_model_bulletin;
 				//echo "\$nom_model_bulletin=$nom_model_bulletin<br />";
 				*/
@@ -998,8 +998,8 @@ function DecocheCheckbox() {
 			}
 
 
-			//echo " | <a href=\"./".$_SERVER['PHP_SELF']."\"> Paramètres d'impression des bulletins PDF</a>";
-			echo " | <a href=\"".$_SERVER['PHP_SELF']."\"> Paramètres d'impression des bulletins PDF</a>";
+			//echo " | <a href=\"./".$_SERVER['PHP_SELF']."\"> ParamÃ¨tres d'impression des bulletins PDF</a>";
+			echo " | <a href=\"".$_SERVER['PHP_SELF']."\"> ParamÃ¨tres d'impression des bulletins PDF</a>";
 
 			echo "</p>\n";
 			echo "<br /><br />\n";
@@ -1007,9 +1007,9 @@ function DecocheCheckbox() {
 			//============================================
 			echo "<form method='post' action='".$_SERVER['PHP_SELF']."?modele=aff' name='action_modele_copie_form'>\n";
 			echo add_token_field();
-			echo "<p>Modèle: <select tabindex='5' name='type_bulletin'>\n";
+			echo "<p>ModÃ¨le: <select tabindex='5' name='type_bulletin'>\n";
 
-			// sélection des modèles des bulletins.
+			// sÃ©lection des modÃ¨les des bulletins.
 			//$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
 			$sql="SELECT id_model_bulletin, valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY nom ASC";
 			$requete_model = mysql_query($sql);
@@ -1035,7 +1035,7 @@ function DecocheCheckbox() {
 			echo "<input type='hidden' name='action_model' value='$action_model' />\n";
 			echo "<input type='hidden' name='modele' value='$modele' />\n";
 			echo "<input type='hidden' name='format' value='$format' />\n";
-			echo "<input type='submit' id='copie_model' name='copie_model' value='Copier les paramètres de ce modèle' onClick=\"return confirm('Attention cette action va écraser votre sélection actuelle')\" />\n";
+			echo "<input type='submit' id='copie_model' name='copie_model' value='Copier les paramÃ¨tres de ce modÃ¨le' onClick=\"return confirm('Attention cette action va Ã©craser votre sÃ©lection actuelle')\" />\n";
 			echo "</form>\n";
 			//============================================
 
@@ -1050,11 +1050,11 @@ function DecocheCheckbox() {
 			/*
 			if(isset($nom_model_bulletin_ecrased)) {
 
-				echo "<h2>Mise en page du modèle de bulletin ($nom_model_bulletin_ecrased)</h2>";
+				echo "<h2>Mise en page du modÃ¨le de bulletin ($nom_model_bulletin_ecrased)</h2>";
 
 				if($id_model_bulletin!='1') {
 					//echo "$nom_model_bulletin -";
-					echo "Nom du modèle :&nbsp;";
+					echo "Nom du modÃ¨le :&nbsp;";
 					echo "<input name='nom_model_bulletin' size='22' style='border: 1px solid #74748F;' type='text' ";
 					if(!empty($nom_model_bulletin_ecrased)) {
 						echo "value=\"$nom_model_bulletin_ecrased\"";
@@ -1062,18 +1062,18 @@ function DecocheCheckbox() {
 					echo " />";
 				}
 				else {
-					echo "Nom du modèle: ".ucfirst($nom_model_bulletin_ecrased);
+					echo "Nom du modÃ¨le: ".ucfirst($nom_model_bulletin_ecrased);
 				}
 			}
 			else {
 			*/
-				echo "<h2>Mise en page du modèle de bulletin ($nom_model_bulletin)</h2>";
+				echo "<h2>Mise en page du modÃ¨le de bulletin ($nom_model_bulletin)</h2>";
 
 				//if($id_model_bulletin!='1') {
 				//if(($id_model_bulletin!='1')||($nom_model_bulletin=='Nouveau')) {
 				if(($id_model_courant!='1')||($nom_model_bulletin=='Nouveau')) {
 					//echo "$nom_model_bulletin -";
-					echo "Nom du modèle :&nbsp;";
+					echo "Nom du modÃ¨le :&nbsp;";
 					echo "<input name='nom_model_bulletin' size='22' style='border: 1px solid #74748F;' type='text' ";
 					if(!empty($nom_model_bulletin)) {
 						echo "value=\"$nom_model_bulletin\"";
@@ -1081,8 +1081,8 @@ function DecocheCheckbox() {
 					echo " />";
 				}
 				else {
-					// On devrait avoir ici: Modèle Standard avec id_model_bulletin=1
-					echo "Nom du modèle: ".ucfirst($nom_model_bulletin);
+					// On devrait avoir ici: ModÃ¨le Standard avec id_model_bulletin=1
+					echo "Nom du modÃ¨le: ".ucfirst($nom_model_bulletin);
 					//echo "<input type='hidden' name='id_model_bulletin' value='$id_model_bulletin' />\n";
 					echo "<input name='nom_model_bulletin' type='hidden' value=\"$nom_model_bulletin\" />\n";
 				}
@@ -1100,44 +1100,44 @@ function DecocheCheckbox() {
 			*/
 
 			?>
-			Nom de la police de caractères&nbsp;<input name="caractere_utilse" size="10" style="border: 1px solid #74748F;" type="text" <?php if(!empty($caractere_utilse)) { ?>value="<?php echo $caractere_utilse; ?>" <?php } ?> />&nbsp;<span style="font-weight: bold; color: rgb(255, 0, 0);">*</span><br /><span style="font-style: italic; color: rgb(255, 0, 0);">* (Attention à ne modifier que si la police existe sur le serveur web voir avec l'administrateur de GEPI)</span><br />
-			<table style="text-align: left; width: 100%; border: 1px solid #74748F;" border="0" cellpadding="2" cellspacing="2"  summary="Tableau des paramètres du modèle">
+			Nom de la police de caractÃ¨res&nbsp;<input name="caractere_utilse" size="10" style="border: 1px solid #74748F;" type="text" <?php if(!empty($caractere_utilse)) { ?>value="<?php echo $caractere_utilse; ?>" <?php } ?> />&nbsp;<span style="font-weight: bold; color: rgb(255, 0, 0);">*</span><br /><span style="font-style: italic; color: rgb(255, 0, 0);">* (Attention Ã  ne modifier que si la police existe sur le serveur web voir avec l'administrateur de GEPI)</span><br />
+			<table style="text-align: left; width: 100%; border: 1px solid #74748F;" border="0" cellpadding="2" cellspacing="2"  summary="Tableau des paramÃ¨tres du modÃ¨le">
 			<tbody>
 			<tr>
 				<td style="vertical-align: center; white-space: nowrap; text-align: center; width: 100%; background: #B3B7BF;" colspan="2" rowspan="1">
-				<input type="submit" id="valide_modif_model" name="valide_modif_model" value="Valider le modèle" />
+				<input type="submit" id="valide_modif_model" name="valide_modif_model" value="Valider le modÃ¨le" />
 				</td>
 			</tr>
 			<tr>
 			<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
-				<div style="font-weight: bold; background: #CFCFCF;">Cadre information établissement</div>
+				<div style="font-weight: bold; background: #CFCFCF;">Cadre information Ã©tablissement</div>
 
 			<?php
 				// AJOUT: boireaus 20081224
-				// Afficher le nom de l'établissement
+				// Afficher le nom de l'Ã©tablissement
 				echo "<input name='affiche_nom_etab' id='affiche_nom_etab' style='border: 1px solid #74748F;' type='checkbox' value='1' ";
 				//if(!empty($affiche_nom_etab) and $affiche_nom_etab==='1') {
 				if((!isset($affiche_nom_etab))||($affiche_nom_etab!='0')) {
 					echo "checked='checked'";
 				}
-				echo "/>&nbsp;<label for='affiche_nom_etab' style='cursor: pointer;'>Afficher le nom de l'établissement</label><br />\n";
+				echo "/>&nbsp;<label for='affiche_nom_etab' style='cursor: pointer;'>Afficher le nom de l'Ã©tablissement</label><br />\n";
 
-				// Afficher l'adresse de l'établissement
+				// Afficher l'adresse de l'Ã©tablissement
 				echo "<input name='affiche_adresse_etab' id='affiche_adresse_etab' style='border: 1px solid #74748F;' type='checkbox' value='1' ";
 				//if(!empty($affiche_adresse_etab) and $affiche_adresse_etab==='1') {
 				if((!isset($affiche_adresse_etab))||($affiche_adresse_etab!='0')) {
 					echo "checked='checked'";
 				}
-				echo "/>&nbsp;<label for='affiche_adresse_etab' style='cursor: pointer;'>Afficher l'adresse de l'établissement</label><br />\n";
+				echo "/>&nbsp;<label for='affiche_adresse_etab' style='cursor: pointer;'>Afficher l'adresse de l'Ã©tablissement</label><br />\n";
 
 			?>
 
-			<input name="nom_etab_gras" id="nom_etab_gras" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($nom_etab_gras) and $nom_etab_gras==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="nom_etab_gras" style="cursor: pointer;">Nom de l'établissement en gras</label><br />
+			<input name="nom_etab_gras" id="nom_etab_gras" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($nom_etab_gras) and $nom_etab_gras==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="nom_etab_gras" style="cursor: pointer;">Nom de l'Ã©tablissement en gras</label><br />
 
 			<input name="affiche_filigrame" id="filigrame" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_filigrame) and $affiche_filigrame==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="filigrame" style="cursor: pointer;">Filigrane</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;<label for="text_fili" style="cursor: pointer;">texte du filigrane</label>&nbsp;<input name="texte_filigrame" id="text_fili" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($texte_filigrame)) { ?>value="<?php echo $texte_filigrame; ?>" <?php } ?> /><br />
 
-			<input name="entente_tel" id="telephone" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_tel) and $entente_tel==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="telephone" style="cursor: pointer;">Téléphone</label><br />
+			<input name="entente_tel" id="telephone" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_tel) and $entente_tel==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="telephone" style="cursor: pointer;">TÃ©lÃ©phone</label><br />
 			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="tel_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($tel_texte)) { ?>value="<?php echo $tel_texte; ?>" <?php } ?> /> ou
 			<input name="tel_image" id="tel_image_1" value="tel1" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel1') { ?>checked="checked"<?php } ?> /><label for="tel_image_1" style="cursor: pointer;"><img src="../images/imabulle/tel1.jpg" style="width: 6.5px; height: 15.5px; border: 0px" alt="" title="" /></label>
 			<input name="tel_image" id="tel_image_2" value="tel2" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel2') { ?>checked="checked"<?php } ?> /><label for="tel_image_2" style="cursor: pointer;"><img src="../images/imabulle/tel2.jpg" style="width: 18.5px; height: 15px; border: 0px" alt="" title="" /></label>
@@ -1160,12 +1160,12 @@ function DecocheCheckbox() {
 			<br />
 
 			<?php
-				// Ligne supplémentaire
+				// Ligne supplÃ©mentaire
 				echo "<input type='checkbox' name='entete_info_etab_suppl' id='entete_info_etab_suppl' value='y' ";
 				if($entete_info_etab_suppl=='y') {
 					echo "checked ";
 				}
-				echo "/><label for='entete_info_etab_suppl'>Ligne supplémentaire de votre choix</label><br />\n";
+				echo "/><label for='entete_info_etab_suppl'>Ligne supplÃ©mentaire de votre choix</label><br />\n";
 				echo "&nbsp;&nbsp;&nbsp;Texte&nbsp;: ";
 				echo "<input type='text' name='entete_info_etab_suppl_texte' id='entete_info_etab_suppl_texte' value='$entete_info_etab_suppl_texte' size='6' />\n";
 				echo "&nbsp;&nbsp;&nbsp;Valeur&nbsp;: ";
@@ -1176,14 +1176,14 @@ function DecocheCheckbox() {
 			<br />
 
 
-			Logo de l'établissement<br />
+			Logo de l'Ã©tablissement<br />
 			<input name="affiche_logo_etab" id="aff_logo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_logo_etab) and $affiche_logo_etab==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="aff_logo" style="cursor: pointer;">Affiche le logo</label><br />
 			<label for="larg_logo" style="cursor: pointer;">Largeur</label>&nbsp;<input name="L_max_logo" id="larg_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($L_max_logo)) { ?>value="<?php echo $L_max_logo; ?>" <?php } ?> />mm&nbsp;/&nbsp;<label for="haut_logo" style="cursor: pointer;">Hauteur</label>&nbsp;<input name="H_max_logo" id="haut_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($H_max_logo)) { ?>value="<?php echo $H_max_logo; ?>" <?php } ?> />mm&nbsp;<br />
 			<input name="centrage_logo" id="centrage_logo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($centrage_logo) and $centrage_logo==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="centrage_logo" style="cursor: pointer;">Centrer le logo</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="Y_centre_logo" style="cursor: pointer;">Positionnement du centrage (Y)</label>&nbsp;<input name="Y_centre_logo" id="Y_centre_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_centre_logo)) { ?>value="<?php echo $Y_centre_logo; ?>" <?php } ?> />mm<br /><br />
 
-				<div style="font-weight: bold; background: #CFCFCF;">Cadre information identité élève</div>
-			<input name="active_bloc_eleve" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_eleve" value="0" type="radio" <?php if(empty($active_bloc_eleve) or (!empty($active_bloc_eleve) and $active_bloc_eleve!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+				<div style="font-weight: bold; background: #CFCFCF;">Cadre information identitÃ© Ã©lÃ¨ve</div>
+			<input name="active_bloc_eleve" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_eleve" value="0" type="radio" <?php if(empty($active_bloc_eleve) or (!empty($active_bloc_eleve) and $active_bloc_eleve!='1')) { ?>checked="checked"<?php } ?> />&nbsp;DÃ©sactiver<br />
 			Positionnement X&nbsp;<input name="X_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_eleve)) { ?>value="<?php echo $X_eleve; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_eleve)) { ?>value="<?php echo $Y_eleve; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="largeur_bloc_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_eleve)) { ?>value="<?php echo $largeur_bloc_eleve; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_eleve)) { ?>value="<?php echo $hauteur_bloc_eleve; ?>" <?php } ?> />mm&nbsp;<br />
 
@@ -1192,29 +1192,29 @@ function DecocheCheckbox() {
 			<input name="active_photo" id="active_photo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_photo) and $active_photo==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="active_photo" style="cursor: pointer;">la photo</label> (<input name="ajout_cadre_blanc_photo" id="ajout_cadre_blanc_photo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($ajout_cadre_blanc_photo) and $ajout_cadre_blanc_photo==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="ajout_cadre_blanc_photo" style="cursor: pointer;">Ajouter un cadre blanc</label> )<br />
 			<input name="affiche_doublement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_doublement) and $affiche_doublement==='1') { ?>checked="checked"<?php } ?> />&nbsp;si doublement<br />
 			<input name="affiche_date_naissance" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_naissance) and $affiche_date_naissance==='1') { ?>checked="checked"<?php } ?> />&nbsp;la date de naissance<br />
-			<input name="affiche_dp" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_dp) and $affiche_dp==='1') { ?>checked="checked"<?php } ?> />&nbsp;le régime<br />
+			<input name="affiche_dp" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_dp) and $affiche_dp==='1') { ?>checked="checked"<?php } ?> />&nbsp;le rÃ©gime<br />
 
 			<?php
 				/*
-				// Il ne faut pas mettre là une variable destinée à arriver dans 'setting' pour toutes les classes et tous les modèles PDF.
+				// Il ne faut pas mettre lÃ  une variable destinÃ©e Ã  arriver dans 'setting' pour toutes les classes et tous les modÃ¨les PDF.
 				echo "<input name='bull_pdf_INE_eleve' style='border: 1px solid #74748F;' type='checkbox' value='1'";
 				if($bull_pdf_INE_eleve=='y') {
 					echo " checked='checked'";
 				}
-				echo " />&nbsp;le régime<br />\n"
+				echo " />&nbsp;le rÃ©gime<br />\n"
 				*/
 			?>
 
 			<input name="affiche_nom_court" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_nom_court) and $affiche_nom_court==='1') { ?>checked="checked"<?php } ?> />&nbsp;nom court de la classe<br />
-			<input name="affiche_ine" id="affiche_ine" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_ine) and $affiche_ine==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_ine" style="cursor: pointer;">numéro INE de l'élève</label><br />
+			<input name="affiche_ine" id="affiche_ine" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_ine) and $affiche_ine==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_ine" style="cursor: pointer;">numÃ©ro INE de l'Ã©lÃ¨ve</label><br />
 			<input name="affiche_effectif_classe" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_effectif_classe) and $affiche_effectif_classe==='1') { ?>checked="checked"<?php } ?> />&nbsp;effectif de la classe<br />
-			<input name="affiche_numero_impression" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_impression) and $affiche_numero_impression==='1') { ?>checked="checked"<?php } ?> />&nbsp;numéro d'impression<br />
-			<input name="affiche_etab_origine" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_etab_origine) and $affiche_etab_origine==='1') { ?>checked="checked"<?php } ?> />&nbsp;établissement d'origine<br /><br />
+			<input name="affiche_numero_impression" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_impression) and $affiche_numero_impression==='1') { ?>checked="checked"<?php } ?> />&nbsp;numÃ©ro d'impression<br />
+			<input name="affiche_etab_origine" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_etab_origine) and $affiche_etab_origine==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ã©tablissement d'origine<br /><br />
 
 			</td>
 				<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre datation du bulletin</div>
-			<input name="active_bloc_datation" value="1" type="radio" <?php if(!empty($active_bloc_datation) and $active_bloc_datation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_datation" value="0" type="radio" <?php if(empty($active_bloc_datation) or (!empty($active_bloc_datation) and $active_bloc_datation!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<input name="active_bloc_datation" value="1" type="radio" <?php if(!empty($active_bloc_datation) and $active_bloc_datation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_datation" value="0" type="radio" <?php if(empty($active_bloc_datation) or (!empty($active_bloc_datation) and $active_bloc_datation!='1')) { ?>checked="checked"<?php } ?> />&nbsp;DÃ©sactiver<br />
 			Positionnement X&nbsp;<input name="X_datation_bul" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_datation_bul)) { ?>value="<?php echo $X_datation_bul; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_datation_bul" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_datation_bul)) { ?>value="<?php echo $Y_datation_bul; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="largeur_bloc_datation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_datation)) { ?>value="<?php echo $largeur_bloc_datation; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_datation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_datation)) { ?>value="<?php echo $hauteur_bloc_datation; ?>" <?php } ?> />mm&nbsp;<br />
 
@@ -1223,46 +1223,46 @@ function DecocheCheckbox() {
 			Taille du texte "classe"&nbsp;<input name="taille_texte_classe" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_classe)) { ?>value="<?php echo $taille_texte_classe; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;format
 				<select name="type_texte_classe">
-						<option value="" <?php if ( isset($type_texte_classe) and $type_texte_classe === '' ) { ?>selected="selected"<?php } ?>>défaut</option>
+						<option value="" <?php if ( isset($type_texte_classe) and $type_texte_classe === '' ) { ?>selected="selected"<?php } ?>>dÃ©faut</option>
 						<option value="N" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'N' ) { ?>selected="selected"<?php } ?>>normal</option>
 						<option value="B" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'B' ) { ?>selected="selected"<?php } ?> style="font-weight: bold;">gras</option>
 						<option value="I" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'I' ) { ?>selected="selected"<?php } ?> style="font-style: italic;">italique</option>
-						<option value="U" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignée</option>
+						<option value="U" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignÃ©e</option>
 					</select><br />
 
-				Taille du texte "année scolaire"&nbsp;<input name="taille_texte_annee" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_annee)) { ?>value="<?php echo $taille_texte_annee; ?>" <?php } ?> />pixel<br />
+				Taille du texte "annÃ©e scolaire"&nbsp;<input name="taille_texte_annee" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_annee)) { ?>value="<?php echo $taille_texte_annee; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;format
 				<select name="type_texte_annee">
-						<option value="" <?php if ( isset($type_texte_annee) and $type_texte_annee === '' ) { ?>selected="selected"<?php } ?>>défaut</option>
+						<option value="" <?php if ( isset($type_texte_annee) and $type_texte_annee === '' ) { ?>selected="selected"<?php } ?>>dÃ©faut</option>
 						<option value="N" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'N' ) { ?>selected="selected"<?php } ?>>normal</option>
 						<option value="B" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'B' ) { ?>selected="selected"<?php } ?> style="font-weight: bold;">gras</option>
 						<option value="I" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'I' ) { ?>selected="selected"<?php } ?> style="font-style: italic;">italique</option>
-						<option value="U" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignée</option>
+						<option value="U" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignÃ©e</option>
 					</select><br />
 
-			Taille du texte "période"&nbsp;<input name="taille_texte_periode" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_periode)) { ?>value="<?php echo $taille_texte_periode; ?>" <?php } ?> />pixel<br />
+			Taille du texte "pÃ©riode"&nbsp;<input name="taille_texte_periode" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_periode)) { ?>value="<?php echo $taille_texte_periode; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;format
 				<select name="type_texte_periode">
-						<option value="" <?php if ( isset($type_texte_periode) and $type_texte_periode === '' ) { ?>selected="selected"<?php } ?>>défaut</option>
+						<option value="" <?php if ( isset($type_texte_periode) and $type_texte_periode === '' ) { ?>selected="selected"<?php } ?>>dÃ©faut</option>
 						<option value="N" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'N' ) { ?>selected="selected"<?php } ?>>normal</option>
 						<option value="B" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'B' ) { ?>selected="selected"<?php } ?> style="font-weight: bold;">gras</option>
 						<option value="I" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'I' ) { ?>selected="selected"<?php } ?> style="font-style: italic;">italique</option>
-						<option value="U" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignée</option>
+						<option value="U" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignÃ©e</option>
 					</select><br />
 
 			Taille du texte "date d'edition"&nbsp;<input name="taille_texte_date_edition" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_date_edition)) { ?>value="<?php echo $taille_texte_date_edition; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;format
 				<select name="type_texte_date_datation">
-						<option value="" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === '' ) { ?>selected="selected"<?php } ?>>défaut</option>
+						<option value="" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === '' ) { ?>selected="selected"<?php } ?>>dÃ©faut</option>
 						<option value="N" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'N' ) { ?>selected="selected"<?php } ?>>normal</option>
 						<option value="B" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'B' ) { ?>selected="selected"<?php } ?> style="font-weight: bold;">gras</option>
 						<option value="I" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'I' ) { ?>selected="selected"<?php } ?> style="font-style: italic;">italique</option>
-						<option value="U" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignée</option>
+						<option value="U" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignÃ©e</option>
 					</select><br />
-			&nbsp;&nbsp;&nbsp;<input name="affiche_date_edition" id="affiche_date_edition" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_edition) and $affiche_date_edition==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_date_edition" style="cursor: pointer;">Afficher la date d'édition</label><br /><br /><br />
+			&nbsp;&nbsp;&nbsp;<input name="affiche_date_edition" id="affiche_date_edition" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_edition) and $affiche_date_edition==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_date_edition" style="cursor: pointer;">Afficher la date d'Ã©dition</label><br /><br /><br />
 
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre adresse des parents</div>
-			<input name="active_bloc_adresse_parent" value="1" type="radio" <?php if(!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_adresse_parent" value="0" type="radio" <?php if(empty($active_bloc_adresse_parent) or (!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<input name="active_bloc_adresse_parent" value="1" type="radio" <?php if(!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_adresse_parent" value="0" type="radio" <?php if(empty($active_bloc_adresse_parent) or (!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent!='1')) { ?>checked="checked"<?php } ?> />&nbsp;DÃ©sactiver<br />
 			Positionnement X&nbsp;<input name="X_parent" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_parent)) { ?>value="<?php echo $X_parent; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_parent" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_parent)) { ?>value="<?php echo $Y_parent; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="largeur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_adresse)) { ?>value="<?php echo $largeur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_adresse)) { ?>value="<?php echo $hauteur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;<br />
 
@@ -1270,27 +1270,27 @@ function DecocheCheckbox() {
 
 			Imprimer les bulletins pour :<br />
 			<input name="imprime_pour" value="1" type="radio" <?php if( (!empty($imprime_pour) and $imprime_pour==='1') or empty($imprime_pour) ) { ?>checked="checked"<?php } ?> />&nbsp;seulement pour le 1er responsable<br />
-			<input name="imprime_pour" value="2" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='2') { ?>checked="checked"<?php } ?> />&nbsp;le 1er et 2ème responsable s'ils n'ont pas la même adresse<br />
-			<input name="imprime_pour" value="3" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='3') { ?>checked="checked"<?php } ?> />&nbsp;forcer pour le 1er et 2ème responsable<br /><br />
+			<input name="imprime_pour" value="2" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='2') { ?>checked="checked"<?php } ?> />&nbsp;le 1er et 2Ã¨me responsable s'ils n'ont pas la mÃªme adresse<br />
+			<input name="imprime_pour" value="3" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='3') { ?>checked="checked"<?php } ?> />&nbsp;forcer pour le 1er et 2Ã¨me responsable<br /><br />
 			
-			<input name="affiche_numero_responsable" id="affiche_numero_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_responsable) and $affiche_numero_responsable==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_numero_responsable" style="cursor: pointer;">Afficher le numéro du responsable</label><br /><br />
+			<input name="affiche_numero_responsable" id="affiche_numero_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_responsable) and $affiche_numero_responsable==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_numero_responsable" style="cursor: pointer;">Afficher le numÃ©ro du responsable</label><br /><br />
 			</td>
 		</tr>
 		<tr>
 			<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;" colspan="2" rowspan="1">
-			<div style="font-weight: bold; background: #CFCFCF;">Cadre note et appréciation</div>
-			<input name="active_bloc_note_appreciation" value="1" type="radio" <?php if(!empty($active_bloc_note_appreciation) and $active_bloc_note_appreciation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_note_appreciation" value="0" type="radio" <?php if(empty($active_bloc_note_appreciation) or (!empty($active_bloc_note_appreciation) and $active_bloc_note_appreciation!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<div style="font-weight: bold; background: #CFCFCF;">Cadre note et apprÃ©ciation</div>
+			<input name="active_bloc_note_appreciation" value="1" type="radio" <?php if(!empty($active_bloc_note_appreciation) and $active_bloc_note_appreciation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_note_appreciation" value="0" type="radio" <?php if(empty($active_bloc_note_appreciation) or (!empty($active_bloc_note_appreciation) and $active_bloc_note_appreciation!='1')) { ?>checked="checked"<?php } ?> />&nbsp;DÃ©sactiver<br />
 			Positionnement X&nbsp;<input name="X_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_note_app)) { ?>value="<?php echo $X_note_app; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_note_app)) { ?>value="<?php echo $Y_note_app; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($longeur_note_app)) { ?>value="<?php echo $longeur_note_app; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_note_app)) { ?>value="<?php echo $hauteur_note_app; ?>" <?php } ?> />mm&nbsp;<br />
-			Entête<br />
-			&nbsp;&nbsp;&nbsp;Titre de la colonne matière : <input name="titre_entete_matiere" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_matiere)) { ?>value="<?php echo $titre_entete_matiere; ?>" <?php } ?> /><br />
+			EntÃªte<br />
+			&nbsp;&nbsp;&nbsp;Titre de la colonne matiÃ¨re : <input name="titre_entete_matiere" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_matiere)) { ?>value="<?php echo $titre_entete_matiere; ?>" <?php } ?> /><br />
 
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Largeur du bloc matière&nbsp;<input name="largeur_matiere" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_matiere)) { ?>value="<?php echo $largeur_matiere; ?>" <?php } ?> />mm<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte "matière"&nbsp;<input name="taille_texte_matiere" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_matiere)) { ?>value="<?php echo $taille_texte_matiere; ?>" <?php } ?> />pixel<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Largeur du bloc matiÃ¨re&nbsp;<input name="largeur_matiere" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_matiere)) { ?>value="<?php echo $largeur_matiere; ?>" <?php } ?> />mm<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte "matiÃ¨re"&nbsp;<input name="taille_texte_matiere" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_matiere)) { ?>value="<?php echo $taille_texte_matiere; ?>" <?php } ?> />pixel<br />
 
 			<?php
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-				echo "Présentation des noms de professeurs&nbsp;:<br />\n";
+				echo "PrÃ©sentation des noms de professeurs&nbsp;:<br />\n";
 
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				echo "<input type='radio' name='presentation_proflist' id='presentation_proflist_1' value='1' ";
@@ -1300,14 +1300,14 @@ function DecocheCheckbox() {
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				echo "<input type='radio' name='presentation_proflist' id='presentation_proflist_2' value='2' ";
 				if($presentation_proflist=="2") {echo "checked ";}
-				echo "/><label for='presentation_proflist_2'>en ligne (<i>à la suite</i>)</label><br />\n";
+				echo "/><label for='presentation_proflist_2'>en ligne (<i>Ã  la suite</i>)</label><br />\n";
 			?>
 
 			&nbsp;&nbsp;&nbsp;Titre de la colonne coefficient : <input name="titre_entete_coef" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_coef)) { ?>value="<?php echo $titre_entete_coef; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne nombre de note : <input name="titre_entete_nbnote" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_nbnote)) { ?>value="<?php echo $titre_entete_nbnote; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne rang : <input name="titre_entete_rang" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_rang)) { ?>value="<?php echo $titre_entete_rang; ?>" <?php } ?> /><br />
-			&nbsp;&nbsp;&nbsp;Titre de la colonne appréciation : <input name="titre_entete_appreciation" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_appreciation)) { ?>value="<?php echo $titre_entete_appreciation; ?>" <?php } ?> /><br />
-			&nbsp;&nbsp;&nbsp;Type de l'entête des moyennes&nbsp;
+			&nbsp;&nbsp;&nbsp;Titre de la colonne apprÃ©ciation : <input name="titre_entete_appreciation" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_appreciation)) { ?>value="<?php echo $titre_entete_appreciation; ?>" <?php } ?> /><br />
+			&nbsp;&nbsp;&nbsp;Type de l'entÃªte des moyennes&nbsp;
 				<select name="entete_model_bulletin">
 						<option value="1" <?php if ( isset($entete_model_bulletin) and $entete_model_bulletin === '1' ) { ?>selected="selected"<?php } ?>>1-moyenne</option>
 						<option value="2" <?php if ( isset($entete_model_bulletin) and $entete_model_bulletin === '2' ) { ?>selected="selected"<?php } ?>>2-pour la classe</option>
@@ -1325,12 +1325,12 @@ function DecocheCheckbox() {
 			<!-- Autres -->
 
 			<div style="background: #EFEFEF; font-style:italic;">Autres</div>
-			<input name="active_coef_moyenne" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_moyenne) and $active_coef_moyenne==='1') { ?>checked="checked"<?php } ?> />&nbsp;Coefficient de chaque matière<br />
+			<input name="active_coef_moyenne" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_moyenne) and $active_coef_moyenne==='1') { ?>checked="checked"<?php } ?> />&nbsp;Coefficient de chaque matiÃ¨re<br />
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne des coefficients&nbsp;<input name="largeur_coef_moyenne" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_coef_moyenne)) { ?>value="<?php echo $largeur_coef_moyenne; ?>" <?php } ?> />mm<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_coef_sousmoyene" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_sousmoyene) and $active_coef_sousmoyene==='1') { ?>checked="checked"<?php } ?> />&nbsp;l'afficher sous la moyenne de l'élève<br />
-			<input name="active_nombre_note_case" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note_case) and $active_nombre_note_case==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nombre de notes par matière dans une case<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_coef_sousmoyene" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_sousmoyene) and $active_coef_sousmoyene==='1') { ?>checked="checked"<?php } ?> />&nbsp;l'afficher sous la moyenne de l'Ã©lÃ¨ve<br />
+			<input name="active_nombre_note_case" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note_case) and $active_nombre_note_case==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nombre de notes par matiÃ¨re dans une case<br />
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne du nombre de notes&nbsp;<input name="largeur_nombre_note" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_nombre_note)) { ?>value="<?php echo $largeur_nombre_note; ?>" <?php } ?> />mm<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_nombre_note" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note) and $active_nombre_note==='1') { ?>checked="checked"<?php } ?> />&nbsp;l'afficher sous la moyenne de l'élève<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_nombre_note" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note) and $active_nombre_note==='1') { ?>checked="checked"<?php } ?> />&nbsp;l'afficher sous la moyenne de l'Ã©lÃ¨ve<br />
 
 			<!-- Moyenne -->
 
@@ -1340,7 +1340,7 @@ function DecocheCheckbox() {
 
 			<br />
 
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_eleve) and $active_moyenne_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne de l'élève&nbsp;&nbsp;&nbsp;(<input name="active_reperage_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_reperage_eleve) and $active_reperage_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_reperage_eleve1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve1)) { ?>value="<?php echo $couleur_reperage_eleve1; ?>" <?php } ?> /> G:<input name="couleur_reperage_eleve2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve2)) { ?>value="<?php echo $couleur_reperage_eleve2; ?>" <?php } ?> /> B:<input name="couleur_reperage_eleve3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve3)) { ?>value="<?php echo $couleur_reperage_eleve3; ?>" <?php } ?> />)<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_eleve) and $active_moyenne_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne de l'Ã©lÃ¨ve&nbsp;&nbsp;&nbsp;(<input name="active_reperage_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_reperage_eleve) and $active_reperage_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_reperage_eleve1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve1)) { ?>value="<?php echo $couleur_reperage_eleve1; ?>" <?php } ?> /> G:<input name="couleur_reperage_eleve2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve2)) { ?>value="<?php echo $couleur_reperage_eleve2; ?>" <?php } ?> /> B:<input name="couleur_reperage_eleve3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve3)) { ?>value="<?php echo $couleur_reperage_eleve3; ?>" <?php } ?> />)<br />
 
 
 			<?php
@@ -1351,7 +1351,7 @@ function DecocheCheckbox() {
 					echo "checked='checked' ";
 				}
 				echo "onchange='check_coherence_coches_bulletin_pdf();' ";
-				echo "/><label for='toute_moyenne_meme_col'>&nbsp;Afficher Moyennes classe/min/max sous la moyenne de l'élève à condition qu'elles soient cochées</label><br />\n";
+				echo "/><label for='toute_moyenne_meme_col'>&nbsp;Afficher Moyennes classe/min/max sous la moyenne de l'Ã©lÃ¨ve Ã  condition qu'elles soient cochÃ©es</label><br />\n";
 
 				echo $decalage_gauche;
 				echo "ou<br />\n";
@@ -1362,16 +1362,16 @@ function DecocheCheckbox() {
 					echo "checked='checked' ";
 				}
 				echo "onchange='check_coherence_coches_bulletin_pdf();' ";
-				echo "/><label for='moyennes_periodes_precedentes'>&nbsp;Afficher les moyennes de l'élève pour les périodes précédentes</label><br />\n";
+				echo "/><label for='moyennes_periodes_precedentes'>&nbsp;Afficher les moyennes de l'Ã©lÃ¨ve pour les pÃ©riodes prÃ©cÃ©dentes</label><br />\n";
 				echo $decalage_gauche;
-				echo "(<i>incompatible avec le choix \"Moyennes classe/min/max sous la moyenne de l'élève\"</i>)<br />\n";
+				echo "(<i>incompatible avec le choix \"Moyennes classe/min/max sous la moyenne de l'Ã©lÃ¨ve\"</i>)<br />\n";
 
 				echo $decalage_gauche;
 				echo "<input name='evolution_moyenne_periode_precedente' id='evolution_moyenne_periode_precedente' style='border: 1px solid #74748F;' type='checkbox' value='y' ";
 				if(!empty($evolution_moyenne_periode_precedente) and $evolution_moyenne_periode_precedente==='y') {
 					echo "checked='checked' ";
 				}
-				echo "/><label for='evolution_moyenne_periode_precedente'>&nbsp;Indiquer par un + ou - l'évolution de la moyenne (<i>hausse/stable/baisse</i>).</label><br />\n";
+				echo "/><label for='evolution_moyenne_periode_precedente'>&nbsp;Indiquer par un + ou - l'Ã©volution de la moyenne (<i>hausse/stable/baisse</i>).</label><br />\n";
 
 			?>
 			<br />
@@ -1382,27 +1382,27 @@ function DecocheCheckbox() {
 
 			<br />
 
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_general) and $active_moyenne_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;Ligne des moyennes générales<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_mini_general" id="affiche_moyenne_mini_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_mini_general) and $affiche_moyenne_mini_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_mini_general" style="cursor: pointer;">moyenne générale la plus basse</label><br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_maxi_general" id="affiche_moyenne_maxi_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_maxi_general) and $affiche_moyenne_maxi_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_maxi_general" style="cursor: pointer;">moyenne générale la plus haute</label><br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_general) and $active_moyenne_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;Ligne des moyennes gÃ©nÃ©rales<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_mini_general" id="affiche_moyenne_mini_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_mini_general) and $affiche_moyenne_mini_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_mini_general" style="cursor: pointer;">moyenne gÃ©nÃ©rale la plus basse</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_maxi_general" id="affiche_moyenne_maxi_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_maxi_general) and $affiche_moyenne_maxi_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_maxi_general" style="cursor: pointer;">moyenne gÃ©nÃ©rale la plus haute</label><br />
 
 			<?php
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-				echo "Colonne coefficient de la ligne Moyenne générale&nbsp;:<br />\n";
+				echo "Colonne coefficient de la ligne Moyenne gÃ©nÃ©rale&nbsp;:<br />\n";
 
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				echo "<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs_0' style='border: 1px solid #74748F;' type='radio' value='0' ";
 				if((empty($affiche_totalpoints_sur_totalcoefs))||($affiche_totalpoints_sur_totalcoefs=='0')) {
 					echo "checked='checked' ";
 				}
-				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_0' style='cursor: pointer;'>pas de total affiché</label><br />\n";
+				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_0' style='cursor: pointer;'>pas de total affichÃ©</label><br />\n";
 
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				echo "<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs_1' style='border: 1px solid #74748F;' type='radio' value='1' ";
 				if($affiche_totalpoints_sur_totalcoefs=='1') {
 					echo "checked='checked' ";
 				}
-				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_1' style='cursor: pointer;'>afficher le total des points sur le total des coefficients dans la case coefficients de la ligne moyenne générale</label><br />\n";
+				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_1' style='cursor: pointer;'>afficher le total des points sur le total des coefficients dans la case coefficients de la ligne moyenne gÃ©nÃ©rale</label><br />\n";
 
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				echo "<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs_2' style='border: 1px solid #74748F;' type='radio' value='2' ";
@@ -1417,42 +1417,42 @@ function DecocheCheckbox() {
 				if(!empty($affiche_totalpoints_sur_totalcoefs) and $affiche_totalpoints_sur_totalcoefs=='1') {
 					echo "checked='checked' ";
 				}
-				echo "/>&nbsp;<label for='affiche_totalpoints_sur_totalcoefs' style='cursor: pointer;'>afficher le total des points sur le total des coefficients dans la case coefficients de la ligne moyenne générale<br />\n";
+				echo "/>&nbsp;<label for='affiche_totalpoints_sur_totalcoefs' style='cursor: pointer;'>afficher le total des points sur le total des coefficients dans la case coefficients de la ligne moyenne gÃ©nÃ©rale<br />\n";
 				*/
 			?>
 
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_general_coef_1" id="affiche_moyenne_general_coef_1" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_general_coef_1) and $affiche_moyenne_general_coef_1 === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_general_coef_1" style="cursor: pointer;">moyenne générale avec coefficients à 1 en plus de la moyenne générale<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;avec les coefficients définis dans Gestion des classes/&lt;Classes&gt; Enseignements</label><br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ce choix est sans effet, si tous les coefficients sont à 1,<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou si on force tous les coefficients à 1,<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou encore si on n'affiche pas les moyennes générales.<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_general_coef_1" id="affiche_moyenne_general_coef_1" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_general_coef_1) and $affiche_moyenne_general_coef_1 === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_general_coef_1" style="cursor: pointer;">moyenne gÃ©nÃ©rale avec coefficients Ã  1 en plus de la moyenne gÃ©nÃ©rale<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;avec les coefficients dÃ©finis dans Gestion des classes/&lt;Classes&gt; Enseignements</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ce choix est sans effet, si tous les coefficients sont Ã  1,<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou si on force tous les coefficients Ã  1,<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou encore si on n'affiche pas les moyennes gÃ©nÃ©rales.<br />
 
 			<br />
 
-			&nbsp;Arrondir les moyennes à : <input name="arrondie_choix" value="0.01" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.01') { ?>checked="checked"<?php } ?> />0,01 <input name="arrondie_choix" value="0.1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.1') { ?>checked="checked"<?php } ?> />0,1 <input name="arrondie_choix" value="0.25" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.25') { ?>checked="checked"<?php } ?> />0,25 <input name="arrondie_choix" value="0.5" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.5') { ?>checked="checked"<?php } ?> />0,5 <input name="arrondie_choix" value="1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='1') { ?>checked="checked"<?php } ?> />1<br />
-			&nbsp;Nombre de zéros après la virgule : <input name="nb_chiffre_virgule" value="2" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='2') { ?>checked="checked"<?php } ?> />2  <input name="nb_chiffre_virgule" value="1" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='1') { ?>checked="checked"<?php } ?> />1 - <input name="chiffre_avec_zero" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($chiffre_avec_zero) and $chiffre_avec_zero==='1') { ?>checked="checked"<?php } ?> /> ne pas afficher le "0" après la virgule<br />
+			&nbsp;Arrondir les moyennes Ã  : <input name="arrondie_choix" value="0.01" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.01') { ?>checked="checked"<?php } ?> />0,01 <input name="arrondie_choix" value="0.1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.1') { ?>checked="checked"<?php } ?> />0,1 <input name="arrondie_choix" value="0.25" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.25') { ?>checked="checked"<?php } ?> />0,25 <input name="arrondie_choix" value="0.5" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.5') { ?>checked="checked"<?php } ?> />0,5 <input name="arrondie_choix" value="1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='1') { ?>checked="checked"<?php } ?> />1<br />
+			&nbsp;Nombre de zÃ©ros aprÃ¨s la virgule : <input name="nb_chiffre_virgule" value="2" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='2') { ?>checked="checked"<?php } ?> />2  <input name="nb_chiffre_virgule" value="1" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='1') { ?>checked="checked"<?php } ?> />1 - <input name="chiffre_avec_zero" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($chiffre_avec_zero) and $chiffre_avec_zero==='1') { ?>checked="checked"<?php } ?> /> ne pas afficher le "0" aprÃ¨s la virgule<br />
 
 			<!-- Autres -->
 
 			<div style="background: #EFEFEF; font-style:italic;">Autres</div>
-			<input name="active_rang" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_rang) and $active_rang==='1') { ?>checked="checked"<?php } ?> />&nbsp;Rang de l'élève<br />
+			<input name="active_rang" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_rang) and $active_rang==='1') { ?>checked="checked"<?php } ?> />&nbsp;Rang de l'Ã©lÃ¨ve<br />
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne rang&nbsp;<input name="largeur_rang" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_rang)) { ?>value="<?php echo $largeur_rang; ?>" <?php } ?> />mm<br />
 			<input name="active_graphique_niveau" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_graphique_niveau) and $active_graphique_niveau==='1') { ?>checked="checked"<?php } ?> />&nbsp;Graphique de niveau<br />
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne niveau&nbsp;<input name="largeur_niveau" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_niveau)) { ?>value="<?php echo $largeur_niveau; ?>" <?php } ?> />mm<br />
-			<input name="active_appreciation" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_appreciation) and $active_appreciation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Appréciation par matière<br />
-			&nbsp;&nbsp;&nbsp;<input name="autorise_sous_matiere" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($autorise_sous_matiere) and $autorise_sous_matiere==='1') { ?>checked="checked"<?php } ?> />&nbsp;Autoriser l'affichage des sous matières<br />
-			Hauteur de la moyenne générale&nbsp;<input name="hauteur_entete_moyenne_general" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_entete_moyenne_general)) { ?>value="<?php echo $hauteur_entete_moyenne_general; ?>" <?php } ?> />mm<br />
-			<div style="background: #EFEFEF; font-style:italic;">Catégories de matières :</div>
-			&nbsp;&nbsp;&nbsp;<input name="active_regroupement_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_regroupement_cote) and $active_regroupement_cote==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nom des catégories de matières sur le coté&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_cote) and $couleur_categorie_cote==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_categorie_cote1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote1)) { ?>value="<?php echo $couleur_categorie_cote1; ?>" <?php } ?> /> G:<input name="couleur_categorie_cote2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote2)) { ?>value="<?php echo $couleur_categorie_cote2; ?>" <?php } ?> /> B:<input name="couleur_categorie_cote3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote3)) { ?>value="<?php echo $couleur_categorie_cote3; ?>" <?php } ?> />)<br />
+			<input name="active_appreciation" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_appreciation) and $active_appreciation==='1') { ?>checked="checked"<?php } ?> />&nbsp;ApprÃ©ciation par matiÃ¨re<br />
+			&nbsp;&nbsp;&nbsp;<input name="autorise_sous_matiere" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($autorise_sous_matiere) and $autorise_sous_matiere==='1') { ?>checked="checked"<?php } ?> />&nbsp;Autoriser l'affichage des sous matiÃ¨res<br />
+			Hauteur de la moyenne gÃ©nÃ©rale&nbsp;<input name="hauteur_entete_moyenne_general" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_entete_moyenne_general)) { ?>value="<?php echo $hauteur_entete_moyenne_general; ?>" <?php } ?> />mm<br />
+			<div style="background: #EFEFEF; font-style:italic;">CatÃ©gories de matiÃ¨res :</div>
+			&nbsp;&nbsp;&nbsp;<input name="active_regroupement_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_regroupement_cote) and $active_regroupement_cote==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nom des catÃ©gories de matiÃ¨res sur le cotÃ©&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_cote) and $couleur_categorie_cote==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_categorie_cote1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote1)) { ?>value="<?php echo $couleur_categorie_cote1; ?>" <?php } ?> /> G:<input name="couleur_categorie_cote2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote2)) { ?>value="<?php echo $couleur_categorie_cote2; ?>" <?php } ?> /> B:<input name="couleur_categorie_cote3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote3)) { ?>value="<?php echo $couleur_categorie_cote3; ?>" <?php } ?> />)<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_categorie_cote" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_categorie_cote)) { ?>value="<?php echo $taille_texte_categorie_cote; ?>" <?php } ?> />pixel<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_entete_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_entete_regroupement) and $active_entete_regroupement==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nom des catégories de matières en entête&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_entete" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_entete) and $couleur_categorie_entete==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_categorie_entete1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete1)) { ?>value="<?php echo $couleur_categorie_entete1; ?>" <?php } ?> /> G:<input name="couleur_categorie_entete2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete2)) { ?>value="<?php echo $couleur_categorie_entete2; ?>" <?php } ?> /> B:<input name="couleur_categorie_entete3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete3)) { ?>value="<?php echo $couleur_categorie_entete3; ?>" <?php } ?> />)<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_entete_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_entete_regroupement) and $active_entete_regroupement==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nom des catÃ©gories de matiÃ¨res en entÃªte&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_entete" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_entete) and $couleur_categorie_entete==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_categorie_entete1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete1)) { ?>value="<?php echo $couleur_categorie_entete1; ?>" <?php } ?> /> G:<input name="couleur_categorie_entete2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete2)) { ?>value="<?php echo $couleur_categorie_entete2; ?>" <?php } ?> /> B:<input name="couleur_categorie_entete3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete3)) { ?>value="<?php echo $couleur_categorie_entete3; ?>" <?php } ?> />)<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_categorie" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_categorie)) { ?>value="<?php echo $taille_texte_categorie; ?>" <?php } ?> />pixel<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Hauteur entête des catégories&nbsp;<input name="hauteur_info_categorie" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_info_categorie)) { ?>value="<?php echo $hauteur_info_categorie; ?>" <?php } ?> />mm<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_regroupement) and $active_moyenne_regroupement==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne des catégories de matières<br />
-			<div style="background: #EFEFEF; font-style:italic;">Moyenne générale</div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Hauteur entÃªte des catÃ©gories&nbsp;<input name="hauteur_info_categorie" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_info_categorie)) { ?>value="<?php echo $hauteur_info_categorie; ?>" <?php } ?> />mm<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_regroupement) and $active_moyenne_regroupement==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne des catÃ©gories de matiÃ¨res<br />
+			<div style="background: #EFEFEF; font-style:italic;">Moyenne gÃ©nÃ©rale</div>
 			&nbsp;&nbsp;&nbsp;<input name="couleur_moy_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_moy_general) and $couleur_moy_general==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_moy_general1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general1)) { ?>value="<?php echo $couleur_moy_general1; ?>" <?php } ?> /> G:<input name="couleur_moy_general2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general2)) { ?>value="<?php echo $couleur_moy_general2; ?>" <?php } ?> /> B:<input name="couleur_moy_general3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general3)) { ?>value="<?php echo $couleur_moy_general3; ?>" <?php } ?> /><br /><br />
 			<div style="font-weight: bold; background: #CFCFCF;">Cadre Absences/CPE</div>
-			<input name="active_bloc_absence" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_absence" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<input name="active_bloc_absence" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_absence" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> />&nbsp;DÃ©sactiver<br />
 			
 			Positionnement X&nbsp;<input name="X_absence" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_absence)) { ?>value="<?php echo $X_absence; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_absence" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_absence)) { ?>value="<?php echo $Y_absence; ?>" <?php } ?> />mm&nbsp;<br />
 
@@ -1467,7 +1467,7 @@ function DecocheCheckbox() {
 		<tr>
 			<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre Avis conseil de classe</div>
-			<input name="active_bloc_avis_conseil" value="1" type="radio" <?php if(!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_avis_conseil" value="0" type="radio" <?php if(empty($active_bloc_avis_conseil) or (!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<input name="active_bloc_avis_conseil" value="1" type="radio" <?php if(!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_avis_conseil" value="0" type="radio" <?php if(empty($active_bloc_avis_conseil) or (!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil!='1')) { ?>checked="checked"<?php } ?> />&nbsp;DÃ©sactiver<br />
 			Positionnement X&nbsp;<input name="X_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_avis_cons)) { ?>value="<?php echo $X_avis_cons; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_avis_cons)) { ?>value="<?php echo $Y_avis_cons; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($longeur_avis_cons)) { ?>value="<?php echo $longeur_avis_cons; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_avis_cons)) { ?>value="<?php echo $hauteur_avis_cons; ?>" <?php } ?> />mm&nbsp;<br />
 			Titre du bloc avis conseil de classe : <input name="titre_bloc_avis_conseil" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_bloc_avis_conseil)) { ?>value="<?php echo $titre_bloc_avis_conseil; ?>" <?php } ?> /><br />
@@ -1486,17 +1486,17 @@ function DecocheCheckbox() {
 				echo "<input type='checkbox' name='affich_mentions' id='affich_mentions' value='y' ";
 				if($affich_mentions!="n") {echo "checked ";}
 				echo "/> \n";
-				echo "<label for='affich_mentions'>Faire apparaître les ".$gepi_denom_mention."s sur les bulletins.</label><br />\n";
+				echo "<label for='affich_mentions'>Faire apparaÃ®tre les ".$gepi_denom_mention."s sur les bulletins.</label><br />\n";
 
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='affich_coches_mentions' id='affich_coches_mentions' value='y' ";
 				if($affich_coches_mentions!="n") {echo "checked ";}
 				echo "/> \n";
-				echo "<label for='affich_coches_mentions'>Faire apparaître des cases à cocher pour les ".$gepi_denom_mention."s sur les bulletins.</label><br />\n";
+				echo "<label for='affich_coches_mentions'>Faire apparaÃ®tre des cases Ã  cocher pour les ".$gepi_denom_mention."s sur les bulletins.</label><br />\n";
 
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;Ou sinon, sans cases à cocher :<br />&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='affich_intitule_mentions' id='affich_intitule_mentions' value='y' ";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;Ou sinon, sans cases Ã  cocher :<br />&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='affich_intitule_mentions' id='affich_intitule_mentions' value='y' ";
 				if($affich_intitule_mentions!="n") {echo "checked ";}
 				echo "/> \n";
-				echo "<label for='affich_intitule_mentions'>Faire apparaître l'intitulé <b>$gepi_denom_mention</b> avant la $gepi_denom_mention choisie pour un élève.</label><br />\n";
+				echo "<label for='affich_intitule_mentions'>Faire apparaÃ®tre l'intitulÃ© <b>$gepi_denom_mention</b> avant la $gepi_denom_mention choisie pour un Ã©lÃ¨ve.</label><br />\n";
 
 			?>
 			<br /><br />
@@ -1504,10 +1504,10 @@ function DecocheCheckbox() {
 			</td>
 				<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre signature du chef</div>
-			<input name="active_bloc_chef" value="1" type="radio" <?php if(!empty($active_bloc_chef) and $active_bloc_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_chef" value="0" type="radio" <?php if(empty($active_bloc_chef) or (!empty($active_bloc_chef) and $active_bloc_chef!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<input name="active_bloc_chef" value="1" type="radio" <?php if(!empty($active_bloc_chef) and $active_bloc_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_chef" value="0" type="radio" <?php if(empty($active_bloc_chef) or (!empty($active_bloc_chef) and $active_bloc_chef!='1')) { ?>checked="checked"<?php } ?> />&nbsp;DÃ©sactiver<br />
 			Positionnement X&nbsp;<input name="X_sign_chef" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_sign_chef)) { ?>value="<?php echo $X_sign_chef; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_sign_chef)) { ?>value="<?php echo $Y_sign_chef; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($longeur_sign_chef)) { ?>value="<?php echo $longeur_sign_chef; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($hauteur_sign_chef)) { ?>value="<?php echo $hauteur_sign_chef; ?>" <?php } ?> />mm&nbsp;<br />
-			<input name="affichage_haut_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affichage_haut_responsable) and $affichage_haut_responsable==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher l'identité du responsable de direction<br />
+			<input name="affichage_haut_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affichage_haut_responsable) and $affichage_haut_responsable==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher l'identitÃ© du responsable de direction<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_identitee_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_identitee_chef)) { ?>value="<?php echo $taille_texte_identitee_chef; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_fonction_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_fonction_chef) and $affiche_fonction_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher sa fonction<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_fonction_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_fonction_chef)) { ?>value="<?php echo $taille_texte_fonction_chef; ?>" <?php } ?> />pixel<br />
@@ -1519,14 +1519,14 @@ function DecocheCheckbox() {
 			<td style="vertical-align: center; white-space: nowrap; text-align: center; width: 100%; background: #B3B7BF;" colspan="2" rowspan="1">
 			<?php
 			/*
-			// Déjà inséré plus haut
+			// DÃ©jÃ  insÃ©rÃ© plus haut
 			if($action_model==='modifier') {
 				echo "<input type='hidden' name='id_model_bulletin' value='$id_model_bulletin' />\n";
 			}
 			*/
 			?>
 			<input type="hidden" name="action_model" value="<?php echo $action_model; ?>" />
-			<input type="submit" id="valide_modif_model2" name="valide_modif_model" value="Valider le modèle" />
+			<input type="submit" id="valide_modif_model2" name="valide_modif_model" value="Valider le modÃ¨le" />
 			</td>
 		</tr>
 		</tbody>
@@ -1536,11 +1536,11 @@ function DecocheCheckbox() {
 		<?php
 
 		echo "<script type='text/javascript'>
-// Diverses vérifications
+// Diverses vÃ©rifications
 function check_coherence_coches_bulletin_pdf() {
 	if((document.getElementById('toute_moyenne_meme_col'))&&(document.getElementById('moyennes_periodes_precedentes'))) {
 		if((document.getElementById('toute_moyenne_meme_col').checked==true)&&(document.getElementById('moyennes_periodes_precedentes').checked==true)) {
-			alert('Les choix \"Afficher Moyennes classe/min/max sous la moyenne de l\'élève\" et \"Afficher les moyennes de l\'élève pour les périodes précédentes\" ne sont pas compatibles.\\nLe deuxième choix va être décoché.');
+			alert('Les choix \"Afficher Moyennes classe/min/max sous la moyenne de l\'Ã©lÃ¨ve\" et \"Afficher les moyennes de l\'Ã©lÃ¨ve pour les pÃ©riodes prÃ©cÃ©dentes\" ne sont pas compatibles.\\nLe deuxiÃ¨me choix va Ãªtre dÃ©cochÃ©.');
 			document.getElementById('moyennes_periodes_precedentes').checked=false;
 		}
 	}
@@ -1553,27 +1553,27 @@ function check_coherence_coches_bulletin_pdf() {
 
 		echo "<form method='post' action='".$_SERVER['PHP_SELF']."?modele=aff' name='action_modele_form'>\n";
 		echo add_token_field();
-		echo "<h2>Supprimer un modèle de bulletin</h2>\n";
+		echo "<h2>Supprimer un modÃ¨le de bulletin</h2>\n";
 
 		$sql="SELECT valeur FROM modele_bulletin WHERE id_model_bulletin='$model_bulletin' AND nom='nom_model_bulletin';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Aucun modèle n'a été trouvé pour l'identifiant $model_bulletin</p>\n";
+			echo "<p>Aucun modÃ¨le n'a Ã©tÃ© trouvÃ© pour l'identifiant $model_bulletin</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 		else {
 			$lig_tmp=mysql_fetch_object($res);
-			echo "<p>Vous allez supprimer le modèle <strong>$lig_tmp->valeur</strong></p>\n";
+			echo "<p>Vous allez supprimer le modÃ¨le <strong>$lig_tmp->valeur</strong></p>\n";
 	?>
-		<table style="text-align: left; width: 100%; border: 1px solid #74748F;" border="0" cellpadding="2" cellspacing="2" summary="Suppression d'un modèle">
+		<table style="text-align: left; width: 100%; border: 1px solid #74748F;" border="0" cellpadding="2" cellspacing="2" summary="Suppression d'un modÃ¨le">
 		<tbody>
 		<tr>
 			<td style="vertical-align: center; white-space: nowrap; text-align: center; width: 100%; background: #B3B7BF;" colspan="2" rowspan="1">
-			<br /><span style="font-weight: bold; color: rgb(255, 0, 0);">Souhaitez-vous supprimer ce modèle ?</span><br /><br />
+			<br /><span style="font-weight: bold; color: rgb(255, 0, 0);">Souhaitez-vous supprimer ce modÃ¨le ?</span><br /><br />
 			<input type="hidden" name="id_model_bulletin" value="<?php echo $model_bulletin; ?>" />
 			<input type="hidden" name="action_model" value="<?php echo $action_model; ?>" />
-			<input type="submit" id="valide_modif_model" name="valide_modif_model" value="Oui supprimer ce modèle" />
+			<input type="submit" id="valide_modif_model" name="valide_modif_model" value="Oui supprimer ce modÃ¨le" />
 			</td>
 		</tr>
 		</tbody>

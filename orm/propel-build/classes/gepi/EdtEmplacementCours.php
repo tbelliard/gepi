@@ -24,7 +24,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	 */
 	public function getHeureDebut($format = '%X') {
 		if ($this->getEdtCreneau() == NULL) {
-		    throw new PropelException("Il n'y a pas de creneau associé a ce cours.");
+		    throw new PropelException("Il n'y a pas de creneau associÃ© a ce cours.");
 		}
 	
 		if ($this->getHeuredebDec() == "0.5") {		    
@@ -54,7 +54,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	 */
 	public function getHeureFin($format = '%X') {
 		if ($this->getEdtCreneau() == NULL) {
-		    throw new PropelException("Il n'y a pas de creneau associé a ce cours.");
+		    throw new PropelException("Il n'y a pas de creneau associÃ© a ce cours.");
 		}
 
 		$creneau = $this->getEdtCreneau();
@@ -70,7 +70,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 		    }
 		}
 		if ($creneau == null) {
-		    // on est arrivé au bout, on va renvoye l'heure de fin du dernier creneau
+		    // on est arrivÃ© au bout, on va renvoye l'heure de fin du dernier creneau
 		    return $lastCreneau->getHeurefinDefiniePeriode($format);
 		}
 		if (($duree_modif % 2) == 0) {
@@ -168,7 +168,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	 *
 	 */
 	public function getDate($id_semaine = null) {
-	    //on va utiliser le numero de semaine precisée pour regler la date
+	    //on va utiliser le numero de semaine precisÃ©e pour regler la date
 	    if ($id_semaine == null || $id_semaine == -1) {
 		$id_semaine = date('W');
 	    }
@@ -176,7 +176,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	    $week_of_the_year = $id_semaine;
 	    $current_week_of_the_year = date('W');
 	    $year = date('Y');
-	    //if faut peut etre decaler l'année
+	    //if faut peut etre decaler l'annÃ©e
 	    if ($current_week_of_the_year > 30 && $week_of_the_year > 30) {
 		//ne rien faire on garde la meme annee
 	    } else if ($current_week_of_the_year < 30 && $week_of_the_year < 30) {

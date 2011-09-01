@@ -45,7 +45,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des élèves";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -56,7 +56,7 @@ echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt=
 
 //----***** STEP 2 *****-----//
     /*
-    * L'étape 2 consiste à
+    * L'Ã©tape 2 consiste Ã 
      *  - Creer les periodes pour les classes recemment importees
      *  - Associer les eleves a leurs classes
     */
@@ -78,9 +78,9 @@ if ($_POST['step'] == "2") {
         */
 
         /*
-        * Affichage du résumé de l'étape 2
+        * Affichage du rÃ©sumÃ© de l'Ã©tape 2
         */
-        echo "<h3> Résumé de l'étape 2 </h3>";
+        echo "<h3> RÃ©sumÃ© de l'Ã©tape 2 </h3>";
 
         /*
          * Recuperation de toutes les classes pour lesquelles l'utilisateur a choisi de creer des periodes
@@ -90,7 +90,7 @@ if ($_POST['step'] == "2") {
         unset($_SESSION['classesamodifier']);
         foreach($classes_concernees as $key => $val) {
             $indice = "classe".$key;
-            // $key contient l'id de la classe, et $val son "nom" (ou numéro publique..)
+            // $key contient l'id de la classe, et $val son "nom" (ou numÃ©ro publique..)
             // Si un nombre de periodes a ete selectionne pour cette classe, on cree les periodes
             // Pour chaque periode, jusqu'au nombre souhaite (REVOIR pour choix non faits...)
             for ($i=1; $i<=$_POST[$indice]; $i++) {
@@ -113,7 +113,7 @@ if ($_POST['step'] == "2") {
          */
         //Il faut reprendre les liens dans j_eleves_classes pour savoir dans quelle classe est chaque eleve
         // Et creer une ligne par periode de la classe
-        // Peut-etre faire choisir à l'admin d'ajouter les les eleves pour toutes les periodes, ou juste pour la premiere
+        // Peut-etre faire choisir Ã  l'admin d'ajouter les les eleves pour toutes les periodes, ou juste pour la premiere
 
         // On cree un critere pour ramener tous les liens eleve_classe/periode qui sont temporaires
         // (c'est a dire qui ont un leur periode a 0 = pas de periode associe)
@@ -190,7 +190,7 @@ if ($_POST['step'] == "2") {
 
 else {
     // Affichage de la page des explications de l'etape 2 (aucune donnee postee)
-    // La deuxieme étape consiste a creer les periodes pour les classes et a affecter les eleves aux classes
+    // La deuxieme Ã©tape consiste a creer les periodes pour les classes et a affecter les eleves aux classes
 
     echo "<br><p>L'&eacute;tape 2 vous permet de cr&eacute;er les p&eacute;riodes pour les classes.</p>";
     echo "<p>Une fois celles-ci cr&eacute;&eacute;es, les &eacute;l&egrave;ves seront affect&eacute;s &agrave; toutes les p&eacute;riodes de leur(s) classe(s)</p>";
@@ -205,7 +205,7 @@ else {
     else {
         // Si des classes virtuelles sont trouvees (= classes sans periodes)
         if (mysql_num_rows($res) != 0) {
-            echo "<p>Voici la liste des classes présentes dans GEPI pour lesquelles aucune p&eacute;riode n'a &eacute;t&eacute; d&eacute;finie,<br>";
+            echo "<p>Voici la liste des classes prÃ©sentes dans GEPI pour lesquelles aucune p&eacute;riode n'a &eacute;t&eacute; d&eacute;finie,<br>";
             echo "<br><p><b>Choisissez pour chaque classe le nombre de p&eacute;riodes : </b></p>";
             echo "<form enctype='multipart/form-data' action='etape2.php' method=post>";
 			echo add_token_field();
@@ -220,11 +220,11 @@ else {
                 echo "<input type=\"radio\" name=\"classe".$row->id."\" value=\"3\"> 3&nbsp;&nbsp;\n";
                 echo "<input type=\"radio\" name=\"classe".$row->id."\" value=\"4\"> 4</p>\n";
             }
-            // On sauvegarde dans la session les classes qui étaient affichées à l'utilisateur,
+            // On sauvegarde dans la session les classes qui Ã©taient affichÃ©es Ã  l'utilisateur,
             $_SESSION['classesamodifier'] = $classes_concernees;
 
             echo "<br><p>Validation du choix des p&eacute;riodes :</p>";
-            echo "<input type='submit' value='Je suis sûr'>";
+            echo "<input type='submit' value='Je suis sÃ»r'>";
             echo "</form>";
             echo "<br>";
 

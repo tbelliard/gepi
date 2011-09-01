@@ -29,7 +29,7 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	    AbsenceEleveType::TYPE_SAISIE_DEBUT_ABS => 'Saisie de l\'heure du debut de l\'absence'
 	    , AbsenceEleveType::TYPE_SAISIE_FIN_ABS => 'Saisie de l\'heure de fin debut de l\'absence'
 	    , AbsenceEleveType::TYPE_SAISIE_DEBUT_ET_FIN_ABS => 'Saisie de l\'heure du debut et de fin de l\'absence'
-	    , AbsenceEleveType::TYPE_SAISIE_NON_PRECISE => 'Type de saisie non précisé'
+	    , AbsenceEleveType::TYPE_SAISIE_NON_PRECISE => 'Type de saisie non prÃ©cisÃ©'
 	    , AbsenceEleveType::TYPE_SAISIE_COMMENTAIRE_EXIGE => 'Saisie d\'un commentaire explicatif'
 	    , AbsenceEleveType::TYPE_SAISIE_DISCIPLINE => 'Saisie d\'un incident disciplinaire');
 

@@ -1,7 +1,7 @@
 <?php
 // $version : $Id$
-// on force la valeur de magic_quotes_runtime à off de façon à ce que les valeurs récupérées dans la base
-// puissent être affichées directement, sans caractère "\"
+// on force la valeur de magic_quotes_runtime Ã  off de faÃ§on Ã  ce que les valeurs rÃ©cupÃ©rÃ©es dans la base
+// puissent Ãªtre affichÃ©es directement, sans caractÃ¨re "\"
 @set_magic_quotes_runtime(0);
 
 // Corrige les caracteres degoutants utilises par les Windozeries
@@ -29,7 +29,7 @@ function unslashes($s)
     else return $s;
 }
 
-# Nettoyage des variables dans $_POST et $_GET pour prévenir tout problème
+# Nettoyage des variables dans $_POST et $_GET pour prÃ©venir tout problÃ¨me
 # d'injection SQL
 function anti_inject(&$_value, $_key) {
    global $use_function_mysql_real_escape_string;
@@ -62,10 +62,10 @@ function anti_inject(&$_value, $_key) {
    }
 }
 
-// Crée des variables à partir du tableau $_POST qui ne sont pas traitées par la fonction anti_inject
+// CrÃ©e des variables Ã  partir du tableau $_POST qui ne sont pas traitÃ©es par la fonction anti_inject
 // Exemple : traitement particulier des mots de passe
 // Ce sont des variables du type $_POST["no_anti_inject_nom_quelquonque"]
-// On crée alors des variables $NON_PROTECT['nom_quelquonque']
+// On crÃ©e alors des variables $NON_PROTECT['nom_quelquonque']
 function cree_variables_non_protegees() {
     global $NON_PROTECT;
     foreach ($_POST as $key => $value) {
@@ -83,7 +83,7 @@ function cree_variables_non_protegees() {
 if (isset($variables_non_protegees)) cree_variables_non_protegees();
 
 unset($liste_scripts_non_traites);
-// Liste des scripts pour lesquels les données postées ne sont pas traitées si $traite_anti_inject = 'no';
+// Liste des scripts pour lesquels les donnÃ©es postÃ©es ne sont pas traitÃ©es si $traite_anti_inject = 'no';
 $liste_scripts_non_traites = array(
 "/visualisation/draw_artichow1.php",
 "/visualisation/draw_artichow2.php",
@@ -99,21 +99,21 @@ $liste_scripts_non_traites = array(
 "/cahier_texte_2/creer_sequence.php"
 );
 
-// On ajoute la possibilité pour les plugins de s'ajouter à la liste
+// On ajoute la possibilitÃ© pour les plugins de s'ajouter Ã  la liste
 if (isset($_ajouter_fichier_anti_inject)){
   $liste_scripts_non_traites[] = "/mod_plugins/" . $_ajouter_fichier_anti_inject;
 }
 
 
 $url = parse_url($_SERVER['REQUEST_URI']);
-// On traite les données postées si nécessaire
+// On traite les donnÃ©es postÃ©es si nÃ©cessaire
 if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
   array_walk($_GET, 'anti_inject');
   array_walk($_POST, 'anti_inject');
   array_walk($_REQUEST, 'anti_inject');
 }
 
-// On nettoie aussi $_SERVER et $_COOKIE de manière systématique
+// On nettoie aussi $_SERVER et $_COOKIE de maniÃ¨re systÃ©matique
 array_walk($_SERVER, 'anti_inject');
 array_walk($_COOKIE, 'anti_inject');
 
@@ -157,7 +157,7 @@ function no_php_in_img($chaine) {
 
 				//fwrite($fich,"\$tab2[0]=$tab2[0]\n\$tab2[1]=$tab2[1]\n++++++++++++++++++++++\n");
 
-				// Est-ce qu'un <img src='' sans fermeture de la balise est quand même interprêté?
+				// Est-ce qu'un <img src='' sans fermeture de la balise est quand mÃªme interprÃªtÃ©?
 
 				unset($tab3);
 				$tab3=explode(" ",preg_replace("/ *=/","=",preg_replace("/= */","=", strtr($tab2[0], "\n\r","  "))));
@@ -223,7 +223,7 @@ if($filtrage_html=='htmlpurifier') {
 		if(!is_array($value)) {
 //echo "<p>Avant \$_POST[$key]=$_POST[$key]<br />";
 			$_POST[$key]=$purifier->purify($value);
-//echo "Après \$_POST[$key]=$_POST[$key]<br />";
+//echo "AprÃ¨s \$_POST[$key]=$_POST[$key]<br />";
 		}
 		else {
 			foreach($_POST[$key] as $key2 => $value2) {
@@ -342,30 +342,30 @@ if($utiliser_no_php_in_img=='y') {
 
 /*
 $url = parse_url($_SERVER['REQUEST_URI']);
-// On traite les données postées si nécessaire
+// On traite les donnÃ©es postÃ©es si nÃ©cessaire
 if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
   array_walk($_GET, 'anti_inject');
   array_walk($_POST, 'anti_inject');
 }
 
-// On nettoie aussi $_SERVER et $_COOKIE de manière systématique
+// On nettoie aussi $_SERVER et $_COOKIE de maniÃ¨re systÃ©matique
 array_walk($_SERVER, 'anti_inject');
 array_walk($_COOKIE, 'anti_inject');
 */
 
 
-//On rétablit les "&" dans $_SERVER['REQUEST_URI']
+//On rÃ©tablit les "&" dans $_SERVER['REQUEST_URI']
 $_SERVER['REQUEST_URI'] = str_replace("&amp;","&",$_SERVER['REQUEST_URI']);
 
 if((isset($filtrage_extensions_fichiers_table_ct_types_documents))&&($filtrage_extensions_fichiers_table_ct_types_documents=='y')) {
 	// On ne filtre pas ici.
-	// Le filtrage est assuré dans le module CDT
+	// Le filtrage est assurÃ© dans le module CDT
 }
 else {
 	$sql="SELECT 1=1 FROM setting WHERE name='filtrage_extensions_fichiers' AND value='n';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0) {
-		// Et on traite les fichiers uploadés
+		// Et on traite les fichiers uploadÃ©s
 		if (!isset($AllowedFilesExtensions)) {
 			//$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","swf","txt","xcf","xls","zip","pps");
 			$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif", "gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","sql","swf","txt","xcf","xls","xml","zip","pps", "docx");

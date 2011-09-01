@@ -1,9 +1,9 @@
 <?php
 
 /*
- * Paramètre de configuration spécifique à gepi :
- * 'portal_return_url' => 'mon url', //adresse de redirection lorsque l'on quitte gepi. Si cette url est présente, on affiche un lien retour au portail et non un lien déconnection
- * 'do_source_logout' => true, //true par défaut, Sur une identification distante sans single logout, il faut éviter et mettre false pour ne pas déconnecter le portail a tord
+ * ParamÃ¨tre de configuration spÃ©cifique Ã  gepi :
+ * 'portal_return_url' => 'mon url', //adresse de redirection lorsque l'on quitte gepi. Si cette url est prÃ©sente, on affiche un lien retour au portail et non un lien dÃ©connection
+ * 'do_source_logout' => true, //true par dÃ©faut, Sur une identification distante sans single logout, il faut Ã©viter et mettre false pour ne pas dÃ©connecter le portail a tord
 */
 $config = array(
 
@@ -46,12 +46,12 @@ $config = array(
 		'sources' => array('Authentification locale gepi', 'Authentification cas e-lyco')
 	),
     
-	/*authentification en s'appuyant sur un gepi-maitre distant (à décommenter sur le gepi esclave)
+	/*authentification en s'appuyant sur un gepi-maitre distant (Ã  dÃ©commenter sur le gepi esclave)
 	'Authentification sur un serveur gepi distant' => array(
 		'saml:SP',
 		'idp' => 'gepi-idp',
 		'entityID' => 'gepi-esclave-sp',
-		//ce paramêtre doit correspondre avec l' entityID dans le fichier simplesaml/metadata/saml20-sp-remote.php du fournisseur d'identité (gepi maitre)
+		//ce paramÃªtre doit correspondre avec l' entityID dans le fichier simplesaml/metadata/saml20-sp-remote.php du fournisseur d'identitÃ© (gepi maitre)
 		'portal_return_url' => 'http://www.mon-serveur-esclave-gepi.fr',
 		'do_source_logout' => false,
 	),
@@ -63,9 +63,9 @@ $config = array(
 	
 );
 
-//configuration d'un choix multiple avec toutes les sources configurées
+//configuration d'un choix multiple avec toutes les sources configurÃ©es
 $sources_array = array_keys($config);
 if (!empty($sources_array)) {
-	//la source définie ci dessous est utilisé par la classe SimpleSAML_Auth_GepiSimple dans les cas d'erreur de configuration de choix de source
+	//la source dÃ©finie ci dessous est utilisÃ© par la classe SimpleSAML_Auth_GepiSimple dans les cas d'erreur de configuration de choix de source
 	$config['Authentification au choix entre toutes les sources configurees'] = array('multiauth:MultiAuth', 'sources' => $sources_array);
 }

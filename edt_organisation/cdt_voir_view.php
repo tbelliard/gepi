@@ -28,7 +28,7 @@
 
 if ( getSettingValue("autorise_edt_tous") === 'y') {
 	if ($IE6) {
-		echo "<div class=\"cadreInformation\">Votre navigateur (Internet Explorer 6) est obsolète et se comporte mal vis à vis de l'affichage des emplois du temps. Faites absolument une mise à jour vers les versions 7 ou 8 ou changez de navigateur (FireFox, Chrome, Opera, Safari)</div>";
+		echo "<div class=\"cadreInformation\">Votre navigateur (Internet Explorer 6) est obsolÃ¨te et se comporte mal vis Ã  vis de l'affichage des emplois du temps. Faites absolument une mise Ã  jour vers les versions 7 ou 8 ou changez de navigateur (FireFox, Chrome, Opera, Safari)</div>";
 	}
 
 

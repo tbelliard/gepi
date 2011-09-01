@@ -88,7 +88,7 @@ if(isset($reinitialiser)) {
 							}
 							else{
 								$res_suppr=false;
-								$msg.="Il n'a pas été possible de vider $temp_dir<br />\n";
+								$msg.="Il n'a pas Ã©tÃ© possible de vider $temp_dir<br />\n";
 							}
 						}
 						if($res_suppr){
@@ -102,11 +102,11 @@ if(isset($reinitialiser)) {
 						$msg.="Le dossier $temp_dir n'existe pas.<br />\n";
 					}
 
-					// On vide le champ temp_dir... une nouvelle valeur sera générée au prochain login
+					// On vide le champ temp_dir... une nouvelle valeur sera gÃ©nÃ©rÃ©e au prochain login
 					$sql="UPDATE utilisateurs SET temp_dir='' WHERE login='".$reinit[$i]."'";
 					$res_update=mysql_query($sql);
 					if(!$res_update){
-						$msg.="Erreur lors de la réinitialisation de temp_dir pour $reinit[$i].<br />\n";
+						$msg.="Erreur lors de la rÃ©initialisation de temp_dir pour $reinit[$i].<br />\n";
 					}
 				}
 			}
@@ -146,7 +146,7 @@ else{
 							}
 							else{
 								$res_suppr=false;
-								$msg.="Il n'a pas été possible de vider $suppr[$i]<br />\n";
+								$msg.="Il n'a pas Ã©tÃ© possible de vider $suppr[$i]<br />\n";
 							}
 						}
 						if($res_suppr){
@@ -176,28 +176,28 @@ if(isset($reinitialiser)) {
 
 	echo "<a href='".$_SERVER['PHP_SELF']."'>Suppression</a>";
 	echo "</p>\n";
-	echo "<h2>Réinitialisation des dossiers temporaires</h2>\n";
+	echo "<h2>RÃ©initialisation des dossiers temporaires</h2>\n";
 
-	echo "<p>La réinitialisation des dossiers temporaires permet de supprimer le dossier temporaire d'un utilisateur et de vider le chemin aléatoire de ce dossier de façon à ce qu'une nouvelle valeur soit générée au login suivant.</p>\n";
+	echo "<p>La rÃ©initialisation des dossiers temporaires permet de supprimer le dossier temporaire d'un utilisateur et de vider le chemin alÃ©atoire de ce dossier de faÃ§on Ã  ce qu'une nouvelle valeur soit gÃ©nÃ©rÃ©e au login suivant.</p>\n";
 
 	$sql="SELECT login,nom,prenom FROM utilisateurs WHERE temp_dir!='' ORDER BY statut,nom,prenom";
 	$res_user=mysql_query($sql);
 
 	if(mysql_num_rows($res_user)==0){
-		echo "<p>Aucun utilisateur n'est encore concerné par la réinitialisation...</p>\n";
+		echo "<p>Aucun utilisateur n'est encore concernÃ© par la rÃ©initialisation...</p>\n";
 	}
 	else{
 		echo "<form action='".$_SERVER['PHP_SELF']."' method=\"post\" name=\"formulaire\">\n";
 		echo add_token_field();
 
-		echo "<p>Voici la liste des utilisateurs dont l'aléa peut être recalculé<br />(<i>Les utilisateurs qui n'apparaissent pas, auront de toute façon un nouveau dossier temporaire généré lors de leur prochain login</i>):</p>\n";
+		echo "<p>Voici la liste des utilisateurs dont l'alÃ©a peut Ãªtre recalculÃ©<br />(<i>Les utilisateurs qui n'apparaissent pas, auront de toute faÃ§on un nouveau dossier temporaire gÃ©nÃ©rÃ© lors de leur prochain login</i>):</p>\n";
 
 		while ($lig_user=mysql_fetch_object($res_user)){
 			$tab_user_login[]=$lig_user->login;
 			$tab_user_info[]=strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom));
 		}
 
-		// Nombre d'enregistrements à afficher
+		// Nombre d'enregistrements Ã  afficher
 		$nombreligne=count($tab_user_login);
 		$nbcol=3;
 
@@ -228,8 +228,8 @@ if(isset($reinitialiser)) {
 
 		echo "<input type='hidden' name='is_posted' value='1' />\n";
 		echo "<center><a href='javascript:modif_case(true)'>Tout cocher</a> / \n";
-		echo "<a href='javascript:modif_case(false)'>Tout décocher</a></center>\n";
-		echo "<center><input type='submit' name='reinitialiser' value='Réinitialiser' /></center>\n";
+		echo "<a href='javascript:modif_case(false)'>Tout dÃ©cocher</a></center>\n";
+		echo "<center><input type='submit' name='reinitialiser' value='RÃ©initialiser' /></center>\n";
 		echo "</form>\n";
 
 
@@ -261,7 +261,7 @@ if(isset($reinitialiser)) {
 	}
 }
 else{
-	echo "<a href='".$_SERVER['PHP_SELF']."?reinitialiser=y".add_token_in_url()."'>Réinitialisation</a>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?reinitialiser=y".add_token_in_url()."'>RÃ©initialisation</a>";
 	echo "</p>\n";
 	echo "<h2>Suppression de dossiers temporaires</h2>\n";
 
@@ -273,7 +273,7 @@ else{
 	echo "<tr>\n";
 	echo "<th>Login</th>\n";
 	echo "<th>Nom</th>\n";
-	echo "<th>Prénom</th>\n";
+	echo "<th>PrÃ©nom</th>\n";
 	echo "<th>Statut</th>\n";
 	echo "<th>Etat</th>\n";
 	echo "<th style='background-color: #96c8f0;'>Type</th>\n";
@@ -282,10 +282,10 @@ else{
 	echo "<br />\n";
 
 	echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-	echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+	echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 
 	echo "</th>\n";
-	//echo "<th>Réinitialiser</th>\n";
+	//echo "<th>RÃ©initialiser</th>\n";
 	echo "</tr>\n";
 
 
@@ -314,7 +314,7 @@ else{
 			//if((strlen(my_ereg_replace("[A-Za-z0-9_.]","",$file))!=0)||(!my_ereg("_[A-Za-z0-9]{40}",$file))) {
 			//if((strlen(my_ereg_replace("[A-Za-z0-9_.-]","",$file))!=0)||(!my_ereg("_",$file))) {
 			if((strlen(preg_replace("/[A-Za-z0-9_.-]/","",$file))!=0)||(!preg_match("/_/",$file))) {
-				// Il y a des caractères inattendus dans le nom de dossier
+				// Il y a des caractÃ¨res inattendus dans le nom de dossier
 				$bizarre++;
 
 				echo "<td colspan='5' style='background-color:red; text-align:center;'>$file</td>\n";
@@ -465,10 +465,10 @@ else{
 	if($bizarre>0){
 		echo "<p><i>NOTE:</i> ";
 		if($bizarre==1){
-			echo "Un fichier/dossier a un nom inattendu.<br />Par précaution, on ne propose pas de le supprimer.";
+			echo "Un fichier/dossier a un nom inattendu.<br />Par prÃ©caution, on ne propose pas de le supprimer.";
 		}
 		else{
-			echo "Des fichiers/dossiers ont des noms inattendus.<br />Par précaution, on ne propose pas de les supprimer.";
+			echo "Des fichiers/dossiers ont des noms inattendus.<br />Par prÃ©caution, on ne propose pas de les supprimer.";
 		}
 		echo "</p>";
 	}

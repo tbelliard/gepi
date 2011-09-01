@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Page bourrinée... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
+// Page bourrinÃ©e... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
 check_token();
 
 
@@ -86,7 +86,7 @@ die();
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des responsables des élèves";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des responsables des Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -94,10 +94,10 @@ require_once("../lib/header.inc");
 
 <?php
 
-// On vérifie si l'extension d_base est active
+// On vÃ©rifie si l'extension d_base est active
 verif_active_dbase();
 
-echo "<h3 align='center' class='gepi'>Deuxième phase d'initialisation<br />Importation des responsables</h3>";
+echo "<h3 align='center' class='gepi'>DeuxiÃ¨me phase d'initialisation<br />Importation des responsables</h3>";
 
 if (isset($step1)) {
     $j=0;
@@ -110,11 +110,11 @@ if (isset($step1)) {
     }
     if ($flag != 0){
         echo "<p><b>ATTENTION ...</b><br />";
-        echo "Des données concernant les responsables sont actuellement présentes dans la base GEPI<br /></p>";
-        echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>";
+        echo "Des donnÃ©es concernant les responsables sont actuellement prÃ©sentes dans la base GEPI<br /></p>";
+        echo "<p>Si vous poursuivez la procÃ©dure ces donnÃ©es seront effacÃ©es.</p>";
         echo "<form enctype='multipart/form-data' action='responsables.php' method=post>";
         echo "<input type=hidden name='step1' value='y' />";
-        echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
+        echo "<input type='submit' name='confirm' value='Poursuivre la procÃ©dure' />";
         echo "</form>";
         die();
     }
@@ -129,8 +129,8 @@ if (!isset($is_posted)) {
         $j++;
     }
 
-    echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
-    echo "<p>Importation du fichier <b>F_ere.dbf</b> contenant les données relatives aux responsables : veuillez préciser le nom complet du fichier <b>F_ere.dbf</b>.";
+    echo "<p><b>ATTENTION ...</b><br />Vous ne devez procÃ©der Ã  cette opÃ©ration uniquement si la constitution des classes a Ã©tÃ© effectuÃ©e !</p>";
+    echo "<p>Importation du fichier <b>F_ere.dbf</b> contenant les donnÃ©es relatives aux responsables : veuillez prÃ©ciser le nom complet du fichier <b>F_ere.dbf</b>.";
     echo "<form enctype='multipart/form-data' action='responsables.php' method=post>";
     echo "<input type=hidden name='is_posted' value='yes' />";
     echo "<input type=hidden name='step1' value='y' />";
@@ -146,21 +146,21 @@ if (!isset($is_posted)) {
             echo "<p>Impossible d'ouvrir le fichier dbf</p>";
             echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
         } else {
-            // on constitue le tableau des champs à extraire
+            // on constitue le tableau des champs Ã  extraire
             $tabchamps = array("ERENO", "ERENOM", "EREPRE", "EREADR", "EREADRS", "ERECLD", "ERELCOM", "EREANOM", "EREAPRE", "EREAADR", "EREACLD", "EREALCOM");
 
-            // ERENO          numéro desresponsables (en liaison avec F_ELE.DBF)
+            // ERENO          numÃ©ro desresponsables (en liaison avec F_ELE.DBF)
             // ERENOM         nom  du premier responsable
-            // EREPRE         prénom(s)  du premier responsable
-            // EREADR         n° + rue   du premier responsable
+            // EREPRE         prÃ©nom(s)  du premier responsable
+            // EREADR         nÂ° + rue   du premier responsable
             // ERECLD         code postal   du premier responsable
             // ERELCOM        nom de la commune  du premier responsable
-            // EREANOM        nom du deuxième responsable
-            // EREAPRE        prénom(s) du deuxième responsable
-            // EREAADR        n° + rue  du deuxième responsable
-            // EREADRS        complément adresse
-            // EREACLD        code postal  du deuxième responsable
-            // EREALCOM       nom de la commune  du deuxième responsable
+            // EREANOM        nom du deuxiÃ¨me responsable
+            // EREAPRE        prÃ©nom(s) du deuxiÃ¨me responsable
+            // EREAADR        nÂ° + rue  du deuxiÃ¨me responsable
+            // EREADRS        complÃ©ment adresse
+            // EREACLD        code postal  du deuxiÃ¨me responsable
+            // EREALCOM       nom de la commune  du deuxiÃ¨me responsable
 
 
             $nblignes = dbase_numrecords($fp); //number of rows
@@ -169,7 +169,7 @@ if (!isset($is_posted)) {
             if (@dbase_get_record_with_names($fp,1)) {
                 $temp = @dbase_get_record_with_names($fp,1);
             } else {
-                echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+                echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
                 echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
                 die();
             }
@@ -219,25 +219,25 @@ if (!isset($is_posted)) {
             }
             dbase_close($fp);
             if ($nb_reg_no != 0) {
-                echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
+                echo "<p>Lors de l'enregistrement des donnÃ©es il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.";
             } else {
-                echo "<p>L'importation des responsables dans la base GEPI a été effectuée avec succès (".$nb_record." enregistrements au total).
-                <br />Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troixième phase d'importation des matières et de définition des options suivies par les élèves.</p>";
-                echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>";
-                echo "<center><p><a href='disciplines.php'>Procéder à la troisième phase</a></p></center>";
+                echo "<p>L'importation des responsables dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (".$nb_record." enregistrements au total).
+                <br />Vous pouvez Ã  prÃ©sent retourner Ã  l'accueil et effectuer toutes les autres opÃ©rations d'initialisation manuellement ou bien procÃ©der Ã  la troixiÃ¨me phase d'importation des matiÃ¨res et de dÃ©finition des options suivies par les Ã©lÃ¨ves.</p>";
+                echo "<center><p><a href='../accueil.php'>Retourner Ã  l'accueil</a></p></center>";
+                echo "<center><p><a href='disciplines.php'>ProcÃ©der Ã  la troisiÃ¨me phase</a></p></center>";
             }
 
 
-			// On sauvegarde le témoin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
+			// On sauvegarde le tÃ©moin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
 			saveSetting("conv_new_resp_table", 0);
 
         }
     } else if (trim($dbf_file['name'])=='') {
-        echo "<p>Aucun fichier n'a été sélectionné !<br />";
+        echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />";
         echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
 
     } else {
-        echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+        echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
         echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
     }
 }

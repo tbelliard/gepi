@@ -49,13 +49,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Génération d un fichier ODS de listes',
+description='GÃ©nÃ¨se des classes: GÃ©nÃ©ration d un fichier ODS de listes',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -63,7 +63,7 @@ if (!checkAccess()) {
 //======================================================================================
 
 	function suppr_accents($chaine){
-		$caract_accentues=array("à","â","ä","ç","é","è","ê","ë","î","ï","ô","ö","ù","û","ü");
+		$caract_accentues=array("Ã ","Ã¢","Ã¤","Ã§","Ã©","Ã¨","Ãª","Ã«","Ã®","Ã¯","Ã´","Ã¶","Ã¹","Ã»","Ã¼");
 		$caract_sans_accent=array("a","a","a","c","e","e","e","e","i","i","o","o","u","u","u");
 
 		$retour=$chaine;
@@ -84,7 +84,7 @@ if (!checkAccess()) {
 	$user_temp_directory=get_user_temp_directory();
 
 	//**************** EN-TETE *****************
-	$titre_page = "Génèse classe: Fichier ODS";
+	$titre_page = "GÃ©nÃ¨se classe: Fichier ODS";
 	//echo "<div class='noprint'>\n";
 	require_once("../lib/header.inc");
 	//echo "</div>\n";
@@ -92,11 +92,11 @@ if (!checkAccess()) {
 
 	echo "<h2>Projet $projet</h2>\n";
 
-	echo "<h3>Génération d'un classeur (<i>ODS</i>)</h3>\n";
+	echo "<h3>GÃ©nÃ©ration d'un classeur (<i>ODS</i>)</h3>\n";
 
 	//if(($fichier_csv=='')||(!file_exists("csv/$fichier_csv"))){
 	if(($fichier_csv=='')||(!file_exists("../temp/".$user_temp_directory."/$fichier_csv"))){
-		echo "<p><b>ERREUR:</b> Aucun fichier CSV n'a été fourni.</p>\n";
+		echo "<p><b>ERREUR:</b> Aucun fichier CSV n'a Ã©tÃ© fourni.</p>\n";
 		echo "</body>\n</html>\n";
 		exit();
 	}
@@ -130,7 +130,7 @@ if (!checkAccess()) {
 		}
 		$nb_ptvirg=$nb_ptvirg-1; // On supprime le point virgule en fin de ligne
 
-		if($nb_ptvirg<1) {$nb_ptvirg=3;} // Pour éviter des blagues avec des nombres de colonnes négatifs
+		if($nb_ptvirg<1) {$nb_ptvirg=3;} // Pour Ã©viter des blagues avec des nombres de colonnes nÃ©gatifs
 
 		$cpt=0;
 		//$fich_source_csv=fopen("csv/$fichier_csv","r");
@@ -139,11 +139,11 @@ if (!checkAccess()) {
 			while(!feof($fich_source_csv)) {
 				$ligne=fgets($fich_source_csv,4096);
 	
-				// Bricolage pas chouette pour changer le séparateur du CSV
-				$ligne_tmp=preg_replace("/°/"," ",preg_replace("/;/",",",preg_replace('/,/',' ',$ligne)));
+				// Bricolage pas chouette pour changer le sÃ©parateur du CSV
+				$ligne_tmp=preg_replace("/Â°/"," ",preg_replace("/;/",",",preg_replace('/,/',' ',$ligne)));
 	
 				//$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',$ligne_tmp))));
-				$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',preg_replace('/°/','Â°',$ligne_tmp)))));
+				$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',preg_replace('/Â°/','Ã‚Â°',$ligne_tmp)))));
 				//echo "<p>\$ligne=$ligne<br>\n";
 				//echo "\$ligne_corrigee=$ligne_corrigee</p>\n";
 	
@@ -155,7 +155,7 @@ if (!checkAccess()) {
 					$ecriture=fwrite($fichier_content_xml,'<table:table-row table:style-name="ro1">');
 					$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce5"/>');
 					$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce12" table:number-columns-repeated="'.$nb_ptvirg.'"/><table:table-cell/>');
-					// Le repeated 4 doit correspondre à la situation sans LV3
+					// Le repeated 4 doit correspondre Ã  la situation sans LV3
 					$ecriture=fwrite($fichier_content_xml,'</table:table-row>');
 				}
 				elseif(!isset($tabligne[1])) {
@@ -295,7 +295,7 @@ if (!checkAccess()) {
 	else{
 
 		// ATTENTION: LA SUITE N'EST PAS CORRIGEE DU TOUT... C'EST UN MODELE DIFFERENT
-		//echo "<p>Modèle sans détails non encore géré.</p>";
+		//echo "<p>ModÃ¨le sans dÃ©tails non encore gÃ©rÃ©.</p>";
 		//die();
 
 		//$fichier_content_xml=fopen("ods/content.xml","w+");
@@ -322,11 +322,11 @@ if (!checkAccess()) {
 			while(!feof($fich_source_csv)){
 				$ligne=fgets($fich_source_csv,4096);
 	
-				// Bricolage pas chouette pour changer le séparateur du CSV
-				$ligne_tmp=preg_replace("/°/"," ",preg_replace("/;/",",",preg_replace('/,/',' ',$ligne)));
+				// Bricolage pas chouette pour changer le sÃ©parateur du CSV
+				$ligne_tmp=preg_replace("/Â°/"," ",preg_replace("/;/",",",preg_replace('/,/',' ',$ligne)));
 	
 				//$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',$ligne_tmp))));
-				$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',preg_replace('/°/','Â°',$ligne_tmp)))));
+				$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',preg_replace('/Â°/','Ã‚Â°',$ligne_tmp)))));
 				//echo "<p>\$ligne=$ligne<br>\n";
 				//echo "\$ligne_corrigee=$ligne_corrigee</p>\n";
 	

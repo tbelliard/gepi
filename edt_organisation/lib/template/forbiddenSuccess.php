@@ -35,7 +35,7 @@
 									<div class="art-post-inner art-article">
                                             <div class="art-postmetadataheader">
                                                 <h2 class="art-postheader">
-                                                    Accès interdit
+                                                    AccÃ¨s interdit
                                                 </h2>
                                             </div>
                                             <div class="art-postcontent">

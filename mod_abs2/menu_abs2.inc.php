@@ -26,12 +26,12 @@
  */
 
 //fichier qui affiche un menu sous forme d'onglets
-//à chaque onglets <li> on teste si c'est l'onglet courant pour le mettre en surimpression
-//et on mets dans la session l'url pour revenir sur le même onglet à la prochaine visite d'absence 2 (par défault l'url courante
+//Ã  chaque onglets <li> on teste si c'est l'onglet courant pour le mettre en surimpression
+//et on mets dans la session l'url pour revenir sur le mÃªme onglet Ã  la prochaine visite d'absence 2 (par dÃ©fault l'url courante
 $basename_serveur=explode("?", basename($_SERVER["REQUEST_URI"]));
 $url_end = reset($basename_serveur);
 $_SESSION['abs2_onglet'] = $url_end;
-// Tests à remplacer par des tests sur les droits attribués aux statuts
+// Tests Ã  remplacer par des tests sur les droits attribuÃ©s aux statuts
 if(($_SESSION['statut']=='cpe')||
     ($_SESSION['statut']=='scolarite')) {
   
@@ -59,7 +59,7 @@ if(($_SESSION['statut']=='cpe')||
         echo "class='current' ";
         $_SESSION['abs2_onglet'] = 'saisir_eleve.php';
     }
-    echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";
+    echo "title='Saisir pour un eleve'>Saisir un Ã©lÃ¨ve</a></li>\n";
 
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
     if($url_end=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
@@ -155,7 +155,7 @@ if(($_SESSION['statut']=='cpe')||
     if(acces('/mod_abs2/saisir_eleve.php','autre')) {
         echo "<li><a href='saisir_eleve.php' ";
         if($url_end=='saisir_eleve.php') {echo "class='current' ";}
-        echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";        
+        echo "title='Saisir pour un eleve'>Saisir un Ã©lÃ¨ve</a></li>\n";        
     
         echo "<li><a href='visu_saisie.php' ";
         if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {

@@ -46,12 +46,12 @@ $msg = '';
 if (isset($new_name_defined)) {
 
     if (!my_ereg("^[[:print:]]{1,10}$",trim($nom_court))) {
-    $msg .= "Le nom court doit être composé de caractères alphanumériques (de 1 à 10 caractères).<br />";
+    $msg .= "Le nom court doit Ãªtre composÃ© de caractÃ¨res alphanumÃ©riques (de 1 Ã  10 caractÃ¨res).<br />";
     unset($new_name_defined);
     }
 
-    if (!my_ereg("^([[:print:]]|[âäàéèêëüûöôîï]){1,50}$",trim($nom_complet))) {
-        $msg .= "Le nom complet doit être composé de caractères alphanumériques (de 1 à 50 caractères).<br />";
+    if (!my_ereg("^([[:print:]]|[Ã¢Ã¤Ã Ã©Ã¨ÃªÃ«Ã¼Ã»Ã¶Ã´Ã®Ã¯]){1,50}$",trim($nom_complet))) {
+        $msg .= "Le nom complet doit Ãªtre composÃ© de caractÃ¨res alphanumÃ©riques (de 1 Ã  50 caractÃ¨res).<br />";
     unset($new_name_defined);
     }
 }
@@ -78,7 +78,7 @@ if (isset($eleves_selected)) {
 
     $newclass_id = mysql_result(mysql_query("SELECT max(id) FROM classes"), 0);
 
-    // Maintenant on duplique les entrées de la table j_classes_matieres_professeurs
+    // Maintenant on duplique les entrÃ©es de la table j_classes_matieres_professeurs
     $get_data1 = mysql_query("SELECT * FROM j_classes_matieres_professeurs WHERE id_classe='$id_classe'");
     $nb1 = mysql_num_rows($get_data1);
     for ($i1=0;$i1<$nb1;$i1++) {
@@ -88,10 +88,10 @@ if (isset($eleves_selected)) {
         $ordre_prof = mysql_result($get_data1, $i1, "ordre_prof");
 
         $register1 = mysql_query("INSERT INTO j_classes_matieres_professeurs SET id_classe='$newclass_id',id_matiere='$id_matiere',id_professeur='$id_professeur',priorite='$priorite',ordre_prof='$ordre_prof',coef='0', recalcul_rang='y'");
-        if (!$register1) $msg .= "Erreur lors de l'enregistrement dans j_classes_matieres_professeurs pour la matière $id_matiere.<br />";
+        if (!$register1) $msg .= "Erreur lors de l'enregistrement dans j_classes_matieres_professeurs pour la matiÃ¨re $id_matiere.<br />";
     }
 
-    // table périodes
+    // table pÃ©riodes
     $get_data2 = mysql_query("SELECT * FROM periodes WHERE id_classe='$id_classe'");
     $nb2 = mysql_num_rows($get_data2);
     for ($i2=0;$i2<$nb2;$i2++) {
@@ -99,10 +99,10 @@ if (isset($eleves_selected)) {
         $num_periode = mysql_result($get_data2, $i2, "num_periode");
         $verouiller = mysql_result($get_data2, $i2, "verouiller");
         $register2 = mysql_query("INSERT INTO periodes SET nom_periode='$nom_periode',num_periode='$num_periode',verouiller='$verouiller',id_classe='$newclass_id'");
-        if (!$register2) $msg .= "Erreur lors de l'enregistrement de la période $nom_periode.<br />";
+        if (!$register2) $msg .= "Erreur lors de l'enregistrement de la pÃ©riode $nom_periode.<br />";
     }
 
-    // On appelle la liste pour faire un traitement élève par élève.
+    // On appelle la liste pour faire un traitement Ã©lÃ¨ve par Ã©lÃ¨ve.
 
     $query = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' AND e.login = c.login)");
     $number = mysql_num_rows($query);
@@ -113,9 +113,9 @@ if (isset($eleves_selected)) {
         if (isset($$eleve_login)) {
 
             $update1 = mysql_query("UPDATE j_eleves_classes SET id_classe='$newclass_id' WHERE (login='$eleve_login' AND id_classe='$id_classe')");
-            if (!$update1) $msg .= "Erreur lors de la mise à jour de la liaison élève / classe pour l'élève $eleve_login.<br />";
+            if (!$update1) $msg .= "Erreur lors de la mise Ã  jour de la liaison Ã©lÃ¨ve / classe pour l'Ã©lÃ¨ve $eleve_login.<br />";
             $update2 = mysql_query("UPDATE j_eleves_professeurs SET id_classe='$newclass_id' WHERE (login='$eleve_login' AND id_classe='$id_classe')");
-            if (!$update2) $msg .= "Erreur lors de la mise à jour de la liaison élève / professeur pour l'élève $eleve_login.<br />";
+            if (!$update2) $msg .= "Erreur lors de la mise Ã  jour de la liaison Ã©lÃ¨ve / professeur pour l'Ã©lÃ¨ve $eleve_login.<br />";
         }
     }
 
@@ -127,19 +127,19 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la gestion des classes</a>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Ã  la gestion des classes</a>
 </p>
 <?php
 
 
 if (!isset($new_name_defined)) {
-    echo "<p>Vous vous apprêtez à scinder une classe.<br />Selon le cas de figure, vous serez amené à recommencer cette opération plusieurs fois.<br /><br />Notez que les paramètres de période de la nouvelle classe seront identiques à ceux de la classe d'origine. Il en est de même des professeurs et matières déjà assignés. De même les élèves gardent le même professeur principal. Ces informations peuvent être modifiées par la suite, une fois l'opération terminée.</p>";
+    echo "<p>Vous vous apprÃªtez Ã  scinder une classe.<br />Selon le cas de figure, vous serez amenÃ© Ã  recommencer cette opÃ©ration plusieurs fois.<br /><br />Notez que les paramÃ¨tres de pÃ©riode de la nouvelle classe seront identiques Ã  ceux de la classe d'origine. Il en est de mÃªme des professeurs et matiÃ¨res dÃ©jÃ  assignÃ©s. De mÃªme les Ã©lÃ¨ves gardent le mÃªme professeur principal. Ces informations peuvent Ãªtre modifiÃ©es par la suite, une fois l'opÃ©ration terminÃ©e.</p>";
 
     echo "<form action='duplicate_class.php' method=post>";
 
 	echo add_token_field();
 
-    echo "<p>Veuillez sélectionner la classe que vous souhaitez scinder :<br />";
+    echo "<p>Veuillez sÃ©lectionner la classe que vous souhaitez scinder :<br />";
     $call_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     $nombreligne = mysql_num_rows($call_classes);
     echo "<select name='id_classe' size=1>\n";
@@ -163,9 +163,9 @@ if (!isset($new_name_defined)) {
 }
 
 if (isset($new_name_defined) && !isset($eleves_selected)) {
-    echo "<p>Vous devez désormais sélectionner les élèves qui vont être retirés de la classe d'origine pour être affectés à la nouvelle classe. Cette affectation est effective pour toutes les périodes de la classe d'origine.</p>";
+    echo "<p>Vous devez dÃ©sormais sÃ©lectionner les Ã©lÃ¨ves qui vont Ãªtre retirÃ©s de la classe d'origine pour Ãªtre affectÃ©s Ã  la nouvelle classe. Cette affectation est effective pour toutes les pÃ©riodes de la classe d'origine.</p>";
 
-    echo "<p>Elèves à affecter à la nouvelle classe :</p>";
+    echo "<p>ElÃ¨ves Ã  affecter Ã  la nouvelle classe :</p>";
 
     $call_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
     WHERE (c.id_classe = '$id_classe' AND e.login = c.login)");
@@ -198,14 +198,14 @@ if (isset($new_name_defined) && !isset($eleves_selected)) {
     echo "<input type=hidden name='nom_court' value='".urlencode($nom_court)."' />";
     echo "<input type=hidden name='nom_complet' value='".urlencode($nom_complet)."' />";
     echo "<p><input type=submit value='Enregistrer la duplication' />";
-    echo "<p>Attention !!! Procédure irrémédiable !</p>";
+    echo "<p>Attention !!! ProcÃ©dure irrÃ©mÃ©diable !</p>";
     echo "</form>";
 
 
 }
 
 if (isset($eleves_selected) && isset($new_name_defined)) {
-    echo "<p class=alert>La nouvelle classe a bien été crée. Veuillez vérifier que tout s'est bien passé en allant visualiser les paramètres de cette nouvelle classe.</p>";
+    echo "<p class=alert>La nouvelle classe a bien Ã©tÃ© crÃ©e. Veuillez vÃ©rifier que tout s'est bien passÃ© en allant visualiser les paramÃ¨tres de cette nouvelle classe.</p>";
 }
 require("../lib/footer.inc.php");
 ?>

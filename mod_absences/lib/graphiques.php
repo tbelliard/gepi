@@ -96,7 +96,7 @@ include("../lib/functions.php");
 
 //REQUETE
 
-//requête pour liste les motif d'absence
+//requÃªte pour liste les motif d'absence
 $requete_liste_motif = "SELECT init_motif_absence, def_motif_absence FROM ".$prefix_base."absences_motifs ORDER BY init_motif_absence ASC";
 
 //requete sur les champs des tableaus
@@ -115,7 +115,7 @@ if ($motif == "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND 
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND justify_absence_eleve != 'O' ORDER BY nom, prenom ASC";
    }
 
-//Spécifie le motif
+//SpÃ©cifie le motif
 if ($motif != "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie == "1")
    {
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."'))  AND motif_absence_eleve = '".$motif."' ORDER BY nom, prenom ASC";
@@ -131,7 +131,7 @@ if ($motif != "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND 
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND justify_absence_eleve != 'O' AND motif_absence_eleve = '".$motif."' ORDER BY nom, prenom ASC";
    }
 
-//avec spécification des classes
+//avec spÃ©cification des classes
 if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie == "1")
    {
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = ".$prefix_base."eleves.login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve ORDER BY nom, prenom ASC";
@@ -147,7 +147,7 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = ".$prefix_base."eleves.login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND justify_absence_eleve != 'O' AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve ORDER BY nom, prenom ASC";
    }
 
-//Spécifie le motif
+//SpÃ©cifie le motif
 if ($motif != "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie == "1")
    {
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = ".$prefix_base."eleves.login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."'))  AND motif_absence_eleve = '".$motif."' AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve ORDER BY nom, prenom ASC";
@@ -163,7 +163,7 @@ if ($motif != "tous" AND $classe_choix != "tous" AND $eleve_choix == "tous" AND 
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = ".$prefix_base."eleves.login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND justify_absence_eleve != 'O' AND motif_absence_eleve = '".$motif."' AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve ORDER BY nom, prenom ASC";
    }
 
-//avec spécification des eleves
+//avec spÃ©cification des eleves
 if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix != "tous" AND $justifie == "1" AND $nonjustifie == "1")
    {
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = ".$prefix_base."eleves.login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$eleve_choix."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve ORDER BY nom, prenom ASC";
@@ -179,7 +179,7 @@ if ($motif == "tous" AND $classe_choix != "tous" AND $eleve_choix != "tous" AND 
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = ".$prefix_base."eleves.login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND justify_absence_eleve != 'O' AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$eleve_choix."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve ORDER BY nom, prenom ASC";
    }
 
-//Spécifie le motif
+//SpÃ©cifie le motif
 if ($motif != "tous" AND $classe_choix != "tous" AND $eleve_choix != "tous" AND $justifie == "1" AND $nonjustifie == "1")
    {
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = ".$prefix_base."eleves.login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."'))  AND motif_absence_eleve = '".$motif."' AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$eleve_choix."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' GROUP BY ".$prefix_base."absences_eleves.id_absence_eleve ORDER BY nom, prenom ASC";
@@ -234,7 +234,7 @@ if ($recherche == "afficher")
                     <?php } ?>
              </select><br />
           <?php if($classe_choix != "tous") { ?>
-          Elève
+          ElÃ¨ve
             <select name="eleve_choix" id="eleve_choix">
                 <option value="tous" <?php if (empty($eleve_choix)) {?>selected<?php } ?>>tous</option>
                     <?php

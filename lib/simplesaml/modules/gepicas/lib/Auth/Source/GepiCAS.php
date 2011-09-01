@@ -22,7 +22,7 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 	private $_search_table_gepi_login_column;
 
 	/**
-	 * @var champ_cas_uid_retour O� trouver l'UID entre $username et $casattributes
+	 * @var champ_cas_uid_retour Où trouver l'UID entre $username et $casattributes
 	 */
 	private $_champ_cas_uid_retour;
 
@@ -36,7 +36,7 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		assert('is_array($info)');
 		assert('is_array($config)');
 
-		//le ldap n'est pas utilis�, mais il faut une configuration pour �viter une erreur de la classe parente CAS
+		//le ldap n'est pas utilisé, mais il faut une configuration pour éviter une erreur de la classe parente CAS
 		$config['ldap'] = array();
 		
 		/* Call the parent constructor first, as required by the interface. */
@@ -102,7 +102,7 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		$result = mysql_query($requete);
 		$valeur = mysql_fetch_array($result);
 		if (!$valeur) {
-			//utilisateur non trouvé dans la base gepi, l'authentification a échoué
+			//utilisateur non trouvÃ© dans la base gepi, l'authentification a Ã©chouÃ©
 				SimpleSAML_Logger::error('gepicas:' . $this->authId .
 					': not authenticated. User is in the CAS but not in the gepi local database.');
 				throw new SimpleSAML_Error_UserNotFound('Utilisateur non trouve dans la base locale');			
@@ -110,8 +110,8 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		$attributes['login'] = array($valeur[0]);
 		$attributes['login_gepi'] = array($valeur[0]);
 		
-		# On interroge la base de données pour récupérer des attributs qu'on va retourner
-		# Cela ne sert pas à gepi directement mais à des services qui peuvent s'appuyer sur gepi pour l'athentification
+		# On interroge la base de donnÃ©es pour rÃ©cupÃ©rer des attributs qu'on va retourner
+		# Cela ne sert pas Ã  gepi directement mais Ã  des services qui peuvent s'appuyer sur gepi pour l'athentification
 		$query = mysql_query("SELECT nom, prenom, email, statut FROM utilisateurs WHERE (login = '".$attributes['login_gepi'][0]."')");
 		$row = mysql_fetch_object($query);
 		

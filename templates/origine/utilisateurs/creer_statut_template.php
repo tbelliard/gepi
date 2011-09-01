@@ -24,7 +24,7 @@
 */
 
 /**
-* Appelle les sous-modèles
+* Appelle les sous-modÃ¨les
 * templates/origine/header_template.php
 * templates/origine/bandeau_template.php
  *
@@ -36,7 +36,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -79,7 +79,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -95,7 +95,7 @@
 	  Statuts "Autre"
 	</h2>
 	<p>
-	  Si Gepi définit plusieurs statuts par défaut, il est possible d'en créer de nouveaux en passant 
+	  Si Gepi dÃ©finit plusieurs statuts par dÃ©faut, il est possible d'en crÃ©er de nouveaux en passant 
 	  par cet outil.
 	</p>
 
@@ -112,7 +112,7 @@ echo add_token_field();
 			  <?php if (getSettingValue('statuts_prives') == 'y') {echo " checked='checked'";} ?>
 			   onchange='document.getElementById("auth_statuts_perso").submit();' />
 		<label for="idAutorise">
-		  Autoriser la création de nouveaux statuts personnalisés par l'admnistrateur.
+		  Autoriser la crÃ©ation de nouveaux statuts personnalisÃ©s par l'admnistrateur.
 		</label>
 		<br/>
 	  </p>
@@ -128,7 +128,7 @@ echo add_token_field();
 
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -150,7 +150,7 @@ echo add_token_field();
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

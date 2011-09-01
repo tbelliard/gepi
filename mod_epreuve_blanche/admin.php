@@ -20,7 +20,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 $accessibilite="y";
-$titre_page = "Epreuves blanches: Activation/désactivation";
+$titre_page = "Epreuves blanches: Activation/dÃ©sactivation";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 $post_reussi=FALSE;
@@ -45,7 +45,7 @@ if ($resultat_session == 'c') {
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -57,15 +57,15 @@ if (!checkAccess()) {
 if (isset($_POST['activer'])) {
 	check_token();
 	if (!saveSetting("active_mod_epreuve_blanche", $_POST['activer'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 	} else {
-		$msg = "Enregistrement effectué.";
+		$msg = "Enregistrement effectuÃ©.";
 		$post_reussi=TRUE;
 	}
 }
 
 //**************** EN-TETE *****************
-//$titre_page = "Epreuves blanches: Activation/désactivation";
+//$titre_page = "Epreuves blanches: Activation/dÃ©sactivation";
 //echo "<div class='noprint'>\n";
 //require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -76,8 +76,8 @@ if (isset($_POST['activer'])) {
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc");
 
-if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Épreuves blanches"))
-		echo "erreur lors de la création du fil d'ariane";
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Ã‰preuves blanches"))
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -92,20 +92,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_epreuve_blanche/admin_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -126,7 +126,7 @@ if (getSettingValue('active_mod_epreuve_blanche')=='y') {echo ' checked';}
 echo " />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module Epreuves blanches</label><br />
 <input type='radio' name='activer' id='activer_n' value='n' ";
 if (getSettingValue('active_mod_epreuve_blanche')=='n') {echo ' checked';}
-echo " />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver le module Epreuves blanches</label>
+echo " />&nbsp;<label for='activer_n' style='cursor: pointer;'>DÃ©sactiver le module Epreuves blanches</label>
 <br />\n";
 
 echo " <input type='submit' name='valider' value='Valider' /></p>\n";

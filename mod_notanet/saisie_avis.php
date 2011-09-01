@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent ViÃ©not-Hauger
 *
 * This file is part of GEPI.
 *
@@ -21,7 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -59,8 +59,8 @@ if (isset($_POST['is_posted'])) {
 	$favorable=isset($_POST["favorable"]) ? $_POST["favorable"] : NULL;
 
 	for($i=0;$i<count($ele_login);$i++) {
-		// Vérifier si l'élève est bien dans la classe?
-		// Inutile si seul l'admin accède et qu'on ne limite pas l'accès à telle ou telle classe
+		// VÃ©rifier si l'Ã©lÃ¨ve est bien dans la classe?
+		// Inutile si seul l'admin accÃ¨de et qu'on ne limite pas l'accÃ¨s Ã  telle ou telle classe
 
 
 		$nom_log = "app_eleve_".$i;
@@ -96,13 +96,13 @@ if (isset($_POST['is_posted'])) {
 				//echo "$sql<br />";
 				$register=mysql_query($sql);
 				if (!$register) {
-					$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
+					$msg .= "Erreur lors de l'enregistrement des donnÃ©es pour $ele_login[$i]<br />";
 					//echo "ERREUR<br />";
 					$pb_record = 'yes';
 				}
 			}
 			else {
-				$msg .= "Erreur: Vous n'avez pas coché un avis favorable ou non pour $ele_login[$i]<br />";
+				$msg .= "Erreur: Vous n'avez pas cochÃ© un avis favorable ou non pour $ele_login[$i]<br />";
 				$pb_record = 'yes';
 			}
 		}
@@ -124,7 +124,7 @@ if (isset($_POST['is_posted'])) {
 			//echo "$sql<br />";
 			$register=mysql_query($sql);
 			if (!$register) {
-				$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
+				$msg .= "Erreur lors de l'enregistrement des donnÃ©es pour $ele_login[$i]<br />";
 				//echo "ERREUR<br />";
 				$pb_record = 'yes';
 			}
@@ -133,16 +133,16 @@ if (isset($_POST['is_posted'])) {
 
 	if ($pb_record == 'no') {
 		//$affiche_message = 'yes';
-		$msg="Les modifications ont été enregistrées !";
+		$msg="Les modifications ont Ã©tÃ© enregistrÃ©es !";
 	}
 }
 
 
-$themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_enregistrement = "Les modifications ont été enregistrées !";
+$themessage = 'Des modifications ont Ã©tÃ© effectuÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 
 //**************** EN-TETE *****************
-$titre_page = "Notanet | Saisie de l'avis du chef d'établissement";
+$titre_page = "Notanet | Saisie de l'avis du chef d'Ã©tablissement";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -169,7 +169,7 @@ if(!isset($id_classe)) {
 
 	$nb_classes=mysql_num_rows($call_classes);
 	if($nb_classes==0){
-		echo "<p>Aucune classe ne semble encore définie.</p>\n";
+		echo "<p>Aucune classe ne semble encore dÃ©finie.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -229,9 +229,9 @@ else {
 	echo add_token_field();
 
 	/*
-	$tabdiv_infobulle[]=creer_div_infobulle('MS',"","","<center>Maîtrise du socle</center>","",10,0,'y','y','n','n');
-	$tabdiv_infobulle[]=creer_div_infobulle('ME',"","","<center>Maîtrise de certains éléments du socle</center>","",12,0,'y','y','n','n');
-	$tabdiv_infobulle[]=creer_div_infobulle('MN',"","","<center>Maîtrise du socle non évaluée</center>","",10,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('MS',"","","<center>MaÃ®trise du socle</center>","",10,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('ME',"","","<center>MaÃ®trise de certains Ã©lÃ©ments du socle</center>","",12,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('MN',"","","<center>MaÃ®trise du socle non Ã©valuÃ©e</center>","",10,0,'y','y','n','n');
 	$tabdiv_infobulle[]=creer_div_infobulle('AB',"","","<center>Absent</center>","",8,0,'y','y','n','n');
 	*/
 
@@ -245,17 +245,17 @@ else {
 		//echo "$sql<br />";
 		$res_ele=mysql_query($sql);
 		if(mysql_num_rows($res_ele)==0) {
-			echo "Aucun élève dans cette classe.</p>\n";
+			echo "Aucun Ã©lÃ¨ve dans cette classe.</p>\n";
 		}
 		else {
 			echo "<table class='boireaus' border='1' summary='Saisie avis'>\n";
 
 			//===========================
 			echo "<tr>\n";
-			echo "<th rowspan='3' colspan='2'>Elève</th>\n";
+			echo "<th rowspan='3' colspan='2'>ElÃ¨ve</th>\n";
 			echo "<th colspan='2'>Avis favorable</th>\n";
-			echo "<th rowspan='2'>Avis mitigé<br />ou<br />non saisi</th>\n";
-			//echo "<th rowspan='3'>Motivation d'un avis défavorable</th>\n";
+			echo "<th rowspan='2'>Avis mitigÃ©<br />ou<br />non saisi</th>\n";
+			//echo "<th rowspan='3'>Motivation d'un avis dÃ©favorable</th>\n";
 			echo "<th rowspan='3'>Motivation de l'avis</th>\n";
 			echo "</tr>\n";
 			//===========================
@@ -274,15 +274,15 @@ else {
 			echo "<tr>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('fav_O_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('fav_O_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('fav_O_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('fav_O_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('fav_N_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('fav_N_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('fav_N_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('fav_N_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
-			echo "<a href=\"javascript:CocheColonne('fav_X_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('fav_X_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne('fav_X_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('fav_X_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 			echo "</th>\n";
 
 			echo "</tr>\n";
@@ -368,7 +368,7 @@ else {
 				echo "<td>\n";
 				echo "<textarea id=\"n".$cpt."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$cpt."\" rows='2' cols='80' wrap='virtual' onchange=\"changement()\"";
 				//==================================
-				// Pour revenir au champ suivant après validation/enregistrement:
+				// Pour revenir au champ suivant aprÃ¨s validation/enregistrement:
 				echo " onfocus=\"focus_suivant(".$cpt.");";
 				echo " document.getElementById('focus_courant').value='".$cpt."';";
 				echo "\"";
@@ -397,13 +397,13 @@ else {
 	}
 	echo "<input type='submit' value='Enregistrer' /><br />
 
-<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+<!-- DIV destinÃ© Ã  afficher un dÃ©compte du temps restant pour ne pas se faire piÃ©ger par la fin de session -->
 <div id='decompte'></div>
 </div>
 </center>
 
 
-<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+<!-- Champ destinÃ© Ã  recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus Ã  ce champ aprÃ¨s une validation -->
 <input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />
 <input type='hidden' id='focus_courant' name='focus_courant' value='' size='3' />
 ";
@@ -439,7 +439,7 @@ function DecocheColonne(nom_col,num_classe) {
 
 
 
-	// Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
+	// Il faudra permettre de n'afficher ce dÃ©compte que si l'administrateur le souhaite.
 	echo "<script type='text/javascript'>
 	cpt=".$tmp_timeout.";
 	compte_a_rebours='y';
@@ -462,11 +462,11 @@ function DecocheColonne(nom_col,num_classe) {
 
 	function focus_suivant(num){
 		temoin='';
-		// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+		// La variable 'dernier' peut dÃ©passer de l'effectif de la classe... mais cela n'est pas dramatique
 		dernier=num+".$cpt."
-		// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
-		// (pour réussir à passer un élève qui ne serait plus dans la période)
-		// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+		// On parcourt les champs Ã  partir de celui de l'Ã©lÃ¨ve en cours jusqu'Ã  rencontrer un champ existant
+		// (pour rÃ©ussir Ã  passer un Ã©lÃ¨ve qui ne serait plus dans la pÃ©riode)
+		// AprÃ¨s validation, c'est ce champ qui obtiendra le focus si on n'Ã©tait pas Ã  la fin de la liste.
 		for(i=num;i<dernier;i++){
 			suivant=i+1;
 			if(temoin==''){
@@ -482,7 +482,7 @@ function DecocheColonne(nom_col,num_classe) {
 
 	";
 
-	// Après validation, on donne le focus au champ qui suivait celui qui vient d'être rempli
+	// AprÃ¨s validation, on donne le focus au champ qui suivait celui qui vient d'Ãªtre rempli
 	if(isset($_POST['champ_info_focus'])){
 		if($_POST['champ_info_focus']!=""){
 			echo "// On positionne le focus...

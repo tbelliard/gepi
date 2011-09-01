@@ -47,7 +47,7 @@ if (!checkAccess()) {
 
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -55,10 +55,10 @@ require_once("../lib/header.inc");
 
 <?php
 
-// On vérifie si l'extension d_base est active
+// On vÃ©rifie si l'extension d_base est active
 //verif_active_dbase();
 
-echo "<center><h3 class='gepi'>Troisième phase d'initialisation<br />Importation des matières</h3></center>";
+echo "<center><h3 class='gepi'>TroisiÃ¨me phase d'initialisation<br />Importation des matiÃ¨res</h3></center>";
 
 if (!isset($step1)) {
 	$j=0;
@@ -71,14 +71,14 @@ if (!isset($step1)) {
 	}
 	if ($flag != 0){
 		echo "<p><b>ATTENTION ...</b><br />";
-		echo "Des données concernant les matières sont actuellement présentes dans la base GEPI<br /></p>";
-		echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>";
-		echo "<p>Seules la table contenant les matières et la table mettant en relation les matières et les professeurs seront conservées.</p>";
+		echo "Des donnÃ©es concernant les matiÃ¨res sont actuellement prÃ©sentes dans la base GEPI<br /></p>";
+		echo "<p>Si vous poursuivez la procÃ©dure les donnÃ©es telles que notes, apprÃ©ciations, ... seront effacÃ©es.</p>";
+		echo "<p>Seules la table contenant les matiÃ¨res et la table mettant en relation les matiÃ¨res et les professeurs seront conservÃ©es.</p>";
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
 		echo add_token_field();
 		echo "<input type=hidden name='step1' value='y' />";
-		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
+		echo "<input type='submit' name='confirm' value='Poursuivre la procÃ©dure' />";
 		echo "</form>";
 		echo "</div>";
 		echo "</body>";
@@ -98,8 +98,8 @@ if (!isset($is_posted)) {
 		}
 	}
 
-	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
-	echo "<p>Importation du fichier <b>F_tmt.csv</b> contenant les données relatives aux matières : veuillez préciser le nom complet du fichier <b>F_tmt.csv</b>.";
+	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procÃ©der Ã  cette opÃ©ration uniquement si la constitution des classes a Ã©tÃ© effectuÃ©e !</p>";
+	echo "<p>Importation du fichier <b>F_tmt.csv</b> contenant les donnÃ©es relatives aux matiÃ¨res : veuillez prÃ©ciser le nom complet du fichier <b>F_tmt.csv</b>.";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
 	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />";
@@ -120,7 +120,7 @@ if (!isset($is_posted)) {
 			echo "<p>Impossible d'ouvrir le fichier dbf</p>";
 			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
 		} else {
-			// on constitue le tableau des champs à extraire
+			// on constitue le tableau des champs Ã  extraire
 			$tabchamps = array("MATIMN","MATILC");
 
 			//$nblignes = dbase_numrecords($fp); //number of rows
@@ -130,7 +130,7 @@ if (!isset($is_posted)) {
 			while (!feof($fp)) {
 				$ligne = fgets($fp, 4096);
 				if($nblignes==0){
-					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
 					for($i=0;$i<sizeof($temp);$i++){
@@ -148,7 +148,7 @@ if (!isset($is_posted)) {
 			if (@dbase_get_record_with_names($fp,1)) {
 				$temp = @dbase_get_record_with_names($fp,1);
 			} else {
-				echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+				echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
 				die();
 			}
@@ -179,14 +179,14 @@ if (!isset($is_posted)) {
 					}
 				}
 			}
-			echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier GEP mais déjà présents dans la base GEPI.<br /><br />Il est possible que certaines matières ci-dessous, bien que figurant dans le fichier CSV, ne soient pas utilisées dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>";
+			echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent Ã  des nouvelles matiÃ¨res dans la base GEPI. les identifiants en vert correspondent Ã  des identifiants de matiÃ¨res dÃ©tectÃ©s dans le fichier GEP mais dÃ©jÃ  prÃ©sents dans la base GEPI.<br /><br />Il est possible que certaines matiÃ¨res ci-dessous, bien que figurant dans le fichier CSV, ne soient pas utilisÃ©es dans votre Ã©tablissement cette annÃ©e. C'est pourquoi il vous sera proposÃ© en fin de procÃ©dure d'initialsation, un nettoyage de la base afin de supprimer ces donnÃ©es inutiles.</p>";
 			echo "<table border=1 cellpadding=2 cellspacing=2>";
-			echo "<tr><td><p class=\"small\">Identifiant de la matière</p></td><td><p class=\"small\">Nom complet</p></td></tr>";
+			echo "<tr><td><p class=\"small\">Identifiant de la matiÃ¨re</p></td><td><p class=\"small\">Nom complet</p></td></tr>";
 
 
 			//=========================
 			$fp=fopen($dbf_file['tmp_name'],"r");
-			// On lit une ligne pour passer la ligne d'entête:
+			// On lit une ligne pour passer la ligne d'entÃªte:
 			$ligne = fgets($fp, 4096);
 			//=========================
 			$nb_reg_no = 0;
@@ -224,18 +224,18 @@ if (!isset($is_posted)) {
 			//dbase_close($fp);
 			fclose($fp);
 			if ($nb_reg_no != 0) {
-				echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
+				echo "<p>Lors de l'enregistrement des donnÃ©es il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.";
 			} else {
-				echo "<p>L'importation des matières dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à la quatrième phase d'importation des professeurs.</p>";
+				echo "<p>L'importation des matiÃ¨res dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s !<br />Vous pouvez procÃ©der Ã  la quatriÃ¨me phase d'importation des professeurs.</p>";
 			}
 			echo "<center><p><a href='prof_csv.php?a=a".add_token_in_url()."'>Importation des professeurs</a></p></center>";
 		}
 	} else if (trim($dbf_file['name'])=='') {
-		echo "<p>Aucun fichier n'a été sélectionné !<br />";
+		echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
 
 	} else {
-		echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+		echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
 	}
 }

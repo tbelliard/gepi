@@ -40,51 +40,51 @@ if (!checkAccess()) {
 die();
 }
 
-// Page bourrinée... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
+// Page bourrinÃ©e... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
 check_token();
 
 if (!function_exists("dbase_open"))  {
-    $msg = "ATTENTION : PHP n'est pas configuré pour gérer les fichiers GEP (dbf). L'extension  d_base n'est pas active. Adressez-vous à l'administrateur du serveur pour corriger le problème.";
+    $msg = "ATTENTION : PHP n'est pas configurÃ© pour gÃ©rer les fichiers GEP (dbf). L'extension  d_base n'est pas active. Adressez-vous Ã  l'administrateur du serveur pour corriger le problÃ¨me.";
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année";
+$titre_page = "Outil d'initialisation de l'annÃ©e";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>|<a href="../gestion/index.php">Retour</a>|</p>
 
-<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
+<p>Vous allez effectuer l'initialisation de l'annÃ©e scolaire qui vient de dÃ©buter.</p>
 <ul>
-<li><p>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes :<br /><br />
-- les données relatives aux établissements,<br />
-- les données relatives aux classes : intitulés courts, intitulés longs, nombre de périodes et noms des périodes,<br />
-- les données relatives aux matières : identifiants et intitulés complets,<br />
-- les données relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
-- Les données relatives aux différents types d'AID.<br />&nbsp;</p></li>
+<li><p>Au cours de la procÃ©dure, le cas Ã©chÃ©ant, certaines donnÃ©es de l'annÃ©e passÃ©e seront dÃ©finitivement effacÃ©es de la base GEPI (Ã©lÃ¨ves, notes, apprÃ©ciations, ...) . Seules seront conservÃ©es les donnÃ©es suivantes :<br /><br />
+- les donnÃ©es relatives aux Ã©tablissements,<br />
+- les donnÃ©es relatives aux classes : intitulÃ©s courts, intitulÃ©s longs, nombre de pÃ©riodes et noms des pÃ©riodes,<br />
+- les donnÃ©es relatives aux matiÃ¨res : identifiants et intitulÃ©s complets,<br />
+- les donnÃ©es relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matiÃ¨res enseignÃ©es par les professeurs sont conservÃ©es,<br />
+- Les donnÃ©es relatives aux diffÃ©rents types d'AID.<br />&nbsp;</p></li>
 
 <li>
 	<?php
 	//==================================
-	// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+	// RNE de l'Ã©tablissement pour comparer avec le RNE de l'Ã©tablissement de l'annÃ©e prÃ©cÃ©dente
 	$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 	//==================================
 	if($gepiSchoolRne=="") {
-		echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+		echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'Ã©tablissement n'est pas renseignÃ© dans 'Gestion gÃ©nÃ©rale/<a href='../gestion/param_gen.php' target='_blank'>Configuration gÃ©nÃ©rale</a>'<br />Cela peut perturber l'import de l'Ã©tablissement d'origine des Ã©lÃ¨ves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
 	}
 	?>
 
-	<p>L'initialisation s'effectue en quatre phases, chacune nécessitant un fichier GEP particulier :</p>
+	<p>L'initialisation s'effectue en quatre phases, chacune nÃ©cessitant un fichier GEP particulier :</p>
     <ul>
-    <li><p><a href='step1.php'>Procéder à la première phase</a> d'importation des élèves,  de constitution des classes et d'affectation des élèves dans les classes : le fichier <b>F_ELE.DBF</b> est requis.<br />&nbsp;</p></li>
-    <li><p><a href='responsables.php'>Procéder à la deuxième phase</a> d'importation des responsables des élèves : le fichier <b>F_ERE.DBF</b> est requis.<br />&nbsp;</p></li>
-    <li><p><a href='disciplines.php'>Procéder à la troisième phase</a> d'importation des matières : le fichier <b>F_tmt.dbf</b> est requis.<br />&nbsp;</p></li>
-    <li><p><a href='professeurs.php'>Procéder à la quatrième phase</a> d'importation des professeurs : le fichier <b>F_wind.dbf</b> est requis.<br />&nbsp;</p></li>
-    <li><p><a href='prof_disc_classe.php'>Procéder à la cinquième phase</a> d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe  et de définition des options suivies par les élèves : les fichiers <b>F_men.dbf</b> et <b>F_gpd.dbf</b> sont requis.<br />&nbsp;</p></li>
-    <li><p><a href='clean_tables.php'>Procéder à la sixième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !<br />&nbsp;</p></li>
+    <li><p><a href='step1.php'>ProcÃ©der Ã  la premiÃ¨re phase</a> d'importation des Ã©lÃ¨ves,  de constitution des classes et d'affectation des Ã©lÃ¨ves dans les classes : le fichier <b>F_ELE.DBF</b> est requis.<br />&nbsp;</p></li>
+    <li><p><a href='responsables.php'>ProcÃ©der Ã  la deuxiÃ¨me phase</a> d'importation des responsables des Ã©lÃ¨ves : le fichier <b>F_ERE.DBF</b> est requis.<br />&nbsp;</p></li>
+    <li><p><a href='disciplines.php'>ProcÃ©der Ã  la troisiÃ¨me phase</a> d'importation des matiÃ¨res : le fichier <b>F_tmt.dbf</b> est requis.<br />&nbsp;</p></li>
+    <li><p><a href='professeurs.php'>ProcÃ©der Ã  la quatriÃ¨me phase</a> d'importation des professeurs : le fichier <b>F_wind.dbf</b> est requis.<br />&nbsp;</p></li>
+    <li><p><a href='prof_disc_classe.php'>ProcÃ©der Ã  la cinquiÃ¨me phase</a> d'affectation des matiÃ¨res Ã  chaque professeur, d'affectation des professeurs dans chaque classe  et de dÃ©finition des options suivies par les Ã©lÃ¨ves : les fichiers <b>F_men.dbf</b> et <b>F_gpd.dbf</b> sont requis.<br />&nbsp;</p></li>
+    <li><p><a href='clean_tables.php'>ProcÃ©der Ã  la sixiÃ¨me phase</a> de nettoyage des donnÃ©es : les donnÃ©es inutiles importÃ©es Ã  partir des fichiers GEP lors des diffÃ©rentes phases d'initialisation seront effacÃ©es !<br />&nbsp;</p></li>
     </ul>
 </li>
-<li><p>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.<br />&nbsp;</p></li>
+<li><p>Une fois toute la procÃ©dure d'initialisation des donnÃ©es terminÃ©e, il vous sera possible d'effectuer toutes les modifications nÃ©cessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.<br />&nbsp;</p></li>
 </ul>
 <?php
 require("../lib/footer.inc.php");

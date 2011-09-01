@@ -49,7 +49,7 @@ require_once("../lib/header.inc");
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo " | <a href='./impression_serie.php'>Impressions multiples</a>";
-echo " | <a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>";
+echo " | <a href='./parametres_impression_pdf.php'>RÃ©gler les paramÃ¨tres du PDF</a>";
 echo "</p>\n";
 
 
@@ -60,10 +60,10 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
 echo "<h3>Liste des classes : </h3>\n";
 
-// Pour tout le monde la possibilité d'imprimer la liste de toutes les classes par période.
-echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer une liste d'élèves au format PDF :</p>\n";
+// Pour tout le monde la possibilitÃ© d'imprimer la liste de toutes les classes par pÃ©riode.
+echo "<p>SÃ©lÃ©ctionnez la classe et la pÃ©riode pour lesquels vous souhaitez imprimer une liste d'Ã©lÃ¨ves au format PDF :</p>\n";
 
-    //si statut scolarite ==> on affiche que les classes de compte scolarité
+    //si statut scolarite ==> on affiche que les classes de compte scolaritÃ©
 	if($_SESSION['statut']=='scolarite'){
        $login_scolarite = $_SESSION['login'];
 	   $sql="SELECT c.id, c.classe, jsc.login, jsc.id_classe 
@@ -71,14 +71,14 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 			 WHERE (jsc.login='$login_scolarite'
 			 AND jsc.id_classe=c.id)
 			 ORDER BY c.classe";
-	} else { //pour tous les statuts sauf scolarité
+	} else { //pour tous les statuts sauf scolaritÃ©
 	   $sql="SELECT id,classe FROM classes ORDER BY classe";
 	}
 	$result_classes=mysql_query($sql);
 	$nb_classes = mysql_num_rows($result_classes);
 
 	if(mysql_num_rows($result_classes)==0){
-		echo "<p>Il semble qu'aucune classe n'ait encore été créée.</p>\n";
+		echo "<p>Il semble qu'aucune classe n'ait encore Ã©tÃ© crÃ©Ã©e.</p>\n";
 	}
 	else{
 		$nb_classes=mysql_num_rows($result_classes);
@@ -102,7 +102,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 			$res_per=mysql_query($sql);
 
 			if(mysql_num_rows($res_per)==0){
-				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+				echo "<p>ERREUR: Aucune pÃ©riode n'est dÃ©finie pour la classe $lig_class->classe</p>\n";
 				echo "</body></html>\n";
 				die();
 			}
@@ -125,7 +125,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 // Module toutes les classes
 
 	if($_SESSION['statut']=='professeur'){
-		echo "<p>Séléctionnez l'enseignement et la période pour lesquels vous souhaitez imprimer une liste alphabétique d'élèves au format PDF :</p>\n";
+		echo "<p>SÃ©lÃ©ctionnez l'enseignement et la pÃ©riode pour lesquels vous souhaitez imprimer une liste alphabÃ©tique d'Ã©lÃ¨ves au format PDF :</p>\n";
 		$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
 			jgp.login = '".$_SESSION['login']."' AND
 			g.id=jgp.id_groupe
@@ -161,7 +161,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 							$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
 							$res_per=mysql_query($sql);
 							if(mysql_num_rows($res_per)==0){
-								echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+								echo "<p>ERREUR: Aucune pÃ©riode n'est dÃ©finie pour la classe $lig_class->classe</p>\n";
 								echo "</body></html>\n";
 								die();
 							}

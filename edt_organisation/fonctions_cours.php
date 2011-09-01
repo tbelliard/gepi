@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ensemble des fonctions qui permettent de créer un nouveau cours en vérifiant les précédents
+ * Ensemble des fonctions qui permettent de crÃ©er un nouveau cours en vÃ©rifiant les prÃ©cÃ©dents
  *
  * @version $Id$
  *
@@ -30,7 +30,7 @@ require_once("choix_langue.php");
 
 // =============================================================================
 //
-//          Fonction qui vérifie si le prof est disponible pour le cours appelé
+//          Fonction qui vÃ©rifie si le prof est disponible pour le cours appelÃ©
 //
 //              $login_prof = login_prof de la table 'edt_cours' 
 //              $jour = jour_horaire_etablissement de la table 'horaires_etablissement'               
@@ -46,7 +46,7 @@ $tab_enseignement = array();
 $tab_id_creneaux = retourne_id_creneaux();
 if ($login_prof != "") {
 
-    // ===================== déterminer (en demi-creneaux) le début et la fin du cours 
+    // ===================== dÃ©terminer (en demi-creneaux) le dÃ©but et la fin du cours 
     $j = 0;
     $endprocess = false;
     $rang_creneau = 0;
@@ -120,7 +120,7 @@ return $prof_libre;
 
 // =============================================================================
 //
-//          Fonction qui vérifie si une salle est libre pour le cours appelé
+//          Fonction qui vÃ©rifie si une salle est libre pour le cours appelÃ©
 //
 //              $salle = id_salle de la table 'salle_cours' 
 //              $jour = jour_horaire_etablissement de la table 'horaires_etablissement'               
@@ -200,7 +200,7 @@ return $salle_libre;
 
 // =============================================================================
 //
-//          Fonction qui vérifie si un groupe est libre pour le cours appelé
+//          Fonction qui vÃ©rifie si un groupe est libre pour le cours appelÃ©
 //
 // =============================================================================
 
@@ -355,9 +355,9 @@ if (($groupe != "") OR ($id_aid != "")) {
                     $req_nom_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$tab_enseignement['login'][$k]."' ");
 		            $rep_nom_prof = mysql_fetch_array($req_nom_prof);
                     
-                    //$enseignants .= $rep_nom_prof['nom']." (".mysql_num_rows($req_nombre_eleves)." élèves) ";
-					$enseignants .= $rep_nom_prof['nom']." (".$count." élèves) ";
-                    // ---- Si nb élèves < 5, ce sont sans doute des élèves affectés provisoirement dans un autre cours (CLA) : on accepte la création
+                    //$enseignants .= $rep_nom_prof['nom']." (".mysql_num_rows($req_nombre_eleves)." Ã©lÃ¨ves) ";
+					$enseignants .= $rep_nom_prof['nom']." (".$count." Ã©lÃ¨ves) ";
+                    // ---- Si nb Ã©lÃ¨ves < 5, ce sont sans doute des Ã©lÃ¨ves affectÃ©s provisoirement dans un autre cours (CLA) : on accepte la crÃ©ation
                     //if (mysql_num_rows($req_nombre_eleves) >= 5) {
 					if ($count >=5) {
                         $groupe_libre = false;
@@ -397,7 +397,7 @@ return $groupe_libre;
 function getGroupsContainingSameStudents($groupe)
 {
 
-    // --------- Rechercher les groupes d'enseignement qui ont des élèves en commun avec le groupe visé
+    // --------- Rechercher les groupes d'enseignement qui ont des Ã©lÃ¨ves en commun avec le groupe visÃ©
 	$LoginTable = array();
 	$CompleteTable = array();	
 	$GroupsTable = array();
@@ -523,7 +523,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
         $k++;
     }
 
-    // --------- Rechercher les AIDs qui ont des élèves en commun avec le groupe visé
+    // --------- Rechercher les AIDs qui ont des Ã©lÃ¨ves en commun avec le groupe visÃ©
 
     $req_creneau_aid = mysql_query("SELECT DISTINCT id_aid FROM j_aid_eleves WHERE 
                                                             login IN (SELECT login FROM j_eleves_groupes WHERE
@@ -584,7 +584,7 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
     else {
         $calendrier = "1=1";
     }
-    // --------- Rechercher les groupes d'enseignement qui ont la salle en commun avec le groupe visé
+    // --------- Rechercher les groupes d'enseignement qui ont la salle en commun avec le groupe visÃ©
     if ($type_semaine == "0") {
             $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                     id_salle = '".$salle."'  AND
@@ -643,7 +643,7 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
     $tab_id_creneaux = retourne_id_creneaux();
 
     $k = 0;
-    // --------- Rechercher les groupes d'enseignement qui ont le prof spécifié
+    // --------- Rechercher les groupes d'enseignement qui ont le prof spÃ©cifiÃ©
     if (($period != NULL) AND ($period != 0)) {
         $calendrier = "(id_calendrier = '".$period."' OR id_calendrier = '0')";
     }
@@ -697,7 +697,7 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
 }
 
 
-// Fonction qui renvoie l'id du créneau suivant de celui qui est appelé
+// Fonction qui renvoie l'id du crÃ©neau suivant de celui qui est appelÃ©
 function creneauSuivant($creneau){
 	$cherche_creneaux = array();
 	$cherche_creneaux = retourne_id_creneaux();
@@ -710,7 +710,7 @@ function creneauSuivant($creneau){
 	return $reponse;
 } // creneauSuivant()
 
-// Fonction qui renvoie l'id du créneau précédent de celui qui est appelé
+// Fonction qui renvoie l'id du crÃ©neau prÃ©cÃ©dent de celui qui est appelÃ©
 function creneauPrecedent($creneau){
 	$cherche_creneaux = array();
 	$cherche_creneaux = retourne_id_creneaux();
@@ -723,9 +723,9 @@ function creneauPrecedent($creneau){
 	return $reponse;
 } // creneauPrecedent()
 
-// Fonction qui renvoie le nombre de créneaux précédents celui qui est appelé
+// Fonction qui renvoie le nombre de crÃ©neaux prÃ©cÃ©dents celui qui est appelÃ©
 function nombreCreneauxPrecedent($creneau){
-	// On récupère l'heure du creneau appelé
+	// On rÃ©cupÃ¨re l'heure du creneau appelÃ©
 	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau."'"));
 	$requete = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE
 						heuredebut_definie_periode < '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND
@@ -736,9 +736,9 @@ function nombreCreneauxPrecedent($creneau){
 	return $nbre;
 } // nombreCreneauxPrecedent()
 
-// Fonction qui renvoie le nombre de créneaux qui suivent celui qui est appelé
+// Fonction qui renvoie le nombre de crÃ©neaux qui suivent celui qui est appelÃ©
 function nombreCreneauxApres($creneau){
-	// On récupère l'heure du creneau appelé
+	// On rÃ©cupÃ¨re l'heure du creneau appelÃ©
 	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau."'"));
 	$requete = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE heuredebut_definie_periode > '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	$nbre = mysql_num_rows($requete);
@@ -760,20 +760,20 @@ function inverseHeuredeb_dec($heuredeb_dec){
 } // inverseHeuredeb_dec()
 
 /*
- * Fonction qui renvoie le début et la fin d'un cours en prenant en compte l'idée que chaque créneau
- * dure 2 "temps". Par exemple, pour un cours qui commence au début du 4ème créneau de la journée et
+ * Fonction qui renvoie le dÃ©but et la fin d'un cours en prenant en compte l'idÃ©e que chaque crÃ©neau
+ * dure 2 "temps". Par exemple, pour un cours qui commence au dÃ©but du 4Ã¨me crÃ©neau de la journÃ©e et
  * qui dure 2 heures, la fonction renvoie $retour["deb"] = 5 et $retour["fin"] = 8;
- * $jour = le jour de la semaine en toute lettre et en Français
- * $creneau = id du créneau (table edt_creneaux)
- * $heuredeb_dec vaut '0' si le cours commence au début d'un créneau et '0.5' si le cours commence au milieu du créneau
- * $duree = nombre de demi-cours (un cours d'un créneau et demi aura donc une durée de 3)
+ * $jour = le jour de la semaine en toute lettre et en FranÃ§ais
+ * $creneau = id du crÃ©neau (table edt_creneaux)
+ * $heuredeb_dec vaut '0' si le cours commence au dÃ©but d'un crÃ©neau et '0.5' si le cours commence au milieu du crÃ©neau
+ * $duree = nombre de demi-cours (un cours d'un crÃ©neau et demi aura donc une durÃ©e de 3)
 */
 function dureeTemps($jour, $creneau, $heuredeb_dec, $duree){
-	// On détermine le "lieu" du début du cours
+	// On dÃ©termine le "lieu" du dÃ©but du cours
 	$deb = 0;
 	$fin = 0;
 	$c_p = nombreCreneauxPrecedent($creneau);
-	// et on calcule de début
+	// et on calcule de dÃ©but
 	if ($c_p == 0) {
 		$deb = 0;
 	}elseif ($heuredeb_dec == 0) {

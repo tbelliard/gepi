@@ -44,8 +44,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -60,7 +60,7 @@ $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_
 
 $msg="";
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Avertir la famille";
 require_once("../lib/header.inc");
@@ -77,14 +77,14 @@ foreach($gepiSettings as $key => $value) {
 
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Index</a>\n";
 
-echo " | <a href='saisie_incident.php?id_incident=$id_incident' onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour incident n°$id_incident</a>\n";
+echo " | <a href='saisie_incident.php?id_incident=$id_incident' onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour incident nÂ°$id_incident</a>\n";
 
 echo " | <a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
 
 if(isset($id_communication)) {
 	// Est-ce qu'on propose de modifier?
-	// On ne garde pas trace de ce qui a déjà été envoyé...
-	// Ou alors il faudrait un champ Révision dans s_communication
+	// On ne garde pas trace de ce qui a dÃ©jÃ  Ã©tÃ© envoyÃ©...
+	// Ou alors il faudrait un champ RÃ©vision dans s_communication
 
 
 }
@@ -119,7 +119,7 @@ $res_dest=mysql_query($sql);
 if(mysql_num_rows($res_dest)==0) {
 	echo "<tr class='lig-1'>\n";
 	echo "<td style='font-weight:bold; text-align:left; vertical-align: top;'>Destinataires&nbsp;:</td>\n";
-	echo "<td colspan='4'>Aucun destinataire n'a été trouvé dans la table 'resp_pers'.</td>\n";
+	echo "<td colspan='4'>Aucun destinataire n'a Ã©tÃ© trouvÃ© dans la table 'resp_pers'.</td>\n";
 	echo "</tr>\n";
 }
 else {
@@ -149,7 +149,7 @@ else {
 		echo "</td>\n";
 
 		echo "<td style='text-align:center;'>\n";
-		echo " (<em>resp.légal ".$lig_dest->resp_legal."</em>)";
+		echo " (<em>resp.lÃ©gal ".$lig_dest->resp_legal."</em>)";
 		echo "</td>\n";
 
 		echo "<td style='text-align:left; font-size: x-small;'>\n";
@@ -245,7 +245,7 @@ if(mysql_num_rows($res_dest)>0) {
 		if(mysql_num_rows($res_dest)>0) {
 			$nb_adr=2;
 
-			// Il y a un autre responsable légal
+			// Il y a un autre responsable lÃ©gal
 			$lig=mysql_fetch_object($res_dest);
 			$num=$lig->resp_legal-1;
 
@@ -270,7 +270,7 @@ else {
 		/*
 		echo "<tr class='lig-1'>\n";
 		echo "<td style='font-weight:bold; text-align:left; vertical-align: top;'>Destinataires&nbsp;:</td>\n";
-		echo "<td colspan='4'>Aucun destinataire n'a été trouvé dans la table 'resp_pers'.</td>\n";
+		echo "<td colspan='4'>Aucun destinataire n'a Ã©tÃ© trouvÃ© dans la table 'resp_pers'.</td>\n";
 		echo "</tr>\n";
 		*/
 	}
@@ -295,7 +295,7 @@ $cpt=0;
 if($nb_adr==0) {
 	echo "<tr class='lig-1'>\n";
 	echo "<td style='font-weight:bold; text-align:left; vertical-align: top;'>Destinataires&nbsp;:</td>\n";
-	echo "<td colspan='4'>Aucun responsable n'a été trouvé dans la table 'resp_pers'.</td>\n";
+	echo "<td colspan='4'>Aucun responsable n'a Ã©tÃ© trouvÃ© dans la table 'resp_pers'.</td>\n";
 	echo "</tr>\n";
 }
 elseif($nb_adr==1) {
@@ -415,12 +415,12 @@ echo "<td style='text-align:left;' colspan='4'>\n";
 echo "<textarea id=\"courrier\" class='wrap' name=\"no_anti_inject_courrier\" rows='12' cols='80' onchange=\"changement()\">";
 
 if(!isset($id_communication)) {
-	// Afficher les détails de l'incident.
+	// Afficher les dÃ©tails de l'incident.
 
 	$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
 	$res_incident=mysql_query($sql);
 	if(mysql_num_rows($res_incident)==0) {
-		echo "??? L'incident n°$id_incident n'existe pas ???";
+		echo "??? L'incident nÂ°$id_incident n'existe pas ???";
 	}
 	else {
 		$lig_inc=mysql_fetch_object($res_incident);
@@ -445,10 +445,10 @@ echo "</blockquote>\n";
 
 echo "</form>\n";
 
-echo "<p style='color:red;'><b>A FAIRE:</b> Afficher aussi les numéros de téléphone.<br />
-Ne proposer 'mail' que si les adresses mail des resp sont renseignées.<br />
-Pouvoir enregistrer le fait que les parents ont été avertis.<br />
-Comment conserver aussi une trace des courriers envoyés? et pouvoir effacer les essais.</p>\n";
+echo "<p style='color:red;'><b>A FAIRE:</b> Afficher aussi les numÃ©ros de tÃ©lÃ©phone.<br />
+Ne proposer 'mail' que si les adresses mail des resp sont renseignÃ©es.<br />
+Pouvoir enregistrer le fait que les parents ont Ã©tÃ© avertis.<br />
+Comment conserver aussi une trace des courriers envoyÃ©s? et pouvoir effacer les essais.</p>\n";
 
 echo "<p><br /></p>\n";
 

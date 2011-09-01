@@ -60,7 +60,7 @@ change = 'no';
 </script>
 
 <p class=bold>
-<a href="index.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre période</a> |
+<a href="index.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre pÃ©riode</a> |
 <a href="index.php">Choisir une autre classe</a></p>
 
 
@@ -73,9 +73,9 @@ $classe = mysql_result($call_classe, "0", "classe");
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
 <tr>
-	<th align='center'><b>Nom Prénom</b></th>
-	<th align='center'><b>Nb. total de 1/2 journées d'absence</b></th>
-	<th align='center'><b>Nb. absences non justifiées</b></th>
+	<th align='center'><b>Nom PrÃ©nom</b></th>
+	<th align='center'><b>Nb. total de 1/2 journÃ©es d'absence</b></th>
+	<th align='center'><b>Nb. absences non justifiÃ©es</b></th>
 	<th align='center'><b>Nb. de retard</b></th>
 	<th align='center'><b>Observations</b></th>
 </tr>

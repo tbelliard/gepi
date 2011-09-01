@@ -61,7 +61,7 @@ class class_page_accueil {
   protected $b=0;
 
 /**
- * Construit les entrées de la page d'accueil
+ * Construit les entrÃ©es de la page d'accueil
  *
  * @author regis
  */
@@ -91,7 +91,7 @@ class class_page_accueil {
 
 	$this->chargeOrdreMenu($ordre_menus);
 
-	// On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de textes et au carnet de notes
+	// On teste si on l'utilisateur est un prof avec des matiÃ¨res. Si oui, on affiche les lignes relatives au cahier de textes et au carnet de notes
 	$this->test_prof_matiere = sql_count(sql_query("SELECT login
 			FROM j_groupes_professeurs
 			WHERE login = '".$this->loginUtilisateur."'"));
@@ -101,7 +101,7 @@ class class_page_accueil {
 			FROM j_eleves_professeurs
 			WHERE professeur = '".$this->loginUtilisateur."'"));
 
-	$this->test_https = 'y'; // pour ne pas avoir à refaire le test si on a besoin de l'URL complète (rss)
+	$this->test_https = 'y'; // pour ne pas avoir Ã  refaire le test si on a besoin de l'URL complÃ¨te (rss)
 	if (!isset($_SERVER['HTTPS'])
 		OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
 		OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
@@ -152,12 +152,12 @@ class class_page_accueil {
 	if ($this->trombinoscope())
 	$this->chargeAutreNom('bloc_trombinoscope');
 
-/***** Outils de relevé de notes *****/
+/***** Outils de relevÃ© de notes *****/
 	$this->verif_exist_ordre_menu('bloc_releve_notes');
 	if ($this->releve_notes())
 	$this->chargeAutreNom('bloc_releve_notes');
 
-/***** Outils de relevé ECTS *****/
+/***** Outils de relevÃ© ECTS *****/
 	$this->verif_exist_ordre_menu('bloc_releve_ects');
 	if ($this->releve_ECTS())
 	$this->chargeAutreNom('bloc_releve_ects');
@@ -169,21 +169,21 @@ class class_page_accueil {
 	  $this->chargeAutreNom('bloc_emploi_du_temps');
 	//}
 
-/***** Outils destinés essentiellement aux parents et aux élèves *****/
+/***** Outils destinÃ©s essentiellement aux parents et aux Ã©lÃ¨ves *****/
 
 // Cahier de textes
 	$this->verif_exist_ordre_menu('bloc_cahier_texte_famille');
 	if ($this->cahierTexteFamille())
 	$this->chargeAutreNom('bloc_cahier_texte_famille');
-// Relevés de notes
+// RelevÃ©s de notes
 	$this->verif_exist_ordre_menu('bloc_carnet_notes_famille');
 	if ($this->releveNotesFamille())
 	$this->chargeAutreNom('bloc_carnet_notes_famille');
-// Equipes pédagogiques
+// Equipes pÃ©dagogiques
 	$this->verif_exist_ordre_menu('bloc_equipe_peda_famille');
 	if ($this->equipePedaFamille())
 	$this->chargeAutreNom('bloc_equipe_peda_famille');
-// Bulletins simplifiés
+// Bulletins simplifiÃ©s
 	$this->verif_exist_ordre_menu('bloc_bull_simple_famille');
 	if ($this->bulletinFamille())
 	$this->chargeAutreNom('bloc_bull_simple_famille');
@@ -202,7 +202,7 @@ class class_page_accueil {
 		if ($this->modDiscFamille())
 		$this->chargeAutreNom('bloc_module_discipline_famille');
 	}
-/***** Outils complémentaires de gestion des AID *****/
+/***** Outils complÃ©mentaires de gestion des AID *****/
 	$this->verif_exist_ordre_menu('bloc_outil_comp_gestion_aid');
 	if ($this->gestionAID())
 	$this->chargeAutreNom('bloc_outil_comp_gestion_aid');
@@ -222,10 +222,10 @@ class class_page_accueil {
 	if ($this->notanet())
 	$this->chargeAutreNom('bloc_notanet_fiches_brevet');
 
-/***** Gestion années antérieures *****/
-	$this->verif_exist_ordre_menu('bloc_annees_antérieures');
+/***** Gestion annÃ©es antÃ©rieures *****/
+	$this->verif_exist_ordre_menu('bloc_annees_antÃ©rieures');
 	if ($this->anneeAnterieure())
-	$this->chargeAutreNom('bloc_annees_antérieures');
+	$this->chargeAutreNom('bloc_annees_antÃ©rieures');
 
 /***** Gestion des messages *****/
 	$this->verif_exist_ordre_menu('bloc_panneau_affichage');
@@ -244,7 +244,7 @@ class class_page_accueil {
 	  $this->chargeAutreNom('bloc_module_discipline');
 	}
 
-/***** Module Modèle Open Office *****/
+/***** Module ModÃ¨le Open Office *****/
 	$this->verif_exist_ordre_menu('bloc_modeles_Open_Office');
 	if ($this->modeleOpenOffice())
 	$this->chargeAutreNom('bloc_modeles_Open_Office');
@@ -260,7 +260,7 @@ class class_page_accueil {
 	  $this->chargeAutreNom('bloc_Genese_classes');
 	}
 
-/***** Lien vers les flux rss pour les élèves s'ils sont activés *****/
+/***** Lien vers les flux rss pour les Ã©lÃ¨ves s'ils sont activÃ©s *****/
 	$this->verif_exist_ordre_menu('bloc_RSS');
 	if ($this->fluxRSS())
 	$this->chargeAutreNom('bloc_RSS');
@@ -339,22 +339,22 @@ class class_page_accueil {
 
 	  $this->creeNouveauItem('/gestion/accueil_sauve.php',
 			  "Sauvegarde de la base",
-			  "Sauvegarde de la base, les répertoires \"documents\" (contenant les documents joints aux cahiers de texte) et \"photos\" (contenant les photos du trombinoscope) ne seront pas sauvegardés.");
+			  "Sauvegarde de la base, les rÃ©pertoires \"documents\" (contenant les documents joints aux cahiers de texte) et \"photos\" (contenant les photos du trombinoscope) ne seront pas sauvegardÃ©s.");
 
 	  $this->creeNouveauItem('/gestion/index.php',
-			  "Gestion générale",
-			  "Pour accéder aux outils de gestion (sécurité, configuration générale, bases de données, initialisation de GEPI).");
+			  "Gestion gÃ©nÃ©rale",
+			  "Pour accÃ©der aux outils de gestion (sÃ©curitÃ©, configuration gÃ©nÃ©rale, bases de donnÃ©es, initialisation de GEPI).");
 	  $this->creeNouveauItem('/accueil_modules.php',
 			  "Gestion des modules",
-			  "Pour gérer les modules (cahier de textes, carnet de notes, absences, trombinoscope).");
+			  "Pour gÃ©rer les modules (cahier de textes, carnet de notes, absences, trombinoscope).");
 	  $this->creeNouveauItem('/accueil_admin.php',
 			  "Gestion des bases",
-			  "Pour gérer les bases (établissements, utilisateurs, matières, classes, ".$this->gepiSettings['denomination_eleves'].", ".$this->gepiSettings['denomination_responsables'].", AIDs).");
+			  "Pour gÃ©rer les bases (Ã©tablissements, utilisateurs, matiÃ¨res, classes, ".$this->gepiSettings['denomination_eleves'].", ".$this->gepiSettings['denomination_responsables'].", AIDs).");
 	  if (getSettingValue('use_ent') == 'y') {
 		  // On ajoute la page du module ENT
 		$this->creeNouveauItem('/mod_ent/index.php',
 				"Liaison ENT",
-				"Entrer en liaison avec l\'ENT pour gérer les utilisateurs et récupérer les logins pour le sso");
+				"Entrer en liaison avec l\'ENT pour gÃ©rer les utilisateurs et rÃ©cupÃ©rer les logins pour le sso");
 	  }
 
 	  if ($this->b>0){
@@ -371,17 +371,17 @@ class class_page_accueil {
 
 			$this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
 					"Gestion Absences, dispenses, retards et infirmeries",
-					"Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
+					"Cet outil vous permet de gÃ©rer les absences, dispenses, retards et autres bobos Ã  l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
 
 			$this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
 					"Visualiser les absences",
-					"Vous pouvez visualiser créneau par créneau la saisie des absences.");
+					"Vous pouvez visualiser crÃ©neau par crÃ©neau la saisie des absences.");
 
 
 	  } else if (getSettingValue("active_module_absence")=='2' && ($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe")) {
 		$this->creeNouveauItem("/mod_abs2/index.php",
 				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
+				"Cet outil vous permet de gÃ©rer les absences des Ã©lÃ¨ves");
 	  }
 
 			if ($this->b>0){
@@ -401,11 +401,11 @@ class class_page_accueil {
 	  if (getSettingValue("active_module_absence")=='y' ) {
 		$this->creeNouveauItem("/mod_absences/professeurs/prof_ajout_abs.php",
 				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
+				"Cet outil vous permet de gÃ©rer les absences des Ã©lÃ¨ves");
 	  } else if (getSettingValue("active_module_absence")=='2' && !($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe") ) {
 		$this->creeNouveauItem("/mod_abs2/index.php",
 				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
+				"Cet outil vous permet de gÃ©rer les absences des Ã©lÃ¨ves");
 	  }
 
 	  if ($this->b>0){
@@ -443,17 +443,17 @@ class class_page_accueil {
 			and (getSettingValue("active_carnets_notes")=='y'))
 	  $this->creeNouveauItem("/cahier_notes/index.php",
 			  "Carnet de notes : saisie des notes",
-			  "Cet outil vous permet de constituer un carnet de notes pour chaque période et de saisir les notes de toutes vos évaluations.");
+			  "Cet outil vous permet de constituer un carnet de notes pour chaque pÃ©riode et de saisir les notes de toutes vos Ã©valuations.");
 
 	if (($this->test_prof_matiere != "0") or ($this->statutUtilisateur!='professeur'))
 	  $this->creeNouveauItem("/saisie/index.php",
-			  "Bulletin : saisie des moyennes et des appréciations par matière",
-			  "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin");
+			  "Bulletin : saisie des moyennes et des apprÃ©ciations par matiÃ¨re",
+			  "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les apprÃ©ciations du bulletin");
 
 	if($afficher_correction_validation=="y")
 	  $this->creeNouveauItem("/saisie/validation_corrections.php",
 			  "Correction des bulletins",
-			  "Cet outil vous permet de valider les corrections d'appréciations proposées par des professeurs après la clôture d'une période.<br /><span style='color:red;'>Une ou des propositions requièrent votre attention.</span>\n");
+			  "Cet outil vous permet de valider les corrections d'apprÃ©ciations proposÃ©es par des professeurs aprÃ¨s la clÃ´ture d'une pÃ©riode.<br /><span style='color:red;'>Une ou des propositions requiÃ¨rent votre attention.</span>\n");
 
 	if ((($this->test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes'))
 			or (($this->statutUtilisateur!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') )
@@ -462,7 +462,7 @@ class class_page_accueil {
 			  "Bulletin : saisie des avis du conseil",
 			  "Cet outil permet la saisie des avis du conseil de classe.");
 
-	// Saisie ECTS - ne doit être affichée que si l'utilisateur a bien des classes ouvrant droit à ECTS
+	// Saisie ECTS - ne doit Ãªtre affichÃ©e que si l'utilisateur a bien des classes ouvrant droit Ã  ECTS
 	if ($this->statutUtilisateur == 'professeur') {
 		$this->test_prof_ects = sql_count(sql_query("SELECT jgc.saisie_ects
 				FROM j_groupes_classes jgc, j_groupes_professeurs jgp
@@ -492,7 +492,7 @@ class class_page_accueil {
 			  AND $this->test_scol_ects != "0")
 		  OR ($this->statutUtilisateur=='secours')));
 	if ($conditions_ects)
-	  $this->creeNouveauItem("/mod_ects/index_saisie.php","Crédits ECTS","Saisie des crédits ECTS");
+	  $this->creeNouveauItem("/mod_ects/index_saisie.php","CrÃ©dits ECTS","Saisie des crÃ©dits ECTS");
 
 	// Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
 	$call_data = mysql_query("SELECT * FROM aid_config
@@ -511,14 +511,14 @@ class class_page_accueil {
 		$nom_aid = @mysql_result($call_data, $i, "nom");
 		$this->creeNouveauItem("/saisie/saisie_aid.php?indice_aid=".$indice_aid,
 				$nom_aid,
-				"Cet outil permet la saisie des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les $nom_aid.");
+				"Cet outil permet la saisie des apprÃ©ciations des ".$this->gepiSettings['denomination_eleves']." pour les $nom_aid.");
 	  }
 	  $i++;
 	}
 
 	//==============================
 // Pour permettre la saisie de commentaires-type, renseigner la variable $commentaires_types dans /lib/global.inc
-// Et récupérer le paquet commentaires_types sur... ADRESSE A DEFINIR:
+// Et rÃ©cupÃ©rer le paquet commentaires_types sur... ADRESSE A DEFINIR:
 	if(file_exists('saisie/commentaires_types.php')) {
 	  if ((($this->statutUtilisateur=='professeur')
 			  AND (getSettingValue("CommentairesTypesPP")=='yes')
@@ -529,7 +529,7 @@ class class_page_accueil {
 	  {
 		$this->creeNouveauItem("/saisie/commentaires_types.php",
 				"Saisie de commentaires-types",
-				"Permet de définir des commentaires-types pour l'avis du conseil de classe.");
+				"Permet de dÃ©finir des commentaires-types pour l'avis du conseil de classe.");
 	  }
 	}
 
@@ -555,7 +555,7 @@ class class_page_accueil {
 	if ($condition) {
 	  $this->creeNouveauItem("/cahier_texte_2/see_all.php",
 			  "Cahier de textes",
-			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
+			  "Permet de consulter les compte-rendus de sÃ©ance et les devoirs Ã  faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
 	}
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');
@@ -575,14 +575,14 @@ class class_page_accueil {
 	if ($condition) {
 	  $this->creeNouveauItem("/cahier_texte_2/see_all.php",
 			  "Cahier de textes des classes suivies",
-			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements des ".$this->gepiSettings['denomination_eleves']." dont vous avez la responsabilité");
+			  "Permet de consulter les compte-rendus de sÃ©ance et les devoirs Ã  faire pour les enseignements des ".$this->gepiSettings['denomination_eleves']." dont vous avez la responsabilitÃ©");
 	}
 	if ($this->b>0)
 	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');
   }
 
   private function trombinoscope(){
-	//On vérifie si le module est activé
+	//On vÃ©rifie si le module est activÃ©
 
 	$active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
 	$active_module_trombino_pers=getSettingValue("active_module_trombino_pers");
@@ -602,7 +602,7 @@ class class_page_accueil {
 			($GepiAccesEleTrombiProfsClasse!="yes")) {
 		$affiche = 'no';
 	  }else {
-		// Au moins un des droits est donné aux élèves.
+		// Au moins un des droits est donnÃ© aux Ã©lÃ¨ves.
 		$affiche = 'yes';
 
 		if (($active_module_trombinoscopes!='y')
@@ -687,16 +687,16 @@ class class_page_accueil {
 
 	if ($condition)
 	  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
-			  "Visualisation et impression des relevés de notes",
-			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, ".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].", classe par classe.");
+			  "Visualisation et impression des relevÃ©s de notes",
+			  "Cet outil vous permet de visualiser Ã  l'Ã©cran et d'imprimer les relevÃ©s de notes, ".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].", classe par classe.");
 
 	if ($condition && $condition2)
 	  $this->creeNouveauItem("/cahier_notes/index2.php",
 			  "Visualisation des moyennes des carnets de notes",
-			  "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.");
+			  "Cet outil vous permet de visualiser Ã  l'Ã©cran les moyennes calculÃ©es d'aprÃ¨s le contenu des carnets de notes, indÃ©pendamment de la saisie des moyennes sur les bulletins.");
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Relevés de notes",'images/icons/releve.png');
+	  $this->creeNouveauTitre('accueil',"RelevÃ©s de notes",'images/icons/releve.png');
 	  return true;
 	}
 
@@ -718,8 +718,8 @@ class class_page_accueil {
 	$chemin = array();
 	if ($condition)
 	  $this->creeNouveauItem("/mod_ects/edition.php",
-			  "Génération des documents ECTS",
-			  "Cet outil vous permet de générer les documents ECTS (relevé, attestation, annexe) pour les classes concernées.");
+			  "GÃ©nÃ©ration des documents ECTS",
+			  "Cet outil vous permet de gÃ©nÃ©rer les documents ECTS (relevÃ©, attestation, annexe) pour les classes concernÃ©es.");
 
 	$recap_ects = ($this->gepiSettings['active_mod_ects'] == 'y'
 					and (
@@ -734,7 +734,7 @@ class class_page_accueil {
 	if ($recap_ects)
 	  $this->creeNouveauItem("/mod_ects/recapitulatif.php",
 			  "Visualiser tous les ECTS",
-			  "Visualiser les tableaux récapitulatif par classe de tous les crédits ECTS.");
+			  "Visualiser les tableaux rÃ©capitulatif par classe de tous les crÃ©dits ECTS.");
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Documents ECTS",'images/icons/releve.png');
@@ -751,7 +751,7 @@ class class_page_accueil {
 
 	if ($_SESSION["statut"] == 'responsable') {
 	  if (getSettingValue("autorise_edt_eleve")=="yes"){
-		// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
+		// on propose l'edt d'un Ã©lÃ¨ve, les autres enfants seront disponibles dans la page de l'edt.
 		$tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur);
 		$this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
 			  "Emploi du temps",
@@ -789,11 +789,11 @@ class class_page_accueil {
 		if ($this->statutUtilisateur == "responsable") {
 		  $this->creeNouveauItem("/cahier_texte/consultation.php",
 				  "Cahier de textes",
-				  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les ".$this->gepiSettings['denomination_eleves']." dont vous êtes le ".$this->gepiSettings['denomination_responsable'].".");
+				  "Permet de consulter les compte-rendus de sÃ©ance et les devoirs Ã  faire pour les ".$this->gepiSettings['denomination_eleves']." dont vous Ãªtes le ".$this->gepiSettings['denomination_responsable'].".");
 		} else {
 		  $this->creeNouveauItem("/cahier_texte/consultation.php",
 				  "Cahier de textes",
-				  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements que vous suivez.");
+				  "Permet de consulter les compte-rendus de sÃ©ance et les devoirs Ã  faire pour les enseignements que vous suivez.");
 		}
 	}
 	if ($this->b>0){
@@ -814,12 +814,12 @@ class class_page_accueil {
 	if ($condition) {
 		if ($this->statutUtilisateur == "responsable") {
 		  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
-				  "Relevés de notes",
-				  "Permet de consulter les relevés de notes des ".$this->gepiSettings['denomination_eleves']." dont vous êtes le ".$this->gepiSettings['denomination_responsable'].".");
+				  "RelevÃ©s de notes",
+				  "Permet de consulter les relevÃ©s de notes des ".$this->gepiSettings['denomination_eleves']." dont vous Ãªtes le ".$this->gepiSettings['denomination_responsable'].".");
 		} else {
 		  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
-				  "Relevés de notes",
-				  "Permet de consulter vos relevés de notes détaillés.");
+				  "RelevÃ©s de notes",
+				  "Permet de consulter vos relevÃ©s de notes dÃ©taillÃ©s.");
 		}
 	}
 	if ($this->b>0){
@@ -843,7 +843,7 @@ class class_page_accueil {
 		if(getSettingValue('visuRespDisc')=='yes') {
 			$this->creeNouveauItem("/mod_discipline/visu_disc.php",
 					"Discipline",
-					"Incidents concernant les élèves/enfants dont vous êtes responsable.");
+					"Incidents concernant les Ã©lÃ¨ves/enfants dont vous Ãªtes responsable.");
 		}
 	}
 
@@ -866,16 +866,16 @@ class class_page_accueil {
 	if ($condition) {
 	  if ($this->statutUtilisateur == "responsable") {
 		  $this->creeNouveauItem("/groupes/visu_profs_eleve.php",
-				  "Équipe pédagogique",
-				  "Permet de consulter l'équipe pédagogique des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$this->gepiSettings['denomination_responsable'].".");
+				  "Ã‰quipe pÃ©dagogique",
+				  "Permet de consulter l'Ã©quipe pÃ©dagogique des ".$this->gepiSettings['denomination_eleves']." dont vous Ãªtes ".$this->gepiSettings['denomination_responsable'].".");
 		 } else {
 		  $this->creeNouveauItem("/groupes/visu_profs_eleve.php",
-				  "Équipe pédagogique",
-				  "Permet de consulter l'équipe pédagogique qui vous concerne.");
+				  "Ã‰quipe pÃ©dagogique",
+				  "Permet de consulter l'Ã©quipe pÃ©dagogique qui vous concerne.");
 		}
 	}
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Équipe pédagogique",'images/icons/trombinoscope.png');
+	  $this->creeNouveauTitre('accueil',"Ã‰quipe pÃ©dagogique",'images/icons/trombinoscope.png');
 	  return true;
 	}
   }
@@ -893,17 +893,17 @@ class class_page_accueil {
 	if ($condition) {
 	  if ($this->statutUtilisateur == "responsable") {
 		  $this->creeNouveauItem("/prepa_conseil/index3.php",
-				  "Bulletins simplifiés",
-				  "Permet de consulter les bulletins simplifiés des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$this->gepiSettings['denomination_responsable'].".");
+				  "Bulletins simplifiÃ©s",
+				  "Permet de consulter les bulletins simplifiÃ©s des ".$this->gepiSettings['denomination_eleves']." dont vous Ãªtes ".$this->gepiSettings['denomination_responsable'].".");
 		 } else {
 		  $this->creeNouveauItem("/prepa_conseil/index3.php",
-				  "Bulletins simplifiés",
-				  "Permet de consulter vos bulletins sous forme simplifiée.");
+				  "Bulletins simplifiÃ©s",
+				  "Permet de consulter vos bulletins sous forme simplifiÃ©e.");
 		}
 	}
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Bulletins simplifiés",'images/icons/bulletin_simp.png');
+	  $this->creeNouveauTitre('accueil',"Bulletins simplifiÃ©s",'images/icons/bulletin_simp.png');
 	  return true;
 	}
   }
@@ -920,11 +920,11 @@ class class_page_accueil {
 	  if ($this->statutUtilisateur == "responsable") {
 		  $this->creeNouveauItem("/visualisation/affiche_eleve.php",
 				  "Visualisation graphique",
-				  "Permet de visualiser sous forme graphique les résultats des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$this->gepiSettings['denomination_responsable'].", par rapport à la classe.");
+				  "Permet de visualiser sous forme graphique les rÃ©sultats des ".$this->gepiSettings['denomination_eleves']." dont vous Ãªtes ".$this->gepiSettings['denomination_responsable'].", par rapport Ã  la classe.");
 		} else {
 		  $this->creeNouveauItem("/visualisation/affiche_eleve.php",
 				  "Visualisation graphique",
-				  "Permet de consulter vos résultats sous forme graphique, comparés à la classe.");
+				  "Permet de consulter vos rÃ©sultats sous forme graphique, comparÃ©s Ã  la classe.");
 		}
     }
 
@@ -947,12 +947,12 @@ class class_page_accueil {
 	if ($conditions2) {
 	  $this->creeNouveauItem("/mod_abs2/bilan_parent.php",
 			  "Absences",
-			  "Permet de suivre les absences et les retards des élèves dont je suis ".$this->gepiSettings['denomination_responsable']);
+			  "Permet de suivre les absences et les retards des Ã©lÃ¨ves dont je suis ".$this->gepiSettings['denomination_responsable']);
 
 	} else if ($conditions3) {
 	  $this->creeNouveauItem("/mod_absences/absences.php",
 			  "Absences",
-			  "Permet de suivre les absences et les retards des élèves dont je suis ".$this->gepiSettings['denomination_responsable']);
+			  "Permet de suivre les absences et les retards des Ã©lÃ¨ves dont je suis ".$this->gepiSettings['denomination_responsable']);
 	}
 
 	if ($this->b>0){
@@ -985,20 +985,20 @@ class class_page_accueil {
 		if ($this->AfficheAid($indice_aid)) {
 		  $this->creeNouveauItem("/aid/index_fiches.php?indice_aid=".$indice_aid,
 				  $nom_aid,
-				  "Tableau récapitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
+				  "Tableau rÃ©capitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
 		}
 		$i++;
 	  }
 	  if (($nb_aid_annees_anterieures > 0)) {
 		$this->creeNouveauItem("/aid/annees_anterieures_accueil.php",
-				"Fiches projets des années antérieures",
-				"Accès aux fiches projets des années antérieures");
+				"Fiches projets des annÃ©es antÃ©rieures",
+				"AccÃ¨s aux fiches projets des annÃ©es antÃ©rieures");
 	  }
 	}
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',
-			  "Outils de visualisation et d'édition des fiches projets",
+			  "Outils de visualisation et d'Ã©dition des fiches projets",
 			  'images/icons/document.png');
 	  return true;
 	}
@@ -1024,27 +1024,27 @@ class class_page_accueil {
 			and (getSettingValue("GepiProfImprBul")=='yes'))
 			or ($this->statutUtilisateur!='professeur')){
 	  $this->creeNouveauItem("/bulletin/verif_bulletins.php",
-			  "Outil de vérification",
-			  "Permet de vérifier si toutes les rubriques des bulletins sont remplies.");
+			  "Outil de vÃ©rification",
+			  "Permet de vÃ©rifier si toutes les rubriques des bulletins sont remplies.");
 	 }
 
 	if ($this->statutUtilisateur!='professeur'){
 	  $this->creeNouveauItem("/bulletin/autorisation_exceptionnelle_saisie_app.php",
-			  "Autorisation exceptionnelle de saisie d'appréciations",
-			  "Permet d'autoriser exceptionnellement un enseignant à proposer une saisie d'appréciations pour un enseignement sur une période partiellement close.");
+			  "Autorisation exceptionnelle de saisie d'apprÃ©ciations",
+			  "Permet d'autoriser exceptionnellement un enseignant Ã  proposer une saisie d'apprÃ©ciations pour un enseignement sur une pÃ©riode partiellement close.");
 	}
 
 	if ($this->statutUtilisateur!='professeur'){
 	  $this->creeNouveauItem("/bulletin/verrouillage.php",
-			  "Verrouillage/Déverrouillage des périodes",
-			  "Permet de verrouiller ou déverrouiller une période pour une ou plusieurs classes.");
+			  "Verrouillage/DÃ©verrouillage des pÃ©riodes",
+			  "Permet de verrouiller ou dÃ©verrouiller une pÃ©riode pour une ou plusieurs classes.");
 	}
 
 //==========================================================
 // AJOUT: boireaus 20080219
-//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+//        Dispositif de restriction des accÃ¨s aux apprÃ©ciations pour les comptes responsables/eleves
 
-//        Sur quel droit s'appuyer pour donner l'accès?
+//        Sur quel droit s'appuyer pour donner l'accÃ¨s?
 //            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
 	if ((($this->test_prof_suivi != "0")
 					AND ($this->statutUtilisateur=='professeur')
@@ -1052,8 +1052,8 @@ class class_page_accueil {
 			 OR ($this->statutUtilisateur=='scolarite')
 			 OR ($this->statutUtilisateur=='administrateur')){
 	  $this->creeNouveauItem("/classes/acces_appreciations.php",
-			  "Accès des ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']." aux appréciations",
-			  "Permet de définir quand les comptes ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']." (s'ils existent) peuvent accéder aux appréciations des ".$this->gepiSettings['denomination_professeurs']." sur le bulletin et avis du conseil de classe.");
+			  "AccÃ¨s des ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']." aux apprÃ©ciations",
+			  "Permet de dÃ©finir quand les comptes ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']." (s'ils existent) peuvent accÃ©der aux apprÃ©ciations des ".$this->gepiSettings['denomination_professeurs']." sur le bulletin et avis du conseil de classe.");
 	 }
 
 //==========================================================
@@ -1067,8 +1067,8 @@ class class_page_accueil {
 			OR (($this->statutUtilisateur=='administrateur')
 					AND (getSettingValue("GepiAdminImprBulSettings")=='yes'))){
 	  $this->creeNouveauItem("/bulletin/param_bull.php",
-			  "Paramètres d'impression des bulletins",
-			  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+			  "ParamÃ¨tres d'impression des bulletins",
+			  "Permet de modifier les paramÃ¨tres de mise en page et d'impression des bulletins.");
 	}
 
 	if ($this->statutUtilisateur=='scolarite'){
@@ -1088,13 +1088,13 @@ class class_page_accueil {
 			OR ($this->statutUtilisateur!='professeur')){
 	  $this->creeNouveauItem("/bulletin/bull_index.php",
 			  "Visualisation et impression des bulletins",
-			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
+			  "Cet outil vous permet de visualiser Ã  l'Ã©cran et d'imprimer les bulletins, classe par classe.");
 	}
 
 	if ($this->statutUtilisateur=='administrateur'){
 		$this->creeNouveauItem("/statistiques/index.php",
 			  "Extractions statistiques",
-			  "Cet outil vous permet d'extraire des données à des fins statistiques (des bulletins, ...).");
+			  "Cet outil vous permet d'extraire des donnÃ©es Ã  des fins statistiques (des bulletins, ...).");
 
 		$gepi_denom_mention=getSettingValue("gepi_denom_mention");
 		if($gepi_denom_mention=="") {
@@ -1103,7 +1103,7 @@ class class_page_accueil {
 
 		$this->creeNouveauItem("/saisie/saisie_mentions.php",
 			  ucfirst($gepi_denom_mention)."s des bulletins",
-			  "Cet outil vous permet de définir les ".$gepi_denom_mention."s (<i>Félicitations, Encouragements,...</i>) des bulletins.");
+			  "Cet outil vous permet de dÃ©finir les ".$gepi_denom_mention."s (<i>FÃ©licitations, Encouragements,...</i>) des bulletins.");
 	}
 
 	if ($this->b>0){
@@ -1147,15 +1147,15 @@ class class_page_accueil {
         );
 
 	$this->creeNouveauItem("/groupes/visu_profs_class.php",
-			"Visualisation des équipes pédagogiques",
-			"Ceci vous permet de connaître tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.");
+			"Visualisation des Ã©quipes pÃ©dagogiques",
+			"Ceci vous permet de connaÃ®tre tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernÃ©s.");
 
 	if(($this->statutUtilisateur=='scolarite')||
 			($this->statutUtilisateur=='professeur')||
 			($this->statutUtilisateur=='cpe')){
 	  $this->creeNouveauItem("/groupes/visu_mes_listes.php",
-			  "Visualisation de mes élèves",
-			  "Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
+			  "Visualisation de mes Ã©lÃ¨ves",
+			  "Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constituÃ© et enseignÃ©.");
 	}
 
 	if(getSettingValue('active_mod_ooo')=='y') {
@@ -1165,13 +1165,13 @@ class class_page_accueil {
 				($this->statutUtilisateur=='cpe')){
 		$this->creeNouveauItem("/mod_ooo/publipostage_ooo.php",
 				"Publipostage OOo",
-				"Ce menu permet de vous permet d'effectuer des publipostages OpenOffice.org à l'aide des données des tables 'eleves' et 'classes'.");
+				"Ce menu permet de vous permet d'effectuer des publipostages OpenOffice.org Ã  l'aide des donnÃ©es des tables 'eleves' et 'classes'.");
 		}
 	}
 
 	$this->creeNouveauItem("/eleves/visu_eleve.php",
 			"Consultation d'un ".$this->gepiSettings['denomination_eleve'],
-			"Ce menu vous permet de consulter dans une même page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevés de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.");
+			"Ce menu vous permet de consulter dans une mÃªme page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevÃ©s de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains Ã©lÃ©ments peuvent n'Ãªtre accessibles que pour certaines catÃ©gories de visiteurs.");
 
 	if(getSettingValue("active_cahiers_texte")=="y") {
 		if(($this->statutUtilisateur=="professeur") OR
@@ -1185,24 +1185,24 @@ class class_page_accueil {
 		if($this->statutUtilisateur=="professeur") {
 			$this->creeNouveauItem("/documents/archives/index.php",
 				"Mes archives de cahiers de textes",
-				"Ce menu vous permet de consulter vos cahiers de textes des années précédentes.");
+				"Ce menu vous permet de consulter vos cahiers de textes des annÃ©es prÃ©cÃ©dentes.");
 		}
 		elseif(($this->statutUtilisateur=="cpe")||($this->statutUtilisateur=="scolarite")||($this->statutUtilisateur=="administrateur")) {
 			$this->creeNouveauItem("/documents/archives/index.php",
 				"Archives de cahiers de textes",
-				"Ce menu vous permet de consulter les cahiers de textes des années précédentes.");
+				"Ce menu vous permet de consulter les cahiers de textes des annÃ©es prÃ©cÃ©dentes.");
 		}
 	}
 
 	$this->creeNouveauItem("/impression/impression_serie.php",
 			"Impression PDF de listes",
-			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", à l'unité ou en série. L'apparence des listes est paramétrable.");
+			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", Ã  l'unitÃ© ou en sÃ©rie. L'apparence des listes est paramÃ©trable.");
 
 	if(($this->statutUtilisateur=='scolarite')||(($this->statutUtilisateur=='professeur')
 			AND ($this->test_prof_suivi != "0"))){
 	  $this->creeNouveauItem("/saisie/impression_avis.php",
 			  "Impression PDF des avis du conseil de classe",
-			  "Ceci vous permet d'imprimer en PDF la synthèse des avis du conseil de classe.");
+			  "Ceci vous permet d'imprimer en PDF la synthÃ¨se des avis du conseil de classe.");
 	}
 
 	if(($this->statutUtilisateur=='scolarite')||
@@ -1210,24 +1210,24 @@ class class_page_accueil {
 			($this->statutUtilisateur=='cpe')){
 	  $this->creeNouveauItem("/groupes/mes_listes.php",
 			  "Exporter mes listes",
-			  "Ce menu permet de télécharger ses listes avec tous les ".$this->gepiSettings['denomination_eleves']." au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.");
+			  "Ce menu permet de tÃ©lÃ©charger ses listes avec tous les ".$this->gepiSettings['denomination_eleves']." au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.");
 	}
 
 	$this->creeNouveauItem("/visualisation/index.php",
 			"Outils graphiques de visualisation",
-			"Visualisation graphique des résultats des ".$this->gepiSettings['denomination_eleves']." ou des classes, en croisant les données de multiples manières.");
+			"Visualisation graphique des rÃ©sultats des ".$this->gepiSettings['denomination_eleves']." ou des classes, en croisant les donnÃ©es de multiples maniÃ¨res.");
 
 	if (($this->test_prof_matiere != "0") or ($this->statutUtilisateur!='professeur')) {
 
 	  if ($this->statutUtilisateur!='scolarite'){
 		$this->creeNouveauItem("/prepa_conseil/index1.php",
-				"Visualiser mes moyennes et appréciations des bulletins",
-				"Tableau récapitulatif de vos moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.");
+				"Visualiser mes moyennes et apprÃ©ciations des bulletins",
+				"Tableau rÃ©capitulatif de vos moyennes et/ou apprÃ©ciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.");
 	  }
 	  else{
 		$this->creeNouveauItem("/prepa_conseil/index1.php",
-				"Visualiser les moyennes et appréciations des bulletins",
-				"Tableau récapitulatif des moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.");
+				"Visualiser les moyennes et apprÃ©ciations des bulletins",
+				"Tableau rÃ©capitulatif des moyennes et/ou apprÃ©ciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.");
 	  }
 
 	}
@@ -1235,13 +1235,13 @@ class class_page_accueil {
 	if ($conditions_moyennes)  {
 	  $this->creeNouveauItem("/prepa_conseil/index2.php",
 			  "Visualiser toutes les moyennes d'une classe",
-			  "Tableau récapitulatif des moyennes d'une classe.");
+			  "Tableau rÃ©capitulatif des moyennes d'une classe.");
 	}
 
 	if ($conditions_bulsimples) {
 	  $this->creeNouveauItem("/prepa_conseil/index3.php",
-			  "Visualiser les bulletins simplifiés",
-			  "Bulletins simplifiés d'une classe.");
+			  "Visualiser les bulletins simplifiÃ©s",
+			  "Bulletins simplifiÃ©s d'une classe.");
 	}
 	elseif(($this->statutUtilisateur=='professeur')&&(getSettingValue("GepiAccesBulletinSimplePP")=="yes")) {
 	  $sql="SELECT 1=1 FROM j_eleves_professeurs
@@ -1249,8 +1249,8 @@ class class_page_accueil {
 	  $test_pp=mysql_num_rows(mysql_query($sql));
 	  if($test_pp>0) {
 		$this->creeNouveauItem("/prepa_conseil/index3.php",
-				"Visualiser les bulletins simplifiés",
-				"Bulletins simplifiés d'une classe.");
+				"Visualiser les bulletins simplifiÃ©s",
+				"Bulletins simplifiÃ©s d'une classe.");
 	  }
 	}
 
@@ -1270,8 +1270,8 @@ class class_page_accueil {
 	  if ($nb_result != 0) {
 		$nom_aid = @mysql_result($call_data, $i, "nom");
 		$this->creeNouveauItem("/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid,
-				"Visualiser des appréciations ".$nom_aid,
-				"Cet outil permet la visualisation et l'impression des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
+				"Visualiser des apprÃ©ciations ".$nom_aid,
+				"Cet outil permet la visualisation et l'impression des apprÃ©ciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
 	  }
 	  $i++;
 	}
@@ -1285,7 +1285,7 @@ class class_page_accueil {
 		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 		$this->creeNouveauItem("/eleves/index.php",
 				"Gestion des ".$this->gepiSettings['denomination_eleves'],
-				"Cet outil permet d'accéder aux informations des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$gepi_prof_suivi.".");
+				"Cet outil permet d'accÃ©der aux informations des ".$this->gepiSettings['denomination_eleves']." dont vous Ãªtes ".$gepi_prof_suivi.".");
 	  }
 	}
 	if ($this->b>0){
@@ -1325,15 +1325,15 @@ class class_page_accueil {
 	  if($this->statutUtilisateur=='professeur') {
 		$this->creeNouveauItem("/mod_notanet/index.php",
 				"Notanet/Fiches Brevet",
-				"Cet outil permet de saisir les appréciations pour les Fiches Brevet.");
+				"Cet outil permet de saisir les apprÃ©ciations pour les Fiches Brevet.");
 	  }
 	  else {
 		$this->creeNouveauItem("/mod_notanet/index.php",
 				"Notanet/Fiches Brevet",
 				"Cet outil permet :<br />
-				- d'effectuer les calculs et la génération du fichier CSV requis pour Notanet.
-				L'opération renseigne également les tables nécessaires pour générer les Fiches brevet.<br />
-				- de générer les fiches brevet");
+				- d'effectuer les calculs et la gÃ©nÃ©ration du fichier CSV requis pour Notanet.
+				L'opÃ©ration renseigne Ã©galement les tables nÃ©cessaires pour gÃ©nÃ©rer les Fiches brevet.<br />
+				- de gÃ©nÃ©rer les fiches brevet");
 	  }
 	}
 
@@ -1350,8 +1350,8 @@ class class_page_accueil {
 
 	  if($this->statutUtilisateur=='administrateur'){
 		$this->creeNouveauItem("/mod_annees_anterieures/index.php",
-				"Années antérieures",
-				"Cet outil permet de gérer et de consulter les données d'années antérieures (bulletins simplifiés,...).");
+				"AnnÃ©es antÃ©rieures",
+				"Cet outil permet de gÃ©rer et de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 	  }
 	  else{
 		if($this->statutUtilisateur=='professeur') {
@@ -1362,8 +1362,8 @@ class class_page_accueil {
 
 		  if(($AAProfTout=="yes")||($AAProfClasses=="yes")||($AAProfGroupes=="yes")){
 			$this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-					"Années antérieures",
-					"Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+					"AnnÃ©es antÃ©rieures",
+					"Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 		  }
 		  elseif($AAProfPrinc=="yes"){
 			$sql="SELECT 1=1 FROM classes c,
@@ -1374,8 +1374,8 @@ class class_page_accueil {
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0){
 			  $this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-					  "Années antérieures",
-					  "Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+					  "AnnÃ©es antÃ©rieures",
+					  "Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 			}
 		  }
 
@@ -1386,8 +1386,8 @@ class class_page_accueil {
 
 		  if($AAScolTout=="yes"){
 			$this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-					"Années antérieures",
-					"Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+					"AnnÃ©es antÃ©rieures",
+					"Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 		  }
 		  elseif($AAScolResp=="yes"){
 			$sql="SELECT 1=1 FROM j_scol_classes jsc
@@ -1395,8 +1395,8 @@ class class_page_accueil {
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0){
 			  $this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-					  "Années antérieures",
-					  "Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+					  "AnnÃ©es antÃ©rieures",
+					  "Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 			}
 		  }
 
@@ -1407,8 +1407,8 @@ class class_page_accueil {
 
 		  if($AACpeTout=="yes"){
 			$this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-					"Années antérieures",
-					"Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+					"AnnÃ©es antÃ©rieures",
+					"Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 		  }
 		  elseif($AACpeResp=="yes"){
 			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$this->loginUtilisateur."'";
@@ -1416,8 +1416,8 @@ class class_page_accueil {
 
 			if(mysql_num_rows($test)>0){
 			  $this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-					  "Années antérieures",
-					  "Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+					  "AnnÃ©es antÃ©rieures",
+					  "Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 			}
 
 		  }
@@ -1427,7 +1427,7 @@ class class_page_accueil {
 		  $AAResponsable=getSettingValue('AAResponsable');
 
 		  if($AAResponsable=="yes"){
-			// Est-ce que le responsable est bien associé à un élève?
+			// Est-ce que le responsable est bien associÃ© Ã  un Ã©lÃ¨ve?
 			$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e
 				WHERE rp.pers_id=r.pers_id AND
 					  r.ele_id=e.ele_id AND
@@ -1435,8 +1435,8 @@ class class_page_accueil {
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0){
 			  $this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-					  "Années antérieures",
-					  "Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+					  "AnnÃ©es antÃ©rieures",
+					  "Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
  			}
 		  }
 
@@ -1446,8 +1446,8 @@ class class_page_accueil {
 
 		  if($AAEleve=="yes"){
 			$this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-					"Années antérieures",
-					"Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+					"AnnÃ©es antÃ©rieures",
+					"Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 		  }
 
 		}
@@ -1457,7 +1457,7 @@ class class_page_accueil {
 	}
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Années antérieures",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"AnnÃ©es antÃ©rieures",'images/icons/document.png');
 	  return true;
 	}
   }
@@ -1467,7 +1467,7 @@ class class_page_accueil {
 
 	$this->creeNouveauItem("/messagerie/index.php",
 			"Panneau d'affichage",
-			"Cet outil permet la gestion des messages à afficher sur la page d'accueil des utilisateurs.");
+			"Cet outil permet la gestion des messages Ã  afficher sur la page d'accueil des utilisateurs.");
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Panneau d'affichage",'images/icons/mail.png');
@@ -1481,12 +1481,12 @@ class class_page_accueil {
 	if (getSettingValue("active_inscription")=='y') {
 	  $this->creeNouveauItem("/mod_inscription/inscription_config.php",
 			  "Configuration du module d'inscription/visualisation",
-			  "Configuration des différents paramètres du module");
+			  "Configuration des diffÃ©rents paramÃ¨tres du module");
 
 	  if (getSettingValue("active_inscription_utilisateurs")=='y'){
 		$this->creeNouveauItem("/mod_inscription/inscription_index.php",
-				"Accès au module d'inscription/visualisation",
-				"S'inscrire ou se désinscrire - Consulter les inscriptions");
+				"AccÃ¨s au module d'inscription/visualisation",
+				"S'inscrire ou se dÃ©sinscrire - Consulter les inscriptions");
 	  }
 
 	}
@@ -1512,7 +1512,7 @@ class class_page_accueil {
 			if(getSettingValue('visuRespDisc')=='y') {
 				$this->creeNouveauItem("/mod_discipline/visu_disc.php",
 						"Discipline",
-						"Incidents concernant les élèves/enfants dont vous êtes responsable.");
+						"Incidents concernant les Ã©lÃ¨ves/enfants dont vous Ãªtes responsable.");
 			}
 		}
 		else {
@@ -1535,12 +1535,12 @@ class class_page_accueil {
 	if (getSettingValue("active_mod_ooo")=='y') {
 
 	  $this->creeNouveauItem("/mod_ooo/index.php",
-			"Modèle Open Office",
-			"Gérer les modèles Open Office dans Gepi et Utiliser les formulaires de saisie");
+			"ModÃ¨le Open Office",
+			"GÃ©rer les modÃ¨les Open Office dans Gepi et Utiliser les formulaires de saisie");
 	}
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Modèles Open Office",'mod_ooo/images/ico_gene_ooo.png');
+	  $this->creeNouveauTitre('accueil',"ModÃ¨les Open Office",'mod_ooo/images/ico_gene_ooo.png');
 	  return true;
 	}
   }
@@ -1554,8 +1554,8 @@ class class_page_accueil {
 	$this->b=0;
 	  $nomPlugin=$plugin->nom;
 	  $this->verif_exist_ordre_menu('bloc_plugin_'.$nomPlugin);
-	  // On offre la possibilité d'inclure un fichier functions_nom_du_plugin.php
-	  // Ce fichier peut lui-même contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
+	  // On offre la possibilitÃ© d'inclure un fichier functions_nom_du_plugin.php
+	  // Ce fichier peut lui-mÃªme contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
 	  if (file_exists($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
 		include_once($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
 
@@ -1564,12 +1564,12 @@ class class_page_accueil {
 								ORDER by titre_item');
 
 	  while ($menuItem = mysql_fetch_object($querymenu)){
-		// On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
+		// On regarde si le plugin a prÃ©vu une surcharge dans le calcul de l'affichage de l'item dans le menu
 		// On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
 		$nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
 
 		if (function_exists($nom_fonction_autorisation))
-		  // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur à afficher cet item dans le menu
+		  // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur Ã  afficher cet item dans le menu
 		  $result_autorisation = $nom_fonction_autorisation($this->loginUtilisateur,$menuItem->lien_item);
 		else
 		  $result_autorisation=true;
@@ -1595,11 +1595,11 @@ class class_page_accueil {
 	$this->b=0;
 
 	$this->creeNouveauItem("/mod_genese_classes/index.php",
-			"Génèse des classes",
-			"Effectuer la répartition des élèves par classes en tenant comptes des options,...");
+			"GÃ©nÃ¨se des classes",
+			"Effectuer la rÃ©partition des Ã©lÃ¨ves par classes en tenant comptes des options,...");
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Génèse des classes",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"GÃ©nÃ¨se des classes",'images/icons/document.png');
 	  return true;
 	}
   }
@@ -1608,10 +1608,10 @@ class class_page_accueil {
 	$this->b=0;
 
 	if (getSettingValue("rss_cdt_eleve") == 'y' AND $this->statutUtilisateur == "eleve") {
-	  // Les flux rss sont ouverts pour les élèves
+	  // Les flux rss sont ouverts pour les Ã©lÃ¨ves
 	  $this->canal_rss_flux=1;
 
-	  // A vérifier pour les cdt
+	  // A vÃ©rifier pour les cdt
 	  if (getSettingValue("rss_acces_ele") == 'direct') {
 	// echo "il y a un flux RSS direct";
 		$uri_el = retourneUri($this->loginUtilisateur, $this->test_https, 'cdt');
@@ -1619,7 +1619,7 @@ class class_page_accueil {
 				  "texte"=>$uri_el["text"],
 				  "mode"=>1 ,
 				  "expli"=>"En cliquant sur la cellule de gauche,
-				  vous pourrez récupérer votre URI (si vous avez activé le javascript sur votre navigateur).");
+				  vous pourrez rÃ©cupÃ©rer votre URI (si vous avez activÃ© le javascript sur votre navigateur).");
 	  }elseif(getSettingValue("rss_acces_ele") == 'csv'){
 		$this->canal_rss=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
 	  }
@@ -1635,14 +1635,14 @@ class class_page_accueil {
 	$this->b=0;
 
 	if ($_SESSION["statut"] == 'autre') {
-	  // On récupère la liste des fichiers à autoriser
+	  // On rÃ©cupÃ¨re la liste des fichiers Ã  autoriser
 	  require_once("utilisateurs/creer_statut_autorisation.php");
 	  $nbre_a = count($autorise);
 
 	  $a = 1;
 	  while($a < $nbre_a){
 		$numitem=$a;
-		// On récupère le droit sur le fichier
+		// On rÃ©cupÃ¨re le droit sur le fichier
 		$sql_f = "SELECT autorisation FROM droits_speciaux
 				  WHERE id_statut = '".$_SESSION["statut_special_id"]."'
 				  AND nom_fichier = '".$autorise[$a][0]."'
@@ -1656,11 +1656,11 @@ class class_page_accueil {
 		}
 
 		if ($rep_f == 'V') {
-		  $test = explode(".", $autorise[$a][0]); // On teste pour voir s'il y a un .php à la fin de la chaîne
+		  $test = explode(".", $autorise[$a][0]); // On teste pour voir s'il y a un .php Ã  la fin de la chaÃ®ne
 
 		  if (!isset($test[1])) {
-				// rien, la vérification se fait dans le module EdT
-				// ou alors dans les autres modules spécifiés
+				// rien, la vÃ©rification se fait dans le module EdT
+				// ou alors dans les autres modules spÃ©cifiÃ©s
 		  }else{
 			if($a == 4){
 				// Dans le cas de la saisie des absences, il faut ajouter une variable pour le GET
@@ -1693,12 +1693,12 @@ class class_page_accueil {
 	//insert into setting set name='active_mod_epreuve_blanche', value='y';
 	if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 	  $this->creeNouveauItem("/mod_epreuve_blanche/index.php",
-			  "Épreuves blanches",
-			  "Organisation d'épreuves blanches,...");
+			  "Ã‰preuves blanches",
+			  "Organisation d'Ã©preuves blanches,...");
 	}
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Épreuves blanches",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"Ã‰preuves blanches",'images/icons/document.png');
 	  return true;
 	}
   }
@@ -1737,7 +1737,7 @@ class class_page_accueil {
 	if (getSettingValue("active_mod_apb")=='y') {
 	  $this->creeNouveauItem("/mod_apb/index.php",
 			  "Export APB",
-			  "Export du fichier XML pour le système Admissions Post-Bac");
+			  "Export du fichier XML pour le systÃ¨me Admissions Post-Bac");
 	}
 
 	if ($this->b>0){
@@ -1752,7 +1752,7 @@ class class_page_accueil {
 	if (getSettingValue("active_mod_gest_aid")=='y') {
 
 	  $sql = "SELECT * FROM aid_config ";
-	  // on exclue la rubrique permettant de visualiser quels élèves ont le droit d'envoyer/modifier leur photo
+	  // on exclue la rubrique permettant de visualiser quels Ã©lÃ¨ves ont le droit d'envoyer/modifier leur photo
 	  $flag_where = 'n';
 
 	  if (getSettingValue("num_aid_trombinoscopes") != "") {
@@ -1760,7 +1760,7 @@ class class_page_accueil {
 		$flag_where = 'y';
 	  }
 
-	  // si le plugin "gestion_autorisations_publications" existe et est activé, on exclue la rubrique correspondante
+	  // si le plugin "gestion_autorisations_publications" existe et est activÃ©, on exclue la rubrique correspondante
 	  $test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
 
 	  if (($test_plugin=='y') and (getSettingValue("indice_aid_autorisations_publi") != ""))
@@ -1791,11 +1791,11 @@ class class_page_accueil {
   		if ($nb_result2 != 0)
       		$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
 				  $nom_aid,
-				  "Cet outil vous permet de gérer les groupes (création, suppression, modification).");
+				  "Cet outil vous permet de gÃ©rer les groupes (crÃ©ation, suppression, modification).");
 			else
       		$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
 				  $nom_aid,
-				  "Cet outil vous permet de gérer l'appartenance des élèves aux différents groupes.");
+				  "Cet outil vous permet de gÃ©rer l'appartenance des Ã©lÃ¨ves aux diffÃ©rents groupes.");
 		}
 
 		$i++;

@@ -38,11 +38,11 @@ if ($resultat_session == 'c') {
 $sql="SELECT 1=1 FROM droits WHERE id='/groupes/update_champs_periode.php';";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
-$sql="INSERT INTO droits VALUES ('/groupes/update_champs_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Ajax: Mise à jour de champs', '');";
+$sql="INSERT INTO droits VALUES ('/groupes/update_champs_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Ajax: Mise Ã  jour de champs', '');";
 $insert=mysql_query($sql);
 }
 
-// INSERT INTO droits VALUES ('/groupes/update_champs_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Ajax: Mise à jour de champs', '');
+// INSERT INTO droits VALUES ('/groupes/update_champs_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Ajax: Mise Ã  jour de champs', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -71,7 +71,7 @@ if((isset($id_groupe))&&(is_numeric($id_groupe))&&($id_groupe!=0)) {
 			else {
 				if($i==1) {echo "checked ";}
 			}
-			echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
+			echo "/><label for='periode_num_$i'> PÃ©riode $i</label><br />\n";
 		}
 	}
 }
@@ -93,7 +93,7 @@ elseif((isset($id_classe))&&(is_numeric($id_classe))&&($id_classe!=0)) {
 			else {
 				if($i==1) {echo "checked ";}
 			}
-			echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
+			echo "/><label for='periode_num_$i'> PÃ©riode $i</label><br />\n";
 		}
 	}
 }

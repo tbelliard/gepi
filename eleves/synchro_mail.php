@@ -46,7 +46,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Synchronisation des mail élèves',
+description='Synchronisation des mail Ã©lÃ¨ves',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -68,7 +68,7 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 	$sql="SELECT u.*, e.email as e_email FROM utilisateurs u, eleves e WHERE e.login=u.login AND u.statut='eleve' AND u.email!=e.email ORDER BY e.nom, e.prenom;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="Toutes les adresses mail élèves sont déjà synchronisées entre les tables 'eleves' et 'utilisateurs'.<br />\n";
+		$msg="Toutes les adresses mail Ã©lÃ¨ves sont dÃ©jÃ  synchronisÃ©es entre les tables 'eleves' et 'utilisateurs'.<br />\n";
 	}
 	else {
 		$cpt=0;
@@ -99,13 +99,13 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 		}
 
 		if($cpt==0) {
-			$msg="Aucune adresse n'a été mise à jour.<br />";
+			$msg="Aucune adresse n'a Ã©tÃ© mise Ã  jour.<br />";
 		}
 		elseif($cpt==1) {
-			$msg="Une adresse a été mise à jour.<br />";
+			$msg="Une adresse a Ã©tÃ© mise Ã  jour.<br />";
 		}
 		else {
-			$msg="$cpt adresses ont été mises à jour.<br />";
+			$msg="$cpt adresses ont Ã©tÃ© mises Ã  jour.<br />";
 		}
 
 		if($erreur==1) {
@@ -118,7 +118,7 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 }
 
 //**************** EN-TETE *******************************
-$titre_page = "Synchronisation des adresses mail élèves";
+$titre_page = "Synchronisation des adresses mail Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 
@@ -128,7 +128,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0){
-		echo "<p>Une conversion des données responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -137,7 +137,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -146,7 +146,7 @@ if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
-			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -161,20 +161,20 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT u.*, e.email as e_email FROM utilisateurs u, eleves e WHERE e.login=u.login AND u.statut='eleve' AND u.email!=e.email ORDER BY e.nom, e.prenom;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Toutes les adresses mail élèves sont synchronisées entre les tables 'eleves' et 'utilisateurs'.</p>\n";
+		echo "<p>Toutes les adresses mail Ã©lÃ¨ves sont synchronisÃ©es entre les tables 'eleves' et 'utilisateurs'.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	echo "<p>".mysql_num_rows($res)." adresses mail élèves diffèrent entre les tables 'eleves' et 'utilisateurs'.</p>\n";
+	echo "<p>".mysql_num_rows($res)." adresses mail Ã©lÃ¨ves diffÃ¨rent entre les tables 'eleves' et 'utilisateurs'.</p>\n";
 
-	echo "<table class='boireaus' summary='Tableau des différences'>\n";
+	echo "<table class='boireaus' summary='Tableau des diffÃ©rences'>\n";
 	echo "<tr>\n";
 	echo "<th>Nom</th>\n";
 	echo "<th>Prenom</th>\n";
-	echo "<th>Email utilisateur<br />(<i>Gérer mon compte</i>)</th>\n";
-	echo "<th>Email élève<br />(<i>Sconet,...</i>)</th>\n";
+	echo "<th>Email utilisateur<br />(<i>GÃ©rer mon compte</i>)</th>\n";
+	echo "<th>Email Ã©lÃ¨ve<br />(<i>Sconet,...</i>)</th>\n";
 	echo "</tr>\n";
 	$alt=1;
 	while($lig=mysql_fetch_object($res)) {
@@ -188,20 +188,20 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	echo "</table>\n";
 
-	echo "<p>Le paramétrage de la synchronisation est actuellement&nbsp;:".getSettingValue('mode_email_ele')."</p>\n";
+	echo "<p>Le paramÃ©trage de la synchronisation est actuellement&nbsp;:".getSettingValue('mode_email_ele')."</p>\n";
 
 	if(getSettingValue('mode_email_ele')=='sconet') {
-		echo "<p>Pour mettre à jour les email des comptes d'utilisateurs d'après les valeurs Sconet, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
+		echo "<p>Pour mettre Ã  jour les email des comptes d'utilisateurs d'aprÃ¨s les valeurs Sconet, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
 	}
 	elseif(getSettingValue('mode_email_ele')=='mon_compte') {
-		echo "<p>Pour mettre à jour les email des élèves d'après les valeurs des comptes d'utilisateurs, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
+		echo "<p>Pour mettre Ã  jour les email des Ã©lÃ¨ves d'aprÃ¨s les valeurs des comptes d'utilisateurs, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
 	}
 	elseif(getSettingValue('mode_email_ele')=='sso') {
-		echo "<p style='color:red'>Situation non encore gérée.</p>\n";
+		echo "<p style='color:red'>Situation non encore gÃ©rÃ©e.</p>\n";
 	}
 
 	if($_SESSION['statut']=='administrateur') {
-		echo "<p>Ce paramétrage peut être modifié dans <a href='../gestion/param_gen.php#mode_email_ele'>Configuration générale</a></p>\n";
+		echo "<p>Ce paramÃ©trage peut Ãªtre modifiÃ© dans <a href='../gestion/param_gen.php#mode_email_ele'>Configuration gÃ©nÃ©rale</a></p>\n";
 	}
 
 	echo "<p><br /></p>\n";

@@ -16,11 +16,11 @@ if ($resultat_session == 'c') {
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// Pour GEPI 1.4.3 à 1.4.4
-// INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','Accès aux fiches brevet','');
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
+// Pour GEPI 1.4.3 Ã  1.4.4
+// INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','AccÃ¨s aux fiches brevet','');
 // Pour GEPI 1.5.x
-// INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','F','Accès à l export NOTANET','');
+// INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','F','AccÃ¨s Ã  l export NOTANET','');
 if (!checkAccess()) {
 	header("Location: ../../logout.php?auto=1");
 	die();

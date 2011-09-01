@@ -49,8 +49,8 @@ die();
 header('Content-Type: application/pdf');
 
 // Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
+// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 Header('Pragma: public');
 
 // fonction de redimensionnement d'image
@@ -61,7 +61,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
+	// largeur et/ou hauteur maximum Ã  afficher en pixel
 	$taille_max_largeur = $L_max;
 	$taille_max_hauteur = $H_max;
 
@@ -70,7 +70,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	$ratio_h = $hauteur / $taille_max_hauteur;
 	$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	$nouvelle_largeur = $largeur / $ratio;
 	$nouvelle_hauteur = $hauteur / $ratio;
 
@@ -96,7 +96,7 @@ define('FPDF_FONTPATH','../../fpdf/font/');
 require('../../fpdf/fpdf.php');
 
 $p = 1;
-//requete dans la base de donnée
+//requete dans la base de donnÃ©e
 
   //etablissement
 
@@ -111,7 +111,7 @@ $p = 1;
                  $fax_etab = getSettingValue("gepiSchoolFax");
                  $mel_etab = getSettingValue("gepiSchoolEmail");
 
-//information sur l'élève
+//information sur l'Ã©lÃ¨ve
 	$nb = 0;
 	$t = 0;
 	while(empty($id_classe[$t])==false)
@@ -160,7 +160,7 @@ $p = 1;
 					 	}
 
 					} else {
-						$civilite_responsable[$nb][0] = 'Pas de responsable sélectionné';
+						$civilite_responsable[$nb][0] = 'Pas de responsable sÃ©lectionnÃ©';
 						$nom_responsable[$nb][0] = '';
 						$prenom_responsable[$nb][0] = '';
 				        $adresse1_responsable[$nb][0] = '';
@@ -210,16 +210,16 @@ $p = 1;
 class bilan_PDF extends FPDF
 {
 
-    //En-tête du document
+    //En-tÃªte du document
     function Header()
     {
 	    global $prefix_base;
 			$X_etab = '10'; $Y_etab = '10';
 		        $caractere_utilse = 'Arial';
 			$affiche_logo_etab='1';
-			$entente_mel='0'; // afficher l'adresse mel dans l'entête
-			$entente_tel='0'; // afficher le numéro de téléphone dans l'entête
-			$entente_fax='0'; // afficher le numéro de fax dans l'entête
+			$entente_mel='0'; // afficher l'adresse mel dans l'entÃªte
+			$entente_tel='0'; // afficher le numÃ©ro de tÃ©lÃ©phone dans l'entÃªte
+			$entente_fax='0'; // afficher le numÃ©ro de fax dans l'entÃªte
 			$L_max_logo=75; $H_max_logo=75; //dimension du logo
 
     //Affiche le filigrame
@@ -230,7 +230,7 @@ class bilan_PDF extends FPDF
 	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 	{
 		$valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
-		//$X_logo et $Y_logo; placement du bloc identite de l'établissement
+		//$X_logo et $Y_logo; placement du bloc identite de l'Ã©tablissement
 		$X_logo=5; $Y_logo=5; $L_logo=$valeur[0]; $H_logo=$valeur[1];
 		$X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
 		//logo
@@ -252,8 +252,8 @@ class bilan_PDF extends FPDF
 	 $this->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
-	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
-	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
+	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'TÃ©l: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
+	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'TÃ©l: '.$gepiSchoolTel; }
 	if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 	if( isset($entete_communic) and $entete_communic != '' ) {
 	 $this->Cell(90,5, $entete_communic,0,2,'');
@@ -279,7 +279,7 @@ class bilan_PDF extends FPDF
                  $fax_etab = getSettingValue("gepiSchoolFax");
                  $mel_etab = getSettingValue("gepiSchoolEmail");
 
-        //Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+        //Positionnement Ã  1 cm du bas et 0,5cm + 0,5cm du cotÃ© gauche
    	$this->SetXY(5,-10);
         //Police Arial Gras 6
         $this->SetFont('Arial','B',8);
@@ -295,19 +295,19 @@ class bilan_PDF extends FPDF
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab!="")
 	{
-	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "TÃ©l : ".$telephone_etab." - Fax : ".$fax_etab." - MÃ¨l : ".$mel_etab;
 	}
 	if($telephone_etab=="" and $fax_etab!="" and $mel_etab!="")
 	{
-	  $adresse2 = "Fax : ".$fax_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "Fax : ".$fax_etab." - MÃ¨l : ".$mel_etab;
 	}
 	if($telephone_etab!="" and $fax_etab=="" and $mel_etab!="")
 	{
-	  $adresse2 = "Tél : ".$telephone_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "TÃ©l : ".$telephone_etab." - MÃ¨l : ".$mel_etab;
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab=="")
 	{
-	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab;
+	  $adresse2 = "TÃ©l : ".$telephone_etab." - Fax : ".$fax_etab;
 	}
 
 	$this->Cell(0, 4.5, traite_accents_utf8($adresse), 0, 1, 'C', '');
@@ -323,7 +323,7 @@ $pdf->SetAutoPageBreak(true);
 
 // champs facultatifs
 $pdf->SetAuthor('');
-$pdf->SetCreator('créer avec Fpdf');
+$pdf->SetCreator('crÃ©er avec Fpdf');
 $pdf->SetTitle('Titre');
 $pdf->SetSubject('Sujet');
 
@@ -346,17 +346,17 @@ $pdf->AddPage();
 	$aujourdhui = date("d/m/Y");
 	$aujourdhui = explode('/', $aujourdhui);
 	if ($aujourdhui[1]==1) { $aujourdhui[1]="janvier"; }
-	if ($aujourdhui[1]==2) { $aujourdhui[1]="février"; }
+	if ($aujourdhui[1]==2) { $aujourdhui[1]="fÃ©vrier"; }
 	if ($aujourdhui[1]==3) { $aujourdhui[1]="mars"; }
 	if ($aujourdhui[1]==4) { $aujourdhui[1]="avril"; }
 	if ($aujourdhui[1]==5) { $aujourdhui[1]="mai"; }
 	if ($aujourdhui[1]==6) { $aujourdhui[1]="juin"; }
 	if ($aujourdhui[1]==7) { $aujourdhui[1]="juillet"; }
-	if ($aujourdhui[1]==8) { $aujourdhui[1]="août"; }
+	if ($aujourdhui[1]==8) { $aujourdhui[1]="aoÃ»t"; }
 	if ($aujourdhui[1]==9) { $aujourdhui[1]="septembre"; }
 	if ($aujourdhui[1]==10) { $aujourdhui[1]="octobre"; }
 	if ($aujourdhui[1]==11) { $aujourdhui[1]="novembre"; }
-	if ($aujourdhui[1]==12) { $aujourdhui[1]="décembre"; }
+	if ($aujourdhui[1]==12) { $aujourdhui[1]="dÃ©cembre"; }
 
 	$aujourdhui = $ville_etab.', le '.$jour.' '.$aujourdhui[0].' '.$aujourdhui[1].' '.$aujourdhui[2];
 	$pdf->Text(109, 15,traite_accents_utf8($aujourdhui));
@@ -379,9 +379,9 @@ $pdf->AddPage();
 
 	$pdf->SetFont('Arial','',12);
 	$pdf->Text(20, 70,'Madame, Monsieur,');
-$ident = "Voici le suivi de l'élève ".$nom_eleve[$i]." ".$prenom_eleve[$i]." de la classe de ".$division[$i].",";
+$ident = "Voici le suivi de l'Ã©lÃ¨ve ".$nom_eleve[$i]." ".$prenom_eleve[$i]." de la classe de ".$division[$i].",";
 $pdf->Text(20, 80, traite_accents_utf8($ident));
-$pdf->Text(20, 85,traite_accents_utf8('sur la période du '.date_frl(date_sql($du))." au ".date_frl(date_sql($au))."."));
+$pdf->Text(20, 85,traite_accents_utf8('sur la pÃ©riode du '.date_frl(date_sql($du))." au ".date_frl(date_sql($au))."."));
 //tableau
 $pdf->SetX(30);
 $pdf->SetY(90);
@@ -390,7 +390,7 @@ $pdf->SetY(90);
         $pdf->Cell(55, 5, 'Du', 1, 0, '', '');
         $pdf->Cell(55, 5, 'Au', 1, 0, '', '');
         $pdf->Cell(22, 5, 'Motif', 1, 0, 'C', '');
-        $pdf->Cell(54, 5, traite_accents_utf8('le motif spécifié'), 1, 1, 'C', '');
+        $pdf->Cell(54, 5, traite_accents_utf8('le motif spÃ©cifiÃ©'), 1, 1, 'C', '');
 		$requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'A' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 		$execution_1 = mysql_query($requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysql_error());
 		while ( $data_1 = mysql_fetch_array($execution_1))
@@ -398,9 +398,9 @@ $pdf->SetY(90);
 
       	//tableau des absences
             $pdf->SetFont('Arial','',9.5);
-            $debut = date_frc($data_1['d_date_absence_eleve'])." à ".heure($data_1['d_heure_absence_eleve']);
+            $debut = date_frc($data_1['d_date_absence_eleve'])." Ã  ".heure($data_1['d_heure_absence_eleve']);
             $pdf->Cell(55, 5, traite_accents_utf8($debut), 0, 0, '', '');
-            $fin = date_frc($data_1['a_date_absence_eleve'])." à ".heure($data_1['a_heure_absence_eleve']);
+            $fin = date_frc($data_1['a_date_absence_eleve'])." Ã  ".heure($data_1['a_heure_absence_eleve']);
             $pdf->Cell(55, 5, traite_accents_utf8($fin), 0, 0, '', '');
             if ($data_1['type_absence_eleve'] == 'A') {$pour = "Absence"; }
             if ($data_1['type_absence_eleve'] == 'R') {$pour = "Retard"; }
@@ -425,14 +425,14 @@ $pdf->SetY(90);
         $pdf->Cell(54, 5, '', 0, 1, 'C', '');
         $pdf->Cell(55, 5, 'Les Retards', 0, 1, '', '');
         $pdf->Cell(55, 5, 'Le', 1, 0, '', '');
-        $pdf->Cell(131, 5, traite_accents_utf8('le motif spécifié'), 1, 1, 'C', '');
+        $pdf->Cell(131, 5, traite_accents_utf8('le motif spÃ©cifiÃ©'), 1, 1, 'C', '');
 		$requete_2 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 		$execution_2 = mysql_query($requete_2) or die('Erreur SQL !'.$requete_2.'<br />'.mysql_error());
 		while ( $data_2 = mysql_fetch_array($execution_2))
         {
        		//tableau des retards
             $pdf->SetFont('Arial','',9.5);
-            $debut = date_frc($data_2['d_date_absence_eleve'])." à ".heure($data_2['d_heure_absence_eleve']);
+            $debut = date_frc($data_2['d_date_absence_eleve'])." Ã  ".heure($data_2['d_heure_absence_eleve']);
             $pdf->Cell(55, 5, traite_accents_utf8($debut), 0, 0, '', '');
 
 			$motif_abrege = $data_2['motif_absence_eleve'];
@@ -455,7 +455,7 @@ $pdf->SetY(90);
         $pdf->Cell(55, 5, 'Les Dispenses', 0, 1, '', '');
         $pdf->Cell(55, 5, 'Du', 1, 0, '', '');
         $pdf->Cell(55, 5, 'Au', 1, 0, '', '');
-        $pdf->Cell(76, 5, traite_accents_utf8('le motif spécifié'), 1, 1, 'C', '');
+        $pdf->Cell(76, 5, traite_accents_utf8('le motif spÃ©cifiÃ©'), 1, 1, 'C', '');
 
 		$requete_3 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'D' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 		$execution_3 = mysql_query($requete_3) or die('Erreur SQL !'.$requete_3.'<br />'.mysql_error());
@@ -474,13 +474,13 @@ $pdf->SetY(90);
 
 $pdf->SetY(250);
 if(substr($civilite_cpe[$i],0,1) == "M" OR substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le conseiller Principal d\'Education'; }
-if(substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La conseillère Principale d\'Education'; }
-if(substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La conseillère Principale d\'Education'; }
+if(substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La conseillÃ¨re Principale d\'Education'; }
+if(substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La conseillÃ¨re Principale d\'Education'; }
 $pdf->Cell(0, 5, traite_accents_utf8($nomine), 0, 1, 'R', '');
 $pdf->Cell(0, 5, traite_accents_utf8($civilite_cpe[$i]." ".substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i]), 0, 1, 'R', '');
 }
 
-// Et on affiche le pdf généré... (ou on le sauvegarde en local)
+// Et on affiche le pdf gÃ©nÃ©rÃ©... (ou on le sauvegarde en local)
 // $pdf->Output(); pour afficher sur votre browser
 
 $nom_lettre=date("Ymd_Hi");

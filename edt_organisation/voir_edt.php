@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fichier voir_edt.php pour visionner les différents EdT (classes ou professeurs)
+ * Fichier voir_edt.php pour visionner les diffÃ©rents EdT (classes ou professeurs)
  *
  * @version     $Id$
  * @package		GEPI
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Définir dés le début le type d'EdT qu'on veut voir (prof, classe, salle)
+// DÃ©finir dÃ©s le dÃ©but le type d'EdT qu'on veut voir (prof, classe, salle)
 
 //===========================
 // AJOUT: boireaus
@@ -63,7 +63,7 @@ elseif ($visioedt == 'salle1') {
 if ($message != "") {
     $_SESSION["message"] = "";
 }
-// =================== Gérer la bascule entre emplois du temps périodes et emplois du temps semaines.
+// =================== GÃ©rer la bascule entre emplois du temps pÃ©riodes et emplois du temps semaines.
 
 if ($bascule_edt != NULL) {
     $_SESSION['bascule_edt'] = $bascule_edt;
@@ -158,7 +158,7 @@ if(isset($login_edt)){
 else {
     $DisplayEDT = false;
 }
-// =================== Tester la présence de IE6
+// =================== Tester la prÃ©sence de IE6
 
 $ua = getenv("HTTP_USER_AGENT");
 if (strstr($ua, "MSIE 6.0")) {

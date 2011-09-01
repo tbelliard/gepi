@@ -65,17 +65,17 @@ echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour
 if(!isset($is_posted)) {
 	echo "</p>\n";
 
-	echo "<p>Cette page est destinée à importer les correspondances identifiant_pays/nom_pays d'après un fichier CSV.</p>\n";
+	echo "<p>Cette page est destinÃ©e Ã  importer les correspondances identifiant_pays/nom_pays d'aprÃ¨s un fichier CSV.</p>\n";
 	
-	//echo "<p>Veuillez préciser le nom complet du fichier <b>CSV</b> à importer.";
+	//echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>CSV</b> Ã  importer.";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='POST'>\n";
 	echo "<input type='hidden' name='is_posted' value='yes' />\n";
 
 	if ($gepiSettings['unzipped_max_filesize']>=0) {
-		echo "<p>Sélectionnez le fichier <b>pays.csv.zip</b>&nbsp;:<br />\n";
+		echo "<p>SÃ©lectionnez le fichier <b>pays.csv.zip</b>&nbsp;:<br />\n";
 	}
 	else {
-		echo "<p>Veuillez dézipper le fichier (<i>évitez de l'ouvrir/modifier/enregistrer avec un tableur</i>) et fournissez le fichier <b>pays.csv</b>&nbsp;:<br />\n";
+		echo "<p>Veuillez dÃ©zipper le fichier (<i>Ã©vitez de l'ouvrir/modifier/enregistrer avec un tableur</i>) et fournissez le fichier <b>pays.csv</b>&nbsp;:<br />\n";
 	}
 
 	echo add_token_field();
@@ -88,7 +88,7 @@ if(!isset($is_posted)) {
 	
 	
 	echo "<p><i>NOTE</i>&nbsp;:</p>\n";
-	echo "<p style='margin-left:3em;'>Le format du fichier CSV est le suivant&nbsp;:<br /><b>code_pays;nom_pays</b><br />Le fichier proposé à l'import est <a href='https://www.sylogix.org/attachments/122/pays.csv.zip'>pays.csv.zip</a>.<br />Il provient d'une extraction du fichier Geographique.xml de Sconet légerement retouché/complété.</p>\n";
+	echo "<p style='margin-left:3em;'>Le format du fichier CSV est le suivant&nbsp;:<br /><b>code_pays;nom_pays</b><br />Le fichier proposÃ© Ã  l'import est <a href='https://www.sylogix.org/attachments/122/pays.csv.zip'>pays.csv.zip</a>.<br />Il provient d'une extraction du fichier Geographique.xml de Sconet lÃ©gerement retouchÃ©/complÃ©tÃ©.</p>\n";
 }
 else {
 	echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Import des pays</a>";
@@ -100,16 +100,16 @@ else {
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 		
 		if (trim($csv_file['name'])=='') {
-			echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+			echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 			echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici</a> pour recommencer !</center></p>";
 		}
 		else {
 
 
 			if(!file_exists($csv_file['tmp_name'])) {
-				echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+				echo "<p style='color:red;'>Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.</p>\n";
 
-				echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+				echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 				echo "post_max_size=$post_max_size<br />\n";
 				echo "upload_max_filesize=$upload_max_filesize<br />\n";
 				echo "et le volume de ".$csv_file['name']." serait<br />\n";
@@ -121,11 +121,11 @@ else {
 				die();
 			}
 
-			echo "<p>Le fichier a été uploadé.</p>\n";
+			echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 
 			$tempdir=get_user_temp_directory();
 			if(!$tempdir) {
-				echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+				echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?</p>\n";
 				// Il ne faut pas aller plus loin...
 				// SITUATION A GERER
 				require("../lib/footer.inc.php");
@@ -174,14 +174,14 @@ else {
 					//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 					if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-						echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+						echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dÃ©passe la limite paramÃ©trÃ©e (<i>$unzipped_max_filesize octets</i>).</p>\n";
 						require("../lib/footer.inc.php");
 						die();
 					}
 
 					$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 					if ($res_extract != 0) {
-						echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+						echo "<p>Le fichier uploadÃ© a Ã©tÃ© dÃ©zippÃ©.</p>\n";
 						$fichier_extrait=$res_extract[0]['filename'];
 						//echo "Fichier extrait: ".$fichier_extrait."<br />";
 						//unlink("$dest_file"); // Pour Wamp...
@@ -219,7 +219,7 @@ else {
 			}
 			else {
 
-				// on constitue le tableau des champs à extraire
+				// on constitue le tableau des champs Ã  extraire
 				$tabchamps=array("code_pays", "nom_pays");
 		
 				$ligne=fgets($fp, 4096);
@@ -243,7 +243,7 @@ else {
 				}
 		
 				if($temoin!=count($tabchamps)) {
-					echo "<p><b>ERREUR:</b> La ligne d'entête du fichier n'est pas conforme à ce qui est attendu.</p>\n";
+					echo "<p><b>ERREUR:</b> La ligne d'entÃªte du fichier n'est pas conforme Ã  ce qui est attendu.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -251,7 +251,7 @@ else {
 
 				//$fp=fopen($csv_file['tmp_name'],"r");
 				$fp=fopen($dest_file,"r");
-				// On lit une ligne pour passer la ligne d'entête:
+				// On lit une ligne pour passer la ligne d'entÃªte:
 				$ligne = fgets($fp, 4096);
 				//=========================
 				unset($code_pays);
@@ -274,12 +274,12 @@ else {
 						$tabligne=explode(";",preg_replace('/"/','',$ligne));
 	
 						$code_pays[]=preg_replace("/[^0-9]/","",corriger_caracteres($tabligne[$tabindice[0]]));
-						//$nom_pays[]=my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
-						//echo $tabligne[$tabindice[1]]." -&gt; ".my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
+						//$nom_pays[]=my_ereg_replace("[^a-zA-Z0-9Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
+						//echo $tabligne[$tabindice[1]]." -&gt; ".my_ereg_replace("[^a-zA-Z0-9Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
 
 
-						$nom_pays[]=preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$tabligne[$tabindice[1]]))));
-						//echo $tabligne[$tabindice[1]]." -&gt; ".preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
+						$nom_pays[]=preg_replace("/[^a-zA-Z0-9Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$tabligne[$tabindice[1]]))));
+						//echo $tabligne[$tabindice[1]]." -&gt; ".preg_replace("/[^a-zA-Z0-9Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
 					}
 				}
 				fclose($fp);
@@ -330,7 +330,7 @@ else {
 								echo "</td>\n";
 		
 								echo "<td>\n";
-								echo "Pays déjà enregistré";
+								echo "Pays dÃ©jÃ  enregistrÃ©";
 								echo "</td>\n";
 							}
 							else {
@@ -345,7 +345,7 @@ else {
 								echo "</td>\n";
 		
 								echo "<td>\n";
-								echo "Pays enregistré sous un autre nom&nbsp;: ".$tab_nom_pays_connus[$code_pays[$i]];
+								echo "Pays enregistrÃ© sous un autre nom&nbsp;: ".$tab_nom_pays_connus[$code_pays[$i]];
 								echo "</td>\n";
 							}
 						}
@@ -402,17 +402,17 @@ else {
 		$nb_err=0;
 		$nb_reg=0;
 		if(!isset($code_pays)) {
-			echo "<p>Aucun pays n'a été proposé à l'enregistrement.</p>\n";
+			echo "<p>Aucun pays n'a Ã©tÃ© proposÃ© Ã  l'enregistrement.</p>\n";
 		}
 		else {
 			//for($i=0;$i<count($code_pays);$i++) {
 			for($i=0;$i<$nb_pays;$i++) {
 				if(isset($code_pays[$i])) {
 					if(in_array($code_pays[$i],$tab_code_pays_connus)) {
-						$sql="UPDATE pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$nom_pays[$i])))))."' WHERE code_pays='$code_pays[$i]';";
+						$sql="UPDATE pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$nom_pays[$i])))))."' WHERE code_pays='$code_pays[$i]';";
 					}
 					else {
-						$sql="INSERT INTO pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$nom_pays[$i])))))."', code_pays='$code_pays[$i]';";
+						$sql="INSERT INTO pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$nom_pays[$i])))))."', code_pays='$code_pays[$i]';";
 					}
 					//echo "$sql<br />";
 					$res=mysql_query($sql);
@@ -427,13 +427,13 @@ else {
 
 			echo "<p>";
 			if($nb_reg==0) {
-				echo "Aucun enregistrement n'a été effectué.<br />\n";
+				echo "Aucun enregistrement n'a Ã©tÃ© effectuÃ©.<br />\n";
 			}
 			elseif($nb_reg==1) {
-				echo "Un enregistrement a été effectué.<br />\n";
+				echo "Un enregistrement a Ã©tÃ© effectuÃ©.<br />\n";
 			}
 			else {
-				echo "$nb_reg enregistrements ont été effectués.<br />\n";
+				echo "$nb_reg enregistrements ont Ã©tÃ© effectuÃ©s.<br />\n";
 			}
 
 			if($nb_err==1) {

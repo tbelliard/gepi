@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// INSERT INTO droits VALUES ('/mod_annees_anterieures/consultation_annee_anterieure.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'Consultation des données d années antérieures', '');
+// INSERT INTO droits VALUES ('/mod_annees_anterieures/consultation_annee_anterieure.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'Consultation des donnÃ©es d annÃ©es antÃ©rieures', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	//echo "Refus checkaccess";
@@ -42,11 +42,11 @@ if (!checkAccess()) {
 }
 
 
-// Si le module n'est pas activé...
+// Si le module n'est pas activÃ©...
 if(getSettingValue('active_annees_anterieures')!="y"){
 	// A DEGAGER
-	// A VOIR: Comment enregistrer une tentative d'accès illicite?
-	tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder au module Années antérieures qui n'est pas activé.");
+	// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
+	tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der au module AnnÃ©es antÃ©rieures qui n'est pas activÃ©.");
 
 	header("Location: ../logout.php?auto=1");
 	//echo "active_annees_anterieures=".getSettingValue('active_annees_anterieures');
@@ -95,7 +95,7 @@ elseif($_SESSION['statut']=="professeur"){
 	//echo "\$AAProfGroupes=$AAProfGroupes<br />";
 
 	if($AAProfTout=="yes"){
-		// Le professeur a accès aux données antérieures de tous les élèves
+		// Le professeur a accÃ¨s aux donnÃ©es antÃ©rieures de tous les Ã©lÃ¨ves
 		$acces="y";
 
 		$sql_classes="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
@@ -128,7 +128,7 @@ elseif($_SESSION['statut']=="professeur"){
 			//echo "$sql_ele<br />";
 		}
 
-		// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
+		// On vÃ©rifie qu'il n'y a pas tentative d'intrusion illicite:
 		if(isset($logineleve)){
 			/*
 			$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_professeurs jgp
@@ -145,9 +145,9 @@ elseif($_SESSION['statut']=="professeur"){
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0){
 				// A DEGAGER
-				// A VOIR: Comment enregistrer une tentative d'accès illicite?
+				// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
 				//echo "$sql<br />";
-				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve qui n'est pas élève d'une de ses classes.");
+				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der aux donnÃ©es d'AnnÃ©es antÃ©rieures de $logineleve qui n'est pas Ã©lÃ¨ve d'une de ses classes.");
 				header("Location: ../logout.php?auto=1");
 				die();
 			}
@@ -183,7 +183,7 @@ elseif($_SESSION['statut']=="professeur"){
 			//echo "$sql_ele<br />";
 		}
 
-		// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
+		// On vÃ©rifie qu'il n'y a pas tentative d'intrusion illicite:
 		if(isset($logineleve)){
 			$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp
 							WHERE jeg.login='$logineleve' AND
@@ -192,9 +192,9 @@ elseif($_SESSION['statut']=="professeur"){
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0){
 				// A DEGAGER
-				// A VOIR: Comment enregistrer une tentative d'accès illicite?
+				// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
 				//echo "$sql<br />";
-				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve qui n'est pas élève d'un de ses enseignements.");
+				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der aux donnÃ©es d'AnnÃ©es antÃ©rieures de $logineleve qui n'est pas Ã©lÃ¨ve d'un de ses enseignements.");
 				header("Location: ../logout.php?auto=1");
 				die();
 			}
@@ -220,16 +220,16 @@ elseif($_SESSION['statut']=="professeur"){
 			//echo "$sql_ele<br />";
 		}
 
-		// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
+		// On vÃ©rifie qu'il n'y a pas tentative d'intrusion illicite:
 		if(isset($logineleve)){
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND
 															login='$logineleve';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0){
 				// A DEGAGER
-				// A VOIR: Comment enregistrer une tentative d'accès illicite?
+				// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
 				//echo "$sql<br />";
-				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve dont il n'est pas ".getSettingValue("gepi_prof_suivi").".");
+				tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der aux donnÃ©es d'AnnÃ©es antÃ©rieures de $logineleve dont il n'est pas ".getSettingValue("gepi_prof_suivi").".");
 				header("Location: ../logout.php?auto=1");
 				die();
 			}
@@ -244,7 +244,7 @@ elseif($_SESSION['statut']=="cpe"){
 	$AACpeResp=getSettingValue('AACpeResp');
 
 	if($AACpeTout=="yes"){
-		// Le CPE a accès aux données antérieures de tous les élèves
+		// Le CPE a accÃ¨s aux donnÃ©es antÃ©rieures de tous les Ã©lÃ¨ves
 		$acces="y";
 
 		$sql_classes="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
@@ -278,15 +278,15 @@ elseif($_SESSION['statut']=="cpe"){
 									ORDER BY e.nom,e.prenom";
 			}
 
-			// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
+			// On vÃ©rifie qu'il n'y a pas tentative d'intrusion illicite:
 			if(isset($logineleve)){
 				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND
 															e_login='$logineleve'";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0){
 					// A DEGAGER
-					// A VOIR: Comment enregistrer une tentative d'accès illicite?
-					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve dont il n'est pas responsable.");
+					// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
+					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der aux donnÃ©es d'AnnÃ©es antÃ©rieures de $logineleve dont il n'est pas responsable.");
 					header("Location: ../logout.php?auto=1");
 					die();
 				}
@@ -302,7 +302,7 @@ elseif($_SESSION['statut']=="scolarite"){
 	$AAScolResp=getSettingValue('AAScolResp');
 
 	if($AAScolTout=="yes"){
-		// Les comptes Scolarité ont accès aux données antérieures de tous les élèves
+		// Les comptes ScolaritÃ© ont accÃ¨s aux donnÃ©es antÃ©rieures de tous les Ã©lÃ¨ves
 		$acces="y";
 
 		$sql_classes="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
@@ -335,7 +335,7 @@ elseif($_SESSION['statut']=="scolarite"){
 									ORDER BY e.nom,e.prenom";
 			}
 
-			// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
+			// On vÃ©rifie qu'il n'y a pas tentative d'intrusion illicite:
 			if(isset($logineleve)){
 				$sql="SELECT 1=1 FROM j_eleves_classes jec, j_scol_classes jsc
 								WHERE jec.login='$logineleve' AND
@@ -344,8 +344,8 @@ elseif($_SESSION['statut']=="scolarite"){
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0){
 					// A DEGAGER
-					// A VOIR: Comment enregistrer une tentative d'accès illicite?
-					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve qui n'est pas élève d'une des classes dont le CPE est responsable.");
+					// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
+					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der aux donnÃ©es d'AnnÃ©es antÃ©rieures de $logineleve qui n'est pas Ã©lÃ¨ve d'une des classes dont le CPE est responsable.");
 					header("Location: ../logout.php?auto=1");
 					die();
 				}
@@ -357,7 +357,7 @@ elseif($_SESSION['statut']=="responsable"){
 	$AAResponsable=getSettingValue('AAResponsable');
 
 	if($AAResponsable=="yes"){
-		// Est-ce que le responsable est bien associé à un élève?
+		// Est-ce que le responsable est bien associÃ© Ã  un Ã©lÃ¨ve?
 		$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND
 																			r.ele_id=e.ele_id AND
 																			rp.login='".$_SESSION['login']."'";
@@ -412,8 +412,8 @@ elseif($_SESSION['statut']=="responsable"){
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0){
 					// A DEGAGER
-					// A VOIR: Comment enregistrer une tentative d'accès illicite?
-					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve dont il n'est pas responsable.");
+					// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
+					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der aux donnÃ©es d'AnnÃ©es antÃ©rieures de $logineleve dont il n'est pas responsable.");
 					header("Location: ../logout.php?auto=1");
 					die();
 				}
@@ -459,9 +459,9 @@ elseif($_SESSION['statut']=="autre") {
 
 if($acces!="y"){
 	// A DEGAGER
-	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+	// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
 
-	tentative_intrusion(1, "Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder à des données d'Années antérieures.");
+	tentative_intrusion(1, "Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accÃ©der Ã  des donnÃ©es d'AnnÃ©es antÃ©rieures.");
 
 	header("Location: ../logout.php?auto=1");
 	//echo "\$acces=$acces";
@@ -476,7 +476,7 @@ $msg="";
 if(isset($enregistrer)){
 
 	if($msg==""){
-		$msg="Enregistrement réussi.";
+		$msg="Enregistrement rÃ©ussi.";
 	}
 
 	unset($page);
@@ -486,7 +486,7 @@ if(isset($enregistrer)){
 $style_specifique="mod_annees_anterieures/annees_anterieures";
 
 //**************** EN-TETE *****************
-$titre_page = "Consultation des données antérieures";
+$titre_page = "Consultation des donnÃ©es antÃ©rieures";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -512,7 +512,7 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['ine']))) {
 		echo "</p>\n";
 		echo "</div>\n";
 
-		echo "<h2 style='text-align: center;'>Choix des informations antérieures</h2>\n";
+		echo "<h2 style='text-align: center;'>Choix des informations antÃ©rieures</h2>\n";
 		//tab_choix_anterieure($logineleve);
 		tab_choix_anterieure('','',$_GET['ine']);
 	}
@@ -522,16 +522,16 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['ine']))) {
 		echo "</div>\n";
 
 		//if($mode=='bull_simp'){
-			echo "<h2 style='text-align: center;'>Bulletin simplifié d'une année antérieure</h2>\n";
+			echo "<h2 style='text-align: center;'>Bulletin simplifiÃ© d'une annÃ©e antÃ©rieure</h2>\n";
 			if(!isset($annee_scolaire)){
-				echo "<p><strong>ERREUR:</strong> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
+				echo "<p><strong>ERREUR:</strong> L'annÃ©e scolaire antÃ©rieure ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 			}
 			elseif(!isset($num_periode)){
-				echo "<p><strong>ERREUR:</strong> La période ne semble pas avoir été choisie.</p>\n";
+				echo "<p><strong>ERREUR:</strong> La pÃ©riode ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 			}
 			/*
 			elseif(!isset($id_classe)){
-				echo "<p><strong>ERREUR:</strong> L'identifiant de la classe actuelle de cet ".$gepiSettings['denomination_eleve']." ne semble pas avoir été fourni.</p>\n";
+				echo "<p><strong>ERREUR:</strong> L'identifiant de la classe actuelle de cet ".$gepiSettings['denomination_eleve']." ne semble pas avoir Ã©tÃ© fourni.</p>\n";
 			}
 			*/
 			else{
@@ -540,9 +540,9 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['ine']))) {
 		/*
 		}
 		elseif($mode=='avis_conseil'){
-			echo "<h2 style='text-align: center;'>Avis des Conseils de classe d'une année antérieure</h2>\n";
+			echo "<h2 style='text-align: center;'>Avis des Conseils de classe d'une annÃ©e antÃ©rieure</h2>\n";
 			if(!isset($annee_scolaire)){
-				echo "<p><strong>ERREUR:</strong> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
+				echo "<p><strong>ERREUR:</strong> L'annÃ©e scolaire antÃ©rieure ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 			}
 			else{
 				avis_conseils_de_classes_annee_anterieure('',$annee_scolaire, $_GET['ine']);
@@ -563,14 +563,14 @@ if(!isset($id_classe)){
 
 	echo "<h2>Choix de la classe</h2>\n";
 
-	echo "<p>Choisissez la classe dans laquelle se trouve actuellement un ".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les données d'années antérieures.</p>";
+	echo "<p>Choisissez la classe dans laquelle se trouve actuellement un ".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les donnÃ©es d'annÃ©es antÃ©rieures.</p>";
 
 
 	//$sql="SELECT id,classe FROM classes ORDER BY classe";
 	//$res1=mysql_query($sql);
 
 	if(!isset($sql_classes)){
-		echo "<p>ERREUR: Il semble que la requête de choix de la classe n'ait pas été initialisée.</p>\n";
+		echo "<p>ERREUR: Il semble que la requÃªte de choix de la classe n'ait pas Ã©tÃ© initialisÃ©e.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -578,7 +578,7 @@ if(!isset($id_classe)){
 	$res1=mysql_query($sql_classes);
 	$nb_classes=mysql_num_rows($res1);
 	if($nb_classes==0){
-		echo "<p>ERREUR: Il semble qu'aucune classe ne soit encore définie.</p>\n";
+		echo "<p>ERREUR: Il semble qu'aucune classe ne soit encore dÃ©finie.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -628,7 +628,7 @@ else{
 
 		//$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom,e.prenom";
 		if(!isset($sql_ele)){
-			echo "<p>ERREUR: Il semble que la requête de choix de l'".$gepiSettings['denomination_eleve']." n'ait pas été initialisée.</p>\n";
+			echo "<p>ERREUR: Il semble que la requÃªte de choix de l'".$gepiSettings['denomination_eleve']." n'ait pas Ã©tÃ© initialisÃ©e.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -642,14 +642,14 @@ else{
 			die();
 		}
 		else{
-			echo "<p>Choisissez un ".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les informations antérieures.</p>\n";
+			echo "<p>Choisissez un ".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les informations antÃ©rieures.</p>\n";
 
 			$nb_eleves=mysql_num_rows($res_ele);
 
 			// Affichage sur 3 colonnes
 			$nb_par_colonne=round($nb_eleves/3);
 
-			echo "<table width='100%' summary=\"Choix de l'élève\">\n";
+			echo "<table width='100%' summary=\"Choix de l'Ã©lÃ¨ve\">\n";
 			echo "<tr valign='top' style='text-align: center;'>\n";
 
 			$i = 0;
@@ -726,15 +726,15 @@ else{
 
 			require("fonctions_annees_anterieures.inc.php");
 
-			echo "<p>Ou afficher les informations pour toute la classe sur la période choisie:</p>\n";
+			echo "<p>Ou afficher les informations pour toute la classe sur la pÃ©riode choisie:</p>\n";
 			echo "<blockquote>\n";
 
 			$sql="SELECT DISTINCT ad.annee FROM archivage_disciplines ad, eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND ad.INE=e.no_gep ORDER BY annee ASC;";
 			//echo "$sql<br />\n";
 			$res_ant=mysql_query($sql);
 			if(mysql_num_rows($res_ant)==0){
-				//echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
-				echo "<p>Aucun résultat antérieur n'a été conservé pour cette classe.</p>\n";
+				//echo "<p>Aucun rÃ©sultat antÃ©rieur n'a Ã©tÃ© conservÃ© pour cet Ã©lÃ¨ve.</p>\n";
+				echo "<p>Aucun rÃ©sultat antÃ©rieur n'a Ã©tÃ© conservÃ© pour cette classe.</p>\n";
 			}
 			else{
 
@@ -745,7 +745,7 @@ else{
 				$alt=1;
 				echo "<table class='boireaus table_annee_anterieure' summary='Bulletins'>\n";
 				echo "<tr class='lig$alt'>\n";
-				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
+				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiÃ©s:</th>";
 				$cpt=0;
 				while($lig_ant=mysql_fetch_object($res_ant)){
 
@@ -762,7 +762,7 @@ else{
 					$res_ant2=mysql_query($sql);
 
 					if(mysql_num_rows($res_ant2)==0){
-						echo "<td>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</td>\n";
+						echo "<td>Aucun rÃ©sultat antÃ©rieur n'a Ã©tÃ© conservÃ© pour cet ".$gepiSettings['denomination_eleve'].".</td>\n";
 					}
 					else{
 						$cpt=0;
@@ -792,7 +792,7 @@ else{
 					}
 					echo "<td>\n";
 
-					echo "Année-scolaire <a href='".$_SERVER['PHP_SELF']."?aff_classe=y&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
+					echo "AnnÃ©e-scolaire <a href='".$_SERVER['PHP_SELF']."?aff_classe=y&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
 					if(isset($id_classe)){echo "&amp;id_classe=$id_classe";}
 					echo "'>$tab_annees[$i]</a>";
 
@@ -817,14 +817,14 @@ else{
 		($_SESSION['statut']=='professeur')
 	)) {
 		//if($_SESSION['statut']!='eleve'){
-			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période ou ".$gepiSettings['denomination_eleve']."</a></p>\n";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre pÃ©riode ou ".$gepiSettings['denomination_eleve']."</a></p>\n";
 			echo "</form>\n";
 			echo "</div>\n";
 		//}
 
 		$res_liste_ele=mysql_query($sql_ele);
 		if(mysql_num_rows($res_liste_ele)==0) {
-			echo "<p>Aucun ".$gepiSettings['denomination_eleve']." n'a semble-t-il été trouvé.</p>\n";
+			echo "<p>Aucun ".$gepiSettings['denomination_eleve']." n'a semble-t-il Ã©tÃ© trouvÃ©.</p>\n";
 		}
 		else {
 			require("fonctions_annees_anterieures.inc.php");
@@ -880,7 +880,7 @@ else{
 		if((!isset($logineleve))||(($mode!='bull_simp')&&($mode!='avis_conseil'))) {
 			echo "</p></form>\n";
 			echo "</div>\n";
-			echo "<h2 style='text-align: center;'>Choix des informations antérieures</h2>\n";
+			echo "<h2 style='text-align: center;'>Choix des informations antÃ©rieures</h2>\n";
 			//tab_choix_anterieure($logineleve);
 			tab_choix_anterieure($logineleve,$id_classe);
 		}
@@ -892,30 +892,30 @@ else{
 			//echo "<div style='float:left; width:5em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></div>\n";
 
 			if($mode=='bull_simp'){
-				echo "<h2 style='text-align: center;'>Bulletin simplifié d'une année antérieure</h2>\n";
+				echo "<h2 style='text-align: center;'>Bulletin simplifiÃ© d'une annÃ©e antÃ©rieure</h2>\n";
 				if(!isset($annee_scolaire)){
-					echo "<p><strong>ERREUR:</strong> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
+					echo "<p><strong>ERREUR:</strong> L'annÃ©e scolaire antÃ©rieure ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 				}
 				elseif(!isset($num_periode)){
-					echo "<p><strong>ERREUR:</strong> La période ne semble pas avoir été choisie.</p>\n";
+					echo "<p><strong>ERREUR:</strong> La pÃ©riode ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 				}
 				elseif(!isset($id_classe)){
-					echo "<p><strong>ERREUR:</strong> L'identifiant de la classe actuelle de cet ".$gepiSettings['denomination_eleve']." ne semble pas avoir été fourni.</p>\n";
+					echo "<p><strong>ERREUR:</strong> L'identifiant de la classe actuelle de cet ".$gepiSettings['denomination_eleve']." ne semble pas avoir Ã©tÃ© fourni.</p>\n";
 				}
 				else{
 					/*
 					if(!isset($num_periode)){
 						$num_periode=1;
 					}
-					// Il n'est pas certain que GEPI ait été mis en place dès la période 1 cette année là.
+					// Il n'est pas certain que GEPI ait Ã©tÃ© mis en place dÃ¨s la pÃ©riode 1 cette annÃ©e lÃ .
 					*/
 					bull_simp_annee_anterieure($logineleve, $id_classe, $annee_scolaire, $num_periode);
 				}
 			}
 			elseif($mode=='avis_conseil'){
-				echo "<h2 style='text-align: center;'>Avis des Conseils de classe d'une année antérieure</h2>\n";
+				echo "<h2 style='text-align: center;'>Avis des Conseils de classe d'une annÃ©e antÃ©rieure</h2>\n";
 				if(!isset($annee_scolaire)){
-					echo "<p><strong>ERREUR:</strong> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
+					echo "<p><strong>ERREUR:</strong> L'annÃ©e scolaire antÃ©rieure ne semble pas avoir Ã©tÃ© choisie.</p>\n";
 				}
 				else{
 					avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire);
@@ -934,13 +934,13 @@ else{
 			$res_ele=mysql_query($sql);
 
 			if(mysql_num_rows($res_ele)==0){
-				//echo "<p>Aucun élève dans la classe $classe pour la période '$nom_periode'.</p>\n";
-				echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
+				//echo "<p>Aucun Ã©lÃ¨ve dans la classe $classe pour la pÃ©riode '$nom_periode'.</p>\n";
+				echo "<p>L'Ã©lÃ¨ve dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
 			}
 			else{
 				$lig_ele=mysql_fetch_object($res_ele);
 
-				// Infos élève
+				// Infos Ã©lÃ¨ve
 				$ine=$lig_ele->no_gep;
 				//$nom=$lig_ele->nom;
 				//$prenom=$lig_ele->prenom;
@@ -951,15 +951,15 @@ else{
 
 				$classe=get_nom_classe($id_classe);
 
-				echo "<p>Liste des années scolaires et périodes pour lesquelles des données concernant $ele_prenom $ele_nom (<i>$classe</i>) ont été conservées:</p>\n";
+				echo "<p>Liste des annÃ©es scolaires et pÃ©riodes pour lesquelles des donnÃ©es concernant $ele_prenom $ele_nom (<i>$classe</i>) ont Ã©tÃ© conservÃ©es:</p>\n";
 
-				// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans annees_anterieures
+				// RÃ©cupÃ©rer les annÃ©es-scolaires et pÃ©riodes pour lesquelles on trouve l'INE dans annees_anterieures
 				//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM annees_anterieures WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
 				$sql="SELECT DISTINCT annee FROM annees_anterieures WHERE ine='$ine' ORDER BY annee DESC";
 				$res_ant=mysql_query($sql);
 
 				if(mysql_num_rows($res_ant)==0){
-					echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
+					echo "<p>Aucun rÃ©sultat antÃ©rieur n'a Ã©tÃ© conservÃ© pour cet Ã©lÃ¨ve.</p>\n";
 				}
 				else{
 					echo "<table border='0'>\n";
@@ -971,7 +971,7 @@ else{
 						$res_ant2=mysql_query($sql);
 
 						if(mysql_num_rows($res_ant2)==0){
-							echo "<td>Aucun résultat antérieur n'a été conservé pour cet élève.</td>\n";
+							echo "<td>Aucun rÃ©sultat antÃ©rieur n'a Ã©tÃ© conservÃ© pour cet Ã©lÃ¨ve.</td>\n";
 						}
 						else{
 							$cpt=0;
@@ -990,7 +990,7 @@ else{
 
 		}
 		else{
-			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve'>Choisir une autre année/période</a>";
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve'>Choisir une autre annÃ©e/pÃ©riode</a>";
 			echo "</div>\n";
 
 			require("fonctions_annees_anterieures.inc.php");

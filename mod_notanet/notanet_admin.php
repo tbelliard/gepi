@@ -42,7 +42,7 @@ if ($resultat_session == 'c') {
 }
 
 // Check access
-// Pour GEPI 1.4.3 à 1.4.4
+// Pour GEPI 1.4.3 Ã  1.4.4
 // INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','Gestion du module NOTANET','');
 // Pour GEPI 1.5.x
 // INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','Gestion du module NOTANET','');
@@ -55,10 +55,10 @@ if (!checkAccess()) {
 if (isset($_POST['activer'])) {
 	check_token();
     if (!saveSetting("active_notanet", $_POST['activer'])){
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 	}
 	else{
-		$msg = "Les modifications ont été enregistrées !";
+		$msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 		$post_reussi=TRUE;
 	}
 }
@@ -73,7 +73,7 @@ $tbs_msg=$msg;
 include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -88,20 +88,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_notanet/notanet_admin_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -114,11 +114,11 @@ include($nom_gabarit);
 
 <form action="notanet_admin.php" name="form1" method="post">
 
-<p>Le module Notanet/Fiches Brevet concernet les collèges.<br />
+<p>Le module Notanet/Fiches Brevet concernet les collÃ¨ges.<br />
 <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_notanet")=='y') echo " checked"; ?> />
-&nbsp;Activer l'accès au module Notanet/Fiches Brevet</label><br />
+&nbsp;Activer l'accÃ¨s au module Notanet/Fiches Brevet</label><br />
 <label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_notanet")=='n') echo " checked"; ?> />
-&nbsp;Désactiver l'accès au module Notanet/Fiches Brevet</label></p>
+&nbsp;DÃ©sactiver l'accÃ¨s au module Notanet/Fiches Brevet</label></p>
 
 <input type="hidden" name="is_posted" value="1" />
 

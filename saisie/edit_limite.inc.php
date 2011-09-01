@@ -30,19 +30,19 @@ if ($periode1 > $periode2) {
   $periode1 = $temp;
 }
 
-// On teste la prÈsence d'au moins un coeff pour afficher la colonne des coef
+// On teste la pr√©sence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 //echo "\$test_coef=$test_coef<br />";
-// Apparemment, $test_coef est rÈaffectÈ plus loin dans un des include()
+// Apparemment, $test_coef est r√©affect√© plus loin dans un des include()
 $nb_coef_superieurs_a_zero=$test_coef;
 
 
-// On regarde si on affiche les catÈgories de matiËres
+// On regarde si on affiche les cat√©gories de mati√®res
 $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
 
 
-// Si le rang des ÈlËves est demandÈ, on met ‡ jour le champ rang de la table matieres_notes
+// Si le rang des √©l√®ves est demand√©, on met √† jour le champ rang de la table matieres_notes
 $affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
 if ($affiche_rang == 'y') {
     $periode_num=$periode1;
@@ -53,7 +53,7 @@ if ($affiche_rang == 'y') {
 }
 
 /*
-// On regarde si on affiche les catÈgories de matiËres
+// On regarde si on affiche les cat√©gories de mati√®res
 $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
 */
@@ -87,7 +87,7 @@ for($loop=$periode1;$loop<=$periode2;$loop++) {
 	$tab_moy['periodes'][$periode_num]['moy_max_classe']=$moy_max_classe;
 	$tab_moy['periodes'][$periode_num]['moy_min_classe']=$moy_min_classe;
 
-	// Il faudrait rÈcupÈrer/stocker les catÈgories?
+	// Il faudrait r√©cup√©rer/stocker les cat√©gories?
 	$tab_moy['periodes'][$periode_num]['moy_cat_eleve']=$moy_cat_eleve;               // [$i][$cat]
 	$tab_moy['periodes'][$periode_num]['moy_cat_classe']=$moy_cat_classe;             // [$i][$cat]
 	$tab_moy['periodes'][$periode_num]['moy_cat_min']=$moy_cat_min;                   // [$i][$cat]
@@ -116,7 +116,7 @@ for($loop=$periode1;$loop<=$periode2;$loop++) {
 	$tab_moy['periodes'][$periode_num]['moy_min_classe_grp']=$moy_min_classe_grp;     // [$j]
 	$tab_moy['periodes'][$periode_num]['moy_max_classe_grp']=$moy_max_classe_grp;     // [$j]
 	if(isset($current_eleve_rang)) {
-		// $current_eleve_rang n'est pas renseignÈ si $affiche_rang='n'
+		// $current_eleve_rang n'est pas renseign√© si $affiche_rang='n'
 		$tab_moy['periodes'][$periode_num]['current_eleve_rang']=$current_eleve_rang; // [$j][$i]
 	}
 	$tab_moy['periodes'][$periode_num]['quartile1_grp']=$quartile1_grp;               // [$j]
@@ -130,49 +130,49 @@ for($loop=$periode1;$loop<=$periode2;$loop++) {
 	$tab_moy['periodes'][$periode_num]['current_group_effectif_avec_note']=$current_group_effectif_avec_note; // [$j]
 
 /*
-// De calcul_moy_gen.inc.php, on rÈcupËre en sortie:
+// De calcul_moy_gen.inc.php, on r√©cup√®re en sortie:
 //     - $moy_gen_eleve[$i]
-//     - $moy_gen_eleve1[$i] idem avec les coef forcÈs ‡ 1
+//     - $moy_gen_eleve1[$i] idem avec les coef forc√©s √† 1
 //     - $moy_gen_classe[$i]
-//     - $moy_gen_classe1[$i] idem avec les coef forcÈs ‡ 1
+//     - $moy_gen_classe1[$i] idem avec les coef forc√©s √† 1
 //     - $moy_generale_classe
 //     - $moy_max_classe
 //     - $moy_min_classe
 
-// A VERIFIER, mais s'il n'y a pas de coef spÈcifique pour un ÈlËve, on devrait avoir
+// A VERIFIER, mais s'il n'y a pas de coef sp√©cifique pour un √©l√®ve, on devrait avoir
 //             $moy_gen_classe[$i] == $moy_generale_classe
-// NON: Cela correspond ‡ un mode de calcul qui ne retient que les matiËres suivies par l'ÈlËve pour calculer la moyenne gÈnÈrale
-//      Le LATIN n'est pas comptÈ dans cette moyenne gÈnÈrale si l'ÈlËve ne fait pas latin.
-//      L'Allemand n'est pas comptabilisÈ si l'ÈlËve ne fait pas allemand
+// NON: Cela correspond √† un mode de calcul qui ne retient que les mati√®res suivies par l'√©l√®ve pour calculer la moyenne g√©n√©rale
+//      Le LATIN n'est pas compt√© dans cette moyenne g√©n√©rale si l'√©l√®ve ne fait pas latin.
+//      L'Allemand n'est pas comptabilis√© si l'√©l√®ve ne fait pas allemand
 // FAIRE LE TOUR DES PAGES POUR VIRER TOUS CES $moy_gen_classe s'il en reste?
 
 //     - $moy_cat_classe[$i][$cat]
 //     - $moy_cat_eleve[$i][$cat]
 
-//     - $moy_cat_min[$i][$cat] Ègale ‡ $moy_min_categorie[$cat]
-//     - $moy_cat_max[$i][$cat] Ègale ‡ $moy_max_categorie[$cat]
+//     - $moy_cat_min[$i][$cat] √©gale √† $moy_min_categorie[$cat]
+//     - $moy_cat_max[$i][$cat] √©gale √† $moy_max_categorie[$cat]
 
-// L‡ le positionnement au niveau moyenne gÈnÈrale:
+// L√† le positionnement au niveau moyenne g√©n√©rale:
 //     - $quartile1_classe_gen
-//       ‡
+//       √†
 //     - $quartile6_classe_gen
 //     - $place_eleve_classe[$i]
 
-// On a rÈcupÈrÈ en intermÈdiaire les
+// On a r√©cup√©r√© en interm√©diaire les
 //     - $current_eleve_login[$i]
 //     - $current_group[$j]
 //     - $current_eleve_note[$j][$i]
 //     - $current_eleve_statut[$j][$i]
-//     - $current_coef[$j] (qui peut Ítre diffÈrent du $coef_eleve pour une matiËre spÈcifique)
+//     - $current_coef[$j] (qui peut √™tre diff√©rent du $coef_eleve pour une mati√®re sp√©cifique)
 //     - $categories -> id
-//     - $current_classe_matiere_moyenne[$j] (moyenne de la classe dans la matiËre)
+//     - $current_classe_matiere_moyenne[$j] (moyenne de la classe dans la mati√®re)
 
-// AJOUTÈ:
+// AJOUT√©:
 //     - $current_coef_eleve[$i][$j]
 //     - $moy_min_classe_grp[$j]
 //     - $moy_max_classe_grp[$j]
-//     - $current_eleve_rang[$j][$i] sous rÈserve que $affiche_rang=='y'
-//     - $quartile1_grp[$j] ‡ $quartile6_grp[$j]
+//     - $current_eleve_rang[$j][$i] sous r√©serve que $affiche_rang=='y'
+//     - $quartile1_grp[$j] √† $quartile6_grp[$j]
 //     - $place_eleve_grp[$j][$i]
 //     - $current_group_effectif_avec_note[$j] pour le nombre de "vraies" moyennes pour le rang (pas disp, abs,...)
 //     - $tab_login_indice[LOGIN_ELEVE]=$i
@@ -216,7 +216,7 @@ $display_moy_gen=sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id
 $affiche_coef=sql_query1("SELECT display_coef FROM classes WHERE id='".$id_classe."';");
 
 if(!getSettingValue("bull_intitule_app")){
-	$bull_intitule_app="ApprÈciations/Conseils";
+	$bull_intitule_app="Appr√©ciations/Conseils";
 }
 else{
 	$bull_intitule_app=getSettingValue("bull_intitule_app");
@@ -233,14 +233,14 @@ if ($choix_edit == '2') {
 }
 
 if ($choix_edit != '2') {
-	// Si on arrive l‡, on n'est ni ÈlËve, ni responsable
+	// Si on arrive l√†, on n'est ni √©l√®ve, ni responsable
 
 	//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 	if ($_SESSION['statut'] == "professeur" AND
 	getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes" AND
 	getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes") {
 
-		// On ne sÈlectionne que les ÈlËves que le professeur a en cours
+		// On ne s√©lectionne que les √©l√®ves que le professeur a en cours
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
 			// On a alors $choix_edit==1 ou $choix_edit==4
@@ -254,7 +254,7 @@ if ($choix_edit != '2') {
 				"jgp.login = '".$_SESSION['login']."') " .
 				"ORDER BY e.nom,e.prenom");
 	    } else {
-			// On a alors $choix_edit==3 uniquement les ÈlËves du professeur principal $login_prof
+			// On a alors $choix_edit==3 uniquement les √©l√®ves du professeur principal $login_prof
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp, j_eleves_professeurs jep " .
 				"WHERE (" .
@@ -268,7 +268,7 @@ if ($choix_edit != '2') {
 				"ORDER BY e.nom,e.prenom");
 	    }
 	} else {
-	    // On sÈlectionne sans restriction
+	    // On s√©lectionne sans restriction
 
 	    //if ($choix_edit == '1') {
 	    if (($choix_edit == '1')||(!isset($login_prof))) {
@@ -296,7 +296,7 @@ if ($choix_edit != '2') {
 
 	//=========================
 	// AJOUT: boireaus 20080209
-	// Affichage des apprÈciations saisies pour la classe
+	// Affichage des appr√©ciations saisies pour la classe
 	//echo "2 \$test_coef=$test_coef<br />";
 	//bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories);
 	//bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$nb_coef_superieurs_a_zero,$affiche_categories);

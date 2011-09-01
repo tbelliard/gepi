@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -37,16 +37,16 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/definir_autres_sanctions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir types sanctions', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_autres_sanctions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir types sanctions', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_discipline/definir_autres_sanctions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir types sanctions', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_autres_sanctions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir types sanctions', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -67,16 +67,16 @@ if(isset($suppr_nature)) {
 			$sql="SELECT 1=1 FROM s_autres_sanctions WHERE id_nature='$suppr_nature[$i]';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0) {
-				$msg.="Il n'est pas possible de supprimer le type de sanction n°".$suppr_nature[$i]." parce qu'il est associé à des sanctions déjà saisies pour un ou des élèves.<br />\n";
+				$msg.="Il n'est pas possible de supprimer le type de sanction nÂ°".$suppr_nature[$i]." parce qu'il est associÃ© Ã  des sanctions dÃ©jÃ  saisies pour un ou des Ã©lÃ¨ves.<br />\n";
 			}
 			else {
 				$sql="DELETE FROM s_types_sanctions WHERE id_nature='$suppr_nature[$i]';";
 				$suppr=mysql_query($sql);
 				if(!$suppr) {
-					$msg.="ERREUR lors de la suppression de la nature n°".$suppr_nature[$i].".<br />\n";
+					$msg.="ERREUR lors de la suppression de la nature nÂ°".$suppr_nature[$i].".<br />\n";
 				}
 				else {
-					$msg.="Suppression de la nature n°".$suppr_nature[$i].".<br />\n";
+					$msg.="Suppression de la nature nÂ°".$suppr_nature[$i].".<br />\n";
 				}
 			}
 		}
@@ -120,9 +120,9 @@ if(isset($nature)) {
 	}
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Discipline: Définition des types de sanctions";
+$titre_page = "Discipline: DÃ©finition des types de sanctions";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -131,8 +131,8 @@ require_once("../lib/header.inc");
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo "</p>\n";
 
-echo "<p>Les types de sanctions prédéfinis sont: Retenue, Exclusion, Travail.<br />
-La présente page est destinée à ajouter d'autres types de sanctions (<i>'mise au pilori', 'flagellation avec des orties', 'regarder Questions pour un champion',... selon les goûts de l'établissement en matière de supplices divers;o</i>).</p>\n";
+echo "<p>Les types de sanctions prÃ©dÃ©finis sont: Retenue, Exclusion, Travail.<br />
+La prÃ©sente page est destinÃ©e Ã  ajouter d'autres types de sanctions (<i>'mise au pilori', 'flagellation avec des orties', 'regarder Questions pour un champion',... selon les goÃ»ts de l'Ã©tablissement en matiÃ¨re de supplices divers;o</i>).</p>\n";
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 echo add_token_field();
@@ -144,7 +144,7 @@ $cpt=0;
 $sql="SELECT * FROM s_types_sanctions ORDER BY nature;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucune sanction supplémentaire n'est encore définie.</p>\n";
+	echo "<p>Aucune sanction supplÃ©mentaire n'est encore dÃ©finie.</p>\n";
 }
 else {
 	echo "<p>Sanctions existantes&nbsp;:</p>\n";

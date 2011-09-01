@@ -24,7 +24,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-// mise à jour des droits dans la table droits
+// mise Ã  jour des droits dans la table droits
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -48,9 +48,9 @@ if ($utilisateur == null) {
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence") != '2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut() != "cpe" && $utilisateur->getStatut() != "scolarite" && $utilisateur->getStatut() != "professeur" && $utilisateur->getStatut() != "autre" ) {
@@ -63,7 +63,7 @@ if($utilisateur->getStatut() == "professeur" && $utilisateur->getClasses()->isEm
 include_once 'lib/function.php';
 
 // Initialisation des variables
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] : (isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] : (isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : (isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
 $id_eleve = isset($_POST["id_eleve"]) ? $_POST["id_eleve"] : (isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : NULL);
@@ -138,7 +138,7 @@ function getDateDescription($date_debut,$date_fin) {
 	    }
 	    return $message;
 	}
-//paramétrage des options affichées en fonction du statut
+//paramÃ©trage des options affichÃ©es en fonction du statut
 $affichage_liens=true;
 $affichage_commentaires_html=true;
 if ($utilisateur->getStatut() == "professeur" || $utilisateur->getStatut() == "autre"){
@@ -157,7 +157,7 @@ $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-//suppression des données en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
+//suppression des donnÃ©es en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
 if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html' && $click_filtrage!="ok" && $raz!=="ok"))){
     unset($_SESSION['donnees_bilan']);
 }
@@ -175,9 +175,9 @@ if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
 $limite_jours=7;
 
 if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2)){
-    //si limitation de temps et si la limite de temps est dépassée en mode toutes les classes on ne lance pas de calculs 
+    //si limitation de temps et si la limite de temps est dÃ©passÃ©e en mode toutes les classes on ne lance pas de calculs 
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
-        $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
+        $message=' L\'intervalle de temps choisi pour toutes les classes doit Ãªtre infÃ©rieur Ã  7 jours ';
         $affichage='';
         $ndj=Null;
         $ndjnj=Null;
@@ -187,7 +187,7 @@ if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="o
        }
 
 // pas de header ou menu dans le cas de l'export odt 
-// début de l'affichage des options
+// dÃ©but de l'affichage des options
 if ($affichage != 'ods' && $affichage != 'odt' ) {
     require_once("../lib/header.inc");
     include('menu_abs2.inc.php');
@@ -199,23 +199,23 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
         }?>
         <?php if($limite_temps && $utilisateur->getStatut() != "autre" && $utilisateur->getStatut() != "professeur" ) :?>
          <p>
-             <strong>La recherche sur toutes les classes n'est permise que pour une durée de <?php echo $limite_jours; ?> jours maximum si aucun nom n'est rentré.</strong>
+             <strong>La recherche sur toutes les classes n'est permise que pour une durÃ©e de <?php echo $limite_jours; ?> jours maximum si aucun nom n'est rentrÃ©.</strong>
 
         <p>
         <?php endif ;?>
-            Cette page permet de regrouper jour par jour les saises du même type (non traitées ou ayant le même traitement) et les informations du traitement.<br />
-            Pour des saisies ayant des traitements multiples , le décompte des demi-journées correspondantes peut donc apparaitre plusieurs fois. 
-            Le total réel des demi-journées calculé par le module s'affiche sous le nom de l'élève.
+            Cette page permet de regrouper jour par jour les saises du mÃªme type (non traitÃ©es ou ayant le mÃªme traitement) et les informations du traitement.<br />
+            Pour des saisies ayant des traitements multiples , le dÃ©compte des demi-journÃ©es correspondantes peut donc apparaitre plusieurs fois. 
+            Le total rÃ©el des demi-journÃ©es calculÃ© par le module s'affiche sous le nom de l'Ã©lÃ¨ve.
         </p>
         <p>
-            Toute modification doit être validée pour être prise en compte.
+            Toute modification doit Ãªtre validÃ©e pour Ãªtre prise en compte.
         </p>
         <?php if ($inverse_date) :?>
-        <h3 class="no">Les dates de début et de fin ont été inversés.</h3>
+        <h3 class="no">Les dates de dÃ©but et de fin ont Ã©tÃ© inversÃ©s.</h3>
         <?php endif; ?>
         <form dojoType="dijit.form.Form" id="bilan_individuel" name="bilan_individuel" action="bilan_individuel.php" method="post">
             <fieldset>
-              <legend>Paramétrage de l'export (dates, classes, tri...) et affichage</legend>
+              <legend>ParamÃ©trage de l'export (dates, classes, tri...) et affichage</legend>
             <h3>Bilan individuel du
                 du	
     <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
@@ -259,7 +259,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
                 }                
                 echo "</select> ";                
             } else {
-                echo 'Aucune classe avec élève affecté n\'a été trouvée';
+                echo 'Aucune classe avec Ã©lÃ¨ve affectÃ© n\'a Ã©tÃ© trouvÃ©e';
             }
             ?>
             Type :
@@ -269,12 +269,12 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
                 echo 'selected';
             }
             ?>
-			>Données occasionnant un manquement aux obligations de présence</option>
+			>DonnÃ©es occasionnant un manquement aux obligations de prÃ©sence</option>
                 <option value='2' <?php
                         if ($type_extrait == '2') {
                             echo 'selected';
                         }
-            ?>>Liste de toutes les données</option>
+            ?>>Liste de toutes les donnÃ©es</option>
             </select><br />            
             
             <input dojoType="dijit.form.CheckBox" type="checkbox" name="tri" value="tri"  <?php
@@ -282,14 +282,14 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
                 echo'checked';
             }            
             ?>
-			> Tri des données par manquement aux obligations de présence, retard puis non manquement.
+			> Tri des donnÃ©es par manquement aux obligations de prÃ©sence, retard puis non manquement.
             <br />
             <?php if($utilisateur->getStatut() == "cpe"):?>            
             <input dojoType="dijit.form.CheckBox" type="checkbox" name="non_traitees" value="non_traitees"  <?php
             if($non_traitees) {
                 echo'checked';
             } ?>
-			> N'afficher que les saisies non traitées ou sans type (non défini et non couverte par un autre traitement)
+			> N'afficher que les saisies non traitÃ©es ou sans type (non dÃ©fini et non couverte par un autre traitement)
             <br />
             <?php endif; ?>
             <?php if($utilisateur->getStatut() == "cpe" || $utilisateur->getStatut() == "scolarite"):?>
@@ -297,7 +297,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             if($ods2) {
                 echo'checked';
             } ?> 
-			> Ne pas répéter les informations globales de l'élève par ligne dans l'export tableur (pour totaux par colonne)
+			> Ne pas rÃ©pÃ©ter les informations globales de l'Ã©lÃ¨ve par ligne dans l'export tableur (pour totaux par colonne)
             <br />
             <input dojoType="dijit.form.CheckBox" type="checkbox" name="sans_commentaire" value="no"  <?php
             if($sans_commentaire) {
@@ -312,12 +312,12 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
 			> Afficher le texte optionnel en bas de l'export odt
             <br />
             <?php endif; ?>            
-            <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Valider les modifications et afficher à l'écran</button>
+            <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Valider les modifications et afficher Ã  l'Ã©cran</button>
         </fieldset>
 		<br />
         <?php if($affichage_liens):?>
         <fieldset style="width:320px; float:left;">
-            <legend>Choix du mode de sortie des données</legend>            
+            <legend>Choix du mode de sortie des donnÃ©es</legend>            
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods" <?php
                  if($affichage==Null || $affichage=='') echo'disabled';?>>Exporter dans un tableur (ods)</button>
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="odt" <?php
@@ -335,17 +335,17 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
     <div id="param-filtre">
      <form id="filtrage" method="POST" action="bilan_individuel.php" >
         <fieldset style="width:540px;">
-            <legend>Filtrage des données</legend>
-            <p style="color:<?php echo $color;?>">N'afficher que les élèves dont les nombres d'absences ou retards respectent les conditions ci-dessous:<br />
+            <legend>Filtrage des donnÃ©es</legend>
+            <p style="color:<?php echo $color;?>">N'afficher que les Ã©lÃ¨ves dont les nombres d'absences ou retards respectent les conditions ci-dessous:<br />
             Choix de la condition si plusieurs conditions sont saisies pour le filtrage : 
             <select dojoType="dijit.form.Select" style="width :3em;font-size:12px;" name="type_filtrage"  <?php if($affichage==Null || $affichage=='') echo'disabled';?>>
                 <option value="OU" <?php if($type_filtrage=="OU") echo 'selected="selected"';?>>OU</option>
                 <option value="ET" <?php if($type_filtrage=="ET") echo 'selected="selected"';?>>ET</option>
             </select>
             <br />    
-            Nombre total de 1/2 journées &ge;: <INPUT dojoType="dijit.form.NumberTextBox" style="width:3em;" constraints="{min:1}" type="text" <?php if($ndj!=Null)echo'value='.$ndj; else echo'value=""'; ?> name="ndj" size="3" maxlength="3"  <?php
+            Nombre total de 1/2 journÃ©es &ge;: <INPUT dojoType="dijit.form.NumberTextBox" style="width:3em;" constraints="{min:1}" type="text" <?php if($ndj!=Null)echo'value='.$ndj; else echo'value=""'; ?> name="ndj" size="3" maxlength="3"  <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>/><br />
-            (OU/ET) Nombre de 1/2 journées non justifiées &ge;: <INPUT dojoType="dijit.form.NumberTextBox" style="width:3em;" constraints="{min:1}" type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3"  <?php
+            (OU/ET) Nombre de 1/2 journÃ©es non justifiÃ©es &ge;: <INPUT dojoType="dijit.form.NumberTextBox" style="width:3em;" constraints="{min:1}" type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3"  <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>><br />
             (OU/ET) Nombre de retards &ge;: <INPUT dojoType="dijit.form.NumberTextBox" constraints="{min:1}" style="width:3em;" type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3"  <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>><br />
@@ -360,14 +360,14 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="click_filtrage" value="ok" <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>>Filtrer</button> 
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="raz" value="ok" <?php
-             if($affichage==Null || $affichage=='') echo'disabled';?>>Réinitialiser</button></p>
+             if($affichage==Null || $affichage=='') echo'disabled';?>>RÃ©initialiser</button></p>
         </fieldset> 
     </form>
     </div>  
     <?php
 }
 // fin de l'affichage des options
-// début de la mise en session des données extraites (sauf si on est dans un filtrage des données affichées)
+// dÃ©but de la mise en session des donnÃ©es extraites (sauf si on est dans un filtrage des donnÃ©es affichÃ©es)
 
 if ($affichage =='html' && $click_filtrage!=="ok" && $raz!=="ok") {
     if(ob_get_contents()){
@@ -391,7 +391,7 @@ if ($id_eleve !== null && $id_eleve != '') {
 }
 $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
 if ($eleve_col->isEmpty()) {
-    echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
+    echo"<h2 class='no'>Aucun Ã©lÃ¨ve avec les paramÃ¨tres sÃ©lectionnÃ©s n'a Ã©tÃ© trouvÃ©.</h2>";
     die();
 }
 $precedent_eleve_id = null;
@@ -407,7 +407,7 @@ foreach ($eleve_col as $eleve) {
         $donnees[$eleve_id]['classe'] = $eleve->getClasseNom();        
         $donnees[$eleve_id]['nbre_lignes_total'] = 0;
     }
-    // on récupère les saisies de l'élève
+    // on rÃ©cupÃ¨re les saisies de l'Ã©lÃ¨ve
     $saisie_query = AbsenceEleveSaisieQuery::create()
                     ->filterByPlageTemps($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
                     ->filterByEleveId($eleve->getIdEleve());
@@ -467,7 +467,7 @@ foreach ($eleve_col as $eleve) {
                 if ($traitement->getAbsenceEleveType() != Null) {
                     $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = $traitement->getAbsenceEleveType()->getNom();
                 } else {
-                    $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = 'Non défini';
+                    $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = 'Non dÃ©fini';
                 }
                 if ($traitement->getAbsenceEleveMotif() != Null) {
                     $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['motif'] = $traitement->getAbsenceEleveMotif()->getNom();
@@ -489,7 +489,7 @@ foreach ($eleve_col as $eleve) {
                 $donnees[$eleve_id]['nbre_lignes_total']++;
             }
             $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['saisies'][] = $saisie->getId();            
-            $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type'] = 'Non traitée(s)';
+            $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type'] = 'Non traitÃ©e(s)';
             $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['motif'] = '-';
             $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['justification'] = '-';
             if (isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates'])) {
@@ -510,7 +510,7 @@ foreach ($eleve_col as $eleve) {
     }    
     $precedent_eleve_id = $eleve->getIdEleve();    
 }
-//on récupère les demi-journées globales et par ligne
+//on rÃ©cupÃ¨re les demi-journÃ©es globales et par ligne
 foreach ($donnees as $id => &$eleve) {
     if(!isset($eleve['infos_saisies'])) continue;
     $propel_eleve = EleveQuery::create()->filterByIdEleve($id)->findOne();
@@ -549,8 +549,8 @@ foreach ($donnees as $id => &$eleve) {
 $_SESSION['donnees_bilan']=serialize($donnees);
 
 }
-// fin de la mise en session des données extraites
-// On fais une copie des données en session pour affichage
+// fin de la mise en session des donnÃ©es extraites
+// On fais une copie des donnÃ©es en session pour affichage
 if($affichage !="odt" && $affichage!="ods"){
     if(isset($_SESSION['donnees_bilan'])){
         $_SESSION['donnees_bilan_affichage']=$_SESSION['donnees_bilan'];
@@ -596,29 +596,29 @@ if ($filtrage == "ok" && ($ndj != null || $ndjnj != null || $nr != null)) {
     }
 
     if($affichage !="odt" && $affichage!="ods"){
-        echo'<p class="red">Les données affichées ci-dessous ont été filtrées. ';
-        echo'Le nombre d\'élèves affiché est de '.($cpt_eleve-$cpt_eleve_filtre).' sur un total initial de '.$cpt_eleve.'</p>';
+        echo'<p class="red">Les donnÃ©es affichÃ©es ci-dessous ont Ã©tÃ© filtrÃ©es. ';
+        echo'Le nombre d\'Ã©lÃ¨ves affichÃ© est de '.($cpt_eleve-$cpt_eleve_filtre).' sur un total initial de '.$cpt_eleve.'</p>';
     } 
     $_SESSION['donnees_bilan_affichage'] = serialize($donnees_filtrage);
 }
 //Fin prise en compte du filtrage
-// début des export
+// dÃ©but des export
   //export html
 if ($affichage == 'html') {
 echo'<div id="sortie_ecran">';
 echo '<table border="1" cellspacing="0" align="center">';
 echo '<tr >';
 echo '<td align="center">';
-echo 'Informations sur l\'élève';
+echo 'Informations sur l\'Ã©lÃ¨ve';
 echo '</td>';
 echo '<td align="center">';
 echo 'Saisies ';
 echo '</td>';
 echo '<td align="center">';
-echo 'Décompte J';
+echo 'DÃ©compte J';
 echo '</td>';
 echo '<td align="center">';
-echo 'Décompte NJ';
+echo 'DÃ©compte NJ';
 echo '</td>';
 echo '<td align="center">';
 echo 'Type';
@@ -667,22 +667,22 @@ foreach ($donnees as $id => $eleve) {
                     }
                     echo '<u><i>Absences :</i></u> <br />';
                     if (strval($eleve['demi_journees']) == 0) {
-                        echo 'Aucune demi-journée';
+                        echo 'Aucune demi-journÃ©e';
                     } else {
-                        echo '<b>' . $eleve['demi_journees'] . '</b> demi-journée';
+                        echo '<b>' . $eleve['demi_journees'] . '</b> demi-journÃ©e';
                         if (strval($eleve['demi_journees']) > 1)
                             echo's';
 
                         if (strval($eleve['demi_journees'] - $eleve['non_justifiees']) != 0) {
                             echo' <br /> ';
-                            echo 'dont ' . strval($eleve['demi_journees'] - $eleve['non_justifiees']) . ' justifiée';
+                            echo 'dont ' . strval($eleve['demi_journees'] - $eleve['non_justifiees']) . ' justifiÃ©e';
                             if (strval($eleve['demi_journees'] - $eleve['non_justifiees']) > 1)
                                 echo's';
                         }
 
                         if (strval($eleve['non_justifiees']) != 0) {
                             echo'<br />';
-                            echo 'dont <b>' . $eleve['non_justifiees'] . ' non justifiée</b>';
+                            echo 'dont <b>' . $eleve['non_justifiees'] . ' non justifiÃ©e</b>';
                             if (strval($eleve['non_justifiees']) > 1)
                                 echo's';
                         }
@@ -714,9 +714,9 @@ foreach ($donnees as $id => $eleve) {
                     echo '<font class="no">' . $value['demi_journees_non_justifiees'] . '</font>';
                 echo '</td>';
                 echo '<td class="'.$style.'">';               
-                if ($value['type'] !== 'Non traitée(s)') {
+                if ($value['type'] !== 'Non traitÃ©e(s)') {
                     $class = '';
-                    if ($value['type'] == 'Non défini') {
+                    if ($value['type'] == 'Non dÃ©fini') {
                         $class = 'orange';
                     }
                     if($affichage_liens){
@@ -754,7 +754,7 @@ foreach ($donnees as $id => $eleve) {
         }
     }
 }
-echo '<h5>Extraction réalisée le '.date("d/m/Y - H:i").'</h5>';
+echo '<h5>Extraction rÃ©alisÃ©e le '.date("d/m/Y - H:i").'</h5>';
 echo'</div>';
 //fin export html; debut export odt et ods
 } else if ($affichage == 'ods' || $affichage == 'odt') {
@@ -919,7 +919,7 @@ if ($id_classe != null && $id_classe != '' && $id_eleve == null) {
     }
 }
 if ($nom_eleve != null && $nom_eleve != '') {
-    $titre .= ' pour les élèves dont le nom ou le prénom contient ' . $nom_eleve;
+    $titre .= ' pour les Ã©lÃ¨ves dont le nom ou le prÃ©nom contient ' . $nom_eleve;
 }
 if ($id_eleve != null && $id_eleve != '') {
     $eleve_current=  EleveQuery::create()->filterByIdEleve($id_eleve)->findOne();

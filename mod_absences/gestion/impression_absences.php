@@ -63,8 +63,8 @@ die();
 
 
 	$form_pdf_lettre = 'cache';
-// redirection vers la création des courrier en pdf
-// si au moins 1 lettre a été cochée et lettre_action = originaux ( c'est a dire passage préalable par le form2 de selection de
+// redirection vers la crÃ©ation des courrier en pdf
+// si au moins 1 lettre a Ã©tÃ© cochÃ©e et lettre_action = originaux ( c'est a dire passage prÃ©alable par le form2 de selection de
 if($id_lettre_suivi[0] != '' and $lettre_action === 'originaux')
 {
 //	$_SESSION['id_lettre_suivi'] = $id_lettre_suivi;
@@ -91,10 +91,10 @@ function getDate(input_pass,form_choix){
  var date_jour = jour+"/"+mois+"/"+annee;
 // nom du formulaire
   var form_action = form_choix;
-// id des élèments
+// id des Ã©lÃ¨ments
   var input_pass_id = input_pass.id;
   var input_pass_value = input_pass.value;
-// modifie le contenue de l'élèment
+// modifie le contenue de l'Ã©lÃ¨ment
 if(document.forms[form_action].elements[input_pass_id].value=='JJ/MM/AAAA' || document.forms[form_action].elements[input_pass_id].value=='') { document.forms[form_action].elements[input_pass_id].value=date_jour; }
 }
  // -->
@@ -261,8 +261,8 @@ if($type_impr === 'eti') {
     else { if (isset($_GET['etiquette_aff'])) { $etiquette_aff = $_GET['etiquette_aff']; } if (isset($_POST['etiquette_aff'])) { $etiquette_aff = $_POST['etiquette_aff']; } }
 }
 
-// fonction de sécuritée
-// uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
+// fonction de sÃ©curitÃ©e
+// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
  if(empty($_SESSION['uid_prime'])) { $_SESSION['uid_prime']=''; }
  if (empty($_GET['uid_post']) and empty($_POST['uid_post'])) {$uid_post='';}
@@ -273,7 +273,7 @@ if($type_impr === 'eti') {
 	    $uid_post = my_eregi_replace('%20',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
-// fin de la fonction de sécuritée
+// fin de la fonction de sÃ©curitÃ©e
 
 function titre_lettre_type($id)
  {
@@ -289,7 +289,7 @@ function titre_lettre_type($id)
 // pour ajouter un nouveau type de lettre
 if(!empty($lettre_type_nouv) and $action_choix_lettre === 'editer' and $valide_form === 'yes')
  {
-	// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
+	// on vÃ©rifie s'il y a des lettres de ce type qui on Ã©tait envoyÃ© si oui on ne peut pas supprimer ce type de lettre
         $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."'"),0);
         if ($test_existance === '0')
 	{
@@ -297,7 +297,7 @@ if(!empty($lettre_type_nouv) and $action_choix_lettre === 'editer' and $valide_f
               $requete="INSERT INTO ".$prefix_base."lettres_types (titre_lettre_type, categorie_lettre_type, reponse_lettre_type) VALUES ('".$lettre_type_nouv."', 'Type de lettre', '".$reponse_lettre_type."')";
               $execution_requete = mysql_query($requete);
 	      $lettre_type = mysql_insert_id();
-	} else { $erreur = 'Il existe déjas un type de lettre de même nom'; }
+	} else { $erreur = 'Il existe dÃ©jas un type de lettre de mÃªme nom'; }
  }
 
 //si action_lettre = ajout_cadre
@@ -355,7 +355,7 @@ if($action_cadre === 'supprimer_cadre' and $valide_form === 'yes')
  {
 	if(!empty($id))
 	{
-		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
+		// on vÃ©rifie s'il y a des lettres de ce type qui on Ã©tait envoyÃ© si oui on ne peut pas supprimer ce type de lettre
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_tcs WHERE cadre_lettre_tc = '".$id."'"),0);
                 if ($test_existance === '0')
 		{
@@ -383,7 +383,7 @@ if($action_choix_lettre === 'supprimer' and $valide_form === 'yes')
  {
 	if(!empty($lettre_type))
 	{
-		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
+		// on vÃ©rifie s'il y a des lettres de ce type qui on Ã©tait envoyÃ© si oui on ne peut pas supprimer ce type de lettre
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE type_lettre_suivi = '".$lettre_type."'"),0);
                 if ($test_existance === '0')
 		{
@@ -400,7 +400,7 @@ if($action_choix_lettre === 'renommer' and $lettre_type_nouv != '' and $valide_f
  {
 	if(!empty($lettre_type_nouv))
 	{
-		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
+		// on vÃ©rifie s'il y a des lettres de ce type qui on Ã©tait envoyÃ© si oui on ne peut pas supprimer ce type de lettre
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."' AND id_lettre_type != '".$lettre_type."'"),0);
                 if ($test_existance === '0')
 		{
@@ -408,7 +408,7 @@ if($action_choix_lettre === 'renommer' and $lettre_type_nouv != '' and $valide_f
 			$requete="UPDATE ".$prefix_base."lettres_types SET titre_lettre_type = '".$lettre_type_nouv."', reponse_lettre_type = '".$reponse_lettre_type."' WHERE id_lettre_type = '".$lettre_type."'";
 		        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 			$action_choix_lettre = '';
-		} else { $erreur = 'Il existe déjas un type de lettre de même nom'; }
+		} else { $erreur = 'Il existe dÃ©jas un type de lettre de mÃªme nom'; }
 	}
  }
 
@@ -432,18 +432,18 @@ if(!empty($nom_lettre_cadre) and empty($id) and $valide_form === 'yes')
 
 //IMPRESSIONS LETTRES AUX PARENTS
 
-// pour réinitialiser la date d'envoi d'un document
+// pour rÃ©initialiser la date d'envoi d'un document
 if($action_laf === 'reinit_envoi' and $valide_form === 'yes')
  {
 	if(!empty($id))
 	{
-		// on vérifie s'il n'y a pas eu de réponse pour cette envoi si oui on ne peut pas réinitialiser
+		// on vÃ©rifie s'il n'y a pas eu de rÃ©ponse pour cette envoi si oui on ne peut pas rÃ©initialiser
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id."' AND (reponse_date_lettre_suivi = '' OR reponse_date_lettre_suivi != '0000-00-00') AND statu_lettre_suivi = 'recus'"),0);
                 if ($test_existance === '0')
 		{
 			$requete="UPDATE ".$prefix_base."lettres_suivis SET envoye_date_lettre_suivi = '', envoye_heure_lettre_suivi = '', quienvoi_lettre_suivi = '' WHERE id_lettre_suivi = '".$id."'";
 		        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-		} else { $erreur = 'Il existe une réponse pour ce courrier donc vous ne pouvez pas réinitialiser l\'envoi'; }
+		} else { $erreur = 'Il existe une rÃ©ponse pour ce courrier donc vous ne pouvez pas rÃ©initialiser l\'envoi'; }
 	}
  }
 
@@ -490,7 +490,7 @@ if($action_etiquette === 'supprimer_etiquette_format' and $valide_form === 'yes'
  }
 
 
-//requête :
+//requÃªte :
 $sql_cpe = 'SELECT '.$prefix_base.'utilisateurs.login, '.$prefix_base.'utilisateurs.nom, '.$prefix_base.'utilisateurs.prenom, '.$prefix_base.'utilisateurs.civilite FROM '.$prefix_base.'utilisateurs WHERE '.$prefix_base.'utilisateurs.statut="cpe" ORDER BY '.$prefix_base.'utilisateurs.nom, '.$prefix_base.'utilisateurs.prenom ASC';
 ?>
 
@@ -562,9 +562,9 @@ mavar = mavar.split('-');
 
 
 affichercacher('div_1');
-// si JavaScript est disponible, cache le contenu dès le
+// si JavaScript est disponible, cache le contenu dÃ¨s le
 // chargement de la page. Sans JavaScript, le contenu sera
-// affiché.
+// affichÃ©.
 </script>
 
 <!-- ENTETE PRINCIPAL -->
@@ -572,7 +572,7 @@ affichercacher('div_1');
 <a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> |
 <a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> |
 <a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> |
-<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">SystÃ¨me d'alerte</a>
 </p>
 <!-- ENTETE PROPOSANT LES CHOIX -->
 <div class="norme_absence centre">
@@ -580,9 +580,9 @@ affichercacher('div_1');
 	 <a href="impression_absences.php?type_impr=bda">Bilan des absences</a> |
 	 <a href="impression_absences.php?type_impr=bpc">Bilan conseils</a> |
 	 <a href="impression_absences.php?type_impr=bj">Bilan journalier</a> |
-	 <a href="impression_absences.php?type_impr=fic">Fiches récapitulatives</a> |
+	 <a href="impression_absences.php?type_impr=fic">Fiches rÃ©capitulatives</a> |
 	 <a href="impression_absences.php?type_impr=eti">Etiquettes</a> |
-	 <a href='impression_absences.php?type_impr=crea_lettre'>Gestion de la création des types de lettre</a> ]
+	 <a href='impression_absences.php?type_impr=crea_lettre'>Gestion de la crÃ©ation des types de lettre</a> ]
 	 </div><br />
 
 
@@ -594,18 +594,18 @@ affichercacher('div_1');
 	<?php
 
 	/* ******************************************************************* */
-	/* DEBUT - Bloc form pour la génération du PDF des lettres aux parents */
-	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Sélectionner pour envoi' )
+	/* DEBUT - Bloc form pour la gÃ©nÃ©ration du PDF des lettres aux parents */
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='SÃ©lectionner pour envoi' )
 	{
 
 		?>
 		<form method="post" action="lettre_pdf.php" name="imprime_pdf_ok" target="_blank">
-	  		<fieldset style="width: 90%; margin: auto; border: 1px solid;"><legend>Votre sélection</legend>
+	  		<fieldset style="width: 90%; margin: auto; border: 1px solid;"><legend>Votre sÃ©lection</legend>
 	  		 	<input type="hidden" name="id_lettre_suivi" value='<?php echo serialize($id_lettre_suivi); ?>' />
 	  		 	<input type="hidden" name="lettre_action" value="<?php echo $lettre_action; ?>" />
-				En cliquant sur le bouton ci-après, vous imprimez les lettres sélectionnées et passer leur état à Envoyé
+				En cliquant sur le bouton ci-aprÃ¨s, vous imprimez les lettres sÃ©lectionnÃ©es et passer leur Ã©tat Ã  EnvoyÃ©
 	  		 	<center>
-				<input type="submit" id="valider_pdf" name="creer_pdf" value="Générer le fichier PDF" />
+				<input type="submit" id="valider_pdf" name="creer_pdf" value="GÃ©nÃ©rer le fichier PDF" />
 				</center>
 			</fieldset>
 		</form>
@@ -614,13 +614,13 @@ affichercacher('div_1');
 	<?php
 
 	}
-	/* FIN - Bloc form pour la génération du PDF des lettres aux parents */
+	/* FIN - Bloc form pour la gÃ©nÃ©ration du PDF des lettres aux parents */
 	/* ***************************************************************** */
 
 
 	/* ******************************************************************* */
 	/* DEBUT - Bloc form pour l'effacement des lettres aux parents */
-	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Effacer les lettres selectionnées' and $_POST['id_lettre_suivi'][0]!='')
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Effacer les lettres selectionnÃ©es' and $_POST['id_lettre_suivi'][0]!='')
 	{
 	$rq_efface_courriers='';
 	$succes_efface_courriers=1;
@@ -630,7 +630,7 @@ affichercacher('div_1');
 		$resultat_efface_courriers = mysql_query($rq_efface_courriers) or die('Erreur SQL !'.$rq_efface_courriers.'<br />'.mysql_error());
 		if ($resultat_efface_courriers!=1){$succes_efface_courriers=0;}
 		}
-	if($succes_efface_courriers==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres ont été effacées !</td></tr></table>');}
+	if($succes_efface_courriers==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres ont Ã©tÃ© effacÃ©es !</td></tr></table>');}
 	}
 	/* FIN - Bloc form pour l'effacement des lettres aux parents  */
 	/* ***************************************************************** */
@@ -648,21 +648,21 @@ affichercacher('div_1');
 		/*echo($liste);*/
 		$rq_liste='SELECT `id_lettre_suivi`,`quirecois_lettre_suivi`,`partdenum_lettre_suivi` FROM `lettres_suivis` WHERE `id_lettre_suivi` IN ('.$liste.') AND `envoye_date_lettre_suivi` = "0000-00-00" AND `statu_lettre_suivi`="en attente" ORDER BY `quirecois_lettre_suivi`,`emis_date_lettre_suivi`;';
 		$resultat_rq_liste = mysql_query($rq_liste) or die('Erreur SQL !'.$rq_liste.'<br />'.mysql_error());
-		/* boucle de rassemblement des absences concernées par un courrier*/
+		/* boucle de rassemblement des absences concernÃ©es par un courrier*/
 		$precedent=Array("","","");
 		while($courrier=mysql_fetch_array($resultat_rq_liste))
 			{
 			/*echo(" ".$courrier[0]." ".$courrier[1]." ".$courrier[2]." <br>");*/
 			if ($precedent[1]==$courrier[1])
 				{
-					/*Même login, donc ajouter courier2 à listeabsences */
+					/*MÃªme login, donc ajouter courier2 Ã  listeabsences */
 					$liste_absences=ereg_replace(",{2,}", ",",$liste_absences.','.$courrier[2]);
 					/*echo($liste_absences.'<BR>');*/
-					/*et ecrire  le sql du courier n°courier[0] avec liste absences*/
+					/*et ecrire  le sql du courier nÂ°courier[0] avec liste absences*/
 					$rq_ajout_courrier='UPDATE `lettres_suivis` SET `envoye_date_lettre_suivi`=0000-00-00 ,`quirecois_lettre_suivi`="'.$courrier[1].'",`quiemet_lettre_suivi`="'.$_SESSION['login'].'" ,`partdenum_lettre_suivi`="'.$liste_absences.'",`statu_lettre_suivi`="en attente", `reponse_date_lettre_suivi`=0000-00-00 ,`envoye_heure_lettre_suivi`=0  WHERE ( `id_lettre_suivi`="'.$courrier[0].'");';
 					/*echo($rq_ajout_courrier);*/
 					mysql_query($rq_ajout_courrier) or die('Erreur SQL !'.$rq_liste.'<br />'.mysql_error());
-					/*on doit effacer l enregistrement précédent[0] dans sql*/
+					/*on doit effacer l enregistrement prÃ©cÃ©dent[0] dans sql*/
 					$rq_suppr_prece='DELETE FROM `lettres_suivis` WHERE `id_lettre_suivi`='.$precedent[0].';';
 					/*echo($rq_suppr_prece.'<br>');*/
 					mysql_query($rq_suppr_prece) or die('Erreur SQL !'.$rq_suppr_prece.'<br />'.mysql_error());
@@ -670,14 +670,14 @@ affichercacher('div_1');
 				}
 			else 
 				{			
-					/*login différent donc on réinitialise precedent*/
+					/*login diffÃ©rent donc on rÃ©initialise precedent*/
 					$precedent=$courrier;
 					$liste_absences=ereg_replace(",{2,}", ",",$courrier[2]);
 					/*$liste_absences=ereg_replace("^,", "", $courrier[2]);*/
 					/*echo($liste_absences.'<BR>');*/
 				}
 			}
-		echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les courriers sélectionnés ont été fusionnés !</td></tr></table>');
+		echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les courriers sÃ©lectionnÃ©s ont Ã©tÃ© fusionnÃ©s !</td></tr></table>');
 	}
 	/* FIN - Bloc form pour l'assemblage des courriers  */
 	/* ***************************************************************** */
@@ -686,7 +686,7 @@ affichercacher('div_1');
 
 	/* ******************************************************************* */
 	/* DEBUT - Bloc form pour repasser les courriers au statut EN ATTENTE */
-	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Réinitialiser les envois de courriers' and $_POST['id_lettre_suivi'][0]!='')
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='RÃ©initialiser les envois de courriers' and $_POST['id_lettre_suivi'][0]!='')
 	{
 	$rq_repasse_courriers_attente='';
 	$succes_repasse_courriers_attente=1;
@@ -697,7 +697,7 @@ affichercacher('div_1');
 		if ($resultat_repasse_courriers_attente!=1){$succes_repasse_courriers_attente=0;}
 		/*echo($rq_repasse_courriers_attente);*/
 		}
-	if($succes_repasse_courriers_attente==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres ont été réinitialisées !</td></tr></table>');}
+	if($succes_repasse_courriers_attente==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres ont Ã©tÃ© rÃ©initialisÃ©es !</td></tr></table>');}
 	}
 	/* FIN - Bloc form pour repasser les courriers au statut EN ATTENTE  */
 	/* ***************************************************************** */
@@ -705,8 +705,8 @@ affichercacher('div_1');
 
 
 	/* ******************************************************************* */
-	/* DEBUT - Bloc form pour réception de reponse */
-	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='Considérer les réponses comme recues' and $_POST['id_lettre_suivi'][0]!='')
+	/* DEBUT - Bloc form pour rÃ©ception de reponse */
+	if ( $form_pdf_lettre === 'affiche' and $_POST['Submit3']==='ConsidÃ©rer les rÃ©ponses comme recues' and $_POST['id_lettre_suivi'][0]!='')
 	{
 	$rq_reponse_recue='';
 	$succes_reponse_recue=1;
@@ -720,9 +720,9 @@ affichercacher('div_1');
 		if ($resultat_rq_reponse_recue!=1){$succes_reponse_recue=0;}
 		/*echo($rq_reponse_recue);*/
 		}
-	if($succes_reponse_recue==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres sélectionnées ont été reçues !</td></tr></table>');}
+	if($succes_reponse_recue==1){echo('<table class="table_erreur" border="0"><tr><td class="erreur">Les lettres sÃ©lectionnÃ©es ont Ã©tÃ© reÃ§ues !</td></tr></table>');}
 	}
-	/* FIN - Bloc form pour réception de reponse */
+	/* FIN - Bloc form pour rÃ©ception de reponse */
 	/* ***************************************************************** */
 
 
@@ -732,7 +732,7 @@ affichercacher('div_1');
   
   <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form1">
       <fieldset style="width: 460px; margin: auto; padding: 4px" class="couleur_ligne_3">
-         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
+         <legend class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
             <div class="titre_tableau_gestion">Lettres aux familles</div>
             <div class="norme_absence" style="text-align: center;">
 
@@ -777,23 +777,23 @@ affichercacher('div_1');
 <td style="text-align: right;">
 <select name="choix" style="width: 198px; border: 1px solid #000000; cursor: pointer; margin-bottom: 2px;">
 <option value="1" <?php if(empty($choix) or (!empty($choix) and $choix === '1')) { ?>selected="selected"<?php } ?>>Tous les courriers</option>
-<option value="2" <?php if(!empty($choix) and $choix === '2') { ?>selected="selected"<?php } ?>>Courriers expédiés</option>
-<option value="3" <?php if(!empty($choix) and $choix === '3') { ?>selected="selected"<?php } ?>>Courriers non expédiés</option>
-<option value="4" <?php if(!empty($choix) and $choix === '4') { ?>selected="selected"<?php } ?>>Courriers sans réponse</option>
-<option value="5" <?php if(!empty($choix) and $choix === '5') { ?>selected="selected"<?php } ?>>Courriers avec réponse</option>
+<option value="2" <?php if(!empty($choix) and $choix === '2') { ?>selected="selected"<?php } ?>>Courriers expÃ©diÃ©s</option>
+<option value="3" <?php if(!empty($choix) and $choix === '3') { ?>selected="selected"<?php } ?>>Courriers non expÃ©diÃ©s</option>
+<option value="4" <?php if(!empty($choix) and $choix === '4') { ?>selected="selected"<?php } ?>>Courriers sans rÃ©ponse</option>
+<option value="5" <?php if(!empty($choix) and $choix === '5') { ?>selected="selected"<?php } ?>>Courriers avec rÃ©ponse</option>
 </select><br />
 <select name="action_lettre" style="width: 90px; border: 1px solid #000000; cursor: pointer;">
 <option value="1" <?php if(empty($action_lettre) or (!empty($action_lettre) and $action_lettre === '1')) { ?>selected="selected"<?php } ?>>&eacute;mis le</option>
-<option value="2" <?php if(!empty($action_lettre) and $action_lettre === '2') { ?>selected="selected"<?php } ?>>postés le</option>
+<option value="2" <?php if(!empty($action_lettre) and $action_lettre === '2') { ?>selected="selected"<?php } ?>>postÃ©s le</option>
 <option value="3" <?php if(!empty($action_lettre) and $action_lettre === '3') { ?>selected="selected"<?php } ?>>r&eacute;ponse re&ccedil;ue le</option>
-<option value="4" <?php if(!empty($action_lettre) and $action_lettre === '4') { ?>selected="selected"<?php } ?>>émis depuis le</option>
+<option value="4" <?php if(!empty($action_lettre) and $action_lettre === '4') { ?>selected="selected"<?php } ?>>Ã©mis depuis le</option>
 <option value="5" <?php if(!empty($action_lettre) and $action_lettre === '5') { ?>selected="selected"<?php } ?>>ne pas tenir compte de la date</option>
 </select>
 
 <!--INSERER ICI UNE POSSIBILITE DE CHOIX DE CLASSE -->
 
 <input name="du" type="text" size="9" maxlength="10" style="width: 80px; border: 1px solid #000000;" value="<?php if(isset($du)) { echo $du; } ?>" /><a href="#calend" onClick="<?php echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
-<input type="submit" name="Submit" value="Lister la sélection" style="cursor: pointer;" /></td>
+<input type="submit" name="Submit" value="Lister la sÃ©lection" style="cursor: pointer;" /></td>
 </tr>
 </table>
 
@@ -828,7 +828,7 @@ affichercacher('div_1');
 		  									WHERE eleves.login = quirecois_lettre_suivi ".$crearequete."
 		  									AND eleves.login = j_eleves_classes.login
 											ORDER BY j_eleves_classes.id_classe ASC, nom ASC, prenom ASC";
-		// On ajoute un paramètre sur les élèves de ce CPE en particulier
+		// On ajoute un paramÃ¨tre sur les Ã©lÃ¨ves de ce CPE en particulier
 		$sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
 		$query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
 		$test = array();
@@ -867,11 +867,11 @@ affichercacher('div_1');
 	      	</td>
 	      	<td align="center" nowrap="nowrap" valign="middle" style="text-align: left;"><label for="sel<?php echo $i; ?>"><?php echo '<strong>'.$donner_liste_courrier['nom'].' '.$donner_liste_courrier['prenom'].'</strong> ('.classe_de($donner_liste_courrier['login']).')'; ?></label></td>
 	      	<td align="center" nowrap="nowrap" valign="middle"><small><?php echo lettre_type($donner_liste_courrier['type_lettre_suivi']); ?></small></td>
-	      	<td align="center" nowrap="nowrap" valign="middle"><?php $datation = date_frl($donner_liste_courrier['emis_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['emis_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quiemet_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['emis_date_lettre_suivi']).'</span>'; ?></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><?php $datation = date_frl($donner_liste_courrier['emis_date_lettre_suivi']).' Ã  '.heure_texte_court($donner_liste_courrier['emis_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quiemet_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['emis_date_lettre_suivi']).'</span>'; ?></td>
 	      	<td align="center" nowrap="nowrap" valign="middle">
-							<?php if($donner_liste_courrier['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['envoye_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['envoye_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quienvoi_lettre_suivi']); ?>
-							<span title="<?php echo $datation; ?>"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'recus' ) { echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); } else { ?><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=reinit_envoi&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>" 							onClick="return confirm('Etes-vous sur de vouloir réinitialiser la date d\'envoi ?')"><?php echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); ?></a><?php } ?></span><?php } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>	      	<td align="center" nowrap="nowrap" valign="middle"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'envoyer' ) { ?><?php } elseif($donner_liste_courrier['reponse_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['reponse_date_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['reponse_date_lettre_suivi']).'</span>';  } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
-	      	<td align="center" nowrap="nowrap" valign="middle"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=aff_status&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>#n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>" title="modifier l'état de réception"><?php echo $donner_liste_courrier['statu_lettre_suivi']; ?></a></td>
+							<?php if($donner_liste_courrier['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['envoye_date_lettre_suivi']).' Ã  '.heure_texte_court($donner_liste_courrier['envoye_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quienvoi_lettre_suivi']); ?>
+							<span title="<?php echo $datation; ?>"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'recus' ) { echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); } else { ?><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=reinit_envoi&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>" 							onClick="return confirm('Etes-vous sur de vouloir rÃ©initialiser la date d\'envoi ?')"><?php echo date_fr($donner_liste_courrier['envoye_date_lettre_suivi']); ?></a><?php } ?></span><?php } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>	      	<td align="center" nowrap="nowrap" valign="middle"><?php if ( $donner_liste_courrier['statu_lettre_suivi'] === 'envoyer' ) { ?><?php } elseif($donner_liste_courrier['reponse_date_lettre_suivi'] != '0000-00-00') { $datation = date_frl($donner_liste_courrier['reponse_date_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['reponse_date_lettre_suivi']).'</span>';  } else { if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>annuler<?php } else { ?>en attente<?php } } ?></td>
+	      	<td align="center" nowrap="nowrap" valign="middle"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;action_lettre=<?php echo $action_lettre; ?>&amp;du=<?php echo $du; ?>&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>&amp;action_laf=aff_status&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>#n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>" title="modifier l'Ã©tat de rÃ©ception"><?php echo $donner_liste_courrier['statu_lettre_suivi']; ?></a></td>
 	    </tr>
 			<?php
 			if( $action_laf === 'aff_status' and $id === $donner_liste_courrier['id_lettre_suivi'])
@@ -881,10 +881,10 @@ affichercacher('div_1');
 	      	<td align="center" nowrap="nowrap" valign="middle"></td>
 	      	<td align="center" nowrap="nowrap" valign="middle" style="text-align: left;" colspan="7" >Statut
 				<select name="statu_lettre[0]" style="width: 130px; border: 1px solid #000000;">
-					<option value="envoyer" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'envoyer') { ?>selected="selected"<?php } ?>>envoyé</option>
+					<option value="envoyer" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'envoyer') { ?>selected="selected"<?php } ?>>envoyÃ©</option>
 					<option value="en attente" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'en attente') { ?>selected="selected"<?php } ?>>en attente</option>
-					<option value="recus" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'recus') { ?>selected="selected"<?php } ?>>réponses reçue</option>
-					<option value="annuler" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>selected="selected"<?php } ?>>courriers annulé</option>
+					<option value="recus" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'recus') { ?>selected="selected"<?php } ?>>rÃ©ponses reÃ§ue</option>
+					<option value="annuler" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>selected="selected"<?php } ?>>courriers annulÃ©</option>
 				</select>
 				Remarque
 				<input type="texte" name="remarque_lettre_suivi[0]" style="width: 150px; border: 1px solid #000000;" />
@@ -899,12 +899,12 @@ affichercacher('div_1');
 		}
 	} // fin du while ?>
 		<tr class="fond_vert">
-			<td colspan="7" class="norme_absence_blanc"><?php if($nombre_d_entre!='' and $nombre_d_entre!='0') { ?>Nombre de lettres affichées <strong><?php echo $nombre_d_entre.'</strong>'; } else { ?>Aucune sélection<?php } ?></td>
+			<td colspan="7" class="norme_absence_blanc"><?php if($nombre_d_entre!='' and $nombre_d_entre!='0') { ?>Nombre de lettres affichÃ©es <strong><?php echo $nombre_d_entre.'</strong>'; } else { ?>Aucune sÃ©lection<?php } ?></td>
 	    </tr>
         <tr>
             <td colspan="2" class="norme_absence">
 				<?php $varcoche = $varcoche."'form2'"; ?>
-				<a href="javascript:CocheCheckbox(<?php echo $varcoche; ?>)">Cocher</a> | <a href="javascript:DecocheCheckbox(<?php echo $varcoche; ?>)">Décocher</a>
+				<a href="javascript:CocheCheckbox(<?php echo $varcoche; ?>)">Cocher</a> | <a href="javascript:DecocheCheckbox(<?php echo $varcoche; ?>)">DÃ©cocher</a>
 			</td>
             <td colspan="7" class="centre">
                 <input type="hidden" name="du" value="<?php echo $du; ?>" />
@@ -916,15 +916,15 @@ affichercacher('div_1');
 				<input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
 				<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 		
-		<input type="submit" name="Submit3" value="Effacer les lettres selectionnées"  onClick="return confirm('Etes-vous sur de vouloir supprimer les courriers cochés ?')" />
+		<input type="submit" name="Submit3" value="Effacer les lettres selectionnÃ©es"  onClick="return confirm('Etes-vous sur de vouloir supprimer les courriers cochÃ©s ?')" />
                 <br>
-		<input type="submit" name="Submit3" value="Assembler les courriers" onClick="return confirm('Si plusieurs courriers  sont en attente pour un élève, ils seront rassemblés en un seul courrier demandant justification pour toutes les absences. Etes-vous sûr de vouloir procéder à ce changement ?')" />
+		<input type="submit" name="Submit3" value="Assembler les courriers" onClick="return confirm('Si plusieurs courriers  sont en attente pour un Ã©lÃ¨ve, ils seront rassemblÃ©s en un seul courrier demandant justification pour toutes les absences. Etes-vous sÃ»r de vouloir procÃ©der Ã  ce changement ?')" />
 		<br>
-		<input type="submit" name="Submit3" value="Réinitialiser les envois de courriers" onClick="return confirm('Le statut des courriers sélectionnés redeviendra EN ATTENTE et pourront être réexpédiés. Etes-vous sûr de vouloir procéder à ce changement ?')"/>
+		<input type="submit" name="Submit3" value="RÃ©initialiser les envois de courriers" onClick="return confirm('Le statut des courriers sÃ©lectionnÃ©s redeviendra EN ATTENTE et pourront Ãªtre rÃ©expÃ©diÃ©s. Etes-vous sÃ»r de vouloir procÃ©der Ã  ce changement ?')"/>
 		<br>
-		<input type="submit" name="Submit3" onClick="return confirm('Ceci va créer un fichier PDF des courriers aux parents. Les courriers changeront alors de statut et la date d'envoi sera enregistrée. Etes-vous sûr de vouloir envoyer les courriers sélectionnés ?')"  value="Sélectionner pour envoi" />
+		<input type="submit" name="Submit3" onClick="return confirm('Ceci va crÃ©er un fichier PDF des courriers aux parents. Les courriers changeront alors de statut et la date d'envoi sera enregistrÃ©e. Etes-vous sÃ»r de vouloir envoyer les courriers sÃ©lectionnÃ©s ?')"  value="SÃ©lectionner pour envoi" />
 		<br>
-		<input type="submit" name="Submit3" value="Considérer les réponses comme recues" onClick="return confirm('Les courriers qui ont été envoyés passeront à REPONSE RECUE. Etes-vous sur de vouloir procéder à ce changement ?')"/>		
+		<input type="submit" name="Submit3" value="ConsidÃ©rer les rÃ©ponses comme recues" onClick="return confirm('Les courriers qui ont Ã©tÃ© envoyÃ©s passeront Ã  REPONSE RECUE. Etes-vous sur de vouloir procÃ©der Ã  ce changement ?')"/>		
             </td>
         </tr>
 	</tbody>
@@ -945,8 +945,8 @@ affichercacher('div_1');
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
-         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-            <div class="titre_tableau_gestion">Bilan général des absences</div>
+         <legend class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
+            <div class="titre_tableau_gestion">Bilan gÃ©nÃ©ral des absences</div>
             <div class="norme_absence" style="text-align: left;">
             Classe
                 <select name="classe">
@@ -963,7 +963,7 @@ affichercacher('div_1');
                           }
                     ?>
                 </select><br />
-                Elève
+                ElÃ¨ve
                 <select name="eleve">
                     <option value="tous">tous</option>
                     <?php
@@ -989,7 +989,7 @@ affichercacher('div_1');
 		  	<br /><input name="retardnj" id="retardnj" value="1" type="checkbox" onclick="activedesactive('absencenj','retardnj');" <?php if ( $retardnj === '1' ) { ?>checked="checked"<?php } ?> /><label for="retardnj" style="cursor: pointer;">Lister seulement les retards non justifi&eacute;s</label>
 		  </span>
 		</div>
-		<br /><div style="text-align: right;"><input type="submit" name="Submit2" value="Valider la sélection" /></div>
+		<br /><div style="text-align: right;"><input type="submit" name="Submit2" value="Valider la sÃ©lection" /></div>
             </div>
       </fieldset>
     </form>
@@ -1017,7 +1017,7 @@ affichercacher('div_1');
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form5">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
-        <legend style="clear: both" class="legend_texte">&nbsp;Sélection&nbsp;</legend>
+        <legend style="clear: both" class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
             <div class="titre_tableau_gestion">Bilan des absences pour les conseils de classe</div>
             <div class="norme_absence" style="text-align: center;">du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_5->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> au <input name="au" id="au" type="text" size="11" maxlength="11" value="<?php echo $au; ?>" onClick="getDate(au,'form5')" /><a href="#calend" onClick="<?php  echo $cal_6->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><input type="submit" name="Submit2" value="&gt;&gt;" /></div>
       </fieldset>
@@ -1029,7 +1029,7 @@ affichercacher('div_1');
           <tr class="fond_vert">
             <td class="norme_absence_blanc" style="width: 80px"><strong>&agrave; imprimer</strong></td>
             <td class="norme_absence_blanc"><strong>Classe</strong></td>
-            <td class="norme_absence_blanc"><strong>Expéditeur</strong></td>
+            <td class="norme_absence_blanc"><strong>ExpÃ©diteur</strong></td>
           </tr>
         <?php
            $ic = '1';
@@ -1068,7 +1068,7 @@ affichercacher('div_1');
            <tr>
             <td colspan="2" class="norme_absence">
 		<?php $varcoche = $varcoche."'form6'"; ?>
-		<a href="javascript:CocheCheckbox(<?php echo $varcoche; ?>)">Cocher</a> | <a href="javascript:DecocheCheckbox(<?php echo $varcoche; ?>)">Décocher</a>
+		<a href="javascript:CocheCheckbox(<?php echo $varcoche; ?>)">Cocher</a> | <a href="javascript:DecocheCheckbox(<?php echo $varcoche; ?>)">DÃ©cocher</a>
 	    </td>
             <td class="centre">
                 <input type="hidden" name="du" value="<?php echo $du; ?>" />
@@ -1091,13 +1091,13 @@ if ( $type_impr == "bj" ) { ?>
 <div style="text-align: center;">
    <form method="post" action="bilan_absences_quotidien_pdf.php" name="form6">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
-         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-            <div class="titre_tableau_gestion">Bilan journalier général</div>
+         <legend class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
+            <div class="titre_tableau_gestion">Bilan journalier gÃ©nÃ©ral</div>
             <div class="norme_absence" style="text-align: left;">
             <br />
             du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_7->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 			&nbsp;
-			<input type="submit" name="Submit2" value="Générer le PDF" /></div>
+			<input type="submit" name="Submit2" value="GÃ©nÃ©rer le PDF" /></div>
 			<br />
             </div>
       </fieldset>
@@ -1108,14 +1108,14 @@ if ( $type_impr == "bj" ) { ?>
 
 
 <!-- FORMULAIRE DE SELECTION POUR LA FICHE RECAPITULATIVE ELEVE, CLASSE, DATES -->
-<?php // fiche récapitulative des absences
+<?php // fiche rÃ©capitulative des absences
  if($type_impr === 'fic') { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
-         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-            <div class="titre_tableau_gestion">Fiche récapitulative</div>
+         <legend class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
+            <div class="titre_tableau_gestion">Fiche rÃ©capitulative</div>
             <div class="norme_absence" style="text-align: center;">
 		<table style="border: 0px; text-align: center; width: 100%;"><tr><td>
                 <select name="classe_multiple[]" size="5" multiple="multiple" tabindex="3" style="width: 220px;">
@@ -1138,7 +1138,7 @@ if ( $type_impr == "bj" ) { ?>
 		  <select name="eleve_multiple[]" size="5" multiple="multiple" tabindex="4" style="width: 220px;">
 		  <optgroup label="----- Listes des &eacute;l&egrave;ves -----">
 		    <?php
-			// sélection des id eleves sélectionné.
+			// sÃ©lection des id eleves sÃ©lectionnÃ©.
 			if(!empty($classe_multiple[0]))
 			{
 				$cpt_classe_selec = 0; $selection_classe = "";
@@ -1189,8 +1189,8 @@ if ( $type_impr == "bj" ) { ?>
 <div style="text-align: center;">
    <form method="post" action="etiquette_pdf.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;etiquette_action=originaux" name="form3">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
-         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-            <div class="titre_tableau_gestion">Impression d'étiquettes</div>
+         <legend class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
+            <div class="titre_tableau_gestion">Impression d'Ã©tiquettes</div>
             <div class="norme_absence" style="text-align: left;">
             Classe
                 <select name="classe">
@@ -1205,20 +1205,20 @@ if ( $type_impr == "bj" ) { ?>
                           }
                     ?>
                 </select><br />
-                Trié par
+                TriÃ© par
                 <select name="trie_par">
-                    <option value="1">Classe, Nom, Prénom</option>
-                    <option value="2">Nom, Prénom</option>
+                    <option value="1">Classe, Nom, PrÃ©nom</option>
+                    <option value="2">Nom, PrÃ©nom</option>
                 </select><br />
-		Types d'étiquettes
+		Types d'Ã©tiquettes
                 <select name="etiquette_type">
-                    <option value="1">NOM Prénom, Classe</option>
-                    <option value="2">NOM Prénom, Classe, Numéro élève</option>
-                    <option value="3">NOM Prénom, Numéro élève</option>
+                    <option value="1">NOM PrÃ©nom, Classe</option>
+                    <option value="2">NOM PrÃ©nom, Classe, NumÃ©ro Ã©lÃ¨ve</option>
+                    <option value="3">NOM PrÃ©nom, NumÃ©ro Ã©lÃ¨ve</option>
                     <option value="4">Adresse responsable</option>
-                    <option value="5">Adresse responsable + élève</option>
+                    <option value="5">Adresse responsable + Ã©lÃ¨ve</option>
                 </select><br />
-		<a href="impression_absences.php?type_impr=eti&amp;etiquette_aff=<?php if($etiquette_aff === 'bibliotheque') { ?><?php } else { ?>bibliotheque<?php } ?>#crea_etiquette">Format d'étiquette</a>
+		<a href="impression_absences.php?type_impr=eti&amp;etiquette_aff=<?php if($etiquette_aff === 'bibliotheque') { ?><?php } else { ?>bibliotheque<?php } ?>#crea_etiquette">Format d'Ã©tiquette</a>
 		<select name="etiquette_format" style="width: 200px;">
                     <?php
                           $sql_etiquette = 'SELECT * FROM '.$prefix_base.'etiquettes_formats ORDER BY nom_etiquette_format ASC';
@@ -1229,7 +1229,7 @@ if ( $type_impr == "bj" ) { ?>
                           }
                     ?>
                 </select><input type="checkbox" name="cadre" value="1" title="Encadrer" />
-                <input type="submit" name="Submit32" value="Sélectionner" />
+                <input type="submit" name="Submit32" value="SÃ©lectionner" />
             </div>
       </fieldset>
     </form>
@@ -1240,12 +1240,12 @@ if ( $type_impr == "bj" ) { ?>
 	<form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;action_etiquette=bibliotheque" name="form10">
           <table style="width: 650px; margin: auto; border: 1px solid #000000;" cellpadding="0" cellspacing="0">
 	    <tr class="fond_vert">
-	     <td class="titre_tableau_gestion" colspan="3">Bibliothèque des formats d'étiquettes</td>
+	     <td class="titre_tableau_gestion" colspan="3">BibliothÃ¨que des formats d'Ã©tiquettes</td>
 	    </tr>
             <tr class="fond_vert">
 	      <td style="width: 17px;"></td>
 	      <td style="width: 17px;"></td>
-              <td class="norme_absence_blanc"><strong>Etiquettes</strong> - Nouveau <input name="nom_etiquette_format" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="<?php echo $type_impr; ?>" /><input type="hidden" name="etiquette_aff" value="<?php echo $etiquette_aff; ?>" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit10" value="Créer" /></td>
+              <td class="norme_absence_blanc"><strong>Etiquettes</strong> - Nouveau <input name="nom_etiquette_format" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="<?php echo $type_impr; ?>" /><input type="hidden" name="etiquette_aff" value="<?php echo $etiquette_aff; ?>" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit10" value="CrÃ©er" /></td>
             </tr>
 	  <?php
            $ic = '1';  $i = '0';
@@ -1255,8 +1255,8 @@ if ( $type_impr == "bj" ) { ?>
                { if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
                 ?>
                   <tr class="<?php echo $couleur_cellule; ?>">
-	            <td style="text-align: center;"><a name="crea_etiquette<?php echo $data_1['id_etiquette_format']; ?>"></a><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;etiquette_aff=bibliotheque&amp;id=<?php echo $data_1['id_etiquette_format']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_etiquette=aff_modifier_etiquette_format&amp;sous_rubrique=gb#crea_etiquette<?php echo $data_1['id_etiquette_format']; ?>"><img src="../../images/edit16.png" title="modifier le format d'étiquette" border="0" alt="" /></a></td>
-	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;etiquette_aff=<?php echo $etiquette_aff; ?>&amp;id=<?php echo $data_1['id_etiquette_format']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_etiquette=supprimer_etiquette_format&amp;sous_rubrique=gb#crea_etiquette" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../../images/delete16.png" title="supprimer le format d'étiquette" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a name="crea_etiquette<?php echo $data_1['id_etiquette_format']; ?>"></a><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;etiquette_aff=bibliotheque&amp;id=<?php echo $data_1['id_etiquette_format']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_etiquette=aff_modifier_etiquette_format&amp;sous_rubrique=gb#crea_etiquette<?php echo $data_1['id_etiquette_format']; ?>"><img src="../../images/edit16.png" title="modifier le format d'Ã©tiquette" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;etiquette_aff=<?php echo $etiquette_aff; ?>&amp;id=<?php echo $data_1['id_etiquette_format']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_etiquette=supprimer_etiquette_format&amp;sous_rubrique=gb#crea_etiquette" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../../images/delete16.png" title="supprimer le format d'Ã©tiquette" border="0" alt="" /></a></td>
                     <td class="norme_absence"><?php echo $data_1['nom_etiquette_format']; if($action_etiquette === 'aff_modifier_etiquette_format' and $id === $data_1['id_etiquette_format']) { ?>
 
 			<input name="nom_etiquette_format" value="<?php echo $data_1['nom_etiquette_format']; ?>" style="border: 1px solid #B3BFB8;" /><br />
@@ -1296,7 +1296,7 @@ if ( $type_impr == "bj" ) { ?>
 
       <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form6">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
-        <legend style="clear: both" class="legend_texte">&nbsp;Sélection&nbsp;</legend>
+        <legend style="clear: both" class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
             <div class="titre_tableau_gestion">Gestion des types de lettre</div>
             <div class="norme_absence" style="text-align: center;">
 	    <select name="lettre_type" size="6" style="width: 448px; border: 1px solid #000000;">
@@ -1316,7 +1316,7 @@ if ( $type_impr == "bj" ) { ?>
 			?>
 		  </optgroup>
 		  </select><br />
-		  Si vous désirez en créer, saisissez le titre ici: <input name="lettre_type_nouv" style="width: 150px; border: 1px solid #000000;" value="<?php if ($action_choix_lettre === 'renommer') { $titre = titre_lettre_type($lettre_type); echo $titre[0]; } ?>" /><input name="reponse_lettre_type" value="oui" type="checkbox" title="désirez-vous une réponse à ce type de lettre" <?php if( ($action_choix_lettre === 'renommer' and $titre[1] === 'oui') or $action_choix_lettre != 'renommer' ) { ?>checked="checked"<?php } ?> />
+		  Si vous dÃ©sirez en crÃ©er, saisissez le titre ici: <input name="lettre_type_nouv" style="width: 150px; border: 1px solid #000000;" value="<?php if ($action_choix_lettre === 'renommer') { $titre = titre_lettre_type($lettre_type); echo $titre[0]; } ?>" /><input name="reponse_lettre_type" value="oui" type="checkbox" title="dÃ©sirez-vous une rÃ©ponse Ã  ce type de lettre" <?php if( ($action_choix_lettre === 'renommer' and $titre[1] === 'oui') or $action_choix_lettre != 'renommer' ) { ?>checked="checked"<?php } ?> />
 
   		  <input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
 		  <?php if (!empty($erreur)) { ?><span class="erreur_rouge_jaune"><?php echo $erreur.' (<strong>'.$lettre_type_nouv.'</strong>)'; ?></span><?php } ?>
@@ -1330,7 +1330,7 @@ if ( $type_impr == "bj" ) { ?>
    <?php // afficher les informations sur la lettre
 	if($type_impr === 'crea_lettre' and !empty($lettre_type) and $action_choix_lettre != 'supprimer' and $action_choix_lettre != 'modifier') { ?>
      <br />
-[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>'>Contenu de la lettre sélectionnée</a> | <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;sous_rubrique=gb'>Gestion de la bibliothèque des cadres</a> ]
+[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>'>Contenu de la lettre sÃ©lectionnÃ©e</a> | <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;sous_rubrique=gb'>Gestion de la bibliothÃ¨que des cadres</a> ]
 <br />
 <br />
 <?php if(empty($sous_rubrique)) { ?>
@@ -1351,7 +1351,7 @@ if ( $type_impr == "bj" ) { ?>
 		  <input type="hidden" name="action_lettre" value="ajout_cadre" />
 		  <input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
 		  <input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
-		  <input type="submit" name="Submit6" value="<< Ajouter la sélection" />
+		  <input type="submit" name="Submit6" value="<< Ajouter la sÃ©lection" />
 	</form>
 </div>
 
@@ -1370,7 +1370,7 @@ if ( $type_impr == "bj" ) { ?>
             <td class="norme_absence_blanc"><strong>Pos. Y</strong></td>
             <td class="norme_absence_blanc"><strong>Largeur</strong></td>
             <td class="norme_absence_blanc"><strong>Hauteur</strong></td>
-            <td class="norme_absence_blanc"><strong>Encadré</strong></td>
+            <td class="norme_absence_blanc"><strong>EncadrÃ©</strong></td>
           </tr>
 	  <?php
            $ic = '1';  $i = '0';
@@ -1381,7 +1381,7 @@ if ( $type_impr == "bj" ) { ?>
                 ?>
                   <tr class="<?php echo $couleur_cellule; ?>">
 	            <td style="text-align: center;"><a name="crea_lettre<?php echo $data_1['cadre_lettre_tc']; ?>"></a><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=aff_modifier_cadre#crea_lettre<?php echo $data_1['cadre_lettre_tc']; ?>"><img src="../../images/edit16.png" title="modifier le cadre" border="0" alt="" /></a></td>
-	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=supprimer_cadre#crea_lettre" onClick="return confirm('Etes-vous sûr de vouloir le supprimer...')"><img src="../../images/delete16.png" title="supprimer le cadre" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo my_ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=supprimer_cadre#crea_lettre" onClick="return confirm('Etes-vous sÃ»r de vouloir le supprimer...')"><img src="../../images/delete16.png" title="supprimer le cadre" border="0" alt="" /></a></td>
                     <td class="norme_absence"><?php echo $data_1['nom_lettre_cadre']; ?></td>
                     <td class="norme_absence" style="text-align: center;"><?php if($action_lettre === 'aff_modifier_cadre' and $cadre_selection === $data_1['cadre_lettre_tc']) { ?><input maxlength="6" size="4" name="x_lettre_tc" value="<?php echo $data_1['x_lettre_tc']; ?>" style="border: 1px solid #B3BFB8;" /><?php } else { echo $data_1['x_lettre_tc']; } ?></td>
                     <td class="norme_absence" style="text-align: center;"><?php if($action_lettre === 'aff_modifier_cadre' and $cadre_selection === $data_1['cadre_lettre_tc']) { ?><input maxlength="6" size="4" name="y_lettre_tc" value="<?php echo $data_1['y_lettre_tc']; ?>" style="border: 1px solid #B3BFB8;" /><?php } else { echo $data_1['y_lettre_tc']; } ?></td>
@@ -1399,7 +1399,7 @@ if ( $type_impr == "bj" ) { ?>
          <?php $i = $i + 1; } ?>
 	</table>
 	</form>
-<a href="lettre_pdf.php?lettre_type=<?php echo $lettre_type; ?>&amp;mode=apercus">Lancer un aperçu</a>
+<a href="lettre_pdf.php?lettre_type=<?php echo $lettre_type; ?>&amp;mode=apercus">Lancer un aperÃ§u</a>
 
 <?php }
 
@@ -1408,12 +1408,12 @@ if($sous_rubrique === 'gb') { ?>
      <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>#crea_lettre" name="form8">
      <table style="width: 650px; margin: auto; border: 1px solid #000000;" cellpadding="0" cellspacing="0">
 	  <tr class="fond_vert">
-	   <td class="titre_tableau_gestion" colspan="3">Bibliothèque des cadres</td>
+	   <td class="titre_tableau_gestion" colspan="3">BibliothÃ¨que des cadres</td>
 	  </tr>
           <tr class="fond_vert">
 	    <td style="width: 17px;"></td>
 	    <td style="width: 17px;"></td>
-            <td class="norme_absence_blanc"><strong>Nom du cadre</strong> - Nouveau <input name="nom_lettre_cadre" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="crea_lettre" /><input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit6" value="Créer" /></td>
+            <td class="norme_absence_blanc"><strong>Nom du cadre</strong> - Nouveau <input name="nom_lettre_cadre" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="crea_lettre" /><input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" /><input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit6" value="CrÃ©er" /></td>
           </tr>
 	  <?php
            $ic = '1';  $i = '0';
@@ -1446,7 +1446,7 @@ if($sous_rubrique === 'gb') { ?>
 		<optgroup label="Style">
 		   <option value="[g][/g]">Gras</option><?php echo "\n"; ?>
 		   <option value="[i][/i]">Italique</option><?php echo "\n"; ?>
-		   <option value="[u][/u]">Souligné</option><?php echo "\n"; ?>
+		   <option value="[u][/u]">SoulignÃ©</option><?php echo "\n"; ?>
 		   <option value="[t3][/t3]">Titre</option><?php echo "\n"; ?>
 		</optgroup>
 		<optgroup label="Date">
@@ -1454,14 +1454,14 @@ if($sous_rubrique === 'gb') { ?>
 		   <option value="[date_long]">date long (Vendredi 00 0000)</option><?php echo "\n"; ?>
 		</optgroup>
 		<optgroup label="Courrier">
-		   <option value="[courrier_demande_par]">courrier demandé par</option><?php echo "\n"; ?>
+		   <option value="[courrier_demande_par]">courrier demandÃ© par</option><?php echo "\n"; ?>
 		   <option value="[remarque_eleve]">raison du courrier</option><?php echo "\n"; ?>
-		   <option value="[courrier_signe_par_fonction]">courrier signé par fonct.</option><?php echo "\n"; ?>
-		   <option value="[courrier_signe_par]">courrier signé par</option><?php echo "\n"; ?>
+		   <option value="[courrier_signe_par_fonction]">courrier signÃ© par fonct.</option><?php echo "\n"; ?>
+		   <option value="[courrier_signe_par]">courrier signÃ© par</option><?php echo "\n"; ?>
 		</optgroup>
-		<optgroup label="Elève">
+		<optgroup label="ElÃ¨ve">
 		   <option value="[nom_eleve]">Nom</option><?php echo "\n"; ?>
-		   <option value="[prenom_eleve]">Prénom</option><?php echo "\n"; ?>
+		   <option value="[prenom_eleve]">PrÃ©nom</option><?php echo "\n"; ?>
 		   <option value="[classe_eleve]">Classe de</option><?php echo "\n"; ?>
 		   <option value="[sujet_eleve]">Sujet de</option><?php echo "\n"; ?>
 		   <option value="[remarque_eleve]">Remarque de</option><?php echo "\n"; ?>
@@ -1470,10 +1470,10 @@ if($sous_rubrique === 'gb') { ?>
 		   <option value="[liste_ret]">Liste des retards</option><?php echo "\n"; ?>
 		</optgroup>
 		<optgroup label="Responsable">
-		   <option value="[civilite_court_responsable]">Civilité court</option><?php echo "\n"; ?>
-		   <option value="[civilite_long_responsable]">Civilité long</option><?php echo "\n"; ?>
+		   <option value="[civilite_court_responsable]">CivilitÃ© court</option><?php echo "\n"; ?>
+		   <option value="[civilite_long_responsable]">CivilitÃ© long</option><?php echo "\n"; ?>
 		   <option value="[nom_responsable]">Nom</option><?php echo "\n"; ?>
-		   <option value="[prenom_responsable]">Prénom</option><?php echo "\n"; ?>
+		   <option value="[prenom_responsable]">PrÃ©nom</option><?php echo "\n"; ?>
 		   <option value="[adresse_responsable]">Adresse</option><?php echo "\n"; ?>
 		   <option value="[adressecomp_responsable]">Adresse ligne 2</option><?php echo "\n"; ?>
 		   <option value="[adressecomp2_responsable]">Adresse ligne 3</option><?php echo "\n"; ?>
@@ -1481,18 +1481,18 @@ if($sous_rubrique === 'gb') { ?>
 		   <option value="[cp_responsable]">Code postal</option><?php echo "\n"; ?>
 		   <option value="[ville_responsable]">Ville</option><?php echo "\n"; ?>
 		</optgroup>
-		<optgroup label="CPE en charge de l'élève">
-		   <option value="[civilite_court_cpe]">Civilité court</option><?php echo "\n"; ?>
-		   <option value="[civilite_long_cpe]">Civilité long</option><?php echo "\n"; ?>
+		<optgroup label="CPE en charge de l'Ã©lÃ¨ve">
+		   <option value="[civilite_court_cpe]">CivilitÃ© court</option><?php echo "\n"; ?>
+		   <option value="[civilite_long_cpe]">CivilitÃ© long</option><?php echo "\n"; ?>
 		   <option value="[nom_cpe]">Nom</option><?php echo "\n"; ?>
-		   <option value="[prenom_cpe]">Prénom</option><?php echo "\n"; ?>
+		   <option value="[prenom_cpe]">PrÃ©nom</option><?php echo "\n"; ?>
 		</optgroup>
  	    </select><br />
 		  <input type="hidden" name="sous_rubrique" value="<?php echo $sous_rubrique; ?>" />
 		  <input type="hidden" name="action_lettre" value="ajout_cadre" />
 		  <input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
 		  <input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
-		 <?php /* <input type="submit" name="Submit6" value="<< Ajouter la sélection" /> */ ?>
+		 <?php /* <input type="submit" name="Submit6" value="<< Ajouter la sÃ©lection" /> */ ?>
 	</div>
 
 		<textarea name="texte_lettre_cadre" id="texte_lettre_cadre" cols="42" rows="10"><?php
@@ -1525,7 +1525,7 @@ if($sous_rubrique === 'gb') { ?>
 
 
 <?php
-// système de test
+// systÃ¨me de test
 	/* $test = repartire_jour('baba', 'R', '2007-01-01', '2007-05-01');
 	//if ( in_array('login', $test) ) { echo 'aaaa'; } else { echo 'bbbb'; }
 	if ( !empty($test['2005-02-22']) ) { echo 'rrrr'; }

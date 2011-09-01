@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Reçoit en argument : $type
+// ReÃ§oit en argument : $type
 // Renvoie vers un script (en fonction de la valeur de $type) les infos $classe_choix et eleve_absent[] .
 
 $niveau_arbo = 2;
@@ -47,7 +47,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Sélection d'un ou plusieurs élèves";
+$titre_page = "SÃ©lection d'un ou plusieurs Ã©lÃ¨ves";
 require_once("../../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -61,7 +61,7 @@ if ($type == "I") {$page = "ajout_inf"; }
 if ($type == "R") {$page = "ajout_ret"; }
 if ($type == "") {exit(); }
 
-// On ajoute un paramètre sur les élèves de ce CPE en particulier
+// On ajoute un paramÃ¨tre sur les Ã©lÃ¨ves de ce CPE en particulier
 $sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
 $query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
 $test_cpe = array();
@@ -85,7 +85,7 @@ else
 }
    
 if ($classe_choix == "tous"){
-	// On récupère tous les élèves qu'on range avec le nom de leur classe dans l'ordre alpha
+	// On rÃ©cupÃ¨re tous les Ã©lÃ¨ves qu'on range avec le nom de leur classe dans l'ordre alpha
 	$requete_liste_eleve = "SELECT e.login, e.nom, e.prenom, c.classe
 									FROM eleves e, j_eleves_classes jec, classes c
 									WHERE e.login = jec.login
@@ -99,7 +99,7 @@ if ($classe_choix == "tous"){
 
 $date_ce_jour = date('d/m/Y');
 
-// On paramètre le retour pour le statut 'autre'
+// On paramÃ¨tre le retour pour le statut 'autre'
 if ($_SESSION["statut"] == 'autre') {
 	$retour = '../../accueil.php';
 }else{
@@ -123,7 +123,7 @@ if ($_SESSION["statut"] == 'autre') {
       <td class="td_tableau_selection">
         <form name="form1" method="post" action="select.php?type=<?php echo $type; ?>">
          <fieldset class="fieldset_efface" style="width: 450px;">
-            Sélection de la classe :
+            SÃ©lection de la classe :
             <select name="classe_choix" onchange="javascript:document.form1.submit();"> <?php /* correction pour ie didier  */ ?>
             	<option value="tous" selected="selected" onclick="javascript:document.form1.submit()">Toutes les classes</option>
 			<?php
@@ -145,15 +145,15 @@ if ($_SESSION["statut"] == 'autre') {
           </fieldset>
          </form>
       <?php if($type == "A" OR $type == "R") { ?>
-         <span class="norme_absence_bleu">* Pour sélectionner plusieurs élèves : touche CTRL enfoncée puis sélectionner les différents élèves en cliquant dessus.</span><br /><br />
+         <span class="norme_absence_bleu">* Pour sÃ©lectionner plusieurs Ã©lÃ¨ves : touche CTRL enfoncÃ©e puis sÃ©lectionner les diffÃ©rents Ã©lÃ¨ves en cliquant dessus.</span><br /><br />
       <?php } ?>
       <?php if($type == "A") { ?>
-         <span class="norme_absence_bleu">* Si aucun élève n'est sélectionné, la classe entière sera sélectionnée.</span><br /><br />
+         <span class="norme_absence_bleu">* Si aucun Ã©lÃ¨ve n'est sÃ©lectionnÃ©, la classe entiÃ¨re sera sÃ©lectionnÃ©e.</span><br /><br />
       <?php } ?>
       </td>
       <td class="td_tableau_selection">
 	<form method="post" action="<?php echo $page; ?>.php?action=ajouter&amp;type=<?php echo $type; ?>" name="form2">
-            <p>Sélection :<br />
+            <p>SÃ©lection :<br />
 			<?php
 				//echo "$requete_liste_eleve<br />";
 			?>
@@ -170,7 +170,7 @@ if ($_SESSION["statut"] == 'autre') {
 			} ?>
             </select>
          <input type="hidden" name="classe_choix" value="<?php echo $classe_choix; ?>" /></p>
-         <p><input type="submit" name="submit" value="Valider votre sélection" /></p>
+         <p><input type="submit" name="submit" value="Valider votre sÃ©lection" /></p>
         </form>
       </td>
     </tr>

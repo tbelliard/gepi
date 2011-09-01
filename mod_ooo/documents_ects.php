@@ -54,14 +54,14 @@ if (!checkAccess()) {
     die();
 }
 
-// On teste si un professeur principal peut effectuer l'édition
+// On teste si un professeur principal peut effectuer l'Ã©dition
 if (($_SESSION['statut'] == 'professeur') and $gepiSettings["GepiAccesEditionDocsEctsPP"] !='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+   die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
-// On teste si le service scolarité peut effectuer la saisie
+// On teste si le service scolaritÃ© peut effectuer la saisie
 if (($_SESSION['statut'] == 'scolarite') and $gepiSettings["GepiAccesEditionDocsEctsScolarite"] !='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+   die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : false;
@@ -74,15 +74,15 @@ $description = isset($_POST['description']) ? true : false;
 $date_edition = isset($_POST['date_edition']) ? $_POST['date_edition'] : false;
 $lieu_edition =isset($_POST['lieu_edition']) ? $_POST['lieu_edition'] : false;
 
-// On va générer un gros tableau avec toutes les données.
+// On va gÃ©nÃ©rer un gros tableau avec toutes les donnÃ©es.
 
 // Tableau global
 $eleves = array();
 
 if ($id_classe == 'all') {
-    // On doit récupérer la totalité des élèves, pour les classes de l'utilisateur
+    // On doit rÃ©cupÃ©rer la totalitÃ© des Ã©lÃ¨ves, pour les classes de l'utilisateur
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
-        // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
+        // On ne sÃ©lectionne que les classes qui ont au moins un enseignement ouvrant Ã  crÃ©dits ECTS
         if($_SESSION['statut']=='scolarite'){
             $call_classes = mysql_query("SELECT DISTINCT c.id
                                         FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
@@ -119,18 +119,18 @@ if ($id_classe == 'all') {
 
 
 $i = 0;
-$mentions = array('A' => 'Très bien', 'B' => 'Bien', 'C' => 'Assez Bien', 'D' => 'Convenable', 'E' => 'Passable', 'F' => 'Insuffisant');
+$mentions = array('A' => 'TrÃ¨s bien', 'B' => 'Bien', 'C' => 'Assez Bien', 'D' => 'Convenable', 'E' => 'Passable', 'F' => 'Insuffisant');
 $resultats = array();
 //$recap_annees = array();
 foreach($Eleves as $Eleve) {
-    // On est dans la boucle principale. Le premier tableau contient les informations relatives à l'élève.
+    // On est dans la boucle principale. Le premier tableau contient les informations relatives Ã  l'Ã©lÃ¨ve.
     // C'est le premier bloc.
     $classes = $Eleve->getClasses('1');
     $Classe = $classes[0];
     if ($Eleve->getSexe() == 'F') {
-        $naissance = "née le ".$Eleve->getNaissance();
+        $naissance = "nÃ©e le ".$Eleve->getNaissance();
     } else {
-        $naissance = "né le ".$Eleve->getNaissance();
+        $naissance = "nÃ© le ".$Eleve->getNaissance();
     }
 
     $adresse_etablissement = $gepiSettings['gepiSchoolName'];
@@ -148,7 +148,7 @@ foreach($Eleves as $Eleve) {
 
     // Gestion du bloc adresse.
     // Le code ci-dessous est repris directement des bulletins... pas le temps
-    // de faire un truc générique propre :-(
+    // de faire un truc gÃ©nÃ©rique propre :-(
 
     $sql="SELECT rp.nom, rp.prenom, rp.civilite, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
 					WHERE r.ele_id='".$Eleve->getEleId()."' AND
@@ -184,8 +184,8 @@ foreach($Eleves as $Eleve) {
             $cpt++;
     }
 
-    // On a désormais toutes les infos concernant le ou les responsables
-    // légaux de l'élève.
+    // On a dÃ©sormais toutes les infos concernant le ou les responsables
+    // lÃ©gaux de l'Ã©lÃ¨ve.
 
     if ($nom_resp[1]=='') {
             // Si on n'a pas de nom pour le responsable 1, on n'affiche rien.
@@ -204,16 +204,16 @@ foreach($Eleves as $Eleve) {
                     and ($pays_resp[1]==$pays_resp[2])
                     )
                     and ($adr1_resp[2]!='')) {
-                    // Les deux responsables légaux ont la même adresse
+                    // Les deux responsables lÃ©gaux ont la mÃªme adresse
 
                             if(($nom_resp[1]!=$nom_resp[2])&&($nom_resp[2]!="")) {
-                                // Les deux responsables légaux n'ont pas le même nom
+                                // Les deux responsables lÃ©gaux n'ont pas le mÃªme nom
                                     $ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
                                     $ligne1.="<br />\n";
                                     $ligne1.="et ";
                                     $ligne1.=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
                             } else {
-                                // Ils ont le même nom
+                                // Ils ont le mÃªme nom
                                     if(($civilite_resp[1]!="")&&($civilite_resp[2]!="")) {
                                             $ligne1=$civilite_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[1]." ".$prenom_resp[1];
                                     } else {
@@ -256,10 +256,10 @@ foreach($Eleves as $Eleve) {
             $statut_etab = 'public';
             break;
         case 'prive_sous_contrat':
-            $statut_etab = 'privé sous contrat';
+            $statut_etab = 'privÃ© sous contrat';
             break;
         case 'prive_hors_contrat':
-            $statut_etab = 'privé hors contrat';
+            $statut_etab = 'privÃ© hors contrat';
             break;
         default:
             $statut_etab = 'public';
@@ -292,11 +292,11 @@ foreach($Eleves as $Eleve) {
                         'resp_ligne3' => $ligne3
                 );
 
-    // Tableau qui contient le total général des crédits de l'étudiant
+    // Tableau qui contient le total gÃ©nÃ©ral des crÃ©dits de l'Ã©tudiant
     $total_credits = 0;
 
-    // On commence par les années archivées
-    // On récupère la liste des années archivées pour l'élève
+    // On commence par les annÃ©es archivÃ©es
+    // On rÃ©cupÃ¨re la liste des annÃ©es archivÃ©es pour l'Ã©lÃ¨ve
     $annees = mysql_query("SELECT DISTINCT(a.annee) FROM archivage_ects a WHERE a.ine = '".$Eleve->getNoGep()."' ORDER BY a.annee ASC");
     $annees_archivees = array();
     $nb_annees = mysql_num_rows($annees);
@@ -304,20 +304,20 @@ foreach($Eleves as $Eleve) {
     for ($a=0;$a<$nb_annees;$a++) {
         $valeur_annee = mysql_result($annees, $a);
         $redoublant = sql_count(sql_query("SELECT * FROM archivage_eleves2 WHERE ine = '".$Eleve->getNoGep()."' and annee = '".$valeur_annee."' AND doublant = 'R'")) != "0" ? true : false;
-        // Si l'année est une année de redoublement, on va écraser l'année précédente.
+        // Si l'annÃ©e est une annÃ©e de redoublement, on va Ã©craser l'annÃ©e prÃ©cÃ©dente.
         if ($test_redoublant == 'R' and $t_index > 0) $t_index--;
         $annees_archivees[$t_index] = $valeur_annee;
         $t_index++;
     }
-    // Enfin, si on a un redoublant pour l'année en cours, alors on supprime
-    // la dernière année archivée
+    // Enfin, si on a un redoublant pour l'annÃ©e en cours, alors on supprime
+    // la derniÃ¨re annÃ©e archivÃ©e
     $redoublant = sql_count(sql_query("SELECT * FROM j_eleves_regime WHERE login = '".$Eleve->getLogin()."' AND doublant = 'R'")) != "0" ? true : false;
     if ($redoublant) {
       $t_index--;
       unset($annees_archivees[$t_index]);
     }
 
-    // Tableau qui contient le total des crédits par année
+    // Tableau qui contient le total des crÃ©dits par annÃ©e
     $total_credits_annees = array();
     foreach($annees_archivees as $annee_archive) {
         $total_credits_annees[$annee_archive] = 0;
@@ -327,8 +327,8 @@ foreach($Eleves as $Eleve) {
     // Boucle de traitement des archives
     $periode_courante = 1;
     foreach($annees_archivees as $annee_archive) {
-        //TODO: Pour l'instant on laisse en dur un nombre de périodes maxi de 5
-        // Il faudrait sans doute améliorer le système.
+        //TODO: Pour l'instant on laisse en dur un nombre de pÃ©riodes maxi de 5
+        // Il faudrait sans doute amÃ©liorer le systÃ¨me.
         for($p=1;$p<=5;$p++) {
             $semestres[$periode_courante] = array();
             $flag = false;
@@ -343,16 +343,16 @@ foreach($Eleves as $Eleve) {
                 $total_credits_annees[$annee_archive] = $total_credits_annees[$annee_archive] + $valeur;
                 $flag = true;
             }
-            // On incrémente le semestre si des valeurs avaient été trouvées
-            // pour la période considérée. Ce fonctionnement permet de jouer
-            // sur des périodes spécifiques pour les ECTS, et d'avoir des relevés
-            // linéaires en apparence.
+            // On incrÃ©mente le semestre si des valeurs avaient Ã©tÃ© trouvÃ©es
+            // pour la pÃ©riode considÃ©rÃ©e. Ce fonctionnement permet de jouer
+            // sur des pÃ©riodes spÃ©cifiques pour les ECTS, et d'avoir des relevÃ©s
+            // linÃ©aires en apparence.
             if ($flag) $periode_courante++;
         }
     }
 
-    //TODO: On considère en dur seulement cinq périodes pour l'année en cours.
-    // A reprendre peut-être...
+    //TODO: On considÃ¨re en dur seulement cinq pÃ©riodes pour l'annÃ©e en cours.
+    // A reprendre peut-Ãªtre...
     for ($p=1;$p<=5;$p++) {
         $semestres[$periode_courante] = array();
         $flag = false;
@@ -371,15 +371,15 @@ foreach($Eleves as $Eleve) {
                 $flag = true;
             }
         }
-        // On incrémente le semestre si on avait des données.
+        // On incrÃ©mente le semestre si on avait des donnÃ©es.
         if ($flag) $periode_courante++;
     }
 
     $eleves[$i]['total_credits'] = $total_credits;
 
-    // On filtre maintenant les périodes : on ne devra afficher que les périodes
-    // pour lesquelles il y a des résultats saisis.
-    $denomination_periodes = array(1 => 'Premier semestre', 2 => 'Deuxième semestre', 3 => 'Troisième semestre', 4 => 'Quatrième semestre', 5 => 'Cinquième semestre', 6 => 'Sixième semestre');
+    // On filtre maintenant les pÃ©riodes : on ne devra afficher que les pÃ©riodes
+    // pour lesquelles il y a des rÃ©sultats saisis.
+    $denomination_periodes = array(1 => 'Premier semestre', 2 => 'DeuxiÃ¨me semestre', 3 => 'TroisiÃ¨me semestre', 4 => 'QuatriÃ¨me semestre', 5 => 'CinquiÃ¨me semestre', 6 => 'SixiÃ¨me semestre');
     $resultats[$i] = array();
 
     foreach($semestres as $num_semestre => $semestre) {
@@ -391,9 +391,9 @@ foreach($Eleves as $Eleve) {
 
     $recap_annees[$i] = array();
     foreach($total_credits_annees as $annee_courante => $credits_courants) {
-        $recap_annees[$i][] = array('texte' => 'Année académique '.$annee_courante." : ".$credits_courants." ECTS");
+        $recap_annees[$i][] = array('texte' => 'AnnÃ©e acadÃ©mique '.$annee_courante." : ".$credits_courants." ECTS");
     }
-    // Fin de la boucle élève
+    // Fin de la boucle Ã©lÃ¨ve
     $i++;
 }
 
@@ -404,9 +404,9 @@ foreach($Eleves as $Eleve) {
 // Et maintenant on s'occupe du fichier proprement dit
 
 //
-//Les variables à modifier pour le traitement  du modèle ooo
+//Les variables Ã  modifier pour le traitement  du modÃ¨le ooo
 //
-//Le chemin et le nom du fichier ooo à traiter (le modèle de document)
+//Le chemin et le nom du fichier ooo Ã  traiter (le modÃ¨le de document)
 $nom_fichier_modele_ooo ='documents_ects.odt';
 // Par defaut tmp
 $nom_dossier_temporaire ='tmp';
@@ -414,8 +414,8 @@ $nom_dossier_temporaire ='tmp';
 $nom_fichier_xml_a_traiter ='content.xml';
 
 
-//Procédure du traitement à effectuer
-//les chemins contenant les données
+//ProcÃ©dure du traitement Ã  effectuer
+//les chemins contenant les donnÃ©es
 include_once ("./lib/chemin.inc.php");
 
 
@@ -426,16 +426,16 @@ $OOo->setZipBinary('zip');
 $OOo->setUnzipBinary('unzip');
 
 // setting the object
-$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
+$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier oÃ¹ se fait le traitement (dÃ©compression / traitement / compression)
 // create a new openoffice document from the template with an unique id
-$OOo->createFrom($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+$OOo->createFrom($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiquÃ© Ã  partir de l'emplacement de ce fichier
 // merge data with openoffice file named 'content.xml'
-$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
+$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit Ãªtre parsÃ© (il sera extrait)
 
 
 
 // Traitement des tableaux
-// On insère ici les lignes concernant la gestion des tableaux
+// On insÃ¨re ici les lignes concernant la gestion des tableaux
 if (!$page_garde) {
     $OOo->mergeXml(
         array(
@@ -478,7 +478,7 @@ $OOo->mergeXml(
     ),$eleves);
 
 
-// On insère les résultats
+// On insÃ¨re les rÃ©sultats
 $OOo->mergeXml(
     array(
       'name'      => 'resultats',
@@ -487,7 +487,7 @@ $OOo->mergeXml(
       'charset'   => 'ISO 8859-15'
     ),'resultats[%p1%]');
 
-// On insère le récapitulatif des années
+// On insÃ¨re le rÃ©capitulatif des annÃ©es
 $OOo->mergeXml(
     array(
       'name'      => 'recap_annees',
@@ -511,10 +511,10 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 $OOo->saveXml(); //traitement du fichier extrait
 $OOo->close();
 
-//Génération du nom du fichier
+//GÃ©nÃ©ration du nom du fichier
 $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
-$nom_fic = $nom_fichier_modele[0]."_généré_le_".$now.".".$nom_fichier_modele[1];
+$nom_fic = $nom_fichier_modele[0]."_gÃ©nÃ©rÃ©_le_".$now.".".$nom_fichier_modele[1];
 header('Expires: ' . $now);
 if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: inline; filename="' . $nom_fic . '"');

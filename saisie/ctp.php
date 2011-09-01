@@ -3,12 +3,12 @@
 		$Id$
 	*/
 
-	// Hauteur du DIV des appréciations-types
-	// Cela conditionne le nombre d'appréciations-types que l'on peut voir simultanément
+	// Hauteur du DIV des apprÃ©ciations-types
+	// Cela conditionne le nombre d'apprÃ©ciations-types que l'on peut voir simultanÃ©ment
 	$hauteur_div_ctp=10;
 
 	//============================================
-	// Dispositif dépendant de la présence des fonctions javascript un peu plus haut comme appliqué dans $mess[$k]:
+	// Dispositif dÃ©pendant de la prÃ©sence des fonctions javascript un peu plus haut comme appliquÃ© dans $mess[$k]:
 	//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';\"";
 
 	$sql="SELECT * FROM commentaires_types_profs WHERE login='".$_SESSION['login']."' ORDER BY app;";

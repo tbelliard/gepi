@@ -44,14 +44,14 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 // ajout de la ligne suivante dans 'sql/data_gepi.sql' et 'utilitaires/updates/access_rights.inc.php'
-// INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'vérifier la table edt_cours', '');
+// INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'vÃ©rifier la table edt_cours', '');
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/verifier_edt.php';";
 $res_test=mysql_query($sql);
 if (mysql_num_rows($res_test)==0) {
-	$sql="INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','vérifier la table edt_cours', '');";
+	$sql="INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','vÃ©rifier la table edt_cours', '');";
 	$res_insert=mysql_query($sql);
 }
 
@@ -60,7 +60,7 @@ if (!checkAccess()) {
     die();
 }
 if ($_SESSION["statut"] != "administrateur") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die('Vous devez demander Ã  votre administrateur l\'autorisation de voir cette page.');
 }
 
 // ===== Initialisation des variables =====
@@ -109,13 +109,13 @@ if (isset($supprimer)) {
 }
 
 
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
-//++++++++++ l'entête de Gepi +++++
+//++++++++++ l'entÃªte de Gepi +++++
 require_once("../lib/header.inc");
-//++++++++++ fin entête +++++++++++
+//++++++++++ fin entÃªte +++++++++++
 //++++++++++ le menu EdT ++++++++++
 require_once("./menu.inc.php");
 //++++++++++ fin du menu ++++++++++
@@ -159,12 +159,12 @@ if (!strstr($ua, "MSIE 6.0")) {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 1</strong></p>';
         echo "<p style=\"text-align:center;\">".mysql_num_rows($req_profs)." enseignant(s) inscrit(s) dans les emplois du temps n'existe(nt) plus dans GEPI</p>";
         echo '<p style="text-align:center;padding:8px;">
-               <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_profs">Lancer la procédure de nettoyage</a>
+               <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_profs">Lancer la procÃ©dure de nettoyage</a>
             </p>';
     }
     else {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 1</strong></p>';
-        echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignants enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
+        echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignants enregistrÃ©s sur GEPI et ceux enregistrÃ©s dans les emplois du temps</p>';
 
     }
 $ua = getenv("HTTP_USER_AGENT");
@@ -199,12 +199,12 @@ if (!strstr($ua, "MSIE 6.0")) {
         //    echo "<p style=\"text-align:center;\">".$rep['id_groupe']."<p>";
         //}
         echo '<p style="text-align:center;padding:8px;">
-	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes">Lancer la procédure de nettoyage</a>
+	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes">Lancer la procÃ©dure de nettoyage</a>
             </p>';
     }
     else {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 2</strong></p>';
-        echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignements enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
+        echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignements enregistrÃ©s sur GEPI et ceux enregistrÃ©s dans les emplois du temps</p>';
 
     }
 $ua = getenv("HTTP_USER_AGENT");
@@ -235,12 +235,12 @@ if (!strstr($ua, "MSIE 6.0")) {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 3</strong></p>';
 	    echo "<p style=\"text-align:center;\">".mysql_num_rows($req_groupes)." aid(s) inscrit(s) dans les emplois du temps n'existe(nt) plus dans GEPI</p>";
         echo '<p style="text-align:center;padding:8px;">
-	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes">Lancer la procédure de nettoyage</a>
+	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes">Lancer la procÃ©dure de nettoyage</a>
             </p>';
     }
     else {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 3</strong></p>';
-        echo '<p style="text-align:center;">Il y a concordance parfaite entre aids enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
+        echo '<p style="text-align:center;">Il y a concordance parfaite entre aids enregistrÃ©s sur GEPI et ceux enregistrÃ©s dans les emplois du temps</p>';
 
     }
 $ua = getenv("HTTP_USER_AGENT");

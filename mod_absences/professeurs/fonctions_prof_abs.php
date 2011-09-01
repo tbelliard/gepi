@@ -8,17 +8,17 @@
  * @copyright 2008
  */
 
-// permet de supprimer un courrier s'il y a besoin par rapport à l'id de l'absence
+// permet de supprimer un courrier s'il y a besoin par rapport Ã  l'id de l'absence
 function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve) {
 	global $prefix_base;
-		// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
-		// première option il existe une lettre qui fait seulement référence à cette id donc suppression
+		// on vÃ©rify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
+		// premiÃ¨re option il existe une lettre qui fait seulement rÃ©fÃ©rence Ã  cette id donc suppression
 	$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
 	if( $cpt_lettre_suivi == 1 ) {
 		$requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'";
 		mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 	}
-	// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
+	// deuxiÃ¨me option il existe une lettre qui fait rÃ©fÃ©rence Ã  cette id mais Ã  d'autre aussi donc modification
 	$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
 	if( $cpt_lettre_suivi == 1 ) {
 		$requete = mysql_query("SELECT * FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'");
@@ -30,9 +30,9 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve) {
 	}
 }
 
-// fonction qui teste l'élève à un créneau donné à la date du jour
+// fonction qui teste l'Ã©lÃ¨ve Ã  un crÃ©neau donnÃ© Ã  la date du jour
 function suivi_absence($creneau_id, $eleve_id){
-	// On récupère les horaires de début du créneau en question et on les transforme en timestamp UNIX
+	// On rÃ©cupÃ¨re les horaires de dÃ©but du crÃ©neau en question et on les transforme en timestamp UNIX
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
 			$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux_bis WHERE id_definie_periode = '".$creneau_id."'");
@@ -49,7 +49,7 @@ function suivi_absence($creneau_id, $eleve_id){
 		$ts_heuredeb = mktime($heuredeb[0], $heuredeb[1], 0, date("m"), date("d"), date("Y"));
 		$ts_heurefin = mktime($heurefin[0], $heurefin[1], 0, date("m"), date("d"), date("Y"));
 
-		// On teste si l'élève était absent ou en retard le cours du créneau (on ne teste que le début du créneau)
+		// On teste si l'Ã©lÃ¨ve Ã©tait absent ou en retard le cours du crÃ©neau (on ne teste que le dÃ©but du crÃ©neau)
 		//$req = mysql_query("SELECT id, retard_absence FROM absences_rb WHERE
 		//		eleve_id = '".$eleve_id."' AND
 		//		debut_ts = '".$ts_heuredeb."'");
@@ -59,11 +59,11 @@ function suivi_absence($creneau_id, $eleve_id){
 								AND (debut_ts <= '".$ts_heuredeb."'
 								AND fin_ts >= '".$ts_heurefin."')");
 		$rep = mysql_fetch_array($req);
-			// S'il est marqué absent A -> fond rouge
+			// S'il est marquÃ© absent A -> fond rouge
 		if ($rep["retard_absence"] == "A") {
 			return " class=\"td_Absence\">A";
 		//}
-			// S'il est marqué en retard R -> fond vert
+			// S'il est marquÃ© en retard R -> fond vert
 			//else if ($rep["retard_absence"] == "R") {
 		}
 		else{
@@ -80,14 +80,14 @@ function suivi_absence($creneau_id, $eleve_id){
 		}
 	}
 
-//================ Début du rajout des fonctions du jour différent =============
+//================ DÃ©but du rajout des fonctions du jour diffÃ©rent =============
 function periode_actuel_jourdifferent($heure_choix) {
-	// fonction permettant de savoir dans quelle période nous nous trouvons
+	// fonction permettant de savoir dans quelle pÃ©riode nous nous trouvons
 	if($heure_choix == "") {
 		$heure_choix = date('H:i:s');
 	}
 	$num_periode = "";
-      //on liste dans un tableau les périodes existantes
+      //on liste dans un tableau les pÃ©riodes existantes
 	$requete_periode = ('SELECT * FROM edt_creneaux_bis WHERE
 					heuredebut_definie_periode <= "'.$heure_choix .'" AND
 					heurefin_definie_periode >= "'.$heure_choix.'"
@@ -101,7 +101,7 @@ function periode_actuel_jourdifferent($heure_choix) {
 	return($num_periode);
 }
 
-//connaitre l'heure du début soit de la fin d'une période
+//connaitre l'heure du dÃ©but soit de la fin d'une pÃ©riode
 // ex: periode_heure($id_periode) > [0]11:00:00 [1]11:55:00
 function periode_heure_jourdifferent($periode){
 	if ($periode == "") {
@@ -109,7 +109,7 @@ function periode_heure_jourdifferent($periode){
 	}
 	$debut = '';
 	$fin = '';
-	// on recherche les informations sur la périodes sélectionné
+	// on recherche les informations sur la pÃ©riodes sÃ©lectionnÃ©
 	$requete_periode = ('SELECT * FROM edt_creneaux_bis WHERE id_definie_periode = "'.$periode.'"');
 	$resultat_periode = mysql_query($requete_periode)
 						or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());

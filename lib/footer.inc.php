@@ -8,14 +8,14 @@
  * @subpackage Affichage
  */
 
-// iI on ne souhaite pas utiliser les js de base, on enlève tout ce qui suit :
+// iI on ne souhaite pas utiliser les js de base, on enlÃ¨ve tout ce qui suit :
 if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	echo "<!-- Pas de js en pied -->\n";
 } else {
-	echo "<!-- Début du pied -->\n";
+	echo "<!-- DÃ©but du pied -->\n";
 	// ========================================
 	// Astuce http://www.ehow.com/how_2000413_convert-em-px-sizes.html
-	// pour calculer le rapport em/px et corriger le positionnement des infobulles (taille fixée en 'em')
+	// pour calculer le rapport em/px et corriger le positionnement des infobulles (taille fixÃ©e en 'em')
 	echo "<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -27,14 +27,14 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 
 
 
-	// On a stocké les DIV dans un tableau et on parcourt le tableau PHP en fin de page pour afficher les infobulles en dehors du coeur de la page.
+	// On a stockÃ© les DIV dans un tableau et on parcourt le tableau PHP en fin de page pour afficher les infobulles en dehors du coeur de la page.
 	// Les infobulles apparaissent ainsi un peu comme des notes de bas de page.
-	// On pourrait cependant insérer l'infobulle au milieu du texte avec:
+	// On pourrait cependant insÃ©rer l'infobulle au milieu du texte avec:
 	//       echo creer_div("div1","1er DIV","Test de petit texte",12,"y","y","n");
-	// au risque de perturber l'affichage de la page si Javascript est désactivé.
+	// au risque de perturber l'affichage de la page si Javascript est dÃ©sactivÃ©.
 
 	if(isset($tabdiv_infobulle)){
-		// Pour éviter des cas de doublons...
+		// Pour Ã©viter des cas de doublons...
 		$temoin_infobulle=array();
 
 		if(count($tabdiv_infobulle)>0){
@@ -47,8 +47,8 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 		}
 	}
 
-	// Témoin destiné à tester la fin de chargement de la page pour éviter des erreurs JavaScript avant la fin de chargement de tous les élèments.
-	// Par exemple: la fonction cacher_div() utilisée plus bas teste cette variable pour ne tenter les opérations que si la variable est à 'ok'
+	// TÃ©moin destinÃ© Ã  tester la fin de chargement de la page pour Ã©viter des erreurs JavaScript avant la fin de chargement de tous les Ã©lÃ¨ments.
+	// Par exemple: la fonction cacher_div() utilisÃ©e plus bas teste cette variable pour ne tenter les opÃ©rations que si la variable est Ã  'ok'
 	echo "<script type='text/javascript'>
 	temporisation_chargement='ok';
 	//desactivation_infobulle='n';
@@ -57,7 +57,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	if(isset($tabid_infobulle)){
 		if(count($tabid_infobulle)>0){
 			// On cache les DIV en fin de chargement de la page (il faut qu'ils existent pour qu'il soit possible de les cacher).
-			// Il me semble qu'il n'est pas possible d'initialiser le 'display' à 'none' et de modifier ce display ensuite via JavaScript.
+			// Il me semble qu'il n'est pas possible d'initialiser le 'display' Ã  'none' et de modifier ce display ensuite via JavaScript.
 			echo "<script type='text/javascript'>\n";
 			for($i=0;$i<count($tabid_infobulle);$i++){
 				echo "cacher_div('".$tabid_infobulle[$i]."');\n";
@@ -75,7 +75,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
           require ($gepiPath."/pmv.php");
         }
 	}
-	// Affichage de la durée de chargement de la page
+	// Affichage de la durÃ©e de chargement de la page
 
 	if (!isset($niveau_arbo)) $niveau_arbo = 1;
 
@@ -92,7 +92,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 </div>
 
 <?php
-	// Pour permettre l'affichage du nombre de champs dans les formulaires, insérer:
+	// Pour permettre l'affichage du nombre de champs dans les formulaires, insÃ©rer:
 	// insert into setting set name='affich_debug_info_form', value='y';
 	// insert into setting set name='login_debug_info_form', value='LOGIN1|LOGIN2|LOGIN3|...';
 	// insert into setting set name='statut_debug_info_form', value='professeur|administrateur|...';
@@ -161,7 +161,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
   <source src='$chemin_sound' />
 </audio>\n";
 		// Exemple de code d'appel: document.getElementById('id_footer_sound').play();
-		// Décommenter pour tester:
+		// DÃ©commenter pour tester:
 		//echo "<a href='javascript:play_sound();'>Jouer le son 'footer_sound' : $footer_sound</a>";
 		echo "
 <!--a href='javascript:play_footer_sound();'>Jouer</a-->

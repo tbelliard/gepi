@@ -52,10 +52,10 @@ if (!checkAccess()) {
 if (isset($_POST['activer'])) {
 	check_token();
     if (!saveSetting("active_inscription", $_POST['activer'])){
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 	}
 	else{
-		$msg = "Les modifications ont été enregistrées !";
+		$msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 		$post_reussi=TRUE;
 	}
 }
@@ -70,7 +70,7 @@ if (isset($_POST['activer'])) {
 include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -85,20 +85,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_inscription/inscription_admin_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -110,14 +110,14 @@ include($nom_gabarit);
 <h2>Activation du module Inscription</h2>
 
 <form action="inscription_admin.php" name="form1" method="post">
-<p>Le module Inscription vous permet de définir un ou plusieurs items (stage, intervention, ...),
-au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.<br />
+<p>Le module Inscription vous permet de dÃ©finir un ou plusieurs items (stage, intervention, ...),
+au(x)quel(s) les utilisateurs pourront s'inscrire ou se dÃ©sinscrire en cochant ou dÃ©cochant une croix.<br />
 <a href="javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')">Consultez l'aide</a> pour en savoir plus.
 <br /><br />
 <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_inscription")=='y') echo " checked"; ?> />
-&nbsp;Activer l'accès au module Inscription</label><br />
+&nbsp;Activer l'accÃ¨s au module Inscription</label><br />
 <label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_inscription")=='n') echo " checked"; ?> />
-&nbsp;Désactiver l'accès au module Inscription</label></p>
+&nbsp;DÃ©sactiver l'accÃ¨s au module Inscription</label></p>
 
 <input type="hidden" name="is_posted" value="1" />
 

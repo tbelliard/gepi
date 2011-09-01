@@ -1,6 +1,6 @@
 <?php
 if ( getSettingValue("autorise_edt_tous") === 'y') {
-	// CSS et js particulier à l'EdT
+	// CSS et js particulier Ã  l'EdT
 	$javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 	$ua = getenv("HTTP_USER_AGENT");
 	if (strstr($ua, "MSIE 6.0")) {
@@ -14,10 +14,10 @@ if ( getSettingValue("autorise_edt_tous") === 'y') {
 
 	$visioedt=isset($_GET['visioedt']) ? $_GET['visioedt'] : (isset($_POST['visioedt']) ? $_POST['visioedt'] : NULL);
 
-	// Pour revenir proprement, on crée le $_SESSION["retour"]
+	// Pour revenir proprement, on crÃ©e le $_SESSION["retour"]
 	//$_SESSION["retour"] = "cdt_index";
 
-	// Définir dés le début le type d'EdT qu'on veut voir (prof, classe, salle)
+	// DÃ©finir dÃ©s le dÃ©but le type d'EdT qu'on veut voir (prof, classe, salle)
 
 	//===========================
 	// AJOUT: boireaus
@@ -47,7 +47,7 @@ if ( getSettingValue("autorise_edt_tous") === 'y') {
 	if ($message != "") {
 		$_SESSION["message"] = "";
 	}
-	// =================== Gérer la bascule entre emplois du temps périodes et emplois du temps semaines.
+	// =================== GÃ©rer la bascule entre emplois du temps pÃ©riodes et emplois du temps semaines.
 
 	if ($bascule_edt != NULL) {
 		$_SESSION['bascule_edt'] = $bascule_edt;
@@ -93,14 +93,14 @@ if ( getSettingValue("autorise_edt_tous") === 'y') {
 		$entetes = ConstruireEnteteEDT();
 		$creneaux = ConstruireCreneauxEDT();
 		$DisplayEDT = true;
-		FixColumnPositions($tab_data, $entetes);		// en cours de dével
+		FixColumnPositions($tab_data, $entetes);		// en cours de dÃ©vel
 		RecupereNotices($tab_data, $entetes);
 		
 	}
 	else {
 		$DisplayEDT = false;
 	}
-	// =================== Tester la présence de IE6
+	// =================== Tester la prÃ©sence de IE6
 
 	$ua = getenv("HTTP_USER_AGENT");
 	if (strstr($ua, "MSIE 6.0")) {

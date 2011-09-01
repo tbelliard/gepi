@@ -55,9 +55,9 @@ $titre_page = "Page de test";
 require_once("./lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p>Cette page est destinée à faire des tests de révision.</p>\n";
+echo "<p>Cette page est destinÃ©e Ã  faire des tests de rÃ©vision.</p>\n";
 
-echo "<p>La variable '\$revision_svn' déclarée dans cette page à la valeur suivante: <span style='color:green;'>$revision_svn</span></p>\n";
+echo "<p>La variable '\$revision_svn' dÃ©clarÃ©e dans cette page Ã  la valeur suivante: <span style='color:green;'>$revision_svn</span></p>\n";
 
 require ("./lib/footer.inc.php");
 ?>

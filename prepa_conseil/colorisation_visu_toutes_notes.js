@@ -4,12 +4,12 @@ $Id$
 
 	var cpt_couleur=1;
 	//var table_body_couleur=document.getElementById('table_body_couleur');
-	// Il faut évaluer table_body_couleur une fois le tableau chargé
+	// Il faut Ã©valuer table_body_couleur une fois le tableau chargÃ©
 
 	function add_tr_couleur() {
 		var table_body_couleur=document.getElementById('table_body_couleur');
 
-		// création des nouveaux noeuds
+		// crÃ©ation des nouveaux noeuds
 		var nouveauTR = document.createElement('tr');
 		var nouveauTD1 = document.createElement('td');
 		var nouveauTD2 = document.createElement('td');
@@ -34,7 +34,7 @@ $Id$
 
 		nouveauTD4.innerHTML='<a href=\'#colorisation_resultats\' onclick=\'suppr_ligne_couleur('+cpt_couleur+');return false;\'><img src=\'../images/delete16.png\' height=\'16\' width=\'16\' alt=\'Supprimer la ligne\' /></a>';
 
-		// Pour ré-étaler les valeurs de bornes et refaire l'alternance des couleurs
+		// Pour rÃ©-Ã©taler les valeurs de bornes et refaire l'alternance des couleurs
 		retouches_tab_couleur();
 
 		cpt_couleur=cpt_couleur+1;
@@ -42,7 +42,7 @@ $Id$
 
 
 	function add_field_couleur(td_conteneur) {
-		// création des nouveaux noeuds
+		// crÃ©ation des nouveaux noeuds
 		var nouveauInput = document.createElement('input');
 
 		nouveauInput.name = 'vtn_borne_couleur[]';
@@ -56,7 +56,7 @@ $Id$
 	}
 
 	function add_select_couleur(td_conteneur,nom) {
-		// création des nouveaux noeuds
+		// crÃ©ation des nouveaux noeuds
 		var nouveauSelect = document.createElement('select');
 
 		nouveauSelect.name = nom+'[]';
@@ -66,7 +66,7 @@ $Id$
 
 		//tab_couleur=new Array('red', 'green', 'blue');
 
-		// Pour pouvoir ne pas modifier la couleur par défaut
+		// Pour pouvoir ne pas modifier la couleur par dÃ©faut
 		nouvelleOption=document.createElement('option');
 		nouvelleOption.setAttribute('value','');
 		nouvelleOption.innerHTML='---';
@@ -87,11 +87,11 @@ $Id$
 	function suppr_ligne_couleur(cpt_couleur) {
 		//document.getElementById('tr_couleur_'+cpt_couleur).removeChild;
 
-		// Cela merdoie... on peut réussir à supprimer la ligne en <thead>
-		// Pour éviter cela:
+		// Cela merdoie... on peut rÃ©ussir Ã  supprimer la ligne en <thead>
+		// Pour Ã©viter cela:
 		if(cpt_couleur-nb_suppr_couleur>0) {
-			// Problème: Le cpt_couleur est fixe...
-			//           ... si bien que si on supprime une ligne autre que la dernière, la ligne de dernier rang ne correspond plus au rang cpt_couleur, mais à cpt_couleur-1
+			// ProblÃ¨me: Le cpt_couleur est fixe...
+			//           ... si bien que si on supprime une ligne autre que la derniÃ¨re, la ligne de dernier rang ne correspond plus au rang cpt_couleur, mais Ã  cpt_couleur-1
 			document.getElementById('table_couleur').deleteRow(cpt_couleur-nb_suppr_couleur);
 			nb_suppr_couleur++;
 			retouches_tab_couleur();
@@ -99,7 +99,7 @@ $Id$
 	}
 
 	function retouches_tab_couleur() {
-		// Couleurs alternées des lignes
+		// Couleurs alternÃ©es des lignes
 		j=0;
 		for(i=0;i<=cpt_couleur;i++) {
 			if(document.getElementById('tr_couleur_'+i)) {
@@ -113,7 +113,7 @@ $Id$
 			}
 		}
 
-		// Ré-étalement des bornes
+		// RÃ©-Ã©talement des bornes
 		if(j>0) {
 			tranche=Math.round(200/j)/10;
 
@@ -125,8 +125,8 @@ $Id$
 				}
 			}
 
-			// On a des arrondis malheureux à 19.8 et 20.1
-			// Pour mettre à 20 le dernier champ:
+			// On a des arrondis malheureux Ã  19.8 et 20.1
+			// Pour mettre Ã  20 le dernier champ:
 			for(i=cpt_couleur;i>=0;i--) {
 				if(document.getElementById('vtn_borne_couleur_'+i)) {
 					document.getElementById('vtn_borne_couleur_'+i).value=20;

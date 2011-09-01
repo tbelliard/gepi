@@ -50,7 +50,7 @@ $compteur_aff_time=0;
 function aff_time() {
 	global $compteur_aff_time;
 
-	// Pour tenter de repérer à quel niveau cela traine:
+	// Pour tenter de repÃ©rer Ã  quel niveau cela traine:
 	$debug=0;
 	if($debug==1) {
 		echo "$compteur_aff_time: ".strftime("%D %T")."<br />";
@@ -61,7 +61,7 @@ function aff_time() {
 
 aff_time();
 
-// Si on est en traitement par lot, on sélectionne tout de suite la liste des utilisateurs impliqués
+// Si on est en traitement par lot, on sÃ©lectionne tout de suite la liste des utilisateurs impliquÃ©s
 $error = false;
 if ($mode == "classe") {
 	$nb_comptes = 0;
@@ -83,71 +83,71 @@ if ($mode == "classe") {
 		if (!$quels_parents) $msg .= mysql_error();
 	} else {
 		$error = true;
-		$msg .= "Vous devez sélectionner au moins une classe !<br />";
+		$msg .= "Vous devez sÃ©lectionner au moins une classe !<br />";
 	}
 }
 
 aff_time();
 
-// Trois actions sont possibles depuis cette page : activation, désactivation et suppression.
-// L'édition se fait directement sur la page de gestion des responsables
+// Trois actions sont possibles depuis cette page : activation, dÃ©sactivation et suppression.
+// L'Ã©dition se fait directement sur la page de gestion des responsables
 if (!$error) {
 	if($action) {
 		check_token();
 	}
 
 	if ($action == "rendre_inactif") {
-		// Désactivation d'utilisateurs actifs
+		// DÃ©sactivation d'utilisateurs actifs
 		if ($mode == "individual") {
-			// Désactivation pour un utilisateur unique
+			// DÃ©sactivation pour un utilisateur unique
 			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'actif')"), 0);
 			if ($test == "0") {
-				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà inactif.";
+				$msg .= "Erreur lors de la dÃ©sactivation de l'utilisateur : celui-ci n'existe pas ou bien est dÃ©jÃ  inactif.";
 			} else {
 				$res = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE (login = '".$_GET['parent_login']."')");
 				if ($res) {
-					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été désactivé.";
+					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a Ã©tÃ© dÃ©sactivÃ©.";
 				} else {
-					$msg .= "Erreur lors de la désactivation de l'utilisateur.";
+					$msg .= "Erreur lors de la dÃ©sactivation de l'utilisateur.";
 				}
 			}
 		} elseif ($mode == "classe" and !$error) {
-			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			// Pour tous les parents qu'on a dÃ©jÃ  sÃ©lectionnÃ©s un peu plus haut, on dÃ©sactive les comptes
 			while ($current_parent = mysql_fetch_object($quels_parents)) {
 				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
-					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					// L'utilisateur existe bien dans la tables utilisateurs, on dÃ©sactive
 					$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_parent->login . "'");
 					if (!$res) {
-						$msg .= "Erreur lors de la désactivation du compte ".$current_parent->login."<br />";
+						$msg .= "Erreur lors de la dÃ©sactivation du compte ".$current_parent->login."<br />";
 					} else {
 						$nb_comptes++;
 					}
 				}
 			}
-			$msg .= "$nb_comptes comptes ont été désactivés.";
+			$msg .= "$nb_comptes comptes ont Ã©tÃ© dÃ©sactivÃ©s.";
 		}
 	} elseif ($action == "rendre_actif") {
-		// Activation d'utilisateurs préalablement désactivés
+		// Activation d'utilisateurs prÃ©alablement dÃ©sactivÃ©s
 		if ($mode == "individual") {
 			// Activation pour un utilisateur unique
 			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'inactif')"), 0);
 			if ($test == "0") {
-				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà actif.";
+				$msg .= "Erreur lors de la dÃ©sactivation de l'utilisateur : celui-ci n'existe pas ou bien est dÃ©jÃ  actif.";
 			} else {
 				$res = mysql_query("UPDATE utilisateurs SET etat='actif' WHERE (login = '".$_GET['parent_login']."')");
 				if ($res) {
-					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été activé.";
+					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a Ã©tÃ© activÃ©.";
 				} else {
 					$msg .= "Erreur lors de l'activation de l'utilisateur.";
 				}
 			}
 		} elseif ($mode == "classe") {
-			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			// Pour tous les parents qu'on a dÃ©jÃ  sÃ©lectionnÃ©s un peu plus haut, on dÃ©sactive les comptes
 			while ($current_parent = mysql_fetch_object($quels_parents)) {
 				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
-					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					// L'utilisateur existe bien dans la tables utilisateurs, on dÃ©sactive
 					$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_parent->login . "'");
 					if (!$res) {
 						$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
@@ -156,7 +156,7 @@ if (!$error) {
 					}
 				}
 			}
-			$msg .= "$nb_comptes comptes ont été activés.";
+			$msg .= "$nb_comptes comptes ont Ã©tÃ© activÃ©s.";
 		}
 
 	} elseif ($action == "supprimer") {
@@ -169,18 +169,18 @@ if (!$error) {
 			} else {
 				$res = mysql_query("DELETE FROM utilisateurs WHERE (login = '".$_GET['parent_login']."')");
 				if ($res) {
-					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été supprimé.";
+					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a Ã©tÃ© supprimÃ©.";
 					$res2 = mysql_query("UPDATE resp_pers SET login='' WHERE login = '".$_GET['parent_login'] . "'");
 				} else {
 					$msg .= "Erreur lors de la suppression de l'utilisateur.";
 				}
 			}
 		} elseif ($mode == "classe") {
-			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			// Pour tous les parents qu'on a dÃ©jÃ  sÃ©lectionnÃ©s un peu plus haut, on dÃ©sactive les comptes
 			while ($current_parent = mysql_fetch_object($quels_parents)) {
 				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
-					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					// L'utilisateur existe bien dans la tables utilisateurs, on dÃ©sactive
 					$res = mysql_query("DELETE FROM utilisateurs WHERE login = '" . $current_parent->login . "'");
 					if (!$res) {
 						$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
@@ -190,20 +190,20 @@ if (!$error) {
 					}
 				}
 			}
-			$msg .= "$nb_comptes comptes ont été supprimés.";
+			$msg .= "$nb_comptes comptes ont Ã©tÃ© supprimÃ©s.";
 		}
 	} elseif ($action == "reinit_password") {
 		if ($mode != "classe") {
-			$msg .= "Erreur : Vous devez sélectionner une classe.";
+			$msg .= "Erreur : Vous devez sÃ©lectionner une classe.";
 		} elseif ($mode == "classe") {
 			if ($_POST['classe'] == "all") {
-				$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=html".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a> - ou (<a href=\"reset_passwords.php?user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y".add_token_in_url()."\" target='_blank'>Impression HTML avec adresse</a>)";
-				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=csv".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+				$msg .= "Vous allez rÃ©initialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br />Si vous Ãªtes vraiment sÃ»r de vouloir effectuer cette opÃ©ration, cliquez sur le lien ci-dessous :";
+				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=html".add_token_in_url()."\" target='_blank'>RÃ©initialiser les mots de passe (Impression HTML)</a> - ou (<a href=\"reset_passwords.php?user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y".add_token_in_url()."\" target='_blank'>Impression HTML avec adresse</a>)";
+				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=csv".add_token_in_url()."\" target='_blank'>RÃ©initialiser les mots de passe (Export CSV)</a>";
 			} else if (is_numeric($_POST['classe'])) {
-				$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a> - ou (<a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;affiche_adresse_resp=y".add_token_in_url()."\" target='_blank'>Impression HTML avec adresse</a>)";
-				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+				$msg .= "Vous allez rÃ©initialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br />Si vous Ãªtes vraiment sÃ»r de vouloir effectuer cette opÃ©ration, cliquez sur le lien ci-dessous :";
+				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html".add_token_in_url()."\" target='_blank'>RÃ©initialiser les mots de passe (Impression HTML)</a> - ou (<a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;affiche_adresse_resp=y".add_token_in_url()."\" target='_blank'>Impression HTML avec adresse</a>)";
+				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv".add_token_in_url()."\" target='_blank'>RÃ©initialiser les mots de passe (Export CSV)</a>";
 			}
 		}
 	}elseif ($action == "change_auth_mode") {
@@ -214,52 +214,52 @@ if (!$error) {
 		$nb_comptes = 0;
 		$reg_auth_mode = (in_array($_POST['reg_auth_mode'], array("gepi", "ldap", "sso"))) ? $_POST['reg_auth_mode'] : "gepi";
 		if ($mode != "classe") {
-			$msg .= "Erreur : Vous devez sélectionner une classe.";
+			$msg .= "Erreur : Vous devez sÃ©lectionner une classe.";
 		} elseif ($mode == "classe") {
 			while ($current_parent = mysql_fetch_object($quels_parents)) {
 				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
 				if ($test > 0) {
 					// L'utilisateur existe bien dans la tables utilisateurs, on modifie
-					// Si on change le mode d'authentification, il faut quelques opérations particulières
+					// Si on change le mode d'authentification, il faut quelques opÃ©rations particuliÃ¨res
 					$old_auth_mode = $current_parent->auth_mode;
 					if ($_POST['reg_auth_mode'] != $old_auth_mode) {
 						// On modifie !
 						$nb_comptes++;
 						$res = mysql_query("UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_parent->login."'");
 
-						// On regarde si des opérations spécifiques sont nécessaires
+						// On regarde si des opÃ©rations spÃ©cifiques sont nÃ©cessaires
 						if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
-							// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
+							// On passe du mode Gepi Ã  un mode externe : il faut supprimer le mot de passe
 							$oldmd5password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE login = '".$current_parent->login."'"), 0);
 							mysql_query("UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_parent->login."'");
-							// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
+							// Et si on a un accÃ¨s en Ã©criture au LDAP, il faut crÃ©er l'utilisateur !
 							if ($ldap_write_access) {
 								$create_ldap_user = true;
 							}
 						} elseif (($old_auth_mode == "sso" || $old_auth_mode == "ldap") && $_POST['reg_auth_mode'] == "gepi") {
-							// Passage au mode Gepi, rien de spécial à faire, si ce n'est annoncer à l'administrateur
-							// qu'il va falloir réinitialiser les mots de passe
+							// Passage au mode Gepi, rien de spÃ©cial Ã  faire, si ce n'est annoncer Ã  l'administrateur
+							// qu'il va falloir rÃ©initialiser les mots de passe
 							$pass_init_required = true;
-							// Et si accès en écriture au LDAP, on supprime le compte.
+							// Et si accÃ¨s en Ã©criture au LDAP, on supprime le compte.
 							if ($ldap_write_access) {
 								$delete_ldap_user = true;
 							}
 						}
 
-						// On effectue les opérations LDAP
+						// On effectue les opÃ©rations LDAP
 						if (isset($create_ldap_user) && $create_ldap_user) {
 							if (!$ldap_server->test_user($current_parent->login)) {
 								$parent = mysql_fetch_object(mysql_query("SELECT distinct(r.login), r.nom, r.prenom, r.civilite, r.mel " .
 														"FROM resp_pers r WHERE (" .
 														"r.login = '" . $current_parent->login."')"));
 								$write_ldap_success = $ldap_server->add_user($parent->login, $parent->nom, $parent->prenom, $parent->mel, $parent->civilite, md5(rand()), "responsable");
-								// On transfert le mot de passe à la main
+								// On transfert le mot de passe Ã  la main
 								$ldap_server->set_manual_password($current_parent->login, "{MD5}".base64_encode(pack("H*",$oldmd5password)));
 							}
 						}
 						if (isset($delete_ldap_user) && $delete_ldap_user) {
 							if (!$ldap_server->test_user($current_parent->login)) {
-								// L'utilisateur n'a pas été trouvé dans l'annuaire.
+								// L'utilisateur n'a pas Ã©tÃ© trouvÃ© dans l'annuaire.
 								$write_ldap_success = true;
 							} else {
 								$write_ldap_success = $ldap_server->delete_user($current_parent->login);
@@ -269,9 +269,9 @@ if (!$error) {
 					}
 				}
 			}
-			$msg .= "$nb_comptes comptes ont été modifiés.";
+			$msg .= "$nb_comptes comptes ont Ã©tÃ© modifiÃ©s.";
 			if (isset($pass_init_required) && $pass_init_required) {
-				$msg .= "<br/>Attention ! Des modifications appliquées nécessitent la réinitialisation de mots de passe des utilisateurs !";
+				$msg .= "<br/>Attention ! Des modifications appliquÃ©es nÃ©cessitent la rÃ©initialisation de mots de passe des utilisateurs !";
 			}
 		}
 	}
@@ -294,7 +294,7 @@ aff_time();
 
 	$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom LIMIT 1");
 	if(mysql_num_rows($quels_parents)==0){
-		echo "<p>Aucun compte responsable n'existe encore.<br />Vous pouvez ajouter des comptes responsables à l'aide du lien ci-dessus.</p>\n";
+		echo "<p>Aucun compte responsable n'existe encore.<br />Vous pouvez ajouter des comptes responsables Ã  l'aide du lien ci-dessus.</p>\n";
 		require("../lib/footer.inc.php");
 		die;
 	}
@@ -314,7 +314,7 @@ aff_time();
 	echo "<blockquote>\n";
 	echo "<p>\n";
 	echo "<select name='classe' size='1'>\n";
-	echo "<option value='none'>Sélectionnez une classe</option>\n";
+	echo "<option value='none'>SÃ©lectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";
 
 	//$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
@@ -345,7 +345,7 @@ aff_time();
 	echo "<input type='radio' name='action' id='action_rendre_inactif' value='rendre_inactif' /> <label for='action_rendre_inactif' style='cursor:pointer;'>Rendre inactif</label>\n";
 	echo "<input type='radio' name='action' id='action_rendre_actif' value='rendre_actif' style='margin-left: 20px;'/> <label for='action_rendre_actif' style='cursor:pointer;'>Rendre actif </label>\n";
 	if ($session_gepi->auth_locale || $gepiSettings['ldap_write_access']) {
-		echo "<input type='radio' name='action' id='action_reinit_password' value='reinit_password' style='margin-left: 20px;'/> <label for='action_reinit_password' style='cursor:pointer;'>Réinitialiser mots de passe</label>\n";
+		echo "<input type='radio' name='action' id='action_reinit_password' value='reinit_password' style='margin-left: 20px;'/> <label for='action_reinit_password' style='cursor:pointer;'>RÃ©initialiser mots de passe</label>\n";
 	}
 	echo "<input type='radio' name='action' id='action_supprimer' value='supprimer' style='margin-left: 20px;' /> <label for='action_supprimer' style='cursor:pointer;'>Supprimer</label><br />\n";
 	echo "<input type='radio' name='action' value='change_auth_mode' /> Modifier authentification : ";
@@ -371,9 +371,9 @@ aff_time();
 
 	$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
 	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
-	$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
+	$critere_recherche=preg_replace("/[^a-zA-ZÃ€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÂ½Â¼Ã‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_ -]/", "", $critere_recherche);
   	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : "";
-	$critere_recherche_login=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche_login);
+	$critere_recherche_login=preg_replace("/[^a-zA-ZÃ€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃÃÃ”Ã–Ã™Ã›ÃœÂ½Â¼Ã‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_ -]/", "", $critere_recherche_login);
 
 	//====================================
 
@@ -417,7 +417,7 @@ aff_time();
 <table class='boireaus' border='1' summary="Liste des comptes existants">
 <tr>
 	<th>Identifiant</th>
-	<th>Nom Prénom</th>
+	<th>Nom PrÃ©nom</th>
 	<th>Responsable de</th>
 	<th>Etat</th>
 	<th>Actions</th>
@@ -475,7 +475,7 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		$res_enfants=mysql_query($sql);
 		//echo "$sql<br />";
 		if(mysql_num_rows($res_enfants)==0){
-			echo "<span style='color:red;'>Aucun élève</span>";
+			echo "<span style='color:red;'>Aucun Ã©lÃ¨ve</span>";
 		}
 		else{
 			while($current_enfant=mysql_fetch_object($res_enfants)){
@@ -487,7 +487,7 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 			if ($current_parent->etat == "actif") {
 				echo "<font color='green'>".$current_parent->etat."</font>";
 				echo "<br />";
-				echo "<a href='edit_responsable.php?action=rendre_inactif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Désactiver";
+				echo "<a href='edit_responsable.php?action=rendre_inactif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>DÃ©sactiver";
 			} else {
 				echo "<font color='red'>".$current_parent->etat."</font>";
 				echo "<br />";
@@ -496,12 +496,12 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 			echo "</a>";
 		echo "</td>\n";
 		echo "<td>";
-		echo "<a href='edit_responsable.php?action=supprimer&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>";
+		echo "<a href='edit_responsable.php?action=supprimer&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."' onclick=\"javascript:return confirm('ÃŠtes-vous sÃ»r de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>";
 
 		if($current_parent->etat == "actif" && ($current_parent->auth_mode == "gepi" || $gepiSettings['ldap_write_access'] == "yes")) {
 			echo "<br />";
-			echo "Réinitialiser le mot de passe : <a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléatoirement</a>";
-			echo " - <a href=\"change_pwd.php?user_login=".$current_parent->login.add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci réinitialisera le mot de passe de l\'utilisateur avec un mot de passe que vous choisirez.\\n En cliquant sur OK, vous lancerez une page qui vous demandera de saisir un mot de passe et de le valider.')\" target='_blank'>choisi </a>";
+			echo "RÃ©initialiser le mot de passe : <a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html".add_token_in_url()."\" onclick=\"javascript:return confirm('ÃŠtes-vous sÃ»r de vouloir effectuer cette opÃ©ration ?\\n Celle-ci est irrÃ©versible, et rÃ©initialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numÃ©rique gÃ©nÃ©rÃ© alÃ©atoirement.\\n En cliquant sur OK, vous lancerez la procÃ©dure, qui gÃ©nÃ¨rera une page contenant la fiche-bienvenue Ã  imprimer immÃ©diatement pour distribution Ã  l\'utilisateur concernÃ©.')\" target='_blank'>AlÃ©atoirement</a>";
+			echo " - <a href=\"change_pwd.php?user_login=".$current_parent->login.add_token_in_url()."\" onclick=\"javascript:return confirm('ÃŠtes-vous sÃ»r de vouloir effectuer cette opÃ©ration ?\\n Celle-ci rÃ©initialisera le mot de passe de l\'utilisateur avec un mot de passe que vous choisirez.\\n En cliquant sur OK, vous lancerez une page qui vous demandera de saisir un mot de passe et de le valider.')\" target='_blank'>choisi </a>";
 		}
 		echo "</td>\n";
 	echo "</tr>\n";
@@ -515,7 +515,7 @@ echo "</blockquote>\n";
 
 <?php
 if (mysql_num_rows($quels_parents) == "0") {
-	echo "<p>Pour créer de nouveaux comptes d'accès associés aux responsables d'élèves définis dans Gepi, vous devez cliquer sur le lien 'Ajouter de nouveaux comptes' ci-dessus.</p>";
+	echo "<p>Pour crÃ©er de nouveaux comptes d'accÃ¨s associÃ©s aux responsables d'Ã©lÃ¨ves dÃ©finis dans Gepi, vous devez cliquer sur le lien 'Ajouter de nouveaux comptes' ci-dessus.</p>";
 }
 require("../lib/footer.inc.php");
 ?>

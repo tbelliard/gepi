@@ -48,7 +48,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
     $msg = '';
     //
-    // Insertion et suppresion de périodes
+    // Insertion et suppresion de pÃ©riodes
     //
     $pb_reg_per = '';
     $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'");
@@ -60,7 +60,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         while ($k < $nb_periode) {
             $test = mysql_query("SELECT * FROM  j_eleves_classes WHERE (periode = '$k' and id_classe='$id_classe')");
             if (mysql_num_rows($test) !=0) {
-                $msg .= "Cette classe contient des élèves pour la periode $k ! Suppression impossible. Vous devez d'abord retirer les élèves de la classe.<br />";
+                $msg .= "Cette classe contient des Ã©lÃ¨ves pour la periode $k ! Suppression impossible. Vous devez d'abord retirer les Ã©lÃ¨ves de la classe.<br />";
                 $autorisation_efface = 'non';
             }
             $k++;
@@ -92,14 +92,14 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         $k = $nb_periode + 1;
         $nombre_periode++;
         while ($k < $nombre_periode) {
-            $register = mysql_query("INSERT INTO periodes SET nom_periode='période ".$k."', num_periode='$k', verouiller = 'N', id_classe='$id_classe'");
+            $register = mysql_query("INSERT INTO periodes SET nom_periode='pÃ©riode ".$k."', num_periode='$k', verouiller = 'N', id_classe='$id_classe'");
             if (!$register) {$pb_reg_per = 'yes';}
             $k++;
         }
     }
 
     //
-    // Verrouillage et déverrouillage; changement de noms
+    // Verrouillage et dÃ©verrouillage; changement de noms
     //
 
    $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'");
@@ -108,7 +108,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     while ($k < $nb_periode) {
         if (!isset($nom_period[$k])) $nom_period[$k] = '';
         $nom_period[$k] = trim($nom_period[$k]);
-        if ($nom_period[$k] == '') $nom_period[$k] = "période ".$k;
+        if ($nom_period[$k] == '') $nom_period[$k] = "pÃ©riode ".$k;
         //$register = mysql_query("UPDATE periodes SET nom_periode='$nom_period[$k]' WHERE (num_periode='$k' and id_classe='$id_classe')");
         $register = mysql_query("UPDATE periodes SET nom_periode='".html_entity_decode($nom_period[$k])."' WHERE (num_periode='$k' and id_classe='$id_classe')");
         if (!$register) {$pb_reg_per = 'yes';}
@@ -116,10 +116,10 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     }
 
    if ($pb_reg_per == 'no')  {
-        $msg.="Les modifications ont été enregistrées !";
+        $msg.="Les modifications ont Ã©tÃ© enregistrÃ©es !";
 
     } else if ($pb_reg_per == 'yes') {
-        $msg.="Il y a eu un problème lors de la tentative de modification du nombre de périodes !";
+        $msg.="Il y a eu un problÃ¨me lors de la tentative de modification du nombre de pÃ©riodes !";
     }
 
 }
@@ -173,9 +173,9 @@ if(mysql_num_rows($res_class_tmp)>0){
 }
 // =================================
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Gestion des classes - Gestion des périodes";
+$titre_page = "Gestion des classes - Gestion des pÃ©riodes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -183,7 +183,7 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
 
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>\n";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>\n";}
 if($chaine_options_classes!="") {
 
 	echo "<script type='text/javascript'>
@@ -220,11 +220,11 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 $titre="Navigation";
 $texte="";
 
-//$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Périodes</a><br />";
-$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elèves</a><br />";
+//$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">PÃ©riodes</a><br />";
+$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ElÃ¨ves</a><br />";
 $texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
-$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
-$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
+$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiÃ©e</a><br />";
+$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ParamÃ¨tres</a>";
 
 $ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 
@@ -259,13 +259,13 @@ echo "</form>\n";
 <form enctype="multipart/form-data" method="post" action="periodes.php">
 <center><input type='submit' value='Enregistrer' /></center>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
-<p><b>Remarque : </b>Le verrouillage/déverrouillage d'une période est possible en étant connecté sous un compte ayant le statut "scolarité".</p>
+<p><b>Remarque : </b>Le verrouillage/dÃ©verrouillage d'une pÃ©riode est possible en Ã©tant connectÃ© sous un compte ayant le statut "scolaritÃ©".</p>
 
 <?php
 
 echo add_token_field();
 
-echo "<p>Nombre de périodes : ";
+echo "<p>Nombre de pÃ©riodes : ";
 
 //$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_classe='$id_classe';";
 $sql="SELECT 1=1 FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe;";
@@ -275,7 +275,7 @@ if(mysql_num_rows($verif)>0) {
 	echo "<b>".$temp."</b>";
 	echo "<input type='hidden' name='nombre_periode' value='$temp' />\n";
 	echo "<br />\n";
-	echo "<a href='ajouter_periode.php?id_classe=$id_classe'>Ajouter</a> / <a href='supprimer_periode.php?id_classe=$id_classe'>Supprimer</a> des périodes<br />\n";
+	echo "<a href='ajouter_periode.php?id_classe=$id_classe'>Ajouter</a> / <a href='supprimer_periode.php?id_classe=$id_classe'>Supprimer</a> des pÃ©riodes<br />\n";
 }
 else {
 	echo "<select size=1 name='nombre_periode'";
@@ -293,11 +293,11 @@ else {
 echo "</p>\n";
 
 if ($test_periode == 0) {
-	echo "<p>Si vous choisissez de ne pas définir de périodes pour cette classe (nombre de périodes = 0), cette classe sera considérée comme virtuelle.</p>\n";
+	echo "<p>Si vous choisissez de ne pas dÃ©finir de pÃ©riodes pour cette classe (nombre de pÃ©riodes = 0), cette classe sera considÃ©rÃ©e comme virtuelle.</p>\n";
 	echo "<p>Remarques : </p>\n";
-	echo "<ul><li>Vous pouvez affecter une ou plusieurs matières à une classe virtuelle.</li>\n";
-	echo "<li>Vous ne pouvez pas affecter d'élèves à une classe virtuelle.</li>\n";
-	echo "<li>Une classe virtuelle peut être utilisée dans le cadre des cahiers de texte : création d'une rubrique accessible au public et remplie par un professeur d'une matière affectée à cette classe.</li>\n";
+	echo "<ul><li>Vous pouvez affecter une ou plusieurs matiÃ¨res Ã  une classe virtuelle.</li>\n";
+	echo "<li>Vous ne pouvez pas affecter d'Ã©lÃ¨ves Ã  une classe virtuelle.</li>\n";
+	echo "<li>Une classe virtuelle peut Ãªtre utilisÃ©e dans le cadre des cahiers de texte : crÃ©ation d'une rubrique accessible au public et remplie par un professeur d'une matiÃ¨re affectÃ©e Ã  cette classe.</li>\n";
 	echo "</ul>\n";
 
 } else {
@@ -307,16 +307,16 @@ if ($test_periode == 0) {
     <table class='boireaus'>
     <tr>
     <th>&nbsp;</th>
-    <th style='padding: 5px;'>Nom de la période</th>
+    <th style='padding: 5px;'>Nom de la pÃ©riode</th>
     </tr>
     <?php
     $k = '1';
 	$alt=1;
     while ($k < $nb_periode) {
-        if ($nom_periode[$k] == '') {$nom_periode[$k] = "période ".$k;}
+        if ($nom_periode[$k] == '') {$nom_periode[$k] = "pÃ©riode ".$k;}
         $alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-        echo "<td style='padding: 5px;'>Période $k</td>\n";
+        echo "<td style='padding: 5px;'>PÃ©riode $k</td>\n";
         echo "<td style='padding: 5px;'><input type='text' name='nom_period[$k]'";
 		echo " onchange='changement()'";
 		echo " value=\"".$nom_periode[$k]."\" size='30' /></td>\n";

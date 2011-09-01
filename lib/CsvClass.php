@@ -21,7 +21,7 @@
 */
 
 
-# Cette classe sert à manipuler ou creer des fichiers CSV.
+# Cette classe sert Ã  manipuler ou creer des fichiers CSV.
 
 
 class CsvClass {

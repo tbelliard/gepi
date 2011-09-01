@@ -3,8 +3,8 @@
 $Id$
 */
 
-// Traitement des données pour une classe référencée par id_classe et id_periode
-// retourne un tableau avec les données de la base
+// Traitement des donnÃ©es pour une classe rÃ©fÃ©rencÃ©e par id_classe et id_periode
+// retourne un tableau avec les donnÃ©es de la base
 // modifie la variable nombre_eleve
 function traite_donnees_classe($id_classe,$id_periode,&$nombre_eleves)
 {
@@ -14,13 +14,13 @@ $cpt_i = 0;
 for ($i=0; $i<sizeof($id_periode) ; $i++) {
 
     $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
-    $requete='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id  AND '.$prefix_base.'periode='.$id_periode[$i]. ' AND ' .$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'j_eleves_regime.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'; 		//on compte les élèves sélectionné
+    $requete='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id  AND '.$prefix_base.'periode='.$id_periode[$i]. ' AND ' .$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'j_eleves_regime.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'; 		//on compte les Ã©lÃ¨ves sÃ©lectionnÃ©
 	//echo $requete;
 	//echo sizeof($id_periode)." : $i : ==>$requete <br />";
 	$call_eleve = mysql_query($requete);	
 	$nb_eleves = @mysql_num_rows($call_eleve);
 	
-	//en réalité, le nombre de ligne
+	//en rÃ©alitÃ©, le nombre de ligne
 	$nombre_eleves = $nb_eleves*sizeof($id_periode); // parametre de la fonction
 
 	/*
@@ -51,7 +51,7 @@ for ($i=0; $i<sizeof($id_periode) ; $i++) {
 		$donnees_eleves[$cpt_i]['doublant'] = $donner['doublant'];
 		$donnees_eleves[$cpt_i]['regime'] = $donner['regime'];
 		$donnees_eleves[$cpt_i]['id_classe'] = $donner['id']; // ID de la classe
-		$donnees_eleves[$cpt_i]['id_periode'] = $id_periode[$i]; // ID de la période traitée
+		$donnees_eleves[$cpt_i]['id_periode'] = $id_periode[$i]; // ID de la pÃ©riode traitÃ©e
 		
 		 
 		$ident_eleve_sel1=$donner['login'];
@@ -104,10 +104,10 @@ for ($i=0; $i<sizeof($id_periode) ; $i++) {
 }
 
 
-// Traitement des données pour un groupe référencé par id_groupe et id_periode
-// retourne un tableau avec les données de la base
+// Traitement des donnÃ©es pour un groupe rÃ©fÃ©rencÃ© par id_groupe et id_periode
+// retourne un tableau avec les donnÃ©es de la base
 // modifie la variable nombre_eleve
-//variable $tri  ==> 'classe' tri des groupe par classe puis nom er prénom / autrement par liste alpha
+//variable $tri  ==> 'classe' tri des groupe par classe puis nom er prÃ©nom / autrement par liste alpha
 function traite_donnees_groupe($id_groupe,$id_periode,&$nombre_eleves,$tri)
 {
 global $prefix_base ;
@@ -130,14 +130,14 @@ global $prefix_base ;
 			$eleve_classe=$lig_tmp->classe;
 			$eleve_classe_nom_complet=$lig_tmp->nom_complet;
 		}
-		// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance,ereno...
+		// La fonction get_group() dans /lib/groupes.inc.php ne rÃ©cupÃ¨re pas le sexe et la date de naissance,ereno...
 		//$sql="SELECT id_classe,naissance,ereno,doublant,regime FROM eleves, j_eleves_classes, j_eleves_regime WHERE eleves.login='$eleve_login' AND j_eleves_classes.login='$eleve_login' AND j_eleves_regime.login='$eleve_login'";
 		$sql="SELECT id_classe,naissance,ereno FROM eleves, j_eleves_classes WHERE eleves.login='$eleve_login' AND j_eleves_classes.login=eleves.login;";
 	    //echo "$sql<br />";
 		$res_tmp=mysql_query($sql);
 
 		if(mysql_num_rows($res_tmp)==0){
-			die("Problème avec les infos de $eleve_login</body></html>");
+			die("ProblÃ¨me avec les infos de $eleve_login</body></html>");
 		}
 		else{
 			$lig_tmp=mysql_fetch_object($res_tmp);
@@ -145,7 +145,7 @@ global $prefix_base ;
 			$eleve_ereno=$lig_tmp->ereno;
 			$eleve_id_classe=$lig_tmp->id_classe;	
 
-			// A quoi servent les données ci-dessous? Je n'ai pas vu dans les pages appelant liste.inc.php
+			// A quoi servent les donnÃ©es ci-dessous? Je n'ai pas vu dans les pages appelant liste.inc.php
 			$sql="SELECT doublant,regime FROM j_eleves_regime WHERE login='$eleve_login';";
 			$res_regime=mysql_query($sql);
 			if(mysql_num_rows($res_regime)==0) {
@@ -169,7 +169,7 @@ global $prefix_base ;
 		$donnees_eleves[$cpt_i]['doublant'] = $eleve_doublant;
 		$donnees_eleves[$cpt_i]['regime'] = $eleve_regime;
 		$donnees_eleves[$cpt_i]['id_classe'] = $eleve_id_classe; 
-		$donnees_eleves[$cpt_i]['id_periode'] = $id_periode; // ID de la période traitée
+		$donnees_eleves[$cpt_i]['id_periode'] = $id_periode; // ID de la pÃ©riode traitÃ©e
 				
 		$ident_eleve_sel1=$donnees_eleves[$cpt_i]['login'];
 		

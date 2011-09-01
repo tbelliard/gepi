@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 }
-// Modif Eric : Table s_alerte_mail ‡ modifier : ajout champs
+// Modif Eric : Table s_alerte_mail √† modifier : ajout champs
 // ALTER TABLE `s_alerte_mail` ADD `adresse` VARCHAR( 250 ) NULL 
 //INSERT INTO droits VALUES ('/mod_discipline/destinataires_alertes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Parametrage des destinataires de mail d alerte', '');
 if (!checkAccess()) {
@@ -42,8 +42,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accÈder au module Discipline qui est dÈsactivÈ !");
-	tentative_intrusion(1, "Tentative d'accËs au module Discipline qui est dÈsactivÈ.");
+	$mess=rawurlencode("Vous tentez d acc√©der au module Discipline qui est d√©sactiv√© !");
+	tentative_intrusion(1, "Tentative d'acc√®s au module Discipline qui est d√©sactiv√©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -80,7 +80,7 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 						$notok = true;
 					}
 				}
-				// Sinon: l'enregistrement est dÈj‡ prÈsent.
+				// Sinon: l'enregistrement est d√©j√† pr√©sent.
 			}
 			else{
 				$test=mysql_query("SELECT 1=1 FROM s_alerte_mail WHERE id_classe='".$tab_id_clas[$j]."' AND destinataire='".$tab_statut[$i]."'");
@@ -98,27 +98,27 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 
 
 	if ($notok == true) {
-		$msg .= "Il y a eu des erreurs lors de l'enregistrement des donnÈes";
+		$msg .= "Il y a eu des erreurs lors de l'enregistrement des donn√©es";
 	} else {
-		$msg .= "L'enregistrement des donnÈes s'est bien passÈ.";
+		$msg .= "L'enregistrement des donn√©es s'est bien pass√©.";
 	}
 }
 
 
-$themessage  = 'Des informations ont ÈtÈ modifiÈes. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont √©t√© modifi√©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Destinataires des alertes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 //debug_var();
-// Cette page a ÈtÈ ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
-// AprËs modification Èventuelle, il faut quitter cette page.
+// Cette page a √©t√© ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
+// Apr√®s modification √©ventuelle, il faut quitter cette page.
 echo "<p class='bold'>";
 echo "<a href='index.php' onClick=\"if(confirm_abandon (this, change, '$themessage')){self.close()};return false;\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 ?>
 
-<p>Choisissez les destinataires des mails d'alerte pour des incidents dont des ÈlËves sont protagonistes.</p>
+<p>Choisissez les destinataires des mails d'alerte pour des incidents dont des √©l√®ves sont protagonistes.</p>
 <?php
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
@@ -136,7 +136,7 @@ echo "</p>\n";
 	//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>Comptes</td>\n";
 	$ligne_statuts.="<th style='text-align:center; font-weight:bold;'>Statuts</th>\n";
 	$ligne_statuts.="<th>CPE</th>\n";
-	$ligne_statuts.="<th>ScolaritÈ<br />responsable<br />de la classe</th>\n";
+	$ligne_statuts.="<th>Scolarit√©<br />responsable<br />de la classe</th>\n";
 	$gepi_prof_suivi=ucfirst(getSettingValue("gepi_prof_suivi"));
 	$ligne_statuts.="<th>".$gepi_prof_suivi."</th>\n";
 	$ligne_statuts.="<th>Professeurs<br />de la classe</th>\n";
@@ -154,7 +154,7 @@ echo "</p>\n";
 		echo "<th style='text-align:center;'>\n";
 
 		echo "<a href=\"javascript:modif_case($i,true,'col');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-		echo "<a href=\"javascript:modif_case($i,false,'col');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>\n";
+		echo "<a href=\"javascript:modif_case($i,false,'col');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>\n";
 
 		echo "<input type='hidden' name='tab_statut[$i]' value='$tab_statut[$i]' />";
 		//echo "</td>\n";
@@ -210,8 +210,8 @@ echo "</p>\n";
 			}
 			echo "<td>\n";
 			echo "<a href=\"javascript:modif_case($j,true,'lig');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>\n";
-			echo "<a href=\"javascript:modif_case($j,false,'lig');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>\n";
+			//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>\n";
+			echo "<a href=\"javascript:modif_case($j,false,'lig');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 			$j++;
@@ -222,7 +222,7 @@ echo "</p>\n";
 		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 	} else {
 		echo "</table>\n";
-		echo "<p class='grand'><b>Attention :</b> aucune classe n'a ÈtÈ dÈfinie dans la base GEPI !</p>\n";
+		echo "<p class='grand'><b>Attention :</b> aucune classe n'a √©t√© d√©finie dans la base GEPI !</p>\n";
 	}
 
 
@@ -234,7 +234,7 @@ echo "</p>\n";
 	// AJOUT: boireaus
 	echo "<script type='text/javascript' language='javascript'>
 		function modif_case(id,statut,mode){
-			// id: numÈro de:
+			// id: num√©ro de:
 			//					. colonne correspondant au login
 			//					. ligne
 			// statut: true ou false

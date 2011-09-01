@@ -15,7 +15,7 @@ class EdtCreneauHelper {
    * Affiche l'heure d'un creneau sous la forme hh:mm
    *
    * @param creneau $creneau
-   * @return array heure francaise avec les cles "debut" et "fin", Rencoi null si aucun creneau trouvé
+   * @return array heure francaise avec les cles "debut" et "fin", Rencoi null si aucun creneau trouvÃ©
    */
 	public static function AfficherHeureFrancaiseCreneau($creneau){
 		$heure_deb_ts = $creneau->getDebutCreneau();
@@ -28,7 +28,7 @@ class EdtCreneauHelper {
 
 
   /**
-   * Méthode qui permet de vérifier si les horaires saisis par l'utilisateur sont corrects ou pas
+   * MÃ©thode qui permet de vÃ©rifier si les horaires saisis par l'utilisateur sont corrects ou pas
    *
    * @param string $info
    * @return boolean false/true
@@ -61,7 +61,7 @@ class EdtCreneauHelper {
 
     $aff_creneaux = '<table><tr>';
     foreach ($tab_creneaux as $creneaux){
-      // S'il s'agit d'un créneau de cours, on l'affiche
+      // S'il s'agit d'un crÃ©neau de cours, on l'affiche
       if ($creneaux->getTypeCreneau() == 'cours'){
         $aff_creneaux .= '
                     <td style="color: '.$_color.'; font-weight: bold; background-color: '.$_background.';">' . $creneaux->getNomCreneau() . '</td>';

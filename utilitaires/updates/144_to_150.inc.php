@@ -1,6 +1,6 @@
 <?php
 /**
- * Mise à jour des bases vers la version 1.5.0
+ * Mise Ã  jour des bases vers la version 1.5.0
  * 
  * $Id: maj.php 7839 2011-08-20 08:17:28Z dblanqui $
  *
@@ -12,7 +12,7 @@
  * @see msj_erreur()
  * @see msj_present()
  */
-		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.0" . $rc . $beta . " :</h3>";
+		$result .= "<h3 class='titreMaJ'>Mise Ã  jour vers la version 1.5.0" . $rc . $beta . " :</h3>";
 		$result .= "<p>";
 		$result .= "&nbsp;->Extension de la taille du champ NAME de la table 'setting'<br />";
 		$query28 = mysql_query("ALTER TABLE setting CHANGE NAME NAME VARCHAR( 255 ) NOT NULL");
@@ -22,7 +22,7 @@
 			$result .= msj_erreur();
 		}
 
-		$result .= "&nbsp;->Ajout du champ responsable à la table droits<br />";
+		$result .= "&nbsp;->Ajout du champ responsable Ã  la table droits<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `droits` ADD `responsable` varchar(1) NOT NULL DEFAULT 'F' AFTER `eleve`");
@@ -33,14 +33,14 @@
 					$exec = traite_requete($value);
 				}
 			} else {
-				$result .= msj_erreur('(le champ existe déjà ?)');
+				$result .= msj_erreur('(le champ existe dÃ©jÃ  ?)');
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
 
-		$result .= "&nbsp;->Ajout du champ 'email' à la table 'eleves'<br />";
+		$result .= "&nbsp;->Ajout du champ 'email' Ã  la table 'eleves'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'email'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `eleves` ADD `email` varchar(255) NOT NULL");
@@ -50,10 +50,10 @@
 				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les accès élèves et parents<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) de paramÃ¨tres par dÃ©faut pour les accÃ¨s Ã©lÃ¨ves et parents<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveEleve'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -82,7 +82,7 @@
 		$result_inter = '';
 
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramètre autorisant l'utilisation de l'outil de récupération de mot de passe<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du paramÃ¨tre autorisant l'utilisation de l'outil de rÃ©cupÃ©ration de mot de passe<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'enable_password_recovery'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -96,7 +96,7 @@
 		$result_inter = '';
 
 
-		$result .= "&nbsp;->Ajout du champ password_ticket à la table utilisateurs<br />";
+		$result .= "&nbsp;->Ajout du champ password_ticket Ã  la table utilisateurs<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'password_ticket'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `password_ticket` varchar(255) NOT NULL AFTER `date_verrouillage`");
@@ -106,10 +106,10 @@
 				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Ajout du champ ticket_expiration à la table utilisateurs<br />";
+		$result .= "&nbsp;->Ajout du champ ticket_expiration Ã  la table utilisateurs<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'ticket_expiration'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `ticket_expiration` datetime NOT NULL AFTER `password_ticket`");
@@ -119,10 +119,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès à la fonction de réinitialisation du mot de passe perdu<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) de paramÃ¨tres par dÃ©faut pour les droits d'accÃ¨s Ã  la fonction de rÃ©initialisation du mot de passe perdu<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitProf'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -161,7 +161,7 @@
 		}
 		$result_inter = '';
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramètre autorisant l'accès public aux cahiers de texte<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du paramÃ¨tre autorisant l'accÃ¨s public aux cahiers de texte<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'cahier_texte_acces_public'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -174,7 +174,7 @@
 		}
 		$result_inter = '';
 
-		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès à l'équipe pédagogique d'un élève<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) de paramÃ¨tres par dÃ©faut pour les droits d'accÃ¨s Ã  l'Ã©quipe pÃ©dagogique d'un Ã©lÃ¨ve<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaEleve'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -212,7 +212,7 @@
 		}
 		$result_inter = '';
 
-		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux bulletins simplifiés et relevés de notes<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) de paramÃ¨tres par dÃ©faut pour les droits d'accÃ¨s aux bulletins simplifiÃ©s et relevÃ©s de notes<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleEleve'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -250,7 +250,7 @@
 		}
 		$result_inter = '';
 
-		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux moyennes par les professeurs<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) de paramÃ¨tres par dÃ©faut pour les droits d'accÃ¨s aux moyennes par les professeurs<br/>";
 
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesMoyennesProf'");
 		$res_test = mysql_num_rows($req_test);
@@ -274,7 +274,7 @@
 		}
 		$result_inter = '';
 
-		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux graphiques de visualisation (eleves et responsables)<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) de paramÃ¨tres par dÃ©faut pour les droits d'accÃ¨s aux graphiques de visualisation (eleves et responsables)<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesGraphEleve'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -292,7 +292,7 @@
 		}
 		$result_inter = '';
 
-		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les fiches d'information destinée aux nouveaux utilisateurs<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) de paramÃ¨tres par dÃ©faut pour les fiches d'information destinÃ©e aux nouveaux utilisateurs<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionParent'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -325,7 +325,7 @@
 		}
 		$result_inter = '';
 
-		$result .= "&nbsp;->Ajout du champ show_email à la table utilisateurs<br />";
+		$result .= "&nbsp;->Ajout du champ show_email Ã  la table utilisateurs<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'show_email'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `show_email` varchar(3) NOT NULL DEFAULT 'no' AFTER `email`");
@@ -335,10 +335,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Ajout du champ ele_id à la table eleves<br />";
+		$result .= "&nbsp;->Ajout du champ ele_id Ã  la table eleves<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'ele_id'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `eleves` ADD `ele_id` varchar(10) NOT NULL DEFAULT '' AFTER `ereno`");
@@ -348,14 +348,14 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_categ_font_size_avis'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
 			$query = mysql_query("INSERT INTO setting VALUES ('bull_categ_font_size_avis', '10');");
-			$result .= "Initialisation du paramètre bull_categ_font_size_avis à '10': ";
+			$result .= "Initialisation du paramÃ¨tre bull_categ_font_size_avis Ã  '10': ";
 			if($query){
 				$result .= msj_ok();
 			}
@@ -368,7 +368,7 @@
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
 			$query = mysql_query("INSERT INTO setting VALUES ('bull_police_avis', 'Times New Roman');");
-			$result .= "Initialisation du paramètre bull_police_avis à 'Times New Roman': ";
+			$result .= "Initialisation du paramÃ¨tre bull_police_avis Ã  'Times New Roman': ";
 			if($query){
 				$result .= msj_ok();
 			}
@@ -381,7 +381,7 @@
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
 			$query = mysql_query("INSERT INTO setting VALUES ('bull_font_style_avis', 'Normal');");
-			$result .= "Initialisation du paramètre bull_font_style_avis à Normal: ";
+			$result .= "Initialisation du paramÃ¨tre bull_font_style_avis Ã  Normal: ";
 			if($query){
 				$result .= msj_ok();
 			}
@@ -391,7 +391,7 @@
 		}
 
 
-		$result .= "&nbsp;->Création de la table responsables2<br />";
+		$result .= "&nbsp;->CrÃ©ation de la table responsables2<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'responsables2'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE IF NOT EXISTS `responsables2` (
@@ -406,10 +406,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe déjà');
+			$result .= msj_present('La table existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Création de la table resp_pers<br />";
+		$result .= "&nbsp;->CrÃ©ation de la table resp_pers<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'resp_pers'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE IF NOT EXISTS `resp_pers` (
@@ -431,10 +431,10 @@ PRIMARY KEY  (`pers_id`)
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe déjà');
+			$result .= msj_present('La table existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Création de la table resp_adr<br />";
+		$result .= "&nbsp;->CrÃ©ation de la table resp_adr<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'resp_adr'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE IF NOT EXISTS `resp_adr` (
@@ -454,11 +454,11 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe déjà');
+			$result .= msj_present('La table existe dÃ©jÃ ');
 		}
 
 
-		$result .= "&nbsp;->Passage de 10 caractères à 255 caractères des champs tel_pers, tel_port et tel_prof de la table resp_pers.<br />";
+		$result .= "&nbsp;->Passage de 10 caractÃ¨res Ã  255 caractÃ¨res des champs tel_pers, tel_port et tel_prof de la table resp_pers.<br />";
 		$alter1 = mysql_query("ALTER TABLE `resp_pers` CHANGE `tel_pers` `tel_pers` VARCHAR( 255 )");
 		$result .= "tel_pers: ";
 		if ($alter1) {
@@ -482,8 +482,8 @@ PRIMARY KEY  (`adr_id`)
 		}
 
 
-		// affectation des modèles de bulletin  PDF aux classes
-		$result .= "&nbsp;->Ajout du champs `modele_bulletin_pdf` à la table `classes`.<br />";
+		// affectation des modÃ¨les de bulletin  PDF aux classes
+		$result .= "&nbsp;->Ajout du champs `modele_bulletin_pdf` Ã  la table `classes`.<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'modele_bulletin_pdf'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `classes` ADD `modele_bulletin_pdf` VARCHAR( 255 ) NULL AFTER `display_moy_gen`");
@@ -493,7 +493,7 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
 
@@ -501,7 +501,7 @@ PRIMARY KEY  (`adr_id`)
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
 			$query = mysql_query("INSERT INTO `setting` VALUES ('option_modele_bulletin', '2');;");
-			$result .= "Initialisation du paramètre option_modele_bulletin à '2': ";
+			$result .= "Initialisation du paramÃ¨tre option_modele_bulletin Ã  '2': ";
 			if($query){
 				$result .= msj_ok();
 			}
@@ -510,7 +510,7 @@ PRIMARY KEY  (`adr_id`)
 			}
 		}
 
-		$result .= "&nbsp;->Création de la table tentatives_intrusion<br />";
+		$result .= "&nbsp;->CrÃ©ation de la table tentatives_intrusion<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'tentatives_intrusion'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `tentatives_intrusion` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `login` VARCHAR( 255 ) NULL , `adresse_ip` VARCHAR( 255 ) NOT NULL , `date` DATETIME NOT NULL , `niveau` SMALLINT NOT NULL , `fichier` VARCHAR( 255 ) NOT NULL , `description` TEXT NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , PRIMARY KEY ( `id`, `login` ))");
@@ -520,10 +520,10 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe déjà');
+			$result .= msj_present('La table existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Ajout du champs `niveau_alerte` à la table `utilisateurs`.<br />";
+		$result .= "&nbsp;->Ajout du champs `niveau_alerte` Ã  la table `utilisateurs`.<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'niveau_alerte'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `niveau_alerte` SMALLINT NOT NULL DEFAULT '0'");
@@ -533,10 +533,10 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Ajout du champs `observation_securite` à la table `utilisateurs`.<br />";
+		$result .= "&nbsp;->Ajout du champs `observation_securite` Ã  la table `utilisateurs`.<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'observation_securite'"));
 		if ($test1 == 0) {
 			$query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `observation_securite` TINYINT NOT NULL DEFAULT '0'");
@@ -546,10 +546,10 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur('!');
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour la définition de la politique de sécurité<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) de paramÃ¨tres par dÃ©faut pour la dÃ©finition de la politique de sÃ©curitÃ©<br/>";
 
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert_email_admin'");
 		$res_test = mysql_num_rows($req_test);
@@ -628,7 +628,7 @@ PRIMARY KEY  (`adr_id`)
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('deverouillage_auto_periode_suivante', 'n');");
 
 		// Ajout Mod_absences
-		$result .= "&nbsp;->Création de la table vs_alerts_eleves<br />";
+		$result .= "&nbsp;->CrÃ©ation de la table vs_alerts_eleves<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'vs_alerts_eleves'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `vs_alerts_eleves` (
@@ -649,10 +649,10 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe déjà');
+			$result .= msj_present('La table existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Création de la table vs_alerts_groupes<br />";
+		$result .= "&nbsp;->CrÃ©ation de la table vs_alerts_groupes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'vs_alerts_groupes'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `vs_alerts_groupes` (
@@ -667,10 +667,10 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe déjà');
+			$result .= msj_present('La table existe dÃ©jÃ ');
 		}
 
-		$result .= "&nbsp;->Création de la table vs_alerts_types<br />";
+		$result .= "&nbsp;->CrÃ©ation de la table vs_alerts_types<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'vs_alerts_types'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `vs_alerts_types` (
@@ -689,7 +689,7 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe déjà');
+			$result .= msj_present('La table existe dÃ©jÃ ');
 		}
 		// Fin Ajout Mod_absences
 
@@ -701,7 +701,7 @@ PRIMARY KEY  (`adr_id`)
 		}
 		$result_inter = '';
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramètre sélectionnant la feuille de style à utiliser<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du paramÃ¨tre sÃ©lectionnant la feuille de style Ã  utiliser<br/>";
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'gepi_stylesheet'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0)
@@ -715,7 +715,7 @@ PRIMARY KEY  (`adr_id`)
 		$result_inter = '';
 
 
-		$result .= "&nbsp;->Ajout du champ temp_dir à la table utilisateurs<br />";
+		$result .= "&nbsp;->Ajout du champ temp_dir Ã  la table utilisateurs<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'temp_dir'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `utilisateurs` ADD `temp_dir` VARCHAR( 255 ) NOT NULL AFTER `observation_securite`");
@@ -725,7 +725,7 @@ PRIMARY KEY  (`adr_id`)
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe déjà');
+			$result .= msj_present('Le champ existe dÃ©jÃ ');
 		}
         
         $result .= "</p>";

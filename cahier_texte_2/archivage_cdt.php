@@ -21,7 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -60,9 +60,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 $step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
@@ -102,15 +102,15 @@ echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Ret
 if($dossier_etab=="") {
 	echo "</p>\n";
 
-	echo "<p style='color:red'>Le dossier d'archivage de l'établissement n'a pas pu être identifié.</p>\n";
+	echo "<p style='color:red'>Le dossier d'archivage de l'Ã©tablissement n'a pas pu Ãªtre identifiÃ©.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
 
-// Création d'un espace entre le bandeau et le reste 
+// CrÃ©ation d'un espace entre le bandeau et le reste 
 //echo "<p></p>\n";
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
 	echo "</p>\n";
 
@@ -119,22 +119,22 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die();
 }
 
-echo " | <a href='../documents/archives/index.php'>Années archivées</a>";
+echo " | <a href='../documents/archives/index.php'>AnnÃ©es archivÃ©es</a>";
 
 echo "</p>\n";
 
 if(!isset($step)) {
 
-	// A FAIRE: Si multisite, ne pas permettre d'aller plus loin si le RNE n'est pas renseigné? ou utiliser le RNE récupéré de... la session?
+	// A FAIRE: Si multisite, ne pas permettre d'aller plus loin si le RNE n'est pas renseignÃ©? ou utiliser le RNE rÃ©cupÃ©rÃ© de... la session?
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	echo "<p>Vous allez archiver les cahiers de textes.</p>\n";
 
 	$annee=preg_replace('/[^0-9a-zA-Z_-]/','_',getSettingValue('gepiYear'));
-	echo "<p>Année&nbsp;: <input type='text' name='annee' value='$annee' /><br />(<i>les caractères autorisés sont les chiffres (de 0 à 9), les lettres non accentuées et les tirets (- et _)</i>)</p>\n";
+	echo "<p>AnnÃ©e&nbsp;: <input type='text' name='annee' value='$annee' /><br />(<i>les caractÃ¨res autorisÃ©s sont les chiffres (de 0 Ã  9), les lettres non accentuÃ©es et les tirets (- et _)</i>)</p>\n";
 	echo "<p>\n";
-	echo "<input type='radio' id='mode_transfert' name='mode' value='transfert' /><label for='mode_transfert'> archiver les cahiers de textes et <b>supprimer les documents joints</b> après transfert</label><br />\n";
-	echo "<input type='radio' id='mode_copie' name='mode' value='copie' checked /><label for='mode_copie'> archiver les cahiers de textes, <b>sans supprimer les documents joints</b> après archivage</label>.</p>\n";
+	echo "<input type='radio' id='mode_transfert' name='mode' value='transfert' /><label for='mode_transfert'> archiver les cahiers de textes et <b>supprimer les documents joints</b> aprÃ¨s transfert</label><br />\n";
+	echo "<input type='radio' id='mode_copie' name='mode' value='copie' checked /><label for='mode_copie'> archiver les cahiers de textes, <b>sans supprimer les documents joints</b> aprÃ¨s archivage</label>.</p>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='step' value='1' />\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -143,11 +143,11 @@ if(!isset($step)) {
 	echo "<p><br /></p>\n";
 	echo "<p><em>NOTES&nbsp;:</em></p>\n";
 	echo "<ul>\n";
-	echo "<li><p>La procédure d'archivage est normalement utilisée en fin d'année.</p></li>\n";
-	echo "<li><p>Lors de l'archivage, les cahiers de textes sont parcourus pour mettre en place une arborescence copie de l'arborescence des cahiers de textes.<br />La procédure ne vide pas les tables des cahiers de textes.</p></li>\n";
-	echo "<li><p>Si vous souhaitez tester la procédure d'archivage, vous pouvez, à n'importe quel moment de l'année, effectuer un archivage sans transfert des documents joints.<br />Une arborescence copie sera mise en place.<br />Vous pourrez la consulter... et la supprimer si vous le souhaitez sans impact sur les cahiers de textes en cours d'utilisation.<br />En revanche, si vous cochez Transfert, les documents joints aux cahiers de textes seront déplacés.<br />Un professeur qui consulterait son cahier de textes de l'année courante, trouverait ses comptes-rendus, mais les documents joints ne seraient plus disponibles.</p></li>\n";
-	echo "<li><p>En fin d'année, il est recommandé d'effectuer un archivage avec transfert des documents pour ne pas laisser de scories pour les enseignements des années suivantes (<em>et éviter d'encombrer l'arborescence du serveur de fichiers inutiles</em>).</p><p>Une fois l'archivage de fin d'année effectué, vous pourrez vider les tables des cahiers de textes dans <a href='../utilitaires/clean_tables.php'>Gestion générale/Nettoyage des tables</a><br />(<em>ce nettoyage 'manuel' des tables n'est pas indispensable; il est effectué automatiquement lors de l'initialisation de l'année si vous ne faites pas une initialisation tout à la main</em>)</p></li>\n";
-	echo "<li><p>Dans les archives de CDT, les professeurs ne pourront consulter que leurs propres cahiers de textes.br />Les comptes de statut 'administrateur', 'scolarite' auront accès à toutes les archives de cahiers de textes.<br />Les autres statuts n'y auront aucun accès.</p></li>\n";
+	echo "<li><p>La procÃ©dure d'archivage est normalement utilisÃ©e en fin d'annÃ©e.</p></li>\n";
+	echo "<li><p>Lors de l'archivage, les cahiers de textes sont parcourus pour mettre en place une arborescence copie de l'arborescence des cahiers de textes.<br />La procÃ©dure ne vide pas les tables des cahiers de textes.</p></li>\n";
+	echo "<li><p>Si vous souhaitez tester la procÃ©dure d'archivage, vous pouvez, Ã  n'importe quel moment de l'annÃ©e, effectuer un archivage sans transfert des documents joints.<br />Une arborescence copie sera mise en place.<br />Vous pourrez la consulter... et la supprimer si vous le souhaitez sans impact sur les cahiers de textes en cours d'utilisation.<br />En revanche, si vous cochez Transfert, les documents joints aux cahiers de textes seront dÃ©placÃ©s.<br />Un professeur qui consulterait son cahier de textes de l'annÃ©e courante, trouverait ses comptes-rendus, mais les documents joints ne seraient plus disponibles.</p></li>\n";
+	echo "<li><p>En fin d'annÃ©e, il est recommandÃ© d'effectuer un archivage avec transfert des documents pour ne pas laisser de scories pour les enseignements des annÃ©es suivantes (<em>et Ã©viter d'encombrer l'arborescence du serveur de fichiers inutiles</em>).</p><p>Une fois l'archivage de fin d'annÃ©e effectuÃ©, vous pourrez vider les tables des cahiers de textes dans <a href='../utilitaires/clean_tables.php'>Gestion gÃ©nÃ©rale/Nettoyage des tables</a><br />(<em>ce nettoyage 'manuel' des tables n'est pas indispensable; il est effectuÃ© automatiquement lors de l'initialisation de l'annÃ©e si vous ne faites pas une initialisation tout Ã  la main</em>)</p></li>\n";
+	echo "<li><p>Dans les archives de CDT, les professeurs ne pourront consulter que leurs propres cahiers de textes.br />Les comptes de statut 'administrateur', 'scolarite' auront accÃ¨s Ã  toutes les archives de cahiers de textes.<br />Les autres statuts n'y auront aucun accÃ¨s.</p></li>\n";
 	echo "</ul>\n";
 }
 else {
@@ -159,7 +159,7 @@ else {
 	$annee=preg_replace('/[^0-9a-zA-Z_-]/','',$annee);
 
 	if($annee=="") {
-		echo "<p style='color:red'>Le nom d'année fourni '$annee_ini' n'est pas valable.</p>\n";
+		echo "<p style='color:red'>Le nom d'annÃ©e fourni '$annee_ini' n'est pas valable.</p>\n";
 		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -167,9 +167,9 @@ else {
 
 	// Stocker date archivage strftime("%Y%m%d_%H%M%S")
 
-	// Sécurité:
+	// SÃ©curitÃ©:
 	if(($dossier_etab=='index.php')||($dossier_etab=='entete.php')) {
-		echo "<p style='color:red'>Le nom de dossier établissement '$dossier_etab' n'est pas valable.</p>\n";
+		echo "<p style='color:red'>Le nom de dossier Ã©tablissement '$dossier_etab' n'est pas valable.</p>\n";
 		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -185,18 +185,18 @@ else {
 		$sql="TRUNCATE TABLE tempo2;";
 		$res=mysql_query($sql);
 		if(!$res) {
-			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors du nettoyage de la table 'tempo2'.</p>\n";
+			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problÃ¨me lors du nettoyage de la table 'tempo2'.</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 
 		//$sql="INSERT INTO tempo2 SELECT id,name FROM groupes;";
-		// On ne retient que les groupes associés à des classes... les autres sont des scories qui devraient être supprimées par un Nettoyage de la base
+		// On ne retient que les groupes associÃ©s Ã  des classes... les autres sont des scories qui devraient Ãªtre supprimÃ©es par un Nettoyage de la base
 		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes WHERE id IN (SELECT DISTINCT id_groupe FROM j_groupes_classes);";
 		$res=mysql_query($sql);
 		if(!$res) {
-			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors de l'insertion de la liste des groupes dans la table 'tempo2'.</p>\n";
+			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problÃ¨me lors de l'insertion de la liste des groupes dans la table 'tempo2'.</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -206,7 +206,7 @@ else {
 		$sql="CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '');";
 		$res=mysql_query($sql);
 		if(!$res) {
-			echo "<p style='color:red'>ABANDON&nbsp;: Erreur lors de la création de la table temporaire 'tempo3_cdt'.</p>\n";
+			echo "<p style='color:red'>ABANDON&nbsp;: Erreur lors de la crÃ©ation de la table temporaire 'tempo3_cdt'.</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -215,7 +215,7 @@ else {
 		$sql="TRUNCATE TABLE tempo3_cdt;";
 		$res=mysql_query($sql);
 		if(!$res) {
-			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors du nettoyage de la table 'tempo3_cdt'.</p>\n";
+			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problÃ¨me lors du nettoyage de la table 'tempo3_cdt'.</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -224,7 +224,7 @@ else {
 		if(!file_exists("../documents/archives/")) {
 			$res=mkdir("../documents/archives/");
 			if(!$res) {
-				echo "<p style='color:red;'>Erreur lors de la préparation de l'arborescence ../documents/archives/</p>\n";
+				echo "<p style='color:red;'>Erreur lors de la prÃ©paration de l'arborescence ../documents/archives/</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -241,24 +241,24 @@ else {
 			$res=creer_index_logout("../documents/archives/".$dossier_etab);
 		}
 
-		// Page HTML à faire à ce niveau pour accéder aux différentes années...
-		// Stocker dans une table la liste des années archivées?
+		// Page HTML Ã  faire Ã  ce niveau pour accÃ©der aux diffÃ©rentes annÃ©es...
+		// Stocker dans une table la liste des annÃ©es archivÃ©es?
 
 		if(file_exists($dossier_annee)) {
 			if($confirmer_ecrasement!='y') {
-				echo "<p style='color:red;'>Le dossier $dossier_annee existe déjà.</p>\n";
+				echo "<p style='color:red;'>Le dossier $dossier_annee existe dÃ©jÃ .</p>\n";
 	
 				// CONFIRMER
-				echo "<p>Voulez-vous, malgré tout, procéder à nouveau à l'archivage des cahiers de textes?<br />Les pages archivées seront écrasées.<br />Vous devriez peut-être commencer par télécharger les pages actuellement archivées par précaution.</p>\n";
+				echo "<p>Voulez-vous, malgrÃ© tout, procÃ©der Ã  nouveau Ã  l'archivage des cahiers de textes?<br />Les pages archivÃ©es seront Ã©crasÃ©es.<br />Vous devriez peut-Ãªtre commencer par tÃ©lÃ©charger les pages actuellement archivÃ©es par prÃ©caution.</p>\n";
 	
-				echo "<p><a href='".$_SERVER['PHP_SELF']."?confirmer_ecrasement=y&amp;step=1&amp;mode=$mode&amp;annee=$annee".add_token_in_url()."'>Archiver à nouveau</a>.</p>";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."?confirmer_ecrasement=y&amp;step=1&amp;mode=$mode&amp;annee=$annee".add_token_in_url()."'>Archiver Ã  nouveau</a>.</p>";
 	
 				require("../lib/footer.inc.php");
 				die();
 			}
 
-			echo "<p style='font-weight: bold;'>Le dossier $dossier_annee existe déjà.</p>\n";
-			echo "<p>Les pages précédemment archivées seront écrasées.</p>\n";
+			echo "<p style='font-weight: bold;'>Le dossier $dossier_annee existe dÃ©jÃ .</p>\n";
+			echo "<p>Les pages prÃ©cÃ©demment archivÃ©es seront Ã©crasÃ©es.</p>\n";
 
 		}
 		else {
@@ -273,7 +273,7 @@ else {
 		if(!file_exists($dossier_cdt)) {
 			$res=mkdir($dossier_cdt);
 			if(!$res) {
-				echo "<p style='color:red;'>Erreur lors de la préparation de l'arborescence $dossier_cdt</p>\n";
+				echo "<p style='color:red;'>Erreur lors de la prÃ©paration de l'arborescence $dossier_cdt</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -281,7 +281,7 @@ else {
 		if(!file_exists($dossier_documents)) {
 			$res=mkdir($dossier_documents);
 			if(!$res) {
-				echo "<p style='color:red;'>Erreur lors de la préparation de l'arborescence $dossier_documents</p>\n";
+				echo "<p style='color:red;'>Erreur lors de la prÃ©paration de l'arborescence $dossier_documents</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -293,12 +293,12 @@ else {
 		}
 
 		// On copie les feuilles de style pour:
-		// 1. Se prémunir de modifications de styles dans des versions ultérieures de Gepi
-		// 2. Permettre d'avoir un code couleur variant par année par exemple
+		// 1. Se prÃ©munir de modifications de styles dans des versions ultÃ©rieures de Gepi
+		// 2. Permettre d'avoir un code couleur variant par annÃ©e par exemple
 		if(!file_exists($dossier_css)) {
 			$res=mkdir($dossier_css);
 			if(!$res) {
-				echo "<p style='color:red;'>Erreur lors de la préparation de l'arborescence $dossier_css</p>\n";
+				echo "<p style='color:red;'>Erreur lors de la prÃ©paration de l'arborescence $dossier_css</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -329,7 +329,7 @@ else {
 		}
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
-		echo "<p>Les préparatifs sont faits.<br />Passons à l'archivage proprement dit&nbsp;:\n";
+		echo "<p>Les prÃ©paratifs sont faits.<br />Passons Ã  l'archivage proprement dit&nbsp;:\n";
 		echo add_token_field();
 		echo "<input type='hidden' name='step' value='2' />\n";
 		echo "<input type='hidden' name='mode' value='$mode' />\n";
@@ -367,7 +367,7 @@ else {
 				$current_group=get_group($id_groupe);
 
 				// ====================================================
-				// Page de l'enseignement n°$id_groupe de l'archive CDT
+				// Page de l'enseignement nÂ°$id_groupe de l'archive CDT
 				// ====================================================
 
 				/*
@@ -409,7 +409,7 @@ else {
 				$html="";
 		
 				//=====================
-				// Le retour doit être différent pour un prof et pour les autres statuts
+				// Le retour doit Ãªtre diffÃ©rent pour un prof et pour les autres statuts
 				$html.='<?php
 if($_SESSION["statut"]=="professeur") {
 	echo "<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'cdt_".$_SESSION["login"].".'.$extension.'\'>Retour</a></div>\n";
@@ -511,7 +511,7 @@ else {
 				fclose($f);
 
 				foreach($current_group["classes"]["classes"] as $key => $value) {
-					// Pour ne créer les liens que pour les cahiers de textes non vides
+					// Pour ne crÃ©er les liens que pour les cahiers de textes non vides
 					if(count($tab_dates)>0) {
 						//$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".$value['classe']." (".$value['nom_complet'].")"."', matiere='$nom_complet_matiere', enseignement='$nom_enseignement', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
 						$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".addslashes($value['classe'])." (".addslashes($value['nom_complet']).")"."', matiere='".addslashes($nom_complet_matiere)."', enseignement='".addslashes($nom_enseignement)."', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
@@ -532,7 +532,7 @@ else {
 					echo "<p style='color:red'>ERREUR lors du nettoyage de 'tempo2'&nbsp;: $sql</p>\n";
 				}
 
-				// A FAIRE: Ajouter à une liste? pour construire par la suite les pages d'index?
+				// A FAIRE: Ajouter Ã  une liste? pour construire par la suite les pages d'index?
 
 			}
 
@@ -553,9 +553,9 @@ else {
 
 		}
 		else {
-			// Les pages des enseignements n°$id_groupe de l'archive CDT ont été générés à l'étape précedente
+			// Les pages des enseignements nÂ°$id_groupe de l'archive CDT ont Ã©tÃ© gÃ©nÃ©rÃ©s Ã  l'Ã©tape prÃ©cedente
 
-			echo "<p>L'archivage des enseignements est réalisé.<br />Les pages d'index vont maintenant être créées.</p>\n";
+			echo "<p>L'archivage des enseignements est rÃ©alisÃ©.<br />Les pages d'index vont maintenant Ãªtre crÃ©Ã©es.</p>\n";
 
 			// ============================
 			// Page racine de l'archive CDT
@@ -570,7 +570,7 @@ else {
 				$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 				$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
 				$html.="<br />\n";
-				$html.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+				$html.="(<i>Archivage effectuÃ© le ".strftime("%d/%m/%Y Ã  %H:%M:%S")."</i>)\n";
 				$html.="</p>\n";
 
 				$html.="<h2 style='text-align:center;'>Classes&nbsp;:</h2>\n";
@@ -609,7 +609,7 @@ else {
 					$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 					$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
 					$html.="<br />\n";
-					$html.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+					$html.="(<i>Archivage effectuÃ© le ".strftime("%d/%m/%Y Ã  %H:%M:%S")."</i>)\n";
 					$html.="</p>\n";
 	
 					$html.="<h2 style='text-align:center;'>Classe de $lig_class->classe&nbsp;:</h2>\n";
@@ -659,7 +659,7 @@ else {
 				$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 				$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
 				$html.="<br />\n";
-				$html.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+				$html.="(<i>Archivage effectuÃ© le ".strftime("%d/%m/%Y Ã  %H:%M:%S")."</i>)\n";
 				$html.="</p>\n";
 
 				$html.="<h2 style='text-align:center;'>Professeurs&nbsp;:</h2>\n";
@@ -672,7 +672,7 @@ else {
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)>0) {
 						// ================================================================================================
-						// Page index des enseignements du professeur courant ((essoufflé) dans la boucle) de l'archive CDT
+						// Page index des enseignements du professeur courant ((essoufflÃ©) dans la boucle) de l'archive CDT
 						// ================================================================================================
 						//$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index_professeurs.'.$extension.'\'>Retour</a></div>';
 						$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'';
@@ -686,7 +686,7 @@ else {
 						$html2.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 						$html2.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
 						$html2.="<br />\n";
-						$html2.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+						$html2.="(<i>Archivage effectuÃ© le ".strftime("%d/%m/%Y Ã  %H:%M:%S")."</i>)\n";
 						$html2.="</p>\n";
 		
 						$html2.="<h2 style='text-align:center;'>Professeur&nbsp;: $lig_prof->civilite ".strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</h2>\n";
@@ -745,13 +745,13 @@ else {
 			// ==========================================================
 			// Page de choix Index_classe ou Index_profs de l'archive CDT
 			// ==========================================================
-			// Faire en dessous une page qui parcourt les sous-dossiers d'années
+			// Faire en dessous une page qui parcourt les sous-dossiers d'annÃ©es
 			$html='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'../../../index.'.$extension.'\'>Retour</a></div>';
 
 			$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 			$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
 			$html.="<br />\n";
-			$html.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+			$html.="(<i>Archivage effectuÃ© le ".strftime("%d/%m/%Y Ã  %H:%M:%S")."</i>)\n";
 			$html.="</p>\n";
 
 			$html.="<div align='center'>\n";
@@ -767,17 +767,17 @@ else {
 			fwrite($f,$html);
 			fclose($f);
 
-			echo "<p>Terminé.<br />Les pages d'index ont maintenant été créées.</p>\n";
+			echo "<p>TerminÃ©.<br />Les pages d'index ont maintenant Ã©tÃ© crÃ©Ã©es.</p>\n";
 
 		}
 	}
 }
 echo "<p><br /></p>\n";
 
-// Evaluer le nom du dossier établissement selon le cas multisite ou non.<br />
-// Calculer l'année à archiver selon la date courante ou d'après le paramétrage 'gepiYear'... ou proposer de saisir un autre nom d'année.<br /><br />
+// Evaluer le nom du dossier Ã©tablissement selon le cas multisite ou non.<br />
+// Calculer l'annÃ©e Ã  archiver selon la date courante ou d'aprÃ¨s le paramÃ©trage 'gepiYear'... ou proposer de saisir un autre nom d'annÃ©e.<br /><br />
 //Ajouter les liens dans le cahier de textes des profs... et scol? cpe?<br /><br />
-echo "<p style='color:red'>A FAIRE: Ne pas proposer le lien vers les années archivées si aucune année n'est archivée pour l'utilisateur courant (variable selon qu'on est prof ou pas)</p>\n";
+echo "<p style='color:red'>A FAIRE: Ne pas proposer le lien vers les annÃ©es archivÃ©es si aucune annÃ©e n'est archivÃ©e pour l'utilisateur courant (variable selon qu'on est prof ou pas)</p>\n";
 
 require("../lib/footer.inc.php");
 die();

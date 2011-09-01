@@ -21,17 +21,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la notice. La sortie est utilisée dans un javascript
+//Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la notice. La sortie est utilisÃ©e dans un javascript
 
 header('Content-Type: text/html; charset=ISO-8859-1');
 
 $filtrage_extensions_fichiers_table_ct_types_documents='y';
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interfÃ©rer avec fckeditor
 $traite_anti_inject = 'no';
 
 require_once("../lib/initialisationsPropel.inc.php");
@@ -48,7 +48,7 @@ check_token();
 
 //debug_var();
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $date_devoir = isset($_POST["date_devoir"]) ? $_POST["date_devoir"] :(isset($_GET["date_devoir"]) ? $_GET["date_devoir"] :NULL);
 $contenu = isset($_POST["contenu"]) ? $_POST["contenu"] :NULL;
@@ -68,22 +68,22 @@ $doc_masque = isset($_POST["doc_masque"]) ? $_POST["doc_masque"] :(isset($_GET["
 $doc_name_modif = isset($_POST["doc_name_modif"]) ? $_POST["doc_name_modif"] :(isset($_GET["doc_name_modif"]) ? $_GET["doc_name_modif"] :NULL);
 $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GET["id_document"]) ? $_GET["id_document"] :NULL);
 
-// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
+// uid de pour ne pas refaire renvoyer plusieurs fois le mÃƒÂªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $_SESSION['uid_prime'] : 1;
 if ($uid_post==$uid_prime) {
-	echo("Erreur enregistrement de devoir : formulaire dejà  posté précédemment.");
+	echo("Erreur enregistrement de devoir : formulaire dejÃ Â  postÃ© prÃ©cÃ©demment.");
 	die();
 }
 $_SESSION['uid_prime'] = $uid_post;
 
-//récupération du compte rendu
+//rÃ©cupÃ©ration du compte rendu
 $ctTravailAFaire = CahierTexteTravailAFairePeer::retrieveByPK($id_devoir);
 if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
 
 	if ($groupe == null) {
-		echo("Erreur enregistrement de devoir : Pas de groupe associé au devoir");
+		echo("Erreur enregistrement de devoir : Pas de groupe associÃ© au devoir");
 		die;
 	}
 
@@ -93,27 +93,27 @@ if ($ctTravailAFaire != null) {
 	}
 }
 
-//si pas  du compte rendu trouvé, récupération du groupe dans la requete et création d'un nouvel objet CahierTexteCompteRendu
+//si pas  du compte rendu trouvÃ©, rÃ©cupÃ©ration du groupe dans la requete et crÃ©ation d'un nouvel objet CahierTexteCompteRendu
 if ($ctTravailAFaire == null) {
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Erreur enregistrement de devoir : pas de groupe ou mauvais groupe spécifié");
+		echo("Erreur enregistrement de devoir : pas de groupe ou mauvais groupe spÃ©cifiÃ©");
 		die;
 	}
 
-	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
 		echo "Erreur enregistrement de devoir : le groupe n'appartient pas au professeur";
 		die();
 	}
 
-	//pas de notices, on lance une création de notice
+	//pas de notices, on lance une crÃ©ation de notice
 	$ctTravailAFaire = new CahierTexteTravailAFaire();
 	$ctTravailAFaire->setIdGroupe($groupe->getId());
 	$ctTravailAFaire->setIdLogin($utilisateur->getLogin());
 }
 
-// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce devoir ?
+// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce devoir ?
 if ($ctTravailAFaire->getIdLogin() != $utilisateur->getLogin()) {
 	if(getSettingValue("cdt_autoriser_modif_multiprof")!="yes") {
 		echo("Erreur enregistrement de devoir : vous n'avez pas le droit de modifier cette notice.");
@@ -124,11 +124,11 @@ if ($ctTravailAFaire->getIdLogin() != $utilisateur->getLogin()) {
 
 // interdire la modification d'un visa par le prof si c'est un visa
 if ($ctTravailAFaire->getVise() == 'y') {
-	echo("Erreur enregistrement de devoir : Notice signée, edition impossible/");
+	echo("Erreur enregistrement de devoir : Notice signÃ©e, edition impossible/");
 	die();
 }
 
-//affectation des parametres de la requete à l'objet ctCompteRendu
+//affectation des parametres de la requete Ã  l'objet ctCompteRendu
 $contenu_cor = traitement_magic_quotes(corriger_caracteres($contenu),'');
 $contenu_cor = str_replace("\\r","",$contenu_cor);
 $contenu_cor = str_replace("\\n","",$contenu_cor);
@@ -152,10 +152,10 @@ $date_visibilite_mal_formatee="n";
 if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/",$heure_visibilite)) {
 	$heure_courante=strftime("%H:%M");
 	if((!isset($id_devoir))||($id_devoir=="")) {
-		echo "Erreur: Heure de visibilité mal formatée : $heure_visibilite.\nL'heure courante sera utilisée : $heure_courante";
+		echo "Erreur: Heure de visibilitÃ© mal formatÃ©e : $heure_visibilite.\nL'heure courante sera utilisÃ©e : $heure_courante";
 	}
 	else {
-		echo "Erreur: Heure de visibilité mal formatée : $heure_visibilite.\nLa date de visibilité ne sera pas modifiée (maintenue à ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").";
+		echo "Erreur: Heure de visibilitÃ© mal formatÃ©e : $heure_visibilite.\nLa date de visibilitÃ© ne sera pas modifiÃ©e (maintenue Ã  ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").";
 	}
 
 	$heure_visibilite=$heure_courante;
@@ -176,10 +176,10 @@ if(!preg_match( '`^\d{1,2}/\d{1,2}/\d{4}$`', $jour_visibilite)) {
 	*/
 
 	if((!isset($id_devoir))||($id_devoir=="")) {
-		echo "Erreur: Le jour de visibilité est mal formaté : $jour_visibilite.\nLe jour courant sera utilisé : $jour_courant";
+		echo "Erreur: Le jour de visibilitÃ© est mal formatÃ© : $jour_visibilite.\nLe jour courant sera utilisÃ© : $jour_courant";
 	}
 	else {
-		echo "Erreur: Le jour de visibilité est mal formaté : $jour_visibilite.\nLa date de visibilité ne sera pas modifiée (maintenue à ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").\n";
+		echo "Erreur: Le jour de visibilitÃ© est mal formatÃ© : $jour_visibilite.\nLa date de visibilitÃ© ne sera pas modifiÃ©e (maintenue Ã  ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").\n";
 	}
 
 	$jour_visibilite=$jour_courant;
@@ -217,7 +217,7 @@ if (!empty($doc_file['name'][0])) {
 		if(!empty($doc_file['tmp_name'][$index_doc])) {
 			$file_path = ajout_fichier($doc_file, $dest_dir, $index_doc, $id_groupe);
 			if ($file_path != null) {
-				//création de l'objet ctDocument
+				//crÃ©ation de l'objet ctDocument
 				$ctDocument = new CahierTexteTravailAFaireFichierJoint();
 				$ctDocument->setIdCtDevoir($ctTravailAFaire->getIdCt());
 				$ctDocument->setTaille($doc_file['size'][$index_doc]);
@@ -250,12 +250,12 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 	$documents = $ctTravailAFaire->getCahierTexteTravailAFaireFichierJoints($criteria);
 
 	if (empty($documents)) {
-		echo "Erreur enregistrement de devoir : document non trouvé.";
+		echo "Erreur enregistrement de devoir : document non trouvÃ©.";
 		die();
 	}
 	$document = $documents[0];
 	if ($document == null) {
-		echo "Erreur enregistrement de devoir :  document non trouvé.";
+		echo "Erreur enregistrement de devoir :  document non trouvÃ©.";
 		die();
 	}
 	$document->setTitre(corriger_caracteres($doc_name_modif));

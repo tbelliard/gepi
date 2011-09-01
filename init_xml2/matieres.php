@@ -22,7 +22,7 @@
 	}
 
 	//**************** EN-TETE *****************
-	$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+	$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
@@ -43,7 +43,7 @@
 	}
 
 	function affiche_debug($texte){
-		// Passer à 1 la variable pour générer l'affichage des infos de debug...
+		// Passer Ã  1 la variable pour gÃ©nÃ©rer l'affichage des infos de debug...
 		$debug=0;
 		if($debug==1){
 			echo "<font color='green'>".$texte."</font>";
@@ -64,10 +64,10 @@
 	$liste_tables_del = $liste_tables_del_etape_matieres;
 
 
-	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
+	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolaritÃ© pour les mÃ j Sconet)
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
-		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?</p>\n";
 		// Il ne faut pas aller plus loin...
 		// SITUATION A GERER
 	}
@@ -91,7 +91,7 @@
 		echo "<a href='".$_SERVER['PHP_SELF']."'> | Autre import</a></p>\n";
 		//echo "</div>\n";
 
-		echo "<p>Si des fichiers XML existent, ils seront supprimés...</p>\n";
+		echo "<p>Si des fichiers XML existent, ils seront supprimÃ©s...</p>\n";
 		//$tabfich=array("f_ele.csv","f_ere.csv");
 		$tabfich=array("sts.xml","nomenclature.xml");
 
@@ -99,10 +99,10 @@
 			if(file_exists("../temp/".$tempdir."/$tabfich[$i]")) {
 				echo "<p>Suppression de $tabfich[$i]... ";
 				if(unlink("../temp/".$tempdir."/$tabfich[$i]")){
-					echo "réussie.</p>\n";
+					echo "rÃ©ussie.</p>\n";
 				}
 				else{
-					echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+					echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 				}
 			}
 		}
@@ -112,11 +112,11 @@
 	}
 	// =======================================================
 	else{
-		echo "<center><h3 class='gepi'>Importation des matières</h3></center>\n";
-		//echo "<h2>Préparation des données élèves/classes/périodes/options</h2>\n";
+		echo "<center><h3 class='gepi'>Importation des matiÃ¨res</h3></center>\n";
+		//echo "<h2>PrÃ©paration des donnÃ©es Ã©lÃ¨ves/classes/pÃ©riodes/options</h2>\n";
 		echo "<p class=bold><a href='";
 		if(isset($_SESSION['ad_retour'])){
-			// On peut venir de l'index init_xml, de la page de conversion ou de la page de mise à jour Sconet
+			// On peut venir de l'index init_xml, de la page de conversion ou de la page de mise Ã  jour Sconet
 			echo $_SESSION['ad_retour'];
 		}
 		else{
@@ -155,16 +155,16 @@
 
 				if ($flag != 0){
 					echo "<p><b>ATTENTION ...</b><br />\n";
-					echo "Des données concernant les matières sont actuellement présentes dans la base GEPI<br /></p>\n";
-					echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>\n";
-					echo "<p>Seules la table contenant les matières et la table mettant en relation les matières et les professeurs seront conservées.</p>\n";
+					echo "Des donnÃ©es concernant les matiÃ¨res sont actuellement prÃ©sentes dans la base GEPI<br /></p>\n";
+					echo "<p>Si vous poursuivez la procÃ©dure les donnÃ©es telles que notes, apprÃ©ciations, ... seront effacÃ©es.</p>\n";
+					echo "<p>Seules la table contenant les matiÃ¨res et la table mettant en relation les matiÃ¨res et les professeurs seront conservÃ©es.</p>\n";
 
-					echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
+					echo "<p>Les tables vidÃ©es seront&nbsp;: $chaine_tables</p>\n";
 
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 					echo add_token_field();
 					echo "<input type=hidden name='verif_tables_non_vides' value='y' />\n";
-					echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
+					echo "<input type='submit' name='confirm' value='Poursuivre la procÃ©dure' />\n";
 					echo "</form>\n";
 					echo "</div>\n";
 					echo "</body>\n";
@@ -186,11 +186,11 @@
 				}
 			}
 
-			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération que si la constitution des classes a été effectuée !</p>\n";
+			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procÃ©der Ã  cette opÃ©ration que si la constitution des classes a Ã©tÃ© effectuÃ©e !</p>\n";
 
-			echo "<p>Cette page permet d'uploader un fichier qui servira à remplir les tables de GEPI avec les informations professeurs, matières,...</p>\n";
+			echo "<p>Cette page permet d'uploader un fichier qui servira Ã  remplir les tables de GEPI avec les informations professeurs, matiÃ¨res,...</p>\n";
 
-			echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
+			echo "<p>Il faut lui fournir un Export XML rÃ©alisÃ© depuis l'application STS-web.<br />Demandez gentiment Ã  votre secrÃ©taire d'accÃ©der Ã  STS-web et d'effectuer 'Mise Ã  jour/Exports/Emplois du temps'.</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo add_token_field();
@@ -218,9 +218,9 @@
 				$xml_file=isset($_FILES["xml_file"]) ? $_FILES["xml_file"] : NULL;
 
 				if(!is_uploaded_file($xml_file['tmp_name'])) {
-					echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+					echo "<p style='color:red;'>L'upload du fichier a Ã©chouÃ©.</p>\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "</p>\n";
@@ -232,9 +232,9 @@
 				}
 				else{
 					if(!file_exists($xml_file['tmp_name'])){
-						echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+						echo "<p style='color:red;'>Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.</p>\n";
 
-						echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+						echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 						echo "post_max_size=$post_max_size<br />\n";
 						echo "upload_max_filesize=$upload_max_filesize<br />\n";
 						echo "et le volume de ".$xml_file['name']." serait<br />\n";
@@ -246,7 +246,7 @@
 						die();
 					}
 
-					echo "<p>Le fichier a été uploadé.</p>\n";
+					echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 
 
 					//$source_file=stripslashes($xml_file['tmp_name']);
@@ -255,16 +255,16 @@
 					$res_copy=copy("$source_file" , "$dest_file");
 
 					if(!$res_copy){
-						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a Ã©chouÃ©.<br />VÃ©rifiez que l'utilisateur ou le groupe apache ou www-data a accÃ¨s au dossier temp/$tempdir</p>\n";
 						// Il ne faut pas aller plus loin...
 						// SITUATION A GERER
 						require("../lib/footer.inc.php");
 						die();
 					}
 					else{
-						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+						echo "<p>La copie du fichier vers le dossier temporaire a rÃ©ussi.</p>\n";
 
-						// Table destinée à stocker l'association code/code_gestion utilisée dans d'autres parties de l'initialisation
+						// Table destinÃ©e Ã  stocker l'association code/code_gestion utilisÃ©e dans d'autres parties de l'initialisation
 						$sql="CREATE TABLE IF NOT EXISTS temp_matieres_import (
 								code varchar(40) NOT NULL default '',
 								code_gestion varchar(40) NOT NULL default '',
@@ -288,7 +288,7 @@
 								$ligne[]=fgets($fp,4096);
 							}
 							fclose($fp);
-							//echo "<p>Terminé.</p>\n";
+							//echo "<p>TerminÃ©.</p>\n";
 						}
 						*/
 						flush();
@@ -302,7 +302,7 @@
 		
 						$nom_racine=$sts_xml->getName();
 						if(strtoupper($nom_racine)!='STS_EDT') {
-							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;.<br />Sa racine devrait être 'STS_EDT'.</p>\n";
+							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'Ãªtre un fichier XML STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;.<br />Sa racine devrait Ãªtre 'STS_EDT'.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -326,14 +326,14 @@
 								$matiere[$i][strtolower($key)]=trim(traite_utf8($value));
 							}
 				
-							// Champs de la matière
+							// Champs de la matiÃ¨re
 							foreach($objet_matiere->children() as $key => $value) {
 								if(in_array(strtoupper($key),$tab_champs_matiere)) {
 									if(strtoupper($key)=='CODE_GESTION') {
 										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
 									}
 									elseif(strtoupper($key)=='LIBELLE_COURT') {
-										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
+										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÃ†Ã¦Â¼Â½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
 									}
 									else {
 										$matiere[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim(preg_replace('/"/','',traite_utf8($value)))));
@@ -364,7 +364,7 @@
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "Erreur lors de la requÃªte $sql<br />\n";
 								flush();
 								$nb_err++;
 							}
@@ -377,11 +377,11 @@
 
 
 
-						echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier GEP mais déjà présents dans la base GEPI.<br /><br />Il est possible que certaines matières ci-dessous, bien que figurant dans le fichier CSV, ne soient pas utilisées dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialisation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
+						echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent Ã  des nouvelles matiÃ¨res dans la base GEPI. les identifiants en vert correspondent Ã  des identifiants de matiÃ¨res dÃ©tectÃ©s dans le fichier GEP mais dÃ©jÃ  prÃ©sents dans la base GEPI.<br /><br />Il est possible que certaines matiÃ¨res ci-dessous, bien que figurant dans le fichier CSV, ne soient pas utilisÃ©es dans votre Ã©tablissement cette annÃ©e. C'est pourquoi il vous sera proposÃ© en fin de procÃ©dure d'initialisation, un nettoyage de la base afin de supprimer ces donnÃ©es inutiles.</p>\n";
 
-						echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des matières'>\n";
+						echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des matiÃ¨res'>\n";
 
-						echo "<tr><th><p class=\"small\">Identifiant de la matière</p></th><th><p class=\"small\">Nom complet</p></th></tr>\n";
+						echo "<tr><th><p class=\"small\">Identifiant de la matiÃ¨re</p></th><th><p class=\"small\">Nom complet</p></th></tr>\n";
 
 						$i=0;
 						//$nb_err=0;
@@ -475,7 +475,7 @@
 								// Champs MEF
 								foreach($objet_mef->children() as $key => $value) {
 									if(in_array(strtoupper($key),$tab_champs_mef)) {
-										$mefs[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
+										$mefs[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÃ†Ã¦Â¼Â½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
 									}
 								}
 								$i++;
@@ -520,9 +520,9 @@
 
 
 						if ($nb_reg_no != 0) {
-							echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
+							echo "<p>Lors de l'enregistrement des donnÃ©es il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.";
 						} else {
-							echo "<p>L'importation des matières dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à la quatrième phase d'importation des professeurs.</p>";
+							echo "<p>L'importation des matiÃ¨res dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s !<br />Vous pouvez procÃ©der Ã  la quatriÃ¨me phase d'importation des professeurs.</p>";
 						}
 
 						//echo "<center><p><a href='prof_csv.php'>Importation des professeurs</a></p></center>";

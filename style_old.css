@@ -96,7 +96,7 @@ table.normal td {
 }
 
 /*==================================*/
-/* Styles généraux */
+/* Styles gÃ©nÃ©raux */
 
 
 p {
@@ -287,7 +287,7 @@ div#lien_cahier_texte {
 /*==================================*/
 
 /*
-    Début - header
+    DÃ©but - header
 */
 
 div#version_gepi {
@@ -647,7 +647,7 @@ img.link {
 
 /*=================================*/
 
-#table_header {
+#table_headerÂ {
 	/*color: white;*/
 	margin: 0;
 	padding: 0;
@@ -818,7 +818,7 @@ div.conteneur_infobulle_css:hover div.infobulle_css {
 }
 div.conteneur_infobulle_css div.infobulle_css:hover {display: inline;}
 /*=====================================================*/
-/* Affichage/masquage de span.details_saisie_abs lorsqu'un champ radio .abs_crob avec LABEL est coché */
+/* Affichage/masquage de span.details_saisie_abs lorsqu'un champ radio .abs_crob avec LABEL est cochÃ© */
 input[type=radio].abs_crob:checked + label {
 	font-weight: bold;
 }
@@ -858,7 +858,7 @@ div.info_abs {
 	margin-top: -3px;
 }
 
-/* ul ul pour ne masquer par défaut que les sous-menus */
+/* ul ul pour ne masquer par dÃ©faut que les sous-menus */
 #menu_barre ul ul {
 	border-right: #b0b0b0 1px solid; 
 	padding-right: 0px; 
@@ -907,7 +907,7 @@ div.info_abs {
 	/*background-color: #e0e0e0;*/
 }
 
-/* Pour éviter de déborder hors du DIV sur les LI horizontaux (niveau1) */
+/* Pour Ã©viter de dÃ©border hors du DIV sur les LI horizontaux (niveau1) */
 #menu_barre .niveau1 li {
 	padding-bottom: 0px;
 }

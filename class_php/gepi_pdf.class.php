@@ -5,7 +5,7 @@
  *
  * $Id$
  *
- * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Christian Chapel
  * @package General
  * @subpackage Impression
  */
@@ -272,7 +272,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 	function DiagBarre($X_placement, $Y_placement, $L_diagramme, $H_diagramme, $data, $place)
 	{
 		$this->SetFont('Courier', '', 10);
-		//encadrement général
+		//encadrement gÃ©nÃ©ral
 		$this->Rect($X_placement, $Y_placement, $L_diagramme, $H_diagramme, 'D');
 		//encadrement du diagramme
 		$this->SetDrawColor(180);
@@ -324,7 +324,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 	}
     
 /**
- * En-tête du document
+ * En-tÃªte du document
  */
 	function Header(){
 
@@ -334,8 +334,8 @@ class bul_PDF extends FPDF_MULTICELLTAG {
  * Pied de page du document
  */
 	function Footer() {
-		// On utilise la classe bul_PDF pour les bulletins et pour les relevés de notes et la formule de bas de page ne doit pas nécessairement être la même.
-		// Traitement du footer déplacé dans les pages concernées.
+		// On utilise la classe bul_PDF pour les bulletins et pour les relevÃ©s de notes et la formule de bas de page ne doit pas nÃ©cessairement Ãªtre la mÃªme.
+		// Traitement du footer dÃ©placÃ© dans les pages concernÃ©es.
 	}
 
 }

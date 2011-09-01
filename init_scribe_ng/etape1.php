@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard + auteur initial du script (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur initial du script (ac. OrlÃ©ans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -44,7 +44,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des élèves";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -71,23 +71,23 @@ if (isset($_POST['step'])) {
     $resp_erreurs_logins = array();
 
 
-    // Données à importer
+    // DonnÃ©es Ã  importer
     $nb_eleves=0;
     $nb_responsables=0;
     $nb_profs=0;
     $siren = 0;
-    // L'admin a validé la procédure, on procède donc...
+    // L'admin a validÃ© la procÃ©dure, on procÃ¨de donc...
 
     // On se connecte au LDAP
     $ldap->connect();
 
     //----***** STEP 1 *****-----//
     /*
-    * L'étape 1 consiste à
-     *  - récupérer le SIREN de l'établissement
+    * L'Ã©tape 1 consiste Ã 
+     *  - rÃ©cupÃ©rer le SIREN de l'Ã©tablissement
      *  - Recuperer tous les eleves pour ce RNE et les creer
-     *  - Recuperer les classes de chaque eleve pour avoir toutes les classes de l'établissement et les créer
-     * (l'association eleve-classe se fera à l'étape suivante)
+     *  - Recuperer les classes de chaque eleve pour avoir toutes les classes de l'Ã©tablissement et les crÃ©er
+     * (l'association eleve-classe se fera Ã  l'Ã©tape suivante)
     */
 
     if ($_POST['step'] == "1") {
@@ -103,24 +103,24 @@ if (isset($_POST['step'])) {
         $del = mysql_query("DELETE FROM utilisateurs WHERE statut = 'eleve'");
 
         /*
-         * Recherche de tous les profs de l'établissement
+         * Recherche de tous les profs de l'Ã©tablissement
          */
         $profs = $ldap->get_all_profs();
         $nb_profs = $profs['count'];
 
         /*
-         * Recherche de tous les eleves de l'établissement
+         * Recherche de tous les eleves de l'Ã©tablissement
          */
         $eleves = $ldap->get_all_eleves();
 
         // Le premier element (indice 'count') du tableau n'est pas un eleve mais le 'count' du nombre
-        // d'éléments présents.
+        // d'Ã©lÃ©ments prÃ©sents.
         $nb_eleves = $eleves['count'];
 
         // On parcours tous les eleves
         for($nb=0; $nb<$nb_eleves; $nb++) {
             /*
-             * On créé l'eleve en base (avec les classes ORM)
+             * On crÃ©Ã© l'eleve en base (avec les classes ORM)
              */
             $eleve = EleveQuery::create()
               ->filterByLogin($eleves[$nb][$ldap->champ_login][0])
@@ -142,40 +142,40 @@ if (isset($_POST['step'])) {
             $nouvel_eleve->setEreno('');
             
             $ele_id = (array_key_exists('intid', $eleves[$nb])) ? $eleves[$nb]['intid'][0] : false;
-            // L'ele_id est très important dans Gepi pour le lien eleve/responsable, mais dans Scribe il ne peut pas
-            // etre spécifié manuellement (seulement à l'import depuis Sconet). En conséquence, s'il est absent,
-            // on le remplace par le noet, en espérant qu'il n'y ait pas de conflit ! (en principe non)
+            // L'ele_id est trÃ¨s important dans Gepi pour le lien eleve/responsable, mais dans Scribe il ne peut pas
+            // etre spÃ©cifiÃ© manuellement (seulement Ã  l'import depuis Sconet). En consÃ©quence, s'il est absent,
+            // on le remplace par le noet, en espÃ©rant qu'il n'y ait pas de conflit ! (en principe non)
             if (!$ele_id and $ele_no_et != '') $ele_id = $ele_no_et;
             
             $nouvel_eleve->setEleid($ele_id);
             $nouvel_eleve->setNoGep($eleves[$nb]['ine'][0]);
             $nouvel_eleve->setEmail($eleves[$nb][$ldap->champ_email][0]);
             
-            // On ne peut créer l'élève que s'il a un ele_id. Sinon, ça ne va pas marcher correctement !
+            // On ne peut crÃ©er l'Ã©lÃ¨ve que s'il a un ele_id. Sinon, Ã§a ne va pas marcher correctement !
             if ($ele_id) {
             
               /*
-               * Récupération des CLASSES de l'eleve :
+               * RÃ©cupÃ©ration des CLASSES de l'eleve :
                * Pour chaque eleve, on parcours ses classes, et on ne prend que celles
-               * qui correspondent à la branche de l'établissement courant, et on les stocke
+               * qui correspondent Ã  la branche de l'Ã©tablissement courant, et on les stocke
                */
               $nb_classes = $eleves[$nb]['enteleveclasses']['count'];
 
-              // Pour chaque classe trouvée..
+              // Pour chaque classe trouvÃ©e..
               $classe_from_ldap = array();
               for ($cpt=0; $cpt<$nb_classes; $cpt++) {
                   $classe_from_ldap = explode("$", $eleves[$nb]['enteleveclasses'][$cpt]);
-                  // $classe_from_ldap[0] contient le DN de l'établissement
+                  // $classe_from_ldap[0] contient le DN de l'Ã©tablissement
                   // $classe_from_ldap[1] contient l'id de la classe
                   $code_classe = $classe_from_ldap[1];
 
-                  // Si le SIREN de la classe trouvée correspond bien au SIREN de l'établissement courant,
-                  // on crée une entrée correspondante dans le tableau des classes disponibles
-                  // Sinon c'est une classe d'un autre établissement, on ne doit donc pas en tenir compte
+                  // Si le SIREN de la classe trouvÃ©e correspond bien au SIREN de l'Ã©tablissement courant,
+                  // on crÃ©e une entrÃ©e correspondante dans le tableau des classes disponibles
+                  // Sinon c'est une classe d'un autre Ã©tablissement, on ne doit donc pas en tenir compte
                   if (strcmp($classe_from_ldap[0], $ldap->get_base_branch()) == 0) {
 
                       /*
-                       * On test si la classe que l'on souhaite ajouter existe déjà
+                       * On test si la classe que l'on souhaite ajouter existe dÃ©jÃ 
                        * en la cherchant dans la base (
                        */
                       $crit = new Criteria();
@@ -194,7 +194,7 @@ if (isset($_POST['step'])) {
                           $nouvelle_classe->save();
                           $classes_inserees++;
                           $classe_courante = $nouvelle_classe;
-                          // On crééra les périodes associées a la classe par la suite
+                          // On crÃ©Ã©ra les pÃ©riodes associÃ©es a la classe par la suite
                       }
                       else if (count($classe_select) == 1){
                           $classe_courante = $classe_select[0];
@@ -204,12 +204,12 @@ if (isset($_POST['step'])) {
                           die ("erreur dans la base : plusieurs classes ont le meme nom.<br>");
                       }
 
-                      // Comme on n'a pas encore de périodes, on va tricher un peu
-                      // pour la définition de l'association élève-classe
+                      // Comme on n'a pas encore de pÃ©riodes, on va tricher un peu
+                      // pour la dÃ©finition de l'association Ã©lÃ¨ve-classe
                       $nouvelle_assoc_classe_eleve = new JEleveClasse();
                       $nouvelle_assoc_classe_eleve->setClasse($classe_courante);
                       $nouvelle_assoc_classe_eleve->setEleve($nouvel_eleve);
-                      // Pour le moment on met 0 dans l'id de periode, car on les créera plus tard.
+                      // Pour le moment on met 0 dans l'id de periode, car on les crÃ©era plus tard.
                       // On veut simplement garder l'association eleve/classe pour ne pas avoir
                       // a refaire une connexion au LDAP a l'etape suivante
                       $nouvelle_assoc_classe_eleve->setPeriode(0);
@@ -221,12 +221,12 @@ if (isset($_POST['step'])) {
 
               $nouvel_eleve->save();
               
-              // On créé maintenant son compte d'accès à Gepi
+              // On crÃ©Ã© maintenant son compte d'accÃ¨s Ã  Gepi
               // On test si l'uid est deja connu de GEPI
               $compte_utilisateur_eleve = UtilisateurProfessionnelPeer::retrieveByPK($nouvel_eleve->getLogin());
               if ($compte_utilisateur_eleve != null) {
-                  // Un compte d'accès avec le même identifiant existe déjà. On ne touche à rien.
-                  echo "Un compte existe déjà pour l'identifiant ".$nouvel_eleve->getLogin().".<br/>";
+                  // Un compte d'accÃ¨s avec le mÃªme identifiant existe dÃ©jÃ . On ne touche Ã  rien.
+                  echo "Un compte existe dÃ©jÃ  pour l'identifiant ".$nouvel_eleve->getLogin().".<br/>";
               }
               else {
                   $new_compte_utilisateur = new UtilisateurProfessionnel();
@@ -250,16 +250,16 @@ if (isset($_POST['step'])) {
     }
 
     /*
-     * Affichage du résumé de l'étape 1
+     * Affichage du rÃ©sumÃ© de l'Ã©tape 1
      */
-    echo "<h3> Résumé de l'étape 1 </h3>";
+    echo "<h3> RÃ©sumÃ© de l'Ã©tape 1 </h3>";
 
     echo "<b>$eleves_inseres</b> &eacute;l&egrave;ves ins&eacute;res en base<br>";
 
     echo "<b>$classes_inserees</b> classes ins&eacute;r&eacute;es en base<br>";
 
-    // Les indices sont les id des classes de l'établissement
-    // On a pris que les classes correspondant au SIREN de l'établissement
+    // Les indices sont les id des classes de l'Ã©tablissement
+    // On a pris que les classes correspondant au SIREN de l'Ã©tablissement
     echo "<br>";
     echo "<form enctype='multipart/form-data' action='etape2.php' method=post>";
 	//echo add_token_field();
@@ -273,15 +273,15 @@ if (isset($_POST['step'])) {
 
 else {
 
-    // La première étape consiste à importer les classes
+    // La premiÃ¨re Ã©tape consiste Ã  importer les classes
 
-    echo "<br><p>L'opération d'importation des élèves depuis le LDAP va effectuer les opérations suivantes :</p>";
+    echo "<br><p>L'opÃ©ration d'importation des Ã©lÃ¨ves depuis le LDAP va effectuer les opÃ©rations suivantes :</p>";
     echo "<ul>";
     echo "<li>Importation des &eacute;l&egrave;ves.</li>";
-    echo "<li>Tentative d'ajout de chaque élèves présent dans l'annuaire.</li>";
-    echo "<li>Si l'élève n'existe pas, il est créé.</li>";
-    echo "<li>Si l'élève existe déjà, ses informations de base sont mises à jour.</li>";
-    echo "<li>Ajout des classes présentes dans l'annuaire.</li>";
+    echo "<li>Tentative d'ajout de chaque Ã©lÃ¨ves prÃ©sent dans l'annuaire.</li>";
+    echo "<li>Si l'Ã©lÃ¨ve n'existe pas, il est crÃ©Ã©.</li>";
+    echo "<li>Si l'Ã©lÃ¨ve existe dÃ©jÃ , ses informations de base sont mises Ã  jour.</li>";
+    echo "<li>Ajout des classes prÃ©sentes dans l'annuaire.</li>";
     echo "</ul>";
 
     echo "<form enctype='multipart/form-data' action='etape1.php' method=post>";
@@ -289,9 +289,9 @@ else {
     echo "<input type=hidden name='step' value='1'>";
     echo "<input type=hidden name='record' value='no'>";
 
-    echo "<p>Etes-vous sûr de vouloir importer tous les élèves depuis l'annuaire vers Gepi ?</p>";
+    echo "<p>Etes-vous sÃ»r de vouloir importer tous les Ã©lÃ¨ves depuis l'annuaire vers Gepi ?</p>";
     echo "<br/>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
 
     require("../lib/footer.inc.php");

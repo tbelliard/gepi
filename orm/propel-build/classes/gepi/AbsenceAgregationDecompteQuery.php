@@ -16,10 +16,10 @@
 class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery {
     
     /**
-     * Filtre la requete sur les dates de début et de fin. En cas de date nulle, 
-     * le premier jour ou le dernier de l'année scolaire est utilisé
+     * Filtre la requete sur les dates de dÃ©but et de fin. En cas de date nulle, 
+     * le premier jour ou le dernier de l'annÃ©e scolaire est utilisÃ©
      * 
-     * @param  DateTime $date_debut, $date_fin Dates de début et de fin de l'extraction des demi journées
+     * @param  DateTime $date_debut, $date_fin Dates de dÃ©but et de fin de l'extraction des demi journÃ©es
      * @return    AbsenceAgregationDecompteQuery The current query, for fluid interface
      */
     public function filterByDateIntervalle($date_debut=Null,  $date_fin=Null) {
@@ -64,7 +64,7 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
     }
        /**
      * Compte le nombre de retard
-     * Attention, la requete n'est pas réutilisable
+     * Attention, la requete n'est pas rÃ©utilisable
      *
      * @return    int
      */
@@ -81,7 +81,7 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
     }
     
     /**
-     * Filtre la requete sur suivant que la marqueur de fin de calcul de mise a jours est présent
+     * Filtre la requete sur suivant que la marqueur de fin de calcul de mise a jours est prÃ©sent
      * 
      * @return    AbsenceAgregationDecompteQuery The current query, for fluid interface
      */

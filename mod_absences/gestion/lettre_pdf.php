@@ -36,12 +36,12 @@ extract($_POST, EXTR_OVERWRITE);
 header('Content-Type: application/pdf');
 
 // Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
+// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 Header('Pragma: public');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -68,7 +68,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
+	// largeur et/ou hauteur maximum Ã  afficher en pixel
 	 $taille_max_largeur = $L_max;
 	 $taille_max_hauteur = $H_max;
 
@@ -77,7 +77,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	 $ratio_h = $hauteur / $taille_max_hauteur;
 	 $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	 $nouvelle_largeur = $largeur / $ratio;
 	 $nouvelle_hauteur = $hauteur / $ratio;
 
@@ -88,7 +88,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	return array($nouvelle_largeur, $nouvelle_hauteur);
  }
 
-//permet de transformer les caractère html
+//permet de transformer les caractÃ¨re html
  function unhtmlentities($chaineHtml) {
          $tmp = get_html_translation_table(HTML_ENTITIES);
          $tmp = array_flip ($tmp);
@@ -123,7 +123,7 @@ $id_lettre_suivi = unserialize(stripslashes($id_lettre_suivi));
 if ( $mode === 'apercus' )
 {
 
-	// on considère qu'il y a 1 élève de sélectionné
+	// on considÃ¨re qu'il y a 1 Ã©lÃ¨ve de sÃ©lectionnÃ©
 	$id_eleve[0] = 'Test';
 	$lettre_type_selectionne[0] = $lettre_type;
 	$civilite_responsable[0][0] = 'M.';
@@ -132,7 +132,7 @@ if ( $mode === 'apercus' )
 	$nom_eleve[0] = 'test';
 	$prenom_eleve[0] = 'test';
 	$naissance_eleve[0] = '12/12/2000';
-	$classe_eleve[0] = '6ème 1';
+	$classe_eleve[0] = '6Ã¨me 1';
 	$nom_responsable[0][0] = 'Tartampion';
 	$prenom_responsable[0][0] = 'mozard';
 	$adresse_responsable[0][0] = 'rue alber';
@@ -150,7 +150,7 @@ if ( $mode === 'apercus' )
 	$cpe_de_l_eleve[0]['nom'] = 'test';
 	$cpe_de_l_eleve[0]['prenom'] = 'test';
 
-	//importation des informations de présentation de la lettre type
+	//importation des informations de prÃ©sentation de la lettre type
 	$i_cadre = '0';
         $requete_structure ="SELECT *
                                FROM ".$prefix_base."lettres_types, ".$prefix_base."lettres_cadres, ".$prefix_base."lettres_tcs
@@ -177,7 +177,7 @@ if ( $mode === 'apercus' )
 }
 
 if ( $lettre_action === 'originaux' ) {
-// on sélectionne les informations
+// on sÃ©lectionne les informations
 
 	//construction de la requete
 	$i = '0'; $requete_command = '';
@@ -204,14 +204,14 @@ if ( $lettre_action === 'originaux' ) {
 	while ( $donne_persone = mysql_fetch_array($execution_persone))
 	{
 		$id_lettre_suivi = $donne_persone['id_lettre_suivi'];
-		// information sur l'élève
-		$id_eleve[$i] = $donne_persone['login']; // id de l'élève
+		// information sur l'Ã©lÃ¨ve
+		$id_eleve[$i] = $donne_persone['login']; // id de l'Ã©lÃ¨ve
 		$ele_id_eleve[$i] = $donne_persone['ele_id'];
 		$classe_eleve[$i] = classe_de($id_eleve[$i]);
 		$sexe_eleve[$i] = $donne_persone['sexe']; // M ou F
-		$nom_eleve[$i] = $donne_persone['nom']; // nom de l'élève
-		$prenom_eleve[$i] = $donne_persone['prenom']; // prénom de l'élève
-		$naissance_eleve[$i] = $donne_persone['naissance']; // date de naissance de l'élève au format SQL AAAA-MM-JJ
+		$nom_eleve[$i] = $donne_persone['nom']; // nom de l'Ã©lÃ¨ve
+		$prenom_eleve[$i] = $donne_persone['prenom']; // prÃ©nom de l'Ã©lÃ¨ve
+		$naissance_eleve[$i] = $donne_persone['naissance']; // date de naissance de l'Ã©lÃ¨ve au format SQL AAAA-MM-JJ
 		// information sur les parents
 		$nombre_de_responsable = 0;
 		$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal!='0' )"),0);
@@ -222,9 +222,9 @@ if ( $lettre_action === 'originaux' ) {
 			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal!='0' ) ORDER BY resp_legal ASC");
 			while ($donner_parents = mysql_fetch_array($requete_parents))
 			{
-				$civilite_responsable[$cpt_parents][$i] = $donner_parents['civilite']; // civilité du responsable
+				$civilite_responsable[$cpt_parents][$i] = $donner_parents['civilite']; // civilitÃ© du responsable
 			        $nom_responsable[$cpt_parents][$i] = $donner_parents['nom']; // nom du responsable
-				$prenom_responsable[$cpt_parents][$i] = $donner_parents['prenom']; // prénom du responsable
+				$prenom_responsable[$cpt_parents][$i] = $donner_parents['prenom']; // prÃ©nom du responsable
 				$adresse_responsable[$cpt_parents][$i] = $donner_parents['adr1']; // adresse du responsable
 				$adressecomp_responsable[$cpt_parents][$i] = $donner_parents['adr2']; // adresse du responsable suite
 				$adressecomp2_responsable[$cpt_parents][$i] = $donner_parents['adr3']; // adresse du responsable suite
@@ -234,9 +234,9 @@ if ( $lettre_action === 'originaux' ) {
 				$cpt_parents = $cpt_parents + 1;
 			}
 		} else {
-				$civilite_responsable[0][$i] = ''; // civilité du responsable
+				$civilite_responsable[0][$i] = ''; // civilitÃ© du responsable
 			        $nom_responsable[0][$i] = ''; // nom du responsable
-				$prenom_responsable[0][$i] = ''; // prénom du responsable
+				$prenom_responsable[0][$i] = ''; // prÃ©nom du responsable
 				$adresse_responsable[0][$i] = ''; // adresse du responsable
 				$adressecomp_responsable[0][$i] = ''; // adresse du responsable suite
 				$commune_responsable[0][$i] = ''; // ville du responsable
@@ -244,7 +244,7 @@ if ( $lettre_action === 'originaux' ) {
 			}
 
 
-		// information sur la personne qui expédie la lettre
+		// information sur la personne qui expÃ©die la lettre
 		$signature_status[$i] = $donne_persone['quienvoi_lettre_suivi'];
 		$t1 = ''; $t1 = $signature_status[$i];
 			if(!isset($signature_qui_status[$t1])) { $signature_status[$i] = strtoupper(qui_fonction($donne_persone['quienvoi_lettre_suivi'])); }
@@ -252,10 +252,10 @@ if ( $lettre_action === 'originaux' ) {
 		$t2 = ''; $t2 = $signature[$i];
 			if(!isset($signature_qui[$t2])) { $signature[$i] = qui($donne_persone['quienvoi_lettre_suivi']); }
 
-		// information sur le/la cpe qui suit l'élève
+		// information sur le/la cpe qui suit l'Ã©lÃ¨ve
 		$cpe_de_l_eleve[$i] = cpe_eleve($id_eleve[$i]);
 
-		//information complémentaire pour la lettre
+		//information complÃ©mentaire pour la lettre
 			$remarque[$i] = ''; $date_debut[$i] = ''; $heure_debut[$i] = ''; $date_fin[$i] = ''; $heure_fin[$i] = '';
 			$ouestce = $donne_persone['partde_lettre_suivi'];
 			$idouestce =  $donne_persone['partdenum_lettre_suivi'];
@@ -268,7 +268,7 @@ if ( $lettre_action === 'originaux' ) {
 					$remarque[$i] = $donne_plusdinfo['komenti_suivi_eleve_cpe'];
 				 }
 			}
-			//if absences_eleves on connait heure de début de fin et date début et fin
+			//if absences_eleves on connait heure de dÃ©but de fin et date dÃ©but et fin
 			$liste_abs[$i] = '';
 			$remarque[$i] = '';
 			$date_debut[$i] = '';
@@ -298,9 +298,9 @@ if ( $lettre_action === 'originaux' ) {
 					$heure_debut[$i] = heure($donne_plusdinfo['d_heure_absence_eleve']);
 					$date_fin[$i] = date_frl($donne_plusdinfo['a_date_absence_eleve']);
 					$heure_fin[$i] = heure($donne_plusdinfo['a_heure_absence_eleve']);
-					if( $date_debut[$i] === $date_fin[$i] ) { $liste_abs[$i] = $liste_abs[$i]."<hh size='60' > </hh>- le <b>".$date_debut[$i]."</b> à partir de <b>".$heure_debut[$i]."</b> jusqu'à <b>".$heure_fin[$i]."</b>"; $liste_abs[$i] = $liste_abs[$i].'
+					if( $date_debut[$i] === $date_fin[$i] ) { $liste_abs[$i] = $liste_abs[$i]."<hh size='60' > </hh>- le <b>".$date_debut[$i]."</b> Ã  partir de <b>".$heure_debut[$i]."</b> jusqu'Ã  <b>".$heure_fin[$i]."</b>"; $liste_abs[$i] = $liste_abs[$i].'
 '; }
-					if( $date_debut[$i] != $date_fin[$i] ) { $liste_abs[$i] = $liste_abs[$i]."<hh size='60' > </hh>- du <b>".$date_debut[$i]."</b> à partir de <b>".$heure_debut[$i]."</b> au <b>".$date_fin[$i]."</b> jusqu'à <b>".$heure_fin[$i]."</b>"; $liste_abs[$i] = $liste_abs[$i].'
+					if( $date_debut[$i] != $date_fin[$i] ) { $liste_abs[$i] = $liste_abs[$i]."<hh size='60' > </hh>- du <b>".$date_debut[$i]."</b> Ã  partir de <b>".$heure_debut[$i]."</b> au <b>".$date_fin[$i]."</b> jusqu'Ã  <b>".$heure_fin[$i]."</b>"; $liste_abs[$i] = $liste_abs[$i].'
 '; }
 				 $o = $o + 1;
 				 }
@@ -340,7 +340,7 @@ if ( $lettre_action === 'originaux' ) {
 		$i_cadre = $i_cadre + 1;
 	    }
 
-		// mise à jour du suivi des lettres
+		// mise Ã  jour du suivi des lettres
         	$date_envoi = date('Y-m-d');
 	        $heure_envoi = date('H:i:s');
                 $requete = "UPDATE ".$prefix_base."lettres_suivis SET quienvoi_lettre_suivi = '".$_SESSION['login']."', envoye_date_lettre_suivi = '".$date_envoi."', envoye_heure_lettre_suivi = '".$heure_envoi."' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
@@ -409,7 +409,7 @@ $type_lettre = $lettre_type_selectionne[$i];
 		{
 		 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
 
-		 //$X_logo et $Y_logo; placement du bloc identite de l'établissement
+		 //$X_logo et $Y_logo; placement du bloc identite de l'Ã©tablissement
 		 $X_logo=$X_entete_etab; $Y_logo=$Y_entete_etab; $L_logo=$valeur[0]; $H_logo=$valeur[1];
 		 $X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
 		 //logo
@@ -420,10 +420,10 @@ $type_lettre = $lettre_type_selectionne[$i];
 
 // BLOC ADRESSE ETABLISSEMENT
 		$caractere_utilse='arial';
-		$affiche_logo_etab='1'; // affiché le logo de l'établissement
-		$entente_mel='1'; // afficher dans l'entête le mel de l'établissement
-		$entente_tel='1'; // afficher dans l'entête le téléphone de l'établissement
-		$entente_fax='1'; // afficher dans l'entête le fax de l'établissement
+		$affiche_logo_etab='1'; // affichÃ© le logo de l'Ã©tablissement
+		$entente_mel='1'; // afficher dans l'entÃªte le mel de l'Ã©tablissement
+		$entente_tel='1'; // afficher dans l'entÃªte le tÃ©lÃ©phone de l'Ã©tablissement
+		$entente_fax='1'; // afficher dans l'entÃªte le fax de l'Ã©tablissement
 	 	 $pdf->SetXY($X_etab,$Y_etab);
 	 	 $pdf->SetFont($caractere_utilse,'',14);
 		  $gepiSchoolName = getSettingValue('gepiSchoolName');
@@ -438,8 +438,8 @@ $type_lettre = $lettre_type_selectionne[$i];
 		 $pdf->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 		  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 		  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
-		if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
-		if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
+		if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'TÃ©l: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
+		if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'TÃ©l: '.$gepiSchoolTel; }
 		if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 		if(isset($entete_communic) and $entete_communic!='') {
 		 $pdf->Cell(90,5, traite_accents_utf8($entete_communic),0,2,'');

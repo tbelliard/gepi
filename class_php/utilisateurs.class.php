@@ -4,7 +4,7 @@ if (!isset($_SESSION["login"])) {
 }
 
 /**
- * Fichier qui définit la classe utilisateur permettant de créer de nouveaux profils dans Gepi
+ * Fichier qui dÃ©finit la classe utilisateur permettant de crÃ©er de nouveaux profils dans Gepi
  *
  */
 class prof{
@@ -26,7 +26,7 @@ class prof{
 
 	function __construct($login_user){
 
-		// On initialise en récupérant toutes les infos
+		// On initialise en rÃ©cupÃ©rant toutes les infos
 		$sql = "SELECT nom, prenom, civilite, email, statut, etat, change_mdp, niveau_alerte FROM utilisateurs WHERE login = '".$login_user."'";
 		$query = mysql_query($sql) OR trigger_error('erreur $query/construct : ', E_USER_NOTICE);
 		if ($query) {
@@ -50,7 +50,7 @@ class prof{
 	}
 
 	function prof($login_user){
-		// On initialise en récupérant toutes les infos
+		// On initialise en rÃ©cupÃ©rant toutes les infos
 		$sql = "SELECT nom, prenom, civilite, email, statut, etat, change_mdp, niveau_alerte FROM utilisateurs WHERE login = '".$login_user."'";
 		$query = mysql_query($sql);
 		if ($query) {
@@ -76,7 +76,7 @@ class prof{
 	function vraiStatut(){
 		if ($this->statut == 'autre') {
 
-			// On récupère le statut de l'utilisateur dans la table droits_utilisateurs
+			// On rÃ©cupÃ¨re le statut de l'utilisateur dans la table droits_utilisateurs
 			$sql = "SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$this->login."' AND id_statut = ds.id";
 			$query = mysql_query($sql);
 			$rep = mysql_fetch_array($query);

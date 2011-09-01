@@ -27,7 +27,7 @@ $niveau_arbo = 0;
 require_once("./lib/initialisations.inc.php");
 global $gepiPath;
 
-// On récupère le dossier temporaire pour l'effacer
+// On rÃ©cupÃ¨re le dossier temporaire pour l'effacer
 if (isset($_SESSION['login'])){
   $temp_perso="temp/".get_user_temp_directory();
 }else{
@@ -58,8 +58,8 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idplog
 		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
 		$auth = new SimpleSAML_Auth_GepiSimple();
 		if ($auth->isAuthenticated()) {
-			//on fait le logout de session avec simplesaml en tant que fournisseur d'identité. Ça va déconnecter uniqement les services associés.
-			//Si gepi n'est pas connecté en local, il faut revenir à la page de logout et passer à la déconnexion de gepi 
+			//on fait le logout de session avec simplesaml en tant que fournisseur d'identitÃ©. Ã‡a va dÃ©connecter uniqement les services associÃ©s.
+			//Si gepi n'est pas connectÃ© en local, il faut revenir Ã  la page de logout et passer Ã  la dÃ©connexion de gepi 
 			$logout_return_url = $_SERVER['REQUEST_URI'];
 			if (strpos($logout_return_url, '?')) {
 				$logout_return_url .= '&';
@@ -73,45 +73,45 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idplog
 }
 //print_r($session_gepi);die;
 
-//$message = "<h1 class='gepi'>Déconnexion</h1>";
-    $titre= "Déconnexion";
+//$message = "<h1 class='gepi'>DÃ©connexion</h1>";
+    $titre= "DÃ©connexion";
     $message = "";
     	
     if (!isset($_GET['auto']) || !$_GET['auto']) {
     	$session_gepi->close(0);
-        $message .= "Vous avez fermé votre session GEPI.";
+        $message .= "Vous avez fermÃ© votre session GEPI.";
         //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     } else if ($_GET['auto']==2) {
         $session_gepi->close($_GET['auto']);
-        $message .= "Vous avez été déconnecté. Il peut s'agir d'une mauvaise configuration de la variable \$GepiPath dans le fichier \"connect.inc.php\"<br />
-        <a href='aide_gepipath.php'><b>Aide à la configuration de \$GepiPath</b></a>";
+        $message .= "Vous avez Ã©tÃ© dÃ©connectÃ©. Il peut s'agir d'une mauvaise configuration de la variable \$GepiPath dans le fichier \"connect.inc.php\"<br />
+        <a href='aide_gepipath.php'><b>Aide Ã  la configuration de \$GepiPath</b></a>";
         //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     } else if ($_GET['auto']==3) {
-        $date_fermeture = date("d\/m\/Y\ \à\ H\ \h\ i");
+        $date_fermeture = date("d\/m\/Y\ \Ã \ H\ \h\ i");
         $debut_session = urldecode($_GET['debut_session']);
         $sql = "select now() > END TIMEOUT from log where SESSION_ID = '" . $_GET['session_id'] . "' and START = '" . $debut_session . "'";
         if (sql_query1($sql)) {
-           // Le temps d'inactivité est dépassé
+           // Le temps d'inactivitÃ© est dÃ©passÃ©
            $session_gepi->close($_GET['auto']);
-           $message .= "Votre session GEPI a expiré car le temps maximum (".getSettingValue("sessionMaxLength")." minutes) sans échange avec le serveur a été atteint.<br /><br />Date et heure de la déconnexion : ".$date_fermeture."";
+           $message .= "Votre session GEPI a expirÃ© car le temps maximum (".getSettingValue("sessionMaxLength")." minutes) sans Ã©change avec le serveur a Ã©tÃ© atteint.<br /><br />Date et heure de la dÃ©connexion : ".$date_fermeture."";
            //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
         } else {
-           $message .= "<h1 class='gepi'>Fermeture d'une fenêtre GEPI</h1>";
-           $titre= "Fermeture d'une fenêtre GEPI";
+           $message .= "<h1 class='gepi'>Fermeture d'une fenÃªtre GEPI</h1>";
+           $titre= "Fermeture d'une fenÃªtre GEPI";
            /*
-			$message .= "A l'heure ci-dessous, une fenêtre GEPI s'est automatiquement fermée par mesure de sécurité car
-           le temps maximum d'inactivité (".getSettingValue("sessionMaxLength")." minutes) avait été atteint.<br /><br />
-           Heure et date de fermeture de la fenêtre : ".$date_fermeture;
+			$message .= "A l'heure ci-dessous, une fenÃªtre GEPI s'est automatiquement fermÃ©e par mesure de sÃ©curitÃ© car
+           le temps maximum d'inactivitÃ© (".getSettingValue("sessionMaxLength")." minutes) avait Ã©tÃ© atteint.<br /><br />
+           Heure et date de fermeture de la fenÃªtre : ".$date_fermeture;
            */
-			$message .= "A l'heure ci-dessous, une fenêtre GEPI s'est automatiquement fermée par mesure de sécurité. Le temps maximum de ".getSettingValue("sessionMaxLength")." minutes sans échange avec le serveur a sans doute été atteint.<br /><br />
-           Heure et date de fermeture de la fenêtre : ".$date_fermeture;
+			$message .= "A l'heure ci-dessous, une fenÃªtre GEPI s'est automatiquement fermÃ©e par mesure de sÃ©curitÃ©. Le temps maximum de ".getSettingValue("sessionMaxLength")." minutes sans Ã©change avec le serveur a sans doute Ã©tÃ© atteint.<br /><br />
+           Heure et date de fermeture de la fenÃªtre : ".$date_fermeture;
            //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
         }
     } else {
         $session_gepi->close($_GET['auto']);
-        $message .= "Votre session GEPI a expiré, ou bien vous avez été déconnecté.<br />";
+        $message .= "Votre session GEPI a expirÃ©, ou bien vous avez Ã©tÃ© dÃ©connectÃ©.<br />";
         if ((getSettingValue("disable_login"))=='yes')  {
-        	$message .=  "<br /><span class=\"rouge gras\">Le site est momentanément inaccessible. Veuillez nous excuser de ce dérangement !<span>";
+        	$message .=  "<br /><span class=\"rouge gras\">Le site est momentanÃ©ment inaccessible. Veuillez nous excuser de ce dÃ©rangement !<span>";
         }
         //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     }

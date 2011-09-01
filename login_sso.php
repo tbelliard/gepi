@@ -22,7 +22,7 @@
 
 //test version de php
 if (version_compare(PHP_VERSION, '5') < 0) {
-    die('GEPI nécessite PHP5 pour fonctionner');
+    die('GEPI nÃ©cessite PHP5 pour fonctionner');
 }
 
 // Pour le multisite
@@ -34,8 +34,8 @@ $niveau_arbo = 0;
 $prevent_session_init = true; // On bloque l'initialisation automatique de la session.
 
 // Cas particulier du single sign-out CAS
-// On doit empêcher le filtrage de $_POST['logoutRequest'], qui contient des
-// caractères spéciaux
+// On doit empÃªcher le filtrage de $_POST['logoutRequest'], qui contient des
+// caractÃ¨res spÃ©ciaux
 if (isset($_POST) && array_key_exists('logoutRequest', $_POST)) {
     $logout_request = $_POST['logoutRequest'];
 }
@@ -49,8 +49,8 @@ if ($auth_sso && isset($logout_request)) {
     $_POST['logoutRequest'] = $logout_request;
 }
 
-# Cette page a pour vocation de gérer les authentification SSO.
-# Si l'authentification SSO n'est pas paramétrée, on renvoie tout de suite
+# Cette page a pour vocation de gÃ©rer les authentification SSO.
+# Si l'authentification SSO n'est pas paramÃ©trÃ©e, on renvoie tout de suite
 # vers la page de login classique.
 
 if (!$auth_sso) {
@@ -59,10 +59,10 @@ if (!$auth_sso) {
 	die();
 }
 
-// Authentification CAS : la session doit être gérée par phpCAS directement
+// Authentification CAS : la session doit Ãªtre gÃ©rÃ©e par phpCAS directement
 // Il est donc indispensable de placer toute l'initialisation ici, et
 // d'instancier la classe 'Session' sans initialiser la session php, qui
-// sera déjà initialisée.
+// sera dÃ©jÃ  initialisÃ©e.
 if ($gepiSettings['auth_sso'] == 'cas') {
 		include_once('./lib/CAS.php');
 		if ($mode_debug) {
@@ -72,7 +72,7 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 		$path = "./secure/config_cas.inc.php";
 		include($path);
 
-		# On défini l'URL de base, pour que phpCAS ne se trompe pas dans la génération
+		# On dÃ©fini l'URL de base, pour que phpCAS ne se trompe pas dans la gÃ©nÃ©ration
 		# de l'adresse de retour vers le service (attention, requiert patchage manuel
 		# de phpCAS !!)
 		if (isset($gepiBaseUrl)) {
@@ -83,21 +83,21 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 			$url_base .= $_SERVER['SERVER_NAME'];
 		}
 
-    // La session doit être nommée de la même manière dans Session.class.php
-    // sinon ça ne marchera pas...
+    // La session doit Ãªtre nommÃ©e de la mÃªme maniÃ¨re dans Session.class.php
+    // sinon Ã§a ne marchera pas...
     session_name("GEPI");
     
 		// Le premier argument est la version du protocole CAS
-		// Le dernier argument a été ajouté par patchage manuel de phpCAS.
+		// Le dernier argument a Ã©tÃ© ajoutÃ© par patchage manuel de phpCAS.
 		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, true, $url_base);
 		phpCAS::setLang('french');
 
-		// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
-		// été trouvé par le client CAS.
+		// redirige vers le serveur d'authentification si aucun utilisateur authentifiÃ© n'a
+		// Ã©tÃ© trouvÃ© par le client CAS.
 		phpCAS::setNoCasServerValidation();
 
-    // On a une demande de logout envoyée par le serveur CAS :
-    //   il faut initialiser la session tout de suite, pour pouvoir la détruire complètement
+    // On a une demande de logout envoyÃ©e par le serveur CAS :
+    //   il faut initialiser la session tout de suite, pour pouvoir la dÃ©truire complÃ¨tement
     if (isset($logout_request)) {
       $session_gepi = new Session();
   		// Gestion du single sign-out
@@ -109,7 +109,7 @@ if ($gepiSettings['auth_sso'] == 'cas') {
     
     // Initialisation de la session, avec blocage de l'initialisation de la
     // session php ainsi que des tests de timeout et update de logs,
-    // car l'authentification CAS n'est pas encore validée côté Gepi !
+    // car l'authentification CAS n'est pas encore validÃ©e cÃ´tÃ© Gepi !
     $session_gepi = new Session(true);
 } else {
   $session_gepi = new Session();
@@ -117,12 +117,12 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 
 
 
-# L'instance de Session permettant de gérer directement les authentifications
-# SSO, on ne s'embête pas :
+# L'instance de Session permettant de gÃ©rer directement les authentifications
+# SSO, on ne s'embÃªte pas :
 $auth = $session_gepi->authenticate();
 
 if ($auth == "1") {
-	# Authentification réussie
+	# Authentification rÃ©ussie
 	session_write_close();
 	header("Location:accueil.php");
 	die();

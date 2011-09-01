@@ -53,7 +53,7 @@ class class_page_accueil_autre {
   protected $b=0;
 
 /**
- * Construit les entrées de la page d'accueil
+ * Construit les entrÃ©es de la page d'accueil
  *
  * @author regis
  */
@@ -94,7 +94,7 @@ class class_page_accueil_autre {
 	  $this->chargeAutreNom('bloc_saisie');
 	}
 
-/***** Outils de relevé de notes *****/
+/***** Outils de relevÃ© de notes *****/
 	$this->verif_exist_ordre_menu('bloc_releve_notes');
 	if ($this->releve_notes())
 	$this->chargeAutreNom('bloc_releve_notes');
@@ -114,12 +114,12 @@ class class_page_accueil_autre {
 	if ($this->impression())
 	$this->chargeAutreNom('bloc_visulation_impression');
 
-/***** Outils de relevé ECTS *****/
+/***** Outils de relevÃ© ECTS *****/
 	$this->verif_exist_ordre_menu('bloc_releve_ects');
 	if ($this->releve_ECTS())
 	$this->chargeAutreNom('bloc_releve_ects');
 
-/***** Outils complémentaires de gestion des AID *****/
+/***** Outils complÃ©mentaires de gestion des AID *****/
 	$this->verif_exist_ordre_menu('bloc_outil_comp_gestion_aid');
 	if ($this->gestionAID())
 	$this->chargeAutreNom('bloc_outil_comp_gestion_aid');
@@ -134,10 +134,10 @@ class class_page_accueil_autre {
 	if ($this->notanet())
 	$this->chargeAutreNom('bloc_notanet_fiches_brevet');
 
-/***** Gestion années antérieures *****/
-	$this->verif_exist_ordre_menu('bloc_annees_antérieures');
+/***** Gestion annÃ©es antÃ©rieures *****/
+	$this->verif_exist_ordre_menu('bloc_annees_antÃ©rieures');
 	if ($this->anneeAnterieure())
-	$this->chargeAutreNom('bloc_annees_antérieures');
+	$this->chargeAutreNom('bloc_annees_antÃ©rieures');
 
 /***** Gestion des messages *****/
 	$this->verif_exist_ordre_menu('bloc_panneau_affichage');
@@ -291,17 +291,17 @@ class class_page_accueil_autre {
 	  if (getSettingValue("active_module_absence")=='y' ) {
 	  $this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
 			  "Gestion Absences, dispenses, retards et infirmeries",
-			  "Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
+			  "Cet outil vous permet de gÃ©rer les absences, dispenses, retards et autres bobos Ã  l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
 	  $this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
 			  "Visualiser les absences",
-			  "Vous pouvez visualiser créneau par créneau la saisie des absences.");
+			  "Vous pouvez visualiser crÃ©neau par crÃ©neau la saisie des absences.");
 		$this->creeNouveauItem("/mod_absences/professeurs/prof_ajout_abs.php",
 				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
+				"Cet outil vous permet de gÃ©rer les absences des Ã©lÃ¨ves");
 	  } else if (getSettingValue("active_module_absence")=='2' ) {
 		$this->creeNouveauItem("/mod_abs2/index.php",
 				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
+				"Cet outil vous permet de gÃ©rer les absences des Ã©lÃ¨ves");
 	  }
 	  if ($this->b>0){
 		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
@@ -315,7 +315,7 @@ class class_page_accueil_autre {
 	if (getSettingValue("active_cahiers_texte")=='y') {
 	  $this->creeNouveauItem("/cahier_texte/see_all.php",
 			  "Cahier de textes",
-			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
+			  "Permet de consulter les compte-rendus de sÃ©ance et les devoirs Ã  faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
 	  $this->creeNouveauItem("/cahier_texte_admin/visa_ct.php",
 			  "Visa des cahiers de textes",
 			  "Permet de viser les cahiers de textes" );
@@ -330,20 +330,20 @@ class class_page_accueil_autre {
 	$this->b=0;
 	if (getSettingValue("active_carnets_notes")=='y') {
 	  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_2.php",
-			  "Visualisation et impression des relevés de notes",
-			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes,
+			  "Visualisation et impression des relevÃ©s de notes",
+			  "Cet outil vous permet de visualiser Ã  l'Ã©cran et d'imprimer les relevÃ©s de notes,
 				".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].",
 				  classe par classe.");
 
 	  $this->creeNouveauItem("/cahier_notes/visu_releve_notes.php",
-			  "Visualisation et impression des relevés de notes",
-			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes,
+			  "Visualisation et impression des relevÃ©s de notes",
+			  "Cet outil vous permet de visualiser Ã  l'Ã©cran et d'imprimer les relevÃ©s de notes,
 				".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].",
 				  classe par classe.");
 	}
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Relevés de notes",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"RelevÃ©s de notes",'images/icons/document.png');
 	  return true;
 	}
   }
@@ -359,7 +359,7 @@ class class_page_accueil_autre {
 	  return true;
 	}
   }  private function trombinoscope(){
-	//On vérifie si le module est activé
+	//On vÃ©rifie si le module est activÃ©
 
 	$active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
 	$active_module_trombino_pers=getSettingValue("active_module_trombino_pers");
@@ -414,42 +414,42 @@ class class_page_accueil_autre {
 	$this->b=0;
 
 	$this->creeNouveauItem("/groupes/visu_profs_class.php",
-			"Visualisation des équipes pédagogiques",
-			"Ceci vous permet de connaître tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.");
+			"Visualisation des Ã©quipes pÃ©dagogiques",
+			"Ceci vous permet de connaÃ®tre tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernÃ©s.");
 /*
 	$this->creeNouveauItem("/eleves/liste_eleves.php",
-			"Visualisation des équipes pédagogiques",
-			"Ceci vous permet de connaître tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.");
+			"Visualisation des Ã©quipes pÃ©dagogiques",
+			"Ceci vous permet de connaÃ®tre tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernÃ©s.");
 */
 	$this->creeNouveauItem("/eleves/visu_eleve.php",
 			"Consultation d'un ".$this->gepiSettings['denomination_eleve'],
-			"Ce menu vous permet de consulter dans une même page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevés de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.");
+			"Ce menu vous permet de consulter dans une mÃªme page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevÃ©s de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains Ã©lÃ©ments peuvent n'Ãªtre accessibles que pour certaines catÃ©gories de visiteurs.");
 
 	$this->creeNouveauItem("/impression/impression_serie.php",
 			"Impression PDF de listes",
-			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", à l'unité ou en série. L'apparence des listes est paramétrable.");
+			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", Ã  l'unitÃ© ou en sÃ©rie. L'apparence des listes est paramÃ©trable.");
 
 	  $this->creeNouveauItem("/groupes/mes_listes.php",
 			  "Exporter mes listes",
-			  "Ce menu permet de télécharger ses listes avec tous les ".$this->gepiSettings['denomination_eleves']." au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.");
+			  "Ce menu permet de tÃ©lÃ©charger ses listes avec tous les ".$this->gepiSettings['denomination_eleves']." au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.");
 
 	$this->creeNouveauItem("/visualisation/index.php",
 			"Outils graphiques de visualisation",
-			"Visualisation graphique des résultats des ".$this->gepiSettings['denomination_eleves']." ou des classes, en croisant les données de multiples manières.");
+			"Visualisation graphique des rÃ©sultats des ".$this->gepiSettings['denomination_eleves']." ou des classes, en croisant les donnÃ©es de multiples maniÃ¨res.");
 	$this->creeNouveauItem("/prepa_conseil/index1.php",
-			"Visualiser mes moyennes et appréciations des bulletins",
-			"Tableau récapitulatif de vos moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.");
+			"Visualiser mes moyennes et apprÃ©ciations des bulletins",
+			"Tableau rÃ©capitulatif de vos moyennes et/ou apprÃ©ciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.");
 	$this->creeNouveauItem("/prepa_conseil/index1.php",
-				"Visualiser les moyennes et appréciations des bulletins",
-				"Tableau récapitulatif des moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.");
+				"Visualiser les moyennes et apprÃ©ciations des bulletins",
+				"Tableau rÃ©capitulatif des moyennes et/ou apprÃ©ciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.");
 
 	$this->creeNouveauItem("/prepa_conseil/index2.php",
 			"Visualiser toutes les moyennes d'une classe",
-			"Tableau récapitulatif des moyennes d'une classe.");
+			"Tableau rÃ©capitulatif des moyennes d'une classe.");
 
 	$this->creeNouveauItem("/prepa_conseil/index3.php",
-			"Visualiser les bulletins simplifiés",
-			"Bulletins simplifiés d'une classe.");
+			"Visualiser les bulletins simplifiÃ©s",
+			"Bulletins simplifiÃ©s d'une classe.");
   	$call_data = mysql_query("SELECT * FROM aid_config 
 					WHERE display_bulletin = 'y' 
 					OR bull_simplifie = 'y' 
@@ -465,8 +465,8 @@ class class_page_accueil_autre {
 	  if ($nb_result != 0) {
 		$nom_aid = @mysql_result($call_data, $i, "nom");	 
 		$this->creeNouveauItem("/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid,
-				"Visualiser des appréciations ".$nom_aid,
-				"Cet outil permet la visualisation et l'impression des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
+				"Visualiser des apprÃ©ciations ".$nom_aid,
+				"Cet outil permet la visualisation et l'impression des apprÃ©ciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
 	  }
 	  $i++;
 	}
@@ -481,13 +481,13 @@ class class_page_accueil_autre {
 
 	$chemin = array();
 	$this->creeNouveauItem("/mod_ects/edition.php",
-			  "Génération des documents ECTS",
-			  "Cet outil vous permet de générer les documents ECTS (relevé, attestation, annexe)
-				pour les classes concernées.");
+			  "GÃ©nÃ©ration des documents ECTS",
+			  "Cet outil vous permet de gÃ©nÃ©rer les documents ECTS (relevÃ©, attestation, annexe)
+				pour les classes concernÃ©es.");
 
 	  $this->creeNouveauItem("/mod_ects/recapitulatif.php",
 			  "Visualiser tous les ECTS",
-			  "Visualiser les tableaux récapitulatif par classe de tous les crédits ECTS.");
+			  "Visualiser les tableaux rÃ©capitulatif par classe de tous les crÃ©dits ECTS.");
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Documents ECTS",'images/icons/releve.png');
@@ -519,20 +519,20 @@ class class_page_accueil_autre {
 		if ($this->AfficheAid($indice_aid)) {
 		  $this->creeNouveauItem("/aid/index_fiches.php?indice_aid=".$indice_aid,
 				  $nom_aid,
-				  "Tableau récapitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
+				  "Tableau rÃ©capitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
 		}
 		$i++;
 	  }
 	  if (($nb_aid_annees_anterieures > 0)) {
 		$this->creeNouveauItem("/aid/annees_anterieures_accueil.php",
-				"Fiches projets des années antérieures",
-				"Accès aux fiches projets des années antérieures");
+				"Fiches projets des annÃ©es antÃ©rieures",
+				"AccÃ¨s aux fiches projets des annÃ©es antÃ©rieures");
 	  }
 	}
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',
-			  "Outils de visualisation et d'édition des fiches projets",
+			  "Outils de visualisation et d'Ã©dition des fiches projets",
 			  'images/icons/document.png');
 	  return true;
 	}
@@ -555,19 +555,19 @@ class class_page_accueil_autre {
 	$this->b=0;
 
 	$this->creeNouveauItem("/bulletin/verif_bulletins.php",
-			  "Outil de vérification",
-			  "Permet de vérifier si toutes les rubriques des bulletins sont remplies.");
+			  "Outil de vÃ©rification",
+			  "Permet de vÃ©rifier si toutes les rubriques des bulletins sont remplies.");
 	$this->creeNouveauItem("/bulletin/verrouillage.php",
-			  "Verrouillage/Déverrouillage des périodes",
-			  "Permet de verrouiller ou déverrouiller une période pour une ou plusieurs classes.");
+			  "Verrouillage/DÃ©verrouillage des pÃ©riodes",
+			  "Permet de verrouiller ou dÃ©verrouiller une pÃ©riode pour une ou plusieurs classes.");
 	$this->creeNouveauItem("/classes/acces_appreciations.php",
-			  "Accès des ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']." aux appréciations",
-			  "Permet de définir quand les comptes ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']."
-			  (s'ils existent) peuvent accéder aux appréciations des ".$this->gepiSettings['denomination_professeurs']."
+			  "AccÃ¨s des ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']." aux apprÃ©ciations",
+			  "Permet de dÃ©finir quand les comptes ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']."
+			  (s'ils existent) peuvent accÃ©der aux apprÃ©ciations des ".$this->gepiSettings['denomination_professeurs']."
 				sur le bulletin et avis du conseil de classe.");
 	$this->creeNouveauItem("/bulletin/param_bull.php",
-			  "Paramètres d'impression des bulletins",
-			  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+			  "ParamÃ¨tres d'impression des bulletins",
+			  "Permet de modifier les paramÃ¨tres de mise en page et d'impression des bulletins.");
 	$this->creeNouveauItem("/responsables/index.php",
 			  "Gestion des fiches ".$this->gepiSettings['denomination_responsables'],
 			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches
@@ -577,7 +577,7 @@ class class_page_accueil_autre {
 			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$this->gepiSettings['denomination_eleves'].".");
 	$this->creeNouveauItem("/bulletin/bull_index.php",
 			  "Visualisation et impression des bulletins",
-			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
+			  "Cet outil vous permet de visualiser Ã  l'Ã©cran et d'imprimer les bulletins, classe par classe.");
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Bulletins scolaires",'images/icons/bulletin_16.png');
@@ -592,9 +592,9 @@ class class_page_accueil_autre {
 	  $this->creeNouveauItem("/mod_notanet/index.php",
 				"Notanet/Fiches Brevet",
 				"Cet outil permet :<br />
-				- d'effectuer les calculs et la génération du fichier CSV requis pour Notanet.
-				L'opération renseigne également les tables nécessaires pour générer les Fiches brevet.<br />
-				- de générer les fiches brevet");
+				- d'effectuer les calculs et la gÃ©nÃ©ration du fichier CSV requis pour Notanet.
+				L'opÃ©ration renseigne Ã©galement les tables nÃ©cessaires pour gÃ©nÃ©rer les Fiches brevet.<br />
+				- de gÃ©nÃ©rer les fiches brevet");
 	}
 
 	if ($this->b>0){
@@ -608,16 +608,16 @@ class class_page_accueil_autre {
 
 	if (getSettingValue("active_annees_anterieures")=='y') {
 		$this->creeNouveauItem("/mod_annees_anterieures/index.php",
-				"Années antérieures",
-				"Cet outil permet de gérer et de consulter les données d'années antérieures (bulletins simplifiés,...).");
+				"AnnÃ©es antÃ©rieures",
+				"Cet outil permet de gÃ©rer et de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 
 		$this->creeNouveauItem("/mod_annees_anterieures/consultation_annee_anterieure.php",
-				"Années antérieures",
-				"Cet outil permet de consulter les données d'années antérieures (bulletins simplifiés,...).");
+				"AnnÃ©es antÃ©rieures",
+				"Cet outil permet de consulter les donnÃ©es d'annÃ©es antÃ©rieures (bulletins simplifiÃ©s,...).");
 	}
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Années antérieures",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"AnnÃ©es antÃ©rieures",'images/icons/document.png');
 	  return true;
 	}
   }
@@ -626,7 +626,7 @@ class class_page_accueil_autre {
 	$this->b=0;
 	$this->creeNouveauItem("/messagerie/index.php",
 			"Panneau d'affichage",
-			"Cet outil permet la gestion des messages à afficher sur la page d'accueil des utilisateurs.");
+			"Cet outil permet la gestion des messages Ã  afficher sur la page d'accueil des utilisateurs.");
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Panneau d'affichage",'images/icons/mail.png');
 	  return true;
@@ -639,12 +639,12 @@ class class_page_accueil_autre {
 	if (getSettingValue("active_inscription")=='y') {
 	  $this->creeNouveauItem("/mod_inscription/inscription_config.php",
 			  "Configuration du module d'inscription/visualisation",
-			  "Configuration des différents paramètres du module");
+			  "Configuration des diffÃ©rents paramÃ¨tres du module");
 
 	  if (getSettingValue("active_inscription_utilisateurs")=='y'){
 		$this->creeNouveauItem("/mod_inscription/inscription_index.php",
-				"Accès au module d'inscription/visualisation",
-				"S'inscrire ou se désinscrire - Consulter les inscriptions");
+				"AccÃ¨s au module d'inscription/visualisation",
+				"S'inscrire ou se dÃ©sinscrire - Consulter les inscriptions");
 	  }
 
 	}
@@ -678,8 +678,8 @@ class class_page_accueil_autre {
 	$this->b=0;
 	  $nomPlugin=$plugin->nom;
 	  $this->verif_exist_ordre_menu('bloc_plugin_'.$nomPlugin);
-	  // On offre la possibilité d'inclure un fichier functions_nom_du_plugin.php
-	  // Ce fichier peut lui-même contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
+	  // On offre la possibilitÃ© d'inclure un fichier functions_nom_du_plugin.php
+	  // Ce fichier peut lui-mÃªme contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
 	  if (file_exists($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
 		include_once($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
 
@@ -688,12 +688,12 @@ class class_page_accueil_autre {
 								ORDER by titre_item');
 
 	  while ($menuItem = mysql_fetch_object($querymenu)){
-		// On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
+		// On regarde si le plugin a prÃ©vu une surcharge dans le calcul de l'affichage de l'item dans le menu
 		// On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
 		$nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
 
 		if (function_exists($nom_fonction_autorisation))
-		  // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur à afficher cet item dans le menu
+		  // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur Ã  afficher cet item dans le menu
 		  $result_autorisation = $nom_fonction_autorisation($this->loginUtilisateur,$menuItem->lien_item);
 		else
 		  $result_autorisation=true;
@@ -718,10 +718,10 @@ class class_page_accueil_autre {
   protected function geneseClasses(){
 	$this->b=0;
 	$this->creeNouveauItem("/mod_genese_classes/index.php",
-			"Génèse des classes",
-			"Effectuer la répartition des élèves par classes en tenant comptes des options,...");
+			"GÃ©nÃ¨se des classes",
+			"Effectuer la rÃ©partition des Ã©lÃ¨ves par classes en tenant comptes des options,...");
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Génèse des classes",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"GÃ©nÃ¨se des classes",'images/icons/document.png');
 	  return true;
 	}
   }
@@ -732,8 +732,8 @@ class class_page_accueil_autre {
 	//insert into setting set name='active_mod_epreuve_blanche', value='y';
 	if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 	  $this->creeNouveauItem("/mod_epreuve_blanche/index.php",
-			  "Épreuves blanches",
-			  "Organisation d'épreuves blanches,...");
+			  "Ã‰preuves blanches",
+			  "Organisation d'Ã©preuves blanches,...");
 	}
 //insert into setting set name='active_mod_epreuve_blanche', value='y';
 	if (getSettingValue("active_mod_examen_blanc")=='y') {
@@ -743,7 +743,7 @@ class class_page_accueil_autre {
 	}
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Épreuves blanches",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"Ã‰preuves blanches",'images/icons/document.png');
 	  return true;
 	}
   }
@@ -754,7 +754,7 @@ class class_page_accueil_autre {
 	if (getSettingValue("active_mod_apb")=='y') {
 	  $this->creeNouveauItem("/mod_apb/index.php",
 			  "Export APB",
-			  "Export du fichier XML pour le système Admissions Post-Bac");
+			  "Export du fichier XML pour le systÃ¨me Admissions Post-Bac");
 	}
 
 	if ($this->b>0){
@@ -768,7 +768,7 @@ class class_page_accueil_autre {
 	if (getSettingValue("active_mod_gest_aid")=='y') {
 
 	  $sql = "SELECT * FROM aid_config ";
-	  // on exclue la rubrique permettant de visualiser quels élèves ont le droit d'envoyer/modifier leur photo
+	  // on exclue la rubrique permettant de visualiser quels Ã©lÃ¨ves ont le droit d'envoyer/modifier leur photo
 	  $flag_where = 'n';
 
 	  if (getSettingValue("num_aid_trombinoscopes") != "") {
@@ -776,7 +776,7 @@ class class_page_accueil_autre {
 		$flag_where = 'y';
 	  }
 
-	  // si le plugin "gestion_autorisations_publications" existe et est activé, on exclue la rubrique correspondante
+	  // si le plugin "gestion_autorisations_publications" existe et est activÃ©, on exclue la rubrique correspondante
 	  $test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
 
 	  if (($test_plugin=='y') and (getSettingValue("indice_aid_autorisations_publi") != ""))
@@ -802,7 +802,7 @@ class class_page_accueil_autre {
 		  $nom_aid = @mysql_result($call_data, $i, "nom");
 		  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
 				  $nom_aid,
-				  "Cet outil vous permet de gérer l'appartenance des élèves aux différents groupes.");
+				  "Cet outil vous permet de gÃ©rer l'appartenance des Ã©lÃ¨ves aux diffÃ©rents groupes.");
 		}
 
 		$i++;

@@ -49,13 +49,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Choix des classes',
+description='GÃ©nÃ¨se des classes: Choix des classes',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -83,7 +83,7 @@ if((isset($choix_classes))&&((isset($id_classe))||(isset($classes_futures)))) {
 
 	if(isset($id_classe)) {
 		for($i=0;$i<count($id_classe);$i++) {
-			// Il faudrait contrôler que les classes sont valides et éviter certains caractères pour 'classe'.
+			// Il faudrait contrÃ´ler que les classes sont valides et Ã©viter certains caractÃ¨res pour 'classe'.
 			$sql="INSERT INTO gc_divisions SET projet='$projet', id_classe='".$id_classe[$i]."', classe='".$classe[$id_classe[$i]]."', statut='actuelle';";
 			//echo "$sql<br />";
 			if($insert=mysql_query($sql)) {$nb_reg1++;} else {$nb_err++;}
@@ -93,7 +93,7 @@ if((isset($choix_classes))&&((isset($id_classe))||(isset($classes_futures)))) {
 	if((isset($classes_futures))&&($classes_futures!="")) {
 		$tab_tmp=explode(",",$classes_futures);
 		for($i=0;$i<count($tab_tmp);$i++) {
-			// Il faudrait contrôler que les classes sont valides et éviter certains caractères pour 'classe'.
+			// Il faudrait contrÃ´ler que les classes sont valides et Ã©viter certains caractÃ¨res pour 'classe'.
 			$sql="INSERT INTO gc_divisions SET projet='$projet', id_classe='0', classe='".$tab_tmp[$i]."', statut='future';";
 			//echo "$sql<br />";
 			if($insert=mysql_query($sql)) {$nb_reg2++;} else {$nb_err++;}
@@ -101,18 +101,18 @@ if((isset($choix_classes))&&((isset($id_classe))||(isset($classes_futures)))) {
 	}
 
 	if($nb_err==0) {
-		$msg="Regénération de la liste des classes effectuée: ";
-		$msg.="$nb_reg1 classes actuelles et $nb_reg2 classes futures enregistrées.";
+		$msg="RegÃ©nÃ©ration de la liste des classes effectuÃ©e: ";
+		$msg.="$nb_reg1 classes actuelles et $nb_reg2 classes futures enregistrÃ©es.";
 	}
 	else {
-		$msg="ERREUR lors de la regénération de la liste des classes: ";
-		$msg.="$nb_reg1 classes actuelles et $nb_reg2 classes futures enregistrées.";
+		$msg="ERREUR lors de la regÃ©nÃ©ration de la liste des classes: ";
+		$msg.="$nb_reg1 classes actuelles et $nb_reg2 classes futures enregistrÃ©es.";
 	}
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Choix classes";
+$titre_page = "GÃ©nÃ¨se classe: Choix classes";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
