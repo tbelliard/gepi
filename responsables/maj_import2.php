@@ -44,7 +44,9 @@ if (!checkAccess()) {
 }
 
 $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
-$ne_pas_tester_les_changements_de_classes=getSettingValue("no_test_chgt_clas") ? getSettingValue("no_test_chgt_clas") : "y";
+
+$ne_pas_tester_les_changements_de_classes=getSettingValue("no_test_chgt_clas");
+if($ne_pas_tester_les_changements_de_classes=="") {$ne_pas_tester_les_changements_de_classes="n";}
 // INSERT INTO setting SET name='no_test_chgt_clas', value='n';
 // UPDATE setting SET value='n' WHERE name='no_test_chgt_clas';
 
@@ -529,6 +531,12 @@ else{
 				//$source_file=stripslashes($xml_file['tmp_name']);
 				$source_file=$xml_file['tmp_name'];
 				$dest_file="../temp/".$tempdir."/eleves.xml";
+				if(file_exists($dest_file)) {
+					echo "<p><b>NETTOYAGE&nbsp;:</b> Suppression du fichier eleves.xml précédent&nbsp;: ";
+					if(unlink($dest_file)) {echo "<span style='color:green'>SUCCES</span>";}
+					else {echo "<span style='color:red'>ECHEC</span>";}
+					echo "</p>\n";
+				}
 				$res_copy=copy("$source_file" , "$dest_file");
 
 				//===============================================================
@@ -787,22 +795,24 @@ else{
 							$eleves[$i]=array();
 
 							$eleves[$i]['eleve_id']=$value;
-
+							//if($eleves[$i]['eleve_id']=='596023') {echo "\$eleves[$i]['eleve_id']=".$value."<br />";}
 							$eleves[$i]["structures"]=array();
 							$j=0;
 							//foreach($objet_structures->STRUCTURES_ELEVE->children() as $structure) {
 							foreach($structures_eleve->children() as $structure) {
 								$eleves[$i]["structures"][$j]=array();
 								foreach($structure->children() as $key => $value) {
+									//echo("\$structure->$key=".$value."<br />");
 									if(in_array(strtoupper($key),$tab_champs_struct)) {
 										$eleves[$i]["structures"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
-										//my_echo("\$structure->$key=".$value."<br />)";
+										//my_echo("\$structure->$key=".$value."<br />");
 									}
 								}
 								$j++;
 							}
 
 							if($debug_import=='y') {
+							//if($eleves[$i]['eleve_id']=='596023') {
 								echo "<pre style='color:green;'><b>Tableau \$eleves[$i]&nbsp;:</b>";
 								print_r($eleves[$i]);
 								echo "</pre>";
@@ -821,6 +831,8 @@ else{
 				if(isset($eleves[$i]["structures"])){
 					if(count($eleves[$i]["structures"])>0){
 						for($j=0;$j<count($eleves[$i]["structures"]);$j++){
+							//if($eleves[$i]['eleve_id']=='596023') {affiche_debug($eleves[$i]["structures"][$j]['code_structure']."<br />");}
+
 							if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
 								$temoin_div_trouvee="oui";
 								break;
@@ -836,6 +848,7 @@ else{
 					$sql="INSERT INTO temp_gep_import2 SET id_tempo='$id_tempo', ";
 					$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
 					$sql.="divcod='".$eleves[$i]['classe']."';";
+					//if($eleves[$i]['eleve_id']=='596023') {affiche_debug("$sql<br />");}
 					//echo "$sql<br />\n";
 					info_debug($sql);
 					$res_insert=mysql_query($sql);
@@ -1946,6 +1959,8 @@ else{
 
 				// On teste s'il s'agit d'un nouvel élève:
 				//$sql="SELECT 1=1 FROM";
+
+				//if($tab_ele_id[$i]=='596023') {affiche_debug("\$tab_ele_id[$i]=$tab_ele_id[$i]<br />");}
 			}
 
 			//echo "\$chaine=$chaine<br />\n";
@@ -2255,12 +2270,14 @@ else{
 					if(!isset($tab_ele_id_diff)) {$tab_ele_id_diff=array();}
 					if(!in_array($tab_ele_id[$i],$tab_ele_id_diff)) {
 						$sql="SELECT classe FROM classes c, eleves e, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login=e.login AND e.ele_id='$tab_ele_id[$i]' ORDER BY jec.periode DESC LIMIT 1;";
+						//if($tab_ele_id[$i]=='596023') {affiche_debug($sql."<br />");}
 						$test_clas1=mysql_query($sql);
 		
 						if(mysql_num_rows($test_clas1)>0) {
 							$lig_clas1=mysql_fetch_object($test_clas1);
 		
 							$sql="SELECT DIVCOD FROM temp_gep_import2 t WHERE t.ELE_ID='$tab_ele_id[$i]';";
+							//if($tab_ele_id[$i]=='596023') {affiche_debug($sql."<br />");}
 							$test_clas2=mysql_query($sql);
 							if(mysql_num_rows($test_clas2)>0) {
 								$lig_clas2=mysql_fetch_object($test_clas2);
@@ -3046,7 +3063,7 @@ else{
 // RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
 
 									$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
-									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$id_classe_actuelle&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet.")."'>changement de classe</a>";
+									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet.")."'>changement de classe</a>";
 									$info_action_destinataire="administrateur";
 									$info_action_mode="statut";
 									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
