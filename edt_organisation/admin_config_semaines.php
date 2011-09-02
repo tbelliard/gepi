@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * $Id: admin_config_semaines.php 4001 2010-01-08 21:46:14Z regis $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
  *

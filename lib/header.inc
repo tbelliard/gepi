@@ -2,7 +2,6 @@
 /**
  * Entête de la page
  * 
- * $Id$
  *
  * @copyright Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  * 

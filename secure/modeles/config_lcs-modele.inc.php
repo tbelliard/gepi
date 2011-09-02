@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 */
 ##############################################################
 # Parametres propres a une authentification sur un serveur LCS

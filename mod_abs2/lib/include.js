@@ -1,6 +1,5 @@
 /**
  *
- * @version $Id$
  *
  * Copyright 2010 Josselin Jacquard
  *

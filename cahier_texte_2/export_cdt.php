@@ -1,6 +1,5 @@
 <?php
 /*
-* @version: $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
@@ -758,7 +757,6 @@ if($action=='acces2') {
 	$f=fopen("../$chemin_acces","w+");
 	fwrite($f,'<?php
 /*
-* @version: $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *

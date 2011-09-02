@@ -2,7 +2,6 @@
 /**
  * Export du carnet de notes
  * 
- * $Id$
  * 
  * @copyright Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 

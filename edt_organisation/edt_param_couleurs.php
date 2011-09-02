@@ -3,7 +3,6 @@
 /**
  * Fichiers qui permet de paramétrer les couleurs de chaque matière des emplois du temps
  *
- * @version $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

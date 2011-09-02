@@ -1,5 +1,4 @@
 <?php
-/* $Id: admin.php 3746 2009-11-20 08:58:25Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  *
  * Ce fichier peut servir à faire une demande à un annuaire ldap pour qu'il renvoie une information
  * juste après l'authentification CAS du fichier lib/cas.inc.php

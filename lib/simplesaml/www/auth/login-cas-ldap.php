@@ -8,7 +8,6 @@
  *
  * @author Mads Freek, RUC. 
  * @package simpleSAMLphp
- * @version $Id$
  */
  
 require_once('../../www/_include.php');

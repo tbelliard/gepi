@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * $Id: admin_periodes_absences.php 4152 2010-03-21 23:32:16Z adminpaulbert $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
  *

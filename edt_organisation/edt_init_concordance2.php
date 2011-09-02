@@ -3,7 +3,6 @@
 /**
  * Fichier qui enregistre les concordances et les cours du fichier edt_init_csv2.php
  *
- * @version $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *

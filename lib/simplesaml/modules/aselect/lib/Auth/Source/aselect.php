@@ -7,7 +7,6 @@
  *
  * @author Patrick Honing, Hogeschool van Arnhem en Nijmegen. <Patrick.Honing@han.nl>
  * @package simpleSAMLphp
- * @version $Id$
  */
 class sspmod_aselect_Auth_Source_aselect extends SimpleSAML_Auth_Source {
 

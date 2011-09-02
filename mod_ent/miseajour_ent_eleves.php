@@ -1,6 +1,5 @@
 <?php
 /**
- * @version $Id$
  *
  * Module d'intégration de Gepi dans un ENT réalisé au moment de l'intégration de Gepi dans ARGOS dans l'académie de Bordeaux
  * Fichier permettant de récupérer de nouveaux élèves dans le ldap de l'ENT

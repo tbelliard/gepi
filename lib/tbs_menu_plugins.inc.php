@@ -2,7 +2,6 @@
 /**
  * Construction de la barre de menu des gabarits
  *
- * @version $Id$
  * @copyright 2008-2011
  * @license GNU/GPL v2
  * @package General

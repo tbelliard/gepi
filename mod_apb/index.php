@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id$
  *
  * Copyright 2001, 2010 Thomas Belliard
  *

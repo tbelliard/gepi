@@ -1,8 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
-* @version: $Id$
-*
 * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.

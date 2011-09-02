@@ -1,6 +1,5 @@
 <?php
 /* 
- * @version $Id$
  * multisite
  * Les dossiers contenant les modèles Gepi et mes modèles. Il faut un / à la fin du chemin.
 */

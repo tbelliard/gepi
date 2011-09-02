@@ -2,7 +2,6 @@
 /**
  * Pied de page
  * 
- * $Id$
  * 
  * @package General
  * @subpackage Affichage

@@ -2,7 +2,6 @@
 /**
  * Visualisation des moyennes des carnets de notes
  * 
- * $Id$
  *
  * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 

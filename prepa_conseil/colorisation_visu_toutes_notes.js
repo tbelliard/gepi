@@ -1,5 +1,4 @@
 /*
-$Id$
 */
 
 	var cpt_couleur=1;

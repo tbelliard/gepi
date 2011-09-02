@@ -1,6 +1,5 @@
 <?php
 	/*
-	$Id$
 	*/
 
 	echo "<table class='boireaus' border='1' summary='Tableau des items'>\n";

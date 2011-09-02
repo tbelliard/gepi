@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 */
 
 // Page incluse dans saisie_sanction.php ou appelée via ajax depuis saisie_sanction.php->ajout_sanction.php

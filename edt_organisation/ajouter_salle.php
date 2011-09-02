@@ -3,7 +3,6 @@
 /**
  * Fichier permettant d'ajouter des salles dans l'EdT de Gepi
  *
- * @version $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

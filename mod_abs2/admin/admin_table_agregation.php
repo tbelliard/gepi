@@ -1,7 +1,6 @@
 <?php
 /*
  *
- *  @version $Id$
  *
  * Copyright 2010-2011 Josselin Jacquard
  *

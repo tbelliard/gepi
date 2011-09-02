@@ -2,7 +2,6 @@
 /**
  * Ensemble des fonctions qui permettent d'afficher les emplois du temps des profs
  *
- * @version $Id: fonctions_edt_prof.php $
  *
  * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

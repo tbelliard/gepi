@@ -2,7 +2,6 @@
 /**
  * Initialisation de mysql
  * 
- * $Id$
  * 
  * mysql.inc - Simple PHP database support for MySQL.
  * 

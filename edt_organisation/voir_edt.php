@@ -3,7 +3,6 @@
 /**
  * Fichier voir_edt.php pour visionner les différents EdT (classes ou professeurs)
  *
- * @version     $Id$
  * @package		GEPI
  * @subpackage	EmploisDuTemps
  * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero

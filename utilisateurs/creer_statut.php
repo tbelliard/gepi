@@ -3,7 +3,6 @@
 /**
  *
  * Modif table `droits` : ALTER TABLE `droits` ADD `autre` VARCHAR( 1 ) NOT NULL DEFAULT 'F' AFTER `secours` ;
- * @version $Id$
  * @copyright 2008
  */
 $affiche_connexion = 'yes';

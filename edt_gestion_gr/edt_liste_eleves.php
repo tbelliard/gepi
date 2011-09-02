@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id$
  *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

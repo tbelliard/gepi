@@ -5,7 +5,6 @@
  * 
  * 
  * 
- * $Id$
  *
  * @license GNU/GPL v2
  * @package General

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: Session.class.php 2315 2008-08-24 19:58:20Z tbelliard $
  *
  * Copyright 2001, 2008 Thomas Belliard
  *

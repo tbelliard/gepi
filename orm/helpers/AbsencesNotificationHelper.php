@@ -2,7 +2,6 @@
 /**
  *
  *
- * @version $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stephane Boireau, Julien Jocal
  *

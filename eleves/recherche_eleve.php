@@ -1,7 +1,6 @@
 <?php
 
 /*
-	$Id$
 */
 if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")){
 	$string = "ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸";

@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @version $Id$
  * @copyright 2008
  *
  * Fichier qui renvoie un select des classes de l'établissement

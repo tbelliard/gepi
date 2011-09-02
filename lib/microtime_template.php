@@ -4,7 +4,6 @@
  * 
  * ---------Variables envoyées au gabarit
  * - $tbs_microtime							nombre de secondes pour charger la page
- * $Id:  $
 */
 
 $tbs_microtime="";

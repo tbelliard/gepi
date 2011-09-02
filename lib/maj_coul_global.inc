@@ -1,7 +1,6 @@
 <?php
 /**
  * Initialisation des couleurs
- * @version $Id$
  * @license GNU/GPL 
  * @package Initialisation
  * @subpackage initialisation

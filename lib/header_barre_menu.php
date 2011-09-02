@@ -3,7 +3,6 @@
 /**
  * Fichier qui permet de construire la barre de menu
  *
- * @version $Id$
  * @copyright 2008-2011
  * @license GNU/GPL v2
  * @package General

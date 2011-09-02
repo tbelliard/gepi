@@ -1,4 +1,3 @@
--- $Id$
 INSERT INTO utilisateurs SET login = 'ADMIN', nom = 'GEPI', prenom = 'Administrateur', civilite = 'M.', password = 'ab4f63f9ac65152575886860dde480a1', statut = 'administrateur', etat = 'actif', change_mdp = 'y', auth_mode = 'gepi';
 INSERT INTO setting VALUES ('version', 'trunk');
 INSERT INTO setting VALUES ('versionRc', '');

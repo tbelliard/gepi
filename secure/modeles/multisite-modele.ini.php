@@ -24,7 +24,6 @@ nombase		= essai2
 pathname	= /gepi
 
 ;
-; @version $Id$
 ;
 ; Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane Boireau, Julien Jocal
 ;

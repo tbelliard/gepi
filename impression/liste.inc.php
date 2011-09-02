@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 */
 
 // Traitement des données pour une classe référencée par id_classe et id_periode

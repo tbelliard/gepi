@@ -3,7 +3,6 @@
 /**
  * Fichier qui permet de construire la barre de menu professeur
  * 
- * $Id$
  * 
  * Variables envoyées au gabarit : liens de la barre de menu prof
  * - $tbs_menu_prof = array(lien , texte)

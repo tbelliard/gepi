@@ -2,7 +2,6 @@
 /**
  * Ensemble des fonctions qui permettent d'afficher les emplois du temps des salles
  *
- * @version $Id: fonctions_edt_salle.php $
  *
  * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

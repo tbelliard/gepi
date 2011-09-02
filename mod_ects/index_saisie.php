@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: saisie_avis.php 2147 2008-07-23 09:01:04Z tbelliard $
  *
  * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

@@ -1,5 +1,4 @@
 <?php
-// $version : $Id$
 // on force la valeur de magic_quotes_runtime à off de façon à ce que les valeurs récupérées dans la base
 // puissent être affichées directement, sans caractère "\"
 @set_magic_quotes_runtime(0);

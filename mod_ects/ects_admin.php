@@ -1,6 +1,5 @@
 <?php
 /*
- * @version: $Id: discipline_admin.php 2554 2008-10-12 14:49:29Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

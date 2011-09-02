@@ -2,7 +2,6 @@
 /**
  * calcul de la moyenne générale
  * 
- * $Id$
  * 
  * Script à appeler dans le code
  * 

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id$
  *
 */
 $InlineImages = "png|jpg|gif";

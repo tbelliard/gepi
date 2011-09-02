@@ -9,7 +9,6 @@
  *
  * @author Hans Zandbelt, SURFnet BV. <hans.zandbelt@surfnet.nl>
  * @package simpleSAMLphp
- * @version $Id$
  */
 
 require_once('../../_include.php');

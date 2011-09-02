@@ -1,7 +1,6 @@
 <?php
 
 	/*
-		$Id$
 	*/
 	// graphe_svg.php
 

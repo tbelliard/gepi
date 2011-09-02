@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id$
  *
  * Ensemble des fonctions qui renvoient la concordance pour le fichier txt
  * de l'import des EdT.

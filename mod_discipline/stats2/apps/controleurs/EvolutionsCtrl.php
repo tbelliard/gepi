@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: GraphCtrl.php 4078 2010-02-06 18:37:19Z crob $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *

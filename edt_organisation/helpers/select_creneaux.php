@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id$
  * @copyright 2008
  *
  * Fichier qui renvoie un select des créneaux horaires de l'établissement

@@ -1,7 +1,6 @@
 <?php
 
 /*
-$Id$
 */
 
 function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode,$ine=""){

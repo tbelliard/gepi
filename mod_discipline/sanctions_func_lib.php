@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 */
 
 // Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()

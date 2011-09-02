@@ -3,7 +3,6 @@
 /**
  * Fichier qui permet de construire la barre de menu cpe des pages utilisant un gabarit
  * 
- * $Id: header_barre_cpe_template.php 7793 2011-08-16 17:39:17Z crob 
  * 
  * Variables envoyées au gabarit
  * - $tbs_menu_admin : liens de la barre de menu 
