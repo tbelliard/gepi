@@ -51,16 +51,16 @@ class AbsencesNotificationHelper {
     foreach ($eleve_col as $eleve) {
             $saisies_string_col = new PropelCollection();
             $saisies_col = AbsenceEleveSaisieQuery::create()->filterByEleveId($eleve->getIdEleve())
-                    ->useJTraitementSaisieEleveQuery()
+	    ->useJTraitementSaisieEleveQuery()
                     ->filterByATraitementId($notification->getAbsenceEleveTraitement()->getId())->endUse()
-                    ->orderBy("DebutAbs", Criteria::ASC)
+		->orderBy("DebutAbs", Criteria::ASC)
                     ->find();
             foreach ($saisies_col as $saisie) {
 
                 $str = $saisie->getDateDescription();
                 $str.= ', cours de '.$saisie->getGroupeNameAvecClasses();
                 $saisies_string_col->append($str);
-                
+
             }
             $TBS->MergeBlock('saisies_string_eleve_id_'.$eleve->getIdEleve(), $saisies_string_col);
     }
