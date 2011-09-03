@@ -1983,10 +1983,11 @@ elseif($step==2) {
 	//$nature="";
 
 	$DisciplineNaturesRestreintes=getSettingValue('DisciplineNaturesRestreintes');
-
+	//echo "\$DisciplineNaturesRestreintes=$DisciplineNaturesRestreintes<br />";
 	if($etat_incident!='clos') {
 		$saisie_nature_libre="y";
 		if($DisciplineNaturesRestreintes==2) {
+			/*
 			// On limite les natures d'incident au contenu de s_categories
 			$sql="SELECT DISTINCT categorie FROM s_categories ORDER BY categorie;";
 			$res_cat=mysql_query($sql);
@@ -2000,8 +2001,24 @@ elseif($step==2) {
 					echo ">$lig_cat->categorie</option>\n";
 				}
 				echo "</select>\n";
-
 			}
+			*/
+
+			// On limite les natures d'incident au contenu de s_natures
+			$sql="SELECT DISTINCT nature FROM s_natures WHERE nature!='' ORDER BY nature;";
+			$res_nat=mysql_query($sql);
+			if(mysql_num_rows($res_nat)>0) {
+				$saisie_nature_libre="n";
+
+				echo "<select name='nature' id='nature'>\n";
+				while($lig_nat=mysql_fetch_object($res_nat)) {
+					echo "<option value=\"$lig_nat->nature\"";
+					if($lig_nat->nature==$nature) {echo " selected='selected'";}
+					echo ">$lig_nat->nature</option>\n";
+				}
+				echo "</select>\n";
+			}
+
 		}
 
 		if($saisie_nature_libre=="y") {

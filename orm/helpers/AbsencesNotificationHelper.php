@@ -48,19 +48,22 @@ class AbsencesNotificationHelper {
     //merge des saisies pour modèles du type 1.5.3
     $TBS->MergeBlock('el_col',$eleve_col);
 
-    if ($notification->getAbsenceEleveTraitement() != null) {
-	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-	    ->useJTraitementSaisieEleveQuery()
-	    ->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
-		->orderBy("DebutAbs", Criteria::ASC)
-		->find()';
-    } else {
-	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-	    ->where(0 <> 0)->find()';
+    foreach ($eleve_col as $eleve) {
+            $saisies_string_col = new PropelCollection();
+            $saisies_col = AbsenceEleveSaisieQuery::create()->filterByEleveId($eleve->getIdEleve())
+                    ->useJTraitementSaisieEleveQuery()
+                    ->filterByATraitementId($notification->getAbsenceEleveTraitement()->getId())->endUse()
+                    ->orderBy("DebutAbs", Criteria::ASC)
+                    ->find();
+            foreach ($saisies_col as $saisie) {
+
+                $str = $saisie->getDateDescription();
+                $str.= ', cours de '.$saisie->getGroupeNameAvecClasses();
+                $saisies_string_col->append($str);
+                
+            }
+            $TBS->MergeBlock('saisies_string_eleve_id_'.$eleve->getIdEleve(), $saisies_string_col);
     }
-
-    $TBS->MergeBlock('saisies', 'php', $query_string);
-
 
     $heure_demi_journee = 11;
     $minute_demi_journee = 50;

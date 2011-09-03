@@ -42,7 +42,12 @@ include "../lib/periodes.inc.php";
 
 $msg_complement="";
 
-$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
+$sql="SELECT classe FROM classes WHERE id = '$id_classe';";
+$call_classe = mysql_query($sql);
+if(mysql_num_rows($call_classe)==0) {
+	echo "La classe n°$id_classe (id_classe) n'existe pas.<br />\n";
+	die();
+}
 $classe = mysql_result($call_classe, "0", "classe");
 
 if (isset($is_posted) and ($is_posted == 1)) {

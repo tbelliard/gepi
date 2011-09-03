@@ -71,7 +71,7 @@ if (isset($is_posted)) {
 		// Récupération du numéro de l'élève dans les saisies:
 		$num_eleve=-1;
 		for($i=0;$i<count($log_eleve);$i++){
-			if($login_eleve==$log_eleve[$i]){
+			if(strtolower($login_eleve)==strtolower($log_eleve[$i])){
 				$num_eleve=$i;
 				break;
 			}
@@ -194,17 +194,22 @@ if (isset($is_posted)) {
 	$autorisation_sup = 'yes';
 	while ($k < $nombreligne){
 		$eleve_login = mysql_result($call_eleves, $k, "login");
+		//echo "<p>\$eleve_login=$eleve_login et ";
 
 		//=========================
 		// AJOUT: boireaus 20071003
 		// Récupération du numéro de l'élève dans les saisies:
 		$num_eleve=-1;
 		for($i=0;$i<count($log_eleve);$i++){
-			if($eleve_login==$log_eleve[$i]){
+			//if($eleve_login==$log_eleve[$i]){
+			if(strtolower($eleve_login)==strtolower($log_eleve[$i])) {
+				//echo " strtolower(".$log_eleve[$i].")=".strtolower($log_eleve[$i])." ";
 				$num_eleve=$i;
 				break;
 			}
 		}
+		//echo "\$num_eleve=$num_eleve<br />";
+
 		if($num_eleve!=-1){
 			$delete=isset($_POST['delete_'.$num_eleve]) ? $_POST['delete_'.$num_eleve] : NULL;
 

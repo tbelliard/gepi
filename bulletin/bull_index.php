@@ -1853,10 +1853,12 @@ else {
 
 			// Récupérer l'effectif de la classe,...
 			$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$periode_num';";
+			//echo "\$sql=$sql<br />\n";
 			$res_eff_classe=mysql_query($sql);
 			//$lig_eff_classe=mysql_fetch_object($res_eff_classe);
 			$eff_classe=mysql_num_rows($res_eff_classe);
 			//echo "<p>Effectif de la classe: $eff_classe</p>\n";
+			//echo "\$eff_classe=$eff_classe<br />\n";
 
 			if($eff_classe==0) {
 				echo "<p>La classe '$classe' est vide sur la période '$periode_num'.<br />Il n'est pas possible de poursuivre.</p>\n";
@@ -1972,6 +1974,8 @@ else {
 
 			// Variables simples
 			$tab_bulletin[$id_classe][$periode_num]['eff_classe']=$eff_classe;
+			//echo "\$eff_classe=$eff_classe<br />\n";
+			//echo "\$tab_bulletin[$id_classe][$periode_num]['eff_classe']=".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."<br />\n";
 
 			// Effectif total sur l'année pour pouvoir parcourir tout $tab_rel pour intercaler bulletin/relevé
 			$tab_bulletin[$id_classe][$periode_num]['eff_total_classe']=$eff_total_classe;
@@ -2967,7 +2971,9 @@ else {
 		/*****************************************
 		* début de la génération du fichier PDF  *
 		* ****************************************/
-		send_file_download_headers('application/pdf','bulletin.pdf');
+		if((!isset($bull_pdf_debug))||($bull_pdf_debug!='y')) {
+			send_file_download_headers('application/pdf','bulletin.pdf');
+		}
 		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
 		$pdf=new bul_PDF('p', 'mm', 'A4');
 		$nb_eleve_aff = 1;
@@ -3026,9 +3032,19 @@ else {
 			unset($rg);
 			//$tri_par_etab_orig="y";
 			if($tri_par_etab_orig=='y') {
-				for($k=0;$k<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$k++) {
+				//echo "count(\$tab_bulletin[$id_classe][$periode_num]['eleve'])=".count($tab_bulletin[$id_classe][$periode_num]['eleve'])."<br />\n";
+				//echo "count(\$tab_bulletin[$id_classe][$periode_num]['eff_classe'])=".count($tab_bulletin[$id_classe][$periode_num]['eff_classe'])."<br />\n";
+				//for($k=0;$k<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$k++) {
+				for($k=0;$k<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$k++) {
 					$rg[$k]=$k;
-					$tmp_tab[$k]=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
+					//echo "\$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['nom']=".$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['nom']."<br />\n";
+					//echo "\$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id']=".$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id']."<br />\n";
+					if(!isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$k])) {
+						$tmp_tab[$k]="";
+					}
+					else {
+						$tmp_tab[$k]=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
+					}
 				}
 				array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
 			}
@@ -3041,7 +3057,8 @@ else {
 
 				if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
 					//if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'])) {
-					if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'])) {
+					if((isset($rg[$i]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
+					//if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
 
 						//if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
 						if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
@@ -3191,7 +3208,15 @@ On a aussi ajouté des champs dans la table 'classes' pour les relevés de notes,.
 elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
 	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
-	$pdf->Output($nom_bulletin,'I');
+
+	//echo "\$bull_pdf_debug=$bull_pdf_debug<br />\n";
+	if((isset($bull_pdf_debug))&&($bull_pdf_debug=='y')) {
+		echo $pdf->Output($nom_bulletin,'S');
+		die();
+	}
+	else {
+		$pdf->Output($nom_bulletin,'I');
+	}
 }
 
 ?>
