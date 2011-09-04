@@ -217,6 +217,9 @@ require_once("../lib/header.inc");
 require_once("../init_xml2/init_xml_lib.php");
 
 //debug_var();
+if(getSettingValue('maj_import2_debug_var')=='y') {
+	debug_var();
+}
 
 if(isset($step)) {
 	if(($step==0)||
