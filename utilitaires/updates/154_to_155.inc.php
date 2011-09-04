@@ -748,7 +748,19 @@ if (file_exists($test_file)) {
     }else{
        $result.=msj_ok(" Réussi !"); 
     }
-}             
+}
 
+$result.="<br />";
+$result.="<br />";
+$result.="<strong>Module discipline :</strong>";
+$result.="<br />";
+$result.="Extension du champ 'nature' de la table 's_natures' :";
+$result_inter = traite_requete("ALTER TABLE s_natures CHANGE nature nature VARCHAR( 255 ) NOT NULL DEFAULT '';");
+if ($result_inter == '') {
+	$result.=msj_ok(" Ok !");
+} else {
+	$result.=msj_erreur(" !".$result_inter);
+}
+$result.="<br />";
 
 ?>
