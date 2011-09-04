@@ -148,6 +148,11 @@ echo "</p>";
 
 <div style="text-align:center">
     <h2>Définition des types d'absence</h2>
+    <p>
+        <span style="font-weight: bold;">Attention :</span> Associer un type à une saisie implique la création d'un traitement de cette saisie.<br />
+        Pour éviter une multiplicité des traitements pour une saisie, il peut être intéressant de limiter les statuts pouvant saisir un type.<br />
+        Par exemple si l'on souhaite que seul la vie scolaire crée le traitement absence ou retard on n'affectera pas ces types au statut professeur.        
+    </p>
 <?php if ($action == "ajouter" OR $action == "modifier" OR $action == "supprimer_statut") { ?>
 <div style="text-align:center">
     <?php
