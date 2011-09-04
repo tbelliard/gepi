@@ -39,9 +39,12 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include "../lib/periodes.inc.php";
 
 $msg_complement="";
+
+if(getSettingValue('classes_ajout_debug_var')=='y') {
+	debug_var();
+}
 
 $sql="SELECT classe FROM classes WHERE id = '$id_classe';";
 $call_classe = mysql_query($sql);
@@ -50,6 +53,8 @@ if(mysql_num_rows($call_classe)==0) {
 	die();
 }
 $classe = mysql_result($call_classe, "0", "classe");
+
+include "../lib/periodes.inc.php";
 
 if (isset($is_posted) and ($is_posted == 1)) {
 	check_token();
