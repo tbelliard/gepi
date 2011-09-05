@@ -2,5 +2,5 @@
 <ruleset name="gepi">
  <description>Standard de codage pour gepi</description>
  <exclude-pattern>*/build/*</exclude-pattern>
- <rule ref="PHPCS"/>
+ <rule ref="PEAR"/>
 </ruleset>
