@@ -11,7 +11,7 @@ temp
 !/documents/archives/index.php
 !/documents/index.html
 *.log
-lib/standalone/HTMLPurifier/DefinitionCache/
+lib/standalone/HTMLPurifier/DefinitionCache/Serializer/HTML
 
 # Ignore dev files
 .settings
