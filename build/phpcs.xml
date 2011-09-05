@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ruleset name="gepi">
+ <description>Standard de codage pour gepi</description>
+ <exclude-pattern>*/build/*</exclude-pattern>
+ <rule ref="PHPCS"/>
+</ruleset>
