@@ -1,5 +1,5 @@
 <?php
-	
+	/*
 		Fichier destiné à stocker des portions de texte susceptibles d'être appelées dans diverses pages.
 		Exemple:
 			require("../lib/textes.inc.php");

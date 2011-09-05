@@ -1,5 +1,5 @@
 <?php
-*
+/*
 * Copyright 2001, 2008 Thomas Belliard
 *
 * This file is part of GEPI.
