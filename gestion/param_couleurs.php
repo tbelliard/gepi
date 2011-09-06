@@ -521,7 +521,7 @@ fieldset#login_box div#header {
 
 #menu_barre {
 	/*background-color: #$degrade_bas;*/
-	/*position:relative;*/
+	position:relative;
 	background-image: url(\"./images/background/degrade1_very_small.png\");
 }
 .menu_barre_bottom {
