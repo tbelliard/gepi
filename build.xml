@@ -55,6 +55,8 @@
    <arg value="${basedir}/build/phpmd.xml" />
    <arg value="--reportfile" />
    <arg value="${basedir}/build/logs/pmd.xml" />
+   <arg value="--exclude" />
+   <arg value="lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
   </exec>
  </target>
 
@@ -63,6 +65,8 @@
   <exec executable="phpcpd">
    <arg value="--log-pmd" />
    <arg value="${basedir}/build/logs/pmd-cpd.xml" />
+   <arg value="--exclude" />
+   <arg value="lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
    <arg path="${source}" />
   </exec>
  </target>
@@ -88,26 +92,54 @@
 
  <target name="phpdoc"
          description="Generate API documentation using PHPDocumentor">
-  <exec executable="phpdoc">
-   <arg value="--directory" />
+
+  <exec executable="${basedir}/build/phpdoc_subdirectories.sh">
    <arg path="${source}" />
-   <arg value="--target" />
-   <arg path="${basedir}/build/api" />
   </exec>
  </target>
 
  <target name="phpcb"
          description="Aggregate tool output with PHP_CodeBrowser">
-  <exec executable="phpcb">
-   <arg value="--log" />
-   <arg path="${basedir}/build/logs" />
-   <arg value="--source" />
+  <exec executable="${basedir}/build/phpcb_subdirectories.sh">
    <arg path="${source}" />
-   <arg value="--output" />
-   <arg path="${basedir}/build/code-browser" />
   </exec>
  </target>
 
+ <target name="version_replace">
+  <property environment="env" />
+  <exec executable="sed">
+   <arg value="-i" />
+   <arg value='s/$gepiVersion = "".*/$gepiVersion = "${env.GIT_BRANCH}";/g' />
+   <arg value="${source}/lib/global.inc.php" />
+  </exec>
+
+  <exec executable="sed">
+   <arg value="-i" />
+   <arg value='s/$gepiSvnVersion = "".*/$gepiVersion = "${env.GIT_COMMIT} ${env.BUILD_TAG}";/g' />
+   <arg value="${source}/lib/global.inc.php" />
+  </exec>
+
+  <exec executable="sed">
+   <arg value="-i" />
+   <arg value='s/$gepiGitCommit = "".*/$gepiGitCommit = "${env.GIT_COMMIT}";/g' />
+   <arg value="${source}/lib/global.inc.php" />
+  </exec>
+
+ </target>
+
+ <target name="tarball" description="Make a tarball from src files" depend="version_replace">
+  <echo message="taring ${source}"/>
+
+  <tar destfile="${basedir}/build/${env.JOB_NAME}-${env.BUILD_ID}.tar.gz" compression="gzip">
+     <tarfileset dir="${source}"
+                preserveLeadingSlashes="true">
+      <exclude name="build/**"/>
+      <exclude name="tests/**"/>
+      <exclude name=".git/**"/>
+    </tarfileset>
+  </tar>
+ </target>
+
  <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->
- <target name="build" depends="clean,phpcpd,phploc"/>
+ <target name="build" depends="clean,phpmd,phpcpd,phploc,phpdoc,phpcb,tarball"/>
 </project>
