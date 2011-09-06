@@ -127,7 +127,7 @@
 
  </target>
 
- <target name="tarball" description="Make a tarball from src files" depend="version_replace">
+ <target name="tarball" description="Make a tarball from src files" depends="version_replace">
   <echo message="taring ${source}"/>
 
   <tar destfile="${basedir}/build/${env.JOB_NAME}-${env.BUILD_ID}.tar.gz" compression="gzip">
