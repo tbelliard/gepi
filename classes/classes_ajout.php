@@ -46,6 +46,13 @@ if(getSettingValue('classes_ajout_debug_var')=='y') {
 	debug_var();
 }
 
+if(getSettingValue('classes_ajout_sans_regime_ni_doublant')=='y') {
+	$classes_ajout_sans_regime_ni_doublant="y";
+}
+else {
+	$classes_ajout_sans_regime_ni_doublant="n";
+}
+
 $sql="SELECT classe FROM classes WHERE id = '$id_classe';";
 $call_classe = mysql_query($sql);
 if(mysql_num_rows($call_classe)==0) {
@@ -129,14 +136,16 @@ if (isset($is_posted) and ($is_posted == 1)) {
 				$reg_doublant=isset($doublant_eleve[$num_eleve]) ? $doublant_eleve[$num_eleve] : NULL;
 				//=========================
 
-				$call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
-				$nb_test_regime = mysql_num_rows($call_regime);
-				if ($nb_test_regime == 0) {
-					$reg_data = mysql_query("INSERT INTO j_eleves_regime SET login='$login_eleve', doublant='$reg_doublant', regime='$reg_regime'");
-					if (!($reg_data)) $reg_ok = 'no';
-				} else {
-					$reg_data = mysql_query("UPDATE j_eleves_regime SET doublant = '$reg_doublant', regime = '$reg_regime'  WHERE login='$login_eleve'");
-					if (!($reg_data)) $reg_ok = 'no';
+				if((isset($reg_regime))&&(isset($reg_doublant))) {
+					$call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
+					$nb_test_regime = mysql_num_rows($call_regime);
+					if ($nb_test_regime == 0) {
+						$reg_data = mysql_query("INSERT INTO j_eleves_regime SET login='$login_eleve', doublant='$reg_doublant', regime='$reg_regime'");
+						if (!($reg_data)) $reg_ok = 'no';
+					} else {
+						$reg_data = mysql_query("UPDATE j_eleves_regime SET doublant = '$reg_doublant', regime = '$reg_regime'  WHERE login='$login_eleve'");
+						if (!($reg_data)) $reg_ok = 'no';
+					}
 				}
 			}
 			$i="1";
@@ -343,7 +352,7 @@ echo "function DecocheLigne(ki) {
 
 <form enctype="multipart/form-data" action="classes_ajout.php" name="form1" method=post>
 
-<p class=bold>
+<p class="bold">
 <a href="classes_const.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de gestion des élèves</a>
 
 <?php
@@ -397,7 +406,10 @@ if ($nombreligne == '0') {
 	$eleves_non_affectes = 'no';
 	echo "<table class='boireaus' cellpadding='5'>\n";
 	echo "<tr>\n";
-	echo "<th><p><b>Nom Prénom </b></p></th>\n<th><p><b>Régime</b></p></th>\n<th><p><b>Redoublant</b></p></th>\n";
+	echo "<th><p><b>Nom Prénom </b></p></th>\n";
+	if($classes_ajout_sans_regime_ni_doublant!="y") {
+		echo "<th><p><b>Régime</b></p></th>\n<th><p><b>Redoublant</b></p></th>\n";
+	}
 	$i="1";
 	while ($i < $nb_periode) {
 		echo "<th><p><b>Ajouter per. $i</b></p></th>\n";
@@ -498,26 +510,29 @@ if ($nombreligne == '0') {
 			echo "<input type='hidden' name='log_eleve[$ki]' value=\"$login_eleve\" />\n";
 			echo "<p>".strtoupper($nom_eleve)." $prenom_eleve</p></td>\n";
 
-			echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_eleve[$ki]' value='ext.'";
-			if ($regime == 'ext.') { echo " checked ";}
-			echo " onchange='changement()' />\n";
-			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='int.'";
-			if ($regime == 'int.') { echo " checked ";}
-			echo " onchange='changement()' />\n";
-			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='d/p' ";
-			if ($regime == 'd/p') { echo " checked ";}
-			echo " onchange='changement()' />\n";
-			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='i-e'";
-			if ($regime == 'i-e') { echo " checked ";}
-			echo " onchange='changement()' />\n";
-			//echo "</p></td><td><p><center><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
-			echo "</p></td>\n<td><p align='center'><input type='checkbox' name='doublant_eleve[$ki]' value='R'";
-			//=========================
-			if ($doublant == 'R') { echo " checked ";}
-			echo " onchange='changement()' />";
+			if($classes_ajout_sans_regime_ni_doublant!="y") {
+				echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_eleve[$ki]' value='ext.'";
+				if ($regime == 'ext.') { echo " checked ";}
+				echo " onchange='changement()' />\n";
+				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='int.'";
+				if ($regime == 'int.') { echo " checked ";}
+				echo " onchange='changement()' />\n";
+				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='d/p' ";
+				if ($regime == 'd/p') { echo " checked ";}
+				echo " onchange='changement()' />\n";
+				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='i-e'";
+				if ($regime == 'i-e') { echo " checked ";}
+				echo " onchange='changement()' />\n";
+				//echo "</p></td><td><p><center><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
+				echo "</p></td>\n<td><p align='center'><input type='checkbox' name='doublant_eleve[$ki]' value='R'";
+				//=========================
+				if ($doublant == 'R') { echo " checked ";}
+				echo " onchange='changement()' />";
+	
+				//echo "</center></p></td>";
+				echo "</p></td>\n";
+			}
 
-			//echo "</center></p></td>";
-			echo "</p></td>\n";
 			$i="1";
 			while ($i < $nb_periode) {
 				echo "<td><p align='center'>";
