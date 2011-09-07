@@ -1056,7 +1056,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		*/
 
 		# On interroge la base de données
-		$query = mysql_query("SELECT nom, prenom, email, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");
+		$query = mysql_query("SELECT login, nom, prenom, email, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");
 
 		# Est-ce qu'on a bien une entrée ?
 		if (mysql_num_rows($query) != "1") {
@@ -1070,9 +1070,16 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		$row = mysql_fetch_object($query);
 
 	    $_SESSION['login'] = $this->login;
+		if(getSettingValue('casse_login_d_apres_base')=='y') {
+			if ($row->login != null) {
+					$_SESSION['login'] = $row->login;
+			} else {
+					$_SESSION['login'] = $this->login;
+			}
+		}
 	    $_SESSION['prenom'] = $row->prenom;
 	    $_SESSION['nom'] = $row->nom;
-      $_SESSION['email'] = $row->email;
+		$_SESSION['email'] = $row->email;
 	    $_SESSION['statut'] = $row->statut;
 	    $_SESSION['start'] = $row->start;
 	    $_SESSION['matiere'] = $matiere_principale;

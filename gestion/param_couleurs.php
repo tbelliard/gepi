@@ -519,23 +519,10 @@ fieldset#login_box div#header {
 }
 
 #menu_barre {
-	/*background-color: #$degrade_bas;*/
-	position:relative;
 	background-image: url(\"./images/background/degrade1_very_small.png\");
 }
 .menu_barre_bottom {
-	position:absolute;
-	bottom:0px;
-	width:100%;
-	height:50%;
 	background-color: #$degrade_haut;
-}
-.menu_barre_container {
-	position:absolute;
-	top:0px;
-	left:0px;
-	width:100%;
-	height:100%;
 }
 /* ul ul pour ne masquer par défaut que les sous-menus */
 #menu_barre ul ul {
