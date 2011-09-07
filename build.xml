@@ -118,7 +118,7 @@
 
   <exec executable="sed">
    <arg value="-i" />
-   <arg value='s/$gepiSvnVersion = "".*/$gepiVersion = "${env.GIT_COMMIT} ${env.BUILD_TAG}";/g' />
+   <arg value='s/$gepiSvnRev = "".*/$gepiSvnRev = "${env.GIT_COMMIT} ${env.BUILD_TAG}";/g' />
    <arg value="${source}/lib/global.inc.php" />
   </exec>
 
@@ -135,7 +135,7 @@
 
   <tar destfile="${basedir}/build/${env.JOB_NAME}-${env.BUILD_ID}.tar.gz" compression="gzip">
      <tarfileset dir="${source}"
-                preserveLeadingSlashes="true">
+                preserveLeadingSlashes="true" prefix="gepi">
       <exclude name="build/**"/>
       <exclude name="tests/**"/>
       <exclude name=".git/**"/>
@@ -144,5 +144,5 @@
  </target>
 
  <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->
- <target name="build" depends="clean,phpmd,phpcpd,phploc,phpdoc,phpcb,tarball"/>
+ <target name="build" depends="clean,phpcpd,phploc,phpdoc,phpcb,tarball"/>
 </project>
