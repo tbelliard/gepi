@@ -110,7 +110,7 @@
    <arg path="${source}" />
    <arg value="--output" />
    <arg path="${basedir}/build/code-browser" />
-  </target>
+  </exec>
  </target>
 
  <target name="version_replace">
