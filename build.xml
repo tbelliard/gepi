@@ -103,9 +103,14 @@
 
  <target name="phpcb"
          description="Aggregate tool output with PHP_CodeBrowser">
-  <exec executable="${basedir}/build/phpcb_subdirectories.sh">
+  <exec executable="phpcb">
+   <arg value="--log" />
+   <arg path="${basedir}/build/logs" />
+   <arg value="--source" />
    <arg path="${source}" />
-  </exec>
+   <arg value="--output" />
+   <arg path="${basedir}/build/code-browser" />
+  </target>
  </target>
 
  <target name="version_replace">
