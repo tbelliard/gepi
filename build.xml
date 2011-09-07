@@ -112,7 +112,7 @@
   <property environment="env" />
   <exec executable="sed">
    <arg value="-i" />
-   <arg value='s/$gepiVersion = "".*/$gepiVersion = "${env.GIT_BRANCH}";/g' />
+   <arg value='s/$gepiVersion = "".*/$gepiVersion = "${env.GIT_BRANCH} ${env.BUILD_ID}";/g' />
    <arg value="${source}/lib/global.inc.php" />
   </exec>
 
