@@ -101,17 +101,24 @@
          description="Generate API documentation using PHPDocumentor">
   <exec executable="phpdoc">
    <arg value="--directory" />
-   <arg path="${source}" />
+   <arg path="${source}/lib" />
    <arg value="--target" />
-   <arg path="${basedir}/../tmp/api" />
-   <arg value="--ignore" />
-   <arg value="build" />
+   <arg path="${basedir}/api/lib" />
+   <!--arg value="--ignore" />
+   <arg value="*/build/*,*/simplesaml/*,*/ckeditor/*,*/artishow/*,*/fpdf/*,*/fckeditor/*,*/lib/standalone/*" /-->
    <arg value="--output" />
-   <arg value="HTML:Smarty:PHP" />
+   <arg value="HTML:frames:earthli" />
   </exec>
-  <move todir="${basedir}/buid/api">
-	<fileset dir="${basedir}/../tmp/api"/>
-  </move>
+  <exec executable="phpdoc">
+   <arg value="--directory" />
+   <arg path="${source}/orm" />
+   <arg value="--target" />
+   <arg path="${basedir}/api/orm" />
+   <!--arg value="--ignore" />
+   <arg value="*/build/*,*/simplesaml/*,*/ckeditor/*,*/artishow/*,*/fpdf/*,*/fckeditor/*,*/lib/standalone/*" /-->
+   <arg value="--output" />
+   <arg value="HTML:frames:earthli" />
+  </exec>
  </target>
 
  <target name="phpcb"
