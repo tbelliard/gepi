@@ -10,6 +10,17 @@ $config = array (
 	/**
 	 * Setup the following parameters to match the directory of your installation.
 	 * See the user manual for more details.
+	 *
+	 * Valid format for baseurlpath is:
+	 * [(http|https)://(hostname|fqdn)[:port]]/[path/to/simplesaml/]
+	 * (note that it must end with a '/')
+	 *
+	 * The full url format is useful if your simpleSAMLphp setup is hosted behind
+	 * a reverse proxy. In that case you can specify the external url here.
+	 *
+	 * Please note that simpleSAMLphp will then redirect all queries to the
+	 * external url, no matter where you come from (direct access or via the
+	 * reverse proxy).
 	 */
 	'baseurlpath'           => 'gepi/lib/simplesaml/www/', //voir configuration automatique à la fin de ce fichier
 	'certdir'               => 'cert/',
@@ -495,6 +506,17 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 $str = $gepiPath;
 //si le premier caractère est un / on le prend pas en compte
 if (substr($str,0,1) == '/') {
-	$str = substr($str,1);
+       $str = substr($str,1);
 }
-$config['baseurlpath'] = $str.'/lib/simplesaml/www/';
+// Le dernier caractère doit être un / si on a un chemin non null
+if (strlen($str) > 0 and substr($str, 0, -1) != '/') {
+       $str .= '/';
+}
+$hoststr = '';
+if (isset($gepiBaseUrl)) {
+       $hoststr = $gepiBaseUrl;
+       if (substr($hoststr,0,-1) != '/') {
+               $hoststr .= '/';
+       }
+}
+$config['baseurlpath'] = $hoststr.$str.'lib/simplesaml/www/';
