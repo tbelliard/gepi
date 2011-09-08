@@ -124,7 +124,7 @@ include('menu_bilans.inc.php');
     <button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Changer</button></h2>
 
 	<p>Vous devez choisir un cr&eacute;neau pour visionner les absents
-	<select dojoType="dijit.form.Select"  name="choix_creneau" onchange='document.choix_du_creneau.submit();'>
+	<select dojoType="dijit.form.Select"  id="choix_creneau" name="choix_creneau" onchange='document.choix_du_creneau.submit();'>
 		<option value="rien">Choix du cr&eacute;neau</option>
 <?php
 	foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edtCreneau)	 {
@@ -146,8 +146,8 @@ foreach ($creneau_col as $creneau) {
 	    $color_selected = 'style="color: red; font-weight: bold;"';
     }else{
 	    $color_selected = '';
-    }
-    echo '<a href="" '.$color_selected.' onclick="document.choix_du_creneau.choix_creneau.selectedIndex = '.($creneau_col->getPosition() + 1).'; document.choix_du_creneau.submit(); return false;">'.$creneau->getNomDefiniePeriode();
+    }    
+    echo '<a href="" '.$color_selected.' onclick="dijit.byId(\'choix_creneau\').attr(\'value\',String('.($creneau->getIdDefiniePeriode()).')); document.choix_du_creneau.submit(); return false;">'.$creneau->getNomDefiniePeriode();
     echo '</a>';
     if (!$creneau_col->isLast()) {
 	echo '&nbsp;-&nbsp;';
