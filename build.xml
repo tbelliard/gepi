@@ -100,10 +100,14 @@
  <target name="phpdoc"
          description="Generate API documentation using PHPDocumentor">
   <exec executable="phpdoc">
-   <arg value="-d ${source}" />
-   <arg value="-t ${basedir}/../tmp/api" />
-   <arg value="-i build" />
-   <arg value="-o HTML:Smarty:PHP" />
+   <arg value="--directory" />
+   <arg path="${source}" />
+   <arg value="--target" />
+   <arg path="${basedir}/../tmp/api" />
+   <arg value="--ignore" />
+   <arg value="build" />
+   <arg value="--output" />
+   <arg value="HTML:Smarty:PHP" />
   </exec>
   <move todir="${basedir}/buid/api">
 	<fileset dir="${basedir}/../tmp/api"/>
