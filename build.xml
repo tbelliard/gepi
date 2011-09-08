@@ -106,8 +106,8 @@
    <arg path="${basedir}/api/lib" />
    <!--arg value="-i" />
    <arg value="*/build/*,*/simplesaml/*,*/ckeditor/*,*/artishow/*,*/fpdf/*,*/fckeditor/*,*/lib/standalone/*" /-->
-   <arg value="--output" />
-   <arg value="HTML:frames:earthli" />
+   <!--arg value="-o" />
+   <arg value="HTML:frames:earthli" /-->
   </exec>
   <exec executable="phpdoc">
    <arg value="--directory" />
@@ -116,8 +116,8 @@
    <arg path="${basedir}/api/orm" />
    <!--arg value="-i" />
    <arg value="*/build/*,*/simplesaml/*,*/ckeditor/*,*/artishow/*,*/fpdf/*,*/fckeditor/*,*/lib/standalone/*" /-->
-   <arg value="--output" />
-   <arg value="HTML:frames:earthli" />
+   <!--arg value="-o" />
+   <arg value="HTML:frames:earthli" /-->
   </exec>
  </target>
 
