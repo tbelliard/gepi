@@ -392,6 +392,13 @@
 							}
 						}
 
+						//if(count($eleves)==0) {
+						if(!isset($eleves)) {
+							echo "<p style='color:red'>Les classes d'affectation des élèves ne sont pas définies dans le fichier XML.<br />Votre secrétaire n'a pas encore remonté cette information dans Sconet... ou bien la remontée n'est pas encore prise en compte dans les XML.<br />Pendant un temps, la saisie n'était prise en compte dans les XML que le lendemain de la saisie.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
 						$nb_err=0;
 						// $cpt: Identifiant id_tempo
 						$id_tempo=1;
