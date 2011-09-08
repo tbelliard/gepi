@@ -6,6 +6,8 @@
  <target name="clean"
          description="Clean up and create artifact directories">
   <delete dir="${basedir}/build/api"/>
+  <delete dir="${basedir}/build/api/lib"/>
+  <delete dir="${basedir}/build/api/orm"/>
   <delete dir="${basedir}/build/code-browser"/>
   <delete dir="${basedir}/build/coverage"/>
   <delete dir="${basedir}/build/logs"/>
