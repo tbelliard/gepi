@@ -104,7 +104,7 @@
    <arg path="${source}/lib" />
    <arg value="--target" />
    <arg path="${basedir}/api/lib" />
-   <!--arg value="--ignore" />
+   <!--arg value="-i" />
    <arg value="*/build/*,*/simplesaml/*,*/ckeditor/*,*/artishow/*,*/fpdf/*,*/fckeditor/*,*/lib/standalone/*" /-->
    <arg value="--output" />
    <arg value="HTML:frames:earthli" />
@@ -114,7 +114,7 @@
    <arg path="${source}/orm" />
    <arg value="--target" />
    <arg path="${basedir}/api/orm" />
-   <!--arg value="--ignore" />
+   <!--arg value="-i" />
    <arg value="*/build/*,*/simplesaml/*,*/ckeditor/*,*/artishow/*,*/fpdf/*,*/fckeditor/*,*/lib/standalone/*" /-->
    <arg value="--output" />
    <arg value="HTML:frames:earthli" />
