@@ -10,6 +10,7 @@
   <delete dir="${basedir}/build/coverage"/>
   <delete dir="${basedir}/build/logs"/>
   <delete dir="${basedir}/build/pdepend"/>
+  <delete dir="${basedir}/../tmp"/>
   <delete>
     <fileset dir="${basedir}/build" includes="*.tar.gz"/>
   </delete>
@@ -19,6 +20,7 @@
   <mkdir dir="${basedir}/build/coverage"/>
   <mkdir dir="${basedir}/build/logs"/>
   <mkdir dir="${basedir}/build/pdepend"/>
+  <mkdir dir="${basedir}/../tmp/api"/>
  </target>
 
  <!--target name="phpunit"
@@ -98,13 +100,14 @@
  <target name="phpdoc"
          description="Generate API documentation using PHPDocumentor">
   <exec executable="phpdoc">
-   <arg value="--directory" />
-   <arg path="${source}" />
-   <arg value="--target" />
-   <arg path="${basedir}/build/api" />
-   <arg value="--ignore" />
-   <arg value="build" />
+   <arg value="-d ${source}" />
+   <arg value="-t ${basedir}/../tmp/api" />
+   <arg value="-i build" />
+   <arg value="-o HTML:Smarty:PHP" />
   </exec>
+  <move todir="${basedir}/buid/api">
+	<fileset dir="${basedir}/../tmp/api"/>
+  </move>
  </target>
 
  <target name="phpcb"
