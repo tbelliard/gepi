@@ -59,7 +59,7 @@
    <arg value="--reportfile" />
    <arg value="${basedir}/build/logs/pmd.xml" />
    <arg value="--exclude" />
-   <arg value="lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
+   <arg value="build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
   </exec>
  </target>
 
@@ -69,7 +69,7 @@
    <arg value="--log-pmd" />
    <arg value="${basedir}/build/logs/pmd-cpd.xml" />
    <arg value="--exclude" />
-   <arg value="lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
+   <arg value="build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
    <arg path="${source}" />
   </exec>
  </target>
@@ -79,6 +79,8 @@
   <exec executable="phploc">
    <arg value="--log-csv" />
    <arg value="${basedir}/build/logs/phploc.csv" />
+   <arg value="--exclude" />
+   <arg value="build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
    <arg path="${source}" />
   </exec>
  </target>
@@ -95,9 +97,13 @@
 
  <target name="phpdoc"
          description="Generate API documentation using PHPDocumentor">
-
-  <exec executable="${basedir}/build/phpdoc_subdirectories.sh">
+  <exec executable="phpdoc">
+   <arg value="--directory" />
    <arg path="${source}" />
+   <arg value="--target" />
+   <arg path="${basedir}/build/api" />
+   <arg value="--ignore" />
+   <arg value="build" />
   </exec>
  </target>
 
@@ -143,5 +149,5 @@
  </target>
 
  <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->
- <target name="build" depends="clean,phpcpd,phploc,phpdoc,phpcb,tarball"/>
+ <target name="build" depends="clean,tarball,phpcpd,phploc,phpdoc,phpcb"/>
 </project>
