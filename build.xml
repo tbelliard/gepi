@@ -65,6 +65,8 @@
    <arg value="${basedir}/build/logs/pmd.xml" />
    <arg value="--exclude" />
    <arg value="build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
+   <arg value="--suffix" />
+   <arg value="php" />
   </exec>
  </target>
 
