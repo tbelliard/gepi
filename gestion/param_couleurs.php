@@ -1482,7 +1482,7 @@ echo add_token_field();
 									//echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onChange='delai_affichecouleur(\"".$tab[$i]."\")' onkeydown=\"clavier_2(this.id,event);\" />\n";
 
 									echo "<label for='id_".$tab[$i]."_".$comp[$j]."' class='invisible'>".$comp[$j]." fond ".$comp[$j]."</label>\n";
-									echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+									echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 									echo "</td>\n";
 								}
 
@@ -1607,7 +1607,7 @@ echo add_token_field();
 									*/
 									echo "<td>\n";
 									echo "<label for='id_".$tab_degrade[$i]."_".$comp[$j]."' class='invisible'>".($i+1)."$comp[$j] degrade ".($i+1)."</label>\n";
-										echo "<input type='text' name='".$tab_degrade[$i]."_".$comp[$j]."' id='id_".$tab_degrade[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_degrade[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_degrade[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+										echo "<input type='text' name='".$tab_degrade[$i]."_".$comp[$j]."' id='id_".$tab_degrade[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_degrade[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_degrade[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 
 									echo "</td>\n";
 								}
@@ -1723,7 +1723,7 @@ echo add_token_field();
 
 							echo "<td>\n";
 							echo "<label for='id_couleur_infobulle_fond_entete_".$comp[$j]."' class='invisible'>".$comp[$j]."E entête ".$comp[$j]."</label>\n";
-							echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+							echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 							echo "</td>\n";
 						}
 						//echo "<td id='couleur_infobulle_fond_entete'>\n";
@@ -1760,7 +1760,7 @@ echo add_token_field();
 
 								echo "<td>\n";
 									echo "<label for='id_couleur_infobulle_fond_corps_".$comp[$j]."' class='invisible'>".$comp[$j]."C corps ".$comp[$j]."</label>\n";
-									echo "<input type='text' name='couleur_infobulle_fond_corps_".$comp[$j]."' id='id_couleur_infobulle_fond_corps_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_corps'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_corps\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+									echo "<input type='text' name='couleur_infobulle_fond_corps_".$comp[$j]."' id='id_couleur_infobulle_fond_corps_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_corps'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_corps\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 								echo "</td>\n";
 							}
 							//echo "<td id='couleur_infobulle_fond_corps'>\n";
@@ -1854,7 +1854,7 @@ echo add_token_field();
 							for($j=0;$j<count($comp);$j++) {
 								echo "<td>\n";
 									echo "<label for='id_couleur_lig_entete_".$comp[$j]."' class='invisible'>".$comp[$j]." P lignes paires ".$comp[$j]."</label>\n";
-									echo "<input type='text' name='couleur_lig_entete_".$comp[$j]."' id='id_couleur_lig_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+									echo "<input type='text' name='couleur_lig_entete_".$comp[$j]."' id='id_couleur_lig_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 								echo "</td>\n";
 							}
 							echo "<td id='couleur_lig_entete'";
@@ -1879,7 +1879,7 @@ echo add_token_field();
 							for($j=0;$j<count($comp);$j++) {
 								echo "<td>\n";
 									echo "<label for='id_couleur_lig_alt1_".$comp[$j]."' class='invisible'>".$comp[$j]." P lignes paires ".$comp[$j]."</label>\n";
-									echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+									echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 								echo "</td>\n";
 							}
 							echo "<td id='couleur_lig_alt1'";
@@ -1904,7 +1904,7 @@ echo add_token_field();
 							for($j=0;$j<count($comp);$j++) {
 								echo "<td>\n";
 									echo "<label for='id_couleur_lig_alt_1_".$comp[$j]."' class='invisible'>".$comp[$j]." I lignes impaires ".$comp[$j]."</label>\n";
-									echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt_1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+									echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt_1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 								echo "</td>\n";
 							}
 							echo "<td id='couleur_lig_alt_1'";
@@ -1974,7 +1974,7 @@ echo add_token_field();
 					for($j=0;$j<count($comp);$j++) {
 						echo "<td>\n";
 							echo "<label for='id_couleur_fond_postit_".$comp[$j]."' class='invisible'>".$comp[$j]." Panneau ".$comp[$j]."</label>\n";
-							echo "<input type='text' name='couleur_fond_postit_".$comp[$j]."' id='id_couleur_fond_postit_".$comp[$j]."' value='".$tabcouleurs['couleur_fond_postit'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_fond_postit\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+							echo "<input type='text' name='couleur_fond_postit_".$comp[$j]."' id='id_couleur_fond_postit_".$comp[$j]."' value='".$tabcouleurs['couleur_fond_postit'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_fond_postit\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 						echo "</td>\n";
 					}
 					echo "<td id='couleur_fond_postit'";
@@ -2089,7 +2089,7 @@ echo add_token_field();
 								for($k=0;$k<count($comp);$k++) {
 									echo "<td>\n";
 								echo "<label for='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' class='invisible'>".$comp[$k]." ".$tab_ct_notice[$i]." ".$tab_ct_couleur_fond[$j]."</label>\n";
-								echo "<input type='text' name='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' value='".$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]][$comp[$k]]."' size='3' onblur='affichecouleur(\"".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n</td>\n";
+								echo "<input type='text' name='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."_".$comp[$k]."' value='".$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]][$comp[$k]]."' size='3' onblur='affichecouleur(\"".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n</td>\n";
 								}
 
 								//echo "<td id='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."'>";
@@ -2160,7 +2160,7 @@ echo add_token_field();
 						for($j=0;$j<count($comp);$j++) {
 							echo "<td>\n";
 								echo "<label for='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' class='invisible'>".$tab_ct_police_bordure[$i]."_".$comp[$j]."</label>\n";
-								echo "<input type='text' name='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' id='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_ct_police_bordure[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_ct_police_bordure[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+								echo "<input type='text' name='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' id='".$tab_ct_police_bordure[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_ct_police_bordure[$i]][$comp[$j]]."' size='3' onblur='affichecouleur(\"".$tab_ct_police_bordure[$i]."\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 							echo "</td>\n";
 						}
 					//echo "<td id='".$tab_ct_police_bordure[$i]."'>\n";
