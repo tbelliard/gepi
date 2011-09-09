@@ -72,7 +72,7 @@ for($i=0; $i<count($tab_select); $i++) {
 		$selected = "";
 	}
 	echo "
-			<option value='".$tab_select[$i]["login"]."'".$selected.">".$tab_select[$i]["nom"].' '.$tab_select[$i]["prenom"]."</option>
+			<option value='".$tab_select[$i]["login"]."'".$selected.">".strtoupper($tab_select[$i]["nom"]).' '.casse_mot($tab_select[$i]["prenom"],'majf2')."</option>
 		";
 
 }
