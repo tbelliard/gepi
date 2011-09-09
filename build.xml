@@ -45,9 +45,12 @@
  <target name="pdepend"
          description="Generate jdepend.xml and software metrics charts using PHP_Depend">
   <exec executable="pdepend">
+   <arg value="--suffix=php" />
    <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
    <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
    <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+   <arg value="--ignore=build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
+   <arg path="--without-annotations" />
    <arg path="${source}" />
   </exec>
  </target>
