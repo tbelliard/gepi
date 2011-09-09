@@ -76,6 +76,6 @@ class PeriodeNote {
 		return $result;
 	}
 
-
+}
 
 ?>
