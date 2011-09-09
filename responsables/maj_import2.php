@@ -599,7 +599,7 @@ else{
 				//===============================================================
 
 				if(!$res_copy){
-					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier <b>temp/$tempdir</b></p>\n";
 					// Il ne faut pas aller plus loin...
 					// SITUATION A GERER
 					require("../lib/footer.inc.php");
@@ -2388,7 +2388,7 @@ else{
 				echo "<p>Le parcours des différences est terminé.</p>\n";
 
 				echo "<input type='hidden' name='step' value='4' />\n";
-				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='".min($cpt_tab_ele_id_diff,10)."' size='3' /> sur $cpt_tab_ele_id_diff<br />\n";
+				echo "<p>Parcourir les différences par tranches de <input type='text' id='eff_tranche' name='eff_tranche' value='".min($cpt_tab_ele_id_diff,10)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur $cpt_tab_ele_id_diff<br />\n";
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
 				// On vide la table dont on va se resservir:
@@ -3066,7 +3066,7 @@ else{
 // RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
 
 									$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
-									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet.")."'>changement de classe</a>";
+									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>changement de classe</a> de $lig_clas1->classe vers $affiche[9]";
 									$info_action_destinataire="administrateur";
 									$info_action_mode="statut";
 									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -3409,7 +3409,7 @@ else{
 					// Si on fait des imports avec Sconet, l'ELENOET n'est pas vide.
 					// Et l'interface ne permet pas actuellement de saisir/corriger un ELE_ID
 					$sql_tmp="SELECT elenoet,login FROM eleves WHERE ele_id='$lig->ELE_ID';";
-					info_debug($sql);
+					info_debug($sql_tmp);
 					//echo "$sql_tmp<br />";
 					$res_tmp=mysql_query($sql_tmp);
 					if(mysql_num_rows($res_tmp)>0) {
@@ -3461,7 +3461,7 @@ else{
 						// La reconnaissance de 'modif' a dû se faire sur l'ELENOET
 						$sql_tmp="SELECT ele_id,login FROM eleves WHERE elenoet='$lig->ELENOET';";
 						//echo "$sql_tmp<br />";
-						info_debug($sql);
+						info_debug($sql_tmp);
 						$res_tmp=mysql_query($sql_tmp);
 						if(mysql_num_rows($res_tmp)>0) {
 							$lig_tmp=mysql_fetch_object($res_tmp);
@@ -5034,7 +5034,7 @@ else{
 						if ($nb_err != 0) {
 							echo "<p>Lors de l'enregistrement des données PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 						} else {
-							echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+							echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 
 							echo "<script type='text/javascript'>
 	/*
@@ -5205,7 +5205,7 @@ else{
 					echo "<p>Lors de l'enregistrement des données de RESPONSABLES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 				}
 				else {
-					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 
 					echo "<script type='text/javascript'>
 	/*
@@ -5395,7 +5395,7 @@ else{
 				if ($nb_err != 0) {
 					echo "<p>Lors de l'enregistrement des données ADRESSES des responsables, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 				} else {
-					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 
 					echo "<script type='text/javascript'>
 	/*
@@ -6345,7 +6345,7 @@ else{
 			//echo "$sql<br />";
 			$test=mysql_query($sql);
 			$nb_tmp_modif=mysql_num_rows($test);
-			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='".min(20,$nb_tmp_modif)."' size='3' /> sur un total de $nb_tmp_modif.<br />\n";
+			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min(20,$nb_tmp_modif)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_tmp_modif.<br />\n";
 
 			echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
@@ -7336,8 +7336,9 @@ else{
 							}
 							else {
 								// Plusieurs cas peuvent survenir
-								$sql="SELECT email FROM utilisateurs WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
-								$res_email_resp=mysql_query($sql);
+								$sql_tmp="SELECT email FROM utilisateurs WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
+								info_debug($sql_tmp);
+								$res_email_resp=mysql_query($sql_tmp);
 								// Si le responsable a un compte
 								if(mysql_num_rows($res_email_resp)>0) {
 									$lig_email_resp=mysql_fetch_object($res_email_resp);
@@ -7348,15 +7349,18 @@ else{
 										// Faut-il vider l'info?
 									}
 									else {
-										if($lig_email_resp->email!=$lig_pers2->mel) {
+										//if($lig_email_resp->email!=$lig_pers2->mel) {
+										if($lig_email_resp->email!=$lig->mel) {
 											// Que faire?
 										}
 									}
+									info_debug("Il y a un email dans la table utilisateurs: $lig_email_resp->email et le mail dans le XML est $lig->mel (on ne fait rien)");
 								}
 								// Si le responsable n'a pas de compte
 								else {
 									// Alors on fait la mise à jour
 									$sql.="						mel='".addslashes($lig->mel)."',";
+									info_debug("Il n'y a pas d'email dans la table utilisateurs; on met à jour d'apres le XML: $lig->mel");
 								}
 							}
 							$sql.="						adr_id='".$lig->adr_id."'
@@ -7371,10 +7375,12 @@ else{
 
 								if(getSettingValue('mode_email_resp')=='sconet') {
 									$sql="UPDATE utilisateurs SET email='".addslashes($lig->mel)."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
+									info_debug($sql);
 									$update_utilisateurs=mysql_query($sql);
 								}
 							}
 							else{
+								info_debug("ERREUR sur l'update");
 								echo "\n<span style='color:red;'>";
 								$erreur++;
 							}
@@ -7777,7 +7783,7 @@ else{
 				info_debug($sql);
 				$test=mysql_query($sql);
 				$nb_associations_a_consulter=mysql_num_rows($test);
-				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='".min(20,$nb_associations_a_consulter)."' size='3' /> sur un total de $nb_associations_a_consulter.<br />\n";
+				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min(20,$nb_associations_a_consulter)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_associations_a_consulter.<br />\n";
 
 				echo "Ne pas proposer de supprimer des responsables non associés à des élèves <input type='checkbox' name='suppr_resp_non_assoc' value='n' /><br />\n";
 				echo add_token_field();
