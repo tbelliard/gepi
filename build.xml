@@ -50,7 +50,7 @@
    <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
    <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
    <arg value="--ignore=build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
-   <arg path="--without-annotations" />
+   <arg value="--without-annotations" />
    <arg path="${source}" />
   </exec>
  </target>
