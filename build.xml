@@ -168,5 +168,6 @@
  </target>
 
  <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->
- <target name="build" depends="clean,tarball,phpcpd,phploc,phpdoc,phpcb"/>
+ <!--target name="build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpcs,phpdoc,phploc,phpunit,phpcb"/-->
+ <target name="build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpdoc,phploc,phpcb"/>
 </project>
