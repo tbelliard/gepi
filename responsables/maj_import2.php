@@ -190,6 +190,11 @@ $alert_diff_mail_ele=isset($_POST['alert_diff_mail_ele']) ? $_POST['alert_diff_m
 
 $alert_diff_etab_origine=isset($_POST['alert_diff_etab_origine']) ? $_POST['alert_diff_etab_origine'] : (isset($_GET['alert_diff_etab_origine']) ? $_GET['alert_diff_etab_origine'] : (isset($_SESSION['alert_diff_etab_origine']) ? $_SESSION['alert_diff_etab_origine'] : "n"));
 
+// Sauvegarde des préférences davantage que le temps de la session
+saveSetting('alert_diff_mail_ele', $alert_diff_mail_ele);
+saveSetting('alert_diff_mail_resp', $alert_diff_mail_resp);
+saveSetting('alert_diff_etab_origine', $alert_diff_etab_origine);
+
 $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
 
 //$style_specifique="responsables/maj_import2";
@@ -393,20 +398,38 @@ if(!isset($step)) {
 		echo "<input type='hidden' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' />\n";
 	}
 	else {
+		$alert_diff_mail_ele=getSettingValue('alert_diff_mail_ele');
 		echo "<p>Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
-		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' checked />\n";
+		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' ";
+		if($alert_diff_mail_ele=='y') {
+			echo "checked ";
+		}
+		echo "/>\n";
 		echo "<label for='alert_diff_mail_ele_y' style='cursor: pointer;'> signaler";
 		echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
-		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_n' value='n' />\n";
+		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_n' value='n' ";
+		if($alert_diff_mail_ele!='y') {
+			echo "checked ";
+		}
+		echo "/>\n";
 		echo "<label for='alert_diff_mail_ele_n' style='cursor: pointer;'> ne pas signaler";
 		echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label></p>\n";
 	}
 
+	$alert_diff_etab_origine=getSettingValue('alert_diff_etab_origine');
 	echo "<p>\n";
-	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_y' value='y' checked />\n";
+	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_y' value='y' ";
+	if($alert_diff_etab_origine=='y') {
+		echo "checked ";
+	}
+	echo "/>\n";
 	echo "<label for='alert_diff_etab_origine_y' style='cursor: pointer;'> signaler";
 	echo " les modifications d'établissement d'origine.</label><br />\n";
-	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_n' value='n' />\n";
+	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_n' value='n' ";
+	if($alert_diff_etab_origine!='y') {
+		echo "checked ";
+	}
+	echo "/>\n";
 	echo "<label for='alert_diff_etab_origine_n' style='cursor: pointer;'> ne pas signaler";
 	echo " les modifications d'établissement d'origine.</label></p>\n";
 
@@ -1510,7 +1533,7 @@ else{
 						$sql_maj="UPDATE eleves SET `date_sortie` ='".traite_date_sortie_to_timestamp($lig_date_sortie->col2)."' WHERE `ele_id`='$ele_id';";
 						$res_date_sortie=mysql_query($sql_maj);
 					}
-// Fin Eric					
+// Fin Eric
 					$sql="SELECT * FROM eleves WHERE ele_id='$ele_id';";
 					info_debug($sql);
 					$res_ele=mysql_query($sql);
@@ -1894,7 +1917,7 @@ else{
 					if(!$test=mysql_query($sql)) {
 						echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 						//Illegal mix of collations
-						if(my_eregi("Illegal mix of collations",mysql_error())) {
+						if(preg_match("/Illegal mix of collations/i",mysql_error())) {
 							echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'&nbsp;:<br />\n";
 							echo "<span style='color:red'>".mysql_error()."</span><br />\n";
 							echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
@@ -2407,7 +2430,7 @@ else{
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
 			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 10;
-			if(my_ereg("[^0-9]",$eff_tranche)) {$eff_tranche=10;}
+			if(preg_match("/[^0-9]/",$eff_tranche)) {$eff_tranche=10;}
 
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
@@ -2536,7 +2559,9 @@ else{
 				echo "<th>N°NAT</th>\n";
 				echo "<th>Régime</th>\n";
 
-				echo "<th>Email</th>\n";
+				if($alert_diff_mail_ele=="y") {
+					echo "<th>Email</th>\n";
+				}
 
 				echo "<th>Classe</th>\n";
 				echo "<th>Etablissement d'origine</th>\n";
@@ -3024,34 +3049,36 @@ else{
 								echo "</td>\n";
 
 
-								echo "<td";
-								if(stripslashes($lig_ele->email)!=stripslashes($affiche[12])){
-									//echo " background-color:lightgreen;'>";
-									echo " class='modif'>";
-									if($lig_ele->email!=''){
-										echo stripslashes($lig_ele->email)." <font color='red'>-&gt;</font>\n";
+								if($alert_diff_mail_ele=="y") {
+									echo "<td";
+									if(stripslashes($lig_ele->email)!=stripslashes($affiche[12])){
+										//echo " background-color:lightgreen;'>";
+										echo " class='modif'>";
+										if($lig_ele->email!=''){
+											echo stripslashes($lig_ele->email)." <font color='red'>-&gt;</font>\n";
+										}
 									}
-								}
-								else{
-									//echo "'>";
-									echo ">";
-								}
-								echo $affiche[12];
-								echo "<input type='hidden' name='modif_".$cpt."_email' value=\"$affiche[12]\" />\n";
-								if(isset($tmp_email_utilisateur_eleve)) {
-									//if($tmp_email_utilisateur_eleve!=$affiche[12]) {
-									if(($tmp_email_utilisateur_eleve!=$affiche[12])&&($alert_diff_mail_ele=='y')) {
-										echo "<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
-
-										$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
-										$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").";
-										$info_action_destinataire=array("administrateur","scolarite");
-										$info_action_mode="statut";
-										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									else{
+										//echo "'>";
+										echo ">";
 									}
-								}
-								echo "</td>\n";
+									echo $affiche[12];
+									echo "<input type='hidden' name='modif_".$cpt."_email' value=\"$affiche[12]\" />\n";
+									if(isset($tmp_email_utilisateur_eleve)) {
+										//if($tmp_email_utilisateur_eleve!=$affiche[12]) {
+										if(($tmp_email_utilisateur_eleve!=$affiche[12])&&($alert_diff_mail_ele=='y')) {
+											//echo "<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+											echo "<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 
+											$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
+											$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").";
+											$info_action_destinataire=array("administrateur","scolarite");
+											$info_action_mode="statut";
+											enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+										}
+									}
+									echo "</td>\n";
+								}
 
 								// Classe
 								//echo "<td style='text-align: center; background-color: white;'>";
@@ -3242,9 +3269,11 @@ else{
 
 								echo "</td>\n";
 
-								echo "<td style='text-align: center;'>";
-								echo "$affiche[12]";
-								echo "</td>\n";
+								if($alert_diff_mail_ele=="y") {
+									echo "<td style='text-align: center;'>";
+									echo "$affiche[12]";
+									echo "</td>\n";
+								}
 
 								echo "<td style='text-align: center;'>";
 								echo "$affiche[9]";
@@ -4012,12 +4041,15 @@ else{
 						echo "<input type='hidden' name='login_eleve[$cpt]' value='".$lig_ele->login."' />\n";
 						echo "</td>\n";
 
+						// J'ai un doute sur la pertinence de faire des requêtes différentes pour les cas LCS ou non
+						// Dans l'annuaire LDAP, une classe de 5 A2 va apparaitre comme 5_A2, mais on ne cherche pas dans le LDAP la classe de l'élève, il me semble.
 						if($auth_sso=='lcs') {
-							$sql="SELECT c.id FROM classes c WHERE c.classe='".my_ereg_replace("'","_",my_ereg_replace(" ","_",$lig_ele->divcod))."';";
+							$sql="SELECT c.id FROM classes c WHERE c.classe='".preg_replace("/'/","_",preg_replace("/ /","_",$lig_ele->divcod))."';";
 						}
 						else {
 							$sql="SELECT c.id FROM classes c WHERE c.classe='$lig_ele->divcod';";
 						}
+
 						info_debug($sql);
 						$res_classe=mysql_query($sql);
 						if(mysql_num_rows($res_classe)>0){
@@ -4031,7 +4063,7 @@ else{
 							if($auth_sso=='lcs') {
 								$sql="SELECT p.num_periode FROM periodes p, classes c
 													WHERE p.id_classe=c.id AND
-															c.classe='".my_ereg_replace("'","_",my_ereg_replace(" ","_",$lig_ele->divcod))."'
+															c.classe='".preg_replace("/'/","_",preg_replace("/ /","_",$lig_ele->divcod))."'
 													ORDER BY num_periode;";
 							}
 							else {
@@ -4064,7 +4096,9 @@ else{
 								echo "<select name='id_classe[$cpt]'>\n";
 								echo "<option value=''>---</option>\n";
 								while($lig_classe=mysql_fetch_object($res_classe)){
-									echo "<option value='$lig_classe->id'>$lig_classe->classe</option>\n";
+									echo "<option value='$lig_classe->id'";
+									if(strtolower($lig_ele->divcod)==strtolower($lig_classe->classe)) {echo " selected='true'";}
+									echo ">$lig_classe->classe</option>\n";
 								}
 								echo "</select>\n";
 							}
@@ -4708,11 +4742,20 @@ else{
 				echo "<input type='hidden' name='alert_diff_mail_resp' id='alert_diff_mail_ele_y' value='y' />\n";
 			}
 			else {
+				$alert_diff_mail_resp=getSettingValue('alert_diff_mail_resp');
 				echo "Pour les responsables qui disposent d'un compte d'utilisateur, <br />\n";
-				echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_y' value='y' checked />\n";
+				echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_y' value='y' ";
+				if($alert_diff_mail_resp=='y') {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "<label for='alert_diff_mail_resp_y' style='cursor: pointer;'> signaler";
 				echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
-				echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_n' value='n' />\n";
+				echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_n' value='n' ";
+				if($alert_diff_mail_resp!='y') {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "<label for='alert_diff_mail_resp_n' style='cursor: pointer;'> ne pas signaler";
 				echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
 			}
@@ -5591,7 +5634,7 @@ else{
 						if(!$test=mysql_query($sql)) {
 							echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 							//Illegal mix of collations
-							if(my_eregi("Illegal mix of collations",mysql_error())) {
+							if(preg_match("/Illegal mix of collations/i",mysql_error())) {
 								//echo "<span style='color:red'>".mysql_error()."</span>\n";
 								echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_responsables2_import.ele_id'&nbsp;:<br />\n";
 								echo "<span style='color:red'>".mysql_error()."</span><br />\n";
@@ -5655,7 +5698,7 @@ else{
 						if(!$test=mysql_query($sql)) {
 							echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 							//Illegal mix of collations
-							if(my_eregi("Illegal mix of collations",mysql_error())) {
+							if(preg_match("/Illegal mix of collations/i",mysql_error())) {
 								//echo "<span style='color:red'>".mysql_error()."</span>\n";
 								echo "Il semble qu'il y ait un problème de 'collation' entre les tables 'resp_pers' et 'temp_resp_pers_import'&nbsp;:<br />\n";
 								echo "<span style='color:red'>".mysql_error()."</span><br />\n";
@@ -6792,78 +6835,86 @@ else{
 						$ligne_parent.="</td>\n";
 						$ligne_parent.="</tr>\n";
 
-						$ligne_parent.="<tr>\n";
-						$ligne_parent.="<td style='text-align:center; font-weight:bold;'>mel</td>\n";
-						$ligne_parent.="<td";
-						if($nouveau==0){
-							if($lig_pers2->mel!=$mel1) {
-								if(($lig_pers2->mel!='')||($mel1!='')){
-
-									//if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
-									if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')&&($alert_diff_mail_resp=='y')) {
-
-										if($login_resp1!='') {
-											$sql="SELECT email FROM utilisateurs WHERE login='$login_resp1';";
-											$res_email_resp=mysql_query($sql);
-											if(mysql_num_rows($res_email_resp)>0) {
-												$lig_email_resp=mysql_fetch_object($res_email_resp);
-
-												if($lig_email_resp->email=='') {
-													$ligne_parent.=" class='modif'>";
-
-													$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
-
-													$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
-													$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' est vide contrairement à l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
-													$info_action_destinataire=array("administrateur","scolarite");
-													$info_action_mode="statut";
-													enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
-												}
-												else {
-													if($lig_email_resp->email!=$lig_pers2->mel) {
-														// L'email Sconet diffère de celui non vide déclaré dans Gérer mon compte
+						if($alert_diff_mail_resp=="y") {
+							$ligne_parent.="<tr>\n";
+							$ligne_parent.="<td style='text-align:center; font-weight:bold;'>mel</td>\n";
+							$ligne_parent.="<td";
+							if($nouveau==0){
+								if($lig_pers2->mel!=$mel1) {
+									if(($lig_pers2->mel!='')||($mel1!='')){
+	
+										//if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
+										if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')&&($alert_diff_mail_resp=='y')) {
+	
+											if($login_resp1!='') {
+												$sql="SELECT email FROM utilisateurs WHERE login='$login_resp1';";
+												$res_email_resp=mysql_query($sql);
+												if(mysql_num_rows($res_email_resp)>0) {
+													$lig_email_resp=mysql_fetch_object($res_email_resp);
+	
+													if($lig_email_resp->email=='') {
 														$ligne_parent.=" class='modif'>";
-
-														$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
-
-														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom),'all');
-														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom),'all')."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
+	
+														//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+														$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+	
+														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
+														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' est vide contrairement à l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
 														$info_action_destinataire=array("administrateur","scolarite");
 														$info_action_mode="statut";
 														enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
 													}
 													else {
-														$ligne_parent.=" class='modif'>";
-														// Bizarre... si le responsable a mise à jour son adresse par Gérer mon compte en mode 'mon_compte', on devrait avoir la synchro... ou alors la mise à jour 'mode_email_resp' est intervenue entre temps
-														// ... faudrait-il aussi tester l'ancien resp_pers.mel et le utilisateurs.email?
-
-														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
-														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
-														$info_action_destinataire=array("administrateur","scolarite");
-														$info_action_mode="statut";
-														enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+														if($lig_email_resp->email!=$lig_pers2->mel) {
+															// L'email Sconet diffère de celui non vide déclaré dans Gérer mon compte
+															$ligne_parent.=" class='modif'>";
+	
+															//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+															$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+	
+															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom),'all');
+															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom),'all')."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
+															$info_action_destinataire=array("administrateur","scolarite");
+															$info_action_mode="statut";
+															enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+														}
+														else {
+															$ligne_parent.=" class='modif'>";
+															// Bizarre... si le responsable a mise à jour son adresse par Gérer mon compte en mode 'mon_compte', on devrait avoir la synchro... ou alors la mise à jour 'mode_email_resp' est intervenue entre temps
+															// ... faudrait-il aussi tester l'ancien resp_pers.mel et le utilisateurs.email?
+	
+															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
+															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
+															$info_action_destinataire=array("administrateur","scolarite");
+															$info_action_mode="statut";
+															enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+														}
 													}
+												}
+												else {
+													// Pas de compte utilisateur pour ce responsable
+													$ligne_parent.=" class='modif'>";
+													// Il faudrait prendre en compte la màj
 												}
 											}
 											else {
-												// Pas de compte utilisateur pour ce responsable
 												$ligne_parent.=" class='modif'>";
-												// Il faudrait prendre en compte la màj
 											}
 										}
 										else {
 											$ligne_parent.=" class='modif'>";
 										}
+	
+										if($mel1!=''){
+											$ligne_parent.=$mel1." <font color='red'>-&gt;</font>\n";
+										}
+	
+										$temoin_diff_autre="y";
 									}
-									else {
-										$ligne_parent.=" class='modif'>";
+									else{
+										//$ligne_parent.="'>";
+										$ligne_parent.=">";
 									}
-
-									if($mel1!=''){
-										$ligne_parent.=$mel1." <font color='red'>-&gt;</font>\n";
-									}
-
-									$temoin_diff_autre="y";
 								}
 								else{
 									//$ligne_parent.="'>";
@@ -6874,14 +6925,10 @@ else{
 								//$ligne_parent.="'>";
 								$ligne_parent.=">";
 							}
+							$ligne_parent.=$lig_pers2->mel;
+							$ligne_parent.="</td>\n";
+							$ligne_parent.="</tr>\n";
 						}
-						else{
-							//$ligne_parent.="'>";
-							$ligne_parent.=">";
-						}
-						$ligne_parent.=$lig_pers2->mel;
-						$ligne_parent.="</td>\n";
-						$ligne_parent.="</tr>\n";
 						$ligne_parent.="</table>\n";
 
 						//$ligne_parent.="\$lig_pers2->adr_id=$lig_pers2->adr_id";
@@ -7113,7 +7160,8 @@ else{
 
 							$tabdiv_infobulle[]=creer_div_infobulle('chgt_adr_'.$cpt,$titre,"",$texte,"",40,0,'y','y','n','n');
 
-							$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
+							//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
+							$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_adr_".$cpt."','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
 							$ligne_parent.="<img src='../images/info.png' width='29' height='29'  align='middle' border='0' alt='Information' title='Information' />";
 							$ligne_parent.="</a> ";
 
@@ -7124,7 +7172,7 @@ else{
 						$ligne_parent.=$chaine_adr2;
 
 					}
-					else{
+					else {
 						//$ligne_parent.="'>";
 						$ligne_parent.=">";
 						// Indiquer l'adresse pour cette nouvelle personne responsable
@@ -7811,7 +7859,7 @@ else{
 			info_debug("=============== Phase step $step =================");
 
 			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 20;
-			if(my_ereg("[^0-9]",$eff_tranche)) {$eff_tranche=20;}
+			if(preg_match("/[^0-9]/",$eff_tranche)) {$eff_tranche=20;}
 
 			$suppr_resp_non_assoc=isset($_POST['suppr_resp_non_assoc']) ? $_POST['suppr_resp_non_assoc'] : 'y';
 			
