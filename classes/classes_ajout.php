@@ -46,11 +46,17 @@ if(getSettingValue('classes_ajout_debug_var')=='y') {
 	debug_var();
 }
 
-if(getSettingValue('classes_ajout_sans_regime_ni_doublant')=='y') {
-	$classes_ajout_sans_regime_ni_doublant="y";
+if(getSettingValue('classes_ajout_sans_regime')=='y') {
+	$classes_ajout_sans_regime="y";
 }
 else {
-	$classes_ajout_sans_regime_ni_doublant="n";
+	$classes_ajout_sans_regime="n";
+}
+
+// On ne propose pas de définir le régime quand suhosin est actif... on a alors trop de variables postées s'il y a beaucoup d'élèves
+$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+if($suhosin_post_max_totalname_length!='') {
+	$classes_ajout_sans_regime="y";
 }
 
 $sql="SELECT classe FROM classes WHERE id = '$id_classe';";
@@ -68,102 +74,53 @@ if (isset($is_posted) and ($is_posted == 1)) {
 
 	$gepiProfSuivi=getSettingValue("gepi_prof_suivi");
 
-	$call_eleves = mysql_query("SELECT login FROM eleves ORDER BY nom, prenom");
+	$call_eleves = mysql_query("SELECT login, id_eleve FROM eleves ORDER BY nom, prenom;");
 	$nombreligne = mysql_num_rows($call_eleves);
 
-	//=========================
-	// AJOUT: boireaus 20071010
-	$log_eleve=$_POST['log_eleve'];
-	//$cpt_k=$_POST['cpt_k'];
-	$regime_eleve=isset($_POST['regime_eleve']) ? $_POST['regime_eleve'] : NULL;
-	$doublant_eleve=isset($_POST['doublant_eleve']) ? $_POST['doublant_eleve'] : NULL;
-	//=========================
+	/*
+	$_POST['regime_1442']=	d/p
+	$_POST['ajout_eleve_1442']=	Array (*)
+	$_POST[ajout_eleve_1442]['1']=	yes
+	$_POST['regime_1441']=	d/p
+	$_POST['doublant_eleve_1441']=	R
+	*/
+
+	$reg_data = 'yes';
 
 	$k = '0';
 	while ($k < $nombreligne) {
 		$pb = 'no';
 		$login_eleve = mysql_result($call_eleves, $k, 'login');
+		$id_eleve = mysql_result($call_eleves, $k, 'id_eleve');
 
-		//=========================
-		// MODIF: boireaus 20071010
-		//$temp = $login_eleve."_item";
-		//$item_login = isset($_POST[$temp])?$_POST[$temp]:NULL;
-
-		// Récupération du numéro de l'élève dans les saisies:
-		$num_eleve=-1;
-		for($i=0;$i<count($log_eleve);$i++){
-			if($login_eleve==$log_eleve[$i]){
-				$num_eleve=$i;
-				break;
-			}
-		}
-		if($num_eleve!=-1){
-
-			$item_login = isset($login_eleve[$num_eleve]) ? $login_eleve[$num_eleve] : NULL;
-
-			//=========================
-
-			$i="1";
-			/*
+		if(isset($_POST['ajout_eleve_'.$id_eleve])) {
+			$i=1;
 			while ($i < $nb_periode) {
-				$temp = "ajout_".$login_eleve."_".$i;
-				$reg_login[$i] = isset($_POST[$temp])?$_POST[$temp]:NULL;
-				$i++;
-			}
-			*/
-			$reg_login = isset($_POST["ajout_eleve_".$num_eleve]) ? $_POST["ajout_eleve_".$num_eleve] : NULL;
-
-			//=========================
-			// MODIF: boireaus 20071010
-			//if ($item_login == 'yes') {
-			if (isset($log_eleve[$num_eleve])) {
-			//=========================
-
-				$reg_data = 'yes';
-
-				//=========================
-				// NOTE: boireaus 20071010
-				// Variables devenues inutiles:
-				$regime_login = "regime_".$login_eleve;
-				$doublant_login = "doublant_".$login_eleve;
-				//=========================
-
-				//=========================
-				// MODIF: boireaus 20071010
-				//$reg_regime = isset($_POST[$regime_login])?$_POST[$regime_login]:NULL;
-				//$reg_doublant = isset($_POST[$doublant_login])?$_POST[$doublant_login]:NULL;
-				$reg_regime=isset($regime_eleve[$num_eleve]) ? $regime_eleve[$num_eleve] : NULL;
-				$reg_doublant=isset($doublant_eleve[$num_eleve]) ? $doublant_eleve[$num_eleve] : NULL;
-				//=========================
-
-				if((isset($reg_regime))&&(isset($reg_doublant))) {
-					$call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
-					$nb_test_regime = mysql_num_rows($call_regime);
-					if ($nb_test_regime == 0) {
-						$reg_data = mysql_query("INSERT INTO j_eleves_regime SET login='$login_eleve', doublant='$reg_doublant', regime='$reg_regime'");
-						if (!($reg_data)) $reg_ok = 'no';
-					} else {
-						$reg_data = mysql_query("UPDATE j_eleves_regime SET doublant = '$reg_doublant', regime = '$reg_regime'  WHERE login='$login_eleve'");
-						if (!($reg_data)) $reg_ok = 'no';
+				$tab_per_ajout_eleve=$_POST['ajout_eleve_'.$id_eleve];
+				if(isset($tab_per_ajout_eleve[$i])) {
+					// Contrôler que l'élève n'est pas déjà dans une autre classe
+					$sql="SELECT id_classe FROM j_eleves_classes WHERE
+					(login = '$login_eleve' and
+					id_classe!='$id_classe' and
+					periode = '$i')";
+					$test_clas_per=mysql_query($sql);
+					if(mysql_num_rows($test_clas_per)>0) {
+						$lig_clas_per=mysql_fetch_object($test_clas_per);
+						$msg_complement.=get_nom_prenom_eleve($login_eleve)." est déjà dans une autre classe&nbsp;: ".get_class_from_id($lig_clas_per->id_classe)."<br />\n";
+						$reg_ok = 'no';
 					}
-				}
-			}
-			$i="1";
-			while ($i < $nb_periode) {
-				//=========================
-				// MODIF: boireaus 20071010
-				if(isset($reg_login[$i])){
-				//=========================
-					if ($reg_login[$i] == 'yes') {
-						if (mysql_num_rows(mysql_query("SELECT login FROM j_eleves_classes WHERE
+					else {
+						$sql="SELECT login FROM j_eleves_classes WHERE
 						(login = '$login_eleve' and
 						id_classe = '$id_classe' and
-						periode = '$i')")) == 0) {
-							$call_data = mysql_query("INSERT INTO j_eleves_classes VALUES('$login_eleve', '$id_classe', $i, '0')");
+						periode = '$i')";
+						$res_clas_per=mysql_query($sql);
+						if (mysql_num_rows($res_clas_per)==0) {
+							$sql="INSERT INTO j_eleves_classes VALUES('$login_eleve', '$id_classe', $i, '0');";
+							$reg_data = mysql_query($sql);
 							if (!($reg_data))  {$reg_ok = 'no';}
 						}
-
-
+		
 						// UPDATE: Ajouter l'élève à tous les groupes pour la période:
 						$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe'";
 						$res_liste_grp_classe=mysql_query($sql);
@@ -174,10 +131,11 @@ if (isset($is_posted) and ($is_posted == 1)) {
 								if(mysql_num_rows($test)==0){
 									$sql="INSERT INTO j_eleves_groupes SET login='$login_eleve',id_groupe='$lig_tmp->id_groupe',periode='$i'";
 									$insert_grp=mysql_query($sql);
+									if (!($insert_grp))  {$reg_ok = 'no';}
 								}
 							}
 						}
-
+			
 						$sql="SELECT DISTINCT cpe_login FROM j_eleves_cpe jecpe, j_eleves_classes jec
 									WHERE (
 										jec.id_classe='$id_classe' AND
@@ -190,7 +148,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve';";
 							//echo "$sql<br />";
 							$nettoyage=mysql_query($sql);
-
+			
 							$lig_tmp=mysql_fetch_object($res_cpe);
 							$sql="INSERT INTO j_eleves_cpe SET cpe_login='$lig_tmp->cpe_login', e_login='$login_eleve';";
 							//echo "$sql<br />";
@@ -199,7 +157,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 						else {
 							$msg_complement.="<br />L'élève $login_eleve n'a pas été associé à un CPE.";
 						}
-
+			
 						$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs jep
 									WHERE (
 										jep.id_classe='$id_classe'
@@ -210,7 +168,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							$sql="DELETE FROM j_eleves_professeurs WHERE login='$login_eleve';";
 							//echo "$sql<br />";
 							$nettoyage=mysql_query($sql);
-
+			
 							$lig_tmp=mysql_fetch_object($res_pp);
 							$sql="INSERT INTO j_eleves_professeurs SET professeur='$lig_tmp->professeur', login='$login_eleve', id_classe='$id_classe';";
 							//echo "$sql<br />";
@@ -224,6 +182,37 @@ if (isset($is_posted) and ($is_posted == 1)) {
 				$i++;
 			}
 		}
+		
+		if(isset($_POST['regime_'.$id_eleve])) {
+			$sql="SELECT * FROM j_eleves_regime WHERE login='$login_eleve';";
+			$call_regime = mysql_query($sql);
+			$nb_test_regime = mysql_num_rows($call_regime);
+			if ($nb_test_regime == 0) {
+				$sql="INSERT INTO j_eleves_regime SET login='$login_eleve', regime='".$_POST['regime_'.$id_eleve]."', doublant='-';";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)) $reg_ok = 'no';
+			} else {
+				$sql="UPDATE j_eleves_regime SET regime='".$_POST['regime_'.$id_eleve]."' WHERE login='$login_eleve';";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)) $reg_ok = 'no';
+			}
+		}
+	
+		if(isset($_POST['doublant_eleve_'.$id_eleve])) {
+			$sql="SELECT * FROM j_eleves_regime WHERE login='$login_eleve';";
+			$call_regime = mysql_query($sql);
+			$nb_test_regime = mysql_num_rows($call_regime);
+			if ($nb_test_regime == 0) {
+				$sql="INSERT INTO j_eleves_regime SET login='$login_eleve', doublant='".$_POST['doublant_eleve_'.$id_eleve]."', regime='d/p';";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)) $reg_ok = 'no';
+			} else {
+				$sql="UPDATE j_eleves_regime SET doublant='".$_POST['doublant_eleve_'.$id_eleve]."' WHERE login='$login_eleve';";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)) $reg_ok = 'no';
+			}
+		}
+
 		$k++;
 	}
 
@@ -235,32 +224,6 @@ if (isset($is_posted) and ($is_posted == 1)) {
 	$msg.=$msg_complement;
 }
 
-// =================================
-/*
-// AJOUT: boireaus
-$sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysql_query($sql);
-if(mysql_num_rows($res_class_tmp)>0){
-	$id_class_prec=0;
-	$id_class_suiv=0;
-	$temoin_tmp=0;
-	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-		if($lig_class_tmp->id==$id_classe){
-			$temoin_tmp=1;
-			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-				$id_class_suiv=$lig_class_tmp->id;
-			}
-			else{
-				$id_class_suiv=0;
-			}
-		}
-		if($temoin_tmp==0){
-			$id_class_prec=$lig_class_tmp->id;
-		}
-	}
-}
-*/
-// =================================
 // AJOUT: boireaus
 $chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
@@ -308,47 +271,26 @@ $titre_page = "Gestion des classes | Ajout d'élèves à une classe";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
-?>
-<script type='text/javascript' language='javascript'>
-/*
-function CochePeriode() {
-	nbParams = CochePeriode.arguments.length;
-	for (var i=0;i<nbParams;i++) {
-		theElement = CochePeriode.arguments[i];
-		if (document.formulaire.elements[theElement])
-			document.formulaire.elements[theElement].checked = true;
-	}
-}
+//debug_var();
 
-function DecochePeriode() {
-	nbParams = DecochePeriode.arguments.length;
-	for (var i=0;i<nbParams;i++) {
-		theElement = DecochePeriode.arguments[i];
-		if (document.formulaire.elements[theElement])
-			document.formulaire.elements[theElement].checked = false;
-	}
-}
-*/
-<?php
-echo "function CocheLigne(ki) {
+echo "<script type='text/javascript' language='javascript'>
+function CocheLigne(ki) {
 	for (var i=1;i<$nb_periode;i++) {
 		if(document.getElementById('case_'+ki+'_'+i)){
 			document.getElementById('case_'+ki+'_'+i).checked = true;
 		}
 	}
 }
-";
 
-echo "function DecocheLigne(ki) {
+function DecocheLigne(ki) {
 	for (var i=1;i<$nb_periode;i++) {
 		if(document.getElementById('case_'+ki+'_'+i)){
 			document.getElementById('case_'+ki+'_'+i).checked = false;
 		}
 	}
 }
-";
+</script>\n";
 ?>
-</script>
 
 <form enctype="multipart/form-data" action="classes_ajout.php" name="form1" method=post>
 
@@ -407,26 +349,27 @@ if ($nombreligne == '0') {
 	echo "<table class='boireaus' cellpadding='5'>\n";
 	echo "<tr>\n";
 	echo "<th><p><b>Nom Prénom </b></p></th>\n";
-	if($classes_ajout_sans_regime_ni_doublant!="y") {
-		echo "<th><p><b>Régime</b></p></th>\n<th><p><b>Redoublant</b></p></th>\n";
+	if($classes_ajout_sans_regime!="y") {
+		echo "<th><p><b>Régime</b></p></th>\n";
 	}
+	echo "<th><p><b>Redoublant</b></p></th>\n";
 	$i="1";
 	while ($i < $nb_periode) {
 		echo "<th><p><b>Ajouter per. $i</b></p></th>\n";
 		$i++;
 	}
 
-	//echo "<th><b><center>cocher / décocher <br/>toutes périodes</center></b></p></th>\n";
 	echo "<th><p style='font-weight:bold; text-align:center;'>cocher / décocher <br />toutes périodes</p></th>\n";
 	echo "</tr>";
 	$k = '0';
 	//=========================
 	// AJOUT: boireaus 20071010
 	// Compteur des élèves effectivement non affectés:
-	$ki=0;
+	//$ki=0;
 	//=========================
 	$alt=1;
 	While ($k < $nombreligne) {
+		$id_eleve = mysql_result($call_eleves, $k, 'id_eleve');
 		$login_eleve = mysql_result($call_eleves, $k, 'login');
 		$nom_eleve = mysql_result($call_eleves, $k, 'nom');
 		$prenom_eleve = mysql_result($call_eleves, $k, 'prenom');
@@ -440,13 +383,7 @@ if ($nombreligne == '0') {
 			$ajout_login[$i] = "ajout_".$login_eleve."_".$i;
 			$i++;
 		}
-		//=========================
-		// NOTE: boireaus 20071010
-		// Ces variables ne sont plus utiles:
-		$item_login = $login_eleve."_item";
-		$regime_login = "regime_".$login_eleve;
-		$doublant_login = "doublant_".$login_eleve;
-		//=========================
+
 		$inserer_ligne = 'no';
 		$call_data = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '$login_eleve'");
 		$test = mysql_num_rows($call_data);
@@ -485,63 +422,39 @@ if ($nombreligne == '0') {
 		if ($inserer_ligne == 'yes') {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'><td>\n";
-			//=========================
-			// MODIF: boireaus 20071010
-			/*
-			echo "<input type='hidden' name=$item_login value='yes' />\n";
-			//echo "<tr><td><p>$nom_eleve $prenom_eleve</p></td>\n";
-			echo "<p>$nom_eleve $prenom_eleve</p></td>\n";
-			echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='$regime_login' value='ext.'";
-			if ($regime == 'ext.') { echo " checked ";}
-			echo " />\n";
-			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='$regime_login' value='int.'";
-			if ($regime == 'int.') { echo " checked ";}
-			echo " />\n";
-			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='$regime_login' value='d/p' ";
-			if ($regime == 'd/p') { echo " checked ";}
-			echo " />\n";
-			echo "&nbsp;&nbsp;&nbsp;<input type=radio name='$regime_login' value='i-e'";
-			if ($regime == 'i-e') { echo " checked ";}
-			echo " />\n";
 
-			//echo "</p></td><td><p><center><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
-			echo "</p></td>\n<td><p align='center'><input type='checkbox' name='$doublant_login' value='R'";
-			*/
-			echo "<input type='hidden' name='log_eleve[$ki]' value=\"$login_eleve\" />\n";
+			//echo "<input type='hidden' name='log_eleve[$ki]' value=\"$login_eleve\" />\n";
 			echo "<p>".strtoupper($nom_eleve)." $prenom_eleve</p></td>\n";
 
-			if($classes_ajout_sans_regime_ni_doublant!="y") {
-				echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_eleve[$ki]' value='ext.'";
+			if($classes_ajout_sans_regime!="y") {
+				echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_$id_eleve' value='ext.'";
 				if ($regime == 'ext.') { echo " checked ";}
 				echo " onchange='changement()' />\n";
-				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='int.'";
+				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_$id_eleve' value='int.'";
 				if ($regime == 'int.') { echo " checked ";}
 				echo " onchange='changement()' />\n";
-				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='d/p' ";
+				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_$id_eleve' value='d/p' ";
 				if ($regime == 'd/p') { echo " checked ";}
 				echo " onchange='changement()' />\n";
-				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_eleve[$ki]' value='i-e'";
+				echo "&nbsp;&nbsp;&nbsp;<input type=radio name='regime_$id_eleve' value='i-e'";
 				if ($regime == 'i-e') { echo " checked ";}
 				echo " onchange='changement()' />\n";
-				//echo "</p></td><td><p><center><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
-				echo "</p></td>\n<td><p align='center'><input type='checkbox' name='doublant_eleve[$ki]' value='R'";
-				//=========================
-				if ($doublant == 'R') { echo " checked ";}
-				echo " onchange='changement()' />";
-	
-				//echo "</center></p></td>";
 				echo "</p></td>\n";
 			}
+			//echo "<td><p align='center'><input type='checkbox' name='doublant_eleve[$ki]' value='R'";
+			echo "<td><p align='center'><input type='checkbox' name='doublant_eleve_$id_eleve' value='R'";
+			//=========================
+			if ($doublant == 'R') { echo " checked ";}
+			echo " onchange='changement()' />";
+
+			echo "</p></td>\n";
 
 			$i="1";
 			while ($i < $nb_periode) {
 				echo "<td><p align='center'>";
 				if ($nom_classe[$i] == 'vide') {
-					//=========================
-					// MODIF: boireaus 20071010
-					//echo "<input type='checkbox' name='$ajout_login[$i]' value='yes' />";
-					echo "<input type='checkbox' name='ajout_eleve_".$ki."[$i]' id='case_".$ki."_".$i."' value='yes' onchange='changement()' />";
-					//=========================
+					//echo "<input type='checkbox' name='ajout_eleve_".$ki."[$i]' id='case_".$ki."_".$i."' value='yes' onchange='changement()' />";
+					echo "<input type='checkbox' name='ajout_eleve_".$id_eleve."[$i]' id='case_".$id_eleve."_".$i."' value='yes' onchange='changement()' />";
 				} else {
 					echo "$nom_classe[$i]";
 				}
@@ -550,18 +463,14 @@ if ($nombreligne == '0') {
 			}
 			$elementlist = null;
 			for ($i=1;$i<=sizeof($ajout_login);$i++) {
-			//echo $ajout_login[$i]."<br>";
-			$elementlist .= "'".$ajout_login[$i]."',";
+				//echo $ajout_login[$i]."<br>";
+				$elementlist .= "'".$ajout_login[$i]."',";
 			}
 			$elementlist = substr($elementlist, 0, -1);
-			//echo "<td><center><a href=\"javascript:CochePeriode($elementlist)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode($elementlist)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
-			echo "<td><center><a href=\"javascript:CocheLigne($ki);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($ki);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
+			echo "<td><center><a href=\"javascript:CocheLigne($id_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($id_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
 			echo "</tr>\n";
 
-			//=========================
-			// AJOUT: boireaus 20071010
-			$ki++;
-			//=========================
+			//$ki++;
 		}
 		$k++;
 	}
