@@ -61,6 +61,7 @@ if(!isset($msg)){
 	$msg="";
 }
 
+$suppr_infos_actions_diff_mail=isset($_GET['suppr_infos_actions_diff_mail']) ? $_GET['suppr_infos_actions_diff_mail'] : "n";
 
 if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 	check_token();
@@ -103,9 +104,11 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 		}
 		elseif($cpt==1) {
 			$msg="Une adresse a été mise à jour.<br />";
+			$suppr_infos_actions_diff_mail="y";
 		}
 		else {
 			$msg="$cpt adresses ont été mises à jour.<br />";
+			$suppr_infos_actions_diff_mail="y";
 		}
 
 		if($erreur==1) {
@@ -114,6 +117,27 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 		elseif($erreur>1) {
 			$msg.="$erreur erreurs se sont produites.<br />";
 		}
+	}
+}
+
+//if((isset($_GET['suppr_infos_actions_diff_mail']))&&($_GET['suppr_infos_actions_diff_mail']=='y')) {
+if($suppr_infos_actions_diff_mail=='y') {
+	check_token();
+
+	$sql="select * from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par l%élève%';";
+	$test_infos_actions=mysql_query($sql);
+	if(mysql_num_rows($test_infos_actions)>0) {
+		$sql="delete from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par l%élève%';";
+		$del=mysql_query($sql);
+		if(!$del) {
+			$msg.="ERREUR lors de la suppression des signalements de différence de mail en page d'accueil.<br />\n";
+		}
+		else {
+			$msg.="Suppression des signalements de différence de mail en page d'accueil effectuée.<br />\n";
+		}
+	}
+	else {
+		$msg.="Aucun signalement n'existait en page d'accueil.<br />\n";
 	}
 }
 
@@ -155,9 +179,15 @@ if(!getSettingValue('conv_new_resp_table')){
 }
 
 ?>
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 <?php
+	$sql="select * from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par l%élève%';";
+	$test_infos_actions=mysql_query($sql);
+	if(mysql_num_rows($test_infos_actions)>0) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?suppr_infos_actions_diff_mail=y".add_token_in_url()."'>Supprimer les signalements de différences en page d'accueil</a>";
+	}
+	echo "</p>\n";
+
 	$sql="SELECT u.*, e.email as e_email FROM utilisateurs u, eleves e WHERE e.login=u.login AND u.statut='eleve' AND u.email!=e.email ORDER BY e.nom, e.prenom;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
