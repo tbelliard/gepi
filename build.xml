@@ -64,7 +64,7 @@
    <arg value="--reportfile" />
    <arg value="${basedir}/build/logs/pmd.xml" />
    <arg value="--exclude" />
-   <arg value="build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
+   <arg value="*/build/*,*/lib/simplesaml/*,*/orm/propel/*,*/orm/propel-build/classes/gepi/om/*,*/lib/standalone/*,*/tbs/*,*/ckeditor/*,*/artishow/*,*/fckeditor/*,*/fpdf/*"/>
    <arg value="--suffix" />
    <arg value="php" />
   </exec>
@@ -76,7 +76,7 @@
    <arg value="--log-pmd" />
    <arg value="${basedir}/build/logs/pmd-cpd.xml" />
    <arg value="--exclude" />
-   <arg value="build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
+   <arg value="*/build/*,*/lib/simplesaml/*,*/orm/propel/*,*/orm/propel-build/classes/gepi/om/*,*/lib/standalone/*,*/tbs/*,*/ckeditor/*,*/artishow/*,*/fckeditor/*,*/fpdf/*"/>
    <arg path="${source}" />
   </exec>
  </target>
@@ -87,7 +87,7 @@
    <arg value="--log-csv" />
    <arg value="${basedir}/build/logs/phploc.csv" />
    <arg value="--exclude" />
-   <arg value="build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fckeditor,fpdf"/>
+   <arg value="*/build/*,*/lib/simplesaml/*,*/orm/propel/*,*/orm/propel-build/classes/gepi/om/*,*/lib/standalone/*,*/tbs/*,*/ckeditor/*,*/artishow/*,*/fckeditor/*,*/fpdf/*"/>
    <arg path="${source}" />
   </exec>
  </target>
