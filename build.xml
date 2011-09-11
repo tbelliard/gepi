@@ -65,7 +65,7 @@
  <target name="phpcpd"
          description="Generate pmd-cpd.xml using PHPCPD">
   <exec dir="${basedir}" executable="phpcpd" failonerror="false">
-      <arg line="--log-pmd build/logs/phpcpd.xml
+      <arg line="--log-pmd build/logs/pmd-cpd.xml
             --exclude build
             --exclude lib/simplesaml
             --exclude orm/propel
