@@ -163,7 +163,7 @@ class Session {
 		  die();
 		}
 
-		if ($_login != null && strtoupper($_login) != strtoupper($this->login)) {
+		if ($_login != null && $_login != $this->login) {
 			//on a une connexion sous un nouveau login, on purge la session
 			$this->reset("4");
 		}
@@ -477,11 +477,13 @@ class Session {
 			die();
 		}
 
-		$req = mysql_query("SELECT auth_mode FROM utilisateurs WHERE UPPER(login) = '".strtoupper($_login)."'");
+		$req = mysql_query("SELECT auth_mode,login FROM utilisateurs WHERE login = '".$_login."'");
 		if (mysql_num_rows($req) == 0) {
 			return false;
 		} else {
-			return mysql_result($req, 0, "auth_mode");
+			if (mysql_result($req, 0, "login")==$_login) {
+				return mysql_result($req, 0, "auth_mode");
+			} else return false;
 		}
 	}
 
