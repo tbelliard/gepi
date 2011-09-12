@@ -304,7 +304,7 @@ else if ($etape == 2) {
 	echo "<br /><h2 class='gepi'>Deuxième étape : Essai de connexion au serveur Mysql</h2>\n";
 
 	echo "<!--";
-	$link = mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db']);
+	$link = mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db'],true);
 	$db_connect = mysql_errno();
 	echo "-->\n";
 
