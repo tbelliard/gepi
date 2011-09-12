@@ -327,6 +327,16 @@
 						$sql="TRUNCATE TABLE temp_gep_import2;";
 						$vide_table = mysql_query($sql);
 
+						$sql="CREATE TABLE IF NOT EXISTS temp_grp (
+						id smallint(6) unsigned NOT NULL auto_increment, 
+						ELE_ID varchar(40) NOT NULL default '',
+						NOM_GRP varchar(255) NOT NULL default '',
+						PRIMARY KEY id (id));";
+						$create_table = mysql_query($sql);
+
+						$sql="TRUNCATE TABLE temp_grp;";
+						$vide_table = mysql_query($sql);
+
 						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
 
 						$ele_xml=simplexml_load_file($dest_file);
@@ -411,12 +421,20 @@
 									for($j=0;$j<count($eleves[$i]["structures"]);$j++){
 										if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
 											$temoin_div_trouvee="oui";
-											break;
+											//break;
+
+											$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
+										}
+										elseif($eleves[$i]["structures"][$j]["type_structure"]=="G") {
+											$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".addslashes($eleves[$i]["structures"][$j]["code_structure"])."';";
+											$insert_assoc_grp=mysql_query($sql);
 										}
 									}
+									/*
 									if($temoin_div_trouvee!=""){
 										$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
 									}
+									*/
 								}
 							}
 
