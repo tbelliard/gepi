@@ -485,6 +485,7 @@ if (!isset($suite)) {
 		echo "</blockquote>\n";
 	}
 
+	$nb_groupes_sans_matieres=0;
 	echo "<h3>Création des groupes</h3>\n";
 	// Traiter les groupes ensuite
 	if(!isset($groupes)) {
@@ -561,6 +562,8 @@ if (!isset($suite)) {
 			}
 			elseif(!isset($groupes[$i]['grp'])) {
 				echo "<p style='color:red'>Le groupe n°$i nommé dans STS <b>".$groupes[$i]['code']."</b> n'est associé à aucune matière dans STS???<br />\n";
+
+				$nb_groupes_sans_matieres++;
 
 				$code_groupe=$groupes[$i]['code'];
 				$nom_grp=$groupes[$i]['code'];
@@ -782,6 +785,10 @@ if (!isset($suite)) {
 	}
 	elseif($temoin_service_sans_enseignant>1) {
 		echo "<p style='color:red;'>$temoin_service_sans_enseignant enseignements (<i>services</i>) ont été déclarés sans enseignant associé.<br />Les élèves pratiquent-ils l'auto-formation en autonomie ou le STS est-il mal renseigné?</p>\n";
+	}
+
+	if($nb_groupes_sans_matieres!=0) {
+		echo "<p style='color:red;'>$nb_groupes_sans_matieres enseignements ont été déclarés sans matière associée.<br />Vous devrez corriger la matière associée ainsi que le professeur associé.</p>\n";
 	}
 
 	//}
