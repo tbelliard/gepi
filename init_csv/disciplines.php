@@ -85,22 +85,36 @@ if (!isset($_POST["action"])) {
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
 
-		$go = true;
+		$sql="SELECT * FROM tempo2;";
+		$res_temp=mysql_query($sql);
+		if(mysql_num_rows($res_temp)==0) {
+			echo "<p style='color:red'>ERREUR&nbsp;: Aucune association élève/option n'a été trouvée&nbsp;???</p>\n";
+			echo "<p><br /></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		while ($go) {
+		$nb_matieres_existantes=0;
+		//while ($go) {
+		while ($lig=mysql_fetch_object($res_temp)) {
 
-			$reg_nom_court = $_POST["ligne".$i."_nom_court"];
-			$reg_nom_long = $_POST["ligne".$i."_nom_long"];
+			//$reg_nom_court = $_POST["ligne".$i."_nom_court"];
+			//$reg_nom_long = $_POST["ligne".$i."_nom_long"];
+
+			$reg_nom_court = $lig->col1;
+			$reg_nom_long = $lig->col2;
 
 			// On nettoie et on vérifie :
 			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($reg_nom_court)));
 			if (strlen($reg_nom_court) > 50) $reg_nom_court = substr($reg_nom_court, 0, 50);
 			//$reg_nom_long = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($reg_nom_long));
-			$reg_nom_long = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_nom_long))))));
+			$reg_nom_long = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_nom_long))))));
 			if (strlen($reg_nom_long) > 200) $reg_nom_long = substr($reg_nom_long, 0, 200);
 
 			// Maintenant que tout est propre, on fait un test sur la table pour voir si la matière existe déjà ou pas
@@ -122,6 +136,9 @@ if (!isset($_POST["action"])) {
 					$total++;
 				}
 
+			}
+			else {
+				$nb_matieres_existantes++;
 			}
 
 
@@ -145,6 +162,15 @@ if (!isset($_POST["action"])) {
 			}
 			else{
 				echo "<p>" . $total . " matières ont été enregistrées.</p>\n";
+			}
+		}
+
+		if($nb_matieres_existantes>0) {
+			if ($nb_matieres_existantes == 1){
+				echo "<p>" . $nb_matieres_existantes . " matière existait déjà.</p>\n";
+			}
+			else{
+				echo "<p>" . $nb_matieres_existantes . " matières existaient déjà.</p>\n";
 			}
 		}
 
@@ -203,7 +229,7 @@ if (!isset($_POST["action"])) {
 							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[0])));
 							if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 							//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($tabligne[1]));
-							$tabligne[1] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
+							$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
 							if (strlen($tabligne[1]) > 200) $tabligne[1] = substr($tabligne[1], 0, 200);
 
 							$data_tab[$k] = array();
@@ -222,6 +248,11 @@ if (!isset($_POST["action"])) {
 				// Fin de l'analyse du fichier.
 				// Maintenant on va afficher tout ça.
 
+				$sql="TRUNCATE TABLE tempo2;";
+				$vide_table = mysql_query($sql);
+
+				$nb_error=0;
+
 				echo "<form enctype='multipart/form-data' action='disciplines.php' method='post'>\n";
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
@@ -234,17 +265,32 @@ if (!isset($_POST["action"])) {
 					$alt=$alt*(-1);
                     echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
-					echo $data_tab[$i]["nom_court"];
-					echo "<input type='hidden' name='ligne".$i."_nom_court' value='" . $data_tab[$i]["nom_court"] . "' />\n";
+					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["nom_court"]."',
+					col2='".addslashes($data_tab[$i]["nom_long"])."';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						echo "<span style='color:red'>";
+						echo $data_tab[$i]["nom_court"];
+ 						echo "</span>";
+						$nb_error++;
+					}
+					else {
+						echo $data_tab[$i]["nom_court"];
+					}
+					//echo "<input type='hidden' name='ligne".$i."_nom_court' value='" . $data_tab[$i]["nom_court"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["nom_long"];
-					echo "<input type='hidden' name='ligne".$i."_nom_long' value='" . $data_tab[$i]["nom_long"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_nom_long' value='" . $data_tab[$i]["nom_long"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
 
 				echo "</table>\n";
+
+				if($nb_error>0) {
+					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+				}
 
 				echo "<input type='submit' value='Enregistrer' />\n";
 

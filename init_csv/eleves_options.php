@@ -90,16 +90,29 @@ if (!isset($_POST["action"])) {
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
 
-		$go = true;
+		$sql="SELECT * FROM tempo2;";
+		$res_temp=mysql_query($sql);
+		if(mysql_num_rows($res_temp)==0) {
+			echo "<p style='color:red'>ERREUR&nbsp;: Aucune matière n'a été trouvée&nbsp;???</p>\n";
+			echo "<p><br /></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		while ($go) {
-
+		//while ($go) {
+		while ($lig=mysql_fetch_object($res_temp)) {
+			/*
 			$reg_id_int = $_POST["ligne".$i."_id_int"];
 			$reg_options = $_POST["ligne".$i."_options"];
+			*/
+			$reg_id_int = $lig->col1;
+			$reg_options = $lig->col2;
 
 			// On nettoie et on vérifie :
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
@@ -180,7 +193,7 @@ if (!isset($_POST["action"])) {
 			}
 
 			$i++;
-			if (!isset($_POST['ligne'.$i.'_id_int'])) $go = false;
+			//if (!isset($_POST['ligne'.$i.'_id_int'])) $go = false;
 		}
 
 		if ($error > 0) {echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";}
@@ -263,6 +276,11 @@ if (!isset($_POST["action"])) {
 				// Fin de l'analyse du fichier.
 				// Maintenant on va afficher tout ça.
 
+				$sql="TRUNCATE TABLE tempo2;";
+				$vide_table = mysql_query($sql);
+
+				$nb_error=0;
+
 				echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>\n";
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
@@ -274,17 +292,32 @@ if (!isset($_POST["action"])) {
 					$alt=$alt*(-1);
                     echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
-					echo $data_tab[$i]["id_int"];
-					echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
+					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
+					col2='".addslashes($data_tab[$i]["options"])."';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						echo "<span style='color:red'>";
+						echo $data_tab[$i]["id_int"];
+ 						echo "</span>";
+						$nb_error++;
+					}
+					else {
+						echo $data_tab[$i]["id_int"];
+					}
+					//echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["options"];
-					echo "<input type='hidden' name='ligne".$i."_options' value='" . $data_tab[$i]["options"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_options' value='" . $data_tab[$i]["options"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
 
 				echo "</table>\n";
+
+				if($nb_error>0) {
+					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+				}
 
 				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
