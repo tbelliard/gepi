@@ -58,7 +58,9 @@ class AbsencesNotificationHelper {
             foreach ($saisies_col as $saisie) {
 
                 $str = $saisie->getDateDescription();
-                $str.= ', cours de '.$saisie->getGroupeNameAvecClasses();
+                if($saisie->getGroupeNameAvecClasses()!=''){
+                    $str.= ', cours de '.$saisie->getGroupeNameAvecClasses();
+                }                
                 $saisies_string_col->append($str);
                 
             }
