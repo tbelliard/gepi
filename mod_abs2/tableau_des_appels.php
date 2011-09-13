@@ -138,7 +138,7 @@ include('menu_bilans.inc.php');
 	}
 ?>
 	</select>
-<br />
+  </p>
 <?php
 $creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 foreach ($creneau_col as $creneau) {
