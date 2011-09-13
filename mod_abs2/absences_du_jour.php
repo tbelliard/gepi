@@ -172,7 +172,7 @@ if (!$groupe_col->isEmpty()) {
     echo "<option value='-1'>choisissez un groupe</option>\n";
     foreach ($groupe_col as $group) {
 	    echo "<option value='".$group->getId()."'";
-	    if ($id_groupe == $group->getId()) echo " SELECTED ";
+	    if ($id_groupe == $group->getId()) echo " selected='SELECTED' ";
 	    echo ">";
 	    echo $group->getNameAvecClasses();
 	    echo "</option>\n";
@@ -200,7 +200,7 @@ if (!$classe_col->isEmpty()) {
     echo "<option value='-1'>choisissez une classe</option>\n";
     foreach ($classe_col as $classe) {
 	    echo "<option value='".$classe->getId()."'";
-	    if ($id_classe == $classe->getId()) echo " SELECTED ";
+	    if ($id_classe == $classe->getId()) echo " selected='SELECTED' ";
 	    echo ">";
 	    echo $classe->getNom();
 	    echo "</option>\n";
@@ -231,7 +231,7 @@ if (!$aid_col->isEmpty()) {
     echo "<option value='-1'>choisissez une aid</option>\n";
     foreach ($aid_col as $aid) {
 	    echo "<option value='".$aid->getPrimaryKey()."'";
-	    if ($id_aid == $aid->getPrimaryKey()) echo " SELECTED ";
+	    if ($id_aid == $aid->getPrimaryKey()) echo " selected='SELECTED' ";
 	    echo ">";
 	    echo $aid->getNom();
 	    echo "</option>\n";
@@ -262,15 +262,15 @@ echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100
     echo ("Régime : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"filter_regime\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez un régime</option>\n";
     	    echo "<option value='d/p'";
-	    if (getFiltreRechercheParam('filter_regime') == 'd/p') echo " SELECTED ";
+	    if (getFiltreRechercheParam('filter_regime') == 'd/p') echo " selected='SELECTED' ";
 	    echo ">";
 	    echo 'd/p';
             echo "<option value='ext.'";
-	    if (getFiltreRechercheParam('filter_regime') == 'ext.') echo " SELECTED ";
+	    if (getFiltreRechercheParam('filter_regime') == 'ext.') echo " selected='SELECTED' ";
 	    echo ">";
 	    echo 'ext.';
             echo "<option value='int.'";
-	    if (getFiltreRechercheParam('filter_regime') == 'int.') echo " SELECTED ";
+	    if (getFiltreRechercheParam('filter_regime') == 'int.') echo " selected='SELECTED' ";
 	    echo ">";
 	    echo 'int.';
 	    echo "</option>\n";
@@ -280,7 +280,7 @@ echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100
     echo ("Afficher : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"font-size:12px;\" name=\"filter_manqement_obligation\" onchange='submit()' class=\"small\">");
     echo "<option value='y'>Manquements à l'obligation de présence</option>";
     	    echo "<option value='n'";
-	    if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') echo " SELECTED ";
+	    if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') echo " selected='SELECTED' ";
 	    echo ">";
 	    echo 'toutes les saisies';
 	    echo "</option>";

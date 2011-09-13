@@ -106,19 +106,33 @@ if (!isset($_POST["action"])) {
 			$j++;
 		}
 
+		$sql="SELECT * FROM tempo4;";
+		$res_tempo4=mysql_query($sql);
+		if(mysql_num_rows($res_tempo4)==0) {
+			echo "<p style='color:red'>ERREUR&nbsp;: Aucune association professeur/matière/classe/type n'a été trouvée&nbsp;???</p>\n";
+			echo "<p><br /></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
 
-		$go = true;
+		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		while ($go) {
-
+		//while ($go) {
+		while ($lig=mysql_fetch_object($res_tempo4)) {
+			/*
 			$reg_prof = $_POST["ligne".$i."_prof"];
 			$reg_matiere = $_POST["ligne".$i."_matiere"];
 			$reg_classes = $_POST["ligne".$i."_classes"];
 			$reg_type = $_POST["ligne".$i."_type"];
+			*/
+			$reg_prof = $lig->col1;
+			$reg_matiere = $lig->col2;
+			$reg_classes = $lig->col3;
+			$reg_type = $lig->col4;
 
 			// On nettoie et on vérifie :
 			$reg_prof = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($reg_prof)));
@@ -218,7 +232,7 @@ if (!isset($_POST["action"])) {
 			} // -> Fin du test où le prof existe
 
 			$i++;
-			if (!isset($_POST['ligne'.$i.'_prof'])) {$go = false;}
+			//if (!isset($_POST['ligne'.$i.'_prof'])) {$go = false;}
 		}
 
 		echo "<p>Opération terminée.</p>\n";
@@ -307,6 +321,14 @@ if (!isset($_POST["action"])) {
 				// Fin de l'analyse du fichier.
 				// Maintenant on va afficher tout ça.
 
+				$nb_error=0;
+
+				$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '');";
+				$res_tempo4=mysql_query($sql);
+
+				$sql="TRUNCATE tempo4;";
+				$res_tempo4=mysql_query($sql);
+
 				echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>\n";
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
@@ -318,25 +340,42 @@ if (!isset($_POST["action"])) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
-					echo $data_tab[$i]["prof"];
-					echo "<input type='hidden' name='ligne".$i."_prof' value='" . $data_tab[$i]["prof"] . "' />\n";
+					$sql="INSERT INTO tempo4 SET col1='".addslashes($data_tab[$i]["prof"])."',
+					col2='".addslashes($data_tab[$i]["matiere"])."',
+					col3='".addslashes($data_tab[$i]["classes"])."',
+					col4='".addslashes($data_tab[$i]["type"])."';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						echo "<span style='color:red'>";
+						echo $data_tab[$i]["prof"];
+ 						echo "</span>";
+						$nb_error++;
+					}
+					else {
+						echo $data_tab[$i]["prof"];
+					}
+					//echo "<input type='hidden' name='ligne".$i."_prof' value='" . $data_tab[$i]["prof"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["matiere"];
-					echo "<input type='hidden' name='ligne".$i."_matiere' value='" . $data_tab[$i]["matiere"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_matiere' value='" . $data_tab[$i]["matiere"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["classes"];
-					echo "<input type='hidden' name='ligne".$i."_classes' value='" . $data_tab[$i]["classes"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_classes' value='" . $data_tab[$i]["classes"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["type"];
-					echo "<input type='hidden' name='ligne".$i."_type' value='" . $data_tab[$i]["type"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_type' value='" . $data_tab[$i]["type"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
 
 				echo "</table>\n";
+
+				if($nb_error>0) {
+					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+				}
 
 				echo "<input type='submit' value='Enregistrer' />\n";
 
