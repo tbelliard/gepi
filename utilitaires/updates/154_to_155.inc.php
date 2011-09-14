@@ -751,6 +751,90 @@ if (file_exists($test_file)) {
 }
 
 $result.="<br />";
+$result.="<strong>Module sso_table :</strong>";
+$result.="<br />";
+$test = sql_query1("SHOW TABLES LIKE 'plugin_sso_table_import'");
+if ($test != -1) {
+    $test2 = sql_query1("SHOW TABLES LIKE 'sso_table_import'");
+    if ($test2 == -1) {
+        $result.="Renommage de la table plugin_sso_table_import :";
+        $result_inter = traite_requete("RENAME TABLE `plugin_sso_table_import` TO `sso_table_import`;");
+        if ($result_inter == '') {
+            $result.=msj_ok(" Ok !");
+        } else {
+            $result.=msj_erreur(" !" . $result_inter);
+        }
+    }
+}
+$test = sql_query1("SHOW TABLES LIKE 'plugin_sso_table'");
+if ($test != -1) {
+    $test2 = sql_query1("SHOW TABLES LIKE 'sso_table_correspondance'");
+    if ($test2 == -1) {
+        $result.="<br />";
+        $result.="Renommage de la table plugin_sso_table :";
+        $result_inter = traite_requete("RENAME TABLE `plugin_sso_table` TO `sso_table_correspondance`;");
+        if ($result_inter == '') {
+            $result.=msj_ok(" Ok !");
+        } else {
+            $result.=msj_erreur(" !" . $result_inter);
+        }
+    }
+    $result.="<br />";
+    $result.="Désinstallation du plugin_sso_table :";
+    $req = mysql_query("SELECT `id` FROM `plugins` WHERE `nom`='plugin_sso_table'");
+    $nb_entrees = mysql_num_rows($req);
+    if ($nb_entrees != 1) {
+        $result.="<br />";
+        $result.="Il y'a un problème , désinstaller le plugin sso_table depuis la page des plugins :";
+    } else {
+        $data = mysql_fetch_array($req);
+        $id_plugin = $data[0];
+        $result.="<br />";
+        $result.="Suppression des entrées de la table plugins pour le plugin sso_table :";        
+        $result_inter = traite_requete("DELETE FROM `plugins` WHERE `id`=$id_plugin;");
+        if ($result_inter == '') {
+            $result.=msj_ok(" Ok !");
+        } else {
+            $result.=msj_erreur(" !" . $result_inter);
+        }
+        $result.="<br />";
+        $result.="Suppression des entrées de la table plugins_autorisations pour le plugin sso_table :";        
+        $result_inter = traite_requete("DELETE FROM `plugins_autorisations` WHERE `plugin_id`=$id_plugin;");
+        if ($result_inter == '') {
+            $result.=msj_ok(" Ok !");
+        } else {
+            $result.=msj_erreur(" !" . $result_inter);
+        }
+        $result.="<br />";
+        $result.="Suppression des entrées de la table plugins_menus pour le plugin sso_table :";        
+        $result_inter = traite_requete("DELETE FROM `plugins_menus` WHERE `plugin_id`=$id_plugin;");
+        if ($result_inter == '') {
+            $result.=msj_ok(" Ok !");
+        } else {
+            $result.=msj_erreur(" !" . $result_inter);
+        }
+    }
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'sso_table_correspondance'");
+if ($test == -1) {
+    $result.="<br />";
+    $result.="Création de la table sso_table_correspondance :";
+    $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `sso_table_correspondance` ( `login_gepi` varchar(100) NOT NULL
+                default '', `login_sso` varchar(100) NOT NULL
+                default '', PRIMARY KEY (`login_gepi`) )
+                ENGINE=MyISAM;");
+    if ($result_inter == '') {
+        $result .= msj_ok("SUCCES !");
+    } else {
+        $result .= msj_erreur("ECHEC !");
+    }
+} else {
+    $result.="<br />";
+    $result.="La table de correspondance existe déja.";
+}
+
+$result.="<br />";
 $result.="<br />";
 $result.="<strong>Module discipline :</strong>";
 $result.="<br />";
