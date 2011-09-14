@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$debug_test_mdp="y";
+$debug_test_mdp="n";
 if(getSettingValue('debug_test_mdp_file')!='') {
 	$debug_test_mdp_file=getSettingValue('debug_test_mdp_file');
 }
