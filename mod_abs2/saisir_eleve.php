@@ -378,7 +378,7 @@ foreach($eleve_col as $eleve) {
 		  <a href="./saisir_eleve.php?type_selection=id_eleve&amp;id_eleve=<?php echo $eleve->getPrimaryKey() ;?>">
 <?php
 		  echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
-			if(!isset($current_classe)){
+			if(!isset($current_classe) && $eleve->getClasse()!=null){
                             echo ' '.$eleve->getClasse()->getNom().'';
                         }
                         echo'</span>';
