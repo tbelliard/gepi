@@ -22,7 +22,12 @@
  */
 
 $debug_test_mdp="n";
-$debug_test_mdp_file="/tmp/test_mdp.txt";
+if(getSettingValue('debug_test_mdp_file')!='') {
+	$debug_test_mdp_file=getSettingValue('debug_test_mdp_file');
+}
+else {
+	$debug_test_mdp_file="/tmp/test_mdp.txt";
+}
 
 # Cette classe sert à manipuler la session en cours.
 # Elle gère notamment l'authentification des utilisateurs
