@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$debug_test_mdp="n";
+$debug_test_mdp="y";
 if(getSettingValue('debug_test_mdp_file')!='') {
 	$debug_test_mdp_file=getSettingValue('debug_test_mdp_file');
 }
@@ -724,53 +724,53 @@ class Session {
                                             $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
                                             $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
                                             if ($db_password == md5($_password_unhtmlentities)) {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec unhtmlentities()\n');
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec unhtmlentities()'."\n");
                                             } else {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification unhtmlentities\n');
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification unhtmlentities'."\n");
                                                     return false;
                                             }
                                     } else {
                                             if ($db_password == md5(htmlentities($_password))) {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec htmlentities()\n');
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec htmlentities()'."\n");
                                             } else {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification htmlentities\n');
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification htmlentities'."\n");
                                                     return false;
                                             }
                                     }
                             }
                             
                             //l'authentification est réussie sinon on serait déjà sorti de la fonction
-                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK\n');
+                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK'."\n");
                             if (mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"))>0) {
                                 //on va passer le hash en hmac scha256
                                 $salt = md5(uniqid(rand(), 1));
                                 $hmac_password = hash_hmac('sha256', $_password, $salt);
                                 $update_query = mysql_query("UPDATE utilisateurs SET password = '".$hmac_password."', salt = '".$salt."' WHERE login = '".$_login."'");
                                 if ($update_query) {
-                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Password ameliore en hmac\n');
+                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Password ameliore en hmac'."\n");
                                 } else {
-                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Echec password ameliore en hmac\n');
+                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Echec password ameliore en hmac'."\n");
                                 }
                             }
                         } else {
                             //login deja en hmac sha256
                             if ($db_password == hash_hmac('sha256', $_password, $db_salt)) {
-                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK sans modification\n');
+                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK sans modification'."\n");
                             } else {
                                     if(getSettingValue('filtrage_html')=='htmlpurifier') {
                                             $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
                                             $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
                                             if ($db_password == hash_hmac('sha256', $_password_unhtmlentities, $db_salt)) {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec unhtmlentities()\n');
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec unhtmlentities()'."\n");
                                             } else {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification unhtmlentities\n');
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification unhtmlentities'."\n");
                                                    return false;
                                             }
                                     } else {
                                             if ($db_password == hash_hmac('sha256', htmlentities($_password), $db_salt)) {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec htmlentities()\n');
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec htmlentities()'."\n");
                                             } else {
-                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification htmlentities\n');
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification htmlentities'."\n");
                                                     return false;
                                             }
                                     }
