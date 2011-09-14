@@ -29,6 +29,11 @@ else {
 	$debug_test_mdp_file="/tmp/test_mdp.txt";
 }
 
+// Passer à 'y' pour loguer les premiers accès (pour expliquer à l'utilisateur ce qu'il fait de travers lors de sa première connexion)
+$debug_login_nouveaux_comptes="n";
+// Ne pas toucher: La variable est déclarée ici pour être globale et modifiée à y ou n par la suite
+$loguer_nouveau_login="n";
+
 # Cette classe sert à manipuler la session en cours.
 # Elle gère notamment l'authentification des utilisateurs
 # à partir de différentes sources.
@@ -157,7 +162,7 @@ class Session {
 	# 8 : multisite ; impossibilité d'obtenir le RNE de l'utilisateur qui s'est authentifié correctement.
 	# 9 : échec de l'authentification (mauvais couple login/mot de passe, sans doute).
 	public function authenticate($_login = null, $_password = null) {
-		global $debug_test_mdp, $debug_test_mdp_file;
+		global $debug_test_mdp, $debug_test_mdp_file, $debug_login_nouveaux_comptes, $loguer_nouveau_login;
 
 		// Quelques petits tests de sécurité
 
@@ -177,6 +182,20 @@ class Session {
 			$f_tmp=fopen($debug_test_mdp_file,"a+");
 			fwrite($f_tmp,strftime("%a %d/%m/%Y - %H%M%S").": \$_login=$_login et \$_password=$_password\n");
 			fclose($f_tmp);
+		}
+		elseif($debug_login_nouveaux_comptes=="y") {
+			$loguer_nouveau_login="n";
+			if(preg_match("/[A-Za-z0-9_\.-]/", $_login)) {
+				$sql="SELECT 1=1 FROM utilisateurs WHERE login='$_login' AND change_mdp='y';";
+				$test_new_login=mysql_query($sql);
+				if(mysql_num_rows($test_new_login)>0) {
+					$loguer_nouveau_login="y";
+
+					$f_tmp=fopen($debug_test_mdp_file,"a+");
+					fwrite($f_tmp,strftime("%a %d/%m/%Y - %H%M%S").": \$_login=$_login et \$_password=$_password : ");
+					fclose($f_tmp);
+				}
+			}
 		}
 
 	    // On initialise la session de l'utilisateur.
@@ -703,6 +722,7 @@ class Session {
 
 	function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
+		global $debug_login_nouveaux_comptes, $loguer_nouveau_login;
 
         $sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
 		$query = mysql_query($sql);
@@ -1575,11 +1595,14 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 
   # écrit dans un fichier un message de debug
   static private function debug_login_mdp($debug_test_mdp,$debug_test_mdp_file,$debug_test_mdp_message) {
-    if($debug_test_mdp=="y") {
-            $f_tmp=fopen($debug_test_mdp_file,"a+");
-            fwrite($f_tmp,$debug_test_mdp_message);
-            fclose($f_tmp);
-    } 
+	global $debug_login_nouveaux_comptes, $loguer_nouveau_login;
+
+    if(($debug_test_mdp=="y")||
+		(($debug_login_nouveaux_comptes=="y")&&($loguer_nouveau_login=="y"))) {
+		$f_tmp=fopen($debug_test_mdp_file,"a+");
+		fwrite($f_tmp,$debug_test_mdp_message);
+		fclose($f_tmp);
+    }
   }
 }
 
