@@ -89,7 +89,7 @@ class AbsencesNotificationHelper {
 	foreach($demi_j as $date) {
 	    $str = 'Le ';
 	    $str .= (strftime("%a %d/%m/%Y", $date->format('U')));
-	    if ($date->format('Hi') < $temps_demi_journee) {
+	    if ($date->format('H') < 12) {
 		$next_date = $demi_j->getNext();
 		if ($next_date != null && $next_date->format('Y-m-d') == $date->format('Y-m-d')) {
 		    $str .= ' la journée';
