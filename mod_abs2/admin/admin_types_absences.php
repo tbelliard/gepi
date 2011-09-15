@@ -316,7 +316,7 @@ echo add_token_field();
 	    ?>
 	  </td>
 	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
-      <td><?php if (!is_null($type->getIdLieu())) {echo $type->getAbsenceEleveLieu()->getNom();} ?></td>
+      <td><?php if ($type->getAbsenceEleveLieu() != null) {echo $type->getAbsenceEleveLieu()->getNom();} ?></td>
 	  <td><?php
 		foreach ($type->getAbsenceEleveTypeStatutAutorises() as $statut_saisie) {
 			echo $statut_saisie->getStatut();
