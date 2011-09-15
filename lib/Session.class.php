@@ -1096,12 +1096,10 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		$row = mysql_fetch_object($query);
 
 	    $_SESSION['login'] = $this->login;
-		if(getSettingValue('casse_login_d_apres_base')=='y') {
-			if ($row->login != null) {
-					$_SESSION['login'] = $row->login;
-			} else {
-					$_SESSION['login'] = $this->login;
-			}
+		if ($row->login != null) {
+				$_SESSION['login'] = $row->login;
+		} else {
+				$_SESSION['login'] = $this->login;
 		}
 	    $_SESSION['prenom'] = $row->prenom;
 	    $_SESSION['nom'] = $row->nom;
