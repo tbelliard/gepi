@@ -29,8 +29,12 @@
 function vider_tables_avant_import() {
     include("config_init_annuaire.inc.php");
     foreach($liste_tables_del as $table) {
-        $query_empty_table = "truncate table $table";
-        mysql_query($query_empty_table) or die("Impossible de vider les tables.");
+        $sql="SHOW TABLES LIKE '$table';";
+        $test=mysql_query($sql);
+        if(mysql_num_rows($test)>0) {
+            $query_empty_table = "truncate table $table;";
+            mysql_query($query_empty_table) or die("Impossible de vider les tables.");
+        }
     }
 }
 

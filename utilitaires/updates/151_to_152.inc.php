@@ -408,19 +408,19 @@ lieu VARCHAR( 255 ) NOT NULL
 		$test = sql_query1("SHOW TABLES LIKE 'ct_devoirs_documents'");
 		if ($test == -1) {
 			$sql="CREATE TABLE ct_devoirs_documents
-		(
-		id INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Id document',
-		id_ct_devoir INTEGER default 0 NOT NULL COMMENT 'Id devoir du cahier de texte',
-		titre VARCHAR(255)  NOT NULL COMMENT 'titre du document',
-		taille INTEGER default 0 NOT NULL COMMENT 'Taille du document',
-		emplacement VARCHAR(255)  NOT NULL COMMENT 'chemin vers le document',
-		PRIMARY KEY (id),
-		INDEX ct_devoirs_documents_FI_1 (id_ct_devoir)
-		);";
-		}
-		$result_inter = traite_requete($sql);
-		if ($result_inter != '') {
-			$result .= "<br />Erreur sur la création de la table 'ct_devoirs_documents': ".$result_inter."<br />";
+			(
+			id INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Id document',
+			id_ct_devoir INTEGER default 0 NOT NULL COMMENT 'Id devoir du cahier de texte',
+			titre VARCHAR(255)  NOT NULL COMMENT 'titre du document',
+			taille INTEGER default 0 NOT NULL COMMENT 'Taille du document',
+			emplacement VARCHAR(255)  NOT NULL COMMENT 'chemin vers le document',
+			PRIMARY KEY (id),
+			INDEX ct_devoirs_documents_FI_1 (id_ct_devoir)
+			);";
+			$result_inter = traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur sur la création de la table 'ct_devoirs_documents': ".$result_inter."<br />";
+			}
 		}
 
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiCahierTexteVersion'");
@@ -436,29 +436,29 @@ lieu VARCHAR( 255 ) NOT NULL
 		$test = sql_query1("SHOW TABLES LIKE 'ct_private_entry'");
 		if ($test == -1) {
 			$sql="CREATE TABLE ct_private_entry
-		(
-		id_ct INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la cotice privee',
-		heure_entry TIME default '00:00:00' NOT NULL COMMENT 'heure de l\'entree',
-		date_ct INTEGER default 0 NOT NULL COMMENT 'date du compte rendu',
-		contenu TEXT  NOT NULL COMMENT 'contenu redactionnel du compte rendu',
-		id_groupe INTEGER  NOT NULL COMMENT 'Cle etrangere du groupe auquel appartient le compte rendu',
-		id_login VARCHAR(32)  COMMENT 'Cle etrangere de l\'utilisateur auquel appartient le compte rendu',
-		PRIMARY KEY (id_ct),
-		INDEX ct_private_entry_FI_1 (id_groupe),
-		CONSTRAINT ct_private_entry_FK_1
-		FOREIGN KEY (id_groupe)
-		REFERENCES groupes (id)
-		ON DELETE CASCADE,
-		INDEX ct_private_entry_FI_2 (id_login),
-		CONSTRAINT ct_private_entry_FK_2
-		FOREIGN KEY (id_login)
-		REFERENCES utilisateurs (login)
-		ON DELETE CASCADE
-		)ENGINE=MyISAM COMMENT='Notice privee du cahier de texte';";
-		}
-		$result_inter = traite_requete($sql);
-		if ($result_inter != '') {
-			$result .= "<br />Erreur sur la création de la table 'ct_private_entry': ".$result_inter."<br />";
+			(
+			id_ct INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la cotice privee',
+			heure_entry TIME default '00:00:00' NOT NULL COMMENT 'heure de l\'entree',
+			date_ct INTEGER default 0 NOT NULL COMMENT 'date du compte rendu',
+			contenu TEXT  NOT NULL COMMENT 'contenu redactionnel du compte rendu',
+			id_groupe INTEGER  NOT NULL COMMENT 'Cle etrangere du groupe auquel appartient le compte rendu',
+			id_login VARCHAR(32)  COMMENT 'Cle etrangere de l\'utilisateur auquel appartient le compte rendu',
+			PRIMARY KEY (id_ct),
+			INDEX ct_private_entry_FI_1 (id_groupe),
+			CONSTRAINT ct_private_entry_FK_1
+			FOREIGN KEY (id_groupe)
+			REFERENCES groupes (id)
+			ON DELETE CASCADE,
+			INDEX ct_private_entry_FI_2 (id_login),
+			CONSTRAINT ct_private_entry_FK_2
+			FOREIGN KEY (id_login)
+			REFERENCES utilisateurs (login)
+			ON DELETE CASCADE
+			)ENGINE=MyISAM COMMENT='Notice privee du cahier de texte';";
+			$result_inter = traite_requete($sql);
+			if ($result_inter != '') {
+				$result .= "<br />Erreur sur la création de la table 'ct_private_entry': ".$result_inter."<br />";
+			}
 		}
 
 		//fin module cahier texte 2
