@@ -22,3 +22,9 @@ commit-*
 nbproject
 *.sh
 *REMOTE*
+
+# Ignore build generated files
+/build/coverage
+/build/logs
+/build/api
+

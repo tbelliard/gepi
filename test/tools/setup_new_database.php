@@ -1,11 +1,11 @@
 #!/usr/bin/php 
 <?php
 
-require_once dirname(__FILE__) . '/fixtures/config/connect.test.inc.php';
+require_once dirname(__FILE__) . '/../fixtures/config/connect.test.inc.php';
 
 $link = mysql_connect($GLOBALS['dbHost'], $GLOBALS['dbUser'], $GLOBALS['dbPass']);
 mysql_select_db($GLOBALS['dbDb']);
-$fd = fopen(dirname(__FILE__) ."/../sql/structure_gepi.sql", "r");
+$fd = fopen(dirname(__FILE__) ."/../../sql/structure_gepi.sql", "r");
 if (!$fd) {
 	echo "Erreur : fichier sql/structure_gepi.sql non trouve\n";
 	die;
@@ -30,7 +30,7 @@ while (!feof($fd)) {
 fclose($fd);
 
 if ($result_ok == 'yes') {
-	$fd = fopen(dirname(__FILE__) ."/../sql/data_gepi.sql", "r");
+	$fd = fopen(dirname(__FILE__) ."/../../sql/data_gepi.sql", "r");
 	if (!$fd) {
 		echo "Erreur : fichier sql/data_gepi.sql non trouve\n";
 		die;
