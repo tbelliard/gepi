@@ -23,11 +23,13 @@
 // Initialisation... pour que le tableau existe, même si on ne définit pas le tableau dans ../temp/info_jours.js
 var tab_jours_ouverture=new Array();
 
-//page initialisation
-Event.observe(window, 'load', initPage);
+//page initialisation: Déplacé en fin de fichier pour que les fonctions soient chargées avant
+//Event.observe(window, 'load', initPage);
 
 function initPage () {
-	getWinCalendar();
+	// On ajoute un délais pour que Calendar et calendarInstanciation soient définies via les lib JS calendar.js et calendar-setup.js
+	//getWinCalendar();
+	setTimeout('getWinCalendar();', 500);
 
 	//si id_group_init est renseigné on affiche le groupe concerné, sinon on affiche les dernieres notices
 	var id_groupe_init = $('id_groupe_init').value;
@@ -35,6 +37,7 @@ function initPage () {
 	    id_groupe = id_groupe_init;
 	    getWinDernieresNotices().hide();
 	    getWinListeNotices();
+		/*
 	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'ISO-8859-1'});
 	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
 		    encoding: 'ISO-8859-1',
@@ -45,11 +48,26 @@ function initPage () {
 				    }
 			    }
 	    );
+		*/
+		// On ajoute un délais pour que le calendrier soit chargé avant
+		setTimeout('initFenetreNotice('+id_groupe_init+')',500);
 	} else {
             getWinDernieresNotices().hide();
 	}
 }
 
+function initFenetreNotice(id_groupe_init) {
+	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'ISO-8859-1'});
+	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
+		    encoding: 'ISO-8859-1',
+		    onComplete :
+		    function() {
+			    initWysiwyg();
+				debut_alert = new Date();
+				    }
+			    }
+	    );
+}
 
 function include(filename)
 {
@@ -71,6 +89,7 @@ function include(filename)
 include('../lib/DHTMLcalendar/calendar.js');
 include('../lib/DHTMLcalendar/lang/calendar-fr.js');
 include('../lib/DHTMLcalendar/calendar-setup.js');
+//setTimeout("include('../lib/DHTMLcalendar/calendar-setup.js')", 500);
 include('../ckeditor/ckeditor.js');
 include('../edt_effets/javascripts/window.js');
 include('../temp/info_jours.js');
@@ -167,7 +186,24 @@ function getWinDernieresNotices() {
 	}
 	return winDernieresNotices;
 }
-
+/*
+function setWinCalendarContent() {
+	$('win_calendar_content').setStyle({	
+		backgroundColor: '#d0d0d0',
+		color: '#000000'
+	});
+	$('win_calendar_content').innerHTML = '<div id="calendar-container-2" onmouseover="winCalendar.toFront();">';
+	calendarInstanciation = Calendar.setup(
+			{
+				flat         : "calendar-container-2", // ID of the parent element
+				flatCallback : dateChanged,          // our callback function
+				daFormat     : "%s",    			   //date format
+				weekNumbers  : false,
+				dayMouseOverCalendarToFront : true
+			}
+		);
+}
+*/
 function getWinCalendar() {
 	if (typeof winCalendar=="undefined") {
 		winCalendar = new Window(
@@ -183,20 +219,30 @@ function getWinCalendar() {
 				width:155,
 				height:170}
 			);
-		$('win_calendar_content').setStyle({	
-			backgroundColor: '#d0d0d0',
-			color: '#000000'
-		});
-		$('win_calendar_content').innerHTML = '<div id="calendar-container-2" onmouseover="winCalendar.toFront();">';
-		calendarInstanciation = Calendar.setup(
-				{
-					flat         : "calendar-container-2", // ID of the parent element
-					flatCallback : dateChanged,          // our callback function
-					daFormat     : "%s",    			   //date format
-					weekNumbers  : false,
-					dayMouseOverCalendarToFront : true
-				}
-			);
+/*
+		// Pour ajouter un délais... on a parfois des pb avec l'ouverture des fenêtres
+		// Web Developper signale des pb d'init avec Calendar...
+		if(!$('win_calendar_content')) {
+			setTimeout('setWinCalendarContent();winCalendar.show();winCalendar.toFront();return winCalendar;',500);
+		}
+		else {
+			setWinCalendarContent();
+*/
+			$('win_calendar_content').setStyle({	
+				backgroundColor: '#d0d0d0',
+				color: '#000000'
+			});
+			$('win_calendar_content').innerHTML = '<div id="calendar-container-2" onmouseover="winCalendar.toFront();">';
+			calendarInstanciation = Calendar.setup(
+					{
+						flat         : "calendar-container-2", // ID of the parent element
+						flatCallback : dateChanged,          // our callback function
+						daFormat     : "%s",    			   //date format
+						weekNumbers  : false,
+						dayMouseOverCalendarToFront : true
+					}
+				);
+		//}
 	}
 	winCalendar.show();
 	winCalendar.toFront();
@@ -871,6 +917,9 @@ function getWinListeNoticesPrivees() {
 	winListeNoticesPrivees.toFront();
 	return winListeNoticesPrivees;
 }
+
+//page initialisation
+Event.observe(window, 'load', initPage);
 
 /**
 *
