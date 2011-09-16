@@ -121,78 +121,80 @@ if (isset($_POST['isposted'])) {
         $req = mysql_query($sql);
     }
 
-	$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : NULL;
-	if(isset($login_prof)) {
-		// Récupérer la liste des profs actuellement associés
-		$tab_profs_associes=array();
-		$sql="SELECT u.login FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login and id_matiere='$matiere_name' ORDER BY u.nom, u.prenom;";
-		$res_profs=mysql_query($sql);
-		if(mysql_num_rows($res_profs)>0) {
-			while($lig=mysql_fetch_object($res_profs)) {
-				$tab_profs_associes[]=$lig->login;
-			}
-		}
-
-		$nb_inser=0;
-		for($loop=0;$loop<count($login_prof);$loop++) {
-			if(!in_array($login_prof[$loop], $tab_profs_associes)) {
-				// Recherche de l'ordre matière le plus élevé pour ce prof
-				$sql="SELECT MAX(ordre_matieres) max_ordre FROM j_professeurs_matieres WHERE id_professeur='".$login_prof[$loop]."';";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
-					$ordre_matieres=1;
-				}
-				else {
-					$ordre_matieres=mysql_result($res, 0, "max_ordre")+1;
-				}
-
-				// On ajoute le prof
-				$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof[$loop]', id_matiere='$matiere_name', ordre_matieres='$ordre_matieres';";
-				$insert=mysql_query($sql);
-				if(!$insert) {
-					$msg.="Erreur lors de l'association de ".$login_prof[$loop]." avec la matière $matiere_name<br />";
-				}
-				else {
-					$nb_inser++;
+	if($ok=='yes') {
+		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : NULL;
+		if(isset($login_prof)) {
+			// Récupérer la liste des profs actuellement associés
+			$tab_profs_associes=array();
+			$sql="SELECT u.login FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login and id_matiere='$matiere_name' ORDER BY u.nom, u.prenom;";
+			$res_profs=mysql_query($sql);
+			if(mysql_num_rows($res_profs)>0) {
+				while($lig=mysql_fetch_object($res_profs)) {
+					$tab_profs_associes[]=$lig->login;
 				}
 			}
-		}
-
-		if($nb_inser>0) {
-			$msg.="$nb_inser professeur(s) a(ont) été associé(s) avec la matière $matiere_name<br />";
-		}
-
-		$nb_suppr=0;
-		for($loop=0;$loop<count($tab_profs_associes);$loop++) {
-			if(!in_array($tab_profs_associes[$loop], $login_prof)) {
-				$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE (jgp.login='".$tab_profs_associes[$loop]."' AND jgm.id_matiere='$matiere_name' AND jgm.id_groupe=jgp.id_groupe)";
-				//echo "$sql<br />";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
-					/*
-					$sql="SELECT ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='$login_prof' AND id_matiere='$matiere_name';";
+	
+			$nb_inser=0;
+			for($loop=0;$loop<count($login_prof);$loop++) {
+				if(!in_array($login_prof[$loop], $tab_profs_associes)) {
+					// Recherche de l'ordre matière le plus élevé pour ce prof
+					$sql="SELECT MAX(ordre_matieres) max_ordre FROM j_professeurs_matieres WHERE id_professeur='".$login_prof[$loop]."';";
 					$res=mysql_query($sql);
-					*/
-
-					$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='".$tab_profs_associes[$loop]."' AND id_matiere='$matiere_name';";
-					$suppr=mysql_query($sql);
-					if(!$suppr) {
-						$msg.="Erreur lors de la suppression de l'association de ".$tab_profs_associes[$loop]." avec la matière $matiere_name<br />";
+					if(mysql_num_rows($res)==0) {
+						$ordre_matieres=1;
 					}
 					else {
-						$nb_suppr++;
+						$ordre_matieres=mysql_result($res, 0, "max_ordre")+1;
+					}
+	
+					// On ajoute le prof
+					$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof[$loop]', id_matiere='$matiere_name', ordre_matieres='$ordre_matieres';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						$msg.="Erreur lors de l'association de ".$login_prof[$loop]." avec la matière $matiere_name<br />";
+					}
+					else {
+						$nb_inser++;
 					}
 				}
-				else {
-					$msg.="Dissociation impossible : Le professeur ".$tab_profs_associes[$loop]." enseigne la matière $matiere_name dans un ou des enseignements.<br />";
+			}
+	
+			if($nb_inser>0) {
+				$msg.="$nb_inser professeur(s) a(ont) été associé(s) avec la matière $matiere_name<br />";
+			}
+	
+			$nb_suppr=0;
+			for($loop=0;$loop<count($tab_profs_associes);$loop++) {
+				if(!in_array($tab_profs_associes[$loop], $login_prof)) {
+					$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE (jgp.login='".$tab_profs_associes[$loop]."' AND jgm.id_matiere='$matiere_name' AND jgm.id_groupe=jgp.id_groupe)";
+					//echo "$sql<br />";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)==0) {
+						/*
+						$sql="SELECT ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='$login_prof' AND id_matiere='$matiere_name';";
+						$res=mysql_query($sql);
+						*/
+	
+						$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='".$tab_profs_associes[$loop]."' AND id_matiere='$matiere_name';";
+						$suppr=mysql_query($sql);
+						if(!$suppr) {
+							$msg.="Erreur lors de la suppression de l'association de ".$tab_profs_associes[$loop]." avec la matière $matiere_name<br />";
+						}
+						else {
+							$nb_suppr++;
+						}
+					}
+					else {
+						$msg.="Dissociation impossible : Le professeur ".$tab_profs_associes[$loop]." enseigne la matière $matiere_name dans un ou des enseignements.<br />";
+					}
 				}
 			}
+	
+			if($nb_suppr>0) {
+				$msg.="$nb_suppr professeur(s) a(ont) été dissocié(s) de la matière $matiere_name<br />";
+			}
+	
 		}
-
-		if($nb_suppr>0) {
-			$msg.="$nb_suppr professeur(s) a(ont) été dissocié(s) de la matière $matiere_name<br />";
-		}
-
 	}
 
 	//$msg = rawurlencode($msg);
