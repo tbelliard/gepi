@@ -2,7 +2,6 @@
 /**
  * Entête de la page
  * 
- * $Id$
  *
  * @copyright Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  * 
@@ -714,8 +713,13 @@ if (isset($titre_page)) {
 		 //=== Affichage de la version de Gepi ===
 				if ($_SESSION['statut'] == "administrateur") {
 					$version_gepi = '';
-					if ($gepiVersion != null || $gepiSvnRev != null) {
-						$version_gepi = 'version '.$gepiVersion.' '.$gepiSvnRev;
+					if ($gepiVersion != null) {
+						$version_gepi = 'version '.$gepiVersion;
+						if ($gepiGitCommit != null) {
+							$version_gepi .= ' git '.substr($gepiGitCommit, 0, 6);
+						} elseif ($gepiSvnRev != null) {
+							$version_gepi .= ' svn r'.$gepiSvnRev;
+						}
 					} else {
 						//rien n'as été rempli, il y a peut être un répertoire .git qui va nous renseigner
 						if (file_exists(dirname(__FILE__).'/../.git/HEAD')) {
@@ -725,22 +729,19 @@ if (isset($titre_page)) {
 									//on a une référence de branche git
 									$gepiVersion = trim(substr($git_ref, 1+strrpos( $git_ref  , '/')));
 									$gepiGitCommit = file_get_contents((dirname(__FILE__).'/../.git/refs/heads/'.$gepiVersion));
-									$gepiSvnRev = substr($gepiGitCommit, 0, 6);
-									$version_gepi = 'version '.$gepiVersion.' '.$gepiSvnRev;
+									$version_gepi = 'version '.$gepiVersion.' git '.substr($gepiGitCommit, 0, 6);
 								} else {
 									//on a un commit git dans le HEAD
 									$gepiVersion = 'git détachée';
 									$gepiGitCommit = $git_ref;
-									$gepiSvnRev = substr($gepiGitCommit, 0, 6);
-									$version_gepi = 'version '.$gepiVersion.' '.$gepiSvnRev;
+									$version_gepi = 'version '.$gepiVersion.' git '.substr($gepiGitCommit, 0, 6);
 								}
 								
 							}
 						}
 					}
 					echo "<p id='num_version'>".$version_gepi."</p>";
-				}
-				else{
+				} else {
 					echo "<p id='num_version'>&nbsp;</p>"; // nécessaire pour recaler le bandeau dans tous les navigateurs
 				}
 
