@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="gepi" default="build" basedir=".">
+  <scriptdef name="branch_end_string" language="javascript">
+     <attribute name="text" />
+     <attribute name="property" />
+     <![CDATA[
+       var text = attributes.get("text");
+       var pos = text.lastIndexOf("/");
+       if (pos == -1) {
+        project.setProperty(attributes.get("property"), text);
+       } else {
+        project.setProperty(attributes.get("property"), text.substring(pos+1));
+       }
+     ]]>
+  </scriptdef>
+  <property environment="env" />
+  <branch_end_string text="origin/developpement" property="branch_name" />
+  <echo message="branch_name = ${branch_name}" />
+
+
  <property name="source" value="."/>
 
  <target name="clean"
@@ -140,10 +158,9 @@
  </target>
 
  <target name="version_replace">
-  <property environment="env" />
   <exec executable="sed">
    <arg value="-i" />
-   <arg value='s/$gepiVersion = "".*/$gepiVersion = "${env.GIT_BRANCH} ${env.BUILD_ID} build ${env.BUILD_TAG}";/g' />
+   <arg value='s/$gepiVersion = "".*/$gepiVersion = "${branch_name} ${env.BUILD_ID} build ${env.BUILD_TAG}";/g' />
    <arg value="${source}/lib/global.inc.php" />
   </exec>
 
@@ -158,7 +175,7 @@
  <target name="tarball" description="Make a tarball from src files" depends="version_replace">
   <echo message="taring ${source}"/>
 
-  <tar destfile="${basedir}/build/gepi-${env.GIT_BRANCH}-${env.BUILD_ID}.tar.gz" compression="gzip">
+  <tar destfile="${basedir}/build/gepi-${branch_name}-${env.BUILD_ID}.tar.gz" compression="gzip">
      <tarfileset dir="${source}"
                 preserveLeadingSlashes="true" prefix="gepi">
       <exclude name="build/**"/>

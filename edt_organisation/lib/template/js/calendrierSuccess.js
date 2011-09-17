@@ -325,138 +325,139 @@
 
 			}
 			else if (NbSelectedDays > 1){
+				if ($('new_period').getStyle('display') == "none") {
+					if (Prototype.Browser.IE) {
+						document.documentElement.scroll = "no";
+						document.documentElement.style.overflow = 'hidden';
+					}
+					else {
+						document.body.scroll = "no";
+						document.body.style.overflow = 'hidden';				
+					}
+					var viewport = document.viewport.getDimensions(); // Gets the viewport as an object literal
+					var width = viewport.width; // Usable window width
+					var height = viewport.height; // Usable window height
+					if( typeof( window.pageYOffset ) == 'number' ) 
+						{y = window.pageYOffset;}
+					else if (typeof(document.documentElement.scrollTop) == 'number') {
+						y=document.documentElement.scrollTop;
+					}
+					$('cache_modal').setStyle({width: "100%"});
+					$('cache_modal').setStyle({height: height+"px"});
+					$('cache_modal').setStyle({top: y+"px"});
+					$('cache_modal').setStyle({display: 'block'});
+					$('cache_modal').setOpacity(0.6);
+					$('new_period').setStyle({top: y+Math.abs((height-100)/2)+"px"});
+					$('new_period').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('new_period').setStyle({display: 'block'});
+					$('params_new_period').setStyle({top: 170+y+Math.abs((height-100)/2)+"px"});
+					$('params_new_period').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('period_input_field').value='';
+					$('period_input_field').focus();
+							
 
-				if (Prototype.Browser.IE) {
-					document.documentElement.scroll = "no";
-					document.documentElement.style.overflow = 'hidden';
-				}
-				else {
-					document.body.scroll = "no";
-					document.body.style.overflow = 'hidden';				
-				}
-				var viewport = document.viewport.getDimensions(); // Gets the viewport as an object literal
-				var width = viewport.width; // Usable window width
-				var height = viewport.height; // Usable window height
-				if( typeof( window.pageYOffset ) == 'number' ) 
-					{y = window.pageYOffset;}
-				else if (typeof(document.documentElement.scrollTop) == 'number') {
-					y=document.documentElement.scrollTop;
-				}
-				$('cache_modal').setStyle({width: "100%"});
-				$('cache_modal').setStyle({height: height+"px"});
-				$('cache_modal').setStyle({top: y+"px"});
-				$('cache_modal').setStyle({display: 'block'});
-				$('cache_modal').setOpacity(0.6);
-				$('new_period').setStyle({top: y+Math.abs((height-100)/2)+"px"});
-				$('new_period').setStyle({left: Math.abs((width-300)/2)+"px"});
-				$('new_period').setStyle({display: 'block'});
-				$('params_new_period').setStyle({top: 170+y+Math.abs((height-100)/2)+"px"});
-				$('params_new_period').setStyle({left: Math.abs((width-300)/2)+"px"});
-				$('period_input_field').value='';
-				$('period_input_field').focus();
-						
+					$('period_input_field').observe('keyup', function(event) {
+						if (event.keyCode=='13'){  
+							$('new_period').setStyle({display: 'none'});	
+							$('cache_modal').setStyle({display: 'none'}); 
+							$('params_new_period').setStyle({display: 'none'});
 
-				$('period_input_field').observe('keyup', function(event) {
-					if (event.keyCode=='13'){  
-						$('new_period').setStyle({display: 'none'});	
-						$('cache_modal').setStyle({display: 'none'}); 
-						$('params_new_period').setStyle({display: 'none'});
-
-						if (Prototype.Browser.IE) {
-							document.documentElement.scroll = "yes";
-							document.documentElement.style.overflow = 'scroll';
-						}
-						else {
-							document.body.scroll = "yes";
-							document.body.style.overflow = 'scroll';				
-						}
-						if ($('period_input_field').value != "") {
-							new Ajax.Request(
-								'./index.php',
-							  {
-								method:'get',
-								parameters: {action: "ajaxrequest", 
-											asker: "calendrier", 
-											periodname: $('period_input_field').value, 
-											firstday: IndiceFirstDiv, 
-											lastday: IndiceCurrentDiv, 
-											id_calendar: $('id_calendar').value,
-											periode_notes:($$('select#params_periodes_notes option').find(function(ele){return ele.selected})).value,
-											ouvert:$('params_ouvert').value,
-											type:$('params_type').value,
-											csrf_alea:$('csrf_alea').value},
-								onSuccess: function(transport){
-									var response = transport.responseText || "Le serveur ne répond pas";
-									var message = response.substring(0,5);
-									if (message == "error") {
-										message = response.substring(5,response.length);
-										$('message').update(message);
-										Effect.ScrollTo($('bandeau'),{ duration:'0.2'});
-										Effect.Appear($('message'));
-										Effect.Shake($('message'),{ distance: 30, duration:'1.5'});
-									}
-									else {
-										$('message').setStyle({display: "none"});
-										if (IndiceFirstDiv < IndiceCurrentDiv) {
-											firstday = IndiceFirstDiv;
-											lastday = IndiceCurrentDiv;
+							if (Prototype.Browser.IE) {
+								document.documentElement.scroll = "yes";
+								document.documentElement.style.overflow = 'scroll';
+							}
+							else {
+								document.body.scroll = "yes";
+								document.body.style.overflow = 'scroll';				
+							}
+							if ($('period_input_field').value != "") {
+								new Ajax.Request(
+									'./index.php',
+								  {
+									method:'get',
+									parameters: {action: "ajaxrequest", 
+												asker: "calendrier", 
+												periodname: $('period_input_field').value, 
+												firstday: IndiceFirstDiv, 
+												lastday: IndiceCurrentDiv, 
+												id_calendar: $('id_calendar').value,
+												periode_notes:($$('select#params_periodes_notes option').find(function(ele){return ele.selected})).value,
+												ouvert:$('params_ouvert').value,
+												type:$('params_type').value,
+												csrf_alea:$('csrf_alea').value},
+									onSuccess: function(transport){
+										var response = transport.responseText || "Le serveur ne répond pas";
+										var message = response.substring(0,5);
+										if (message == "error") {
+											message = response.substring(5,response.length);
+											$('message').update(message);
+											Effect.ScrollTo($('bandeau'),{ duration:'0.2'});
+											Effect.Appear($('message'));
+											Effect.Shake($('message'),{ distance: 30, duration:'1.5'});
 										}
 										else {
-											lastday = IndiceFirstDiv;
-											firstday = IndiceCurrentDiv;										
+											$('message').setStyle({display: "none"});
+											if (IndiceFirstDiv < IndiceCurrentDiv) {
+												firstday = IndiceFirstDiv;
+												lastday = IndiceCurrentDiv;
+											}
+											else {
+												lastday = IndiceFirstDiv;
+												firstday = IndiceCurrentDiv;										
+											}
+											$('div'+firstday).setStyle({backgroundColor: '#75a1ff'});
+											$('div'+firstday).className = "calendar_first_cell_period";
+											for (i=firstday+1;i<=lastday;i++) {
+												$('div'+i).setStyle({backgroundColor: '#95a1ff'});	
+												$('div'+i).className = "calendar_cell_period";
+											}										
 										}
-										$('div'+firstday).setStyle({backgroundColor: '#75a1ff'});
-										$('div'+firstday).className = "calendar_first_cell_period";
-										for (i=firstday+1;i<=lastday;i++) {
-											$('div'+i).setStyle({backgroundColor: '#95a1ff'});	
-											$('div'+i).className = "calendar_cell_period";
-										}										
-									}
-								},
-								onFailure: function(){ alert('Impossible de transmettre votre requête') }
-							  });
+									},
+									onFailure: function(){ alert('Impossible de transmettre votre requête') }
+								  });
 
-							  $('period_input_field').value = "";
+								  $('period_input_field').value = "";
+							}
+							$$('select#params_periodes_notes option').each(function(o) {
+								o.selected = o.readAttribute('value') == "0";
+							});
+							$('params_ouvert').value = "1";
+							$('params_checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
+							$('params_checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
+							$('params_type').value = "0";
+							$('params_checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
+							$('params_checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
+							NbSelectedDays = 0;
+							FirstDiv='';
+							repaint_cells();
 						}
-						$$('select#params_periodes_notes option').each(function(o) {
-							o.selected = o.readAttribute('value') == "0";
-						});
-						$('params_ouvert').value = "1";
-						$('params_checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
-						$('params_checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
-						$('params_type').value = "0";
-						$('params_checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
-						$('params_checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
-						NbSelectedDays = 0;
-						FirstDiv='';
-						repaint_cells();
-  					}
-					else if (event.keyCode=='27'){  
-						$('new_period').setStyle({display: 'none'});	
-						$('cache_modal').setStyle({display: 'none'}); 
-						$('params_new_period').setStyle({display: 'none'});
-						$$('select#params_periodes_notes option').each(function(o) {
-							o.selected = o.readAttribute('value') == "0";
-						});
-						$('params_ouvert').value = "1";
-						$('params_checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
-						$('params_checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
-						$('params_type').value = "0";
-						$('params_checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
-						$('params_checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
-						if (Prototype.Browser.IE) {
-							document.documentElement.scroll = "yes";
-							document.documentElement.style.overflow = 'scroll';
+						else if (event.keyCode=='27'){  
+							$('new_period').setStyle({display: 'none'});	
+							$('cache_modal').setStyle({display: 'none'}); 
+							$('params_new_period').setStyle({display: 'none'});
+							$$('select#params_periodes_notes option').each(function(o) {
+								o.selected = o.readAttribute('value') == "0";
+							});
+							$('params_ouvert').value = "1";
+							$('params_checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
+							$('params_checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
+							$('params_type').value = "0";
+							$('params_checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
+							$('params_checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
+							if (Prototype.Browser.IE) {
+								document.documentElement.scroll = "yes";
+								document.documentElement.style.overflow = 'scroll';
+							}
+							else {
+								document.body.scroll = "yes";
+								document.body.style.overflow = 'scroll';				
+							}
+							NbSelectedDays = 0;
+							FirstDiv='';
+							repaint_cells();
 						}
-						else {
-							document.body.scroll = "yes";
-							document.body.style.overflow = 'scroll';				
-						}
-						NbSelectedDays = 0;
-						FirstDiv='';
-						repaint_cells();
-  					}
-				});
+					});
+				}
 			}
 			else {
 				NbSelectedDays = 0;

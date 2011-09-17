@@ -57,26 +57,28 @@ Class modele_select extends Modele {
   }
 
   public function get_classes_periode() {
-
-    if (isset($_SESSION['stats_periodes']['periode'])) {
-      foreach ($this->periodes_calendrier as $value) {
-        if ($value['id_calendrier']==$_SESSION['stats_periodes']['periode']) {
-          $liste=trim($value['classe_concerne_calendrier'],";");
-          $liste=explode(';',$liste);
+        $liste = false;
+        if (isset($_SESSION['stats_periodes']['periode'])) {
+            foreach ($this->periodes_calendrier as $value) {
+                if ($value['id_calendrier'] == $_SESSION['stats_periodes']['periode']) {
+                    if ($value['classe_concerne_calendrier'] != '') {
+                        $liste = trim($value['classe_concerne_calendrier'], ";");
+                        $liste = explode(';', $liste);
+                    }
+                }
+            }
         }
-      }
-      $this->sql = "SELECT id, classe, nom_complet FROM classes WHERE id IN (".implode(',', $liste)." ) ORDER BY classe ASC ";
-      $this->res = mysql_query($this->sql);
-      $this->classes=parent::set_array('object',$this->res);
-
-    }else {
-      $this->sql = "SELECT id, classe, nom_complet FROM classes ORDER BY classe ASC ";
-      $this->res = mysql_query($this->sql);
-      $this->classes=parent::set_array('object',$this->res);
-
+        if ($liste) {
+            $this->sql = "SELECT id, classe, nom_complet FROM classes WHERE id IN (" . implode(',', $liste) . " ) ORDER BY classe ASC ";
+            $this->res = mysql_query($this->sql);
+            $this->classes = parent::set_array('object', $this->res);
+        } else {
+            $this->sql = "SELECT id, classe, nom_complet FROM classes ORDER BY classe ASC ";
+            $this->res = mysql_query($this->sql);
+            $this->classes = parent::set_array('object', $this->res);
+        }
+        return($this->classes);
     }
-    return($this->classes);
-  }
   public function get_infos_classe($id) {
     $this->sql = 'SELECT id, classe, nom_complet FROM classes where id='.$id;
     $this->res = mysql_query($this->sql);    
