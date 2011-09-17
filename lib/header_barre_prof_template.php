@@ -183,7 +183,7 @@ include("tbs_menu_plugins.inc.php");
 			$tmp_sous_menu[$cpt_sous_menu] = array("lien"=> getSettingValue('sacocheUrl').'?sso&amp;id='.getSettingValue('sacoche_base') , "texte"=>"Évaluation par compétence");
 			$cpt_sous_menu++;
 		}
-		
+
 		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 		$compteur_menu++;
@@ -350,6 +350,25 @@ include("tbs_menu_plugins.inc.php");
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof' , "texte"=>"Emploi du tps");
+
+		$tmp_sous_menu=array();
+		$cpt_sous_menu=0;
+
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=classe1' , "texte"=>"EDT classe");
+		$cpt_sous_menu++;
+
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1' , "texte"=>"EDT prof");
+		$cpt_sous_menu++;
+
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=salle1' , "texte"=>"EDT salle");
+		$cpt_sous_menu++;
+
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=eleve1' , "texte"=>"EDT élève");
+		$cpt_sous_menu++;
+
+		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
+		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+
 		$compteur_menu++;
 	}else{$barre_edt = '';}
 
@@ -368,12 +387,43 @@ include("tbs_menu_plugins.inc.php");
 	}else{ $barre_notanet = '';}
 
 	//=======================================================
-	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
-		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/eleves/visu_eleve.php' , "texte"=>"Consult.élève");
-		$compteur_menu++;
-	}
-	else{ $barre_consult_eleve = '';}
+	$tbs_menu_prof[$compteur_menu]=array("lien"=> '/groupes/visu_mes_listes.php' , "texte"=>"Élèves");
+	$tmp_sous_menu=array();
+	$cpt_sous_menu=0;
 
+	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/eleves/visu_eleve.php' , "texte"=>"Consult.élève");
+		$cpt_sous_menu++;
+	}
+	//else{ $barre_consult_eleve = '';}
+
+	if(getSettingValue('active_module_trombinoscopes')=='y') {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_trombinoscopes/trombinoscopes.php' , "texte"=>"Trombinoscope");
+		$tmp_sous_menu2=array();
+		$cpt_sous_menu2=0;
+		foreach($mes_groupes as $tmp_group) {
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/mod_trombinoscopes/trombino_pdf.php?classe=&groupe='.$tmp_group['id'].'&equipepeda=&discipline=&statusgepi=&affdiscipline=';
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+			$cpt_sous_menu2++;
+		}
+		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+
+		$cpt_sous_menu++;
+	}
+	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/groupes/visu_mes_listes.php' , "texte"=>"Mes listes");
+	$cpt_sous_menu++;
+
+	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/groupes/mes_listes.php' , "texte"=>"Mes listes CSV");
+	$cpt_sous_menu++;
+
+	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/impression/impression_serie.php' , "texte"=>"Mes listes PDF");
+	$cpt_sous_menu++;
+
+	$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
+	$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+
+	$compteur_menu++;
 
 	//=======================================================
 	// plugin
