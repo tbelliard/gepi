@@ -894,6 +894,7 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;">
+		<a name='format_login_resp'></a>
 		Mode de génération automatique des logins :</td>
 	<td>
 	<select name='mode_generation_login' onchange='changement()'>
