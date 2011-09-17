@@ -20,7 +20,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -42,9 +42,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 //include "../lib/mincals.inc";
@@ -89,17 +89,17 @@ elseif ($_SESSION['statut'] == "responsable") {
 			"r.login = '".$_SESSION['login']."')");
 
 	if (mysql_num_rows($get_eleves) == 1) {
-			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
+			// Un seul Ã©lÃ¨ve associÃ© : on initialise tout de suite la variable $selected_eleve
 			// Cela signifie entre autre que l'on ne prend pas en compte $login_eleve, fermant ainsi une
-			// potentielle faille de sécurité.
+			// potentielle faille de sÃ©curitÃ©.
 		$selected_eleve = mysql_fetch_object($get_eleves);
 	} elseif (mysql_num_rows($get_eleves) == 0) {
 		$selected_eleve = false;
 	} elseif (mysql_num_rows($get_eleves) > 1 and $selected_eleve) {
-		// Si on est là, c'est que la variable $login_eleve a été utilisée pour
-		// générer $selected_eleve
-		// On va vérifier que l'élève ainsi sélectionné fait bien partie des élèves
-		// associés à l'utilisateur au statut 'responsable'
+		// Si on est lÃ , c'est que la variable $login_eleve a Ã©tÃ© utilisÃ©e pour
+		// gÃ©nÃ©rer $selected_eleve
+		// On va vÃ©rifier que l'Ã©lÃ¨ve ainsi sÃ©lectionnÃ© fait bien partie des Ã©lÃ¨ves
+		// associÃ©s Ã  l'utilisateur au statut 'responsable'
 		$ok = false;
 		while($test = mysql_fetch_object($get_eleves)) {
 			if ($test->login == $selected_eleve->login) {$ok = true;}
@@ -119,7 +119,7 @@ if (($id_classe!=-1)&&($id_classe!='')) {
 	}
 }
 
-// Nom complet de la matière
+// Nom complet de la matiÃ¨re
 if($current_group) {
 	$matiere_nom = $current_group["matiere"]["nom_complet"];
 }
@@ -160,16 +160,16 @@ if ($current_imprime=='y') echo "<div id='container'>\n";
 
 //debug_var();
 
-// Création d'un espace entre le bandeau et le reste 
+// CrÃ©ation d'un espace entre le bandeau et le reste 
 echo "<p></p>\n";
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
 	die("<p class='grand centre_texte'>Le cahier de textes n'est pas accessible pour le moment.</p>");
 }
 
 echo "<div class='centre_table'>\n";
-	// Choix classe et matière
+	// Choix classe et matiÃ¨re
 	echo "<div class='ct_col_gauche'>\n";
 		if ($current_imprime=='n') {
 			if ($_SESSION['statut'] == 'responsable') {
@@ -214,7 +214,7 @@ echo "<div class='centre_table'>\n";
 			echo "<span class='grand'>\n";
 				echo "Cahier de textes";
 				if($id_groupe=='Toutes_matieres') {
-					echo " - Toutes les matières";
+					echo " - Toutes les matiÃ¨res";
 				}
 				else {
 					if ($current_group) {
@@ -227,7 +227,7 @@ echo "<div class='centre_table'>\n";
 				}
 			echo "</span>\n";
 
-			// Test si le cahier de texte est partagé
+			// Test si le cahier de texte est partagÃ©
 			if ($current_group) {
 				echo "<br />\n<strong>(";
 				$i=0;
@@ -266,7 +266,7 @@ if ($current_group) {
 if(($id_groupe=='Toutes_matieres')&&
 (($selected_eleve_login!='')||($id_classe!=-1))) {
 	if($id_classe==-1) {
-		// Cas élève
+		// Cas Ã©lÃ¨ve
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
@@ -385,8 +385,8 @@ if(($id_groupe=='Toutes_matieres')&&
 		echo "<table class='boireaus' summary='' width='100%'>\n";
 		echo "<tr>\n";
 		echo "<th>Enseignement</th>\n";
-		echo "<th>Travail à faire</th>\n";
-		echo "<th>Compte-rendu de séance</th>\n";
+		echo "<th>Travail Ã  faire</th>\n";
+		echo "<th>Compte-rendu de sÃ©ance</th>\n";
 		echo "</tr>\n";
 		for($j=0;$j<count($tab_id_grp);$j++) {
 			if((isset($tab_dev[$tab_dates[$i]][$tab_id_grp[$j]]))||(isset($tab_notices[$tab_dates[$i]][$tab_id_grp[$j]]))) {
@@ -417,7 +417,7 @@ if(($id_groupe=='Toutes_matieres')&&
 						echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
 
 						if($value['date_visibilite_eleve']!='0000-00-00 00:00:00') {
-							echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>Donné le ".formate_date($value['date_visibilite_eleve'])."</div>\n";
+							echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>DonnÃ© le ".formate_date($value['date_visibilite_eleve'])."</div>\n";
 						}
 
 						echo $value['contenu'];
@@ -466,17 +466,17 @@ $nb_test = mysql_num_rows($test_cahier_texte);
 if ($nb_test == 0) {
 	echo "\n<h2 class='gepi centre_texte'>\n";
 	if ($_SESSION['statut'] == "responsable") {
-		echo "Choisissez un élève et une matière.";
+		echo "Choisissez un Ã©lÃ¨ve et une matiÃ¨re.";
 	} elseif ($_SESSION['statut'] == "eleve") {
-		echo "Choisissez une matière.";
+		echo "Choisissez une matiÃ¨re.";
 	} else {
-		echo "Choisissez une classe et une matière.";
+		echo "Choisissez une classe et une matiÃ¨re.";
 	}
 	echo "\n</h2>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
-// Affichage des informations générales
+// Affichage des informations gÃ©nÃ©rales
 $appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
@@ -491,8 +491,8 @@ if ($html != '') {
 echo "<div class='see_all_general couleur_bord_tableau_notice'>".$html."</div>";
 }
 
-	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
-echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>CAHIER DE TEXTES: comptes rendus de séance</strong>\n</h2>\n";
+	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de sÃ©ance</strong></div><br />";
+echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>CAHIER DE TEXTES: comptes rendus de sÃ©ance</strong>\n</h2>\n";
 
 if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 	$req_notices =
@@ -538,39 +538,39 @@ $timestamp_courant=time();
 $date_ct_old = -1;
 while (true) {
 	if ($current_ordre == "DESC") {
-		// On met les notices du jour avant les devoirs à rendre aujourd'hui
+		// On met les notices du jour avant les devoirs Ã  rendre aujourd'hui
 		if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
-			// Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
+			// Il y a encore une notice et elle est plus rÃ©cente que le prochain devoir, oÃ¹ il n'y a plus de devoirs
 			$not_dev = $notice;
 			$notice = mysql_fetch_object($res_notices);
 
 			$type_notice="notice";
 		} elseif($devoir) {
-			// Plus de notices et toujours un devoir, ou devoir plus récent
+			// Plus de notices et toujours un devoir, ou devoir plus rÃ©cent
 			$not_dev = $devoir;
 			$devoir = mysql_fetch_object($res_devoirs);
 
 			$type_notice="devoir";
 		} else {
-			// Plus rien à afficher, on sort de la boucle
+			// Plus rien Ã  afficher, on sort de la boucle
 			break;
 		}
 	} else {
-		// On met les notices du jour avant les devoirs à rendre aujourd'hui
+		// On met les notices du jour avant les devoirs Ã  rendre aujourd'hui
 		if ($notice && (!$devoir || $notice->date_ct <= $devoir->date_ct)) {
-			// Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
+			// Il y a encore une notice et elle est plus rÃ©cente que le prochain devoir, oÃ¹ il n'y a plus de devoirs
 			$not_dev = $notice;
 			$notice = mysql_fetch_object($res_notices);
 
 			$type_notice="notice";
 		} elseif($devoir) {
-			// Plus de notices et toujours un devoir, ou devoir plus récent
+			// Plus de notices et toujours un devoir, ou devoir plus rÃ©cent
 			$not_dev = $devoir;
 			$devoir = mysql_fetch_object($res_devoirs);
 
 			$type_notice="devoir";
 		} else {
-			// Plus rien à afficher, on sort de la boucle
+			// Plus rien Ã  afficher, on sort de la boucle
 			break;
 		}
 	}
@@ -608,17 +608,17 @@ while (true) {
 			}
 			echo(strftime("%a %d %b %y", $not_dev->date_ct));
 		echo "</strong>\n</h3>\n";
-		// Numérotation des notices si plusieurs notices sur la même journée
+		// NumÃ©rotation des notices si plusieurs notices sur la mÃªme journÃ©e
 		if ($not_dev->type == "c") {
 			if ($date_ct_old == $not_dev->date_ct) {
 				$num_notice++;
-				echo " <strong><em>(notice N° ".$num_notice.")</em></strong>";
+				echo " <strong><em>(notice NÂ° ".$num_notice.")</em></strong>";
 			} else {
-				// on afffiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
+				// on afffiche "(notice NÂ° 1)" uniquement s'il y a plusieurs notices dans la mÃªme journÃ©e
 				$nb_notices = sql_query1("SELECT count(id_ct) FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='".$not_dev->date_ct."')");
 				if ($nb_notices > 1)
-					echo " <strong><em>(notice N° 1)</em></strong>";
-				// On réinitialise le compteur
+					echo " <strong><em>(notice NÂ° 1)</em></strong>";
+				// On rÃ©initialise le compteur
 				$num_notice = 1;
 			}
 		}
@@ -631,7 +631,7 @@ while (true) {
 		}*/
 
 		if(($type_notice=='devoir')&&($not_dev->date_visibilite_eleve!='0000-00-00 00:00:00')) {
-			echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>Donné le ".formate_date($not_dev->date_visibilite_eleve)."</div>\n";
+			echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>DonnÃ© le ".formate_date($not_dev->date_visibilite_eleve)."</div>\n";
 		}
 
 		echo "$html\n</div>\n";

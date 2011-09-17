@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,16 +52,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :(isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] :(isset($_SESSION["id_aid"]) ? $_SESSION["id_aid"] : NULL));
@@ -202,7 +202,7 @@ echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
 	&& $utilisateur->getStatut() == "professeur") {
 	//le reglage specifie que le prof n'a pas le droit de saisir autre chose que son cours
-	//donc on affiche pas de selection, le cours est automatiquement selectionné
+	//donc on affiche pas de selection, le cours est automatiquement selectionnÃ©
 } else {
     if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
 	$groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
@@ -228,7 +228,7 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
 	}
 	echo "</select>&nbsp;";
 	format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve);
-	echo '<button type="submit">Afficher les élèves</button>';
+	echo '<button type="submit">Afficher les Ã©lÃ¨ves</button>';
 	echo "</p>";
 	echo "</form>";
 	echo "</td>";
@@ -239,7 +239,7 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
 if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
 	&& $utilisateur->getStatut() == "professeur") {
 	//le reglage specifie que le prof n'a pas le droit de saisir autre chose que son cours
-	//donc on affiche pas de selection, le cours est automatiquement selectionné
+	//donc on affiche pas de selection, le cours est automatiquement selectionnÃ©
 } else {
     if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
 	$aid_col = AidDetailsQuery::create()->find();
@@ -263,7 +263,7 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
 	}
 	echo "</select>&nbsp;";
 	format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve);
-	echo '<button type="submit">Afficher les élèves</button>';
+	echo '<button type="submit">Afficher les Ã©lÃ¨ves</button>';
 	echo "</p>";
 	echo "</form>";
 	echo "</td>";
@@ -275,13 +275,13 @@ if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
 	&& getSettingValue("abs2_saisie_prof_decale")!='y'
 	&& $utilisateur->getStatut() == "professeur") {
 	//le reglage specifie que le prof n'a pas le droit de saisir autre chose que son cours
-	//donc on affiche pas de selection, le cours est automatiquement selectionné
+	//donc on affiche pas de selection, le cours est automatiquement selectionnÃ©
 } else if (getSettingValue("autorise_edt_tous") != 'y') {
-    //edt desactivé
+    //edt desactivÃ©
 } else {
     //on affiche une boite de selection avec les cours
     if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-		//la collection entière des cours est trop grosse et inexploitable sous la forme d'une liste. ça consomme de la ressource donc c'est désactivé
+		//la collection entiÃ¨re des cours est trop grosse et inexploitable sous la forme d'une liste. Ã§a consomme de la ressource donc c'est dÃ©sactivÃ©
 		$edt_cours_col = new PropelCollection();
     } else {
 	$edt_cours_col = $utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle();
@@ -296,7 +296,7 @@ if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
 	foreach ($edt_cours_col as $edt_cours) {
 //	    $edt_cours = new EdtEmplacementCours();
 		if ($edt_cours->getEdtCreneau() == NULL) {
-		    //on affiche pas le cours si il n'est associé avec aucun creneau
+		    //on affiche pas le cours si il n'est associÃ© avec aucun creneau
 		    continue;
 		}
 		if (getSettingValue("abs2_saisie_prof_decale") != 'y' && $utilisateur->getStatut() == "professeur") {
@@ -322,7 +322,7 @@ if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
 	    $col = EdtSemaineQuery::create()->find();
 	    echo ("<select name=\"id_semaine\" class=\"small\">");
 	    echo "<option value='-1'>choisissez une semaine</option>\n";
-	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
+	    //on va commencer la liste Ã  la semaine 31 (milieu des vacances d'ete)
 	    for ($i = 0; $i < $col->count(); $i++) {
 		$pos = ($i + 30) % $col->count();
 		$semaine = $col[$pos];
@@ -340,7 +340,7 @@ if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
 	    echo '<input type="hidden" name="id_semaine" value="'.$id_semaine.'"/>&nbsp;';
 	}
 
-	echo '<button type="submit">Afficher les élèves</button>';
+	echo '<button type="submit">Afficher les Ã©lÃ¨ves</button>';
 	if ($current_cours != null && $current_cours->getTypeSemaine() != '' && $current_cours->getTypeSemaine() != '0' && $current_semaine != null && $current_cours->getTypeSemaine() != $current_semaine->getTypeEdtSemaine()) {
 	    echo '<br>Erreur : le cours ne correspond pas au type de semaine.';
 	    $current_cours = null;
@@ -376,7 +376,7 @@ if (!$classe_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve);
-    echo '<button type="submit">Afficher les élèves</button>';
+    echo '<button type="submit">Afficher les Ã©lÃ¨ves</button>';
     echo "</p>";
     echo "</form>";
     echo "</td>";
@@ -474,7 +474,7 @@ if ($current_cours != null) {
 }
 
 if ($current_creneau == null) {
-    echo 'Aucun créneau selectionné';
+    echo 'Aucun crÃ©neau selectionnÃ©';
     //on vide la liste des eleves pour eviter de proposer une saisie
     $eleve_col = new PropelObjectCollection();
 }
@@ -530,7 +530,7 @@ if (!$eleve_col->isEmpty()) {
 				    echo $heure_debut_appel;
 				    echo '" type="text" maxlength="5" size="4"/>';
 				?>
-				à
+				Ã 
 				<?php
 				    echo ' <input style="font-size:88%;" name="heure_fin_appel" id="heure_fin_appel" value="';
 				    if (isset($_POST["heure_fin_appel"])) {$heure_fin_appel = ($_POST["heure_fin_appel"]);}
@@ -545,7 +545,7 @@ if (!$eleve_col->isEmpty()) {
 				?>
 				<?php } ?>
 				<br/>
-				(les élèves non cochés seront considérés présents)
+				(les Ã©lÃ¨ves non cochÃ©s seront considÃ©rÃ©s prÃ©sents)
 			</p>
 			<p class="choix_fin">
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
@@ -557,19 +557,19 @@ if (!$eleve_col->isEmpty()) {
 			    </p>';
 			} ?>
 
-<!-- Afichage du tableau de la liste des élèves -->
+<!-- Afichage du tableau de la liste des Ã©lÃ¨ves -->
 <!-- Legende du tableau-->
-	<?php echo ('<p>'.$eleve_col->count().' élèves.</p>') ?>
+	<?php echo ('<p>'.$eleve_col->count().' Ã©lÃ¨ves.</p>') ?>
 
 <!-- Fin de la legende -->
 <!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
-	<table class="tb_absences" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
+	<table class="tb_absences" summary="Liste des Ã©lÃ¨ves pour l'appel. Colonne 1 : Ã©lÃ¨ves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journÃ©e par crÃ©neaux, derniÃ¨re colonne : photos si actif">
 		<caption class="invisible no_print">Absences</caption>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
 				<th style="text-align : center;" >Veille</th>
-				<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves</th>
-				<th colspan='"<?php echo (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime()->count());?>"' class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>
+				<th style="text-align : center;" abbr="Ã©lÃ¨ves">Liste des &eacute;l&egrave;ves</th>
+				<th colspan='"<?php echo (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime()->count());?>"' class="th_abs_suivi" abbr="CrÃ©neaux">Suivi sur la journ&eacute;e</th>
 			</tr>
 			<tr>
 				<td></td>
@@ -605,7 +605,7 @@ foreach($eleve_col as $eleve) {
 			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
 			if (	(isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
 				|| (isset($current_classe) && $current_classe != null)) {
-			    //si le groupe a une seule classe ou si c'est une classe qui est sélectionner pas la peine d'afficher la classe.
+			    //si le groupe a une seule classe ou si c'est une classe qui est sÃ©lectionner pas la peine d'afficher la classe.
 			} else {
                             if ($eleve->getClasse() != null) {
                                 echo ' '.$eleve->getClasse()->getNom().' ';
@@ -797,7 +797,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 45;
              $taille_max_hauteur = 45;
 
@@ -806,7 +806,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 
@@ -818,7 +818,7 @@ function redimensionne_image_petit($photo)
      	if ($utilisateur->getStatut() != 'professeur' || getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
 	    echo ("<select name=\"id_creneau\" class=\"small\">");
 	    $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-	    echo "<option value='-1'>choisissez un créneau</option>\n";
+	    echo "<option value='-1'>choisissez un crÃ©neau</option>\n";
 	    foreach ($edt_creneau_col as $edt_creneau) {
 		    if ($edt_creneau->getTypeCreneaux() == EdtCreneau::TYPE_PAUSE
 			    || $edt_creneau->getTypeCreneaux() == EdtCreneau::TYPE_REPAS) {

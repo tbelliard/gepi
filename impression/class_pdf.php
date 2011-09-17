@@ -23,7 +23,7 @@ global $avec_emplacement_trous;
     $this->cell(0,2,"","T",0);
 		$this->SetFont('arial','',7.5);	
 	$this->SetXY(5,287); 
-	$this->Cell(0,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,''); 
+	$this->Cell(0,5,'GEPI - Solution libre de Gestion des Ã©lÃ¨ves par Internet',0,1,''); 
 	
 	$etab_text = "".getSettingValue("gepiSchoolName")."  ";
 	$lg_text = $this->GetStringWidth($etab_text);
@@ -35,7 +35,7 @@ global $avec_emplacement_trous;
     $this->Cell(0,5,'Page '.$this->PageNo(),"0",1,'C');
 }
 
-// Pour faire des pointiullés
+// Pour faire des pointiullÃ©s
 function SetDash($black=false,$white=false)
 {
 	if($black and $white)
@@ -47,7 +47,7 @@ function SetDash($black=false,$white=false)
 
 
 /*
-Cellule à texte ajusté
+Cellule Ã  texte ajustÃ©
 Informations
 Auteur : Patrick Benny
 Licence : Freeware
@@ -156,13 +156,13 @@ Ce script permet de tracer cercles et ellipses. Il requiert FPDF 1.51.
 
 function Circle(float x, float y, float r [, string style])
 x : abscisse du cente.
-y : ordonnée du centre.
+y : ordonnÃ©e du centre.
 r : rayon.
-style : style de dessin, comme pour Rect (D, F ou FD). Valeur par défaut : D.
+style : style de dessin, comme pour Rect (D, F ou FD). Valeur par dÃ©faut : D.
 
 function Ellipse(float x, float y, float rx, float ry [, string style])
 x : abscisse du cente.
-y : ordonnée du centre.
+y : ordonnÃ©e du centre.
 rx : rayon horizontal.
 ry : rayon vertical.
 style : style de dessin.

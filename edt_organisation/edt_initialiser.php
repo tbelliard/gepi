@@ -43,21 +43,21 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $utilisation_win = 'oui';
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
-// On insère l'entête de Gepi
+// On insÃ¨re l'entÃªte de Gepi
 require_once("../lib/header.inc");
 
 // On ajoute le menu EdT
@@ -87,7 +87,7 @@ $aff_reglages = GetSettingEdt("edt_aff_init_infos");
 
 if ($aff_reglages == "oui") {
 	echo "
-	<p style=\"font-weight: bold;\">Avant de commencer la création des cours dans l'emploi du temps, il faut préparer le logiciel.</p>
+	<p style=\"font-weight: bold;\">Avant de commencer la crÃ©ation des cours dans l'emploi du temps, il faut prÃ©parer le logiciel.</p>
 
 	<p>Une partie de l'initialisation est commune avec le module absences :
 	<br />&nbsp;-&nbsp;<a href=\"./admin_periodes_absences.php?action=visualiser\">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e.
@@ -105,16 +105,16 @@ if ($aff_reglages == "oui") {
 	Pour entrer des informations dans l'emploi du temps de Gepi, il y a plusieurs possibilit&eacute;s.
 	<br /><br />
 	<p onclick=\"ouvrirWin2('id_manuel'); return false;\" style=\"float: left; border: 1px solid grey; background: #FFFFFF; width: 200px; text-align: center; cursor: pointer;\">
-	Méthode manuelle</p>
+	MÃ©thode manuelle</p>
 
 	<p onclick=\"changerDisplayDiv('edt_init_import'); return false;\" style=\"position: relative; margin-left: 350px; border: 1px solid grey; background: #FFFFFF; width: 200px; text-align: center; cursor: pointer;\">
 	Importation</p>
 	";
 }
-// ============================= c'est là que j'ai sorti la partie manuelle ==================
+// ============================= c'est lÃ  que j'ai sorti la partie manuelle ==================
 
-	// une fois initialisé, la partie suivante peut être verrouillée
-			// Pour déverrouiller, le traitement se fait ici là
+	// une fois initialisÃ©, la partie suivante peut Ãªtre verrouillÃ©e
+			// Pour dÃ©verrouiller, le traitement se fait ici lÃ 
 
 echo '<div id="edt_init_import" style="display: none;">';
 
@@ -137,7 +137,7 @@ if ($aff_reglages2 == "oui") {
 	 qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d\'avoir param&eacute;tr&eacute;
  	l\'ensemble des informations relatives aux horaires de l\'&eacute;tablissement.</h5>
 
- 	<h4 class="red">Pour les procédures suivantes, vous pouvez demander à Gepi d\'effacer les cours existants ou décider de les conserver.</h4>
+ 	<h4 class="red">Pour les procÃ©dures suivantes, vous pouvez demander Ã  Gepi d\'effacer les cours existants ou dÃ©cider de les conserver.</h4>
 
  	<div id="lien" style="background: #fefefe; margin-left: 200px; width: 400px;">
  		<br />

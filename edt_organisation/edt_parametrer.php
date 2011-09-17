@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Fichier utilisé par l'administrateur pour paramétrer l'EdT de Gepi
+// Fichier utilisÃ© par l'administrateur pour paramÃ©trer l'EdT de Gepi
 require_once("./choix_langue.php");
 
 $titre_page = TITLE_EDT_PARAMETRER;
@@ -41,16 +41,16 @@ if ($resultat_session == '0') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 $style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
 $ua = getenv("HTTP_USER_AGENT");
@@ -90,34 +90,34 @@ $param_menu_edt = isset($_POST["param_menu_edt"]) ? $_POST["param_menu_edt"] : N
 		mysql_query("INSERT INTO edt_setting SET 	valeur = 'nb' ,
 													reglage = 'edt_aff_couleur_prof'");		
 	}
-// Récupérer les paramètres tels qu'ils sont déjà définis
+// RÃ©cupÃ©rer les paramÃ¨tres tels qu'ils sont dÃ©jÃ  dÃ©finis
 if (isset($parametrer_ok)) {
 	$aff_message = "";
-	// Le réglage de l'affichage des matières
+	// Le rÃ©glage de l'affichage des matiÃ¨res
 	$req_reg_mat = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_matiere'");
 	$tab_reg_mat = mysql_fetch_array($req_reg_mat);
 
 	if ($edt_aff_matiere === $tab_reg_mat['valeur']) {
-		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des matières</p>\n";
+		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des matiÃ¨res</p>\n";
 	}
 	else {
 		$modif_aff_mat = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_matiere' WHERE reglage = 'edt_aff_matiere'");
-		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des matières enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des matiÃ¨res enregistrÃ©e</p>\n";
 	}
 
-	// Le réglage de l'affichage du type d'heure
+	// Le rÃ©glage de l'affichage du type d'heure
 	$req_reg_cre = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_creneaux'");
 	$tab_reg_cre = mysql_fetch_array($req_reg_cre);
 
 	if ($edt_aff_creneaux === $tab_reg_cre['valeur']) {
-		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des créneaux</p>\n";
+		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des crÃ©neaux</p>\n";
 	}
 	else {
 		$modif_aff_cre = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_creneaux' WHERE reglage = 'edt_aff_creneaux'");
-		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des créneaux enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des crÃ©neaux enregistrÃ©e</p>\n";
 	}
 
-	// Le réglage de l'affichage des couleurs
+	// Le rÃ©glage de l'affichage des couleurs
 	$req_reg_coul = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur'");
 	$tab_reg_coul = mysql_fetch_array($req_reg_coul);
 
@@ -126,9 +126,9 @@ if (isset($parametrer_ok)) {
 	}
 	else {
 		$modif_aff_coul = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_couleur' WHERE reglage = 'edt_aff_couleur'");
-		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrÃ©e</p>\n";
 	}
-	// Le réglage de l'affichage des couleurs profs
+	// Le rÃ©glage de l'affichage des couleurs profs
 	$req_reg_coul = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_prof'");
 	$tab_reg_coul = mysql_fetch_array($req_reg_coul);
 
@@ -137,10 +137,10 @@ if (isset($parametrer_ok)) {
 	}
 	else {
 		$modif_aff_coul = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_couleur_prof' WHERE reglage = 'edt_aff_couleur_prof'");
-		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée (prof)</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrÃ©e (prof)</p>\n";
 	}
 	
-	// Le réglage de l'affichage des couleurs salles
+	// Le rÃ©glage de l'affichage des couleurs salles
 	$req_reg_coul = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_salle'");
 	$tab_reg_coul = mysql_fetch_array($req_reg_coul);
 
@@ -149,10 +149,10 @@ if (isset($parametrer_ok)) {
 	}
 	else {
 		$modif_aff_coul = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_couleur_salle' WHERE reglage = 'edt_aff_couleur_salle'");
-		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée (salle)</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrÃ©e (salle)</p>\n";
 	}
 
-	//Le réglage de l'affichage des salles
+	//Le rÃ©glage de l'affichage des salles
 	$req_reg_salle = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_salle'");
 	$tab_reg_salle = mysql_fetch_array($req_reg_salle);
 
@@ -161,11 +161,11 @@ if (isset($parametrer_ok)) {
 	}
 	else {
 		$modif_aff_salle = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_salle' WHERE reglage = 'edt_aff_salle'");
-		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des salle enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des salle enregistrÃ©e</p>\n";
 
 	}
 
-	// le réglage de l'affichage du menu CHERCHER
+	// le rÃ©glage de l'affichage du menu CHERCHER
 	$req_cherche_salle = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'aff_cherche_salle'");
 	$rep_cherche_salle = mysql_fetch_array($req_cherche_salle);
 
@@ -174,10 +174,10 @@ if (isset($parametrer_ok)) {
 	}
 	else {
 		$modif_cherch_salle = mysql_query("UPDATE edt_setting SET valeur = '$aff_cherche_salle' WHERE reglage = 'aff_cherche_salle'");
-		$aff_message .= "<p class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrÃ©e</p>\n";
 	}
 
-	// Le réglage du fonctionnement du menu (param_menu_edt)
+	// Le rÃ©glage du fonctionnement du menu (param_menu_edt)
 	$req_param_menu = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'");
 	$rep_param_menu = mysql_fetch_array($req_param_menu);
 
@@ -185,17 +185,17 @@ if (isset($parametrer_ok)) {
 		$aff_message .= "<p class=\"accept\">Aucune modification du fonctionnement du menu.</p>\n";
 	} else {
 		$modif_param_menu = mysql_query("UPDATE edt_setting SET valeur = '$param_menu_edt' WHERE reglage = 'param_menu_edt'");
-		$aff_message .= "<p class=\"refus\">Modification du fonctionnement du menu enregistrée.</p>\n";
+		$aff_message .= "<p class=\"refus\">Modification du fonctionnement du menu enregistrÃ©e.</p>\n";
 	}
 
 } //if (isset($parametrer_ok))
 else {
-	$message = "Dans cette page, vous pouvez paramétrer l'affichage des emplois du temps pour tous les utilisateurs de Gepi.";
+	$message = "Dans cette page, vous pouvez paramÃ©trer l'affichage des emplois du temps pour tous les utilisateurs de Gepi.";
 }
 
 
 
-// On insère l'entête de Gepi
+// On insÃ¨re l'entÃªte de Gepi
 require_once("../lib/header.inc");
 
 // On ajoute le menu EdT
@@ -249,7 +249,7 @@ if (isset($aff_message)) {
 									<div class="art-post-inner art-article">
 										<div class="art-postmetadataheader">
 											<h2 class="art-postheader">
-												Affichage des matières
+												Affichage des matiÃ¨res
 											</h2>
 										</div>
 										<div class="art-postcontent">
@@ -321,7 +321,7 @@ if (isset($aff_message)) {
 									<div class="art-post-inner art-article">
 										<div class="art-postmetadataheader">
 											<h2 class="art-postheader">
-												Affichage des Couleurs (emplois du temps classes et élèves)
+												Affichage des Couleurs (emplois du temps classes et Ã©lÃ¨ves)
 											</h2>
 										</div>
 										<div class="art-postcontent">

@@ -48,13 +48,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Saisie des contraintes options/classes',
+description='GÃ©nÃ¨se des classes: Saisie des contraintes options/classes',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -154,7 +154,7 @@ if((isset($is_posted))&&(isset($projet))) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Contraintes options/classes";
+$titre_page = "GÃ©nÃ¨se classe: Contraintes options/classes";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -178,7 +178,7 @@ $sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut
 $res_clas_fut=mysql_query($sql);
 $nb_clas_fut=mysql_num_rows($res_clas_fut);
 if($nb_clas_fut==0) {
-	echo "<p>Aucune classe future n'est encore définie pour ce projet.</p>\n";
+	echo "<p>Aucune classe future n'est encore dÃ©finie pour ce projet.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -187,7 +187,7 @@ $sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' ORDER BY opt;";
 $res_opt=mysql_query($sql);
 $nb_opt=mysql_num_rows($res_opt);
 if($nb_opt==0) {
-	echo "<p>Aucune option n'est encore définie pour ce projet.</p>\n";
+	echo "<p>Aucune option n'est encore dÃ©finie pour ce projet.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -222,7 +222,7 @@ echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='ajout'>\n"
 echo "<table class='boireaus' border='1' summary='Choix des contraintes'>\n";
 echo "<tr>\n";
 echo "<th rowspan='2'>Classe future</th>\n";
-echo "<th colspan='$cpt'>Options non autorisées</th>\n";
+echo "<th colspan='$cpt'>Options non autorisÃ©es</th>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
@@ -305,7 +305,7 @@ $sql="SELECT * FROM gc_options_classes WHERE projet='$projet' ORDER BY classe_fu
 $res=mysql_query($sql);
 if(mysql_num_rows($res)>0) {
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='suppr'>\n";
-	echo "<p>Si vous souhaitez supprimer des contraintes préalablement définies, cochez et validez&nbsp;:</p>\n";
+	echo "<p>Si vous souhaitez supprimer des contraintes prÃ©alablement dÃ©finies, cochez et validez&nbsp;:</p>\n";
 	$cpt=0;
 	$classe_prec="";
 	$alt=1;

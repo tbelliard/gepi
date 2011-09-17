@@ -1,7 +1,7 @@
 <?php
 /**
  * Description of EdtEmplacementCoursHelper
- *  Classe qui implemente des methodes statiques pour géré un groupe ou un tableau de groupe
+ *  Classe qui implemente des methodes statiques pour gÃ©rÃ© un groupe ou un tableau de groupe
  *
  * @author joss
  */
@@ -12,7 +12,7 @@ class EdtEmplacementCoursHelper {
 	 *
 	 * @param      EdtEmplacementCours $groupeA Le premier EdtEmplacementCours a coparer
 	 * @param      EdtEmplacementCours $groupeB Le deuxieme EdtEmplacementCours a comparer
-	 * @return     int un entier, qui sera inférieur, égal ou supérieur à zéro suivant que le premier argument est considéré comme plus petit, égal ou plus grand que le second argument.
+	 * @return     int un entier, qui sera infÃ©rieur, Ã©gal ou supÃ©rieur Ã  zÃ©ro suivant que le premier argument est considÃ©rÃ© comme plus petit, Ã©gal ou plus grand que le second argument.
 	 */
 	public static function compareEdtEmplacementCours($a, $b) {
 		if ($a ==null || $b == null){
@@ -58,11 +58,11 @@ class EdtEmplacementCoursHelper {
 
  	/**
 	 *
-	 * Classe un tableau de groupe par ordre alphabétique de leur nom (avec les noms de classes d'eleves associée)
+	 * Classe un tableau de groupe par ordre alphabÃ©tique de leur nom (avec les noms de classes d'eleves associÃ©e)
 	 *
 	 * @param      PropelObjectCollection $edtEmplacementCours La collection d'emplacement de cours
-	 * @return     PropelObjectCollection $edtEmplacementCours Un collection ordonnés d'emplacement de cours
-	 * @throws     PropelException - si les types d'entrées ne sont pas bon.
+	 * @return     PropelObjectCollection $edtEmplacementCours Un collection ordonnÃ©s d'emplacement de cours
+	 * @throws     PropelException - si les types d'entrÃ©es ne sont pas bon.
 	 */
 	public static function orderChronologically(PropelObjectCollection $edtEmplacementCours) {
 		$edtEmplacementCours->uasort(array("EdtEmplacementCoursHelper", "compareEdtEmplacementCours"));
@@ -71,11 +71,11 @@ class EdtEmplacementCoursHelper {
 
  	/**
 	 *
-	 * Renvoi le premiers cours de la collection qui correspond à l'heure donnée
+	 * Renvoi le premiers cours de la collection qui correspond Ã  l'heure donnÃ©e
 	 *
 	 * @param      PropelObjectCollection $edtEmplacementCours La collection d'emplacement de cours
-	 * @return     PropelObjectCollection $edtEmplacementCours Un collection ordonnés d'emplacement de cours
-	 * @throws     PropelException - si les types d'entrées ne sont pas bon.
+	 * @return     PropelObjectCollection $edtEmplacementCours Un collection ordonnÃ©s d'emplacement de cours
+	 * @throws     PropelException - si les types d'entrÃ©es ne sont pas bon.
 	 */
 	public static function getEdtEmplacementCoursActuel(PropelObjectCollection $edtEmplacementCoursCol, $v = 'now') {
 	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
@@ -133,11 +133,11 @@ class EdtEmplacementCoursHelper {
 
 	 	/**
 	 *
-	 * Renvoi la collection de cours qui correspond à l'heure donnée
+	 * Renvoi la collection de cours qui correspond Ã  l'heure donnÃ©e
 	 *
 	 * @param      PropelObjectCollection $edtEmplacementCours La collection d'emplacement de cours
-	 * @return     PropelObjectCollection $edtEmplacementCours Un collection ordonnés d'emplacement de cours
-	 * @throws     PropelException - si les types d'entrées ne sont pas bon.
+	 * @return     PropelObjectCollection $edtEmplacementCours Un collection ordonnÃ©s d'emplacement de cours
+	 * @throws     PropelException - si les types d'entrÃ©es ne sont pas bon.
 	 */
 	public static function getColEdtEmplacementCoursActuel(PropelObjectCollection $edtEmplacementCoursCol, $v = 'now') {
 	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')

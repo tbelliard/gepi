@@ -38,13 +38,13 @@ if (!defined('FPDF_VERSION')) {
 }
 //require('../fpdf/fpdf15.php');
 
-// Il faut récupérer l'info sur le mode avant l'appel à ex_fpdf.php pour que les accents de l'entête soient corrects
+// Il faut rÃ©cupÃ©rer l'info sur le mode avant l'appel Ã  ex_fpdf.php pour que les accents de l'entÃªte soient corrects
 $mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
 if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
 require('../fpdf/ex_fpdf.php');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -86,7 +86,7 @@ if (isset($_GET['id_groupe'])) {
 	if (count($current_group["classes"]["list"]) > 1) $text_classe_matiere .= "s";
 	$text_classe_matiere .= " : ".$current_group["classlist_string"];
     if (isset($_GET['periode_num'])) {
-        $text_classe_matiere .= " - Période : ".sql_query1("SELECT nom_periode FROM periodes WHERE
+        $text_classe_matiere .= " - PÃ©riode : ".sql_query1("SELECT nom_periode FROM periodes WHERE
         (
         id_classe='".$current_group["classes"]["list"][0]."' and
         num_periode='".(int)$_GET['periode_num']."'
@@ -130,12 +130,12 @@ if ($titre!='') {
     $pdf->SetDrawColor(0,0,0);
     $pdf->SetFillColor(255,255,255);
     $pdf->SetTextColor(0,0,0);
-    //Titre centré
+    //Titre centrÃ©
     $pdf->Cell($w,9,$titre,$bord,1,'C',0);
     //Saut de ligne
 }
 
-// tableau des en-têtes
+// tableau des en-tÃªtes
 $header1 = array();
 $header1 = unserialize($_SESSION['header_pdf']);
 
@@ -143,7 +143,7 @@ $header1 = unserialize($_SESSION['header_pdf']);
 $w1 = array();
 $w1 = unserialize($_SESSION['w_pdf']);
 
-// tableau des données
+// tableau des donnÃ©es
 $data1 = array();
 //$data1 = unserialize($_SESSION['data_pdf']);
 $data1 = unserialize($_SESSION['data_pdf']);

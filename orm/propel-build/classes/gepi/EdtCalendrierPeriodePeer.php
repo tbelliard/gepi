@@ -81,11 +81,11 @@ class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
 		foreach (EdtCalendrierPeriodePeer::retrieveAllEdtCalendrierPeriodesOrderByTime() as $edtPeriode) {
           if ($edtPeriode->getJourdebutCalendrier('Y-m-d') <= $dt->format('Y-m-d')
 			    &&	$edtPeriode->getJourfinCalendrier('Y-m-d') >= $dt->format('Y-m-d')) {
-			   if (is_null($edt_periode_actuelle)){ //c'est la première periode rencontrée qui correspond
+			   if (is_null($edt_periode_actuelle)){ //c'est la premiÃ¨re periode rencontrÃ©e qui correspond
                  $edt_periode_actuelle=$edtPeriode;
                  $intervalle_periode=$edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs();  
                }else{
-          //si une periode plus courte correspond on prend celle là
+          //si une periode plus courte correspond on prend celle lÃ 
           if ($edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs()<=$intervalle_periode) {
             $edt_periode_actuelle = $edtPeriode;
             $intervalle_periode=$edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs();

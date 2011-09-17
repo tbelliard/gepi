@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 	
 // Initialisations files
@@ -87,7 +87,7 @@ if(isset($_POST['action_corrections'])) {
 			if ((isset($action[$i]))&&(in_array($action[$i],$tab_actions_valides))) {
 				if (isset($NON_PROTECT["appreciation".$i])) {
 					$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["appreciation".$i]));
-					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 					$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
 
 					if($action[$i]=='supprimer') {
@@ -96,10 +96,10 @@ if(isset($_POST['action_corrections'])) {
 						if($del) {
 							$msg.="Suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
 							//$nb_reg++;
-							// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
+							// Envoyer un mail... problÃ¨me... il serait bien de n'envoyer qu'un seul mail par destinataire, plutÃ´t que un mail par correction
 							if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
-							//$texte_email[$current_id_groupe].="Votre proposition de correction pour $enregistrement[$i] a été refusée/supprimée.\n";
-							$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été refusée/supprimée.\n";
+							//$texte_email[$current_id_groupe].="Votre proposition de correction pour $enregistrement[$i] a Ã©tÃ© refusÃ©e/supprimÃ©e.\n";
+							$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la pÃ©riode $current_periode a Ã©tÃ© refusÃ©e/supprimÃ©e.\n";
 						}
 						else {
 							$msg.="Erreur lors de la suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
@@ -118,9 +118,9 @@ if(isset($_POST['action_corrections'])) {
 							if($del) {
 								$nb_reg++;
 								$msg.="Suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
-								// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
+								// Envoyer un mail... problÃ¨me... il serait bien de n'envoyer qu'un seul mail par destinataire, plutÃ´t que un mail par correction
 								if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
-								$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été validée.\n";
+								$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la pÃ©riode $current_periode a Ã©tÃ© validÃ©e.\n";
 
 								if(!in_array($current_periode,$tab_periode_num)) {$tab_periode_num[]=$current_periode;}
 								//$reimprimer_bulletins.="<input type='hidden' name='preselection_eleves[$current_periode][]' value='$current_login_ele' />\n";
@@ -132,7 +132,7 @@ if(isset($_POST['action_corrections'])) {
 							}
 						}
 						else {
-							$msg.="Erreur lors de la mise à jour de l'enregistrement $enregistrement[$i] sur le bulletin.<br />";
+							$msg.="Erreur lors de la mise Ã  jour de l'enregistrement $enregistrement[$i] sur le bulletin.<br />";
 						}
 					}
 
@@ -143,16 +143,16 @@ if(isset($_POST['action_corrections'])) {
 			}
 		}
 		else {
-			$msg.="Des caractères invalides sont proposés pour $enregistrement[$i].<br />";
+			$msg.="Des caractÃ¨res invalides sont proposÃ©s pour $enregistrement[$i].<br />";
 		}
 	}
 
 	if(($nb_reg>0)||(count($texte_email)>0)) {
-		if($nb_reg>0) {$msg.="$nb_reg enregistrement(s) effectué(s).<br />";}
+		if($nb_reg>0) {$msg.="$nb_reg enregistrement(s) effectuÃ©(s).<br />";}
 
 		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 		if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-			$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+			$envoi_mail_actif='y'; // Passer Ã  'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 		}
 
 		if($envoi_mail_actif=='y') {
@@ -182,7 +182,7 @@ if(isset($_POST['action_corrections'])) {
 					}
 
 					if($email_destinataires!='') {
-						$sujet_mail="[GEPI] Groupe n°$id_groupe: Réponse à votre demande de correction";
+						$sujet_mail="[GEPI] Groupe nÂ°$id_groupe: RÃ©ponse Ã  votre demande de correction";
 
 						$ajout_header="";
 						if($email_reply!="") {
@@ -245,7 +245,7 @@ if(!isset($tab_id_classe)) {
 		$cpt++;
 	}
 	echo "</table>\n";
-	echo "<p><a href='#' onClick='ModifCase(true); return false;'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout décocher</a></p>\n";
+	echo "<p><a href='#' onClick='ModifCase(true); return false;'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout dÃ©cocher</a></p>\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -283,7 +283,7 @@ else {
 		echo "<form enctype='multipart/form-data' action='../bulletin/bull_index.php' method='post' name='form_bulletin' target='_blank'>\n";
 		//echo add_token_field();
 
-		echo "<p><span style='font-weight:bold; color:red'>ATTENTION&nbsp;:</span> Des modifications ont été effectuées.<br />Il faut sans doute réimprimer les bulletins correspondants.</p>\n";
+		echo "<p><span style='font-weight:bold; color:red'>ATTENTION&nbsp;:</span> Des modifications ont Ã©tÃ© effectuÃ©es.<br />Il faut sans doute rÃ©imprimer les bulletins correspondants.</p>\n";
 	
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<input type='hidden' name='tab_id_classe[]' value='$tab_id_classe[$i]' />\n";
@@ -299,7 +299,7 @@ else {
 
 		echo "<input type='hidden' name='choix_periode_num' value='fait' />\n";
 	
-		echo "<p><input type='submit' value='Réimprimer les bulletins' /></p>\n";
+		echo "<p><input type='submit' value='RÃ©imprimer les bulletins' /></p>\n";
 		echo "</form>\n";
 		echo "</div>\n";
 	}
@@ -315,20 +315,20 @@ else {
 		echo "<input type='hidden' name='tab_id_classe[]' value='$tab_id_classe[$i]' />\n";
 		echo "<blockquote>\n";
 
-		// Groupes associés à la classe
+		// Groupes associÃ©s Ã  la classe
 		$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, matieres_app_corrections mac WHERE jgc.id_classe='$tab_id_classe[$i]' AND jgc.id_groupe=mac.id_groupe;";
 		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
 		$nb_grp=mysql_num_rows($res);
 		if($nb_grp==0) {
-			echo "<p>Aucun enseignement associé à cette classe ne présente (plus) de proposition de correction.</p>\n";
+			echo "<p>Aucun enseignement associÃ© Ã  cette classe ne prÃ©sente (plus) de proposition de correction.</p>\n";
 		}
 		else {
-			echo "<table class='boireaus' width='100%' summary=\"Corrections proposées en $classe\">\n";
+			echo "<table class='boireaus' width='100%' summary=\"Corrections proposÃ©es en $classe\">\n";
 			echo "<tr>\n";
 			echo "<th rowspan='2'>Enseignement</th>\n";
-			echo "<th rowspan='2'>Elève</th>\n";
-			echo "<th rowspan='2'>Période</th>\n";
+			echo "<th rowspan='2'>ElÃ¨ve</th>\n";
+			echo "<th rowspan='2'>PÃ©riode</th>\n";
 			echo "<th rowspan='2'>Proposition</th>\n";
 			echo "<th colspan='3'>Action</th>\n";
 			echo "</tr>\n";
@@ -343,9 +343,9 @@ else {
 			while($lig=mysql_fetch_object($res)) {
 				$current_group=get_group($lig->id_groupe);
 
-				// Elèves avec correction associés au groupe
+				// ElÃ¨ves avec correction associÃ©s au groupe
 				//$sql="SELECT DISTINCT mac.*, ma.appreciation AS old_app FROM matieres_app_corrections mac, matieres_appreciations ma, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.periode=mac.periode AND jec.login=mac.login AND mac.id_groupe='$lig->id_groupe' AND mac.periode=ma.periode AND mac.id_groupe=ma.id_groupe AND mac.login=ma.login ORDER BY ma.login;";
-				// On ne récupérait pas d'élèves si le prof n'avait pas rempli d'appréciation pour la période (ça ne fonctionnait que pour une correction, pas pour une proposition de première saisie après la date de verrouillage)
+				// On ne rÃ©cupÃ©rait pas d'Ã©lÃ¨ves si le prof n'avait pas rempli d'apprÃ©ciation pour la pÃ©riode (Ã§a ne fonctionnait que pour une correction, pas pour une proposition de premiÃ¨re saisie aprÃ¨s la date de verrouillage)
 				$sql="SELECT DISTINCT mac.* FROM matieres_app_corrections mac, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.periode=mac.periode AND jec.login=mac.login AND mac.id_groupe='$lig->id_groupe' ORDER BY mac.login;";
 				//echo "$sql<br />\n";
 				$res_ele=mysql_query($sql);
@@ -368,7 +368,7 @@ else {
 					echo "<td>$lig_ele->periode</td>\n";
 					echo "<td>";
 					echo "<div style='border: 1px solid black; margin: 2px;'>\n";
-					echo "<b>Appréciation enregistrée&nbsp;:</b> ";
+					echo "<b>ApprÃ©ciation enregistrÃ©e&nbsp;:</b> ";
 					//echo nl2br($lig_ele->old_app);
 					$sql="SELECT * FROM matieres_appreciations WHERE periode='$lig_ele->periode' AND id_groupe='$lig_ele->id_groupe' AND login='$lig_ele->login';";
 					$res_old_app=mysql_query($sql);
@@ -377,11 +377,11 @@ else {
 						echo nl2br($lig_old->appreciation);
 					}
 					else {
-						echo "<span style='color:red'>Aucune appréciation n'a été enregistrée avant la proposition de correction.</span>\n";
+						echo "<span style='color:red'>Aucune apprÃ©ciation n'a Ã©tÃ© enregistrÃ©e avant la proposition de correction.</span>\n";
 					}
 					echo "</div>\n";
 					echo "<div style='border: 1px solid black; margin: 2px;'>\n";
-					echo "<b>Correction proposée&nbsp;:</b> ";
+					echo "<b>Correction proposÃ©e&nbsp;:</b> ";
 					echo "<textarea id=\"n".$compteur."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_appreciation".$compteur."\" cols='70' rows='2'>".$lig_ele->appreciation."</textarea>\n";
 					echo "</div>\n";
 					echo "</td>\n";

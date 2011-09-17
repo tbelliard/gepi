@@ -31,7 +31,7 @@ function log_debug($texte) {
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-//log_debug('Après initialisations');
+//log_debug('AprÃ¨s initialisations');
 
 extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
@@ -46,7 +46,7 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-//log_debug('Après $session_gepi->security_check()');
+//log_debug('AprÃ¨s $session_gepi->security_check()');
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -58,17 +58,17 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 	unset($_SESSION['retour_apres_maj_sconet']);
 }
 
-//log_debug('Après checkAccess()');
+//log_debug('AprÃ¨s checkAccess()');
 
 //log_debug(debug_var());
 //debug_var();
 
 
- //répertoire des photos
+ //rÃ©pertoire des photos
 
-// En multisite, on ajoute le répertoire RNE
+// En multisite, on ajoute le rÃ©pertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-	  // On récupère le RNE de l'établissement
+	  // On rÃ©cupÃ¨re le RNE de l'Ã©tablissement
 	$rep_photos='../photos/'.$_COOKIE['RNE'].'/eleves/';
 
 	//============================================
@@ -115,22 +115,22 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['initialiser_regimes'])
 
 		$msg="";
 		if($nb_reg_regime>0) {
-			$msg.="$nb_reg_regime régime(s) ont été initialisés.<br />";
+			$msg.="$nb_reg_regime rÃ©gime(s) ont Ã©tÃ© initialisÃ©s.<br />";
 		}
 		if($nb_err_regime>0) {
-			$msg.="$nb_err_regime erreur(s) se sont produites lors de l'initialisation des régimes.<br />";
+			$msg.="$nb_err_regime erreur(s) se sont produites lors de l'initialisation des rÃ©gimes.<br />";
 		}
 	}
 	else {
-		$msg="Tous les régimes étaient déjà renseignés.<br />";
+		$msg="Tous les rÃ©gimes Ã©taient dÃ©jÃ  renseignÃ©s.<br />";
 	}
 }
 
 $gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 if($_SESSION['statut']=="professeur") {
 	if(getSettingValue('GepiAccesGestElevesProfP')!='yes') {
-		tentative_intrusion("2", "Tentative d'accès par un prof à des fiches élèves, sans en avoir l'autorisation.");
-		echo "Vous ne pouvez pas accéder à cette page car l'accès professeur n'est pas autorisé !";
+		tentative_intrusion("2", "Tentative d'accÃ¨s par un prof Ã  des fiches Ã©lÃ¨ves, sans en avoir l'autorisation.");
+		echo "Vous ne pouvez pas accÃ©der Ã  cette page car l'accÃ¨s professeur n'est pas autorisÃ© !";
 		require ("../lib/footer.inc.php");
 		die();
 	}
@@ -139,8 +139,8 @@ if($_SESSION['statut']=="professeur") {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
 		if (mysql_num_rows($test)==0) {
-			tentative_intrusion("2", "Tentative d'accès par un prof qui n'est pas $gepi_prof_suivi à des fiches élèves, sans en avoir l'autorisation.");
-			echo "Vous ne pouvez pas accéder à cette page car vous n'êtes pas $gepi_prof_suivi !";
+			tentative_intrusion("2", "Tentative d'accÃ¨s par un prof qui n'est pas $gepi_prof_suivi Ã  des fiches Ã©lÃ¨ves, sans en avoir l'autorisation.");
+			echo "Vous ne pouvez pas accÃ©der Ã  cette page car vous n'Ãªtes pas $gepi_prof_suivi !";
 			require ("../lib/footer.inc.php");
 			die();
 		}
@@ -151,11 +151,11 @@ if (isset($is_posted) and ($is_posted == '2')) {
 	//$tab_id_classe_quelles_classes=array();
 	if ($quelles_classes == 'certaines') {
 		//
-		// On efface les enregistrements liés à la session en cours
+		// On efface les enregistrements liÃ©s Ã  la session en cours
 		//
 		mysql_query("DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
 		//
-		// On efface les enregistrements obsolètes
+		// On efface les enregistrements obsolÃ¨tes
 		//
 		$call_data = mysql_query("SELECT * FROM tempo");
 		$nb_enr = mysql_num_rows($call_data);
@@ -188,7 +188,7 @@ if (isset($is_posted) and ($is_posted == '2')) {
 	}
 }
 
-// Le statut scolarite ne devrait pas être proposé ici.
+// Le statut scolarite ne devrait pas Ãªtre proposÃ© ici.
 // La page confirm_query.php n'est accessible qu'en administrateur
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 	if (isset($is_posted) and ($is_posted == '1')) {
@@ -196,7 +196,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		check_token();
 
 		$delete_eleve=isset($_POST['delete_eleve']) ? $_POST['delete_eleve'] : array();
-		if(!is_array($delete_eleve)) {$delete_eleve=array();$msg="Erreur: La liste d'élèves à supprimer devrait être un tableau.<br />";}
+		if(!is_array($delete_eleve)) {$delete_eleve=array();$msg="Erreur: La liste d'Ã©lÃ¨ves Ã  supprimer devrait Ãªtre un tableau.<br />";}
 
 		$calldata = mysql_query("SELECT * FROM eleves");
 		$nombreligne = mysql_num_rows($calldata);
@@ -334,31 +334,31 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 		{
 			$sav_photo = isset($_FILES["photo"]) ? $_FILES["photo"] : NULL;
 			if (!isset($sav_photo['tmp_name'][$cpt_photo]) or ($sav_photo['tmp_name'][$cpt_photo] =='')) {
-				$msg.="Erreur de téléchargement niveau 1 (<i>photo n°$cpt_photo</i>).<br />";
+				$msg.="Erreur de tÃ©lÃ©chargement niveau 1 (<i>photo nÂ°$cpt_photo</i>).<br />";
 			} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
-				$msg.="Erreur de téléchargement niveau 2 (<i>photo n°$cpt_photo</i>).<br />";
+				$msg.="Erreur de tÃ©lÃ©chargement niveau 2 (<i>photo nÂ°$cpt_photo</i>).<br />";
 			} else if (strtolower($sav_photo['type'][$cpt_photo])!="image/jpeg") {
-				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
+				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisÃ©s (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
 			} else if (!preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo])) {
-				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
+				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisÃ©s (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
 			} else {
 				$dest = $rep_photos;
 				$n = 0;
 				//$msg.="\$rep_photos=$rep_photos<br />";
 				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.$quiestce[$cpt_photo].".jpg")) {
-					$msg.="Problème de transfert : le fichier n°$cpt_photo n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
+					$msg.="ProblÃ¨me de transfert : le fichier nÂ°$cpt_photo n'a pas pu Ãªtre transfÃ©rÃ© sur le rÃ©pertoire photos/eleves/<br />";
 				} else {
-					//$msg = "Téléchargement réussi.";
+					//$msg = "TÃ©lÃ©chargement rÃ©ussi.";
 					$cpt_photos_mises_en_place++;
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-						// si le redimensionnement des photos est activé on redimenssionne
+						// si le redimensionnement des photos est activÃ© on redimenssionne
 	
 						$source = imagecreatefromjpeg($rep_photos.$quiestce[$cpt_photo].".jpg"); // La photo est la source
 	
-						if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
-						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
+						if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crÃ©e la miniature vide
+						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crÃ©e la miniature vide
 	
-						//rotation de l'image si choix différent de rien
+						//rotation de l'image si choix diffÃ©rent de rien
 						//if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
 	
 						// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
@@ -367,7 +367,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 						$largeur_destination = imagesx($destination);
 						$hauteur_destination = imagesy($destination);
 	
-						// On crée la miniature
+						// On crÃ©e la miniature
 						imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
 						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
 						// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
@@ -378,12 +378,12 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 		}
 		$cpt_photo = $cpt_photo + 1;
 	}
-	if(($msg=="")&&($cpt_photos_mises_en_place>0)) {$msg = "Téléchargement réussi.";}
+	if(($msg=="")&&($cpt_photos_mises_en_place>0)) {$msg = "TÃ©lÃ©chargement rÃ©ussi.";}
 }
 // fin de l'envoi des photos du trombinoscope
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des élèves";
+$titre_page = "Gestion des Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE *****************
 
@@ -394,7 +394,7 @@ require_once("../lib/header.inc");
 <script type='text/javascript' language="JavaScript">
 	function verif1() {
 	<?php
-		// Test d'existence de PMV... utilisé ici pour le file_exists() des photos
+		// Test d'existence de PMV... utilisÃ© ici pour le file_exists() des photos
 		/*
 		if(getSettingValue("gepi_pmv")!="n"){
 			echo "document.formulaire.quelles_classes[8].checked = true;";
@@ -452,7 +452,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 
 		if($_SESSION['statut']=="administrateur"){
 			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
@@ -468,7 +468,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 
 		if($_SESSION['statut']=="administrateur"){
 			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
@@ -484,7 +484,7 @@ if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
-			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 
 		if($_SESSION['statut']=="administrateur"){
 			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
@@ -500,42 +500,42 @@ if(!getSettingValue('conv_new_resp_table')){
 }
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
-	echo " | <a href='add_eleve.php?mode=unique'>Ajouter un élève à la base (simple)</a>\n";
-	echo " | <a href='add_eleve.php?mode=multiple'>Ajouter des élèves à la base (à la chaîne)</a>\n";
+	echo " | <a href='add_eleve.php?mode=unique'>Ajouter un Ã©lÃ¨ve Ã  la base (simple)</a>\n";
+	echo " | <a href='add_eleve.php?mode=multiple'>Ajouter des Ã©lÃ¨ves Ã  la base (Ã  la chaÃ®ne)</a>\n";
 
 	$droits = @sql_query1("SELECT ".$_SESSION['statut']." FROM droits WHERE id='/eleves/import_eleves_csv.php'");
 	if ($droits == "V") {
-		echo " | <a href=\"import_eleves_csv.php\" title=\"Télécharger le fichier des noms, prénoms, identifiants GEPI et classes\">Télécharger le fichier des élèves au format csv.</a>\n";
+		echo " | <a href=\"import_eleves_csv.php\" title=\"TÃ©lÃ©charger le fichier des noms, prÃ©noms, identifiants GEPI et classes\">TÃ©lÃ©charger le fichier des Ã©lÃ¨ves au format csv.</a>\n";
 
 		if(getSettingValue("import_maj_xml_sconet")==1){
-			echo " | <a href=\"../responsables/maj_import.php\">Mettre à jour depuis Sconet</a>\n";
-			echo " | <a href=\"import_communes.php\">Importer les communes de naissance des élèves</a>\n";
+			echo " | <a href=\"../responsables/maj_import.php\">Mettre Ã  jour depuis Sconet</a>\n";
+			echo " | <a href=\"import_communes.php\">Importer les communes de naissance des Ã©lÃ¨ves</a>\n";
 		}
 	}
 }
 
-if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {echo " | <a href='synchro_mail.php'>Synchroniser les adresses mail élèves</a>\n";}
+if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {echo " | <a href='synchro_mail.php'>Synchroniser les adresses mail Ã©lÃ¨ves</a>\n";}
 
 if(($_SESSION['statut']=="administrateur")&&(getSettingValue('exp_imp_chgt_etab')=='yes')) {
 	// Pour activer le dispositif:
 	// DELETE FROM setting WHERE name='exp_imp_chgt_etab';INSERT INTO setting SET name='exp_imp_chgt_etab', value='yes';
 	//echo " | ";
 	echo "<br />";
-	echo "Changement d'établissement: <a href='export_bull_eleve.php'>Export des bulletins</a>\n";
+	echo "Changement d'Ã©tablissement: <a href='export_bull_eleve.php'>Export des bulletins</a>\n";
 	echo " et <a href='import_bull_eleve.php'>Import des bulletins</a>\n";
 }
 echo "</p>\n";
 
-echo "<center><p class='grand'>Visualiser \ modifier une fiche élève</p></center>\n";
+echo "<center><p class='grand'>Visualiser \ modifier une fiche Ã©lÃ¨ve</p></center>\n";
 
 $req = mysql_query("SELECT login FROM eleves");
 $test = mysql_num_rows($req);
 if ($test == '0') {
-	echo "<p class='grand'>Attention : il n'y a aucun élève dans la base GEPI !</p>\n";
+	echo "<p class='grand'>Attention : il n'y a aucun Ã©lÃ¨ve dans la base GEPI !</p>\n";
 	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
-		echo "<p>Vous pouvez ajouter des élèves à la base en cliquant sur l'un des liens ci-dessus";
+		echo "<p>Vous pouvez ajouter des Ã©lÃ¨ves Ã  la base en cliquant sur l'un des liens ci-dessus";
 		if($_SESSION['statut']=="administrateur") {
-			echo ", ou bien directement <br /><a href='../initialisation/index.php'>importer les élèves et les classes à partir de fichiers GEP</a></p>\n";
+			echo ", ou bien directement <br /><a href='../initialisation/index.php'>importer les Ã©lÃ¨ves et les classes Ã  partir de fichiers GEP</a></p>\n";
 		}
 		require("../lib/footer.inc.php");
 		die();
@@ -550,7 +550,7 @@ if (!isset($quelles_classes)) {
 
 		$nb_classes=mysql_num_rows($call_classes);
 		if($nb_classes==0){
-			echo "<p>Vous n'êtes pas $gepi_prof_suivi</p>\n";
+			echo "<p>Vous n'Ãªtes pas $gepi_prof_suivi</p>\n";
 			// AJOUTER UN RENSEIGNEMENT test_intrusion... (normalement c'est fait plus haut)
 			require("../lib/footer.inc.php");
 			die();
@@ -608,7 +608,7 @@ if (!isset($quelles_classes)) {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Elève dont le nom commence par: \n";
+		echo "<span class='norme'>ElÃ¨ve dont le nom commence par: \n";
 		echo "<input type='text' name='motif_rech' id='motif_rech_nom' value='' onclick='verif3()' size='5' />\n";
 		echo "</span><br />\n";
 		echo "</label>\n";
@@ -621,7 +621,7 @@ if (!isset($quelles_classes)) {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Elève dont le prénom commence par: \n";
+		echo "<span class='norme'>ElÃ¨ve dont le prÃ©nom commence par: \n";
 		echo "<input type='text' name='motif_rech_p' value='' onclick='verif4()' size='5' />\n";
 		echo "</span><br />\n";
 		echo "</label>\n";
@@ -644,7 +644,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='na' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves sont affectés dans une classe.</span><br />\n";
+			echo "<span class='norme'>Tous les Ã©lÃ¨ves sont affectÃ©s dans une classe.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -655,13 +655,13 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_na' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élèves non affectés à une classe (<i>".mysql_num_rows($test_na)."</i>).</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ves non affectÃ©s Ã  une classe (<i>".mysql_num_rows($test_na)."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
 
-// Eric Les élèves dont la date de sortie de l'établissement est renseignée      
+// Eric Les Ã©lÃ¨ves dont la date de sortie de l'Ã©tablissement est renseignÃ©e      
 		$sql="SELECT 1=1 FROM eleves e where e.date_sortie<>0";
 		$test_dse=mysql_query($sql);
 		if(mysql_num_rows($test_dse)==0){
@@ -673,7 +673,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='dse' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Aucun élève n'a une date de sortie de l'établissement renseignée.</span><br />\n";
+			echo "<span class='norme'>Aucun Ã©lÃ¨ve n'a une date de sortie de l'Ã©tablissement renseignÃ©e.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -684,7 +684,7 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_dse' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élève dont la date de sortie de l'établissement est renseignée (<i>".mysql_num_rows($test_dse)."</i>)</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ve dont la date de sortie de l'Ã©tablissement est renseignÃ©e (<i>".mysql_num_rows($test_dse)."</i>)</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -702,7 +702,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='incomplet' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves ont leur Elenoet et leur Numéro national (INE) renseigné.</span><br />\n";
+			echo "<span class='norme'>Tous les Ã©lÃ¨ves ont leur Elenoet et leur NumÃ©ro national (INE) renseignÃ©.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -713,7 +713,7 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_incomplet' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élèves dont l'Elenoet ou le Numéro national (INE) n'est pas renseigné (<i>".mysql_num_rows($test_incomplet)."</i>).</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ves dont l'Elenoet ou le NumÃ©ro national (INE) n'est pas renseignÃ© (<i>".mysql_num_rows($test_incomplet)."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -740,7 +740,7 @@ if (!isset($quelles_classes)) {
 					echo "</td>\n";
 					echo "<td>\n";
 					echo "<label for='quelles_classes_photo' style='cursor: pointer;'>\n";
-					echo "<span class='norme'>Parmi les élèves dont l'Elenoet est renseigné, $cpt_photo_manquante n'ont pas leur photo.</span><br />\n";
+					echo "<span class='norme'>Parmi les Ã©lÃ¨ves dont l'Elenoet est renseignÃ©, $cpt_photo_manquante n'ont pas leur photo.</span><br />\n";
 					echo "</label>\n";
 					echo "</td>\n";
 					echo "</tr>\n";
@@ -754,7 +754,7 @@ if (!isset($quelles_classes)) {
 
 					echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='photo' onclick='verif2()' /></span>\n";
 
-					echo "<span class='norme'>Tous les élèves, dont l'Elenoet est renseigné, ont leur photo.</span><br />\n";
+					echo "<span class='norme'>Tous les Ã©lÃ¨ves, dont l'Elenoet est renseignÃ©, ont leur photo.</span><br />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
@@ -769,7 +769,7 @@ if (!isset($quelles_classes)) {
 				echo "<span style='display:none;'><input type='radio' name='quelles_classes' id='quelles_classes_photo' value='photo' onclick='verif2()' /></span>\n";
 
 				echo "<label for='quelles_classes_photo' style='cursor: pointer;'>\n";
-				echo "<span class='norme'>Aucun élève n'a son Elenoet renseigné.<br />L'affichage des photos n'est donc pas fonctionnel.</span><br />\n";
+				echo "<span class='norme'>Aucun Ã©lÃ¨ve n'a son Elenoet renseignÃ©.<br />L'affichage des photos n'est donc pas fonctionnel.</span><br />\n";
 				echo "</label>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
@@ -805,7 +805,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_cpe' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves (<i>affectés dans des classes</i>) ont un CPE associé.</span><br />\n";
+			echo "<span class='norme'>Tous les Ã©lÃ¨ves (<i>affectÃ©s dans des classes</i>) ont un CPE associÃ©.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -816,8 +816,8 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_cpe' style='cursor: pointer;'>\n";
-			//echo "<span class='norme'>Les élèves sans CPE (<i>".mysql_num_rows($test_no_cpe)."</i>).</span><br />\n";
-			echo "<span class='norme'>Les élèves (<i>affectés dans des classes</i>) sans CPE (<i>".$test_no_cpe_effectif."</i>).</span><br />\n";
+			//echo "<span class='norme'>Les Ã©lÃ¨ves sans CPE (<i>".mysql_num_rows($test_no_cpe)."</i>).</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ves (<i>affectÃ©s dans des classes</i>) sans CPE (<i>".$test_no_cpe_effectif."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -840,7 +840,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_regime' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves (<i>affectés dans des classes</i>) ont le régime renseigné.</span><br />\n";
+			echo "<span class='norme'>Tous les Ã©lÃ¨ves (<i>affectÃ©s dans des classes</i>) ont le rÃ©gime renseignÃ©.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -851,20 +851,20 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_regime' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élèves (<i>affectés dans des classes</i>) dont le régime n'est pas renseigné (<i>".$test_no_regime_effectif."</i>).</span><br />\n";
-			echo "<span style='color:red'>Le régime non renseigné est bloquant pour nombre de recherches dans cette page.</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ves (<i>affectÃ©s dans des classes</i>) dont le rÃ©gime n'est pas renseignÃ© (<i>".$test_no_regime_effectif."</i>).</span><br />\n";
+			echo "<span style='color:red'>Le rÃ©gime non renseignÃ© est bloquant pour nombre de recherches dans cette page.</span><br />\n";
 			if($_SESSION['statut']=='administrateur') {
 				echo "<span style='color:red'>";
-				echo "Initialiser tous les régimes non renseignés à la valeur&nbsp;: ";
+				echo "Initialiser tous les rÃ©gimes non renseignÃ©s Ã  la valeur&nbsp;: ";
 				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=d/p".add_token_in_url()."'>demi-pensionnaire</a>, ";
 				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=int.".add_token_in_url()."'>interne</a>, ";
 				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=ext.".add_token_in_url()."'>externe</a> ou ";
-				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=i-e".add_token_in_url()."'>interne-externé</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=i-e".add_token_in_url()."'>interne-externÃ©</a>";
 				echo "</span>";
 				echo "<br />\n";
 			}
 			else {
-				echo "<span style='color:red'>Vous pouvez contacter l'administrateur pour initialiser tous les régimes manquants à la valeur de votre choix parmi demi-pensionnaire, interne, externe, interne-externé.</span><br />\n";
+				echo "<span style='color:red'>Vous pouvez contacter l'administrateur pour initialiser tous les rÃ©gimes manquants Ã  la valeur de votre choix parmi demi-pensionnaire, interne, externe, interne-externÃ©.</span><br />\n";
 			}
 			echo "</label>\n";
 			echo "</td>\n";
@@ -888,7 +888,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_pp' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves ont un ".getSettingValue('gepi_prof_suivi')." associé.</span><br />\n";
+			echo "<span class='norme'>Tous les Ã©lÃ¨ves ont un ".getSettingValue('gepi_prof_suivi')." associÃ©.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -899,7 +899,7 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_pp' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élèves sans ".getSettingValue('gepi_prof_suivi')." (<i>".$test_no_pp_effectif."</i>).</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ves sans ".getSettingValue('gepi_prof_suivi')." (<i>".$test_no_pp_effectif."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -928,7 +928,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_resp' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves ont un responsable associé.</span><br />\n";
+			echo "<span class='norme'>Tous les Ã©lÃ¨ves ont un responsable associÃ©.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -939,8 +939,8 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_resp' style='cursor: pointer;'>\n";
-			//echo "<span class='norme'>Les élèves sans responsable (<i>".$test_no_resp_effectif."</i>).</span><br />\n";
-			echo "<span class='norme'>Les élèves sans responsable mais inscrits dans une classe (<i>".$test_no_resp_effectif."</i>).</span><br />\n";
+			//echo "<span class='norme'>Les Ã©lÃ¨ves sans responsable (<i>".$test_no_resp_effectif."</i>).</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ves sans responsable mais inscrits dans une classe (<i>".$test_no_resp_effectif."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -960,7 +960,7 @@ if (!isset($quelles_classes)) {
 
 			//echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_etab' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves ont leur établissement d'origine renseigné.</span><br />\n";
+			echo "<span class='norme'>Tous les Ã©lÃ¨ves ont leur Ã©tablissement d'origine renseignÃ©.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -971,7 +971,7 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_etab' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élèves dont l'établissement d'origine n'est pas renseigné (<i>".mysql_num_rows($test_no_etab)."</i>).</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ves dont l'Ã©tablissement d'origine n'est pas renseignÃ© (<i>".mysql_num_rows($test_no_etab)."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -989,7 +989,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='email_vide' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves ont leur email renseigné dans la table 'eleves'.</span><br />\n";
+			echo "<span class='norme'>Tous les Ã©lÃ¨ves ont leur email renseignÃ© dans la table 'eleves'.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -1000,7 +1000,7 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_email_vide' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élèves dont l'email n'est pas renseigné dans la table 'eleves' (<i>".mysql_num_rows($test_incomplet)."</i>).</span><br />\n";
+			echo "<span class='norme'>Les Ã©lÃ¨ves dont l'email n'est pas renseignÃ© dans la table 'eleves' (<i>".mysql_num_rows($test_incomplet)."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -1015,7 +1015,7 @@ if (!isset($quelles_classes)) {
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='quelles_classes_toutes' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Tous les élèves.</span><br />";
+		echo "<span class='norme'>Tous les Ã©lÃ¨ves.</span><br />";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1032,7 +1032,7 @@ if (!isset($quelles_classes)) {
 			echo "<td valign='top'>\n";
 
 			echo "<label for='quelles_classes_certaines' style='cursor: pointer;'>\n";
-			echo "<span class = \"norme\">Seulement les élèves des classes sélectionnées ci-dessous : </span>";
+			echo "<span class = \"norme\">Seulement les Ã©lÃ¨ves des classes sÃ©lectionnÃ©es ci-dessous : </span>";
 			echo "</label>\n";
 			echo "<br />\n";
 
@@ -1107,13 +1107,13 @@ if (!isset($quelles_classes)) {
 if(isset($quelles_classes)) {
 	//echo "$quelles_classes<br />";
 
-	echo "<p class='small'>Remarque : l'identifiant mentionné ici ne permet pas aux élèves de se connecter à Gepi, il sert simplement d'identifiant unique.";
+	echo "<p class='small'>Remarque : l'identifiant mentionnÃ© ici ne permet pas aux Ã©lÃ¨ves de se connecter Ã  Gepi, il sert simplement d'identifiant unique.";
 	//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if($_SESSION['statut']=="administrateur") {
-		echo " Pour permettre aux élèves de se connecter à Gepi, vous devez leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> <a href='../utilisateurs/edit_eleve.php'>Elèves</a>.";
+		echo " Pour permettre aux Ã©lÃ¨ves de se connecter Ã  Gepi, vous devez leur crÃ©er des comptes d'accÃ¨s, en passant par la page Gestion des bases -> Gestion des comptes d'accÃ¨s utilisateurs -> <a href='../utilisateurs/edit_eleve.php'>ElÃ¨ves</a>.";
 	}
 	elseif($_SESSION['statut']=="scolarite") {
-		echo " Pour permettre aux élèves de se connecter à Gepi, vous devez vous connecter en 'administrateur' et leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> Elèves.";
+		echo " Pour permettre aux Ã©lÃ¨ves de se connecter Ã  Gepi, vous devez vous connecter en 'administrateur' et leur crÃ©er des comptes d'accÃ¨s, en passant par la page Gestion des bases -> Gestion des comptes d'accÃ¨s utilisateurs -> ElÃ¨ves.";
 	}
 	echo "</p>\n";
 
@@ -1129,7 +1129,7 @@ if(isset($quelles_classes)) {
 	echo "<td><p>Identifiant</p></td>\n";
 	echo "<td><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	echo "'>Nom Prénom</a></p></td>\n";
+	echo "'>Nom PrÃ©nom</a></p></td>\n";
 	echo "<td><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	echo "'>Sexe</a></p></td>\n";
@@ -1145,9 +1145,9 @@ if(isset($quelles_classes)) {
 	}
 //    echo "<td><p>Classe</p></td>";
 	echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td>\n";
-	echo "<td><p><input type='submit' value='Supprimer' onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
+	echo "<td><p><input type='submit' value='Supprimer' onclick=\"return confirmlink(this, 'La suppression d\'un Ã©lÃ¨ve est irrÃ©versible et entraÃ®ne l\'effacement complet de toutes ses donnÃ©es (notes, apprÃ©ciations, ...). Etes-vous sÃ»r de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
-		echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
+		echo "<td><p><input type='submit' value='TÃ©lÃ©charger les photos' name='bouton1' /></td>\n";
 	}
 	echo "</tr>\n";
 	*/
@@ -1172,7 +1172,7 @@ if(isset($quelles_classes)) {
 		ORDER BY $order_type;";
 		$calldata = mysql_query($sql);
 
-		echo "<p align='center'>Liste des élèves de la classe choisie.</p>\n";
+		echo "<p align='center'>Liste des Ã©lÃ¨ves de la classe choisie.</p>\n";
 	}
 	else{
 		if ($quelles_classes == 'certaines') {
@@ -1197,7 +1197,7 @@ if(isset($quelles_classes)) {
 			ORDER BY $order_type;";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves de la ou des classes choisies.</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves de la ou des classes choisies.</p>\n";
 
 		} else if ($quelles_classes == 'toutes') {
 			if ($order_type == "classe,nom,prenom") {
@@ -1223,7 +1223,7 @@ if(isset($quelles_classes)) {
 				$calldata = mysql_query("SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY $order_type");
 			}
 
-			echo "<p align='center'>Liste de tous les élèves.</p>\n";
+			echo "<p align='center'>Liste de tous les Ã©lÃ¨ves.</p>\n";
 
 		} else if ($quelles_classes == 'na') {
 			/*
@@ -1284,7 +1284,7 @@ if(isset($quelles_classes)) {
 			//echo "$sql<br />";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves non affectés dans une classe.</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves non affectÃ©s dans une classe.</p>\n";
 
 		} else if ($quelles_classes == 'incomplet') {
 			/*
@@ -1308,7 +1308,7 @@ if(isset($quelles_classes)) {
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves dont l'Elenoet ou le Numéro national (INE) n'est pas renseigné.</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves dont l'Elenoet ou le NumÃ©ro national (INE) n'est pas renseignÃ©.</p>\n";
 
 
 		} else if ($quelles_classes == 'email_vide') {
@@ -1333,7 +1333,7 @@ if(isset($quelles_classes)) {
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves dont l'email n'est pas renseigné.</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves dont l'email n'est pas renseignÃ©.</p>\n";
 
 
 		} else if ($quelles_classes == 'photo') {
@@ -1376,7 +1376,7 @@ if(isset($quelles_classes)) {
 				*/
 			}
 
-			echo "<p align='center'>Liste des élèves sans photo.</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves sans photo.</p>\n";
 
 		} else if ($quelles_classes == 'no_cpe') {
 			if(preg_match('/classe/',$order_type)){
@@ -1395,7 +1395,7 @@ if(isset($quelles_classes)) {
 				$calldata=mysql_query($sql);
 			}
 
-			echo "<p align='center'>Liste des élèves sans CPE.</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves sans CPE.</p>\n";
 
 		} else if ($quelles_classes == 'no_regime') {
 
@@ -1412,7 +1412,7 @@ if(isset($quelles_classes)) {
 			//echo "$sql<br />";
 			$calldata=mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves dont le régime n'est pas renseigné.</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves dont le rÃ©gime n'est pas renseignÃ©.</p>\n";
 
 
 		} else if ($quelles_classes == 'no_pp') {
@@ -1434,7 +1434,7 @@ if(isset($quelles_classes)) {
 
 			}
 
-			echo "<p align='center'>Liste des élèves sans ".getSettingValue('gepi_prof_suivi')."</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves sans ".getSettingValue('gepi_prof_suivi')."</p>\n";
 
 		} else if ($quelles_classes == 'no_resp') {
 			if(preg_match('/classe/',$order_type)){
@@ -1485,7 +1485,7 @@ if(isset($quelles_classes)) {
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves dont le prenom commence par <b>$motif_rech</b></p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves dont le prenom commence par <b>$motif_rech</b></p>\n";
 
 		} else if ($quelles_classes == 'recherche') {
 			/*
@@ -1509,16 +1509,16 @@ if(isset($quelles_classes)) {
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves dont le nom commence par <b>$motif_rech</b></p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves dont le nom commence par <b>$motif_rech</b></p>\n";
 		}
-		else if ($quelles_classes == 'dse') { //Elève ayant une date de sortie renseignée.
+		else if ($quelles_classes == 'dse') { //ElÃ¨ve ayant une date de sortie renseignÃ©e.
 			$sql="SELECT e.*, jer.* FROM eleves e
 					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
 					WHERE jer.login =e.login AND e.date_sortie<>0 ORDER BY $order_type;";
 			//echo "$sql<br />";
 			$calldata = mysql_query($sql);
 
-			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée.</p>\n";
+			echo "<p align='center'>Liste des Ã©lÃ¨ves ayant une date de sortie renseignÃ©e.</p>\n";
 			}
 		elseif ($quelles_classes == 'no_etab') {
 			if(preg_match('/classe/',$order_type)){
@@ -1548,12 +1548,12 @@ if(isset($quelles_classes)) {
 
 
 
-	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
+	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des Ã©lÃ¨ves de la classe'>\n";
 	echo "<tr>\n";
 	echo "<td><p>Identifiant</p></td>\n";
 	echo "<td><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	echo "'>Nom Prénom</a></p></td>\n";
+	echo "'>Nom PrÃ©nom</a></p></td>\n";
 	echo "<td><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	echo "'>Sexe</a></p></td>\n";
@@ -1563,7 +1563,7 @@ if(isset($quelles_classes)) {
 
 	echo "<td><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	echo "'>Régime</a></p></td>\n";
+	echo "'>RÃ©gime</a></p></td>\n";
 
 	if ($quelles_classes == 'na') {
 		echo "<td><p>Classe</p></td>\n";
@@ -1584,7 +1584,7 @@ if(isset($quelles_classes)) {
 
 	//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if($_SESSION['statut']=="administrateur") {
-		echo "<td><p><input type='submit' value='Supprimer' onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
+		echo "<td><p><input type='submit' value='Supprimer' onclick=\"return confirmlink(this, 'La suppression d\'un Ã©lÃ¨ve est irrÃ©versible et entraÃ®ne l\'effacement complet de toutes ses donnÃ©es (notes, apprÃ©ciations, ...). Etes-vous sÃ»r de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
 	}
 	elseif($_SESSION['statut']=="scolarite") {
 		echo "<td><p><span title=\"La suppression n'est possible qu'avec un compte administrateur\">Supprimer</span></p></td>\n";
@@ -1593,11 +1593,11 @@ if(isset($quelles_classes)) {
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
 		if($_SESSION['statut']=="professeur") {
 			if (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes') {
-				echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
+				echo "<td><p><input type='submit' value='TÃ©lÃ©charger les photos' name='bouton1' /></td>\n";
 			}
 		}
 		else{
-			echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
+			echo "<td><p><input type='submit' value='TÃ©lÃ©charger les photos' name='bouton1' /></td>\n";
 		}
 	}
 	echo "</tr>\n";
@@ -1610,8 +1610,8 @@ if(isset($quelles_classes)) {
 	}
 	//echo "\$nombreligne=$nombreligne<br />";
 /*
-	echo "<p>Total : $nombreligne éleves</p>\n";
-	echo "<p>Remarque : le login ne permet pas aux élèves de se connecter à Gepi. Il sert simplement d'identifiant unique.</p>\n";
+	echo "<p>Total : $nombreligne Ã©leves</p>\n";
+	echo "<p>Remarque : le login ne permet pas aux Ã©lÃ¨ves de se connecter Ã  Gepi. Il sert simplement d'identifiant unique.</p>\n";
 */
 
 	$i = 0;
@@ -1716,7 +1716,7 @@ if(isset($quelles_classes)) {
 
 			//echo "<input name='photo[$i]' type='file' />\n";
 
-			// Dans le cas du multisite, on préfère le login pour afficher les photos
+			// Dans le cas du multisite, on prÃ©fÃ¨re le login pour afficher les photos
 			$nom_photo_test = (isset ($multisite) AND $multisite == 'y') ? $eleve_login : $elenoet;
 			echo "<input type='hidden' name='quiestce[$i]' value=\"$nom_photo_test\" />\n";
 
@@ -1747,7 +1747,7 @@ if(isset($quelles_classes)) {
 				else{
 					echo "photo_g.png";
 				}
-				echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' />";
+				echo "' width='32' height='32'  align='middle' border='0' alt='photo prÃ©sente' title='photo prÃ©sente' />";
 				echo "</a>";
 
 				echo "</div>";
@@ -1755,14 +1755,14 @@ if(isset($quelles_classes)) {
 
 
 			if($nom_photo_test=="") {
-				// Dans le cas multisite, le login élève est forcément renseigné
-				echo "<span style='color:red'>Elenoet non renseigné</span>";
+				// Dans le cas multisite, le login Ã©lÃ¨ve est forcÃ©ment renseignÃ©
+				echo "<span style='color:red'>Elenoet non renseignÃ©</span>";
 			}
 			else {
 				//echo "<span id='span_file_$i'></span>";
 				echo "<span id='span_file_$i'>";
-				//echo "<a href='javascript:add_file_upload($i)'><img src='../images/ico_edit16plus.png' width='16' height='16' alt='Choisir un fichier à uploader' /></a>";
-				// Pour que si JavaScript est désactivé, on ait quand même le champ FILE
+				//echo "<a href='javascript:add_file_upload($i)'><img src='../images/ico_edit16plus.png' width='16' height='16' alt='Choisir un fichier Ã  uploader' /></a>";
+				// Pour que si JavaScript est dÃ©sactivÃ©, on ait quand mÃªme le champ FILE
 				echo "<input name='photo[$i]' type='file' />\n";
 				echo "</span>";
 			}
@@ -1774,22 +1774,22 @@ if(isset($quelles_classes)) {
 		$i++;
 	}
 	echo "</table>\n";
-	echo "<p>Total : $nombreligne élève";
+	echo "<p>Total : $nombreligne Ã©lÃ¨ve";
 	if($nombreligne>1) {echo "s";}
 	echo "</p>\n";
 
 	echo "<script type='text/javascript'>
-	// Ajout d'un champ FILE... pour éviter la limite de max_file_uploads (on n'a que le nombre de champs FILE correspondant à ce que l'on souhaite effectivement uploader
+	// Ajout d'un champ FILE... pour Ã©viter la limite de max_file_uploads (on n'a que le nombre de champs FILE correspondant Ã  ce que l'on souhaite effectivement uploader
 	function add_file_upload(i) {
 		if(document.getElementById('span_file_'+i)) {
 			document.getElementById('span_file_'+i).innerHTML='<input type=\'file\' name=\'photo['+i+']\' />';
 		}
 	}
 
-	// On remplace les champs FILE par des liens d'ajout de champ FILE... au cas où JavaScript serait désactivé.
+	// On remplace les champs FILE par des liens d'ajout de champ FILE... au cas oÃ¹ JavaScript serait dÃ©sactivÃ©.
 	for(i=0;i<$i;i++) {
 		if(document.getElementById('span_file_'+i)) {
-			document.getElementById('span_file_'+i).innerHTML='<a href=\'javascript:add_file_upload('+i+')\'><img src=\'../images/ico_edit16plus.png\' width=\'16\' height=\'16\' alt=\'Choisir un fichier à uploader\' /></a>';
+			document.getElementById('span_file_'+i).innerHTML='<a href=\'javascript:add_file_upload('+i+')\'><img src=\'../images/ico_edit16plus.png\' width=\'16\' height=\'16\' alt=\'Choisir un fichier Ã  uploader\' /></a>';
 		}
 	}
 </script>\n";
@@ -1820,7 +1820,7 @@ if(isset($quelles_classes)) {
 	if(($max_file_uploads!="")&&(strlen(preg_replace("/[^0-9]/","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
 		echo "<p><i>Notes</i>&nbsp;:</p>\n";
 		echo "<ul>\n";
-		echo "<li><p>L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p></li>\n";
+		echo "<li><p>L'upload des photos est limitÃ© Ã  $max_file_uploads fichier(s) simultanÃ©ment.</p></li>\n";
 		$temoin_notes_bas_de_page="y";
 	}
 
@@ -1829,7 +1829,7 @@ if(isset($quelles_classes)) {
 			echo "<p><i>Notes</i>&nbsp;:</p>\n";
 			echo "<ul>\n";
 		}
-		echo "<li><i>Note</i>&nbsp;: Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#formEnvoi'>ZIP d'un lot de photos</a> plutôt que les uploader une par une.<br />Il faut que les photos soient nommées au format ELENOET.JPG</p></li>\n";
+		echo "<li><i>Note</i>&nbsp;: Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#formEnvoi'>ZIP d'un lot de photos</a> plutÃ´t que les uploader une par une.<br />Il faut que les photos soient nommÃ©es au format ELENOET.JPG</p></li>\n";
 		$temoin_notes_bas_de_page="y";
 	}
 
@@ -1878,8 +1878,8 @@ if(isset($quelles_classes)) {
 	echo "<script type='text/javascript'>
 
 	function afficher_changement_regime(login_eleve, regime_eleve) {
-		// regime_eleve est le régime actuel de l'élève
-		document.getElementById('titre_entete_changer_regime').innerHTML='Régime de '+login_eleve;
+		// regime_eleve est le rÃ©gime actuel de l'Ã©lÃ¨ve
+		document.getElementById('titre_entete_changer_regime').innerHTML='RÃ©gime de '+login_eleve;
 		document.getElementById('regime_login_eleve').value=login_eleve;
 
 		//alert('regime_eleve='+regime_eleve);
@@ -1909,7 +1909,7 @@ if(isset($quelles_classes)) {
 			new Ajax.Updater($('regime_'+login_eleve),'ajax_modif_eleve.php?login_eleve='+login_eleve+'&regime_eleve='+regime_eleve+'&mode=changer_regime".add_token_in_url(false)."',{method: 'get'});
 		}
 		else {
-			alert('document.getElementById(\'regime_login_eleve\') n est pas affecté.')
+			alert('document.getElementById(\'regime_login_eleve\') n est pas affectÃ©.')
 		}
 
 		cacher_div('div_changer_regime');

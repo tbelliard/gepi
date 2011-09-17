@@ -23,14 +23,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Sécurité : éviter que quelqu'un appelle ce fichier seul
+// SÃ©curitÃ© : Ã©viter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
 $analyse = explode("/", $serveur_script);
 	if ($analyse[3] == "menu.inc.php") {
 		die();
 	}
 
-// ========================= Récupérer le bon fichier de langue
+// ========================= RÃ©cupÃ©rer le bon fichier de langue
 
 require_once('../edt_organisation/choix_langue.php');
 
@@ -38,16 +38,16 @@ require_once('../edt_organisation/choix_langue.php');
 require_once('../edt_organisation/fonctions_calendrier.php');
 //===========================INITIALISATION DES VARIABLES=======
 
-// Pour éviter d'avoir un décalage dans les infobulles
+// Pour Ã©viter d'avoir un dÃ©calage dans les infobulles
 $pas_de_decalage_infobulle = "oui";
 
 
 //===========================
 
-// Fonction qui gère le fonctionnement du menu
+// Fonction qui gÃ¨re le fonctionnement du menu
 function menuEdtJs($numero){
 	$aff_menu_edt = "";
-	// On récupère la valeur du réglage "param_menu_edt"
+	// On rÃ©cupÃ¨re la valeur du rÃ©glage "param_menu_edt"
 	$reglage = mysql_fetch_array(mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'"));
 	if ($reglage["valeur"] == "mouseover") {
 		$aff_menu_edt = " onmouseover=\"javascript:montre('sEdTmenu".$numero."');\"";
@@ -59,7 +59,7 @@ function menuEdtJs($numero){
 	return $aff_menu_edt;
 }
 function displaydd($numero){
-		// On récupère la valeur du réglage "param_menu_edt"
+		// On rÃ©cupÃ¨re la valeur du rÃ©glage "param_menu_edt"
 	$reglage = mysql_fetch_array(mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'"));
 	if ($reglage["valeur"] == "rien") {
 		return " style=\"display: block;\"";
@@ -130,7 +130,7 @@ if (getSettingValue("use_only_cdt") != 'y' OR $_SESSION["statut"] != 'professeur
 
 		<dt<?php echo menuEdtJs("1"); ?>><?php echo VIEWS ?></dt>
 
-			<dd id="sEdTmenu1" <?php echo displaydd("1"); ?>>	<!-- Régis -->
+			<dd id="sEdTmenu1" <?php echo displaydd("1"); ?>>	<!-- RÃ©gis -->
 				<ul>
 					<?php if (statutAutreSetting() == 'oui') {
 						echo '
@@ -156,7 +156,7 @@ echo '
 			</dd>';
 } */
 
-	// La fonction chercher_salle est paramétrable
+	// La fonction chercher_salle est paramÃ©trable
 $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	if ($aff_cherche_salle == "tous") {
 		$aff_ok = "oui";
@@ -167,7 +167,7 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	else
 	$aff_ok = "non";
     
-	// En fonction du résultat, on propose l'affichage ou non
+	// En fonction du rÃ©sultat, on propose l'affichage ou non
 	if ($aff_ok == "oui" OR $_SESSION["statut"] == $aff_ok) {
 		echo '
 		<dt'.menuEdtJs("3").'>'.LOOKFOR.'</dt>

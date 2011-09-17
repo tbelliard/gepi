@@ -40,44 +40,44 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année pour l'annuaire LDAP Scribe NG";
+$titre_page = "Outil d'initialisation de l'annÃ©e pour l'annuaire LDAP Scribe NG";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold><a href="../gestion/index.php#init_scribe_ng"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter, directement depuis l'annuaire LDAP de Scribe NG. Celui-ci doit donc avoir été préalablement alimenté. Cette procédure ne s'effectue qu'une seule fois.</p>
+<p>Vous allez effectuer l'initialisation de l'annÃ©e scolaire qui vient de dÃ©buter, directement depuis l'annuaire LDAP de Scribe NG. Celui-ci doit donc avoir Ã©tÃ© prÃ©alablement alimentÃ©. Cette procÃ©dure ne s'effectue qu'une seule fois.</p>
 
 <?php
-	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
+	echo "<p>Avez-vous pensÃ© Ã  effectuer les diffÃ©rentes opÃ©rations de fin d'annÃ©e et prÃ©paration de nouvelle annÃ©e Ã  la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'annÃ©e</a>&nbsp?</p>\n";
 ?>
 
 <ul>
-<li>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes :<br /><br />
-- les données relatives aux établissements,<br />
-- les données relatives aux classes : intitulés courts, intitulés longs, nombre de périodes et noms des périodes,<br />
-- les données relatives aux matières : identifiants et intitulés complets,<br />
-- les données relatives aux utilisateurs personnels dans l'établissement (professeurs, administrateurs, ...). Concernant les professeurs, les matières enseignées par les professeurs sont conservées (et éventuellement complétées en phase 5),<br />
-- Les données relatives aux différents types d'AID.</li><br />
+<li>Au cours de la procÃ©dure, le cas Ã©chÃ©ant, certaines donnÃ©es de l'annÃ©e passÃ©e seront dÃ©finitivement effacÃ©es de la base GEPI (Ã©lÃ¨ves, notes, apprÃ©ciations, ...) . Seules seront conservÃ©es les donnÃ©es suivantes :<br /><br />
+- les donnÃ©es relatives aux Ã©tablissements,<br />
+- les donnÃ©es relatives aux classes : intitulÃ©s courts, intitulÃ©s longs, nombre de pÃ©riodes et noms des pÃ©riodes,<br />
+- les donnÃ©es relatives aux matiÃ¨res : identifiants et intitulÃ©s complets,<br />
+- les donnÃ©es relatives aux utilisateurs personnels dans l'Ã©tablissement (professeurs, administrateurs, ...). Concernant les professeurs, les matiÃ¨res enseignÃ©es par les professeurs sont conservÃ©es (et Ã©ventuellement complÃ©tÃ©es en phase 5),<br />
+- Les donnÃ©es relatives aux diffÃ©rents types d'AID.</li><br />
 
-<li>L'initialisation s'effectue en différentes phases :<br />
+<li>L'initialisation s'effectue en diffÃ©rentes phases :<br />
     <ul>
     <br />
-    <li><a href='etape1.php'>Procéder à la première phase</a> d'importation des élèves et de cr&eacute;ation des classes.</li>
+    <li><a href='etape1.php'>ProcÃ©der Ã  la premiÃ¨re phase</a> d'importation des Ã©lÃ¨ves et de cr&eacute;ation des classes.</li>
     <br />
-    <li><a href='etape2.php'>Procéder à la deuxième phase</a> de cr&eacute;ation des p&eacute;riodes et d'affectation des &eacute;l&egrave;ves dans les classes.</li>
+    <li><a href='etape2.php'>ProcÃ©der Ã  la deuxiÃ¨me phase</a> de cr&eacute;ation des p&eacute;riodes et d'affectation des &eacute;l&egrave;ves dans les classes.</li>
     <br />
-    <li><a href='etape3.php'>Procéder à la troisième phase</a> d'importation des responsables l&eacute;gaux des &eacute;l&egrave;ves.</li>
+    <li><a href='etape3.php'>ProcÃ©der Ã  la troisiÃ¨me phase</a> d'importation des responsables l&eacute;gaux des &eacute;l&egrave;ves.</li>
     <br />
-    <li><a href='etape4.php'>Procéder à la quatrième phase</a> d'importation des professeurs.</li>
+    <li><a href='etape4.php'>ProcÃ©der Ã  la quatriÃ¨me phase</a> d'importation des professeurs.</li>
     <br />
-    <li><a href='etape5.php'>Procéder à la cinquième phase</a> d'importation des matières.</li>
+    <li><a href='etape5.php'>ProcÃ©der Ã  la cinquiÃ¨me phase</a> d'importation des matiÃ¨res.</li>
     <br />
-    <li><a href='etape6.php'>Procéder à la sixième phase</a> d'importation des enseignements.</li>
+    <li><a href='etape6.php'>ProcÃ©der Ã  la sixiÃ¨me phase</a> d'importation des enseignements.</li>
     <br />
-    <li><a href='etape7.php'>Procéder à la septième phase</a> d'importation des personnels non-enseignants.</li>
+    <li><a href='etape7.php'>ProcÃ©der Ã  la septiÃ¨me phase</a> d'importation des personnels non-enseignants.</li>
     <br />
     <br />
 </li>
-<li>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</li>
+<li>Une fois toute la procÃ©dure d'initialisation des donnÃ©es terminÃ©e, il vous sera possible d'effectuer toutes les modifications nÃ©cessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</li>
 </ul>
 <?php require("../lib/footer.inc.php");?>

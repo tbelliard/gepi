@@ -81,13 +81,13 @@ if (!checkAccess()) {
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 	check_token();
 
-	// Détermination du format de la date de naissance
+	// DÃ©termination du format de la date de naissance
 	$call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE 1");
 	$test_eleve_naissance = @mysql_result($call_eleve_test, "0", "naissance");
 	$format = strlen($test_eleve_naissance);
 
 
-	// Cas de la création d'un élève
+	// Cas de la crÃ©ation d'un Ã©lÃ¨ve
 	$reg_nom = trim($reg_nom);
 	$reg_prenom = trim($reg_prenom);
 	$reg_email = trim($reg_email);
@@ -117,14 +117,14 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 
 	$continue = 'yes';
 	if (($reg_nom == '') or ($reg_prenom == '')) {
-		$msg = "Les champs nom et prénom sont obligatoires.";
+		$msg = "Les champs nom et prÃ©nom sont obligatoires.";
 		$continue = 'no';
 	}
 
 	//$msg.="\$reg_login=$reg_login<br />";
 	//if(isset($eleve_login)){$msg.="\$eleve_login=$eleve_login<br />";}
 
-	// $reg_login non vide correspond à un nouvel élève.
+	// $reg_login non vide correspond Ã  un nouvel Ã©lÃ¨ve.
 	// On a saisi un login avant de valider
 	if (($continue == 'yes') and (isset($reg_login))) {
 		$msg = '';
@@ -136,8 +136,8 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
 				$count1 = mysql_num_rows($test1);
 				if ($count1 != "0") {
-					//$msg .= "Erreur : un élève ayant le même numéro GEP existe déjà.<br />";
-					$msg .= "Erreur : un élève ayant le même numéro interne Sconet (elenoet) existe déjà.<br />";
+					//$msg .= "Erreur : un Ã©lÃ¨ve ayant le mÃªme numÃ©ro GEP existe dÃ©jÃ .<br />";
+					$msg .= "Erreur : un Ã©lÃ¨ve ayant le mÃªme numÃ©ro interne Sconet (elenoet) existe dÃ©jÃ .<br />";
 					$ok = 'no';
 				}
 			}
@@ -146,7 +146,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				$test2 = mysql_query("SELECT login FROM eleves WHERE no_gep='$reg_no_nat'");
 				$count2 = mysql_num_rows($test2);
 				if ($count2 != "0") {
-					$msg .= "Erreur : un élève ayant le même numéro national existe déjà.";
+					$msg .= "Erreur : un Ã©lÃ¨ve ayant le mÃªme numÃ©ro national existe dÃ©jÃ .";
 					$ok = 'no';
 				}
 			}
@@ -171,7 +171,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						$ele_id=$max_ele_id+1;
 						*/
 						// PB si on fait ensuite un import sconet le pers_id risque de ne pas correspondre... de provoquer des collisions.
-						// QUAND ON LES METS A LA MAIN, METTRE UN ele_id, pers_id,... négatifs?
+						// QUAND ON LES METS A LA MAIN, METTRE UN ele_id, pers_id,... nÃ©gatifs?
 
 						// PREFIXER D'UN e...
 
@@ -232,11 +232,11 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						");
 
 					if($reg_resp1!=""){
-						// Quand on laisse '(vide)' pour le choix du responsable, la variable est créée puisque le champ est posté, mais la variable est une chaine vide qui ne doit pas correspondre à une insertion dans responsables2
+						// Quand on laisse '(vide)' pour le choix du responsable, la variable est crÃ©Ã©e puisque le champ est postÃ©, mais la variable est une chaine vide qui ne doit pas correspondre Ã  une insertion dans responsables2
 						$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
 						$test_resp1=mysql_query($sql);
 						if(mysql_num_rows($test_resp1)>0){
-							// Il y a déjà une association élève/responsable (c'est bizarre pour un élève que l'on inscrit maintenant???)
+							// Il y a dÃ©jÃ  une association Ã©lÃ¨ve/responsable (c'est bizarre pour un Ã©lÃ¨ve que l'on inscrit maintenant???)
 							$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
 							$test_resp1b=mysql_query($sql);
 							if(mysql_num_rows($test_resp1b)==1){
@@ -249,7 +249,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 									$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
 									$res_update=mysql_query($sql);
 									if(!$res_update){
-										$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+										$msg.="Erreur lors de la mise Ã  jour du responsable $lig_autre_resp->pers_id en responsable lÃ©gal nÂ°2.<br />\n";
 										$temoin_maj_resp="PB";
 									}
 								}
@@ -258,14 +258,14 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 									$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
 									$res_update=mysql_query($sql);
 									if(!$res_update){
-										$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+										$msg.="Erreur lors de la mise Ã  jour du responsable $reg_resp1 en responsable lÃ©gal nÂ°1.<br />\n";
 									}
 								}
 							}
-							// Sinon, l'association est déjà la bonne... pas de changement.
+							// Sinon, l'association est dÃ©jÃ  la bonne... pas de changement.
 						}
 						else{
-							// Il n'y a pas encore d'association entre cet élève et ce responsable
+							// Il n'y a pas encore d'association entre cet Ã©lÃ¨ve et ce responsable
 							$temoin_maj_resp="";
 							$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
 							$test_resp1c=mysql_query($sql);
@@ -273,11 +273,11 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 							if(mysql_num_rows($test_resp1c)>0){
 								$lig_autre_resp=mysql_fetch_object($test_resp1c);
 
-								// Y avait-il un autre responsable légal n°2?
+								// Y avait-il un autre responsable lÃ©gal nÂ°2?
 								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
 								$res_menage=mysql_query($sql);
 								if(!$res_menage){
-									$msg.="Erreur lors de la suppression de l'association avec le précédent responsable légal n°2.<br />";
+									$msg.="Erreur lors de la suppression de l'association avec le prÃ©cÃ©dent responsable lÃ©gal nÂ°2.<br />";
 									$temoin_maj_resp="PB";
 								}
 								else{
@@ -285,7 +285,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 									$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
 									$res_update=mysql_query($sql);
 									if(!$res_update){
-										$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+										$msg.="Erreur lors de la mise Ã  jour du responsable $lig_autre_resp->pers_id en responsable lÃ©gal nÂ°2.<br />\n";
 										$temoin_maj_resp="PB";
 									}
 								}
@@ -295,13 +295,13 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 								$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
 								$reg_data2b=mysql_query($sql);
 								if(!$reg_data2b){
-									$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+									$msg.="Erreur lors de la mise Ã  jour du responsable $reg_resp1 en responsable lÃ©gal nÂ°1.<br />\n";
 								}
 							}
 						}
 					}
 
-					// Régime et établissement d'origine:
+					// RÃ©gime et Ã©tablissement d'origine:
 					$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p';");
 					if ($reg_no_gep != '') {
 						//$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_login'");
@@ -323,32 +323,32 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						}
 					}
 					if ((!$reg_data1) or (!$reg_data3)) {
-						$msg = "Erreur lors de l'enregistrement des données";
+						$msg = "Erreur lors de l'enregistrement des donnÃ©es";
 					} elseif ($mode == "unique") {
-						$mess=rawurlencode("Elève enregistré !");
+						$mess=rawurlencode("ElÃ¨ve enregistrÃ© !");
 						header("Location: index.php?msg=$mess");
 						die();
 					} elseif ($mode == "multiple") {
-						$mess=rawurlencode("Elève enregistré. Vous pouvez saisir l'élève suivant.");
+						$mess=rawurlencode("ElÃ¨ve enregistrÃ©. Vous pouvez saisir l'Ã©lÃ¨ve suivant.");
 						header("Location: add_eleve.php?mode=multiple&msg=$mess");
 						die();
 					}
 				} else {
-					$msg="Un élève portant le même identifiant existe déja !";
+					$msg="Un Ã©lÃ¨ve portant le mÃªme identifiant existe dÃ©ja !";
 				}
 			}
 		} else {
-			$msg="L'identifiant choisi est constitué au maximum de 12 caractères : lettres, chiffres, \"_\" ou \".\" et ne doit pas commencer par un chiffre !";
+			$msg="L'identifiant choisi est constituÃ© au maximum de 12 caractÃ¨res : lettres, chiffres, \"_\" ou \".\" et ne doit pas commencer par un chiffre !";
 		}
 	} else if ($continue == 'yes') {
-		// C'est une mise à jour pour un élève qui existait déjà dans la table 'eleves'.
+		// C'est une mise Ã  jour pour un Ã©lÃ¨ve qui existait dÃ©jÃ  dans la table 'eleves'.
 
 		// On nettoie les windozeries
 		$reg_data = mysql_query("UPDATE eleves SET no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',email='$reg_email',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."' WHERE login='".$eleve_login."'");
 		if (!$reg_data) {
-			$msg = "Erreur lors de l'enregistrement des données";
+			$msg = "Erreur lors de l'enregistrement des donnÃ©es";
 		} else {
-			// On met à jour la table utilisateurs si un compte existe pour cet élève
+			// On met Ã  jour la table utilisateurs si un compte existe pour cet Ã©lÃ¨ve
 			$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
 			if ($test_login > 0) {
 				$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."' WHERE login = '".$eleve_login."'");
@@ -377,18 +377,18 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		}
 
 		if (!$reg_data) {
-			$msg = "Erreur lors de l'enregistrement des données !";
+			$msg = "Erreur lors de l'enregistrement des donnÃ©es !";
 		} else {
-			//$msg = "Les modifications ont bien été enregistrées !";
+			//$msg = "Les modifications ont bien Ã©tÃ© enregistrÃ©es !";
 			// MODIF POUR AFFICHER MES TEMOINS...
-			$msg .= "Les modifications ont bien été enregistrées !";
+			$msg .= "Les modifications ont bien Ã©tÃ© enregistrÃ©es !";
 		}
 
 		$temoin_ele_id="";
 		$sql="SELECT ele_id FROM eleves WHERE login='$eleve_login'";
 		$res_ele_id_eleve=mysql_query($sql);
 		if(mysql_num_rows($res_ele_id_eleve)==0){
-			$msg.="Erreur: Le champ ele_id n'est pas présent. Votre table 'eleves' n'a pas l'air à jour.<br />";
+			$msg.="Erreur: Le champ ele_id n'est pas prÃ©sent. Votre table 'eleves' n'a pas l'air Ã  jour.<br />";
 			$temoin_ele_id="PB";
 		}
 		else{
@@ -401,7 +401,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 			$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
 			$test_resp1=mysql_query($sql);
 			if(mysql_num_rows($test_resp1)>0){
-				// Il y a déjà une association élève/responsable (c'est bizarre pour un élève que l'on inscrit maintenant???)
+				// Il y a dÃ©jÃ  une association Ã©lÃ¨ve/responsable (c'est bizarre pour un Ã©lÃ¨ve que l'on inscrit maintenant???)
 				$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
 				$test_resp1b=mysql_query($sql);
 				if(mysql_num_rows($test_resp1b)==1){
@@ -414,7 +414,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
 						$res_update=mysql_query($sql);
 						if(!$res_update){
-							$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+							$msg.="Erreur lors de la mise Ã  jour du responsable $lig_autre_resp->pers_id en responsable lÃ©gal nÂ°2.<br />\n";
 							$temoin_maj_resp="PB";
 						}
 					}
@@ -423,14 +423,14 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
 						$res_update=mysql_query($sql);
 						if(!$res_update){
-							$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+							$msg.="Erreur lors de la mise Ã  jour du responsable $reg_resp1 en responsable lÃ©gal nÂ°1.<br />\n";
 						}
 					}
 				}
-				// Sinon, l'association est déjà la bonne... pas de changement.
+				// Sinon, l'association est dÃ©jÃ  la bonne... pas de changement.
 			}
 			else{
-				// Il n'y a pas encore d'association entre cet élève et ce responsable
+				// Il n'y a pas encore d'association entre cet Ã©lÃ¨ve et ce responsable
 				$temoin_maj_resp="";
 				$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
 				$test_resp1c=mysql_query($sql);
@@ -438,11 +438,11 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				if(mysql_num_rows($test_resp1c)>0){
 					$lig_autre_resp=mysql_fetch_object($test_resp1c);
 
-					// Y avait-il un autre responsable légal n°2?
+					// Y avait-il un autre responsable lÃ©gal nÂ°2?
 					$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
 					$res_menage=mysql_query($sql);
 					if(!$res_menage){
-						$msg.="Erreur lors de la suppression de l'association avec le précédent responsable légal n°2.<br />";
+						$msg.="Erreur lors de la suppression de l'association avec le prÃ©cÃ©dent responsable lÃ©gal nÂ°2.<br />";
 						$temoin_maj_resp="PB";
 					}
 					else{
@@ -450,7 +450,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
 						$res_update=mysql_query($sql);
 						if(!$res_update){
-							$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+							$msg.="Erreur lors de la mise Ã  jour du responsable $lig_autre_resp->pers_id en responsable lÃ©gal nÂ°2.<br />\n";
 							$temoin_maj_resp="PB";
 						}
 					}
@@ -460,7 +460,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 					$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
 					$reg_data2b=mysql_query($sql);
 					if(!$reg_data2b){
-						$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+						$msg.="Erreur lors de la mise Ã  jour du responsable $reg_resp1 en responsable lÃ©gal nÂ°1.<br />\n";
 					}
 				}
 			}
@@ -498,7 +498,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 			$reg_data2b=mysql_query($sql);
 		}
 
-		// AJOUTER DES TESTS DE SUCCES DE LA MàJ.
+		// AJOUTER DES TESTS DE SUCCES DE LA MÃ J.
 */
 
 	}
@@ -568,7 +568,7 @@ if (isset($eleve_login)) {
 
 
 } else {
-	// On passe par là au premier accès à la page et si après validation le champ login n'a pas été saisi.
+	// On passe par lÃ  au premier accÃ¨s Ã  la page et si aprÃ¨s validation le champ login n'a pas Ã©tÃ© saisi.
 	//echo "\$reg_nom=$reg_nom<br />\n";
     if (isset($reg_nom)) $eleve_nom = $reg_nom;
     if (isset($reg_prenom)) $eleve_prenom = $reg_prenom;
@@ -587,7 +587,7 @@ if (isset($eleve_login)) {
 
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des élèves | Ajouter/Modifier une fiche élève";
+$titre_page = "Gestion des Ã©lÃ¨ves | Ajouter/Modifier une fiche Ã©lÃ¨ve";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -600,14 +600,14 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 
 
 /*
-// Désactivé pour permettre de renseigner un ELENOET manquant pour une conversion avec sconet
-// Cela a en revanche été conservé sur la page index.php
-// On ne devrait donc arriver ici lorsqu'une conversion est réclamée qu'en venant de conversion.php pour remplir un ELENOET
+// DÃ©sactivÃ© pour permettre de renseigner un ELENOET manquant pour une conversion avec sconet
+// Cela a en revanche Ã©tÃ© conservÃ© sur la page index.php
+// On ne devrait donc arriver ici lorsqu'une conversion est rÃ©clamÃ©e qu'en venant de conversion.php pour remplir un ELENOET
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -616,7 +616,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -625,7 +625,7 @@ if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
-			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -663,7 +663,7 @@ echo "<tr>\n";
 		$ratio_h=$hauteur/$photo_hauteur_max;
 		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
-		// définit largeur et hauteur pour la nouvelle image
+		// dÃ©finit largeur et hauteur pour la nouvelle image
 		$nouvelle_largeur=round($largeur/$ratio);
 		$nouvelle_hauteur=round($hauteur/$ratio);
 
@@ -678,7 +678,7 @@ echo "<tr>\n";
         echo " /></td>\n";
     } else {
         echo "<td>Identifiant GEPI * : </td>
-        <td><input type=text name=reg_login size=20 value=\"\" maxlength='".$longmax_login."' /> (<i>max.$longmax_login caractères</i>)</td>\n";
+        <td><input type=text name=reg_login size=20 value=\"\" maxlength='".$longmax_login."' /> (<i>max.$longmax_login caractÃ¨res</i>)</td>\n";
     }
     ?>
 </tr>
@@ -687,7 +687,7 @@ echo "<tr>\n";
     <td><input type=text name='reg_nom' size=20 <?php if (isset($eleve_nom)) { echo "value=\"".$eleve_nom."\"";}?> /></td>
 </tr>
 <tr>
-    <td>Prénom * : </td>
+    <td>PrÃ©nom * : </td>
     <td><input type=text name='reg_prenom' size=20 <?php if (isset($eleve_prenom)) { echo "value=\"".$eleve_prenom."\"";}?> /></td>
 </tr>
 <tr>
@@ -703,8 +703,8 @@ echo "<tr>\n";
     ?>
 </tr>
 <?php
-    //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
-    echo "<tr><td>Numéro interne Sconet (<i>elenoet</i>) : </td><td><input type='text' name='reg_no_gep' size='20' ";
+    //echo "<tr><td>NumÃ©ro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
+    echo "<tr><td>NumÃ©ro interne Sconet (<i>elenoet</i>) : </td><td><input type='text' name='reg_no_gep' size='20' ";
     if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
     echo " /></td>\n";
 
@@ -731,8 +731,8 @@ echo "</tr>\n";
 echo "</table>\n";
 
 if (($reg_no_gep == '') and (isset($eleve_login))) {
-   //echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
-   echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (elenoet). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.</font>\n";
+   //echo "<font color=red>ATTENTION : Cet Ã©lÃ¨ve ne possÃ¨de pas de numÃ©ro GEP. Vous ne pourrez pas importer les absences Ã  partir des fichiers GEP pour cet Ã©lÃ¨ves.</font>\n";
+   echo "<font color=red>ATTENTION : Cet Ã©lÃ¨ve ne possÃ¨de pas de numÃ©ro interne Sconet (elenoet). Vous ne pourrez pas importer les absences Ã  partir des fichiers GEP/Sconet pour cet Ã©lÃ¨ves.</font>\n";
 
 	$sql="select value from setting where name='import_maj_xml_sconet'";
 	$test_sconet=mysql_query($sql);
@@ -740,7 +740,7 @@ if (($reg_no_gep == '') and (isset($eleve_login))) {
 		$lig_tmp=mysql_fetch_object($test_sconet);
 		if($lig_tmp->value=='1'){
 			echo "<br />";
-			echo "<font color=red>Vous ne pourrez pas non plus effectuer les mises à jour de ses informations depuis Sconet<br />(<i>l'ELENOET et l'ELE_ID ne correspondront pas aux données de Sconet</i>).</font>\n";
+			echo "<font color=red>Vous ne pourrez pas non plus effectuer les mises Ã  jour de ses informations depuis Sconet<br />(<i>l'ELENOET et l'ELE_ID ne correspondront pas aux donnÃ©es de Sconet</i>).</font>\n";
 		}
 	}
 }
@@ -752,21 +752,21 @@ if (($reg_no_gep == '') and (isset($eleve_login))) {
 if (!(isset($eleve_sexe))) $eleve_sexe="M";
 /*
 <input type=radio name=reg_sexe value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> /> Masculin
-<input type=radio name=reg_sexe value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> Féminin
+<input type=radio name=reg_sexe value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> FÃ©minin
 */
 ?>
 <label for='reg_sexeM' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeM' value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> /> Masculin</label>
-<label for='reg_sexeF' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> Féminin</label>
+<label for='reg_sexeF' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> FÃ©minin</label>
 </div></td><td><div class='norme'>
 Date de naissance (respecter format 00/00/0000) : <br />
 Jour <input type=text name=birth_day size=2 value=<?php if (isset($eleve_naissance_jour)) echo $eleve_naissance_jour;?> />
 Mois<input type=text name=birth_month size=2 value=<?php if (isset($eleve_naissance_mois)) echo $eleve_naissance_mois;?> />
-Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
+AnnÃ©e<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
 </div></td></tr>
 </table></center>
 
 <p><b>Remarques</b> :
-<br />- la modification du régime de l'élève (demi-pensionnaire, interne, ...) s'effectue dans le module de gestion des classes !
+<br />- la modification du rÃ©gime de l'Ã©lÃ¨ve (demi-pensionnaire, interne, ...) s'effectue dans le module de gestion des classes !
 <br />- Les champs * sont obligatoires.</p>
 <?php
 /*
@@ -775,7 +775,7 @@ echo "\$ele_id=$ele_id<br />\n";
 echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 */
 
-// PROBLEME: On ne récupère que les responsables déjà associés à un élève !
+// PROBLEME: On ne rÃ©cupÃ¨re que les responsables dÃ©jÃ  associÃ©s Ã  un Ã©lÃ¨ve !
 
 //$sql="SELECT rp.nom,rp.prenom,rp.pers_id,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.resp_legal='1' AND r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
 //$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
@@ -791,7 +791,7 @@ if ($nombreligne != 0) {
 
 	echo "<br /><hr /><h3>Envoi des bulletins par voie postale</h3>\n";
 	echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
-	echo "<br /><br /><table><tr><td><b>Responsable légal principal : </b></td>\n";
+	echo "<br /><br /><table><tr><td><b>Responsable lÃ©gal principal : </b></td>\n";
 
 	echo "<td><select size=1 name='reg_resp1'>\n";
 	echo "<option value='(vide)' ";
@@ -807,7 +807,7 @@ if ($nombreligne != 0) {
 	while($lig_resp1=mysql_fetch_object($call_resp)){
 		echo "<option value='".$lig_resp1->pers_id."'";
 		//if ($lig_resp1->pers_id==$eleve_no_resp1) {
-		// Cela donnait des trucs bizarres avec les valeurs non numériques p0000002 était assimilé à zéro.
+		// Cela donnait des trucs bizarres avec les valeurs non numÃ©riques p0000002 Ã©tait assimilÃ© Ã  zÃ©ro.
 		if ("$lig_resp1->pers_id"=="$eleve_no_resp1") {
 			echo " selected";
 		}
@@ -855,7 +855,7 @@ if ($nombreligne != 0) {
     $chaine_resp2 = '';
     echo "<br /><hr /><H3>Envoi des bulletins par voie postale</H3>";
     echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
-    echo "<br /><br /><table><tr><td><b>Responsable légal principal : </b></td>";
+    echo "<br /><br /><table><tr><td><b>Responsable lÃ©gal principal : </b></td>";
 
     echo "<td><select size = 1 name = 'reg_resp1'>";
     echo "<option value='(vide)' "; if (!(isset($eleve_no_resp))) {echo " SELECTED";} echo ">(vide)</option>";
@@ -882,12 +882,12 @@ if ($nombreligne != 0) {
                 $chaine_resp2 = $nom2." ".$prenom2;
             }
             if (substr($adr1, 0, strlen($adr1)-1) == substr($adr2, 0, strlen($adr1)-1) and ($cp1 == $cp2) and ($commune1 == $commune2)) {
-                $message = "<b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b>";
+                $message = "<b>Les adresses des deux responsables lÃ©gaux sont identiques. Par consÃ©quent, le bulletin ne sera envoyÃ© qu'Ã  la premiÃ¨re adresse.</b>";
             } else {
                 if ($chaine_adr2 != '') {
-                    $message =  "<b>Les adresses des deux responsables légaux ne sont pas identiques. Par conséquent, le bulletin sera envoyé aux deux responsables légaux.</b>";
+                    $message =  "<b>Les adresses des deux responsables lÃ©gaux ne sont pas identiques. Par consÃ©quent, le bulletin sera envoyÃ© aux deux responsables lÃ©gaux.</b>";
                 } else {
-                    $message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
+                    $message =  "<b>Le bulletin sera envoyÃ© au responsable lÃ©gal ci-dessus.</b>";
                 }
             }
 
@@ -907,7 +907,7 @@ if ($nombreligne != 0) {
 		$res_resp2=mysql_query($sql);
 		if(mysql_num_rows($res_resp2)>0){
 			$lig_resp2=mysql_fetch_object($res_resp2);
-			echo "<tr><td><b>Deuxième responsable légal : </b></td>\n";
+			echo "<tr><td><b>DeuxiÃ¨me responsable lÃ©gal : </b></td>\n";
 			echo "<td>".$lig_resp2->nom." ".$lig_resp2->prenom." | ";
 
 			/*
@@ -936,22 +936,22 @@ if ($nombreligne != 0) {
 
 
 			if(substr($lig_resp1->adr1,0,strlen($lig_resp1->adr1)-1)==substr($lig_resp2->adr1, 0, strlen($lig_resp2->adr1)-1) and ($lig_resp1->cp==$lig_resp2->cp) and ($lig_resp1->commune==$lig_resp2->commune) and ($lig_resp1->pays==$lig_resp2->pays)) {
-				$message = "<b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b>";
+				$message = "<b>Les adresses des deux responsables lÃ©gaux sont identiques. Par consÃ©quent, le bulletin ne sera envoyÃ© qu'Ã  la premiÃ¨re adresse.</b>";
 			} else {
 				if($chaine_adr2!='') {
-					$message =  "<b>Les adresses des deux responsables légaux ne sont pas identiques. Par conséquent, le bulletin sera envoyé aux deux responsables légaux.</b>";
+					$message =  "<b>Les adresses des deux responsables lÃ©gaux ne sont pas identiques. Par consÃ©quent, le bulletin sera envoyÃ© aux deux responsables lÃ©gaux.</b>";
 				} else {
-					$message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
+					$message =  "<b>Le bulletin sera envoyÃ© au responsable lÃ©gal ci-dessus.</b>";
 				}
 			}
 
 		}
 		else{
-			$message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
+			$message =  "<b>Le bulletin sera envoyÃ© au responsable lÃ©gal ci-dessus.</b>";
 		}
 	}
 	elseif($eleve_no_resp1!=0){
-		$message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
+		$message =  "<b>Le bulletin sera envoyÃ© au responsable lÃ©gal ci-dessus.</b>";
 	}
 	/*
 	else{
@@ -960,15 +960,15 @@ if ($nombreligne != 0) {
 	*/
 /*
     if ($chaine_adr2 != '') {
-        echo "<tr><td><b>Deuxième responsable légal : </b></td>";
+        echo "<tr><td><b>DeuxiÃ¨me responsable lÃ©gal : </b></td>";
         echo "<td>".$chaine_resp2." | ".$chaine_adr2."</td></tr>" ;
     }
 */
 
     echo "</table>\n";
-    echo "<br />Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base
-    (après avoir, le cas échéant, sauvegardé cette fiche)
-    <br />en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]";
+    echo "<br />Si le responsable lÃ©gal ne figure pas dans la liste, vous pouvez l'ajouter Ã  la base
+    (aprÃ¨s avoir, le cas Ã©chÃ©ant, sauvegardÃ© cette fiche)
+    <br />en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables Ã©lÃ¨ves</a>]";
 
     if ($chaine_adr1 != '') {
 		if(!isset($message)){$message="";}
@@ -1015,7 +1015,7 @@ if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$elev
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
 echo "<center><input type=submit value=Enregistrer /></center>\n";
 echo "</form>\n";
-echo "<p><b>Attention</b>: L'enregistrement de l'établissement d'origine est conditionnée par la saisie d'un identifiant SCONET/GEP (<i>Elenoet</i>)</p>\n";
+echo "<p><b>Attention</b>: L'enregistrement de l'Ã©tablissement d'origine est conditionnÃ©e par la saisie d'un identifiant SCONET/GEP (<i>Elenoet</i>)</p>\n";
 
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

@@ -66,7 +66,7 @@ $nb_enr_tableau = sizeof ($donnees_personne_csv['login']);
 //echo $nb_enr_tableau;
 
 if (($donnees_personne_csv)) {
-    // On rechercher par rapport au premier login si c'est un eleve ou un parent. ==> format de sortie CSV diffÈrent.
+    // On rechercher par rapport au premier login si c'est un eleve ou un parent. ==> format de sortie CSV diff√©rent.
 	//$login=$donnees_personne_csv['login'][1];
 	$login=$donnees_personne_csv['login'][0];
 	$sql_statut="SELECT statut FROM utilisateurs WHERE login='$login'";
@@ -75,7 +75,7 @@ if (($donnees_personne_csv)) {
 
 	switch ($statut) {
 	case 'eleve':
-			//pour un ÈlËve
+			//pour un √©l√®ve
 			$fd.="CLASSE;IDENTIFIANT;NOM;PRENOM;MOT_DE_PASSE;COURRIEL\n";
 			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
 				if(isset($donnees_personne_csv['login'][$i])){
@@ -129,7 +129,7 @@ if (($donnees_personne_csv)) {
 			}
 	break;
 	default:
-			// ni ÈlËve ni responsable
+			// ni √©l√®ve ni responsable
 			$fd.="IDENTIFIANT;NOM;PRENOM;MOT_DE_PASSE;COURRIEL\n";
 			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
 				if(isset($donnees_personne_csv['login'][$i])){

@@ -2,7 +2,7 @@
 
 /**
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -39,7 +39,7 @@ $etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
 $nbre_ligne = isset($_POST["nbre_ligne"]) ? $_POST["nbre_ligne"] : NULL;
 $effacer_semaines = isset($_POST["effacer_semaines"]) ? $_POST["effacer_semaines"] : NULL;
 $values = '';
-$msg = NULL; // le message destiné aux lignes non reconnues par l'import
+$msg = NULL; // le message destinÃ© aux lignes non reconnues par l'import
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -49,18 +49,18 @@ $msg = NULL; // le message destiné aux lignes non reconnues par l'import
 </head>
 <body>
 <?php
-// On indique à quelle étape on se situe
-echo '<p>ETAPE n° '.$etape.'</p>';
+// On indique Ã  quelle Ã©tape on se situe
+echo '<p>ETAPE nÂ° '.$etape.'</p>';
 
-// Si cette étape n'est pas nulle, on fait le travail demandé
+// Si cette Ã©tape n'est pas nulle, on fait le travail demandÃ©
 if ($etape != NULL) {
 	// On prend d'abord le cas des semaines
 	if ($etape == 7) {
-		// On récupère les données pour les sauvegarder dans la table edt_semaines
-		// Si c'est demandé, on vide la table edt_semaines
+		// On rÃ©cupÃ¨re les donnÃ©es pour les sauvegarder dans la table edt_semaines
+		// Si c'est demandÃ©, on vide la table edt_semaines
 		if ($effacer_semaines == "ok") {
-			// alors on met à jour la table
-				$erreur = 'non'; // sert à enregistrer les erreurs du update
+			// alors on met Ã  jour la table
+				$erreur = 'non'; // sert Ã  enregistrer les erreurs du update
 				$type_semaine = array();
 			for($s = 1; $s < ($nbre_ligne + 1); $s++){
 				$type_semaine[$s] = isset($_POST["semaine_".$s]) ? $_POST["semaine_".$s] : NULL;
@@ -71,34 +71,34 @@ if ($etape != NULL) {
 			}
 			if ($erreur == 'non') {
 				echo '
-				<h3>L\'opération est réussie</h3>
+				<h3>L\'opÃ©ration est rÃ©ussie</h3>
 				<p>Il y a eu '.$nbre_ligne.' enregistrements dans la base</p>
-				<a href="./edt_init_texte.php">Revenez en arrière et recommencer la même opération pour l\'étape '.$prochaine_etape.'.</a>';
+				<a href="./edt_init_texte.php">Revenez en arriÃ¨re et recommencer la mÃªme opÃ©ration pour l\'Ã©tape '.$prochaine_etape.'.</a>';
 			}else{
-				// Il y a eu des problèmes et on affiche l'erreur
+				// Il y a eu des problÃ¨mes et on affiche l'erreur
 				echo $erreur;
 			}
 		}else{
-			// On ne fait rien puisque cette table est initialisée à la base (/sql/data_gepi.sql)
+			// On ne fait rien puisque cette table est initialisÃ©e Ã  la base (/sql/data_gepi.sql)
 			$prochaine_etape = $etape + 1;
 			$vers_etape2 = mysql_query("UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte'");
 			echo '
-			<h3>L\'opération a réussi</h3>
-			<a href="./edt_init_texte.php">Revenez en arrière et recommencer la même opération pour l\'étape '.$prochaine_etape.'.</a>';
+			<h3>L\'opÃ©ration a rÃ©ussi</h3>
+			<a href="./edt_init_texte.php">Revenez en arriÃ¨re et recommencer la mÃªme opÃ©ration pour l\'Ã©tape '.$prochaine_etape.'.</a>';
 		}
 
 
 	// Puis on prend le cas des cours
 	}elseif($etape == 9){
-		// Pour les cours, on fait le lien avec les infos déjà rentrées dans la table edt_init
+		// Pour les cours, on fait le lien avec les infos dÃ©jÃ  rentrÃ©es dans la table edt_init
 		require_once("edt_init_fonctions.php");
 		// On explose la valeur
 		for($c = 1; $c < $nbre_ligne + 1; $c++){
 			$cours[$c] = isset($_POST["cours_".$c]) ? $_POST["cours_".$c] : NULL;
 			$elements_cours = explode("|", $cours[$c]);
 			// Si l'enregistrement n'est pas bon (soit que Gepi ne retrouve pas l'enseignement / AID soit que
-			// la base réagit mal, on affiche toutes les infos sur la ligne qui n'est pas enregistrée
-			/*echo '<b>Ligne n° '.$c.'</b>
+			// la base rÃ©agit mal, on affiche toutes les infos sur la ligne qui n'est pas enregistrÃ©e
+			/*echo '<b>Ligne nÂ° '.$c.'</b>
 				  classe : '.$elements_cours[0].
 				' type semaine : '.$elements_cours[1].
 				' jour : '.$elements_cours[2].
@@ -107,14 +107,14 @@ if ($etape != NULL) {
 				' prof : '.$elements_cours[5].
 				' grpe : '.$elements_cours[6].
 				' partie : '.$elements_cours[7].
-				' matière : '.$elements_cours[8].
+				' matiÃ¨re : '.$elements_cours[8].
 				' salle : '.$elements_cours[9].
-				' Grpe/entière : '.$elements_cours[10].'<br />'."\n";
+				' Grpe/entiÃ¨re : '.$elements_cours[10].'<br />'."\n";
 			*/
-			// On cherche à retrouver la salle du cours
+			// On cherche Ã  retrouver la salle du cours
 			$salle = renvoiIdSalle($elements_cours[9]);
 			if ($salle == "inc") {
-				// on insère cette nouvelle classe dans la table adéquate
+				// on insÃ¨re cette nouvelle classe dans la table adÃ©quate
 				$query = mysql_query("INSERT INTO salle_cours SET numero_salle = '".$elements_cours[9]."', nom_salle = ''");
 				$salle = mysql_insert_id();
 			}
@@ -125,31 +125,31 @@ if ($etape != NULL) {
 			}else{
 				$week_type = $elements_cours[1];
 			}
-			// On veut récupérer le jour de la semaine
+			// On veut rÃ©cupÃ©rer le jour de la semaine
 			$jour = renvoiJour($elements_cours[2]);
-			// Ainsi que l'id du créneau id_definie_periode
+			// Ainsi que l'id du crÃ©neau id_definie_periode
 			$debut = renvoiIdCreneau($elements_cours[3], $jour);
-			// La durée (est-ce qu'on la met à 1 ? )
+			// La durÃ©e (est-ce qu'on la met Ã  1 ? )
 			$duree = renvoiDuree($elements_cours[3], $elements_cours[4]);
-			// on détermine si le cours commence au début ou au milieu d'un créneau
+			// on dÃ©termine si le cours commence au dÃ©but ou au milieu d'un crÃ©neau
 			$debut_dec = renvoiDebut($debut, $elements_cours[3], $jour);
-			// Il reste à afficher le login du professeur
+			// Il reste Ã  afficher le login du professeur
 			$prof = renvoiLoginProf($elements_cours[5]);
-			// On cherche à reconstituer le groupe/enseignement/AID concerné
+			// On cherche Ã  reconstituer le groupe/enseignement/AID concernÃ©
 			$groupe = renvoiIdGroupe($prof, $elements_cours[0], $elements_cours[8], $elements_cours[6], $elements_cours[7], 'texte');
 				$choix_groupe = "non";
 				if ($groupe == "aucun") {
 					// On n'enregistre pas le cours avec "inc" comme id_groupe
 					$groupe_insert = "inc";
 					//$choix_groupe = "oui";
-					$msg .= '<p>Pour la ligne n° '.$c.', Gepi ne trouve pas la concordance, impossible de l\'enregistrer('.$prof.' '.renvoiConcordances($elements_cours[8], 5).').</p>';
+					$msg .= '<p>Pour la ligne nÂ° '.$c.', Gepi ne trouve pas la concordance, impossible de l\'enregistrer('.$prof.' '.renvoiConcordances($elements_cours[8], 5).').</p>';
 				}elseif($groupe == "plusieurs"){
 					// On propose un message
-					$msg .= '<p>Pour la ligne n° '.$c.', Gepi renvoie trop de réponses possibles.
+					$msg .= '<p>Pour la ligne nÂ° '.$c.', Gepi renvoie trop de rÃ©ponses possibles.
 							Impossible de l\'enregistrer.</p>';
 
 				}else{
-					// On vérifie que ce cours n'existe pas déjà
+					// On vÃ©rifie que ce cours n'existe pas dÃ©jÃ 
 					$query = mysql_query("SELECT id_cours FROM edt_cours WHERE
 										id_groupe = '".$groupe."' AND
 										id_salle = '".$salle."' AND
@@ -161,19 +161,19 @@ if ($etape != NULL) {
 										id_calendrier = '0' AND
 										modif_edt = '0' AND
 										login_prof = '".$prof."'")
-											OR DIE('Erreur dans la vérification sur l\'existence du cours : '.mysql_error());
+											OR DIE('Erreur dans la vÃ©rification sur l\'existence du cours : '.mysql_error());
 					$verif_exist = mysql_num_rows($query);
 					if ($verif_exist >= 1) {
-						// On n'enregistre pas une deuxième fois
+						// On n'enregistre pas une deuxiÃ¨me fois
 						$choix_groupe = "non";
 					}else{
-						// Il n'y a qu'une réponse, alors c'est bon
+						// Il n'y a qu'une rÃ©ponse, alors c'est bon
 						$choix_groupe = "oui";
 						$groupe_insert = $groupe;
 					}
 				}
 				if ($choix_groupe == "oui") {
-					// Au final, on insère dans la table edt_cours
+					// Au final, on insÃ¨re dans la table edt_cours
 					$sql = "INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, id_calendrier, modif_edt, login_prof)
 								VALUES ('', '".$groupe_insert."', '".$salle."', '".$jour."', '".$debut."', '".$duree."', '".$debut_dec."', '".$week_type."', '0', '0', '".$prof."') ";
 					$query = mysql_query($sql)
@@ -181,45 +181,45 @@ if ($etape != NULL) {
 
 				}
 
-		} // for($c = 0; $c < $nbre_ligne; $c++)  (de l'étape 9)
+		} // for($c = 0; $c < $nbre_ligne; $c++)  (de l'Ã©tape 9)
 
 	// pour tout ce qui n'est ni les types de semaines, ni des cours, on voit la concordance
 	}else{
-		// C'est le cas général pour enregistrer les concordances entre le fichier txt et Gepi
-		// On réceptionne les données et on les rentre dans la base
+		// C'est le cas gÃ©nÃ©ral pour enregistrer les concordances entre le fichier txt et Gepi
+		// On rÃ©ceptionne les donnÃ©es et on les rentre dans la base
 		for($a = 1; $a < ($nbre_ligne + 1); $a++){
 
 			$nom_gepi[$a] = isset($_POST["nom_gepi_".$a]) ? $_POST["nom_gepi_".$a] : NULL;
 			$numero_texte[$a] = isset($_POST["numero_texte_".$a]) ? $_POST["numero_texte_".$a] : NULL;
-			// On prépare la requête
+			// On prÃ©pare la requÃªte
 			if ($nom_gepi[$a] != '') {
 				$values .= "('', '".$etape."', '".$numero_texte[$a]."', '".$nom_gepi[$a]."'), ";
 
 			}
 		}
-		// On envoie toutes les requêtes d'un coup
+		// On envoie toutes les requÃªtes d'un coup
 		echo $values;
 		$envoie = mysql_query("INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
-					VALUES ".$values." ('', ".$etape.", 'fin', 'fin')") OR DIE ('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
+					VALUES ".$values." ('', ".$etape.", 'fin', 'fin')") OR DIE ('Erreur dans la requÃªte $envoie de l\'Ã©tape '.$etape.' : '.mysql_error().'<br />'.$envoie);
 
-		// si l'envoi est une réussite alors on passe à l'étape suivante
+		// si l'envoi est une rÃ©ussite alors on passe Ã  l'Ã©tape suivante
 		if ($envoie) {
 			$prochaine_etape = $etape + 1;
 			$vers_etape2 = mysql_query("UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte'");
 			echo '
-			<h3>L\'opération a réussi</h3>';
-			// Certaines étapes ne donnent lieu à aucun enregistrement
+			<h3>L\'opÃ©ration a rÃ©ussi</h3>';
+			// Certaines Ã©tapes ne donnent lieu Ã  aucun enregistrement
 			if ($etape != 4) {
 				echo '
 				<p>Il y a eu '.$nbre_ligne.' enregistrements dans la base</p>';
 			}else{
-				// C'est la cas des "PARTIES" qui sont des références à des groupes d'élèves
-				// étape 4
+				// C'est la cas des "PARTIES" qui sont des rÃ©fÃ©rences Ã  des groupes d'Ã©lÃ¨ves
+				// Ã©tape 4
 				echo '
 				<p>Il n\'y a eu aucun enregistrement dans la base</p>';
 			}
 			echo '
-			<a href="./edt_init_texte.php">Revenez en arrière et recommencer la même opération pour l\'étape '.$prochaine_etape.'.</a>';
+			<a href="./edt_init_texte.php">Revenez en arriÃ¨re et recommencer la mÃªme opÃ©ration pour l\'Ã©tape '.$prochaine_etape.'.</a>';
 		}
 
 	} // fin du else
@@ -227,7 +227,7 @@ if ($etape != NULL) {
 if (isset($msg) AND $msg != '') {
 	echo $msg;
 	echo '
-	<p>Vous pouvez aller vérifier les emplois du temps des professeurs. <a href="index_edt.php">REVENIR</a></p>
+	<p>Vous pouvez aller vÃ©rifier les emplois du temps des professeurs. <a href="index_edt.php">REVENIR</a></p>
 	';
 }
 

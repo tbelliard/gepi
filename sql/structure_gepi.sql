@@ -23,7 +23,7 @@ CREATE TABLE `cn_notes_conteneurs` ( `login` varchar(50) NOT NULL default '', `i
 DROP TABLE IF EXISTS `cn_notes_devoirs`;
 CREATE TABLE `cn_notes_devoirs` ( `login` varchar(50) NOT NULL default '', `id_devoir` int(11) NOT NULL default '0', `note` float(10,1) NOT NULL default '0.0', `comment` text NOT NULL, `statut` varchar(4) NOT NULL default '', PRIMARY KEY  (`login`,`id_devoir`), INDEX devoir_statut (`id_devoir`,`statut`));
 DROP TABLE IF EXISTS `ct_devoirs_entry`;
-CREATE TABLE `ct_devoirs_entry` ( `id_ct` int(11) NOT NULL auto_increment, `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '',id_sequence INT ( 11 ) NOT NULL DEFAULT '0', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', PRIMARY KEY (`id_ct`), KEY `id_groupe` (`id_groupe`), date_visibilite_eleve TIMESTAMP NOT NULL default now() COMMENT 'Timestamp pr√©cisant quand les devoirs sont port√©s √† la conaissance des √©l√®ves', INDEX groupe_date (`id_groupe`, `date_ct`));
+CREATE TABLE `ct_devoirs_entry` ( `id_ct` int(11) NOT NULL auto_increment, `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '',id_sequence INT ( 11 ) NOT NULL DEFAULT '0', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', PRIMARY KEY (`id_ct`), KEY `id_groupe` (`id_groupe`), date_visibilite_eleve TIMESTAMP NOT NULL default now() COMMENT 'Timestamp pr√É¬©cisant quand les devoirs sont port√É¬©s √É¬† la conaissance des √É¬©l√É¬®ves', INDEX groupe_date (`id_groupe`, `date_ct`));
 DROP TABLE IF EXISTS `ct_documents`;
 CREATE TABLE `ct_documents` ( `id` int(11) NOT NULL auto_increment, `id_ct` int(11) NOT NULL default '0', `titre` varchar(255) NOT NULL default '', `taille` int(11) NOT NULL default '0', `emplacement` varchar(255) NOT NULL default '', visible_eleve_parent BOOLEAN default true, PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `ct_devoirs_documents`;
@@ -55,7 +55,7 @@ CREATE TABLE eleves
 	ele_id VARCHAR(10) DEFAULT '' NOT NULL COMMENT 'cle utilise par Sconet dans ses fichiers xml',
 	email VARCHAR(255) DEFAULT '' NOT NULL COMMENT 'Courriel de l\'eleve',
 	id_eleve INTEGER(11) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
-	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'ÈlËve de l\'Ètablissement (fin d\'inscription)',
+	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'√©l√®ve de l\'√©tablissement (fin d\'inscription)',
 	mef_code BIGINT(20) COMMENT 'code mef de la formation de l\'eleve',
 	PRIMARY KEY (id_eleve),
 	INDEX eleves_FI_1 (mef_code),
@@ -82,7 +82,7 @@ CREATE TABLE mef
 	libelle_long VARCHAR(300) NOT NULL COMMENT 'libelle de la formation',
 	libelle_edition VARCHAR(300) NOT NULL COMMENT 'libelle de la formation pour presentation',
 	PRIMARY KEY (id)
-) ENGINE=MyISAM COMMENT='Module ÈlÈmentaire de formation';
+) ENGINE=MyISAM COMMENT='Module √©l√©mentaire de formation';
 
 DROP TABLE IF EXISTS `etablissements`;
 CREATE TABLE `etablissements` ( `id` char(8) NOT NULL default '', `nom` char(50) NOT NULL default '', `niveau` char(50) NOT NULL default '', `type` char(50) NOT NULL default '', `cp` int(10) NOT NULL default '0', `ville` char(50) NOT NULL default '', PRIMARY KEY  (`id`));
@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS ects_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT
 DROP TABLE IF EXISTS ects_global_credits;
 CREATE TABLE IF NOT EXISTS ects_global_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT, id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,id_eleve), INDEX ects_global_credits_FI_1 (id_eleve), CONSTRAINT ects_global_credits_FK_1 FOREIGN KEY (id_eleve) REFERENCES eleves (id_eleve));
 DROP TABLE IF EXISTS archivage_ects;
-CREATE TABLE IF NOT EXISTS archivage_ects (id INTEGER(11)  NOT NULL AUTO_INCREMENT, annee VARCHAR(255)  NOT NULL COMMENT 'Annee scolaire', ine VARCHAR(255)  NOT NULL COMMENT 'Identifiant de l\'eleve', classe VARCHAR(255)  NOT NULL COMMENT 'Classe de l\'eleve', num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode', nom_periode VARCHAR(255)  NOT NULL COMMENT 'Nom complet de la periode', special VARCHAR(255)  NOT NULL COMMENT 'Cle utilisee pour isoler certaines lignes (par exemple un credit ECTS pour une periode et non une matiere)', matiere VARCHAR(255) COMMENT 'Nom de l\'enseignement', profs VARCHAR(255) COMMENT 'Liste des profs de l\'enseignement', valeur DECIMAL  NOT NULL COMMENT 'Nombre de cr√©dits obtenus par l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,ine,num_periode,special), INDEX archivage_ects_FI_1 (ine), CONSTRAINT archivage_ects_FK_1 FOREIGN KEY (ine) REFERENCES eleves (no_gep))ENGINE=MyISAM;
+CREATE TABLE IF NOT EXISTS archivage_ects (id INTEGER(11)  NOT NULL AUTO_INCREMENT, annee VARCHAR(255)  NOT NULL COMMENT 'Annee scolaire', ine VARCHAR(255)  NOT NULL COMMENT 'Identifiant de l\'eleve', classe VARCHAR(255)  NOT NULL COMMENT 'Classe de l\'eleve', num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode', nom_periode VARCHAR(255)  NOT NULL COMMENT 'Nom complet de la periode', special VARCHAR(255)  NOT NULL COMMENT 'Cle utilisee pour isoler certaines lignes (par exemple un credit ECTS pour une periode et non une matiere)', matiere VARCHAR(255) COMMENT 'Nom de l\'enseignement', profs VARCHAR(255) COMMENT 'Liste des profs de l\'enseignement', valeur DECIMAL  NOT NULL COMMENT 'Nombre de cr√É¬©dits obtenus par l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,ine,num_periode,special), INDEX archivage_ects_FI_1 (ine), CONSTRAINT archivage_ects_FK_1 FOREIGN KEY (ine) REFERENCES eleves (no_gep))ENGINE=MyISAM;
 DROP TABLE IF EXISTS ects_global_credits;
 CREATE TABLE IF NOT EXISTS ects_global_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT, id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,id_eleve), INDEX ects_global_credits_FI_1 (id_eleve), CONSTRAINT ects_global_credits_FK_1 FOREIGN KEY (id_eleve) REFERENCES eleves (id_eleve));
 DROP TABLE IF EXISTS ref_wiki;
@@ -413,12 +413,12 @@ CREATE TABLE a_types
 	id INTEGER(11) NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',
 	nom VARCHAR(250) NOT NULL COMMENT 'Nom du type d\'absence',
 	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
-	sous_responsabilite_etablissement VARCHAR(255) DEFAULT 'NON_PRECISE' COMMENT 'L\'eleve est sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriÈtÈ ‡ vrai car l\'eleve est encore sous la responsabilitÈ de l\'etablissement. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
-	manquement_obligation_presence VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'L\'eleve manque ‡ ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
-	retard_bulletin VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'La saisie est comptabilisÈe dans le bulletin en tant que retard. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
-	type_saisie VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'Enumeration des possibilitÈs de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE',
+	sous_responsabilite_etablissement VARCHAR(255) DEFAULT 'NON_PRECISE' COMMENT 'L\'eleve est sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propri√©t√© √† vrai car l\'eleve est encore sous la responsabilit√© de l\'etablissement. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	manquement_obligation_presence VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'L\'eleve manque √† ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	retard_bulletin VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'La saisie est comptabilis√©e dans le bulletin en tant que retard. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	type_saisie VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'Enumeration des possibilit√©s de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
-	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'ÈlËve',
+	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'√©l√®ve',
 	sortable_rank INTEGER,
 	created_at DATETIME,
 	updated_at DATETIME,
@@ -431,7 +431,7 @@ CREATE TABLE a_types
 ) ENGINE=MyISAM COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
 
 DROP TABLE IF EXISTS a_types_statut;
-CREATE TABLE IF NOT EXISTS a_types_statut(	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',	id_a_type INTEGER(11)  NOT NULL COMMENT 'Cle etrangere de la table a_type',	statut VARCHAR(20)  NOT NULL COMMENT 'Statut de l\'utilisateur',	PRIMARY KEY (id),	INDEX a_types_statut_FI_1 (id_a_type),	CONSTRAINT a_types_statut_FK_1		FOREIGN KEY (id_a_type)		REFERENCES a_types (id)		ON DELETE CASCADE)ENGINE=MyISAM COMMENT='Liste des statuts autorises ‡ saisir des types d\'absences';
+CREATE TABLE IF NOT EXISTS a_types_statut(	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',	id_a_type INTEGER(11)  NOT NULL COMMENT 'Cle etrangere de la table a_type',	statut VARCHAR(20)  NOT NULL COMMENT 'Statut de l\'utilisateur',	PRIMARY KEY (id),	INDEX a_types_statut_FI_1 (id_a_type),	CONSTRAINT a_types_statut_FK_1		FOREIGN KEY (id_a_type)		REFERENCES a_types (id)		ON DELETE CASCADE)ENGINE=MyISAM COMMENT='Liste des statuts autorises √† saisir des types d\'absences';
 
 -- ---------------------------------------------------------------------
 -- a_saisies
@@ -443,7 +443,7 @@ CREATE TABLE a_saisies
 (
 	id INTEGER(11) NOT NULL AUTO_INCREMENT,
 	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a saisi l\'absence',
-	eleve_id INTEGER(11) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal ‡ null si aucun eleve n\'est saisi',
+	eleve_id INTEGER(11) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal √† null si aucun eleve n\'est saisi',
 	commentaire TEXT COMMENT 'commentaire de l\'utilisateur',
 	debut_abs DATETIME COMMENT 'Debut de l\'absence en timestamp UNIX',
 	fin_abs DATETIME COMMENT 'Fin de l\'absence en timestamp UNIX',
@@ -454,7 +454,7 @@ CREATE TABLE a_saisies
 	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
-	deleted_by VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a supprimÈ la saisie',
+	deleted_by VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a supprim√© la saisie',
 	created_at DATETIME COMMENT 'Date de creation de la saisie',
 	updated_at DATETIME COMMENT 'Date de modification de la saisie, y compris suppression, restauration et changement de version',
 	deleted_at DATETIME,
@@ -504,7 +504,7 @@ CREATE TABLE a_saisies
 		FOREIGN KEY (id_lieu)
 		REFERENCES a_lieux (id)
 		ON DELETE SET NULL
-) ENGINE=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durÈe (plusieurs jours), dÈfini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisÈ dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precisÈ dans debut_abs.';
+) ENGINE=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue dur√©e (plusieurs jours), d√©fini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precis√© dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precis√© dans debut_abs.';
 
 -- ---------------------------------------------------------------------
 -- a_traitements
@@ -549,12 +549,12 @@ CREATE TABLE a_traitements
 	CONSTRAINT a_traitements_FK_5
 		FOREIGN KEY (modifie_par_utilisateur_id)
 		REFERENCES utilisateurs (login)
-) ENGINE=MyISAM COMMENT='Un traitement peut gerer plusieurs saisies et consiste ‡ definir les motifs/justifications... de ces absences saisies';
+) ENGINE=MyISAM COMMENT='Un traitement peut gerer plusieurs saisies et consiste √† definir les motifs/justifications... de ces absences saisies';
 
 DROP TABLE IF EXISTS j_traitements_saisies;
 CREATE TABLE IF NOT EXISTS j_traitements_saisies(	a_saisie_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'absence saisie',	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement de ces absences',	PRIMARY KEY (a_saisie_id,a_traitement_id),	CONSTRAINT j_traitements_saisies_FK_1		FOREIGN KEY (a_saisie_id)		REFERENCES a_saisies (id)		ON DELETE CASCADE,	INDEX j_traitements_saisies_FI_2 (a_traitement_id),	CONSTRAINT j_traitements_saisies_FK_2		FOREIGN KEY (a_traitement_id)		REFERENCES a_traitements (id)		ON DELETE CASCADE)ENGINE=MyISAM COMMENT='Table de jointure entre la saisie et le traitement des absences';
 DROP TABLE IF EXISTS a_notifications;
-CREATE TABLE IF NOT EXISTS a_notifications(	id INTEGER(11)  NOT NULL AUTO_INCREMENT,	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui envoi la notification',	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement qu\'on notifie',	type_notification INTEGER(5) COMMENT 'type de notification (0 : email, 1 : courrier, 2 : sms)',	email VARCHAR(100) COMMENT 'email de destination (pour le type email)',	telephone VARCHAR(100) COMMENT 'numero du telephone de destination (pour le type sms)',	adr_id VARCHAR(10) COMMENT 'cle etrangere vers l\'adresse de destination (pour le type courrier)',	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',	statut_envoi INTEGER(5) default 0 COMMENT 'Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)',	date_envoi DATETIME COMMENT 'Date envoi',	erreur_message_envoi TEXT COMMENT 'Message d\'erreur retournÈ par le service d\'envoi',	created_at DATETIME,	updated_at DATETIME,	PRIMARY KEY (id),	INDEX a_notifications_FI_1 (utilisateur_id),	CONSTRAINT a_notifications_FK_1		FOREIGN KEY (utilisateur_id)		REFERENCES utilisateurs (login)		ON DELETE SET NULL,	INDEX a_notifications_FI_2 (a_traitement_id),	CONSTRAINT a_notifications_FK_2		FOREIGN KEY (a_traitement_id)		REFERENCES a_traitements (id)		ON DELETE CASCADE,	INDEX a_notifications_FI_3 (adr_id),	CONSTRAINT a_notifications_FK_3		FOREIGN KEY (adr_id)		REFERENCES resp_adr (adr_id)		ON DELETE SET NULL)ENGINE=MyISAM COMMENT='Notification (a la famille) des absences';
+CREATE TABLE IF NOT EXISTS a_notifications(	id INTEGER(11)  NOT NULL AUTO_INCREMENT,	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui envoi la notification',	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement qu\'on notifie',	type_notification INTEGER(5) COMMENT 'type de notification (0 : email, 1 : courrier, 2 : sms)',	email VARCHAR(100) COMMENT 'email de destination (pour le type email)',	telephone VARCHAR(100) COMMENT 'numero du telephone de destination (pour le type sms)',	adr_id VARCHAR(10) COMMENT 'cle etrangere vers l\'adresse de destination (pour le type courrier)',	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',	statut_envoi INTEGER(5) default 0 COMMENT 'Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)',	date_envoi DATETIME COMMENT 'Date envoi',	erreur_message_envoi TEXT COMMENT 'Message d\'erreur retourn√© par le service d\'envoi',	created_at DATETIME,	updated_at DATETIME,	PRIMARY KEY (id),	INDEX a_notifications_FI_1 (utilisateur_id),	CONSTRAINT a_notifications_FK_1		FOREIGN KEY (utilisateur_id)		REFERENCES utilisateurs (login)		ON DELETE SET NULL,	INDEX a_notifications_FI_2 (a_traitement_id),	CONSTRAINT a_notifications_FK_2		FOREIGN KEY (a_traitement_id)		REFERENCES a_traitements (id)		ON DELETE CASCADE,	INDEX a_notifications_FI_3 (adr_id),	CONSTRAINT a_notifications_FK_3		FOREIGN KEY (adr_id)		REFERENCES resp_adr (adr_id)		ON DELETE SET NULL)ENGINE=MyISAM COMMENT='Notification (a la famille) des absences';
 DROP TABLE IF EXISTS j_notifications_resp_pers;
 CREATE TABLE IF NOT EXISTS j_notifications_resp_pers(	a_notification_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de la notification',	pers_id VARCHAR(10)  NOT NULL COMMENT 'cle etrangere des personnes',	PRIMARY KEY (a_notification_id,pers_id),	CONSTRAINT j_notifications_resp_pers_FK_1		FOREIGN KEY (a_notification_id)		REFERENCES a_notifications (id)		ON DELETE CASCADE,	INDEX j_notifications_resp_pers_FI_2 (pers_id),	CONSTRAINT j_notifications_resp_pers_FK_2		FOREIGN KEY (pers_id)		REFERENCES resp_pers (pers_id)		ON DELETE CASCADE)ENGINE=MyISAM COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
 DROP TABLE IF EXISTS matieres_app_delais;
@@ -602,7 +602,7 @@ CREATE TABLE a_saisies_version
 (
 	id INTEGER(11) NOT NULL,
 	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a saisi l\'absence',
-	eleve_id INTEGER(11) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal ‡ null si aucun eleve n\'est saisi',
+	eleve_id INTEGER(11) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal √† null si aucun eleve n\'est saisi',
 	commentaire TEXT COMMENT 'commentaire de l\'utilisateur',
 	debut_abs DATETIME COMMENT 'Debut de l\'absence en timestamp UNIX',
 	fin_abs DATETIME COMMENT 'Fin de l\'absence en timestamp UNIX',
@@ -613,7 +613,7 @@ CREATE TABLE a_saisies_version
 	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
-	deleted_by VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a supprimÈ la saisie',
+	deleted_by VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a supprim√© la saisie',
 	created_at DATETIME COMMENT 'Date de creation de la saisie',
 	updated_at DATETIME COMMENT 'Date de modification de la saisie, y compris suppression, restauration et changement de version',
 	deleted_at DATETIME,
@@ -637,14 +637,14 @@ DROP TABLE IF EXISTS a_agregation_decompte;
 CREATE TABLE a_agregation_decompte
 (
 	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
-	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journÈe agrÈgÈe : 00:00 pour une matinÈe, 12:00 pour une aprËs midi',
-	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journÈe est comptÈe comme absence',
-	justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journÈe est comptÈ comme absence, y a-t-il une justification',
-	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journÈe est comptÈ comme absence, y a-t-il une notification ‡ la famille',
-	nb_retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards dÈcomptÈs dans la demi journÈe',
-	nb_retards_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards justifiÈs dÈcomptÈs dans la demi journÈe',
-	motifs_absences TEXT COMMENT 'Liste des motifs (table a_motifs) associÈs ‡ cette demi-journÈe d\'absence',
-	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associÈs aux retard de cette demi-journÈe',
+	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journ√©e agr√©g√©e : 00:00 pour une matin√©e, 12:00 pour une apr√®s midi',
+	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journ√©e est compt√©e comme absence',
+	justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journ√©e est compt√© comme absence, y a-t-il une justification',
+	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journ√©e est compt√© comme absence, y a-t-il une notification √† la famille',
+	nb_retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards d√©compt√©s dans la demi journ√©e',
+	nb_retards_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards justifi√©s d√©compt√©s dans la demi journ√©e',
+	motifs_absences TEXT COMMENT 'Liste des motifs (table a_motifs) associ√©s √† cette demi-journ√©e d\'absence',
+	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associ√©s aux retard de cette demi-journ√©e',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (eleve_id,date_demi_jounee),

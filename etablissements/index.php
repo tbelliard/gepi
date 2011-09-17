@@ -44,20 +44,20 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des établissements";
+$titre_page = "Gestion des Ã©tablissements";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
 <p class=bold>
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
- | <a href="modify_etab.php">Ajouter un établissement</a>
- | <a href="import_etab_csv.php">Importer un fichier d'établissements</a>
+ | <a href="modify_etab.php">Ajouter un Ã©tablissement</a>
+ | <a href="import_etab_csv.php">Importer un fichier d'Ã©tablissements</a>
 </p>
-<p>Les données de la base établissement servent à l'affichage de l'établissement d'origine des <?php echo $gepiSettings['denomination_eleves'];?>
- sur les documents tels que les bulletins simplifiés.</p>
+<p>Les donnÃ©es de la base Ã©tablissement servent Ã  l'affichage de l'Ã©tablissement d'origine des <?php echo $gepiSettings['denomination_eleves'];?>
+ sur les documents tels que les bulletins simplifiÃ©s.</p>
 <?php
-// On va chercher les établissements déjà existant, et on les affiche.
+// On va chercher les Ã©tablissements dÃ©jÃ  existant, et on les affiche.
 if (!isset($order_by)) {$order_by = "id";}
 $call_data = mysql_query("SELECT * FROM etablissements ORDER BY $order_by");
 $nombre_lignes = mysql_num_rows($call_data);
@@ -65,10 +65,10 @@ $nombre_lignes = mysql_num_rows($call_data);
 $res='';
 if ($nombre_lignes == 1) $res = sql_query1("SELECT id FROM etablissements WHERE id='999'");
 if (($nombre_lignes == 0) or ($res=='999')) {
-    echo "<p><b>Actuellement aucun établissement n'est présent dans la base.</b>
-    <br /><br />Avant de procéder à l'importation des fichiers GEP ou à l'ajout manuel d'élèves dans la base, il est conseillé
-    de constituer la base des établissements d'où proviennent en majorité vos élèves.
-    <br />Vous pouvez pour cela <a href=\"import_etab_csv.php\">importer directement le fichier d'établissements</a> de votre académie.
+    echo "<p><b>Actuellement aucun Ã©tablissement n'est prÃ©sent dans la base.</b>
+    <br /><br />Avant de procÃ©der Ã  l'importation des fichiers GEP ou Ã  l'ajout manuel d'Ã©lÃ¨ves dans la base, il est conseillÃ©
+    de constituer la base des Ã©tablissements d'oÃ¹ proviennent en majoritÃ© vos Ã©lÃ¨ves.
+    <br />Vous pouvez pour cela <a href=\"import_etab_csv.php\">importer directement le fichier d'Ã©tablissements</a> de votre acadÃ©mie.
     <hr /><br />\n";
 }
 

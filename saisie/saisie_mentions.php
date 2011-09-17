@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -89,14 +89,14 @@ if(isset($saisie_mention)) {
 		}
 	}
 	if($cpt_suppr>0) {
-		$msg.="$cpt_suppr $gepi_denom_mention(s) supprimée(s).<br />";
+		$msg.="$cpt_suppr $gepi_denom_mention(s) supprimÃ©e(s).<br />";
 	}
 
 	if($nouvelle_mention!="") {
 		$sql="SELECT 1=1 FROM mentions WHERE mention='$nouvelle_mention';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			$msg.="La $gepi_denom_mention <b>$nouvelle_mention</b> existe déjà.<br />";
+			$msg.="La $gepi_denom_mention <b>$nouvelle_mention</b> existe dÃ©jÃ .<br />";
 		}
 		else {
 			$sql="INSERT INTO mentions SET mention='$nouvelle_mention';";
@@ -105,7 +105,7 @@ if(isset($saisie_mention)) {
 				$msg.="Erreur lors de l'ajout de la $gepi_denom_mention <b>$nouvelle_mention</b><br />";
 			}
 			else {
-				$msg.=ucfirst($gepi_denom_mention)." <b>$nouvelle_mention</b> ajoutée.<br />";
+				$msg.=ucfirst($gepi_denom_mention)." <b>$nouvelle_mention</b> ajoutÃ©e.<br />";
 			}
 		}
 	}
@@ -171,7 +171,7 @@ if(isset($saisie_association_mentions_classes)) {
 		}
 	}
 	if(($msg=="")&&($cpt_reg>0)) {
-		$msg.="Enregistrement effectué.<br />";
+		$msg.="Enregistrement effectuÃ©.<br />";
 		$enregistrement_ok="y";
 	}
 }
@@ -194,7 +194,7 @@ if(isset($saisie_ordre_mentions)) {
 	}
 
 	if(($msg=="")&&($cpt_reg>0)) {
-		$msg.="Enregistrement effectué.<br />";
+		$msg.="Enregistrement effectuÃ©.<br />";
 		$enregistrement_ok="y";
 	}
 }
@@ -216,12 +216,12 @@ function insere_mentions_par_defaut() {
 	$cpt_reg=0;
 	$retour="";
 
-	$tab_mentions=array('Félicitations', 'Mention honorable', 'Encouragements');
+	$tab_mentions=array('FÃ©licitations', 'Mention honorable', 'Encouragements');
 	for($i=0;$i<count($tab_mentions);$i++) {
 		$sql="SELECT 1=1 FROM mentions WHERE mention='$tab_mentions[$i]';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			$retour.="La $gepi_denom_mention '$tab_mentions[$i]' est déjà enregistrée.<br />\n";
+			$retour.="La $gepi_denom_mention '$tab_mentions[$i]' est dÃ©jÃ  enregistrÃ©e.<br />\n";
 		}
 		else {
 			$sql="INSERT INTO mentions SET mention='$tab_mentions[$i]';";
@@ -231,11 +231,11 @@ function insere_mentions_par_defaut() {
 	}
 
 	if($cpt_erreur>0) {
-		$retour.="$cpt_erreur erreur(s) lors de l'insertion des ".$gepi_denom_mention."s par défaut.<br />\n";
+		$retour.="$cpt_erreur erreur(s) lors de l'insertion des ".$gepi_denom_mention."s par dÃ©faut.<br />\n";
 	}
 
 	if($cpt_reg>0) {
-		$retour.="$cpt_reg $gepi_denom_mention(s) enregistrée(s).<br />\n";
+		$retour.="$cpt_reg $gepi_denom_mention(s) enregistrÃ©e(s).<br />\n";
 	}
 
 	return $retour;
@@ -262,14 +262,14 @@ $resultat_creation_table=mysql_query($sql);
 
 echo "<p class='bold'><a href='../accueil.php'>Retour</a>";
 if(!isset($associer_mentions_classes)) {
-	echo " | <a href='".$_SERVER['PHP_SELF']."?associer_mentions_classes=y'>Sélectionner les ".$gepi_denom_mention."s associées aux classes</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?associer_mentions_classes=y'>SÃ©lectionner les ".$gepi_denom_mention."s associÃ©es aux classes</a>";
 	echo "</p>\n";
 
 	echo "<form name='formulaire' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
 
-	echo "<p>Liste des ".$gepi_denom_mention."s définies&nbsp;:</p>";
-	echo "<table class='boireaus' summary='Tableau des ".$gepi_denom_mention."s définies'>\n";
+	echo "<p>Liste des ".$gepi_denom_mention."s dÃ©finies&nbsp;:</p>";
+	echo "<table class='boireaus' summary='Tableau des ".$gepi_denom_mention."s dÃ©finies'>\n";
 	echo "<tr>\n";
 	echo "<th>".ucfirst($gepi_denom_mention)."</th>\n";
 	echo "<th>Supprimer</th>\n";
@@ -287,14 +287,14 @@ if(!isset($associer_mentions_classes)) {
 			echo "<input type='checkbox' name='suppr[]' id='suppr_$key' value='$key' />";
 		}
 		else {
-			echo "<img src='../images/disabled.png' width='20' height='20' alt='Suppression impossible: ".ucfirst($gepi_denom_mention)." donnée à au moins un élève.' title='Suppression impossible: ".ucfirst($gepi_denom_mention)." donnée à au moins un élève.' />";
+			echo "<img src='../images/disabled.png' width='20' height='20' alt='Suppression impossible: ".ucfirst($gepi_denom_mention)." donnÃ©e Ã  au moins un Ã©lÃ¨ve.' title='Suppression impossible: ".ucfirst($gepi_denom_mention)." donnÃ©e Ã  au moins un Ã©lÃ¨ve.' />";
 		}
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
 	echo "</table>\n";
 
-	echo "<p>".ucfirst($gepi_denom_mention)." à ajouter&nbsp;: <input type='text' name='nouvelle_mention' value='' /></p>\n";
+	echo "<p>".ucfirst($gepi_denom_mention)." Ã  ajouter&nbsp;: <input type='text' name='nouvelle_mention' value='' /></p>\n";
 	echo "<input type='hidden' name='saisie_mention' value='y' /></p>\n";
 	echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -304,30 +304,30 @@ if(!isset($associer_mentions_classes)) {
 	echo "<p><i>NOTES</i>&nbsp;:</p>
 <ul>
 	<li>
-		<p>L'intitulé <b>$gepi_denom_mention</b> peut être modifié dans la page <a href='../gestion/param_gen.php#gepi_denom_mention'>Configuration générale</a></p>
+		<p>L'intitulÃ© <b>$gepi_denom_mention</b> peut Ãªtre modifiÃ© dans la page <a href='../gestion/param_gen.php#gepi_denom_mention'>Configuration gÃ©nÃ©rale</a></p>
 	</li>
 	<li>
-		<p>Pour que le champ de saisie d'une $gepi_denom_mention n'apparaisse pas (<i>lors de la saisie de l'avis du conseil de classe</i>) pour une classe donnée, il suffit qu'aucune $gepi_denom_mention ne soit associée à la classe.</p>
+		<p>Pour que le champ de saisie d'une $gepi_denom_mention n'apparaisse pas (<i>lors de la saisie de l'avis du conseil de classe</i>) pour une classe donnÃ©e, il suffit qu'aucune $gepi_denom_mention ne soit associÃ©e Ã  la classe.</p>
 	</li>
 	<li>
-		<p>L'article Article R511-13 du code de l'éducation rappelle que dans les lycées et collèges relevant du ministre chargé de l'éducation, les sanctions qui peuvent être prononcées à l'encontre des élèves sont les suivantes :</p>
+		<p>L'article Article R511-13 du code de l'Ã©ducation rappelle que dans les lycÃ©es et collÃ¨ges relevant du ministre chargÃ© de l'Ã©ducation, les sanctions qui peuvent Ãªtre prononcÃ©es Ã  l'encontre des Ã©lÃ¨ves sont les suivantes :</p>
 		<ol>
 			<li>L'avertissement</li>
-			<li>Le blâme ;</li>
-			<li>L'exclusion temporaire, qui ne peut excéder un mois, de l'établissement ou de l'un de ses services annexes ;</li>
-			<li>L'exclusion définitive de l'établissement ou de l'un de ses services annexes.</li>
+			<li>Le blÃ¢me ;</li>
+			<li>L'exclusion temporaire, qui ne peut excÃ©der un mois, de l'Ã©tablissement ou de l'un de ses services annexes ;</li>
+			<li>L'exclusion dÃ©finitive de l'Ã©tablissement ou de l'un de ses services annexes.</li>
 		</ol>
-		<p>Les sanctions peuvent être assorties d'un sursis total ou partiel.<br />
-		<b>Toute sanction, hormis l'exclusion définitive, est effacée du dossier administratif de l'élève au bout d'un an</b>
-		Le règlement intérieur reproduit l'échelle des sanctions. En outre, il peut prévoir des mesures de prévention, d'accompagnement et de réparation.<br />
-		<a href='http://www.legifrance.gouv.fr/affichCodeArticle.do?cidTexte=LEGITEXT000006071191&idArticle=LEGIARTI000020663068&dateTexte=&categorieLien=cid'>Le lien sur Légifrance</a>.</p>
+		<p>Les sanctions peuvent Ãªtre assorties d'un sursis total ou partiel.<br />
+		<b>Toute sanction, hormis l'exclusion dÃ©finitive, est effacÃ©e du dossier administratif de l'Ã©lÃ¨ve au bout d'un an</b>
+		Le rÃ¨glement intÃ©rieur reproduit l'Ã©chelle des sanctions. En outre, il peut prÃ©voir des mesures de prÃ©vention, d'accompagnement et de rÃ©paration.<br />
+		<a href='http://www.legifrance.gouv.fr/affichCodeArticle.do?cidTexte=LEGITEXT000006071191&idArticle=LEGIARTI000020663068&dateTexte=&categorieLien=cid'>Le lien sur LÃ©gifrance</a>.</p>
 	</li>
 </ul>\n";
 
-	echo "<p style='color:red'>Pour ne pas poser de problèmes sur les bulletins PDF, il est recommandé pour le moment (<i>à améliorer</i>)&nbsp;:</p>
+	echo "<p style='color:red'>Pour ne pas poser de problÃ¨mes sur les bulletins PDF, il est recommandÃ© pour le moment (<i>Ã  amÃ©liorer</i>)&nbsp;:</p>
 <ul style='color:red'>
-<li>de ne pas dépasser 18 caractères dans une $gepi_denom_mention</li>
-<li>de ne pas définir plus de 8 ".$gepi_denom_mention."s différentes pour une même classe</li>
+<li>de ne pas dÃ©passer 18 caractÃ¨res dans une $gepi_denom_mention</li>
+<li>de ne pas dÃ©finir plus de 8 ".$gepi_denom_mention."s diffÃ©rentes pour une mÃªme classe</li>
 </ul>\n";
 }
 else {
@@ -342,7 +342,7 @@ else {
 		$classes_list=mysql_query($sql);
 		$nb=mysql_num_rows($classes_list);
 		if($nb==0){
-			echo "<p>Aucune classe n'est encore définie...</p>\n";
+			echo "<p>Aucune classe n'est encore dÃ©finie...</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -385,7 +385,7 @@ else {
 		echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 		echo "</form>\n";
 
-		echo "<p><a href=\"javascript:cocher_toutes_classes('cocher')\">Cocher</a> / <a href=\"javascript:cocher_toutes_classes('decocher')\">décocher</a> toutes les classes.</p>\n";
+		echo "<p><a href=\"javascript:cocher_toutes_classes('cocher')\">Cocher</a> / <a href=\"javascript:cocher_toutes_classes('decocher')\">dÃ©cocher</a> toutes les classes.</p>\n";
 
 		echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
@@ -459,7 +459,7 @@ function cocher_toutes_classes(mode) {
 		echo "<tr>\n";
 		echo "<th>Cocher</th>\n";
 		echo "<th>".ucfirst($gepi_denom_mention)."</th>\n";
-		echo "<th>Classes déjà associées</th>\n";
+		echo "<th>Classes dÃ©jÃ  associÃ©es</th>\n";
 		echo "</tr>\n";
 		$alt=1;
 		//for($i=0;$i<count($tab_mentions);$i++) {
@@ -526,7 +526,7 @@ function cocher_toutes_classes(mode) {
 		$sql.=") ORDER BY ordre, id_mention;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p style='color:red'>Aucune $gepi_denom_mention n'est associée à ces classes.</p>\n";
+			echo "<p style='color:red'>Aucune $gepi_denom_mention n'est associÃ©e Ã  ces classes.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}

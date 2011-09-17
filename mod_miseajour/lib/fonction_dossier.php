@@ -1,6 +1,6 @@
 <?php
 
-// fonction permettant de vérifier une url
+// fonction permettant de vÃ©rifier une url
 // ex: url_exists("http://www.google.fr/test.txt") -> TRUE / FALSE
 // appel de la fonction: url_exists(url);
 function url_exists($url)
@@ -35,7 +35,7 @@ function date_sql($var)
 // fonction permettant le listage d'un dossier et de mettre les informations dans un tableau
 // ex: listage_dossier("./gepi144/documents","./gepi144/documents/") -> tab[1]='dossier/test.txt
 // appel de la fonction: listage_dossier(emplacement, emplacement);
-// le deuxième emplacement et le même que le premier mais il sert de dossier racine pour la suite
+// le deuxiÃ¨me emplacement et le mÃªme que le premier mais il sert de dossier racine pour la suite
 function listage_dossier($dossier, $dossier_racine)
  {
 	//on initialiste le compteur de fichier
@@ -46,7 +46,7 @@ function listage_dossier($dossier, $dossier_racine)
 	if(empty($GLOBALS['tab_fichier'][0])) { $tab_fichier=''; }
 	else { $tab_fichier=$GLOBALS['tab_fichier'][0]; }
 
-	//on vérifie si c'est un dossier
+	//on vÃ©rifie si c'est un dossier
 	if(is_dir($dossier))
 	{
 		//on ouvre le dossier
@@ -55,17 +55,17 @@ function listage_dossier($dossier, $dossier_racine)
 			// on liste les fichiers et dossier
 			while(($nom=readdir($dh))!=false)
 			{
-				// s'il sont différent de . et .. on continue le listage
+				// s'il sont diffÃ©rent de . et .. on continue le listage
 			        if($nom!='.' and $nom!='..') {
 				   $emplacement="$dossier/$nom";
-				   // fonction récursive si c'est un dossier on appel à nouveau la fonction dans laquelle on se trouve actuellement
+				   // fonction rÃ©cursive si c'est un dossier on appel Ã  nouveau la fonction dans laquelle on se trouve actuellement
 				   if(is_dir($emplacement)&&($nom!=".")&&($nom!=".."))
 			 	   {
 					listage_dossier("$dossier/$nom", $dossier_racine);
 				   } else { 
 						// si ce n'est pas un dossier alors un met l'emplacement du fichier et le fichier dans le tableau
 						$tab_fichier_select=$dossier.'/'.$nom;
-						//on enlève la partie non utils
+						//on enlÃ¨ve la partie non utils
 						$GLOBALS['tab_fichier']['source_fichier'][$cpt_fichier] = $tab_fichier_select;
 						//nom du fichier
 						$GLOBALS['tab_fichier']['nom_fichier'][$cpt_fichier] = trim($nom);
@@ -73,7 +73,7 @@ function listage_dossier($dossier, $dossier_racine)
 						$source_emplacement= my_eregi_replace($dossier_racine,'',$tab_fichier_select);
 						$source_emplacement= my_eregi_replace($nom,'',$source_emplacement);
 						$GLOBALS['tab_fichier']['emplacement_fichier'][$cpt_fichier] = trim($source_emplacement);
-						// destiné à
+						// destinÃ© Ã 
 						$cpt_fichier++;
 						$GLOBALS['cpt_fichier']=$cpt_fichier;
 					  }
@@ -97,7 +97,7 @@ function envoi_ftp($tableau, $destination)
 		//$tableau['date_fichier']['1'] -> 21/11/2006
 		//$tableau['heure_fichier']['1'] -> 12:00
 		//$tableau['md5_fichier']['1'] -> md5
-		//$tableau['status_fichier']['1'] -> état du fichier (pass)
+		//$tableau['status_fichier']['1'] -> Ã©tat du fichier (pass)
 
 	// on inclue le fichier d'information FTP
 	include('info_connect.inc.php');
@@ -107,21 +107,21 @@ function envoi_ftp($tableau, $destination)
 	// on compte le nombre d'enregistrement du tableau
 	$nb_valeur=count($tableau);
 
-	// on essaye de ce connecter en ftp sécurisé
+	// on essaye de ce connecter en ftp sÃ©curisÃ©
 	$connexion_id = ftp_ssl_connect("$ftp_server", "$port_ssl", "$temps_max_response");
 	if($connexion_id===FALSE)
          {
-	       // si la connection sécurisé n'est pas possible alors on se connect en non sécurisé
+	       // si la connection sÃ©curisÃ© n'est pas possible alors on se connect en non sÃ©curisÃ©
 	       $connexion_id = ftp_connect($ftp_server, $port_nonssl, $temps_max_response);
-	       if($connexion_id===FALSE) { $message_ftp['connection']='Impossible de se connecter au serveur FTP: '.$ftp_server; exit(); } else { $message_ftp['connection']='Connecté au serveur FTP en transfert non sécurisé'; }
-	 } else { $message_ftp['connection']='Connecté au serveur FTP en transfert sécurisé'; }
+	       if($connexion_id===FALSE) { $message_ftp['connection']='Impossible de se connecter au serveur FTP: '.$ftp_server; exit(); } else { $message_ftp['connection']='ConnectÃ© au serveur FTP en transfert non sÃ©curisÃ©'; }
+	 } else { $message_ftp['connection']='ConnectÃ© au serveur FTP en transfert sÃ©curisÃ©'; }
 
 	// Identification avec un nom d'utilisateur et un mot de passe
 	$login_result = ftp_login($connexion_id, $ftp_user_name, $ftp_user_pass);
 	if($login_result===FALSE)
 	 {
 		// si le nom d'utilisateur ou le mot de passe n'est pas correct
-		$message_ftp['authentification']='Le nom d\'utilisateur ou le mot de passe sont erroné pour l\'utilisateur: '.$ftp_user_name;
+		$message_ftp['authentification']='Le nom d\'utilisateur ou le mot de passe sont erronÃ© pour l\'utilisateur: '.$ftp_user_name;
 		exit();
 	 } else { $message_ftp['authentification']='Nom d\'utilistaeur et mot de passe correct'; }
 
@@ -143,7 +143,7 @@ function envoi_ftp($tableau, $destination)
 	$dossier_du_fichier_precedent=@ftp_chdir($connexion_id, $destination);
 	$dossier_du_fichier_precedent=ftp_pwd($connexion_id);
 
-	// début de la gestion du téléchargement des fichiers du tableau
+	// dÃ©but de la gestion du tÃ©lÃ©chargement des fichiers du tableau
 	$i_tab_ftp='1'; $nb_ancien_enfant='0';
 	while(!empty($tableau['source_fichier'][$i_tab_ftp]))
 	 {
@@ -152,7 +152,7 @@ function envoi_ftp($tableau, $destination)
 	     $source = $tableau['source_fichier'][$i_tab_ftp];
 	     //nom du fichier
 	     $nom_du_fichier     = $tableau['nom_fichier'][$i_tab_ftp];
-	     //emplacement complet du fichier - on enléve le nom du fichier au chemin complet
+	     //emplacement complet du fichier - on enlÃ©ve le nom du fichier au chemin complet
 	     $dossier_du_fichier = $tableau['emplacement_fichier'][$i_tab_ftp];
 	     //on met dans une variable le chemin sans le nom du fichier pour une comparaisont par la suite
 	     $dossier_du_fichier_actuel = $dossier_du_fichier;
@@ -165,11 +165,11 @@ function envoi_ftp($tableau, $destination)
 		if($premier_carct!='/' and $dernier_carct==='/') { $dossier_du_fichier=substr("$dossier_du_fichier", 0, -1); }
 	     $dossier_du_fichier = explode('/', $dossier_du_fichier);
 
-	     //on vérifie si nous somme dans le même dossier qu'au passage précédent
+	     //on vÃ©rifie si nous somme dans le mÃªme dossier qu'au passage prÃ©cÃ©dent
 	     if($dossier_du_fichier_precedent!=$dossier_du_fichier_actuel)
              {
   	        $i_c=0;
-	      	//si nous étions dans un dossier nous revenons à la racine
+	      	//si nous Ã©tions dans un dossier nous revenons Ã  la racine
   	     	while($i_c<$nb_ancien_enfant)
 	     	{
 			ftp_cdup($connexion_id);
@@ -184,13 +184,13 @@ function envoi_ftp($tableau, $destination)
 			{
 				// le dossier existe
 			} else {
-	 		  	  //si le dossier n'existe pas on le créer
+	 		  	  //si le dossier n'existe pas on le crÃ©er
 				  if (@ftp_mkdir($connexion_id, $dossier_du_fichier[$i_d])) 
 				  {
 					//puis on entre dans le dossier
 					@ftp_chdir($connexion_id, $dossier_du_fichier[$i_d]);
 				  } else {
-						$message_ftp['dossier'] = 'impossible à créer le dossier';
+						$message_ftp['dossier'] = 'impossible Ã  crÃ©er le dossier';
 					 }
 				}
 			$i_d++;
@@ -205,7 +205,7 @@ function envoi_ftp($tableau, $destination)
 		//echo $nom_du_fichier."<br /><br />";
 
 	$upload = ftp_put($connexion_id, $nom_du_fichier, $source, FTP_BINARY);
-	// Vérification de téléchargement
+	// VÃ©rification de tÃ©lÃ©chargement
 	//if (!$upload) { } else { }
 	//on entre dans une variable le dossier ou nous somme actuellement (chemin complet)
 	$dossier_du_fichier_precedent = $dossier_du_fichier_actuel;
@@ -216,15 +216,15 @@ function envoi_ftp($tableau, $destination)
  ftp_close($connexion_id);
  }
 
-// fonction permettant l'envoie d'un tableau contenant les informations de mise à jour du logiciel fichier par fichier
+// fonction permettant l'envoie d'un tableau contenant les informations de mise Ã  jour du logiciel fichier par fichier
 // ex: info_miseajour_fichier($site_de_miseajour, $version_system)
 // appel de la fonction: info_miseajour_fichier(le site_de_miseajour, version du logiciel);
 function info_miseajour_fichier($site_de_miseajour, $version_system)
  {
-	// définition des variables
+	// dÃ©finition des variables
 	$ligne='';
 
-	//on recherche le fichier de mise à jour sur le site du principal des fichiers d'après la version installé
+	//on recherche le fichier de mise Ã  jour sur le site du principal des fichiers d'aprÃ¨s la version installÃ©
 	$version_system = my_eregi_replace('\.','',$version_system);
 	if(url_exists($site_de_miseajour."version".$version_system.".msj"))
 	{
@@ -252,14 +252,14 @@ function info_miseajour_fichier($site_de_miseajour, $version_system)
  return($info_fichier_serveur);
  }
 
-// fonction permettant l'envoie d'un tableau contenant les informations sur les mise à jour déjas effectué
+// fonction permettant l'envoie d'un tableau contenant les informations sur les mise Ã  jour dÃ©jas effectuÃ©
 // ex: info_miseajour_base()
 // appel de la fonction: info_miseajour_base();
 function info_miseajour_base()
  {
 	$prefix_base=''; $info_miseajour_base='';
 
-	//on recherche les mise à jour de fichier dans la base
+	//on recherche les mise Ã  jour de fichier dans la base
 	$requete_liste_miseajour = mysql_query("SELECT * FROM ".$prefix_base."miseajour");
         while ($donne_liste_miseajour = mysql_fetch_array($requete_liste_miseajour))
           {
@@ -269,9 +269,9 @@ function info_miseajour_base()
  return($info_miseajour_base);
  }
 
-// fonction permettant de copié un fichier d'internet vers le dossier temporaire de mise à jour
+// fonction permettant de copiÃ© un fichier d'internet vers le dossier temporaire de mise Ã  jour
 // ex: copie_fichier_temp()
-// appel de la fonction: copie_fichier_temp(tableau des données);
+// appel de la fonction: copie_fichier_temp(tableau des donnÃ©es);
 function copie_fichier_temp($tableau, $rep_temp)
  {
 
@@ -294,7 +294,7 @@ function copie_fichier_temp($tableau, $rep_temp)
 	$nom_fichier  = $tableau['nom_fichier']['1'];
 	$cible        = $rep_temp.$nom_fichier;
 
-	// si le dossier de téléchargement de mise à jour n'existe pas on le créer
+	// si le dossier de tÃ©lÃ©chargement de mise Ã  jour n'existe pas on le crÃ©er
 	if (!is_dir($rep_temp))
 	 {
 		$old = umask(0000); 
@@ -307,21 +307,21 @@ function copie_fichier_temp($tableau, $rep_temp)
 	$old = umask(0000); 
 	if(!url_exists($source))
          {
-	   // le téléchargement n'a pas réussi car le fichier de mise à jour n'est pas présent
+	   // le tÃ©lÃ©chargement n'a pas rÃ©ussi car le fichier de mise Ã  jour n'est pas prÃ©sent
 	 } else {
 		  // le fichier existe on le copie
 
 		  if (!copy($source, $cible)) 
                   { 
-		    // le téléchargement n'a pas réussi echec de connection au serveur de mise à jour
+		    // le tÃ©lÃ©chargement n'a pas rÃ©ussi echec de connection au serveur de mise Ã  jour
 		  } else {
 			    umask($old);
-			    // le fichier à été copier
-			    // on vérifie le md5
+			    // le fichier Ã  Ã©tÃ© copier
+			    // on vÃ©rifie le md5
 			    $md5_du_fichier_telecharge = md5_file($rep_temp.$nom_fichier);
 			    if($md5_de_verif!=$md5_du_fichier_telecharge)
 			    {
-			      // si le md5 n'est pas bon, on supprime le fichier téléchargé
+			      // si le md5 n'est pas bon, on supprime le fichier tÃ©lÃ©chargÃ©
 				$tableau_fichier['source_fichier']['1'] = $cible;
 				$tableau_fichier['nom_fichier']['1'] = $tableau['nom_fichier']['1'];
 				$tableau_fichier['emplacement_fichier']['1'] = $tableau['emplacement_fichier']['1'];
@@ -330,7 +330,7 @@ function copie_fichier_temp($tableau, $rep_temp)
 				$tableau_fichier['md5_fichier']['1'] = $tableau['md5_fichier']['1'];
 				$tableau_fichier['status_fichier']['1'] = 'erreur fichier corrompus';
 			     } else {
-				      // si le md5 est bon on ne touche à rien
+				      // si le md5 est bon on ne touche Ã  rien
 					$tableau_fichier['source_fichier']['1'] = $cible;
 					$tableau_fichier['nom_fichier']['1'] = $tableau['nom_fichier']['1'];
 					$tableau_fichier['emplacement_fichier']['1'] = $tableau['emplacement_fichier']['1'];
@@ -344,9 +344,9 @@ function copie_fichier_temp($tableau, $rep_temp)
 	return($tableau_fichier);
  }
 
-// fonction permettant de supprimer tout les dossier et sous dossier et fichiers d'une sélection de dossier d'un tableau
-// ex: supprimer_rep(tableau des dossiers à supprimer)
-// appel de la fonction: supprimer_rep(tableau des données);
+// fonction permettant de supprimer tout les dossier et sous dossier et fichiers d'une sÃ©lection de dossier d'un tableau
+// ex: supprimer_rep(tableau des dossiers Ã  supprimer)
+// appel de la fonction: supprimer_rep(tableau des donnÃ©es);
 // source: http://www.phpcs.com/codes/SUPPRIMER-PLUSIEURS-REPERTOIRES-TOUT-QU-DEDANS_33556.aspx
 function supprimer_rep($tableau) { // fonction pour supprimer un ou plusieurs repertoires et tout ce qu'il y a dedans
     foreach ($tableau as $dir) {

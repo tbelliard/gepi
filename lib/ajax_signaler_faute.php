@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-//INSERT INTO droits SET id='/lib/ajax_signaler_faute.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Envoi de mail pour signaler une faute dans une appréciation',statut='';
+//INSERT INTO droits SET id='/lib/ajax_signaler_faute.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Envoi de mail pour signaler une faute dans une apprÃ©ciation',statut='';
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -81,7 +81,7 @@ if(!preg_match('/^[0-9]*$/',$signalement_id_groupe)) {
 	die();
 }
 
-// Contrôler que la personne est autorisée à faire le signalement
+// ContrÃ´ler que la personne est autorisÃ©e Ã  faire le signalement
 
 
 
@@ -105,7 +105,7 @@ if($envoi_mail_actif!='n') {
 		$ajout_headers="Reply-to: $email_utilisateur";
 	}
 
-	// On considère que le signalement est un succès, si le mail est envoyé pour au moins un destinataire
+	// On considÃ¨re que le signalement est un succÃ¨s, si le mail est envoyÃ© pour au moins un destinataire
 	$temoin=false;
 	while($lig=mysql_fetch_object($res)) {
 		$destinataire=$lig->email;

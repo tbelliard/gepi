@@ -2,10 +2,10 @@
 
 /**
  *
- * Module d'intégration de Gepi dans un ENT réalisé au moment de l'intégration de Gepi dans ARGOS dans l'académie de Bordeaux
- * Fichier permettant de récupérer de nouveaux élèves dans le ldap de l'ENT
+ * Module d'intÃ©gration de Gepi dans un ENT rÃ©alisÃ© au moment de l'intÃ©gration de Gepi dans ARGOS dans l'acadÃ©mie de Bordeaux
+ * Fichier permettant de rÃ©cupÃ©rer de nouveaux Ã©lÃ¨ves dans le ldap de l'ENT
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, StÃ©phane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -42,7 +42,7 @@ if (!checkAccess()) {
 	die();
 }
 
-// Sécurité supplémentaire pour éviter d'aller voir ce fichier si on n'est pas dans un ent
+// SÃ©curitÃ© supplÃ©mentaire pour Ã©viter d'aller voir ce fichier si on n'est pas dans un ent
 if (getSettingValue("use_ent") != 'y') {
 	die('Fichier interdit.');
 }
@@ -54,14 +54,14 @@ $msg2 = NULL;
 $etape = isset($_GET["etape"]) ? $_GET["etape"] : NULL;
 
 
-// ======================= Traitement des données ================================
-// On récupère le RNE de l'établissement en question
+// ======================= Traitement des donnÃ©es ================================
+// On rÃ©cupÃ¨re le RNE de l'Ã©tablissement en question
 $RNE = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'] : getSettingValue("gepiSchoolRne");
 if ($RNE === '') {
-	$msg = "Attention, votre RNE n'est pas renseigné dans la page des <a href=\"gestion/param_gen.php\">paramètres généraux.</a>";
+	$msg = "Attention, votre RNE n'est pas renseignÃ© dans la page des <a href=\"gestion/param_gen.php\">paramÃ¨tres gÃ©nÃ©raux.</a>";
 } else {
 
-	$msg = "<p>Votre RNE est ".$RNE.". S'il est exact, vous pouvez passer à l'étape suivante.
+	$msg = "<p>Votre RNE est ".$RNE.". S'il est exact, vous pouvez passer Ã  l'Ã©tape suivante.
 				&nbsp;<a href=\"index.php?etape=2".add_token_in_url()."\">Enregistrer les utilisateurs</a>";
 
 }
@@ -71,7 +71,7 @@ if ($etape == 2) {
 	check_token();
 
 	$msg = NULL;
-	// On crée la table si nécessaire
+	// On crÃ©e la table si nÃ©cessaire
 
 	$result = "&nbsp;->Ajout de la table ldap_bx. <br />";
 	$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'ldap_bx'"));
@@ -91,7 +91,7 @@ if ($etape == 2) {
 			$msg = "<font style=\"color: red;\">Erreur</font><br />";
 		}
 	}else{
-		$msg = "<font style=\"color: blue;\">La table existe déjà.</font><br />";
+		$msg = "<font style=\"color: blue;\">La table existe dÃ©jÃ .</font><br />";
 	}
 
 	// On truncate la table
@@ -129,26 +129,26 @@ if ($etape == 2) {
 		$query = mysql_query($sql);
 
 		if ($query) {
-			$msg2 .= '<br />L\'utilisateur '.$info[$a][$ldap_login][0].' a été enregistré.';
+			$msg2 .= '<br />L\'utilisateur '.$info[$a][$ldap_login][0].' a Ã©tÃ© enregistrÃ©.';
 		}else{
-			$msg2 .= '<br /><span style="color: red;">L\'utilisateur '.$info[$a][$ldap_login][0].' n\'a pas été enregistré.</span>';
+			$msg2 .= '<br /><span style="color: red;">L\'utilisateur '.$info[$a][$ldap_login][0].' n\'a pas Ã©tÃ© enregistrÃ©.</span>';
 		}
 	}
 	$aff_continuer = '<p>Vous pouvez retourner sur la page d\'initialisation par sconet/STSweb <a href="../init_xml2/index.php">CONTINUER</a></p>
-	<p><a href="miseajour_ent_eleves.php">Ajouter de nouveaux utilisateurs arrivés en cours d\'année</a></p>';
+	<p><a href="miseajour_ent_eleves.php">Ajouter de nouveaux utilisateurs arrivÃ©s en cours d\'annÃ©e</a></p>';
 
 }
 
-// =========== fichiers spéciaux ==========
+// =========== fichiers spÃ©ciaux ==========
 $style_specifique = "edt_organisation/style_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les utilisateurs de l'ENT";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-//debug_var(); // à enlever en production
+//debug_var(); // Ã  enlever en production
 ?>
 
-<!-- Mise à jour à partir de l'ENT -->
+<!-- Mise Ã  jour Ã  partir de l'ENT -->
 <p class="bold"><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <h2>R&eacute;cup&eacute;ration des informations de l'ENT</h2>

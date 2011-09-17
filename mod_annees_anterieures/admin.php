@@ -21,7 +21,7 @@
  */
 
 $accessibilite="y";
-$titre_page = "Gestion du module Années antérieures";
+$titre_page = "Gestion du module AnnÃ©es antÃ©rieures";
 $gepiPathJava="./..";
 $post_reussi=FALSE;
 $msg = '';
@@ -51,26 +51,26 @@ if (!checkAccess()) {
 if (isset($_POST['activer'])) {
 	check_token();
     if (!saveSetting("active_annees_anterieures", $_POST['activer']))
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+			$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 }
 
 
 
 if (isset($_POST['is_posted']) and ($msg=='')){
-  $msg = "Les modifications ont été enregistrées !";
+  $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
   $post_reussi=TRUE;
 }
 //**************** EN-TETE *******************************
 // header
-//$titre_page = "Gestion du module Années antérieures";
+//$titre_page = "Gestion du module AnnÃ©es antÃ©rieures";
 //require_once("../lib/header.inc");
 //**************** EN-TETE *******************************
 
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc");
 
-if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Années antérieures"))
-		echo "erreur lors de la création du fil d'ariane";
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion AnnÃ©es antÃ©rieures"))
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -85,20 +85,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_annees_anterieures/admin_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -117,16 +117,16 @@ else {
 }
 
 ?>
-<h2>Configuration générale</h2>
-<i>La désactivation du module Années antérieures n'entraîne aucune suppression des données. Lorsque le module est désactivé, personne n'a accès au module.</i>
+<h2>Configuration gÃ©nÃ©rale</h2>
+<i>La dÃ©sactivation du module AnnÃ©es antÃ©rieures n'entraÃ®ne aucune suppression des donnÃ©es. Lorsque le module est dÃ©sactivÃ©, personne n'a accÃ¨s au module.</i>
 <br />
 <form action="<?php
 	echo $_SERVER['PHP_SELF'];
 ?>" name="form1" method="post">
 
 <p>
-<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_annees_anterieures")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module Années antérieures</label><br />
-<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_annees_anterieures")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver le module Années antérieures</label>
+<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_annees_anterieures")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module AnnÃ©es antÃ©rieures</label><br />
+<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_annees_anterieures")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>DÃ©sactiver le module AnnÃ©es antÃ©rieures</label>
 </p>
 
 <input type="hidden" name="is_posted" value="1" />

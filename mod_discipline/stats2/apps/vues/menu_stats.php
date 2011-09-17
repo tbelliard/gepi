@@ -19,7 +19,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -30,6 +30,6 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <li><a href='index.php?ctrl=bilans&action=affiche_bilans'><img src='apps/img/bilans.png' alt='bilans' class='back_link'/> Bilans </a></li>
 <li><a href='index.php?ctrl=bilans&action=evolutions'><img src='apps/img/evolution.png' alt='Graphiques' class='back_link'/> Evolutions des incidents </a></li>
 <li><a href='index.php?ctrl=bilans&action=top'><img src='apps/img/top10.png' alt='Top10' class='back_link'/> Top 10 </a></li>
-<li><a href='index.php?ctrl=categories'><img src='apps/img/categories.png' alt='bilans' class='back_link'/> Catégories </a></li>
+<li><a href='index.php?ctrl=categories'><img src='apps/img/categories.png' alt='bilans' class='back_link'/> CatÃ©gories </a></li>
 <!--<li><a href='index.php?ctrl=switch'><img src='apps/img/switch.png' alt='Absence/Discipline' class='back_link'/> Absences/Discipline </a></li> -->
 </ol>

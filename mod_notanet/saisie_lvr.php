@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger, Stephane Boireau
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent ViÃ©not-Hauger, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -21,7 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -83,7 +83,7 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 			foreach($lvr as $key => $value) {
 				$sql="UPDATE notanet_lvr SET intitule='$value' WHERE id='$key';";
 				$update=mysql_query($sql);
-				if(!$update) {$msg.="Erreur lors de la mise à jour de la LVR $value<br />";$pb_record='y';}
+				if(!$update) {$msg.="Erreur lors de la mise Ã  jour de la LVR $value<br />";$pb_record='y';}
 			}
 		}
 
@@ -94,10 +94,10 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 				if(mysql_num_rows($test)==0) {
 					$sql="DELETE FROM notanet_lvr WHERE id='$value';";
 					$del=mysql_query($sql);
-					if(!$del) {$msg.="Erreur lors de la suppression de la LVR n°$value<br />";$pb_record='y';}
+					if(!$del) {$msg.="Erreur lors de la suppression de la LVR nÂ°$value<br />";$pb_record='y';}
 				}
 				else {
-					$msg.="La LVR n°$value est associée à ".mysql_num_rows($test)." élève(s).<br />";
+					$msg.="La LVR nÂ°$value est associÃ©e Ã  ".mysql_num_rows($test)." Ã©lÃ¨ve(s).<br />";
 					$pb_record='y';
 				}
 			}
@@ -139,7 +139,7 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 					$sql="DELETE FROM notanet_lvr_ele WHERE login='$login_ele[$i]';";
 					//echo "$sql<br />";
 					$del=mysql_query($sql);
-					if(!$del) {$msg.="Erreur lors de la réinitialisation pour $login_ele[$i]<br />";$pb_record='y';}
+					if(!$del) {$msg.="Erreur lors de la rÃ©initialisation pour $login_ele[$i]<br />";$pb_record='y';}
 					else {
 						$sql="INSERT INTO notanet_lvr_ele SET login='$login_ele[$i]', id_lvr='$lvr[$i]';";
 						//echo "$sql<br />";
@@ -171,13 +171,13 @@ if((isset($_POST['is_posted']))&&(isset($mode))) {
 
 	if ($pb_record == 'no') {
 		//$affiche_message = 'yes';
-		$msg="Les modifications ont été enregistrées !";
+		$msg="Les modifications ont Ã©tÃ© enregistrÃ©es !";
 	}
 }
 
 
-$themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_enregistrement = "Les modifications ont été enregistrées !";
+$themessage = 'Des modifications ont Ã©tÃ© effectuÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 
 //**************** EN-TETE *****************
 $titre_page = "Notanet | Saisie des notes de LVR";
@@ -222,41 +222,41 @@ if(!isset($mode)) {
 	echo "<p>Choisissez&nbsp;:</p>\n";
 	echo "<ul>\n";
 	echo "<li>\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."?mode=set_lvr'>Définir les langues régionales</a>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?mode=set_lvr'>DÃ©finir les langues rÃ©gionales</a>";
 	echo "</li>\n";
 
 	$sql="SELECT * FROM notanet_lvr ORDER BY intitule;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		echo "<li>\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?mode=select_eleves'>Sélectionner les élèves suivant une Langue Vivante Régionale</a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?mode=select_eleves'>SÃ©lectionner les Ã©lÃ¨ves suivant une Langue Vivante RÃ©gionale</a>";
 		echo "<br />\n";
-		echo "Les élèves peuvent choisir de ne pas faire apparaître la Langue Vivante Régionale sur leur Fiche Brevet.<br />\n";
-		echo "Dans ce cas, ne sélectionnez pas l'élève.";
+		echo "Les Ã©lÃ¨ves peuvent choisir de ne pas faire apparaÃ®tre la Langue Vivante RÃ©gionale sur leur Fiche Brevet.<br />\n";
+		echo "Dans ce cas, ne sÃ©lectionnez pas l'Ã©lÃ¨ve.";
 		echo "</li>\n";
 		//echo "<li>\n";
-		//echo "<a href='".$_SERVER['PHP_SELF']."?mode=select_profs'>Sélectionner des professeurs...</a>";
+		//echo "<a href='".$_SERVER['PHP_SELF']."?mode=select_profs'>SÃ©lectionner des professeurs...</a>";
 		//echo "</li>\n";
 
-		// On teste si des élèves ont été affectés dans des LVR...
+		// On teste si des Ã©lÃ¨ves ont Ã©tÃ© affectÃ©s dans des LVR...
 		$sql="SELECT 1=1 FROM notanet_lvr_ele;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
 
 			echo "<li>\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?mode=saisie'>Saisir les 'notes' pour une Langue Vivante Régionale</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?mode=saisie'>Saisir les 'notes' pour une Langue Vivante RÃ©gionale</a>";
 			echo "</li>\n";
 		}
 	}
 	echo "</ul>\n";
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu Langue Vivante Régionale</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Menu Langue Vivante RÃ©gionale</a>\n";
 
 	if($mode=='set_lvr') {
 		echo "</p>\n";
 
-		echo "<h2>Définition/saisie des LVR</h2>\n";
+		echo "<h2>DÃ©finition/saisie des LVR</h2>\n";
 
 		//$cpt=0;
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
@@ -266,7 +266,7 @@ else {
 		if(mysql_num_rows($res)>0) {
 			echo "<table class='boireaus' summary='Liste des LVR'>\n";
 			echo "<tr>\n";
-			echo "<th>Intitulé</th>\n";
+			echo "<th>IntitulÃ©</th>\n";
 			echo "<th>Supprimer</th>\n";
 			echo "</tr>\n";
 			$alt=1;
@@ -293,7 +293,7 @@ else {
 		if(!isset($id_classe)) {
 			echo "</p>\n";
 
-			echo "<h2>Sélection des élèves pour les LVR</h2>\n";
+			echo "<h2>SÃ©lection des Ã©lÃ¨ves pour les LVR</h2>\n";
 
 			// Choisir une classe
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, notanet_ele_type net WHERE p.id_classe = c.id AND c.id=jec.id_classe AND jec.login=net.login ORDER BY classe;";
@@ -301,7 +301,7 @@ else {
 		
 			$nb_classes=mysql_num_rows($call_classes);
 			if($nb_classes==0) {
-				echo "<p>Aucune classe ne semble encore définie.</p>\n";
+				echo "<p>Aucune classe ne semble encore dÃ©finie.</p>\n";
 		
 				require("../lib/footer.inc.php");
 				die();
@@ -352,9 +352,9 @@ else {
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=select_eleves'>Choix de la classe</a>\n";
 			echo "</p>\n";
 
-			echo "<h2>Sélection des élèves pour les LVR</h2>\n";
+			echo "<h2>SÃ©lection des Ã©lÃ¨ves pour les LVR</h2>\n";
 
-			// Sélectionner des élèves ou s'appuyer sur un groupe
+			// SÃ©lectionner des Ã©lÃ¨ves ou s'appuyer sur un groupe
 
 			$sql="SELECT DISTINCT e.login, e.prenom, e.nom FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND id_classe='$id_classe' ORDER BY e.nom, e.prenom";
 			$res_ele=mysql_query($sql);
@@ -362,7 +362,7 @@ else {
 			$nb_ele=mysql_num_rows($res_ele);
 			if($nb_ele==0) {
 
-				echo "<p>Aucun élève dans la classe ".get_class_from_id($id_classe).".</p>\n";
+				echo "<p>Aucun Ã©lÃ¨ve dans la classe ".get_class_from_id($id_classe).".</p>\n";
 
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=select_eleves'>Retour au choix de la classe</a></p>\n";
 
@@ -387,11 +387,11 @@ else {
 					$tab_lvr_ele[$lig_lvr_ele->login]=$lig_lvr_ele->id_lvr;
 				}
 
-				echo "<table class='boireaus' summary='Choix des LVR des élèves'>\n";
+				echo "<table class='boireaus' summary='Choix des LVR des Ã©lÃ¨ves'>\n";
 
 				echo "<tr>\n";
 				echo "<th align='left'>\n";
-				echo "Elève\n";
+				echo "ElÃ¨ve\n";
 				echo "</th>\n";
 	
 				echo "<th>\n";
@@ -450,7 +450,7 @@ else {
 	elseif($mode=='saisie') {
 		echo "</p>\n";
 
-		echo "<h2>Saisie des 'notes' des élèves aux LVR</h2>\n";
+		echo "<h2>Saisie des 'notes' des Ã©lÃ¨ves aux LVR</h2>\n";
 
 		//$sql="SELECT DISTINCT e.login, e.prenom, e.nom, c.classe, nle.id_lvr FROM eleves e, j_eleves_classes jec, classes c, notanet_lvr_ele nle WHERE e.login=jec.login AND jec.id_classe='$id_classe' AND jec.id_classe=c.id AND nle.login=e.login ORDER BY c.classe, e.nom, e.prenom";
 		$sql="SELECT DISTINCT e.login, e.prenom, e.nom, c.classe, nle.id_lvr FROM eleves e, j_eleves_classes jec, classes c, notanet_lvr_ele nle WHERE e.login=jec.login AND jec.id_classe=c.id AND nle.login=e.login ORDER BY c.classe, e.nom, e.prenom;";
@@ -459,7 +459,7 @@ else {
 
 		$nb_ele=mysql_num_rows($res_ele);
 		if($nb_ele==0) {
-			echo "<p>Aucun élève n'a été trouvé.</p>\n";
+			echo "<p>Aucun Ã©lÃ¨ve n'a Ã©tÃ© trouvÃ©.</p>\n";
 		}
 		else {
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
@@ -502,11 +502,11 @@ else {
 					echo "<p class='bold'>Classe de $lig_ele->classe</p>\n";
 					echo "<blockquote>\n";
 
-					echo "<table class='boireaus' summary='Choix des LVR des élèves'>\n";
+					echo "<table class='boireaus' summary='Choix des LVR des Ã©lÃ¨ves'>\n";
 	
 					echo "<tr>\n";
 					echo "<th rowspan='2'>\n";
-					echo "Elève\n";
+					echo "ElÃ¨ve\n";
 					echo "</th>\n";
 		
 					echo "<th colspan='3'>\n";

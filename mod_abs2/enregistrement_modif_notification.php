@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,16 +52,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_notification = isset($_POST["id_notification"]) ? $_POST["id_notification"] :(isset($_GET["id_notification"]) ? $_GET["id_notification"] :NULL);
 $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GET["commentaire"]) ? $_GET["commentaire"] :NULL);
 $modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GET["modif"] :NULL);
@@ -69,7 +69,7 @@ $modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GE
 $message_enregistrement = '';
 $notification = AbsenceEleveNotificationQuery::create()->findPk($id_notification);
 if ($notification == null && !isset($_POST["creation_notification"])) {
-    $message_enregistrement .= 'Modification impossible : notification non trouvée. ';
+    $message_enregistrement .= 'Modification impossible : notification non trouvÃ©e. ';
     include("visu_notification.php");
     die();
 }
@@ -78,7 +78,7 @@ if ( isset($_POST["creation_notification"])) {
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :NULL);
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
     if ($traitement == null) {
-	$message_enregistrement .= 'Modification impossible : traitement non trouvé. ';
+	$message_enregistrement .= 'Modification impossible : traitement non trouvÃ©. ';
 	include("visu_notification.php");
 	die();
     } else {
@@ -86,7 +86,7 @@ if ( isset($_POST["creation_notification"])) {
 	$notification->setUtilisateurProfessionnel($utilisateur);
 	$notification->setAbsenceEleveTraitement($traitement);
 
-	//on met le type courrier par défaut
+	//on met le type courrier par dÃ©faut
 	$notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
 
 	$responsable_eleve1 = null;
@@ -126,7 +126,7 @@ if ( $modif == 'type') {
     $notification->setCommentaire($_POST["commentaire"]);
 } elseif ($modif == 'enlever_responsable') {
     if (0 != JNotificationResponsableEleveQuery::create()->filterByAbsenceEleveNotification($notification)->filterByPersId($_POST["pers_id"])->limit(1)->delete()) {
-	$message_enregistrement .= 'Responsable supprimé';
+	$message_enregistrement .= 'Responsable supprimÃ©';
     } else {
 	$message_enregistrement .= 'Suppression impossible';
     }
@@ -167,7 +167,7 @@ if (!$notification->isModified()) {
 } else {
     if ($notification->validate()) {
 	$notification->save();
-	$message_enregistrement .= 'Modification enregistrée';
+	$message_enregistrement .= 'Modification enregistrÃ©e';
     } else {
 	$no_br = true;
 	foreach ($notification->getValidationFailures() as $erreurs) {

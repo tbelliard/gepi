@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// INSERT INTO `droits` VALUES ('/responsables/dedoublonnage_adresses.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Dédoublonnage des adresses responsables', '');
+// INSERT INTO `droits` VALUES ('/responsables/dedoublonnage_adresses.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'DÃ©doublonnage des adresses responsables', '');
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -45,7 +45,7 @@ if (!checkAccess()) {
 
 
 function affiche_debug($texte){
-	// Passer à 1 la variable pour générer l'affichage des infos de debug...
+	// Passer Ã  1 la variable pour gÃ©nÃ©rer l'affichage des infos de debug...
 	$debug=0;
 	if($debug==1){
 		echo "<font color='green'>".$texte."</font>";
@@ -81,7 +81,7 @@ $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['st
 //$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 
 //**************** EN-TETE *****************
-$titre_page = "Dédoublonnage des adresses responsables";
+$titre_page = "DÃ©doublonnage des adresses responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -102,7 +102,7 @@ if(isset($step)) {
 </form>\n";
 	echo "</div>\n";
 
-	echo creer_div_infobulle("div_stop","","","Ce bouton permet s'il est coché d'interrompre les passages automatiques à la page suivante","",12,0,"n","n","y","n");
+	echo creer_div_infobulle("div_stop","","","Ce bouton permet s'il est cochÃ© d'interrompre les passages automatiques Ã  la page suivante","",12,0,"n","n","y","n");
 
 	echo "<script type='text/javascript'>
 	temporisation_chargement='ok';
@@ -190,9 +190,9 @@ echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' cla
 if(!isset($step)) {
 	echo "</p>\n";
 
-	echo "<h2>Dédoublonnage des adresses de responsables</h2>\n";
+	echo "<h2>DÃ©doublonnage des adresses de responsables</h2>\n";
 
-	echo "<p>Cette page est destinée à effectuer le dédoublonnage d'adresses considérées à tort par Sconet comme des adresses différentes alors qu'elles sont identiques.</p>\n";
+	echo "<p>Cette page est destinÃ©e Ã  effectuer le dÃ©doublonnage d'adresses considÃ©rÃ©es Ã  tort par Sconet comme des adresses diffÃ©rentes alors qu'elles sont identiques.</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
@@ -203,7 +203,7 @@ if(!isset($step)) {
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
-	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
+	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> DÃ©sactiver le mode automatique.</label></p>\n";
 	//==============================
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -214,8 +214,8 @@ if(!isset($step)) {
 else{
 	echo "</p>\n";
 
-	// Affichage des informations élèves
-	echo "<h2>Dédoublonnage des adresses de responsables</h2>\n";
+	// Affichage des informations Ã©lÃ¨ves
+	echo "<h2>DÃ©doublonnage des adresses de responsables</h2>\n";
 
 	if(!isset($parcours_diff)){
 
@@ -231,12 +231,12 @@ else{
 		$res1=mysql_query($sql);
 		$nb_resp=mysql_num_rows($res1);
 		if($nb_resp==0){
-			echo "<p>La table 'tempo2' est vide???<br />Aucun responsable ne serait encore défini?</p>\n";
+			echo "<p>La table 'tempo2' est vide???<br />Aucun responsable ne serait encore dÃ©fini?</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 
-		echo "<p>Les ".$nb_resp." responsables vont être parcourus par tranches de 20 à la recherche de différences.</p>\n";
+		echo "<p>Les ".$nb_resp." responsables vont Ãªtre parcourus par tranches de 20 Ã  la recherche de diffÃ©rences.</p>\n";
 
 		$nb_parcours=ceil($nb_resp/20);
 
@@ -259,7 +259,7 @@ else{
 	$sql="SELECT * FROM tempo2 LIMIT 20;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Dédoublonnage achevé.</p>\n";
+		echo "<p>DÃ©doublonnage achevÃ©.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -293,7 +293,7 @@ else{
 						$temoin="n";
 
 						$tab_ele1=array();
-						// On vérifie si les deux responsables sont bien liés via responsables2
+						// On vÃ©rifie si les deux responsables sont bien liÃ©s via responsables2
 						$sql="SELECT ele_id FROM responsables2 WHERE pers_id='$pers_id' AND (resp_legal='1' OR resp_legal='2');";
 						$res_ele1=mysql_query($sql);
 						if(mysql_num_rows($res_ele1)>0) {
@@ -303,7 +303,7 @@ else{
 						}
 
 						//$tab_ele2=array();
-						// On vérifie si les deux responsables sont bien liés via responsables2
+						// On vÃ©rifie si les deux responsables sont bien liÃ©s via responsables2
 						$sql="SELECT ele_id FROM responsables2 WHERE pers_id='$lig3->pers_id' AND (resp_legal='1' OR resp_legal='2');";
 						$res_ele2=mysql_query($sql);
 						if(mysql_num_rows($res_ele2)>0) {
@@ -329,7 +329,7 @@ else{
 							*/
 
 							//echo " <span style='color:red'>$lig3->pers_id</span>";
-							if($cpt==0) {echo "<p><b>Dédoublonnage pour:</b> ";} else {echo " - ";}
+							if($cpt==0) {echo "<p><b>DÃ©doublonnage pour:</b> ";} else {echo " - ";}
 
 							echo strtoupper($lig1->nom)." ".ucfirst(strtolower($lig1->prenom))." (<i>".strtoupper($lig3->nom)." ".ucfirst(strtolower($lig3->prenom))."</i>)";
 

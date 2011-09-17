@@ -49,42 +49,42 @@ require_once("../lib/header.inc");
 <p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
 <center>
 <p>
-Vous pouvez choisir ci-dessous différents moyens de visualisation :
+Vous pouvez choisir ci-dessous diffÃ©rents moyens de visualisation :
 </p>
 
 <!--table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5 -->
 <table class="boireaus" width="700" class="bordercolor" summary="Choix de l'outil">
 <tr class='lig1'>
-    <td width=200><a href="eleve_classe.php"><?php echo ucfirst($gepiSettings['denomination_eleve']);?> par rapport à la classe</a></td>
-    <td>Permet de comparer les résultats d'un <?php echo $gepiSettings['denomination_eleve'];?> vis à vis des résultats moyens de la classe, matière par matière, période par période.</td>
+    <td width=200><a href="eleve_classe.php"><?php echo ucfirst($gepiSettings['denomination_eleve']);?> par rapport Ã  la classe</a></td>
+    <td>Permet de comparer les rÃ©sultats d'un <?php echo $gepiSettings['denomination_eleve'];?> vis Ã  vis des rÃ©sultats moyens de la classe, matiÃ¨re par matiÃ¨re, pÃ©riode par pÃ©riode.</td>
 </tr>
 <tr class='lig-1'>
-    <td width=200><a href="eleve_eleve.php"><?php echo ucfirst($gepiSettings['denomination_eleve']);?> par rapport à un autre <?php echo $gepiSettings['denomination_eleve'];?></a></td>
-    <td>Permet de comparer les résultats d'un <?php echo $gepiSettings['denomination_eleve'];?> vis à vis des résultats d'un autre <?php echo $gepiSettings['denomination_eleve'];?> (quelconque), matière par matière, période par période (permet également de comparer les résultats de l'année passée pour un redoublant).</td>
+    <td width=200><a href="eleve_eleve.php"><?php echo ucfirst($gepiSettings['denomination_eleve']);?> par rapport Ã  un autre <?php echo $gepiSettings['denomination_eleve'];?></a></td>
+    <td>Permet de comparer les rÃ©sultats d'un <?php echo $gepiSettings['denomination_eleve'];?> vis Ã  vis des rÃ©sultats d'un autre <?php echo $gepiSettings['denomination_eleve'];?> (quelconque), matiÃ¨re par matiÃ¨re, pÃ©riode par pÃ©riode (permet Ã©galement de comparer les rÃ©sultats de l'annÃ©e passÃ©e pour un redoublant).</td>
 </tr>
 <tr class='lig1'>
-    <td width=200><a href="evol_eleve.php">Evolution d'un <?php echo $gepiSettings['denomination_eleve'];?> sur l'année</a></td>
-    <td>Permet de visualiser l'évolution des résultats d'un <?php echo $gepiSettings['denomination_eleve'];?> sur l'année, matière par matière.</td>
+    <td width=200><a href="evol_eleve.php">Evolution d'un <?php echo $gepiSettings['denomination_eleve'];?> sur l'annÃ©e</a></td>
+    <td>Permet de visualiser l'Ã©volution des rÃ©sultats d'un <?php echo $gepiSettings['denomination_eleve'];?> sur l'annÃ©e, matiÃ¨re par matiÃ¨re.</td>
 </tr>
 <tr class='lig-1'>
-    <td width=200><a href="evol_eleve_classe.php">Evolution d'un <?php echo $gepiSettings['denomination_eleve'];?> et classe sur l'année</a></td>
-    <td>Permet de visualiser l'évolution des résultats d'un <?php echo $gepiSettings['denomination_eleve'];?> vis à vis de l'évolution de la classe, matière par matière.</td>
+    <td width=200><a href="evol_eleve_classe.php">Evolution d'un <?php echo $gepiSettings['denomination_eleve'];?> et classe sur l'annÃ©e</a></td>
+    <td>Permet de visualiser l'Ã©volution des rÃ©sultats d'un <?php echo $gepiSettings['denomination_eleve'];?> vis Ã  vis de l'Ã©volution de la classe, matiÃ¨re par matiÃ¨re.</td>
 </tr>
 <tr class='lig1'>
     <td width=200><a href="stats_classe.php">Evolution des moyennes de classes</a></td>
-    <td>Permet d'obtenir les différentes moyennes de la classe (maxi, mini, moyenne, etc.) matière par matière, avec évolution sur l'année.</td>
+    <td>Permet d'obtenir les diffÃ©rentes moyennes de la classe (maxi, mini, moyenne, etc.) matiÃ¨re par matiÃ¨re, avec Ã©volution sur l'annÃ©e.</td>
 </tr>
 <tr class='lig-1'>
-    <td width=200><a href="classe_classe.php">Classe par rapport à autre classe</a></td>
-    <td>Permet de comparer les résultats d'une classe vis à vis d'une autre classe, matière par matière, période par période.</td>
+    <td width=200><a href="classe_classe.php">Classe par rapport Ã  autre classe</a></td>
+    <td>Permet de comparer les rÃ©sultats d'une classe vis Ã  vis d'une autre classe, matiÃ¨re par matiÃ¨re, pÃ©riode par pÃ©riode.</td>
 </tr>
 <tr class='lig1'>
-    <td width=200><a href="affiche_eleve.php?type_graphe=courbe"><?php echo ucfirst($gepiSettings['denomination_eleve']);?> par rapport à un <?php echo $gepiSettings['denomination_eleve'];?> ou une moyenne</a></td>
-    <td><b>Graphique en courbe</b>: Permet de comparer les résultats d'un <?php echo $gepiSettings['denomination_eleve'];?>, par rapport aux moyennes min/max/classe et par rapport à un autre <?php echo $gepiSettings['denomination_eleve'];?>, matière par matière, période par période.<br />Alternativement, ce choix permet d'obtenir les courbes des 3 trimestres.</td>
+    <td width=200><a href="affiche_eleve.php?type_graphe=courbe"><?php echo ucfirst($gepiSettings['denomination_eleve']);?> par rapport Ã  un <?php echo $gepiSettings['denomination_eleve'];?> ou une moyenne</a></td>
+    <td><b>Graphique en courbe</b>: Permet de comparer les rÃ©sultats d'un <?php echo $gepiSettings['denomination_eleve'];?>, par rapport aux moyennes min/max/classe et par rapport Ã  un autre <?php echo $gepiSettings['denomination_eleve'];?>, matiÃ¨re par matiÃ¨re, pÃ©riode par pÃ©riode.<br />Alternativement, ce choix permet d'obtenir les courbes des 3 trimestres.</td>
 </tr>
 <tr class='lig-1'>
-    <td width=200><a href="affiche_eleve.php?type_graphe=etoile"><?php echo ucfirst($gepiSettings['denomination_eleve']);?> par rapport à un <?php echo $gepiSettings['denomination_eleve'];?> ou une moyenne</a></td>
-    <td><b>Graphique en étoile/polygone</b>: Permet de comparer les résultats d'un <?php echo $gepiSettings['denomination_eleve'];?>, par rapport aux moyennes min/max/classe et par rapport à un autre <?php echo $gepiSettings['denomination_eleve'];?>, matière par matière, période par période.<br />Alternativement, ce choix permet d'obtenir les polygones des 3 trimestres.</td>
+    <td width=200><a href="affiche_eleve.php?type_graphe=etoile"><?php echo ucfirst($gepiSettings['denomination_eleve']);?> par rapport Ã  un <?php echo $gepiSettings['denomination_eleve'];?> ou une moyenne</a></td>
+    <td><b>Graphique en Ã©toile/polygone</b>: Permet de comparer les rÃ©sultats d'un <?php echo $gepiSettings['denomination_eleve'];?>, par rapport aux moyennes min/max/classe et par rapport Ã  un autre <?php echo $gepiSettings['denomination_eleve'];?>, matiÃ¨re par matiÃ¨re, pÃ©riode par pÃ©riode.<br />Alternativement, ce choix permet d'obtenir les polygones des 3 trimestres.</td>
 </tr>
 </table>
 <p><br /></p>

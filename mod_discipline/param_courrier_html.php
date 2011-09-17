@@ -20,11 +20,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Begin standart header
-$titre_page = "Paramètres de configuration des bulletins scolaires HTML";
+$titre_page = "ParamÃ¨tres de configuration des bulletins scolaires HTML";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -41,16 +41,16 @@ if ($resultat_session == 'c') {
 include("../fckeditor/fckeditor.php") ;
 
 // Check access
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/param_courrier_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Paramètres courrier HTML', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/param_courrier_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Paramètres courrier HTML', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_discipline/param_courrier_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: ParamÃ¨tres courrier HTML', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/param_courrier_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: ParamÃ¨tres courrier HTML', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -228,13 +228,13 @@ if (isset($_POST['bull_affiche_signature'])) {
 */
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
-   $msg = "Enregistrement réussi !";
+   $msg = "Enregistrement rÃ©ussi !";
 }
 
 
 // End standart header
 //**************** EN-TETE *****************
-$titre_page = "Discipline: Paramètres courriers";
+$titre_page = "Discipline: ParamÃ¨tres courriers";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -243,7 +243,7 @@ echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' al
 /*
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 {
-    die("Droits insuffisants pour effectuer cette opération");
+    die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 */
 
@@ -329,15 +329,15 @@ echo "</td>\n";
 echo "</tr>\n";
 //============================================
 
-// Tester si un logo est défini
+// Tester si un logo est dÃ©fini
 
 echo "<tr";
 if ($nb_ligne % 2) {echo "bgcolor=".$bgcolor;}
 $nb_ligne++;
 echo ">\n";
 echo "<td style='font-variant: small-caps;'>\n";
-echo "Afficher le logo de l'établissement :\n";
-echo "<br /><span style='color:red;'>Tester si un logo est défini</span>";
+echo "Afficher le logo de l'Ã©tablissement :\n";
+echo "<br /><span style='color:red;'>Tester si un logo est dÃ©fini</span>";
 echo "</td>\n";
 
 echo "<td style='font-variant: small-caps;'>\n";
@@ -367,7 +367,7 @@ if ($nb_ligne % 2) {echo "bgcolor=".$bgcolor;}
 $nb_ligne++;
 echo ">\n";
 echo "<td style='font-variant: small-caps;'>\n";
-echo "Faire apparaitre le nom de l'établissement sur le bulletin :<br />(<i>certains établissements ont le nom dans le Logo</i>) :\n";
+echo "Faire apparaitre le nom de l'Ã©tablissement sur le bulletin :<br />(<i>certains Ã©tablissements ont le nom dans le Logo</i>) :\n";
 echo "</td>\n";
 
 echo "<td style='font-variant: small-caps;'>\n";
@@ -398,7 +398,7 @@ if ($nb_ligne % 2) {echo "bgcolor=".$bgcolor;}
 $nb_ligne++;
 echo ">\n";
 echo "<td style='font-variant: small-caps;'>\n";
-echo "Faire apparaitre l'adresse de l'établissement sur le bulletin :<br />(<i>certains établissements ont l'adresse dans le Logo</i>) :\n";
+echo "Faire apparaitre l'adresse de l'Ã©tablissement sur le bulletin :<br />(<i>certains Ã©tablissements ont l'adresse dans le Logo</i>) :\n";
 echo "</td>\n";
 
 echo "<td style='font-variant: small-caps;'>\n";
@@ -428,7 +428,7 @@ if ($nb_ligne % 2) {echo "bgcolor=".$bgcolor;}
 $nb_ligne++;
 echo ">\n";
 echo "<td style='font-variant: small-caps;'>\n";
-echo "Afficher le numéro de téléphone de l'établissement :\n";
+echo "Afficher le numÃ©ro de tÃ©lÃ©phone de l'Ã©tablissement :\n";
 echo "</td>\n";
 
 echo "<td style='font-variant: small-caps;'>\n";
@@ -458,7 +458,7 @@ if ($nb_ligne % 2) {echo "bgcolor=".$bgcolor;}
 $nb_ligne++;
 echo ">\n";
 echo "<td style='font-variant: small-caps;'>\n";
-echo "Afficher le numéro de fax de l'établissement :\n";
+echo "Afficher le numÃ©ro de fax de l'Ã©tablissement :\n";
 echo "</td>\n";
 
 echo "<td style='font-variant: small-caps;'>\n";
@@ -491,7 +491,7 @@ echo "<hr />\n";
 echo "<h3>Bloc adresse responsable</h3>\n";
 
 echo "<center><table border='1' cellpadding='10' width='90%' summary='Bloc adresse'><tr><td>
-Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève directement sur les courriers.
+Ces options contrÃ´lent le positionnement du bloc adresse du responsable de l'Ã©lÃ¨ve directement sur les courriers.
 </td></tr></table></center>\n";
 
 echo "<table cellpadding='8' cellspacing='0' width='100%' border='0' summary='Bloca adresse'>\n";
@@ -527,7 +527,7 @@ else {
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='disc_addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des résultats :</label>
+        <label for='disc_addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des rÃ©sultats :</label>
         </td>
         <td><input type="text" name="disc_addressblock_padding_text" id="disc_addressblock_padding_text" size="20" value="<?php echo(getSettingValue("disc_addressblock_padding_text")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
@@ -556,7 +556,7 @@ else {
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='disc_addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement :</label>
+        <label for='disc_addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouÃ©e au logo et Ã  l'adresse de l'Ã©tablissement :</label>
         </td>
 	<?php
 		if(!getSettingValue("disc_addressblock_logo_etab_prop")){
@@ -571,7 +571,7 @@ else {
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='disc_addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au bloc "Classe, année, période" :</label>
+        <label for='disc_addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouÃ©e au bloc "Classe, annÃ©e, pÃ©riode" :</label>
         </td>
 	<?php
 		if(!getSettingValue("disc_addressblock_classe_annee")){

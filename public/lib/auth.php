@@ -1,12 +1,12 @@
 <?php
 /*
-    Réalisation     : BIOT Nicolas pour PHPindex
+    RÃ©alisation     : BIOT Nicolas pour PHPindex
     Contact        : BIOT Nicolas <nicolas@globalis-ms.com>
 
     ----------------------------------------------------------
     Fichier        : auth.inc.php
     Description    : Script d'authentification
-    Date création    : 14/05/2001
+    Date crÃ©ation    : 14/05/2001
     Date de modif    : 10/11/2001 Antoine Bajolet
 */
 $user = getSettingValue("cahiers_texte_login_pub");
@@ -29,8 +29,8 @@ function phpdigAuth(){
     require_once("lib/header.inc");
 
     //**************** FIN EN-TETE *****************
-    echo "<H3><center>En raison du caractère personnel du contenu, ce site est soumis à des restrictions utilisateurs.
-    <br />Pour accéder aux cahiers de texte, vous devez demander auprès de l'administrateur,
+    echo "<H3><center>En raison du caractÃ¨re personnel du contenu, ce site est soumis Ã  des restrictions utilisateurs.
+    <br />Pour accÃ©der aux cahiers de texte, vous devez demander auprÃ¨s de l'administrateur,
     <br />le nom d'utilisateur et le mot de passe.</center></H3>";
     echo "</body></html>";
     exit();
@@ -43,7 +43,7 @@ if( !isset($PHP_AUTH_USER) && !isset($PHP_AUTH_PW) ) {
 }
 else {
     if( $PHP_AUTH_USER==$user && $PHP_AUTH_PW==$pwd ) {
-        // la suite du script sera exécutée
+        // la suite du script sera exÃ©cutÃ©e
     }
     else{
         // rappel de la fonction d'identification

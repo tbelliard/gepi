@@ -43,8 +43,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -60,16 +60,16 @@ if(isset($chaine_rech)) {
 	//check_token();
 
 	// Pour debug:
-	// echo "Eléments transmis: $chaine_rech<br />";
+	// echo "ElÃ©ments transmis: $chaine_rech<br />";
 
-	// Filtrage des caractères
-	$chaine_rech=preg_replace("/[^A-Za-z0-9ÀàÂâÄäÉéÈèÊêËëÎîÏïÔôÖöÙùÛûÜü \._-]/","%",$chaine_rech);
+	// Filtrage des caractÃ¨res
+	$chaine_rech=preg_replace("/[^A-Za-z0-9Ã€Ã Ã‚Ã¢Ã„Ã¤Ã‰Ã©ÃˆÃ¨ÃŠÃªÃ‹Ã«ÃÃ®ÃÃ¯Ã”Ã´Ã–Ã¶Ã™Ã¹Ã›Ã»ÃœÃ¼ \._-]/","%",$chaine_rech);
 
 	//$chaine_mysql="(";
 	$chaine_mysql=" 1 AND (";
-	//$tab=explode("_",substr($chaine_rech,1)); // On vire le _ de début de chaine
-	//$tab=explode("_",preg_replace("/^_/","",$chaine_rech)); // On vire le _ de début de chaine
-	$tab=explode(" ",$chaine_rech); // On vire le _ de début de chaine
+	//$tab=explode("_",substr($chaine_rech,1)); // On vire le _ de dÃ©but de chaine
+	//$tab=explode("_",preg_replace("/^_/","",$chaine_rech)); // On vire le _ de dÃ©but de chaine
+	$tab=explode(" ",$chaine_rech); // On vire le _ de dÃ©but de chaine
 	for($i=0;$i<count($tab);$i++) {
 		if($tab[$i]!='') {
 			if($i>0) {$chaine_mysql.=" OR ";}
@@ -101,10 +101,10 @@ if(isset($chaine_rech)) {
 		echo "</ul>";
 	}
 	else {
-		echo "Aucun incident de même nature n'a été trouvé.";
+		echo "Aucun incident de mÃªme nature n'a Ã©tÃ© trouvÃ©.";
 	}
 }
 else {
-	echo "Aucun élément pour la recherche d'incident.";
+	echo "Aucun Ã©lÃ©ment pour la recherche d'incident.";
 }
 ?>

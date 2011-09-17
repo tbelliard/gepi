@@ -65,7 +65,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
   if ($autoriser_inscript_multiples != 'y') {
     $test = sql_query1("select count(login) c from j_aid_eleves where indice_aid='".$indice_aid."' group by login order by c desc limit 1");
     if ($test > 1) {
-      $msg_inter = "Actuellement, un ou plusieurs élèves sont inscrits dans plusieurs AID à la fois.
+      $msg_inter = "Actuellement, un ou plusieurs Ã©lÃ¨ves sont inscrits dans plusieurs AID Ã  la fois.
       Impossible donc de supprimer l'autorisation d'inscrire un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.";
       $autoriser_inscript_multiples = 'y';
     }
@@ -91,9 +91,9 @@ if (isset($is_posted) and ($is_posted == "1")) {
 			feuille_presence = '".$feuille_presence."',
 			outils_complementaires = '".$activer_outils_comp."'");
 	  if (!$reg_data)
-		  $msg_inter .= "Erreur lors de l'enregistrement des données !<br />";
+		  $msg_inter .= "Erreur lors de l'enregistrement des donnÃ©es !<br />";
 
-		// Suppression de professeurs dans le cas des outils complémentaire
+		// Suppression de professeurs dans le cas des outils complÃ©mentaire
 		$call_profs = mysql_query("SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE (indice_aid='$indice_aid')");
 		$nb_profs = mysql_num_rows($call_profs);
 		$i = 0;
@@ -106,10 +106,10 @@ if (isset($is_posted) and ($is_posted == "1")) {
 		    $i++;
 		} // while
     if (isset($_POST["reg_prof_login"]) and ($_POST["reg_prof_login"] !="")) {
-        // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+        // On commence par vÃ©rifier que le professeur n'est pas dÃ©jÃ  prÃ©sent dans cette liste.
         $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and indice_aid='$indice_aid')");
         if ($test != "0") {
-            $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+            $msg = "Le professeur que vous avez tentÃ© d'ajouter appartient dÃ©jÃ  Ã  cet AID";
         } else {
             $reg_data = mysql_query("INSERT INTO j_aidcateg_utilisateurs SET id_utilisateur= '".$_POST["reg_prof_login"]."', indice_aid='".$indice_aid."'");
             if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
@@ -130,10 +130,10 @@ if (isset($is_posted) and ($is_posted == "1")) {
 
 
     if (isset($_POST["reg_gestionnaire_login"]) and ($_POST["reg_gestionnaire_login"] !="")) {
-        // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+        // On commence par vÃ©rifier que le professeur n'est pas dÃ©jÃ  prÃ©sent dans cette liste.
         $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$reg_gestionnaire_login' and indice_aid='$indice_aid')");
         if ($test != "0") {
-            $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+            $msg = "Le professeur que vous avez tentÃ© d'ajouter appartient dÃ©jÃ  Ã  cet AID";
         } else {
             $reg_data = mysql_query("INSERT INTO j_aidcateg_super_gestionnaires SET id_utilisateur= '".$_POST["reg_gestionnaire_login"]."', indice_aid='".$indice_aid."'");
             if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
@@ -144,7 +144,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
     if ($msg_inter !="") {
         $msg = $msg_inter;
     } else {
-        $msg = "Enregistrement réussi !";
+        $msg = "Enregistrement rÃ©ussi !";
     }
 }
 
@@ -159,7 +159,7 @@ require_once("../lib/header.inc");
 <script type="text/javascript" language="javascript">
 var errorMsg0  = 'Le formulaire est incomplet !';
 var errorMsg1  = ' veuillez rentrer un nombre ! ';
-var errorMsg2  = ' : cette valeur n\'est pas autorisée ! ';
+var errorMsg2  = ' : cette valeur n\'est pas autorisÃ©e ! ';
 function mise_a_zero() {
     window.document.formulaire.note_max.value = '';
 }
@@ -178,8 +178,8 @@ function verif_type_note() {
 // AJOUT: boireaus
 function emptyFormElements(formulaire,champ){
 	//eval("document.forms['"+formulaire+"']."+champ+".value=''");
-	// J'ai viré la ligne parce qu'elle vide le champ avant que la valeur soit transmise
-	// et du coup on insère dans la table des noms vides.
+	// J'ai virÃ© la ligne parce qu'elle vide le champ avant que la valeur soit transmise
+	// et du coup on insÃ¨re dans la table des noms vides.
 	return true;
 }
 
@@ -216,7 +216,7 @@ if (isset($indice_aid)) {
     $bull_simplifie = @mysql_result($call_data, 0, "bull_simplifie");
     $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
     $feuille_presence = @mysql_result($call_data, 0, "feuille_presence");
-    // Compatibilité avec version
+    // CompatibilitÃ© avec version
     if ($display_bulletin=='')  $display_bulletin = "y";
     if ($autoriser_inscript_multiples=='')  $autoriser_inscript_multiples = "n";
 } else {
@@ -251,15 +251,15 @@ echo add_token_field();
 
 <input type="submit" value="Enregistrer" /><br />
 
-<br /><b>Configuration des AID (Activités Inter-Disciplinaires) :</b>
+<br /><b>Configuration des AID (ActivitÃ©s Inter-Disciplinaires) :</b>
 
 <hr />
 
-Choisissez le nom complet de l'AID (par exemple Travaux Personnels Encadrés) :
+Choisissez le nom complet de l'AID (par exemple Travaux Personnels EncadrÃ©s) :
 
 <br />Nom complet : <input type="text" name="reg_nom_complet" size="40" <?php if (isset($reg_nom_complet)) { echo "value=\"".$reg_nom_complet."\"";}?> />
 
-<br /><br />Choisissez le nom abrégé de l'AID (par exemple T.P.E.) :
+<br /><br />Choisissez le nom abrÃ©gÃ© de l'AID (par exemple T.P.E.) :
 
 <br />Nom : <input type="text" name="reg_nom" size="20" <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> />
 
@@ -267,9 +267,9 @@ Choisissez le nom complet de l'AID (par exemple Travaux Personnels Encadrés) :
 
 Type de notation :  <br />
 
-<input type="radio" name="type_note" value="every" <?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> /> Une note pour chaque période
+<input type="radio" name="type_note" value="every" <?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> /> Une note pour chaque pÃ©riode
 
-<input type="radio" name="type_note" value="last" <?php if ($type_note == "last") { echo ' checked="checked"';} ?> /> Une note uniquement pour la dernière période
+<input type="radio" name="type_note" value="last" <?php if ($type_note == "last") { echo ' checked="checked"';} ?> /> Une note uniquement pour la derniÃ¨re pÃ©riode
 
 <input type="radio" name="type_note" value="no" <?php if ($type_note == "no") { echo ' checked="checked"';} ?> onclick="mise_a_zero()" /> Pas de note
 
@@ -283,15 +283,15 @@ $query_max_periode = mysql_query("SELECT max(num_periode) max FROM periodes");
 
 $max_periode = mysql_result($query_max_periode, 0, "max")+1;
 
-echo "Durée de l'AID : ";
+echo "DurÃ©e de l'AID : ";
 
 if ($max_periode == '1') {
 
-   echo " <font color='red'>Attention, aucune période n'est actuellement définie (commencez par créer une ou plusieurs classes sur une ou plusieurs périodes).</font>";
+   echo " <font color='red'>Attention, aucune pÃ©riode n'est actuellement dÃ©finie (commencez par crÃ©er une ou plusieurs classes sur une ou plusieurs pÃ©riodes).</font>";
 
    $max_periode = '2';
 
-} echo "<br /> L'aid débute à la période";
+} echo "<br /> L'aid dÃ©bute Ã  la pÃ©riode";
 
 echo "<SELECT name=\"display_begin\">";
 
@@ -309,7 +309,7 @@ while ($i < $max_periode) {
 
 </SELECT>
 
-(incluse) jusqu'à la période
+(incluse) jusqu'Ã  la pÃ©riode
 
 <SELECT name="display_end">
 
@@ -335,13 +335,13 @@ while ($i < $max_periode) {
 
 <hr />
 
-Choisissez le cas échéant la note maximum sur laquelle est notée l'AID :
+Choisissez le cas Ã©chÃ©ant la note maximum sur laquelle est notÃ©e l'AID :
 
 <br />Note maximum : <input type="text" name="note_max" size="20" <?php if ($note_max) { echo "value=\"".$note_max."\"";}?> onBlur="verif_type_note()" />
 
 <hr />
 
-Dans le bulletin final, le titre complet apparaît et précède l'appréciation dans la case appréciation :<br />
+Dans le bulletin final, le titre complet apparaÃ®t et prÃ©cÃ¨de l'apprÃ©ciation dans la case apprÃ©ciation :<br />
 
 <input type="radio" name="display_nom" value="y" <?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> /> Oui
 
@@ -349,17 +349,17 @@ Dans le bulletin final, le titre complet apparaît et précède l'appréciation dans
 
 <hr />
 
-Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :<br />
+Dans le bulletin final, le message suivant prÃ©cÃ¨de le titre complet dans la case apprÃ©ciation :<br />
 
 <input type="text" name="message" size="40" maxlength="40" <?php if ($message) { echo "value=\"".$message."\"";}?> /><br />
-<span style='font-size:small;'>(Ce message prendra de la place dans la case appréciation sur le bulletin)</span>
+<span style='font-size:small;'>(Ce message prendra de la place dans la case apprÃ©ciation sur le bulletin)</span>
 
 <hr />
 
-<p>Place de la case réservée à cette aid dans le bulletin final :</p>
+<p>Place de la case rÃ©servÃ©e Ã  cette aid dans le bulletin final :</p>
 <p>
 <input type="radio" id="orderDisplay1Y" name="order_display1" value="b" <?php if (($order_display1 == "b") or (!$order_display1)) { echo ' checked="checked"';;} ?> />
-<label for="orderDisplay1Y"> En début du bulletin</label>
+<label for="orderDisplay1Y"> En dÃ©but du bulletin</label>
 <input type="radio"id="orderDisplay1N" name="order_display1" value="e" <?php if ($order_display1 == "e") { echo ' checked="checked"';;} ?> />
 <label for="orderDisplay1N"> En fin de bulletin</label>
 </p>
@@ -379,7 +379,7 @@ Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
 <p><b>Affichage :  </b></p>
 <p>
 <input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" <?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
-<label for="display_Bulletin">L'AID apparaît dans le bulletin officiel</label>
+<label for="display_Bulletin">L'AID apparaÃ®t dans le bulletin officiel</label>
 </p>
 <p>
 <input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' <?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
@@ -398,7 +398,7 @@ Par d&eacute;faut, un &eacute;l&egrave;ve ne peut &ecirc;tre inscrit dans plus d
 
 <hr />
 <?php
-// si le plugin "gestion_autorisations_publications" existe et est activé, on exclue la rubrique correspondante
+// si le plugin "gestion_autorisations_publications" existe et est activÃ©, on exclue la rubrique correspondante
 $test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
 
 if ((getSettingValue("active_mod_gest_aid")=="y") and ($test_plugin=='y') and (getSettingValue("indice_aid_autorisations_publi") != $indice_aid)) {
@@ -439,13 +439,13 @@ while ($i < $nombreligne) {
 <hr />
 <?php } ?>
 
-<p><b>Outils complémentaires de gestion des AIDs :</b></p>
-<p>En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
-(attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire...).
+<p><b>Outils complÃ©mentaires de gestion des AIDs :</b></p>
+<p>En activant les outils complÃ©mentaires de gestion des AIDs, vous avez accÃ¨s Ã  des champs supplÃ©mentaires
+(attribution d'une salle, possibilitÃ© de dÃ©finir un rÃ©sumÃ©, le type de production, des mots_clÃ©s, un public destinataire...).
 <a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Consulter l'aide</a>.</p>
 <p>
 <input type="radio" onclick="javascript:Element.show('outils_comp');" name="activer_outils_comp" value="y" <?php if ($activer_outils_comp=='y') echo " checked"; ?> />&nbsp;Activer les outils compl&eacute;mentaires<br />
-<input type="radio" onclick="javascript:Element.hide('outils_comp');" name="activer_outils_comp" value="n" <?php if ($activer_outils_comp=='n') echo " checked"; ?> />&nbsp;Désactiver les outils compl&eacute;mentaires
+<input type="radio" onclick="javascript:Element.hide('outils_comp');" name="activer_outils_comp" value="n" <?php if ($activer_outils_comp=='n') echo " checked"; ?> />&nbsp;DÃ©sactiver les outils compl&eacute;mentaires
 </p>
 <?php if ($activer_outils_comp=='y') {?>
     <div id="outils_comp">
@@ -455,7 +455,7 @@ while ($i < $nombreligne) {
 <hr />
 <p><b>Modification des fiches projet : </b></p>
 <p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (professeurs ou CPE) ayant le droit de modifier les fiches projet (documentaliste, ...)
-même lorsque l'administrateur a désactivé cette possibilité pour les professeurs responsables.</p>
+mÃªme lorsque l'administrateur a dÃ©sactivÃ© cette possibilitÃ© pour les professeurs responsables.</p>
 <?php
 $call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
 $nombre = mysql_num_rows($call_liste_data);
@@ -488,8 +488,8 @@ while ($i < $nombreligne) {
 
 ?>
 </select>
-<hr /><p><b>Feuille de présence : </b></p>
-<p>En cochant la case présence ci-dessous, vous avez la possibilité, dans l'interface de visualisation, d'afficher un lien permettant d'imprimer des feuilles de présence.</p>
+<hr /><p><b>Feuille de prÃ©sence : </b></p>
+<p>En cochant la case prÃ©sence ci-dessous, vous avez la possibilitÃ©, dans l'interface de visualisation, d'afficher un lien permettant d'imprimer des feuilles de prÃ©sence.</p>
 <p>
 <input type="checkbox" id="feuillePresence" name="feuille_presence" value="y" <?php if ($feuille_presence == "y") { echo ' checked="checked"';} ?> />
 <label for="feuille_presence"> Afficher un lien permettant l'impression de feuilles de pr&eacute;sence</label>

@@ -21,11 +21,11 @@ header("Location: ../logout.php?auto=1");
 die();
 }
 
-// Page bourrinÈe... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
+// Page bourrin√©e... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
 check_token();
 
 //================================================
-// Fonction de gÈnÈration de mot de passe rÈcupÈrÈe sur TotallyPHP
+// Fonction de g√©n√©ration de mot de passe r√©cup√©r√©e sur TotallyPHP
 // Aucune mention de licence pour ce script...
 
 /*
@@ -56,7 +56,7 @@ function createRandomPassword() {
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>Lecture du XML Emploi du temps de Sts-web et gÈnÈration de CSV</title>
+    <title>Lecture du XML Emploi du temps de Sts-web et g√©n√©ration de CSV</title>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
     <meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
     <!--link type="text/css" rel="stylesheet" href="../styles.css" /-->
@@ -66,15 +66,15 @@ function createRandomPassword() {
     <div class="content">
         <?php
 
-            // Initialisation du rÈpertoire actuel de sauvegarde
+            // Initialisation du r√©pertoire actuel de sauvegarde
             $dirname = getSettingValue("backup_directory");
             //$dirname="tmp";
 
             if(!file_exists("../backup/$dirname/csv")){
                 //if(!mkdir("../backup/$dirname/csv","0770")){
                 if(!mkdir("../backup/$dirname/csv")){
-                    echo "<p style='color:red;'>Erreur! Le dossier csv n'a pas pu Ítre crÈÈ.</p>\n";
-                    echo "<p>Retour ‡ l'<a href='index.php'>index</a></p>\n";
+                    echo "<p style='color:red;'>Erreur! Le dossier csv n'a pas pu √™tre cr√©√©.</p>\n";
+                    echo "<p>Retour √† l'<a href='index.php'>index</a></p>\n";
                     echo "</div></body></html>\n";
                     die();
                 }
@@ -86,32 +86,32 @@ function createRandomPassword() {
 
             if(isset($_GET['nettoyage'])){
                 echo "<h1 align='center'>Suppression des CSV</h1>\n";
-                echo "<p>Si des fichiers CSV existent, ils seront supprimÈs...</p>\n";
+                echo "<p>Si des fichiers CSV existent, ils seront supprim√©s...</p>\n";
                 $tabfich=array("f_wind.csv","f_men.csv","f_gpd.csv","f_div.csv","f_tmt.csv","profs.html");
                 for($i=0;$i<count($tabfich);$i++){
                     if(file_exists("../backup/$dirname/csv/$tabfich[$i]")){
                         echo "<p>Suppression de $tabfich[$i]... ";
                         if(unlink("../backup/$dirname/csv/$tabfich[$i]")){
-                            echo "rÈussie.</p>\n";
+                            echo "r√©ussie.</p>\n";
                         }
                         else{
-                            echo "<font color='red'>Echec!</font> VÈrifiez les droits d'Ècriture sur le serveur.</p>\n";
+                            echo "<font color='red'>Echec!</font> V√©rifiez les droits d'√©criture sur le serveur.</p>\n";
                         }
                     }
                 }
             }
             else{
-                echo "<h1 align='center'>Lecture du XML Emploi du temps de Sts-web et gÈnÈration de CSV</h1>\n";
+                echo "<h1 align='center'>Lecture du XML Emploi du temps de Sts-web et g√©n√©ration de CSV</h1>\n";
                 if(!isset($_POST['is_posted'])){
-                    echo "<p>Cette page permet de remplir des tableaux PHP avec les informations professeurs, matiËres,... mais pas encore les liaisons profs/matiËres/classes.<br />Elle gÈnËre des fichiers CSV permettant un import des comptes profs pour SambaEdu3.</p>\n";
-                    echo "<p>Il faut lui fournir un Export XML rÈalisÈ depuis l'application STS-web.<br />Demandez gentillement ‡ votre secrÈtaire d'accÈder ‡ STS-web et d'effectuer 'Mise ‡ jour/Exports/Emplois du temps'.</p>\n";
+                    echo "<p>Cette page permet de remplir des tableaux PHP avec les informations professeurs, mati√®res,... mais pas encore les liaisons profs/mati√®res/classes.<br />Elle g√©n√®re des fichiers CSV permettant un import des comptes profs pour SambaEdu3.</p>\n";
+                    echo "<p>Il faut lui fournir un Export XML r√©alis√© depuis l'application STS-web.<br />Demandez gentillement √† votre secr√©taire d'acc√©der √† STS-web et d'effectuer 'Mise √† jour/Exports/Emplois du temps'.</p>\n";
                     echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
                     echo "<p>Veuillez fournir le fichier XML: \n";
                     echo "<p><input type=\"file\" size=\"80\" name=\"xml_file\">\n";
                     echo "<input type='hidden' name='is_posted' value='yes'>\n";
                     echo "</p>\n";
-                    echo "<p><input type=\"radio\" name=\"mdp\" value=\"alea\" checked> GÈnÈrer un mot de passe alÈatoire pour chaque professeur.<br />\n";
-                    echo "<input type=\"radio\" name=\"mdp\" value=\"date\"> Utiliser plutÙt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra Ítre modifiÈ au premier login</i>).</p>\n";
+                    echo "<p><input type=\"radio\" name=\"mdp\" value=\"alea\" checked> G√©n√©rer un mot de passe al√©atoire pour chaque professeur.<br />\n";
+                    echo "<input type=\"radio\" name=\"mdp\" value=\"date\"> Utiliser plut√¥t la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra √™tre modifi√© au premier login</i>).</p>\n";
                     echo "<input type='hidden' name='is_posted' value='yes'>\n";
                     //echo "</p>\n";
                     echo "<p><input type='submit' value='Valider'></p>\n";
@@ -123,7 +123,7 @@ function createRandomPassword() {
                     $xml_file = isset($_FILES["xml_file"]) ? $_FILES["xml_file"] : NULL;
                     $fp=fopen($xml_file['tmp_name'],"r");
                     if($fp){
-                        echo "<h2>PremiËre phase...</h2>\n";
+                        echo "<h2>Premi√®re phase...</h2>\n";
                         echo "<blockquote>\n";
                         echo "<h3>Lecture du fichier...</h3>\n";
                         echo "<blockquote>\n";
@@ -131,9 +131,9 @@ function createRandomPassword() {
                             $ligne[]=fgets($fp,4096);
                         }
                         fclose($fp);
-                        echo "<p>TerminÈ.</p>\n";
-                        //echo "<p>Aller ‡ la <a href='#se3'>section SambaEdu3</a></p>\n";
-                        echo "<p>Aller ‡ la <a href='#gepi'>section GEPI</a><br />Si vous patientez, des liens directs seront proposÈs pour tÈlÈcharger les fichiers.</p>\n";
+                        echo "<p>Termin√©.</p>\n";
+                        //echo "<p>Aller √† la <a href='#se3'>section SambaEdu3</a></p>\n";
+                        echo "<p>Aller √† la <a href='#gepi'>section GEPI</a><br />Si vous patientez, des liens directs seront propos√©s pour t√©l√©charger les fichiers.</p>\n";
                         echo "</blockquote>\n";
 
                         echo "<h3>Affichage du XML</h3>\n";
@@ -147,7 +147,7 @@ function createRandomPassword() {
                             $cpt++;
                         }
                         echo "</table>\n";
-                        echo "<p>TerminÈ.</p>\n";
+                        echo "<p>Termin√©.</p>\n";
                         echo "</blockquote>\n";
                         echo "</blockquote>\n";
 
@@ -155,7 +155,7 @@ function createRandomPassword() {
 
                         echo "<h2>Etablissement</h2>\n";
                         echo "<blockquote>\n";
-                        echo "<h3>Analyse du fichier pour extraire les paramËtres de l'Ètablissement...</h3>\n";
+                        echo "<h3>Analyse du fichier pour extraire les param√®tres de l'√©tablissement...</h3>\n";
                         echo "<blockquote>\n";
                         $cpt=0;
                         $etablissement=array();
@@ -165,22 +165,22 @@ function createRandomPassword() {
                         while($cpt<count($ligne)){
                             //echo htmlentities($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<PARAMETRES>")){
-                                echo "DÈbut de la section PARAMETRES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "D√©but de la section PARAMETRES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_param++;
                             }
                             if(strstr($ligne[$cpt],"</PARAMETRES>")){
-                                echo "Fin de la section PARAMETRES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "Fin de la section PARAMETRES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_param++;
                             }
                             if($temoin_param==1){
-                                // On analyse maintenant matiËre par matiËre:
+                                // On analyse maintenant mati√®re par mati√®re:
                                 /*
                                 if(strstr($ligne[$cpt],"<UAJ CODE=")){
                                     unset($tabtmp);
                                     $tabtmp=explode('"',$ligne[$cpt]);
                                     $etablissement["code"]=trim($tabtmp[1]);
                                     $temoin_uaj=1;
-                                    //echo "\$temoin_uaj=$temoin_uaj ‡ la ligne $cpt et \$tabtmp[1]=$tabtmp[1]<br />\n";
+                                    //echo "\$temoin_uaj=$temoin_uaj √† la ligne $cpt et \$tabtmp[1]=$tabtmp[1]<br />\n";
                                 }
                                 */
                                 if(strstr($ligne[$cpt],"<UAJ ")){
@@ -316,17 +316,17 @@ function createRandomPassword() {
                             }
                             $cpt++;
                         }
-                        echo "<p>TerminÈ.</p>\n";
+                        echo "<p>Termin√©.</p>\n";
                         echo "</blockquote>\n";
 
-                        echo "<h3>Affichage des donnÈes PARAMETRES Ètablissement extraites:</h3>\n";
+                        echo "<h3>Affichage des donn√©es PARAMETRES √©tablissement extraites:</h3>\n";
                         echo "<blockquote>\n";
                         echo "<table border='1'>\n";
                         echo "<tr>\n";
                         //echo "<th style='color: blue;'>&nbsp;</th>\n";
                         echo "<th>Code</th>\n";
-                        echo "<th>Code acadÈmie</th>\n";
-                        echo "<th>Libelle acadÈmie</th>\n";
+                        echo "<th>Code acad√©mie</th>\n";
+                        echo "<th>Libelle acad√©mie</th>\n";
                         echo "<th>Sigle</th>\n";
                         echo "<th>Denom_princ</th>\n";
                         echo "<th>Denom_compl</th>\n";
@@ -383,9 +383,9 @@ function createRandomPassword() {
 
 
 
-                        echo "<h2>MatiËres</h2>\n";
+                        echo "<h2>Mati√®res</h2>\n";
                         echo "<blockquote>\n";
-                        echo "<h3>Analyse du fichier pour extraire les matiËres...</h3>\n";
+                        echo "<h3>Analyse du fichier pour extraire les mati√®res...</h3>\n";
                         echo "<blockquote>\n";
                         $cpt=0;
                         $temoin_matieres=0;
@@ -395,15 +395,15 @@ function createRandomPassword() {
                         while($cpt<count($ligne)){
                             //echo htmlentities($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<MATIERES>")){
-                                echo "DÈbut de la section MATIERES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "D√©but de la section MATIERES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_matieres++;
                             }
                             if(strstr($ligne[$cpt],"</MATIERES>")){
-                                echo "Fin de la section MATIERES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "Fin de la section MATIERES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_matieres++;
                             }
                             if($temoin_matieres==1){
-                                // On analyse maintenant matiËre par matiËre:
+                                // On analyse maintenant mati√®re par mati√®re:
                                 /*
                                 if(strstr($ligne[$cpt],"<MATIERE CODE=")){
                                     $matiere[$i]=array();
@@ -437,7 +437,7 @@ function createRandomPassword() {
                                         unset($tabtmp);
                                         $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$matiere[$i]["libelle_court"]=$tabtmp[2];
-                                        $matiere[$i]["libelle_court"]=trim(my_ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+                                        $matiere[$i]["libelle_court"]=trim(my_ereg_replace("[^a-zA-Z0-9√Ä√Ñ√Ç√â√à√ä√ã√é√è√î√ñ√ô√õ√ú√á√ß√†√§√¢√©√®√™√´√Æ√Ø√¥√∂√π√ª√º&_. -]","",html_entity_decode_all_version($tabtmp[2])));
                                     }
                                     if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
                                         unset($tabtmp);
@@ -454,10 +454,10 @@ function createRandomPassword() {
 
                             $cpt++;
                         }
-                        echo "<p>TerminÈ.</p>\n";
+                        echo "<p>Termin√©.</p>\n";
                         echo "</blockquote>\n";
 
-                        echo "<h3>Affichage des donnÈes MATIERES extraites:</h3>\n";
+                        echo "<h3>Affichage des donn√©es MATIERES extraites:</h3>\n";
                         echo "<blockquote>\n";
                         echo "<table border='1'>\n";
                         echo "<tr>\n";
@@ -497,9 +497,9 @@ function createRandomPassword() {
 
 
 
-                        echo "<h2>CivilitÈs</h2>\n";
+                        echo "<h2>Civilit√©s</h2>\n";
                         echo "<blockquote>\n";
-                        echo "<h3>Analyse du fichier pour extraire les civilitÈs...</h3>\n";
+                        echo "<h3>Analyse du fichier pour extraire les civilit√©s...</h3>\n";
                         echo "<blockquote>\n";
                         $cpt=0;
                         $temoin_civilites=0;
@@ -508,11 +508,11 @@ function createRandomPassword() {
                         while($cpt<count($ligne)){
                             //echo htmlentities($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<CIVILITES>")){
-                                echo "DÈbut de la section CIVILITES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "D√©but de la section CIVILITES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_civilites++;
                             }
                             if(strstr($ligne[$cpt],"</CIVILITES>")){
-                                echo "Fin de la section CIVILITES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "Fin de la section CIVILITES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_civilites++;
                             }
                             if($temoin_civilites==1){
@@ -551,10 +551,10 @@ function createRandomPassword() {
                             }
                             $cpt++;
                         }
-                        echo "<p>TerminÈ.</p>\n";
+                        echo "<p>Termin√©.</p>\n";
                         echo "</blockquote>\n";
 
-                        echo "<h3>Affichage des donnÈes CIVILITES extraites:</h3>\n";
+                        echo "<h3>Affichage des donn√©es CIVILITES extraites:</h3>\n";
                         echo "<blockquote>\n";
                         echo "<table border='1'>\n";
                         echo "<tr>\n";
@@ -598,15 +598,15 @@ function createRandomPassword() {
                         while($cpt<count($ligne)){
                             //echo htmlentities($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<INDIVIDUS>")){
-                                echo "DÈbut de la section INDIVIDUS ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "D√©but de la section INDIVIDUS √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_professeurs++;
                             }
                             if(strstr($ligne[$cpt],"</INDIVIDUS>")){
-                                echo "Fin de la section INDIVIDUS ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "Fin de la section INDIVIDUS √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_professeurs++;
                             }
                             if($temoin_professeurs==1){
-                                // On analyse maintenant matiËre par matiËre:
+                                // On analyse maintenant mati√®re par mati√®re:
                                 /*
                                 if(strstr($ligne[$cpt],"<INDIVIDU ID=")){
                                     $prof[$i]=array();
@@ -659,7 +659,7 @@ function createRandomPassword() {
                                         unset($tabtmp);
                                         $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$prof[$i]["prenom"]=$tabtmp[2];
-                                        $prof[$i]["prenom"]=trim(my_ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_. -]","",$tabtmp[2]));
+                                        $prof[$i]["prenom"]=trim(my_ereg_replace("[^a-zA-Z0-9√Ä√Ñ√Ç√â√à√ä√ã√é√è√î√ñ√ô√õ√ú√á√ß√†√§√¢√©√®√™√´√Æ√Ø√¥√∂√π√ª√º_. -]","",$tabtmp[2]));
                                     }
                                     if(strstr($ligne[$cpt],"<DATE_NAISSANCE>")){
                                         unset($tabtmp);
@@ -775,24 +775,24 @@ function createRandomPassword() {
 
 
 
-                            // On va rÈcupÈrer les divisions et associations profs/matiËres...
+                            // On va r√©cup√©rer les divisions et associations profs/mati√®res...
                             if(strstr($ligne[$cpt],"<STRUCTURE>")){
-                                echo "DÈbut de la section STRUCTURE ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "D√©but de la section STRUCTURE √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_structure++;
                             }
                             if(strstr($ligne[$cpt],"</STRUCTURE>")){
-                                echo "Fin de la section STRUCTURE ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "Fin de la section STRUCTURE √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_structure++;
                             }
                             if($temoin_structure==1){
                                 if(strstr($ligne[$cpt],"<DIVISIONS>")){
-                                    echo "DÈbut de la section DIVISIONS ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                    echo "D√©but de la section DIVISIONS √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                     $temoin_divisions++;
                                     $divisions=array();
                                     $i=0;
                                 }
                                 if(strstr($ligne[$cpt],"</DIVISIONS>")){
-                                    echo "Fin de la section DIVISIONS ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                    echo "Fin de la section DIVISIONS √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                     $temoin_divisions++;
                                 }
                                 if($temoin_divisions==1){
@@ -884,13 +884,13 @@ function createRandomPassword() {
 
 
                                 if(strstr($ligne[$cpt],"<GROUPES>")){
-                                    echo "DÈbut de la section GROUPES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                    echo "D√©but de la section GROUPES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                     $temoin_groupes++;
                                     $groupes=array();
                                     $i=0;
                                 }
                                 if(strstr($ligne[$cpt],"</GROUPES>")){
-                                    echo "Fin de la section GROUPES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                    echo "Fin de la section GROUPES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                     $temoin_groupes++;
                                 }
                                 if($temoin_groupes==1){
@@ -967,8 +967,8 @@ function createRandomPassword() {
 
 
                                         //<ENSEIGNANT TYPE="epp" ID="31762">
-                                        // AmÈliorer la rÈcup de l'attribut ID...
-                                        // ...dÈcouper en un tableau avec ' '
+                                        // Am√©liorer la r√©cup de l'attribut ID...
+                                        // ...d√©couper en un tableau avec ' '
                                         // et rechercher quel champ du tableau commence par ID=
 
                                            //<ENSEIGNANT ID="11508" TYPE="epp">
@@ -1007,7 +1007,7 @@ function createRandomPassword() {
 
                             $cpt++;
                         }
-                        echo "<p>TerminÈ.</p>\n";
+                        echo "<p>Termin√©.</p>\n";
                         echo "</blockquote>\n";
 
 
@@ -1035,15 +1035,15 @@ function createRandomPassword() {
                         while($cpt<count($ligne)){
                             //echo htmlentities($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<PROGRAMMES>")){
-                                echo "DÈbut de la section PROGRAMMES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "D√©but de la section PROGRAMMES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_programmes++;
                             }
                             if(strstr($ligne[$cpt],"</PROGRAMMES>")){
-                                echo "Fin de la section PROGRAMMES ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
+                                echo "Fin de la section PROGRAMMES √† la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_programmes++;
                             }
                             if($temoin_programmes==1){
-                                // On analyse maintenant matiËre par matiËre:
+                                // On analyse maintenant mati√®re par mati√®re:
                                 if(strstr($ligne[$cpt],"<PROGRAMME>")){
                                     $programme[$i]=array();
                                     $temoin_prog=1;
@@ -1068,7 +1068,7 @@ function createRandomPassword() {
 
                             $cpt++;
                         }
-                        echo "<p>TerminÈ.</p>\n";
+                        echo "<p>Termin√©.</p>\n";
                         echo "</blockquote>\n";
 */
 
@@ -1076,7 +1076,7 @@ function createRandomPassword() {
 
 
 
-                        echo "<h3>Affichage des donnÈes PROFS,... extraites:</h3>\n";
+                        echo "<h3>Affichage des donn√©es PROFS,... extraites:</h3>\n";
                         echo "<blockquote>\n";
                         echo "<table border='1'>\n";
                         echo "<tr>\n";
@@ -1156,7 +1156,7 @@ function createRandomPassword() {
                                 for($m=0;$m<count($matiere);$m++){
                                     if($matiere[$m]["code"]==$divisions[$i]["services"][$j]["code_matiere"]){
                                         //echo "\$matiere[$m][\"code_gestion\"]=".$matiere[$m]["code_gestion"]."<br />\n";
-                                        echo "MatiËre: ".$matiere[$m]["code_gestion"]."<br />\n";
+                                        echo "Mati√®re: ".$matiere[$m]["code_gestion"]."<br />\n";
                                         $temoin_au_moins_une_matiere="oui";
                                     }
                                 }
@@ -1188,7 +1188,7 @@ function createRandomPassword() {
 
 
     /*
-                        echo "<a name='se3'></a><h2>GÈnÈration du CSV (F_WIND.txt) des profs pour SE3</h2>\n";
+                        echo "<a name='se3'></a><h2>G√©n√©ration du CSV (F_WIND.txt) des profs pour SE3</h2>\n";
                         echo "<blockquote>\n";
                         $cpt=0;
                         while($cpt<count($prof)){
@@ -1204,7 +1204,7 @@ function createRandomPassword() {
 
 
 
-                        echo "<a name='f_div'></a><h2>GÈnÈration d'un CSV du F_DIV pour SambaEdu3</h2>\n";
+                        echo "<a name='f_div'></a><h2>G√©n√©ration d'un CSV du F_DIV pour SambaEdu3</h2>\n";
                         echo "<blockquote>\n";
                         for($i=0;$i<count($divisions);$i++){
                             $numind_pp="";
@@ -1218,17 +1218,17 @@ function createRandomPassword() {
                             echo $divisions[$i]["code"]."|".$divisions[$i]["code"]."|".$numind_pp."<br />\n";
                         }
                         if($temoin_au_moins_un_prof_princ!="oui"){
-                            echo "<p>Il semble que votre fichier ne comporte pas l'information suivante:<br />Qui sont les profs principaux?<br />Cela n'empÍche cependant pas l'import du CSV dans SambaEdu3.</p>\n";
+                            echo "<p>Il semble que votre fichier ne comporte pas l'information suivante:<br />Qui sont les profs principaux?<br />Cela n'emp√™che cependant pas l'import du CSV dans SambaEdu3.</p>\n";
                         }
                         echo "</blockquote>\n";
 
 
 
 
-                        echo "<a name='f_men'></a><h2>GÈnÈration d'un CSV du F_MEN pour SambaEdu3</h2>\n";
+                        echo "<a name='f_men'></a><h2>G√©n√©ration d'un CSV du F_MEN pour SambaEdu3</h2>\n";
                         echo "<blockquote>\n";
                         if(($temoin_au_moins_une_matiere=="")||($temoin_au_moins_un_prof=="")){
-                            echo "<p>Votre fichier ne comporte pas suffisamment d'informations pour gÈnÈrer ce CSV.<br />Il faut que les emplois du temps soient remontÈs vers STS pour que le fichier XML permette de gÈnÈrer ce CSV.</p>\n";
+                            echo "<p>Votre fichier ne comporte pas suffisamment d'informations pour g√©n√©rer ce CSV.<br />Il faut que les emplois du temps soient remont√©s vers STS pour que le fichier XML permette de g√©n√©rer ce CSV.</p>\n";
                         }
                         else{
                             for($i=0;$i<count($divisions);$i++){
@@ -1256,27 +1256,27 @@ function createRandomPassword() {
 
                         echo "<h2>Suppression des CSV existants</h2>\n";
                         echo "<blockquote>\n";
-                        echo "<p>Si des fichiers CSV ont dÈj‡ ÈtÈ gÈnÈrÈs, on va commencer par les supprimer avant d'en gÈnÈrer de nouveaux...</p>\n";
+                        echo "<p>Si des fichiers CSV ont d√©j√† √©t√© g√©n√©r√©s, on va commencer par les supprimer avant d'en g√©n√©rer de nouveaux...</p>\n";
                         $tabfich=array("f_wind.csv","f_men.csv","f_gpd.csv","f_div.csv","f_tmt.csv","profs.html");
                         for($i=0;$i<count($tabfich);$i++){
                             if(file_exists("../backup/$dirname/csv/$tabfich[$i]")){
                                 echo "<p>Suppression de $tabfich[$i]... ";
                                 if(unlink("../backup/$dirname/csv/$tabfich[$i]")){
-                                    echo "rÈussie.</p>\n";
+                                    echo "r√©ussie.</p>\n";
                                 }
                                 else{
-                                    echo "<font color='red'>Echec!</font> VÈrifiez les droits d'Ècriture sur le serveur.</p>\n";
+                                    echo "<font color='red'>Echec!</font> V√©rifiez les droits d'√©criture sur le serveur.</p>\n";
                                 }
                             }
                         }
-                        echo "<p>TerminÈ.</p>\n";
+                        echo "<p>Termin√©.</p>\n";
                         echo "</blockquote>\n";
 
 
 
                         echo "<a name='gepi'></a>\n";
 
-                        echo "<a name='f_wind_gepi'></a><h2>GÈnÈration du CSV (F_WIND.CSV) des profs pour GEPI</h2>\n";
+                        echo "<a name='f_wind_gepi'></a><h2>G√©n√©ration du CSV (F_WIND.CSV) des profs pour GEPI</h2>\n";
                         echo "<blockquote>\n";
                         $cpt=0;
                         $fich=fopen("../backup/$dirname/csv/f_wind.csv","w+");
@@ -1323,8 +1323,8 @@ die();
 <table border='1'>
 <tr>
 <th>Nom</th>
-<th>PrÈnom</th>
-<th>CivilitÈ</th>
+<th>Pr√©nom</th>
+<th>Civilit√©</th>
 <th>Mot de passe</th>
 </tr>\n");
                         }
@@ -1378,7 +1378,7 @@ die();
                         fclose($fich);
                         if($_POST['mdp']=="alea"){
                             fwrite($fich2,"</table>
-<p>Imprimez cette page, puis supprimez-la en procÈdant au nettoyage comme indiquÈ ‡ la page prÈcÈdente.</p>
+<p>Imprimez cette page, puis supprimez-la en proc√©dant au nettoyage comme indiqu√© √† la page pr√©c√©dente.</p>
 </body>
 </html>\n");
                             fclose($fich2);
@@ -1387,10 +1387,10 @@ die();
 
 
 
-                        echo "<a name='f_men_gepi'></a><h2>GÈnÈration d'un CSV du F_MEN pour GEPI</h2>\n";
+                        echo "<a name='f_men_gepi'></a><h2>G√©n√©ration d'un CSV du F_MEN pour GEPI</h2>\n";
                         echo "<blockquote>\n";
                         if(($temoin_au_moins_une_matiere=="")||($temoin_au_moins_un_prof=="")){
-                            echo "<p>Votre fichier ne comporte pas suffisamment d'informations pour gÈnÈrer ce CSV.<br />Il faut que les emplois du temps soient remontÈs vers STS pour que le fichier XML permette de gÈnÈrer ce CSV.</p>\n";
+                            echo "<p>Votre fichier ne comporte pas suffisamment d'informations pour g√©n√©rer ce CSV.<br />Il faut que les emplois du temps soient remont√©s vers STS pour que le fichier XML permette de g√©n√©rer ce CSV.</p>\n";
                         }
                         else{
                             $fich=fopen("../backup/$dirname/csv/f_men.csv","w+");
@@ -1432,7 +1432,7 @@ die();
                                     if($matiere[$m]["code"]==$groupes[$i]["code_matiere"]){
                                         //$matimn=$programme[$k]["code_matiere"];
                                         $matimn=$matiere[$m]["code_gestion"];
-                                        //echo "<b>TrouvÈ: matiËre n∞$m: \$matimn=$matimn</b><br />\n";
+                                        //echo "<b>Trouv√©: mati√®re n¬∞$m: \$matimn=$matimn</b><br />\n";
                                     }
                                 }
                                 //$groupes[$i]["enseignant"][$m]["id"]
@@ -1499,7 +1499,7 @@ die();
                             }
                             fclose($fich);
                         }
-                        echo "<p>Je ne sais pas trop pour le prÈfixe P.<br />Il n'est pas dans le fichier XML, mais est utilisÈ par SE3...<br />Et par contre, sur les F_WIND.DBF gÈnÈrÈs par AutoSco, il y a un prÈfixe E.</p>";
+                        echo "<p>Je ne sais pas trop pour le pr√©fixe P.<br />Il n'est pas dans le fichier XML, mais est utilis√© par SE3...<br />Et par contre, sur les F_WIND.DBF g√©n√©r√©s par AutoSco, il y a un pr√©fixe E.</p>";
                         echo "</blockquote>\n";
 
 
@@ -1514,11 +1514,11 @@ die();
 
 
 
-                        echo "<a name='f_gpd_gepi'></a><h2>GÈnÈration d'un CSV du F_GPD pour GEPI</h2>\n";
+                        echo "<a name='f_gpd_gepi'></a><h2>G√©n√©ration d'un CSV du F_GPD pour GEPI</h2>\n";
                         echo "<blockquote>\n";
     /*
                         if(($temoin_au_moins_une_matiere=="")||($temoin_au_moins_un_prof=="")){
-                            echo "<p>Votre fichier ne comporte pas suffisamment d'informations pour gÈnÈrer ce CSV.<br />Il faut que les emplois du temps soient remontÈs vers STS pour que le fichier XML permette de gÈnÈrer ce CSV.</p>\n";
+                            echo "<p>Votre fichier ne comporte pas suffisamment d'informations pour g√©n√©rer ce CSV.<br />Il faut que les emplois du temps soient remont√©s vers STS pour que le fichier XML permette de g√©n√©rer ce CSV.</p>\n";
                         }
                         else{
     */
@@ -1548,7 +1548,7 @@ die();
 
 
 
-                        echo "<a name='f_tmt_gepi'></a><h2>GÈnÈration d'un CSV du F_TMT pour GEPI</h2>\n";
+                        echo "<a name='f_tmt_gepi'></a><h2>G√©n√©ration d'un CSV du F_TMT pour GEPI</h2>\n";
                         echo "<blockquote>\n";
                         //echo "MATIMN;MATILC<br />\n";
                         $fich=fopen("../backup/$dirname/csv/f_tmt.csv","w+");
@@ -1570,7 +1570,7 @@ die();
 
 
 
-                        echo "<a name='f_div_gepi'></a><h2>GÈnÈration d'un CSV du F_DIV pour GEPI</h2>\n";
+                        echo "<a name='f_div_gepi'></a><h2>G√©n√©ration d'un CSV du F_DIV pour GEPI</h2>\n";
                         echo "<blockquote>\n";
                         $fich=fopen("../backup/$dirname/csv/f_div.csv","w+");
                         $chaine="DIVCOD;NUMIND";
@@ -1595,33 +1595,33 @@ die();
                             echo $chaine."<br />\n";
                         }
                         fclose($fich);
-                        echo "<p>Ce CSV est destinÈ ‡ renseigner les Professeurs Principaux...</p>\n";
+                        echo "<p>Ce CSV est destin√© √† renseigner les Professeurs Principaux...</p>\n";
                         echo "</blockquote>\n";
 
                         //echo "<div style='position:absolute; top: 50px; left: 50px; width: 300px; height: 200px; background: yellow; border: 1px solid black;'>\n";
                         echo "<div style='position:absolute; top: 70px; left: 300px; width: 300px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0; '>\n";
                         echo "<h4 style='margin:0; padding:0; text-align:center;'>GEPI</h4>\n";
                         //echo "<p style='margin-top: 0;'>Effectuez un Clic-droit/Enregistrer la cible du lien sous... pour chacun des fichiers ci-dessous.</p>\n";
-                        echo "<p style='margin-top: 0;'>RÈcupÈrez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
+                        echo "<p style='margin-top: 0;'>R√©cup√©rez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
                         echo "<table border='0'>\n";
 /*
                         echo "<li>Fichier Profs: <a href='../backup/$dirname/csv/f_wind.csv'>f_wind.csv</a></li>\n";
-                        echo "<li>Fichier Classes/matiËres/profs: <a href='../backup/$dirname/csv/f_men.csv'>f_men.csv</a></li>\n";
+                        echo "<li>Fichier Classes/mati√®res/profs: <a href='../backup/$dirname/csv/f_men.csv'>f_men.csv</a></li>\n";
                         echo "<li>Fichier Groupes/classes: <a href='../backup/$dirname/csv/f_gpd.csv'>f_gpd.csv</a></li>\n";
-                        echo "<li>Fichier MatiËres: <a href='../backup/$dirname/csv/f_tmt.csv'>f_tmt.csv</a></li>\n";
+                        echo "<li>Fichier Mati√®res: <a href='../backup/$dirname/csv/f_tmt.csv'>f_tmt.csv</a></li>\n";
                         echo "<li>Fichier Profs principaux: <a href='../backup/$dirname/csv/f_div.csv'>f_div.csv</a></li>\n";
 */
                         echo "<tr><td>Fichier Profs:</td><td><a href='save_csv.php?fileid=0'>f_wind.csv</a></td></tr>\n";
-                        echo "<tr><td>Fichier Classes/matiËres/profs:</td><td><a href='save_csv.php?fileid=1'>f_men.csv</a></td></tr>\n";
+                        echo "<tr><td>Fichier Classes/mati√®res/profs:</td><td><a href='save_csv.php?fileid=1'>f_men.csv</a></td></tr>\n";
                         echo "<tr><td>Fichier Groupes/classes:</td><td><a href='save_csv.php?fileid=2'>f_gpd.csv</a></td></tr>\n";
-                        echo "<tr><td>Fichier MatiËres:</td><td><a href='save_csv.php?fileid=3'>f_tmt.csv</a></td></tr>\n";
+                        echo "<tr><td>Fichier Mati√®res:</td><td><a href='save_csv.php?fileid=3'>f_tmt.csv</a></td></tr>\n";
                         echo "<tr><td>Fichier Profs principaux:</td><td><a href='save_csv.php?fileid=4'>f_div.csv</a></td></tr>\n";
 
                         echo "</table>\n";
                         if($_POST['mdp']=="alea"){
-                            echo "<p>Voici Ègalement une <a href='../backup/$dirname/csv/profs.html' target='_blank'>page des mots de passe initiaux des professeurs</a> ‡ imprimer avant de procÈder au nettoyage ci-dessous.</p>\n";
+                            echo "<p>Voici √©galement une <a href='../backup/$dirname/csv/profs.html' target='_blank'>page des mots de passe initiaux des professeurs</a> √† imprimer avant de proc√©der au nettoyage ci-dessous.</p>\n";
                         }
-                        echo "<p>Pour supprimer les fichiers aprËs rÈcupÈration: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Nettoyage</a></p>\n";
+                        echo "<p>Pour supprimer les fichiers apr√®s r√©cup√©ration: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Nettoyage</a></p>\n";
                         echo "</div>\n";
                     }
                     else{
@@ -1631,7 +1631,7 @@ die();
             }
 
         ?>
-        <p>Retour ‡ l'<a href="index.php">index</a></p>
+        <p>Retour √† l'<a href="index.php">index</a></p>
     </div>
 </body>
 </html>

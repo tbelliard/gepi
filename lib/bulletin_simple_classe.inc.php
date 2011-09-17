@@ -11,12 +11,12 @@ global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
 //global $avec_rapport_effectif;
 $avec_rapport_effectif="y";
 
-// données requises :
-//- $total : nombre total d'élèves
-//- $periode1 : numéro de la première période à afficher
-//- $periode2 : numéro de la dernière période à afficher
-//- $nom_periode : tableau des noms de période
-//- $gepiYear : année
+// donnÃ©es requises :
+//- $total : nombre total d'Ã©lÃ¨ves
+//- $periode1 : numÃ©ro de la premiÃ¨re pÃ©riode Ã  afficher
+//- $periode2 : numÃ©ro de la derniÃ¨re pÃ©riode Ã  afficher
+//- $nom_periode : tableau des noms de pÃ©riode
+//- $gepiYear : annÃ©e
 //- $id_classe : identifiant de la classe.
 
 //====================
@@ -36,7 +36,7 @@ global $affiche_deux_moy_gen;
 
 //echo "\$affiche_categories=$affiche_categories<br />";
 if(!getSettingValue("bull_intitule_app")){
-	$bull_intitule_app="Appréciations/Conseils";
+	$bull_intitule_app="ApprÃ©ciations/Conseils";
 }
 else{
 	$bull_intitule_app=getSettingValue("bull_intitule_app");
@@ -60,13 +60,13 @@ $call_classe = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
 $classe = mysql_result($call_classe, 0, "classe");
 
 //-------------------------------
-// On affiche l'en-tête : Les données de la classe
+// On affiche l'en-tÃªte : Les donnÃ©es de la classe
 //-------------------------------
 echo "<span class='bull_simpl'><span class='bold'>Classe de $classe</span>";
-echo ", année scolaire $gepiYear<br />\n";
+echo ", annÃ©e scolaire $gepiYear<br />\n";
 
 if ($periode1 < $periode2) {
-	echo "Résultats de : ";
+	echo "RÃ©sultats de : ";
 	$nb = $periode1;
 	while ($nb < $periode2+1) {
 	echo $nom_periode[$nb];
@@ -76,12 +76,12 @@ if ($periode1 < $periode2) {
 	echo ".</span>";
 } else {
 	$temp = strtolower($nom_periode[$periode1]);
-	echo "Résultats du $temp.</span>";
+	echo "RÃ©sultats du $temp.</span>";
 
 }
 //
 //-------------------------------
-// Fin de l'en-tête
+// Fin de l'en-tÃªte
 
 //echo "\$test_coef=$test_coef<br />";
 
@@ -95,7 +95,7 @@ $larg_col4 = 20;
 $larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
 //echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
 echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary=''>\n";
-echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$total élèves";
+echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$total Ã©lÃ¨ves";
 echo "</td>\n";
 
 //====================
@@ -110,7 +110,7 @@ if($avec_rapport_effectif=="y") {
 }
 
 echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
-//echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>&Eacute;lève</td>\n";
+//echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>&Eacute;lÃ¨ve</td>\n";
 /*
 if ($affiche_rang=='y') {
 	echo "<td width=$larg_col4 align=\"center\" class='bull_simpl'><i>Rang</i></td>\n";
@@ -119,7 +119,7 @@ if ($affiche_rang=='y') {
 echo "<td width=\"$larg_col5\" class='bull_simpl'>$bull_intitule_app</td></tr>\n";
 //echo "</table>";
 /*
-// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
+// On attaque maintenant l'affichage des apprÃ©ciations des ActivitÃ©s Interdisciplinaires devant apparaÃ®tre en tÃªte des bulletins :
 $call_data = mysql_query("SELECT * FROM aid_config WHERE order_display1 = 'b' ORDER BY order_display2");
 $nb_aid = mysql_num_rows($call_data);
 $z=0;
@@ -143,7 +143,7 @@ while ($z < $nb_aid) {
 
 /*
 if ($affiche_categories) {
-	// On utilise les valeurs spécifiées pour la classe en question
+	// On utilise les valeurs spÃ©cifiÃ©es pour la classe en question
 	$sql="SELECT DISTINCT jgc.id_groupe ".
 	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
 	"WHERE ( " .
@@ -166,12 +166,12 @@ if ($affiche_categories) {
 	"ORDER BY jgc.priorite,jgm.id_matiere");
 }
 
-// La ligne suivante a été remplacée par les requêtes intégrant le classement par catégories de matières
+// La ligne suivante a Ã©tÃ© remplacÃ©e par les requÃªtes intÃ©grant le classement par catÃ©gories de matiÃ¨res
 // $appel_liste_groupes = mysql_query("SELECT DISTINCT jeg.id_groupe id_groupe FROM j_eleves_groupes jeg, j_groupes_classes jgc WHERE (jeg.login = '" . $current_eleve_login . "' AND jeg.id_groupe = jgc.id_groupe AND jgc.id_classe = '" . $id_classe . "') ORDER BY jgc.priorite");
 $nombre_groupes = mysql_num_rows($appel_liste_groupes);
 */
 
-// Récupération des noms de catgories
+// RÃ©cupÃ©ration des noms de catgories
 $get_cat = mysql_query("SELECT id FROM matieres_categories");
 $categories = array();
 while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
@@ -247,7 +247,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 	//$group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
 	//$current_group = get_group($group_id);
 
-	// On récupère le groupe depuis $tab_moy
+	// On rÃ©cupÃ¨re le groupe depuis $tab_moy
 	$current_group=$tab_moy['current_group'][$j];
 
 	// Coefficient pour le groupe
@@ -280,7 +280,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 		//if($nb_moyennes_current_classe_matiere[$nb]==0) {$current_classe_matiere_moyenne[$nb]='-';}
 
 
-		// On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichées
+		// On teste si des notes de une ou plusieurs boites du carnet de notes doivent Ãªtre affichÃ©es
 		$test_cn = mysql_query("select c.nom_court, c.id from cn_cahier_notes cn, cn_conteneurs c
 		where (cn.periode = '$nb' and cn.id_groupe='".$current_group["id"]."' and cn.id_cahier_notes = c.id_racine and c.id_racine!=c.id and c.display_bulletin = 1) ");
 		$nb_ligne_cn[$nb] = mysql_num_rows($test_cn);
@@ -307,7 +307,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 
 	/*
-	// Maintenant on regarde si l'élève suit bien cette matière ou pas
+	// Maintenant on regarde si l'Ã©lÃ¨ve suit bien cette matiÃ¨re ou pas
 	//-----------------------------
 	$nb=$periode1;
 	while ($nb < $periode2+1) {
@@ -319,7 +319,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 			$current_eleve_appreciation_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$current_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
 			$current_eleve_appreciation[$nb] = @mysql_result($current_eleve_appreciation_query, 0, "appreciation");
 
-			// Coefficient personnalisé pour l'élève?
+			// Coefficient personnalisÃ© pour l'Ã©lÃ¨ve?
 			$sql="SELECT value FROM eleves_groupes_settings WHERE (" .
 					"login = '".$current_eleve_login."' AND " .
 					"id_groupe = '".$group_id."' AND " .
@@ -332,7 +332,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 				$coef_eleve = $current_coef;
 			}
 			//=========================
-			// MODIF: boireaus 20071217 On arrondira seulement à l'affichage
+			// MODIF: boireaus 20071217 On arrondira seulement Ã  l'affichage
 			//$coef_eleve=number_format($coef_eleve,1, ',', ' ');
 			//=========================
 		} else {
@@ -343,7 +343,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 
 	//++++++++++++++++++++++++
-	// Modif d'après F.Boisson
+	// Modif d'aprÃ¨s F.Boisson
 	// notes dans appreciation
 		$sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$current_eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$nb' AND cnd.statut='';";
 		$result_nbct=mysql_query($sql);
@@ -364,13 +364,13 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 	//if ($inser_ligne == 'yes') {
 		if ($affiche_categories) {
-		// On regarde si on change de catégorie de matière
+		// On regarde si on change de catÃ©gorie de matiÃ¨re
 			if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] != $prev_cat_id) {
 				$prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
-				// On est dans une nouvelle catégorie
-				// On récupère les infos nécessaires, et on affiche une ligne
+				// On est dans une nouvelle catÃ©gorie
+				// On rÃ©cupÃ¨re les infos nÃ©cessaires, et on affiche une ligne
 
-				// On détermine le nombre de colonnes pour le colspan
+				// On dÃ©termine le nombre de colonnes pour le colspan
 				//$nb_total_cols = 4;
 				$nb_total_cols = 3;
 				//====================
@@ -386,7 +386,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 				//if ($affiche_rang == 'y')  $nb_total_cols++;
 
-				// On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
+				// On regarde s'il faut afficher la moyenne de l'Ã©lÃ¨ve pour cette catÃ©gorie
 
 				$affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')");
 				if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
@@ -497,10 +497,10 @@ for($j=0;$j<$nombre_groupes;$j++) {
 				//echo "$sql0<br /><br />";
 				//echo "$sql<br /><br />";
 				if($effectif_grp_classe==$effectif_grp_total) {
-					echo $effectif_grp_classe.'&nbsp;él.';
+					echo $effectif_grp_classe.'&nbsp;Ã©l.';
 				}
 				else {
-					echo "$effectif_grp_classe&nbsp;él. /$effectif_grp_total";
+					echo "$effectif_grp_classe&nbsp;Ã©l. /$effectif_grp_total";
 				}
 				echo "</td>\n";
 			}
@@ -526,7 +526,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 				echo '-';
 			}
 			echo "</b></td>\n";
-			//Affichage des cellules rang le cas échéant
+			//Affichage des cellules rang le cas Ã©chÃ©ant
 			if ($affiche_rang == 'y')  {
 				$rang = sql_query1("select rang from matieres_notes where (
 				periode = '".$nb."' and
@@ -547,7 +547,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 				echo "<td width=\"$larg_col4\" align=\"center\" class='bull_simpl'><i>".$rang."</i></td>\n";
 			}
 			*/
-			// Affichage des cases appréciations
+			// Affichage des cases apprÃ©ciations
 			echo "<td width=\"$larg_col5\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>\n";
 			// Affichage des moyennes secondaires
 			/*
@@ -594,7 +594,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 		}
 
 		/*
-		// On calcule les moyennes générales de la classe :
+		// On calcule les moyennes gÃ©nÃ©rales de la classe :
 		//if ($test_coef != 0) {
 		$nb=$periode1;
 		while ($nb < $periode2+1) {
@@ -640,7 +640,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 /*
 //echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>";
-// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en fin de bulletin :
+// On attaque maintenant l'affichage des apprÃ©ciations des ActivitÃ©s Interdisciplinaires devant apparaÃ®tre en fin de bulletin :
 $call_data = mysql_query("SELECT * FROM aid_config WHERE order_display1 = 'e' ORDER BY order_display2");
 $nb_aid = mysql_num_rows($call_data);
 $z=0;
@@ -663,12 +663,12 @@ while ($z < $nb_aid) {
 //echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>";
 
 //echo "<tr><td>\$test_coef=$test_coef</td></tr>";
-// Affichage des moyennes générales
+// Affichage des moyennes gÃ©nÃ©rales
 if($display_moy_gen=="y") {
 	if ($test_coef != 0) {
 		echo "<tr>\n<td";
 		if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
-		echo ">\n<p class='bull_simpl'><b>Moyenne générale</b></p>\n</td>\n";
+		echo ">\n<p class='bull_simpl'><b>Moyenne gÃ©nÃ©rale</b></p>\n</td>\n";
 		//====================
 		// Modif: boireaus 20070626
 		if($affiche_coef=='y'){
@@ -717,7 +717,7 @@ if($display_moy_gen=="y") {
 
 				echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
 				//echo "$sql<br />";
-				echo mysql_num_rows($res_eff_classe).' él.';
+				echo mysql_num_rows($res_eff_classe).' Ã©l.';
 				echo "</td>\n";
 			}
 
@@ -767,7 +767,7 @@ if($display_moy_gen=="y") {
 				foreach($categories as $cat_id) {
 
 					// MODIF: boireaus 20070627 ajout du test et utilisation de $total_cat_coef_eleve, $total_cat_coef_classe
-					// Tester si cette catégorie doit avoir sa moyenne affichée
+					// Tester si cette catÃ©gorie doit avoir sa moyenne affichÃ©e
 					$affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')");
 					if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
 						$affiche_cat_moyenne = false;
@@ -842,20 +842,20 @@ while ($nb < $periode2+1) {
 	echo "<tr>\n<td valign=top class='bull_simpl'>$nom_periode[$nb]</td>\n";
 	echo "<td valign=top class='bull_simpl'>\n";
 	if ($eleve_abs_j[$nb] == "1") {
-		echo "Absences justifiées : une demi-journée";
+		echo "Absences justifiÃ©es : une demi-journÃ©e";
 	} else if ($eleve_abs_j[$nb] != "0") {
-		echo "Absences justifiées : $eleve_abs_j[$nb] demi-journées";
+		echo "Absences justifiÃ©es : $eleve_abs_j[$nb] demi-journÃ©es";
 	} else {
-		echo "Aucune absence justifiée";
+		echo "Aucune absence justifiÃ©e";
 	}
 	echo "</td>\n";
 	echo "<td valign=top class='bull_simpl'>\n";
 	if ($eleve_abs_nj[$nb] == '1') {
-		echo "Absences non justifiées : une demi-journée";
+		echo "Absences non justifiÃ©es : une demi-journÃ©e";
 	} else if ($eleve_abs_nj[$nb] != '0') {
-		echo "Absences non justifiées : $eleve_abs_nj[$nb] demi-journées";
+		echo "Absences non justifiÃ©es : $eleve_abs_nj[$nb] demi-journÃ©es";
 	} else {
-		echo "Aucune absence non justifiée";
+		echo "Aucune absence non justifiÃ©e";
 	}
 	echo "</td>\n";
 	echo "<td valign=top class='bull_simpl'>Nb. de retards : $eleve_retards[$nb]</td>\n</tr>\n";
@@ -882,7 +882,7 @@ if ($current_eleve_profsuivi_login) {
 }
 */
 if(empty($current_profsuivi_login)) {
-	//echo "Pas de $gepi_prof_suivi désigné.";
+	//echo "Pas de $gepi_prof_suivi dÃ©signÃ©.";
 	//echo "(-)";
 	echo "";
 }
@@ -944,7 +944,7 @@ function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$curre
 	$display_begin = @mysql_result($call_data, 0, "display_begin");
 	$display_end = @mysql_result($call_data, 0, "display_end");
 	$bull_simplifie = @mysql_result($call_data, 0, "bull_simplifie");
-	// On vérifie que cet AID soit autorisée à l'affichage dans le bulletin simplifié
+	// On vÃ©rifie que cet AID soit autorisÃ©e Ã  l'affichage dans le bulletin simplifiÃ©
 	if ($bull_simplifie == "n") {
 		return "";
 	}
@@ -961,7 +961,7 @@ function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$curre
 		$n++;
 	}
 	//------
-	// On appelle l'appréciation de l'élève, et sa note le cas échéant
+	// On appelle l'apprÃ©ciation de l'Ã©lÃ¨ve, et sa note le cas Ã©chÃ©ant
 	//------
 	$nb=$periode1;
 	while($nb < $periode2+1) {
@@ -1005,7 +1005,7 @@ function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$curre
 		$nb++;
 	}
 	//------
-	// On affiche l'appréciation aid :
+	// On affiche l'apprÃ©ciation aid :
 	//------
 
 	echo "<tr><td ";

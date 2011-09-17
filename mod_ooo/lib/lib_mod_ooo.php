@@ -7,7 +7,7 @@ function extension_nom_fichier($nom_fichier) {
   return $ext;
 }
 
-//fonction qui renvoie le nom de l'image à télécharger
+//fonction qui renvoie le nom de l'image Ã  tÃ©lÃ©charger
 function renvoi_nom_image ($extension) {
 	switch ($extension) {
 	case "odt":
@@ -27,9 +27,9 @@ function renvoi_nom_image ($extension) {
 
 /*
 //$repaussi==true ~> efface aussi $rep
-//retourne true si tout s'est bien passé,
-//false si un fichier est resté (problème de permission ou attribut lecture sous Win
-//dans tous les cas, le maximum possible est supprimé.
+//retourne true si tout s'est bien passÃ©,
+//false si un fichier est restÃ© (problÃ¨me de permission ou attribut lecture sous Win
+//dans tous les cas, le maximum possible est supprimÃ©.
 function deltree($rep,$repaussi=true) {
 static $niv=0;
 $niv++;
@@ -55,10 +55,10 @@ return $ok;
 */
 
 function creertousrep($fic) {
-//crée tous les répertoires intermédiaires s'il n'existent pas
-//$fic est de la forme '../rep1/rep2/.../repn/bloub' et sont créés :
+//crÃ©e tous les rÃ©pertoires intermÃ©diaires s'il n'existent pas
+//$fic est de la forme '../rep1/rep2/.../repn/bloub' et sont crÃ©Ã©s :
 //../rep1, ../rep1/rep2, ../rep1/rep2/.../repn
-//bloub peut ne pas exister ($fic se termine par / donc c'est un rép.)
+//bloub peut ne pas exister ($fic se termine par / donc c'est un rÃ©p.)
 $p=strpos($fic,'/');
 while ($p<strlen($fic) && $p=strpos($fic,'/',$p+1)) {
     //print substr($fic,0,$p);
@@ -69,13 +69,13 @@ return $fic;
 
 
 
-//Du code PHP écrit, dans le flux HTML, des lignes qui appellent des fonctions javascript.
+//Du code PHP Ã©crit, dans le flux HTML, des lignes qui appellent des fonctions javascript.
 //Ces fonctions effectuent directement ce que leur nom indique.
-//L'avantage est d'éviter de s'encombrer de la quincaillerie javascript,
-//du genre <script language='JavaScript'> (voir fonction js) et d'être obligé
-//de "sortir" d'un script PHP pour écrire des lignes de code js
+//L'avantage est d'Ã©viter de s'encombrer de la quincaillerie javascript,
+//du genre <script language='JavaScript'> (voir fonction js) et d'Ãªtre obligÃ©
+//de "sortir" d'un script PHP pour Ã©crire des lignes de code js
 
-//pour plusieurs lignes de JS, on pourra écrire :
+//pour plusieurs lignes de JS, on pourra Ã©crire :
 //     js_begin(); js_ins($y); ...; js_ins($d); js_end;
 function js_begin() {print "\n<script language=\"JavaScript\">\n";}
 function js_ins($instructionJS) {print "\t$instructionJS\n";}
@@ -107,11 +107,11 @@ function gohistory($n) {
   js("window.history.go($n);");
 }
 
-//confirm : affiche la $question et prend la décision appropriée (l'un des 2 paramètres)
-//ces 2 paramètres (éventuellement vides) doivent être des instructions JS.
+//confirm : affiche la $question et prend la dÃ©cision appropriÃ©e (l'un des 2 paramÃ¨tres)
+//ces 2 paramÃ¨tres (Ã©ventuellement vides) doivent Ãªtre des instructions JS.
 //pour charger une URL mettre : "window.location.href='mon_URL.php';"
-//pour "ne rien faire" (c'est à dire terminer le script js) mettre "" ou "stop();"
-//Penser à séparer les instructions js par des ; et TERMINER par un ; !!!
+//pour "ne rien faire" (c'est Ã  dire terminer le script js) mettre "" ou "stop();"
+//Penser Ã  sÃ©parer les instructions js par des ; et TERMINER par un ; !!!
 function confirm($question,$jsYes,$jsNo) {
   $question=addslashes($question);
   js_begin();
@@ -138,14 +138,14 @@ function close_window() {
 }
 
 //$inverse 'o' ou 'n'
-//$motif : le motif de séparation - ou /
+//$motif : le motif de sÃ©paration - ou /
 function datemysql_to_jj_mois_aaaa ($date,$motif,$inverse) {
     if ($inverse=='o') {
 	    list($annee, $mois, $jour) = explode($motif, $date);
 	} else {
 	    list($jour, $mois, $annee) = explode($motif, $date);
 	}
-	$les_mois = array("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre");
+	$les_mois = array("janvier", "fÃ©vrier", "mars", "avril", "mai", "juin", "juillet", "aoÃ»t", "septembre", "octobre", "novembre", "dÃ©cembre");
 	return $jour." ".$les_mois[$mois-1]." ".$annee;
 }
 ?>

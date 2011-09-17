@@ -1,33 +1,33 @@
 <?php
 /**
- * Construit les tableaux nécessaires au header des gabarits
+ * Construit les tableaux nÃ©cessaires au header des gabarits
  * 
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul, Bouguin Régis
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul, Bouguin RÃ©gis
  * 
- * Variables envoyées au gabarit
- * - $tbs_gepiSchoolName : nom de l'établissement
+ * Variables envoyÃ©es au gabarit
+ * - $tbs_gepiSchoolName : nom de l'Ã©tablissement
  * - $tbs_message_enregistrement
  * - $tbs_temps_max : temps maximal de session
  * - $tbs_gepiPath : chemin de gepi
- * - $tbs_prototype : fichier de la bibliothèque prototype
+ * - $tbs_prototype : fichier de la bibliothÃ¨que prototype
  * - $tbs_charger_observeur
  * - $tbs_degrade_entete
  * - tbs_modif_bandeau
- * - $tbs_bouton_taille : chemin de gepi si on affiche les boutons de réduction de taille du bandeau
+ * - $tbs_bouton_taille : chemin de gepi si on affiche les boutons de rÃ©duction de taille du bandeau
  * - $titre_page
  * - $tbs_nom_prenom
  * - $tbs_last_connection
- * - $tbs_mise_a_jour - chemin de gepi si le module mise à jour est actif
+ * - $tbs_mise_a_jour - chemin de gepi si le module mise Ã  jour est actif
  * - $tbs_version_gepi
- * - $tbs_msg - message à afficher en haut de page
+ * - $tbs_msg - message Ã  afficher en haut de page
  *
- * - $tbs_refresh = array(tempsmax , lien , debut , id_session ) : initialisation de la méthode refresh
- * - $tbs_librairies = array( )								bibliothèques à ajouter
+ * - $tbs_refresh = array(tempsmax , lien , debut , id_session ) : initialisation de la mÃ©thode refresh
+ * - $tbs_librairies = array( )								bibliothÃ¨ques Ã  ajouter
  * - $tbs_CSS = array( fichier , rel , type , media , title ) : fichiers CSS
  * - $tbs_statut = array(class , texte , ajout ) : statut
  * - $donnees_enfant = array(nom_enfant , classe_enfant )
- * - $tbs_premier_menu = array(lien , confirme , image , alt , title , texte ) : menu du bandeau 1ère ligne
- * - $tbs_deux_menu = array(lien , onclick , texte ) : menu du bandeau 2ème ligne
+ * - $tbs_premier_menu = array(lien , confirme , image , alt , title , texte ) : menu du bandeau 1Ã¨re ligne
+ * - $tbs_deux_menu = array(lien , onclick , texte ) : menu du bandeau 2Ã¨me ligne
  * 
  * 
  * @license GNU/GPL v2
@@ -37,8 +37,8 @@
  * @see get_enfants_from_resp_login()
  * @see getPref()
  * @see getSettingValue()
- * @todo Il faudra définir un nom de la forme style_screen_ajout_RNE.css pour le multisite
- * @todo $prefix et $gepiPath2="."; déjà défini dans initialisation.inc.php, on peut économiser un test
+ * @todo Il faudra dÃ©finir un nom de la forme style_screen_ajout_RNE.css pour le multisite
+ * @todo $prefix et $gepiPath2="."; dÃ©jÃ  dÃ©fini dans initialisation.inc.php, on peut Ã©conomiser un test
  */
 
 /* This file is part of GEPI.
@@ -63,7 +63,7 @@
 $donnees_enfant=array();
 
 /**
- * Renvoie la date et l'heure de la dernière connexion ou d'une tentative de connexion avec mauvais mot de passe
+ * Renvoie la date et l'heure de la derniÃ¨re connexion ou d'une tentative de connexion avec mauvais mot de passe
  * 
  * @global string
  * @return string la date et l'heure
@@ -83,7 +83,7 @@ function last_connection() {
       $secondes_b = substr($row[0],17,2);
       if ($row[0]  != '') {
           if ($row[1]  == "4") {
-              $r = "<span style=\"color: red\"><strong>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</strong></span> (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
+              $r = "<span style=\"color: red\"><strong>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." Ã  ".$heures_b." h ".$minutes_b. " avec un mot de passe erronÃ©</strong></span> (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
               // On compte le nombre de tentatives infructueuses successives
               $nb_tentative = 0;
               $flag = 0;
@@ -98,7 +98,7 @@ function last_connection() {
               }
               if ($nb_tentative > 1) {$r .= "<br /><strong>Nombre de tentatives de connexion successives : ".$nb_tentative.".</strong></font>";}
           } else {
-              $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
+              $r = "  DerniÃ¨re session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." Ã  ".$heures_b." h ".$minutes_b. " (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
 			}
       }
     }
@@ -133,14 +133,14 @@ if (isset($affiche_message) and ($affiche_message == 'yes')) {
 
 // ====================== Affichage des javascripts ===================
 
-// Ajout du framework prototype 1.5.1.1 conditionné à la variable $utilisation_prototype="ok"
+// Ajout du framework prototype 1.5.1.1 conditionnÃ© Ã  la variable $utilisation_prototype="ok"
 $prototype = "ok";
 if ($prototype == "ok") {
 	// On affiche alors le lien qui charge Prototype
 	$tbs_librairies[]=$gepiPath."/lib/prototype.js";
 }
 	
-// Ajout de la librairie Scriptaculous.js conditionné à la variable $utilisation_scriptaculous="ok"
+// Ajout de la librairie Scriptaculous.js conditionnÃ© Ã  la variable $utilisation_scriptaculous="ok"
 $scriptaculous = isset($utilisation_scriptaculous) ? $utilisation_scriptaculous : NULL;
 $script_effet = isset($scriptaculous_effet) ? $scriptaculous_effet : NULL;
 if ($scriptaculous == "ok") {
@@ -164,27 +164,27 @@ if(isset($javascript_specifique)) {
 	if(is_array($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
 			if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
-				// Javascript spécifique à une page:
+				// Javascript spÃ©cifique Ã  une page:
               $tbs_librairies[]=$gepiPath."/".$current_javascript_specifique.'.js';
 			}
 		}
 	}
 	else {
 		if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
-			// Javascript spécifique à une page:
+			// Javascript spÃ©cifique Ã  une page:
 			$tbs_librairies[]=$gepiPath."/".$javascript_specifique.'.js';
 		}
 	}
 }
 
 
-// On affiche tout le temps brainjar sauf quand on dit à Gepi de ne pas le faire
+// On affiche tout le temps brainjar sauf quand on dit Ã  Gepi de ne pas le faire
 $utilisation_jsdivdrag = isset($utilisation_jsdivdrag) ? $utilisation_jsdivdrag : NULL;
 if (isset($utilisation_jsdivdrag) AND ($utilisation_jsdivdrag == "non")) {
 	//echo "<!-- Pas de brainjar-->\n";(
 }else{
 	//===================================
-	// Pour aérer les infobulles si jamais Javascript n'est pas actif.
+	// Pour aÃ©rer les infobulles si jamais Javascript n'est pas actif.
 	// Sinon, avec le position:absolute, les div se superposent.
 	$posDiv_infobulle=0;
 	// $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
@@ -192,7 +192,7 @@ if (isset($utilisation_jsdivdrag) AND ($utilisation_jsdivdrag == "non")) {
 	$tabdiv_infobulle=array();
 	$tabid_infobulle=array();
 
-	// Choix de l'unité pour les dimensions des DIV: em, px,...
+	// Choix de l'unitÃ© pour les dimensions des DIV: em, px,...
 	$unite_div_infobulle="em";
 	// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
 
@@ -204,28 +204,28 @@ if (isset($utilisation_jsdivdrag) AND ($utilisation_jsdivdrag == "non")) {
 
 
 
-// ======================= Début de l'affichage des feuilles de style ================
+// ======================= DÃ©but de l'affichage des feuilles de style ================
 $style = getSettingValue("gepi_stylesheet");
 
 // style.css
 if (empty($style)) $style = "style";
 
-//===== utiliser de préférence $gepiPath."/css/".$style.".css"
+//===== utiliser de prÃ©fÃ©rence $gepiPath."/css/".$style.".css"
 $tbs_CSS[]=array("fichier"=>$gepiPath."/css/".$style.".css"  , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"screen" , "title"=>"");
 
 // Couleur de fond des pages
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
 
-// Styles spécifiques
+// Styles spÃ©cifiques
 if(isset($style_specifique)) {
   // Il faudrait filtrer le contenu de la variable...
-  // ne doit contenir que certains types de caractères et se terminer par .css
+  // ne doit contenir que certains types de caractÃ¨res et se terminer par .css
   // Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
 
   if(is_array($style_specifique)) {
 	foreach($style_specifique as $current_style_specifique) {
 	  if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
-		//// Styles spécifiques à une page:
+		//// Styles spÃ©cifiques Ã  une page:
 		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 
 	  }
@@ -233,13 +233,13 @@ if(isset($style_specifique)) {
 	}
   } else {
 	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
-	  // Styles spécifiques à une page:
+	  // Styles spÃ©cifiques Ã  une page:
 	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 	}
   }
 }
 
-// vérifie si on est dans le modules absences
+// vÃ©rifie si on est dans le modules absences
 $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi", "admin_config_semaines", "admin_motifs_absences", "admin_horaire_ouverture", "admin_actions_absences", "admin_periodes_absences");
 if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
 	$tbs_CSS[]=array("fichier"=> $gepiPath."/mod_absences/styles/mod_absences.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
@@ -259,11 +259,11 @@ $tbs_CSS[]=array("fichier"=> $gepiPath."/css/style_telephone.css" , "rel"=>"styl
 
 if (isset($style_screen_ajout))  {
 
-	// Styles paramétrables depuis l'interface:
+	// Styles paramÃ©trables depuis l'interface:
 	if($style_screen_ajout=='y') {
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
-		// Il faudra définir un nom de la forme style_screen_ajout_RNE.css pour le multisite
+		// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+		// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
+		// Il faudra dÃ©finir un nom de la forme style_screen_ajout_RNE.css pour le multisite
 		
 		if (!isset($niveau_arbo)) $niveau_arbo = 1;
 	 if ($niveau_arbo == "0") {
@@ -276,7 +276,7 @@ if (isset($style_screen_ajout))  {
 	   $gepiPath2="../../..";
 	}
 	
-		$Style_CSS=array(); // initialisation du tableau de Style supplémentaire	
+		$Style_CSS=array(); // initialisation du tableau de Style supplÃ©mentaire	
 		
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			if (@file_exists($gepiPath2.'/style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
@@ -293,7 +293,7 @@ if (isset($style_screen_ajout))  {
 }
 
 /**
- * Définition des couleurs
+ * DÃ©finition des couleurs
  */
 include 'maj_coul_global.inc';
 
@@ -309,7 +309,7 @@ $tbs_charger_observeur=$charger_observeur;
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
 	$_SESSION['cacher_header']="y";
 }
-// Taille à récupérer dans la base pour initialiser $_SESSION['cacher_header']
+// Taille Ã  rÃ©cupÃ©rer dans la base pour initialiser $_SESSION['cacher_header']
 	// petit bandeau toute valeur sauf "n" ;
 	// grand bandeau "n";
 if (isset($titre_page)) {
@@ -321,7 +321,7 @@ if (isset($titre_page)) {
 /* ===== affichage du bandeau ===== */
 
 	if(getSettingValue('gepi_stylesheet')=='style') {
-		// Détermine le fond du bandeau
+		// DÃ©termine le fond du bandeau
 		if(getSettingValue('utiliser_degrade')=='y') {
 			$degrade_entete="degrade1";
 		}else{
@@ -332,7 +332,7 @@ if (isset($titre_page)) {
 	}
 // Initialisation du bandeau 
 	$tbs_degrade_entete=$degrade_entete;
-// Initialisation du bandeau à la bonne taille
+// Initialisation du bandeau Ã  la bonne taille
 	$cacher_header = isset($_SESSION['cacher_header']) ? $_SESSION['cacher_header'] : "n";
 
 	//=====================
@@ -361,7 +361,7 @@ if (isset($titre_page)) {
 
 	$tbs_afficher_temoin_filtrage_html=getSettingValue('afficher_temoin_filtrage_html');
 	
-	//=== Nom Prénom utilisateur ===
+	//=== Nom PrÃ©nom utilisateur ===
 	if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
 		$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
 		$res_np=mysql_query($sql);
@@ -377,7 +377,7 @@ if (isset($titre_page)) {
 		$tbs_nom_prenom="NOM Prenom";
 	}
 	
-	//=== Dernière connexion ===
+	//=== DerniÃ¨re connexion ===
 	if (isset($affiche_connexion)) {
 		$tbs_last_connection=last_connection();
 	}
@@ -392,15 +392,15 @@ if (isset($titre_page)) {
 			$nom_complet_matiere=my_ereg_replace("&", "&amp;" , $nom_complet_matiere);
 			$tbs_statut[]=array("classe"=>"" , "texte"=>"Professeur de : " . ($nom_complet_matiere));
 		}else{
-			$tbs_statut[]=array("classe"=>"" , "texte"=>"Invité");
+			$tbs_statut[]=array("classe"=>"" , "texte"=>"InvitÃ©");
 		}
 	}elseif ($_SESSION['statut'] == "scolarite") {
-			$tbs_statut[]=array("classe"=>"" , "texte"=>"Scolarité");
+			$tbs_statut[]=array("classe"=>"" , "texte"=>"ScolaritÃ©");
 	}elseif ($_SESSION['statut'] == "cpe") {
 			$tbs_statut[]=array("classe"=>"" , "texte"=>"CPE");
 	}elseif ($_SESSION['statut'] == "eleve") {
 		$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
-		$tbs_statut[]=array("classe"=>"" , "texte"=>"Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]);
+		$tbs_statut[]=array("classe"=>"" , "texte"=>"Ã‰lÃ¨ve de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]);
 	}elseif ($_SESSION['statut'] == "responsable") {
 		$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
 		$chaine_enfants="";
@@ -436,7 +436,7 @@ if (isset($titre_page)) {
 		$tbs_statut[]=array("classe"=>"" , "texte"=>"<strong class='rouge'>compte secours</strong>");
 	}
 					
-	//On vérifie si le module de mise à jour est activé
+	//On vÃ©rifie si le module de mise Ã  jour est activÃ©
 	$tbs_mise_a_jour="";
 	if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
 		$tbs_mise_a_jour=$gepiPath;
@@ -446,12 +446,12 @@ if (isset($titre_page)) {
 	// menus de droite
 	// menu accueil
 	$tbs_premier_menu[]=array("lien"=>$gepiPath."/accueil.php" , "confirme"=>"insert_confirm_abandon()" , "image"=>$gepiPath."/images/icons/home.png" , "alt"=>"Accueil" , "title"=>"Accueil" , "texte"=>"Accueil");
-	$tbs_premier_menu[]=array("lien"=>$gepiPath."/utilisateurs/mon_compte.php" , "confirme"=>"insert_confirm_abandon()" , "image"=>$gepiPath."/images/icons/buddy.png" , "alt"=>"Mon compte" , "title"=>"Mon compte" ,  "texte"=>"Gérer mon compte");
+	$tbs_premier_menu[]=array("lien"=>$gepiPath."/utilisateurs/mon_compte.php" , "confirme"=>"insert_confirm_abandon()" , "image"=>$gepiPath."/images/icons/buddy.png" , "alt"=>"Mon compte" , "title"=>"Mon compte" ,  "texte"=>"GÃ©rer mon compte");
 	if ($session_gepi->current_auth_mode == "sso" && $gepiSettings['sso_display_portail'] == 'yes') {
 	$tbs_premier_menu[]=array("lien"=>$gepiSettings["sso_url_portail"] , "confirme"=>"" , "image"=>$gepiPath."/images/icons/retour_sso.png" , "alt"=>"Portail" , "title"=>"Retour portail" , "texte"=>"Retour portail");
 	}
 	if ($session_gepi->current_auth_mode != "sso" || $gepiSettings["sso_hide_logout"] != 'yes') {
-		$tbs_premier_menu[]=array("lien"=> $gepiPath."/logout.php?auto=0" , "confirme"=>"insert_confirm_abandon()", "image"=>$gepiPath."/images/icons/quit_16.png" , "alt"=>"Se déconnecter" , "title"=>"Se déconnecter" , "texte"=>"Déconnexion");
+		$tbs_premier_menu[]=array("lien"=> $gepiPath."/logout.php?auto=0" , "confirme"=>"insert_confirm_abandon()", "image"=>$gepiPath."/images/icons/quit_16.png" , "alt"=>"Se dÃ©connecter" , "title"=>"Se dÃ©connecter" , "texte"=>"DÃ©connexion");
 	}
 				
 				// menu contact
@@ -479,8 +479,8 @@ if (isset($titre_page)) {
 		}
 	}
 		
-	$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/info_gepi.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Informations générales");
-	$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/info_vie_privee.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/info_vie_privee.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Vie privée");
+	$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/info_gepi.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Informations gÃ©nÃ©rales");
+	$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/info_vie_privee.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/info_vie_privee.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Vie privÃ©e");
 	
 		 //=== Affichage de la version de Gepi ===
 		 //=== Affichage de la version de Gepi ===
@@ -494,18 +494,18 @@ if (isset($titre_page)) {
 				$version_gepi .= ' svn r'.$gepiSvnRev;
 			}
 		} else {
-			//rien n'as été rempli, il y a peut être un répertoire .git qui va nous renseigner
+			//rien n'as Ã©tÃ© rempli, il y a peut Ãªtre un rÃ©pertoire .git qui va nous renseigner
 			if (file_exists(dirname(__FILE__).'/../.git/HEAD')) {
 				$git_ref = file_get_contents((dirname(__FILE__).'/../.git/HEAD'));
 				if ($git_ref != null) {
 					if (substr($git_ref,0,4) == 'ref:') {
-						//on a une référence de branche git
+						//on a une rÃ©fÃ©rence de branche git
 						$gepiVersion = trim(substr($git_ref, 1+strrpos( $git_ref  , '/')));
 						$gepiGitCommit = file_get_contents((dirname(__FILE__).'/../.git/refs/heads/'.$gepiVersion));
 						$version_gepi = 'version '.$gepiVersion.' git '.substr($gepiGitCommit, 0, 6);
 					} else {
 						//on a un commit git dans le HEAD
-						$gepiVersion = 'git détachée';
+						$gepiVersion = 'git dÃ©tachÃ©e';
 						$gepiGitCommit = $git_ref;
 						$version_gepi = 'version '.$gepiVersion.' git '.substr($gepiGitCommit, 0, 6);
 					}
@@ -515,12 +515,12 @@ if (isset($titre_page)) {
 		}
 		$tbs_version_gepi = $version_gepi;
 	} else {
-		$tbs_version_gepi=" ";			// nécessaire pour recaler le bandeau dans tous les navigateurs
+		$tbs_version_gepi=" ";			// nÃ©cessaire pour recaler le bandeau dans tous les navigateurs
 	}
 
 	// Fin du conteneur de Header
 
-// ----- Régis : fin des modifications du bandeau -----
+// ----- RÃ©gis : fin des modifications du bandeau -----
 
 
 // ==========> On ajoute la barre de menu <========================= //
@@ -530,10 +530,10 @@ $tbs_menu_scol = array();
 $tbs_menu_cpe = array();
 if (!isset($nobar)) { $nobar = "non"; }
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
-	// On vérifie que l'utilisateur ne l'a pas enlevée
+	// On vÃ©rifie que l'utilisateur ne l'a pas enlevÃ©e
 
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
-		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
+		// ne pourrait-on pas utiliser $gepiPath plutÃ´t que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
               /**
                * Fonctions de calendrier
@@ -552,8 +552,8 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 	}
 } else if ((getSettingValue("utiliserMenuBarre") == "yes") AND ($_SESSION["statut"] == "administrateur") AND ($nobar != 'oui')) {
 
-		// Il n'y a pas de préférence enregistrée pour des non_prof
-		// Du coup, on récupère la valeur par défaut: 'yes'
+		// Il n'y a pas de prÃ©fÃ©rence enregistrÃ©e pour des non_prof
+		// Du coup, on rÃ©cupÃ¨re la valeur par dÃ©faut: 'yes'
 		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
 			if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
               /**
@@ -574,8 +574,8 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 
 } else if ((getSettingValue("utiliserMenuBarre") == "yes") AND ($_SESSION["statut"] == "scolarite") AND ($nobar != 'oui')) {
 
-		// Il n'y a pas de préférence enregistrée pour des non_prof
-		// Du coup, on récupère la valeur par défaut: 'yes'
+		// Il n'y a pas de prÃ©fÃ©rence enregistrÃ©e pour des non_prof
+		// Du coup, on rÃ©cupÃ¨re la valeur par dÃ©faut: 'yes'
 		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
 			if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
               /**
@@ -589,14 +589,14 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 				require_once("./fonctions_calendrier.php");
 			}
             /**
-             * Barre de menu de scolarité
+             * Barre de menu de scolaritÃ©
              */
 			include("header_barre_scolarite_template.php");
 		}
 	
 } else if ((getSettingValue("utiliserMenuBarre") == "yes") AND ($_SESSION["statut"] == "cpe") AND ($nobar != 'oui')) {
-		// Il n'y a pas de préférence enregistrée pour des non_prof
-		// Du coup, on récupère la valeur par défaut: 'yes'
+		// Il n'y a pas de prÃ©fÃ©rence enregistrÃ©e pour des non_prof
+		// Du coup, on rÃ©cupÃ¨re la valeur par dÃ©faut: 'yes'
 		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
 			if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
               /**
@@ -629,7 +629,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 		}
 	}
 }
-// Décommenter la ligne ci -dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci -dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
 
 ?>

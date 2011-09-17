@@ -19,7 +19,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -42,8 +42,8 @@ class ErrorCtrl extends Controleur {
     }
 
     function select(){
-        $this->errors[]="Vous n'avez sélectionné aucune donnée à traîter";
-        $this->errors[].="Sélectionnez des individus ou des classes dans l'onglet sélection..";
+        $this->errors[]="Vous n'avez sÃ©lectionnÃ© aucune donnÃ©e Ã  traÃ®ter";
+        $this->errors[].="SÃ©lectionnez des individus ou des classes dans l'onglet sÃ©lection..";
         $this->vue->setVar('errors', $this->errors);
         $this->vue->afficheVue("error.php",$this->vue->getVars());
     }

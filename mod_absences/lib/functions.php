@@ -1,7 +1,7 @@
 <?php
-//fonction permettant de connaître la classe d'un élève par son login
-// Modif Eric : ajout du nom court accolé au nom long
-// Faut-il faire un test pour savoir s'ils sont différents ?
+//fonction permettant de connaÃ®tre la classe d'un Ã©lÃ¨ve par son login
+// Modif Eric : ajout du nom court accolÃ© au nom long
+// Faut-il faire un test pour savoir s'ils sont diffÃ©rents ?
 function classe_de($id_classe_eleve) {
     global $prefix_base;
     $requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
@@ -20,7 +20,7 @@ function classe_court_de($id_classe_eleve) {
     return($id_classe_eleve);
 }
 
-// fonction permettant de connaitre le régime de l'élève
+// fonction permettant de connaitre le rÃ©gime de l'Ã©lÃ¨ve
 function regime($id_eleve) {
     global $prefix_base;
     $requete_regime_eleve ="SELECT e.login , jer.login , jer.regime FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_regime jer WHERE e.login = jer.login AND e.login = '".$id_eleve."'";
@@ -30,7 +30,7 @@ function regime($id_eleve) {
     return($regime_eleve);
 }
 
-//fonction permettant de connaître le motif d'une absence
+//fonction permettant de connaÃ®tre le motif d'une absence
 function motif_de($nc_motif) {
     global $prefix_base;
     $requete_motif ="SELECT * FROM ".$prefix_base."absences_motifs WHERE ".$prefix_base."absences_motifs.init_motif_absence='".$nc_motif."'";
@@ -40,7 +40,7 @@ function motif_de($nc_motif) {
     return($nc_motif);
 }
 
-// fonction pour présenter les numéro de téléphone
+// fonction pour prÃ©senter les numÃ©ro de tÃ©lÃ©phone
 function present_tel($tel)
 {
 	$compt_nb_chiffre = strlen ($tel);
@@ -57,7 +57,7 @@ function present_tel($tel)
 	return($tel);
 }
 
-//fonction permettant de connaître l'action par rapport à un id d'action
+//fonction permettant de connaÃ®tre l'action par rapport Ã  un id d'action
 function action_de($nc_action) {
     global $prefix_base;
 	$requete_action = "SELECT init_absence_action, def_absence_action FROM ".$prefix_base."absences_actions WHERE init_absence_action='".$nc_action."'";
@@ -98,7 +98,7 @@ function dategl($jour, $mois, $annee)
   echo "$date";
   }
 
-// renvoie en format text la lecture de l'heure au format 00h00 ou 00h si les minutes sont égale à 00
+// renvoie en format text la lecture de l'heure au format 00h00 ou 00h si les minutes sont Ã©gale Ã  00
 function heure($heure)
 {
 	$tab_heure = explode(':', $heure);
@@ -123,7 +123,7 @@ function heure($heure)
 	else
 	{
 
-		// si $heure n'est pas défini alors on renvoie la variable à vide
+		// si $heure n'est pas dÃ©fini alors on renvoie la variable Ã  vide
 		$heure = '';
 
 	}
@@ -279,7 +279,7 @@ function nb_jour($date_debut,$date_fin)
 
 function PrepSQL($ChangNom)
 {
-    $str = trim($ChangNom); //trim enleve les espaces avant et après le mot
+    $str = trim($ChangNom); //trim enleve les espaces avant et aprÃ¨s le mot
     if ($str == "")
     {
 //      echo "rien";
@@ -446,7 +446,7 @@ function nb_jour_mois($mois_select,$annee_select)
     //$date_select_exp[2] = jour
     $date_select_exp = explode('-', $date_select);
 
-  //Mois précédent
+  //Mois prÃ©cÃ©dent
     //calcul des positions des mois
     $mois = $date_select_exp[1];
         if($mois == 12)
@@ -517,7 +517,7 @@ function mois_suivant($date_select)
     return($date_plus1);
  }
 
-// fonction qui renvoi un tableau de mois d'un moi à un autre mois
+// fonction qui renvoi un tableau de mois d'un moi Ã  un autre mois
 function tableau_mois($mois_de, $annee_de, $mois_au, $annee_au)
 {
 	$jour = '1';
@@ -528,7 +528,7 @@ function tableau_mois($mois_de, $annee_de, $mois_au, $annee_au)
 	while ( $sortire_de_la_boucle != 'oui' )
 	{
 
-		// si le moi passe n'est pas défini alors on le définie avec
+		// si le moi passe n'est pas dÃ©fini alors on le dÃ©finie avec
 		if ( $mois_passe === '' and $annee_passe === '' )
 		{
 			$mois_passe = $mois_de;
@@ -537,8 +537,8 @@ function tableau_mois($mois_de, $annee_de, $mois_au, $annee_au)
 
 	  if ( $mois_passe.'-'.$annee_passe === $mois_au.'-'.$annee_au ) { $sortire_de_la_boucle = 'oui'; }
 
-		// tableau des nom des mois par rapport à leurs numéro
-		$tab_mois = array('01'=>"jan.", '02'=>"fev.", '03'=>"mar.", '04'=>"avr.", '05'=>"mai", '06'=>"jui.", '07'=>"juil.", '08'=>"aoû.", '09'=>"sep.", '10'=>"oct.", '11'=>"nov.", '12'=>"déc.");
+		// tableau des nom des mois par rapport Ã  leurs numÃ©ro
+		$tab_mois = array('01'=>"jan.", '02'=>"fev.", '03'=>"mar.", '04'=>"avr.", '05'=>"mai", '06'=>"jui.", '07'=>"juil.", '08'=>"aoÃ».", '09'=>"sep.", '10'=>"oct.", '11'=>"nov.", '12'=>"dÃ©c.");
 
 		$mois[$i]['mois'] = $tab_mois[$mois_passe].' '.$annee_passe;
 		$mois[$i]['mois_court'] = $tab_mois[$mois_passe];
@@ -638,7 +638,7 @@ function verif_date($date_a_verif)
  {
     if(my_eregi("[0-9]{4}-[0-9]{2}-[0-9]{2}",$date_a_verif))
      {
-       //explotion de la date en jour, mois, année
+       //explotion de la date en jour, mois, annÃ©e
           $date_a_verif_exp = explode('-', $date_a_verif);
           $resultats = checkdate($date_a_verif_exp[1], $date_a_verif_exp[2], $date_a_verif_exp[0]);
 
@@ -655,7 +655,7 @@ function redimensionne_image($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 110;
              $taille_max_hauteur = 110;
 
@@ -664,7 +664,7 @@ function redimensionne_image($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 
@@ -680,7 +680,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 60;
              $taille_max_hauteur = 60;
 
@@ -689,7 +689,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 
@@ -759,7 +759,7 @@ function fiche_action_type($id)
 }
 
 function aff_mois($mois) {
-   $tab_mois = array('1'=>"Janvier", '2'=>"Fevrier", '3'=>"Mars", '4'=>"Avril", '5'=>"Mai", '6'=>"Juin", '7'=>"Juillet", '8'=>"Aout", '9'=>"Septembre", '10'=>"Octobre", '11'=>"Novembre", '12'=>"Décembre");
+   $tab_mois = array('1'=>"Janvier", '2'=>"Fevrier", '3'=>"Mars", '4'=>"Avril", '5'=>"Mai", '6'=>"Juin", '7'=>"Juillet", '8'=>"Aout", '9'=>"Septembre", '10'=>"Octobre", '11'=>"Novembre", '12'=>"DÃ©cembre");
    return($tab_mois[$mois]);
 }
 
@@ -778,7 +778,7 @@ function date_long_format($jour, $mois, $annee)
     return($date);
  }
 
-// fonction permettant l'affichage des absences sur une année
+// fonction permettant l'affichage des absences sur une annÃ©e
 // tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tableau_info_donnee)
 function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tableau_info_donnee)
  {
@@ -792,7 +792,7 @@ function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tablea
 	$icouleur = '1';
 
 	echo '<table class="table_calendrier">';
-	//entête
+	//entÃªte
 		echo '<tr>';
 		  echo '<td class="td_calendrier_mois" style="background-color: #F0FFCF;">Mois</td>';
 		  // boucle des jours
@@ -803,7 +803,7 @@ function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tablea
 		  }
 		echo '</tr>';
 
-	//donnée
+	//donnÃ©e
 	$nb_jour_aff = '1';
 	$nb_mois_aff = '1';
 	$icouleur = '1';
@@ -811,7 +811,7 @@ function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tablea
 	// boucle des mois
 	while($nb_mois_aff<=$nb_mois)
 	{
-		// gestion du numéro du mois
+		// gestion du numÃ©ro du mois
 		if($num_mois==='0')
 		{ $num_mois = $mois_debut; } else {
 				if($num_mois!='12') { $num_mois = $num_mois + '1'; } else { $num_mois = '1'; $annee_select++; }
@@ -826,7 +826,7 @@ function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tablea
 		  while($nb_jour_aff<=$nb_jour) {
 			$jour_selectionne = $nb_jour_aff;
 			//s'occupe de connaitre la couleur de la cellule si un jour non existant
-			// vérifie l'existance de la date
+			// vÃ©rifie l'existance de la date
 			if(checkdate($num_mois, $jour_selectionne, $annee_select)) {
 				if(aff_jour($jour_selectionne, $num_mois, $annee_select)!='Dimanche') { if($icouleur==='1') { $couleur_cellule='#FAFFEF'; } else { $couleur_cellule='#F0FFCF'; } } else { $couleur_cellule='#C3EF59'; }
 			 } else { $couleur_cellule='#5F5F5F'; }
@@ -865,15 +865,15 @@ function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tablea
 	?> <img src="../images/absenceretard.png" style="width: 10px; height: 10px;" alt="" /> - Absences et retard<?php */
 }
 
-//fonction qui détermine le nombre de jour entre deux date et renvoie un tableau avec les dates d'absences
+//fonction qui dÃ©termine le nombre de jour entre deux date et renvoie un tableau avec les dates d'absences
 // $variable['absences']['date']['login']
 /*
 function jour_concerne($tableau_selection_eleve, $type)
 {
 	$type='A';
-	// sélecion de tous les élèves de l'école
+	// sÃ©lecion de tous les Ã©lÃ¨ves de l'Ã©cole
         if($tableau_selection_eleve === "tous" and empty($tableau_selection_eleve[0])) { $requete = ("SELECT * FROM ".$prefix_base."absences_eleves WHERE type_absence_eleve = '".$type."'"); }
-	// sélection de quelles que élèves
+	// sÃ©lection de quelles que Ã©lÃ¨ves
         if($tableau_selection_eleve != "tous" and !empty($tableau_selection_eleve[0])) {
 		if (!empty($tableau_selection_eleve[0])) {
 	 	$o=0; $prepa_requete = "";
@@ -896,7 +896,7 @@ function jour_concerne($tableau_selection_eleve, $type)
 		$date_fin = date_fr($donner['a_date_absence_eleve']);
 		$heure_debut = $donner['d_heure_absence_eleve'];
 		$heure_fin = $donner['a_heure_absence_eleve'];
-	    // on vas faire une boucle tant que l'élève est absent si la date de début et de fin ne sont pas égale
+	    // on vas faire une boucle tant que l'Ã©lÃ¨ve est absent si la date de dÃ©but et de fin ne sont pas Ã©gale
 	      if($date_debut!=$date_fin)
 	      {
  		     $date_debut_tableau = $date_debut;
@@ -914,10 +914,10 @@ function jour_concerne($tableau_selection_eleve, $type)
 	}
 } */
 
-//fonction permettant de récupérer les données de l'emploie du temps
+//fonction permettant de rÃ©cupÃ©rer les donnÃ©es de l'emploie du temps
 function edt_active_prof($login_prof, $heure, $jour, $semaine)
 {
-	  // requête qui permet de savoir quelle cours à un professeur par rapport à un jour et une heure donnée ainsi que la semaine paire et impaire
+	  // requÃªte qui permet de savoir quelle cours Ã  un professeur par rapport Ã  un jour et une heure donnÃ©e ainsi que la semaine paire et impaire
           $requete = ('SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$login_prof.'" AND jour_edt_classe = "'.$jour.'" AND semaine_edt_classe = "'.$semaine.'"');
       	  $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 	  while($donner = mysql_fetch_array($resultat))
@@ -929,14 +929,14 @@ function edt_active_prof($login_prof, $heure, $jour, $semaine)
 return array($id_groupe_edt, $heuredebut_edt, $heurefin_edt);
 }
 
-// fonction permettant de savoir dans quelle période nous nous trouvons
-// ex: periode_actuel('11:00:00') > période M4
+// fonction permettant de savoir dans quelle pÃ©riode nous nous trouvons
+// ex: periode_actuel('11:00:00') > pÃ©riode M4
 function periode_actuel($heure_choix)
   {
-      // fonction permettant de savoir dans quelle période nous nous trouvons
+      // fonction permettant de savoir dans quelle pÃ©riode nous nous trouvons
       if($heure_choix=="") { $heure_choix = date('H:i:s'); }
       $num_periode="";
-      //on liste dans un tableau les périodes existante
+      //on liste dans un tableau les pÃ©riodes existante
       $requete_periode = ('SELECT * FROM edt_creneaux WHERE heuredebut_definie_periode <= "'.$heure_choix .'" AND heurefin_definie_periode >= "'.$heure_choix.'" ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
       $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
       while($data_periode = mysql_fetch_array ($resultat_periode)) {
@@ -946,7 +946,7 @@ function periode_actuel($heure_choix)
       return($num_periode);
   }
 
-// fonction permettant de connaitre le nom de la période dans laquelle se trouve l'heure
+// fonction permettant de connaitre le nom de la pÃ©riode dans laquelle se trouve l'heure
 // s'il y en a plusieurs alors il retourne sous cette forme M1;M2;M3
 function periode_actuel_nom($heure_debut, $heure_fin)
 {
@@ -964,7 +964,7 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 		// initilalisation de la variable du nom de la periode
 		$nom_periode = '';
 
-		//on liste dans un tableau les périodes existante
+		//on liste dans un tableau les pÃ©riodes existante
 		$requete_periode = ('SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode
 				     FROM edt_creneaux
 				     WHERE (
@@ -1002,7 +1002,7 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 }
 
 
-/* liste les créneaux d'ouverture d'un jour donnée */
+/* liste les crÃ©neaux d'ouverture d'un jour donnÃ©e */
 function creneau_du_jour($id_eleve,$date_choisie)
 {
 
@@ -1011,29 +1011,29 @@ function creneau_du_jour($id_eleve,$date_choisie)
 
 	// nous connaisson
 		// la date du jour
-		// l'id de l'élève
+		// l'id de l'Ã©lÃ¨ve
 
-	// on peut donc en déduire
-		// les créneaux du jour
+	// on peut donc en dÃ©duire
+		// les crÃ©neaux du jour
 
-	// on renvoie donc la liste des créneaus du jour M1;M2;M3....
+	// on renvoie donc la liste des crÃ©neaus du jour M1;M2;M3....
 
 	/*
 	 *
-	 * $id_eleve -> login de l'élève
+	 * $id_eleve -> login de l'Ã©lÃ¨ve
  	 * $Date -> JJ/MM/AAAA
  	 *
  	 */
 
- /* tout cela seras utils quand nous ferons la différence entre les jours
+ /* tout cela seras utils quand nous ferons la diffÃ©rence entre les jours
 
-	// on créer un tableau avec le jour, le moi, l'année de la date choisi
+	// on crÃ©er un tableau avec le jour, le moi, l'annÃ©e de la date choisi
 	$choix_date = explode("/", $date_choisie);
 
-	// on créer un timestamp de cette date
+	// on crÃ©er un timestamp de cette date
 	$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
-	// On récupère les créneau du jour
+	// On rÃ©cupÃ¨re les crÃ©neau du jour
 	if ( date("w", $date_choisie_ts) == getSettingValue("creneau_different") )
 	{
 
@@ -1079,12 +1079,12 @@ function creneau_du_jour($id_eleve,$date_choisie)
 
 	}
 
-	// on renvoie les periodes selectionné séparer par des ;
+	// on renvoie les periodes selectionnÃ© sÃ©parer par des ;
 	return ($tableau_perdiode);
 
 }
 
-/* élève absence periode */
+/* Ã©lÃ¨ve absence periode */
 function absence_sur_creneau($id_eleve,$date_choisie,$heure_debut,$heure_fin,$type='')
 {
 
@@ -1092,37 +1092,37 @@ function absence_sur_creneau($id_eleve,$date_choisie,$heure_debut,$heure_fin,$ty
 
 	// nous connaisson
 		// la date du jour
-		// l'id de l'élève
-		// l'heure de début
+		// l'id de l'Ã©lÃ¨ve
+		// l'heure de dÃ©but
 		// l'heure de fin
 
-	// on peut donc en déduire
-		// les créneaux du jour
-		// savoir si l'élève à était absent
+	// on peut donc en dÃ©duire
+		// les crÃ©neaux du jour
+		// savoir si l'Ã©lÃ¨ve Ã  Ã©tait absent
 		// et quelle type d'absence
 
 	// on renvoi le type d'absence s'il y a une
 
 	/*
 	 *
-	 * $id_eleve -> login de l'élève
+	 * $id_eleve -> login de l'Ã©lÃ¨ve
  	 * $Date -> JJ/MM/AAAA
  	 * $heuredebut -> 00:00
  	 * $heurefin -> 00:00
  	 *
  	 */
 
-	// on créer un tableau avec le jour, le moi, l'année de la date choisi
+	// on crÃ©er un tableau avec le jour, le moi, l'annÃ©e de la date choisi
 	$choix_date = explode("/", $date_choisie);
 
-	// on créer un timestamp du debut et de la fin
+	// on crÃ©er un timestamp du debut et de la fin
 	$heuredeb = explode(":", $heure_debut);
 	$heurefin = explode(":", $heure_fin);
 
 	$ts_heuredeb = mktime($heuredeb[0], $heuredeb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 	$ts_heurefin = mktime($heurefin[0], $heurefin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
-	// on recherche si l'élève à était absence et en retard par rapport au donner de la table absences_rb
+	// on recherche si l'Ã©lÃ¨ve Ã  Ã©tait absence et en retard par rapport au donner de la table absences_rb
 	if ( $type != '' )
 	{
 
@@ -1184,7 +1184,7 @@ function absence_sur_creneau($id_eleve,$date_choisie,$heure_debut,$heure_fin,$ty
 
 }
 
-/* liste les créneaux d'ouverture d'un jour donnée */
+/* liste les crÃ©neaux d'ouverture d'un jour donnÃ©e */
 function creneau_absence_du_jour($id_eleve,$date_choisie,$type='')
 {
 
@@ -1192,29 +1192,29 @@ function creneau_absence_du_jour($id_eleve,$date_choisie,$type='')
 
 	// nous connaisson
 		// la date du jour
-		// l'id de l'élève
+		// l'id de l'Ã©lÃ¨ve
 
-	// on peut donc en déduire
-		// les créneaux du jour
+	// on peut donc en dÃ©duire
+		// les crÃ©neaux du jour
 
-	// on renvoie donc la liste des créneaus du jour M1;M2;M3....
+	// on renvoie donc la liste des crÃ©neaus du jour M1;M2;M3....
 
 	/*
 	 *
-	 * $id_eleve -> login de l'élève
+	 * $id_eleve -> login de l'Ã©lÃ¨ve
  	 * $Date -> JJ/MM/AAAA
  	 *
  	 */
 
- /* tout cela seras utils quand nous ferons la différence entre les jours
+ /* tout cela seras utils quand nous ferons la diffÃ©rence entre les jours
 
-	// on créer un tableau avec le jour, le moi, l'année de la date choisi
+	// on crÃ©er un tableau avec le jour, le moi, l'annÃ©e de la date choisi
 	$choix_date = explode("/", $date_choisie);
 
-	// on créer un timestamp de cette date
+	// on crÃ©er un timestamp de cette date
 	$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
-	// On récupère les créneau du jour
+	// On rÃ©cupÃ¨re les crÃ©neau du jour
 	if ( date("w", $date_choisie_ts) == getSettingValue("creneau_different") )
 	{
 
@@ -1274,19 +1274,19 @@ function creneau_absence_du_jour($id_eleve,$date_choisie,$type='')
 
 	}
 
-	// on renvoie les periodes selectionné séparer par des ;
+	// on renvoie les periodes selectionnÃ© sÃ©parer par des ;
 	return ($tableau_perdiode);
 
 }
 
 
-/* fonction qui permet de savoir si un courrier à était expédié pour une absences donné */
+/* fonction qui permet de savoir si un courrier Ã  Ã©tait expÃ©diÃ© pour une absences donnÃ© */
 function lettre_absence_envoye($id_absence_eleve)
 {
 
 	global $prefix_base;
 
-	// requête pour compte le nombre de lettre envoyé pour une absence donnée.
+	// requÃªte pour compte le nombre de lettre envoyÃ© pour une absence donnÃ©e.
 	$cpt_lettre_recus = 0;
 	$cpt_lettre_recus = mysql_result(mysql_query("SELECT count(*)
 													FROM " . $prefix_base . "lettres_suivis
@@ -1301,7 +1301,7 @@ function lettre_absence_envoye($id_absence_eleve)
 
 }
 
-// fonction permettant de connaitre le nom de la période dans laquelle se trouve l'heure
+// fonction permettant de connaitre le nom de la pÃ©riode dans laquelle se trouve l'heure
 // s'il y en a plusieurs alors il retourne sous cette forme M1;M2;M3
 function periode_active_nom($heure_debut, $heure_fin) {
 	// si aucune heure on prend l'heure actuelle
@@ -1311,7 +1311,7 @@ function periode_active_nom($heure_debut, $heure_fin) {
 		// initilalisation de la variable du nom de la periode
 		$nom_periode = '';
 
-		//on liste dans un tableau les périodes existante
+		//on liste dans un tableau les pÃ©riodes existante
 		$requete_periode = ('SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode
 				     FROM edt_creneaux
 				     WHERE (
@@ -1351,12 +1351,12 @@ function periode_active_nom($heure_debut, $heure_fin) {
 }
 
 
-//connaitre l'heure du début soit de la fin d'une période
+//connaitre l'heure du dÃ©but soit de la fin d'une pÃ©riode
 // ex: periode_heure($id_periode) > [0]11:00:00 [1]11:55:00
 function periode_heure($periode)
 {
 	$debut = ''; $fin = '';
-      // on recherche les informations sur la périodes sélectionné
+      // on recherche les informations sur la pÃ©riodes sÃ©lectionnÃ©
       $requete_periode = ('SELECT * FROM edt_creneaux WHERE id_definie_periode = "'.$periode.'"');
       $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
       while($data_periode = mysql_fetch_array ($resultat_periode)) {
@@ -1370,7 +1370,7 @@ function periode_heure($periode)
 function periode_heure_parnom($periode)
 {
 	$debut = ''; $fin = '';
-      // on recherche les informations sur la périodes sélectionné
+      // on recherche les informations sur la pÃ©riodes sÃ©lectionnÃ©
       $requete_periode = ('SELECT * FROM edt_creneaux WHERE nom_definie_periode = "'.$periode.'"');
       $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
       while($data_periode = mysql_fetch_array ($resultat_periode)) {
@@ -1381,7 +1381,7 @@ function periode_heure_parnom($periode)
       return array('debut'=> $debut, 'fin'=>$fin);
 }
 
-//fonction pour connaitre le jour de la semaine par rapport à une date
+//fonction pour connaitre le jour de la semaine par rapport Ã  une date
 function jour_semaine($date_parametre)
 {
    //on explose la date en jour mois annee
@@ -1398,7 +1398,7 @@ function jour_semaine($date_parametre)
    }
 }
 
-// fonction permetant d'exploser une date français ou sql en jour mois annee
+// fonction permetant d'exploser une date franÃ§ais ou sql en jour mois annee
 // ex: date_explose(date)
 function date_explose($date_parametre)
 {
@@ -1409,7 +1409,7 @@ function date_explose($date_parametre)
     return array('jour'=>$jour, 'mois'=>$mois, 'annee'=>$annee);
 }
 
-//fonction permetant de connaitre la matière d'une groupe
+//fonction permetant de connaitre la matiÃ¨re d'une groupe
 // ex: matiere_du_groupe(id du groupe)
 function matiere_du_groupe($groupe_parametre)
 {
@@ -1422,7 +1422,7 @@ function matiere_du_groupe($groupe_parametre)
       return array('nomcomplet'=> $nomcomplet, 'nomcourt'=>$nomcourt);
 }
 
-// fonction permetant de connaitre le jour de la semain SQL en numérique
+// fonction permetant de connaitre le jour de la semain SQL en numÃ©rique
 function jour_sem_sql($date)
  {
 	// date_default_timezone_get(); // n'est compatible que PHP 5.0.1
@@ -1457,7 +1457,7 @@ function jour_sem_compfr($date)
 
 
 //fonction qui permet de recevoir dans un tableau login|jour|date|heure_debut|heure_fin
-// à partir d'un tableau qui contient les données suivant login|date_debut|date_fin|heure_debut|heure_fin
+// Ã  partir d'un tableau qui contient les donnÃ©es suivant login|date_debut|date_fin|heure_debut|heure_fin
 function crer_tableau_jaj($tableau)
  {
 	// date_default_timezone_get(); // n'est compatible que PHP 5.0.1
@@ -1484,7 +1484,7 @@ function crer_tableau_jaj($tableau)
 			$tableau_de_donnees[$i2]['heure_fin'] = $tableau[$i]['heure_fin'];
 			$i2 = $i2 + 1;
 		 }
-		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
+		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des donnÃ©es
 		if($tableau[$i]['date_debut'] != $tableau[$i]['date_fin'])
 		 {
 			$jour_select = $tableau[$i]['date_debut'];
@@ -1619,7 +1619,7 @@ function convert_heures_minutes($heures)
   return($total_minute);
 }
 
-// fonction de conversion de numéro de mois en mois court
+// fonction de conversion de numÃ©ro de mois en mois court
 function convert_num_mois_court($numero)
 {
   	$tab_mois = array('01'=>"Jan.", '02'=>"Fev.", '03'=>"Mar.", '04'=>"Avr.", '05'=>"Mai", '06'=>"Juin", '07'=>"Juil.", '08'=>"Aout", '09'=>"Sept.", '10'=>"Oct.", '11'=>"Nov.", '12'=>"Dec.");
@@ -1687,7 +1687,7 @@ function repartire($login, $type, $du, $au)
 			$tableau_de_donnees[$i2]['heure_fin'] = $donnee['a_heure_absence_eleve'];
 			$i2 = $i2 + 1;
 		 }
-		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
+		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des donnÃ©es
 		if($donnee['d_date_absence_eleve'] != $donnee['a_date_absence_eleve'])
 		 {
 			$jour_select = $donnee['d_date_absence_eleve'];
@@ -1749,7 +1749,7 @@ function repartire_jour($login, $type, $du, $au)
 		 {
 			$date_select = $donnee['d_date_absence_eleve'];
 
-// incrémente en fonction du nombre de fois ou on trouve une heure de début pour un même jour
+// incrÃ©mente en fonction du nombre de fois ou on trouve une heure de dÃ©but pour un mÃªme jour
 if ( !isset($nb_horraire_date[$date_select]) ) { $nb_horraire_date[$date_select] = 0; } else { $nb_horraire_date[$date_select] = $nb_horraire_date[$date_select] + 1; }
 $nb_passage_horraire = $nb_horraire_date[$date_select];
 $date_tt = $date_select.'-'.$nb_passage_horraire;
@@ -1835,7 +1835,7 @@ $date_tt = $date_select.'-'.$nb_passage_horraire;
 
 			$i2 = $i2 + 1;
 		 }
-		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
+		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des donnÃ©es
 		if($donnee['d_date_absence_eleve'] != $donnee['a_date_absence_eleve'])
 		 {
 			$jour_select = $donnee['d_date_absence_eleve'];
@@ -1848,7 +1848,7 @@ $date_tt = $date_select.'-'.$nb_passage_horraire;
 			while($nb_jour_passe<=$nbjours)
 			 {
 
-// incrémente en fonction du nombre de fois ou on trouve une heure de début pour un même jour
+// incrÃ©mente en fonction du nombre de fois ou on trouve une heure de dÃ©but pour un mÃªme jour
 if ( !isset($nb_horraire_date[$jour_passe]) ) { $nb_horraire_date[$jour_passe] = 0; } else { $nb_horraire_date[$jour_passe] = $nb_horraire_date[$jour_passe] + 1; }
 $nb_passage_horraire = $nb_horraire_date[$jour_passe];
 $jour_passe_tt = $jour_passe.'-'.$nb_passage_horraire;
@@ -1976,7 +1976,7 @@ function tronquer_texte($texte, $longeur_max)
     if (strlen($texte) > $longeur_max)
     {
     $texte = substr($texte, 0, $longeur_max);
-	// on ne coupe pas au dernier espace mais au carcatére pret
+	// on ne coupe pas au dernier espace mais au carcatÃ©re pret
 	// $dernier_espace = strrpos($texte, "");
 	$dernier_espace = $longeur_max;
     $texte = substr($texte, 0, $dernier_espace)."...";
@@ -1985,7 +1985,7 @@ function tronquer_texte($texte, $longeur_max)
     return $texte;
 }
 
-// fonction pour information du cpe d'un élève
+// fonction pour information du cpe d'un Ã©lÃ¨ve
 function cpe_eleve($login_eleve)
 {
     global $prefix_base;
@@ -2001,7 +2001,7 @@ function cpe_eleve($login_eleve)
     return array('login' => $login_cpe, 'civilite' => $civilite, 'nom' => $nom, 'prenom' => $prenom);
 }
 
-// fonction pour information du cpe d'un élève
+// fonction pour information du cpe d'un Ã©lÃ¨ve
 function tel_responsable($ele_id)
 {
     global $prefix_base;
@@ -2028,11 +2028,11 @@ function tel_responsable($ele_id)
 			{
 				$tel_responsable[$cpt_parents]['civilite'] = $donner_parents['civilite']; // nom du responsable suite
 				$tel_responsable[$cpt_parents]['nom'] = $donner_parents['nom']; // nom du responsable suite
-				$tel_responsable[$cpt_parents]['prenom'] = $donner_parents['prenom']; // prénom du responsable suite
+				$tel_responsable[$cpt_parents]['prenom'] = $donner_parents['prenom']; // prÃ©nom du responsable suite
 				$tel_responsable[$cpt_parents]['tel_pers'] = $donner_parents['tel_pers']; // adresse du responsable suite
 				$tel_responsable[$cpt_parents]['tel_port'] = $donner_parents['tel_port']; // ville du responsable
 				$tel_responsable[$cpt_parents]['tel_prof'] = $donner_parents['tel_prof']; // code postal du responsable
-				$tel_responsable[$cpt_parents]['resp_legal'] = $donner_parents['resp_legal']; // code représente légal
+				$tel_responsable[$cpt_parents]['resp_legal'] = $donner_parents['resp_legal']; // code reprÃ©sente lÃ©gal
 
 				$sql="SELECT adr1,cp,commune FROM resp_adr WHERE adr_id='".$donner_parents['adr_id']."';";
 				$res_adr=mysql_query($sql);
@@ -2054,7 +2054,7 @@ function tel_responsable($ele_id)
     return ($tel_responsable);
 }
 
-// fonction permettant de combler les trous d'un auto_increment en prévision
+// fonction permettant de combler les trous d'un auto_increment en prÃ©vision
 function get_id($champ, $table)
 {
     $results = @mysql_query('SELECT ' . $champ . 'FROM ' . $table );
@@ -2075,7 +2075,7 @@ function initial_mode($initial_choix)
     global $prefix_base;
 
       if( $initial_choix == '' ) { $initial_donnee = ''; }
-      //on cherche l'initial demandé
+      //on cherche l'initial demandÃ©
 	$requete_initial_choix ="SELECT * FROM ".$prefix_base."absences_motifs WHERE def_motif_absence = '".$initial_choix."'";
     	$execution_initial_choix = mysql_query($requete_initial_choix) or die('Erreur SQL !'.$requete_initial_choix.'<br />'.mysql_error());
     	$donnee_initial_choix = mysql_fetch_array($execution_initial_choix);
@@ -2085,7 +2085,7 @@ function initial_mode($initial_choix)
   }
 
 
-// fonction pour vérifier l'existance d'une table
+// fonction pour vÃ©rifier l'existance d'une table
 function mysql_table_exists($table , $db) {
 
 	$requete = 'SHOW TABLES FROM '.$db.' LIKE \''.$table.'\'';
@@ -2103,7 +2103,7 @@ function timestamps_encode($date_select, $heure_select)
 
 	$jour = ''; $mois = ''; $annee = ''; $heure = ''; $minute = ''; $seconde = '';
 
-	// décortication de la date au format SQL ou FR
+	// dÃ©cortication de la date au format SQL ou FR
 	$date_decompose = explode('/',$date_select);
 		if ( isset($date_decompose['0']) ) { $jour = $date_decompose['0']; }
 		if ( isset($date_decompose['1']) ) { $mois = $date_decompose['1']; }
@@ -2115,7 +2115,7 @@ function timestamps_encode($date_select, $heure_select)
 		if ( isset($date_decompose['2']) ) { $jour = $date_decompose['2']; }
 	}
 
-	// décortication des heure, minute, seconde
+	// dÃ©cortication des heure, minute, seconde
 	$heure_decompose = explode(':',$heure_select);
 		if ( isset($date_decompose['0']) ) { $heure = $heure_decompose['0']; } else { $heure = '00'; }
 		if ( isset($date_decompose['1']) ) { $minute = $heure_decompose['1']; } else { $minute = '00'; }
@@ -2129,7 +2129,7 @@ function timestamps_encode($date_select, $heure_select)
 	return ($timestamps);
 }
 
-// fonction qui décode un timestamps en date et heure
+// fonction qui dÃ©code un timestamps en date et heure
 // retourne $donnee['date'] = 12/12/2006 $donnee['heure'] = 15:10:00
 function timestamps_decode($timestamps, $type)
 {
@@ -2142,7 +2142,7 @@ function timestamps_decode($timestamps, $type)
 		// date renvoie en GMT+1
 		$donnees = date("m d Y H:i:s", $timestamps);
 
-	// décortication de la date au format SQL ou FR
+	// dÃ©cortication de la date au format SQL ou FR
 		$donnees_decompose = explode(' ',$donnees);
 		if ( isset($donnees_decompose['0']) ) { $jour = $donnees_decompose['1']; }
 		if ( isset($donnees_decompose['1']) ) { $mois = $donnees_decompose['0']; }
@@ -2156,14 +2156,14 @@ function timestamps_decode($timestamps, $type)
 	return array('date'=>$date, 'heure'=>$heure);
 }
 
-//une fonction qui vérifie que l'établissement était ouvert
+//une fonction qui vÃ©rifie que l'Ã©tablissement Ã©tait ouvert
 function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 {
 
     global $prefix_base;
     global $dbDb;
 
-	// a l'état initial l'établissement est considérer comme fermer
+	// a l'Ã©tat initial l'Ã©tablissement est considÃ©rer comme fermer
 	$ouvert = 'non';
 
 	// on explose la date soit sql soit fr
@@ -2177,7 +2177,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 	// pour connaitre le jour lundi, mardi, ...
 	$joursem =  aff_jour($jour, $mois, $annee);
 
-	// on compte le nombre de jour trouvé qui soit ouvert
+	// on compte le nombre de jour trouvÃ© qui soit ouvert
 		$requete_nb = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."horaires_etablissement
 							WHERE jour_horaire_etablissement = '".$joursem."'
 							AND ouvert_horaire_etablissement = '1'
@@ -2188,18 +2188,18 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						          OR fermeture_horaire_etablissement BETWEEN '".$de_heure."' AND '".$a_heure."'
 					      		)"),0);
 
-	// ensuit on vérifie qu'une table edt_calendrier existe
+	// ensuit on vÃ©rifie qu'une table edt_calendrier existe
 	$table_edt_calendrier = 'non';
 	$table= '';
 	$table = $prefix_base.'edt_calendrier';
 	$exist_table = mysql_table_exists($table, $dbDb);
 	if ( $exist_table === 1 ) { $table_edt_calendrier = 'oui'; }
 
-	// si la table existe est qu'elle n'est pas vide alors on vérifie que le jour ne soit pas férier ou dans une période de vacances
+	// si la table existe est qu'elle n'est pas vide alors on vÃ©rifie que le jour ne soit pas fÃ©rier ou dans une pÃ©riode de vacances
 	$requete_nb_calendrier_1 = '0';
 	$requete_nb_calendrier_2 = '0';
 
-		// définition des dates en timestamps
+		// dÃ©finition des dates en timestamps
 		$debut_calendrier_ts_gmt = timestamps_encode($date_sql, $de_heure);
 		$fin_calendrier_ts_gmt = timestamps_encode($date_sql, $a_heure);
 
@@ -2215,7 +2215,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
 							)"),0);
 	}
-	// on fait de même si c'est pour une classe est précisé
+	// on fait de mÃªme si c'est pour une classe est prÃ©cisÃ©
 	if ( $table_edt_calendrier === 'oui' and $classe_select != '' )
 	{
 		$requete_nb_calendrier_2 = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_calendrier
@@ -2238,7 +2238,7 @@ function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
 	return($ouvert);
 }
 
-//Nb. absences non justifiées
+//Nb. absences non justifiÃ©es
 function nb_absences_nj($identifiant, $du_date, $au_date, $classe_select)
 {
 
@@ -2255,7 +2255,7 @@ function nb_absences_nj($identifiant, $du_date, $au_date, $classe_select)
 			       	OR a_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
 				)";
 
-	// on fait une boucle pour savoir si cela tombe pendant que l'établissement est ouvert
+	// on fait une boucle pour savoir si cela tombe pendant que l'Ã©tablissement est ouvert
         $execution =mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 	$nb = '0';
         while ( $donnee = mysql_fetch_array($execution))
@@ -2282,7 +2282,7 @@ function nb_absences_nj($identifiant, $du_date, $au_date, $classe_select)
 
 				$date_de_fin_de_base = $donnee['a_date_absence_eleve'];
 
-				// calcule du nombre de jour entre la date de début et celle de fin
+				// calcule du nombre de jour entre la date de dÃ©but et celle de fin
 				$date1 = str_replace("-", "", $date_de_debut);
 				$date2 = str_replace("-", "", $date_de_fin);
 				// $nbjours = le nombre de jour entre les deux dates
@@ -2295,9 +2295,9 @@ function nb_absences_nj($identifiant, $du_date, $au_date, $classe_select)
 			 	{
 					$date_selection = $jour_passe;
 
-					// connaitre à l'avance la date suivant
+					// connaitre Ã  l'avance la date suivant
 					$tab_date = explode('-', $jour_passe);
-					// ensuite on incrémente de 1 la date actif
+					// ensuite on incrÃ©mente de 1 la date actif
 					$jour_qui_suivera = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
 
 					// si le jour qui suit n'est pas = au jour de fin alors toutjournee = 1
@@ -2305,29 +2305,29 @@ function nb_absences_nj($identifiant, $du_date, $au_date, $classe_select)
 					// si le jour qui suit est = au jour de fin alors toutjournee = 2
 					if ( $date_selection === $date_de_fin_de_base ) { $toutjournee = 'non'; }
 
-					// si le jour suivant et plus grand que la date de fin de la sélection alors on n'arret la boucle
+					// si le jour suivant et plus grand que la date de fin de la sÃ©lection alors on n'arret la boucle
 					if ( $jour_qui_suivera > date_sql($au_date) ) { $boucle = 'fin'; }
 					// si le jour suivant et plus grand que la date de fin de la base alors on n'arret la boucle
 					if ( $jour_qui_suivera > $date_de_fin_de_base ) { $boucle = 'fin'; }
 
-					/* définition des horaires */
+					/* dÃ©finition des horaires */
 
-					// si la date de selection est égale à la date de début de la base alors on prend l'heure de début saisi
+					// si la date de selection est Ã©gale Ã  la date de dÃ©but de la base alors on prend l'heure de dÃ©but saisi
 					if ( $date_selection === $date_de_debut ) {
 						$heure_de_select = $donnee['d_heure_absence_eleve'];
 						$heure_a_select = '23:59:59';
 					}
-					// si la date de selection est égale à la date de fin de la base et que la journée n'est pas la journée complète alors on prend l'heure de fin saisi
+					// si la date de selection est Ã©gale Ã  la date de fin de la base et que la journÃ©e n'est pas la journÃ©e complÃ¨te alors on prend l'heure de fin saisi
 					if ( $date_selection === $date_de_fin and $toutjournee === 'non' ) {
 						$heure_de_select = '00:00:00';
 						$heure_a_select = $donnee['a_heure_absence_eleve'];
 					}
-					// si la date de selection est égale à la date de fin de la base et que la journée est complète alors on prend l'heure de fin 23:59:59
+					// si la date de selection est Ã©gale Ã  la date de fin de la base et que la journÃ©e est complÃ¨te alors on prend l'heure de fin 23:59:59
 					if ( $date_selection === $date_de_fin and $toutjournee === 'oui' ) {
 						$heure_de_select = '00:00:00';
 						$heure_a_select = '23:59:59';
 					}
-					// si la date de selection ne correspond ni à la date de début ni à la date fin alors on initialise au début journée et fin journée
+					// si la date de selection ne correspond ni Ã  la date de dÃ©but ni Ã  la date fin alors on initialise au dÃ©but journÃ©e et fin journÃ©e
 					if ( $date_selection != $date_de_debut and $date_selection != $date_de_fin ) {
 						$heure_de_select = '00:00:00';
 						$heure_a_select = '23:59:59';
@@ -2335,7 +2335,7 @@ function nb_absences_nj($identifiant, $du_date, $au_date, $classe_select)
 
 					if ( etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb = $nb + 1; }
 
-					// on incrémente de 1 la date actif
+					// on incrÃ©mente de 1 la date actif
 					$jour_passe = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
 					// on compte + 1 pour le nombre de jour passe
 					$nb_jour_passe = $nb_jour_passe + 1;
@@ -2366,7 +2366,7 @@ function nb_retard($identifiant, $du_date, $au_date, $classe_select)
 				       	OR d_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
 				       	OR a_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
 					)";
-	// on fait une boucle pour savoir si cela tombe pendant que l'établissement est ouvert
+	// on fait une boucle pour savoir si cela tombe pendant que l'Ã©tablissement est ouvert
         $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 	$nb = '0';
         while ( $donnee = mysql_fetch_array($execution))
@@ -2377,15 +2377,15 @@ function nb_retard($identifiant, $du_date, $au_date, $classe_select)
 	return($nb);
 }
 
-// Nb. total de 1/2 journées d'absence
+// Nb. total de 1/2 journÃ©es d'absence
 function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_select)
 {
 
     global $prefix_base;
 
 	$tableau_base = '';
-	$heure_de_coupure = '13:00:00'; // heure de milieu de journée - CAS N°1
-	$nb_heure_demi_journee = '04:00:00'; // nombre d'heure que fait une demi-jounrée - CAS N°2
+	$heure_de_coupure = '13:00:00'; // heure de milieu de journÃ©e - CAS NÂ°1
+	$nb_heure_demi_journee = '04:00:00'; // nombre d'heure que fait une demi-jounrÃ©e - CAS NÂ°2
 	$type = 'A'; // type absences
 	$nb_demi_journee = '0';
 
@@ -2431,7 +2431,7 @@ function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_
 
 				$date_de_fin_de_base = $donnee['a_date_absence_eleve'];
 
-				// calcule du nombre de jour entre la date de début et celle de fin
+				// calcule du nombre de jour entre la date de dÃ©but et celle de fin
 				$date1 = str_replace("-", "", $date_de_debut);
 				$date2 = str_replace("-", "", $date_de_fin);
 				// $nbjours = le nombre de jour entre les deux dates
@@ -2447,9 +2447,9 @@ function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_
 					if ( !isset($tableau_base[$date_selection]['matin']) ) { $tableau_base[$date_selection]['matin'] = 'non'; }
 					if ( !isset($tableau_base[$date_selection]['apresmidi']) ) { $tableau_base[$date_selection]['apresmidi'] = 'non'; }
 
-					// connaitre à l'avance la date suivant
+					// connaitre Ã  l'avance la date suivant
 					$tab_date = explode('-', $jour_passe);
-					// ensuite on incrémente de 1 la date actif
+					// ensuite on incrÃ©mente de 1 la date actif
 					$jour_qui_suivera = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
 
 					// si le jour qui suit n'est pas = au jour de fin alors toutjournee = 1
@@ -2457,29 +2457,29 @@ function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_
 					// si le jour qui suit est = au jour de fin alors toutjournee = 2
 					if ( $date_selection === $date_de_fin_de_base ) { $toutjournee = 'non'; }
 
-					// si le jour suivant et plus grand que la date de fin de la sélection alors on n'arret la boucle
+					// si le jour suivant et plus grand que la date de fin de la sÃ©lection alors on n'arret la boucle
 					if ( $jour_qui_suivera > date_sql($au_date) ) { $boucle = 'fin'; }
 					// si le jour suivant et plus grand que la date de fin de la base alors on n'arret la boucle
 					if ( $jour_qui_suivera > $date_de_fin_de_base ) { $boucle = 'fin'; }
 
-					/* définition des horaires */
+					/* dÃ©finition des horaires */
 
-					// si la date de selection est égale à la date de début de la base alors on prend l'heure de début saisi
+					// si la date de selection est Ã©gale Ã  la date de dÃ©but de la base alors on prend l'heure de dÃ©but saisi
 					if ( $date_selection === $date_de_debut ) {
 						$heure_de_select = $donnee['d_heure_absence_eleve'];
 						$heure_a_select = '23:59:59';
 					}
-					// si la date de selection est égale à la date de fin de la base et que la journée n'est pas la journée complète alors on prend l'heure de fin saisi
+					// si la date de selection est Ã©gale Ã  la date de fin de la base et que la journÃ©e n'est pas la journÃ©e complÃ¨te alors on prend l'heure de fin saisi
 					if ( $date_selection === $date_de_fin and $toutjournee === 'non' ) {
 						$heure_de_select = '00:00:00';
 						$heure_a_select = $donnee['a_heure_absence_eleve'];
 					}
-					// si la date de selection est égale à la date de fin de la base et que la journée est complète alors on prend l'heure de fin 23:59:59
+					// si la date de selection est Ã©gale Ã  la date de fin de la base et que la journÃ©e est complÃ¨te alors on prend l'heure de fin 23:59:59
 					if ( $date_selection === $date_de_fin and $toutjournee === 'oui' ) {
 						$heure_de_select = '00:00:00';
 						$heure_a_select = '23:59:59';
 					}
-					// si la date de selection ne correspond ni à la date de début ni à la date fin alors on initialise au début journée et fin journée
+					// si la date de selection ne correspond ni Ã  la date de dÃ©but ni Ã  la date fin alors on initialise au dÃ©but journÃ©e et fin journÃ©e
 					if ( $date_selection != $date_de_debut and $date_selection != $date_de_fin ) {
 						$heure_de_select = '00:00:00';
 						$heure_a_select = '23:59:59';
@@ -2489,7 +2489,7 @@ function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_
 					elseif ( $heure_de_select < $heure_de_coupure and $heure_a_select > $heure_de_coupure  and $tableau_base[$date_selection]['matin'] != 'oui' and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 2; $tableau_base[$date_selection]['matin'] = 'oui'; $tableau_base[$date_selection]['apresmidi'] = 'oui'; }
 					elseif ( $heure_de_select >= $heure_de_coupure and $heure_a_select > $heure_de_coupure and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 1; $tableau_base[$date_selection]['apresmidi'] = 'oui'; }
 
-					// on incrémente de 1 la date actif
+					// on incrÃ©mente de 1 la date actif
 					$jour_passe = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
 					// on compte + 1 pour le nombre de jour passe
 					$nb_jour_passe = $nb_jour_passe + 1;

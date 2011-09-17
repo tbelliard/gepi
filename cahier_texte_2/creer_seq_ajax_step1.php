@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
   die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=2");
     die();
@@ -48,7 +48,7 @@ if (!checkAccess()) {
 $select   = isset($_POST["select"]) ? $_POST["select"] : NULL;
 $_id      = isset($_POST["_id"]) ? $_POST["_id"] : NULL;
 
-// =================================================== Le code métier =======================================/
+// =================================================== Le code mÃ©tier =======================================/
 
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {

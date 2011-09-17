@@ -62,7 +62,7 @@ require_once("../../lib/header.inc");
 // Mes fonctions
 	include("../lib/functions.php");
 
-// fonction affiche les moyennes avec les arrondies et le nombre de chiffre après la virgule
+// fonction affiche les moyennes avec les arrondies et le nombre de chiffre aprÃ¨s la virgule
 // precision '0.01' '0.1' '0.25' '0.5' '1'
 function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_zero)
  {
@@ -73,13 +73,13 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
         return($nombre);
  }
 
-// Variable prédéfinit
+// Variable prÃ©dÃ©finit
 	$date_ce_jour = date('d/m/Y');
 	$date_ce_jour_sql = date('Y-m-d');
 	$annee_scolaire = annee_en_cours_t($date_ce_jour_sql);
-	// donnée de l'axe X
+	// donnÃ©e de l'axe X
 	$donnee_x = '';
-	// donnée de l'axe Y
+	// donnÃ©e de l'axe Y
 	$donnee_y = '';
 	// texte des labels
 	$donnee_label = '';
@@ -93,7 +93,7 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	$cpt_donnees = '0';
 	$donnee_select = '';
 
-// Variable non définit
+// Variable non dÃ©finit
 	if (empty($_GET['classe']) and empty($_POST['classe'])) { $classe[0] = ''; }
 	   else { if (isset($_GET['classe'])) { $classe = $_GET['classe']; } if (isset($_POST['classe'])) { $classe = $_POST['classe']; } }
 	if (empty($_GET['eleve']) and empty($_POST['eleve'])) { $eleve[0] = ''; }
@@ -131,11 +131,11 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	if (empty($_GET['doublon_journee']) and empty($_POST['doublon_journee'])) { $doublon_journee = ''; }
 	   else { if (isset($_GET['doublon_journee'])) { $doublon_journee = $_GET['doublon_journee']; } if (isset($_POST['doublon_journee'])) { $doublon_journee = $_POST['doublon_journee']; } }
 
-	// si au n'est pas défini alors on prend le premier jour du mois suivant
+	// si au n'est pas dÃ©fini alors on prend le premier jour du mois suivant
 	if ( $au === '' or $au === 'JJ/MM/AAAA' or $du > $au ) { $au = mois_suivant($du); }
 
-// Préparation des requêtes
-	// pour la sélection des type A/R/I/D
+// PrÃ©paration des requÃªtes
+	// pour la sÃ©lection des type A/R/I/D
 	if(!empty($type[0])) {
 		$i = '0';
 		while ( !empty($type[$i]) )
@@ -146,15 +146,15 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 		$i = $i + 1;
 		}
 	}
-	// pour la sélection de la justification ou non justification
-	 // affiché tout
+	// pour la sÃ©lection de la justification ou non justification
+	 // affichÃ© tout
 	 if ( $justification === 'T' ) { $justification_selectionne = "(justify_absence_eleve = 'O' OR justify_absence_eleve = 'T' OR justify_absence_eleve = 'N')";  }
-	 // affiché ceux qui sont justifiée par lettre ou par téléphone
+	 // affichÃ© ceux qui sont justifiÃ©e par lettre ou par tÃ©lÃ©phone
 	 if ( $justification === 'O' ) { $justification_selectionne = "(justify_absence_eleve = 'O' OR justify_absence_eleve = 'T')";  }
-	 // affiché ceux qui ne sont pas jsutifiée
+	 // affichÃ© ceux qui ne sont pas jsutifiÃ©e
 	 if ( $justification === 'N' ) { $justification_selectionne = "(justify_absence_eleve = 'N')";  }
 
-	// pour la sélection classe
+	// pour la sÃ©lection classe
 	if(!empty($classe[0])) {
 		$i = '0';
 		while ( !empty($classe[$i]) )
@@ -165,7 +165,7 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 		$i = $i + 1;
 		}
 	}
-	// pour la sélection élève
+	// pour la sÃ©lection Ã©lÃ¨ve
 	if(!empty($eleve[0])) {
 		$i = '0';
 		while ( !empty($eleve[$i]) )
@@ -185,24 +185,24 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	 { $long_absence_cocher = "d_date_absence_eleve = a_date_absence_eleve"; }
      
 // Requete SQL
-	// élève non sélectionné, classe non sélectionné
+	// Ã©lÃ¨ve non sÃ©lectionnÃ©, classe non sÃ©lectionnÃ©
 	 if($eleve_selectionne === '' and $classe_selectionne === '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
 	
-	// Classe sélectionné, élève non sélectionné
+	// Classe sÃ©lectionnÃ©, Ã©lÃ¨ve non sÃ©lectionnÃ©
 	 if($eleve_selectionne === '' and $classe_selectionne != '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$classe_selectionne." AND ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
 
-	// élèves sélectionné, classe sélectionné
+	// Ã©lÃ¨ves sÃ©lectionnÃ©, classe sÃ©lectionnÃ©
 	 if($eleve_selectionne != '' and $classe_selectionne != '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$eleve_selectionne." AND ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
 
 	     $i = '0';             
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
-	     // compte les données
+	     // compte les donnÃ©es
 	     $cpt_donnees = mysql_num_rows($execution_komenti);
 
-	// vérification s'il contient des données
+	// vÃ©rification s'il contient des donnÃ©es
 	if ( $cpt_donnees != '0' ) {
 	    // si oui on charge les informations
              while ( $donnee_base = mysql_fetch_array($execution_komenti))
@@ -217,14 +217,14 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 			$i = $i + 1;
 		} 
 	    $tab = crer_tableau_jaj($tableau);
-		// en cas d'erreur pour affiché les informations
+		// en cas d'erreur pour affichÃ© les informations
 		//	echo '<pre>';
 		//	print_r($tab);
 		//	echo '</pre>';
 	}
 
 
-// si on désire les comptes en demi-journée
+// si on dÃ©sire les comptes en demi-journÃ©e
 if($echelle_y === 'D') {
 	$i = '0';
 	$jour_temp_passe = '';
@@ -236,12 +236,12 @@ if($echelle_y === 'D') {
 
 	while ( !empty($tab[$i]) ) {
 			$onprend = 'oui';
-			// si on ne prend pas les doublons dans une même journée
+			// si on ne prend pas les doublons dans une mÃªme journÃ©e
 			if( $doublon_journee != '')
 			   {
 				$eleve_passe = $tab[$i]['login'];
 				$date_passe = $tab[$i]['date'];
-				// on vérifie si l'élève à déjas une absence prise en compte dans une journée donnée
+				// on vÃ©rifie si l'Ã©lÃ¨ve Ã  dÃ©jas une absence prise en compte dans une journÃ©e donnÃ©e
 				if ( !isset($eleve_passe_tab[$date_passe][$eleve_passe]) )
 				{
 				   $onprend = 'oui';
@@ -249,12 +249,12 @@ if($echelle_y === 'D') {
 				} else { $onprend = 'non'; }
 			   }
 
-			// on vérifie la sélection par rapport à une date si une date de début ou de fin on était donnée
+			// on vÃ©rifie la sÃ©lection par rapport Ã  une date si une date de dÃ©but ou de fin on Ã©tait donnÃ©e
 			if( !empty($du) and $du != 'JJ/MM/AAAA' ) { $du_sql = date_sql($du); } else { $du_sql = ''; }
 			if( !empty($au) and $au != 'JJ/MM/AAAA' ) { $au_sql = date_sql($au); } else { $au_sql = ''; }
 			   if( ($du_sql != '' or $au_sql != '') and $onprend === 'oui' )
 			   {
-				// on vérifie si la date de début rentre dans l'information
+				// on vÃ©rifie si la date de dÃ©but rentre dans l'information
 				if ( $tab[$i]['date'] >= $du_sql )
 				{
 				   $onprend = 'oui';
@@ -278,7 +278,7 @@ if($echelle_y === 'D') {
 		$classe_eleve = $tab[$i]['classe'];
 		$eleve_eleve = qui_eleve($tab[$i]['login']);
 
-		// les données
+		// les donnÃ©es
 			// par mois
 			if($echelle_x === 'M') {
 				if(empty($donnee_select[$annee.'-'.$mois])) { $donnee_select[$annee.'-'.$mois] = '0'; }
@@ -289,7 +289,7 @@ if($echelle_y === 'D') {
 				if(empty($donnee_select[$annee.'-'.$mois.'-'.$jour])) { $donnee_select[$annee.'-'.$mois.'-'.$jour] = '0'; }
 				$donnee_select[$annee.'-'.$mois.'-'.$jour] = $donnee_select[$annee.'-'.$mois.'-'.$jour] + nb_total_demijournee_absence($tab[$i]['login'], date_fr($tab[$i]['date']), date_fr($tab[$i]['date']), $classe_eleve);
 			}
-			// par heure (période)
+			// par heure (pÃ©riode)
 			if($echelle_x === 'P') {
 			}
 			// par classe
@@ -297,7 +297,7 @@ if($echelle_y === 'D') {
 				if(empty($donnee_select[$classe_eleve])) { $donnee_select[$classe_eleve] = '0'; }
 				$donnee_select[$classe_eleve] = $donnee_select[$classe_eleve] + nb_total_demijournee_absence($tab[$i]['login'], date_fr($tab[$i]['date']), date_fr($tab[$i]['date']), $classe_eleve);
 			}
-			// par élève
+			// par Ã©lÃ¨ve
 			if($echelle_x === 'E') {
 				if(empty($donnee_select[$eleve_eleve])) { $donnee_select[$eleve_eleve] = '0'; }
 				$donnee_select[$eleve_eleve] = $donnee_select[$eleve_eleve] + nb_total_demijournee_absence($tab[$i]['login'], date_fr($tab[$i]['date']), date_fr($tab[$i]['date']), $classe_eleve);
@@ -308,7 +308,7 @@ if($echelle_y === 'D') {
 }
 
 
-// si on désire les comptes en horaire
+// si on dÃ©sire les comptes en horaire
 if($echelle_y === 'H') {
 	$i = '0';
 	$jour_temp_passe = '';
@@ -317,12 +317,12 @@ if($echelle_y === 'H') {
 
 	while ( !empty($tab[$i]) ) {
 		$onprend = 'oui';
-		// on vérifie la sélection par rapport à une date si une date de début ou de fin on était donnée
+		// on vÃ©rifie la sÃ©lection par rapport Ã  une date si une date de dÃ©but ou de fin on Ã©tait donnÃ©e
 		if( !empty($du) and $du != 'JJ/MM/AAAA' ) { $du_sql = date_sql($du); } else { $du_sql = ''; }
 		if( !empty($au) and $au != 'JJ/MM/AAAA' ) { $au_sql = date_sql($au); } else { $au_sql = ''; }
 			   if( $du_sql != '' or $au_sql != '')
 			   {
-				// on vérifie si la date de début rentre dans l'information
+				// on vÃ©rifie si la date de dÃ©but rentre dans l'information
 				if ( $tab[$i]['date'] >= $du_sql )
 				{
 				   $onprend = 'oui';
@@ -346,7 +346,7 @@ if($echelle_y === 'H') {
 		$classe_eleve = $tab[$i]['classe'];
 		$eleve_eleve = qui_eleve($tab[$i]['login']);
 
-		// total en minute de l'heure du début
+		// total en minute de l'heure du dÃ©but
 		$total_minute_de = convert_heures_minutes($tab[$i]['heure_debut']);
 
 		// total en minute de l'heure de fin
@@ -354,12 +354,12 @@ if($echelle_y === 'H') {
 
 		// total en minute de l'absence
 		$total_minute = $total_minute_a - $total_minute_de;
-			// si suppérieur à 8h00 alors on prend 480 minutes au lieu de ce que l'on trouve
+			// si suppÃ©rieur Ã  8h00 alors on prend 480 minutes au lieu de ce que l'on trouve
 			if ( $total_minute > '480' ) { $total_minute = '480'; }
-			// le jour tombe un dimanche donc = 0 on remet le compteur à 0
+			// le jour tombe un dimanche donc = 0 on remet le compteur Ã  0
 			if ( $tab[$i]['jour'] === '0' ) { $total_minute = '0'; }
 
-		// les données
+		// les donnÃ©es
 			// par mois
 			if($echelle_x === 'M') {
 				if(empty($donnee_select[$annee.'-'.$mois])) { $donnee_select[$annee.'-'.$mois] = '0'; }
@@ -370,7 +370,7 @@ if($echelle_y === 'H') {
 				if(empty($donnee_select[$annee.'-'.$mois.'-'.$jour])) { $donnee_select[$annee.'-'.$mois.'-'.$jour] = '0'; }
 				$donnee_select[$annee.'-'.$mois.'-'.$jour] = $donnee_select[$annee.'-'.$mois.'-'.$jour] + $total_minute;
 			}
-			// par heure (période)
+			// par heure (pÃ©riode)
 			if($echelle_x === 'P') {
 			}
 			// par classe
@@ -378,7 +378,7 @@ if($echelle_y === 'H') {
 				if(empty($donnee_select[$classe_eleve])) { $donnee_select[$classe_eleve] = '0'; }
 				$donnee_select[$classe_eleve] = $donnee_select[$classe_eleve] + $total_minute;
 			}
-			// par élève
+			// par Ã©lÃ¨ve
 			if($echelle_x === 'E') {
 				if(empty($donnee_select[$eleve_eleve])) { $donnee_select[$eleve_eleve] = '0'; }
 				$donnee_select[$eleve_eleve] = $donnee_select[$eleve_eleve] + $total_minute;
@@ -388,7 +388,7 @@ if($echelle_y === 'H') {
 	}
 }
 
-// si on désire les comptes en nombre d'enregistrement
+// si on dÃ©sire les comptes en nombre d'enregistrement
 if($echelle_y === 'E') {
 	$i = '0';
 	$jour_temp_passe = '';
@@ -400,12 +400,12 @@ if($echelle_y === 'E') {
 
 	while ( !empty($tab[$i]) ) {
 			$onprend = 'oui';
-			// si on ne prend pas les doublons dans une même journée
+			// si on ne prend pas les doublons dans une mÃªme journÃ©e
 			if( $doublon_journee != '')
 			   {
 				$eleve_passe = $tab[$i]['login'];
 				$date_passe = $tab[$i]['date'];
-				// on vérifie si l'élève à déjas une absence prise en compte dans une journée donnée
+				// on vÃ©rifie si l'Ã©lÃ¨ve Ã  dÃ©jas une absence prise en compte dans une journÃ©e donnÃ©e
 				if ( !isset($eleve_passe_tab[$date_passe][$eleve_passe]) )
 				{
 				   $onprend = 'oui';
@@ -413,12 +413,12 @@ if($echelle_y === 'E') {
 				} else { $onprend = 'non'; }
 			   }
 
-			// on vérifie la sélection par rapport à une date si une date de début ou de fin on était donnée
+			// on vÃ©rifie la sÃ©lection par rapport Ã  une date si une date de dÃ©but ou de fin on Ã©tait donnÃ©e
 			if( !empty($du) and $du != 'JJ/MM/AAAA' ) { $du_sql = date_sql($du); } else { $du_sql = ''; }
 			if( !empty($au) and $au != 'JJ/MM/AAAA' ) { $au_sql = date_sql($au); } else { $au_sql = ''; }
 			   if( ($du_sql != '' or $au_sql != '') and $onprend === 'oui' )
 			   {
-				// on vérifie si la date de début rentre dans l'information
+				// on vÃ©rifie si la date de dÃ©but rentre dans l'information
 				if ( $tab[$i]['date'] >= $du_sql )
 				{
 				   $onprend = 'oui';
@@ -442,7 +442,7 @@ if($echelle_y === 'E') {
 		$classe_eleve = $tab[$i]['classe'];
 		$eleve_eleve = qui_eleve($tab[$i]['login']);
 
-		// les données
+		// les donnÃ©es
 			// par mois
 			if($echelle_x === 'M') {
 				if(empty($donnee_select[$annee.'-'.$mois])) { $donnee_select[$annee.'-'.$mois] = '0'; }
@@ -453,7 +453,7 @@ if($echelle_y === 'E') {
 				if(empty($donnee_select[$annee.'-'.$mois.'-'.$jour])) { $donnee_select[$annee.'-'.$mois.'-'.$jour] = '0'; }
 				$donnee_select[$annee.'-'.$mois.'-'.$jour] = $donnee_select[$annee.'-'.$mois.'-'.$jour] + 1;
 			}
-			// par heure (période)
+			// par heure (pÃ©riode)
 			if($echelle_x === 'P') {
 			}
 			// par classe
@@ -461,7 +461,7 @@ if($echelle_y === 'E') {
 				if(empty($donnee_select[$classe_eleve])) { $donnee_select[$classe_eleve] = '0'; }
 				$donnee_select[$classe_eleve] = $donnee_select[$classe_eleve] + 1;
 			}
-			// par élève
+			// par Ã©lÃ¨ve
 			if($echelle_x === 'E') {
 				if(empty($donnee_select[$eleve_eleve])) { $donnee_select[$eleve_eleve] = '0'; }
 				$donnee_select[$eleve_eleve] = $donnee_select[$eleve_eleve] + 1;
@@ -471,7 +471,7 @@ if($echelle_y === 'E') {
 	}
 }
 
-		// en cas d'erreur pour affiché les informations
+		// en cas d'erreur pour affichÃ© les informations
 		//	echo '<pre>';
 		//	print_r($donnee_select);
 		//	echo '</pre>';
@@ -485,7 +485,7 @@ if($echelle_y === 'E') {
 			if( $type[$i] === 'A' ) { $type_selectionne_titre = $type_selectionne_titre."d'absences"; }
 			if( $type[$i] === 'R' ) { $type_selectionne_titre = $type_selectionne_titre."de retards"; }
 			if( $type[$i] === 'D' ) { $type_selectionne_titre = $type_selectionne_titre."de dispences"; }
-			if( $type[$i] === 'I' ) { $type_selectionne_titre = $type_selectionne_titre."de passage à l'infirmerie"; }
+			if( $type[$i] === 'I' ) { $type_selectionne_titre = $type_selectionne_titre."de passage Ã  l'infirmerie"; }
 				if(!empty($type[$i+1]) and !empty($type[$i+2])) { $type_selectionne_titre = $type_selectionne_titre.", "; }
 				if(!empty($type[$i+1]) and empty($type[$i+2])) { $type_selectionne_titre = $type_selectionne_titre." et "; }
 		$i = $i + 1;
@@ -494,48 +494,48 @@ if($echelle_y === 'E') {
 
 	if ( $type_graphique === 'ligne' ) {
 		if ( $echelle_y === 'D' ) {
-			if($echelle_x === 'M') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." par mois"; }
-			if($echelle_x === 'J') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." par jour"; }
-			if($echelle_x === 'P') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." pour heure (période)"; }
-			if($echelle_x === 'C') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." par classe"; }
-			if($echelle_x === 'E') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." par élève"; }
+			if($echelle_x === 'M') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." par mois"; }
+			if($echelle_x === 'J') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." par jour"; }
+			if($echelle_x === 'P') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." pour heure (pÃ©riode)"; }
+			if($echelle_x === 'C') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." par classe"; }
+			if($echelle_x === 'E') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." par Ã©lÃ¨ve"; }
 		}
 		if ( $echelle_y === 'E' ) {
 			if($echelle_x === 'M') { $donnee_titre[0] = "Total ".$type_selectionne_titre." par mois"; }
 			if($echelle_x === 'J') { $donnee_titre[0] = "Total ".$type_selectionne_titre." par jour"; }
-			if($echelle_x === 'P') { $donnee_titre[0] = "Total ".$type_selectionne_titre." pour heure (période)"; }
+			if($echelle_x === 'P') { $donnee_titre[0] = "Total ".$type_selectionne_titre." pour heure (pÃ©riode)"; }
 			if($echelle_x === 'C') { $donnee_titre[0] = "Total ".$type_selectionne_titre." par classe"; }
-			if($echelle_x === 'E') { $donnee_titre[0] = "Total ".$type_selectionne_titre." par élève"; }
+			if($echelle_x === 'E') { $donnee_titre[0] = "Total ".$type_selectionne_titre." par Ã©lÃ¨ve"; }
 		}
 		if ( $echelle_y === 'H' ) {
 			if($echelle_x === 'M') { $donnee_titre[0] = "Heure ".$type_selectionne_titre." par mois"; }
 			if($echelle_x === 'J') { $donnee_titre[0] = "Heure ".$type_selectionne_titre." par jour"; }
-			if($echelle_x === 'P') { $donnee_titre[0] = "Heure ".$type_selectionne_titre." pour heure (période)"; }
+			if($echelle_x === 'P') { $donnee_titre[0] = "Heure ".$type_selectionne_titre." pour heure (pÃ©riode)"; }
 			if($echelle_x === 'C') { $donnee_titre[0] = "Heure ".$type_selectionne_titre." par classe"; }
-			if($echelle_x === 'E') { $donnee_titre[0] = "Heure ".$type_selectionne_titre." par élève"; }
+			if($echelle_x === 'E') { $donnee_titre[0] = "Heure ".$type_selectionne_titre." par Ã©lÃ¨ve"; }
 		}
 	}
 	if ( $type_graphique === 'camembert' ) {
 		if ( $echelle_y === 'D' ) {
-			if($echelle_x === 'M') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." par mois"; }
-			if($echelle_x === 'J') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." par jour"; }
-			if($echelle_x === 'P') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." pour heure (période)"; }
-			if($echelle_x === 'C') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." par classe"; }
-			if($echelle_x === 'E') { $donnee_titre[0] = "Demi-journée ".$type_selectionne_titre." par élève"; }
+			if($echelle_x === 'M') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." par mois"; }
+			if($echelle_x === 'J') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." par jour"; }
+			if($echelle_x === 'P') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." pour heure (pÃ©riode)"; }
+			if($echelle_x === 'C') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." par classe"; }
+			if($echelle_x === 'E') { $donnee_titre[0] = "Demi-journÃ©e ".$type_selectionne_titre." par Ã©lÃ¨ve"; }
 		}
 		if ( $echelle_y === 'E' ) {
 			if($echelle_x === 'M') { $donnee_titre[0] = "Pourcentage du total ".$type_selectionne_titre." par mois"; }
 			if($echelle_x === 'J') { $donnee_titre[0] = "Pourcentage du total ".$type_selectionne_titre." par jour"; }
-			if($echelle_x === 'P') { $donnee_titre[0] = "Pourcentage du total ".$type_selectionne_titre." pour heure (période)"; }
+			if($echelle_x === 'P') { $donnee_titre[0] = "Pourcentage du total ".$type_selectionne_titre." pour heure (pÃ©riode)"; }
 			if($echelle_x === 'C') { $donnee_titre[0] = "Pourcentage du total ".$type_selectionne_titre." par classe"; }
-			if($echelle_x === 'E') { $donnee_titre[0] = "Pourcentage du total ".$type_selectionne_titre." par élève"; }
+			if($echelle_x === 'E') { $donnee_titre[0] = "Pourcentage du total ".$type_selectionne_titre." par Ã©lÃ¨ve"; }
 		}
 		if ( $echelle_y === 'H' ) {
 			if($echelle_x === 'M') { $donnee_titre[0] = "Pourcentage d'heure ".$type_selectionne_titre." par mois"; }
 			if($echelle_x === 'J') { $donnee_titre[0] = "Pourcentage d'heure ".$type_selectionne_titre." par jour"; }
-			if($echelle_x === 'P') { $donnee_titre[0] = "Pourcentage d'heure ".$type_selectionne_titre." pour heure (période)"; }
+			if($echelle_x === 'P') { $donnee_titre[0] = "Pourcentage d'heure ".$type_selectionne_titre." pour heure (pÃ©riode)"; }
 			if($echelle_x === 'C') { $donnee_titre[0] = "Pourcentage d'heure ".$type_selectionne_titre." par classe"; }
-			if($echelle_x === 'E') { $donnee_titre[0] = "Pourcentage d'heure ".$type_selectionne_titre." par élève"; }
+			if($echelle_x === 'E') { $donnee_titre[0] = "Pourcentage d'heure ".$type_selectionne_titre." par Ã©lÃ¨ve"; }
 		}
 	}
 
@@ -546,7 +546,7 @@ if($echelle_y === 'E') {
 <a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> | 
 <a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> | 
 <a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> | 
-<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">SystÃ¨me d'alerte</a>
 </p>
 
 <?php /* div de centrage du tableau pour ie5 */ ?>
@@ -554,7 +554,7 @@ if($echelle_y === 'E') {
 
 <?php /* DIV contenant le formulaire de recherche */ ?>
   <div style="border: 2px solid #D9EF1D; width: 210px; height: 360px; float: left; margin-top: 17px; text-align: center;">
-	<div class="entete_stats"><b>Système d'alerte</b></div>
+	<div class="entete_stats"><b>SystÃ¨me d'alerte</b></div>
 	<div>
 		<form name="form1" method="post" action="statistiques.php">
 	               <select name="type[]" id="type" multiple="multiple" size="3" tabindex="1" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
@@ -562,13 +562,13 @@ if($echelle_y === 'E') {
 		               <option value="A" <?php if(!empty($type) and in_array('A', $type)) { ?>selected="selected"<?php } ?>>Les absences</option>
         		       <option value="R" <?php if(!empty($type) and in_array('R', $type)) { ?>selected="selected"<?php } ?>>Les retards</option>
                 	       <option value="D" <?php if(!empty($type) and in_array('D', $type)) { ?>selected="selected"<?php } ?>>Les dispenses</option>
-	                       <option value="I" <?php if(!empty($type) and in_array('I', $type)) { ?>selected="selected"<?php } ?>>Les passages à l'infirmerie</option>
+	                       <option value="I" <?php if(!empty($type) and in_array('I', $type)) { ?>selected="selected"<?php } ?>>Les passages Ã  l'infirmerie</option>
 			    </optgroup>
 	               </select><br />
 
-			<input name="justification" id="jus1" value="T" tabindex="8" type="radio" <?php if(!empty($justification) and $justification === 'T') { ?>checked="checked"<?php } ?> /><label for="jus1" title="Justifié et non justifié" style="cursor: pointer;">Tous</label>
-			<input name="justification" id="jus2" value="O" tabindex="8" type="radio" <?php if(!empty($justification) and $justification === 'O') { ?>checked="checked"<?php } ?> /><label for="jus2" title="Justifié" style="cursor: pointer;">Justi.</label>
-			<input name="justification" id="jus3" value="N" tabindex="9" type="radio" <?php if(!empty($justification) and $justification === 'N') { ?>checked="checked"<?php } ?> /><label for="jus3" title="Non justifié" style="cursor: pointer;">Non justi.</label><br />
+			<input name="justification" id="jus1" value="T" tabindex="8" type="radio" <?php if(!empty($justification) and $justification === 'T') { ?>checked="checked"<?php } ?> /><label for="jus1" title="JustifiÃ© et non justifiÃ©" style="cursor: pointer;">Tous</label>
+			<input name="justification" id="jus2" value="O" tabindex="8" type="radio" <?php if(!empty($justification) and $justification === 'O') { ?>checked="checked"<?php } ?> /><label for="jus2" title="JustifiÃ©" style="cursor: pointer;">Justi.</label>
+			<input name="justification" id="jus3" value="N" tabindex="9" type="radio" <?php if(!empty($justification) and $justification === 'N') { ?>checked="checked"<?php } ?> /><label for="jus3" title="Non justifiÃ©" style="cursor: pointer;">Non justi.</label><br />
 
 	                <select name="classe[]" id="classe" multiple="multiple" size="3" tabindex="2" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
 			    <optgroup label="Les classes">
@@ -584,11 +584,11 @@ if($echelle_y === 'E') {
 	                </select><br />
 
 			<input name="long_absence" id="lon1" value="1" tabindex="4" type="checkbox" <?php if(!empty($long_absence) and $long_absence === '1') { ?>checked="checked"<?php } ?> /><label for="lon1" title="Comptabiliser les longues absences" style="cursor: pointer;">Longues absences</label><br />
-			<input name="doublon_journee" id="dou1" value="1" tabindex="5" type="checkbox" <?php if(!empty($doublon_journee) and $doublon_journee === '1') { ?>checked="checked"<?php } ?> /><label for="dou1" title="Comptabiliser un élève q'une fois par jour" style="cursor: pointer;">Compte une fois</label><br />
+			<input name="doublon_journee" id="dou1" value="1" tabindex="5" type="checkbox" <?php if(!empty($doublon_journee) and $doublon_journee === '1') { ?>checked="checked"<?php } ?> /><label for="dou1" title="Comptabiliser un Ã©lÃ¨ve q'une fois par jour" style="cursor: pointer;">Compte une fois</label><br />
 
 		<?php if($classe[0] != '') { ?>
             		<select name="eleve[]" id="eleve" multiple="multiple" size="3" tabindex="3" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
-			    <optgroup label="Les élèves">
+			    <optgroup label="Les Ã©lÃ¨ves">
 		                <option value="">tous</option>
 	                        <?php
   				if ($classe[0] === '') { $requete_liste_eleve = "SELECT login, nom, prenom FROM ".$prefix_base."eleves ORDER BY nom, prenom ASC";
@@ -608,18 +608,18 @@ if($echelle_y === 'E') {
 			au&nbsp;<input name="au" onfocus="javascript:this.select()" type="text" tabindex="5" value="<?php if (isset($au) and !empty($au)) { echo $au; } else { ?>JJ/MM/AAAA<?php } ?>" size="10" maxlength="10" style="border: 1px solid #000000;" /><a href="#calend" onClick="<?php echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
 
 	               <select name="echelle_x" id="echelle_x" size="1" tabindex="6" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
-      			    <optgroup label="Les échelles (X)">
+      			    <optgroup label="Les Ã©chelles (X)">
 		               <option value="M" <?php if(!empty($echelle_x) and $echelle_x === 'M') { ?>selected="selected"<?php } ?>>Par mois</option>
         		       <option value="J" <?php if(!empty($echelle_x) and $echelle_x === 'J') { ?>selected="selected"<?php } ?>>Par jour</option>
-                	       <?php /* <option value="P" <?php if(!empty($echelle_x) and $echelle_x === 'P') { ?>selected="selected"<?php } ?>>Par heure (période)</option> */ ?>
+                	       <?php /* <option value="P" <?php if(!empty($echelle_x) and $echelle_x === 'P') { ?>selected="selected"<?php } ?>>Par heure (pÃ©riode)</option> */ ?>
                 	       <option value="C" <?php if(!empty($echelle_x) and $echelle_x === 'C') { ?>selected="selected"<?php } ?>>Par classe</option>
-                	       <option value="E" <?php if(!empty($echelle_x) and $echelle_x === 'E') { ?>selected="selected"<?php } ?>>Par élève</option>
+                	       <option value="E" <?php if(!empty($echelle_x) and $echelle_x === 'E') { ?>selected="selected"<?php } ?>>Par Ã©lÃ¨ve</option>
 			    </optgroup>
 	               </select><br />
 
 	               <select name="echelle_y" id="echelle_y" size="1" tabindex="7" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
-      			    <optgroup label="Les échelles (Y)">
-		               <option value="D" <?php if(!empty($echelle_y) and $echelle_y === 'D') { ?>selected="selected"<?php } ?>>Demi-journée</option>
+      			    <optgroup label="Les Ã©chelles (Y)">
+		               <option value="D" <?php if(!empty($echelle_y) and $echelle_y === 'D') { ?>selected="selected"<?php } ?>>Demi-journÃ©e</option>
 		               <option value="E" <?php if(!empty($echelle_y) and $echelle_y === 'E') { ?>selected="selected"<?php } ?>>Nombre d'enregistrements</option>
 		               <option value="H" <?php if(!empty($echelle_y) and $echelle_y === 'H') { ?>selected="selected"<?php } ?>>Nombre d'heures</option>
 			    </optgroup>
@@ -637,7 +637,7 @@ if($echelle_y === 'E') {
 	<div class="entete_stats_message">Graphique des statistiques</div>
 	<div style="background-color: #EFEFEF; border-left: 4px solid #D9EF1D;">
 
-	<?php /* DIV contenant le graphique et le tableau des données */ ?>
+	<?php /* DIV contenant le graphique et le tableau des donnÃ©es */ ?>
 	<div style="width: 550px; border : 0px solid #0061BD; text-align: center; /* background-color: #0061BD; */">
 		<?php /* DIV contenant le graphique */ ?>
 		<div>
@@ -646,14 +646,14 @@ if($echelle_y === 'E') {
 		<?php $_SESSION['donnee_e'] = ''; $_SESSION['donnee_e'] = $donnee_select; ?>
 			<img src="../lib/graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>
 			<?php /* <a href="graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>fdfdfdf</a> */ ?>
-	<?php } else { ?>Aucune donnée correspondant à votre rechercher n'a été trouvée<?php } ?>
+	<?php } else { ?>Aucune donnÃ©e correspondant Ã  votre rechercher n'a Ã©tÃ© trouvÃ©e<?php } ?>
 		</div>
 
 	<?php if ( $cpt_donnees != '0' and $donnee_select != '') { ?>
-		<?php /* DIV contenant le tableau des données */ ?>
+		<?php /* DIV contenant le tableau des donnÃ©es */ ?>
 		<div>
 			<?php 
-				// donner d'entête du tableau
+				// donner d'entÃªte du tableau
 				$entete_tableau = array_keys($_SESSION['donnee_e']);
 					if ( $echelle_x === 'M' ) {
 						$entete_tableau_recharge = $entete_tableau;
@@ -688,10 +688,10 @@ if($echelle_y === 'E') {
 						}
 					}
 
-			// pour l'affichage des données en pourcentage
+			// pour l'affichage des donnÃ©es en pourcentage
 			if ( $type_graphique === 'camembert' )
 			{
-			// calcule du pourcentage des données
+			// calcule du pourcentage des donnÃ©es
 				// calcule du total des valeurs
 				$donnee_tableau = array_values($_SESSION['donnee_e']);
 				$i = 0; $total_des_valeurs = 0; $donnee_tableau_pourcentage = '';
@@ -711,15 +711,15 @@ if($echelle_y === 'E') {
 				}
 			}
 
-				// compte le total d'entrée du tableau
+				// compte le total d'entrÃ©e du tableau
 				$cpt_total_entree = count($entete_tableau);
-				// nombre d'entrée à affiché par ligne
+				// nombre d'entrÃ©e Ã  affichÃ© par ligne
 				$cpt_total_par_ligne = '3'; 
 				// compte le nombre de ligne qu'il faut affciher
 				$cpt_ligne = $cpt_total_entree / $cpt_total_par_ligne;
-				// on explose la valeur pour savoir s'il y a des chiffre après la virgule
+				// on explose la valeur pour savoir s'il y a des chiffre aprÃ¨s la virgule
 				$valeur = explode('.',$cpt_ligne);
-				// s'il y a des chiffres après la virgule alors on rajoute une ligne
+				// s'il y a des chiffres aprÃ¨s la virgule alors on rajoute une ligne
 				if(!empty($valeur[1]) and $valeur[1] != '0') { $cpt_tableau = $valeur[0] + 1; } else { $cpt_tableau = $valeur[0]; }
 			$i_tableau = '0';
 				$ia_passe = '0'; $ib_passe = '0';

@@ -25,7 +25,7 @@
 	$fb_session=getSettingValue("fb_session");
 	// ****************************************************************************
 	// MODE DE CALCUL POUR LES MOYENNES DES REGROUPEMENTS DE MATIERES:
-	// - LV1: on présente pour chaque élève, la moyenne qui correspond à sa LV1: ALL1 s'il fait ALL1,...
+	// - LV1: on prÃ©sente pour chaque Ã©lÃ¨ve, la moyenne qui correspond Ã  sa LV1: ALL1 s'il fait ALL1,...
 	// ou
 	// - LV1: on fait la moyenne de toutes les LV1 (AGL1, ALL1)
 	// ****************************************************************************
@@ -33,7 +33,7 @@
 	if(($fb_mode_moyenne!=1)&&($fb_mode_moyenne!=2)) {$fb_mode_moyenne=1;}
 	$ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
 
-	// Choix du type de brevet à imprimer
+	// Choix du type de brevet Ã  imprimer
 	//$type_brevet=0;
 
 
@@ -49,7 +49,7 @@
 
 	if((!isset($_POST['id_classe']))||(!isset($_POST['type_brevet']))) {
 		//**************** EN-TETE *****************
-		$titre_page = "Fiches Brevet<br />Modèle Lille";
+		$titre_page = "Fiches Brevet<br />ModÃ¨le Lille";
 		//echo "<div class='noprint'>\n";
 		require_once("../lib/header.inc");
 		//echo "</div>\n";
@@ -74,7 +74,7 @@
 	}
 	// Liste des classes
 	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
-	// Avec ou sans appréciations
+	// Avec ou sans apprÃ©ciations
 	$avec_app=isset($_POST['avec_app']) ? $_POST['avec_app'] : "n";
 
 	// Utiliser ma fonction cell_ajustee() pour faire tenir au mieux (*) les textes longs dans les cases
@@ -84,7 +84,7 @@
 
 
 	//===================================================================
-	// Vérification préalable
+	// VÃ©rification prÃ©alable
 	$sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet;";
 	$res=mysql_query($sql);
 	$nb_type_brevet=mysql_num_rows($res);
@@ -93,7 +93,7 @@
 		echo "</p>\n";
 		echo "</div>\n";
 	
-		echo "<p>Aucune association matières/type de brevet n'a encore été réalisée.<br />Commencez par <a href='../select_matieres.php'>sélectionner les matières</a></p>\n";
+		echo "<p>Aucune association matiÃ¨res/type de brevet n'a encore Ã©tÃ© rÃ©alisÃ©e.<br />Commencez par <a href='../select_matieres.php'>sÃ©lectionner les matiÃ¨res</a></p>\n";
 	
 		require("../lib/footer.inc.php");
 		die();
@@ -110,7 +110,7 @@
 	
 		echo "<ul>\n";
 		while($lig=mysql_fetch_object($res)) {
-			echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+			echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>GÃ©nÃ©rer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 		}
 		echo "</ul>\n";
 	
@@ -151,7 +151,7 @@
 		echo "<div class='noprint'>\n";
 		echo "<p class='bold'><a href='../accueil.php'>Accueil</a>";
 		echo " | <a href='index.php'>Accueil Notanet</a>";
-		//echo " | <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramètrer</a>";
+		//echo " | <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>ParamÃ¨trer</a>";
 
 		$sql="SELECT DISTINCT type_brevet FROM notanet_ele_type LIMIT 2;";
 		$test=mysql_query($sql);
@@ -166,8 +166,8 @@
 		//$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, notanet n WHERE p.id_classe = c.id AND c.id=n.id_classe ORDER BY classe");
 		$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe AND n.login=net.login ORDER BY classe");
 		if(!$call_data){
-			//echo "<p><font color='red'>Attention:</font> Il semble que vous n'ayez pas mené la procédure notanet à son terme.<br />Cette procédure renseigne des tables requises pour générer les fiches brevet.<br />Effectuez la <a href='notanet.php'>procédure notanet</a>.</p>\n";
-			echo "<p><font color='red'>Attention:</font> Il semble que vous n'ayez pas mené la procédure notanet à son terme.<br />Cette procédure renseigne des tables requises pour générer les fiches brevet.<br />Effectuez la <a href='../index.php'>procédure notanet</a>.</p>\n";
+			//echo "<p><font color='red'>Attention:</font> Il semble que vous n'ayez pas menÃ© la procÃ©dure notanet Ã  son terme.<br />Cette procÃ©dure renseigne des tables requises pour gÃ©nÃ©rer les fiches brevet.<br />Effectuez la <a href='notanet.php'>procÃ©dure notanet</a>.</p>\n";
+			echo "<p><font color='red'>Attention:</font> Il semble que vous n'ayez pas menÃ© la procÃ©dure notanet Ã  son terme.<br />Cette procÃ©dure renseigne des tables requises pour gÃ©nÃ©rer les fiches brevet.<br />Effectuez la <a href='../index.php'>procÃ©dure notanet</a>.</p>\n";
 	
 			require("../lib/footer.inc.php");
 			die();
@@ -175,13 +175,13 @@
 		$nombre_lignes = mysql_num_rows($call_data);
 	
 	
-		echo "<p>Choisissez les classes pour lesquelles vous souhaitez générer les fiches brevet série <b>".$tab_type_brevet[$type_brevet]."</b>&nbsp;:</p>\n";
+		echo "<p>Choisissez les classes pour lesquelles vous souhaitez gÃ©nÃ©rer les fiches brevet sÃ©rie <b>".$tab_type_brevet[$type_brevet]."</b>&nbsp;:</p>\n";
 	
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
 		//echo "<input type='hidden' name='choix1' value='export' />\n";
 		//echo "<input type='hidden' name='type_brevet' value='".$type_brevet."' />\n";
-		echo "<p>Sélectionnez les classes : </p>\n";
+		echo "<p>SÃ©lectionnez les classes : </p>\n";
 		echo "<blockquote>\n";
 		//$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	
@@ -200,8 +200,8 @@
 			$i++;
 		}
 		echo "</select><br />\n";
-		echo "<label for='avec_app' style='cursor: pointer;'><input type='checkbox' name='avec_app' id='avec_app' value='y' checked /> Avec les appréciations</label><br />\n";
-		echo "<label for='use_cell_ajustee' style='cursor: pointer;'><input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label><br />\n";
+		echo "<label for='avec_app' style='cursor: pointer;'><input type='checkbox' name='avec_app' id='avec_app' value='y' checked /> Avec les apprÃ©ciations</label><br />\n";
+		echo "<label for='use_cell_ajustee' style='cursor: pointer;'><input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'Ã©criture des apprÃ©ciations.</label><br />\n";
 		echo "<input type='submit' name='choix_classe' value='Envoyer' />\n";
 		echo "</blockquote>\n";
 		//echo "</p>\n";
@@ -213,7 +213,7 @@
 	}
 	//===================================================================
 
-	// Génération proprement dite des fiches brevet
+	// GÃ©nÃ©ration proprement dite des fiches brevet
 
 	// BOUCLE SUR LA LISTE DES CLASSES
 	for($i=0;$i<count($id_classe);$i++) {
@@ -225,11 +225,11 @@
 				// Dans la table 'notanet', matiere='PREMIERE LANGUE VIVANTE'
 				//                       et mat='AGL1'
 				//                       ou mat='ALL1'
-				// ... avec une seule ligne/enregistrement par élève pour la matière (aucun élève ne suit à la fois ALL1 et AGL1)
+				// ... avec une seule ligne/enregistrement par Ã©lÃ¨ve pour la matiÃ¨re (aucun Ã©lÃ¨ve ne suit Ã  la fois ALL1 et AGL1)
 				// Dans la table 'notanet_corresp', notanet_mat='PREMIERE LANGUE VIVANTE'
 				//                       et matiere='AGL1'
 				//                       ou matiere='ALL1'
-				// ... avec plusieurs lignes/enregistrements pour une même notanet_mat
+				// ... avec plusieurs lignes/enregistrements pour une mÃªme notanet_mat
 				//$sql="SELECT ROUND(AVG(note),1) moyenne FROM notanet WHERE note!='DI' AND note!='AB' AND note!='NN' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 				$sql="SELECT ROUND(AVG(note),1) moyenne FROM notanet WHERE note!='DI' AND note!='AB' AND note!='NN' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 				//$sql="SELECT ROUND(AVG(note),1) moyenne FROM notanet n,notanet_ele_type net WHERE n.note!='DI' AND n.note!='AB' AND n.note!='NN' AND n.id_classe='$id_classe[$i]' AND n.matiere='".$tabmatieres[$j][0]."' AND n.login=net.login AND net.type_brevet='$type_brevet';";
@@ -239,7 +239,7 @@
 					$lig_moy=mysql_fetch_object($res_moy);
 					$moy_classe[$j]=$lig_moy->moyenne;
 					//echo "\$moy_classe[$j]=$moy_classe[$j]<br />";
-					// Là on fait la moyenne de l'ALL1 et de l'AGL1 ensemble car one ne fait pas la différence:
+					// LÃ  on fait la moyenne de l'ALL1 et de l'AGL1 ensemble car one ne fait pas la diffÃ©rence:
 					// $tabmatieres[$j][0]='PREMIERE LANGUE VIVANTE'
 				}
 				else {
@@ -351,7 +351,7 @@
 	$fs_txt=10;
 	$fs_txt_mm=fs_pt2mm($fs_txt);
 
-	// Ratio de l'interligne par rapport à la taille de police
+	// Ratio de l'interligne par rapport Ã  la taille de police
 	$r_interligne=0.3;
 	$sc_interligne=1+$r_interligne;
 
@@ -374,7 +374,7 @@
 
 	//=======================================
 
-	// Hauteur cadre du bas (avis du chef d'établissement,...)
+	// Hauteur cadre du bas (avis du chef d'Ã©tablissement,...)
 	$h_cadre_bas=41;
 	$h_cadre_bas_hors_notes_pdp=22;
 	//$y_cadre_bas=$h_page-$marge-$h_cadre_bas;
@@ -394,7 +394,7 @@
 								ORDER BY e.login;";
 		$res1=mysql_query($sql);
 		if(mysql_num_rows($res1)>0) {
-			// Boucle sur la liste des élèves
+			// Boucle sur la liste des Ã©lÃ¨ves
 			while($lig1=mysql_fetch_object($res1)) {
 
 				$pdf->AddPage('L'); //ajout d'une page au document
@@ -426,31 +426,31 @@
 				$pdf->SetFont('Arial','',$fs_titre);
 				$pdf->Cell($pdf->GetStringWidth($texte3),$pdf->FontSize*$sc_interligne, $texte3,0,1,'L');
 
-				// Problème potentiel de largeur
+				// ProblÃ¨me potentiel de largeur
 
-				// Deuxième ligne
+				// DeuxiÃ¨me ligne
 				if($lig1->sexe=='F') {
-					$texte="Née le :";
+					$texte="NÃ©e le :";
 				}
 				else {
-					$texte="Né le :";
+					$texte="NÃ© le :";
 				}
-				$texte.=formate_date($lig1->naissance)." à : ";
+				$texte.=formate_date($lig1->naissance)." Ã  : ";
 				if($ele_lieu_naissance=='y') {
 					$texte.=get_commune($lig1->lieu_naissance, 2);
 				}
 				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,0,0,'L');
 
 				$pdf->SetFont('Arial','B',$fs_txt);
-				//$texte="ACADÉMIE DE ".strtoupper($fb_academie);
-				$texte="ACADÉMIE DE ".casse_mot($fb_academie);
+				//$texte="ACADÃ‰MIE DE ".strtoupper($fb_academie);
+				$texte="ACADÃ‰MIE DE ".casse_mot($fb_academie);
 				$x=$l_page-$marge-$pdf->GetStringWidth($texte);
 				$pdf->setXY($x,$pdf->GetY());
 				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,0,1,'R');
 
-				// Il n'y a pas le département sur le modèle Lille
+				// Il n'y a pas le dÃ©partement sur le modÃ¨le Lille
 				//$pdf->SetXY($marge,$pdf->GetY()+$pdf->FontSize*$r_interligne);
-				//$pdf->Cell($larg_acad,$pdf->FontSize*$sc_interligne, "Département: $fb_departement",0,2,'');
+				//$pdf->Cell($larg_acad,$pdf->FontSize*$sc_interligne, "DÃ©partement: $fb_departement",0,2,'');
 			
 				//================================================
 				// TABLEAU ADRESSE ETAB
@@ -463,7 +463,7 @@
 				$y_etab=$y+$pdf->FontSize*$sc_interligne;
 				$pdf->setXY($marge+15,$y_etab);
 				$pdf->SetFont('Arial','B',$fs_txt);
-				$texte="Établissement fréquenté : ";
+				$texte="Ã‰tablissement frÃ©quentÃ© : ";
 				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,0,0,'L');
 
 				$pdf->SetFont('Arial','',$fs_txt);
@@ -478,7 +478,7 @@
 
 				$pdf->SetXY($marge+$larg_col_disc,$y2+$pdf->FontSize*$sc_interligne);
 				$pdf->SetFont('Arial','B',$fs_txt);
-				$texte='   Note Globale affectée du coefficient   ';
+				$texte='   Note Globale affectÃ©e du coefficient   ';
 				$font_size=adjust_size_font($texte,$l_page-$pdf->GetX()-$marge,$fs_txt,0.1);
 				$pdf->SetFont('Arial','B',$font_size);
 				$pdf->Cell($larg_col_note_classe+2*$larg_col_note_glob,3*$pdf->FontSize*$sc_interligne, $texte,'LRBT',1,'C');
@@ -489,7 +489,7 @@
 				$x=$marge;
 				$y_disc=$pdf->GetY();
 				$y_lignes_disc=$y_disc+3*$pdf->FontSize*$sc_interligne;
-				// On trace le cadre d'entête du tableau
+				// On trace le cadre d'entÃªte du tableau
 				$pdf->Cell($l_page-2*$marge,3*$pdf->FontSize*$sc_interligne, "",'LRBT',0,'C');
 				$pdf->SetXY($marge,$y_disc);
 				$h_titre_disc=3*$pdf->FontSize*$sc_interligne;
@@ -502,21 +502,21 @@
 				//$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_classe, 2*$pdf->FontSize*$sc_interligne, 'C', 'M', 0);
 				$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_classe, 2*$h_texte_titre_disc, 'C', 'M', 0);
 				$pdf->SetXY($x_tmp,$pdf->GetY());
-				//$pdf->Cell($larg_col_note_classe,$pdf->FontSize*$sc_interligne, "(0 à 20)",'',0,'C');
-				$pdf->Cell($larg_col_note_classe,$h_texte_titre_disc, "(0 à 20)",'',0,'C');
+				//$pdf->Cell($larg_col_note_classe,$pdf->FontSize*$sc_interligne, "(0 Ã  20)",'',0,'C');
+				$pdf->Cell($larg_col_note_classe,$h_texte_titre_disc, "(0 Ã  20)",'',0,'C');
 
 				$x_tmp=$pdf->GetX();
 				$pdf->SetXY($x_tmp,$y_disc);
-				//$pdf->Cell(2*$larg_col_note_glob,$pdf->FontSize*$sc_interligne, "3ème",'LRBT',1,'C');
-				$pdf->Cell(2*$larg_col_note_glob,$h_texte_titre_disc, "3ème",'LRBT',1,'C');
+				//$pdf->Cell(2*$larg_col_note_glob,$pdf->FontSize*$sc_interligne, "3Ã¨me",'LRBT',1,'C');
+				$pdf->Cell(2*$larg_col_note_glob,$h_texte_titre_disc, "3Ã¨me",'LRBT',1,'C');
 				$pdf->SetXY($x_tmp,$pdf->GetY());
 				//$pdf->Cell($larg_col_note_glob,2*$pdf->FontSize*$sc_interligne, "LV2",'LRBT',0,'C');
 				$pdf->Cell($larg_col_note_glob,2*$h_texte_titre_disc, "LV2",'LRBT',0,'C');
-				$texte="Module déc.Prof. 6 heures";
+				$texte="Module dÃ©c.Prof. 6 heures";
 				//$pdf->drawTextBox('Note moyenne de la classe', $larg_col_note_glob, 2*$pdf->FontSize*$sc_interligne, 'C', 'M', 1);
 				$pdf->drawTextBox($texte, $larg_col_note_glob, 2*$h_texte_titre_disc, 'C', 'M', 1);
 
-				$texte="Appréciations des professeurs";
+				$texte="ApprÃ©ciations des professeurs";
 				$font_size=adjust_size_font($texte,$larg_col_app,$fs_txt,0.3);
 				$pdf->SetFontSize($font_size);
 				//$pdf->SetXY($x_tmp+2*$larg_col_note_glob,$y_disc);
@@ -531,7 +531,7 @@
 
 				//====================================================
 
-				// Calcul du nombre de matières à faire apparaitre:
+				// Calcul du nombre de matiÃ¨res Ã  faire apparaitre:
 				//$y=100;
 				$nb_mat=0;
 				$nb_mat_notnonca=0;
@@ -551,16 +551,16 @@
 				//$h_ligne_a_titre_indicatif=10;
 				//$h_ligne_a_titre_indicatif=fs_pt2mm($fs_txt)*$sc_interligne; // INUTILE A VIRER ********************************************************
 
-				// Hauteur pour chaque matière:
+				// Hauteur pour chaque matiÃ¨re:
 				$hauteur_toutes_matieres=$y_cadre_bas-$y;
-				$h_par_matiere=$hauteur_toutes_matieres/($nb_mat+1); // La ligne TOTAL compte comme une matière
+				$h_par_matiere=$hauteur_toutes_matieres/($nb_mat+1); // La ligne TOTAL compte comme une matiÃ¨re
 
-				// Boucle sur les matières
+				// Boucle sur les matiÃ¨res
 				$TOTAL=0;
 				$SUR_TOTAL=array();
 				$SUR_TOTAL[1]=0;
 				$SUR_TOTAL[2]=0;
-				// Les notes con calculées (à titre indicatif) sont en bas de tableau
+				// Les notes con calculÃ©es (Ã  titre indicatif) sont en bas de tableau
 				$temoin_notnonca=0;
 				$cpt=0;
 				for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++) {
@@ -602,7 +602,7 @@
 								// Colonne DP6h
 								$pdf->Cell($larg_col_note_glob,$h_par_matiere, $t_col2,'LRBT',0,'C');
 
-								// Appréciation
+								// ApprÃ©ciation
 								$pdf->Cell($larg_col_app,$h_par_matiere, '','LRBT',1,'C');
 
 								$cpt++;
@@ -626,7 +626,7 @@
 							$pdf->SetFontSize($fs_txt);
 				
 							if($tabmatieres[$j][-1]=='NOTNONCA') {
-								// Correctif pour le décalage dû à la ligne 'A titre indicatif' -> INUTILE SUR LE MODELE LILLE
+								// Correctif pour le dÃ©calage dÃ» Ã  la ligne 'A titre indicatif' -> INUTILE SUR LE MODELE LILLE
 								//$y+=$h_ligne_a_titre_indicatif;
 								$temoin_notnonca++;
 							}
@@ -639,7 +639,7 @@
 	
 							//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
 							if($tabmatieres[$j][0]=="OPTION FACULTATIVE") {
-								// recherche de la matière facultative pour l'élève
+								// recherche de la matiÃ¨re facultative pour l'Ã©lÃ¨ve
 								$sql_mat_fac="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 								$res_mat_fac=mysql_query($sql_mat_fac);
 								if(mysql_num_rows($res_mat_fac)>0){
@@ -650,7 +650,7 @@
 							$font_size=adjust_size_font($texte,$larg_col_disc,$fs_txt,0.3);
 							$pdf->SetFontSize($font_size);
 							$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',0,'L');
-							// A REVOIR: Si la taille de police descend en dessous d'une valeur à choisir, mettre sur deux lignes
+							// A REVOIR: Si la taille de police descend en dessous d'une valeur Ã  choisir, mettre sur deux lignes
 
 							$pdf->SetFont('Arial','',$fs_txt);
 							//$pdf->SetFontSize($fs_txt);
@@ -685,7 +685,7 @@
 								$x+=$larg_col_note_classe;
 								$largeur_colonnes_moy+=$larg_col_note_classe;
 					
-								// Moyenne élève
+								// Moyenne Ã©lÃ¨ve
 								//$pdf->SetXY($x,$y);
 								$tmp_note="";
 								$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
@@ -707,7 +707,7 @@
 
 
 							/*
-							// Appréciation
+							// ApprÃ©ciation
 							//$pdf->SetXY($x,$y);
 							$texte="";
 							if($avec_app=="y") {
@@ -733,7 +733,7 @@
 							//}
 
 							$h_cell=$h_par_matiere;
-							// Par précaution, si ma fonction cell_ajustee() posait pb:
+							// Par prÃ©caution, si ma fonction cell_ajustee() posait pb:
 							if($use_cell_ajustee=="n") {
 								$font_size=adjust_size_font($texte,100-$largeur_colonnes_moy,$fs_txt,0.1);
 								$pdf->SetFontSize($font_size);
@@ -757,7 +757,7 @@
 
 									$valeur_tmp="";
 	
-									// On traite le cas des notes non numériques AB, DI,... plus pour décrémenter les SUR_TOTAUX
+									// On traite le cas des notes non numÃ©riques AB, DI,... plus pour dÃ©crÃ©menter les SUR_TOTAUX
 									if((strlen(preg_replace("/[0-9]/","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
 										$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
 									}
@@ -778,7 +778,7 @@
 	
 											$valeur_notanet_tmp=$lig_note->note_notanet;
 	
-											// Le cas PTSUP est calculé plus loin
+											// Le cas PTSUP est calculÃ© plus loin
 											if($tabmatieres[$j][-1]!='PTSUP'){
 												$TOTAL+=$valeur_tmp;
 											}
@@ -900,7 +900,7 @@
 									//$y_tmp=$pdf->GetY();
 									$pdf->SetXY($x_col_note_glob,$y);
 									$pdf->SetFont('Arial','',$fs_txt);
-									$texte="Points supplémentaires";
+									$texte="Points supplÃ©mentaires";
 									$font_size=adjust_size_font($texte,$larg_col_note_glob-4,$fs_txt,0.3);
 									$pdf->Cell($larg_col_note_glob,$h_par_matiere/2, $texte,'LRT',0,'C');
 
@@ -910,7 +910,7 @@
 									// Colonne DP6h
 									$pdf->SetXY($x_col_note_glob+$larg_col_note_glob,$y);
 									$pdf->SetFont('Arial','',$fs_txt);
-									$texte="Points supplémentaires";
+									$texte="Points supplÃ©mentaires";
 									$font_size=adjust_size_font($texte,$larg_col_note_glob-4,$fs_txt,0.3);
 									$pdf->Cell($larg_col_note_glob,$h_par_matiere/2, $texte,'LRT',2,'C');
 									$pdf->SetXY($x_col_note_glob+$larg_col_note_glob,$y+($h_par_matiere/2));
@@ -975,7 +975,7 @@
 
 							$pdf->SetXY($x_col_app,$y);
 
-							// Appréciation
+							// ApprÃ©ciation
 							//$pdf->SetXY($x,$y);
 							$texte="";
 							if($avec_app=="y") {
@@ -1001,7 +1001,7 @@
 							//}
 
 							$h_cell=$h_par_matiere;
-							// Par précaution, si ma fonction cell_ajustee() posait pb:
+							// Par prÃ©caution, si ma fonction cell_ajustee() posait pb:
 							if($use_cell_ajustee=="n") {
 								$font_size=adjust_size_font($texte,100-$largeur_colonnes_moy,$fs_txt,0.1);
 								$pdf->SetFontSize($font_size);
@@ -1033,7 +1033,7 @@
 				$pdf->Cell($l_page-2*$marge, $h_cadre_bas_hors_notes_pdp, "",'LRBT',2,'C');
 				$pdf->SetXY($marge,$y_cadre_bas);
 				$pdf->SetFont('Arial','B',$fs_txt);
-				$texte="Avis et signature du Chef d'établissement : ";
+				$texte="Avis et signature du Chef d'Ã©tablissement : ";
 				$pdf->Cell($pdf->GetStringWidth($texte), $pdf->FontSize*$sc_interligne, $texte,'',0,'L');
 				$pdf->SetFont('Arial','',$fs_txt);
 				$x=$pdf->GetX();
@@ -1043,7 +1043,7 @@
 				if(mysql_num_rows($res_avis)>0) {
 					$lig_avis=mysql_fetch_object($res_avis);
 					if($lig_avis->favorable=="O") {$avis="Avis favorable.\n";}
-					elseif($lig_avis->favorable=="N") {$avis="Avis défavorable.\n";}
+					elseif($lig_avis->favorable=="N") {$avis="Avis dÃ©favorable.\n";}
 					$avis.=$lig_avis->avis;
 				}
 				//$pdf->Cell(100, $h_cadre_bas, $avis,'',0,'C');
@@ -1060,17 +1060,17 @@
 
 				$pdf->SetXY($marge,$y_cadre_bas+$h_cadre_bas_hors_notes_pdp);
 				$pdf->SetFont('Arial','',$fs_txt);
-				$texte="(1) Latin, Grec ou découverte professionnelle 3H";
+				$texte="(1) Latin, Grec ou dÃ©couverte professionnelle 3H";
 				$pdf->Cell($pdf->GetStringWidth($texte), $pdf->FontSize*$sc_interligne, $texte,'',1,'L');
 				$texte="(2) % acquisition dans la classe";
 				$pdf->Cell($pdf->GetStringWidth($texte), $pdf->FontSize*$sc_interligne, $texte,'',1,'L');
-				$texte="(3) AB (candidat absent) - MS (maîtrise du socle) - MN (maîtrise du socle non évaluée) - ME (maîtrise éléments du socle)";
+				$texte="(3) AB (candidat absent) - MS (maÃ®trise du socle) - MN (maÃ®trise du socle non Ã©valuÃ©e) - ME (maÃ®trise Ã©lÃ©ments du socle)";
 				$pdf->Cell($pdf->GetStringWidth($texte), $pdf->FontSize*$sc_interligne, $texte,'',1,'L');
 				/*
-				// Décision
+				// DÃ©cision
 				$pdf->SetXY(210-$marge-2*$larg_col_note_classe,$y_cadre_bas);
 				$pdf->SetFont('Arial','B',$fs_txt);
-				$pdf->Cell(2*$larg_col_note_classe, $pdf->FontSize*$sc_interligne, "DÉCISION",'LRBT',1,'C');
+				$pdf->Cell(2*$larg_col_note_classe, $pdf->FontSize*$sc_interligne, "DÃ‰CISION",'LRBT',1,'C');
 				$pdf->SetFont('Arial','',$fs_txt);
 				//$pdf->SetXY(210-$marge-2*$larg_col_note_classe,$pdf->GetY());
 				$pdf->SetXY(210-$marge-2*$larg_col_note_classe,$y_cadre_bas+$pdf->FontSize*$sc_interligne);
@@ -1093,16 +1093,16 @@
 			//$pdf->MultiCell(20,20, "Note moy",'LRBT',2,'C');
 
 			$pdf->SetFontSize(10);
-			//$pdf->drawTextBox('"Note moyenne de la classe 0 à 20"', 20, 20, 'C', 'M', 1);
+			//$pdf->drawTextBox('"Note moyenne de la classe 0 Ã  20"', 20, 20, 'C', 'M', 1);
 			//$pdf->Cell(20,20, "Note moy",'LRBT',2,'C');
-			//$pdf->WriteHTML("<center>Note moyenne de la classe<br />0 à 20</center>");
+			//$pdf->WriteHTML("<center>Note moyenne de la classe<br />0 Ã  20</center>");
 			$pdf->drawTextBox('Note moyenne de la classe', 20, 15, 'C', 'M', 1);
 			$pdf->SetXY(60,100);
-			$pdf->drawTextBox('0 à 20', 20, 5, 'C', 'M', 1);
+			$pdf->drawTextBox('0 Ã  20', 20, 5, 'C', 'M', 1);
 		
 			$pdf->SetXY(80,85);
-			$pdf->drawTextBox("Note moyenne de l'élève", 20, 15, 'C', 'M', 1);
+			$pdf->drawTextBox("Note moyenne de l'Ã©lÃ¨ve", 20, 15, 'C', 'M', 1);
 			$pdf->SetXY(80,100);
-			$pdf->drawTextBox('0 à 20', 20, 5, 'C', 'M', 1);
+			$pdf->drawTextBox('0 Ã  20', 20, 5, 'C', 'M', 1);
 		*/
 ?>

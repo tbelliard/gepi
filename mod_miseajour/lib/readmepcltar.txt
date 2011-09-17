@@ -5,7 +5,7 @@
 // http://www.phpconcept.net
 // --------------------------------------------------------------------------------
 
-                                                  (Voir version Française à la fin)
+                                                  (Voir version FranÃ§aise Ã  la fin)
 
 0 - Sommaire
 ============
@@ -249,11 +249,11 @@
 ============
     1 - Introduction
     2 - Installation
-    3 - Nouveautés
-    4 - Démarrer avec PclTar
+    3 - NouveautÃ©s
+    4 - DÃ©marrer avec PclTar
     5 - Manuel
     6 - Langage
-    7 - Problèmes connus
+    7 - ProblÃ¨mes connus
     8 - License
     9 - Avertissement
    10 - Auteur
@@ -262,13 +262,13 @@
 1 - Introduction
 ================
 
-  PclTar est une librairie qui vous permet de créer des archives au format GNU TAR ou GNU
-  TAR compressé, d'ajouter des fichiers ou des dossiers entiers et d'extraire le contenu
+  PclTar est une librairie qui vous permet de crÃ©er des archives au format GNU TAR ou GNU
+  TAR compressÃ©, d'ajouter des fichiers ou des dossiers entiers et d'extraire le contenu
   total ou partiel des archives.
-  A présent les tests ont montré que les archives créées par PclTar sont lisibles par les
+  A prÃ©sent les tests ont montrÃ© que les archives crÃ©Ã©es par PclTar sont lisibles par les
   outils tar et gzip, ainsi que l'application WinZip.
 
-  PclTar est constituée des fichiers suivants, ils sont placés dans le dossier 'lib' :
+  PclTar est constituÃ©e des fichiers suivants, ils sont placÃ©s dans le dossier 'lib' :
     - pcltar.lib.php3
     - pcltrace.lib.php3
     - pclerror.lib.php3
@@ -276,94 +276,94 @@
   Aujourd'hui les librairies PclTrace et PclError sont obligatoires pour faire fonctionner
   PclTar.
 
-  Les extensions de fichiers (.php3) peuvent être modifiés (en .php par exemple) sans
-  nécessité d'intervenir à l'intérieur du fichier.
+  Les extensions de fichiers (.php3) peuvent Ãªtre modifiÃ©s (en .php par exemple) sans
+  nÃ©cessitÃ© d'intervenir Ã  l'intÃ©rieur du fichier.
 
-  Les fichiers peuvent être placés dans n'importe quel dossier pour peu que l'application
+  Les fichiers peuvent Ãªtre placÃ©s dans n'importe quel dossier pour peu que l'application
   ou le script appelant utilise un chemin d'appel valide.
 
 
 2 - Installation
 ================
 
-  PclTar 1.3 est distribué sous trois formats :
+  PclTar 1.3 est distribuÃ© sous trois formats :
 
     - Format Zip traditionnel (pcltar-1-3.zip),
-    - Format GNU TAR compressé (pcltar-1-3.tgz),
+    - Format GNU TAR compressÃ© (pcltar-1-3.tgz),
     - Format PhpZip auto-extract (pcltar-1-3.piz).
 
-  Les fichiers Zip and GNU TAR compressés contiennent aussi le format PhpZip
+  Les fichiers Zip and GNU TAR compressÃ©s contiennent aussi le format PhpZip
   auto-extract.
 
   a. Archive Zip
-     Décompressez l'archive Zip dans un dossier.
-     Les fichiers sont dans le dossier 'lib' et peuvent être déplacés ailleurs.
+     DÃ©compressez l'archive Zip dans un dossier.
+     Les fichiers sont dans le dossier 'lib' et peuvent Ãªtre dÃ©placÃ©s ailleurs.
 
-  b. Archive GNU TAR compressée
-     Décompressez l'archive GNU TAR dans un dossier.
-     Les fichiers sont dans le dossier 'lib' et peuvent être déplacés ailleurs.
+  b. Archive GNU TAR compressÃ©e
+     DÃ©compressez l'archive GNU TAR dans un dossier.
+     Les fichiers sont dans le dossier 'lib' et peuvent Ãªtre dÃ©placÃ©s ailleurs.
 
   c. Auto-extract PhpZip archive
-     Téléchargez *** EN MODE BINAIRE *** l'archive PhpZip sur votre site Web dans
-     le dossier souhaité 'mondossier'.
+     TÃ©lÃ©chargez *** EN MODE BINAIRE *** l'archive PhpZip sur votre site Web dans
+     le dossier souhaitÃ© 'mondossier'.
      Lancer l'extraction en appelant http://mondomaine.com/mondossier/pcltar-1-3.piz.php3
      Les fichiers sont dans le dossier 'lib' du dossier 'mondossier'.
 
 
-3 - Nouveautés
+3 - NouveautÃ©s
 ==============
 
   En version 1.3.1 :
 
-  - Suppression des appels de fonctions par références
+  - Suppression des appels de fonctions par rÃ©fÃ©rences
 
   En version 1.3 :
 
   - Ajout de la fonction PclTarExtractIndex()
   - Correction d'un bug avec l'archivage des dossiers. Parfois la taille des
-    dossiers archivés était non nul ce qui entrainait une erreur lors de l'extraction.
-    PclTar force désormais la taille à zéro lorsqu'il s'agit d'un dossier. De même lors
-    de l'extraction il ignore la taille éventuellement incorrecte.
+    dossiers archivÃ©s Ã©tait non nul ce qui entrainait une erreur lors de l'extraction.
+    PclTar force dÃ©sormais la taille Ã  zÃ©ro lorsqu'il s'agit d'un dossier. De mÃªme lors
+    de l'extraction il ignore la taille Ã©ventuellement incorrecte.
   - Modification de la fonction PclTarDelete() : Lorsque l'on donne le nom d'un dossier
-    à supprimer, le dossier et les fichiers se trouvant dedans sont supprimés.
-    Avant la version 1.3 seulement l'entrée concernant le dossier était supprimée.
-  - Correction d'un bug dans les propriétés d'ajout/suppression de chemin. Lorsque l'on
-    indiquait un chemin à supprimer, cela se passait bien pour les fichiers et
-    sous-dossiers, mais le dossier en lui-même n'était pas ignoré.
-  - Correction d'un bug dans l'extraction d'un dossier : Le dossier est normalement créé,
-    mais le status de l'opération pour ce dossier était en 'write_erreor'.
-  - Correction d'un bug sur la validité des dates de dernière modification des
-    fichiers. Utilisation  plus systèmatique de clearstatcache().
+    Ã  supprimer, le dossier et les fichiers se trouvant dedans sont supprimÃ©s.
+    Avant la version 1.3 seulement l'entrÃ©e concernant le dossier Ã©tait supprimÃ©e.
+  - Correction d'un bug dans les propriÃ©tÃ©s d'ajout/suppression de chemin. Lorsque l'on
+    indiquait un chemin Ã  supprimer, cela se passait bien pour les fichiers et
+    sous-dossiers, mais le dossier en lui-mÃªme n'Ã©tait pas ignorÃ©.
+  - Correction d'un bug dans l'extraction d'un dossier : Le dossier est normalement crÃ©Ã©,
+    mais le status de l'opÃ©ration pour ce dossier Ã©tait en 'write_erreor'.
+  - Correction d'un bug sur la validitÃ© des dates de derniÃ¨re modification des
+    fichiers. Utilisation  plus systÃ¨matique de clearstatcache().
 
   En version 1.2 :
 
-  - Ajout d'une nouvelle fonction PclTarMerge(), qui permet d'ajouter à une archive le
+  - Ajout d'une nouvelle fonction PclTarMerge(), qui permet d'ajouter Ã  une archive le
     contenu d'une autre.
-  - Ajout des propriétés "ajout de path/suppression de path" pour la fonction PclTarCreate().
-  - Les archives générées par PclTar supportent maintenant les dossiers vide. Avant la
-    version 1.2, un dossier n'était ajouté que lorsqu'il y avait au moins un fichier dedans.
+  - Ajout des propriÃ©tÃ©s "ajout de path/suppression de path" pour la fonction PclTarCreate().
+  - Les archives gÃ©nÃ©rÃ©es par PclTar supportent maintenant les dossiers vide. Avant la
+    version 1.2, un dossier n'Ã©tait ajoutÃ© que lorsqu'il y avait au moins un fichier dedans.
   - Optimisation du code de PclTarHandleAddList()
 
   En version 1.1 :
 
-  - Ajout de la vérification du checksum lors de l'extraction d'un fichier.
-  - Amélioration de la création des entêtes POSIX. En version 1.0 PclTar utilisait un fichier
-    temporaire pour calculer le checksum. Ce n'est plus le cas à partir de la version 1.2.
-  - Ajout d'un champ "status" dans le tableau de description des propriétés d'un fichier.
+  - Ajout de la vÃ©rification du checksum lors de l'extraction d'un fichier.
+  - AmÃ©lioration de la crÃ©ation des entÃªtes POSIX. En version 1.0 PclTar utilisait un fichier
+    temporaire pour calculer le checksum. Ce n'est plus le cas Ã  partir de la version 1.2.
+  - Ajout d'un champ "status" dans le tableau de description des propriÃ©tÃ©s d'un fichier.
     Les champs "link", "magic", "version", "uname", "gname", "devmajor" and "devminor" sont
-    eux supprimés car ils ne contiennent aucune information interessante.
-  - Lors de l'extraction une vérification est faite pour savoir si le fichier existe déjà ou non.
-    Si une erreur arrive lors de l'extraction le fichier est sauté et la fonction cherche à
-    extraire le fichier suivant. Dans la version précédente l'extraction était arrêtée.
-  - Lors de l'extraction d'un fichier la date de dernière modification est mise à jour avec
-    celle mémorisée dans l'archive.
-    Notez que ce n'est pas le cas pour le mode (R/W) qui reste celui par défaut.
+    eux supprimÃ©s car ils ne contiennent aucune information interessante.
+  - Lors de l'extraction une vÃ©rification est faite pour savoir si le fichier existe dÃ©jÃ  ou non.
+    Si une erreur arrive lors de l'extraction le fichier est sautÃ© et la fonction cherche Ã 
+    extraire le fichier suivant. Dans la version prÃ©cÃ©dente l'extraction Ã©tait arrÃªtÃ©e.
+  - Lors de l'extraction d'un fichier la date de derniÃ¨re modification est mise Ã  jour avec
+    celle mÃ©morisÃ©e dans l'archive.
+    Notez que ce n'est pas le cas pour le mode (R/W) qui reste celui par dÃ©faut.
   - Nouvelle fonction PclTarDelete($tarname, $filelist), qui supprime de l'archive les fichiers
-    spécifiés dans $filelist.
+    spÃ©cifiÃ©s dans $filelist.
   - Nouvelle fonction PclTarUpdate(), qui remplace les anciens fichiers par les nouveaux
-    (en fonction de la date de dernière modification). Si le fichier n'existe pas il est
-    ajouté en fin d'archive.
-  - Le tableau contenant les propriétés d'un fichier a les champs suivants :
+    (en fonction de la date de derniÃ¨re modification). Si le fichier n'existe pas il est
+    ajoutÃ© en fin d'archive.
+  - Le tableau contenant les propriÃ©tÃ©s d'un fichier a les champs suivants :
     filename (with path),
     size,
     mode (decimal value of the octal value),
@@ -373,18 +373,18 @@
     typeflag ("0" or "" = file, "5" = directory, "1" = link),
     status (ok, added, updated, not_updated, already_a_directory,
             write_protected, newer_exist, path_creation_fail, write_error)
-  - Ajout d'une propriété "chemin à retirer" dans les fonctions d'extraction. Cela permet
-    d'extraire un fichier ou un dossier dans un dossier différent de celui qui a été mémorizé.
+  - Ajout d'une propriÃ©tÃ© "chemin Ã  retirer" dans les fonctions d'extraction. Cela permet
+    d'extraire un fichier ou un dossier dans un dossier diffÃ©rent de celui qui a Ã©tÃ© mÃ©morizÃ©.
   - Ajout de la focntion PclTarAddList()
   - Ajout du parametre $p_mode dans PclTarList()
 
-3 - Démarrer avec PclTar
+3 - DÃ©marrer avec PclTar
 ========================
 
   Pour utiliser PclTar, une application ou un script doivent inclure le fichier
   pcltar.lib.php3.
   PclTar utilisant deux librairies annexes (PclTrace et PclError), une configuration
-  est nécessaire pour que PclTar retrouve le chemin d'inclusion des deux librairies.
+  est nÃ©cessaire pour que PclTar retrouve le chemin d'inclusion des deux librairies.
   Plusieurs solutions, au choix, sont possibles :
 
   - Inclure chaque librarie dans l'application/script :
@@ -395,7 +395,7 @@
     [...]
     ?>
 
-  - Donner à PclTar la connaissance du chemin d'inclusion :
+  - Donner Ã  PclTar la connaissance du chemin d'inclusion :
     <?
     $g_pcltar_lib_dir = "my_lib_dir";
     include ("my_lib_dir/pcltar.lib.php3");
@@ -404,54 +404,54 @@
 
   - Modifier la variable $g_pcltar_lib_dir dans pcltar.lib.php3
 
-  - Utiliser le chemin d'include par défaut (configuré dans php.ini), sans oublier de
-    modifier la variable $g_pcltar_lib_dir pour la mettre à ''.
+  - Utiliser le chemin d'include par dÃ©faut (configurÃ© dans php.ini), sans oublier de
+    modifier la variable $g_pcltar_lib_dir pour la mettre Ã  ''.
 
-  Il est à noter que le fichier pcltar.lib.php3 peut être inclu plusieurs fois sans
-  impact autre qu'une légère perte de performance.
+  Il est Ã  noter que le fichier pcltar.lib.php3 peut Ãªtre inclu plusieurs fois sans
+  impact autre qu'une lÃ©gÃ¨re perte de performance.
 
 
 4 - Manuel
 ==========
 
-  PclTar définit des fonctions pour créer, ajouter, lister, détruire et extraire des
-  fichiers depuis une archive GNU TAR. Cette archive peut être compressée ou non.
+  PclTar dÃ©finit des fonctions pour crÃ©er, ajouter, lister, dÃ©truire et extraire des
+  fichiers depuis une archive GNU TAR. Cette archive peut Ãªtre compressÃ©e ou non.
 
-  Une description plus complète de PclTar est disponible sur
+  Une description plus complÃ¨te de PclTar est disponible sur
   http://www.phpconcept.net
 
-  Chaque fonction est aussi documentée dans un entête associé, directement dans
+  Chaque fonction est aussi documentÃ©e dans un entÃªte associÃ©, directement dans
   le code source.
 
 
 5 - Langage
 ===========
 
-  PclTar a été développé en PHP3 mais est compatible avec PHP4. Les
-  extensions de fichiers (.php3) peuvent être modifié sans toucher à l'intérieur
+  PclTar a Ã©tÃ© dÃ©veloppÃ© en PHP3 mais est compatible avec PHP4. Les
+  extensions de fichiers (.php3) peuvent Ãªtre modifiÃ© sans toucher Ã  l'intÃ©rieur
   des fichiers.
 
-  Le code de PclTar est entièrement documenté en anglais.
+  Le code de PclTar est entiÃ¨rement documentÃ© en anglais.
 
 
-6 - Problèmes connus
+6 - ProblÃ¨mes connus
 ====================
 
-  Liste des problèmes connus dans PclTar 1.0 (liste non exhaustive) :
+  Liste des problÃ¨mes connus dans PclTar 1.0 (liste non exhaustive) :
 
-  - Seuls les archives GNU TAR au format "header POSIX" sont supportées
-  - Lors de l'extraction d'un fichier le checksupm de l'entête n'est pas vérifié
-  - Lors de l'extraction d'un fichier la date de dernière modification d'un
-    fichier n'est pas comparé avec celle du fichier existant.
-  - Lors de l'extraction d'un fichier les droits d'accès d'un fichier ne sont pas
+  - Seuls les archives GNU TAR au format "header POSIX" sont supportÃ©es
+  - Lors de l'extraction d'un fichier le checksupm de l'entÃªte n'est pas vÃ©rifiÃ©
+  - Lors de l'extraction d'un fichier la date de derniÃ¨re modification d'un
+    fichier n'est pas comparÃ© avec celle du fichier existant.
+  - Lors de l'extraction d'un fichier les droits d'accÃ¨s d'un fichier ne sont pas
     reconduits
-  - Lors de l'archivage d'un dossier entier, le nom du dossier lui même n'est pas
-    archivé comme une entrée indépendante
-  - Lors de l'extraction de l'entrée décrivant un dossier, le dossier n'est créé que si
-    au moins un fichier est archivé pour ce dossier.
+  - Lors de l'archivage d'un dossier entier, le nom du dossier lui mÃªme n'est pas
+    archivÃ© comme une entrÃ©e indÃ©pendante
+  - Lors de l'extraction de l'entrÃ©e dÃ©crivant un dossier, le dossier n'est crÃ©Ã© que si
+    au moins un fichier est archivÃ© pour ce dossier.
 
   Les bugs connus et les contournements possibles ou les versions de correction
-  seront mis à jour sur le site http://www.phpconcept.net
+  seront mis Ã  jour sur le site http://www.phpconcept.net
 
   Merci d'y documenter les bugs que vous rencontrez afin qu'ils soient pris en compte
   dans les versions futures !
@@ -459,18 +459,18 @@
 7 - License
 ===========
 
-  La librairie PclTar 1.3 est distribuées sous license GNU/GPL.
+  La librairie PclTar 1.3 est distribuÃ©es sous license GNU/GPL.
   Vous pouvez donc l'utiliser gratuitement.
 
   CEPENDANT, si vous publiez un script, une application, une librairie ou tout
   code incluant PclTar (entier ou partiel), VOUS DEVEZ :
-  - Publier votre travail sous license GNU/GPL (c'est à dire gratuitement),
+  - Publier votre travail sous license GNU/GPL (c'est Ã  dire gratuitement),
   - Indiquer quelque part dans la documentation (le fichier readme par exemple) que
-    vous utilisez PclTar, faire référence à l'auteur et au site Web
+    vous utilisez PclTar, faire rÃ©fÃ©rence Ã  l'auteur et au site Web
     http://www.phpconcept.net
 
-  J'apprécierai aussi que vous m'envoyez un mail (vincent@blavet.net) afin que
-  je sache que PclTar est utilisé quelque part (mais ce n'est pas obligatoire ;-) ).
+  J'apprÃ©cierai aussi que vous m'envoyez un mail (vincent@blavet.net) afin que
+  je sache que PclTar est utilisÃ© quelque part (mais ce n'est pas obligatoire ;-) ).
 
   Pour plus d'information voir http://www.gnu.org
 
@@ -478,16 +478,16 @@
 8 - Avertissement
 =================
 
-   Cette application a été créée de façon non professionnelle.
-   Son usage est au risque et péril de celui qui l'utilise, en aucun cas l'auteur
-   de ce code ne pourra être tenu pour responsable des éventuels dégats qu'il pourrait
+   Cette application a Ã©tÃ© crÃ©Ã©e de faÃ§on non professionnelle.
+   Son usage est au risque et pÃ©ril de celui qui l'utilise, en aucun cas l'auteur
+   de ce code ne pourra Ãªtre tenu pour responsable des Ã©ventuels dÃ©gats qu'il pourrait
    engendrer.
-   Il est entendu cependant que l'auteur a réalisé ce code par plaisir et n'y a
-   caché aucun virus ni malveillance.
+   Il est entendu cependant que l'auteur a rÃ©alisÃ© ce code par plaisir et n'y a
+   cachÃ© aucun virus ni malveillance.
 
 
 9 - Auteur
 ==========
 
-Ce code a été écrit par Vincent Blavet (vincent@blavet.net) sur ses temps de loisir.
+Ce code a Ã©tÃ© Ã©crit par Vincent Blavet (vincent@blavet.net) sur ses temps de loisir.
 

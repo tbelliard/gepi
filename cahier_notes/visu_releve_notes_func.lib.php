@@ -3,7 +3,7 @@
 /*
 *
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -61,10 +61,10 @@ function regime($id_reg) {
 			$regime="interne";
 			break;
 		case "i-e":
-			$regime="interne-externé";
+			$regime="interne-externÃ©";
 			break;
 		default:
-			$regime="Régime inconnu???";
+			$regime="RÃ©gime inconnu???";
 			break;
 	}
 
@@ -93,7 +93,7 @@ function redimensionne_image_releve($photo){
 	$ratio_h=$hauteur/$releve_photo_hauteur_max;
 	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	$nouvelle_largeur=round($largeur/$ratio);
 	$nouvelle_hauteur=round($hauteur/$ratio);
 
@@ -111,7 +111,7 @@ function texte_html_ou_pas($texte){
 	if((strstr($texte,">"))||(strstr($texte,"<"))){
 		$retour=$texte;
 	}
-	// Sinon, on transforme les retours à la ligne en <br />
+	// Sinon, on transforme les retours Ã  la ligne en <br />
 	else{
 		$retour=nl2br($texte);
 	}
@@ -119,7 +119,7 @@ function texte_html_ou_pas($texte){
 }
 */
 
-// Pour ne récupérer que les devoirs situés dans les conteneurs listés dans $tab_id_conteneur
+// Pour ne rÃ©cupÃ©rer que les devoirs situÃ©s dans les conteneurs listÃ©s dans $tab_id_conteneur
 function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 	global $retour_a_la_ligne, $chaine_coef;
 
@@ -132,13 +132,13 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 	if(isset($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
 		while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
 			if(in_array($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur'],$tab_id_conteneur)) {
-				// Note de l'élève sur le devoir:
+				// Note de l'Ã©lÃ¨ve sur le devoir:
 				$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
-				// Statut de l'élève sur le devoir:
+				// Statut de l'Ã©lÃ¨ve sur le devoir:
 				$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
-				// Appréciation de l'élève sur le devoir:
+				// ApprÃ©ciation de l'Ã©lÃ¨ve sur le devoir:
 				$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
-				// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
+				// Le professeur a-t-il autorisÃ© l'accÃ¨s Ã  l'apprÃ©ciation lors de la saisie du devoir
 				$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
 				// Nom court du devoir:
 				$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
@@ -148,10 +148,10 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 				$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
 	
 				$tab_devoirs_affiches_en_sous_conteneur[]=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_devoir'];
-				//echo "<span style='color:orange'>\$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_devoir']=".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_devoir']." affiché.</span><br />";
+				//echo "<span style='color:orange'>\$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_devoir']=".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_devoir']." affichÃ©.</span><br />";
 
 				//==========================================
-				// On teste s'il y aura une "Note" à afficher
+				// On teste s'il y aura une "Note" Ã  afficher
 				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 					$affiche_note = $eleve_statut;
 				}
@@ -178,7 +178,7 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					}
 				}
 		
-				// Si une "Note" doit être affichée
+				// Si une "Note" doit Ãªtre affichÃ©e
 				if ($affiche_note != '') {
 					if ($tiret == "yes") {
 						if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
@@ -196,16 +196,16 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					}
 		
 					// Coefficient (si on affiche tous les coef...
-					// ou si on ne les affiche que s'il y a plusieurs coef différents)
+					// ou si on ne les affiche que s'il y a plusieurs coef diffÃ©rents)
 					if(($tab_rel['rn_toutcoefdev']=="y")||
 						(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
 						$retour.=" (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
 					}
 		
-					// Si on a demandé à afficher les appréciations
-					// et si le prof a coché l'autorisation d'accès à l'appréciations
+					// Si on a demandÃ© Ã  afficher les apprÃ©ciations
+					// et si le prof a cochÃ© l'autorisation d'accÃ¨s Ã  l'apprÃ©ciations
 					if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-						$retour.=" - Appréciation : ";
+						$retour.=" - ApprÃ©ciation : ";
 						if ($eleve_app!="") {
 							$retour.=$eleve_app;
 						}
@@ -230,7 +230,7 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					}
 	
 					//====================================================================
-					// Après un tour avec affichage dans la boucle:
+					// AprÃ¨s un tour avec affichage dans la boucle:
 					$tiret = "yes";
 	
 					// DEBUG:
@@ -247,7 +247,7 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 	return $retour;
 }
 
-// Pour ne récupérer que les devoirs situés dans les conteneurs listés dans $tab_id_conteneur
+// Pour ne rÃ©cupÃ©rer que les devoirs situÃ©s dans les conteneurs listÃ©s dans $tab_id_conteneur
 function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 	global $retour_a_la_ligne, $chaine_coef;
 	global $use_cell_ajustee;
@@ -261,13 +261,13 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 	if(isset($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
 		while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
 			if(in_array($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur'],$tab_id_conteneur)) {
-				// Note de l'élève sur le devoir:
+				// Note de l'Ã©lÃ¨ve sur le devoir:
 				$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
-				// Statut de l'élève sur le devoir:
+				// Statut de l'Ã©lÃ¨ve sur le devoir:
 				$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
-				// Appréciation de l'élève sur le devoir:
+				// ApprÃ©ciation de l'Ã©lÃ¨ve sur le devoir:
 				$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
-				// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
+				// Le professeur a-t-il autorisÃ© l'accÃ¨s Ã  l'apprÃ©ciation lors de la saisie du devoir
 				$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
 				// Nom court du devoir:
 				$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
@@ -288,7 +288,7 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 				}
 				*/
 				//==========================================
-				// On teste s'il y aura une "Note" à afficher
+				// On teste s'il y aura une "Note" Ã  afficher
 				/*
 				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 					$affiche_note = $eleve_statut;
@@ -310,7 +310,7 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					if($use_cell_ajustee!="n") {$affiche_note.="</b>";}
 				}
 				elseif ($eleve_statut == 'v') {
-					// Dans le cas où il n'y a pas de note (champ note vide), on a $eleve_statut='v' et $eleve_note='0.0' mais il ne faut pas afficher zéro.
+					// Dans le cas oÃ¹ il n'y a pas de note (champ note vide), on a $eleve_statut='v' et $eleve_note='0.0' mais il ne faut pas afficher zÃ©ro.
 					$affiche_note.="-";
 				}
 				elseif ($eleve_note != '') {
@@ -335,7 +335,7 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					}
 				}
 		
-				// Si une "Note" doit être affichée
+				// Si une "Note" doit Ãªtre affichÃ©e
 				if ($affiche_note != '') {
 					if ($tiret == "yes") {
 						if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
@@ -355,17 +355,17 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					}
 		
 					// Coefficient (si on affiche tous les coef...
-					// ou si on ne les affiche que s'il y a plusieurs coef différents)
+					// ou si on ne les affiche que s'il y a plusieurs coef diffÃ©rents)
 					if(($tab_rel['rn_toutcoefdev']=="y")||
 						(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
 						//$retour.=" (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
 						$retour.=" (".$chaine_coef.$eleve_coef.")";
 					}
 		
-					// Si on a demandé à afficher les appréciations
-					// et si le prof a coché l'autorisation d'accès à l'appréciations
+					// Si on a demandÃ© Ã  afficher les apprÃ©ciations
+					// et si le prof a cochÃ© l'autorisation d'accÃ¨s Ã  l'apprÃ©ciations
 					if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-						$retour.=" - Appréciation : ";
+						$retour.=" - ApprÃ©ciation : ";
 						if ($eleve_app!="") {
 							$retour.=$eleve_app;
 						}
@@ -391,7 +391,7 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					}
 
 					//====================================================================
-					// Après un tour avec affichage dans la boucle:
+					// AprÃ¨s un tour avec affichage dans la boucle:
 					$tiret = "yes";
 				}
 			}
@@ -412,13 +412,13 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 
 
 // $tab_reletin[$id_classe][$periode_num]
-// $i indice élève
+// $i indice Ã©lÃ¨ve
 //function releve_html($tab_rel,$i) {
 function releve_html($tab_rel,$i,$num_releve_specifie) {
 	global
 		//============================================
-		// Paramètres généraux:
-		// En admin, dans Gestion générale/Configuration générale
+		// ParamÃ¨tres gÃ©nÃ©raux:
+		// En admin, dans Gestion gÃ©nÃ©rale/Configuration gÃ©nÃ©rale
 		$gepi_prof_suivi,
 
 		$RneEtablissement,
@@ -439,17 +439,17 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$chaine_coef,	// 'coef.:'
 		//============================================
 
-		// Paramètres d'impression des bulletins HTML:
+		// ParamÃ¨tres d'impression des bulletins HTML:
 
 		// Mise en page du bulletin scolaire
 		$releve_body_marginleft,
-		// $titlesize, $textsize, $p_bulletin_margin sont récupérés plus haut dans l'entête pour écrire les styles
+		// $titlesize, $textsize, $p_bulletin_margin sont rÃ©cupÃ©rÃ©s plus haut dans l'entÃªte pour Ã©crire les styles
 		$releve_largeurtableau,
 
 		$releve_col_matiere_largeur,
 		//$col_note_largeur,
 		//$col_boite_largeur,
-		//$col_hauteur,		// La hauteur minimale de ligne n'est exploitée que dans les boites/conteneurs
+		//$col_hauteur,		// La hauteur minimale de ligne n'est exploitÃ©e que dans les boites/conteneurs
 		$releve_cellpadding,
 		$releve_cellspacing,
 		$releve_ecart_entete,
@@ -464,7 +464,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		//$bull_categ_font_size_avis,
 		//$bull_police_avis,
 		//$bull_font_style_avis,
-		// Ils sont utilisés dans l'entête pour générer les styles
+		// Ils sont utilisÃ©s dans l'entÃªte pour gÃ©nÃ©rer les styles
 		//======================
 		$genre_periode,
 		$releve_affich_nom_etab,
@@ -478,14 +478,14 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		//$releve_affiche_absences,
 		//$releve_affiche_avis,
 		//$releve_affiche_aid,
-		$releve_affiche_numero,		// affichage du numéro du bulletin
-		// L'affichage des graphes devrait provenir des Paramètres d'impression des bulletins HTML, mais le paramètre a été stocké dans $tab_rel
-		//$releve_affiche_signature,	// affichage du nom du PP et du chef d'établissement
+		$releve_affiche_numero,		// affichage du numÃ©ro du bulletin
+		// L'affichage des graphes devrait provenir des ParamÃ¨tres d'impression des bulletins HTML, mais le paramÃ¨tre a Ã©tÃ© stockÃ© dans $tab_rel
+		//$releve_affiche_signature,	// affichage du nom du PP et du chef d'Ã©tablissement
 		$releve_affiche_etab,			// Etablissement d'origine
 
 
 		$activer_photo_releve,
-		// $releve_photo_largeur_max et $releve_photo_hauteur_max sont récupérées via global dans redimensionne_image()
+		// $releve_photo_largeur_max et $releve_photo_hauteur_max sont rÃ©cupÃ©rÃ©es via global dans redimensionne_image()
 
 		$releve_affiche_tel,
 		$releve_affiche_fax,
@@ -494,7 +494,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$releve_affiche_INE_eleve,
 		$releve_affiche_formule,
 		$releve_formule_bas,
-		// Nom du fichier déterminé d'après le paramètre choix_bulletin
+		// Nom du fichier dÃ©terminÃ© d'aprÃ¨s le paramÃ¨tre choix_bulletin
 		$fichier_bulletin,
 		$min_max_moyclas,
 
@@ -504,20 +504,20 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$releve_addressblock_padding_text,
 		$releve_addressblock_length,
 		$releve_addressblock_font_size,
-		//addressblock_logo_etab_prop correspond au pourcentage $largeur1 et $largeur2 est le complément à 100%
+		//addressblock_logo_etab_prop correspond au pourcentage $largeur1 et $largeur2 est le complÃ©ment Ã  100%
 		$releve_addressblock_logo_etab_prop,
 		$releve_addressblock_autre_prop,
-		// Pourcentage calculé par rapport au tableau contenant le bloc Classe, Année,...
+		// Pourcentage calculÃ© par rapport au tableau contenant le bloc Classe, AnnÃ©e,...
 		$releve_addressblock_classe_annee2,
-		// Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prénom,... de l'élève
+		// Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prÃ©nom,... de l'Ã©lÃ¨ve
 		$releve_ecart_bloc_nom,
 		$releve_addressblock_debug,
 
 		//============================================
-		// Paramètre transmis depuis la page d'impression des bulletins
+		// ParamÃ¨tre transmis depuis la page d'impression des bulletins
 		$un_seul_bull_par_famille,
 
-		// Pour afficher un message expliquant les deux relevés
+		// Pour afficher un message expliquant les deux relevÃ©s
 		$nb_releves,
 
 		//============================================
@@ -526,7 +526,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$type_etablissement2,
 
 		//============================================
-		// Paramètre du module trombinoscope
+		// ParamÃ¨tre du module trombinoscope
 		// En admin, dans Gestion des modules
 		$active_module_trombinoscopes;
 
@@ -536,15 +536,15 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$debug_ele_login="ahnjinwon";
 		$debug_id_groupe=237;
 
-	// Récupérer avant le nombre de bulletins à imprimer
+	// RÃ©cupÃ©rer avant le nombre de bulletins Ã  imprimer
 	// - que le premier resp
-	// - tous les resp si adr différentes
+	// - tous les resp si adr diffÃ©rentes
 	// et le passer via global
 	//================================
 
-    // Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
+    // Pour retourner Ã  la ligne entre les devoirs dans le cas oÃ¹ le nom ou l'apprÃ©ciation du devoir est demandÃ©e:
     $retour_a_la_ligne="y";
-    // Passer à "n" pour désactiver le retour à la ligne.
+    // Passer Ã  "n" pour dÃ©sactiver le retour Ã  la ligne.
 
 	if((isset($tab_rel['rn_retour_ligne']))&&(($tab_rel['rn_retour_ligne']=='y')||($tab_rel['rn_retour_ligne']=='n'))) {
 		$retour_a_la_ligne=$tab_rel['rn_retour_ligne'];
@@ -569,7 +569,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 
 	$id_classe=$tab_rel['id_classe'];
 
-	// Pour n'imprimer qu'un relevé dans le cas où on n'imprime pas les adresses des responsables
+	// Pour n'imprimer qu'un relevÃ© dans le cas oÃ¹ on n'imprime pas les adresses des responsables
 	$nb_releves=1;
 
 	unset($tab_adr_ligne1);
@@ -577,9 +577,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 	unset($tab_adr_ligne3);
 
 	//if ($tab_rel['affiche_adresse'] == 'y') {
-	// On fait le travail sur $tab_adr_ligne1 même si on ne souhaite pas afficher l'adresse des responsables parce que c'est aussi cette démarche qui permet de déterminer $nb_releves
+	// On fait le travail sur $tab_adr_ligne1 mÃªme si on ne souhaite pas afficher l'adresse des responsables parce que c'est aussi cette dÃ©marche qui permet de dÃ©terminer $nb_releves
 
-		// Préparation des lignes adresse responsable
+		// PrÃ©paration des lignes adresse responsable
 		if (!isset($tab_rel['eleve'][$i]['resp'][0])) {
 			$tab_adr_ligne1[0]="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 			$tab_adr_ligne2[0]="";
@@ -594,7 +594,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 					(isset($tab_rel['eleve'][$i]['resp'][1]['cp']))&&
 					(isset($tab_rel['eleve'][$i]['resp'][1]['commune']))
 				) {
-					// Le deuxième responsable existe et est renseigné
+					// Le deuxiÃ¨me responsable existe et est renseignÃ©
 					if (($tab_rel['eleve'][$i]['resp'][0]['adr_id']==$tab_rel['eleve'][$i]['resp'][1]['adr_id']) OR
 						(
 							/*
@@ -618,7 +618,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 
 						if(($tab_rel['eleve'][$i]['resp'][0]['nom']!=$tab_rel['eleve'][$i]['resp'][1]['nom'])&&
 							($tab_rel['eleve'][$i]['resp'][1]['nom']!="")) {
-							// Les noms des responsables sont différents
+							// Les noms des responsables sont diffÃ©rents
 							$tab_adr_ligne1[0]=$tab_rel['eleve'][$i]['resp'][0]['civilite']." ".$tab_rel['eleve'][$i]['resp'][0]['nom']." ".$tab_rel['eleve'][$i]['resp'][0]['prenom']." et ".$tab_rel['eleve'][$i]['resp'][1]['civilite']." ".$tab_rel['eleve'][$i]['resp'][1]['nom']." ".$tab_rel['eleve'][$i]['resp'][1]['prenom'];
 						}
 						else{
@@ -650,9 +650,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 						}
 					}
 					else {
-						// Les adresses sont différentes
+						// Les adresses sont diffÃ©rentes
 						//if ($un_seul_bull_par_famille!="oui") {
-						// On teste en plus si la deuxième adresse est valide
+						// On teste en plus si la deuxiÃ¨me adresse est valide
 						if (($un_seul_bull_par_famille!="oui")&&
 							($tab_rel['eleve'][$i]['resp'][1]['adr1']!="")&&
 							($tab_rel['eleve'][$i]['resp'][1]['commune']!="")
@@ -695,8 +695,8 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 					}
 				}
 				else {
-					// Il n'y a pas de deuxième adresse, mais il y aurait un deuxième responsable???
-					// CA NE DEVRAIT PAS ARRIVER ETANT DONNé LA REQUETE EFFECTUEE QUI JOINT resp_pers ET resp_adr...
+					// Il n'y a pas de deuxiÃ¨me adresse, mais il y aurait un deuxiÃ¨me responsable???
+					// CA NE DEVRAIT PAS ARRIVER ETANT DONNÃ© LA REQUETE EFFECTUEE QUI JOINT resp_pers ET resp_adr...
 						if ($un_seul_bull_par_famille!="oui") {
 							$nb_releves=2;
 						}
@@ -734,7 +734,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 				}
 			}
 			else {
-				// Il n'y a pas de deuxième responsable
+				// Il n'y a pas de deuxiÃ¨me responsable
 				$nb_releves=1;
 
 				if($tab_rel['eleve'][$i]['resp'][0]['civilite']!="") {
@@ -765,7 +765,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 			}
 		}
 	//}
-	// Fin de la préparation des lignes adresse responsable
+	// Fin de la prÃ©paration des lignes adresse responsable
 
 	//echo "\$nb_releves=$nb_releves<br />";
 	//echo "\$num_releve_specifie=$num_releve_specifie<br />";
@@ -779,7 +779,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 	//echo "\$num_premier_releve=$num_premier_releve<br />";
 	//echo "\$nb_releves=$nb_releves<br />";
 
-	// Début des bulletins
+	// DÃ©but des bulletins
 	for ($num_releve=$num_premier_releve; $num_releve<$nb_releves; $num_releve++) {
 
 		//echo "\$num_releve=$num_releve<br />";
@@ -795,8 +795,8 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 			$ligne2=$tab_adr_ligne2[$num_releve];
 			$ligne3=$tab_adr_ligne3[$num_releve];
 
-			// Info affichée en haut de la page de garde
-			$info_eleve_page_garde="Elève: ".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom'].", ".$tab_rel['eleve'][$i]['classe'];
+			// Info affichÃ©e en haut de la page de garde
+			$info_eleve_page_garde="ElÃ¨ve: ".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom'].", ".$tab_rel['eleve'][$i]['classe'];
 
 			//if ($affiche_page_garde == "yes") {
 			//	include "./page_garde.php";
@@ -808,14 +808,14 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 
 		if($tab_rel['affiche_adresse'] == 'y') {
 			//-------------------------------
-			// Maintenant, on affiche l'en-tête : Les données de l'élève, le bloc adresse responsable et l'adresse du lycée.
+			// Maintenant, on affiche l'en-tÃªte : Les donnÃ©es de l'Ã©lÃ¨ve, le bloc adresse responsable et l'adresse du lycÃ©e.
 			//-------------------------------
 
-			echo "\n<!-- Début du cadre entête -->\n";
+			echo "\n<!-- DÃ©but du cadre entÃªte -->\n";
 			echo "<div";
 			if($releve_addressblock_debug=="y"){echo " style='border:1px solid red;'";}
 			echo ">\n";
-			// Pour éviter que le bloc-adresse ne remonte au-delà du saut de page:
+			// Pour Ã©viter que le bloc-adresse ne remonte au-delÃ  du saut de page:
 			echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
 
 			// Cadre adresse du responsable:
@@ -835,7 +835,7 @@ $ligne3
 </div>\n";
 
 
-			// Cadre contenant le tableau Logo+Ad_etab et le nom, prénom,... de l'élève:
+			// Cadre contenant le tableau Logo+Ad_etab et le nom, prÃ©nom,... de l'Ã©lÃ¨ve:
 			echo "<div style='float:left;
 left:0px;
 top:0px;
@@ -845,7 +845,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 			echo "<table";
 			if($releve_addressblock_debug=="y"){echo " border='1'";}
-			echo " summary='Tableau des informations établissement'";
+			echo " summary='Tableau des informations Ã©tablissement'";
 			echo ">\n";
 			echo "<tr>\n";
 
@@ -896,11 +896,11 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			}
 
 
-			//affichage des données sur une seule ligne ou plusieurs
+			//affichage des donnÃ©es sur une seule ligne ou plusieurs
 			if  ($releve_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"releve_grand\">".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom']."</span></b><br />";
-				echo "Né";
+				echo "NÃ©";
 				if (strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_rel['eleve'][$i]['naissance'];
 				//Eric Ajout
@@ -909,7 +909,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "ext.") {echo "Externe";}
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo "Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
-					echo "Interne&nbsp;externé";
+					echo "Interne&nbsp;externÃ©";
 					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 				}
 				//Eric Ajout
@@ -933,14 +933,14 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			else { //sur une ligne
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"releve_grand\">".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom']."</span></b><br />";
-				echo "Né";
+				echo "NÃ©";
 				if (strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_rel['eleve'][$i]['naissance'];
 				if ($tab_rel['eleve'][$i]['regime'] == "d/p") {echo ", Demi-pensionnaire";}
 				if ($tab_rel['eleve'][$i]['regime'] == "ext.") {echo ", Externe";}
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo ", Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
-					echo ", Interne&nbsp;externé";
+					echo ", Interne&nbsp;externÃ©";
 					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 				}
 				if ($releve_mention_doublant == 'yes'){
@@ -956,7 +956,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 			if($releve_affiche_INE_eleve=="y"){
 				echo "<br />\n";
-				echo "Numéro INE: ".$tab_rel['eleve'][$i]['no_gep'];
+				echo "NumÃ©ro INE: ".$tab_rel['eleve'][$i]['no_gep'];
 			}
 
 			if($releve_affiche_etab=="y"){
@@ -981,45 +981,45 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			//echo "<spacer type='vertical' size='10'>";
 
 
-			// Tableau contenant le nom de la classe, l'année et la période.
+			// Tableau contenant le nom de la classe, l'annÃ©e et la pÃ©riode.
 			echo "<table width='".$releve_addressblock_autre_prop."%' ";
 			if($releve_addressblock_debug=="y"){echo "border='1' ";}
-			echo "summary=\"Tableau de l'entête\" ";
+			echo "summary=\"Tableau de l'entÃªte\" ";
 			echo "cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'>\n";
 			echo "<tr>\n";
 			echo "<td class='releve_empty'>\n";
 			echo "&nbsp;\n";
 			echo "</td>\n";
 			echo "<td style='width:".$releve_addressblock_classe_annee2."%;'>\n";
-			echo "<p class='bulletin' align='center'><span class=\"releve_grand\">Classe de ".$tab_rel['eleve'][$i]['classe_nom_complet']."<br />Année scolaire ".$gepiYear."</span><br />\n";
+			echo "<p class='bulletin' align='center'><span class=\"releve_grand\">Classe de ".$tab_rel['eleve'][$i]['classe_nom_complet']."<br />AnnÃ©e scolaire ".$gepiYear."</span><br />\n";
 
 			if ($choix_periode=='intervalle') {
-				echo "Relevé de notes du <b>".$tab_rel['intervalle']['debut']."</b> au <b>".$tab_rel['intervalle']['fin']."</b></span>";
+				echo "RelevÃ© de notes du <b>".$tab_rel['intervalle']['debut']."</b> au <b>".$tab_rel['intervalle']['fin']."</b></span>";
 			} else {
-				echo "<b>".$tab_rel['nom_periode']."</b> : Relevé de notes";
+				echo "<b>".$tab_rel['nom_periode']."</b> : RelevÃ© de notes";
 			}
 
 			echo "</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
 
-			// Pour que le tableau des appréciations ne vienne pas s'encastrer dans les DIV float:
+			// Pour que le tableau des apprÃ©ciations ne vienne pas s'encastrer dans les DIV float:
 			echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
 
-			// Fin du cadre entête:
+			// Fin du cadre entÃªte:
 			echo "</div>\n";
-			echo "<!-- Fin du cadre entête -->\n\n";
+			echo "<!-- Fin du cadre entÃªte -->\n\n";
 
 		}
 		else{
 			//-------------------------------
-			// Maintenant, on affiche l'en-tête : Les données de l'élève, et l'adresse du lycée.
+			// Maintenant, on affiche l'en-tÃªte : Les donnÃ©es de l'Ã©lÃ¨ve, et l'adresse du lycÃ©e.
 			// sans bloc adresse responsable
 			//-------------------------------
 
             echo "<div align='center'>\n";
 			echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'";
-			echo " summary=\"Tableau de l'entête\"";
+			echo " summary=\"Tableau de l'entÃªte\"";
 			echo ">\n";
 
 			echo "<tr>\n";
@@ -1038,11 +1038,11 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				}
 			}
 
-				//affichage des données sur une seule ligne ou plusieurs
+				//affichage des donnÃ©es sur une seule ligne ou plusieurs
 			if  ($releve_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"releve_grand\">".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom']."</span></b><br />";
-				echo "Né";
+				echo "NÃ©";
 				if (strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_rel['eleve'][$i]['naissance'];
 				//Eric Ajout
@@ -1051,7 +1051,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "ext.") {echo "Externe";}
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo "Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
-					echo "Interne&nbsp;externé";
+					echo "Interne&nbsp;externÃ©";
 					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 				}
 				//Eric Ajout
@@ -1076,7 +1076,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			} else { //sur une ligne
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"releve_grand\">".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom']."</span></b><br />";
-				echo "Né";
+				echo "NÃ©";
 				if (strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_rel['eleve'][$i]['naissance'];
 
@@ -1084,7 +1084,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "ext.") {echo ", Externe";}
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo ", Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
-					echo ", Interne&nbsp;externé";
+					echo ", Interne&nbsp;externÃ©";
 					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 				}
 				//Eric Ajout
@@ -1101,7 +1101,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 			if($releve_affiche_INE_eleve=="y"){
 				echo "<br />\n";
-				echo "Numéro INE: ".$tab_rel['eleve'][$i]['no_gep'];
+				echo "NumÃ©ro INE: ".$tab_rel['eleve'][$i]['no_gep'];
 			}
 
 			if($releve_affiche_etab=="y"){
@@ -1122,12 +1122,12 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			echo "</p></td>\n<td style=\"width: 40%;text-align: center;\">\n";
 
 			if ($tab_rel['affiche_adresse'] != "y") {
-				echo "<p class='bulletin'><span class=\"releve_grand\">Classe de ".$tab_rel['eleve'][$i]['classe_nom_complet']."<br />Année scolaire ".$gepiYear."</span><br />\n";
+				echo "<p class='bulletin'><span class=\"releve_grand\">Classe de ".$tab_rel['eleve'][$i]['classe_nom_complet']."<br />AnnÃ©e scolaire ".$gepiYear."</span><br />\n";
 
 				if ($choix_periode=='intervalle') {
-					echo "Relevé de notes du <b>".$tab_rel['intervalle']['debut']."</b> au <b>".$tab_rel['intervalle']['fin']."</b>";
+					echo "RelevÃ© de notes du <b>".$tab_rel['intervalle']['debut']."</b> au <b>".$tab_rel['intervalle']['fin']."</b>";
 				} else {
-					echo "<b>".$tab_rel['nom_periode']."</b> : Relevé de notes";
+					echo "<b>".$tab_rel['nom_periode']."</b> : RelevÃ© de notes";
 				}
 				echo "</p>\n";
 			} else {
@@ -1163,7 +1163,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			echo "</td>\n</tr>\n</table>\n";
             echo "</div>\n";
 			//-------------------------------
-			// Fin de l'en-tête
+			// Fin de l'en-tÃªte
 		}
 
 
@@ -1178,22 +1178,22 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
         //=============================================
 
-		// Tableau des matieres/devoirs/notes/appréciations
+		// Tableau des matieres/devoirs/notes/apprÃ©ciations
 
 		//include ($fichier_bulletin);
 
 		if((!isset($tab_rel['eleve'][$i]['groupe']))||(count($tab_rel['eleve'][$i]['groupe'])==0)) {
-			echo "<div class='noprint' style='background-color: white; color: red; border: 1px solid black;padding: 1em;'>Aucun enseignement n'est associé à l'élève";
+			echo "<div class='noprint' style='background-color: white; color: red; border: 1px solid black;padding: 1em;'>Aucun enseignement n'est associÃ© Ã  l'Ã©lÃ¨ve";
 
 			if ($choix_periode=='intervalle') {
-				echo ",<br />ou l'élève n'a aucune note sur l'intervalle de dates choisi (<i>en demandant l'affichage des relevés pour la période entière, les matières sont affichées, même si aucune note n'a été saisie</i>).</p>";
+				echo ",<br />ou l'Ã©lÃ¨ve n'a aucune note sur l'intervalle de dates choisi (<i>en demandant l'affichage des relevÃ©s pour la pÃ©riode entiÃ¨re, les matiÃ¨res sont affichÃ©es, mÃªme si aucune note n'a Ã©tÃ© saisie</i>).</p>";
 			}
 			echo ".<br />\n";
 
 			if ($tab_rel['affiche_categories']) {
-				echo "<br />Si vous pensez que c'est anormal, c'est peut-être dû à un mauvais paramétrage des catégories de matières.<br />";
-				//echo "Il est possible de contrôler les catégories de matières en administrateur dans Gestion générale/Nettoyage des tables pour corriger ce problème.\n";
-				echo "Il est possible de corriger le problème en administrateur en refaisant le paramétrage des catégories de matières dans 'Gestion des bases/Gestion des classes/&lt;Une_classe&gt; Paramètres' ou dans 'Gestion des bases/Gestion des classes/Paramétrage par lots'.\n";
+				echo "<br />Si vous pensez que c'est anormal, c'est peut-Ãªtre dÃ» Ã  un mauvais paramÃ©trage des catÃ©gories de matiÃ¨res.<br />";
+				//echo "Il est possible de contrÃ´ler les catÃ©gories de matiÃ¨res en administrateur dans Gestion gÃ©nÃ©rale/Nettoyage des tables pour corriger ce problÃ¨me.\n";
+				echo "Il est possible de corriger le problÃ¨me en administrateur en refaisant le paramÃ©trage des catÃ©gories de matiÃ¨res dans 'Gestion des bases/Gestion des classes/&lt;Une_classe&gt; ParamÃ¨tres' ou dans 'Gestion des bases/Gestion des classes/ParamÃ©trage par lots'.\n";
 			}
 			echo "</div>\n";
 		}
@@ -1209,7 +1209,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		echo "summary=\"Tableau des notes\" ";
 		echo ">\n";
 		echo "<tr>\n";
-		echo "<td width=\"$larg_col1\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
+		echo "<td width=\"$larg_col1\" class='releve'><b>MatiÃ¨re</b><br /><i>Professeur</i></td>\n";
 		echo "<td width=\"$larg_col2\" class='releve'>Notes sur 20</td>\n";
 		echo "</tr>\n";
 
@@ -1223,7 +1223,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				(($choix_periode=='intervalle')&&(isset($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])))) {
 				//count($tab_rel['eleve'][$i]['groupe'][$j]['devoir']>0)))) {
 					if ($tab_rel['affiche_categories']) {
-						// On regarde si on change de catégorie de matière
+						// On regarde si on change de catÃ©gorie de matiÃ¨re
 						if ($tab_rel['eleve'][$i]['groupe'][$j]['id_cat'] != $prev_cat_id) {
 							$prev_cat_id = $tab_rel['eleve'][$i]['groupe'][$j]['id_cat'];
 		
@@ -1246,7 +1246,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 					//echo $tab_rel['eleve'][$i]['groupe'][$j]['id_groupe'];
 	
 					$k = 0;
-					// Il peut y avoir une matière sans prof, avec une note saisie en compte secours
+					// Il peut y avoir une matiÃ¨re sans prof, avec une note saisie en compte secours
 					if(isset($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'])) {
 						While ($k < count($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'])) {
 							echo "<br /><i>".affiche_utilisateur(htmlentities($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'][$k]),$id_classe)."</i>";
@@ -1260,7 +1260,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 					// Boucle sur la liste des devoirs
 					if(!isset($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
 						echo "&nbsp;";
-						//echo "\$tab_rel['eleve'][$i]['groupe'][$j]['devoir'] n'est pas affecté.<br />";
+						//echo "\$tab_rel['eleve'][$i]['groupe'][$j]['devoir'] n'est pas affectÃ©.<br />";
 					}
 					else {
 
@@ -1283,9 +1283,9 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 							$premier_cn="y";
 							$temoin_affichage_de_conteneur="n";
 							$temoin_conteneur=0;
-							// Parcours des carnets de notes (un seule si une période est choisie, mais peut-être plusieurs si on a un intervalle de dates)
+							// Parcours des carnets de notes (un seule si une pÃ©riode est choisie, mais peut-Ãªtre plusieurs si on a un intervalle de dates)
 							foreach($tab_rel['eleve'][$i]['groupe'][$j]['id_cn'] as $tmp_id_cn => $tab_id_cn) {
-								// On ne récupère que les conteneurs de niveau 1, pas la racine... et si on a plusieurs périodes, on peut récupérer les boites d'une autre période... d'où des tests par la suite sur ce qu'il convient d'afficher.
+								// On ne rÃ©cupÃ¨re que les conteneurs de niveau 1, pas la racine... et si on a plusieurs pÃ©riodes, on peut rÃ©cupÃ©rer les boites d'une autre pÃ©riode... d'oÃ¹ des tests par la suite sur ce qu'il convient d'afficher.
 
 								unset($tmp_tab);
 								$tmp_tab[]=$tmp_id_cn;
@@ -1313,7 +1313,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 								}
 	
 								// Faire la boucle while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {} 
-								// avec un test sur $tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur']==$tmp_id_cn (soit la racine du cn à ce niveau)
+								// avec un test sur $tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur']==$tmp_id_cn (soit la racine du cn Ã  ce niveau)
 	
 	
 								for($k=0;$k<count($tab_id_cn['conteneurs']);$k++) {
@@ -1350,7 +1350,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 										}
 	
 										// Faire la boucle while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {} 
-										// avec un test sur $tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur'] égal à $tab_id_cn['conteneurs'][$k]['id_racine'] ou dans $tab_id_cn['conteneurs'][$k]['conteneurs_enfants'][]
+										// avec un test sur $tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur'] Ã©gal Ã  $tab_id_cn['conteneurs'][$k]['id_racine'] ou dans $tab_id_cn['conteneurs'][$k]['conteneurs_enfants'][]
 									//}
 								}
 
@@ -1367,7 +1367,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 							//if($temoin_affichage_de_conteneur!='y') {
 								//echo "|B:$tmp_id_cn|";
-								// On va tester s'il y a des devoirs hors des boites (qui se sont révélées vides?)
+								// On va tester s'il y a des devoirs hors des boites (qui se sont rÃ©vÃ©lÃ©es vides?)
 								$m=0;
 								$tiret = "no";
 								while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
@@ -1398,13 +1398,13 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 												echo "<br />\n";
 											}
 		
-											// Note de l'élève sur le devoir:
+											// Note de l'Ã©lÃ¨ve sur le devoir:
 											$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
-											// Statut de l'élève sur le devoir:
+											// Statut de l'Ã©lÃ¨ve sur le devoir:
 											$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
-											// Appréciation de l'élève sur le devoir:
+											// ApprÃ©ciation de l'Ã©lÃ¨ve sur le devoir:
 											$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
-											// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
+											// Le professeur a-t-il autorisÃ© l'accÃ¨s Ã  l'apprÃ©ciation lors de la saisie du devoir
 											$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
 											// Nom court du devoir:
 											$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
@@ -1414,7 +1414,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 											$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
 						
 											//==========================================
-											// On teste s'il y aura une "Note" à afficher
+											// On teste s'il y aura une "Note" Ã  afficher
 											if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 												$affiche_note = $eleve_statut;
 											}
@@ -1441,7 +1441,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 												}
 											}
 						
-											// Si une "Note" doit être affichée
+											// Si une "Note" doit Ãªtre affichÃ©e
 											if ($affiche_note != '') {
 												if ($tiret == "yes") {
 													if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
@@ -1459,16 +1459,16 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 												}
 						
 												// Coefficient (si on affiche tous les coef...
-												// ou si on ne les affiche que s'il y a plusieurs coef différents)
+												// ou si on ne les affiche que s'il y a plusieurs coef diffÃ©rents)
 												if(($tab_rel['rn_toutcoefdev']=="y")||
 													(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
 													echo " (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
 												}
 						
-												// Si on a demandé à afficher les appréciations
-												// et si le prof a coché l'autorisation d'accès à l'appréciations
+												// Si on a demandÃ© Ã  afficher les apprÃ©ciations
+												// et si le prof a cochÃ© l'autorisation d'accÃ¨s Ã  l'apprÃ©ciations
 												if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-													echo " - Appréciation : ";
+													echo " - ApprÃ©ciation : ";
 													if ($eleve_app!="") {
 														echo $eleve_app;
 													}
@@ -1494,7 +1494,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				
 				
 												//====================================================================
-												// Après un tour avec affichage dans la boucle:
+												// AprÃ¨s un tour avec affichage dans la boucle:
 												$tiret = "yes";
 											}
 		
@@ -1510,13 +1510,13 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 							$m=0;
 							$tiret = "no";
 							while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
-								// Note de l'élève sur le devoir:
+								// Note de l'Ã©lÃ¨ve sur le devoir:
 								$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
-								// Statut de l'élève sur le devoir:
+								// Statut de l'Ã©lÃ¨ve sur le devoir:
 								$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
-								// Appréciation de l'élève sur le devoir:
+								// ApprÃ©ciation de l'Ã©lÃ¨ve sur le devoir:
 								$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
-								// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
+								// Le professeur a-t-il autorisÃ© l'accÃ¨s Ã  l'apprÃ©ciation lors de la saisie du devoir
 								$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
 								// Nom court du devoir:
 								$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
@@ -1526,7 +1526,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 								$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
 			
 								//==========================================
-								// On teste s'il y aura une "Note" à afficher
+								// On teste s'il y aura une "Note" Ã  afficher
 								if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 									$affiche_note = $eleve_statut;
 								}
@@ -1553,7 +1553,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 									}
 								}
 			
-								// Si une "Note" doit être affichée
+								// Si une "Note" doit Ãªtre affichÃ©e
 								if ($affiche_note != '') {
 									if ($tiret == "yes") {
 										if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
@@ -1571,16 +1571,16 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 									}
 			
 									// Coefficient (si on affiche tous les coef...
-									// ou si on ne les affiche que s'il y a plusieurs coef différents)
+									// ou si on ne les affiche que s'il y a plusieurs coef diffÃ©rents)
 									if(($tab_rel['rn_toutcoefdev']=="y")||
 										(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
 										echo " (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
 									}
 			
-									// Si on a demandé à afficher les appréciations
-									// et si le prof a coché l'autorisation d'accès à l'appréciations
+									// Si on a demandÃ© Ã  afficher les apprÃ©ciations
+									// et si le prof a cochÃ© l'autorisation d'accÃ¨s Ã  l'apprÃ©ciations
 									if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-										echo " - Appréciation : ";
+										echo " - ApprÃ©ciation : ";
 										if ($eleve_app!="") {
 											echo $eleve_app;
 										}
@@ -1606,7 +1606,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 	
 	
 									//====================================================================
-									// Après un tour avec affichage dans la boucle:
+									// AprÃ¨s un tour avec affichage dans la boucle:
 									$tiret = "yes";
 								}
 			
@@ -1624,7 +1624,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
         //=============================================
 
 		/*
-		// Avis du conseil de classe à ramener par là
+		// Avis du conseil de classe Ã  ramener par lÃ 
 
 		if (($releve_affiche_avis == 'y')||($releve_affiche_signature == 'y')) {
 			// Tableau de l'avis des conseil de classe
@@ -1650,7 +1650,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			}
 			else {
 				echo "&nbsp;";
-				// Si il n'y a pas d'avis, on rajoute des lignes vides selon les paramètres d'impression
+				// Si il n'y a pas d'avis, on rajoute des lignes vides selon les paramÃ¨tres d'impression
 				$n = 0;
 				if ($releve_espace_avis >0){
 					while ($n < $releve_espace_avis) {
@@ -1680,7 +1680,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			echo "<span class='bulletin'><i>".$tab_rel['suivi_par']."</i></span>";
 		}
 
-        // Si une des deux variables 'releve_affiche_avis' ou 'releve_affiche_signature' est à 'y', il faut fermer le tableau
+        // Si une des deux variables 'releve_affiche_avis' ou 'releve_affiche_signature' est Ã  'y', il faut fermer le tableau
         if (($releve_affiche_avis == 'y')||($releve_affiche_signature == 'y')) {
             echo "</td>\n";
             // Fin du tableau
@@ -1712,7 +1712,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 			if($tab_rel['rn_sign_chefetab']=='y'){
 				echo "<td width='$largeur_case'>\n";
-				echo "<b>Signature du chef d'établissement:</b>";
+				echo "<b>Signature du chef d'Ã©tablissement:</b>";
 				for($m=0;$m<$tab_rel['rn_sign_nblig'];$m++) {
 					echo "<br />\n";
 				}
@@ -1745,7 +1745,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			//echo "<p>".htmlentities($tab_rel['rn_formule'])."</p>\n";
 			//echo "<p>".$tab_rel['rn_formule']."</p>\n";
 
-			echo "<table width='$releve_largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."' summary='Formule du bas de relevé de notes'>\n";
+			echo "<table width='$releve_largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."' summary='Formule du bas de relevÃ© de notes'>\n";
 			echo "<tr>";
 			echo "<td><p align='center' class='bulletin'>".$tab_rel['rn_formule']."</p></td>\n";
 			echo "</tr></table>";
@@ -1761,7 +1761,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		//echo "\$releve_formule_bas=$releve_formule_bas<br />";
 		//echo "\$releve_affiche_formule=$releve_affiche_formule<br />";
 		if (($releve_formule_bas != '') and ($releve_affiche_formule == 'y')) {
-			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+			// Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
 			echo "<table width='$releve_largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'>\n";
 			echo "<tr>";
 			echo "<td><p align='center' class='bulletin'>".$releve_formule_bas."</p></td>\n";
@@ -1835,26 +1835,26 @@ function releve_pdf($tab_rel,$i) {
 		$releve_affiche_fax,
 		$releve_affiche_mail,
 
-		// A AJOUTER: ine et ancien étab
+		// A AJOUTER: ine et ancien Ã©tab
 
 		$affiche_releve_formule,
 		$releve_formule_bas,
 
 		$use_cell_ajustee,
 
-		// Pour gérer un appel depuis l'impression de bulletins avec le relevé de notes au verso
+		// Pour gÃ©rer un appel depuis l'impression de bulletins avec le relevÃ© de notes au verso
 		$num_resp_bull,
 
-		// Pour gérer les 2 relevés par page
+		// Pour gÃ©rer les 2 relevÃ©s par page
 		$compteur_releve,
 		$nb_releve_par_page,
 
-		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
+		// Objet PDF initiÃ© hors de la prÃ©sente fonction donnant la page du bulletin pour un Ã©lÃ¨ve
 		$pdf;
 
 		global $tab_devoirs_affiches_en_sous_conteneur;
 
-		// Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
+		// Pour retourner Ã  la ligne entre les devoirs dans le cas oÃ¹ le nom ou l'apprÃ©ciation du devoir est demandÃ©e:
 		$retour_a_la_ligne="y";
 
 		if((isset($tab_rel['rn_retour_ligne']))&&(($tab_rel['rn_retour_ligne']=='y')||($tab_rel['rn_retour_ligne']=='n'))) {
@@ -1871,7 +1871,7 @@ function releve_pdf($tab_rel,$i) {
 	$id_classe=$tab_rel['id_classe'];
 	$classe_id=$id_classe;
 
-	// Préparation des lignes d'adresse
+	// PrÃ©paration des lignes d'adresse
 
 	// Initialisation:
 	for($loop=0;$loop<=1;$loop++) {
@@ -1905,7 +1905,7 @@ function releve_pdf($tab_rel,$i) {
 				(isset($tab_rel['eleve'][$i]['resp'][1]['cp']))&&
 				(isset($tab_rel['eleve'][$i]['resp'][1]['commune']))
 			) {
-				// Le deuxième responsable existe et est renseigné
+				// Le deuxiÃ¨me responsable existe et est renseignÃ©
 				if (($tab_rel['eleve'][$i]['resp'][0]['adr_id']==$tab_rel['eleve'][$i]['resp'][1]['adr_id']) OR
 					(
 						(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr1'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr1']))&&
@@ -1922,7 +1922,7 @@ function releve_pdf($tab_rel,$i) {
 
 					if(($tab_rel['eleve'][$i]['resp'][0]['nom']!=$tab_rel['eleve'][$i]['resp'][1]['nom'])&&
 						($tab_rel['eleve'][$i]['resp'][1]['nom']!="")) {
-						// Les noms des responsables sont différents
+						// Les noms des responsables sont diffÃ©rents
 						$tab_adr_ligne1[0]=$tab_rel['eleve'][$i]['resp'][0]['civilite']." ".$tab_rel['eleve'][$i]['resp'][0]['nom']." ".$tab_rel['eleve'][$i]['resp'][0]['prenom']." et ".$tab_rel['eleve'][$i]['resp'][1]['civilite']." ".$tab_rel['eleve'][$i]['resp'][1]['nom']." ".$tab_rel['eleve'][$i]['resp'][1]['prenom'];
 
 						/*
@@ -1961,9 +1961,9 @@ function releve_pdf($tab_rel,$i) {
 
 				}
 				else {
-					// Les adresses sont différentes
+					// Les adresses sont diffÃ©rentes
 					//if ($un_seul_bull_par_famille!="oui") {
-					// On teste en plus si la deuxième adresse est valide
+					// On teste en plus si la deuxiÃ¨me adresse est valide
 					if (($un_seul_bull_par_famille!="oui")&&
 						($tab_rel['eleve'][$i]['resp'][1]['adr1']!="")&&
 						($tab_rel['eleve'][$i]['resp'][1]['commune']!="")
@@ -2007,8 +2007,8 @@ function releve_pdf($tab_rel,$i) {
 				}
 			}
 			else {
-				// Il n'y a pas de deuxième adresse, mais il y aurait un deuxième responsable???
-				// CA NE DEVRAIT PAS ARRIVER ETANT DONNé LA REQUETE EFFECTUEE QUI JOINT resp_pers ET resp_adr...
+				// Il n'y a pas de deuxiÃ¨me adresse, mais il y aurait un deuxiÃ¨me responsable???
+				// CA NE DEVRAIT PAS ARRIVER ETANT DONNÃ© LA REQUETE EFFECTUEE QUI JOINT resp_pers ET resp_adr...
 				if ($un_seul_bull_par_famille!="oui") {
 					//$nb_bulletins=2;
 					$nb_releves=2;
@@ -2048,7 +2048,7 @@ function releve_pdf($tab_rel,$i) {
 			}
 		}
 		else {
-			// Il n'y a pas de deuxième responsable
+			// Il n'y a pas de deuxiÃ¨me responsable
 			//$nb_bulletins=1;
 			$nb_releves=1;
 
@@ -2088,15 +2088,15 @@ function releve_pdf($tab_rel,$i) {
 	echo "\$tab_rel['eleve'][0]['groupe'][0]['devoir'][1]['note']=".$tab_rel['eleve'][0]['groupe'][0]['devoir'][1]['note']."<br />\n";
 	*/
 
-	// Pour gérer le cas appel depuis bulletin_pdf pour un recto/verso
+	// Pour gÃ©rer le cas appel depuis bulletin_pdf pour un recto/verso
 	if(isset($num_resp_bull)) {
 		$nb_releves=1;
-		// Par contre si on met l'adresse sur le relevé et pas sur le bulletin, on récupère toujours l'adresse n°1 sur le relevé
+		// Par contre si on met l'adresse sur le relevÃ© et pas sur le bulletin, on rÃ©cupÃ¨re toujours l'adresse nÂ°1 sur le relevÃ©
 	}
 
-	// Pour un relevé en recto/verso avec le bulletin,
-	// il ne faut qu'un relevé par page, mais si on devait utiliser cette fonction
-	// pour remplacer un jour le dispositif relevé PDF, il faudrait revoir cela:
+	// Pour un relevÃ© en recto/verso avec le bulletin,
+	// il ne faut qu'un relevÃ© par page, mais si on devait utiliser cette fonction
+	// pour remplacer un jour le dispositif relevÃ© PDF, il faudrait revoir cela:
 	//$nb_releve_par_page=2;
 
 	//for($loop_rel=0;$loop_rel<$nb_bulletins;$loop_rel++) {
@@ -2111,12 +2111,12 @@ function releve_pdf($tab_rel,$i) {
 
 /*
 		//================================
-		// On insère le footer dès que la page est créée:
-		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+		// On insÃ¨re le footer dÃ¨s que la page est crÃ©Ã©e:
+		//Positionnement Ã  1 cm du bas et 0,5cm + 0,5cm du cotÃ© gauche
 		$pdf->SetXY(5,-10);
 		//Police Arial Gras 6
 		$pdf->SetFont('Arial','B',8);
-		// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
+		// $fomule = 'Bulletin Ã  conserver prÃ©cieusement. Aucun duplicata ne sera dÃ©livrÃ©. - GEPI : solution libre de gestion et de suivi des rÃ©sultats scolaires.'
 		if($tab_rel['rn_formule']!="") {
 			$pdf->Cell(0,4.5,unhtmlentities($tab_rel['rn_formule']),0,0,'C');
 		}
@@ -2133,9 +2133,9 @@ function releve_pdf($tab_rel,$i) {
 		*/
 	
 		/*
-		// Pour un relevé en recto/verso avec le bulletin,
-		// il ne faut qu'un relevé par page, mais si on devait utiliser cette fonction
-		// pour remplacer un jour le dispositif relevé PDF, il faudrait revoir cela:
+		// Pour un relevÃ© en recto/verso avec le bulletin,
+		// il ne faut qu'un relevÃ© par page, mais si on devait utiliser cette fonction
+		// pour remplacer un jour le dispositif relevÃ© PDF, il faudrait revoir cela:
 		$nb_releve_par_page=1;
 		*/
 	
@@ -2153,7 +2153,7 @@ function releve_pdf($tab_rel,$i) {
 
 		// A FAIRE:
 		// Pour la hauteur, prendre en compte la saisie d'une formule $tab_rel['rn_formule'] (non vide)
-		// et le caractère vide ou non de getSettingValue("bull_formule_bas")
+		// et le caractÃ¨re vide ou non de getSettingValue("bull_formule_bas")
 	
 		//$affiche_bloc_observation=1;
 		$affiche_bloc_observation=($tab_rel['rn_bloc_obs']=='y') ? 1 : 0;
@@ -2176,14 +2176,14 @@ function releve_pdf($tab_rel,$i) {
 	
 		$passage_i=1;
 	
-		// login de l'élève
+		// login de l'Ã©lÃ¨ve
 		//$eleve_select=$login[$nb_eleves_i];
 		//$eleve_select=$tab_rel['eleve'][$i]['login'];
 		//if(isset($tab_rel['eleve'][$i]['login'])) {
 			$eleve_select=$tab_rel['eleve'][$i]['login'];
 	
 			/*
-			// différente Y pour les présentation sur 1 ou 2 par page avec ident parents
+			// diffÃ©rente Y pour les prÃ©sentation sur 1 ou 2 par page avec ident parents
 			if($nb_releve_par_page=='1' and $passage_i == '1' and $active_bloc_adresse_parent!='1') { $Y_cadre_note = '32'; $Y_cadre_eleve = '5'; $Y_entete_etab='5'; }
 			if($nb_releve_par_page=='1' and $passage_i == '1' and $active_bloc_adresse_parent==='1') { $Y_cadre_note = '75'; $Y_cadre_eleve = '5'; $Y_entete_etab='5'; }
 			if($nb_releve_par_page=='2' and $passage_i == '1') { $Y_cadre_note = '32'; $Y_cadre_eleve = '5'; $Y_entete_etab='5'; }
@@ -2228,8 +2228,8 @@ function releve_pdf($tab_rel,$i) {
 
 
 			//================================
-			// On insère le footer dès que la page est créée:
-			//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+			// On insÃ¨re le footer dÃ¨s que la page est crÃ©Ã©e:
+			//Positionnement Ã  1 cm du bas et 0,5cm + 0,5cm du cotÃ© gauche
 			if($nb_releve_par_page==1) {
 				$pdf->SetXY(5,-10);
 			}
@@ -2241,7 +2241,7 @@ function releve_pdf($tab_rel,$i) {
 			}
 			//Police Arial Gras 6
 			$pdf->SetFont('Arial','B',8);
-			// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
+			// $fomule = 'Bulletin Ã  conserver prÃ©cieusement. Aucun duplicata ne sera dÃ©livrÃ©. - GEPI : solution libre de gestion et de suivi des rÃ©sultats scolaires.'
 			if($tab_rel['rn_formule']!="") {
 				$pdf->Cell(0,4.5,unhtmlentities($tab_rel['rn_formule']),0,0,'C');
 			}
@@ -2256,16 +2256,16 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->SetFont($caractere_utilse,'B',14);
 			$pdf->Cell(90,7,strtoupper($tab_rel['eleve'][$i]['nom'])." ".ucfirst($tab_rel['eleve'][$i]['prenom']),0,2,'');
 			$pdf->SetFont($caractere_utilse,'',10);
-			//$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
+			//$pdf->Cell(90,5,'NÃ© le '.affiche_date_naissance($naissance[$nb_eleves_i]).',Â demi-pensionnaire',0,2,'');
 			if($tab_rel['eleve'][$i]['sexe']=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
 	
-			//$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.affiche_date_naissance($tab_rel['eleve'][$i]['naissance']).', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
-			//$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
+			//$pdf->Cell(90,5,'NÃ©'.$e_au_feminin.' le '.affiche_date_naissance($tab_rel['eleve'][$i]['naissance']).',Â '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
+			//$pdf->Cell(90,5,'NÃ©'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].',Â '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
 			if(getSettingValue('releve_bazar_utf8')=='y') {
-				$pdf->Cell(90,5,traite_accents_utf8('Né').$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
+				$pdf->Cell(90,5,traite_accents_utf8('NÃ©').$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].',Â '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
 			}
 			else {
-				$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
+				$pdf->Cell(90,5,'NÃ©'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].',Â '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
 			}
 
 			$pdf->Cell(90,5,'',0,2,'');
@@ -2303,10 +2303,10 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->SetX($X_cadre_eleve);
 			$pdf->SetFont($caractere_utilse,'',10);
 			if(getSettingValue('releve_bazar_utf8')=='y') {
-				$pdf->Cell(90,5,traite_accents_utf8('Année scolaire ').$annee_scolaire,0,2,'');
+				$pdf->Cell(90,5,traite_accents_utf8('AnnÃ©e scolaire ').$annee_scolaire,0,2,'');
 			}
 			else {
-				$pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');
+				$pdf->Cell(90,5,'AnnÃ©e scolaire '.$annee_scolaire,0,2,'');
 			}
 
 			// BLOC IDENTITE DE L'ETABLISSEMENT
@@ -2317,7 +2317,7 @@ function releve_pdf($tab_rel,$i) {
 			//if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==1 and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo=='jpg' or $format_du_logo=='png')) {
 			if((file_exists($logo))&&(getSettingValue('logo_etab')!='')&&(($format_du_logo=='jpg')||($format_du_logo=='png'))) {
 				$valeur=redimensionne_image($logo, $L_max_logo, $H_max_logo);
-				//$X_logo et $Y_logo; placement du bloc identite de l'établissement
+				//$X_logo et $Y_logo; placement du bloc identite de l'Ã©tablissement
 				$X_logo=$X_entete_etab;
 				$Y_logo=$Y_entete_etab;
 				$L_logo=$valeur[0];
@@ -2353,20 +2353,20 @@ function releve_pdf($tab_rel,$i) {
 			//$gepiSchoolFax = getSettingValue('gepiSchoolFax');
 			/*
 			if($tab_modele_pdf["entente_tel"][$classe_id]==='1' and $tab_modele_pdf["entente_fax"][$classe_id]==='1') {
-				$entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax;
+				$entete_communic = 'TÃ©l: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax;
 			}
 			if($tab_modele_pdf["entente_tel"][$classe_id]==='1' and empty($entete_communic)) {
-				$entete_communic = 'Tél: '.$gepiSchoolTel;
+				$entete_communic = 'TÃ©l: '.$gepiSchoolTel;
 			}
 			if($tab_modele_pdf["entente_fax"][$classe_id]==='1' and empty($entete_communic)) {
 				$entete_communic = 'Fax: '.$gepiSchoolFax;
 			}
 			*/
 			if(($releve_affiche_tel=='y')&&($gepiSchoolTel!="")&&($releve_affiche_fax=='y')&&($gepiSchoolFax!="")) {
-				$entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax;
+				$entete_communic = 'TÃ©l: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax;
 			}
 			elseif(($releve_affiche_tel=='y')&&($gepiSchoolTel!="")) {
-				$entete_communic = 'Tél: '.$gepiSchoolTel;
+				$entete_communic = 'TÃ©l: '.$gepiSchoolTel;
 			}
 			elseif(($releve_affiche_fax=='y')&&($gepiSchoolFax!="")) {
 				$entete_communic = 'Fax: '.$gepiSchoolFax;
@@ -2382,7 +2382,7 @@ function releve_pdf($tab_rel,$i) {
 			}
 	
 			// BLOC ADRESSE DES PARENTS
-			// Nom des variables à revoir
+			// Nom des variables Ã  revoir
 			//if($active_bloc_adresse_parent==='1' and $nb_releve_par_page==='1') {
 			if($active_bloc_adresse_parent==1 and $nb_releve_par_page==1) {
 	
@@ -2419,13 +2419,13 @@ function releve_pdf($tab_rel,$i) {
 				$pdf->Cell(90,7, $texte_1_responsable,0,2,'');
 
 
-				//Ajout Eric le 6-11-2010 Num du Resp légal sur le relevé
+				//Ajout Eric le 6-11-2010 Num du Resp lÃ©gal sur le relevÃ©
 				$pdf->SetXY($X_parent+82,$Y_parent-3);
-				$pdf->SetFont($caractere_utilse,'',6); //6==> hauteur de caractère
+				$pdf->SetFont($caractere_utilse,'',6); //6==> hauteur de caractÃ¨re
 				$num=$num_resp+1;
 				$num_legal= "(Resp ".$num.")";
 				$pdf->Cell(90,7,$num_legal,0,2,'');
-				// On remet le curseur à la bonne position pour la suite de l'adresse
+				// On remet le curseur Ã  la bonne position pour la suite de l'adresse
 				$pdf->SetXY($X_parent,$Y_parent+7);
 				// Fin modif Eric
 				
@@ -2502,7 +2502,7 @@ function releve_pdf($tab_rel,$i) {
 	
 			//$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.' '.date_frc($_SESSION['date_debut_aff']).' au '.date_frc($_SESSION['date_fin_aff']), $var_encadrement_titre,0,'C');
 			// A REVOIR...
-			//$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.' Période '.$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
+			//$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.' PÃ©riode '.$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
 			if(getSettingValue('releve_bazar_utf8')=='y') {
 				if(isset($tab_rel['nom_periode'])) {
 					$pdf->Cell(0, $hauteur_du_titre, traite_accents_utf8($titre_du_cadre).$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
@@ -2526,7 +2526,7 @@ function releve_pdf($tab_rel,$i) {
 			$nb_matiere=0;
 			for($j=0;$j<count($tab_rel['eleve'][$i]['groupe']);$j++) {
 				if(isset($tab_bull['note'][$j][$i])) {
-					// Si l'élève suit l'option, sa note est affectée (éventuellement vide)
+					// Si l'Ã©lÃ¨ve suit l'option, sa note est affectÃ©e (Ã©ventuellement vide)
 					$nb_matiere++;
 				}
 			}
@@ -2534,7 +2534,7 @@ function releve_pdf($tab_rel,$i) {
 
 			if(isset($tab_rel['eleve'][$i]['groupe'])) {
 				$nb_matiere=count($tab_rel['eleve'][$i]['groupe']);
-				// Il faut dans le cas intervalle de dates ne pas afficher les matières dans lesquelles il n'y a pas de notes parce que l'on risque de récupérer des matières de la période 1 alors que l'élève n'est plus dans le groupe sur la période 2.
+				// Il faut dans le cas intervalle de dates ne pas afficher les matiÃ¨res dans lesquelles il n'y a pas de notes parce que l'on risque de rÃ©cupÃ©rer des matiÃ¨res de la pÃ©riode 1 alors que l'Ã©lÃ¨ve n'est plus dans le groupe sur la pÃ©riode 2.
 				if(!isset($tab_rel['nom_periode'])) {
 					for($m=0; $m<count($tab_rel['eleve'][$i]['groupe']); $m++) {
 						if (!isset($tab_rel['eleve'][$i]['groupe'][$m]['devoir'])) {
@@ -2547,7 +2547,7 @@ function releve_pdf($tab_rel,$i) {
 				//s'il y des notes alors on affiche le cadre avec les notes
 				//if(isset($nb_matiere[$eleve_select]) and !empty($nb_matiere[$eleve_select])) {
 				if($nb_matiere>0) {
-					// Hauteur d'une ligne pour une matière
+					// Hauteur d'une ligne pour une matiÃ¨re
 					/*
 					if($active_entete_regroupement === '1') {
 						$hauteur_cadre_matiere=($hauteur_cadre_note_global-($nb_regroupement[$eleve_select]*$hauteur_dun_regroupement))/$nb_matiere[$eleve_select];
@@ -2557,17 +2557,17 @@ function releve_pdf($tab_rel,$i) {
 						$hauteur_cadre_matiere=$hauteur_cadre_note_global/$nb_matiere;
 					//}
 		
-					// Tableau des matières et des notes de l'élève
+					// Tableau des matiÃ¨res et des notes de l'Ã©lÃ¨ve
 					$cpt_i='1';
 					$nom_regroupement_passer='';
 					//while($cpt_i<=$nb_matiere[$eleve_select])
 					//{
 					for($m=0; $m<count($tab_rel['eleve'][$i]['groupe']); $m++) {
 		
-						// Si c'est une matière suivie par l'élève
+						// Si c'est une matiÃ¨re suivie par l'Ã©lÃ¨ve
 						if(isset($tab_rel['eleve'][$i]['groupe'][$m])) {
 		
-							// Il faut dans le cas intervalle de dates ne pas afficher les matières dans lesquelles il n'y a pas de notes parce que l'on risque de récupérer des matières de la période 1 alors que l'élève n'est plus dans le groupe sur la période 2.
+							// Il faut dans le cas intervalle de dates ne pas afficher les matiÃ¨res dans lesquelles il n'y a pas de notes parce que l'on risque de rÃ©cupÃ©rer des matiÃ¨res de la pÃ©riode 1 alors que l'Ã©lÃ¨ve n'est plus dans le groupe sur la pÃ©riode 2.
 							if ((isset($tab_rel['nom_periode']))||
 							((!isset($tab_rel['nom_periode'])&&(isset($tab_rel['eleve'][$i]['groupe'][$m]['devoir']))))) {
 		
@@ -2580,7 +2580,7 @@ function releve_pdf($tab_rel,$i) {
 								$pdf->SetXY($X_cadre_note,$Y_cadre_note+$hauteur_utilise);
 								// On dessine le cadre
 								$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere, "", 'LRBT', 2, '');
-								// Et on revient aux coordonnées initiales pour écrire dans la cellule en plusieurs fois
+								// Et on revient aux coordonnÃ©es initiales pour Ã©crire dans la cellule en plusieurs fois
 								$pdf->SetXY($X_cadre_note,$Y_cadre_note+$hauteur_utilise);
 			
 								// on affiche les nom des regroupements
@@ -2652,7 +2652,7 @@ function releve_pdf($tab_rel,$i) {
 									if ($nb_releve_par_page==1) {
 										while ($nb_prof_matiere > $nb_pass_count) {
 					
-											// calcul de la hauteur du caractère du prof
+											// calcul de la hauteur du caractÃ¨re du prof
 											//if ( $nb_releve_par_page === '1' ) {
 											if ($nb_releve_par_page==1) {
 												$text_prof = affiche_utilisateur($tab_rel['eleve'][$i]['groupe'][$m]['prof_login'][$nb_pass_count],$id_classe);
@@ -2691,7 +2691,7 @@ function releve_pdf($tab_rel,$i) {
 										}
 									}
 									else {
-										// Deux relevés par page
+										// Deux relevÃ©s par page
 		
 										if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 9; }
 										elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 7; }
@@ -2764,7 +2764,7 @@ function releve_pdf($tab_rel,$i) {
 		
 				//while($cpt_i<=$nb_matiere[$eleve_select]) {
 				for($m=0; $m<count($tab_rel['eleve'][$i]['groupe']); $m++) {
-					// Il faut dans le cas intervalle de dates ne pas afficher les matières dans lesquelles il n'y a pas de notes parce que l'on risque de récupérer des matières de la période 1 alors que l'élève n'est plus dans le groupe sur la période 2.
+					// Il faut dans le cas intervalle de dates ne pas afficher les matiÃ¨res dans lesquelles il n'y a pas de notes parce que l'on risque de rÃ©cupÃ©rer des matiÃ¨res de la pÃ©riode 1 alors que l'Ã©lÃ¨ve n'est plus dans le groupe sur la pÃ©riode 2.
 					if ((isset($tab_rel['nom_periode']))||
 					((!isset($tab_rel['nom_periode'])&&(isset($tab_rel['eleve'][$i]['groupe'][$m]['devoir']))))) {
 			
@@ -2801,8 +2801,8 @@ function releve_pdf($tab_rel,$i) {
 							$temoin_affichage_de_conteneur="n";
 							$temoin_conteneur=0;
 							foreach($tab_rel['eleve'][$i]['groupe'][$m]['id_cn'] as $tmp_id_cn => $tab_id_cn) {
-								// On parcourt les cahier de notes associés au groupe (si on n'a choisi une seule période, on ne fait qu'un tour dans cette boucle pour le groupe $m)
-								// Sauf que si la période courante n'a pas de conteneur pour ce groupe, on ne récupère que les conteneurs des auters périodes et pas le conteneur racine.
+								// On parcourt les cahier de notes associÃ©s au groupe (si on n'a choisi une seule pÃ©riode, on ne fait qu'un tour dans cette boucle pour le groupe $m)
+								// Sauf que si la pÃ©riode courante n'a pas de conteneur pour ce groupe, on ne rÃ©cupÃ¨re que les conteneurs des auters pÃ©riodes et pas le conteneur racine.
 
 								//$chaine_notes.="<b>cn $tmp_id_cn</b> ";
 								//echo "<b>cn $tmp_id_cn</b> \n";
@@ -2824,7 +2824,7 @@ function releve_pdf($tab_rel,$i) {
 								}
 	
 								// Faire la boucle while($m<count($tab_rel['eleve'][$i]['groupe'][$m]['devoir'])) {} 
-								// avec un test sur $tab_ele['groupe'][$m]['devoir'][$m]['id_conteneur']==$tmp_id_cn (soit la racine du cn à ce niveau)
+								// avec un test sur $tab_ele['groupe'][$m]['devoir'][$m]['id_conteneur']==$tmp_id_cn (soit la racine du cn Ã  ce niveau)
 	
 	
 								for($k=0;$k<count($tab_id_cn['conteneurs']);$k++) {
@@ -2863,7 +2863,7 @@ function releve_pdf($tab_rel,$i) {
 										}
 	
 										// Faire la boucle while($m<count($tab_rel['eleve'][$i]['groupe'][$m]['devoir'])) {} 
-										// avec un test sur $tab_ele['groupe'][$m]['devoir'][$m]['id_conteneur'] égal à $tab_id_cn['conteneurs'][$k]['id_racine'] ou dans $tab_id_cn['conteneurs'][$k]['conteneurs_enfants'][]
+										// avec un test sur $tab_ele['groupe'][$m]['devoir'][$m]['id_conteneur'] Ã©gal Ã  $tab_id_cn['conteneurs'][$k]['id_racine'] ou dans $tab_id_cn['conteneurs'][$k]['conteneurs_enfants'][]
 									//}
 								}
 
@@ -2901,7 +2901,7 @@ function releve_pdf($tab_rel,$i) {
 		
 												/*
 												$temoin_devoir_a_la_racine="y";
-												// On parcourt les conteneurs associés au groupe pour la période courante ($tmp_id_cn => $tab_id_cn)
+												// On parcourt les conteneurs associÃ©s au groupe pour la pÃ©riode courante ($tmp_id_cn => $tab_id_cn)
 												for($kkk=0;$kkk<count($tab_id_cn['conteneurs']);$kkk++) {
 													if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']==$tab_id_cn['conteneurs'][$kkk]['id_racine']) {
 														$temoin_devoir_a_la_racine="n";
@@ -3108,8 +3108,8 @@ function releve_pdf($tab_rel,$i) {
 							}
 						}
 	
-						// détermine la taille de la police de caractère
-						// on peut allez jusqu'a 275mm de caractère dans trois cases de notes
+						// dÃ©termine la taille de la police de caractÃ¨re
+						// on peut allez jusqu'a 275mm de caractÃ¨re dans trois cases de notes
 						$hauteur_caractere_notes=9;
 						$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
 		
@@ -3148,7 +3148,7 @@ function releve_pdf($tab_rel,$i) {
 			}
 			else {
 				$pdf->SetXY(10,$Y_cadre_note);
-				$pdf->Cell(100,20, "Aucun enseignement n'est associé.",0,1,'C');
+				$pdf->Cell(100,20, "Aucun enseignement n'est associÃ©.",0,1,'C');
 			}
 
 			// BLOC OBSERVATION
@@ -3215,14 +3215,14 @@ function releve_pdf($tab_rel,$i) {
 			//}
 
 		$compteur_releve++;
-	} // Fin de la boucle sur les deux responsables séparés
+	} // Fin de la boucle sur les deux responsables sÃ©parÃ©s
 
 		/*
 		//PUB ;)
 		$pdf->SetXY($X_cadre_note, $Y_cadre_note+$hauteur_cadre_note_global+$hauteur_du_titre);
 		$pdf->SetFont('arial','',8);
-		$pdf->Cell(200,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,'');
-		// CA ENTRE EN COLLISION AVEC LA FORMULE DU BULLETIN (insérée via la fonction Footer() de class_php/gepi_pdf.class.php)
+		$pdf->Cell(200,5,'GEPI - Solution libre de Gestion des Ã©lÃ¨ves par Internet',0,1,'');
+		// CA ENTRE EN COLLISION AVEC LA FORMULE DU BULLETIN (insÃ©rÃ©e via la fonction Footer() de class_php/gepi_pdf.class.php)
 		*/
 	//}
 
@@ -3231,8 +3231,8 @@ function releve_pdf($tab_rel,$i) {
 		$nb_eleves_i = $nb_eleves_i + 1;
 	}
 
-	// on prépare la 2ème boucle pour faire R1 et R2 != R1 si nécessaire
-	if ($nb_eleves_i > $nb_eleves) { // dans ce cas on a fait la première boucle, on prépare la 2éme pour les R2 != à R1
+	// on prÃ©pare la 2Ã¨me boucle pour faire R1 et R2 != R1 si nÃ©cessaire
+	if ($nb_eleves_i > $nb_eleves) { // dans ce cas on a fait la premiÃ¨re boucle, on prÃ©pare la 2Ã©me pour les R2 != Ã  R1
 		$nb_boucle++;
 		$responsable_place = 1;
 		$nb_eleves_i = 1;
@@ -3252,12 +3252,12 @@ function releve_pdf($tab_rel,$i) {
 //    unset($_SESSION["avec_nom_devoir"]);
 
 /*
-// sortie PDF sur écran
+// sortie PDF sur Ã©cran
 $nom_releve=date("Ymd_Hi");
 $nom_releve = 'Releve_'.$nom_releve.'.pdf';
 $pdf->Output($nom_releve,'I');
 
-// Le PDF n'est généré qu'en fin de boucle sur les bulletins
+// Le PDF n'est gÃ©nÃ©rÃ© qu'en fin de boucle sur les bulletins
 */
 }
 

@@ -23,7 +23,7 @@
 
 //=====================================================
 // Pour pouvoir enregistrer l'avis du conseil de classe:
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 //=====================================================
 
@@ -43,8 +43,8 @@ if ($resultat_session == 'c') {
 
 
 // Ajouter une gestion des droits par la suite
-// dans la table MySQL appropriée et décommenter ce passage.
-// INSERT INTO droits VALUES ('/visualisation/affiche_eleve.php', 'F', 'V', 'V', 'V', 'F', 'F', 'Visualisation graphique des résultats scolaires', '1');
+// dans la table MySQL appropriÃ©e et dÃ©commenter ce passage.
+// INSERT INTO droits VALUES ('/visualisation/affiche_eleve.php', 'F', 'V', 'V', 'V', 'F', 'F', 'Visualisation graphique des rÃ©sultats scolaires', '1');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -75,7 +75,7 @@ $v_legend1 = "";
 $v_legend2 = "";
 */
 
-// Initialisations sans lesquelles EasyPHP râle:
+// Initialisations sans lesquelles EasyPHP rÃ¢le:
 $seriemin="";
 $seriemax="";
 $seriemoy="";
@@ -90,13 +90,13 @@ $mgen[2]="";
 //$temoin_imageps="";
 
 //===================================
-// Durée en millisecondes pendant laquelle la souris ne doit pas sortir d'un rectangle
-// pour que l'affichage d'une appréciation en infobulle se fasse.
+// DurÃ©e en millisecondes pendant laquelle la souris ne doit pas sortir d'un rectangle
+// pour que l'affichage d'une apprÃ©ciation en infobulle se fasse.
 $duree_delais_afficher_div=500;
-// Hauteur du rectangle pour le graphe en ligne-brisée
+// Hauteur du rectangle pour le graphe en ligne-brisÃ©e
 $hauteur_rect_delais_afficher_div=20;
-// Pour opter pour le clic plutôt que le survol pour provoquer l'affichage d'une appréciation,
-// passer la valeur à 'y'
+// Pour opter pour le clic plutÃ´t que le survol pour provoquer l'affichage d'une apprÃ©ciation,
+// passer la valeur Ã  'y'
 $click_plutot_que_survol_aff_app="n";
 //===================================
 
@@ -128,7 +128,7 @@ if(isset($_POST['valider_raz_param'])) {
 	}
 }
 
-// On permet au compte scolarité d'enregistrer les paramètres d'affichage du graphe
+// On permet au compte scolaritÃ© d'enregistrer les paramÃ¨tres d'affichage du graphe
 if($_SESSION['statut']=='scolarite') {
 /*
 affiche_photo
@@ -151,7 +151,7 @@ tronquer_nom_court
 			function save_params_graphe($nom,$valeur) {
 				global $msg;
 				if(!saveSetting("$nom", $valeur)) {
-					$msg.="Erreur lors de l'enregistrement du paramètre $nom<br />";
+					$msg.="Erreur lors de l'enregistrement du paramÃ¨tre $nom<br />";
 				}
 			}
 
@@ -190,7 +190,7 @@ tronquer_nom_court
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
 			if($msg=='') {
-				$msg="Paramètres enregistrés.";
+				$msg="ParamÃ¨tres enregistrÃ©s.";
 			}
 		}
 	}
@@ -199,7 +199,7 @@ tronquer_nom_court
 if(isset($_POST['parametrage_affichage'])) {
 	check_token();
 
-	// Enregistrer les préférences
+	// Enregistrer les prÃ©fÃ©rences
 
 	if(isset($_POST['affiche_photo'])) {savePref($_SESSION['login'],'graphe_affiche_photo',$_POST['affiche_photo']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_photo','non');}
@@ -235,14 +235,14 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['click_plutot_que_survol_aff_app'])) {savePref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
 	if($msg=='') {
-		$msg.="Préférences personnelles enregistrées.";
+		$msg.="PrÃ©fÃ©rences personnelles enregistrÃ©es.";
 	}
 
 }
 
 unset($id_classe);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-// Vérifier s'il peut y avoir des accents dans un id_classe.
+// VÃ©rifier s'il peut y avoir des accents dans un id_classe.
 if(!is_numeric($id_classe)) {$id_classe=NULL;}
 
 //===============================================
@@ -256,7 +256,7 @@ if(
 	check_token();
 
 	$eleve_saisie_avis = isset($_POST['eleve_saisie_avis']) ? $_POST['eleve_saisie_avis'] : NULL;
-	// Contrôler les caractères utilisés...
+	// ContrÃ´ler les caractÃ¨res utilisÃ©s...
 
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
@@ -266,8 +266,8 @@ if(
 		//echo "$sql<br />";
 		$verif=mysql_query($sql);
 		if (mysql_num_rows($verif)==0) {
-			tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève non inscrit dans la classe.");
-			$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève non inscrit dans la classe.");
+			tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un Ã©lÃ¨ve non inscrit dans la classe.");
+			$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un Ã©lÃ¨ve non inscrit dans la classe.");
 			header("Location: ../accueil.php?msg=$mess");
 			die();
 		}
@@ -283,14 +283,14 @@ if(
 									jgp.login ='".$_SESSION['login']."';";
 			$verif=mysql_query($sql);
 			if (mysql_num_rows($verif)==0) {
-				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève dont vous n'êtes pas professeur principal.");
-				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève non inscrit dans la classe.");
+				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un Ã©lÃ¨ve dont vous n'Ãªtes pas professeur principal.");
+				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un Ã©lÃ¨ve non inscrit dans la classe.");
 				header("Location: ../accueil.php?msg=$mess");
 				die();
 			}
 		}
 		else {
-			// Compte scolarité
+			// Compte scolaritÃ©
 			$sql="SELECT 1=1 FROM j_scol_classes jsc,
 								j_eleves_classes jec
 							WHERE jsc.id_classe=jec.id_classe AND
@@ -299,8 +299,8 @@ if(
 								jsc.login='".$_SESSION['login']."';";
 			$verif=mysql_query($sql);
 			if (mysql_num_rows($verif)==0) {
-				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève d'une classe dont le compte scolarité n'est pas responsable.");
-				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève d'une classe dont vous n'êtes pas responsable.");
+				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un Ã©lÃ¨ve d'une classe dont le compte scolaritÃ© n'est pas responsable.");
+				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un Ã©lÃ¨ve d'une classe dont vous n'Ãªtes pas responsable.");
 				header("Location: ../accueil.php?msg=$mess");
 				die();
 			}
@@ -336,17 +336,17 @@ if(
 			}
 
 			if (!$register) {
-				$msg = "Erreur lors de l'enregistrement des données.";
+				$msg = "Erreur lors de l'enregistrement des donnÃ©es.";
 			}
 			else {
-				$msg="Enregistrement de l'avis effectué.";
+				$msg="Enregistrement de l'avis effectuÃ©.";
 			}
 		}
 		else {
-			$msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
+			$msg = "La pÃ©riode sur laquelle vous voulez enregistrer est verrouillÃ©e";
 		}
 	}
-	else {echo "Periode non numérique: $num_periode_saisie<br />";}
+	else {echo "Periode non numÃ©rique: $num_periode_saisie<br />";}
 	unset($eleve_saisie_avis);
 }
 //===============================================
@@ -360,13 +360,13 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-// Vérifications droits d'accès
+// VÃ©rifications droits d'accÃ¨s
 if (
 	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesGraphParent") != "yes") OR
 	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesGraphEleve") != "yes")
 	) {
-	tentative_intrusion(1, "Tentative d'accès à l'outil de visualisation graphique sans y être autorisé.");
-	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+	tentative_intrusion(1, "Tentative d'accÃ¨s Ã  l'outil de visualisation graphique sans y Ãªtre autorisÃ©.");
+	echo "<p>Vous n'Ãªtes pas autorisÃ© Ã  visualiser cette page.</p>";
 	require "../lib/footer.inc.php";
 	die();
 }
@@ -392,18 +392,18 @@ $prec = isset($_GET['prec']) ? $_GET['prec'] : 'no';
 $v_eleve = isset($_POST['v_eleve']) ? $_POST['v_eleve'] : (isset($_GET['v_eleve']) ? $_GET['v_eleve'] : NULL);
 */
 
-// Récupération des variables:
+// RÃ©cupÃ©ration des variables:
 /*
 unset($id_classe);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-// Vérifier s'il peut y avoir des accents dans un id_classe.
+// VÃ©rifier s'il peut y avoir des accents dans un id_classe.
 if(!is_numeric($id_classe)) {$id_classe=NULL;}
 */
 
 unset($login_eleve);
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_GET["login_eleve"]) ? $_GET["login_eleve"] : NULL);
 
-// Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
+// Quelques filtrages de dÃ©part pour prÃ©-initialiser la variable qui nous importe ici : $login_eleve
 if ($_SESSION['statut'] == "responsable") {
 	$get_eleves = mysql_query("SELECT e.login, e.prenom, e.nom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
@@ -413,16 +413,16 @@ if ($_SESSION['statut'] == "responsable") {
 			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 
 	if (mysql_num_rows($get_eleves) == 1) {
-		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
+		// Un seul Ã©lÃ¨ve associÃ© : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
 	} elseif (mysql_num_rows($get_eleves) == 0) {
-		echo "<p>Il semble que vous ne soyez associé à aucun élève. Contactez l'administrateur pour résoudre cette erreur.</p>";
+		echo "<p>Il semble que vous ne soyez associÃ© Ã  aucun Ã©lÃ¨ve. Contactez l'administrateur pour rÃ©soudre cette erreur.</p>";
 		require "../lib/footer.inc.php";
 		die();
 	} else {
 		if ($login_eleve != null) {
-			// $login_eleve a été défini mais l'utilisateur a plusieurs élèves associés. On vérifie
-			// qu'il a le droit de visualiser les données pour l'élève sélectionné.
+			// $login_eleve a Ã©tÃ© dÃ©fini mais l'utilisateur a plusieurs Ã©lÃ¨ves associÃ©s. On vÃ©rifie
+			// qu'il a le droit de visualiser les donnÃ©es pour l'Ã©lÃ¨ve sÃ©lectionnÃ©.
 			$test = mysql_query("SELECT count(e.login) " .
 					"FROM eleves e, responsables2 re, resp_pers r " .
 					"WHERE (" .
@@ -431,25 +431,25 @@ if ($_SESSION['statut'] == "responsable") {
 					"re.pers_id = r.pers_id AND " .
 					"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 			if (mysql_result($test, 0) == 0) {
-			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
-			    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
+			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des rÃ©sultats d'un Ã©lÃ¨ve dont il n'est pas responsable lÃ©gal.");
+			    echo "<p>Vous ne pouvez visualiser que les graphiques des Ã©lÃ¨ves pour lesquels vous Ãªtes responsable lÃ©gal.</p>\n";
 			    require("../lib/footer.inc.php");
 				die();
 			}
 		}
 	}
 } else if ($_SESSION['statut'] == "eleve") {
-	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
+	// Si l'utilisateur identifiÃ© est un Ã©lÃ¨ve, pas le choix, il ne peut consulter que son Ã©quipe pÃ©dagogique
 	if ($login_eleve != null and (strtoupper($login_eleve) != strtoupper($_SESSION['login']))) {
-		tentative_intrusion(2, "Tentative par un élève de visualisation graphique des résultats d'un autre élève.");
+		tentative_intrusion(2, "Tentative par un Ã©lÃ¨ve de visualisation graphique des rÃ©sultats d'un autre Ã©lÃ¨ve.");
 	}
 	$login_eleve = $_SESSION['login'];
 }
 
 if ($login_eleve and $login_eleve != null) {
-	// On récupère la classe de l'élève, pour déterminer automatiquement le nombre de périodes
-	// On part du postulat que même si l'élève change de classe en cours d'année, c'est pour aller
-	// dans une classe qui a le même nombre de périodes...
+	// On rÃ©cupÃ¨re la classe de l'Ã©lÃ¨ve, pour dÃ©terminer automatiquement le nombre de pÃ©riodes
+	// On part du postulat que mÃªme si l'Ã©lÃ¨ve change de classe en cours d'annÃ©e, c'est pour aller
+	// dans une classe qui a le mÃªme nombre de pÃ©riodes...
 	$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
 	$req = mysql_query("SELECT nom, prenom FROM eleves WHERE login='".$login_eleve."'");
 	$nom_eleve = mysql_result($req, 0, "nom");
@@ -458,8 +458,8 @@ if ($login_eleve and $login_eleve != null) {
 
 
 include "../lib/periodes.inc.php";
-// Cette bibliothèque permet de récupérer des tableaux de $nom_periode et $ver_periode (et $nb_periode)
-// pour la classe considérée (valeur courante de $id_classe).
+// Cette bibliothÃ¨que permet de rÃ©cupÃ©rer des tableaux de $nom_periode et $ver_periode (et $nb_periode)
+// pour la classe considÃ©rÃ©e (valeur courante de $id_classe).
 
 //echo "<p>$id_classe</p>\n";
 
@@ -472,7 +472,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	//echo "<form action='$_PHP_SELF' name='form_choix_classe' method='post'>\n";
 	//echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
-	echo "<p>Sélectionnez la classe : </p>\n";
+	echo "<p>SÃ©lectionnez la classe : </p>\n";
 	echo "<blockquote>\n";
 	//$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	if($_SESSION['statut']=='scolarite') {
@@ -512,7 +512,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	$nombre_lignes = mysql_num_rows($call_data);
 
-	// Courbe ou étoile
+	// Courbe ou Ã©toile
 	$type_graphe=(isset($_GET['type_graphe'])) ? $_GET['type_graphe'] : NULL;
 	$chaine_type_graphe=isset($type_graphe) ? "&amp;type_graphe=$type_graphe" : "";
 
@@ -549,25 +549,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//echo "</p>\n";
 	//echo "</form>\n";
 
-	// Après ça, on arrive en fin de page avec le require("../lib/footer.inc.php");
+	// AprÃ¨s Ã§a, on arrive en fin de page avec le require("../lib/footer.inc.php");
 
 } elseif ($_SESSION['statut'] == "responsable" and $login_eleve == null) {
-	// On demande à l'utilisateur de choisir l'élève pour lequel il souhaite visualiser les données
+	// On demande Ã  l'utilisateur de choisir l'Ã©lÃ¨ve pour lequel il souhaite visualiser les donnÃ©es
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
-	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser les moyennes :</p>";
+	echo "<p>Cliquez sur le nom de l'Ã©lÃ¨ve pour lequel vous souhaitez visualiser les moyennes :</p>";
 	while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		echo "<p><a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
-	// Après ça, on arrive en fin de page avec le require("../lib/footer.inc.php");
+	// AprÃ¨s Ã§a, on arrive en fin de page avec le require("../lib/footer.inc.php");
 
 } else {
 	// A ce stade:
-	// - la classe est choisie (prof, scol ou cpe) ou récupérée d'après le login élève choisi (responsable, eleve): $id_classe
-	// - le login élève est imposé pour un utilisateur connecté élève ou responsable: $login_eleve et $eleve1=$login_eleve
-	//   sinon, on récupère $_POST['eleve1']
+	// - la classe est choisie (prof, scol ou cpe) ou rÃ©cupÃ©rÃ©e d'aprÃ¨s le login Ã©lÃ¨ve choisi (responsable, eleve): $id_classe
+	// - le login Ã©lÃ¨ve est imposÃ© pour un utilisateur connectÃ© Ã©lÃ¨ve ou responsable: $login_eleve et $eleve1=$login_eleve
+	//   sinon, on rÃ©cupÃ¨re $_POST['eleve1']
 
 	// Capture des mouvements de la souris et affichage des cadres d'info
-	// Remonté pour éviter/limiter des erreurs JavaScript lors du chargement...
+	// RemontÃ© pour Ã©viter/limiter des erreurs JavaScript lors du chargement...
 	//echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
 	// On utilise maintenant /lib/position.js
 
@@ -576,7 +576,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	//==========================================================
 	// AJOUT: boireaus 20080218
-	//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+	//        Dispositif de restriction des accÃ¨s aux apprÃ©ciations pour les comptes responsables/eleves
 
 	unset($tab_acces_app);
 	$tab_acces_app=array();
@@ -594,7 +594,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 						$tab_acces_app[$i]="y";
 					}
 					elseif($lig->acces=="date") {
-						//echo "<p>Période $i: Date limite: $lig->date<br />";
+						//echo "<p>PÃ©riode $i: Date limite: $lig->date<br />";
 						$tab_date=explode("-",$lig->date);
 						$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
 						//echo "$timestamp_limite<br />";
@@ -652,7 +652,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 	else {
-		// Pas de limitations d'accès pour les autres statuts.
+		// Pas de limitations d'accÃ¨s pour les autres statuts.
 		//for($i=$periode1;$i<=$periode2;$i++) {
 		for($i=1;$i<=$nb_periode;$i++) {
 			$tab_acces_app[$i]="y";
@@ -754,7 +754,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		echo " | ";
 
-		// On ajoute l'accès/retour à une autre classe:
+		// On ajoute l'accÃ¨s/retour Ã  une autre classe:
 		//echo "<a href=\"$_PHP_SELF\">Choisir une autre classe</a>|";
 		//echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
 		/*
@@ -765,7 +765,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		// =================================
 		// AJOUT: boireaus
-		// Pour proposer de passer à la classe suivante ou à la précédente
+		// Pour proposer de passer Ã  la classe suivante ou Ã  la prÃ©cÃ©dente
 		//$sql="SELECT id, classe FROM classes ORDER BY classe";
 		if($_SESSION['statut']=='scolarite') {
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
@@ -817,7 +817,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
 				echo "&amp;type_graphe=$type_graphe";
 				echo "&amp;mode_graphe=$mode_graphe";
-				echo "'>Classe précédente</a> | ";
+				echo "'>Classe prÃ©cÃ©dente</a> | ";
 			}
 		}
 
@@ -848,25 +848,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 	//===============================================
-	// Récupération des variables:
-	//$id_classe=$_POST['id_classe']; // Récupérée plus haut...
+	// RÃ©cupÃ©ration des variables:
+	//$id_classe=$_POST['id_classe']; // RÃ©cupÃ©rÃ©e plus haut...
 	$eleve1=isset($_POST['eleve1']) ? $_POST['eleve1'] : NULL;
-	// Login d'un élève réclamé par Précédent/Suivant:
+	// Login d'un Ã©lÃ¨ve rÃ©clamÃ© par PrÃ©cÃ©dent/Suivant:
 	$eleve1b=isset($_POST['eleve1b']) ? $_POST['eleve1b'] : NULL;
 	if((isset($eleve1b))&&($eleve1b!='')) {
 		$eleve1=$eleve1b;
 	}
 	/*
-	// Modif: pour éviter une fausse alerte en 'responsable' sur la valeur de $eleve2
+	// Modif: pour Ã©viter une fausse alerte en 'responsable' sur la valeur de $eleve2
 	//$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : NULL;
 	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : "moyclasse";
 	*/
 	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : NULL;
 
-	// Possibilité de désactiver l'affichage des infobulles via un JavaScript:
+	// PossibilitÃ© de dÃ©sactiver l'affichage des infobulles via un JavaScript:
 	$desactivation_infobulle=isset($_POST['desactivation_infobulle']) ? $_POST['desactivation_infobulle'] : 'n';
 
-	// Vérification de sécurité
+	// VÃ©rification de sÃ©curitÃ©
 	if ($_SESSION['statut'] == "eleve") {
 		$eleve1 = $login_eleve;
 	}
@@ -882,8 +882,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"re.pers_id = r.pers_id AND " .
 				"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 		if (mysql_result($test, 0) == 0) {
-		    tentative_intrusion(3, "Tentative (forte) d'un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
-		    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.\n";
+		    tentative_intrusion(3, "Tentative (forte) d'un parent de visualisation graphique des rÃ©sultats d'un Ã©lÃ¨ve dont il n'est pas responsable lÃ©gal.");
+		    echo "<p>Vous ne pouvez visualiser que les graphiques des Ã©lÃ¨ves pour lesquels vous Ãªtes responsable lÃ©gal.\n";
 		    require("../lib/footer.inc.php");
 			die();
 		}
@@ -892,12 +892,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// On filtre eleve2 :
 		if(!isset($eleve2)) {$eleve2 = "moyclasse";}
 		if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax") {
-			tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
+			tentative_intrusion(3, "Tentative de manipulation de la seconde source de donnÃ©es sur la visualisation graphique des rÃ©sultats (dÃ©tournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'Ã  une moyenne et non un autre Ã©lÃ¨ve).");
 			$eleve2 = "moyclasse";
 		}
 	}
 
-	// On évite d'initialiser à NULL pour permettre de pré-cocher le choix_periode.
+	// On Ã©vite d'initialiser Ã  NULL pour permettre de prÃ©-cocher le choix_periode.
 	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : NULL;
 	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : "toutes_periodes";
 	$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : "periode";
@@ -915,7 +915,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//======================================================================
 	//======================================================================
 
-	// On récupère de $_POST les paramètres d'affichage s'ils ont été transmis, sinon, on les récupère dans la base MySQL.
+	// On rÃ©cupÃ¨re de $_POST les paramÃ¨tres d'affichage s'ils ont Ã©tÃ© transmis, sinon, on les rÃ©cupÃ¨re dans la base MySQL.
 
 	//$affiche_photo=isset($_POST['affiche_photo']) ? $_POST['affiche_photo'] : '';
 	if(isset($_POST['affiche_photo'])) {
@@ -1156,7 +1156,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
-	// Pour présenter ou non, les noms longs en entier en travers sous le graphe.
+	// Pour prÃ©senter ou non, les noms longs en entier en travers sous le graphe.
 	if(isset($_POST['temoin_image_escalier'])) {
 		$temoin_image_escalier=$_POST['temoin_image_escalier'];
 	}
@@ -1176,7 +1176,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
-	// A zéro caractères, on ne tronque pas
+	// A zÃ©ro caractÃ¨res, on ne tronque pas
 	if(isset($_POST['tronquer_nom_court'])) {
 		$tronquer_nom_court=$_POST['tronquer_nom_court'];
 	}
@@ -1245,7 +1245,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	$temoin_image_escalier=isset($_POST['temoin_image_escalier']) ? $_POST['temoin_image_escalier'] : 'non';
 
-	// A zéro caractères, on ne tronque pas
+	// A zÃ©ro caractÃ¨res, on ne tronque pas
 	$tronquer_nom_court=isset($_POST['tronquer_nom_court']) ? $_POST['tronquer_nom_court'] : '0';
 */
 	//===============================================
@@ -1256,23 +1256,23 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	// AJOUT boireaus 20090115
 	if(isset($_POST['graphe_champ_saisie_avis_fixe'])) {
 		$graphe_champ_saisie_avis_fixe=$_POST['graphe_champ_saisie_avis_fixe'];
-		//echo "On prend la valeur POSTée: ";
+		//echo "On prend la valeur POSTÃ©e: ";
 	}
 	else{
 		$pref_champ_saisie_avis_fixe=getPref($_SESSION['login'],'graphe_champ_saisie_avis_fixe','');
 		if(($pref_champ_saisie_avis_fixe=='y')||($pref_champ_saisie_avis_fixe=='n')) {
 			$graphe_champ_saisie_avis_fixe=$pref_champ_saisie_avis_fixe;
-			//echo "On prend la préférence de ".$_SESSION['login'].": ";
+			//echo "On prend la prÃ©fÃ©rence de ".$_SESSION['login'].": ";
 		}
 		else {
 			if(getSettingValue('graphe_champ_saisie_avis_fixe')) {
 				//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
 				$graphe_champ_saisie_avis_fixe=getSettingValue('graphe_champ_saisie_avis_fixe');
-				//echo "On prend la valeur définie globalement pour l'établissement: ";
+				//echo "On prend la valeur dÃ©finie globalement pour l'Ã©tablissement: ";
 			}
 			else{
 				$graphe_champ_saisie_avis_fixe="n";
-				//echo "On prend la valeur par défaut: ";
+				//echo "On prend la valeur par dÃ©faut: ";
 			}
 		}
 	}
@@ -1332,7 +1332,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			*/
 
-			echo "<h2>Paramétrage de l'affichage du graphique</h2>\n";
+			echo "<h2>ParamÃ©trage de l'affichage du graphique</h2>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_parametrage_affichage' method='post'>\n";
 			echo add_token_field();
@@ -1356,22 +1356,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//echo "<input type='hidden' name='periode' value='".$periode."'/>\n";
 			echo "<input type='hidden' name='periode' value=\"".$periode."\"/>\n";
 
-			// Paramètres:
-			echo "<p><b>Moyennes et périodes</b></p>\n";
+			// ParamÃ¨tres:
+			echo "<p><b>Moyennes et pÃ©riodes</b></p>\n";
 			echo "<blockquote>\n";
 
 			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<table border='0' summary='Paramètres'>\n";
-			//echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
-			echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td>";
+			echo "<table border='0' summary='ParamÃ¨tres'>\n";
+			//echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne gÃ©nÃ©rale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
+			echo "<tr valign='top'><td>Afficher la moyenne gÃ©nÃ©rale:</td><td>";
 			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='affiche_mgen' id='affiche_mgen_oui' value='oui'$checked /><label for='affiche_mgen_oui' style='cursor: pointer;'> Oui </label>/";
 			if($affiche_mgen!='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked /></td></tr>\n";
 
 			//if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
-			//echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
-			echo "<tr valign='top'><td>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</td><td>";
+			//echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliquÃ© en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
+			echo "<tr valign='top'><td>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliquÃ© en mode 'Toutes_les_periodes'</i>)</td><td>";
 			if($affiche_minmax=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='affiche_minmax' id='affiche_minmax_oui' value='oui'$checked /><label for='affiche_minmax_oui' style='cursor: pointer;'> Oui </label>/\n";
 			if($affiche_minmax!='oui') {$checked=" checked='yes'";} else {$checked="";}
@@ -1392,17 +1392,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			//echo "<hr width='150' />\n";
 
-			// Paramètres d'affichage:
+			// ParamÃ¨tres d'affichage:
 			echo "<p><b>Graphe</b></p>\n";
 			echo "<blockquote>\n";
-			echo "<table border='0' summary='Paramètres'>\n";
+			echo "<table border='0' summary='ParamÃ¨tres'>\n";
 
-			// Graphe en courbe ou étoile
+			// Graphe en courbe ou Ã©toile
 			echo "<tr><td>Graphe en </td>\n";
 			if($type_graphe=='courbe') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<td><label for='type_graphe_courbe' style='cursor: pointer;'><input type='radio' name='type_graphe' id='type_graphe_courbe' value='courbe'$checked /> courbe</label><br />\n";
 			if($type_graphe=='etoile') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<label for='type_graphe_etoile' style='cursor: pointer;'><input type='radio' name='type_graphe' id='type_graphe_etoile' value='etoile'$checked /> étoile</label>\n";
+			echo "<label for='type_graphe_etoile' style='cursor: pointer;'><input type='radio' name='type_graphe' id='type_graphe_etoile' value='etoile'$checked /> Ã©toile</label>\n";
 			echo "</td></tr>\n";
 
 			// - dimensions de l'image
@@ -1427,7 +1427,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</select></td></tr>\n";
 
 			// - epaisseur croissante des traits
-			echo "<tr><td>Epaisseur croissante des courbes de période en période:</td><td>\n";
+			echo "<tr><td>Epaisseur croissante des courbes de pÃ©riode en pÃ©riode:</td><td>\n";
 			if($epaisseur_croissante_traits_periodes=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='epaisseur_croissante_traits_periodes' id='epaisseur_croissante_traits_periodes_oui' value='oui'$checked /><label for='epaisseur_croissante_traits_periodes_oui' style='cursor: pointer;'> Oui </label>/";
 			if($epaisseur_croissante_traits_periodes!='oui') {$checked=" checked='yes'";} else {$checked="";}
@@ -1435,21 +1435,21 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</td></tr>\n";
 
 
-			// - modèle de couleurs
+			// - modÃ¨le de couleurs
 
 			//if($temoin_imageps=='oui') {$checked=" checked='yes'";}else{$checked="";}
 			//if($temoin_image_escalier=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
-			//echo "<tr><td><label for='temoin_image_escalier' style='cursor: pointer;'>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</label></td><td><input type='checkbox' name='temoin_image_escalier' id='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
-			echo "<tr><td>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</td><td>";
+			//echo "<tr><td><label for='temoin_image_escalier' style='cursor: pointer;'>Afficher les noms longs de matiÃ¨res:<br />(<i>en lÃ©gende sous le graphe</i>)</label></td><td><input type='checkbox' name='temoin_image_escalier' id='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
+			echo "<tr><td>Afficher les noms longs de matiÃ¨res:<br />(<i>en lÃ©gende sous le graphe</i>)</td><td>";
 			if($temoin_image_escalier=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='temoin_image_escalier' id='temoin_image_escalier_oui' value='oui'$checked /><label for='temoin_image_escalier_oui' style='cursor: pointer;'> Oui </label>/";
 			if($temoin_image_escalier!='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='temoin_image_escalier_non' style='cursor: pointer;'> Non </label><input type='radio' name='temoin_image_escalier' id='temoin_image_escalier_non' value='non'$checked />";
 			echo "</td></tr>\n";
 
-			//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
-			echo "<tr><td><label for='tronquer_nom_court' style='cursor: pointer;'>Tronquer le nom court de la matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\");return false;'>X</a> caractères:<br />(<i>pour éviter des collisions de légendes en haut du graphe</i>)</label></td><td><select name='tronquer_nom_court' id='tronquer_nom_court'>\n";
+			//echo "<tr><td>Tronquer le nom court<br />de matiÃ¨re Ã  <a href='javascript:alert(\"A zÃ©ro caractÃ¨res, on ne tronque pas le nom court de matiÃ¨re affichÃ© en haut du graphe.\")'>X</a> caractÃ¨res:</td><td><select name='tronquer_nom_court'>\n";
+			echo "<tr><td><label for='tronquer_nom_court' style='cursor: pointer;'>Tronquer le nom court de la matiÃ¨re Ã  <a href='#' onclick='alert(\"A zÃ©ro caractÃ¨res, on ne tronque pas le nom court de matiÃ¨re affichÃ© en haut du graphe.\");return false;'>X</a> caractÃ¨res:<br />(<i>pour Ã©viter des collisions de lÃ©gendes en haut du graphe</i>)</label></td><td><select name='tronquer_nom_court' id='tronquer_nom_court'>\n";
 			for($i=0;$i<=10;$i++) {
 				if($tronquer_nom_court==$i) {$selected=" selected='yes'";} else {$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
@@ -1458,7 +1458,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			echo "<tr>\n";
 			echo "<td>\n";
-			echo "<label for='click_plutot_que_survol_aff_app' style='cursor: pointer;'>Afficher les appréciations en infobulles lors du&nbsp;:</label>\n";
+			echo "<label for='click_plutot_que_survol_aff_app' style='cursor: pointer;'>Afficher les apprÃ©ciations en infobulles lors du&nbsp;:</label>\n";
 			echo "</td>\n";
 			echo "<td>\n";
 
@@ -1486,8 +1486,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 			// Graphe PNG ou SVG
-			echo "<tr><td valign='top'>Générer des graphes en PNG ou SVG<br />\n";
-			echo "(<i>Les graphes SVG donnent un aspect plus lissé,<br />mais nécessitent, avec certains navigateurs,<br />l'installation d'un plugin.<br />Uniquement disponible pour les graphes<br />en courbe pour le moment</i>)";
+			echo "<tr><td valign='top'>GÃ©nÃ©rer des graphes en PNG ou SVG<br />\n";
+			echo "(<i>Les graphes SVG donnent un aspect plus lissÃ©,<br />mais nÃ©cessitent, avec certains navigateurs,<br />l'installation d'un plugin.<br />Uniquement disponible pour les graphes<br />en courbe pour le moment</i>)";
 			echo "</td>\n";
 			if($mode_graphe=='png') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<td valign='top'><label for='mode_graphe_png' style='cursor: pointer;'><input type='radio' name='mode_graphe' id='mode_graphe_png' value='png'$checked /> PNG</label><br />\n";
@@ -1499,10 +1499,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//Ajout Eric 11/12/10
 			echo "<table border='0' summary='affiche_deroulant_appreciations'>\n";
 			if(($graphe_affiche_deroulant_appreciations=='')||($graphe_affiche_deroulant_appreciations=='oui')) {$checked=" checked='yes'";} else {$checked="";}
-			echo "<tr><td>Afficher une fenêtre déroulante contenant les appréciations:</td><td><label for='affiche_deroulant_appreciations_oui' style='cursor: pointer;'><input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_oui' value='oui'$checked />Oui</label> / \n";
+			echo "<tr><td>Afficher une fenÃªtre dÃ©roulante contenant les apprÃ©ciations:</td><td><label for='affiche_deroulant_appreciations_oui' style='cursor: pointer;'><input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_oui' value='oui'$checked />Oui</label> / \n";
 			if($graphe_affiche_deroulant_appreciations=='non') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='affiche_deroulant_appreciations_non' style='cursor: pointer;'>Non<input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_non' value='non'$checked /></label></td></tr>\n";
-			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone déroulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
+			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone dÃ©roulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
 
 			echo "</table>\n";
 			
@@ -1511,15 +1511,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			
 
 			// - Affichage de la photo
-			echo "<p><b>Paramètres des photos</b></p>\n";
+			echo "<p><b>ParamÃ¨tres des photos</b></p>\n";
 			echo "<blockquote>\n";
-			echo "<table border='0' summary='Paramètres des photos'>\n";
+			echo "<table border='0' summary='ParamÃ¨tres des photos'>\n";
 			if(($affiche_photo=='')||($affiche_photo=='oui')) {$checked=" checked='yes'";} else {$checked="";}
-			echo "<tr><td>Afficher la photo de l'élève si elle existe:</td><td><label for='affiche_photo_oui' style='cursor: pointer;'><input type='radio' name='affiche_photo' id='affiche_photo_oui' value='oui'$checked />Oui</label> / \n";
+			echo "<tr><td>Afficher la photo de l'Ã©lÃ¨ve si elle existe:</td><td><label for='affiche_photo_oui' style='cursor: pointer;'><input type='radio' name='affiche_photo' id='affiche_photo_oui' value='oui'$checked />Oui</label> / \n";
 			if($affiche_photo=='non') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='affiche_photo_non' style='cursor: pointer;'>Non<input type='radio' name='affiche_photo' id='affiche_photo_non' value='non'$checked /></label></td></tr>\n";
 
-			// - Largeur imposée pour la photo
+			// - Largeur imposÃ©e pour la photo
 			echo "<tr><td><label for='largeur_imposee_photo' style='cursor: pointer;'>Largeur de la photo (<i>en pixels</i>):</label></td><td><input type='text' name='largeur_imposee_photo' id='largeur_imposee_photo' value='$largeur_imposee_photo' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
 			//echo "</p>\n";
 			echo "</table>\n";
@@ -1540,9 +1540,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			echo "<p align='center'>";
 			if($_SESSION['statut']=='scolarite') {
-				//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
+				//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramÃ¨tres</b>\n";
 				echo "<input type='hidden' name='save_params' value='' />\n";
-				echo "<input type='button' onClick=\"document.forms['form_parametrage_affichage'].save_params.value='y';document.forms['form_parametrage_affichage'].submit();\" name='Enregistrer' value='Enregistrer les paramètres dans la base' />\n";
+				echo "<input type='button' onClick=\"document.forms['form_parametrage_affichage'].save_params.value='y';document.forms['form_parametrage_affichage'].submit();\" name='Enregistrer' value='Enregistrer les paramÃ¨tres dans la base' />\n";
 				echo "<br />\n";
 			}
 
@@ -1556,7 +1556,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_raz_parametrage_affichage' method='post'>\n";
 			echo add_token_field();
 
-			echo "<p align='center'>Si, après des essais, vous souhaitez abandonner vos paramètres personnels et revenir aux paramètres enregistrés dans la base, validez ci-dessous&nbsp;:<br />";
+			echo "<p align='center'>Si, aprÃ¨s des essais, vous souhaitez abandonner vos paramÃ¨tres personnels et revenir aux paramÃ¨tres enregistrÃ©s dans la base, validez ci-dessous&nbsp;:<br />";
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 			echo "<input type='hidden' name='is_posted' value='y' />\n";
 
@@ -1575,7 +1575,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//echo "<input type='hidden' name='periode' value='".$periode."'/>\n";
 			echo "<input type='hidden' name='periode' value=\"".$periode."\"/>\n";
 
-			echo "<input type='submit' name=\"valider_raz_param\" value=\"Prendre les paramètres par défaut de l'établissement\" /></p>\n";
+			echo "<input type='submit' name=\"valider_raz_param\" value=\"Prendre les paramÃ¨tres par dÃ©faut de l'Ã©tablissement\" /></p>\n";
 
 			echo "</form>\n";
 
@@ -1620,7 +1620,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
 
 
-	echo "<table summary='Présentation'>\n";
+	echo "<table summary='PrÃ©sentation'>\n";
 	echo "<tr valign='top'>\n";
 	//====================================================================
 	// Bande de pilotage:
@@ -1650,7 +1650,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			/*
 			//if(file_exists("$chemin_photos/$eleve1.jpg")) {
 			if(file_exists("../photos/eleves/$elenoet1.jpg")) {
-				// Récupérer les dimensions de la photo...
+				// RÃ©cupÃ©rer les dimensions de la photo...
 				//$dimimg=getimagesize("../photos/$eleve1.jpg");
 				$dimimg=getimagesize("../photos/eleves/$elenoet1.jpg");
 				//echo "$dimimg[0] et $dimimg[1]";
@@ -1662,7 +1662,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<img src='../photos/eleves/$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
 			}
 			elseif(file_exists("../photos/eleves/0$elenoet1.jpg")) {
-				// Récupérer les dimensions de la photo...
+				// RÃ©cupÃ©rer les dimensions de la photo...
 				//$dimimg=getimagesize("../photos/$eleve1.jpg");
 				$dimimg=getimagesize("../photos/eleves/0$elenoet1.jpg");
 				//echo "$dimimg[0] et $dimimg[1]";
@@ -1697,19 +1697,19 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<br />\n";
 
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
-		// Choix des élèves:
+		// Choix des Ã©lÃ¨ves:
 		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom,prenom");
 		$nombreligne = mysql_num_rows($call_eleve);
 
-		// Pour afficher le nom/prénom plutôt que le login:
+		// Pour afficher le nom/prÃ©nom plutÃ´t que le login:
 		$tab_nom_prenom_eleve=array();
 
-		echo "Choisir l'élève:<br />\n";
+		echo "Choisir l'Ã©lÃ¨ve:<br />\n";
 		echo "<select name='eleve1' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		$cpt=1;
 		$numeleve1=0;
 		while($ligne=mysql_fetch_object($call_eleve)) {
-			// Le login est la clé liant les tables eleves et j_eleves_classes
+			// Le login est la clÃ© liant les tables eleves et j_eleves_classes
 			$tab_login_eleve[$cpt]="$ligne->login";
 			$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
 
@@ -1752,7 +1752,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "</select>\n";
 		echo "<br />\n";
 
-		// Pour passer à l'élève précédent ou au suivant:
+		// Pour passer Ã  l'Ã©lÃ¨ve prÃ©cÃ©dent ou au suivant:
 		echo "<script type='text/javascript' language='JavaScript'>\n";
 
 		$precedent=$numeleve1-1;
@@ -1761,7 +1761,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "suivant=$suivant\n";
 		echo "function eleve_precedent() {
 	if(document.getElementById('numeleve1').value>1) {";
-	    // On effectue un test pour éviter de tenter de chercher $tab_login_eleve[$precedent] si $precedent=0
+	    // On effectue un test pour Ã©viter de tenter de chercher $tab_login_eleve[$precedent] si $precedent=0
 	    if($precedent>0) {
 	        echo "		document.getElementById('eleve1b').value='$tab_login_eleve[$precedent]';
 		document.forms['form_choix_eleves'].submit();";
@@ -1791,13 +1791,13 @@ function eleve_suivant() {
 
 		//echo "<p>\n";
 		echo "<input type='hidden' name='numeleve1' id='numeleve1' value='$numeleve1' size='3' />\n";
-		// 'eleve1b' est destiné au passage du nom de l'élève par les boutons Précédent/Suivant
+		// 'eleve1b' est destinÃ© au passage du nom de l'Ã©lÃ¨ve par les boutons PrÃ©cÃ©dent/Suivant
 	 	// Cette valeur l'emporte sur le contenu de 'eleve1'
 		echo "<input type='hidden' name='eleve1b' id='eleve1b' value='' />\n";
 
 	    if($precedent>0) {
 			//echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
-			echo "<a href='javascript:eleve_precedent();'>Élève précédent</a><br />\n";
+			echo "<a href='javascript:eleve_precedent();'>Ã‰lÃ¨ve prÃ©cÃ©dent</a><br />\n";
 		}
 
 		//echo "<input type='submit' name='choix_eleves' value='Afficher' />\n";
@@ -1806,16 +1806,16 @@ function eleve_suivant() {
 	    if($suivant<$nombreligne+1) {
 			echo "<br />\n";
 			//echo "<input type='button' name='suivant' value='>>' onClick='eleve_suivant();' />\n";
-			echo "<a href='javascript:eleve_suivant();'>Élève suivant</a>";
+			echo "<a href='javascript:eleve_suivant();'>Ã‰lÃ¨ve suivant</a>";
 		}
 		echo "</p>\n";
 
 		echo "<hr width='150' />\n";
 
 	} else {
-		// Cas d'un responsable ou d'un élève :
-		// Pas de sélection de l'élève, il est déjà fixé.
-		// Pas de sélection non plus de la comparaison : c'est la moyenne de la classe (ou moy min ou max).
+		// Cas d'un responsable ou d'un Ã©lÃ¨ve :
+		// Pas de sÃ©lection de l'Ã©lÃ¨ve, il est dÃ©jÃ  fixÃ©.
+		// Pas de sÃ©lection non plus de la comparaison : c'est la moyenne de la classe (ou moy min ou max).
 		echo "<p>Eleve : ".$prenom_eleve . " " .$nom_eleve."</p>\n";
 		echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
 		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
@@ -1835,7 +1835,7 @@ function eleve_suivant() {
 	if ($graphe_affiche_deroulant_appreciations=='oui') {
 		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
 		//echo "<div style='border:1px solid black; background-color:white; width: 320px;' style='height:$graphe_hauteur_affichage_deroulant'>";
-		echo "<b><i><center>Appréciations - $periode</center></i></b>";
+		echo "<b><i><center>ApprÃ©ciations - $periode</center></i></b>";
 		echo "<div id='appreciations_deroulantes'>";
 		echo "<span id='appreciations_defile'>";
 		//echo $txt_appreciations_deroulantes;
@@ -1843,8 +1843,8 @@ function eleve_suivant() {
 		echo "<hr width='150' />\n";
 	}
 
-	// Choix de la période
-	echo "Choisir la période:<br />\n";
+	// Choix de la pÃ©riode
+	echo "Choisir la pÃ©riode:<br />\n";
 	if($choix_periode=='periode') {$checked=" checked='yes'";}else{$checked="";}
 	//echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' checked='true'$checked />\n";
 	echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' $checked onchange=\"document.forms['form_choix_eleves'].submit();\" />\n";
@@ -1857,7 +1857,7 @@ function eleve_suivant() {
 	echo "</select>\n";
 	echo "<br />\n";
 	if($choix_periode=='toutes_periodes') {$checked=" checked='yes'";}else{$checked="";}
-	echo "<label for='choix_toutes_periodes' style='cursor: pointer;'><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\" /> Toutes les périodes</label>\n";
+	echo "<label for='choix_toutes_periodes' style='cursor: pointer;'><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\" /> Toutes les pÃ©riodes</label>\n";
 
 	echo "<hr width='150' />\n";
 
@@ -1889,7 +1889,7 @@ function eleve_suivant() {
 	echo "<input type='hidden' name='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' />\n";
 	
 	echo "<input type='hidden' name='parametrer_affichage' value='' />\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
+	echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>ParamÃ©trer l'affichage</a>.<br />\n";
 
 /*
 	echo "<script type='text/javascript'>
@@ -1913,13 +1913,13 @@ function eleve_suivant() {
 </script>\n";
 
 
-	echo "<input type='checkbox' name='params' id='id_params' value='oui' onchange='display_div()' /> <b>Afficher les paramètres</b><br />\n";
+	echo "<input type='checkbox' name='params' id='id_params' value='oui' onchange='display_div()' /> <b>Afficher les paramÃ¨tres</b><br />\n";
 
 	echo "<div id='div_params' style='display:block;'>\n";
 
 	echo "<table border='0'>\n";
 
-	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params1' value='1' onchange='display_div()' /> </td><td>Moyennes et périodes</td></tr>\n";
+	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params1' value='1' onchange='display_div()' /> </td><td>Moyennes et pÃ©riodes</td></tr>\n";
 	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params2' value='2' onchange='display_div()' /> </td><td>Dimensions</td></tr>\n";
 	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params3' value='3' onchange='display_div()' /> </td><td>Photo</td></tr>\n";
 
@@ -1932,11 +1932,11 @@ function eleve_suivant() {
 
 
 	echo "<div id='div_params_1' style='display:block; border: 1px solid black;'>";
-	echo "<b>Moyennes et périodes</b><br />";
+	echo "<b>Moyennes et pÃ©riodes</b><br />";
 
 	if($affiche_mgen=='oui') {$checked=" checked='yes'";}else{$checked="";}
 	echo "<table border='0'>\n";
-	echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td><input type='checkbox' name='affiche_mgen' value='oui'$checked /></td></tr>\n";
+	echo "<tr valign='top'><td>Afficher la moyenne gÃ©nÃ©rale:</td><td><input type='checkbox' name='affiche_mgen' value='oui'$checked /></td></tr>\n";
 
 	if($affiche_minmax=='oui') {$checked=" checked='yes'";}else{$checked="";}
 	echo "<tr valign='top'><td>Afficher les bandes Min/max:<br />(<i>pas en mode 'Toutes_les_periodes'</i>)</td><td><input type='checkbox' name='affiche_minmax' value='oui'$checked /></td></tr>\n";
@@ -1950,7 +1950,7 @@ function eleve_suivant() {
 	echo "</div>\n";
 	//echo "<hr width='150' />\n";
 
-	// Paramètres d'affichage:
+	// ParamÃ¨tres d'affichage:
 	// - dimensions de l'image
 	echo "<div id='div_params_2' style='display:block; border: 1px solid black;'>";
 	echo "<b>Graphe</b><br />\n";
@@ -1975,15 +1975,15 @@ function eleve_suivant() {
 	}
 	echo "</select></td></tr>\n";
 
-	// - modèle de couleurs
+	// - modÃ¨le de couleurs
 
 	//if($temoin_imageps=='oui') {$checked=" checked='yes'";}else{$checked="";}
 	if($temoin_image_escalier=='oui') {$checked=" checked='yes'";}else{$checked="";}
 	//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
-	echo "<tr><td>Afficher les noms<br />longs de matières:</td><td><input type='checkbox' name='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
+	echo "<tr><td>Afficher les noms<br />longs de matiÃ¨res:</td><td><input type='checkbox' name='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
 
-	//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
-	echo "<tr><td>Tronquer le nom court<br />de matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
+	//echo "<tr><td>Tronquer le nom court<br />de matiÃ¨re Ã  <a href='javascript:alert(\"A zÃ©ro caractÃ¨res, on ne tronque pas le nom court de matiÃ¨re affichÃ© en haut du graphe.\")'>X</a> caractÃ¨res:</td><td><select name='tronquer_nom_court'>\n";
+	echo "<tr><td>Tronquer le nom court<br />de matiÃ¨re Ã  <a href='#' onclick='alert(\"A zÃ©ro caractÃ¨res, on ne tronque pas le nom court de matiÃ¨re affichÃ© en haut du graphe.\")'>X</a> caractÃ¨res:</td><td><select name='tronquer_nom_court'>\n";
 	for($i=0;$i<=10;$i++) {
 		if($tronquer_nom_court==$i) {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='$i'$selected>$i</option>\n";
@@ -1999,13 +1999,13 @@ function eleve_suivant() {
 
 	// - Affichage de la photo
 	echo "<div id='div_params_3' style='display:block; border: 1px solid black;'>";
-	echo "<b>Paramètres des photos</b><br />\n";
+	echo "<b>ParamÃ¨tres des photos</b><br />\n";
 	if(($affiche_photo=='')||($affiche_photo=='oui')) {$checked=" checked='yes'";}else{$checked="";}
 	echo "Afficher: <input type='radio' name='affiche_photo' value='oui'$checked />O / \n";
 	if($affiche_photo=='non') {$checked=" checked='yes'";}else{$checked="";}
 	echo "N<input type='radio' name='affiche_photo' value='non'$checked /><br />\n";
 
-	// - Largeur imposée pour la photo
+	// - Largeur imposÃ©e pour la photo
 	echo "Largeur photo: <input type='text' name='largeur_imposee_photo' value='$largeur_imposee_photo' size='3' />\n";
 	//echo "</p>\n";
 	echo "</div>\n";
@@ -2013,7 +2013,7 @@ function eleve_suivant() {
 
 
 
-	//echo "<b>Paramètres des photos</b><br />";
+	//echo "<b>ParamÃ¨tres des photos</b><br />";
 	echo "<div id='div_params_4' style='display:block; border: 1px solid black;'>";
 	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 		echo "<b>Couleurs</b><br />\n";
@@ -2025,15 +2025,15 @@ function eleve_suivant() {
 	echo "</div>\n";
 
 	if($_SESSION['statut']=='scolarite') {
-		//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
+		//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramÃ¨tres</b>\n";
 		echo "<input type='hidden' name='save_params' value='' />\n";
-		echo "<input type='button' onClick=\"document.forms['form_choix_eleves'].save_params.value='y';document.forms['form_choix_eleves'].submit();\" name='Enregistrer' value='Enregistrer les paramètres' />\n";
+		echo "<input type='button' onClick=\"document.forms['form_choix_eleves'].save_params.value='y';document.forms['form_choix_eleves'].submit();\" name='Enregistrer' value='Enregistrer les paramÃ¨tres' />\n";
 	}
 	echo "</div>\n";
 
 
 	echo "<script type='text/javascript'>
-	// On cache les div de paramètres au chargement de la page
+	// On cache les div de paramÃ¨tres au chargement de la page
 	document.getElementById('div_params').style.display='none';
 	document.getElementById('div_params_1').style.display='none';
 	document.getElementById('div_params_2').style.display='none';
@@ -2063,7 +2063,7 @@ function eleve_suivant() {
 
 	echo "<label for='desactivation_infobulle' style='cursor: pointer;'><input type='checkbox' name='desactivation_infobulle' id='desactivation_infobulle' value='y' onchange='fct_desactivation_infobulle();' ";
 	if($desactivation_infobulle=="y") {echo "checked ";}
-	echo "/> Désactiver l'affichage des appréciations</label>\n";
+	echo "/> DÃ©sactiver l'affichage des apprÃ©ciations</label>\n";
 	if($desactivation_infobulle=="y") {
 		echo "<script type='text/javascript'>desactivation_infobulle='y';</script>\n";
 	}
@@ -2077,7 +2077,7 @@ function eleve_suivant() {
 
 
 	//================
-	// Déplacement: boireaus 20090727
+	// DÃ©placement: boireaus 20090727
 	// Initialisation:
 	$texte_saisie_avis_fixe="";
 	//================
@@ -2089,7 +2089,7 @@ function eleve_suivant() {
 	) {
 
 		$droit_saisie_avis="y";
-		// Contrôler si le prof est PP de l'élève
+		// ContrÃ´ler si le prof est PP de l'Ã©lÃ¨ve
 		if($_SESSION['statut']=='professeur') {
 			$droit_saisie_avis="n";
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$eleve1."' AND id_classe='$id_classe';";
@@ -2170,7 +2170,7 @@ function eleve_suivant() {
 						//================
 						// Ajout: boireaus 20090115
 	
-						// Pour forcer la valeur avant de la mettre en choix dans les paramètres:
+						// Pour forcer la valeur avant de la mettre en choix dans les paramÃ¨tres:
 						//$graphe_champ_saisie_avis_fixe="y";
 	
 						if($graphe_champ_saisie_avis_fixe!="y") {
@@ -2195,7 +2195,7 @@ function eleve_suivant() {
 	
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								/*
-								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+								// Essai d'ajout de listes dÃ©roulantes en vue de l'intÃ©gration des mentions au bulletin :
 								$selectedF="";
 								$selectedM="";
 								$selectedE="";
@@ -2208,7 +2208,7 @@ function eleve_suivant() {
 								$texte.="<option value='B'$selectedB> </option>\n";
 								$texte.="<option value='E'$selectedE>Encouragements</option>\n";
 								$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
-								$texte.="<option value='F'$selectedF>Félicitations</option>\n";
+								$texte.="<option value='F'$selectedF>FÃ©licitations</option>\n";
 								$texte.="</select>\n";
 								*/
 								$texte.="<br/>\n";
@@ -2252,7 +2252,7 @@ function eleve_suivant() {
 	
 								$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								/*
-								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+								// Essai d'ajout de listes dÃ©roulantes en vue de l'intÃ©gration des mentions au bulletin :
 								$selectedF="";
 								$selectedM="";
 								$selectedE="";
@@ -2265,7 +2265,7 @@ function eleve_suivant() {
 								$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
 								$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
 								$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
-								$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
+								$texte_saisie_avis_fixe.="<option value='F'$selectedF>FÃ©licitations</option>\n";
 								$texte_saisie_avis_fixe.="</select>\n";
 								*/
 								$texte_saisie_avis_fixe.="<br/>\n";
@@ -2296,12 +2296,12 @@ function eleve_suivant() {
 			}
 			//elseif($_POST['choix_periode']=="toutes_periodes") {
 			elseif($choix_periode=="toutes_periodes") {
-				// On doit trouver quelle période est ouverte en saisie d'avis.
+				// On doit trouver quelle pÃ©riode est ouverte en saisie d'avis.
 
 				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND verouiller!='O';";
 				$res_verr_per=mysql_query($sql);
 				if(mysql_num_rows($res_verr_per)==1) {
-					// On ne propose la saisie d'avis que si une seule période est ouverte en saisie (N ou P)
+					// On ne propose la saisie d'avis que si une seule pÃ©riode est ouverte en saisie (N ou P)
 					// ... pour le moment.
 					$lig_per=mysql_fetch_object($res_verr_per);
 
@@ -2365,7 +2365,7 @@ function eleve_suivant() {
 	
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								/*
-								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+								// Essai d'ajout de listes dÃ©roulantes en vue de l'intÃ©gration des mentions au bulletin :
 								$selectedF="";
 								$selectedM="";
 								$selectedE="";
@@ -2378,7 +2378,7 @@ function eleve_suivant() {
 								$texte.="<option value='B'$selectedB> </option>\n";
 								$texte.="<option value='E'$selectedE>Encouragements</option>\n";
 								$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
-								$texte.="<option value='F'$selectedF>Félicitations</option>\n";
+								$texte.="<option value='F'$selectedF>FÃ©licitations</option>\n";
 								$texte.="</select>\n";
 								*/
 								$texte.="<br/>\n";
@@ -2421,7 +2421,7 @@ function eleve_suivant() {
 	
 								$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								/*
-								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+								// Essai d'ajout de listes dÃ©roulantes en vue de l'intÃ©gration des mentions au bulletin :
 								$selectedF="";
 								$selectedM="";
 								$selectedE="";
@@ -2434,7 +2434,7 @@ function eleve_suivant() {
 								$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
 								$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
 								$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
-								$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
+								$texte_saisie_avis_fixe.="<option value='F'$selectedF>FÃ©licitations</option>\n";
 								$texte_saisie_avis_fixe.="</select>\n";
 								*/
 								$texte_saisie_avis_fixe.="<br/>\n";
@@ -2477,8 +2477,8 @@ function eleve_suivant() {
 	echo "<td>\n";
 	//====================================================================
 
-	// Récupération des infos personnelles sur l'élève (nom, prénom, sexe, date de naissance et redoublant)
-	// Et calcul de l'age (si le serveur est à l'heure;o).
+	// RÃ©cupÃ©ration des infos personnelles sur l'Ã©lÃ¨ve (nom, prÃ©nom, sexe, date de naissance et redoublant)
+	// Et calcul de l'age (si le serveur est Ã  l'heure;o).
 	/*
 	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
 		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")) {
@@ -2486,7 +2486,7 @@ function eleve_suivant() {
 	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
 		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")
 		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $choix_periode == "toutes_periodes")) {
-		// Informations sur l'élève $eleve1:
+		// Informations sur l'Ã©lÃ¨ve $eleve1:
 		$sql="SELECT * FROM eleves WHERE login='$eleve1'";
 		$result_infos_eleve=mysql_query($sql);
 		if(mysql_num_rows($result_infos_eleve)==1) {
@@ -2545,25 +2545,25 @@ function eleve_suivant() {
 		}
 	//}
 
-		// Initialisation de la liste des matières.
+		// Initialisation de la liste des matiÃ¨res.
 		$liste_matieres="";
 		$matiere=array();
 		$matiere_nom=array();
 		$txt_appreciations_deroulantes="";
 
-		// Séries:
+		// SÃ©ries:
 		if($choix_periode=="periode") {
 			$nb_series=2;
 			$serie=array();
 			for($i=1;$i<=$nb_series;$i++) {$serie[$i]="";}
 
-			//echo "Elève: $eleve1<br />periode=$periode<br />";
+			//echo "ElÃ¨ve: $eleve1<br />periode=$periode<br />";
 
 			//$num_periode
 			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND nom_periode='".$periode."'";
 			$resultat=mysql_query($sql);
 			if(mysql_num_rows($resultat)==0) {
-				//??? Toutes les périodes ?
+				//??? Toutes les pÃ©riodes ?
 				echo "<p>PB periode... $periode</p>";
 			}
 			else{
@@ -2572,7 +2572,7 @@ function eleve_suivant() {
 			}
 
 
-			// Des coefficients sont-ils saisis pour les différentes matières dans le cadre du calcul de la moyenne générale?
+			// Des coefficients sont-ils saisis pour les diffÃ©rentes matiÃ¨res dans le cadre du calcul de la moyenne gÃ©nÃ©rale?
 			//$call_classe_infos = mysql_query("SELECT DISTINCT  m.* FROM matieres m,j_classes_matieres_professeurs j WHERE (m.matiere = j.id_matiere AND j.id_classe='$id_classe')");
 
 
@@ -2585,8 +2585,8 @@ function eleve_suivant() {
 
 
 			// On calcule les moyennes:
-			// Doivent être initialisées, les variables:
-			// - $id_classe : la classe concernée
+			// Doivent Ãªtre initialisÃ©es, les variables:
+			// - $id_classe : la classe concernÃ©e
 			// - $periode_num
 			$periode_num=$num_periode;
 
@@ -2594,15 +2594,15 @@ function eleve_suivant() {
 			$affiche_graph="n";
 			include('../lib/calcul_moy_gen.inc.php');
 
-			// Récupérer la ligne de l'élève courant
-			// Remplir $liste_matieres, $serie[1] et $serie[2] (selon que c'est moymin, moymax, moyclasse ou un autre élève)
+			// RÃ©cupÃ©rer la ligne de l'Ã©lÃ¨ve courant
+			// Remplir $liste_matieres, $serie[1] et $serie[2] (selon que c'est moymin, moymax, moyclasse ou un autre Ã©lÃ¨ve)
 			// Remplir seriemin et seriemax?
-			// Récupérer les appréciations et générer les infobulles
+			// RÃ©cupÃ©rer les apprÃ©ciations et gÃ©nÃ©rer les infobulles
 
 			$tab_imagemap=array();
 			$tab_imagemap_commentaire_present=array();
 
-			// On recherche l'élève courant:
+			// On recherche l'Ã©lÃ¨ve courant:
 			$indice_eleve1=-1;
 			for($loop=0;$loop<count($current_eleve_login);$loop++) {
 				//if($current_eleve_login[$loop]==$eleve1) {
@@ -2613,7 +2613,7 @@ function eleve_suivant() {
 			}
 
 			if($indice_eleve1==-1) {
-				//echo "<p><span style='font-weight:bold; color:red;'>ERREUR:</span> L'élève $eleve1 n'a pas été trouvé lors de l'extraction des moyennes sur la période $periode.<br />Cela peut s'expliquer si l'élève a changé de classe ou quitté l'établissement.</p>\n";
+				//echo "<p><span style='font-weight:bold; color:red;'>ERREUR:</span> L'Ã©lÃ¨ve $eleve1 n'a pas Ã©tÃ© trouvÃ© lors de l'extraction des moyennes sur la pÃ©riode $periode.<br />Cela peut s'expliquer si l'Ã©lÃ¨ve a changÃ© de classe ou quittÃ© l'Ã©tablissement.</p>\n";
 
 				echo "<div style='margin: 5% 2em; padding: 1em; border: 1px dotted #2a6167'>\n";
 				echo "<div style='text-align: center; margin-bottom: 1em; font-weight: bold; color: #ee2222'>";
@@ -2624,8 +2624,8 @@ function eleve_suivant() {
 					echo $eleve1;
 				}
 				echo "</div>\n";
-				echo "<p>L'élève a changé de classe, est arrivé en cours d'année<br />ou a quitté l'établissement, mais il n'est pas dans la classe de $classe<br />pour la période $periode.</p>\n";
-				echo "<p>Si ces informations vous semblent erronées,<br />\n";
+				echo "<p>L'Ã©lÃ¨ve a changÃ© de classe, est arrivÃ© en cours d'annÃ©e<br />ou a quittÃ© l'Ã©tablissement, mais il n'est pas dans la classe de $classe<br />pour la pÃ©riode $periode.</p>\n";
+				echo "<p>Si ces informations vous semblent erronÃ©es,<br />\n";
 				echo "vous pouvez <a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600, 480,'scrollbars=yes,statusbar=no,resizable=yes')\">contacter l'administrateur</a>.</p>\n";
 				echo "</div>\n";
 
@@ -2635,7 +2635,7 @@ function eleve_suivant() {
 
 			$mgen[1]=$moy_gen_eleve[$indice_eleve1];
 
-			// On recherche l'élève2 et on récupère la moyenne générale 2:
+			// On recherche l'Ã©lÃ¨ve2 et on rÃ©cupÃ¨re la moyenne gÃ©nÃ©rale 2:
 			$indice_eleve2=-1;
 			//echo "\$eleve2=$eleve2<br />";
 			if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')) {
@@ -2659,11 +2659,11 @@ function eleve_suivant() {
 				$mgen[2]=$moy_max_classe;
 			}
 
-			// On remplit $liste_matieres, $serie[1], les tableaux d'appréciations et on génère les infobulles
+			// On remplit $liste_matieres, $serie[1], les tableaux d'apprÃ©ciations et on gÃ©nÃ¨re les infobulles
 			$cpt=0;
 			for($loop=0;$loop<count($current_group);$loop++) {
 				if(isset($current_eleve_note[$loop][$indice_eleve1])) {
-					// L'élève suit l'enseignement
+					// L'Ã©lÃ¨ve suit l'enseignement
 
 					if($liste_matieres!="") {
 						$liste_matieres.="|";
@@ -2676,14 +2676,14 @@ function eleve_suivant() {
 					// Groupe:
 					$id_groupe=$current_group[$loop]["id"];
 
-					// Matières
+					// MatiÃ¨res
 					$matiere[$cpt]=$current_group[$loop]["matiere"]["matiere"];
 					$matiere_nom[$cpt]=$current_group[$loop]["matiere"]["nom_complet"];
 					$liste_matieres.=$matiere[$cpt];
 
-					// Elève 1:
+					// ElÃ¨ve 1:
 					if($current_eleve_statut[$loop][$indice_eleve1]!="") {
-						// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
+						// Mettre le statut pose des problÃ¨mes pour le tracÃ© de la courbe... abs, disp,... passent pour des zÃ©ros
 						//$serie[1].=$current_eleve_statut[$loop][$indice_eleve1];
 						$serie[1].="-";
 					}
@@ -2691,12 +2691,12 @@ function eleve_suivant() {
 						$serie[1].=$current_eleve_note[$loop][$indice_eleve1];
 					}
 
-					// Elève 2:
+					// ElÃ¨ve 2:
 					if($indice_eleve2!=-1) {
-						// Si le deuxième élève suit le même enseignement:
+						// Si le deuxiÃ¨me Ã©lÃ¨ve suit le mÃªme enseignement:
 						if(isset($current_eleve_note[$loop][$indice_eleve2])) {
 							if($current_eleve_statut[$loop][$indice_eleve2]!="") {
-								// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
+								// Mettre le statut pose des problÃ¨mes pour le tracÃ© de la courbe... abs, disp,... passent pour des zÃ©ros
 								//$serie[2].=$current_eleve_statut[$loop][$indice_eleve2];
 								$serie[2].="-";
 							}
@@ -2720,15 +2720,15 @@ function eleve_suivant() {
 						$serie[2].=$moy_max_classe_grp[$loop];
 					}
 
-					// Série min et série max pour les bandes min/max:
-					// Avec min($current_eleve_note[$loop]) on n'a que les élève de la classe pas ceux de tout l'enseignement si à cheval sur plusieurs classes
+					// SÃ©rie min et sÃ©rie max pour les bandes min/max:
+					// Avec min($current_eleve_note[$loop]) on n'a que les Ã©lÃ¨ve de la classe pas ceux de tout l'enseignement si Ã  cheval sur plusieurs classes
 					//$seriemin.=min($current_eleve_note[$loop]);
 					$seriemin.=$moy_min_classe_grp[$loop];
 					//$seriemax.=max($current_eleve_note[$loop]);
 					$seriemax.=$moy_max_classe_grp[$loop];
 
 
-					// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+					// Dispositif de restriction des accÃ¨s aux apprÃ©ciations pour les comptes responsables/eleves
 					if($tab_acces_app[$num_periode]=="y") {
 					//==========================================================
 						//=========================
@@ -2750,7 +2750,7 @@ function eleve_suivant() {
 							$texte_bulle.="</div>\n";
 							//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 
-							//Ajout Eric pour le déroulant des appréciations
+							//Ajout Eric pour le dÃ©roulant des apprÃ©ciations
 							$app_tmp = $ligtmp->appreciation;
 							$app_tmp = str_replace("\n", "", $app_tmp);
 							$app_tmp = str_replace("\r\n", "", $app_tmp);
@@ -2772,14 +2772,14 @@ function eleve_suivant() {
 
 					//$tab_nom_matiere[]=$current_group[$loop]["matiere"]["matiere"];
 					$tab_nom_matiere[]=$matiere[$cpt];
-					// On stocke dans un tableau, les numéros $cpt correspondant aux matières que l'élève a.
+					// On stocke dans un tableau, les numÃ©ros $cpt correspondant aux matiÃ¨res que l'Ã©lÃ¨ve a.
 					$tab_imagemap[]=$cpt;
 
 					$cpt++;
 				}
 				else{
-					// L'élève n'a pas cette matière.
-					echo "<!-- $eleve1 n'a pas la matière ".$current_group[$loop]["matiere"]["matiere"]." -->\n";
+					// L'Ã©lÃ¨ve n'a pas cette matiÃ¨re.
+					echo "<!-- $eleve1 n'a pas la matiÃ¨re ".$current_group[$loop]["matiere"]["matiere"]." -->\n";
 				}
 			}
 			//=========================================================
@@ -2787,7 +2787,7 @@ function eleve_suivant() {
 			//=========================================================
 
 
-			// Ajout Eric 11/12/2010 Boite déroulante pour les appréciations.
+			// Ajout Eric 11/12/2010 Boite dÃ©roulante pour les apprÃ©ciations.
 			if ($graphe_affiche_deroulant_appreciations=='oui') {
 				$graphe_hauteur_affichage_deroulant=$graphe_hauteur_affichage_deroulant."px";
 				echo "<script type='text/javascript'>
@@ -2816,7 +2816,7 @@ function eleve_suivant() {
 				</script>\n";
 				/*
 				echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
-				echo "<b><i><center>Appréciations - $periode</center></i></b>";
+				echo "<b><i><center>ApprÃ©ciations - $periode</center></i></b>";
 				echo "<div id='appreciations_deroulantes'>";
 				echo "<span id='appreciations_defile'>";
 				echo $txt_appreciations_deroulantes;
@@ -2827,7 +2827,7 @@ function eleve_suivant() {
 			
 			// Avis du conseil de classe
 			$temoin_avis_present="n";
-			// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+			// Dispositif de restriction des accÃ¨s aux apprÃ©ciations pour les comptes responsables/eleves
 			if($tab_acces_app[$num_periode]=="y") {
 				$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode' ORDER BY periode";
 				$res_avis=mysql_query($sql);
@@ -2919,16 +2919,16 @@ function eleve_suivant() {
 
 
 				//***********************************************************
-				// Image Map pour le graphe en étoile
+				// Image Map pour le graphe en Ã©toile
 				// J'ai repris une portion du code de draw_graphe_star.php
-				// pour juste récupérer les coordonnées des textes de matières
+				// pour juste rÃ©cupÃ©rer les coordonnÃ©es des textes de matiÃ¨res
 				echo "<map name='imagemap_star'>\n";
 
 				$largeurTotale=$largeur_graphe;
 				$hauteurTotale=$hauteur_graphe;
 				$legendy[2]=$choix_periode;
 				$x0=round($largeurTotale/2);
-				if($legendy[2]=='Toutes_les_périodes') {
+				if($legendy[2]=='Toutes_les_pÃ©riodes') {
 					$L=round(($hauteurTotale-6*(ImageFontHeight($taille_police)+5))/2);
 					//$y0=round(3*(ImageFontHeight($taille_police))+5)+$L;
 					$y0=round(4*(ImageFontHeight($taille_police))+5)+$L;
@@ -2941,8 +2941,8 @@ function eleve_suivant() {
 				$pi=pi();
 
 				function coordcirc($note,$angle) {
-					// $note sur 20 (s'assurer qu'il y a le point pour séparateur et non la virgule)
-					// $angle en degrés
+					// $note sur 20 (s'assurer qu'il y a le point pour sÃ©parateur et non la virgule)
+					// $angle en degrÃ©s
 					global $pi;
 					global $L;
 					global $x0;
@@ -2969,7 +2969,7 @@ function eleve_suivant() {
 				//=================================
 
 				//=================================
-				// Légendes Matières: -> Coordonnées des textes de matières
+				// LÃ©gendes MatiÃ¨res: -> CoordonnÃ©es des textes de matiÃ¨res
 				for($i=0;$i<count($tab20)/2;$i++) {
 					$angle=round($i*360/$nbMat);
 
@@ -3378,7 +3378,7 @@ function eleve_suivant() {
 		}
 		else{
 			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-			// On va afficher toutes les périodes
+			// On va afficher toutes les pÃ©riodes
 
 			$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 			if ($affiche_categories == "y") {
@@ -3387,7 +3387,7 @@ function eleve_suivant() {
 				$affiche_categories = false;
 			}
 
-			// Récupération de la liste des matières dans l'ordre souhaité:
+			// RÃ©cupÃ©ration de la liste des matiÃ¨res dans l'ordre souhaitÃ©:
 			if ($affiche_categories) {
 				/*
 				$sql="SELECT DISTINCT jgc.id_groupe, m.* FROM matieres m,
@@ -3430,8 +3430,8 @@ function eleve_suivant() {
 			$matiere_nom=array();
 
 			$cpt=0;
-			// Boucle sur l'ordre des matières:
-			// On ne va retenir que les matières du premier élève.
+			// Boucle sur l'ordre des matiÃ¨res:
+			// On ne va retenir que les matiÃ¨res du premier Ã©lÃ¨ve.
 			while($ligne=mysql_fetch_object($call_classe_infos)) {
 
 				$sql="SELECT * FROM j_eleves_groupes jeg WHERE (jeg.login='$eleve1' AND jeg.id_groupe='$ligne->id_groupe');";
@@ -3457,12 +3457,12 @@ function eleve_suivant() {
 				}
 			}
 
-			// Toutes les périodes...
+			// Toutes les pÃ©riodes...
 			$sql="SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode";
 			$result_periode=mysql_query($sql);
 			$nb_periode=mysql_num_rows($result_periode);
 
-			// Initialisation des séries:
+			// Initialisation des sÃ©ries:
 			$nb_series=$nb_periode;
 			for($i=1;$i<=$nb_series;$i++) {$serie[$i]="";}
 
@@ -3471,12 +3471,12 @@ function eleve_suivant() {
 			$tab_imagemap=array();
 
 			//$temoin_au_moins_une_vraie_moyenne="";
-			// $liste_temp va contenir les séries à envoyer au graphe et éventuellement les moyennes générales sur les différentes périodes.
+			// $liste_temp va contenir les sÃ©ries Ã  envoyer au graphe et Ã©ventuellement les moyennes gÃ©nÃ©rales sur les diffÃ©rentes pÃ©riodes.
 			$liste_temp="";
 			$cpt=1;
 			while($lign_periode=mysql_fetch_object($result_periode)) {
 				// DEBUG
-				//echo "<p>Période $cpt<br />";
+				//echo "<p>PÃ©riode $cpt<br />";
 
 				$num_periode[$cpt]=$lign_periode->num_periode;
 				//$nom_periode[$cpt]=$lign_periode->nom_periode;
@@ -3486,16 +3486,16 @@ function eleve_suivant() {
 				$affiche_graph="n";
 				$periode_num=$num_periode[$cpt];
 
-				// Réinitialisations:
+				// RÃ©initialisations:
 				unset($current_eleve_login);
 				unset($current_group);
 				unset($moy_gen_eleve);
 				unset($current_eleve_note);
 				unset($current_eleve_statut);
-				// Puis extraction de la période $periode_num
+				// Puis extraction de la pÃ©riode $periode_num
 				include('../lib/calcul_moy_gen.inc.php');
 
-				// On recherche l'indice de l'élève courant: $eleve1
+				// On recherche l'indice de l'Ã©lÃ¨ve courant: $eleve1
 				$indice_eleve1=-1;
 				for($loop=0;$loop<count($current_eleve_login);$loop++) {
 					//if($current_eleve_login[$loop]==$eleve1) {
@@ -3509,7 +3509,7 @@ function eleve_suivant() {
 				//echo "\$indice_eleve1=$indice_eleve1<br />";
 
 				if($indice_eleve1==-1) {
-					// L'élève n'est pas dans la classe sur la période?
+					// L'Ã©lÃ¨ve n'est pas dans la classe sur la pÃ©riode?
 					for($loop=0;$loop<count($matiere);$loop++) {
 						if($serie[$cpt]!="") {$serie[$cpt].="|";}
 						$serie[$cpt].="-";
@@ -3518,7 +3518,7 @@ function eleve_suivant() {
 					$mgen[$cpt]="-";
 				}
 				else {
-					// Moyenne générale de l'élève $eleve1 sur la période $cpt
+					// Moyenne gÃ©nÃ©rale de l'Ã©lÃ¨ve $eleve1 sur la pÃ©riode $cpt
 					$mgen[$cpt]=$moy_gen_eleve[$indice_eleve1];
 
 					// DEBUG
@@ -3526,9 +3526,9 @@ function eleve_suivant() {
 
 					// Boucle sur les groupes:
 					for($j=0;$j<count($id_groupe);$j++) {
-						if($serie[$cpt]!="") {$serie[$cpt].="|";} // Cette ligne impose que si un élève n'a pas la première matière de la liste sur une période, on mette quand même quelque chose (tiret,... mais pas vide sans quoi on a un décalage dans le nombre de champs entre $liste_matieres et $serie[$cpt])
+						if($serie[$cpt]!="") {$serie[$cpt].="|";} // Cette ligne impose que si un Ã©lÃ¨ve n'a pas la premiÃ¨re matiÃ¨re de la liste sur une pÃ©riode, on mette quand mÃªme quelque chose (tiret,... mais pas vide sans quoi on a un dÃ©calage dans le nombre de champs entre $liste_matieres et $serie[$cpt])
 
-						// Recherche de l'indice du groupe retourné en $current_group par calcul_moy_gen.inc.php
+						// Recherche de l'indice du groupe retournÃ© en $current_group par calcul_moy_gen.inc.php
 						$indice_groupe=-1;
 						for($loop=0;$loop<count($current_group);$loop++) {
 							if($current_group[$loop]['id']==$id_groupe[$j]) {
@@ -3547,9 +3547,9 @@ function eleve_suivant() {
 						}
 						else {
 							if(isset($current_eleve_note[$indice_groupe][$indice_eleve1])) {
-								// L'élève suit l'enseignement
+								// L'Ã©lÃ¨ve suit l'enseignement
 								if($current_eleve_statut[$indice_groupe][$indice_eleve1]!="") {
-									// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
+									// Mettre le statut pose des problÃ¨mes pour le tracÃ© de la courbe... abs, disp,... passent pour des zÃ©ros
 									//$serie[$cpt].=$current_eleve_statut[$indice_groupe][$indice_eleve1];
 									$serie[$cpt].="-";
 								}
@@ -3562,22 +3562,22 @@ function eleve_suivant() {
 								$sql="SELECT ma.* FROM matieres_appreciations ma WHERE (ma.login='$eleve1' AND ma.periode='$num_periode[$cpt]' AND ma.id_groupe='$id_groupe[$j]');";
 								affiche_debug("$sql<br />");
 								$app_eleve_query=mysql_query($sql);
-								// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+								// Dispositif de restriction des accÃ¨s aux apprÃ©ciations pour les comptes responsables/eleves
 								if((mysql_num_rows($app_eleve_query)>0)&&($tab_acces_app[$cpt]=="y")) {
 									$ligtmp=mysql_fetch_object($app_eleve_query);
 
 									$tab_imagemap[$cpt][$j]=htmlentities($ligtmp->appreciation);
-									$info_imagemap[$j]="Au moins une appréciation";
+									$info_imagemap[$j]="Au moins une apprÃ©ciation";
 								}
 								else{
 									$tab_imagemap[$cpt][$j]="";
 								}
 							}
 							else{
-								// L'élève n'a pas cette matière sur la période...
-								// Pas sûr qu'on puisse arriver là: si, cf ci-dessous
-								echo "<!-- $eleve1 n'a pas la matière ".$current_group[$indice_groupe]["matiere"]["matiere"]." sur la période ".$num_periode[$cpt]." -->\n";
-								// mais en mode 'toutes les périodes', il faut afficher un champ (cas de l'Histoire des arts au T3 seulement)
+								// L'Ã©lÃ¨ve n'a pas cette matiÃ¨re sur la pÃ©riode...
+								// Pas sÃ»r qu'on puisse arriver lÃ : si, cf ci-dessous
+								echo "<!-- $eleve1 n'a pas la matiÃ¨re ".$current_group[$indice_groupe]["matiere"]["matiere"]." sur la pÃ©riode ".$num_periode[$cpt]." -->\n";
+								// mais en mode 'toutes les pÃ©riodes', il faut afficher un champ (cas de l'Histoire des arts au T3 seulement)
 								$serie[$cpt].="-";
 							}
 						}
@@ -3630,14 +3630,14 @@ function eleve_suivant() {
 				while($lig_avis=mysql_fetch_object($res_avis)) {
 					//==========================================================
 					// AJOUT: boireaus 20080218
-					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+					//        Dispositif de restriction des accÃ¨s aux apprÃ©ciations pour les comptes responsables/eleves
 					//if($tab_acces_app[$lig_avis->periode]=="y") {
 					if(($tab_acces_app[$lig_avis->periode]=="y")&&($lig_avis->avis!="")) {
 					//==========================================================
 						$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlentities($lig_avis->avis)."</td></tr>\n";
 					//==========================================================
 					// AJOUT: boireaus 20080218
-					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+					//        Dispositif de restriction des accÃ¨s aux apprÃ©ciations pour les comptes responsables/eleves
 						$temoin_avis_present="y";
 					}
 					//==========================================================
@@ -3648,7 +3648,7 @@ function eleve_suivant() {
 				$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
 
 				//==========================================================
-				// COMMENTé ET REMONTé: boireaus 20080218
+				// COMMENTÃ© ET REMONTÃ©: boireaus 20080218
 				//$temoin_avis_present="y";
 				//==========================================================
 			}
@@ -3660,7 +3660,7 @@ function eleve_suivant() {
 
 				$nbMat=count($matiere);
 
-				// Pour éviter des pb de division par zero
+				// Pour Ã©viter des pb de division par zero
 				$largeurMat=$largeur_utile;
 				if($nbMat>0) {
 					$largeurMat=round($largeur_utile/$nbMat);
@@ -3703,16 +3703,16 @@ function eleve_suivant() {
 
 
 			//===============================================================
-			// Image Map pour le graphe en étoile
+			// Image Map pour le graphe en Ã©toile
 			// J'ai repris une portion du code de draw_graphe_star.php
-			// pour juste récupérer les coordonnées des textes de matières
+			// pour juste rÃ©cupÃ©rer les coordonnÃ©es des textes de matiÃ¨res
 			echo "<map name='imagemap_star'>\n";
 
 			$largeurTotale=$largeur_graphe;
 			$hauteurTotale=$hauteur_graphe;
 			$legendy[2]=$choix_periode;
 			$x0=round($largeurTotale/2);
-			if($legendy[2]=='Toutes_les_périodes') {
+			if($legendy[2]=='Toutes_les_pÃ©riodes') {
 				$L=round(($hauteurTotale-6*(ImageFontHeight($taille_police)+5))/2);
 				//$y0=round(3*(ImageFontHeight($taille_police))+5)+$L;
 				$y0=round(4*(ImageFontHeight($taille_police))+5)+$L;
@@ -3725,8 +3725,8 @@ function eleve_suivant() {
 			$pi=pi();
 
 			function coordcirc($note,$angle) {
-				// $note sur 20 (s'assurer qu'il y a le point pour séparateur et non la virgule)
-				// $angle en degrés
+				// $note sur 20 (s'assurer qu'il y a le point pour sÃ©parateur et non la virgule)
+				// $angle en degrÃ©s
 				global $pi;
 				global $L;
 				global $x0;
@@ -3753,7 +3753,7 @@ function eleve_suivant() {
 			//=================================
 
 			//=================================
-			// Légendes Matières: -> Coordonnées des textes de matières
+			// LÃ©gendes MatiÃ¨res: -> CoordonnÃ©es des textes de matiÃ¨res
 			for($i=0;$i<count($tab20)/2;$i++) {
 				$angle=round($i*360/$nbMat);
 
@@ -3926,7 +3926,7 @@ function eleve_suivant() {
 
 
 
-			// On génère les lignes de moyennes
+			// On gÃ©nÃ¨re les lignes de moyennes
 			$liste_temp="";
 			for($loop=1;$loop<=count($serie);$loop++) {
 				if($liste_temp!="") {$liste_temp.="&amp;";}
@@ -3948,17 +3948,17 @@ function eleve_suivant() {
 
 				if($mode_graphe=='png') {
 					//echo "<img src='draw_artichow_fig7.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3'>";
-					//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";
-					//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";
-					//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe'>";
+					//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_pÃ©riodes&compteur=$compteur&nb_data=$nbp'>";
+					//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_pÃ©riodes&compteur=$compteur&nb_data=$nbp'>";
+					//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_pÃ©riodes&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe'>";
 					echo "<img src='draw_graphe.php?";
-					// $liste_temp contient les séries et les moyennes générales.
+					// $liste_temp contient les sÃ©ries et les moyennes gÃ©nÃ©rales.
 					echo "$liste_temp";
 					echo "&amp;etiquette=$liste_matieres";
 					echo "&amp;titre=$graph_title";
 					echo "&amp;v_legend1=$eleve1";
-					//echo "&amp;v_legend2=Toutes_les_périodes";
-					echo "&amp;v_legend2=".rawurlencode("Toutes_les_périodes");
+					//echo "&amp;v_legend2=Toutes_les_pÃ©riodes";
+					echo "&amp;v_legend2=".rawurlencode("Toutes_les_pÃ©riodes");
 					echo "&amp;compteur=$compteur";
 					echo "&amp;nb_series=$nb_series";
 					echo "&amp;id_classe=$id_classe";
@@ -4026,13 +4026,13 @@ function eleve_suivant() {
 
 					echo "<object data='draw_graphe_svg.php?";
 
-					// $liste_temp contient les séries et les moyennes générales.
+					// $liste_temp contient les sÃ©ries et les moyennes gÃ©nÃ©rales.
 					echo "$liste_temp";
 					echo "&amp;etiquette=$liste_matieres";
 					echo "&amp;titre=$graph_title";
 					echo "&amp;v_legend1=$eleve1";
-					//echo "&amp;v_legend2=Toutes_les_périodes";
-					echo "&amp;v_legend2=".rawurlencode("Toutes_les_périodes");
+					//echo "&amp;v_legend2=Toutes_les_pÃ©riodes";
+					echo "&amp;v_legend2=".rawurlencode("Toutes_les_pÃ©riodes");
 					echo "&amp;compteur=$compteur";
 					echo "&amp;nb_series=$nb_series";
 					echo "&amp;id_classe=$id_classe";
@@ -4063,13 +4063,13 @@ function eleve_suivant() {
 			else{
 				echo "<img src='draw_graphe_star.php?";
 				//echo "<img src='draw_graphe.php?";
-				// $liste_temp contient les séries et les moyennes générales.
+				// $liste_temp contient les sÃ©ries et les moyennes gÃ©nÃ©rales.
 				echo "$liste_temp";
 				echo "&amp;etiquette=$liste_matieres";
 				echo "&amp;titre=$graph_title";
 				echo "&amp;v_legend1=$eleve1";
-				//echo "&amp;v_legend2=Toutes_les_périodes";
-				echo "&amp;v_legend2=".rawurlencode("Toutes_les_périodes");
+				//echo "&amp;v_legend2=Toutes_les_pÃ©riodes";
+				echo "&amp;v_legend2=".rawurlencode("Toutes_les_pÃ©riodes");
 				echo "&amp;compteur=$compteur";
 				echo "&amp;nb_series=$nb_series";
 				echo "&amp;id_classe=$id_classe";
@@ -4112,9 +4112,9 @@ function eleve_suivant() {
 		$num_periode=1;
 
 		$cpt=1;
-		// Boucle sur l'ordre des matières:
+		// Boucle sur l'ordre des matiÃ¨res:
 		while($ligne=mysql_fetch_object($call_classe_infos)) {
-			// Nom court/long de la matière:
+			// Nom court/long de la matiÃ¨re:
 			$matiere[$cpt]=$ligne->matiere;
 			$matiere_nom[$cpt]=$ligne->nom_complet;
 			$cpt++;
@@ -4127,7 +4127,7 @@ function eleve_suivant() {
 			echo "<p align='center'>$prenom1 $nom1";
 			//if($doublant1!="-") {echo " (<i>$doublant1</i>)";}
 			if(($doublant1!="-")&&($doublant1!="")) {echo " (<i>$doublant1</i>)";}
-			echo " né";
+			echo " nÃ©";
 			if($sexe1=="F") {echo "e";}
 			echo " le $naissance1[2]/$naissance1[1]/$naissance1[0] (<i>soit $age1 $precision1</i>).</p>";
 
@@ -4189,15 +4189,15 @@ function eleve_suivant() {
 				if($choix_periode=='toutes_periodes') {
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
 					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\">";
-					echo "Voir le bulletin simplifié";
-					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
+					echo "Voir le bulletin simplifiÃ©";
+					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes pÃ©riodes en infobulle' title='Bulletin simple toutes pÃ©riodes en infobulle' />";
 					echo "</a>";
 				}
 				else {
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
 					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');return false;\" target=\"_blank\">";
-					echo "Voir le bulletin simplifié";
-					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
+					echo "Voir le bulletin simplifiÃ©";
+					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes pÃ©riodes en infobulle' title='Bulletin simple toutes pÃ©riodes en infobulle' />";
 					echo "</a>";
 				}
 
@@ -4217,7 +4217,7 @@ function eleve_suivant() {
 					//echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
 					echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');return false;\" target=\"_blank\">";
 					//echo "<a href=\"javascript:afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1', '$id_classe'); return false;\" target=\"_blank\">";
-					echo "Années antérieures";
+					echo "AnnÃ©es antÃ©rieures";
 					echo "</a>";
 				}
 
@@ -4228,15 +4228,15 @@ function eleve_suivant() {
 			// A FAIRE:
 			// Faire apparaitre les absences...
 			
-			// Bibliothèque de fonctions de la page consultation élève.
+			// BibliothÃ¨que de fonctions de la page consultation Ã©lÃ¨ve.
 			include("../eleves/visu_ele_func.lib.php");
-			// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
+			// On extrait un tableau de l'ensemble des infos sur l'Ã©lÃ¨ve (bulletins, relevÃ©s de notes,... inclus)
 			$tab_ele=info_eleve($eleve1);
 			
-			//A FAIRE variable à utiliser et à initialiser pour afficher les absences sous le graphique
+			//A FAIRE variable Ã  utiliser et Ã  initialiser pour afficher les absences sous le graphique
 			$afficher_absences='y';
 			
-			//La variable 	$num_periode_choisie 	  contient le numéro de la période en cours 
+			//La variable 	$num_periode_choisie 	  contient le numÃ©ro de la pÃ©riode en cours 
 				
 			if($afficher_absences=="y") {
 				if((getSettingValue("active_module_absence")=='y')||
@@ -4257,21 +4257,21 @@ function eleve_suivant() {
 							$info_absence="<center>";
 
 							if((count($tab_ele['absences'])==0)) {
-								$info_absence.="Aucun bilan d'absences n'est enregistré.";
+								$info_absence.="Aucun bilan d'absences n'est enregistrÃ©.";
 							}
 							else {
 								if($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0')
 								{
-									$info_absence.="Aucune demi-journée d'absence.";
+									$info_absence.="Aucune demi-journÃ©e d'absence.";
 								} else {
-									$info_absence.="Nombre de demi-journées d'absence ";
+									$info_absence.="Nombre de demi-journÃ©es d'absence ";
 									if ($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0') {
-										$info_absence = $info_absence."justifiées ";
+										$info_absence = $info_absence."justifiÃ©es ";
 									}
 									$info_absence = $info_absence.": ".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</b>";
 									if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '0')
 									{
-										$info_absence = $info_absence." (<em>dont <b>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</b> non justifiée";
+										$info_absence = $info_absence." (<em>dont <b>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</b> non justifiÃ©e";
 										if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '1') { $info_absence = $info_absence."s"; }
 										$info_absence = $info_absence."</em>)";
 									}
@@ -4289,8 +4289,8 @@ function eleve_suivant() {
 							echo "<div align='center'>\n";
 							echo "<table class='boireaus' summary='Bilan des absences'>\n";
 							echo "<tr>\n";
-							echo "<th>Nombre 1/2 journées d'absence sur la période</th>\n";
-							echo "<th>dont non justifiées</th>\n";
+							echo "<th>Nombre 1/2 journÃ©es d'absence sur la pÃ©riode</th>\n";
+							echo "<th>dont non justifiÃ©es</th>\n";
 							echo "<th>Nombre de retards</th>\n";
 							echo "</tr>\n";
 							$alt=-1;
@@ -4309,18 +4309,18 @@ function eleve_suivant() {
 /*  A supprimer				   
 				    //Affichage tableau
 				    if(count($tab_ele['absences'])==0) {
-					    echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
+					    echo "<p>Aucun bilan d'absences n'est enregistrÃ©.</p>\n";
 				    }
 				    else {
 					    echo "<table class='boireaus' summary='Bilan des absences'>\n";
 					    echo "<tr>\n";
-					    echo "<th>Nombre 1/2 journées d'absence sur la période</th>\n";
-					    echo "<th>dont non justifiées</th>\n";
+					    echo "<th>Nombre 1/2 journÃ©es d'absence sur la pÃ©riode</th>\n";
+					    echo "<th>dont non justifiÃ©es</th>\n";
 					    echo "<th>Nombre de retards</th>\n";
 					    echo "</tr>\n";
 					    $alt=-1; 
 						echo "<tr class='lig$alt'>\n";
-						//echo "<td>N° ".$tab_ele['absences'][$num_periode_choisie-1]['periode']."</td>\n";
+						//echo "<td>NÂ° ".$tab_ele['absences'][$num_periode_choisie-1]['periode']."</td>\n";
 						echo "<td>".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</td>\n";
 						echo "<td>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</td>\n";
 						echo "<td>".$tab_ele['absences'][$num_periode_choisie-1]['nb_retards']."</td>\n";
@@ -4329,7 +4329,7 @@ function eleve_suivant() {
 				    }
 */
 				}
-// A décommenter pour le module abs 2 				
+// A dÃ©commenter pour le module abs 2 				
 				/* elseif (getSettingValue("active_module_absence")=='2') {
 				    // Initialisations files
 				    require_once("../lib/initialisationsPropel.inc.php");
@@ -4337,9 +4337,9 @@ function eleve_suivant() {
 
 				    echo "<table class='boireaus' summary='Bilan des absences'>\n";
 				    echo "<tr>\n";
-				    echo "<th>Absences sur la période</th>\n";
-				    echo "<th>Nombre de 1/2 journées</th>\n";
-				    echo "<th>dont non justifiées</th>\n";
+				    echo "<th>Absences sur la pÃ©riode</th>\n";
+				    echo "<th>Nombre de 1/2 journÃ©es</th>\n";
+				    echo "<th>dont non justifiÃ©es</th>\n";
 				    echo "<th>Nombre de retards</th>\n";
 				    echo "</tr>\n";
 				    $alt=1;
@@ -4384,16 +4384,16 @@ function eleve_suivant() {
 		
 		//=========================
 		// AJOUT: boireaus 20090115
-		// La variable peut être vide si on n'a pas choisi ce mode d'affichage ou si on n'a pas le droit de saisie, ou péridoe close,...
+		// La variable peut Ãªtre vide si on n'a pas choisi ce mode d'affichage ou si on n'a pas le droit de saisie, ou pÃ©ridoe close,...
 		echo $texte_saisie_avis_fixe;
 		//=========================
 
 	}
 	else{
 		if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
-			echo "<p align='center'>Choisissez une période et validez.</p>\n";
+			echo "<p align='center'>Choisissez une pÃ©riode et validez.</p>\n";
 		} else {
-			echo "<p align='center'>Choisissez un élève et validez.</p>\n";
+			echo "<p align='center'>Choisissez un Ã©lÃ¨ve et validez.</p>\n";
 		}
 	}
 	echo "</td>\n";
@@ -4411,7 +4411,7 @@ function eleve_suivant() {
 	echo "</table>\n";
 
 	if(!isset($_POST['is_posted'])) {
-		// Pour la première validation lors de l'accès à la page de graphe et ainsi obtenir directement le premier affichage:
+		// Pour la premiÃ¨re validation lors de l'accÃ¨s Ã  la page de graphe et ainsi obtenir directement le premier affichage:
 		echo "<script type='text/javascript'>
 	document.forms['form_choix_eleves'].submit();
 </script>\n";
@@ -4429,7 +4429,7 @@ function div_cmnt_type() {
 	global $num_periode_choisie;
 	global $graphe_champ_saisie_avis_fixe;
 
-	// Récupération du numéro de la période de saisie de l'avis du conseil:
+	// RÃ©cupÃ©ration du numÃ©ro de la pÃ©riode de saisie de l'avis du conseil:
 	$periode_num=$num_periode_choisie;
 
 	$sql="show tables;";
@@ -4486,14 +4486,14 @@ function div_cmnt_type() {
 
 				// Pour conserver le code HTML saisi dans les commentaires-type...
 				if((preg_match("/</",$ligne_commentaire->commentaire))&&(preg_match("/>/",$ligne_commentaire->commentaire))) {
-					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
+					/* Si le commentaire contient du code HTML, on ne remplace pas les retours Ã  la ligne par des <br> pour Ã©viter des doubles retours Ã  la ligne pour un code comme celui-ci:
 						<p>Blabla<br>
 						Blibli</p>
 					*/
 					$retour_lignes_cmnt_type.=htmlentities(stripslashes(trim($ligne_commentaire->commentaire)));
 				}
 				else{
-					//Si le commentaire ne contient pas de code HTML, on remplace les retours à la ligne par des <br>:
+					//Si le commentaire ne contient pas de code HTML, on remplace les retours Ã  la ligne par des <br>:
 					$retour_lignes_cmnt_type.=htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
 				}
 
@@ -4526,7 +4526,7 @@ function ajuste_pos(id_div) {
 
 // Pour konqueror...
 function complete_textarea_avis(num) {
-	// Récupération de l'identifiant du TEXTAREA à remplir
+	// RÃ©cupÃ©ration de l'identifiant du TEXTAREA Ã  remplir
 	id_textarea_courant='no_anti_inject_current_eleve_login_ap2'
 	//alert('id_textarea_courant='+id_textarea_courant);
 
@@ -4534,7 +4534,7 @@ function complete_textarea_avis(num) {
 	contenu_courant_textarea_courant=eval(\"document.getElementById('\"+id_textarea_courant+\"').value\");
 	//alert('contenu_courant_textarea_courant='+contenu_courant_textarea_courant);
 
-	// Commentaire à ajouter
+	// Commentaire Ã  ajouter
 	commentaire_a_ajouter=eval(\"document.getElementById('commentaire_type_\"+num+\"').value\");
 	//alert('commentaire_a_ajouter='+commentaire_a_ajouter);
 
@@ -4572,12 +4572,12 @@ echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute;
 		echo "</div>\n";
 
 		echo "<div id='titre_entete_bull_simp'>";
-		echo "Bulletin simplifié de $prenom1 $nom1 ";
+		echo "Bulletin simplifiÃ© de $prenom1 $nom1 ";
 		if($choix_periode=='periode') {
-			echo "en période $num_periode_choisie";
+			echo "en pÃ©riode $num_periode_choisie";
 		}
 		else {
-			echo "de la période 1 à la $nb_periode";
+			echo "de la pÃ©riode 1 Ã  la $nb_periode";
 		}
 		echo "</div>\n";
 	echo "</div>\n";
@@ -4605,7 +4605,7 @@ echo "</div>\n";
 echo "<script type='text/javascript'>
 	// <![CDATA[
 	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
-		//document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+		//document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifiÃ© de '+login_eleve+' pÃ©riode '+num_per1+' Ã  '+num_per2;
 
 		//new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
 	}

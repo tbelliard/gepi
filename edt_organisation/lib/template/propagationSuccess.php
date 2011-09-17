@@ -42,7 +42,7 @@
                                             </div>
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
-                                                <p>Cette partie du logiciel est en cours de développement. Elle vous permettra la publication des emplois du temps sur les différentes périodes calendaires.</p>
+                                                <p>Cette partie du logiciel est en cours de dÃ©veloppement. Elle vous permettra la publication des emplois du temps sur les diffÃ©rentes pÃ©riodes calendaires.</p>
                                                 <div class="cleared"></div>
                                                 <!-- /article-content -->
                                             </div>

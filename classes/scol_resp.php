@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-//INSERT INTO `droits` VALUES ('/classes/scol_resp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Affectation des comptes scolaritÈ aux classes', '');
+//INSERT INTO `droits` VALUES ('/classes/scol_resp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Affectation des comptes scolarit√© aux classes', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -75,7 +75,7 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 						$notok = true;
 					}
 				}
-				// Sinon: l'enregistrement est dÈj‡ prÈsent.
+				// Sinon: l'enregistrement est d√©j√† pr√©sent.
 			}
 			else{
 				$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$tab_id_clas[$j]."' AND login='".$scol_login[$i]."'");
@@ -122,9 +122,9 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 	*/
 
 	if ($notok == true) {
-		$msg .= "Il y a eu des erreurs lors de l'enregistrement des donnÈes";
+		$msg .= "Il y a eu des erreurs lors de l'enregistrement des donn√©es";
 	} else {
-		$msg .= "L'enregistrement des donnÈes s'est bien passÈ.";
+		$msg .= "L'enregistrement des donn√©es s'est bien pass√©.";
 	}
 }
 
@@ -137,7 +137,7 @@ if (isset($_GET['disp_filter'])) {
 	$disp_filter = "only_undefined";
 }
 
-$themessage  = 'Des informations ont ÈtÈ modifiÈes. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont √©t√© modifi√©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes";
 require_once("../lib/header.inc");
@@ -154,8 +154,8 @@ if(!isset($quitter_la_page)){
 	echo "</p>\n";
 }
 else{
-	// Cette page a ÈtÈ ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
-	// AprËs modification Èventuelle, il faut quitter cette page.
+	// Cette page a √©t√© ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
+	// Apr√®s modification √©ventuelle, il faut quitter cette page.
 	echo "<p class='bold'>";
 	echo "<a href='index.php' onClick=\"if(confirm_abandon (this, change, '$themessage')){self.close()};return false;\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a>";
 	echo "</p>\n";
@@ -165,8 +165,8 @@ else{
 }
 ?>
 
-<p>Affectez les classes aux comptes scolaritÈ.</p>
-<!--p><a href="scol_resp.php?disp_filter=all">Afficher toutes les classes</a> || <a href="scol_resp.php?disp_filter=only_undefined">Afficher les classes non-paramÈtrÈes</a></p-->
+<p>Affectez les classes aux comptes scolarit√©.</p>
+<!--p><a href="scol_resp.php?disp_filter=all">Afficher toutes les classes</a> || <a href="scol_resp.php?disp_filter=only_undefined">Afficher les classes non-param√©tr√©es</a></p-->
 <?php
 
 	//echo "<table border='1'>\n";
@@ -203,8 +203,8 @@ else{
 
 		//echo "<a href='javascript:modif_case($i,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 		echo "<a href=\"javascript:modif_case($i,true,'col');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-		//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>\n";
-		echo "<a href=\"javascript:modif_case($i,false,'col');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>\n";
+		//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>\n";
+		echo "<a href=\"javascript:modif_case($i,false,'col');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>\n";
 
 		echo "<input type='hidden' name='scol_login[$i]' value='$scol_login[$i]' />";
 		//echo "</td>\n";
@@ -247,8 +247,8 @@ else{
 			}
 			echo "<td>\n";
 			echo "<a href=\"javascript:modif_case($j,true,'lig');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>\n";
-			echo "<a href=\"javascript:modif_case($j,false,'lig');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>\n";
+			//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>\n";
+			echo "<a href=\"javascript:modif_case($j,false,'lig');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 			$j++;
@@ -259,7 +259,7 @@ else{
 		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 	} else {
 		echo "</table>\n";
-		echo "<p class='grand'><b>Attention :</b> aucune classe n'a ÈtÈ dÈfinie dans la base GEPI !</p>\n";
+		echo "<p class='grand'><b>Attention :</b> aucune classe n'a √©t√© d√©finie dans la base GEPI !</p>\n";
 	}
 
 
@@ -272,7 +272,7 @@ else{
 	echo "<script type='text/javascript' language='javascript'>
 		/*
 		function modif_case(id_login,statut){
-			// id_login: numÈro de colonne correspondant au login
+			// id_login: num√©ro de colonne correspondant au login
 			// statut: true ou false
 			for(k=0;k<$nombre_lignes;k++){
 				if(document.getElementById('case_'+id_login+'_'+k)){
@@ -284,7 +284,7 @@ else{
 		*/
 
 		function modif_case(id,statut,mode){
-			// id: numÈro de:
+			// id: num√©ro de:
 			//					. colonne correspondant au login
 			//					. ligne
 			// statut: true ou false
@@ -322,7 +322,7 @@ else{
 		echo "</option>\n";
 	}
 	echo "</select>";
-	// On va chercher les classes dÈj‡ existantes, et on les affiche.
+	// On va chercher les classes d√©j√† existantes, et on les affiche.
 
 	$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 	$nombre_lignes = mysql_num_rows($call_data);
@@ -373,14 +373,14 @@ else{
 		//============================================
 
 		echo "<a href='javascript:modif_cases(true)'>Tout cocher</a>/\n";
-		echo "<a href='javascript:modif_cases(false)'>Tout dÈcocher</a>\n";
+		echo "<a href='javascript:modif_cases(false)'>Tout d√©cocher</a>\n";
 
 
 		echo "<input type='hidden' name='action' value='reg_scolresp' />\n";
 		echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 	} else {
-		echo "<p class='grand'>Attention : aucune classe n'a ÈtÈ dÈfinie dans la base GEPI !</p>";
+		echo "<p class='grand'>Attention : aucune classe n'a √©t√© d√©finie dans la base GEPI !</p>";
 	}
 */
 ?>

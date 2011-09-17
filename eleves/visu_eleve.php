@@ -31,7 +31,7 @@ require_once("../lib/initialisations.inc.php");
 
 
 $titre_page = "Consultation d'un ".$gepiSettings['denomination_eleve'];
-// fonctions complémentaires et/ou librairies utiles
+// fonctions complÃ©mentaires et/ou librairies utiles
 
 
 // Resume session
@@ -44,7 +44,7 @@ if ($resultat_session == "c") {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 // SQL : INSERT INTO droits VALUES ( '/eleves/visu_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Consultation_d_un_eleve', '');
 // maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/visu_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Consultation_d_un_eleve', '');";
 //

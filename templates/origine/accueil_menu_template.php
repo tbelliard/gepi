@@ -3,7 +3,7 @@
  * $Id$
 */
 ?>
-<!-- menus général -->
+<!-- menus gÃ©nÃ©ral -->
 
 <div class='div_tableau'>
 	<h3 class="colonne ie_gauche">
@@ -18,4 +18,4 @@
 </div>
 
 
-<!-- Fin menu	général -->	
+<!-- Fin menu	gÃ©nÃ©ral -->	

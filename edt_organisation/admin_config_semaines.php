@@ -60,20 +60,20 @@ $num_interne = isset($_GET["num_interne"]) ? $_GET["num_interne"] : (isset($_POS
 
 // ======================================================
 //
-//		fonctions utilisées par config_semaines
+//		fonctions utilisÃ©es par config_semaines
 //
 // ======================================================
 	
 function trouverDates($numero_semaine){
-	// fonction qui permet de déterminer la date de début de la semaine (lundi)
+	// fonction qui permet de dÃ©terminer la date de dÃ©but de la semaine (lundi)
 	/*
 	$ts_depart = 1186358400;
-	$ts_depart = 1217887200; // 5 aout 2008 à 00:00:00
+	$ts_depart = 1217887200; // 5 aout 2008 Ã  00:00:00
 	$ts_depart = 1249336800;
-	$ts_depart = 1280771449; // 2 août 2010 à 00:00:00
+	$ts_depart = 1280771449; // 2 aoÃ»t 2010 Ã  00:00:00
 */
 	
-	// On recherche l'année
+	// On recherche l'annÃ©e
 	$maintenant = date("n");
 	if ($maintenant >= 8) {
 		$annee = date("Y");
@@ -81,7 +81,7 @@ function trouverDates($numero_semaine){
 		$annee = date("Y") - 1;
 	}
 	
-	// On recherche le premier lundi du mois d'Août
+	// On recherche le premier lundi du mois d'AoÃ»t
 	$lundi1=1;
 	while (date("N",mktime(0, 0, 0, 8, $lundi1, $annee))!=1) {
 		$lundi1++;
@@ -115,11 +115,11 @@ function trouverDates($numero_semaine){
 
 // ======================================================
 //
-//				préparation de la page
+//				prÃ©paration de la page
 //
 // ======================================================
 
-// ajout et mise à jour de la base
+// ajout et mise Ã  jour de la base
 if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 {
 	$i = '0';
@@ -162,7 +162,7 @@ if ( $action === 'visualiser' )
 
 // ======================================================
 //
-//		On traite l'affichage du tableau récapitulatif
+//		On traite l'affichage du tableau rÃ©capitulatif
 //
 // ======================================================	
 
@@ -170,14 +170,14 @@ if ( $action === 'visualiser' )
 if ($action === "visualiser") {
 
 // header
-$titre_page = "Définition des types de semaine de l'établissement";
+$titre_page = "DÃ©finition des types de semaine de l'Ã©tablissement";
 $style_specifique = "templates/".NameTemplateEdt()."/css/style_edt";
 require_once("../lib/header.inc");
 
 /* gestion des jours de chaque semaine */
-// On considère que la 32e semaine commence le 6 août 2007
+// On considÃ¨re que la 32e semaine commence le 6 aoÃ»t 2007
 // En timestamp Unix GMT, cette date vaut 1186358400 secondes
-// RAPPEL : une journée a 86400 secondes et une semaine en a 604800
+// RAPPEL : une journÃ©e a 86400 secondes et une semaine en a 604800
 
 	require_once("./menu.inc.php");
 	?>
@@ -189,7 +189,7 @@ require_once("../lib/header.inc");
 		<?php 
 		require_once("./menu.inc.new.php"); ?>
 		
-		<h2>Définition des types de semaines</h2>
+		<h2>DÃ©finition des types de semaines</h2>
 
 		<div style="text-align: center;">			
 			<form method="post" action="admin_config_semaines.php?action=<?php echo $action; ?>" name="form1">
@@ -200,21 +200,21 @@ require_once("../lib/header.inc");
 				<table cellpadding="0" cellspacing="1" class="tab_table" summary="Semaines">
 				<tbody>
 					<tr>
-						<th class="tab_th" style="width: 100px;">Semaine n°<br /> (officiel)</th>
+						<th class="tab_th" style="width: 100px;">Semaine nÂ°<br /> (officiel)</th>
 						<th class="tab_th" style="width: 100px;">Num&eacute;ro<br />interne
 						<br />
-						<a href="javascript: numerotation_auto()" title="Numérotation automatique; Laisser vides les champs à ne pas traiter"><img src="../images/icons/wizard.png" width="16" height="16" alt="Numérotation automatique d'après le premier champ" /></a>
+						<a href="javascript: numerotation_auto()" title="NumÃ©rotation automatique; Laisser vides les champs Ã  ne pas traiter"><img src="../images/icons/wizard.png" width="16" height="16" alt="NumÃ©rotation automatique d'aprÃ¨s le premier champ" /></a>
 						</th>
 						<th class="tab_th" style="width: 100px;">Type
 						<br />
-						<a href="javascript: alterne_auto_semaines_AB()" title="Alterner les semaines A et B; Laisser vides les champs à ne pas traiter"><img src="../images/icons/wizard.png" width="16" height="16" alt="Alterner les semaines A/B" /></a>
+						<a href="javascript: alterne_auto_semaines_AB()" title="Alterner les semaines A et B; Laisser vides les champs Ã  ne pas traiter"><img src="../images/icons/wizard.png" width="16" height="16" alt="Alterner les semaines A/B" /></a>
 						</th>
 						<th class="tab_th" style="width: 200px;">Du</th>
 						<th class="tab_th" style="width: 200px;">au</th>
 					</tr>
 					<?php
-					// On permet l'affichage en commençant par la 32ème semaine et en terminant par la 31 ème de l'année suivante
-					// attention, on part du lundi à 00:00:00, le samedi matin à la même heure est donc 86400*5 fois plus loin (et pas 6*86400 fois).
+					// On permet l'affichage en commenÃ§ant par la 32Ã¨me semaine et en terminant par la 31 Ã¨me de l'annÃ©e suivante
+					// attention, on part du lundi Ã  00:00:00, le samedi matin Ã  la mÃªme heure est donc 86400*5 fois plus loin (et pas 6*86400 fois).
 					$i = '31';
 					$i_initial=$i;
 					$ic = '1';

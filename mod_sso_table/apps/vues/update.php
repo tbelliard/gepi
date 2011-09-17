@@ -19,16 +19,16 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 ?>
 [onload;file=menu.php]
-<p>Mise à jour de l'utilisateur : [b1.login_gepi] </p>
-<p class='message_red'> Si le champs login sso n'est pas vide c'est qu'une correspondance existe déja pour cet utilisateur. Soyez certain de la mise à jour</p>
+<p>Mise Ã  jour de l'utilisateur : [b1.login_gepi] </p>
+<p class='message_red'> Si le champs login sso n'est pas vide c'est qu'une correspondance existe dÃ©ja pour cet utilisateur. Soyez certain de la mise Ã  jour</p>
 <form action="index.php?ctrl=maj&action=updated"  method="post">
-      <p>Login gépi :</p>
+      <p>Login gÃ©pi :</p>
        <input type="text" name="login_gepi" id="login_gepi" value="[b1.login_gepi]" disabled />
        <input type="hidden" name="login_gepi" id="login_gepi" value="[b1.login_gepi]" />
        <p>Login sso :</p>    <input type="text" name="login_sso" id="login_sso" value="[b1.login_sso;if b1.login_ss0 !='']" />

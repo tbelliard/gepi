@@ -2,9 +2,9 @@
 
 // Nettoyage des tables
 
-// ATTENTION: Lors de l'ajout de tables à nettoyer à une étape donnée, à veiller, notamment dans le cas de tables temporaires, à vérifier que dans la suite de la procédeure d'initialisation, cette table n'intervient pas... ou sans perturbation
+// ATTENTION: Lors de l'ajout de tables Ã  nettoyer Ã  une Ã©tape donnÃ©e, Ã  veiller, notamment dans le cas de tables temporaires, Ã  vÃ©rifier que dans la suite de la procÃ©deure d'initialisation, cette table n'intervient pas... ou sans perturbation
 
-// Etape de l'import des élèves et classes
+// Etape de l'import des Ã©lÃ¨ves et classes
 $liste_tables_del_etape_eleves = array(
 // mod_abs2
 "a_agregation_decompte",
@@ -32,25 +32,25 @@ $liste_tables_del_etape_eleves = array(
 "j_aidcateg_super_gestionnaires",
 "j_aidcateg_utilisateurs",
 
-// Elèves et responsables
+// ElÃ¨ves et responsables
 "eleves",
 "responsables",
 /*
 // NE FAUDRAIT-IL PAS VIDER ICI responsables2, resp_pers et reps_adr?
-// NON: Cela empêche de conserver les comptes utilisateurs pour les responsables
+// NON: Cela empÃªche de conserver les comptes utilisateurs pour les responsables
 "responsables2",
 "resp_pers",
 "resp_adr",
 */
 "j_eleves_classes",
 //==========================
-// On ne vide plus la table chaque année
-// Problème avec Sconet qui récupère seulement l'établissement de l'année précédente qui peut être l'établissement courant
+// On ne vide plus la table chaque annÃ©e
+// ProblÃ¨me avec Sconet qui rÃ©cupÃ¨re seulement l'Ã©tablissement de l'annÃ©e prÃ©cÃ©dente qui peut Ãªtre l'Ã©tablissement courant
 //"j_eleves_etablissements",
 //==========================
 "j_eleves_professeurs",
 "j_eleves_regime",
-// Notes et appréciations
+// Notes et apprÃ©ciations
 "matieres_appreciations",
 "matieres_notes",
 "matieres_appreciations_grp",
@@ -73,7 +73,7 @@ $liste_tables_del_etape_eleves = array(
 
 "tempo2",
 "tempo",
-// Découpe de trombinoscopes
+// DÃ©coupe de trombinoscopes
 "trombino_decoupe",
 "trombino_decoupe_param",
 // Cahier de notes
@@ -101,7 +101,7 @@ $liste_tables_del_etape_eleves = array(
 "eb_epreuves",
 "eb_groupes",
 "eb_profs",
-// Génèse des classes
+// GÃ©nÃ¨se des classes
 "gc_ele_arriv_red",
 "gc_eleves_options",
 // mod_discipline
@@ -119,7 +119,7 @@ $liste_tables_del_etape_eleves = array(
 "rss_users"
 );
 
-// Etape de l'import des matières
+// Etape de l'import des matiÃ¨res
 $liste_tables_del_etape_matieres = array(
 "eleves_groupes_settings",
 "groupes",
@@ -157,7 +157,7 @@ $liste_tables_del_etape_matieres = array(
 'edt_classes',
 'edt_cours'
 /*
-// Attente de confirmation de Pascal Fautrero pour décommenter...
+// Attente de confirmation de Pascal Fautrero pour dÃ©commenter...
 ,
 "edt_calendrier",
 //"edt_classes",
@@ -173,7 +173,7 @@ $liste_tables_del_etape_matieres = array(
 
 // Etape de l'import des responsables
 $liste_tables_del_etape_resp = array(
-// On vide l'ancienne table responsables pour ne pas conserver des infos d'années antérieures:
+// On vide l'ancienne table responsables pour ne pas conserver des infos d'annÃ©es antÃ©rieures:
 "responsables",
 
 "responsables2",

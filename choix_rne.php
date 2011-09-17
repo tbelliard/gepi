@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Il faudrait ajouter de la sécurité, mais je ne sais pas quoi :?
+// Il faudrait ajouter de la sÃ©curitÃ©, mais je ne sais pas quoi :?
 
 
 // ===================== Initialisation des variables ===================
@@ -32,7 +32,7 @@ $aff_options = NULL;
 $rne = explode("|", $lesrne);
 	for($a = 0 ; $a < $nbre ; $a++){
 
-		// On affiche les différentes propositions
+		// On affiche les diffÃ©rentes propositions
 		$aff_options .= '<option value="'.$rne[$a].'">'.$rne[$a].'</option>'."\n";
 
 	}

@@ -40,10 +40,10 @@ if (!checkAccess()) {
     die();
 }
 
-// Page bourrinée... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
+// Page bourrinÃ©e... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
 check_token();
 
-// Initialisation du répertoire actuel de sauvegarde
+// Initialisation du rÃ©pertoire actuel de sauvegarde
 $dirname = getSettingValue("backup_directory");
 
 

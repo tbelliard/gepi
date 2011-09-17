@@ -23,14 +23,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Sécurité : éviter que quelqu'un appelle ce fichier seul
+// SÃ©curitÃ© : Ã©viter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
 $analyse = explode("/", $serveur_script);
 	if ($analyse[3] == "mini_calendrier.php") {
 		die();
 	}
 
-// ========================= Récupérer le bon fichier de langue
+// ========================= RÃ©cupÃ©rer le bon fichier de langue
 require_once('../edt_organisation/choix_langue.php');
 
 ?>

@@ -29,7 +29,7 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complémentaires et/ou librairies utiles
+// fonctions complÃ©mentaires et/ou librairies utiles
 
 
 // Resume session
@@ -42,9 +42,9 @@ if ($resultat_session == "c") {
     die();
 }
 
-// Sécurité
-// SQL : INSERT INTO droits VALUES ( '/eleves/import_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Importation bulletin élève', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/import_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Importation bulletin élève', '');";
+// SÃ©curitÃ©
+// SQL : INSERT INTO droits VALUES ( '/eleves/import_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Importation bulletin Ã©lÃ¨ve', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/import_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Importation bulletin Ã©lÃ¨ve', '');";
 //
 
 
@@ -108,17 +108,17 @@ function get_infos_from_ele_login($ele_login,$mode) {
 	return $retour;
 }
 
-// PB: Il faut remplacer le login PROF par ANONYME_EXT... ou le nom de l'établissement
-// A l'import, il faut avoir créé l'élève,
-//             créer des enseignements? dans une classe EXTERIEUR... il faut une classe par élève...
-//             si on a plusieurs arrivées, ça fait des matières en plus,... pas un pb...
-//             seules les matières suivies par l'élève sont prises en compte...
-//             créer des cours différents pour chaque élève pour éviter des moyennes de classe fantaisistes
-// A l'export, une ligne pour l'association: LOGIN_ETAB -> Nom, prénom pour la table utilisateurs
+// PB: Il faut remplacer le login PROF par ANONYME_EXT... ou le nom de l'Ã©tablissement
+// A l'import, il faut avoir crÃ©Ã© l'Ã©lÃ¨ve,
+//             crÃ©er des enseignements? dans une classe EXTERIEUR... il faut une classe par Ã©lÃ¨ve...
+//             si on a plusieurs arrivÃ©es, Ã§a fait des matiÃ¨res en plus,... pas un pb...
+//             seules les matiÃ¨res suivies par l'Ã©lÃ¨ve sont prises en compte...
+//             crÃ©er des cours diffÃ©rents pour chaque Ã©lÃ¨ve pour Ã©viter des moyennes de classe fantaisistes
+// A l'export, une ligne pour l'association: LOGIN_ETAB -> Nom, prÃ©nom pour la table utilisateurs
 
 
 // Nom: gepiSchoolName
-// Prénom: gepiSchoolCity
+// PrÃ©nom: gepiSchoolCity
 
 // ======================== CSS et js particuliers ========================
 $utilisation_win = "non";
@@ -142,10 +142,10 @@ echo "<div class='norme'><p class='bold'><a href='index.php'><img src='../images
 if(getSettingValue('exp_imp_chgt_etab')!='yes') {
 	// Pour activer le dispositif:
 	// DELETE FROM setting WHERE name='exp_imp_chgt_etab';INSERT INTO setting SET name='exp_imp_chgt_etab', value='yes';
-	echo "<p>Cette page est destinée à importer les moyennes et appréciations du bulletin d'un élève arrivant d'un autre établissement<br />\n";
-	echo "L'élève doit avoir été préalablement créé dans votre base et affecté dans une classe pour une période au moins.</p>\n";
+	echo "<p>Cette page est destinÃ©e Ã  importer les moyennes et apprÃ©ciations du bulletin d'un Ã©lÃ¨ve arrivant d'un autre Ã©tablissement<br />\n";
+	echo "L'Ã©lÃ¨ve doit avoir Ã©tÃ© prÃ©alablement crÃ©Ã© dans votre base et affectÃ© dans une classe pour une pÃ©riode au moins.</p>\n";
 	echo "<p><br /></p>\n";
-	echo "<p>Le dispositif (<i>encore en cours de test au 17/07/2008</i>) ne semble pas activé.</p>\n";
+	echo "<p>Le dispositif (<i>encore en cours de test au 17/07/2008</i>) ne semble pas activÃ©.</p>\n";
 	require_once("../lib/footer.inc.php");
 	die();
 }
@@ -155,21 +155,21 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Cette page est destinée à importer les moyennes et appréciations du bulletin d'un élève arrivant d'un autre établissement<br />\n";
-	echo "L'élève doit avoir été préalablement créé dans votre base et affecté dans une classe pour une période au moins.</p>\n";
+	echo "<p>Cette page est destinÃ©e Ã  importer les moyennes et apprÃ©ciations du bulletin d'un Ã©lÃ¨ve arrivant d'un autre Ã©tablissement<br />\n";
+	echo "L'Ã©lÃ¨ve doit avoir Ã©tÃ© prÃ©alablement crÃ©Ã© dans votre base et affectÃ© dans une classe pour une pÃ©riode au moins.</p>\n";
 
 	echo "<p><i>Exemple:</i></p>\n";
 	echo "<blockquote>\n";
-	echo "<p>On inscrit un élève arrivant en décembre dans une classe pour les trimestres 2 et 3.<br />Et seul le trimestre 1 sera importé depuis un fichier CSV.\n";
+	echo "<p>On inscrit un Ã©lÃ¨ve arrivant en dÃ©cembre dans une classe pour les trimestres 2 et 3.<br />Et seul le trimestre 1 sera importÃ© depuis un fichier CSV.\n";
 	echo "</p>\n";
 	echo "</blockquote>\n";
 
-	echo "<p class='bold'>Choix de l'élève:</p>\n";
+	echo "<p class='bold'>Choix de l'Ã©lÃ¨ve:</p>\n";
 	// Formulaire pour navigateur SANS Javascript:
 	echo "<noscript>
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
 		<p>
-		Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
+		Afficher les Ã©lÃ¨ves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
 		</p>
@@ -206,7 +206,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
 	echo "<p>";
-	echo "Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
+	echo "Afficher les Ã©lÃ¨ves dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' value='Rechercher' onclick='cherche_eleves()' />\n";
 	echo "</p>\n";
@@ -220,19 +220,19 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "<p><br /></p>\n";
 	echo "<p><i>Remarque:</i></p>\n";
 	echo "<blockquote>\n";
-	echo "<p>Les bulletins de l'ancien établissement comporteront une information erronée:<br />La structure de la table 'j_eleves_cpe' ne tient pas compte des périodes si bien que le CPE responsable pour les périodes où l'élève était dans son précédent établissement appraîtra comme étant le CPE de votre établissement.<br />Il faudra changer la structure de 'j_eleves_cpe' dans une prochaine version de Gepi pour corriger ce bug.</p>\n";
+	echo "<p>Les bulletins de l'ancien Ã©tablissement comporteront une information erronÃ©e:<br />La structure de la table 'j_eleves_cpe' ne tient pas compte des pÃ©riodes si bien que le CPE responsable pour les pÃ©riodes oÃ¹ l'Ã©lÃ¨ve Ã©tait dans son prÃ©cÃ©dent Ã©tablissement appraÃ®tra comme Ã©tant le CPE de votre Ã©tablissement.<br />Il faudra changer la structure de 'j_eleves_cpe' dans une prochaine version de Gepi pour corriger ce bug.</p>\n";
 	echo "</blockquote>\n";
 }
 elseif(isset($_POST['Recherche_sans_js'])) {
-	// On ne passe ici que si JavaScript est désactivé
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
+	// On ne passe ici que si JavaScript est dÃ©sactivÃ©
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre Ã©lÃ¨ve</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
 
 	include("recherche_eleve.php");
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre Ã©lÃ¨ve</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -255,47 +255,47 @@ else {
 		$sql="SELECT c.classe,jec.periode,p.nom_periode FROM j_eleves_classes jec, classes c, periodes p WHERE jec.login='$ele_login' AND jec.id_classe=c.id AND p.num_periode=jec.periode ORDER BY jec.periode;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "L'élève n'est inscrit";
+			echo "L'Ã©lÃ¨ve n'est inscrit";
 			if($info_eleve['sexe']=='F') {echo "e";}
-			echo " dans aucune classe pour aucune période.<br />\n";
+			echo " dans aucune classe pour aucune pÃ©riode.<br />\n";
 			echo "</p>\n";
 		}
 		else {
 			while($lig=mysql_fetch_object($res)) {
 				if(!in_array($lig->periode,$tab_per)) {
 					$tab_per[]=$lig->periode;
-					echo "L'élève est inscrit";
+					echo "L'Ã©lÃ¨ve est inscrit";
 					if($info_eleve['sexe']=='F') {echo "e";}
-					echo " en ".$lig->classe." pour la période ".$lig->nom_periode.".<br />\n";
+					echo " en ".$lig->classe." pour la pÃ©riode ".$lig->nom_periode.".<br />\n";
 				}
 			}
 			echo "</p>\n";
 
-			echo "<p>Seule(s) la ou les période(s) non listée(s) ci-dessus pourra(ont) être importée(s) depuis le fichier CSV.</p>\n";
+			echo "<p>Seule(s) la ou les pÃ©riode(s) non listÃ©e(s) ci-dessus pourra(ont) Ãªtre importÃ©e(s) depuis le fichier CSV.</p>\n";
 		}
 
 		//echo nl2br(get_bull($ele_login));
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 		echo add_token_field();
-		echo "Fichier à importer: <input type='file' name='csv_file' value='' />\n";
+		echo "Fichier Ã  importer: <input type='file' name='csv_file' value='' />\n";
 		echo "<input type='hidden' name='ele_login' value=\"$ele_login\" />\n";
 		echo "<input type='submit' name='envoi' value='Envoyer' />\n";
 		echo "</form>\n";
 
-		echo "<p><i>Attention</i>&nbsp;: Veillez à n'importer que des fichiers CSV générés par Gepi.<br />Dans le doute, faites une sauvegarde préalable de la base.</p>\n";
+		echo "<p><i>Attention</i>&nbsp;: Veillez Ã  n'importer que des fichiers CSV gÃ©nÃ©rÃ©s par Gepi.<br />Dans le doute, faites une sauvegarde prÃ©alable de la base.</p>\n";
 	}
 	else {
 
 		//if((!is_array($_FILES["csv_file"]))||(!is_uploaded_file($_FILES["csv_file"]['tmp_name']))) {
 		if(!is_uploaded_file($_FILES["csv_file"]['tmp_name'])) {
-			echo "<p>Le fichier n'a pas été uploadé...<br />\n";
+			echo "<p>Le fichier n'a pas Ã©tÃ© uploadÃ©...<br />\n";
 			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login'>Retour au choix du fichier</a></p>\n";
 			require_once("../lib/footer.inc.php");
 			die();
 		}
 
-		echo "<p>Fichier uploadé...<br />\n";
+		echo "<p>Fichier uploadÃ©...<br />\n";
 		$csv_file=$_FILES["csv_file"];
 		//echo "\$csv_file['tmp_name']=".$csv_file['tmp_name']."<br />";
 
@@ -343,7 +343,7 @@ else {
 		fclose($fich);
 		//echo "</p>\n";
 
-		// Recherche des infos établissement
+		// Recherche des infos Ã©tablissement
 		//$csv_file=$_FILES["csv_file"];
 		$fich=fopen($csv_file['tmp_name'],"r");
 		while (!feof($fich)) {
@@ -364,7 +364,7 @@ else {
 		$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='".$info_eleve['elenoet']."';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Insertion de l'association élève/établissement d'origine: ";
+			echo "<p>Insertion de l'association Ã©lÃ¨ve/Ã©tablissement d'origine: ";
 			$sql="INSERT INTO j_eleves_etablissements SET id_eleve='".$info_eleve['elenoet']."', id_etablissement='$rne_etab_ori';";
 			$res=mysql_query($sql);
 			if($res) {
@@ -379,7 +379,7 @@ else {
 			}
 		}
 		else {
-			echo "<p>Mise à jour de l'association élève/établissement d'origine: ";
+			echo "<p>Mise Ã  jour de l'association Ã©lÃ¨ve/Ã©tablissement d'origine: ";
 			$sql="UPDATE j_eleves_etablissements SET id_etablissement='$rne_etab_ori' WHERE id_eleve='".$info_eleve['elenoet']."';";
 			$res=mysql_query($sql);
 			if($res) {
@@ -395,14 +395,14 @@ else {
 		}
 
 
-		// Créer la classe
+		// CrÃ©er la classe
 		//$sql="SELECT classe FROM classes WHERE classe LIKE '$nom_etab_ori%';";
 		$sql="SELECT classe FROM classes WHERE classe='$nom_etab_ori';";
 		//echo "$sql<br />";
 		//flush();
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Création d'une classe '$nom_etab_ori': ";
+			echo "<p>CrÃ©ation d'une classe '$nom_etab_ori': ";
 
 			//$sql="INSERT INTO classes SET classe='$nom_etab_ori', nom_complet='$nom_etab_ori';";
 			$sql="INSERT INTO classes SET classe='".$nom_etab_ori."',
@@ -434,7 +434,7 @@ else {
 				$sql="SELECT classe FROM classes WHERE classe='".$nom_etab_ori.$cpt."';";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0) {
-					echo "<p>Création d'une classe '".$nom_etab_ori.$cpt."': ";
+					echo "<p>CrÃ©ation d'une classe '".$nom_etab_ori.$cpt."': ";
 
 					$sql="INSERT INTO classes SET classe='".$nom_etab_ori.$cpt."',
 												nom_complet='".$nom_etab_ori.$cpt."',
@@ -466,16 +466,16 @@ else {
 				}
 			}
 		}
-		echo "<p>Vous pourrez renommer ultérieurement la classe si vous le souhaitez.</p>\n";
+		echo "<p>Vous pourrez renommer ultÃ©rieurement la classe si vous le souhaitez.</p>\n";
 
 
-		// Insertion du même nombre de périodes pour l'ancienne classe que pour l'actuelle
-		// L'élève ne sera pas affecté dans la classe pour toutes les périodes
-		if($nb_per>0) {echo "<p>Création des périodes pour l'ancienne classe de l'élève ('$classe_etab'): ";}
+		// Insertion du mÃªme nombre de pÃ©riodes pour l'ancienne classe que pour l'actuelle
+		// L'Ã©lÃ¨ve ne sera pas affectÃ© dans la classe pour toutes les pÃ©riodes
+		if($nb_per>0) {echo "<p>CrÃ©ation des pÃ©riodes pour l'ancienne classe de l'Ã©lÃ¨ve ('$classe_etab'): ";}
 		for($i=1;$i<=$nb_per;$i++) {
 			if($i>1) {echo ", ";}
 			echo $i;
-			$sql="INSERT INTO periodes SET num_periode='$i', nom_periode='Période $i', verouiller='O', id_classe='$id_classe_etab';";
+			$sql="INSERT INTO periodes SET num_periode='$i', nom_periode='PÃ©riode $i', verouiller='O', id_classe='$id_classe_etab';";
 			$res=mysql_query($sql);
 			if($res) {
 				echo "<span style='color:green;'>OK</span>";
@@ -490,11 +490,11 @@ else {
 		}
 
 
-		// Créer l'utilisateur prof...
+		// CrÃ©er l'utilisateur prof...
 		$sql="SELECT login FROM utilisateurs WHERE nom='$nom_etab_ori' AND prenom='$ville_etab_ori';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Création d'un utilisateur professeur '$nom_etab_ori': ";
+			echo "<p>CrÃ©ation d'un utilisateur professeur '$nom_etab_ori': ";
 
 			// CREER UN LOGIN
 			$login_etab=generate_unique_login($nom_etab_ori,$ville_etab_ori,"name");
@@ -523,8 +523,8 @@ else {
 			$login_etab=$lig->login;
 		}
 
-		// Penser à inscrire dans j_scol_classe les comptes scolarité qui ont la classe actuelle de l'élève
-		// et si l'élève n'est dans aucune classe, proposer le lien.
+		// Penser Ã  inscrire dans j_scol_classe les comptes scolaritÃ© qui ont la classe actuelle de l'Ã©lÃ¨ve
+		// et si l'Ã©lÃ¨ve n'est dans aucune classe, proposer le lien.
 		$sql="SELECT DISTINCT jsc.login FROM j_eleves_classes jec,j_scol_classes jsc WHERE jec.login='$ele_login' AND jec.id_classe=jsc.id_classe;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
@@ -551,14 +551,14 @@ else {
 
 
 		/*
-		// On a forcément une info erronée sur le nom du CPE
+		// On a forcÃ©ment une info erronÃ©e sur le nom du CPE
 		// parce que la table j_eleves_cpe n'a que deux champs e_login et cpe_login
 
-		// Créer l'utilisateur CPE...
+		// CrÃ©er l'utilisateur CPE...
 		$sql="SELECT login FROM utilisateurs WHERE nom='CPE $nom_etab_ori' AND prenom='$ville_etab_ori';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Création d'un utilisateur 'CPE $nom_etab_ori': ";
+			echo "<p>CrÃ©ation d'un utilisateur 'CPE $nom_etab_ori': ";
 
 			// CREER UN LOGIN
 			$login_etab=generate_unique_login("CPE $nom_etab_ori","$ville_etab_ori","name");
@@ -590,11 +590,11 @@ else {
 		*/
 
 
-		// Pour ne pas créer autant de groupes par matière qu'il y a de périodes:
+		// Pour ne pas crÃ©er autant de groupes par matiÃ¨re qu'il y a de pÃ©riodes:
 		//$tab_src_id_groupes_crees=array();
 		$tab_dst_id_groupes_crees=array();
 
-		// Recherche des infos matières,...
+		// Recherche des infos matiÃ¨res,...
 		//$csv_file=$_FILES["csv_file"];
 		$fich=fopen($csv_file['tmp_name'],"r");
 		while (!feof($fich)) {
@@ -608,15 +608,15 @@ else {
 						$avis=$tab_tmp[2];
 
 
-						// A REVOIR: Il y a une économie de requêtes à faire sur les tests ci-dessous en stockant les infos dans un tableau
+						// A REVOIR: Il y a une Ã©conomie de requÃªtes Ã  faire sur les tests ci-dessous en stockant les infos dans un tableau
 
 
-						// Créer l'association dans 'periodes' si elle n'est pas déjà présente
+						// CrÃ©er l'association dans 'periodes' si elle n'est pas dÃ©jÃ  prÃ©sente
 						$sql="SELECT 1=1 FROM periodes WHERE num_periode='$periode' AND id_classe='$id_classe_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association période/classe pour la période '$periode': ";
-							$sql="INSERT INTO periodes SET num_periode='$periode', nom_periode='Période $periode', verouiller='O', id_classe='$id_classe_etab';";
+							echo "<p>Inscription de l'association pÃ©riode/classe pour la pÃ©riode '$periode': ";
+							$sql="INSERT INTO periodes SET num_periode='$periode', nom_periode='PÃ©riode $periode', verouiller='O', id_classe='$id_classe_etab';";
 							$res=mysql_query($sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
@@ -630,11 +630,11 @@ else {
 							}
 						}
 
-						// Inscription de l'élève dans la classe
+						// Inscription de l'Ã©lÃ¨ve dans la classe
 						$sql="SELECT 1=1 FROM j_eleves_classes WHERE periode='$periode' AND id_classe='$id_classe_etab' AND login='$ele_login';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'élève dans la classe '$classe_etab' pour la période '$periode': ";
+							echo "<p>Inscription de l'Ã©lÃ¨ve dans la classe '$classe_etab' pour la pÃ©riode '$periode': ";
 							$sql="INSERT INTO j_eleves_classes SET periode='$periode', id_classe='$id_classe_etab', login='$ele_login';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -653,7 +653,7 @@ else {
 						$sql="SELECT 1=1 FROM avis_conseil_classe WHERE login='$ele_login' AND periode='$periode';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'avis du conseil de classe pour la période '$periode': ";
+							echo "<p>Inscription de l'avis du conseil de classe pour la pÃ©riode '$periode': ";
 							//$sql="INSERT INTO avis_conseil_classe SET login='$ele_login', periode='$periode', avis='$avis';";
 							$sql="INSERT INTO avis_conseil_classe SET login='$ele_login', periode='$periode', avis='".my_ereg_replace("_POINT_VIRGULE_",";",$avis)."';";
 							$res=mysql_query($sql);
@@ -670,10 +670,10 @@ else {
 						}
 						else {
 							// Ca ne devrait pas arriver...
-							// Dans la lecture du fichier CSV, on ne retient que les périodes pour lesquelles il n'y a rien sur le bulletin de l'élève dans le nouvel établissement...
-							// ... ou plutôt les périodes pour lesquelles l'élève n'est dans aucune classe (donc rien sur le bulletin)
-							// Si on passe ici, c'est qu'il y a plusieurs lignes pour l'avis du conseil de classe pour une même période dans ce CSV.
-							echo "<p><span style='color:red;'>BIZARRE:</span> Il semble qu'il y ait plusieurs lignes d'avis du conseil de classe pour la période '$periode'.</p>\n";
+							// Dans la lecture du fichier CSV, on ne retient que les pÃ©riodes pour lesquelles il n'y a rien sur le bulletin de l'Ã©lÃ¨ve dans le nouvel Ã©tablissement...
+							// ... ou plutÃ´t les pÃ©riodes pour lesquelles l'Ã©lÃ¨ve n'est dans aucune classe (donc rien sur le bulletin)
+							// Si on passe ici, c'est qu'il y a plusieurs lignes pour l'avis du conseil de classe pour une mÃªme pÃ©riode dans ce CSV.
+							echo "<p><span style='color:red;'>BIZARRE:</span> Il semble qu'il y ait plusieurs lignes d'avis du conseil de classe pour la pÃ©riode '$periode'.</p>\n";
 						}
 					}
 				}
@@ -692,7 +692,7 @@ else {
 						$sql="SELECT 1=1 FROM absences WHERE login='$ele_login' AND periode='$periode';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription des absences/retards pour la période '$periode': ";
+							echo "<p>Inscription des absences/retards pour la pÃ©riode '$periode': ";
 							$sql="INSERT INTO absences SET login='$ele_login',
 															periode='$periode',
 															nb_absences='$nb_absences',
@@ -714,13 +714,13 @@ else {
 						}
 						else {
 							// Ca ne devrait pas arriver...
-							echo "<p><span style='color:red;'>BIZARRE:</span> Il semble qu'il y ait plusieurs lignes de totaux d'absences pour la période '$periode'.</p>\n";
+							echo "<p><span style='color:red;'>BIZARRE:</span> Il semble qu'il y ait plusieurs lignes de totaux d'absences pour la pÃ©riode '$periode'.</p>\n";
 						}
 					}
 				}
 				elseif((substr($ligne,0,20)!="INFOS_ETABLISSEMENT;")&&(substr($ligne,0,12)!="INFOS_ELEVE;")&&(substr($ligne,0,9)!="ABSENCES;")) {
-					// $ligne devrait correspondre à une matière
-					// Il faudrait identifier auparavant les matières et les associer aux matières du nouvel établissement...
+					// $ligne devrait correspondre Ã  une matiÃ¨re
+					// Il faudrait identifier auparavant les matiÃ¨res et les associer aux matiÃ¨res du nouvel Ã©tablissement...
 
 					$tab_tmp=explode(";",$ligne);
 
@@ -735,15 +735,15 @@ else {
 						$statut=$tab_tmp[5];
 						$app=$tab_tmp[6];
 
-						// A REVOIR: Il y a une économie de requêtes à faire sur les tests ci-dessous en stockant les infos dans un tableau
+						// A REVOIR: Il y a une Ã©conomie de requÃªtes Ã  faire sur les tests ci-dessous en stockant les infos dans un tableau
 
 
-						// Créer l'association dans 'periodes' si elle n'est pas déjà présente
+						// CrÃ©er l'association dans 'periodes' si elle n'est pas dÃ©jÃ  prÃ©sente
 						$sql="SELECT 1=1 FROM periodes WHERE num_periode='$periode' AND id_classe='$id_classe_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association période/classe pour la période '$periode': ";
-							$sql="INSERT INTO periodes SET num_periode='$periode', nom_periode='Période $periode', verouiller='O', id_classe='$id_classe_etab';";
+							echo "<p>Inscription de l'association pÃ©riode/classe pour la pÃ©riode '$periode': ";
+							$sql="INSERT INTO periodes SET num_periode='$periode', nom_periode='PÃ©riode $periode', verouiller='O', id_classe='$id_classe_etab';";
 							$res=mysql_query($sql);
 							if($res) {
 								echo "<span style='color:green;'>OK</span>";
@@ -757,11 +757,11 @@ else {
 							}
 						}
 
-						// Inscription de l'élève dans la classe
+						// Inscription de l'Ã©lÃ¨ve dans la classe
 						$sql="SELECT 1=1 FROM j_eleves_classes WHERE periode='$periode' AND id_classe='$id_classe_etab' AND login='$ele_login';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'élève dans la classe '$classe_etab' pour la période '$periode': ";
+							echo "<p>Inscription de l'Ã©lÃ¨ve dans la classe '$classe_etab' pour la pÃ©riode '$periode': ";
 							$sql="INSERT INTO j_eleves_classes SET periode='$periode', id_classe='$id_classe_etab', login='$ele_login';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -777,12 +777,12 @@ else {
 						}
 
 
-						// Insertion de la matière
+						// Insertion de la matiÃ¨re
 						//$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere' AND nom_complet='$matiere_nom_complet';";
 						$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de la matière '".htmlentities($matiere)."' dans la table 'matieres': ";
+							echo "<p>Inscription de la matiÃ¨re '".htmlentities($matiere)."' dans la table 'matieres': ";
 							$sql="INSERT INTO matieres SET matiere='$matiere', nom_complet='$matiere_nom_complet';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -797,11 +797,11 @@ else {
 							}
 						}
 
-						// Insertion de l'association prof/matière
+						// Insertion de l'association prof/matiÃ¨re
 						$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$matiere' AND id_professeur='$login_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association professeur '$login_etab' / matière '".htmlentities($matiere)."' dans la table 'j_professeurs_matieres': ";
+							echo "<p>Inscription de l'association professeur '$login_etab' / matiÃ¨re '".htmlentities($matiere)."' dans la table 'j_professeurs_matieres': ";
 							$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$matiere', id_professeur='$login_etab';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -847,8 +847,8 @@ else {
 						}
 						*/
 
-						// Insertion de l'association groupe/élève
-						echo "<p>Inscription de l'association groupe/élève dans la table 'j_eleves_groupes': ";
+						// Insertion de l'association groupe/Ã©lÃ¨ve
+						echo "<p>Inscription de l'association groupe/Ã©lÃ¨ve dans la table 'j_eleves_groupes': ";
 						$sql="INSERT INTO j_eleves_groupes SET id_groupe='$current_id_groupe', login='$ele_login', periode='$periode';";
 						$res=mysql_query($sql);
 						if($res) {
@@ -883,8 +883,8 @@ else {
 
 						/*
 						// FAIT PAR LE create_group()
-						// Insertion de l'association groupe/matière
-						echo "<p>Inscription de l'association groupe/matière dans la table 'j_groupes_matieres': ";
+						// Insertion de l'association groupe/matiÃ¨re
+						echo "<p>Inscription de l'association groupe/matiÃ¨re dans la table 'j_groupes_matieres': ";
 						$sql="INSERT INTO j_groupes_matieres SET id_groupe='$current_id_groupe', matiere='$matiere';";
 						$res=mysql_query($sql);
 						if($res) {
@@ -918,13 +918,13 @@ else {
 
 
 
-						// Insertion de l'appréciation
+						// Insertion de l'apprÃ©ciation
 						/*
 						$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='$ele_login' AND id_groupe='$current_id_groupe' AND periode='$periode';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
 						*/
-							echo "<p>Inscription de l'appréciation pour la matière '".htmlentities($matiere)."' sur la période '$periode': ";
+							echo "<p>Inscription de l'apprÃ©ciation pour la matiÃ¨re '".htmlentities($matiere)."' sur la pÃ©riode '$periode': ";
 							//$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='$app';";
 							$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='".my_ereg_replace("_POINT_VIRGULE_",";",$app)."';";
 							$res=mysql_query($sql);
@@ -942,11 +942,11 @@ else {
 						}
 						else {
 							// Ca ne devrait pas arriver...
-							echo "<p><span style='color:red;'>BIZARRE:</span> Il semble qu'il y ait plusieurs lignes d'appréciation pour un même groupe sur la période '$periode'.</p>\n";
+							echo "<p><span style='color:red;'>BIZARRE:</span> Il semble qu'il y ait plusieurs lignes d'apprÃ©ciation pour un mÃªme groupe sur la pÃ©riode '$periode'.</p>\n";
 						}
 						*/
 
-						// Stockage de l'ancien groupe comme déjà créé:
+						// Stockage de l'ancien groupe comme dÃ©jÃ  crÃ©Ã©:
 						//$tab_src_id_groupes_crees[]=$src_id_groupe;
 						$tab_dst_id_groupes_crees[$src_id_groupe]=$current_id_groupe;
 
@@ -957,7 +957,7 @@ else {
 		fclose($fich);
 		//echo "</p>\n";
 
-		echo "<p>Terminé.</p>\n";
+		echo "<p>TerminÃ©.</p>\n";
 
 	}
 }

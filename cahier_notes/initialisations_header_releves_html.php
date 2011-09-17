@@ -1,6 +1,6 @@
 <?php
 /**
- * Portion des styles et initialisations à reprendre dans le cas d'une insertion des relevés de notes entre les bulletins
+ * Portion des styles et initialisations Ã  reprendre dans le cas d'une insertion des relevÃ©s de notes entre les bulletins
  * 
  * @license GNU/GPL 
  * @package Carnet_de_notes
@@ -39,9 +39,9 @@
 	text-align:left;
 }\n";
 
-	// Récupération des variables du bloc adresses:
-	// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
-	// Il y a d'autres récupération de largeur et de positionnement du bloc adresse à extraire...
+	// RÃ©cupÃ©ration des variables du bloc adresses:
+	// Liste de rÃ©cupÃ©ration Ã  extraire de la boucle Ã©lÃ¨ves pour limiter le nombre de requÃªtes... A FAIRE
+	// Il y a d'autres rÃ©cupÃ©ration de largeur et de positionnement du bloc adresse Ã  extraire...
 	// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
 	$releve_addressblock_logo_etab_prop=getSettingValue("releve_addressblock_logo_etab_prop") ? getSettingValue("releve_addressblock_logo_etab_prop") : 40;
 	$releve_addressblock_autre_prop=100-$releve_addressblock_logo_etab_prop;
@@ -49,18 +49,18 @@
 	// Taille des polices sur le bloc adresse:
 	$releve_addressblock_font_size=getSettingValue("releve_addressblock_font_size") ? getSettingValue("releve_addressblock_font_size") : 12;
 
-	// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
+	// Taille de la cellule Classe et AnnÃ©e scolaire sur le bloc adresse:
 	$releve_addressblock_classe_annee=getSettingValue("releve_addressblock_classe_annee") ? getSettingValue("releve_addressblock_classe_annee") : 35;
-	// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
+	// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, AnnÃ©e,...
 	$releve_addressblock_classe_annee2=round(100*$releve_addressblock_classe_annee/(100-$releve_addressblock_logo_etab_prop));
 
-	// Débug sur l'entête pour afficher les cadres
+	// DÃ©bug sur l'entÃªte pour afficher les cadres
 	$releve_addressblock_debug=getSettingValue("releve_addressblock_debug") ? getSettingValue("releve_addressblock_debug") : "n";
 
-	// Nombre de sauts de lignes entre le tableau logo+etab et le nom, prénom,... de l'élève
+	// Nombre de sauts de lignes entre le tableau logo+etab et le nom, prÃ©nom,... de l'Ã©lÃ¨ve
 	$releve_ecart_bloc_nom=getSettingValue("releve_ecart_bloc_nom") ? getSettingValue("releve_ecart_bloc_nom") : 0;
 
-	// Afficher l'établissement d'origine de l'élève:
+	// Afficher l'Ã©tablissement d'origine de l'Ã©lÃ¨ve:
 	$releve_affiche_etab=getSettingValue("releve_affiche_etab") ? getSettingValue("releve_affiche_etab") : "n";
 
 	// Bordure classique ou trait-noir:
@@ -79,7 +79,7 @@
 
 
 
-	// Affichage ou non du nom et de l'adresse de l'établissement
+	// Affichage ou non du nom et de l'adresse de l'Ã©tablissement
 	$releve_affich_nom_etab=getSettingValue("releve_affich_nom_etab") ? getSettingValue("releve_affich_nom_etab") : "y";
 	$releve_affich_adr_etab=getSettingValue("releve_affich_adr_etab") ? getSettingValue("releve_affich_adr_etab") : "y";
 	if(($releve_affich_nom_etab!="n")&&($releve_affich_nom_etab!="y")) {$releve_affich_nom_etab="y";}
@@ -101,7 +101,7 @@
 	$releve_affiche_signature=getSettingValue("releve_affiche_signature") ? getSettingValue("releve_affiche_signature") : "y";
 
 	$releve_affiche_formule=getSettingValue("releve_affiche_formule") ? getSettingValue("releve_affiche_formule") : "n";
-	$releve_formule_bas=getSettingValue("releve_formule_bas") ? getSettingValue("releve_formule_bas") : "Relevé à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.";
+	$releve_formule_bas=getSettingValue("releve_formule_bas") ? getSettingValue("releve_formule_bas") : "RelevÃ© Ã  conserver prÃ©cieusement. Aucun duplicata ne sera dÃ©livrÃ©. - GEPI : solution libre de gestion et de suivi des rÃ©sultats scolaires.";
 
 
 	$releve_col_hauteur=getSettingValue("releve_col_hauteur") ? getSettingValue("releve_col_hauteur") : 0;

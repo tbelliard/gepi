@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent ViÃ©not-Hauger
 *
 * This file is part of GEPI.
 *
@@ -20,7 +20,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -53,7 +53,7 @@ if($gepi_denom_mention=="") {
 if (isset($_POST['is_posted'])) {
 	check_token();
 
-	// Synthèse
+	// SynthÃ¨se
 	$i = '1';
 	while ($i < $nb_periode) {
 		if ($ver_periode[$i] != "O"){
@@ -71,14 +71,14 @@ if (isset($_POST['is_posted'])) {
 				if(mysql_num_rows($test)==0) {
 					$sql="INSERT INTO synthese_app_classe SET id_classe='$id_classe', periode='$i', synthese='$synthese';";
 					$insert=mysql_query($sql);
-					if(!$insert) {$msg="Erreur lors de l'enregistrement de la synthèse.";}
-					//else {$msg="La synthèse a été enregistrée.";}
+					if(!$insert) {$msg="Erreur lors de l'enregistrement de la synthÃ¨se.";}
+					//else {$msg="La synthÃ¨se a Ã©tÃ© enregistrÃ©e.";}
 				}
 				else {
 					$sql="UPDATE synthese_app_classe SET synthese='$synthese' WHERE id_classe='$id_classe' AND periode='$i';";
 					$update=mysql_query($sql);
-					if(!$update) {$msg="Erreur lors de la mise à jour de la synthèse.";}
-					//else {$msg="La synthèse a été mise à jour.";}
+					if(!$update) {$msg="Erreur lors de la mise Ã  jour de la synthÃ¨se.";}
+					//else {$msg="La synthÃ¨se a Ã©tÃ© mise Ã  jour.";}
 				}
 			}
 		}
@@ -115,7 +115,7 @@ if (isset($_POST['is_posted'])) {
 					unset($log_eleve);
 					$log_eleve=$_POST['log_eleve_'.$i];
 
-					// Récupération du numéro de l'élève dans les saisies:
+					// RÃ©cupÃ©ration du numÃ©ro de l'Ã©lÃ¨ve dans les saisies:
 					$num_eleve=-1;
 					//for($k=0;$k<count($log_eleve);$k++){
 					for($k=0;$k<$lignes;$k++){
@@ -151,7 +151,7 @@ if (isset($_POST['is_posted'])) {
 						}
 
 						if (!$register) {
-							$msg = "Erreur lors de l'enregistrement des données de la période $i";
+							$msg = "Erreur lors de l'enregistrement des donnÃ©es de la pÃ©riode $i";
 							$pb_record = 'yes';
 						}
 					}
@@ -164,8 +164,8 @@ if (isset($_POST['is_posted'])) {
 	}
 	if ($pb_record == 'no') $affiche_message = 'yes';
 }
-$themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_enregistrement = "Les modifications ont été enregistrées !";
+$themessage = 'Des apprÃ©ciations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 $javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des avis | Saisie";
@@ -181,12 +181,12 @@ change = 'no';
 <?php
 // On teste si un professeur peut saisir les avis
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiRubConseilProf")!='yes') {
-	die("Droits insuffisants pour effectuer cette opération");
+	die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
-// On teste si le service scolarité peut saisir les avis
+// On teste si le service scolaritÃ© peut saisir les avis
 if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol")!='yes') {
-	die("Droits insuffisants pour effectuer cette opération");
+	die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 ?>
 <form enctype="multipart/form-data" action="saisie_avis1.php" name="form1" method='post'>
@@ -194,13 +194,13 @@ if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol
 
 <?php
 
-// Ajout lien classe précédente / classe suivante
+// Ajout lien classe prÃ©cÃ©dente / classe suivante
 if($_SESSION['statut']=='scolarite'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
 elseif($_SESSION['statut']=='professeur'){
 
-	// On a filtré plus haut les profs qui n'ont pas getSettingValue("GepiRubConseilProf")=='yes'
+	// On a filtrÃ© plus haut les profs qui n'ont pas getSettingValue("GepiRubConseilProf")=='yes'
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
 										j_eleves_classes jec,
 										j_eleves_professeurs jep
@@ -221,7 +221,7 @@ elseif($_SESSION['statut']=='cpe'){
 		ORDER BY classe";
 }
 elseif($_SESSION['statut'] == 'autre'){
-	// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donné les bons droits
+	// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donnÃ© les bons droits
 	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 }
 elseif($_SESSION['statut'] == 'secours'){
@@ -268,7 +268,7 @@ if($nb_classes_suivies>0){
 
 // =================================
 if(isset($id_class_prec)){
-	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>";}
 }
 
 if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
@@ -304,7 +304,7 @@ if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
 if(isset($id_class_suiv)){
 	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 }
-//fin ajout lien classe précédente / classe suivante
+//fin ajout lien classe prÃ©cÃ©dente / classe suivante
 echo "</p>\n";
 
 echo "</form>\n";
@@ -350,16 +350,16 @@ if ($id_classe) {
 	CommentairesTypesScol
 */
 
-	// Fonction de renseignement du champ qui doit obtenir le focus après validation
+	// Fonction de renseignement du champ qui doit obtenir le focus aprÃ¨s validation
 	echo "<script type='text/javascript'>
 
 function focus_suivant(num){
 	temoin='';
-	// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+	// La variable 'dernier' peut dÃ©passer de l'effectif de la classe... mais cela n'est pas dramatique
 	dernier=num+".$nombre_lignes."
-	// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
-	// (pour réussir à passer un élève qui ne serait plus dans la période)
-	// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+	// On parcourt les champs Ã  partir de celui de l'Ã©lÃ¨ve en cours jusqu'Ã  rencontrer un champ existant
+	// (pour rÃ©ussir Ã  passer un Ã©lÃ¨ve qui ne serait plus dans la pÃ©riode)
+	// AprÃ¨s validation, c'est ce champ qui obtiendra le focus si on n'Ã©tait pas Ã  la fin de la liste.
 	for(i=num;i<dernier;i++){
 		suivant=i+1;
 		if(temoin==''){
@@ -379,7 +379,7 @@ function focus_suivant(num){
 	$k=1;
 	$commentaires_type_classe_periode=array();
 	while ($k < $nb_periode) {
-		// Existe-t-il des commentaires-types pour cette classe et cette période?
+		// Existe-t-il des commentaires-types pour cette classe et cette pÃ©riode?
 		$sql="select 1=1 from commentaires_types WHERE num_periode='$k' AND id_classe='$id_classe'";
 		$res_test=mysql_query($sql);
 		if(mysql_num_rows($res_test)!=0){
@@ -392,10 +392,10 @@ function focus_suivant(num){
 	}
 
 
-	echo "<table width=\"750\" class='boireaus' border='1' cellspacing='2' cellpadding='5' summary=\"Synthèse de classe\">\n";
+	echo "<table width=\"750\" class='boireaus' border='1' cellspacing='2' cellpadding='5' summary=\"SynthÃ¨se de classe\">\n";
 	echo "<tr>\n";
 	echo "<th width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></th>\n";
-	echo "<th><div align=\"center\"><b>Synthèse de classe</b>\n";
+	echo "<th><div align=\"center\"><b>SynthÃ¨se de classe</b>\n";
 	echo "</div></th>\n";
 	echo "</tr>\n";
 	//========================
@@ -490,7 +490,7 @@ function focus_suivant(num){
 		echo "<td><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b></div></td>\n";
 		echo "</tr>\n";
 		*/
-		echo "<table width=\"750\" class='boireaus' border='1' cellspacing='2' cellpadding='5' summary=\"Elève $current_eleve_nom $current_eleve_prenom\">\n";
+		echo "<table width=\"750\" class='boireaus' border='1' cellspacing='2' cellpadding='5' summary=\"ElÃ¨ve $current_eleve_nom $current_eleve_prenom\">\n";
 		echo "<tr>\n";
 		echo "<th width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></th>\n";
 		echo "<th><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b>\n";
@@ -565,7 +565,7 @@ function focus_suivant(num){
 						echo "<option value='B'$selectedB> </option>\n";
 						echo "<option value='E'$selectedE>Encouragements</option>\n";
 						echo "<option value='M'$selectedM>Mention honorable</option>\n";
-						echo "<option value='F'$selectedF>Félicitations</option>\n";
+						echo "<option value='F'$selectedF>FÃ©licitations</option>\n";
 						echo "</select>\n";
 						*/
 					}
@@ -633,17 +633,17 @@ function focus_suivant(num){
 		<input type='hidden' name='id_classe' value=<?php echo "$id_classe";?> />
 		<center><div id="fixe"><input type='submit' value='Enregistrer' />
 
-		<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+		<!-- DIV destinÃ© Ã  afficher un dÃ©compte du temps restant pour ne pas se faire piÃ©ger par la fin de session -->
 		<div id='decompte'></div>
 
-		<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+		<!-- Champ destinÃ© Ã  recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus Ã  ce champ aprÃ¨s une validation -->
 		<input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />
 
 		</div></center>
 		<br /><br /><br /><br />
 
 		<?php
-			// Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
+			// Il faudra permettre de n'afficher ce dÃ©compte que si l'administrateur le souhaite.
 
 			echo "<script type='text/javascript'>
 
@@ -670,7 +670,7 @@ decompte(cpt);
 
 ";
 
-		// Après validation, on donne le focus au champ qui suivait celui qui vien d'être rempli
+		// AprÃ¨s validation, on donne le focus au champ qui suivait celui qui vien d'Ãªtre rempli
 		if(isset($_POST['champ_info_focus'])){
 			if($_POST['champ_info_focus']!=""){
 				echo "// On positionne le focus...

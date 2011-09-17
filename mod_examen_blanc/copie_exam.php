@@ -54,7 +54,7 @@ $insert=mysql_query($sql);
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -67,7 +67,7 @@ include('lib_exb.php');
 
 $id_exam=isset($_POST['id_exam']) ? $_POST['id_exam'] : (isset($_GET['id_exam']) ? $_GET['id_exam'] : NULL);
 if(!preg_match('/^[0-9]+$/', $id_exam)) {
-	header("Location: index.php?msg=".rawurlencode("Aucun id_exam n'a été choisi."));
+	header("Location: index.php?msg=".rawurlencode("Aucun id_exam n'a Ã©tÃ© choisi."));
 	die();
 }
 
@@ -90,7 +90,7 @@ if($_SESSION['statut']=='professeur') {
 	}
 
 	if((isset($id_exam))&&(!is_pp_proprio_exb($id_exam))) {
-		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'êtes pas propriétaire de l'examen blanc n°$id_exam."));
+		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'Ãªtes pas propriÃ©taire de l'examen blanc nÂ°$id_exam."));
 		die();
 	}
 
@@ -123,7 +123,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			$msg="L'examen modèle choisi (<i>$id_exam_modele</i>) n'existe pas.\n";
+			$msg="L'examen modÃ¨le choisi (<i>$id_exam_modele</i>) n'existe pas.\n";
 		}
 		else {
 			//$lig=mysql_fetch_object($res);
@@ -169,7 +169,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					//echo "$sql<br />\n";
 					$del=mysql_query($sql);
 					if(!$del) {
-						$msg.="Erreur lors du nettoyage des matières.<br />\n";
+						$msg.="Erreur lors du nettoyage des matiÃ¨res.<br />\n";
 						$nb_err++;
 					}
 				}
@@ -190,7 +190,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							//echo "$sql<br />\n";
 							$insert=mysql_query($sql);
 							if(!$insert) {
-								$msg.="Erreur lors de l'association avec la matière ".$lig_modele->matiere."<br />\n";
+								$msg.="Erreur lors de l'association avec la matiÃ¨re ".$lig_modele->matiere."<br />\n";
 								$nb_err++;
 							}
 							else {
@@ -215,7 +215,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							//echo "$sql<br />\n";
 							$update=mysql_query($sql);
 							if(!$update) {
-								$msg.="Erreur lors de la mise à jour des coefficients et bonus de la matière ".$lig_modele->matiere."<br />\n";
+								$msg.="Erreur lors de la mise Ã  jour des coefficients et bonus de la matiÃ¨re ".$lig_modele->matiere."<br />\n";
 								$nb_err++;
 							}
 							else {
@@ -250,7 +250,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							//echo "$sql<br />\n";
 							$insert=mysql_query($sql);
 							if(!$insert) {
-								$msg.="Erreur lors de l'association avec le groupe n°".$lig_modele->id_groupe."<br />\n";
+								$msg.="Erreur lors de l'association avec le groupe nÂ°".$lig_modele->id_groupe."<br />\n";
 								$nb_err++;
 							}
 							else {
@@ -261,7 +261,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				}
 			}
 		}
-		if(($nb_reg>0)&&($nb_err==0)) {$msg.="Copie effectuée.";}
+		if(($nb_reg>0)&&($nb_err==0)) {$msg.="Copie effectuÃ©e.";}
 		header("Location: index.php?id_exam=$id_exam&mode=modif_exam&msg=".rawurlencode($msg));
 		die();
 
@@ -270,7 +270,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $javascript_specifique='mod_examen_blanc/lib_exb';
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Examen blanc: Copie";
 //echo "<div class='noprint'>\n";
@@ -297,7 +297,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	$sql="SELECT * FROM ex_examens WHERE id!='$id_exam' ORDER BY date, intitule;";
 	$res_autres_exam=mysql_query($sql);
 	if(mysql_num_rows($res_autres_exam)==0) {
-		echo "<p style='color:red'>Aucun autre examen blanc n'est enregistré.</p>\n";
+		echo "<p style='color:red'>Aucun autre examen blanc n'est enregistrÃ©.</p>\n";
 
 		echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
@@ -320,7 +320,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	}
 
 	if(count($tab_exam)==0) {
-		echo "<p style='color:red'>Vous n'avez aucun autre examen blanc enregistré.</p>\n";
+		echo "<p style='color:red'>Vous n'avez aucun autre examen blanc enregistrÃ©.</p>\n";
 
 		echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
@@ -328,7 +328,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	}
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
-	echo "<p class='bold'>Copier les paramètres de l'examen&nbsp;:</p>\n";
+	echo "<p class='bold'>Copier les paramÃ¨tres de l'examen&nbsp;:</p>\n";
 	echo "<table class='boireaus' summary='Tableau des examens blancs'>\n";
 	echo "<tr>\n";
 	echo "<th>Choix</th>\n";
@@ -337,7 +337,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	echo "<th>Description</th>\n";
 	echo "<th>Date</th>\n";
 	echo "<th>Etat</th>\n";
-	echo "<th>Détails</th>\n";
+	echo "<th>DÃ©tails</th>\n";
 	echo "</tr>\n";
 	$alt=1;
 	$nb_exam=count($tab_exam);
@@ -359,16 +359,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	}
 	echo "</table>\n";
 
-	echo "<p class='bold'>Quels paramètres copier&nbsp;?</p>\n";
+	echo "<p class='bold'>Quels paramÃ¨tres copier&nbsp;?</p>\n";
 	echo "<p>\n";
 	echo "<input type='checkbox' name='copier_classes' id='copier_classes' value='y' onchange=\"checkbox_change('copier_classes');changement()\" /><label for='copier_classes' id='texte_copier_classes'>Classes</label><br />\n";
-	echo "<input type='checkbox' name='copier_matieres' id='copier_matieres' value='y' onchange=\"checkbox_change('copier_matieres');changement()\" /><label for='copier_matieres' id='texte_copier_matieres'>Matières</label><br />\n";
+	echo "<input type='checkbox' name='copier_matieres' id='copier_matieres' value='y' onchange=\"checkbox_change('copier_matieres');changement()\" /><label for='copier_matieres' id='texte_copier_matieres'>MatiÃ¨res</label><br />\n";
 	echo "<input type='checkbox' name='copier_groupes' id='copier_groupes' value='y' onchange=\"checkbox_change('copier_groupes');changement()\" /><label for='copier_groupes' id='texte_copier_groupes'>Enseignements (<i>groupes</i>)</label><br />\n";
 	echo "<input type='checkbox' name='copier_coef' id='copier_coef' value='y' onchange=\"checkbox_change('copier_coef');changement()\" /><label for='copier_coef' id='texte_copier_coef'>Coefficients et bonus</label><br />\n";
 	//echo "<input type='checkbox' name='' id='' value='y' /><label for=''></label><br />\n";
 	echo "</p>\n";
 
-	echo "<p><input type='checkbox' name='vider_param_anterieurs' id='vider_param_anterieurs' value='y' onchange=\"checkbox_change('vider_param_anterieurs');changement()\" /><label for='vider_param_anterieurs' id='texte_vider_param_anterieurs'>Vider les éventuelles sélections antérieures de classes, groupes, matières,... de l'examen blanc n°$id_exam</label></p>\n";
+	echo "<p><input type='checkbox' name='vider_param_anterieurs' id='vider_param_anterieurs' value='y' onchange=\"checkbox_change('vider_param_anterieurs');changement()\" /><label for='vider_param_anterieurs' id='texte_vider_param_anterieurs'>Vider les Ã©ventuelles sÃ©lections antÃ©rieures de classes, groupes, matiÃ¨res,... de l'examen blanc nÂ°$id_exam</label></p>\n";
 
 	echo "<input type='hidden' name='id_exam' value='$id_exam' />\n";
 	echo "<p align='center'><input type='submit' name='copier_param_exam' value='Valider' /></p>\n";

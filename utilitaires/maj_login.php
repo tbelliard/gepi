@@ -2,8 +2,8 @@
 /*
  * $Id$
  *
- * Cette procédure spéciale de mise à jour de la base MySql permet de régler les problèmes liés
- * à la présence dans certains identifiants d'élèves du caractère \"-\".
+ * Cette procÃ©dure spÃ©ciale de mise Ã  jour de la base MySql permet de rÃ©gler les problÃ¨mes liÃ©s
+ * Ã  la prÃ©sence dans certains identifiants d'Ã©lÃ¨ves du caractÃ¨re \"-\".
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
         if ($num_row == 1) {
             $valid='yes';
         } else {
-            $message = "Identifiant ou mot de passe incorrect, ou bien vous n'êtes pas administrateur.";
+            $message = "Identifiant ou mot de passe incorrect, ou bien vous n'Ãªtes pas administrateur.";
         }
     }
 }
@@ -49,7 +49,7 @@ if (isset($_POST['submit'])) {
     <HTML>
     <HEAD>
     <link REL="stylesheet" href="style.css" type="text/css" />
-    <TITLE>Mise à jour spéciale de la base de donnée GEPI</TITLE>
+    <TITLE>Mise Ã  jour spÃ©ciale de la base de donnÃ©e GEPI</TITLE>
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="icon" type="image/ico" href="../favicon.ico" />
     </head>
@@ -60,7 +60,7 @@ if (($resultat_session == '0') and ($valid!='yes')) {
     ?>
     <form action="maj_login.php" method='POST' style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
     <div class="center">
-    <H2 align="center"><?php echo "Mise à jour spéciale de la base de donnée GEPI<br />(Accès administrateur)"; ?></H2>
+    <H2 align="center"><?php echo "Mise Ã  jour spÃ©ciale de la base de donnÃ©e GEPI<br />(AccÃ¨s administrateur)"; ?></H2>
 
     <?php
     if (isset($message)) {
@@ -90,7 +90,7 @@ if (($resultat_session == '0') and ($valid!='yes')) {
 };
 
 if ((isset($_SESSION['statut'])) and ($_SESSION['statut'] != 'administrateur')) {
-   echo "<center><p class=grand><font color=red>Mise à jour spéciale de la base MySql de GEPI.<br />Vous n'avez pas les droits suffisants pour accéder à cette page.</font><p></center></body></html>";
+   echo "<center><p class=grand><font color=red>Mise Ã  jour spÃ©ciale de la base MySql de GEPI.<br />Vous n'avez pas les droits suffisants pour accÃ©der Ã  cette page.</font><p></center></body></html>";
    die();
 }
 
@@ -127,7 +127,7 @@ while ($j < count($liste_tables))  {
           $tempo = str_replace("-", "_", $temp);
           $up = mysql_query("UPDATE $liste_tables[$j] set login = '".$tempo."' where login ='".$temp."'");
           if ($affiche == 'yes') {
-              $message .= "Dans la table ".$liste_tables[$j].", l'identifiant : ".$temp." a été changé en : ".$tempo."<br>";
+              $message .= "Dans la table ".$liste_tables[$j].", l'identifiant : ".$temp." a Ã©tÃ© changÃ© en : ".$tempo."<br>";
               $affiche = 'no';
           }
       }
@@ -144,7 +144,7 @@ while ($i < $nb_lignes) {
     $temp = mysql_result($req, $i, 'id_eleve');
     $pos = strpos($temp, "-");
     if ($pos >=1) {
-		// A ce stade, la table 'eleves' a déjà été mise à jour
+		// A ce stade, la table 'eleves' a dÃ©jÃ  Ã©tÃ© mise Ã  jour
 		$sql="SELECT elenoet FROM eleves WHERE login='$tempo';";
 		$res_elenoet=mysql_query($sql);
 		if(mysql_num_rows($res_elenoet)>0) {
@@ -154,8 +154,8 @@ while ($i < $nb_lignes) {
 				//$up = mysql_query("UPDATE j_eleves_etablissements set id_eleve = '".$tempo."' where id_eleve ='".$temp."'");
 				$up = mysql_query("UPDATE j_eleves_etablissements set id_eleve = '".$res_elenoet."' where id_eleve ='".$temp."'");
 				if ($affiche == 'yes') {
-					//$message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a été changé en : ".$tempo."<br>";
-					$message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a été changé en : ".$res_elenoet."<br>";
+					//$message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a Ã©tÃ© changÃ© en : ".$tempo."<br>";
+					$message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a Ã©tÃ© changÃ© en : ".$res_elenoet."<br>";
 					$affiche = 'no';
 				}
 			}
@@ -168,32 +168,32 @@ while ($i < $nb_lignes) {
 }
 
 if (isset($mess)) echo "<center><p class=grand><font color=red>".$mess."</font><p></center>";
-echo "<center><p class=grand>Mise à jour spéciale de la base de données MySql de GEPI<p></center>";
+echo "<center><p class=grand>Mise Ã  jour spÃ©ciale de la base de donnÃ©es MySql de GEPI<p></center>";
 if (isset($message)) {
     if ($message == '') {
-        echo "<p>Aucun changement n'a été effectué. Pas de problème dans la base.</p>";
+        echo "<p>Aucun changement n'a Ã©tÃ© effectuÃ©. Pas de problÃ¨me dans la base.</p>";
     } else {
-        echo "<p>Résultat de la mise à jour :</p>".$message;
+        echo "<p>RÃ©sultat de la mise Ã  jour :</p>".$message;
     }
 } else {
     if (isset($_SESSION['statut'])) {
-        echo "<p>Il est vivement conseillé de faire une sauvegarde de la base MySql avant de procéder à la mise à jour</p>";
+        echo "<p>Il est vivement conseillÃ© de faire une sauvegarde de la base MySql avant de procÃ©der Ã  la mise Ã  jour</p>";
         echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php?action=dump\" method=post name=formulaire>";
-        echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>";
+        echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de donnÃ©es\" /></form></center>";
     }
-    echo "<p>Remarque : Cette procédure spéciale de mise à jour de la base MySql permet de régler les problèmes liés
-    à la présence dans certains identifiants d'élèves du caractère \"-\".
-    <br><br>Si vous avez utilisé la procédure d'initialisation des bases de GEPI à partir des
-    fichiers GEP avec une version de GEPI antérieure à la version 1.3, il se peut que certains identifiants d'élèves
-    contiennent le caractère \"-\". Ceci entraîne des dysfonctionnements dans la saisie des notes et appréciations de
-    ces élèves.</p>";
+    echo "<p>Remarque : Cette procÃ©dure spÃ©ciale de mise Ã  jour de la base MySql permet de rÃ©gler les problÃ¨mes liÃ©s
+    Ã  la prÃ©sence dans certains identifiants d'Ã©lÃ¨ves du caractÃ¨re \"-\".
+    <br><br>Si vous avez utilisÃ© la procÃ©dure d'initialisation des bases de GEPI Ã  partir des
+    fichiers GEP avec une version de GEPI antÃ©rieure Ã  la version 1.3, il se peut que certains identifiants d'Ã©lÃ¨ves
+    contiennent le caractÃ¨re \"-\". Ceci entraÃ®ne des dysfonctionnements dans la saisie des notes et apprÃ©ciations de
+    ces Ã©lÃ¨ves.</p>";
     echo "<form action=\"maj_login.php\" method=\"post\">";
-    echo "<p><b>Cliquez sur le bouton suivant pour effectuer la mise à jour de la base</b></p>";
-    echo "<center><input type=submit value='Mettre à jour' /></center>";
+    echo "<p><b>Cliquez sur le bouton suivant pour effectuer la mise Ã  jour de la base</b></p>";
+    echo "<center><input type=submit value='Mettre Ã  jour' /></center>";
     echo "<input type=hidden name='maj' value='yes' />";
     echo "<input type=hidden name='valid' value='$valid' />";
     echo "</form>";
 }
-echo "<br><center><a href=\"".$gepiPath."/logout.php?auto=0\">Déconnexion</a></center>";
+echo "<br><center><a href=\"".$gepiPath."/logout.php?auto=0\">DÃ©connexion</a></center>";
 ?>
 </body></html>

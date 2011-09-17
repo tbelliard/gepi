@@ -19,14 +19,14 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 ?>
 <div id="result">
   <div id="wrap">
-    <h3><font class="red">Evolutions des incidents sur l'année scolaire :</font> </h3>
+    <h3><font class="red">Evolutions des incidents sur l'annÃ©e scolaire :</font> </h3>
     <?php ClassVue::afficheVue('parametres.php',$vars) ;
     if (isset($incidents)) {
       ?>
@@ -41,7 +41,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
           <li><a href="#tab<?php echo $i;?>" name="<?php echo $titre;?>-onglet-01" title="Evolution des incidents"><?php echo $titre;?></a></li>
                   <?php $i=$i+1;
                 endif;
-              } else if ($titre=='Tous les élèves' ||$titre=='Tous les personnels' ) { ?>
+              } else if ($titre=='Tous les Ã©lÃ¨ves' ||$titre=='Tous les personnels' ) { ?>
           <li><a href="#tab<?php echo $i;?>" name="<?php echo $titre;?>-onglet-01" title="Evolution des incidents"><?php echo $titre;?> </a></li>
                 <?php  $i=$i+1;
               } else { ?>

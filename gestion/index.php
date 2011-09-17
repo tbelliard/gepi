@@ -21,24 +21,24 @@
  */
  
  
-/* ---------Variables envoyées au gabarit
+/* ---------Variables envoyÃ©es au gabarit
 *
 *	$tbs_menu
 *				-> classe								classe CSS
 *				-> image								icone du lien
 *				-> texte								texte du titre du menu
-*				-> entree								entrées du menu
+*				-> entree								entrÃ©es du menu
 *							-> lien						lien vers la page
 *							-> titre   				texte du lien
 *							-> expli					explications
 *	$niveau_arbo									Niveau dans l'arborescence
 *	$titre_page										Titre de la page
 *	$tbs_last_connection					Vide, pour ne pas avoir d'erreur dans le bandeau
-*	$tbs_retour										Lien retour arrière
+*	$tbs_retour										Lien retour arriÃ¨re
 *	$tbs_ariane										Fil d'arianne
 *
 *
-*	Variables héritées de :
+*	Variables hÃ©ritÃ©es de :
 *
 *	header_template.inc
 *	header_barre_prof_template.inc
@@ -69,7 +69,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 // Begin standart header
-$titre_page = "Gestion générale";
+$titre_page = "Gestion gÃ©nÃ©rale";
 $tbs_last_connection="";
 
 // ====== Inclusion des balises head et du bandeau =====
@@ -85,30 +85,30 @@ include_once("../lib/header_template.inc");
 	$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"../accueil.php");
 	
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 
 /*
 <!-- 
 <center>
 -->
 <!-- 
-<table class='menu' summary='Menu sécurité'>
+<table class='menu' summary='Menu sÃ©curitÃ©'>
 <tr>
-	<th colspan='2'><img src='../images/icons/securite.png' alt='Sécurité' class='link'/> - Sécurité</th>
+	<th colspan='2'><img src='../images/icons/securite.png' alt='SÃ©curitÃ©' class='link'/> - SÃ©curitÃ©</th>
 </tr>
 <tr>
     <td width='200'><a href="gestion_connect.php">Gestion des connexions</a></td>
-    <td>Affichage des connexions en cours, activation/désactivation des connexions pour le site, protection contre les attaques forces brutes, journal des connexions, changement de mot de passe obligatoire.
+    <td>Affichage des connexions en cours, activation/dÃ©sactivation des connexions pour le site, protection contre les attaques forces brutes, journal des connexions, changement de mot de passe obligatoire.
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="security_panel.php">Panneau de contrôle sécurité</a></td>
-    <td>Visualiser les tentatives d'utilisation illégale de Gepi.
+    <td width='200'><a href="security_panel.php">Panneau de contrÃ´le sÃ©curitÃ©</a></td>
+    <td>Visualiser les tentatives d'utilisation illÃ©gale de Gepi.
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="security_policy.php">Politique de sécurité</a></td>
-    <td>Définir les seuils d'alerte et les actions à entreprendre dans le cas de tentatives d'intrusion ou d'accès illégal à des ressources.
+    <td width='200'><a href="security_policy.php">Politique de sÃ©curitÃ©</a></td>
+    <td>DÃ©finir les seuils d'alerte et les actions Ã  entreprendre dans le cas de tentatives d'intrusion ou d'accÃ¨s illÃ©gal Ã  des ressources.
     </td>
 </tr>
 <tr>
@@ -119,7 +119,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
  -->
 */
 	$nummenu=0;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/securite.png' , 'texte'=>"Sécurité");
+	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/securite.png' , 'texte'=>"SÃ©curitÃ©");
 	$chemin = array();
   $titre = array();
   $expli = array();
@@ -127,19 +127,19 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   
   $chemin = "gestion_connect.php";
   $titre = "Gestion des connexions";
-  $expli = "Affichage des connexions en cours, activation/désactivation des connexions pour le site, protection contre les attaques forces brutes, journal des connexions, changement de mot de passe obligatoire.";
+  $expli = "Affichage des connexions en cours, activation/dÃ©sactivation des connexions pour le site, protection contre les attaques forces brutes, journal des connexions, changement de mot de passe obligatoire.";
   $ancre="gestion_connect";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "security_panel.php";
-  $titre = "Panneau de contrôle sécurité";
-  $expli = "Visualiser les tentatives d'utilisation illégale de Gepi.";
+  $titre = "Panneau de contrÃ´le sÃ©curitÃ©";
+  $expli = "Visualiser les tentatives d'utilisation illÃ©gale de Gepi.";
   $ancre="security_panel";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "security_policy.php";
-  $titre = "Politique de sécurité";
-  $expli = "Définir les seuils d'alerte et les actions à entreprendre dans le cas de tentatives d'intrusion ou d'accès illégal à des ressources.";
+  $titre = "Politique de sÃ©curitÃ©";
+  $expli = "DÃ©finir les seuils d'alerte et les actions Ã  entreprendre dans le cas de tentatives d'intrusion ou d'accÃ¨s illÃ©gal Ã  des ressources.";
   $ancre="security_policy";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
@@ -151,87 +151,87 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 
 /*
 <!--
-<table class='menu' summary='Menu général'>
+<table class='menu' summary='Menu gÃ©nÃ©ral'>
 <tr>
-	<th colspan='2'><img src='../images/icons/configure.png' alt='Configuration' class='link' /> - Général</th>
+	<th colspan='2'><img src='../images/icons/configure.png' alt='Configuration' class='link' /> - GÃ©nÃ©ral</th>
 </tr>
 <tr>
-    <td width='200'><a href="param_gen.php">Configuration générale</a></td>
-    <td>Permet de modifier des paramètres généraux (nom de l'établissement, adresse, ...).
+    <td width='200'><a href="param_gen.php">Configuration gÃ©nÃ©rale</a></td>
+    <td>Permet de modifier des paramÃ¨tres gÃ©nÃ©raux (nom de l'Ã©tablissement, adresse, ...).
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="droits_acces.php">Droits d'accès</a></td>
-    <td>Modifier les droits d'accès à certaines fonctionnalités selon le statut de l'utilisateur.
+    <td width='200'><a href="droits_acces.php">Droits d'accÃ¨s</a></td>
+    <td>Modifier les droits d'accÃ¨s Ã  certaines fonctionnalitÃ©s selon le statut de l'utilisateur.
     </td>
 </tr>
 <tr>
     <td width='200'><a href="options_connect.php">Options de connexions</a></td>
-    <td>Gestion de la procédure automatisée de récupération de mot de passe, paramétrage du mode de connexion (autonome ou Single Sign-On), changement de mot de passe obligatoire, réglage de la durée de conservation des connexions, suppression de toutes les entrées du journal de connexion.
+    <td>Gestion de la procÃ©dure automatisÃ©e de rÃ©cupÃ©ration de mot de passe, paramÃ©trage du mode de connexion (autonome ou Single Sign-On), changement de mot de passe obligatoire, rÃ©glage de la durÃ©e de conservation des connexions, suppression de toutes les entrÃ©es du journal de connexion.
     </td>
 </tr>
 <tr>
     <td width='200'><a href="modify_impression.php">Gestion de la fiche "bienvenue"</a></td>
-    <td>Permet de modifier la feuille d'information à imprimer pour chaque nouvel utilisateur créé.
+    <td>Permet de modifier la feuille d'information Ã  imprimer pour chaque nouvel utilisateur crÃ©Ã©.
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="config_prefs.php">Paramétrage de l'interface <?php echo $gepiSettings['denomination_professeur']; ?></a></td>
-    <td>Paramétrage des items de l'interface simplifiée pour certaines pages. Gestion du menu en barre horizontale.</td>
+    <td width='200'><a href="config_prefs.php">ParamÃ©trage de l'interface <?php echo $gepiSettings['denomination_professeur']; ?></a></td>
+    <td>ParamÃ©trage des items de l'interface simplifiÃ©e pour certaines pages. Gestion du menu en barre horizontale.</td>
 </tr>
 <tr>
-    <td width='200'><a href="param_couleurs.php">Paramétrage des couleurs</a></td>
-    <td>Paramétrage des couleurs de fond d'écran et du dégradé d'entête.</td>
+    <td width='200'><a href="param_couleurs.php">ParamÃ©trage des couleurs</a></td>
+    <td>ParamÃ©trage des couleurs de fond d'Ã©cran et du dÃ©gradÃ© d'entÃªte.</td>
 </tr>
 </table>
  -->
 */ 
  
 	$nummenu=1;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/configure.png' , 'texte'=>"Général");
+	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/configure.png' , 'texte'=>"GÃ©nÃ©ral");
 	$chemin = array();
   $titre = array();
   $expli = array();
   
   $chemin = "param_gen.php";
-  $titre = "Configuration générale";
-  $expli = "Permet de modifier des paramètres généraux (nom de l'établissement, adresse, ...).";
+  $titre = "Configuration gÃ©nÃ©rale";
+  $expli = "Permet de modifier des paramÃ¨tres gÃ©nÃ©raux (nom de l'Ã©tablissement, adresse, ...).";
   $ancre="param_gen";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "droits_acces.php";
-  $titre = "Droits d'accès";
-  $expli = "Modifier les droits d'accès à certaines fonctionnalités selon le statut de l'utilisateur.";
+  $titre = "Droits d'accÃ¨s";
+  $expli = "Modifier les droits d'accÃ¨s Ã  certaines fonctionnalitÃ©s selon le statut de l'utilisateur.";
   $ancre="droits_acces";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "options_connect.php";
   $titre = "Options de connexions";
-  $expli = "Gestion de la procédure automatisée de récupération de mot de passe, paramétrage du mode de connexion (autonome ou Single Sign-On), changement de mot de passe obligatoire, réglage de la durée de conservation des connexions, suppression de toutes les entrées du journal de connexion.";
+  $expli = "Gestion de la procÃ©dure automatisÃ©e de rÃ©cupÃ©ration de mot de passe, paramÃ©trage du mode de connexion (autonome ou Single Sign-On), changement de mot de passe obligatoire, rÃ©glage de la durÃ©e de conservation des connexions, suppression de toutes les entrÃ©es du journal de connexion.";
   $ancre="options_connect";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "modify_impression.php";
   $titre = "Gestion de la fiche \"bienvenue\"";
-  $expli = "Permet de modifier la feuille d'information à imprimer pour chaque nouvel utilisateur créé.";
+  $expli = "Permet de modifier la feuille d'information Ã  imprimer pour chaque nouvel utilisateur crÃ©Ã©.";
   $ancre="modify_impression";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "config_prefs.php";
-  $titre = "Paramétrage de l'interface ".$gepiSettings['denomination_professeur'];
-  $expli = "Paramétrage des items de l'interface simplifiée pour certaines pages. Gestion du menu en barre horizontale.";
+  $titre = "ParamÃ©trage de l'interface ".$gepiSettings['denomination_professeur'];
+  $expli = "ParamÃ©trage des items de l'interface simplifiÃ©e pour certaines pages. Gestion du menu en barre horizontale.";
   $ancre="config_prefs";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
   $chemin = "param_couleurs.php";
-  $titre = "Paramétrage des couleurs";
-  $expli = "Paramétrage des couleurs de fond d'écran et du dégradé d'entête.";
+  $titre = "ParamÃ©trage des couleurs";
+  $expli = "ParamÃ©trage des couleurs de fond d'Ã©cran et du dÃ©gradÃ© d'entÃªte.";
   $ancre="param_couleurs";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
   $chemin = "param_ordre_item.php";
-  $titre = "Paramétrage de l'ordre des menus";
-  $expli = "Paramétrage de l'ordre des items dans les menus";
+  $titre = "ParamÃ©trage de l'ordre des menus";
+  $expli = "ParamÃ©trage de l'ordre des items dans les menus";
   $ancre="param_ordre_item";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
@@ -239,27 +239,27 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 <!--
 <table class='menu' summary='Menu gestion des BDD'>
 <tr>
-	<th colspan='2'><img src='../images/icons/database.png' alt='Gestion bases de données' class='link' /> - Gestion des bases de données </th>
+	<th colspan='2'><img src='../images/icons/database.png' alt='Gestion bases de donnÃ©es' class='link' /> - Gestion des bases de donnÃ©es </th>
 </tr>
 <tr>
     <td width='200'><a href="accueil_sauve.php">Sauvegardes et restauration</a></td>
     <td>Sauvegarder la base GEPI sous la forme d'un fichier au format "mysql".<br />
-    Restaurer des données dans la base Mysql de GEPI à partir d'un fichier.
+    Restaurer des donnÃ©es dans la base Mysql de GEPI Ã  partir d'un fichier.
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="../utilitaires/maj.php">Mise à jour de la base</a></td>
-    <td>Permet d'effectuer une mise à jour de la base MySql après un changement de version  de GEPI.
+    <td width='200'><a href="../utilitaires/maj.php">Mise Ã  jour de la base</a></td>
+    <td>Permet d'effectuer une mise Ã  jour de la base MySql aprÃ¨s un changement de version  de GEPI.
     </td>
 </tr>
 <tr>
     <td width='200'><a href="../utilitaires/clean_tables.php">Nettoyage des tables</a></td>
-    <td>Procéder à un nettoyage des tables de la base MySql de GEPI (suppression de certains doublons et/ou lignes obsolètes ou orphelines).
+    <td>ProcÃ©der Ã  un nettoyage des tables de la base MySql de GEPI (suppression de certains doublons et/ou lignes obsolÃ¨tes ou orphelines).
     </td>
 </tr>
 <tr>
     <td width='200'><a href="efface_base.php">Effacer la base</a></td>
-    <td>Permet de réinitialiser les bases en effaçant toutes les données <?php echo $gepiSettings['denomination_eleves']; ?> de la base.
+    <td>Permet de rÃ©initialiser les bases en effaÃ§ant toutes les donnÃ©es <?php echo $gepiSettings['denomination_eleves']; ?> de la base.
     </td>
 </tr>
 <tr>
@@ -268,7 +268,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 </tr>
 <tr>
     <td width='200'><a href="gestion_temp_dir.php">Gestion des dossiers temporaires</a></td>
-    <td>Permet de contrôler le volume occupé par les dossiers temporaires (<i>utilisés notamment pour générer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activée dans le module carnet de notes</i>), de supprimer ces dossiers,...</td>
+    <td>Permet de contrÃ´ler le volume occupÃ© par les dossiers temporaires (<i>utilisÃ©s notamment pour gÃ©nÃ©rer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activÃ©e dans le module carnet de notes</i>), de supprimer ces dossiers,...</td>
 </tr>
 
 </table>
@@ -276,7 +276,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 */
  
 	$nummenu=2;
-	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/database.png' , 'texte'=>"Gestion des bases de données");
+	$tbs_menu[$nummenu]=array('classe'=>'accueil' , 'image'=>'../images/icons/database.png' , 'texte'=>"Gestion des bases de donnÃ©es");
 	$chemin = array();
   $titre = array();
   $expli = array();  
@@ -284,25 +284,25 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   $chemin = "accueil_sauve.php";
   $titre = "Sauvegardes et restauration";
   $expli = "Sauvegarder la base GEPI sous la forme d'un fichier au format \"mysql\".<br />
-    Restaurer des données dans la base Mysql de GEPI à partir d'un fichier.";
+    Restaurer des donnÃ©es dans la base Mysql de GEPI Ã  partir d'un fichier.";
   $ancre="accueil_sauve";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "../utilitaires/maj.php";
-  $titre = "Mise à jour de la base";
-  $expli = "Permet d'effectuer une mise à jour de la base MySql après un changement de version  de GEPI.";
+  $titre = "Mise Ã  jour de la base";
+  $expli = "Permet d'effectuer une mise Ã  jour de la base MySql aprÃ¨s un changement de version  de GEPI.";
   $ancre="maj";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "../utilitaires/clean_tables.php";
   $titre = "Nettoyage des tables";
-  $expli = "Procéder à un nettoyage des tables de la base MySql de GEPI (suppression de certains doublons et/ou lignes obsolètes ou orphelines).";
+  $expli = "ProcÃ©der Ã  un nettoyage des tables de la base MySql de GEPI (suppression de certains doublons et/ou lignes obsolÃ¨tes ou orphelines).";
   $ancre="clean_tables";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "efface_base.php";
   $titre = "Effacer la base";
-  $expli = "Permet de réinitialiser les bases en effaçant toutes les données ".$gepiSettings['denomination_eleves']." de la base.";
+  $expli = "Permet de rÃ©initialiser les bases en effaÃ§ant toutes les donnÃ©es ".$gepiSettings['denomination_eleves']." de la base.";
   $ancre="efface_base";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
@@ -316,13 +316,13 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   
   $chemin = "gestion_temp_dir.php";
   $titre = "Gestion des dossiers temporaires";
-  $expli = "Permet de contrôler le volume occupé par les dossiers temporaires (<em>utilisés notamment pour générer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activée dans le module carnet de notes</em>), de supprimer ces dossiers,...";
+  $expli = "Permet de contrÃ´ler le volume occupÃ© par les dossiers temporaires (<em>utilisÃ©s notamment pour gÃ©nÃ©rer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activÃ©e dans le module carnet de notes</em>), de supprimer ces dossiers,...";
   $ancre="gestion_temp_dir";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "gestion_base_test.php";
-  $titre = "Gestion des données de test";
-  $expli = "Permet d'inserer des données de test dans la base. Ne pas utiliser sur une base de production.";
+  $titre = "Gestion des donnÃ©es de test";
+  $expli = "Permet d'inserer des donnÃ©es de test dans la base. Ne pas utiliser sur une base de production.";
   $ancre="gestion_base_test";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
@@ -337,45 +337,45 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 if (LDAPServer::is_setup()) {
     ?>
 <tr>
-    <td width='200'><a href="../init_scribe/index.php">Initialisation à partir de l'annuaire LDAP du serveur Eole Scribe</a></td>
-    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières directement depuis le serveur LDAP de Scribe.
+    <td width='200'><a href="../init_scribe/index.php">Initialisation Ã  partir de l'annuaire LDAP du serveur Eole Scribe</a></td>
+    <td>Permet d'importer les donnÃ©es <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matiÃ¨res directement depuis le serveur LDAP de Scribe.
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="../init_lcs/index.php">Initialisation à partir de l'annuaire LDAP du serveur LCS</a></td>
-    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières directement depuis le serveur LDAP de LCS.
+    <td width='200'><a href="../init_lcs/index.php">Initialisation Ã  partir de l'annuaire LDAP du serveur LCS</a></td>
+    <td>Permet d'importer les donnÃ©es <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matiÃ¨res directement depuis le serveur LDAP de LCS.
     </td>
 </tr>
 <?php
 }
 ?>
 <tr>
-    <td width='200'><a href="../init_csv/index.php">Initialisation des données à partir de fichiers CSV</a></td>
-    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis des fichiers CSV, par exemple des exports depuis Sconet.
+    <td width='200'><a href="../init_csv/index.php">Initialisation des donnÃ©es Ã  partir de fichiers CSV</a></td>
+    <td>Permet d'importer les donnÃ©es <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matiÃ¨res depuis des fichiers CSV, par exemple des exports depuis Sconet.
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="../init_xml2/index.php">Initialisation des données à partir de fichiers XML</a></td>
-    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis les exports XML de Sconet/STS.<br />
-	<b>Nouvelle procédure:</b> Plus simple et moins gourmande en ressources que l'ancienne méthode ci-dessous.
+    <td width='200'><a href="../init_xml2/index.php">Initialisation des donnÃ©es Ã  partir de fichiers XML</a></td>
+    <td>Permet d'importer les donnÃ©es <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matiÃ¨res depuis les exports XML de Sconet/STS.<br />
+	<b>Nouvelle procÃ©dure:</b> Plus simple et moins gourmande en ressources que l'ancienne mÃ©thode ci-dessous.
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="../init_xml/index.php">Initialisation des données à partir de fichiers XML</a></td>
-    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis les exports XML de Sconet/STS.<br />
-	<i>Les XML sont traités pour générer des fichiers CSV qui sont ensuite réclamés dans les différentes étapes de l'initialisation.</i>
+    <td width='200'><a href="../init_xml/index.php">Initialisation des donnÃ©es Ã  partir de fichiers XML</a></td>
+    <td>Permet d'importer les donnÃ©es <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matiÃ¨res depuis les exports XML de Sconet/STS.<br />
+	<i>Les XML sont traitÃ©s pour gÃ©nÃ©rer des fichiers CSV qui sont ensuite rÃ©clamÃ©s dans les diffÃ©rentes Ã©tapes de l'initialisation.</i>
     </td>
 </tr>
  -->
 <!--tr>
-    <td width='200'><a href="../init_dbf_sts/index.php">Initialisation des données à partir de fichiers DBF et XML</a> (OBSOLETE)</td>
-    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis deux fichiers DBF et l'export XML de STS.<br />
+    <td width='200'><a href="../init_dbf_sts/index.php">Initialisation des donnÃ©es Ã  partir de fichiers DBF et XML</a> (OBSOLETE)</td>
+    <td>Permet d'importer les donnÃ©es <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matiÃ¨res depuis deux fichiers DBF et l'export XML de STS.<br />
 	<span style='color:red; '>Cette solution ne sera plus maintenue dans la future version 1.5.2 de Gepi.</span>
     </td>
 </tr>
 <tr>
-    <td width='200'><a href="../initialisation/index.php">Initialisation des données à partir des fichiers GEP</a> (OBSOLETE)</td>
-    <td>Permet d'importer les données <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matières depuis les fichiers GEP. Cette procédure est désormais obsolète avec la généralisation de Sconet.<br />
+    <td width='200'><a href="../initialisation/index.php">Initialisation des donnÃ©es Ã  partir des fichiers GEP</a> (OBSOLETE)</td>
+    <td>Permet d'importer les donnÃ©es <?php echo $gepiSettings['denomination_eleves']; ?>, classes, <?php echo $gepiSettings['denomination_professeurs']; ?>, matiÃ¨res depuis les fichiers GEP. Cette procÃ©dure est dÃ©sormais obsolÃ¨te avec la gÃ©nÃ©ralisation de Sconet.<br />
 	<span style='color:red; '>Cette solution ne sera plus maintenue dans la future version 1.5.2 de Gepi.</span>
     </td>
 </tr-->
@@ -391,44 +391,44 @@ if (LDAPServer::is_setup()) {
   $expli = array();
 
 	$chemin="changement_d_annee.php";
-	$titre = "Changement d'année";
-	$expli = "Permet d'effectuer les opérations d'archivage de fin d'année et les opérations précédent l'initialisation de la nouvelle année.";
+	$titre = "Changement d'annÃ©e";
+	$expli = "Permet d'effectuer les opÃ©rations d'archivage de fin d'annÃ©e et les opÃ©rations prÃ©cÃ©dent l'initialisation de la nouvelle annÃ©e.";
 	$ancre="chgt_annee";
 	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
 if (LDAPServer::is_setup()) {	
 	
 	$chemin="../init_scribe_ng/index.php";
-	$titre = "Initialisation à partir de l'annuaire LDAP du serveur Eole Scribe NG";
-	$expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières directement depuis le serveur LDAP de Scribe NG.";
+	$titre = "Initialisation Ã  partir de l'annuaire LDAP du serveur Eole Scribe NG";
+	$expli = "Permet d'importer les donnÃ©es ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matiÃ¨res directement depuis le serveur LDAP de Scribe NG.";
 	$ancre="init_scribe_ng";
 	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
 	$chemin="../init_lcs/index.php";
-	$titre = "Initialisation à partir de l'annuaire LDAP du serveur LCS";
-	$expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières directement depuis le serveur LDAP de LCS.";
+	$titre = "Initialisation Ã  partir de l'annuaire LDAP du serveur LCS";
+	$expli = "Permet d'importer les donnÃ©es ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matiÃ¨res directement depuis le serveur LDAP de LCS.";
 	$ancre="init_lcs";
 	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
     
 }
 	
 	$chemin = "../init_csv/index.php";
-	$titre = "Initialisation des données à partir de fichiers CSV";
-	$expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières depuis des fichiers CSV, par exemple des exports depuis Sconet.";
+	$titre = "Initialisation des donnÃ©es Ã  partir de fichiers CSV";
+	$expli = "Permet d'importer les donnÃ©es ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matiÃ¨res depuis des fichiers CSV, par exemple des exports depuis Sconet.";
 	$ancre="init_csv";
 	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "../init_xml2/index.php";
-  $titre = "Initialisation des données à partir de fichiers XML";
-  $expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières depuis les exports XML de Sconet/STS.<br />
-	<strong>Nouvelle procédure:</strong> Plus simple et moins gourmande en ressources que l'ancienne méthode ci-dessous.";
+  $titre = "Initialisation des donnÃ©es Ã  partir de fichiers XML";
+  $expli = "Permet d'importer les donnÃ©es ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matiÃ¨res depuis les exports XML de Sconet/STS.<br />
+	<strong>Nouvelle procÃ©dure:</strong> Plus simple et moins gourmande en ressources que l'ancienne mÃ©thode ci-dessous.";
 	$ancre="init_xml2";
 	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
   $chemin = "../init_xml/index.php";
-  $titre = "Initialisation des données à partir de fichiers XML convertis en CSV";
-  $expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières depuis les exports XML de Sconet/STS.<br />
-	<em>Les XML sont traités pour générer des fichiers CSV qui sont ensuite réclamés dans les différentes étapes de l'initialisation.</em>";
+  $titre = "Initialisation des donnÃ©es Ã  partir de fichiers XML convertis en CSV";
+  $expli = "Permet d'importer les donnÃ©es ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matiÃ¨res depuis les exports XML de Sconet/STS.<br />
+	<em>Les XML sont traitÃ©s pour gÃ©nÃ©rer des fichiers CSV qui sont ensuite rÃ©clamÃ©s dans les diffÃ©rentes Ã©tapes de l'initialisation.</em>";
 	$ancre="init_xml";
 	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 	
@@ -446,7 +446,7 @@ if (LDAPServer::is_setup()) {
 
 	
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
 
 //include('./../templates/origine/gestion_generale_template.php');

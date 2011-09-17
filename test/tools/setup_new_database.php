@@ -22,7 +22,7 @@ while (!feof($fd)) {
 		$reg = mysql_query($query);
 		if (!$reg) {
 			echo "ERROR : '$query' : \n";
-			echo "Erreur retournée : ".mysql_error()."\n";
+			echo "Erreur retournÃ©e : ".mysql_error()."\n";
 			$result_ok = 'no';
 		}
 	}
@@ -42,7 +42,7 @@ if ($result_ok == 'yes') {
 			$reg = mysql_query($query);
 			if (!$reg) {
 				echo "ERROR : '$query' \n";
-				echo "Erreur retournée : ".mysql_error()."\n";
+				echo "Erreur retournÃ©e : ".mysql_error()."\n";
 				$result_ok = 'no';
 			}
 		}

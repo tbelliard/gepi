@@ -16,7 +16,7 @@ if ($resultat_session == 'c') {
 $sql="SELECT 1=1 FROM droits WHERE id='/bulletin/test_modele_bull.php';";
 $res_test=mysql_query($sql);
 if (mysql_num_rows($res_test)==0) {
-	$sql="INSERT INTO droits VALUES ('/bulletin/test_modele_bull.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Test de modèle pour les bulletins PDF', '1');";
+	$sql="INSERT INTO droits VALUES ('/bulletin/test_modele_bull.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Test de modÃ¨le pour les bulletins PDF', '1');";
 	$res_insert=mysql_query($sql);
 }
 if (!checkAccess()) {
@@ -29,7 +29,7 @@ $titre_page = "Test";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
-echo "<p>Page de test pour convertir la table 'model_bulletin' en une table à trois champs.<br />Pour les tests, la table 'model_bulletin' n'est pas supprimée.<br />Une table 'model<b>e</b>_bulletin' est créée à la place.</p>\n";
+echo "<p>Page de test pour convertir la table 'model_bulletin' en une table Ã  trois champs.<br />Pour les tests, la table 'model_bulletin' n'est pas supprimÃ©e.<br />Une table 'model<b>e</b>_bulletin' est crÃ©Ã©e Ã  la place.</p>\n";
 
 $sql="SELECT * FROM model_bulletin;";
 $res_model=mysql_query($sql);
@@ -83,7 +83,7 @@ if(mysql_num_rows($res_model)>0) {
 			//if(isset($tab_model[$i])) {
 			if(!empty($tab_model[$i])) {
 				//echo "<p>\$tab_model[$i]: ";
-				echo "<p>Enregistrements d'après \$tab_model[$i] dans la nouvelle table 'modele_bulletin': ";
+				echo "<p>Enregistrements d'aprÃ¨s \$tab_model[$i] dans la nouvelle table 'modele_bulletin': ";
 				foreach($tab_model[$i] as $key => $value) {
 					if($cpt>0) {echo ", ";}
 
@@ -116,15 +116,15 @@ while($lig=mysql_fetch_object($res)) {
    echo "$nom=".$$nom."<br />\n";
 }
 
-echo "<p><b>Vérification de la bonne affectation des variables/valeurs:</b><br />
+echo "<p><b>VÃ©rification de la bonne affectation des variables/valeurs:</b><br />
 cadre_adresse=$cadre_adresse<br />
 largeur_matiere=$largeur_matiere</p>\n";
 
 echo "<p><br /></p>\n";
 
-echo "<p><b>NOTES:</b> Pour les modifications à effectuer ensuite:</p>
+echo "<p><b>NOTES:</b> Pour les modifications Ã  effectuer ensuite:</p>
 <ul>
-<li>Pour les requêtes destinées à affecter les valeurs (<i>comme dans l'exemple ci-dessus</i>):<br />
+<li>Pour les requÃªtes destinÃ©es Ã  affecter les valeurs (<i>comme dans l'exemple ci-dessus</i>):<br />
 <pre>\$sql=\"SELECT * FROM modele_bulletin WHERE id_model_bulletin='\$num';\";
 \$res=mysql_query(\$sql);
 while(\$lig=mysql_fetch_object(\$res)) {
@@ -134,10 +134,10 @@ while(\$lig=mysql_fetch_object(\$res)) {
 }
 </pre>
 </li>
-<li>Pour les insertions, préfixer les noms de variables à enregistrer d'une chaine de caractères à choisir, par exemple 'reg_':<br />
-(<i>de façon à n'insérer dans la table que les bonnes associations et pas tous les autres variables/champs de formulaire utilisés</i>)<br />
+<li>Pour les insertions, prÃ©fixer les noms de variables Ã  enregistrer d'une chaine de caractÃ¨res Ã  choisir, par exemple 'reg_':<br />
+(<i>de faÃ§on Ã  n'insÃ©rer dans la table que les bonnes associations et pas tous les autres variables/champs de formulaire utilisÃ©s</i>)<br />
 &nbsp;&nbsp;&nbsp;&lt;input type='text' name='reg_hauteur_bloc_adresse' value='...' /&gt;<br />
-Et récupérer/traiter:
+Et rÃ©cupÃ©rer/traiter:
 <pre>
 \$id_model_bulletin=\$_POST['id_model_bulletin'];
 foreach(\$_POST as \$key => \$value) {

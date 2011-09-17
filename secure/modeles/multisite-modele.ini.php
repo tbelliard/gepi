@@ -1,5 +1,5 @@
 ; <?php header('Location:../login.php');die(); ?>
-; Une fois renseigné, pensez à renommer ce fichier multisite.ini.php dans le repertoire secure
+; Une fois renseignÃ©, pensez Ã  renommer ce fichier multisite.ini.php dans le repertoire secure
 
 [RNE]
 nomhote		= localhost
@@ -25,7 +25,7 @@ pathname	= /gepi
 
 ;
 ;
-; Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane Boireau, Julien Jocal
+; Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
 ;
 ; This file is part of GEPI.
 ;
@@ -45,8 +45,8 @@ pathname	= /gepi
 ;/
 
 ; Multisite.ini, fichier permettant de configurer l'utilisation d'un seul Gepi
-; sur plusieurs établissements. Ce fichier est parsé pour récupérer la bonne base en fonction du RNE de l'établissement
-; Il doit comporter les informations pour chaque établissement en suivant le modèle présenté et en sautant une ligne entre chaque configuration
-; Le paramètre nometablissement n'est pas obligatoire
-; le RNE peut être une autre information que le rne Education nationale mais doit correspondre à une information disponible
-; en GET (le lien vers le gepi doit donc être du type https://nom_serveur/gepipath/login.php?rne=RNE (ce RNE correspondant à celui qui est entre crochets ci-dessous)
+; sur plusieurs Ã©tablissements. Ce fichier est parsÃ© pour rÃ©cupÃ©rer la bonne base en fonction du RNE de l'Ã©tablissement
+; Il doit comporter les informations pour chaque Ã©tablissement en suivant le modÃ¨le prÃ©sentÃ© et en sautant une ligne entre chaque configuration
+; Le paramÃ¨tre nometablissement n'est pas obligatoire
+; le RNE peut Ãªtre une autre information que le rne Education nationale mais doit correspondre Ã  une information disponible
+; en GET (le lien vers le gepi doit donc Ãªtre du type https://nom_serveur/gepipath/login.php?rne=RNE (ce RNE correspondant Ã  celui qui est entre crochets ci-dessous)

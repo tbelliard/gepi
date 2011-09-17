@@ -9,9 +9,9 @@ var LC_Style=["<span class='clock'>","</span>",0,1,4,1,2];
 // arg 1 : balise de fermeture
 // arg 2 : si 0 affichage sur 24 heures, si 1 affichage anglais AM et PM
 // arg 3 : si 1 -> actualisation toutes les secondes, si 0 -> pas d'actualisation
-// arg 4 : diffÈrents format d'affichage de la date valeurs possibles : 1, 2, 3 et 4
-// arg 5 : si 0 -> nom complet des jours et mois. Si 1 -> noms abrÈgÈs
-// arg 6 : valeur ajoutÈe au GMT
+// arg 4 : diff√©rents format d'affichage de la date valeurs possibles : 1, 2, 3 et 4
+// arg 5 : si 0 -> nom complet des jours et mois. Si 1 -> noms abr√©g√©s
+// arg 6 : valeur ajout√©e au GMT
 
 var LC_IE=(document.all);
 var LC_NS=(document.layers);
@@ -19,7 +19,7 @@ var LC_N6=(window.sidebar);
 var LC_Old=(!LC_IE&&!LC_NS&&!LC_N6);
 var LC_Clocks=new Array();
 var LC_DaysOfWeek=[["Dimanche","Dim."],["Lundi","Lun."],["Mardi","Mar."],["Mercredi","Mer."],["Jeudi","Jeu."],["Vendredi","Ven."],["Samedi","Sam."]];
-var LC_MonthsOfYear=[["Janvier","Jan."],["Fevrier","Fev."],["Mars","Mar."],["Avril","Avr."],["Mai","Mai."],["Juin","Juin."],["Juillet","Juil."],["Ao˚t","Ao˚."],["Septembre","Sep."],["Octobre","Oct."],["Novembre","Nov."],["DÈcembre","Dec."]];
+var LC_MonthsOfYear=[["Janvier","Jan."],["Fevrier","Fev."],["Mars","Mar."],["Avril","Avr."],["Mai","Mai."],["Juin","Juin."],["Juillet","Juil."],["Ao√ªt","Ao√ª."],["Septembre","Sep."],["Octobre","Oct."],["Novembre","Nov."],["D√©cembre","Dec."]];
 var LC_ClockUpdate=[0,1000,60000];
 
 function LC_CreateClock(c){

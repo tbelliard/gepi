@@ -1,18 +1,18 @@
 <?php
 /**
- * Fichier de mise à jour de la version 1.5.4 à la version 1.5.5
+ * Fichier de mise Ã  jour de la version 1.5.4 Ã  la version 1.5.5
  * 
  * $Id$
  *
- * Le code PHP présent ici est exécuté tel quel.
- * Pensez à conserver le code parfaitement compatible pour une application
- * multiple des mises à jour. Toute modification ne doit être réalisée qu'après
- * un test pour s'assurer qu'elle est nécessaire.
+ * Le code PHP prÃ©sent ici est exÃ©cutÃ© tel quel.
+ * Pensez Ã  conserver le code parfaitement compatible pour une application
+ * multiple des mises Ã  jour. Toute modification ne doit Ãªtre rÃ©alisÃ©e qu'aprÃ¨s
+ * un test pour s'assurer qu'elle est nÃ©cessaire.
  *
- * Le résultat de la mise à jour est du html préformaté. Il doit être concaténé
- * dans la variable $result, qui est déjà initialisé.
+ * Le rÃ©sultat de la mise Ã  jour est du html prÃ©formatÃ©. Il doit Ãªtre concatÃ©nÃ©
+ * dans la variable $result, qui est dÃ©jÃ  initialisÃ©.
  *
- * Exemple : $result .= msj_ok("Champ XXX ajouté avec succès");
+ * Exemple : $result .= msj_ok("Champ XXX ajoutÃ© avec succÃ¨s");
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL,
@@ -23,7 +23,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version courante :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise Ã  jour vers la version courante :</h3>";
 
 $result.="<br/>";
 

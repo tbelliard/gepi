@@ -1,8 +1,8 @@
 <?php
 /**
- * Affichage du temps de génération de la page
+ * Affichage du temps de gÃ©nÃ©ration de la page
  * 
- * ---------Variables envoyées au gabarit
+ * ---------Variables envoyÃ©es au gabarit
  * - $tbs_microtime							nombre de secondes pour charger la page
 */
 

@@ -21,29 +21,29 @@
  */
 
 #---
-# Ce fichier doit être renommé en config_cas.inc.php dans le repertoire secure pour pouvoir être
+# Ce fichier doit Ãªtre renommÃ© en config_cas.inc.php dans le repertoire secure pour pouvoir Ãªtre
 # pris en compte !
 #---
 
 
-// Paramétrage du serveur CAS
+// ParamÃ©trage du serveur CAS
 // L'URL est construite de la forme suivante :
 // https://$cas_host:$cas_port/$cas_root
 
-$cas_host = "localhost"; // l'hôte du serveur CAS
+$cas_host = "localhost"; // l'hÃ´te du serveur CAS
 $cas_port = 8443; // Le port
 $cas_root = 'cas';
 
-# Si la variable suivante contient une URL, l'utilisateur qui se déconnecte de Gepi
-# sera redirigé vers la page logout de CAS. Ensuite, soit l'utilisateur sera invité
-# à cliquer sur cette URL, soit il sera automatiquement redirigé vers elle. Ce
-# comportement est déterminé par la seconde variable ($cas_logout_redirect).
+# Si la variable suivante contient une URL, l'utilisateur qui se dÃ©connecte de Gepi
+# sera redirigÃ© vers la page logout de CAS. Ensuite, soit l'utilisateur sera invitÃ©
+# Ã  cliquer sur cette URL, soit il sera automatiquement redirigÃ© vers elle. Ce
+# comportement est dÃ©terminÃ© par la seconde variable ($cas_logout_redirect).
 
 $cas_logout_url = ''; 	# Laissez vide pour n'afficher que la page logout de Gepi.
 						# Assurez-vous de bien saisir une URL valide !
 
 $cas_logout_redirect = true; 	# true/false : activer ou non la redirection automatique
 								# lors du logout.
-$cas_use_logout = true; // true/false pour se déconnecter ou non de CAS quand on se déconnecte de GEPI.
+$cas_use_logout = true; // true/false pour se dÃ©connecter ou non de CAS quand on se dÃ©connecte de GEPI.
 
 ?>

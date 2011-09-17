@@ -8,7 +8,7 @@
 *                                                                              *
 * Modifications : decode_pdf_utf8 (Equipe Gepi)                                *
 * Modifications : Fonctions myWriteHTML, MyOpenTag, MyCloseTag, MySetStyle     *
-*                 pour ne gerer que les styles B, I, U et évaluer correctement *
+*                 pour ne gerer que les styles B, I, U et Ã©valuer correctement *
 *                 les largeurs  
  * @package externe
  * @subpackage FPDF                                          *
@@ -617,7 +617,7 @@ function Link($x, $y, $w, $h, $link)
 
 function Text($x, $y, $txt)
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+	// Ajout suite au souci sur l'encodage utf8 (merci Ã  l'acadÃ©mie de Guyane)
     if (getSettingValue('decode_pdf_utf8') == 'y') {
     	$txt = utf8_decode($txt);
     }
@@ -638,7 +638,7 @@ function AcceptPageBreak()
 
 function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+	// Ajout suite au souci sur l'encodage utf8 (merci Ã  l'acadÃ©mie de Guyane)
     if (getSettingValue('decode_pdf_utf8') == 'y') {
     	$txt = utf8_decode($txt);
     }
@@ -721,7 +721,7 @@ function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link
 
 function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+	// Ajout suite au souci sur l'encodage utf8 (merci Ã  l'acadÃ©mie de Guyane)
     if (getSettingValue('decode_pdf_utf8') == 'y') {
     	$txt = utf8_decode($txt);
     }
@@ -838,7 +838,7 @@ function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 
 function Write($h, $txt, $link='')
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+	// Ajout suite au souci sur l'encodage utf8 (merci Ã  l'acadÃ©mie de Guyane)
     if (getSettingValue('decode_pdf_utf8') == 'y') {
     	$txt = utf8_decode($txt);
     }
@@ -1003,7 +1003,7 @@ function CloseTag($tag)
 
 function SetStyle($tag,$enable)
 {
-    //Modifie le style et sélectionne la police correspondante
+    //Modifie le style et sÃ©lectionne la police correspondante
     $this->$tag+=($enable ? 1 : -1);
     $style='';
     foreach(array('B','I','U') as $s)
@@ -1012,21 +1012,21 @@ function SetStyle($tag,$enable)
     $this->SetFont('',$style);
 }
 //===============================================
-// Fonction adaptée pour ne gérer que les B, U et I
+// Fonction adaptÃ©e pour ne gÃ©rer que les B, U et I
 // La fonction normale WriteHTML() se comporte bizarrement sur les largeurs prises en compte
-// On se retrouve avec des retours à la ligne non souhaités...
+// On se retrouve avec des retours Ã  la ligne non souhaitÃ©s...
 function myWriteHTML($html)
 {
 	global $my_echo_debug, $mode_my_echo_debug;
 
 	//================================
 	// Options de debug
-	// Passer à 1 pour débugger
+	// Passer Ã  1 pour dÃ©bugger
 	$my_echo_debug=0;
 	//$my_echo_debug=1;
 
-	// Les modes sont 'fichier' ou n'importe quoi d'autre qui provoque des echo... donc un échec de la génération de PDF... à ouvrir avec un bloc-notes, pas avec un lecteur PDF
-	// Voir la fonction my_echo_debug() pour l'emplacement du fichier généré
+	// Les modes sont 'fichier' ou n'importe quoi d'autre qui provoque des echo... donc un Ã©chec de la gÃ©nÃ©ration de PDF... Ã  ouvrir avec un bloc-notes, pas avec un lecteur PDF
+	// Voir la fonction my_echo_debug() pour l'emplacement du fichier gÃ©nÃ©rÃ©
 	$mode_my_echo_debug='fichier';
 	//$mode_my_echo_debug='';
 	//================================
@@ -1041,16 +1041,16 @@ function myWriteHTML($html)
 	{
 		if($i%2==0)
 		{
-			// Il se passe un truc bizarre avec un saut de 10cm quasiment sur l'abscisse de retour après écriture d'une cellule vide.
+			// Il se passe un truc bizarre avec un saut de 10cm quasiment sur l'abscisse de retour aprÃ¨s Ã©criture d'une cellule vide.
 			if($e!="") {
 				//Texte
 				if (getSettingValue('decode_pdf_utf8') == 'y') {
 					$e=utf8_decode($e);
 				}
-				if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Avant écriture de \"$e\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
+				if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Avant Ã©criture de \"$e\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
 				if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Largeur de \"$e\": ".$this->GetStringWidth($e)."\n");
 				$this->Cell($this->GetStringWidth($e),5, $e, 0, 0,'');
-				if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Après écriture de \"$e\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
+				if($my_echo_debug==1) my_echo_debug("   myWriteHTML: AprÃ¨s Ã©criture de \"$e\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
 			}
 		}
 		else
@@ -1061,7 +1061,7 @@ function myWriteHTML($html)
 				if($tag=='B' or $tag=='I' or $tag=='U') {
 					if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Avant fermeture de \"$tag\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
 					$this->MyCloseTag($tag);
-					if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Après fermeture de \"$tag\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
+					if($my_echo_debug==1) my_echo_debug("   myWriteHTML: AprÃ¨s fermeture de \"$tag\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
 				}
 			}
 			else
@@ -1087,7 +1087,7 @@ function myWriteHTML($html)
 				if($tag=='B' or $tag=='I' or $tag=='U') {
 					if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Avant ouverture de \"$tag\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
 					$this->MyOpenTag($tag,$attr);
-					if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Après ouverture de \"$tag\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
+					if($my_echo_debug==1) my_echo_debug("   myWriteHTML: AprÃ¨s ouverture de \"$tag\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
 				}
 			}
 		}
@@ -1116,7 +1116,7 @@ function MyCloseTag($tag)
 
 function MySetStyle($tag,$enable)
 {
-	//Modifie le style et sélectionne la police correspondante
+	//Modifie le style et sÃ©lectionne la police correspondante
 	$this->$tag+=($enable ? 1 : -1);
 	$style='';
 	foreach(array('B','I','U') as $s)

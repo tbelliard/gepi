@@ -40,12 +40,12 @@ if (!checkAccess()) {
 $msg = '';
 $error = false;
 if (isset($_POST['is_posted'])) {
-    // Les données ont été postées, on met à jour
+    // Les donnÃ©es ont Ã©tÃ© postÃ©es, on met Ã  jour
     check_token();
 
     $get_all_matieres = mysql_query("SELECT matiere, priority, categorie_id FROM matieres");
     while ($row = mysql_fetch_object($get_all_matieres)) {
-        // On passe les matières une par une et on met à jour
+        // On passe les matiÃ¨res une par une et on met Ã  jour
         $varname_p = strtolower($row->matiere)."_priorite";
 		//echo "<p>Test \$varname_p=$varname_p<br />";
         if (isset($_POST[$varname_p])) {
@@ -54,47 +54,47 @@ if (isset($_POST['is_posted'])) {
 				//echo "is_numeric(\$_POST[$varname_p]) oui<br />";
             	// La valeur est correcte
             	if ($_POST[$varname_p] != $row->priority) {
-                // On a une valeur différente. On met à jour.
+                // On a une valeur diffÃ©rente. On met Ã  jour.
                     $res = mysql_query("UPDATE matieres SET priority = '".$_POST[$varname_p] . "' WHERE matiere = '" . $row->matiere . "'");
                     if (!$res) {
-                        $msg .= "<br/>Erreur lors de la mise à jour de la priorité de la matière ".$row->matiere.".";
+                        $msg .= "<br/>Erreur lors de la mise Ã  jour de la prioritÃ© de la matiÃ¨re ".$row->matiere.".";
                         $error = true;
                     }
                 }
-                // On met à jour toutes les priorités dans les classes si ça a été demandé
+                // On met Ã  jour toutes les prioritÃ©s dans les classes si Ã§a a Ã©tÃ© demandÃ©
                 if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
 			        $sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$_POST[$varname_p]."' " .
 			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')";
 					//echo "$sql<br />";
 					$req = mysql_query($sql);
 			        if (!$req) {
-			        	$msg .="<br/>Erreur lors de la mise à jour de la priorité de matière dans les classes pour la matière ".$row->matiere.".";
+			        	$msg .="<br/>Erreur lors de la mise Ã  jour de la prioritÃ© de matiÃ¨re dans les classes pour la matiÃ¨re ".$row->matiere.".";
 			        	$error = true;
 			        }
                 }
             }
         }
 
-        // La même chose pour la catégorie de matière
+        // La mÃªme chose pour la catÃ©gorie de matiÃ¨re
         $varname_c = strtolower($row->matiere)."_categorie";
         if (isset($_POST[$varname_c])) {
         	if (is_numeric($_POST[$varname_c])) {
         		// On a une valeur correcte. On y va !
             	if ($_POST[$varname_c] != $row->categorie_id) {
-                	// On a une valeur différente. On met à jour.
+                	// On a une valeur diffÃ©rente. On met Ã  jour.
                     $res = mysql_query("UPDATE matieres SET categorie_id = '".$_POST[$varname_c] . "' WHERE matiere = '" . $row->matiere . "'");
                     if (!$res) {
-                        $msg .= "<br/>Erreur lors de la mise à jour de la catégorie de la matière ".$row->matiere.".";
+                        $msg .= "<br/>Erreur lors de la mise Ã  jour de la catÃ©gorie de la matiÃ¨re ".$row->matiere.".";
                         $error = true;
                     }
                 }
 
-                // On met à jour toutes les catégories dans les classes si ça a été demandé
+                // On met Ã  jour toutes les catÃ©gories dans les classes si Ã§a a Ã©tÃ© demandÃ©
                 if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
 			        $req = mysql_query("UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$_POST[$varname_c]."' " .
 			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')");
 			        if (!$req) {
-			        	$msg .="<br/>Erreur lors de la mise à jour de la catégorie de matière dans les classes pour la matière ".$row->matiere.".";
+			        	$msg .="<br/>Erreur lors de la mise Ã  jour de la catÃ©gorie de matiÃ¨re dans les classes pour la matiÃ¨re ".$row->matiere.".";
 			        	$error = true;
 			        }
                 }
@@ -104,39 +104,39 @@ if (isset($_POST['is_posted'])) {
 
     }
     if ($error) {
-        $msg .= "<br/>Des erreurs se sont produites lors de la mise à jour des données.";
+        $msg .= "<br/>Des erreurs se sont produites lors de la mise Ã  jour des donnÃ©es.";
     } else {
-        $msg .= "<br/>Mise à jour effectuée.";
+        $msg .= "<br/>Mise Ã  jour effectuÃ©e.";
     }
 }
 
-$themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage = 'Des modifications ont Ã©tÃ© effectuÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Gestion des matières";
+$titre_page = "Gestion des matiÃ¨res";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
 <p class=bold><a href="../accueil_admin.php"<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
- | <a href="modify_matiere.php"<?php echo insert_confirm_abandon();?>>Ajouter matière</a>
- | <a href='matieres_param.php'<?php echo insert_confirm_abandon();?>>Paramétrage de plusieurs matières par lots</a>
- | <a href='matieres_categories.php'<?php echo insert_confirm_abandon();?>>Editer les catégories de matières</a>
- | <a href='matieres_csv.php'<?php echo insert_confirm_abandon();?>>Importer un CSV de la liste des matières</a>
+ | <a href="modify_matiere.php"<?php echo insert_confirm_abandon();?>>Ajouter matiÃ¨re</a>
+ | <a href='matieres_param.php'<?php echo insert_confirm_abandon();?>>ParamÃ©trage de plusieurs matiÃ¨res par lots</a>
+ | <a href='matieres_categories.php'<?php echo insert_confirm_abandon();?>>Editer les catÃ©gories de matiÃ¨res</a>
+ | <a href='matieres_csv.php'<?php echo insert_confirm_abandon();?>>Importer un CSV de la liste des matiÃ¨res</a>
 </p>
 <form enctype="multipart/form-data" action="index.php" method=post>
 <?php
 echo add_token_field();
 ?>
 <input type='submit' value='Enregistrer' style='margin-left: 10%; margin-bottom: 0px;' />
-<p><label for='forcer_defauts' style='cursor: pointer;'>Pour toutes les classes, forcer les valeurs définies pour toutes les matières ci-dessous <input type='checkbox' name='forcer_defauts' id='forcer_defauts' value='yes' /></label>
-<br/><b>Attention !</b> Cette fonction effacera tous vos changements manuels concernant la priorité et la catégorie de chaque matière dans les différentes classes !</p>
+<p><label for='forcer_defauts' style='cursor: pointer;'>Pour toutes les classes, forcer les valeurs dÃ©finies pour toutes les matiÃ¨res ci-dessous <input type='checkbox' name='forcer_defauts' id='forcer_defauts' value='yes' /></label>
+<br/><b>Attention !</b> Cette fonction effacera tous vos changements manuels concernant la prioritÃ© et la catÃ©gorie de chaque matiÃ¨re dans les diffÃ©rentes classes !</p>
 <input type='hidden' name='is_posted' value='1' />
 <table class='boireaus' width = '100%' cellpadding = '5'>
 <tr>
-    <th><p class='bold'><a href='./index.php?orderby=m.matiere'<?php echo insert_confirm_abandon();?>>Identifiant matière</a></p></th>
+    <th><p class='bold'><a href='./index.php?orderby=m.matiere'<?php echo insert_confirm_abandon();?>>Identifiant matiÃ¨re</a></p></th>
     <th><p class='bold'><a href='./index.php?orderby=m.nom_complet'<?php echo insert_confirm_abandon();?>>Nom complet</a></p></th>
-    <th><p class='bold'><a href='./index.php?orderby=m.priority,m.nom_complet'<?php echo insert_confirm_abandon();?>>Ordre d'affichage<br />par défaut</a></p></th>
-    <th><p class='bold'>Catégorie par défaut</p></th>
+    <th><p class='bold'><a href='./index.php?orderby=m.priority,m.nom_complet'<?php echo insert_confirm_abandon();?>>Ordre d'affichage<br />par dÃ©faut</a></p></th>
+    <th><p class='bold'>CatÃ©gorie par dÃ©faut</p></th>
     <th><p class='bold'>Supprimer</p></th>
 </tr>
 <?php
@@ -145,7 +145,7 @@ if ($orderby != "m.matiere" AND $orderby != "m.nom_complet" AND $orderby != "m.p
     $orderby = "m.priority,m.nom_complet";
 }
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
-// On va chercher les classes déjà existantes, et on les affiche.
+// On va chercher les classes dÃ©jÃ  existantes, et on les affiche.
 
 $call_data = mysql_query("SELECT m.matiere, m.nom_complet, m.priority, m.categorie_id FROM matieres m ORDER BY $orderby");
 $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
@@ -169,7 +169,7 @@ while ($i < $nombre_lignes){
     //echo "<td>$current_matiere_nom</td>";
     //echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
     echo "<td>".htmlentities($current_matiere_nom)."</td>\n";
-    // La priorité par défaut
+    // La prioritÃ© par dÃ©faut
     echo "<td>\n";
     echo "<select size=1 name='" . strtolower($current_matiere)."_priorite' onchange='changement()'>\n";
     $k = '0';
@@ -200,8 +200,8 @@ while ($i < $nombre_lignes){
     }
     echo "</select>\n";
     echo "</td>\n";
-    //echo "<td><a href=\"../lib/confirm_query.php?liste_cible=$current_matiere&amp;action=del_matiere\" onclick=\"return confirmlink(this, 'La suppression d\'une matière est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>\n";
-    echo "<td><a href=\"suppr_matiere.php?matiere=$current_matiere\" onclick=\"return confirmlink(this, 'La suppression d\'une matière est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>\n";
+    //echo "<td><a href=\"../lib/confirm_query.php?liste_cible=$current_matiere&amp;action=del_matiere\" onclick=\"return confirmlink(this, 'La suppression d\'une matiÃ¨re est irrÃ©versible. Une telle suppression ne devrait pas avoir lieu en cours d\'annÃ©e. Si c\'est le cas, cela peut entraÃ®ner la prÃ©sence de donnÃ©es orphelines dans la base. Etes-vous sÃ»r de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>\n";
+    echo "<td><a href=\"suppr_matiere.php?matiere=$current_matiere\" onclick=\"return confirmlink(this, 'La suppression d\'une matiÃ¨re est irrÃ©versible. Une telle suppression ne devrait pas avoir lieu en cours d\'annÃ©e. Si c\'est le cas, cela peut entraÃ®ner la prÃ©sence de donnÃ©es orphelines dans la base. Etes-vous sÃ»r de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>\n";
 	$i++;
 }
 ?>

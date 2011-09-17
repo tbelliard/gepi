@@ -44,21 +44,21 @@ include "../lib/periodes.inc.php";
 
 // On teste si un professeur peut saisir les avis
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiRubConseilProf")!='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+   die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
-// On teste si le service scolarité peut saisir les avis
+// On teste si le service scolaritÃ© peut saisir les avis
 if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol")!='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+   die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Saisie des appréciations du conseil | Importation";
+$titre_page = "Saisie des apprÃ©ciations du conseil | Importation";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-// $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
+// $long_max : doit Ãªtre plus grand que la plus grande ligne trouvÃ©e dans le fichier CSV
 $long_max = 8000;
 
 echo "<form enctype='multipart/form-data' action='import_app_cons.php' method='post' name='form1'>\n";
@@ -67,7 +67,7 @@ echo "<input type='hidden' name='periode_num' value=\"$periode_num\" />\n";
 echo "<p class='bold'><a href='saisie_avis.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 // ===========================================
-// Ajout lien classe précédente / classe suivante
+// Ajout lien classe prÃ©cÃ©dente / classe suivante
 if($_SESSION['statut']=='scolarite'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
@@ -122,7 +122,7 @@ if(isset($id_class_prec)){
 	if($id_class_prec!=0){
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;periode_num=$periode_num'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">Classe précédente</a>\n";
+		echo ">Classe prÃ©cÃ©dente</a>\n";
 	}
 }
 if($chaine_options_classes!="") {
@@ -165,14 +165,14 @@ echo "<script type='text/javascript'>
 	}
 </script>\n";
 
-//fin ajout lien classe précédente / classe suivante
+//fin ajout lien classe prÃ©cÃ©dente / classe suivante
 // ===========================================
 
 
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
-echo "<p><span class = 'grand'>Première phase d'importation des appréciations </span>";
-echo "<p class = 'bold'>Classe : $classe | Période : $nom_periode[$periode_num]</p>";
+echo "<p><span class = 'grand'>PremiÃ¨re phase d'importation des apprÃ©ciations </span>";
+echo "<p class = 'bold'>Classe : $classe | PÃ©riode : $nom_periode[$periode_num]</p>";
 
 if (!isset($is_posted)) {
     ?>
@@ -181,8 +181,8 @@ if (!isset($is_posted)) {
 		$csv_file=""; 
 		echo add_token_field();
 	?>
-    <p>Fichier CSV à importer : <input type='file' name="csv_file" />    <input type='submit' value='Ouvrir' /></p>
-    <p>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre&nbsp;
+    <p>Fichier CSV Ã  importer : <input type='file' name="csv_file" />    <input type='submit' value='Ouvrir' /></p>
+    <p>Si le fichier Ã  importer comporte une premiÃ¨re ligne d'en-tÃªte (non vide) Ã  ignorer, <br />cocher la case ci-contre&nbsp;
     <input type='checkbox' name="en_tete" value="yes" checked /></p>
     <input type='hidden' name='is_posted' value='1' />
     <?php
@@ -191,21 +191,21 @@ if (!isset($is_posted)) {
     ?>
     </form>
     <?php
-    echo "<p>Vous avez décidé d'importer directement un fichier d'appréciations. Le fichier d'importation doit être au format csv (séparateur : point-virgule) et doit contenir les deux champs suivants :<br />\n";
-    echo "--> <B>IDENTIFIANT</B> : L'identifiant GEPI de l'élève (<b>voir les explications plus bas</b>).<br />\n";
-    echo "--> <B>Appréciation</B> : le texte de l'appréciation de l'élève.<br />Si ce champ est vide, Il n'y aura pas modification de l'appréciation enregistrée dans GEPI pour l'élève en question.</p>\n";
-    echo "<p>Pour constituer le fichier d'importation vous avez besoin de connaître
-    l'identifiant <b>GEPI</b> de chaque élève. Vous pouvez télécharger :
+    echo "<p>Vous avez dÃ©cidÃ© d'importer directement un fichier d'apprÃ©ciations. Le fichier d'importation doit Ãªtre au format csv (sÃ©parateur : point-virgule) et doit contenir les deux champs suivants :<br />\n";
+    echo "--> <B>IDENTIFIANT</B> : L'identifiant GEPI de l'Ã©lÃ¨ve (<b>voir les explications plus bas</b>).<br />\n";
+    echo "--> <B>ApprÃ©ciation</B> : le texte de l'apprÃ©ciation de l'Ã©lÃ¨ve.<br />Si ce champ est vide, Il n'y aura pas modification de l'apprÃ©ciation enregistrÃ©e dans GEPI pour l'Ã©lÃ¨ve en question.</p>\n";
+    echo "<p>Pour constituer le fichier d'importation vous avez besoin de connaÃ®tre
+    l'identifiant <b>GEPI</b> de chaque Ã©lÃ¨ve. Vous pouvez tÃ©lÃ©charger :
     <ul>
-    <li>le fichier élèves des identifiants GEPI (<i>sans les nom et prénom</i>) en
+    <li>le fichier Ã©lÃ¨ves des identifiants GEPI (<i>sans les nom et prÃ©nom</i>) en
     <a href='import_class_csv.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;champs=2&amp;ligne_entete=y&amp;mode=Id_App'><b>cliquant ici</b></a></li>\n";
 
     //echo ", ou bien,";
-    echo "<li>ou bien le fichier élèves (nom - prénom - identifiant GEPI) en
-    <a href='import_class_csv.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;champs=4&amp;ligne_entete=y&amp;mode=Nom_Prenom_Id_App'><b>cliquant ici</b></a><br />(<i>ce deuxième fichier n'est pas directement adapté à l'import<br />(il faudra en supprimer les colonnes Nom et Prénom avant import)</i>)</li>\n";
+    echo "<li>ou bien le fichier Ã©lÃ¨ves (nom - prÃ©nom - identifiant GEPI) en
+    <a href='import_class_csv.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;champs=4&amp;ligne_entete=y&amp;mode=Nom_Prenom_Id_App'><b>cliquant ici</b></a><br />(<i>ce deuxiÃ¨me fichier n'est pas directement adaptÃ© Ã  l'import<br />(il faudra en supprimer les colonnes Nom et PrÃ©nom avant import)</i>)</li>\n";
 
     echo "</ul>
-    <p>Une fois téléchargé, utilisez votre tableur habituel pour ouvrir ce fichier en précisant que le type de fichier est csv avec point-virgule comme séparateur.</p>\n";
+    <p>Une fois tÃ©lÃ©chargÃ©, utilisez votre tableur habituel pour ouvrir ce fichier en prÃ©cisant que le type de fichier est csv avec point-virgule comme sÃ©parateur.</p>\n";
 
 }
 if (isset($is_posted ) and ($is_posted==1)) {
@@ -216,7 +216,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
     echo "<form enctype='multipart/form-data' action='import_app_cons.php' method='post'>\n";
 	echo add_token_field();
     if($csv_file['tmp_name'] != "") {
-        echo "<p><b>Attention</b>, les données ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !</p>\n";
+        echo "<p><b>Attention</b>, les donnÃ©es ne sont pas encore enregistrÃ©es dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !</p>\n";
 
         $fp = @fopen($csv_file['tmp_name'], "r");
         if(!$fp) {
@@ -227,9 +227,9 @@ if (isset($is_posted ) and ($is_posted==1)) {
 			<tr>
             <th><p class='bold'>IDENTIFIANT</p></th>
             <th><p class='bold'>Nom</p></th>
-            <th><p class='bold'>Prénom</p></th>
+            <th><p class='bold'>PrÃ©nom</p></th>
             <th><p class='bold'>Classe</p></th>
-            <th><p class='bold'>Appréciation</p></th>
+            <th><p class='bold'>ApprÃ©ciation</p></th>
             <th><p class='bold'>Statut</p></th>
             </tr>\n";
             $valid = 1;
@@ -241,7 +241,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
                 }
                 $data = fgetcsv ($fp, $long_max, ";");
                  $num = count ($data);
-                // On commence par repérer les lignes qui comportent 2 champs vides de façon à ne pas les retenir
+                // On commence par repÃ©rer les lignes qui comportent 2 champs vides de faÃ§on Ã  ne pas les retenir
                 if ($num == 2) {
                     $champs_vides = 'yes';
                     for ($c=0; $c<$num; $c++) {
@@ -280,7 +280,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
                                 }
 
                                 //
-                                // On verifie que l'élève a bien pour professeur principal le professeur connecté.
+                                // On verifie que l'Ã©lÃ¨ve a bien pour professeur principal le professeur connectÃ©.
                                 //
                                 if ($_SESSION['statut'] != 'scolarite') {
                                     $eleve_profsuivi_query = mysql_query("SELECT * FROM  j_eleves_professeurs
@@ -293,7 +293,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
                                     $test_suivi = 1;
                                 }
                                 //
-                                // Si l'utilisateur n'est pas prof de suivi de l'élève ou si l'élève n'appartient pas à la classe, echec !
+                                // Si l'utilisateur n'est pas prof de suivi de l'Ã©lÃ¨ve ou si l'Ã©lÃ¨ve n'appartient pas Ã  la classe, echec !
                                 //
                                 if (($test_suivi != "0") and ($eleve_id_classe == $id_classe))  {
                                     echo "<td><p>$data[$c]</p>\n";
@@ -328,7 +328,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
                             }
                             break;
                         case 1:
-                            // Appréciation
+                            // ApprÃ©ciation
                             if ($data[$c] == "") {
                                 $col3 = "<font color='green'>ND</font>";
                                 $non_def = 'yes';
@@ -355,25 +355,25 @@ if (isset($is_posted ) and ($is_posted==1)) {
             }
             fclose($fp);
             echo "</table>\n";
-            echo "<p>Première phase de l'importation : $row entrées détectées !</p>\n";
+            echo "<p>PremiÃ¨re phase de l'importation : $row entrÃ©es dÃ©tectÃ©es !</p>\n";
             if ($row > 0) {
                 echo "<input type='hidden' name='nb_row' value=\"$row\" />\n";
                 echo "<input type='hidden' name='id_classe' value=\"$id_classe\" />\n";
                 echo "<input type='hidden' name='periode_num' value=\"$periode_num\" />\n";
                 echo "<input type='hidden' name='is_posted' value=\"2\" />\n";
-                echo "<input type='submit' value='Enregistrer les données' />\n";
+                echo "<input type='submit' value='Enregistrer les donnÃ©es' />\n";
                 echo "</form>";
                 if ($valid != '1') {
-                    echo "<p class='bold'>AVERTISSEMENT : Les symboles <font color=red>???</font> et les messages en rouge indiquent des lignes non valides et qui ne seront pas enregistrées.<br /></p>\n";
+                    echo "<p class='bold'>AVERTISSEMENT : Les symboles <font color=red>???</font> et les messages en rouge indiquent des lignes non valides et qui ne seront pas enregistrÃ©es.<br /></p>\n";
                     echo "</form>\n";
                 }
                 if ($non_def == 'yes') {
-                    echo "<p class='bold'>Les symboles <font color=green>ND</font> signifient que le champ en question sera ignoré. Il n'y aura donc pas modification de la donnée existante dans la base de GEPI.<br /></p>\n";
+                    echo "<p class='bold'>Les symboles <font color=green>ND</font> signifient que le champ en question sera ignorÃ©. Il n'y aura donc pas modification de la donnÃ©e existante dans la base de GEPI.<br /></p>\n";
                 }
                 ?>
                 <script type="text/javascript">
                 <!--
-                alert("Attention, les données ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !");
+                alert("Attention, les donnÃ©es ne sont pas encore enregistrÃ©es dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !");
                 //-->
                 </script>
                 <?php
@@ -385,27 +385,27 @@ if (isset($is_posted ) and ($is_posted==1)) {
 
 
             } else {
-                echo "<p>L'importation a échoué !</p>\n";
+                echo "<p>L'importation a Ã©chouÃ© !</p>\n";
             }
         }
     // suite de la condition "if($csv_file != "none")"
     } else {
-        echo "<p>Aucun fichier n'a été sélectionné !</p>\n";
+        echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !</p>\n";
     // fin de la condition "if($csv_file != "none")"
     }
 }
 
-// On enregistre les données
+// On enregistre les donnÃ©es
 if (isset($is_posted ) and ($is_posted==2)) {
 	check_token(false);
 
-    // on vérifie que la période n'est pas totalement verrouillée
+    // on vÃ©rifie que la pÃ©riode n'est pas totalement verrouillÃ©e
     if ($ver_periode[$periode_num] == "O") {
-        echo "<p class='grand'>La période sur laquelle vous voulez enregistrer est verrouillée.</p>\n";
+        echo "<p class='grand'>La pÃ©riode sur laquelle vous voulez enregistrer est verrouillÃ©e.</p>\n";
 		require("../lib/footer.inc.php");
         die();
     }
-    // si la période n'est pas totalement verrouillée, on continue
+    // si la pÃ©riode n'est pas totalement verrouillÃ©e, on continue
     $nb_row++;
     for ($row=1; $row<$nb_row; $row++) {
         $temp = "reg_".$row."_ok";
@@ -452,14 +452,14 @@ if (isset($is_posted ) and ($is_posted==2)) {
             }
 
             if (!$reg_data) {
-                echo "<font color='red'>Erreur lors de la modification de l'appréciation de l'utilisateur $reg_login !</font><br />\n";
+                echo "<font color='red'>Erreur lors de la modification de l'apprÃ©ciation de l'utilisateur $reg_login !</font><br />\n";
             } else {
-                echo "L'appréciation de l'utilisateur $reg_login a été modifiée avec succès !<br />\n";
+                echo "L'apprÃ©ciation de l'utilisateur $reg_login a Ã©tÃ© modifiÃ©e avec succÃ¨s !<br />\n";
             }
         }
     }
     echo "</p>\n";
-    echo "<br /><a href='saisie_avis1.php?id_classe=$id_classe'>Accéder à la page de saisie des appréciations pour vérification</a></p>\n";
+    echo "<br /><a href='saisie_avis1.php?id_classe=$id_classe'>AccÃ©der Ã  la page de saisie des apprÃ©ciations pour vÃ©rification</a></p>\n";
 }
 require("../lib/footer.inc.php");
 ?>

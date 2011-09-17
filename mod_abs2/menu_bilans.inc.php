@@ -31,7 +31,7 @@ $basename_serveur=explode("?", basename($_SERVER["REQUEST_URI"]));
 $onglet_abs = reset($basename_serveur);
 
 $_SESSION['abs2_onglet'] = $onglet_abs;
-// Tests à remplacer par des tests sur les droits attribués aux statuts
+// Tests Ã  remplacer par des tests sur les droits attribuÃ©s aux statuts
 if(($_SESSION['statut']=='cpe')||
     ($_SESSION['statut']=='scolarite')) {
 
@@ -59,7 +59,7 @@ if(($_SESSION['statut']=='cpe')||
 
     echo "<li><a href='extraction_demi-journees.php' ";
     if($onglet_abs=='extraction_demi-journees.php') {echo "class='current' ";}
-    echo "title='Extraction des saisies'>Extraction des demi-journées</a></li>\n";
+    echo "title='Extraction des saisies'>Extraction des demi-journÃ©es</a></li>\n";
 
     echo "<li><a href='bilan_individuel.php' ";
     if($onglet_abs=='bilan_individuel.php') {echo "class='current' ";}

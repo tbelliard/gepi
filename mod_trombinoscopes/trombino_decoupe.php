@@ -48,13 +48,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génération d une grille PDF pour les trombinoscopes,...',
+description='GÃ©nÃ©ration d une grille PDF pour les trombinoscopes,...',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -121,7 +121,7 @@ if(isset($parametrer_pdf)) {
 			$msg .= "Erreur lors de l'enregistrement de trombino_pdf_nb_lig !";
 		}
 
-		if($msg=="") {$msg="Enregistrement des paramètres effectué.";}
+		if($msg=="") {$msg="Enregistrement des paramÃ¨tres effectuÃ©.";}
 	}
 }
 //=================================================
@@ -131,14 +131,14 @@ if(isset($_POST['suppr_grille'])) {
 	for($i=0;$i<count($suppr_grille);$i++) {
 		$sql="DELETE FROM trombino_decoupe WHERE id_grille='$suppr_grille[$i]';";
 		$del=mysql_query($sql);
-		if(!$del) {$msg.="Erreur lors de la suppression de la grille n°$suppr_grille[$i]<br />";}
+		if(!$del) {$msg.="Erreur lors de la suppression de la grille nÂ°$suppr_grille[$i]<br />";}
 		else {
 			$sql="DELETE FROM trombino_decoupe_param WHERE id_grille='$suppr_grille[$i]';";
 			$del=mysql_query($sql);
-			if(!$del) {$msg.="Erreur lors de la suppression des paramètres de la grille n°$suppr_grille[$i]<br />";}
+			if(!$del) {$msg.="Erreur lors de la suppression des paramÃ¨tres de la grille nÂ°$suppr_grille[$i]<br />";}
 		}
 	}
-	if($msg=="") {$msg="Suppression effectuée.<br />";}
+	if($msg=="") {$msg="Suppression effectuÃ©e.<br />";}
 }
 //=================================================
 include('trombino.inc.php');
@@ -169,19 +169,19 @@ $dy=2;
 
 // Hauteur classe
 $hauteur_classe=10;
-// J'ai ajouté depuis un $ecart_sous_classe=2;
+// J'ai ajoutÃ© depuis un $ecart_sous_classe=2;
 
-// Espace pour Nom et prénom dans le cadre
+// Espace pour Nom et prÃ©nom dans le cadre
 $hauteur_info_eleve=5;
 
 // Pour pouvoir ne pas imprimer le Footer
 $no_footer="n";
 
-// Il arrive qu'il y ait un décalage vertical s'amplifiant ligne après ligne sur les découpes
-// Par défaut, pas de décalage:
+// Il arrive qu'il y ait un dÃ©calage vertical s'amplifiant ligne aprÃ¨s ligne sur les dÃ©coupes
+// Par dÃ©faut, pas de dÃ©calage:
 $correctif_vertical=1;
 //===================
-// Valeurs calculées:
+// Valeurs calculÃ©es:
 
 // Nombre de cases par page
 $nb_cell=$trombino_pdf_nb_lig*$trombino_pdf_nb_col;
@@ -205,33 +205,33 @@ if(isset($_POST['upload_scan'])) {
 
 	//echo "1";
 	if(!isset($_POST['fin_form_upload_scan'])) {
-		$msg="Le formulaire n'a pas été POSTé entièrement.<br />Vous avez peut-être été trop gourmand avec le nombre et le volume des photos proposées.<br />";
+		$msg="Le formulaire n'a pas Ã©tÃ© POSTÃ© entiÃ¨rement.<br />Vous avez peut-Ãªtre Ã©tÃ© trop gourmand avec le nombre et le volume des photos proposÃ©es.<br />";
 		// Ca ne fonctionne pas... si on est trop gourmand, on se retrouve avec $_POST vide.
 	}
 
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
-		$msg="Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?<br />\n";
+		$msg="Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?<br />\n";
 		// Il ne faut pas aller plus loin...
 	}
 	elseif(!isset($id_grille)) {
-		$msg="Aucun id_grille n'a été choisi.<br />\n";
+		$msg="Aucun id_grille n'a Ã©tÃ© choisi.<br />\n";
 	}
 	else {
 		//echo "2";
 		$sql="SELECT page_global FROM trombino_decoupe WHERE id_grille='$id_grille' ORDER BY page_global DESC LIMIT 1;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			$msg="L'id_grille n°$id_grille ne correspond à aucun enregistrement dans la table 'trombino_decoupe'.<br />\n";
+			$msg="L'id_grille nÂ°$id_grille ne correspond Ã  aucun enregistrement dans la table 'trombino_decoupe'.<br />\n";
 		}
 		else {
 			//echo "3";
-			// Récuperer les paramètres et calculer les dimensions des cadres d'après les nombres de colonnes et de lignes
+			// RÃ©cuperer les paramÃ¨tres et calculer les dimensions des cadres d'aprÃ¨s les nombres de colonnes et de lignes
 			$sql="SELECT * FROM trombino_decoupe_param WHERE id_grille='$id_grille';";
 			//$msg.="$sql<br />";
 			$res_param=mysql_query($sql);
 			if(mysql_num_rows($res_param)==0) {
-				$msg="Aucun paramètre n'a été trouvé pour l'id_grille n°$id_grille dans la table 'trombino_decoupe_param'.<br />\n";
+				$msg="Aucun paramÃ¨tre n'a Ã©tÃ© trouvÃ© pour l'id_grille nÂ°$id_grille dans la table 'trombino_decoupe_param'.<br />\n";
 			}
 			else {
 				while($lig_param=mysql_fetch_object($res_param)) {
@@ -260,10 +260,10 @@ if(isset($_POST['upload_scan'])) {
 				$msg.="\$larg_cadre=$larg_cadre<br />";
 				*/
 
-				$msg.="Traitement des découpes avec une grille de $trombino_pdf_nb_col colonnes sur $trombino_pdf_nb_lig lignes (id_grille n°$id_grille).<br />";
+				$msg.="Traitement des dÃ©coupes avec une grille de $trombino_pdf_nb_col colonnes sur $trombino_pdf_nb_lig lignes (id_grille nÂ°$id_grille).<br />";
 
 				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-					// On récupère le RNE de l'établissement
+					// On rÃ©cupÃ¨re le RNE de l'Ã©tablissement
 					$repertoire2=$_COOKIE['RNE']."/";
 				}
 				else {
@@ -281,23 +281,23 @@ if(isset($_POST['upload_scan'])) {
 						$upload_max_filesize=ini_get('upload_max_filesize');
 
 						if(!is_uploaded_file($image['tmp_name'])) {
-							$msg.="L'upload du fichier n°$i a échoué.<br />\n";
-							$msg.="Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+							$msg.="L'upload du fichier nÂ°$i a Ã©chouÃ©.<br />\n";
+							$msg.="Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 							$msg.="post_max_size=$post_max_size<br />\n";
 							$msg.="upload_max_filesize=$upload_max_filesize<br />\n";
 						}
 						else{
 							if(!file_exists($image['tmp_name'])){
-								$msg.="Le fichier n°$i aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
-								$msg.="Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+								$msg.="Le fichier nÂ°$i aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.<br />\n";
+								$msg.="Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 								$msg.="post_max_size=$post_max_size<br />\n";
 								$msg.="upload_max_filesize=$upload_max_filesize<br />\n";
 								$msg.="et le volume de ".$image['name']." serait<br />\n";
 								$msg.="\$image['size']=".volume_human($image['size'])."<br />\n";
 							}
 		
-							//echo "<p>Le fichier ".$image['name']." sous ".$image['tmp_name']." a été uploadé.</p>\n";
-							if($image['name']=="") {$msg.="Il s'est passé un problème lors de l'upload/traitement.<br />Le fichier uploadé était-il bien de type JPEG? (type trouvé&nbsp;: ".$image['type'].")<br />";}
+							//echo "<p>Le fichier ".$image['name']." sous ".$image['tmp_name']." a Ã©tÃ© uploadÃ©.</p>\n";
+							if($image['name']=="") {$msg.="Il s'est passÃ© un problÃ¨me lors de l'upload/traitement.<br />Le fichier uploadÃ© Ã©tait-il bien de type JPEG? (type trouvÃ©&nbsp;: ".$image['type'].")<br />";}
 
 							$source_file=$image['tmp_name'];
 							$dest_file="../temp/".$tempdir."/image_$i.jpg";
@@ -307,8 +307,8 @@ if(isset($_POST['upload_scan'])) {
 							}
 							else {
 								$num_page=$i+1;
-								//$msg.="Traitement de la page n°$i<br />\n";
-								$msg.="Traitement de la page n°$num_page<br />\n";
+								//$msg.="Traitement de la page nÂ°$i<br />\n";
+								$msg.="Traitement de la page nÂ°$num_page<br />\n";
 	
 								if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 									$sql="SELECT t.*, e.login FROM trombino_decoupe t, eleves e WHERE t.page_global='$i' AND t.id_grille='$id_grille' AND t.elenoet=e.elenoet;";
@@ -319,18 +319,18 @@ if(isset($_POST['upload_scan'])) {
 								$res2=mysql_query($sql);
 								if(mysql_num_rows($res2)>0) {
 									$img_source=imagecreatefromjpeg($dest_file);
-									// Dimensions de l'image scannée
+									// Dimensions de l'image scannÃ©e
 									$larg_img=imagesx($img_source);
 									$haut_img=imagesy($img_source);
 	
-									// Il est indispensable que la découpe de l'image scannée soit aux bords de la page imprimée
+									// Il est indispensable que la dÃ©coupe de l'image scannÃ©e soit aux bords de la page imprimÃ©e
 									$ratio=$larg_img/$largeur_page;
 	
 									$larg_cadre_img=round($larg_cadre*$ratio);
 									$haut_cadre_img=round($haut_cadre*$ratio);
 	
 									while($lig2=mysql_fetch_object($res2)) {
-										// Coordonnées dans le PDF multipliées par le ratio
+										// CoordonnÃ©es dans le PDF multipliÃ©es par le ratio
 										$x=round(($x0+$lig2->x*($larg_cadre+$dx))*$ratio);
 										$y=round(($y0+$lig2->y*($haut_cadre+$dy)+$hauteur_classe+$ecart_sous_classe)*$ratio)*$correctif_vertical;
 	
@@ -360,7 +360,7 @@ if(isset($_POST['upload_scan'])) {
 if(isset($generer_pdf)) {
 	check_token();
 	if(!isset($id_classe)) {
-		$msg="ERREUR&nbsp;: Aucune classe n'a été sélectionnée.<br />\n";
+		$msg="ERREUR&nbsp;: Aucune classe n'a Ã©tÃ© sÃ©lectionnÃ©e.<br />\n";
 		unset($mode);
 	}
 	else {
@@ -490,9 +490,9 @@ if(isset($generer_pdf)) {
 		
 					$pdf->SetFont($fonte,'',$fonte_size);
 		
-					// Paramètres pour cell_ajustee()
-					// On n'arrive pas à centrer avec cell_ajustee()
-					// Difficulté avec le mode de remplissage avec myWriteHTML()
+					// ParamÃ¨tres pour cell_ajustee()
+					// On n'arrive pas Ã  centrer avec cell_ajustee()
+					// DifficultÃ© avec le mode de remplissage avec myWriteHTML()
 					$largeur_dispo=$larg_cadre;
 					/*
 					$h_cell=$hauteur_info_eleve;
@@ -581,21 +581,21 @@ if(!isset($mode)) {
 
 	echo "<p>Choisissez&nbsp;:</p>\n";
 	echo "<ul>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=parametrer'>Paramétrer les grilles</a></li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=generer_grille'>Générer des grilles</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=parametrer'>ParamÃ©trer les grilles</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=generer_grille'>GÃ©nÃ©rer des grilles</a></li>\n";
 	$sql="SELECT 1=1 FROM trombino_decoupe;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=uploader'>Uploader les grilles scannées après collage des photos</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=uploader'>Uploader les grilles scannÃ©es aprÃ¨s collage des photos</a></li>\n";
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=suppr_grille'>Supprimer des grilles</a></li>\n";
 	}
 	echo "</ul>\n";
 
 	echo "<p><i>NOTES</i>&nbsp;:</p>\n";
 	echo "<ul>\n";
-	echo "<li>Le mode d'utilisation de cette page est le suivant&nbsp;:<br />L'administrateur choisit le nombre de colonnes et de lignes.<br />Il génère et imprime les grilles PDF.<br />Les photos sont collées par vos soins sur les grilles avec un tube de colle tout ce qu'il y a de classique.<br />Les grilles sont scannées en veillant à ce que les bords de chaque image scannée coïncident avec les bords de la page.<br />Il uploade ensuite les images scannées.<br />Le dispositif se charge de découper les grilles pour placer les photos individuelles renommées en ../photos/eleves/ELENOET.jpg</li>\n";
-	//echo "<li><span style='color:red;'>A REVOIR&nbsp;:</span> Il ne faut pas changer les paramètres entre l'édition de grilles et l'upload des scans correspondants.</li>\n";
-	echo "<li><span style='color:red;'>A REVOIR&nbsp;:</span> D'autres paramètres devraient être proposés et enregistrés dans la base... et liés à une édition de grille particulière.</li>\n";
+	echo "<li>Le mode d'utilisation de cette page est le suivant&nbsp;:<br />L'administrateur choisit le nombre de colonnes et de lignes.<br />Il gÃ©nÃ¨re et imprime les grilles PDF.<br />Les photos sont collÃ©es par vos soins sur les grilles avec un tube de colle tout ce qu'il y a de classique.<br />Les grilles sont scannÃ©es en veillant Ã  ce que les bords de chaque image scannÃ©e coÃ¯ncident avec les bords de la page.<br />Il uploade ensuite les images scannÃ©es.<br />Le dispositif se charge de dÃ©couper les grilles pour placer les photos individuelles renommÃ©es en ../photos/eleves/ELENOET.jpg</li>\n";
+	//echo "<li><span style='color:red;'>A REVOIR&nbsp;:</span> Il ne faut pas changer les paramÃ¨tres entre l'Ã©dition de grilles et l'upload des scans correspondants.</li>\n";
+	echo "<li><span style='color:red;'>A REVOIR&nbsp;:</span> D'autres paramÃ¨tres devraient Ãªtre proposÃ©s et enregistrÃ©s dans la base... et liÃ©s Ã  une Ã©dition de grille particuliÃ¨re.</li>\n";
 	//echo "<li></li>\n";
 	echo "</ul>\n";
 
@@ -608,7 +608,7 @@ elseif($mode=='parametrer') {
 	//debug_var();
 
 	echo "<p class=bold><a href='trombinoscopes.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil trombinoscopes</a>";
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil découpe</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil dÃ©coupe</a>\n";
 	echo "</p>\n";
 
 	$trombino_pdf_nb_col=getSettingValue("trombino_pdf_nb_col");
@@ -620,8 +620,8 @@ elseif($mode=='parametrer') {
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
 	echo "<fieldset>\n";
-	echo "<p>Paramétrage&nbsp;:</p>\n";
-	echo "<table style='margin-left:2em;' class='boireaus' summary='Paramètres du trombinoscope'>\n";
+	echo "<p>ParamÃ©trage&nbsp;:</p>\n";
+	echo "<table style='margin-left:2em;' class='boireaus' summary='ParamÃ¨tres du trombinoscope'>\n";
 	echo "<tr class='lig1'>\n";
 	echo "<td>\n";
 	echo "Nombre de colonnes&nbsp;:\n";
@@ -670,7 +670,7 @@ elseif($mode=='generer_grille') {
 	//debug_var();
 
 	echo "<p class=bold><a href='trombinoscopes.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil trombinoscopes</a>";
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil découpe</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil dÃ©coupe</a>\n";
 	echo "</p>\n";
 
 	$sql="SELECT classe, id FROM classes ORDER BY classe;";
@@ -685,7 +685,7 @@ elseif($mode=='generer_grille') {
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
 	echo add_token_field();
 	echo "<fieldset>\n";
-	echo "<p>Générer les grilles PDF pour&nbsp;:</p>\n";
+	echo "<p>GÃ©nÃ©rer les grilles PDF pour&nbsp;:</p>\n";
 
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
@@ -715,7 +715,7 @@ elseif($mode=='generer_grille') {
 	echo "</tr>\n";
 	echo "</table>\n";
 
-	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout décocher</a></p>\n";
+	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout dÃ©cocher</a></p>\n";
 
 	echo "<input type='hidden' name='generer_pdf' value='yes' />\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -755,12 +755,12 @@ elseif($mode=='uploader') {
 	//debug_var();
 
 	echo "<p class=bold><a href='trombinoscopes.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil trombinoscopes</a>";
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil découpe</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil dÃ©coupe</a>\n";
 	echo "</p>\n";
 
-	echo "<p>Les images uploadées doivent être de type JPEG.</p>\n";
+	echo "<p>Les images uploadÃ©es doivent Ãªtre de type JPEG.</p>\n";
 
-	echo "<p>Les paramètres suivants peuvent influer sur le nombre de photos que vous pourrez uploader d'un coup&nbsp;:<br />\n";
+	echo "<p>Les paramÃ¨tres suivants peuvent influer sur le nombre de photos que vous pourrez uploader d'un coup&nbsp;:<br />\n";
 	$post_max_size=ini_get('post_max_size');
 	$upload_max_filesize=ini_get('upload_max_filesize');
 	echo "&nbsp;&nbsp;&nbsp;\$post_max_size=$post_max_size<br />\n";
@@ -771,7 +771,7 @@ elseif($mode=='uploader') {
 		$sql="SELECT DISTINCT id_grille FROM trombino_decoupe ORDER BY id_grille;";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			echo "<p style='color:red'>ERREUR&nbsp;: Aucune grille n'a encore été générée.</p>\n";
+			echo "<p style='color:red'>ERREUR&nbsp;: Aucune grille n'a encore Ã©tÃ© gÃ©nÃ©rÃ©e.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -784,7 +784,7 @@ elseif($mode=='uploader') {
 			echo "<ul>\n";
 			while($lig=mysql_fetch_object($test)) {
 				echo "<li>\n";
-				echo "<a href='".$_SERVER['PHP_SELF']."?mode=uploader&amp;id_grille=$lig->id_grille".add_token_in_url()."'>Grille n°$lig->id_grille</a>\n";
+				echo "<a href='".$_SERVER['PHP_SELF']."?mode=uploader&amp;id_grille=$lig->id_grille".add_token_in_url()."'>Grille nÂ°$lig->id_grille</a>\n";
 
 				$sql="SELECT DISTINCT classe FROM trombino_decoupe WHERE id_grille='$lig->id_grille' ORDER BY classe;";
 				//echo "$sql<br />";
@@ -812,12 +812,12 @@ elseif($mode=='uploader') {
 		}
 	}
 
-	echo "<p class='bold'>Grille n°$id_grille</p>\n";
+	echo "<p class='bold'>Grille nÂ°$id_grille</p>\n";
 
 	$sql="SELECT DISTINCT classe, page, page_global FROM trombino_decoupe WHERE id_grille='$id_grille' ORDER BY page_global, page;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0) {
-		echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'est associée à la grille n°$id_grille.</p>\n";
+		echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'est associÃ©e Ã  la grille nÂ°$id_grille.</p>\n";
 	}
 	else {
 
@@ -826,13 +826,13 @@ elseif($mode=='uploader') {
 		echo "<fieldset>\n";
 		echo "<input type='hidden' name='id_grille' value='$id_grille' />\n";
 		echo "<input type='hidden' name='upload_scan' value='yes' />\n";
-		//echo "<p>Une grille a été éditée.<br />Vous avez la possibilité de d'uploader les pages scannées.</p>\n";
+		//echo "<p>Une grille a Ã©tÃ© Ã©ditÃ©e.<br />Vous avez la possibilitÃ© de d'uploader les pages scannÃ©es.</p>\n";
 		echo "<table style='margin-left:2em;' class='boireaus' summary='Upload des pages du trombinoscope'>\n";
 		echo "<tr>\n";
 		echo "<th>Page de la grille</th>\n";
 		echo "<th>Classe</th>\n";
 		echo "<th>Page de la classe</th>\n";
-		echo "<th>Fichier scanné</th>\n";
+		echo "<th>Fichier scannÃ©</th>\n";
 		echo "</tr>\n";
 		$alt=1;
 		while($lig=mysql_fetch_object($test)) {
@@ -855,8 +855,8 @@ elseif($mode=='uploader') {
 		//echo "<input type='' name='' value='' />\n";
 		//echo "<input type='hidden' name='id_grille' value='$id_grille' />\n";
 		//echo "<input type='hidden' name='upload_scan' value='yes' />\n";
-		echo "<p> Il arrive qu'il y ait un décalage vertical s'amplifiant ligne après ligne sur les découpes.<br />Par défaut, on ne décale pas&nbsp;: 
-<input type='text' id='correctif_vertical' name='correctif_vertical' value='1' size='3' onkeydown=\"clavier_3(this.id,event,0.1,1.5,0.01);\" /><br />Si vos découpes sont un peu décalées vers le bas (<i>il manque le haut des cranes</i>), essayez de corriger avec 0.97<br />Aucun correctif n'est proposé pour la largeur.<br />Veillez à ce que vos images scannées aient les bords taillés à la largeur de la page.</p>\n";
+		echo "<p> Il arrive qu'il y ait un dÃ©calage vertical s'amplifiant ligne aprÃ¨s ligne sur les dÃ©coupes.<br />Par dÃ©faut, on ne dÃ©cale pas&nbsp;: 
+<input type='text' id='correctif_vertical' name='correctif_vertical' value='1' size='3' onkeydown=\"clavier_3(this.id,event,0.1,1.5,0.01);\" /><br />Si vos dÃ©coupes sont un peu dÃ©calÃ©es vers le bas (<i>il manque le haut des cranes</i>), essayez de corriger avec 0.97<br />Aucun correctif n'est proposÃ© pour la largeur.<br />Veillez Ã  ce que vos images scannÃ©es aient les bords taillÃ©s Ã  la largeur de la page.</p>\n";
 		echo "<p><input type='submit' value='Uploader' /></p>\n";
 		echo "<input type='hidden' name='fin_form_upload_scan' value='yes' />\n";
 		echo "</fieldset>\n";
@@ -866,7 +866,7 @@ elseif($mode=='uploader') {
 
 		$max_file_uploads=ini_get('max_file_uploads');
 		if(($max_file_uploads!="")&&(strlen(my_ereg_replace("[^0-9]","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
-			echo "<p><i>Note</i>&nbsp;: L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p>\n";
+			echo "<p><i>Note</i>&nbsp;: L'upload des photos est limitÃ© Ã  $max_file_uploads fichier(s) simultanÃ©ment.</p>\n";
 		}
 	}
 
@@ -879,13 +879,13 @@ elseif($mode=='suppr_grille') {
 	//debug_var();
 
 	echo "<p class=bold><a href='trombinoscopes.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil trombinoscopes</a>";
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil découpe</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil dÃ©coupe</a>\n";
 	echo "</p>\n";
 
 	$sql="SELECT DISTINCT id_grille FROM trombino_decoupe ORDER BY id_grille;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0) {
-		echo "<p style='color:red'>ERREUR&nbsp;: Aucune grille n'a encore été générée.</p>\n";
+		echo "<p style='color:red'>ERREUR&nbsp;: Aucune grille n'a encore Ã©tÃ© gÃ©nÃ©rÃ©e.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -895,7 +895,7 @@ elseif($mode=='suppr_grille') {
 		echo "<fieldset>\n";
 		echo "<p>Quelles grilles souhaitez-vous supprimer?</p>\n";
 		while($lig=mysql_fetch_object($test)) {
-			echo "<input type='checkbox' name='suppr_grille[]' id='suppr_$lig->id_grille' value='$lig->id_grille' /><label for='suppr_$lig->id_grille'> Grille n°$lig->id_grille";
+			echo "<input type='checkbox' name='suppr_grille[]' id='suppr_$lig->id_grille' value='$lig->id_grille' /><label for='suppr_$lig->id_grille'> Grille nÂ°$lig->id_grille";
 
 			$sql="SELECT DISTINCT classe FROM trombino_decoupe WHERE id_grille='$lig->id_grille' ORDER BY classe;";
 			//echo "$sql<br />";

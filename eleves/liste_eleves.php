@@ -37,16 +37,16 @@ if ($resultat_session == "c") {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 // SQL : INSERT INTO droits VALUES ( '/eleves/liste_eleves.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Lister_des_eleves', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/liste_eleves.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Lister des élèves', '');";
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/liste_eleves.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Lister des Ã©lÃ¨ves', '');";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
 
-// La page est destinée à être appelée via Ajax.
-// Il n'y a donc ni entête HTML, ni pied de page.
+// La page est destinÃ©e Ã  Ãªtre appelÃ©e via Ajax.
+// Il n'y a donc ni entÃªte HTML, ni pied de page.
 
 header('Content-type: text/html; charset=iso-8859-1');
 

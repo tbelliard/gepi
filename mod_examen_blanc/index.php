@@ -58,7 +58,7 @@ $insert=mysql_query($sql);
 
 
 //======================================================================================
-// Section checkAccess() ‡ dÈcommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() √† d√©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -71,7 +71,7 @@ include('lib_exb.php');
 
 /*
 
-// CrÈation des tables
+// Cr√©ation des tables
 
 $sql="CREATE TABLE IF NOT EXISTS ex_examens (
 id int(11) unsigned NOT NULL auto_increment,
@@ -129,10 +129,10 @@ $create_table=mysql_query($sql);
 //=========================================================
 // A TRANSFERER VERS utilitaires/updates/152_to_153.inc.php et sql/structure_gepi.sql
 $result="";
-$result.="&nbsp;->Ajout d'un champ 'valeur' ‡ la table 'ex_groupes'<br />";
+$result.="&nbsp;->Ajout d'un champ 'valeur' √† la table 'ex_groupes'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ex_groupes LIKE 'valeur';"));
 if ($test_champ>0) {
-	$result .= "<font color=\"blue\">Le champ existe dÈj‡.</font><br />";
+	$result .= "<font color=\"blue\">Le champ existe d√©j√†.</font><br />";
 }
 else {
 	$query = mysql_query("ALTER TABLE ex_groupes ADD valeur VARCHAR(255) NOT NULL;");
@@ -171,7 +171,7 @@ if($_SESSION['statut']=='professeur') {
 	}
 
 	if((isset($id_exam))&&(!is_pp_proprio_exb($id_exam))) {
-		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'Ítes pas propriÈtaire de l'examen blanc n∞$id_exam."));
+		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'√™tes pas propri√©taire de l'examen blanc n¬∞$id_exam."));
 		die();
 	}
 
@@ -201,14 +201,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		}
 	}
 
-	// TÈmoin d'une modification de numÈros anonymat (pour informer qu'il faut regÈnÈrer les Ètiquettes,...)
+	// T√©moin d'une modification de num√©ros anonymat (pour informer qu'il faut reg√©n√©rer les √©tiquettes,...)
 	//$temoin_n_anonymat='n';
-	// TÈmoin d'une erreur anonymat pour un ÈlËve au moins
+	// T√©moin d'une erreur anonymat pour un √©l√®ve au moins
 	//$temoin_erreur_n_anonymat='n';
 
 	//if(isset($_POST['creer_epreuve'])) {
 	if((isset($_POST['creer_exam']))||(isset($_POST['modif_exam']))) {
-		// Correction, modification des paramËtres d'un examen
+		// Correction, modification des param√®tres d'un examen
 
 		check_token();
 
@@ -217,7 +217,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		$description=isset($_POST['description']) ? $_POST['description'] : "";
 		//$type_anonymat=isset($_POST['type_anonymat']) ? $_POST['type_anonymat'] : "ele_id";
 
-		if(strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-z¬ƒ¿¡√ƒ≈« À»…ŒœÃÕ—‘÷“”’¶€‹Ÿ⁄›æ¥·‡‚‰„ÂÁÈËÍÎÓÔÏÌÒÙˆÚÛı®˚¸˘˙˝ˇ∏0-9_\.-]/"," ",$intitule);}
+		if(strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-z√Ç√Ñ√Ä√Å√É√Ñ√Ö√á√ä√ã√à√â√é√è√å√ç√ë√î√ñ√í√ì√ï¬¶√õ√ú√ô√ö√ù¬æ¬¥√°√†√¢√§√£√•√ß√©√®√™√´√Æ√Ø√¨√≠√±√¥√∂√∞√≤√≥√µ¬®√ª√º√π√∫√Ω√ø¬∏0-9_\.-]/"," ",$intitule);}
 		if($intitule=="") {$intitule="Examen blanc";}
 
 		//$tab_anonymat=array('elenoet','ele_id','no_gep','alea');
@@ -243,10 +243,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			$sql="INSERT INTO ex_examens SET intitule='$intitule', description='$description', date='$date';";
 			if($insert=mysql_query($sql)) {
 				$id_exam=mysql_insert_id();
-				$msg="Examen n∞$id_exam : '$intitule' crÈÈ.<br />";
+				$msg="Examen n¬∞$id_exam : '$intitule' cr√©√©.<br />";
 			}
 			else {
-				$msg="ERREUR lors de la crÈation de l'examen '$intitule'.<br />";
+				$msg="ERREUR lors de la cr√©ation de l'examen '$intitule'.<br />";
 				//$msg.="<br />$sql";
 			}
 		}
@@ -254,7 +254,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 			$sql="UPDATE ex_examens SET intitule='$intitule', description='$description', date='$date' WHERE id='$id_exam';";
 			if($update=mysql_query($sql)) {
-				$msg="Examen n∞$id_exam: '$intitule' mise ‡ jour.";
+				$msg="Examen n¬∞$id_exam: '$intitule' mise √† jour.";
 			}
 			else {
 				$msg="ERREUR lors de la modification de l'examen '$intitule'.";
@@ -275,7 +275,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			if(isset($coef[$i])) {
 				$enregistrer='y';
 				if(preg_match("/[^0-9\.]/",$coef[$i])) {
-					$msg.="$coef[$i] contient des caractËres non numÈriques.<br />\n";
+					$msg.="$coef[$i] contient des caract√®res non num√©riques.<br />\n";
 					$enregistrer='n';
 				}
 				elseif(strlen(preg_replace("/[^\.]/","",$coef[$i]))>1) {
@@ -296,7 +296,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				}
 			}
 		}
-		if($nb_reg>0) {$msg.="Coefficients et bonus mis ‡ jour.<br />";}
+		if($nb_reg>0) {$msg.="Coefficients et bonus mis √† jour.<br />";}
 
 		$mode="modif_exam";
 	}
@@ -308,7 +308,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		//$tab_tables=array('ex_notes', 'ex_groupes', 'ex_matieres', 'ex_classes', 'ex_examens');
 		//$tab_tables=array('ex_notes', 'ex_groupes', 'ex_matieres', 'ex_classes');
 		$tab_tables=array('ex_groupes', 'ex_matieres', 'ex_classes');
-		// A REVOIR: COMMENT VIRER LES NOTES SAISIES HORS devoirs/Èpreuves classiques
+		// A REVOIR: COMMENT VIRER LES NOTES SAISIES HORS devoirs/√©preuves classiques
 		for($i=0;$i<count($tab_tables);$i++) {
 			$sql="DELETE FROM $tab_tables[$i] WHERE id_exam='$id_exam';";
 			//echo "$sql<br />";
@@ -329,7 +329,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				$msg="ERREUR lors de la suppression de l'examen $id_exam";
 			}
 			else {
-				$msg="Suppression de l'examen $id_exam effectuÈe.";
+				$msg="Suppression de l'examen $id_exam effectu√©e.";
 			}
 		}
 		unset($id_exam);
@@ -338,14 +338,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	elseif((isset($id_exam))&&($mode=='ajout_classes')) {
 		check_token();
 
-		// Ajout de classes pour l'examen sÈlectionnÈ
+		// Ajout de classes pour l'examen s√©lectionn√©
 		$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : array());
 
-		// On contrÙle en cas d'accËs prof qu'il est bien PP de ces classes
+		// On contr√¥le en cas d'acc√®s prof qu'il est bien PP de ces classes
 		if($_SESSION['statut']=='professeur') {
 			for($i=0;$i<count($id_classe);$i++) {
 				if(!is_pp($_SESSION['login'], $id_classe[$i])) {
-					header("Location: ".$_SERVER['PHP_SELF']."?id_exam=$id_exam&msg=".rawurlencode("Vous n'Ítes pas ".getSettingValue('gepi_prof_suivi')." dans la classe de ".get_class_from_id($id_classe[$i])));
+					header("Location: ".$_SERVER['PHP_SELF']."?id_exam=$id_exam&msg=".rawurlencode("Vous n'√™tes pas ".getSettingValue('gepi_prof_suivi')." dans la classe de ".get_class_from_id($id_classe[$i])));
 					die();
 				}
 			}
@@ -361,7 +361,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 			if(!in_array($lig->id_classe,$id_classe)) {
 
-				// Les groupes associÈs ‡ la classe sont ils encore associÈs ‡ une autre classe de l'examen?
+				// Les groupes associ√©s √† la classe sont ils encore associ√©s √† une autre classe de l'examen?
 				$sql="SELECT DISTINCT eg.id_groupe FROM j_groupes_classes jgc, ex_groupes eg WHERE eg.id_exam='$id_exam' AND jgc.id_classe='$lig->id_classe' AND jgc.id_groupe=eg.id_groupe;";
 				//echo "$sql<br />";
 				$res1=mysql_query($sql);
@@ -393,8 +393,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			}
 		}
 
-		if($nb_classes_supprimees>0) {$msg.="$nb_classes_supprimees classe(s) supprimÈe(s) de l'examen $id_exam<br />";}
-		if($nb_classes_ajoutees>0) {$msg.="$nb_classes_ajoutees classe(s) ajoutÈe(s) ‡ l'examen $id_exam<br />";}
+		if($nb_classes_supprimees>0) {$msg.="$nb_classes_supprimees classe(s) supprim√©e(s) de l'examen $id_exam<br />";}
+		if($nb_classes_ajoutees>0) {$msg.="$nb_classes_ajoutees classe(s) ajout√©e(s) √† l'examen $id_exam<br />";}
 
 		$mode="modif_exam";
 
@@ -402,7 +402,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	elseif((isset($id_exam))&&($mode=='ajout_matieres')) {
 		check_token();
 
-		// Ajout de matiËres pour l'examen sÈlectionnÈ
+		// Ajout de mati√®res pour l'examen s√©lectionn√©
 		$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : array());
 
 		$nb_matieres_supprimees=0;
@@ -431,8 +431,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			}
 		}
 
-		if($nb_matieres_supprimees>0) {$msg.="$nb_matieres_supprimees matiËre(s) supprimÈe(s) de l'examen $id_exam<br />";}
-		if($nb_matieres_ajoutees>0) {$msg.="$nb_matieres_ajoutees matiËre(s) ajoutÈe(s) ‡ l'examen $id_exam<br />";}
+		if($nb_matieres_supprimees>0) {$msg.="$nb_matieres_supprimees mati√®re(s) supprim√©e(s) de l'examen $id_exam<br />";}
+		if($nb_matieres_ajoutees>0) {$msg.="$nb_matieres_ajoutees mati√®re(s) ajout√©e(s) √† l'examen $id_exam<br />";}
 
 		$mode="modif_exam";
 
@@ -440,17 +440,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	elseif((isset($id_exam))&&($mode=='ajout_groupes')) {
 		check_token();
 
-		// Ajout de groupes pour l'examen sÈlectionnÈe
+		// Ajout de groupes pour l'examen s√©lectionn√©e
 		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : array());
 		$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : array());
 		$groupe_hors_enseignement=isset($_POST['groupe_hors_enseignement']) ? $_POST['groupe_hors_enseignement'] : (isset($_GET['groupe_hors_enseignement']) ? $_GET['groupe_hors_enseignement'] : "n");
 
-		// A FAIRE: ContrÙler les caractËres de $matiere
+		// A FAIRE: Contr√¥ler les caract√®res de $matiere
 
 		$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			$msg="L'examen n∞$id_exam n'existe pas.<br />";
+			$msg="L'examen n¬∞$id_exam n'existe pas.<br />";
 		}
 		else {
 			$tab_id_groupe_assoc_old=array();
@@ -474,7 +474,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					}
 				}
 			}
-			if($nb_suppr>0) {$msg.="$nb_suppr association(s) de groupe(s) supprimÈe(s).<br />";}
+			if($nb_suppr>0) {$msg.="$nb_suppr association(s) de groupe(s) supprim√©e(s).<br />";}
 
 			$nb_ajout=0;
 			for($i=0;$i<count($id_groupe);$i++) {
@@ -482,13 +482,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					$sql="INSERT INTO ex_groupes SET id_exam='$id_exam', id_groupe='$id_groupe[$i]', matiere='$matiere';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
-						$msg.="Erreur lors de l'ajout du groupe n∞$id_groupe[$i]<br />";
+						$msg.="Erreur lors de l'ajout du groupe n¬∞$id_groupe[$i]<br />";
 					}
 					else {$nb_ajout++;}
 				}
-				//if($msg=='') {$msg="Ajout de(s) groupe(s) effectuÈ.<br />";}
+				//if($msg=='') {$msg="Ajout de(s) groupe(s) effectu√©.<br />";}
 			}
-			if($nb_ajout>0) {$msg.="Ajout de $nb_ajout groupe(s) effectuÈ.<br />";}
+			if($nb_ajout>0) {$msg.="Ajout de $nb_ajout groupe(s) effectu√©.<br />";}
 
 			if($groupe_hors_enseignement=='y') {
 				$sql="SELECT 1=1 FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
@@ -496,7 +496,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				if(mysql_num_rows($test)==0) {
 					$sql="INSERT INTO ex_groupes SET id_exam='$id_exam', id_groupe='0', matiere='$matiere', type='hors_enseignement';";
 					$insert=mysql_query($sql);
-					if($insert) {$msg.="CrÈation d'un groupe hors enseignements.<br />";}
+					if($insert) {$msg.="Cr√©ation d'un groupe hors enseignements.<br />";}
 				}
 			}
 		}
@@ -504,7 +504,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	}
 /*
 	elseif((isset($id_exam))&&($mode=='ajout_matieres')) {
-		// Ajout de matiËres pour l'examen sÈlectionnÈ
+		// Ajout de mati√®res pour l'examen s√©lectionn√©
 		$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : array());
 
 		$nb_matieres_supprimees=0;
@@ -533,8 +533,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			}
 		}
 
-		if($nb_matieres_supprimees>0) {$msg.="$nb_matieres_supprimees matiËre(s) supprimÈe(s) de l'examen $id_exam<br />";}
-		if($nb_matieres_ajoutees>0) {$msg.="$nb_matieres_ajoutees matiËre(s) ajoutÈe(s) ‡ l'examen $id_exam<br />";}
+		if($nb_matieres_supprimees>0) {$msg.="$nb_matieres_supprimees mati√®re(s) supprim√©e(s) de l'examen $id_exam<br />";}
+		if($nb_matieres_ajoutees>0) {$msg.="$nb_matieres_ajoutees mati√®re(s) ajout√©e(s) √† l'examen $id_exam<br />";}
 
 		$mode="modif_exam";
 
@@ -543,16 +543,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	elseif((isset($id_exam))&&($mode=='modif_choix_dev')) {
 		check_token();
 
-		// Ajout de groupes pour l'examen sÈlectionnÈe
+		// Ajout de groupes pour l'examen s√©lectionn√©e
 		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : array());
 		$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : array());
 
-		// A FAIRE: ContrÙler les caractËres de $matiere
+		// A FAIRE: Contr√¥ler les caract√®res de $matiere
 
 		$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			$msg="L'examen n∞$id_exam n'existe pas.<br />";
+			$msg="L'examen n¬∞$id_exam n'existe pas.<br />";
 		}
 		else {
 			$nb_enr=0;
@@ -564,7 +564,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					unset($id_dev_liste_periode);
 					$id_dev_liste_periode=isset($_POST['id_dev_'.$i.'_periodes']) ? $_POST['id_dev_'.$i.'_periodes'] : array();
 					if(count($id_dev_liste_periode)==0) {
-						$msg.="ERREUR: Aucune pÈriode n'a ÈtÈ choisie pour le groupe ".$id_groupe[$i].".<br />";
+						$msg.="ERREUR: Aucune p√©riode n'a √©t√© choisie pour le groupe ".$id_groupe[$i].".<br />";
 					}
 					else {
 						$chaine_periodes=$id_dev_liste_periode[0];
@@ -581,7 +581,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						//echo "$sql<br />";
 						$res_id_ex_grp=mysql_query($sql);
 						if(mysql_num_rows($res_id_ex_grp)==0) {
-							$msg.="Identifiant du groupe dans ex_groupe non trouvÈ pour l'examen $id_exam et le groupe $id_groupe[$i].<br />";
+							$msg.="Identifiant du groupe dans ex_groupe non trouv√© pour l'examen $id_exam et le groupe $id_groupe[$i].<br />";
 						}
 						else {
 							$lig=mysql_fetch_object($res_id_ex_grp);
@@ -626,7 +626,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					$res=mysql_query($sql);
 				}
 				else {
-					// VÈrifier que c'est un devoir valide.
+					// V√©rifier que c'est un devoir valide.
 					$sql="SELECT 1=1 FROM cn_devoirs WHERE id='$id_dev';";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)==0) {
@@ -664,7 +664,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				$nb_enr++;
 			}
 
-			if($nb_enr>0) {$msg.="Mise ‡ jour de la liste des devoirs effectuÈe.<br />";}
+			if($nb_enr>0) {$msg.="Mise √† jour de la liste des devoirs effectu√©e.<br />";}
 		}
 		$mode='modif_exam';
 	}
@@ -672,32 +672,32 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 /*
 	elseif((isset($id_exam))&&($mode=='suppr_groupe')) {
-		// Ajout de groupes pour l'Èpreuve sÈlectionnÈe
+		// Ajout de groupes pour l'√©preuve s√©lectionn√©e
 		$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 
 		if(isset($id_groupe)) {
 			$sql="SELECT 1=1 FROM eb_copies ec, eb_groupes eg WHERE ec.id_exam='$id_exam' AND eg.id_exam='$id_exam' AND eg.id_groupe='$id_groupe' AND statut!='v';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==1) {
-				$msg="Une note a dÈj‡ ÈtÈ saisie pour une copie associÈe au groupe.";
+				$msg="Une note a d√©j√† √©t√© saisie pour une copie associ√©e au groupe.";
 			}
 			elseif(mysql_num_rows($test)>1) {
-				$msg=mysql_num_rows($test)." notes ont dÈj‡ ÈtÈ saisies pour des copies associÈes au groupe.";
+				$msg=mysql_num_rows($test)." notes ont d√©j√† √©t√© saisies pour des copies associ√©es au groupe.";
 			}
 			else {
 				$sql="DELETE FROM eb_copies ec, eb_groupes eg WHERE ec.id_exam='$id_exam' AND eg.id_exam='$id_exam' AND eg.id_groupe='$id_groupe';";
 				$suppr=mysql_query($sql);
 				if(!$suppr) {
-					$msg="ERREUR lors de la suppression des copies associÈes au groupe n∞$id_groupe.";
+					$msg="ERREUR lors de la suppression des copies associ√©es au groupe n¬∞$id_groupe.";
 				}
 				else {
 					$sql="DELETE FROM eb_groupes WHERE id_exam='$id_exam' AND id_groupe='$id_groupe';";
 					$suppr=mysql_query($sql);
 					if(!$suppr) {
-						$msg="ERREUR lors de la suppression du groupe n∞$id_groupe.";
+						$msg="ERREUR lors de la suppression du groupe n¬∞$id_groupe.";
 					}
 					else {
-						$msg="Suppression du groupe n∞$id_groupe effectuÈe.";
+						$msg="Suppression du groupe n¬∞$id_groupe effectu√©e.";
 					}
 				}
 			}
@@ -705,25 +705,25 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		$mode='modif_exam';
 	}
 	elseif((isset($id_exam))&&($mode=='ajout_profs')) {
-		// Ajout de groupes pour l'Èpreuve sÈlectionnÈe
+		// Ajout de groupes pour l'√©preuve s√©lectionn√©e
 		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : array());
 
 		$sql="DELETE FROM eb_profs WHERE id_exam='$id_exam';";
 		$suppr=mysql_query($sql);
 		if(!$suppr) {
-			$msg="ERREUR lors de la rÈinitialisation des professeurs inscrits.";
+			$msg="ERREUR lors de la r√©initialisation des professeurs inscrits.";
 		}
 		else {
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_exam';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				$msg="L'Èpreuve n∞$id_exam n'existe pas.<br />";
+				$msg="L'√©preuve n¬∞$id_exam n'existe pas.<br />";
 			}
 			else {
 				$tab_profs_inscrits=array();
 				$msg="";
 				for($i=0;$i<count($login_prof);$i++) {
-					// On peut sÈlectionner plusieurs fois le mÍme prof, mais il ne faut pas l'insÈrer plusieurs fois dans la table eb_profs
+					// On peut s√©lectionner plusieurs fois le m√™me prof, mais il ne faut pas l'ins√©rer plusieurs fois dans la table eb_profs
 					if(!in_array($login_prof[$i],$tab_profs_inscrits)) {
 						$tab_profs_inscrits[]=$login_prof[$i];
 						$sql="INSERT INTO eb_profs SET id_exam='$id_exam', login_prof='$login_prof[$i]';";
@@ -733,10 +733,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						}
 					}
 				}
-				if(($msg=='')&&(count($login_prof)>0)) {$msg="Ajout de(s) professeur(s) effectuÈ.";}
+				if(($msg=='')&&(count($login_prof)>0)) {$msg="Ajout de(s) professeur(s) effectu√©.";}
 
-				// VÈrification:
-				// A-t-on supprimÈ un prof qui Ètait associÈ ‡ des copies?
+				// V√©rification:
+				// A-t-on supprim√© un prof qui √©tait associ√© √† des copies?
 				$sql="SELECT DISTINCT login_prof FROM eb_copies WHERE id_exam='$id_exam' AND login_prof!='';";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
@@ -746,7 +746,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						if(!in_array($lig->login_prof,$tab_profs_inscrits)) {
 							$sql="UPDATE eb_copies SET login_prof='' WHERE id_exam='$id_exam' AND login_prof='$lig->login_prof';";
 							$update=mysql_query($sql);
-							$msg.="Suppression de professeur(s) qui Ètai(en)t associÈ(s) ‡ des copies.<br />";
+							$msg.="Suppression de professeur(s) qui √©tai(en)t associ√©(s) √† des copies.<br />";
 						}
 					}
 				}
@@ -755,42 +755,42 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		$mode='modif_exam';
 	}
 	elseif((isset($id_exam))&&($mode=='clore')) {
-		// Cloture d'une Èpreuve
+		// Cloture d'une √©preuve
 		$sql="UPDATE eb_epreuves SET etat='clos' WHERE id='$id_exam';";
 		$cloture=mysql_query($sql);
 		if(!$cloture) {
-			$msg="ERREUR lors de la cloture de l'Èpreuve $id_exam";
+			$msg="ERREUR lors de la cloture de l'√©preuve $id_exam";
 			unset($id_exam);
 			unset($mode);
 			break;
 		}
-		else {$msg="Cloture de l'Èpreuve n∞$id_exam effectuÈe.";}
+		else {$msg="Cloture de l'√©preuve n¬∞$id_exam effectu√©e.";}
 		unset($id_exam);
 		unset($mode);
 	}
 	elseif((isset($id_exam))&&($mode=='declore')) {
-		// RÈouverture d'une Èpreuve
+		// R√©ouverture d'une √©preuve
 		$sql="UPDATE eb_epreuves SET etat='' WHERE id='$id_exam';";
 		$cloture=mysql_query($sql);
 		if(!$cloture) {
-			$msg="ERREUR lors de la rÈouverture de l'Èpreuve $id_exam";
+			$msg="ERREUR lors de la r√©ouverture de l'√©preuve $id_exam";
 			unset($id_exam);
 			unset($mode);
 			break;
 		}
 		else {
-			$msg="RÈouverture de l'Èpreuve n∞$id_exam effectuÈe.";
+			$msg="R√©ouverture de l'√©preuve n¬∞$id_exam effectu√©e.";
 			$mode='modif_exam';
 		}
 	}
 
 	if($temoin_erreur_n_anonymat=='y') {
 		if(!isset($msg)) {$msg="";}
-		$msg.="<br />Une ou des erreurs se sont produites sur l'anonymat.<br />Vous devriez contrÙler les numÈros anonymat.";
+		$msg.="<br />Une ou des erreurs se sont produites sur l'anonymat.<br />Vous devriez contr√¥ler les num√©ros anonymat.";
 	}
 	elseif($temoin_n_anonymat=='y') {
 		if(!isset($msg)) {$msg="";}
-		$msg.="<br />Des numÈros anonymat ont ÈtÈ modifiÈs. RegÈnÈrez si nÈcessaire les Ètiquettes/listes d'Èmargement.";
+		$msg.="<br />Des num√©ros anonymat ont √©t√© modifi√©s. Reg√©n√©rez si n√©cessaire les √©tiquettes/listes d'√©margement.";
 	}
 	*/
 }
@@ -799,7 +799,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 /*
 $truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 if($truncate_tables=='y') {
-	$msg="<p>Nettoyage des tables GÈnËse des classes... <font color='red'>A FAIRE</font></p>\n";
+	$msg="<p>Nettoyage des tables G√©n√®se des classes... <font color='red'>A FAIRE</font></p>\n";
 	$sql="TRUNCATE TABLE ...;";
 	//$del=mysql_query($sql);
 }
@@ -807,7 +807,7 @@ if($truncate_tables=='y') {
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $javascript_specifique='mod_examen_blanc/lib_exb';
-$themessage  = 'Des informations ont ÈtÈ modifiÈes. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont √©t√© modifi√©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Examen blanc: Accueil";
 //echo "<div class='noprint'>\n";
@@ -837,12 +837,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			echo "</p>\n";
 
 			echo "<ul>\n";
-			// CrÈer un examen blanc
+			// Cr√©er un examen blanc
 			echo "<li>\n";
-			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=creer_exam'>CrÈer un nouvel examen</a></p>\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=creer_exam'>Cr√©er un nouvel examen</a></p>\n";
 			echo "</li>\n";
 
-			// AccÈder aux examens blancs
+			// Acc√©der aux examens blancs
 			$sql="SELECT * FROM ex_examens ORDER BY date, intitule;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -857,37 +857,37 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						if($lig->description!='') {
 							echo " onmouseover=\"delais_afficher_div('div_exam_".$lig->id."','y',-100,20,1000,20,20)\" onmouseout=\"cacher_div('div_exam_".$lig->id."')\"";
 	
-							$titre="Examen n∞$lig->id";
+							$titre="Examen n¬∞$lig->id";
 							$texte="<p><b>".$lig->intitule."</b><br />";
 							$texte.=$lig->description;
 							$tabdiv_infobulle[]=creer_div_infobulle('div_exam_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');
 	
 						}
 						echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
-						echo " - <a href='".$_SERVER['PHP_SELF']."?id_exam=$lig->id&amp;mode=suppr_exam".add_token_in_url()."' onclick=\"return confirm('Etes vous s˚r de vouloir supprimer l examen?')\">Supprimer</a><br />\n";
+						echo " - <a href='".$_SERVER['PHP_SELF']."?id_exam=$lig->id&amp;mode=suppr_exam".add_token_in_url()."' onclick=\"return confirm('Etes vous s√ªr de vouloir supprimer l examen?')\">Supprimer</a><br />\n";
 					}
 				}
 				echo "</li>\n";
 			}
 			echo "</ul>\n";
 
-			echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'examens blancs.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-Ítre ajouter une conservation dans les tables archivages (annÈes antÈrieures).</p>\n";
+			echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'examens blancs.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-√™tre ajouter une conservation dans les tables archivages (ann√©es ant√©rieures).</p>\n";
 		}
 		//===========================================================================
-		// CrÈation d'un examen
+		// Cr√©ation d'un examen
 		elseif($mode=='creer_exam') {
 			echo " | <a href='".$_SERVER['PHP_SELF']."'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo ">Menu examens blancs</a>\n";
 			echo "</p>\n";
 
-			echo "<p class='bold'>CrÈation d'un examen blanc&nbsp;:</p>\n";
+			echo "<p class='bold'>Cr√©ation d'un examen blanc&nbsp;:</p>\n";
 
 			echo "<blockquote>\n";
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
 
-			echo "<table summary='ParamËtres'>\n";
+			echo "<table summary='Param√®tres'>\n";
 			echo "<tr>\n";
 			echo "<td>Intitule&nbsp;:</td>\n";
 			echo "<td><input type='text' name='intitule' value='Examen blanc' onchange='changement()' /></td>\n";
@@ -933,7 +933,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		}
 	}
 	//===========================================================================
-	// Modification/complÈments sur une examen
+	// Modification/compl√©ments sur une examen
 	elseif($mode=='modif_exam') {
 		echo " | <a href='".$_SERVER['PHP_SELF']."'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -943,7 +943,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		if(!isset($aff)) {
 			echo "</p>\n";
 
-			echo "<p><b>Modification d'un examen blanc&nbsp;:</b> Examen n∞$id_exam</p>\n";
+			echo "<p><b>Modification d'un examen blanc&nbsp;:</b> Examen n¬∞$id_exam</p>\n";
 
 			$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
 			$res=mysql_query($sql);
@@ -956,7 +956,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			//$etat=$lig->etat;
 
 			//==============================================
-			// RequÍtes exploitÈes plus bas
+			// Requ√™tes exploit√©es plus bas
 			//$sql="SELECT g.*,m.matiere,m.nom_complet FROM ex_matieres em, ex_groupes eg, groupes g WHERE eg.id_exam='$id_exam' AND em.id_exam='$id_exam' AND em.matiere=eg.matiere AND em.matiere=m.matiere ORDER BY em.ordre,m.matiere;";
 			//$res_groupes=mysql_query($sql);
 
@@ -984,7 +984,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						echo "<li>\n";
 						echo "<p><a href='copie_exam.php?id_exam=$id_exam'";
 						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-						echo ">Copier les paramËtres d'un autre examen blanc</a></p>\n";
+						echo ">Copier les param√®tres d'un autre examen blanc</a></p>\n";
 						echo "</li>\n";
 					}
 				}
@@ -1007,25 +1007,25 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				echo "</li>\n";
 				echo "<li>\n";
 				//$sql="SELECT m.*,em.coef,em.bonus FROM ex_matieres em, matieres m WHERE em.matiere=m.matiere AND id_exam='$id_exam' ORDER BY em.ordre, m.matiere;";
-				// Pour mettre les matiËres ‡ bonus ‡ la fin si aucun ordre n'a ÈtÈ dÈfini
+				// Pour mettre les mati√®res √† bonus √† la fin si aucun ordre n'a √©t√© d√©fini
 				$sql="SELECT m.*,em.coef,em.bonus FROM ex_matieres em, matieres m WHERE em.matiere=m.matiere AND id_exam='$id_exam' ORDER BY em.ordre, em.bonus, m.matiere;";
 				$res_matieres=mysql_query($sql);
 				$nb_matieres=mysql_num_rows($res_matieres);
 				if($nb_matieres>0) {
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;aff=matieres'";
 					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-					echo ">Modifier la liste des matiËres</a></p>\n";
+					echo ">Modifier la liste des mati√®res</a></p>\n";
 				}
 				else {
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;aff=matieres'";
 					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-					echo ">Ajouter des matiËres</a></p>\n";
+					echo ">Ajouter des mati√®res</a></p>\n";
 				}
 				echo "</li>\n";
 				echo "<li>\n";
 				echo "<p><a href='releve.php?id_exam=$id_exam'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">Editer des relevÈs de notes et moyennes</a></p>\n";
+				echo ">Editer des relev√©s de notes et moyennes</a></p>\n";
 				echo "</li>\n";
 
 				echo "<li>\n";
@@ -1046,7 +1046,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			//echo "<fieldset style='padding: 8px;  margin: 8px;'>\n";
 			//echo "<div style='border: 1px solid black;'>\n";
 
-			echo "<table style='border: 1px solid black;' summary='ParamËtres'>\n";
+			echo "<table style='border: 1px solid black;' summary='Param√®tres'>\n";
 			echo "<tr>\n";
 			echo "<td style='font-weight:bold;'>Intitule&nbsp;:</td>\n";
 			//if($etat!='clos') {
@@ -1150,7 +1150,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			$tab_bonus=array();
 			//$nb_matieres=mysql_num_rows($res_matieres);
 			if($nb_matieres>0) {
-				echo "<p class='bold'>Liste des matiËres&nbsp;:</p>\n";
+				echo "<p class='bold'>Liste des mati√®res&nbsp;:</p>\n";
 				echo "<ul>\n";
 				while($lig=mysql_fetch_object($res_matieres)) {
 					$tab_matiere[]=$lig->matiere;
@@ -1159,11 +1159,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					echo "<li>".htmlentities($lig->matiere)." (<i>".htmlentities($lig->nom_complet)."</i>)</li>\n";
 				}
 				echo "</ul>\n";
-				//echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;aff=matieres'>Modifier la liste des matiËres</a></p>\n";
+				//echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;aff=matieres'>Modifier la liste des mati√®res</a></p>\n";
 			}
 			/*
 			else {
-				echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;aff=matieres'>Ajouter des matiËres</a></p>\n";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;aff=matieres'>Ajouter des mati√®res</a></p>\n";
 			}
 			*/
 			echo "</td>\n";
@@ -1182,9 +1182,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)>0) {$grp_hors_enseignement='y';}
 
-				echo "<table class='boireaus' border='1' summary='Tableau des associations matiËres/classes/groupes'>\n";
+				echo "<table class='boireaus' border='1' summary='Tableau des associations mati√®res/classes/groupes'>\n";
 				echo "<tr>\n";
-				echo "<th>Classes<br />MatiËres</th>\n";
+				echo "<th>Classes<br />Mati√®res</th>\n";
 				echo "<th>Groupes<br />Devoirs</th>\n";
 				echo "<th>Coef</th>\n";
 				echo "<th>Bonus</th>\n";
@@ -1224,7 +1224,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					}
 					echo "</th>\n";
 
-					// Mettre un javascript pour augmenter/rÈduire le coef avec les flËches: FAIT
+					// Mettre un javascript pour augmenter/r√©duire le coef avec les fl√®ches: FAIT
 					echo "<td><input type='text' name='coef[$j]' id='coef_$j' value='$tab_coef[$j]' size='2' onKeyDown=\"nombre_plus_moins(this.id,event);\"  onchange='changement()' /></td>\n";
 					echo "<td><input type='checkbox' name='bonus[$j]' id='bonus_$j' value='y' onchange='changement()' ";
 					if($tab_bonus[$j]=='y') {echo "checked ";}
@@ -1252,19 +1252,19 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 								if($lig->id_dev>0) {
 									echo "<br />\n";
 									echo "<span style='font-size:small;'>\n";
-									//echo "Devoir n∞$lig->id_dev\n";
+									//echo "Devoir n¬∞$lig->id_dev\n";
 
 									$sql="SELECT cd.nom_court, cd.nom_complet, cd.description, cd.date, ccn.periode FROM cn_devoirs cd, cn_cahier_notes ccn WHERE ccn.id_cahier_notes=cd.id_racine AND cd.id='$lig->id_dev';";
 									$res_dev=mysql_query($sql);
 									if(mysql_num_rows($res_dev)==0) {
-										echo "Devoir n∞$lig->id_dev\n";
+										echo "Devoir n¬∞$lig->id_dev\n";
 										echo "<span style='color:red;'>ERREUR&nbsp;: Devoir inconnu???</span>";
 									}
 									else {
 										$lig_dev=mysql_fetch_object($res_dev);
 
 										echo "<a href='#' onmouseover=\"delais_afficher_div('div_dev_".$lig->id_dev."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_dev_".$lig->id_dev."')\" onclick='return false;'>";
-										echo "Devoir n∞$lig->id_dev";
+										echo "Devoir n¬∞$lig->id_dev";
 										echo "</a>\n";
 
 										if(!in_array($lig->id_dev,$tab_dev)) {
@@ -1274,7 +1274,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 											$res_per=mysql_query($sql);
 											$lig_per=mysql_fetch_object($res_per);
 	
-											$titre="Devoir n∞$lig->id_dev (<i>$lig_per->nom_periode</i>)";
+											$titre="Devoir n¬∞$lig->id_dev (<i>$lig_per->nom_periode</i>)";
 											$texte="<p><b>".htmlentities($lig_dev->nom_court)."</b>";
 											if($lig_dev->nom_court!=$lig_dev->nom_complet) {
 												$texte.=" (<i>".htmlentities($lig_dev->nom_complet)."</i>)";
@@ -1323,9 +1323,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										$lig_per=mysql_fetch_object($res_per);
 
 										$titre="Moyennes bulletins (<i>$lig_per->nom_periode</i>)";
-										$texte="<p><b>Moyennes des ÈlËves sur les bulletins pour la pÈriode $lig_per->nom_periode</b>";
+										$texte="<p><b>Moyennes des √©l√®ves sur les bulletins pour la p√©riode $lig_per->nom_periode</b>";
 
-										// Effectif du groupe sur la pÈriode
+										// Effectif du groupe sur la p√©riode
 										$sql="SELECT * FROM j_eleves_groupes WHERE id_groupe='$lig->id' AND periode='$lig->valeur';";
 										//echo "$sql<br />\n";
 										$res_grp=mysql_query($sql);
@@ -1360,8 +1360,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 											$texte.="<br />\n";
 											if($eff_abs>0) {$texte.="$eff_abs absent(s)<br />\n";}
-											if($eff_disp>0) {$texte.="$eff_disp dispensÈ(s)<br />\n";}
-											if($eff_non_note>0) {$texte.="$eff_non_note non notÈ(s)<br />\n";}
+											if($eff_disp>0) {$texte.="$eff_disp dispens√©(s)<br />\n";}
+											if($eff_non_note>0) {$texte.="$eff_non_note non not√©(s)<br />\n";}
 										}
 										else {
 											$texte.="<span style='color:red;'>Aucune moyenne saisie</span>";
@@ -1378,17 +1378,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									echo "<span style='font-size:small;'>\n";
 
 									echo "<a href='#' onmouseover=\"delais_afficher_div('div_moy_plusieurs_periodes_".$lig->id."_".$lig->valeur."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_moy_plusieurs_periodes_".$lig->id."_".$lig->valeur."')\" onclick='return false;'>";
-									echo "Moy.pÈriodes ".$lig->valeur;
+									echo "Moy.p√©riodes ".$lig->valeur;
 									echo "</a>\n";
 
 									$chaine_mpp="moy_plusieurs_periodes_".$lig->id."_".strtr($lig->valeur," ","_");
 									if(!in_array($chaine_mpp,$tab_moy_plusieurs_periodes)) {
 										$tab_moy_plusieurs_periodes[]=$chaine_mpp;
 
-										$titre="Moyennes des pÈriodes $lig->valeur";
-										$texte="<p><b>Moyenne des moyennes des ÈlËves sur les bulletins pour les pÈriodes $lig->valeur</b>";
+										$titre="Moyennes des p√©riodes $lig->valeur";
+										$texte="<p><b>Moyenne des moyennes des √©l√®ves sur les bulletins pour les p√©riodes $lig->valeur</b>";
 
-										// Effectif du groupe sur les pÈriodes
+										// Effectif du groupe sur les p√©riodes
 										$tab_per=explode(" ",$lig->valeur);
 										$chaine_sql="(periode='$tab_per[0]'";
 										for($loop=1;$loop<count($tab_per);$loop++) {
@@ -1406,7 +1406,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										//echo "$sql<br />";
 										$res_id_ex_grp=mysql_query($sql);
 										if(mysql_num_rows($res_id_ex_grp)==0) {
-											$texte.="<span style='color:red'>Identifiant du groupe dans ex_groupe non trouvÈ pour l'examen $id_exam et le groupe $id_groupe[$i].</span><br />";
+											$texte.="<span style='color:red'>Identifiant du groupe dans ex_groupe non trouv√© pour l'examen $id_exam et le groupe $id_groupe[$i].</span><br />";
 										}
 										else {
 											$lig_ex_grp=mysql_fetch_object($res_id_ex_grp);
@@ -1506,7 +1506,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 			}
 
-			echo "<p><i>A FAIRE&nbsp;:</i> Pouvoir rÈgler l'ordre des matiËres (*), Èditer des bulletins.<br />PrÈsenter aussi le tableau ci-dessus et celui de sÈlection des devoirs par tranche de 5 ou 6 classes au plus.<br />Ne mettre les coef que sur le premier tableau.<br />(*) L'ordre actuel est alphabÈtique en faisant passer ‡ la fin les matiËres ‡ bonus.</p>\n";
+			echo "<p><i>A FAIRE&nbsp;:</i> Pouvoir r√©gler l'ordre des mati√®res (*), √©diter des bulletins.<br />Pr√©senter aussi le tableau ci-dessus et celui de s√©lection des devoirs par tranche de 5 ou 6 classes au plus.<br />Ne mettre les coef que sur le premier tableau.<br />(*) L'ordre actuel est alphab√©tique en faisant passer √† la fin les mati√®res √† bonus.</p>\n";
 
 			unset($tab_matiere);
 			unset($tab_classe);
@@ -1536,7 +1536,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 			/*
 			if($etat=='clos') {
-				echo "<p class='bold'>L'Èpreuve $id_exam est close.</p>\n";
+				echo "<p class='bold'>L'√©preuve $id_exam est close.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1552,16 +1552,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				// Permettre aussi de voir toutes les classes...
 			}
 			else {
-				// AccËs prof principal
+				// Acc√®s prof principal
 				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep WHERE jep.id_classe=c.id AND jep.professeur='".$_SESSION['login']."' ORDER BY classe";
 			}
 			$classes_list = mysql_query($sql);
 			$nb = mysql_num_rows($classes_list);
 			if ($nb==0) {
-				echo "<p>Aucune classe ne semble dÈfinie.</p>\n";
+				echo "<p>Aucune classe ne semble d√©finie.</p>\n";
 			}
 			else {
-				// Liste des classes dÈj‡ associÈes ‡ l'examen
+				// Liste des classes d√©j√† associ√©es √† l'examen
 				$tab_id_classe=array();
 				$sql="SELECT DISTINCT id_classe FROM ex_classes WHERE id_exam='$id_exam';";
 				$res=mysql_query($sql);
@@ -1630,7 +1630,7 @@ function checkbox_change(cpt) {
 		}
 		//=============================================================================
 		elseif($aff=='matieres') {
-			// Choix des matiËres
+			// Choix des mati√®res
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_exam&amp;id_exam=$id_exam'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo ">Examen $id_exam</a>\n";
@@ -1648,22 +1648,22 @@ function checkbox_change(cpt) {
 
 			/*
 			if($etat=='clos') {
-				echo "<p class='bold'>L'Èpreuve $id_exam est close.</p>\n";
+				echo "<p class='bold'>L'√©preuve $id_exam est close.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
 			*/
 
-			echo "<p class='bold'>Choix des matiËres pour l'examen $id_exam&nbsp;:</p>\n";
+			echo "<p class='bold'>Choix des mati√®res pour l'examen $id_exam&nbsp;:</p>\n";
 
 			$sql="SELECT DISTINCT m.* FROM matieres m ORDER BY matiere, nom_complet";
 			$matieres_list = mysql_query($sql);
 			$nb=mysql_num_rows($matieres_list);
 			if($nb==0) {
-				echo "<p>Aucune matiËres ne semble dÈfinie.</p>\n";
+				echo "<p>Aucune mati√®res ne semble d√©finie.</p>\n";
 			}
 			else {
-				// Liste des matiËres dÈj‡ associÈes ‡ l'examen
+				// Liste des mati√®res d√©j√† associ√©es √† l'examen
 				$tab_matiere=array();
 				$sql="SELECT DISTINCT matiere FROM ex_matieres WHERE id_exam='$id_exam';";
 				$res=mysql_query($sql);
@@ -1673,12 +1673,12 @@ function checkbox_change(cpt) {
 					}
 				}
 
-				// Choix des matiËres
+				// Choix des mati√®res
 				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 				echo add_token_field();
 
 				$nb_matier_par_colonne=round($nb/3);
-				echo "<table width='100%' summary='Choix des matiËres'>\n";
+				echo "<table width='100%' summary='Choix des mati√®res'>\n";
 				echo "<tr valign='top' align='center'>\n";
 	
 				$i=0;
@@ -1702,7 +1702,7 @@ function checkbox_change(cpt) {
 
 					if(in_array($matiere,$tab_matiere)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 
-					echo "/><label for='matiere_$i'><span id='texte_matiere_$i'$temp_style>MatiËre : ".$matiere."</span></label><br />\n";
+					echo "/><label for='matiere_$i'><span id='texte_matiere_$i'$temp_style>Mati√®re : ".$matiere."</span></label><br />\n";
 					$i++;
 				}
 				echo "</td>\n";
@@ -1744,7 +1744,7 @@ function checkbox_change(cpt) {
 			echo ">Choix des classes</a>\n";
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_exam&amp;id_exam=$id_exam&amp;aff=matieres'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Choix des matiËres</a>\n";
+			echo ">Choix des mati√®res</a>\n";
 			echo "</p>\n";
 
 
@@ -1761,14 +1761,14 @@ function checkbox_change(cpt) {
 
 			/*
 			if(!isset($id_classe)) {
-				echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'a ÈtÈ choisie.</p>\n";
+				echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'a √©t√© choisie.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
 			*/
 
 			if(!isset($matiere)) {
-				echo "<p style='color:red'>ERREUR&nbsp;: Aucune matiËre n'a ÈtÈ choisie.</p>\n";
+				echo "<p style='color:red'>ERREUR&nbsp;: Aucune mati√®re n'a √©t√© choisie.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1783,7 +1783,7 @@ function checkbox_change(cpt) {
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
 
-			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matiËre $matiere</p>\n";
+			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et mati√®re $matiere</p>\n";
 
 			$tab_groupes_inscrits=array();
 			//$sql="SELECT eg.id_groupe FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere' AND jgc.id_classe='$id_classe' AND jgc.id_groupe=eg.id_groupe;";
@@ -1823,7 +1823,7 @@ function checkbox_change(cpt) {
 				}
 				else {
 					// Proposer d'associer sans enseignement
-					// PB: Si on met tous les ÈlËves de la classe???... ne pas faire apparaitre sur le 'bulletin' les notes sans...
+					// PB: Si on met tous les √©l√®ves de la classe???... ne pas faire apparaitre sur le 'bulletin' les notes sans...
 					echo "Aucun groupe";
 /*
 					echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
@@ -1846,8 +1846,8 @@ function checkbox_change(cpt) {
 				echo "checked ";
 			}
 			echo "/>\n";
-			echo "<label for='groupe_hors_enseignement' style='cursor: pointer;'> CrÈer un groupe hors enseignement</label><br />\n";
-			echo "(<i>Un tel 'groupe' permet par exemple de saisir en terminale des notes obtenues au bac de franÁais en premiËre</i>).</p>\n";
+			echo "<label for='groupe_hors_enseignement' style='cursor: pointer;'> Cr√©er un groupe hors enseignement</label><br />\n";
+			echo "(<i>Un tel 'groupe' permet par exemple de saisir en terminale des notes obtenues au bac de fran√ßais en premi√®re</i>).</p>\n";
 
 			echo "<input type='hidden' name='id_exam' value='$id_exam' />\n";
 			echo "<input type='hidden' name='matiere' value='$matiere' />\n";
@@ -1857,7 +1857,7 @@ function checkbox_change(cpt) {
 			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
 
-			echo "<p><a href='javascript:cocher_decocher(true)'>Cocher</a> / <a href='javascript:cocher_decocher(false)'>dÈcocher</a> tous les groupes.</p>\n";
+			echo "<p><a href='javascript:cocher_decocher(true)'>Cocher</a> / <a href='javascript:cocher_decocher(false)'>d√©cocher</a> tous les groupes.</p>\n";
 
 			echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
@@ -1871,7 +1871,7 @@ function checkbox_change(cpt) {
 	}
 }
 
-// Tout cocher/dÈcocher
+// Tout cocher/d√©cocher
 function cocher_decocher(mode) {
 	for (var k=0;k<$cpt;k++) {
 		if(document.getElementById('id_groupe_'+k)){
@@ -1883,7 +1883,7 @@ function cocher_decocher(mode) {
 </script>\n";
 
 			echo "<p><br /></p>\n";
-			echo "<p><i>Remarque ‡ propos des notes hors enseignement&nbsp;:</i> On crÈe normalement un 'groupe' hors enseignement pour une note devant Ítre prise en compte alors qu'elle ne correspond pas ‡ un enseignement dispensÈ sur l'annÈe (<i>exemple: note de franÁais pour le BAC</i>).<br />On ne devrait pas alors avoir de situation bizarre comme celle proposÈe/commentÈe ci-dessous&nbsp;:<br />Si un ÈlËve est inscrit pour une mÍme matiËre ‡ la fois avec un devoir (<i>ou une moyenne de bulletin</i>) et avec une note hors enseignement, c'est la note hors enseignement qui est prise en compte.</p>\n";
+			echo "<p><i>Remarque √† propos des notes hors enseignement&nbsp;:</i> On cr√©e normalement un 'groupe' hors enseignement pour une note devant √™tre prise en compte alors qu'elle ne correspond pas √† un enseignement dispens√© sur l'ann√©e (<i>exemple: note de fran√ßais pour le BAC</i>).<br />On ne devrait pas alors avoir de situation bizarre comme celle propos√©e/comment√©e ci-dessous&nbsp;:<br />Si un √©l√®ve est inscrit pour une m√™me mati√®re √† la fois avec un devoir (<i>ou une moyenne de bulletin</i>) et avec une note hors enseignement, c'est la note hors enseignement qui est prise en compte.</p>\n";
 			echo "<p><br /></p>\n";
 
 		}
@@ -1900,7 +1900,7 @@ function cocher_decocher(mode) {
 			echo ">Choix des classes</a>\n";
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_exam&amp;id_exam=$id_exam&amp;aff=matieres'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Choix des matiËres</a>\n";
+			echo ">Choix des mati√®res</a>\n";
 			echo " | <a href='".$_SERVER['PHP_SELF']."?mode=modif_exam&amp;id_exam=$id_exam&amp;matiere=$matiere&amp;aff=groupes'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo ">Choix des groupes</a>\n";
@@ -1915,7 +1915,7 @@ function cocher_decocher(mode) {
 			}
 
 			if(!isset($matiere)) {
-				echo "<p style='color:red'>ERREUR&nbsp;: Aucune matiËre n'a ÈtÈ choisie.</p>\n";
+				echo "<p style='color:red'>ERREUR&nbsp;: Aucune mati√®re n'a √©t√© choisie.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1932,7 +1932,7 @@ function cocher_decocher(mode) {
 			$nb_classes=count($id_classe);
 
 			if($nb_classes==0) {
-				echo "<p style='color:red'>Aucune classe n'a ÈtÈ choisie.</p>\n";
+				echo "<p style='color:red'>Aucune classe n'a √©t√© choisie.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1949,7 +1949,7 @@ function cocher_decocher(mode) {
 				if($loop>0) {echo ", ";}
 				echo get_class_from_id($id_classe[$loop]);
 			}
-			echo " et matiËre $matiere</p>\n";
+			echo " et mati√®re $matiere</p>\n";
 
 			$tab_moy_bull_inscrits=array();
 			$tab_moy_pp_inscrits=array();
@@ -2003,12 +2003,12 @@ function cocher_decocher(mode) {
 						echo "<input type='hidden' name='id_groupe[$cpt_grp]' value='$lig->id' />\n";
 
 						/*
-						// Le dispositif commentÈ ici aurait seulement permis de saisir un devoir pour un groupe existant alors que ce qui est utile, c'est de pouvoir crÈer un enseignement pour le bac de franÁais, note obtenue en premiËre.
+						// Le dispositif comment√© ici aurait seulement permis de saisir un devoir pour un groupe existant alors que ce qui est utile, c'est de pouvoir cr√©er un enseignement pour le bac de fran√ßais, note obtenue en premi√®re.
 						echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='-1' ";
 						echo "onchange=\"radio_change($cpt_grp,$cpt)\" ";
 						//if() {echo "checked ";}
 						echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'>";
-						echo "Saisir une <span id='texte_id_dev_".$cpt_grp."_$cpt'>sÈrie de notes hors enseignement de l'annÈe</span>\n";
+						echo "Saisir une <span id='texte_id_dev_".$cpt_grp."_$cpt'>s√©rie de notes hors enseignement de l'ann√©e</span>\n";
 						echo "</label><br />\n";
 						$cpt++;
 
@@ -2024,7 +2024,7 @@ function cocher_decocher(mode) {
 								if($lig2->periode!=$periode_precedente) {
 									unset($lig3);
 
-									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la pÈriode' title='Moyenne du bulletin pour la pÈriode'>";
+									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la p√©riode' title='Moyenne du bulletin pour la p√©riode'>";
 									$sql="SELECT nom_periode, verouiller FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$lig2->periode';";
 									$res3=mysql_query($sql);
 									if(mysql_num_rows($res3)>0) {
@@ -2035,7 +2035,7 @@ function cocher_decocher(mode) {
 									}
 									else {
 										// Ca ne devrait pas arriver...
-										echo "<span class='bold'>PÈriode ".$lig2->periode."</span>\n";
+										echo "<span class='bold'>P√©riode ".$lig2->periode."</span>\n";
 
 										$tab_periodes[$cpt_grp][]=$lig2->periode;
 									}
@@ -2051,7 +2051,7 @@ function cocher_decocher(mode) {
 									echo "/>";
 
 									if(isset($lig3)) {
-										if($lig3->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: PÈriode non close' title='ATTENTION: PÈriode non close' />\n";}
+										if($lig3->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: P√©riode non close' title='ATTENTION: P√©riode non close' />\n";}
 									}
 									echo "<br />\n";
 									$periode_precedente=$lig2->periode;
@@ -2079,7 +2079,7 @@ function cocher_decocher(mode) {
 						if(mysql_num_rows($res2)>0) {
 							while($lig2=mysql_fetch_object($res2)) {
 								if((!isset($tab_periodes[$cpt_grp]))||(!in_array($lig2->periode, $tab_periodes[$cpt_grp]))) {
-									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la pÈriode' title='Moyenne du bulletin pour la pÈriode'>";
+									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la p√©riode' title='Moyenne du bulletin pour la p√©riode'>";
 									echo "<span class='bold'>".htmlentities($lig2->nom_periode)."</span>\n";
 									$tab_periodes[$cpt_grp][]=$lig2->periode;
 									echo "</label>\n";
@@ -2090,7 +2090,7 @@ function cocher_decocher(mode) {
 									}
 									echo "/>";
 
-									if($lig2->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: PÈriode non close' title='ATTENTION: PÈriode non close' />\n";}
+									if($lig2->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: P√©riode non close' title='ATTENTION: P√©riode non close' />\n";}
 									echo "<br />\n";
 
 									$cpt++;
@@ -2114,19 +2114,19 @@ function cocher_decocher(mode) {
 						if(isset($tab_periodes[$cpt_grp])) {
 							echo "<hr />\n";
 							echo "<b>Ou</b><br />\n";
-							//echo "<b>Moyenne de plusieurs pÈriodes:</b>\n";
+							//echo "<b>Moyenne de plusieurs p√©riodes:</b>\n";
 							echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='Plusieurs_periodes' ";
 							echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
 
 							//if(in_array($lig2->id,$tab_dev_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
 							if(isset($tab_moy_pp_inscrits[$lig->id])) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
 
-							echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>Moyenne de plusieurs pÈriodes&nbsp;:</span></label><br />\n";
+							echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>Moyenne de plusieurs p√©riodes&nbsp;:</span></label><br />\n";
 
 							for($j=0;$j<count($tab_periodes[$cpt_grp]);$j++) {
 								echo "<span style='margin-left:2em;'><input type='checkbox' name='id_dev_".$cpt_grp."_periodes[]' id='id_dev_".$cpt_grp."_periodes_$j' value='".$tab_periodes[$cpt_grp][$j]."' onchange=\"document.getElementById('id_dev_".$cpt_grp."_$cpt').checked=true;\" ";
 								if((isset($tab_moy_pp_inscrits[$lig->id]))&&(in_array($tab_periodes[$cpt_grp][$j],$tab_moy_pp_inscrits[$lig->id]))) {echo "checked ";}
-								echo "/><label for='id_dev_".$cpt_grp."_periodes_$j'>PÈriode ".$tab_periodes[$cpt_grp][$j]."</label></span><br />\n";
+								echo "/><label for='id_dev_".$cpt_grp."_periodes_$j'>P√©riode ".$tab_periodes[$cpt_grp][$j]."</label></span><br />\n";
 							}
 							$cpt++;
 						}
@@ -2178,7 +2178,7 @@ function radio_change(i,cpt) {
 }
 //=============================================================================
 
-//echo "<span style='color:red;'>ALTER TABLE ex_groupes ADD valeur VARCHAR( 255 ) NOT NULL ;</span> ‡ mettre en utilitaires/updates/152_to_153.inc.php et sql/structure_gepi.sql";
+//echo "<span style='color:red;'>ALTER TABLE ex_groupes ADD valeur VARCHAR( 255 ) NOT NULL ;</span> √† mettre en utilitaires/updates/152_to_153.inc.php et sql/structure_gepi.sql";
 
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

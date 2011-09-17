@@ -45,13 +45,13 @@ $annee_scolaire=isset($_POST['annee_scolaire']) ? $_POST['annee_scolaire'] : (is
 $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 $deja_traitee_id_type=isset($_POST['deja_traitee_id_type']) ? $_POST['deja_traitee_id_type'] : NULL;
 $log_error=isset($_POST['log_error']) ? $_POST['log_error'] : "n";
-// Si le module n'est pas activé...
+// Si le module n'est pas activÃ©...
 if(getSettingValue('active_annees_anterieures')!="y"){
 	header("Location: ../logout.php?auto=1");
 	die();
 }
 
-// si le plugin "port_folio" existe et est activé
+// si le plugin "port_folio" existe et est activÃ©
 $test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
 if ($test_plugin=='y') $flag_port_folio='y';
 
@@ -59,11 +59,11 @@ if ($test_plugin=='y') $flag_port_folio='y';
 $msg="";
 
 $style_specifique="mod_annees_anterieures/annees_anterieures";
-// Suppression des données archivées pour une année donnée.
+// Suppression des donnÃ©es archivÃ©es pour une annÃ©e donnÃ©e.
 if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 	check_token();
 
-  	// Suppression des liens élèves/aid
+  	// Suppression des liens Ã©lÃ¨ves/aid
     $sql="SELECT id FROM archivage_aids WHERE annee='".$_GET['annee_supp']."'";
     $res=sql_query($sql);
     $nb_lignes = mysql_num_rows($res);
@@ -87,29 +87,29 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
   		mysql_query($sql);
     }
 
-	// Maintenant, on regarde si l'année est encore utilisée dans archivage_disciplines
-	// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
+	// Maintenant, on regarde si l'annÃ©e est encore utilisÃ©e dans archivage_disciplines
+	// Sinon, on supprime les entrÃ©es correspondantes Ã  l'annÃ©e dans archivage_eleves2 car elles ne servent plus Ã  rien.
 	$test = sql_query1("select count(annee) from archivage_disciplines where annee='".$_GET['annee_supp']."'");
 	if ($test == 0) {
 		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
 		$res_suppr4=mysql_query($sql);
 	} else $res_suppr4 = 1;
 
-	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
+	// Maintenant, il faut supprimer les donnÃ©es Ã©lÃ¨ves qui ne servent plus Ã  rien
 	suppression_donnees_eleves_inutiles();
 
 	if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)) {
-		$msg = "La suppression des données a été correctement effectuée.";
+		$msg = "La suppression des donnÃ©es a Ã©tÃ© correctement effectuÃ©e.";
 	} else {
-		$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+		$msg = "Un ou plusieurs problÃ¨mes ont Ã©tÃ© rencontrÃ©s lors de la suppression.";
 	}
 
 }
-// Suppression des données archivées pour une année donnée.
+// Suppression des donnÃ©es archivÃ©es pour une annÃ©e donnÃ©e.
 if (isset($_GET['action']) and ($_GET['action']=="supp_AID")) {
 	check_token();
 
-  	// Suppression des liens élèves/aid
+  	// Suppression des liens Ã©lÃ¨ves/aid
     $sql="SELECT id FROM archivage_aids WHERE annee='".$_GET['annee_supp']."' and id_type_aid='".$_GET['type_aid_supp']."'";
     $res=sql_query($sql);
     $nb_lignes = mysql_num_rows($res);
@@ -128,20 +128,20 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_AID")) {
     $sql="DELETE FROM archivage_types_aid WHERE annee='".$_GET["annee_supp"]."' and id='".$_GET['type_aid_supp']."'";
 		$res_suppr2=mysql_query($sql);
 
-    // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
+    // Maintenant, il faut supprimer les donnÃ©es Ã©lÃ¨ves qui ne servent plus Ã  rien
     suppression_donnees_eleves_inutiles();
 
 		if (($res_suppr1) and ($res_suppr2)) {
-			$msg = "La suppression des données a été correctement effectuée.";
+			$msg = "La suppression des donnÃ©es a Ã©tÃ© correctement effectuÃ©e.";
 		} else {
-			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+			$msg = "Un ou plusieurs problÃ¨mes ont Ã©tÃ© rencontrÃ©s lors de la suppression.";
 		}
 
 }
 
 
-$themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données AID concernant cette année ?';
-$themessage2  = 'Etes-vous sûr de vouloir supprimer toutes les données pour cette AID ?';
+$themessage  = 'Etes-vous sÃ»r de vouloir supprimer toutes les donnÃ©es AID concernant cette annÃ©e ?';
+$themessage2  = 'Etes-vous sÃ»r de vouloir supprimer toutes les donnÃ©es pour cette AID ?';
 //**************** EN-TETE *****************
 $titre_page = "Archivage des AIDs";
 require_once("../lib/header.inc");
@@ -157,20 +157,20 @@ if(!isset($annee_scolaire)){
 	$sql="SELECT DISTINCT annee FROM archivage_types_aid ORDER BY annee";
 	$res_annee=sql_query($sql);
 	if(mysql_num_rows($res_annee)==0){
-		echo "<p>Aucune année n'est encore sauvegardée.</p>\n";
+		echo "<p>Aucune annÃ©e n'est encore sauvegardÃ©e.</p>\n";
 	}
 	else{
-		echo "<p>Voici la liste des années sauvegardées :</p>\n";
+		echo "<p>Voici la liste des annÃ©es sauvegardÃ©es :</p>\n";
 		echo "<ul>\n";
 		while($lig_annee=mysql_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
-			echo "<li><b>Année $annee_scolaire</b> - <a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données AIDs archivées pour cette année</a></li>\n";
+			echo "<li><b>AnnÃ©e $annee_scolaire</b> - <a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les donnÃ©es AIDs archivÃ©es pour cette annÃ©e</a></li>\n";
 		}
 		echo "</ul>\n";
 		echo "<p><br /></p>\n";
 
 	}
-	echo "<p>Sous quel nom d'année voulez-vous sauvegarder l'année?</p>\n";
+	echo "<p>Sous quel nom d'annÃ©e voulez-vous sauvegarder l'annÃ©e?</p>\n";
 	$default_annee=getSettingValue('gepiYear');
 
 	if($default_annee==""){
@@ -182,7 +182,7 @@ if(!isset($annee_scolaire)){
 		$default_annee=$annee."-".$annee2;
 	}
 
-	echo "<p>Année&nbsp;: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
+	echo "<p>AnnÃ©e&nbsp;: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
 
 	echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 } else {
@@ -197,12 +197,12 @@ if(!isset($annee_scolaire)){
 			$chaine_types_aid='<ul>';
 			while($lig_types_aid=mysql_fetch_object($res_test)){
 					$chaine_types_aid.="<li> ".$lig_types_aid->nom." (".$lig_types_aid->nom_complet.")
-          - <a href='".$_SERVER['PHP_SELF']."?action=supp_AID&amp;annee_scolaire=".$annee_scolaire."&amp;annee_supp=".$annee_scolaire."&amp;type_aid_supp=".$lig_types_aid->id."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage2')\">Supprimer toutes les données archivées de cette AID</a></li>";
+          - <a href='".$_SERVER['PHP_SELF']."?action=supp_AID&amp;annee_scolaire=".$annee_scolaire."&amp;annee_supp=".$annee_scolaire."&amp;type_aid_supp=".$lig_types_aid->id."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage2')\">Supprimer toutes les donnÃ©es archivÃ©es de cette AID</a></li>";
 			}
 
-			echo "<p>Des données ont déjà été sauvegardées pour l'année $annee_scolaire. Liste des types d'AIDs sauvegardés :<br /> $chaine_types_aid</ul><p>
-      <b>ATTENTION :</b> si, à l'étape suivante, vous cochez des types d'AIDs déjà archivés, les données seront archivées une nouvelle fois et s'ajouteront aux autres données déjà archivées. S'il s'agit bien des mêmes types d'AIDS, vous risquez alors de créer des doublons.</p>\n";
- 			echo "<p>Vous pouvez également procéder à la suppression d'AIDs archivées</p>";
+			echo "<p>Des donnÃ©es ont dÃ©jÃ  Ã©tÃ© sauvegardÃ©es pour l'annÃ©e $annee_scolaire. Liste des types d'AIDs sauvegardÃ©s :<br /> $chaine_types_aid</ul><p>
+      <b>ATTENTION :</b> si, Ã  l'Ã©tape suivante, vous cochez des types d'AIDs dÃ©jÃ  archivÃ©s, les donnÃ©es seront archivÃ©es une nouvelle fois et s'ajouteront aux autres donnÃ©es dÃ©jÃ  archivÃ©es. S'il s'agit bien des mÃªmes types d'AIDS, vous risquez alors de crÃ©er des doublons.</p>\n";
+ 			echo "<p>Vous pouvez Ã©galement procÃ©der Ã  la suppression d'AIDs archivÃ©es</p>";
 
 			echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";
 
@@ -218,18 +218,18 @@ if(!isset($annee_scolaire)){
 
 		echo "<h2>Choix des types d'AIDs</h2>\n";
 
-		echo "<p>Conservation des données pour l'année scolaire: $annee_scolaire</p>\n";
+		echo "<p>Conservation des donnÃ©es pour l'annÃ©e scolaire: $annee_scolaire</p>\n";
 
 		echo "<p>Choisissez les types d'AIDs que vous souhaitez archiver</p>";
-		echo "<p>Tout <a href='javascript:modif_coche(true)'>cocher</a> / <a href='javascript:modif_coche(false)'>décocher</a>.</p>";
+		echo "<p>Tout <a href='javascript:modif_coche(true)'>cocher</a> / <a href='javascript:modif_coche(false)'>dÃ©cocher</a>.</p>";
 
-		// Afficher les types pour lesquelles les données sont déjà migrées...
+		// Afficher les types pour lesquelles les donnÃ©es sont dÃ©jÃ  migrÃ©es...
 
 		$sql="SELECT indice_aid,nom,outils_complementaires,nom_complet FROM aid_config ORDER BY nom";
 		$res1=sql_query($sql);
 		$nb_types=mysql_num_rows($res1);
 		if($nb_types==0){
-			echo "<p>ERREUR: Il semble qu'aucun type d'AID ne soit encore défini.</p>\n";
+			echo "<p>ERREUR: Il semble qu'aucun type d'AID ne soit encore dÃ©fini.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -265,8 +265,8 @@ if(!isset($annee_scolaire)){
 		echo "</table>\n";
 		echo "<p><input type = \"checkbox\" name=\"log_error\" value=\"y\" ";
 		if ($log_error == 'y') {echo " cheched ";}
-    echo "/>Les résultats de l'archivage sont en général très longs. Cochez la case ci-contre si vous souhaitez n'afficher que les erreurs d'archivage.";
-    echo "<p class='small'>(*) Types d'AID pour lesquels les outils complémentaire liés aux fiches projets ont été activés.</p>";
+    echo "/>Les rÃ©sultats de l'archivage sont en gÃ©nÃ©ral trÃ¨s longs. Cochez la case ci-contre si vous souhaitez n'afficher que les erreurs d'archivage.";
+    echo "<p class='small'>(*) Types d'AID pour lesquels les outils complÃ©mentaire liÃ©s aux fiches projets ont Ã©tÃ© activÃ©s.</p>";
 
 		echo "<script type='text/javascript'>
 			function modif_coche(statut){
@@ -289,7 +289,7 @@ if(!isset($annee_scolaire)){
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres types d'AIDs</a> | ";
 		echo "</div>\n";
 		if(count($id_type)==0){
-			echo "<p>ERREUR: Vous n'avez pas coché de type d'AIDs.</p>\n";
+			echo "<p>ERREUR: Vous n'avez pas cochÃ© de type d'AIDs.</p>\n";
 			echo "</form>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -297,13 +297,13 @@ if(!isset($annee_scolaire)){
 
 		check_token(false);
 
-    // Déput du traitement !!!!!
+    // DÃ©put du traitement !!!!!
     $sql_aid = "select * from aid_config where indice_aid = '".$id_type[0]."'";
     $res_aid = sql_query($sql_aid);
     $nb_type = mysql_num_rows($res_aid);
     $i = 0;
     // Boucle sur les types d'AID
-    $tab1 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id</b></td><td><b>Année</b></td><td><b>Nom</b></td><td><b>Nom complet</b></td><td><b>Note sur</b></td><td><b>Type de note</b></td></tr>\n";
+    $tab1 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id</b></td><td><b>AnnÃ©e</b></td><td><b>Nom</b></td><td><b>Nom complet</b></td><td><b>Note sur</b></td><td><b>Type de note</b></td></tr>\n";
     $flag_tab1 = 0;
     while ($i < $nb_type) {
       $nom_type = mysql_result($res_aid,$i,"nom");
@@ -330,7 +330,7 @@ if(!isset($annee_scolaire)){
       annee='".$annee_scolaire."'";
       $res_insert1=sql_query($sql_archiv);
       if(!$res_insert1){
-          $tab1 .= "<tr><td colspan=\"6\"><font color=\"red\">Erreur d'enregistrement pour la requête : ".$sql_archiv."</font></td></tr>";
+          $tab1 .= "<tr><td colspan=\"6\"><font color=\"red\">Erreur d'enregistrement pour la requÃªte : ".$sql_archiv."</font></td></tr>";
           $flag_tab1 = 1;
 			} else {
   	      $nouveau_id_type = mysql_insert_id();
@@ -347,14 +347,14 @@ if(!isset($annee_scolaire)){
       $nb_aid = mysql_num_rows($res_aid2);
       $j = 0;
       if ($outils_complementaires == 'y') {
-          $tab2 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id AID</b></td><td><b>Année</b></td><td><b>Nom</b></td><td><b>Identifiant type AID</b></td><td><b>Productions</b></td><td><b>Résumé</b></td><td><b>Famille</b></td><td><b>Mots clés</b></td><td><b>Adresse 1</b></td><td><b>Adresse 1</b></td><td><b>Public destinataire</b></td><td><b>Contacts</b></td><td><b>Matière 1</b></td><td><b>Matière 2</b></td><td><b>Fiche publique</b></td><td><b>Affiche adresse 1</b></td><td><b>Moyenne des notes</b></td><td><b>Max des notes</b></td><td><b>Min des notes</b></td><td><b>En construction</b></td><td><b>Liste des professeurs responsables</b></td><td><b>Liste des élèves</b></td><td><b>Liste des élèves responsables</b></td></tr>\n";
+          $tab2 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id AID</b></td><td><b>AnnÃ©e</b></td><td><b>Nom</b></td><td><b>Identifiant type AID</b></td><td><b>Productions</b></td><td><b>RÃ©sumÃ©</b></td><td><b>Famille</b></td><td><b>Mots clÃ©s</b></td><td><b>Adresse 1</b></td><td><b>Adresse 1</b></td><td><b>Public destinataire</b></td><td><b>Contacts</b></td><td><b>MatiÃ¨re 1</b></td><td><b>MatiÃ¨re 2</b></td><td><b>Fiche publique</b></td><td><b>Affiche adresse 1</b></td><td><b>Moyenne des notes</b></td><td><b>Max des notes</b></td><td><b>Min des notes</b></td><td><b>En construction</b></td><td><b>Liste des professeurs responsables</b></td><td><b>Liste des Ã©lÃ¨ves</b></td><td><b>Liste des Ã©lÃ¨ves responsables</b></td></tr>\n";
       } else {
-          $tab2 = "<table border = \"1\">\n<tr><td><b>Id AID</b></td><td><b>Année</b></td><td><b>Nom</b></td><td><b>Identifiant type AID</b></td></tr>\n";
+          $tab2 = "<table border = \"1\">\n<tr><td><b>Id AID</b></td><td><b>AnnÃ©e</b></td><td><b>Nom</b></td><td><b>Identifiant type AID</b></td></tr>\n";
       }
       $flag_tab2 = 0;
-      $tab3 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id AID</b></td><td><b>Id élève</b></td><td><b>Elève responsable</b></td></tr>\n";
-      $tab4 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id élève</b></td><td><b>Année</b></td><td><b>Classe</b></td><td><b>Id AID</b></td><td><b>Numéro période</b></td><td><b>Appréciation</b></td><td><b>Note élève</b></td><td><b>moyenne classe</b></td><td><b>Min classe</b></td><td><b>Max classe</b></td></tr>\n";
-      $tab5 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id élève</b></td><td><b>Nom</b></td><td><b>Prénom</b></td><td><b>Date de naisance</b></td></tr>\n";
+      $tab3 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id AID</b></td><td><b>Id Ã©lÃ¨ve</b></td><td><b>ElÃ¨ve responsable</b></td></tr>\n";
+      $tab4 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id Ã©lÃ¨ve</b></td><td><b>AnnÃ©e</b></td><td><b>Classe</b></td><td><b>Id AID</b></td><td><b>NumÃ©ro pÃ©riode</b></td><td><b>ApprÃ©ciation</b></td><td><b>Note Ã©lÃ¨ve</b></td><td><b>moyenne classe</b></td><td><b>Min classe</b></td><td><b>Max classe</b></td></tr>\n";
+      $tab5 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id Ã©lÃ¨ve</b></td><td><b>Nom</b></td><td><b>PrÃ©nom</b></td><td><b>Date de naisance</b></td></tr>\n";
       $flag_tab3 = 0;
       $flag_tab4 = 0;
       $flag_tab5 = 0;
@@ -431,7 +431,7 @@ if(!isset($annee_scolaire)){
             $k++;
           }
 
-        // moyennes, max, min (il s'agit de stats sur l'aid, donc indépendant des classes)
+        // moyennes, max, min (il s'agit de stats sur l'aid, donc indÃ©pendant des classes)
         $sql_moyenne = sql_query("SELECT round(avg(note),1) moyenne, MIN(note) min, Max(note) max, periode FROM aid_appreciations where id_aid='".$id."' and statut='' group by periode order by periode");
         $nombre = mysql_num_rows($sql_moyenne);
         $liste_moyenne = "";
@@ -452,9 +452,9 @@ if(!isset($annee_scolaire)){
             if ($max=='') $max = '-';
             $moyenne = mysql_result($sql_moyenne,$k,"moyenne");
             if ($moyenne=='') $moyenne = '-';
-            $liste_min .= "période N° ".$num_periode.":".$min;
-            $liste_max .= "période N° ".$num_periode.":".$max;
-            $liste_moyenne .= "période N° ".$num_periode.":".$moyenne;
+            $liste_min .= "pÃ©riode NÂ° ".$num_periode.":".$min;
+            $liste_max .= "pÃ©riode NÂ° ".$num_periode.":".$max;
+            $liste_moyenne .= "pÃ©riode NÂ° ".$num_periode.":".$moyenne;
 
             $flag = "1";
             $k++;
@@ -490,9 +490,9 @@ if(!isset($annee_scolaire)){
 
           if(!$res_insert2){
             if ($outils_complementaires == 'y')
-              $tab2 .= "<tr><td colspan=\"24\"><font color=\"red\">Erreur d'enregistrement pour la requête : ".$sql_archiv."</font></td></tr>";
+              $tab2 .= "<tr><td colspan=\"24\"><font color=\"red\">Erreur d'enregistrement pour la requÃªte : ".$sql_archiv."</font></td></tr>";
             else
-              $tab2 .= "<tr><td colspan=\"4\"><font color=\"red\">Erreur d'enregistrement pour la requête : ".$sql_archiv."</font></td></tr>";
+              $tab2 .= "<tr><td colspan=\"4\"><font color=\"red\">Erreur d'enregistrement pour la requÃªte : ".$sql_archiv."</font></td></tr>";
             $flag_tab2 = 1;
 
 			    } else {
@@ -518,7 +518,7 @@ if(!isset($annee_scolaire)){
                 $no_gep = "LOGIN_".$login_eleve;
       					$no_gep = cree_substitut_INE_unique($no_gep);
     				}
-            // On vérifie que l'élève est enregistré dans archive_eleves. Sinon, on l'enregistre
+            // On vÃ©rifie que l'Ã©lÃ¨ve est enregistrÃ© dans archive_eleves. Sinon, on l'enregistre
             $temp = insert_eleve($login_eleve,$no_gep,$annee_scolaire,$log_error);
             if ($temp != '') $flag_tab5 = 1;
             $tab5 .= $temp;
@@ -534,7 +534,7 @@ if(!isset($annee_scolaire)){
             eleve_resp = '".$eleve_resp."'";
             $res_insert3=sql_query($sql_archiv);
             if(!$res_insert3){
-                $tab3 .= "<tr><td colspan=\"3\"><font color=\"red\">Erreur d'enregistrement pour la requête : ".$sql_archiv."</font></td></tr>";
+                $tab3 .= "<tr><td colspan=\"3\"><font color=\"red\">Erreur d'enregistrement pour la requÃªte : ".$sql_archiv."</font></td></tr>";
                 $flag_tab3 = 1;
 		  	    } else if ($log_error!='y') {
                 $tab3 .= "<tr><td class='small'>".$nouveau_id_aid."</td><td class='small'>".$no_gep."</td><td class='small'>".$eleve_resp."</td></tr>\n";
@@ -542,7 +542,7 @@ if(!isset($annee_scolaire)){
             }
 
 
-    				// Appréciation AID, min, max moyennes
+    				// ApprÃ©ciation AID, min, max moyennes
             $call_liste_data_app = sql_query("SELECT * FROM aid_appreciations WHERE (id_aid='".$id."' and login='".$login_eleve."')");
             $nombre_app = mysql_num_rows($call_liste_data_app);
             $t = "0";
@@ -591,7 +591,7 @@ if(!isset($annee_scolaire)){
               note_eleve = '".addslashes($note)."'";
               $res_insert4=sql_query($sql_archiv);
               if(!$res_insert4){
-                  $tab4 .= "<tr><td colspan=\"11\"><font color=\"red\">Erreur d'enregistrement pour la requête : ".$sql_archiv."</font></td></tr>";
+                  $tab4 .= "<tr><td colspan=\"11\"><font color=\"red\">Erreur d'enregistrement pour la requÃªte : ".$sql_archiv."</font></td></tr>";
                   $flag_tab4 = 1;
 		  	      } else if ($log_error!='y') {
                   $tab4 .= "<tr><td class='small'>".$no_gep."</td><td class='small'>".$annee_scolaire."</td><td class='small'>".$classe."</td><td class='small'>".$nouveau_id_aid."</td><td class='small'>".$periode."</td><td class='small'>".$appreciation."</td><td class='small'>".$note."</td><td class='small'>".$moyenne."</td><td class='small'>".$min."</td><td class='small'>".$max."</td></tr>\n";
@@ -601,7 +601,7 @@ if(!isset($annee_scolaire)){
               $t++;
             }
 
-            // si le plugin "port_folio" existe et est activé
+            // si le plugin "port_folio" existe et est activÃ©
             $test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
             if (isset($flag_port_folio)) {
               include("../mod_plugins/port_folio/archivage_port_folio.php");
@@ -623,7 +623,7 @@ if(!isset($annee_scolaire)){
 		//===================================
 
 		if(isset($deja_traitee_id_type)){
-			echo "<h2>Types d'AIDs déjà traités</h2><p>";
+			echo "<h2>Types d'AIDs dÃ©jÃ  traitÃ©s</h2><p>";
 			for($i=0;$i<count($deja_traitee_id_type);$i++){
 				echo "<input type='hidden' name='deja_traitee_id_type[]' value='$deja_traitee_id_type[$i]' />\n";
   			$nom_type = sql_query1("select nom from aid_config where indice_aid = '".$deja_traitee_id_type[$i]."'");
@@ -646,7 +646,7 @@ if(!isset($annee_scolaire)){
 			$chaine.=", ".$nom_type;
 		}
 		if($chaine!=""){
-			echo "<h2>Types d'AIDs restant à traiter</h2><p><b>".substr($chaine,2)."</b></p>\n";
+			echo "<h2>Types d'AIDs restant Ã  traiter</h2><p><b>".substr($chaine,2)."</b></p>\n";
 		}
 		if($temoin_encore_des_types>0){
 /*			echo "<script type='text/javascript'>
@@ -654,11 +654,11 @@ if(!isset($annee_scolaire)){
 			</script>\n";*/
 			echo "<center><input type=\"submit\" name='ok' value=\"Continuer le traitement\" style=\"font-variant: small-caps;\" /></center>\n";
 		}	else {
-			echo "<h2>Traitement terminé.</h2>\n";
+			echo "<h2>Traitement terminÃ©.</h2>\n";
 		}
     echo "<hr />";
 		$nom_type = sql_query1("select nom from aid_config where indice_aid = '".$id_type[0]."'");
-    echo "<h2>Résultats du traitement du type d'AID : $nom_type</h2>\n";
+    echo "<h2>RÃ©sultats du traitement du type d'AID : $nom_type</h2>\n";
 
 
     echo "<h3>Enregistrement du type d'AID";
@@ -668,15 +668,15 @@ if(!isset($annee_scolaire)){
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
-    echo "<H3>Enregistrement de nouveaux élèves non encore archivés";
+            echo " : </h3>Aucun nouvel enregistrement n'a Ã©tÃ© effectuÃ©.";
+    echo "<H3>Enregistrement de nouveaux Ã©lÃ¨ves non encore archivÃ©s";
     if ($flag_tab5 == 1)
         echo $tab5;
     else
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a Ã©tÃ© effectuÃ©.";
 
     echo "<H3>Enregistrement des AIDs";
     if ($flag_tab2 == 1)
@@ -685,29 +685,29 @@ if(!isset($annee_scolaire)){
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a Ã©tÃ© effectuÃ©.";
 
-    echo "<H3>Enregistrement des liens AIDs/élèves";
+    echo "<H3>Enregistrement des liens AIDs/Ã©lÃ¨ves";
     if ($flag_tab3 == 1)
         echo $tab3;
     else
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a Ã©tÃ© effectuÃ©.";
 
-    echo "<H3>Enregistrement des appréciations, notes, min, max";
+    echo "<H3>Enregistrement des apprÃ©ciations, notes, min, max";
     if ($flag_tab4 == 1)
         echo $tab4;
     else
         if ($log_error =='y')
             echo " : <b><font color='green'>OK !</font></b></h3>";
         else
-            echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
+            echo " : </h3>Aucun nouvel enregistrement n'a Ã©tÃ© effectuÃ©.";
 
     if (isset($flag_port_folio)) {
       $tab_item .= "</table>\n";
-      echo "<H3>Enregistrement des items validés";
+      echo "<H3>Enregistrement des items validÃ©s";
       echo $tab_item;
     }
 

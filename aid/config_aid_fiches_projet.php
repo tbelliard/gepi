@@ -52,7 +52,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
     $i = 0;
     while ($i < $nb_lignes) {
         $id = mysql_result($res,$i,"id");
-        if ($_POST["description_".$id]=="") $_POST["description_".$id] = "A préciser";
+        if ($_POST["description_".$id]=="") $_POST["description_".$id] = "A prÃ©ciser";
         if (!(isset($_POST["public_".$id]))) $_POST["public_".$id] = '-';
         if (!(isset($_POST["professeur_".$id]))) $_POST["professeur_".$id] = '-';
         if (!(isset($_POST["cpe_".$id]))) $_POST["cpe_".$id] = '-';
@@ -86,23 +86,23 @@ require_once("../lib/header.inc");
 
 echo add_token_field();
 
-echo "<p>Le tableau suivant permet de fixer les droits sur les différents champs des fiches projet.";
+echo "<p>Le tableau suivant permet de fixer les droits sur les diffÃ©rents champs des fiches projet.";
 echo "<br /><br />Remarques :
 <ul>
-<li>Quand un champ est <b>actif</b>, il est visible dans l'interface privée de GEPI (utilisateur connecté) par les administrateurs, les professeurs, les CPE, les élèves et les responsables.</li>
-<li>Quand un champ n'est pas <b>actif</b>, cela signifie qu'il n'est pas utilisé dans GEPI.</li>
-<li>Le code \"<b>R &amp; W</b>\" signifie que le champ est accessible en lecture et écriture.
+<li>Quand un champ est <b>actif</b>, il est visible dans l'interface privÃ©e de GEPI (utilisateur connectÃ©) par les administrateurs, les professeurs, les CPE, les Ã©lÃ¨ves et les responsables.</li>
+<li>Quand un champ n'est pas <b>actif</b>, cela signifie qu'il n'est pas utilisÃ© dans GEPI.</li>
+<li>Le code \"<b>R &amp; W</b>\" signifie que le champ est accessible en lecture et Ã©criture.
 <br />Le code \"<b>R</b>\" signifie que le champ est accessible en lecture seulement.
 <br />Le code \"<b>-</b>\" signifie que le champ n'est pas accessible.
 </li>
 </ul>";
 echo "<table border='1' cellpadding='5' class='boireaus'>";
 echo "<tr><th><b>Champ de la fiche projet</b></th>
-<th><span class='small'>Libellé du champ</span></th>
+<th><span class='small'>LibellÃ© du champ</span></th>
 <th><span class='small'>Le champ est visible dans l'interface publique</span></th>
 <th><span class='small'>Les professeurs peuvent modifier ce champ</span></th>
 <th><span class='small'>Les C.P.E peuvent modifier ce champ</span></th>
-<th><span class='small'>Les élèves peuvent modifier ce champ</span></th>
+<th><span class='small'>Les Ã©lÃ¨ves peuvent modifier ce champ</span></th>
 <th><span class='small'>Le champ est actif</span></th>
 </tr>";
 $res = mysql_query($requete);

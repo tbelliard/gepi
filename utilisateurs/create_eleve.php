@@ -47,18 +47,18 @@ $_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['
 $mdp_INE=isset($_POST["mdp_INE"]) ? $_POST["mdp_INE"] : (isset($_GET["mdp_INE"]) ? $_GET["mdp_INE"] : NULL);
 
 if ($create_mode == "classe" OR $create_mode == "individual") {
-	// On a une demande de crÈation, on continue
+	// On a une demande de cr√©ation, on continue
 	check_token();
 
-	// On veut alimenter la variable $quels_eleves avec un rÈsultat mysql qui contient
-	// la liste des ÈlËves pour lesquels on veut crÈer un compte
+	// On veut alimenter la variable $quels_eleves avec un r√©sultat mysql qui contient
+	// la liste des √©l√®ves pour lesquels on veut cr√©er un compte
 	$error = false;
 	$msg = "";
 	if ($create_mode == "individual") {
 		$test = mysql_query("SELECT count(e.login) FROM eleves e WHERE (e.login = '" . $_POST['eleve_login'] ."')");
 		if (mysql_result($test, 0) == "0") {
 			$error = true;
-			$msg .= "Erreur lors de la crÈation de l'utilisateur : aucun ÈlËve avec ce login n'a ÈtÈ trouvÈ !<br />";
+			$msg .= "Erreur lors de la cr√©ation de l'utilisateur : aucun √©l√®ve avec ce login n'a √©t√© trouv√© !<br />";
 		} else {
 			$quels_eleves = mysql_query("SELECT e.* FROM eleves e WHERE (" .
 				"e.login = '" . $_POST['eleve_login'] ."')");
@@ -79,7 +79,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			if (!$quels_eleves) $msg .= mysql_error();
 		} else {
 			$error = true;
-			$msg .= "Vous devez sÈlectionner au moins une classe !<br />";
+			$msg .= "Vous devez s√©lectionner au moins une classe !<br />";
 		}
 	}
 
@@ -90,7 +90,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 		$nb_comptes = 0;
 		while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-			// CrÈation du compte utilisateur pour l'ÈlËve considÈrÈ
+			// Cr√©ation du compte utilisateur pour l'√©l√®ve consid√©r√©
 			$reg = true;
 			$civilite = '';
 			if ($current_eleve->sexe == "M") {
@@ -99,18 +99,18 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				$civilite = "Mlle";
 			}
 
-			// Si on a un accËs LDAP en Ècriture, on crÈÈ le compte sur le LDAP
-			// On ne procËde que si le LDAP est configurÈ en Ècriture, qu'on a activÈ
-			// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a ÈtÈ choisi pour cet utilisateur.
+			// Si on a un acc√®s LDAP en √©criture, on cr√©√© le compte sur le LDAP
+			// On ne proc√®de que si le LDAP est configur√© en √©criture, qu'on a activ√©
+			// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a √©t√© choisi pour cet utilisateur.
 			if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'auth_ldap' || $_POST['reg_auth_mode'] == 'auth_sso')) {
 				$write_ldap = true;
 				$write_ldap_success = false;
-				// On tente de crÈer l'utilisateur sur l'annuaire LDAP
+				// On tente de cr√©er l'utilisateur sur l'annuaire LDAP
 				$ldap_server = new LDAPServer();
 				if ($ldap_server->test_user($current_eleve->login)) {
-					// L'utilisateur a ÈtÈ trouvÈ dans l'annuaire. On ne l'enregistre pas.
+					// L'utilisateur a √©t√© trouv√© dans l'annuaire. On ne l'enregistre pas.
 					$write_ldap_success = true;
-					$msg.= "L'utilisateur n'a pas pu Ítre ajoutÈ ‡ l'annuaire LDAP, car il y est dÈj‡ prÈsent. Il va nÈanmoins Ítre crÈÈ dans la base Gepi.";
+					$msg.= "L'utilisateur n'a pas pu √™tre ajout√© √† l'annuaire LDAP, car il y est d√©j√† pr√©sent. Il va n√©anmoins √™tre cr√©√© dans la base Gepi.";
 				} else {
 					$write_ldap_success = $ldap_server->add_user($current_eleve->login, $current_eleve->nom, $current_eleve->prenom, $current_eleve->email, $civilite, '', 'eleve');
 				}
@@ -145,7 +145,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 							"change_mdp = 'n'");
 
 					if (!$reg) {
-						$msg .= "Erreur lors de la crÈation du compte ".$current_eleve->login."<br />";
+						$msg .= "Erreur lors de la cr√©ation du compte ".$current_eleve->login."<br />";
 					} else {
 						$nb_comptes++;
 					}
@@ -155,14 +155,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					$nb_comptes_preexistants++;
 				}
 			} else {
-				$msg .= "Erreur lors de la crÈation du compte ".$current_eleve->login." : l'utilisateur n'a pas pu Ítre crÈÈ sur l'annuaire LDAP.<br />";
+				$msg .= "Erreur lors de la cr√©ation du compte ".$current_eleve->login." : l'utilisateur n'a pas pu √™tre cr√©√© sur l'annuaire LDAP.<br />";
 
 			}
 		}
 		if ($nb_comptes == 1) {
-			$msg .= "Un compte a ÈtÈ crÈÈ avec succËs.<br />";
+			$msg .= "Un compte a √©t√© cr√©√© avec succ√®s.<br />";
 		} elseif ($nb_comptes > 1) {
-			$msg .= $nb_comptes." comptes ont ÈtÈ crÈÈs avec succËs.<br />";
+			$msg .= $nb_comptes." comptes ont √©t√© cr√©√©s avec succ√®s.<br />";
 		}
 		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
 
@@ -174,11 +174,11 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			}
 
 			if ($create_mode == "individual") {
-				// Mode de crÈation de compte individuel. On fait un lien spÈcifique pour la fiche de bienvenue
+				// Mode de cr√©ation de compte individuel. On fait un lien sp√©cifique pour la fiche de bienvenue
 	            $msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la fiche 'identifiants'</a>";
 			} else {
-				// On est ici en mode de crÈation par classe
-				// Si on opËre sur toutes les classes, on ne spÈcifie aucune classe
+				// On est ici en mode de cr√©ation par classe
+				// Si on op√®re sur toutes les classes, on ne sp√©cifie aucune classe
 
             	if ($_POST['classe'] == "all") {
 				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
@@ -190,27 +190,27 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				}
 			}
-			$msg .= "<br />Vous devez effectuer cette opÈration maintenant !";
+			$msg .= "<br />Vous devez effectuer cette op√©ration maintenant !";
 		} else {
 			if ($nb_comptes > 0) {
-				$msg .= "Vous avez crÈÈ des comptes d'accËs en mode SSO ou LDAP, mais sans avoir configurÈ l'accËs LDAP en Ècriture. En consÈquence, vous ne pouvez pas gÈnÈrer de mot de passe pour les utilisateurs.<br />";
+				$msg .= "Vous avez cr√©√© des comptes d'acc√®s en mode SSO ou LDAP, mais sans avoir configur√© l'acc√®s LDAP en √©criture. En cons√©quence, vous ne pouvez pas g√©n√©rer de mot de passe pour les utilisateurs.<br />";
 			}
 		}
 
 
 		if($nb_comptes_preexistants>0) {
 			if($nb_comptes_preexistants==1) {
-				$msg.="Un compte existait dÈj‡ pour la sÈlection.<br />";
+				$msg.="Un compte existait d√©j√† pour la s√©lection.<br />";
 			}
 			else {
-				$msg.="$nb_comptes_preexistants comptes existaient dÈj‡ pour la sÈlection.<br />";
+				$msg.="$nb_comptes_preexistants comptes existaient d√©j√† pour la s√©lection.<br />";
 			}
 		}
 	}
 }
 
 //**************** EN-TETE *****************
-$titre_page = "CrÈer des comptes d'accËs ÈlËves";
+$titre_page = "Cr√©er des comptes d'acc√®s √©l√®ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -224,20 +224,20 @@ $quels_eleves = mysql_query("SELECT e.* FROM eleves e LEFT JOIN utilisateurs u O
 		"ORDER BY e.nom,e.prenom");
 $nb = mysql_num_rows($quels_eleves);
 if($nb==0){
-	echo "<p>Tous les ÈlËves ont un compte utilisateur, ou bien aucun ÈlËve n'a encore ÈtÈ crÈÈ.</p>\n";
+	echo "<p>Tous les √©l√®ves ont un compte utilisateur, ou bien aucun √©l√®ve n'a encore √©t√© cr√©√©.</p>\n";
 }
 else{
-	//echo "<p>Les $nb ÈlËves ci-dessous n'ont pas encore de compte d'accËs ‡ Gepi.</p>\n";
-	echo "<p>$nb ÈlËves n'ont pas encore de compte d'accËs ‡ Gepi.</p>\n";
+	//echo "<p>Les $nb √©l√®ves ci-dessous n'ont pas encore de compte d'acc√®s √† Gepi.</p>\n";
+	echo "<p>$nb √©l√®ves n'ont pas encore de compte d'acc√®s √† Gepi.</p>\n";
 
 	if (!$session_gepi->auth_locale && $gepiSettings['ldap_write_access'] != "yes") {
-		echo "<p><b>Note :</b> Vous utilisez une authentification externe ‡ Gepi (LDAP ou SSO) sans avoir dÈfini d'accËs en Ècriture ‡ l'annuaire LDAP. Aucun mot de passe ne sera donc assignÈ aux utilisateurs que vous vous apprÍtez ‡ crÈer. Soyez certain de gÈnÈrer les login selon le mÍme format que pour votre source d'authentification SSO.</p>\n";
+		echo "<p><b>Note :</b> Vous utilisez une authentification externe √† Gepi (LDAP ou SSO) sans avoir d√©fini d'acc√®s en √©criture √† l'annuaire LDAP. Aucun mot de passe ne sera donc assign√© aux utilisateurs que vous vous appr√™tez √† cr√©er. Soyez certain de g√©n√©rer les login selon le m√™me format que pour votre source d'authentification SSO.</p>\n";
 	}
 
-	echo "<p><b>CrÈer des comptes par lot</b> :</p>\n";
+	echo "<p><b>Cr√©er des comptes par lot</b> :</p>\n";
 	echo "<blockquote>\n";
 
-	echo "<p>SÈlectionnez le mode d'authentification appliquÈ aux comptes :</p>";
+	echo "<p>S√©lectionnez le mode d'authentification appliqu√© aux comptes :</p>";
 	echo "<form action='create_eleve.php' method='post'>\n";
 	echo add_token_field();
 	echo "<select name='reg_auth_mode' size='1'>";
@@ -254,12 +254,12 @@ else{
 	}
 	echo "</select>";
 
-	echo "<p>SÈlectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
+	echo "<p>S√©lectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
 
 
 	echo "<input type='hidden' name='mode' value='classe' />\n";
 	echo "<select name='classe' size='1'>\n";
-	echo "<option value='none'>SÈlectionnez une classe</option>\n";
+	echo "<option value='none'>S√©lectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";
 
 	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
@@ -270,13 +270,13 @@ else{
 
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 
-	echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numÈro national de l'ÈlËve (<i>INE</i>) comme mot de passe initial lorsqu'il est renseignÈ.</label></p>\n";
+	echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le num√©ro national de l'√©l√®ve (<i>INE</i>) comme mot de passe initial lorsqu'il est renseign√©.</label></p>\n";
 
 	echo "</form>\n";
 
 	include("randpass.php");
 
-	echo "<p style='font-size:small;'>Lors de la crÈation, les comptes reÁoivent un mot de passe alÈatoire choisi parmi les caractËres suivants: ";
+	echo "<p style='font-size:small;'>Lors de la cr√©ation, les comptes re√ßoivent un mot de passe al√©atoire choisi parmi les caract√®res suivants: ";
 	if (LOWER_AND_UPPER) {
 		if(EXCLURE_CARACT_CONFUS) {
 			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -318,12 +318,12 @@ else{
 
 
 
-	echo "<p><b>CrÈer des comptes individuellement</b> :</p>\n";
+	echo "<p><b>Cr√©er des comptes individuellement</b> :</p>\n";
 	echo "<blockquote>\n";
 
 	$afficher_tous_les_eleves=isset($_POST['afficher_tous_les_eleves']) ? $_POST['afficher_tous_les_eleves'] : "n";
 	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
-	$critere_recherche=preg_replace("/[^a-zA-Z¿ƒ¬…» ÀŒœ‘÷Ÿ€‹Ωº«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_ -]/", "", $critere_recherche);
+	$critere_recherche=preg_replace("/[^a-zA-Z√Ä√Ñ√Ç√â√à√ä√ã√é√è√î√ñ√ô√õ√ú¬Ω¬º√á√ß√†√§√¢√©√®√™√´√Æ√Ø√¥√∂√π√ª√º_ -]/", "", $critere_recherche);
 
 
 	$sql="SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (u.login IS NULL";
@@ -345,7 +345,7 @@ else{
 
 	echo "<p>";
 	if(($afficher_tous_les_eleves!='y')&&($critere_recherche=="")){
-		echo "Au plus $nb2 ÈlËves sont affichÈs ci-dessous (<i>pour limiter le temps de chargement de la page</i>).<br />\n";
+		echo "Au plus $nb2 √©l√®ves sont affich√©s ci-dessous (<i>pour limiter le temps de chargement de la page</i>).<br />\n";
 	}
 	echo "Utilisez le formulaire de recherche pour adapter la recherche.";
 	echo "</p>\n";
@@ -358,7 +358,7 @@ else{
 	echo "Filtrage:";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='submit' name='filtrage' value='Afficher' /> les ÈlËves sans login dont le <b>nom</b> contient: ";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les √©l√®ves sans login dont le <b>nom</b> contient: ";
 	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -369,7 +369,7 @@ else{
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<input type='button' name='afficher_tous' value='Afficher tous les ÈlËves sans login' onClick=\"document.getElementById('afficher_tous_les_eleves').value='y'; document.form_rech.submit();\" />\n";
+	echo "<input type='button' name='afficher_tous' value='Afficher tous les √©l√®ves sans login' onClick=\"document.getElementById('afficher_tous_les_eleves').value='y'; document.form_rech.submit();\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -380,7 +380,7 @@ else{
 	echo "<br />\n";
 
 
-	echo "<p>Cliquez sur le bouton 'CrÈer' d'un ÈlËve pour crÈer un compte associÈ.</p>\n";
+	echo "<p>Cliquez sur le bouton 'Cr√©er' d'un √©l√®ve pour cr√©er un compte associ√©.</p>\n";
 	echo "<form id='form_create_one_eleve' action='create_eleve.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='mode' value='individual' />\n";
@@ -389,7 +389,7 @@ else{
 	echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "<input type='hidden' name='afficher_tous_les_eleves' value='$afficher_tous_les_eleves' />\n";
 
-	// SÈlection du mode d'authentification
+	// S√©lection du mode d'authentification
 	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1'>";
 	if ($session_gepi->auth_locale) {
 		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
@@ -403,18 +403,18 @@ else{
 	echo "</select>";
 	echo "</p>";
 
-	echo "<table class='boireaus' border='1' summary='CrÈer'>\n";
+	echo "<table class='boireaus' border='1' summary='Cr√©er'>\n";
 	$alt=1;
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
-			echo "<input type='submit' value='CrÈer' onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='n'; $('form_create_one_eleve').submit();\" />\n";
+			echo "<input type='submit' value='Cr√©er' onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='n'; $('form_create_one_eleve').submit();\" />\n";
 			echo "</td>\n";
 
 			echo "<td>\n";
-			echo "<input type='submit' value=\"CrÈer d'aprËs INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y'; $('form_create_one_eleve').submit();\" />\n";
-			//echo "<input type='submit' value=\"CrÈer d'aprËs INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y';\" />\n";
+			echo "<input type='submit' value=\"Cr√©er d'apr√®s INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y'; $('form_create_one_eleve').submit();\" />\n";
+			//echo "<input type='submit' value=\"Cr√©er d'apr√®s INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y';\" />\n";
 			echo "</td>\n";
 
 			echo "<td>".$current_eleve->nom." ".$current_eleve->prenom."</td>\n";

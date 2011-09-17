@@ -71,7 +71,7 @@ function add_user($_login, $_nom, $_prenom, $_sexe, $_statut, $_email) {
         }
 
 
-    // Si l'utilisateur existe dÈj‡, on met simplement ‡ jour ses informations...
+    // Si l'utilisateur existe d√©j√†, on met simplement √† jour ses informations...
     $test = mysql_query("SELECT login FROM utilisateurs WHERE login = '" . $_login . "'");
     if (mysql_num_rows($test) > 0) {
         $record = mysql_query("UPDATE utilisateurs SET
@@ -111,7 +111,7 @@ $lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
 $lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'annÈe : Importation des professeurs";
+$titre_page = "Outil d'initialisation de l'ann√©e : Importation des professeurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -120,7 +120,7 @@ echo "<p class='bold'><a href='../init_lcs/index.php'><img src='../images/icons/
 if (isset($_POST['is_posted'])) {
 	check_token();
 
-    // L'admin a validÈ la procÈdure, on procËde donc...
+    // L'admin a valid√© la proc√©dure, on proc√®de donc...
 
     // On se connecte au LDAP
     $ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
@@ -137,12 +137,12 @@ if (isset($_POST['is_posted'])) {
         "gecos"             // Date de naissance,Sexe (F/M),
         );
 
-    echo "<table border=\"1\" cellpadding=\"3\" cellspacing=\"3\">\n<tr><td>Login Professeur</td><td>Nom </td><td>PrÈnom</td><td>Sexe</td><td>Email</td></tr>\n";
-    // On commence par rÈcupÈrer tous les profs depuis le LDAP
+    echo "<table border=\"1\" cellpadding=\"3\" cellspacing=\"3\">\n<tr><td>Login Professeur</td><td>Nom </td><td>Pr√©nom</td><td>Sexe</td><td>Email</td></tr>\n";
+    // On commence par r√©cup√©rer tous les profs depuis le LDAP
     $attr[] = "memberuid";
     $result = ldap_read ( $ds, "cn=Profs,".$lcs_ldap_groups_dn, "(objectclass=*)",$attr);
 
-    // On met tous les professeurs en Ètat inactif
+    // On met tous les professeurs en √©tat inactif
     $update = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE statut='professeur'");
     $info = ldap_get_entries ( $ds, $result );
     if ( $info["count"]) {
@@ -169,8 +169,8 @@ if (isset($_POST['is_posted'])) {
                  }
                  @ldap_free_result ( $result2 );
              }
-             // On ajoute l'utilisateur. La fonction s'occupe toute seule de vÈrifier que
-             // le login n'existe pas dÈj‡ dans la base. S'il existe, on met simplement ‡ jour
+             // On ajoute l'utilisateur. La fonction s'occupe toute seule de v√©rifier que
+             // le login n'existe pas d√©j√† dans la base. S'il existe, on met simplement √† jour
              // les informations
              // function add_user($_login, $_nom, $_prenom, $_statut) {
              $add = add_user($uid,$ret_people["nom"],$prenom,$ret_people["sexe"],"professeur",$ret_people["email"]);
@@ -180,24 +180,24 @@ if (isset($_POST['is_posted'])) {
          echo "<table>";
     }
 
-    echo "<p>OpÈration effectuÈe.</p>";
-    echo "<p>Vous pouvez vÈrifier l'importation en allant sur la page de <a href='../utilisateurs/index.php'>gestion des utilisateurs</a>.</p>";
+    echo "<p>Op√©ration effectu√©e.</p>";
+    echo "<p>Vous pouvez v√©rifier l'importation en allant sur la page de <a href='../utilisateurs/index.php'>gestion des utilisateurs</a>.</p>";
 
 } else {
-    echo "<p>L'opÈration d'importation des professeurs depuis le LDAP de LCS va effectuer les opÈrations suivantes :</p>";
+    echo "<p>L'op√©ration d'importation des professeurs depuis le LDAP de LCS va effectuer les op√©rations suivantes :</p>";
     echo "<ul>";
-    echo "<li>Passage ‡ l'Ètat 'inactif' de tous les professeurs dÈj‡ prÈsents dans la base Gepi.</li>";
-    echo "<li>Tentative d'ajout de chaque utilisateur 'professeur' prÈsent dans l'annuaire LDAP de LCS.</li>";
-    echo "<li>Si l'utilisateur n'existe pas, il est crÈÈ et est directement utilisable.</li>";
-    echo "<li>Si l'utilisateur existe dÈj‡, ses informations de base sont mises ‡ jour et il passe en Ètat 'actif', devenant directement utilisable.</li>";
+    echo "<li>Passage √† l'√©tat 'inactif' de tous les professeurs d√©j√† pr√©sents dans la base Gepi.</li>";
+    echo "<li>Tentative d'ajout de chaque utilisateur 'professeur' pr√©sent dans l'annuaire LDAP de LCS.</li>";
+    echo "<li>Si l'utilisateur n'existe pas, il est cr√©√© et est directement utilisable.</li>";
+    echo "<li>Si l'utilisateur existe d√©j√†, ses informations de base sont mises √† jour et il passe en √©tat 'actif', devenant directement utilisable.</li>";
     echo "</ul>";
     echo "<form enctype='multipart/form-data' action='professeurs.php' method=post>";
 	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes'>";
 
-    echo "<p>Etes-vous s˚r de vouloir importer tous les utilisateurs depuis l'annuaire du serveur LCS vers Gepi ?</p>";
+    echo "<p>Etes-vous s√ªr de vouloir importer tous les utilisateurs depuis l'annuaire du serveur LCS vers Gepi ?</p>";
     echo "<br/>";
-    echo "<input type='submit' value='Je suis s˚r'>";
+    echo "<input type='submit' value='Je suis s√ªr'>";
     echo "</form>";
 }
 require("../lib/footer.inc.php");

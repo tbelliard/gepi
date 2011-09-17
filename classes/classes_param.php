@@ -45,14 +45,14 @@ if (isset($_POST['is_posted'])) {
 	check_token();
 	$msg = '';
 	$reg_ok = '';
-	// Première boucle sur le nombre de periodes
+	// PremiÃ¨re boucle sur le nombre de periodes
 	$per = 0;
 	while ($per < $max_periode) {
 		$per++;
 		// On dresse la liste de toutes les classes non virtuelles
 		$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
 		$nb_classe = mysql_num_rows($classes_list);
-		// $nb : nombre de classes ayant un nombre de periodes égal à $per
+		// $nb : nombre de classes ayant un nombre de periodes Ã©gal Ã  $per
 		$nb=0;
 		$nbc = 0;
 		while ($nbc < $nb_classe) {
@@ -61,7 +61,7 @@ if (isset($_POST['is_posted'])) {
 			$query_per = mysql_query("SELECT p.num_periode FROM classes c, periodes p WHERE (p.id_classe = c.id  and c.id = '".$id_classe."')");
 			$nb_periode = mysql_num_rows($query_per);
 			if ($nb_periode == $per) {
-				// la classe dont l'identifiant est $id_classe a $per périodes
+				// la classe dont l'identifiant est $id_classe a $per pÃ©riodes
 				$temp = "case_".$id_classe;
 				if (isset($_POST[$temp])) {
 					$k = '1';
@@ -214,7 +214,7 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
-					// On enregistre les infos relatives aux catégories de matières
+					// On enregistre les infos relatives aux catÃ©gories de matiÃ¨res
 					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 						$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
@@ -223,14 +223,14 @@ if (isset($_POST['is_posted'])) {
 						if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
 						$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
 						if ($test == 0) {
-							// Pas d'entrée... on créé
+							// Pas d'entrÃ©e... on crÃ©Ã©
 							$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
 						} else {
-							// Entrée existante, on met à jour
+							// EntrÃ©e existante, on met Ã  jour
 							$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
 						}
 						if (!$res) {
-							$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
+							$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des donnÃ©es de catÃ©gorie.";
 						}
 					}
 
@@ -242,7 +242,7 @@ if (isset($_POST['is_posted'])) {
 								$sql="UPDATE j_groupes_classes SET coef='".$coef_enseignements."' WHERE id_classe='".$id_classe."';";
 								$update_coef=mysql_query($sql);
 								if(!$update_coef) {
-									$msg .= "<br />Une erreur s'est produite lors de la mise à jour des coefficients pour la classe $id_classe.";
+									$msg .= "<br />Une erreur s'est produite lors de la mise Ã  jour des coefficients pour la classe $id_classe.";
 								}
 							}
 						}
@@ -263,7 +263,7 @@ if (isset($_POST['is_posted'])) {
 							}
 						}
 						else {
-							$msg.="<br />Aucune période n'est définie pour cette classe.<br />Recalcul des rangs impossible pour la classe ".get_nom_classe($id_classe).".";
+							$msg.="<br />Aucune pÃ©riode n'est dÃ©finie pour cette classe.<br />Recalcul des rangs impossible pour la classe ".get_nom_classe($id_classe).".";
 						}
 					}
 
@@ -275,7 +275,7 @@ if (isset($_POST['is_posted'])) {
 							$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere_nouvel_enseignement';";
 							$verif=mysql_query($sql);
 							if(mysql_num_rows($verif)==0) {
-								$msg .= "<br />La matière $matiere_nouvel_enseignement n'existe pas.";
+								$msg .= "<br />La matiÃ¨re $matiere_nouvel_enseignement n'existe pas.";
 							}
 							else {
 								$coef_nouvel_enseignement=isset($_POST['coef_nouvel_enseignement']) ? $_POST['coef_nouvel_enseignement'] : 0;
@@ -299,9 +299,9 @@ if (isset($_POST['is_posted'])) {
 
 								$reg_clazz = array();
 								$reg_clazz[] = $id_classe;
-								$reg_categorie = 1; // Récupérer par la suite la catégorie par défaut de la table 'matieres' (champ categorie_id)
-								$reg_nom_groupe=$matiere_nouvel_enseignement; // Obtenir une unicité...?
-								$reg_nom_complet=$matiere_nouvel_enseignement; // Obtenir une unicité...?
+								$reg_categorie = 1; // RÃ©cupÃ©rer par la suite la catÃ©gorie par dÃ©faut de la table 'matieres' (champ categorie_id)
+								$reg_nom_groupe=$matiere_nouvel_enseignement; // Obtenir une unicitÃ©...?
+								$reg_nom_complet=$matiere_nouvel_enseignement; // Obtenir une unicitÃ©...?
 
 								$sql="SELECT nom_complet,categorie_id FROM matieres WHERE matiere='$matiere_nouvel_enseignement';";
 								$res_mat=mysql_query($sql);
@@ -338,7 +338,7 @@ if (isset($_POST['is_posted'])) {
 										$sql="UPDATE j_groupes_classes SET coef='$coef_nouvel_enseignement' WHERE id_groupe='$create' AND id_classe='$id_classe';";
 										$res_coef=mysql_query($sql);
 										if(!$res_coef) {
-											$msg .= "<br />Erreur lors de la mise à jour du coefficient du groupe n°$create pour la classe n°$id_classe.";
+											$msg .= "<br />Erreur lors de la mise Ã  jour du coefficient du groupe nÂ°$create pour la classe nÂ°$id_classe.";
 										}
 									}
 								}
@@ -356,30 +356,30 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if ($reg_ok=='') {
-		$message_enregistrement = "Aucune modification n'a été effectuée !";
+		$message_enregistrement = "Aucune modification n'a Ã©tÃ© effectuÃ©e !";
 		$affiche_message = 'yes';
 	} else if ($reg_ok=='yes') {
-		$message_enregistrement = "Les modifications ont été effectuées avec succès.";
+		$message_enregistrement = "Les modifications ont Ã©tÃ© effectuÃ©es avec succÃ¨s.";
 		$affiche_message = 'yes';
 	} else {
-		$message_enregistrement = "Il y a eu un problème lors de l'enregistrement des modification.";
+		$message_enregistrement = "Il y a eu un problÃ¨me lors de l'enregistrement des modification.";
 		$affiche_message = 'yes';
 	}
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des classes - Paramétrage des classes par lots";
+$titre_page = "Gestion des classes - ParamÃ©trage des classes par lots";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 If ($max_periode <= 0) {
-echo "Aucune classe comportant des périodes n'a été définie.";
+echo "Aucune classe comportant des pÃ©riodes n'a Ã©tÃ© dÃ©finie.";
 die();
 }
 echo "<form action=\"classes_param.php\" method='post'>\n";
 echo add_token_field();
 echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' name='enregistrer1' value='Enregistrer' /></p>";
-echo "Sur cette page, vous pouvez modifier différents paramètres par lots de classes cochées ci-dessous.";
+echo "Sur cette page, vous pouvez modifier diffÃ©rents paramÃ¨tres par lots de classes cochÃ©es ci-dessous.";
 /*
 echo "<script language='javascript' type='text/javascript'>
 function checkAll(){
@@ -408,17 +408,17 @@ function UncheckAll(){
 	}
 }
 </script>\n";
-echo "<p><a href='javascript:checkAll();'>Cocher toutes les classes</a> / <a href='javascript:UncheckAll();'>Tout décocher</a></p>\n";
+echo "<p><a href='javascript:checkAll();'>Cocher toutes les classes</a> / <a href='javascript:UncheckAll();'>Tout dÃ©cocher</a></p>\n";
 */
 
-// Première boucle sur le nombre de periodes
+// PremiÃ¨re boucle sur le nombre de periodes
 $per = 0;
 while ($per < $max_periode) {
 	$per++;
 	// On dresse la liste de toutes les classes non virtuelles
 	$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
 	$nb_classe = mysql_num_rows($classes_list);
-	// $nb : nombre de classes ayant un nombre de periodes égal à $per
+	// $nb : nombre de classes ayant un nombre de periodes Ã©gal Ã  $per
 	$nb=0;
 	$nbc = 0;
 	while ($nbc < $nb_classe) {
@@ -433,10 +433,10 @@ while ($per < $max_periode) {
 		$nbc++;
 	}
 	If ($nb != 0) {
-		echo "<center><p class='grand'>Classes ayant ".$per." période";
+		echo "<center><p class='grand'>Classes ayant ".$per." pÃ©riode";
 		if ($per > 1) echo "s";
 		echo "</p></center>\n";
-		// S'il existe des classe ayant un nombre de periodes égal = $per :
+		// S'il existe des classe ayant un nombre de periodes Ã©gal = $per :
 		$nb_ligne = intval($nb/3)+1;
 		echo "<table width = 100% class='boireaus' border='1'>\n";
 
@@ -463,7 +463,7 @@ while ($per < $max_periode) {
 
 			echo "<th>";
 			echo "<a href='javascript:modif_case($per,$i,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			echo "<a href='javascript:modif_case($per,$i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "<a href='javascript:modif_case($per,$i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 			echo "</th>\n";
 
 			echo "</tr>\n";
@@ -475,7 +475,7 @@ while ($per < $max_periode) {
 		while ($j < 3) {
 			echo "<th>\n";
 			echo "<a href='javascript:modif_case($per,$j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			echo "<a href='javascript:modif_case($per,$j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "<a href='javascript:modif_case($per,$j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 			echo "</th>\n";
 			$j++;
 		}
@@ -483,7 +483,7 @@ while ($per < $max_periode) {
 		echo "<th>";
 
 			echo "<a href='javascript:tout_cocher($per,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			echo "<a href='javascript:tout_cocher($per,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "<a href='javascript:tout_cocher($per,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 
 		echo "</th>\n";
 		echo "</tr>\n";
@@ -495,7 +495,7 @@ while ($per < $max_periode) {
 		echo "<script type='text/javascript' language='javascript'>
 	function modif_case(per,rang,type,statut){
 		// type: col ou lig
-		// rang: le numéro de la colonne ou de la ligne
+		// rang: le numÃ©ro de la colonne ou de la ligne
 		// statut: true ou false
 		if(type=='col'){
 			for(k=0;k<$nb_ligne;k++){
@@ -544,13 +544,13 @@ while ($per < $max_periode) {
 
 
 		?>
-		<p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus&nbsp;: </p>
-		<p>Aucune modification ne sera apportée aux champs laissés vides</p>
+		<p class='bold'>Pour la ou les classe(s) sÃ©lectionnÃ©e(s) ci-dessus&nbsp;: </p>
+		<p>Aucune modification ne sera apportÃ©e aux champs laissÃ©s vides</p>
 
 		<table width=100% border=2 cellspacing=1  cellpadding=3 class='boireaus'>
 		<tr>
 		<th>&nbsp;</th>
-		<th>Nom de la période</th>
+		<th>Nom de la pÃ©riode</th>
 		</tr>
 
 		<?php
@@ -559,7 +559,7 @@ while ($per < $max_periode) {
 		While ($k < $per+1) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<th>Période ".$k."</th>\n";
+			echo "<th>PÃ©riode ".$k."</th>\n";
 			echo "<td><input type='text' name='nb_".$per."_".$k."' value=\"\" size='30' /></td>\n";
 			echo"</tr>\n";
 			$k++;
@@ -568,39 +568,39 @@ while ($per < $max_periode) {
 		?>
 
 		</table>
-		<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant)&nbsp;:
+		<p>PrÃ©nom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'Ã©tablissement ou son reprÃ©sentant)&nbsp;:
 		<br /><input type="text" size="30" name="<?php echo "nb_".$per."_reg_suivi_par"; ?>" value="" /></p>
         <?php if ($gepiSettings['active_mod_ects'] == "y") { ?>
-            <p>Fonction du signataire sus-nommé (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation_<?php echo $per;?>" value="" /></p>
+            <p>Fonction du signataire sus-nommÃ© (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation_<?php echo $per;?>" value="" /></p>
         <?php } ?>
-		<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus&nbsp;:
+		<p>Formule Ã  insÃ©rer sur les bulletins (cette formule sera suivie des nom et prÃ©nom de la personne dÃ©signÃ©e ci_dessus&nbsp;:
 		<br /><input type="text" size="80" name="<?php echo "nb_".$per."_reg_formule"; ?>" value="" /></p>
-		<p>Formatage de l'identité des professeurs&nbsp;:
+		<p>Formatage de l'identitÃ© des professeurs&nbsp;:
 
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_np" value="<?php echo "nb_".$per."_np"; ?>" />
-		<label for='<?php echo "nb_".$per."_reg_format"; ?>_np' style='cursor: pointer;'>Nom Prénom (Durand Albert)</label>
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_np' style='cursor: pointer;'>Nom PrÃ©nom (Durand Albert)</label>
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_pn" value="<?php echo "nb_".$per."_pn"; ?>" />
-		<label for='<?php echo "nb_".$per."_reg_format"; ?>_pn' style='cursor: pointer;'>Prénom Nom (Albert Durand)</label>
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_pn' style='cursor: pointer;'>PrÃ©nom Nom (Albert Durand)</label>
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_in" value="<?php echo "nb_".$per."_in"; ?>" />
-		<label for='<?php echo "nb_".$per."_reg_format"; ?>_in' style='cursor: pointer;'>Initiale-Prénom Nom (A. Durand)</label>
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_in' style='cursor: pointer;'>Initiale-PrÃ©nom Nom (A. Durand)</label>
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_ni" value="<?php echo "nb_".$per."_ni"; ?>" />
-		<label for='<?php echo "nb_".$per."_reg_format"; ?>_ni' style='cursor: pointer;'>Nom Initiale-Prénom (Durand A.)</label>
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_ni' style='cursor: pointer;'>Nom Initiale-PrÃ©nom (Durand A.)</label>
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_cnp" value="<?php echo "nb_".$per."_cnp"; ?>" />
-		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cnp' style='cursor: pointer;'>Civilité Nom Prénom (M. Durand Albert)</label>
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cnp' style='cursor: pointer;'>CivilitÃ© Nom PrÃ©nom (M. Durand Albert)</label>
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_cpn" value="<?php echo "nb_".$per."_cpn"; ?>" />
-		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cpn' style='cursor: pointer;'>Civilité Prénom Nom (M. Albert Durand)</label>
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cpn' style='cursor: pointer;'>CivilitÃ© PrÃ©nom Nom (M. Albert Durand)</label>
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_cin" value="<?php echo "nb_".$per."_cin"; ?>" />
-		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cin' style='cursor: pointer;'>Civ. initiale-Prénom Nom (M. A. Durand)</label>
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cin' style='cursor: pointer;'>Civ. initiale-PrÃ©nom Nom (M. A. Durand)</label>
 		<br />
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_cni" value="<?php echo "nb_".$per."_cni"; ?>" />
-		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom (M. Durand A.)</label>
+		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cni' style='cursor: pointer;'>Civ. Nom initiale-PrÃ©nom (M. Durand A.)</label>
 		<br />
 <br />
 
@@ -610,7 +610,7 @@ while ($per < $max_periode) {
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold;"-->
 	<td>
-	<input type='checkbox' name='change_coef' id='change_coef' value='y' /> Passer les coefficients de tous les enseignements à&nbsp;:
+	<input type='checkbox' name='change_coef' id='change_coef' value='y' /> Passer les coefficients de tous les enseignements Ã &nbsp;:
 	</td>
 	<td>
 	<select name='coef_enseignements' onchange="document.getElementById('change_coef').checked=true">
@@ -630,13 +630,13 @@ while ($per < $max_periode) {
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold; vertical-align:top;"-->
 	<td style="vertical-align:top;">
-	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /> Créer un enseignement de&nbsp;:
+	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /> CrÃ©er un enseignement de&nbsp;:
 	</td>
 	<?php
 		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
 		$res_mat=mysql_query($sql);
 		if(mysql_num_rows($res_mat)==0) {
-			echo "<td>Aucune matière n'est encore créée.</td>\n";
+			echo "<td>Aucune matiÃ¨re n'est encore crÃ©Ã©e.</td>\n";
 		}
 		else {
 			echo "<td colspan='2'>\n";
@@ -662,7 +662,7 @@ while ($per < $max_periode) {
 			}
 			echo "</select>\n";
 			//echo "<span style='color:red'>A FAIRE: pas pris en compte pour le moment</span>";
-			//echo "<br /><span style='color:red'>A FAIRE aussi: récupérer la catégorie associée à la matière dans 'matieres.categorie_id' et récupérer le matieres.nom_complet pour le nom du groupe</span>";
+			//echo "<br /><span style='color:red'>A FAIRE aussi: rÃ©cupÃ©rer la catÃ©gorie associÃ©e Ã  la matiÃ¨re dans 'matieres.categorie_id' et rÃ©cupÃ©rer le matieres.nom_complet pour le nom du groupe</span>";
 			echo "</td>\n";
 			echo "</tr>\n";
 
@@ -691,7 +691,7 @@ while ($per < $max_periode) {
 
 <?php
 	$titre="Recalcul des rangs";
-	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.<br />Le recalcul sera effectué lors du prochain affichage de bulletin ou de moyennes.</p>";
+	$texte="<p>Un utilisateur a rencontrÃ© un jour le problÃ¨me suivant&nbsp;:<br />Le rang Ã©tait calculÃ© pour les enseignements, mais pas pour le rang gÃ©nÃ©ral de l'Ã©lÃ¨ve.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang gÃ©nÃ©ral.<br />Le recalcul sera effectuÃ© lors du prochain affichage de bulletin ou de moyennes.</p>";
 	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang',$titre,"",$texte,"",25,0,'y','y','n','n');
 ?>
 
@@ -706,14 +706,14 @@ while ($per < $max_periode) {
 <table border='0'>
 <tr>
 	<td colspan='3'>
-	<h2><b>Paramètres généraux&nbsp;: </b></h2>
+	<h2><b>ParamÃ¨tres gÃ©nÃ©raux&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold;"-->
 	<td>
-	Afficher les rubriques de matières sur le bulletin (HTML),<br />les relevés de notes (HTML), et les outils de visualisation&nbsp;:
+	Afficher les rubriques de matiÃ¨res sur le bulletin (HTML),<br />les relevÃ©s de notes (HTML), et les outils de visualisation&nbsp;:
 	</td>
 	<td>
 	<?php
@@ -727,15 +727,15 @@ while ($per < $max_periode) {
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold;" valign="top"-->
 	<td valign="top">
-	Paramétrage des catégories de matière pour cette classe<br />
-	(<i>la prise en compte de ce paramètrage est conditionnée<br />
+	ParamÃ©trage des catÃ©gories de matiÃ¨re pour cette classe<br />
+	(<i>la prise en compte de ce paramÃ¨trage est conditionnÃ©e<br />
 	par le fait de cocher la case<br />
-	'Afficher les rubriques de matières...' ci-dessus</i>)
+	'Afficher les rubriques de matiÃ¨res...' ci-dessus</i>)
 	</td>
 	<td>
 		<table style='border: 1px solid black;'>
 		<tr>
-			<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
+			<td style='width: auto;'>CatÃ©gorie</td><td style='width: 100px; text-align: center;'>PrioritÃ© d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
@@ -768,7 +768,7 @@ while ($per < $max_periode) {
 
 	<tr>
 	<td colspan='3'>
-	<h2><b>Paramètres bulletin HTML&nbsp;: </b></h2>
+	<h2><b>ParamÃ¨tres bulletin HTML&nbsp;: </b></h2>
 	</td>
 	<td>
 	</td>
@@ -777,7 +777,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-		Afficher sur le bulletin le rang de chaque élève&nbsp;: 
+		Afficher sur le bulletin le rang de chaque Ã©lÃ¨ve&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_rang_".$per; ?>" value="y" />Oui
@@ -788,7 +788,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	Afficher le bloc adresse du responsable de l'élève&nbsp;: 
+	Afficher le bloc adresse du responsable de l'Ã©lÃ¨ve&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_address_".$per; ?>" value="y" />Oui
@@ -799,7 +799,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	Afficher les coefficients des matières<br />(<i>uniquement si au moins un coef différent de 0</i>)&nbsp;: 
+	Afficher les coefficients des matiÃ¨res<br />(<i>uniquement si au moins un coef diffÃ©rent de 0</i>)&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_coef_".$per; ?>" value="y" />Oui
@@ -810,7 +810,7 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
-	Afficher les moyennes générales sur les bulletins<br />(<i>uniquement si au moins un coef différent de 0</i>)&nbsp;: 
+	Afficher les moyennes gÃ©nÃ©rales sur les bulletins<br />(<i>uniquement si au moins un coef diffÃ©rent de 0</i>)&nbsp;: 
 	</td>
 	<td valign="bottom">
 		<input type="radio" name="<?php echo "display_moy_gen_".$per; ?>" value="y" />Oui
@@ -830,7 +830,7 @@ while ($per < $max_periode) {
 	</tr>
 	<tr>
 	<td colspan='3'>
-	<h2><b>Paramètres bulletin PDF&nbsp;: </b></h2>
+	<h2><b>ParamÃ¨tres bulletin PDF&nbsp;: </b></h2>
 	</td>
 	<td>
 	</td>
@@ -838,11 +838,11 @@ while ($per < $max_periode) {
 	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
-	Sélectionner le modèle de bulletin pour l'impression en PDF&nbsp;:
+	SÃ©lectionner le modÃ¨le de bulletin pour l'impression en PDF&nbsp;:
 	</td>
 	<td><?php
 		echo "<select tabindex=\"5\" name=\"modele_bulletin_".$per."\">";
-		// sélection des modèle des bulletins.
+		// sÃ©lection des modÃ¨le des bulletins.
 		//$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
 		$requete_modele = mysql_query("SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
 		echo "<option value=\"0\">Aucun changement</option>";
@@ -859,7 +859,7 @@ while ($per < $max_periode) {
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
-	<h2><b>Paramètres des relevés de notes&nbsp;: </b></h2>
+	<h2><b>ParamÃ¨tres des relevÃ©s de notes&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
@@ -880,7 +880,7 @@ while ($per < $max_periode) {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher les coefficients des devoirs si des coefficients différents sont présents&nbsp;:</td>
+	<td style="font-variant: small-caps;">Afficher les coefficients des devoirs si des coefficients diffÃ©rents sont prÃ©sents&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_coefdev_si_diff_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_coefdev_si_diff_".$per; ?>" value="n" />Non
@@ -897,13 +897,13 @@ while ($per < $max_periode) {
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Formule/Message à insérer sous le relevé de notes&nbsp;:</td>
+	<td style="font-variant: small-caps;">Formule/Message Ã  insÃ©rer sous le relevÃ© de notes&nbsp;:</td>
 	<td><input type=text size=40 name="rn_formule_<?php echo $per;?>" value="" /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Afficher une case pour la signature du chef d'établissement&nbsp;:</td>
+	<td style="font-variant: small-caps;">Afficher une case pour la signature du chef d'Ã©tablissement&nbsp;:</td>
 	<td>
 		<input type="radio" name="<?php echo "rn_sign_chefetab_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_sign_chefetab_".$per; ?>" value="n" />Non
@@ -937,12 +937,12 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     ?>
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres des attestations ECTS&nbsp;: </b></h2>
+	  <h2><b>ParamÃ¨tres des attestations ECTS&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Type de formation (ex: "Classe préparatoire scientifique")&nbsp;:</td>
+    <td style="font-variant: small-caps;">Type de formation (ex: "Classe prÃ©paratoire scientifique")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_type_formation_<?php echo $per;?>" value="" /></td>
 </tr>
 <tr>
@@ -957,7 +957,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre")&nbsp;:</td>
+    <td style="font-variant: small-caps;">Domaines d'Ã©tude (ex: "Biologie, Chimie, Physique, MathÃ©matiques, Sciences de la Terre")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_domaines_etude_<?php echo $per;?>" value="" /></td>
 </tr>
 <?php

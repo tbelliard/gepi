@@ -8,14 +8,14 @@ $graph = new Graph(800, 500);
 $graph->setAntiAliasing(TRUE);
 
 
-// On définit les mois
+// On dÃ©finit les mois
 $months = array(
         'Septembre',
         'Octobre',
         'Novembre',
-        'Décembre',
+        'DÃ©cembre',
         'Janvier',
-        'Février',
+        'FÃ©vrier',
         'Mars',
         'Avril',
         'Mai',

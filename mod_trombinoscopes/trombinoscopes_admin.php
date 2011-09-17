@@ -25,9 +25,9 @@
 
 
 /*
- * Paramétrage du trombinoscope
+ * ParamÃ©trage du trombinoscope
  *
- * @param $_POST['activer'] activation/désactivation
+ * @param $_POST['activer'] activation/dÃ©sactivation
  * @param $_POST['num_aid_trombinoscopes']
  * @param $_POST['activer_personnels']
  * @param $_POST['activer_redimensionne']
@@ -79,7 +79,7 @@ if (!checkAccess()) {
 }
 
 /******************************************************************
- *    Enregistrement des variables passées en $_POST si besoin
+ *    Enregistrement des variables passÃ©es en $_POST si besoin
  ******************************************************************/
 $msg = '';
 if(isset($_POST['is_posted'])) {
@@ -88,7 +88,7 @@ if(isset($_POST['is_posted'])) {
 	if (isset($_POST['num_aid_trombinoscopes'])) {
 		if ($_POST['num_aid_trombinoscopes']!='') {
 			if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes']))
-					$msg = "Erreur lors de l'enregistrement du paramètre num_aid_trombinoscopes !";
+					$msg = "Erreur lors de l'enregistrement du paramÃ¨tre num_aid_trombinoscopes !";
 		} else {
 			$del_num_aid_trombinoscopes = mysql_query("delete from setting where NAME='num_aid_trombinoscopes'");
 			$gepiSettings['num_aid_trombinoscopes']="";
@@ -96,53 +96,53 @@ if(isset($_POST['is_posted'])) {
 	}
 	if (isset($_POST['activer'])) {
 		if (!saveSetting("active_module_trombinoscopes", $_POST['activer']))
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 		if (!cree_repertoire_multisite())
-		$msg = "Erreur lors de la création du répertoire photos de l'établissement !";
+		$msg = "Erreur lors de la crÃ©ation du rÃ©pertoire photos de l'Ã©tablissement !";
 	}
 	
 	if (isset($_POST['activer_personnels'])) {
 		if (!saveSetting("active_module_trombino_pers", $_POST['activer_personnels']))
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation du trombinoscope des personnels !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation du trombinoscope des personnels !";
 	}
 	
 	if (isset($_POST['activer_redimensionne'])) {
 		if (!saveSetting("active_module_trombinoscopes_rd", $_POST['activer_redimensionne']))
-				$msg = "Erreur lors de l'enregistrement du paramètre de redimenssionement des photos !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre de redimenssionement des photos !";
 	}
 	if (isset($_POST['activer_rotation'])) {
 		if (!saveSetting("active_module_trombinoscopes_rt", $_POST['activer_rotation']))
-				$msg = "Erreur lors de l'enregistrement du paramètre rotation des photos !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre rotation des photos !";
 	}
 	if (isset($_POST['l_max_aff_trombinoscopes'])) {
 		if (!saveSetting("l_max_aff_trombinoscopes", $_POST['l_max_aff_trombinoscopes']))
-				$msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre largeur maximum !";
 	}
 	if (isset($_POST['h_max_aff_trombinoscopes'])) {
 		if (!saveSetting("h_max_aff_trombinoscopes", $_POST['h_max_aff_trombinoscopes']))
-				$msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre hauteur maximum !";
 	}
 	if (isset($_POST['l_max_imp_trombinoscopes'])) {
 		if (!saveSetting("l_max_imp_trombinoscopes", $_POST['l_max_imp_trombinoscopes']))
-				$msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre largeur maximum !";
 	}
 	if (isset($_POST['h_max_imp_trombinoscopes'])) {
 		if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes']))
-				$msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre hauteur maximum !";
 	}
 	
 	if (isset($_POST['nb_col_imp_trombinoscopes'])) {
 		if (!saveSetting("nb_col_imp_trombinoscopes", $_POST['nb_col_imp_trombinoscopes']))
-				$msg = "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimés !";
+				$msg = "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimÃ©s !";
 	}
 	
 	if (isset($_POST['l_resize_trombinoscopes'])) {
 		if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes']))
-				$msg = "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre l_resize_trombinoscopes !";
 	}
 	if (isset($_POST['h_resize_trombinoscopes'])) {
 		if (!saveSetting("h_resize_trombinoscopes", $_POST['h_resize_trombinoscopes']))
-				$msg = "Erreur lors de l'enregistrement du paramètre h_resize_trombinoscopes !";
+				$msg = "Erreur lors de l'enregistrement du paramÃ¨tre h_resize_trombinoscopes !";
 	}
 
 	if (isset($_POST['sousrub'])) {
@@ -154,10 +154,10 @@ if(isset($_POST['is_posted'])) {
 			if ($msg == FALSE)
 				$msg = "Erreur lors de la suppression des photos du personnel";
 			} else if ($_POST['sousrub']=="de"){
-			// suppression des photos des élèves
+			// suppression des photos des Ã©lÃ¨ves
 			$msg = efface_photos("eleves");
 			if ($msg == FALSE)
-			$msg = "Erreur lors de la suppression des photos des élèves";
+			$msg = "Erreur lors de la suppression des photos des Ã©lÃ¨ves";
 			}
 		}
 	}
@@ -165,7 +165,7 @@ if(isset($_POST['is_posted'])) {
 	if(isset ($_POST['voirPerso']) && $_POST['voirPerso']=="yes"){
 		// Affichage du personnel sans photo
 		if (!recherche_personnel_sans_photo()){
-		$msg = "Erreur lors de la sélection de professeur(s) sans photo";
+		$msg = "Erreur lors de la sÃ©lection de professeur(s) sans photo";
 		}else{
 		$personnel_sans_photo=recherche_personnel_sans_photo();
 		$msg.="liste des professeurs sans photo en bas de page <br/>";
@@ -173,19 +173,19 @@ if(isset($_POST['is_posted'])) {
 	}
 	
 	if (isset ($_POST['voirEleve']) && $_POST['voirEleve']=="yes"){
-	// Affichage des élèves sans photo
+	// Affichage des Ã©lÃ¨ves sans photo
 	if (!recherche_eleves_sans_photo()){
-		$msg = "Erreur lors de la sélection des élèves sans photo";
+		$msg = "Erreur lors de la sÃ©lection des Ã©lÃ¨ves sans photo";
 	}else{
 	$eleves_sans_photo=recherche_eleves_sans_photo();
-	$msg.="liste des élèves sans photo en bas de page";
+	$msg.="liste des Ã©lÃ¨ves sans photo en bas de page";
 	}
 	}
 
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) {
-  $msg = "Les modifications ont été enregistrées !";
+  $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
   $post_reussi=TRUE;
 }
 
@@ -196,7 +196,7 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 
 if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 	check_token();
-  // Le téléchargement s'est-il bien passé ?
+  // Le tÃ©lÃ©chargement s'est-il bien passÃ© ?
   $sav_file = isset($_FILES["nom_du_fichier"]) ? $_FILES["nom_du_fichier"] : NULL;
   if ($sav_file){
 	// copie du fichier vers /temp
@@ -205,7 +205,7 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 	if ($reponse!="ok"){
 	  $msg = $reponse;
 	}else{
-	  // dézipage du fichier
+	  // dÃ©zipage du fichier
 	  $reponse = dezip_PclZip_fichier($dirname."/".$sav_file['name'],$dirname,1);
 	  if ($reponse!="ok"){
 		$msg = $reponse;
@@ -216,16 +216,16 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 
 		// copy des fichiers vers /photos
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			  // On récupère le RNE de l'établissement
+			  // On rÃ©cupÃ¨re le RNE de l'Ã©tablissement
 		  if (!$repertoire=$_COOKIE['RNE'])
-			return ("Erreur lors de la récupération du dossier établissement.");
+			return ("Erreur lors de la rÃ©cupÃ©ration du dossier Ã©tablissement.");
 		} else {
 		  $repertoire="";
 		}
 		if ($repertoire!="")
 		  $repertoire.="/";
 		$repertoire="../photos/".$repertoire;
-		//Elèves
+		//ElÃ¨ves
 		$folder = $dirname."/photos/eleves/";
 		$dossier = opendir($folder);
 		while ($Fichier = readdir($dossier)) {
@@ -285,7 +285,7 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 	}
   }
   if ($msg==""){
-	$msg= "La restauration s'est bien déroulée";
+	$msg= "La restauration s'est bien dÃ©roulÃ©e";
 	$post_reussi=TRUE;
   }
 }
@@ -303,9 +303,9 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 //$titre_page = "Gestion du module trombinoscope";
 
 
-// En multisite, on ajoute le répertoire RNE
+// En multisite, on ajoute le rÃ©pertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-	  // On récupère le RNE de l'établissement
+	  // On rÃ©cupÃ¨re le RNE de l'Ã©tablissement
   $repertoire=$_COOKIE['RNE']."/";
 }else{
   $repertoire="";
@@ -319,7 +319,7 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -369,17 +369,17 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 
 <p class='bold'><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
-<h2>Configuration générale</h2>
-<i>La désactivation du module trombinoscope n'entraîne aucune suppression des données. Lorsque le module est désactivé, il n'y a pas d'accès au module.</i>
+<h2>Configuration gÃ©nÃ©rale</h2>
+<i>La dÃ©sactivation du module trombinoscope n'entraÃ®ne aucune suppression des donnÃ©es. Lorsque le module est dÃ©sactivÃ©, il n'y a pas d'accÃ¨s au module.</i>
 <br />
 <form action="trombinoscopes_admin.php" name="form1" method="post">
-<p><strong>Elèves&nbsp;:</strong></p>
+<p><strong>ElÃ¨ves&nbsp;:</strong></p>
 <blockquote>
 <input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_module_trombinoscopes")=='y') echo " checked='checked'"; ?>  />
 <label for='activer_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope</label><br />
 <input type="radio" name="activer" id='activer_n' value="n" <?php
 	if (getSettingValue("active_module_trombinoscopes")!='y'){echo " checked='checked'";}
-?>  /><label for='activer_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope</label>
+?>  /><label for='activer_n' style='cursor:pointer'>&nbsp;DÃ©sactiver le module trombinoscope</label>
 <input type="hidden" name="is_posted" value="1" />
 </blockquote>
 
@@ -388,14 +388,14 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 <input type="radio" name="activer_personnels" id='activer_personnels_y' value="y" <?php if (getSettingValue("active_module_trombino_pers")=='y') echo " checked='checked'"; ?>  /><label for='activer_personnels_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope des personnels</label><br />
 <input type="radio" name="activer_personnels" id='activer_personnels_n' value="n" <?php
 	if (getSettingValue("active_module_trombino_pers")!='y'){echo " checked='checked'";}
-?>  /><label for='activer_personnels_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope des personnels</label>
+?>  /><label for='activer_personnels_n' style='cursor:pointer'>&nbsp;DÃ©sactiver le module trombinoscope des personnels</label>
 </blockquote>
 
 <br />
 
 <h2>Configuration d'affichage et de stockage</h2>
-&nbsp;&nbsp;&nbsp;&nbsp;<i>Les valeurs ci-dessous vous servent au paramétrage des valeurs maxi des largeurs et des hauteurs.</i><br />
-<span style="font-weight: bold;">Pour l'écran</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<i>Les valeurs ci-dessous vous servent au paramÃ©trage des valeurs maxi des largeurs et des hauteurs.</i><br />
+<span style="font-weight: bold;">Pour l'Ã©cran</span><br />
 &nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_aff_trombinoscopes"); ?>" />&nbsp;
 hauteur maxi&nbsp;<input name="h_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_aff_trombinoscopes"); ?>" />
 <br /><span style="font-weight: bold;">Pour l'impression</span><br />
@@ -408,33 +408,33 @@ hauteur &nbsp;<input name="h_resize_trombinoscopes" size="3" maxlength="3" value
 
 <br />
 <h2>Configuration du redimensionnement des photos</h2>
-<i>La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site ne seront pas réduites en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>.</i>
+<i>La dÃ©sactivation du redimensionnement des photos n'entraÃ®ne aucune suppression des donnÃ©es. Lorsque le systÃ¨me de redimensionnement est dÃ©sactivÃ©, les photos transferÃ©es sur le site ne seront pas rÃ©duites en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>.</i>
 <br /><br />
 <input type="radio" name="activer_redimensionne" id="activer_redimensionne_y" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked='checked'"; ?> /><label for='activer_redimensionne_y' style='cursor:pointer'>&nbsp;Activer le redimensionnement des photos en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?></label><br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Remarque</b> attention GD doit être actif sur le serveur de GEPI pour utiliser le redimensionnement.<br />
-<input type="radio" name="activer_redimensionne" id="activer_redimensionne_n" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked='checked'"; ?> /><label for='activer_redimensionne_n' style='cursor:pointer'>&nbsp;Désactiver le redimensionnement des photos</label>
-<ul><li>Rotation de l'image : <input name="activer_rotation" value="" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') { ?>checked='checked'<?php } ?> /> 0°
-<input name="activer_rotation" value="90" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='90') { ?>checked='checked'<?php } ?> /> 90°
-<input name="activer_rotation" value="180" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') { ?>checked='checked'<?php } ?> /> 180°
-<input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked='checked'<?php } ?> /> 270° &nbsp;Sélectionner une valeur si vous désirez une rotation de la photo originale</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Remarque</b> attention GD doit Ãªtre actif sur le serveur de GEPI pour utiliser le redimensionnement.<br />
+<input type="radio" name="activer_redimensionne" id="activer_redimensionne_n" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked='checked'"; ?> /><label for='activer_redimensionne_n' style='cursor:pointer'>&nbsp;DÃ©sactiver le redimensionnement des photos</label>
+<ul><li>Rotation de l'image : <input name="activer_rotation" value="" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') { ?>checked='checked'<?php } ?> /> 0Â°
+<input name="activer_rotation" value="90" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='90') { ?>checked='checked'<?php } ?> /> 90Â°
+<input name="activer_rotation" value="180" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') { ?>checked='checked'<?php } ?> /> 180Â°
+<input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked='checked'<?php } ?> /> 270Â° &nbsp;SÃ©lectionner une valeur si vous dÃ©sirez une rotation de la photo originale</li>
 </ul>
 
-<h2>Gestion de l'accès des élèves</h2>
-Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de donner à <b>tous les élèves</b> le droit d'envoyer/modifier lui-même sa photo dans l'interface "Gérer mon compte".
+<h2>Gestion de l'accÃ¨s des Ã©lÃ¨ves</h2>
+Dans la page "Gestion gÃ©nÃ©rale"->"Droits d'accÃ¨s", vous avez la possibilitÃ© de donner Ã  <b>tous les Ã©lÃ¨ves</b> le droit d'envoyer/modifier lui-mÃªme sa photo dans l'interface "GÃ©rer mon compte".
 <br />
-<b>Si cette option est activée</b>, vous pouvez, ci-dessous, gérer plus finement quels élèves ont le droit d'envoyer/modifier leur photo.
-<br /><b>Marche à suivre :</b>
+<b>Si cette option est activÃ©e</b>, vous pouvez, ci-dessous, gÃ©rer plus finement quels Ã©lÃ¨ves ont le droit d'envoyer/modifier leur photo.
+<br /><b>Marche Ã  suivre :</b>
 <ul>
-<li>Créez une "catégorie d'AID" ayant par exemple pour intitulé "trombinoscope".</li>
-<li>Configurez l'affichage de cette catégorie d'AID de sorte que :
-<br />- L'AID n'apparaîsse pas dans le bulletin officiel,
-<br />- L'AID n'apparaîsse pas dans le bulletin simplifié.
-<br />Les autres paramètres n'ont pas d'importance.</li>
-<li>Dans la "Liste des aid de la catégorie", ajoutez une ou plusieurs AIDs.</li>
-<li>Ci-dessous, sélectionner dans la liste des catégories d'AIDs, celle portant le nom que vous avez donné ci-dessus.
-<i>(cette liste n'appararaît pas si vous n'avez pas donné la possibilité à tous les élèves d'envoyer/modifier leur photo dans "Gestion générale"->"Droits d'accès")</i>.
+<li>CrÃ©ez une "catÃ©gorie d'AID" ayant par exemple pour intitulÃ© "trombinoscope".</li>
+<li>Configurez l'affichage de cette catÃ©gorie d'AID de sorte que :
+<br />- L'AID n'apparaÃ®sse pas dans le bulletin officiel,
+<br />- L'AID n'apparaÃ®sse pas dans le bulletin simplifiÃ©.
+<br />Les autres paramÃ¨tres n'ont pas d'importance.</li>
+<li>Dans la "Liste des aid de la catÃ©gorie", ajoutez une ou plusieurs AIDs.</li>
+<li>Ci-dessous, sÃ©lectionner dans la liste des catÃ©gories d'AIDs, celle portant le nom que vous avez donnÃ© ci-dessus.
+<i>(cette liste n'appararaÃ®t pas si vous n'avez pas donnÃ© la possibilitÃ© Ã  tous les Ã©lÃ¨ves d'envoyer/modifier leur photo dans "Gestion gÃ©nÃ©rale"->"Droits d'accÃ¨s")</i>.
 </li>
-<li>Tous les élèves inscrits dans une des AIDs de la catégorie sus-nommée pourront alors envoyer/modifier leur photo (<em>à l'exception des élèves sans numéro Sconet ou "elenoet"</em>).</li>
+<li>Tous les Ã©lÃ¨ves inscrits dans une des AIDs de la catÃ©gorie sus-nommÃ©e pourront alors envoyer/modifier leur photo (<em>Ã  l'exception des Ã©lÃ¨ves sans numÃ©ro Sconet ou "elenoet"</em>).</li>
 </ul>
 
 <?php
@@ -456,7 +456,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
     }
     ?>
     </select><br />
-    <b>Remarque&nbsp;:</b> Si "aucune" AID n'est définie, <b>tous les élèves</b> peuvent envoyer/modifier leur photo (<em>sauf ceux sans elenoet</em>).
+    <b>Remarque&nbsp;:</b> Si "aucune" AID n'est dÃ©finie, <b>tous les Ã©lÃ¨ves</b> peuvent envoyer/modifier leur photo (<em>sauf ceux sans elenoet</em>).
     <br />
 <?php
 }
@@ -476,7 +476,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
   <li><a href="trombinoscopes_admin.php?sousrub=dp#validation">Vider le dossier photos des personnels</a></li>
   <?php //} if( file_exists('../photos/eleves/') ) {?>
   <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
-  <li><a href="trombinoscopes_admin.php?sousrub=de#validation">Vider le dossier photos des élèves</a></li>
+  <li><a href="trombinoscopes_admin.php?sousrub=de#validation">Vider le dossier photos des Ã©lÃ¨ves</a></li>
   <?php } ?>
  </ul>
 </li>
@@ -487,7 +487,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
   <li><a href="trombinoscopes_admin.php?sousrub=vp#liste">Voir les personnels n'ayant pas de photos</a></li>
   <?php //} if( file_exists('../photos/eleves/') ) {?>
   <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
-  <li><a href="trombinoscopes_admin.php?sousrub=ve#liste">Voir les élèves n'ayant pas de photos</a></li>
+  <li><a href="trombinoscopes_admin.php?sousrub=ve#liste">Voir les Ã©lÃ¨ves n'ayant pas de photos</a></li>
   <?php } ?>
  </ul>
 </li>
@@ -516,13 +516,13 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 		$cpt_eleve = $cpt_eleve + 1;
 	}
 
-	?><a name="liste"></a><h2>Liste des élèves n'ayant pas de photos</h2>
-	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Elèves sans photo">
+	?><a name="liste"></a><h2>Liste des Ã©lÃ¨ves n'ayant pas de photos</h2>
+	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="ElÃ¨ves sans photo">
 	   <tr>
 	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Nom</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Prénom</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">PrÃ©nom</td>
 	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Classe</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Numéro élève</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">NumÃ©ro Ã©lÃ¨ve</td>
 	   </tr>
 	<?php
 	$cpt_eleve = '0'; $classe_passe = ''; $i = '1';
@@ -571,7 +571,7 @@ if ( $sousrub === 'vp' ) {
 	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Personnels sans photo">
 	   <tr>
 	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Nom</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Prénom</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">PrÃ©nom</td>
 	   </tr>
 	<?php
 	$cpt_personnel = '0'; $i = '1';
@@ -593,13 +593,13 @@ if ( $sousrub === 'vp' ) {
 
 if ( $sousrub === 'de' ) {
 
-	?><a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" alt="Attention" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité élève que contient le dossier photo de GEPI, êtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=deok#supprime">OUI</a></div></div><?php
+	?><a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" alt="Attention" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identitÃ© Ã©lÃ¨ve que contient le dossier photo de GEPI, Ãªtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=deok#supprime">OUI</a></div></div><?php
 }
 
 if ( $sousrub === 'dp' ) {
 
 	?>
-	<a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" alt="Attention" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité personnel que contient le dossier photo de GEPI, êtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=dpok#supprime">OUI</a></div></div>
+	<a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" alt="Attention" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identitÃ© personnel que contient le dossier photo de GEPI, Ãªtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=dpok#supprime">OUI</a></div></div>
 <?php
 }
 
@@ -625,8 +625,8 @@ if ( $sousrub === 'deok' ) {
 	$cpt_fichier = '0';
 	?>
 	<a name="supprime"></a>
-	<!--h2>Liste des fichiers concernés et leurs états</h2-->
-	<h2>Liste des fichiers concernés</h2>
+	<!--h2>Liste des fichiers concernÃ©s et leurs Ã©tats</h2-->
+	<h2>Liste des fichiers concernÃ©s</h2>
 
 	<?php
 		if(count($fichier_sup)==0) {
@@ -648,7 +648,7 @@ if ( $sousrub === 'deok' ) {
 					@unlink($fichier_sup[$cpt_fichier]);
 
 					if(file_exists($fichier_sup[$cpt_fichier]))
-					{ $etat = '<span style="color:red;">erreur, vous n\'avez pas les droits pour supprimer ce fichier</span>'; } else { $etat = 'supprimé'; }
+					{ $etat = '<span style="color:red;">erreur, vous n\'avez pas les droits pour supprimer ce fichier</span>'; } else { $etat = 'supprimÃ©'; }
 					?>
 				<tr style="<?php echo $couleur_cellule; ?>">
 					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
@@ -683,8 +683,8 @@ if ( $sousrub === 'dpok' ) {
 	$cpt_fichier = '0';
 	?>
 	<a name="supprime"></a>
-	<!--h2>Liste des fichiers concernés et leurs états</h2-->
-	<h2>Liste des fichiers concernés</h2>
+	<!--h2>Liste des fichiers concernÃ©s et leurs Ã©tats</h2-->
+	<h2>Liste des fichiers concernÃ©s</h2>
 
 	<?php
 		if(count($fichier_sup)==0) {
@@ -706,7 +706,7 @@ if ( $sousrub === 'dpok' ) {
 					@unlink($fichier_sup[$cpt_fichier]);
 
 					if(file_exists($fichier_sup[$cpt_fichier]))
-					{ $etat = '<span style="color:red;">erreur, vous n\'avez pas les droits pour supprimer ce fichier</span>'; } else { $etat = 'supprimé'; }
+					{ $etat = '<span style="color:red;">erreur, vous n\'avez pas les droits pour supprimer ce fichier</span>'; } else { $etat = 'supprimÃ©'; }
 					?>
 				<tr style="<?php echo $couleur_cellule; ?>">
 					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
@@ -735,20 +735,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_trombinoscopes/trombinoscopes_admin_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----

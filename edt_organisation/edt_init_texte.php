@@ -2,7 +2,7 @@
 
 /**
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -22,7 +22,7 @@
  */
 
 // edt_init_textes.php est un fichier qui permet d'initialiser l'EdT par les exports de type "Charlemagne".
-// On passe par une table edt_init qui a 4 champs : id_init (auto incrémenté), identifiant, nom_gepi, nom_export
+// On passe par une table edt_init qui a 4 champs : id_init (auto incrÃ©mentÃ©), identifiant, nom_gepi, nom_export
 
 $titre_page = "Emploi du temps - Initialisation EDT";
 $affiche_connexion = 'yes';
@@ -44,22 +44,22 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 //==============PROTOTYPE===============
 $utilisation_prototype = "ok";
 //============fin PROTOTYPE=============
-// On insère l'entête de Gepi
+// On insÃ¨re l'entÃªte de Gepi
 require_once("../lib/header.inc");
 
 // On ajoute le menu EdT
@@ -74,30 +74,30 @@ $etape = NULL;
 $aff_etape = NULL;
 
 echo 	'<div id="lecorps">';
-// On teste d'abord pour savoir à quelle étape on est
+// On teste d'abord pour savoir Ã  quelle Ã©tape on est
 $query = mysql_query("SELECT nom_export FROM edt_init WHERE ident_export = 'fichierTexte'");
-// On affiche le numéro de l'étape
+// On affiche le numÃ©ro de l'Ã©tape
 if ($query) {
 	$etape_effectuee = mysql_fetch_array($query);
 	if ($etape_effectuee["nom_export"] != '') {
 		$aff_etape = '
-		<h3 class="gepi">Vous êtes actuellement à l\'étape numéro '.$etape_effectuee["nom_export"].'</h3>';
+		<h3 class="gepi">Vous Ãªtes actuellement Ã  l\'Ã©tape numÃ©ro '.$etape_effectuee["nom_export"].'</h3>';
 	}else{
 		$aff_etape = '
-		<p class="red">Vous n\'avez pas commencé la concordance.</p>';
+		<p class="red">Vous n\'avez pas commencÃ© la concordance.</p>';
 	}
 
 }else{
 	$aff_etape = '
-	<p class="red">Vous n\'avez pas commencé la concordance.</p>';
+	<p class="red">Vous n\'avez pas commencÃ© la concordance.</p>';
 }
 echo $aff_etape;
-// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
-// en proposant des champs de saisie pour modifier les données si on le souhaite
+// On va donc afficher le contenu du fichier tel qu'il va Ãªtre enregistrÃ© dans Gepi
+// en proposant des champs de saisie pour modifier les donnÃ©es si on le souhaite
 if ($action == "upload_file") {
 
 
-	// On vérifie le nom du fichier...
+	// On vÃ©rifie le nom du fichier...
 	if(strtolower($txt_file['name']) == "emploidutemps.txt") {
 		// Le nom est ok. On ouvre le fichier
         $fp = fopen($txt_file['tmp_name'],"r");
@@ -107,7 +107,7 @@ if ($action == "upload_file") {
 			echo "<p>Impossible d'ouvrir le fichier texte !</p>\n";
 			echo "<p style=\"text-align: center;\"><a href=\"./edt_init_texte.php\">Veuillez recommencer</a></p>\n";
         }else {
-			// On vérifie si on demande d'effacer la table en question
+			// On vÃ©rifie si on demande d'effacer la table en question
 			if ($truncate_cours == "oui") {
 			$vider_table = mysql_query("TRUNCATE TABLE edt_init");
 			} // fin du !fp
@@ -115,14 +115,14 @@ if ($action == "upload_file") {
 			// On peut enfin s'attaquer au travail sur le fichier
 			$nbre_rep = mysql_num_rows($query);
 			if ($nbre_rep === 0) {
-				// C'est qu'on est au tout début, au premier passage et donc
-				// on crée le champ fichierTexte
+				// C'est qu'on est au tout dÃ©but, au premier passage et donc
+				// on crÃ©e le champ fichierTexte
 				$insert = mysql_query("INSERT INTO edt_init SET ident_export = 'fichierTexte', nom_export = '1', nom_gepi = '".date("d-m-Y h:i")."'");
 				$etape = 1;
 			}else{
-				// On récupère d'abord le numéro de l'étape actuel
+				// On rÃ©cupÃ¨re d'abord le numÃ©ro de l'Ã©tape actuel
 				$etape = mysql_result($query, 0,"nom_export");
-				// On incrémentera de 1 si cette nouvelle étape est validée
+				// On incrÃ©mentera de 1 si cette nouvelle Ã©tape est validÃ©e
 			}
 
 			$neuf_etapes = array("PROFESSEUR", "CLASSE", "GROUPE", "PARTIE", "MATIERE", "ETABLISSEMENT", "SEMAINE", "CONGES", "COURS");
@@ -137,15 +137,15 @@ if ($action == "upload_file") {
 			while($tab = fgetcsv($fp, 1024, "	")) {
 				$nom_selected = $nom_select = NULL;
 				if ($tab[0] == $neuf_etapes[$etape - 1]) {
-					// On commence l'étape demandée et on autorise donc à récupérer les données utiles
+					// On commence l'Ã©tape demandÃ©e et on autorise donc Ã  rÃ©cupÃ©rer les donnÃ©es utiles
 					$autorise = "continue";
-					echo '<p>Vous êtes dans l\'étape '.$etape.'</p>';
+					echo '<p>Vous Ãªtes dans l\'Ã©tape '.$etape.'</p>';
 					echo '<p>Gestion des "'.$neuf_etapes[$etape - 1].'".</p>';
 
 				}elseif($tab[0] == $neuf_etapes[$etape]){
-					// On arrive à l'étape suivante et donc on arrête de récupérer les données du fichier
+					// On arrive Ã  l'Ã©tape suivante et donc on arrÃªte de rÃ©cupÃ©rer les donnÃ©es du fichier
 					$autorise = "stop";
-					echo '<p>La lecture du fichier pour cette étape est terminée, vous devez maintenant faire les concordances.</p>';
+					echo '<p>La lecture du fichier pour cette Ã©tape est terminÃ©e, vous devez maintenant faire les concordances.</p>';
 				}
 				// Si $autorise = "continue"; alors on peut utiliser les infos
 
@@ -156,10 +156,10 @@ if ($action == "upload_file") {
 							$nbre_lignes = $tab[1];
 							echo 'Il y a '.$tab[1].' professeurs.<br />'."\n";
 						}else{
-							// On détermine si la première lettre du prénom existe
+							// On dÃ©termine si la premiÃ¨re lettre du prÃ©nom existe
 							$prenom = (isset($tab[3]) AND $tab[3] != '') ? '('.$tab[3].'.)' : NULL;
 							// on permet la concordance
-							echo 'Numéro : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].' '.$prenom.'</b>';
+							echo 'NumÃ©ro : '.$tab[0].' civilitÃ© :'.$tab[1].' nom : <b>'.$tab[2].' '.$prenom.'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
 							$nom_selected = strtoupper(remplace_accents($tab[2], 'all_nospace')); // pour le selected
@@ -174,7 +174,7 @@ if ($action == "upload_file") {
 							echo 'Il y a '.$tab[1].' classes.<br />'."\n";
 						}else{
 							// On permet la concordance
-							echo 'Numéro : '.$tab[0].' classe :<b>'.$tab[1].'</b>';
+							echo 'NumÃ©ro : '.$tab[0].' classe :<b>'.$tab[1].'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
 							$nom_classe = $tab[1]; // pour le selected
@@ -188,7 +188,7 @@ if ($action == "upload_file") {
 							echo 'Il y a '.$tab[1].' groupes.<br />'."\n";
 						}else{
 							// On permet la concordance
-							echo 'Numéro : '.$tab[0].' groupe :<b>'.$tab[1].'</b>';
+							echo 'NumÃ©ro : '.$tab[0].' groupe :<b>'.$tab[1].'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero;
 							include("helpers/select_aid_groupes.php");
@@ -201,18 +201,18 @@ if ($action == "upload_file") {
 							echo 'Il y a '.$tab[1].' "parties".<br />'."\n";
 						}else{
 							echo '
-							<p>A priori, les PARTIES ne servent pas pour l\'emploi du temps car l\'exportation ne donne pas la liste des élèves</p>
-							<p>Cliquez sur le bouton ci-dessous pour passer à l\'étape suivante.</p>';
+							<p>A priori, les PARTIES ne servent pas pour l\'emploi du temps car l\'exportation ne donne pas la liste des Ã©lÃ¨ves</p>
+							<p>Cliquez sur le bouton ci-dessous pour passer Ã  l\'Ã©tape suivante.</p>';
 							break;
 						}
 					}elseif($etape == 5){
 						// On traite des "MATIERE"
 						if($tab[0] == "MATIERE"){
 							$nbre_lignes = $tab[1];
-							echo 'Il y a '.$tab[1].' matières.<br />'."\n";
+							echo 'Il y a '.$tab[1].' matiÃ¨res.<br />'."\n";
 						}else{
 							// On permet la concordance
-							echo 'Numéro : '.$tab[0].' matière :<b>'.$tab[1].'</b>';
+							echo 'NumÃ©ro : '.$tab[0].' matiÃ¨re :<b>'.$tab[1].'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
 							$nom_matiere = $tab[1]; // pour le selected
@@ -224,10 +224,10 @@ if ($action == "upload_file") {
 						if ($tab[0] == "ETABLISSEMENT") {
 							$nbre_lignes = 0;
 						}else{
-							// Difficile en l'état de faire mieux que ne rien faire.
+							// Difficile en l'Ã©tat de faire mieux que ne rien faire.
 							echo '
-							<p>A priori, l\'établissement '.$tab[1].' est le bon.</p>
-							<p>Cliquez sur le bouton ci-dessous pour passer à l\'étape suivante.</p>';
+							<p>A priori, l\'Ã©tablissement '.$tab[1].' est le bon.</p>
+							<p>Cliquez sur le bouton ci-dessous pour passer Ã  l\'Ã©tape suivante.</p>';
 							break;
 						}
 					}elseif($etape == 7){
@@ -236,8 +236,8 @@ if ($action == "upload_file") {
 							$nbre_lignes = 53;
 							echo 'Il y a 53 semaines.<br />'."\n";
 						}else{
-							// on va aller remplir la table edt_semaines $tab[1] est le numéro de la semaine et $tab[2] son type (A/B, 1/2,...)
-							// le fichier txt commence par le rne établissement puis le n° de la semaine et sa valeur
+							// on va aller remplir la table edt_semaines $tab[1] est le numÃ©ro de la semaine et $tab[2] son type (A/B, 1/2,...)
+							// le fichier txt commence par le rne Ã©tablissement puis le nÂ° de la semaine et sa valeur
 							echo '<input type="hidden" name="semaine_'.$tab[1].'" value="'.$tab[2].'" />'."\n";
 							$nbre_lignes = 53;
 							// voir plus bas le champ checkbox sur le choix de vider ou non la table edt_semaines
@@ -246,7 +246,7 @@ if ($action == "upload_file") {
 						// On traite des "CONGES"
 						if($tab[0] == "CONGES"){
 							$nbre_lignes = $tab[1];
-							echo 'Il y a '.$tab[1].' congés.<br />'."\n";
+							echo 'Il y a '.$tab[1].' congÃ©s.<br />'."\n";
 						}else{
 							// on va aller remplir la table edt_calendrier
 							$nbre_lignes = 0;
@@ -258,7 +258,7 @@ if ($action == "upload_file") {
 							$nbre_lignes = $tab[1];
 							echo 'Il y a '.$tab[1].' cours.<br />'."\n";
 						}else{
-							// On cherche dans la table edt_init les concordances et on crée les cours en question
+							// On cherche dans la table edt_init les concordances et on crÃ©e les cours en question
 							// ESSAI : on propose des champs hidden avec toutes les infos et c'est edt_init_concordance.php qui fait le travail
 								$cours = '';
 							for($a = 0; $a < 11; $a++){
@@ -274,10 +274,10 @@ if ($action == "upload_file") {
 					$numero++;
 				}
 			}
-			// Si c'est l'étape 7 (le type des semaines) on propose de vider la table edt_semaines ou pas.
+			// Si c'est l'Ã©tape 7 (le type des semaines) on propose de vider la table edt_semaines ou pas.
 			if ($etape == 7) {
 				echo '
-				<label for="etapeSemaines">Si vous n\'avez pas encore initialisé le type des semaines de l\'année, cochez : </label>
+				<label for="etapeSemaines">Si vous n\'avez pas encore initialisÃ© le type des semaines de l\'annÃ©e, cochez : </label>
 				<input type="checkbox" id="etapeSemaines" name="effacer_semaines" value="ok" />
 				';
 
@@ -291,8 +291,8 @@ if ($action == "upload_file") {
 			echo "\n<hr /><br />\n";
 		}
 	}else{
-		// Si on est là c'est que le nom du fichier n'est pas bon.
-		echo '<p>Ce n\'est pas le bon nom de fichier, vous devriez regarder et modifier le cas échéant.</p>';
+		// Si on est lÃ  c'est que le nom du fichier n'est pas bon.
+		echo '<p>Ce n\'est pas le bon nom de fichier, vous devriez regarder et modifier le cas Ã©chÃ©ant.</p>';
 		echo "<p style=\"text-align: center;\"><a href=\"./edt_init_texte.php\">Veuillez recommencer</a></p>\n";
 	}
 } // fin du if ($action == "upload_file")...
@@ -320,7 +320,7 @@ Celles-ci doivent avoir 9 parties pour pouvoir les utiliser ici :</p>
 la derni&egrave;re sera la plus longue. Par contre, les 8 premi&egrave;re &eacute;tapes seront conserv&eacute;es par Gepi et vous pourrez effectuer la derni&egrave;re
  &eacute;tape (importation des cours eux-m&ecirc;mes autant de fois que vous le d&eacute;sirez (en effa&ccedil;ant les anciens cours ou non).</p>
 
-	<p>Veuillez préciser le nom complet du fichier <b>emploidutemps.txt</b>.</p>
+	<p>Veuillez prÃ©ciser le nom complet du fichier <b>emploidutemps.txt</b>.</p>
 		<form enctype="multipart/form-data" action="edt_init_texte.php" method="post">
 			<input type="hidden" name="action" value="upload_file" />
 			<p>

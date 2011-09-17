@@ -60,7 +60,7 @@ for ($i=0;$i<$nb_fiches;$i++) {
 	echo "</p>";
 
 	echo "<p style='font-variant:small-caps;color:red;'>La ligne donnant le mot de passe de l'utilisateur
-ne figure sur la fiche <b>QUE SI</b> cette dernière est imprimée dès la création de l'utilisateur.</p>";
+ne figure sur la fiche <b>QUE SI</b> cette derniÃ¨re est imprimÃ©e dÃ¨s la crÃ©ation de l'utilisateur.</p>";
 
 	echo $impression;
 }

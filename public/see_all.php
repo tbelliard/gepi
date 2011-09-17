@@ -28,7 +28,7 @@ require_once("../lib/initialisations.inc.php");
 require_once("../lib/mincals.inc");
 require_once("../lib/transform_functions.php");
 require_once("lib/functions.inc");
-// On vérifie si l'accès est restreint ou non
+// On vÃ©rifie si l'accÃ¨s est restreint ou non
 require_once("lib/auth.php");
 unset($day);
 $day = isset($_POST["day"]) ? $_POST["day"] : (isset($_GET["day"]) ? $_GET["day"] : date("d"));
@@ -49,7 +49,7 @@ if (is_numeric($id_groupe)) {
 // Nom complet de la classe
 $appel_classe = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
 $classe_nom = @mysql_result($appel_classe, 0, "classe");
-// Nom complet de la matière
+// Nom complet de la matiÃ¨re
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 (!isset($_GET['ordre']) or (($_GET['ordre'] != '') and ($_GET['ordre']!= 'DESC')))?$current_ordre='':$current_ordre=$_GET['ordre'];
@@ -69,14 +69,14 @@ if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
 $page_accueil = "index.php?id_classe=-1";
 require_once("lib/header.inc");
 //**************** FIN EN-TETE *************
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
     echo("<center><p class='grand'>Le cahier de textes n'est pas accessible pour le moment.</p></center>");
     require ("../lib/footer.inc.php");
     die();
 }
 if (getSettingValue("cahier_texte_acces_public")!='yes') {
-    echo("<center><p class='grand'>Le cahier de textes n'est pas en accès public.</p></center>");
+    echo("<center><p class='grand'>Le cahier de textes n'est pas en accÃ¨s public.</p></center>");
     require ("../lib/footer.inc.php");
     die();
 }
@@ -93,7 +93,7 @@ if ($id_classe != -1) echo "<br />$classe_nom";
 if ($current_group) echo "- $matiere_nom";
 echo "</span>";
 
-  // Test si le cahier de texte est partagé
+  // Test si le cahier de texte est partagÃ©
 if ($current_group) {
   echo "<br /><b>(";
   $i=0;
@@ -117,11 +117,11 @@ echo "<hr />";
 $test_cahier_texte = mysql_query("SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
 $nb_test = mysql_num_rows($test_cahier_texte);
 if ($nb_test == 0) {
-    echo "<center><h3 class='gepi'>Choisissez une classe et une matière.</h3></center>";
+    echo "<center><h3 class='gepi'>Choisissez une classe et une matiÃ¨re.</h3></center>";
     echo "</body></html>";
     die();
 }
-// Affichage des informations générales
+// Affichage des informations gÃ©nÃ©rales
 $appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
@@ -133,7 +133,7 @@ if ($html != '') {
     echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr><td>".$html."</td></tr></table>";
 }
 
-echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>CAHIER DE TEXTES: compte-rendus de séance</b></div><br />";
+echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>CAHIER DE TEXTES: compte-rendus de sÃ©ance</b></div><br />";
 
 $current_time = time();
 $req_notices =
@@ -165,31 +165,31 @@ $devoir = mysql_fetch_object($res_devoirs);
 $date_ct_old = -1;
 while (true) {
   if ($current_ordre == "DESC") {
-    // On met les notices du jour avant les devoirs à rendre aujourd'hui
+    // On met les notices du jour avant les devoirs Ã  rendre aujourd'hui
     if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
-        // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
+        // Il y a encore une notice et elle est plus rÃ©cente que le prochain devoir, oÃ¹ il n'y a plus de devoirs
         $not_dev = $notice;
         $notice = mysql_fetch_object($res_notices);
     } elseif($devoir) {
-        // Plus de notices et toujours un devoir, ou devoir plus récent
+        // Plus de notices et toujours un devoir, ou devoir plus rÃ©cent
         $not_dev = $devoir;
         $devoir = mysql_fetch_object($res_devoirs);
     } else {
-        // Plus rien à afficher, on sort de la boucle
+        // Plus rien Ã  afficher, on sort de la boucle
         break;
     }
   } else {
-    // On met les notices du jour avant les devoirs à rendre aujourd'hui
+    // On met les notices du jour avant les devoirs Ã  rendre aujourd'hui
     if ($notice && (!$devoir || $notice->date_ct <= $devoir->date_ct)) {
-        // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
+        // Il y a encore une notice et elle est plus rÃ©cente que le prochain devoir, oÃ¹ il n'y a plus de devoirs
         $not_dev = $notice;
         $notice = mysql_fetch_object($res_notices);
     } elseif($devoir) {
-        // Plus de notices et toujours un devoir, ou devoir plus récent
+        // Plus de notices et toujours un devoir, ou devoir plus rÃ©cent
         $not_dev = $devoir;
         $devoir = mysql_fetch_object($res_devoirs);
     } else {
-        // Plus rien à afficher, on sort de la boucle
+        // Plus rien Ã  afficher, on sort de la boucle
         break;
     }
   }
@@ -202,17 +202,17 @@ while (true) {
         echo("<strong>A faire pour le : </strong>\n");
     }
     echo("<b>" . strftime("%a %d %b %y", $not_dev->date_ct) . "</b>\n");
-    // Numérotation des notices si plusieurs notice sur la même journée
+    // NumÃ©rotation des notices si plusieurs notice sur la mÃªme journÃ©e
     if ($not_dev->type == "c") {
       if ($date_ct_old == $not_dev->date_ct) {
         $num_notice++;
-        echo " <b><i>(notice N° ".$num_notice.")</i></b>";
+        echo " <b><i>(notice NÂ° ".$num_notice.")</i></b>";
       } else {
-        // on afffiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
+        // on afffiche "(notice NÂ° 1)" uniquement s'il y a plusieurs notices dans la mÃªme journÃ©e
         $nb_notices = sql_query1("SELECT count(id_ct) FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='".$not_dev->date_ct."')");
         if ($nb_notices > 1)
-            echo " <b><i>(notice N° 1)</i></b>";
-        // On réinitialise le compteur
+            echo " <b><i>(notice NÂ° 1)</i></b>";
+        // On rÃ©initialise le compteur
         $num_notice = 1;
       }
     }

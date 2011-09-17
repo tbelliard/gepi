@@ -23,7 +23,7 @@
  */
 
 $accessibilite="y";
-$titre_page = "ParamÈtrer les flux rss du cahier de textes";
+$titre_page = "Param√©trer les flux rss du cahier de textes";
 $affiche_connexion = "oui";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
@@ -32,7 +32,7 @@ $gepiPathJava="./..";
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complÈmentaires et/ou librairies utiles
+// fonctions compl√©mentaires et/ou librairies utiles
 
 
 // Resume session
@@ -45,14 +45,14 @@ if ($resultat_session == "c") {
     die();
 }
 
-// SÈcuritÈ
+// S√©curit√©
 //
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
 
-// ======================== Initialisation des donnÈes ==================== //
+// ======================== Initialisation des donn√©es ==================== //
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $rss_cdt_ele = isset($_POST["rss_cdt_ele"]) ? $_POST["rss_cdt_ele"] : NULL;
 $rss_acces_ele = isset($_POST["rss_acces_ele"]) ? $_POST["rss_acces_ele"] : NULL;
@@ -65,12 +65,12 @@ $a=0;
 
 
 
-// ======================== Traitement des donnÈes ======================== //
+// ======================== Traitement des donn√©es ======================== //
 if ($action == "modifier") {
 	check_token();
 	$save = saveSetting("rss_cdt_eleve", $rss_cdt_ele);
 	if (!$save) {
-		$msg .= '<p class="red">La modification n\'a pas ÈtÈ enregistrÈe.</p>'."\n";
+		$msg .= '<p class="red">La modification n\'a pas √©t√© enregistr√©e.</p>'."\n";
 	}
 
 }
@@ -78,31 +78,31 @@ if (isset($rss_acces_ele)) {
 	check_token();
 	$save_d = saveSetting("rss_acces_ele", $rss_acces_ele);
 	if (!$save_d) {
-		$msg .= '<p class="red">La modification n\'a pas ÈtÈ enregistrÈe.</p>';
+		$msg .= '<p class="red">La modification n\'a pas √©t√© enregistr√©e.</p>';
 	}
 }
 
-// On teste si l'admin veut autoriser les flux pour crÈer la table adÈquate
+// On teste si l'admin veut autoriser les flux pour cr√©er la table ad√©quate
   $test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
 
 if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 	check_token();
 	$suivant = "non";
-	// on teste si la table existe dÈj‡ et on la crÈe le cas ÈchÈant
-	$result .= '<p>Gepi vÈrifie si la table nÈcessaire est bien dans la base.</p>';
+	// on teste si la table existe d√©j√† et on la cr√©e le cas √©ch√©ant
+	$result .= '<p>Gepi v√©rifie si la table n√©cessaire est bien dans la base.</p>';
 
     if ($test_table == 0) {
 		$query1 = mysql_query("CREATE TABLE `rss_users` (`id` int(11) NOT NULL auto_increment, `user_login` varchar(30) NOT NULL, `user_uri` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
         if ($query1) {
-            $result .= "<span class='green'>La table nÈcessaire est bien crÈÈe !</span><br />";
+            $result .= "<span class='green'>La table n√©cessaire est bien cr√©√©e !</span><br />";
 			$creeTable=1;
             $suivant = "oui";
         } else {
-			$result .= "<span class='red'>Erreur lors de la crÈation de la table.</span><br />";
+			$result .= "<span class='red'>Erreur lors de la cr√©ation de la table.</span><br />";
 			$creeTable=0;
 		}
 	} else {
-		$result .= "<font class='blue'>La table existe dÈj‡.</span><br />";
+		$result .= "<font class='blue'>La table existe d√©j√†.</span><br />";
 		$creeTable=2;
 		$suivant = "oui";
 	}
@@ -116,7 +116,7 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 
 	while($rep_el = mysql_fetch_array($select_el)){
 
-		// On produit une URI pour chaque utilisateur ‡ partir du login, du RNE et d'un nombre alÈatoire
+		// On produit une URI pour chaque utilisateur √† partir du login, du RNE et d'un nombre al√©atoire
 		$uri_el = md5($rep_el["login"].getSettingValue("gepiSchoolRne").mt_rand());
 		$insert = mysql_query("INSERT INTO rss_users (id, user_login, user_uri) VALUES ('', '".$rep_el["login"]."', '".$uri_el."')");
 		if (!$insert) {
@@ -132,13 +132,13 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 
 	// On envoie le csv si l'admin le demande
 	if (getSettingValue("rss_acces_ele") == "csv") {
-		// le code nÈcessaire ‡ gÈnÈrer le csv "classe";"nom";"prenom";"login";"uri de la ressource"
-		$msg .= 'le csv est disponible : <a href="../eleves/import_eleves_csv.php?rss=y">TÈlÈcharger le csv</a>';
+		// le code n√©cessaire √† g√©n√©rer le csv "classe";"nom";"prenom";"login";"uri de la ressource"
+		$msg .= 'le csv est disponible : <a href="../eleves/import_eleves_csv.php?rss=y">T√©l√©charger le csv</a>';
 	}
 
 }
 
-// On teste si l'admin veut autoriser les flux pour crÈer la table adÈquate
+// On teste si l'admin veut autoriser les flux pour cr√©er la table ad√©quate
   $test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
 
   if ($test_table == 0) {
@@ -146,35 +146,35 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 /*
 			$lien_generateflux = '
 			<a href="rss_cdt_admin.php?genereflux=y">
-			GÈnÈrer les adresses personnelles (<acronym title="identifiant de ressource sur un rÈseau">URI</acronym>) pour chaque ÈlËve
+			G√©n√©rer les adresses personnelles (<acronym title="identifiant de ressource sur un r√©seau">URI</acronym>) pour chaque √©l√®ve
 			</a>'."\n";
  *
  */
 	  $lienFlux[$a]['lien']="rss_cdt_admin.php?genereflux=y";
-	  $lienFlux[$a]['texte']="GÈnÈrer les adresses personnelles (<acronym title='Uniform Resource Identifier : identifiant de ressource sur un rÈseau'>URI</acronym>) pour chaque ÈlËve";
+	  $lienFlux[$a]['texte']="G√©n√©rer les adresses personnelles (<acronym title='Uniform Resource Identifier : identifiant de ressource sur un r√©seau'>URI</acronym>) pour chaque √©l√®ve";
 	  $lienFlux[$a]['confirme']=FALSE;
 	  $a++;
 	}else{
 	  $lien_generateflux = '';
 	}
   }elseif ($test_table == 1){
-	$themessage = " tes-vous certain de vouloir gÈnÈrer de nouveau ces URI ? Tous les ÈlËves qui utilisaient dÈj‡ une URI devront adopter la nouvelle.";
+	$themessage = "√ätes-vous certain de vouloir g√©n√©rer de nouveau ces URI ? Tous les √©l√®ves qui utilisaient d√©j√† une URI devront adopter la nouvelle.";
 
 /*
  * 		$lien_generateflux = '
 		La table existe et les URI sont en place.&nbsp;&nbsp;
 		<a href="'.$gepiPath.'/cahier_texte_admin/rss_cdt_admin.php?genereflux=y"'.insert_confirm_abandon().'>
-		Re-GÈnÈrer les <acronym title="identifiant de ressource sur un rÈseau">URI</acronym></a>'."\n";
+		Re-G√©n√©rer les <acronym title="identifiant de ressource sur un r√©seau">URI</acronym></a>'."\n";
  *
  */
 	$lienFlux[$a]['lien']=$gepiPath."/cahier_texte_admin/rss_cdt_admin.php?genereflux=y";
-	$lienFlux[$a]['texte']="Re-GÈnÈrer les <acronym title='Uniform Resource Identifier : identifiant de ressource sur un rÈseau'>URI</acronym>";
+	$lienFlux[$a]['texte']="Re-G√©n√©rer les <acronym title='Uniform Resource Identifier : identifiant de ressource sur un r√©seau'>URI</acronym>";
 	$lienFlux[$a]['confirme']=TRUE;
 	$a++;
   }
 
-// On vÈrifie les checked
-// et on dÈfinit si on doit afficher le div qui suit ou pas
+// On v√©rifie les checked
+// et on d√©finit si on doit afficher le div qui suit ou pas
 if (getSettingValue("rss_cdt_eleve") == "y") {
 	$checked_ele = ' checked="checked"';
 	$style_ele = ' style="Display: block;"';
@@ -193,7 +193,7 @@ if (getSettingValue("rss_acces_ele") == "direct") {
 
 
 if ($msg=="" && ($action=="modifier"||$rss_acces_ele)) {
-  $msg = "Les modifications ont ÈtÈ enregistrÈes !";
+  $msg = "Les modifications ont √©t√© enregistr√©es !";
   $post_reussi=TRUE;
 }
 // ======================== CSS et js particuliers ========================
@@ -218,8 +218,8 @@ include_once("../lib/header_template.inc");
 			FIN HAUT DE PAGE
 ****************************************************************/
 
-if (!suivi_ariane($_SERVER['PHP_SELF'],"paramÈtrage Flux RSS"))
-		echo "erreur lors de la crÈation du fil d'ariane";
+if (!suivi_ariane($_SERVER['PHP_SELF'],"param√©trage Flux RSS"))
+		echo "erreur lors de la cr√©ation du fil d'ariane";
 
 
 /****************************************************************
@@ -230,20 +230,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseignÈ
+			On s'assure que le nom du gabarit est bien renseign√©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// DÈcommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// D√©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/cahier_texte_admin/rss_cdt_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les derniËres connexions
+$tbs_last_connection=""; // On n'affiche pas les derni√®res connexions
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----

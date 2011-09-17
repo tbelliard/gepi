@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,9 +52,9 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
@@ -78,7 +78,7 @@ if ( isset($_POST["creation_traitement"]) && $_POST["creation_traitement"] == 'y
 	}
     }
     if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
-	$message_erreur_traitement = ' Erreur : aucune saisie sélectionnée';
+	$message_erreur_traitement = ' Erreur : aucune saisie sÃ©lectionnÃ©e';
     } else {
 	$traitement->save();
     $url='./visu_traitement.php?id_traitement='.$traitement->getId().'';
@@ -91,7 +91,7 @@ if ( isset($_POST["creation_traitement"]) && $_POST["creation_traitement"] == 'y
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
     if ($traitement == null) {
-	$message_erreur_traitement = ' Erreur : aucun traitement trouvé';
+	$message_erreur_traitement = ' Erreur : aucun traitement trouvÃ©';
     } else {
 	for($i=0; $i<$nb; $i++) {
 	    if (isset($_POST["select_saisie"][$i])) {
@@ -102,7 +102,7 @@ if ( isset($_POST["creation_traitement"]) && $_POST["creation_traitement"] == 'y
 	    }
 	}
 	if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
-	    $message_erreur_traitement = ' Erreur : aucune saisie sélectionnée';
+	    $message_erreur_traitement = ' Erreur : aucune saisie sÃ©lectionnÃ©e';
 	} else {
 	    $traitement->save();
         $url='./visu_traitement.php?id_traitement='.$traitement->getId().'';

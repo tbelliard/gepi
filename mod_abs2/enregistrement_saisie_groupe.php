@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,16 +52,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] :NULL);
@@ -84,7 +84,7 @@ $current_creneau = null;
 
 if ($type_selection == 'id_cours') {
     if (getSettingValue("autorise_edt_tous") != 'y') {
-	$message_enregistrement .= "<span style='color :red'>Erreur : un cours a été spécifié mais le module edt est désactivé</span><br/>";
+	$message_enregistrement .= "<span style='color :red'>Erreur : un cours a Ã©tÃ© spÃ©cifiÃ© mais le module edt est dÃ©sactivÃ©</span><br/>";
     }else {
 	$current_cours = EdtEmplacementCoursQuery::create()->findPk($id_cours);
 	if ($current_cours != null) {
@@ -149,7 +149,7 @@ if ($date_absence_eleve != null) {
 	$message_enregistrement .= "<span style='color :red'>Erreur : Mauvais format de date d'absence.</span><br/>";
     }
 } else {
-    $message_enregistrement .= "<span style='color :red'>Erreur : La date d'absence doit etre précisée.</span><br/>";
+    $message_enregistrement .= "<span style='color :red'>Erreur : La date d'absence doit etre prÃ©cisÃ©e.</span><br/>";
 }
 if ($message_enregistrement != '') {
 	//il y a une erreur, on arrete la saisie
@@ -165,7 +165,7 @@ if ($heure_debut_appel != null) {
 	$message_enregistrement .= "<span style='color :red'>Erreur : Mauvais format d'heure de debut de saisie.</span><br/>";
     }
 } else {
-    $message_enregistrement .= "<span style='color :red'>Erreur : heure de debut de saisie non precisée.</span><br/>";
+    $message_enregistrement .= "<span style='color :red'>Erreur : heure de debut de saisie non precisÃ©e.</span><br/>";
 }
 if ($heure_fin_appel != null) {
     try {
@@ -176,7 +176,7 @@ if ($heure_fin_appel != null) {
 	$message_enregistrement .= "<span style='color :red'>Erreur : Mauvais format d'heure de fin de saisie.</span><br/>";
     }
 } else {
-    $message_enregistrement .= "<span style='color :red'>Erreur : heure de fin de saisie non precisée.</span><br/>";
+    $message_enregistrement .= "<span style='color :red'>Erreur : heure de fin de saisie non precisÃ©e.</span><br/>";
 }
 
 if ($id_groupe == null && $id_classe == null && $id_aid == null) {
@@ -205,11 +205,11 @@ $saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
 //on verifie si l'utilisateur a le droit de saisir cela
 $message_erreur .= verif_debut_fin_saisie($dt_date_debut_appel, $dt_date_fin_appel, $utilisateur, $current_cours);
-//on vérifie en prime que l'appel est bien fait pendant l'heure en cours.
+//on vÃ©rifie en prime que l'appel est bien fait pendant l'heure en cours.
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale_journee")!='y' && getSettingValue("abs2_saisie_prof_decale")!='y') {
     $now = new DateTime('now');
     if ($dt_date_debut_appel->format('U') > $now->format('U') || $dt_date_fin_appel->format('U') < $now->format('U')) {
-	$message_erreur .= "Appel non autorisée et dehors des heures de cours dont on fait l'appel.<br/>";
+	$message_erreur .= "Appel non autorisÃ©e et dehors des heures de cours dont on fait l'appel.<br/>";
     }
 }
 $saisie->setDebutAbs($dt_date_debut_appel);
@@ -222,7 +222,7 @@ if ($message_erreur != '') {
     die();
 } else if ($saisie->validate()) {
     $saisie->save();
-    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a><br/>";
+    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistrÃ©</a><br/>";
 } else {
     //on arrete la saisie
     $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.format_verif_failures($saisie).'</span>';
@@ -239,7 +239,7 @@ for($i=0; $i<$total_eleves; $i++) {
     }
     $id_eleve = $_POST['id_eleve_absent'][$i];
 
-    //on test si l'eleve est coché absent
+    //on test si l'eleve est cochÃ© absent
     if (!isset($_POST['active_absence_eleve'][$i])
 	&& !(isset($_POST['commentaire_absence_eleve'][$i]) && $_POST['commentaire_absence_eleve'][$i] != null)
 	&& !(isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1)
@@ -302,7 +302,7 @@ for($i=0; $i<$total_eleves; $i++) {
 	$type = AbsenceEleveTypeQuery::create()->findPk($_POST['type_absence_eleve'][$i]);
 	if ($type != null) {
 	    if ($type->isStatutAutorise($utilisateur->getStatut())) {
-		//on va creer un traitement avec le type d'absence associé
+		//on va creer un traitement avec le type d'absence associÃ©
 		$traitement = new AbsenceEleveTraitement();
 		$traitement->addAbsenceEleveSaisie($saisie);
 		$traitement->setAbsenceEleveType($type);
@@ -312,7 +312,7 @@ for($i=0; $i<$total_eleves; $i++) {
 		    $saisie_discipline = true;
 		}
 	    } else {
-		$message_erreur_eleve[$id_eleve] .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
+		$message_erreur_eleve[$id_eleve] .= "Type d'absence non autorisÃ© pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
 	} else {
 	    $message_erreur_eleve[$id_eleve] .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence_eleve'][$i]."<br/>";
@@ -329,10 +329,10 @@ for($i=0; $i<$total_eleves; $i++) {
 	    if (isset($traitement)) {
 		$traitement->save();
 	    }
-	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'élève : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
+	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrÃ©e pour l'Ã©lÃ¨ve : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
 	    if (isset($saisie_discipline) && $saisie_discipline == true) {
 		$message_enregistrement .= " &nbsp;<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
-		    $saisie->getId()."&return_url=no_return".add_token_in_url()."'>Saisir un incident disciplinaire pour l'élève : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
+		    $saisie->getId()."&return_url=no_return".add_token_in_url()."'>Saisir un incident disciplinaire pour l'Ã©lÃ¨ve : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
 	    }
 	    $message_enregistrement .= "<br/>";
 	} else {
@@ -341,7 +341,7 @@ for($i=0; $i<$total_eleves; $i++) {
     }
 
     if ($message_erreur_eleve[$id_eleve] != '') {
-	$message_enregistrement .= '<span style="color :red">Erreur pour l\'enregistrement de l\'élève '.$eleve->getNom().' '.$eleve->getPrenom().' : </span>'.$message_erreur_eleve[$id_eleve];
+	$message_enregistrement .= '<span style="color :red">Erreur pour l\'enregistrement de l\'Ã©lÃ¨ve '.$eleve->getNom().' '.$eleve->getPrenom().' : </span>'.$message_erreur_eleve[$id_eleve];
     }
 }
 
@@ -350,37 +350,37 @@ include("saisir_groupe.php");
 function verif_debut_fin_saisie(DateTime $dt_date_debut_appel, DateTime $dt_date_fin_appel, UtilisateurProfessionnel $utilisateur, $edt_cours) {
     $message_enregistrement = '';
     if ($dt_date_debut_appel === null) {
-	$message_enregistrement .= "Le début de saisie doit etre précisée.<br/>";
+	$message_enregistrement .= "Le dÃ©but de saisie doit etre prÃ©cisÃ©e.<br/>";
 	return $message_enregistrement;
     }
     if ($dt_date_fin_appel === null) {
-	$message_enregistrement .= "La fin de saisie doit etre précisée.<br/>";
+	$message_enregistrement .= "La fin de saisie doit etre prÃ©cisÃ©e.<br/>";
 	return $message_enregistrement;
     }
     ////on verifie si l'utilisateur a le droit de saisir cela
     if ($utilisateur->getStatut() == 'professeur') {
 	if ($dt_date_debut_appel->format('d/m/Y') != $dt_date_fin_appel->format('d/m/Y')) {
-	    $message_enregistrement .= "Saisie sur plusieurs jours non autorisée.<br/>";
+	    $message_enregistrement .= "Saisie sur plusieurs jours non autorisÃ©e.<br/>";
 	}
 	//verification des autorisation de saisies decaleer
 	if (getSettingValue("abs2_saisie_prof_decale")!='y') {
 	    $now = new DateTime('now');
 	    if ($dt_date_debut_appel->format('d/m/Y') != $now->format('d/m/Y') || $dt_date_fin_appel->format('d/m/Y') != $now->format('d/m/Y')) {
-		$message_enregistrement .= "Saisie non autorisée autre que pour la journée courante.<br/>";
+		$message_enregistrement .= "Saisie non autorisÃ©e autre que pour la journÃ©e courante.<br/>";
 	    }
 	}
 	if ($edt_cours != null && $utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_hors_cours")!='y') {
 	    //on verifie que le saisie ne deborde pas du cours
 	    if ($edt_cours->getHeureDebut('Hi') > $dt_date_debut_appel->format('Hi')) {
-		$message_enregistrement .= "L'heure de début de saisie ne peut pas être antérieure au cours.<br/>";
+		$message_enregistrement .= "L'heure de dÃ©but de saisie ne peut pas Ãªtre antÃ©rieure au cours.<br/>";
 	    }
 	    if ($edt_cours->getHeureFin('Hi') < $dt_date_fin_appel->format('Hi')) {
-		$message_enregistrement .= "L'heure de fin de saisie ne peut pas être postérieure au cours.<br/>";
+		$message_enregistrement .= "L'heure de fin de saisie ne peut pas Ãªtre postÃ©rieure au cours.<br/>";
 	    }
 	}
     }
     if ($dt_date_debut_appel->format('U') > $dt_date_fin_appel->format('U')) {
-	$message_enregistrement .= "L'heure de fin de saisie ne peut etre anterieure à l'heure de début.<br/>";
+	$message_enregistrement .= "L'heure de fin de saisie ne peut etre anterieure Ã  l'heure de dÃ©but.<br/>";
     }
     return $message_enregistrement;
 }

@@ -32,7 +32,7 @@ function ExitWiki($errormsg)
    function LinkImage($url, $alt='') {
       global $ScriptUrl;
       if(my_ereg('[<>"]', $url)) {
-         return "<b><u>Mauvaise URL -- supprimez tous les caractères &lt;, &gt;, &quot;</u></b>";
+         return "<b><u>Mauvaise URL -- supprimez tous les caractÃ¨res &lt;, &gt;, &quot;</u></b>";
       }
       return "<img src=\"$url\" ALT=\"$alt\">";
    }

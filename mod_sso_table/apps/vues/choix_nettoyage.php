@@ -19,7 +19,7 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -27,11 +27,11 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 ?>
 [onload;file=menu.php]
 <p>Cette section permet de nettoyer la table de correspondance; Plusieurs options sont possibles mais tout nettoyage est irreversible</p>
-<p class="title-page">Attention , Une fois leur correspondance nettoyée les utilisateurs ne pourront plus se connecter en SSO avec ce module</p>
+<p class="title-page">Attention , Une fois leur correspondance nettoyÃ©e les utilisateurs ne pourront plus se connecter en SSO avec ce module</p>
 <form action="index.php?ctrl=nettoyage&action=choix" enctype='multipart/form-data' method="post">
 <p>
-	<input type="radio" name="choix" value="vidage_complet" checked="checked" />Vider complètement la table de correspondances<br/>
-	<input type="radio" name="choix" value="anciens_comptes" />Supprimer de la table les comptes n'existant plus dans Gépi<br/>
+	<input type="radio" name="choix" value="vidage_complet" checked="checked" />Vider complÃ¨tement la table de correspondances<br/>
+	<input type="radio" name="choix" value="anciens_comptes" />Supprimer de la table les comptes n'existant plus dans GÃ©pi<br/>
 	<input type="radio" name="choix" value="profil" />Supprimer les correspondances pour un profil (enseignant,eleve,tuteur....) <br/>
     <input type="radio" name="choix" value="classe" />Supprimer les correspondances pour une classe<br/>
 </p>

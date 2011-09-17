@@ -15,20 +15,20 @@ Eric LEBRUN <eric.lebrun@ac-poitiers.fr>
 
 http://gepi.mutualibre.org/
 
-ATTENTION! Ce paquetage contient la version en cours de développement de Gepi, c'est-à-dire une version
-destinée à identifier et corriger les bugs induits par les nouvelles fonctionnalités.
+ATTENTION! Ce paquetage contient la version en cours de dÃ©veloppement de Gepi, c'est-Ã -dire une version
+destinÃ©e Ã  identifier et corriger les bugs induits par les nouvelles fonctionnalitÃ©s.
 
-NE PAS UTILISER CETTE VERSION EN PRODUCTION ! Vous exposeriez votre base de données à des incohérences
+NE PAS UTILISER CETTE VERSION EN PRODUCTION ! Vous exposeriez votre base de donnÃ©es Ã  des incohÃ©rences
 qui pourraient la rendre incompatible avec la version stable.
 
-GEPI (Gestion des Elèves Par Internet) est une application développée en PHP/MySQL/HTML
-dont les fonctions s'articulent autour d'un objectif : permettre la gestion et surtout le suivi des résultats scolaires
-des élèves, et tout ce qui y est attaché, par une interface Web. Cela signifie, entre autre,
+GEPI (Gestion des ElÃ¨ves Par Internet) est une application dÃ©veloppÃ©e en PHP/MySQL/HTML
+dont les fonctions s'articulent autour d'un objectif : permettre la gestion et surtout le suivi des rÃ©sultats scolaires
+des Ã©lÃ¨ves, et tout ce qui y est attachÃ©, par une interface Web. Cela signifie, entre autre,
 
 * la saisie des notes via un module "carnet de notes",
 * leur consultation,
-* la saisie des appréciations des professeurs,
-* l'édition des bulletins scolaires,
+* la saisie des apprÃ©ciations des professeurs,
+* l'Ã©dition des bulletins scolaires,
 * un module "cahier de texte",
 * un outil trombinoscope
 * un module de saisie des absences par les professeurs
@@ -36,73 +36,73 @@ des élèves, et tout ce qui y est attaché, par une interface Web. Cela signifie, 
 
 1. Installation
 2. Licence
-3. Remarques concernant la sécurité
-4. Développements en cours
+3. Remarques concernant la sÃ©curitÃ©
+4. DÃ©veloppements en cours
 5. Documentation
 
 
 1. Installation
 =======================================
 
-Pour obtenir une description complète de la procédure d'installation,
+Pour obtenir une description complÃ¨te de la procÃ©dure d'installation,
 veuillez vous reporter au fichier "INSTALL.txt".
 
-Pour une installation simplifiée, décompressez simplement cette archive sur un
-serveur, et indiquez l'adresse où se trouvent les fichiers extraits dans un navigateur (ex: http://www.monsite.fr/gepi).
+Pour une installation simplifiÃ©e, dÃ©compressez simplement cette archive sur un
+serveur, et indiquez l'adresse oÃ¹ se trouvent les fichiers extraits dans un navigateur (ex: http://www.monsite.fr/gepi).
 
-* Préalables pour l'installation automatisée :
-- disposer d'un espace FTP sur un serveur avec PHP 5 ou supérieur, pour y transférer les fichiers
-- disposer d'une base de données MySQL (adresse du serveur MySQL, login, mot
+* PrÃ©alables pour l'installation automatisÃ©e :
+- disposer d'un espace FTP sur un serveur avec PHP 5 ou supÃ©rieur, pour y transfÃ©rer les fichiers
+- disposer d'une base de donnÃ©es MySQL (adresse du serveur MySQL, login, mot
   de passe)
 
 
 2. Licence
 =======================================
 
-GEPI est publié sous les termes de la GNU General Public Licence, dont le
+GEPI est publiÃ© sous les termes de la GNU General Public Licence, dont le
 contenu est disponible dans le fichier "COPYING.txt", en anglais.
-GEPI est gratuit, vous pouvez le copier, le distribuer, et le modifier, à
-condition que chaque partie de GEPI réutilisée ou modifiée reste sous licence
+GEPI est gratuit, vous pouvez le copier, le distribuer, et le modifier, Ã 
+condition que chaque partie de GEPI rÃ©utilisÃ©e ou modifiÃ©e reste sous licence
 GNU GPL.
-Par ailleurs et dans un soucis d'efficacité, merci de rester en contact avec
-l'équipe de développement de GEPI pour éventuellement intégrer vos
-contributions à une distribution ultérieure.
+Par ailleurs et dans un soucis d'efficacitÃ©, merci de rester en contact avec
+l'Ã©quipe de dÃ©veloppement de GEPI pour Ã©ventuellement intÃ©grer vos
+contributions Ã  une distribution ultÃ©rieure.
 
-Enfin, GEPI est livré en l'état sans aucune garantie. Les auteurs de cet outil
-ne pourront en aucun cas être tenus pour responsables d'éventuels bugs.
+Enfin, GEPI est livrÃ© en l'Ã©tat sans aucune garantie. Les auteurs de cet outil
+ne pourront en aucun cas Ãªtre tenus pour responsables d'Ã©ventuels bugs.
 
 
-3. Remarques concernant la sécurité
+3. Remarques concernant la sÃ©curitÃ©
 =======================================
 
-La sécurisation de GEPI est un point crucial, étant donné la sensibilité des
-données enregistrées. Malheureusement la sécurisation de GEPI est dépendante
+La sÃ©curisation de GEPI est un point crucial, Ã©tant donnÃ© la sensibilitÃ© des
+donnÃ©es enregistrÃ©es. Malheureusement la sÃ©curisation de GEPI est dÃ©pendante
 de celle du serveur. Nous vous recommandons d'utiliser un serveur Apache sous
-Linux, en utilisant le protocole https (transferts de données cryptées), et en
-veillant à toujours utiliser les dernières versions des logiciels impliqués
-(notamment Apache et PHP). GEPI n'a pas encore été testé sur d'autres
+Linux, en utilisant le protocole https (transferts de donnÃ©es cryptÃ©es), et en
+veillant Ã  toujours utiliser les derniÃ¨res versions des logiciels impliquÃ©s
+(notamment Apache et PHP). GEPI n'a pas encore Ã©tÃ© testÃ© sur d'autres
 serveurs.
 
 L'EQUIPE DE DEVELOPPEMENT DE GEPI NE SAURAIT EN AUCUN CAS ETRE TENUE
 POUR RESPONSABLE EN CAS D'INTRUSION EXTERIEURE LIEE A UNE FAIBLESSE DE GEPI OU
 DE SON SUPPORT SERVEUR.
 
-Abonnez-vous à la liste de diffusion 'gepi-users' pour être tenu informé des
-mises à jours en matière de sécurité et pour participer
-aux discussions relatives à l'utilisation et au développement de Gepi.
+Abonnez-vous Ã  la liste de diffusion 'gepi-users' pour Ãªtre tenu informÃ© des
+mises Ã  jours en matiÃ¨re de sÃ©curitÃ© et pour participer
+aux discussions relatives Ã  l'utilisation et au dÃ©veloppement de Gepi.
 https://lists.sylogix.net/mailman/listinfo/gepi-users
 
 
-4. Développements en cours
+4. DÃ©veloppements en cours
 =======================================
 
-Les développeurs de Gepi travaillent en fonction des besoins de leurs établissements
-respectifs. N'hésitez pas à leur suggérer des fonctionnalités, par le biais
+Les dÃ©veloppeurs de Gepi travaillent en fonction des besoins de leurs Ã©tablissements
+respectifs. N'hÃ©sitez pas Ã  leur suggÃ©rer des fonctionnalitÃ©s, par le biais
 de la liste de diffusion des utilisateurs.
 
 
 5. Documentation
 =======================================
 
-La documentation de Gepi se trouve à l'adresse suivante :
+La documentation de Gepi se trouve Ã  l'adresse suivante :
 http://www.sylogix.org/projects/gepi/wiki

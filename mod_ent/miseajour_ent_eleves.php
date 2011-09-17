@@ -1,10 +1,10 @@
 <?php
 /**
  *
- * Module d'intégration de Gepi dans un ENT réalisé au moment de l'intégration de Gepi dans ARGOS dans l'académie de Bordeaux
- * Fichier permettant de récupérer de nouveaux élèves dans le ldap de l'ENT
+ * Module d'intÃ©gration de Gepi dans un ENT rÃ©alisÃ© au moment de l'intÃ©gration de Gepi dans ARGOS dans l'acadÃ©mie de Bordeaux
+ * Fichier permettant de rÃ©cupÃ©rer de nouveaux Ã©lÃ¨ves dans le ldap de l'ENT
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, StÃ©phane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -41,7 +41,7 @@ if (!checkAccess()) {
 	die();
 }
 
-// Sécurité supplémentaire pour éviter d'aller voir ce fichier si on n'est pas dans un ent
+// SÃ©curitÃ© supplÃ©mentaire pour Ã©viter d'aller voir ce fichier si on n'est pas dans un ent
 if (getSettingValue("use_ent") != 'y') {
 	DIE('Fichier interdit.');
 }
@@ -61,16 +61,16 @@ $_regime	= isset($_POST['regime']) ? $_POST['regime'] : NULL;
 $_elenoet	= isset($_POST['elenoet']) ? $_POST['elenoet'] : NULL;
 $_national	= isset($_POST['national']) ? $_POST['national'] : NULL;
 
-// ======================= code métier ======================================== //
+// ======================= code mÃ©tier ======================================== //
 
-// Si c'est demandé, on traite les nouveaux logins
-if ($enregistrer == "Ajouter ces élèves") {
+// Si c'est demandÃ©, on traite les nouveaux logins
+if ($enregistrer == "Ajouter ces Ã©lÃ¨ves") {
 	check_token();
 
 	/*
 	Pour info : d/p ext. int. pour demi-pensionnaire, externe et interne.
 	dans j_eleves_regime {login, doublant, regime} doublant = R sinon -
-	Dans eleves {no_gep, login, nom, prénom, sexe, naissance, elenoet} - sexe {F M} naissance {aaaa-mm-jj} et no_gep est le numéro national
+	Dans eleves {no_gep, login, nom, prÃ©nom, sexe, naissance, elenoet} - sexe {F M} naissance {aaaa-mm-jj} et no_gep est le numÃ©ro national
 	*/
 
 	$nbre_a_traiter = count($_nom);
@@ -78,12 +78,12 @@ if ($enregistrer == "Ajouter ces élèves") {
 
 		if (isset($maj[$i])) {
 
-			// On peut alors ajouter cet élève à la base de Gepi
+			// On peut alors ajouter cet Ã©lÃ¨ve Ã  la base de Gepi
 			/*echo '
-				<br />On ajoute ' . $_nom[$i] . ' ' . $_prenom[$i] . ' Régime ' . $_regime[$i] . '
+				<br />On ajoute ' . $_nom[$i] . ' ' . $_prenom[$i] . ' RÃ©gime ' . $_regime[$i] . '
 				(S : ' . $_sexe[$i] . ', N : ' . $_naissance[$i] . ', E : ' . $_elenoet[$i] . ', INE : ' . $_national[$i] . '.';*/
 
-			// Quelques vérifications de base
+			// Quelques vÃ©rifications de base
 			if(!is_numeric($_elenoet[$i]) OR mb_strlen($_elenoet[$i]) != 4){$_elenoet[$i] = '';}
 			if(!is_numeric($_national[$i])){$_national[$i] = '';}
 			$test_date = explode("-", $_naissance[$i]);
@@ -99,12 +99,12 @@ if ($enregistrer == "Ajouter ces élèves") {
 													naissance = '" . $_naissance[$i] . "',
 													elenoet = '" . $_elenoet[$i] . "'";
 
-			$query_eleves = mysql_query($sql_eleves) OR DIE('<br />Impossible d\'enregistrer cet élève <br />' . $sql_eleves . '<br /> --> ' . mysql_error());
+			$query_eleves = mysql_query($sql_eleves) OR DIE('<br />Impossible d\'enregistrer cet Ã©lÃ¨ve <br />' . $sql_eleves . '<br /> --> ' . mysql_error());
 
 
 			if ($query_eleves) {
 
-				// Comme la première insertion a fonctionné, on ajoute la seconde
+				// Comme la premiÃ¨re insertion a fonctionnÃ©, on ajoute la seconde
 				if($_regime[$i] == 'inc' OR $_regime[$i] == 'dp'){
 					$_regime[$i] = 'd/p';
 				}elseif($_regime[$i] == 'ext'){
@@ -116,12 +116,12 @@ if ($enregistrer == "Ajouter ces élèves") {
 				$query_reg = mysql_query($sql_reg);
 
 				if ($query_reg) {
-					$msg .= '<p style="color: green;">L\'élève ' . $_nom[$i] . ' ' . $_prenom[$i] . ' a bien été enregistré dans la base des élèves de GEPI.</p>';
+					$msg .= '<p style="color: green;">L\'Ã©lÃ¨ve ' . $_nom[$i] . ' ' . $_prenom[$i] . ' a bien Ã©tÃ© enregistrÃ© dans la base des Ã©lÃ¨ves de GEPI.</p>';
 				}else{
-					$msg .= '<p style="color: red;">L\'élève ' . $_nom[$i] . ' ' . $_prenom[$i] . ' n\'a pas été enregistré dans la base des élèves de GEPI.</p>';
+					$msg .= '<p style="color: red;">L\'Ã©lÃ¨ve ' . $_nom[$i] . ' ' . $_prenom[$i] . ' n\'a pas Ã©tÃ© enregistrÃ© dans la base des Ã©lÃ¨ves de GEPI.</p>';
 				}
 			}else{
-				$msg .= '<p style="color: red;">L\'élève ' . $_nom[$i] . ' ' . $_prenom[$i] . ' n\'a pas été enregistré dans la base des élèves de GEPI.</p>';
+				$msg .= '<p style="color: red;">L\'Ã©lÃ¨ve ' . $_nom[$i] . ' ' . $_prenom[$i] . ' n\'a pas Ã©tÃ© enregistrÃ© dans la base des Ã©lÃ¨ves de GEPI.</p>';
 			}
 
 		}
@@ -131,7 +131,7 @@ if ($enregistrer == "Ajouter ces élèves") {
 }
 
 
-// On récupère la liste des élèves déjà inscrits dans la base
+// On rÃ©cupÃ¨re la liste des Ã©lÃ¨ves dÃ©jÃ  inscrits dans la base
 $sql_all = "SELECT DISTINCT login FROM eleves";
 $query_all = mysql_query($sql_all);
 $tab_all = array();
@@ -139,7 +139,7 @@ while($rep_all = mysql_fetch_array($query_all)){
 	$tab_all[] = $rep_all['login'];
 } // while
 
-// Puis la liste des élèves présents dans la table ldap_bx
+// Puis la liste des Ã©lÃ¨ves prÃ©sents dans la table ldap_bx
 $sql_ent = "SELECT DISTINCT login_u FROM ldap_bx WHERE statut_u = 'student'";
 $query_ent = mysql_query($sql_ent);
 $tab_ent = array();
@@ -152,19 +152,19 @@ $tab_new_eleves = array_diff($tab_ent, $tab_all);
 
 $test_new = count($tab_new_eleves);
 if ($test_new >= 1) {
-	// Alors il y a au moins un nouvel élève dans le ldap
+	// Alors il y a au moins un nouvel Ã©lÃ¨ve dans le ldap
 	foreach($tab_new_eleves as $rep){
 
 		$aff_liste_eleves .= $rep . '<br />';
 		$requete_c .= 'login_u = "' . $rep . '" OR ';
 
 	}
-	// On récupère les nom_u, prenom_u et identite_u
+	// On rÃ©cupÃ¨re les nom_u, prenom_u et identite_u
 	$complement_req = substr($requete_c, 0, -4);
 	$sql_c = "SELECT * FROM ldap_bx WHERE (" . $complement_req . ")";
-	$query_c = mysql_query($sql_c) OR DIE('<br />Erreur dans la requête SQL <br /> --> ' . $sql_c . '<br />' . mysql_error());
+	$query_c = mysql_query($sql_c) OR DIE('<br />Erreur dans la requÃªte SQL <br /> --> ' . $sql_c . '<br />' . mysql_error());
 
-	unset($tab_new_eleves); // pour repartir de zéro
+	unset($tab_new_eleves); // pour repartir de zÃ©ro
 	$a = 0;
 
 	while($rep_c = mysql_fetch_array($query_c)){
@@ -181,13 +181,13 @@ if ($test_new >= 1) {
 }
 
 
-// =========== fichiers spéciaux ==========
+// =========== fichiers spÃ©ciaux ==========
 $style_specifique = "edt_organisation/style_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les utilisateurs de l'ENT";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-//debug_var(); // à enlever en production
+//debug_var(); // Ã  enlever en production
 $increment = 0; // pour les name du formulaire ci-dessous
 ?>
 <p><a href="../accueil.php">RETOUR vers l'accueil</a>&nbsp;-&nbsp;Ajouter un nouvel &eacute;l&egrave;ve inscrit dans l'ENT</p>

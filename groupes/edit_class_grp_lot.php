@@ -125,14 +125,14 @@ if (isset($_POST['is_posted'])) {
                         $create = create_group($id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz);
                         if (!$create) {
                             //echo "<!-- erreur -->\n";
-                            $msg .= "Erreur lors de la création du groupe $id_matiere[$i]";
+                            $msg .= "Erreur lors de la crÃ©ation du groupe $id_matiere[$i]";
                         }
                         else{
                             $id_groupe=$create;
                             $sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
                             $resultat_prof=mysql_query($sql);
 
-                            // Affectation de tous les élèves de la classe dans le groupe:
+                            // Affectation de tous les Ã©lÃ¨ves de la classe dans le groupe:
                             $current_group = get_group($id_groupe);
                             $reg_professeurs = (array)$current_group["profs"]["list"];
                             unset($reg_eleves);
@@ -163,17 +163,17 @@ if (isset($_POST['is_posted'])) {
 
                             $create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $reg_professeurs, $reg_eleves);
                             if (!$create) {
-                                $msg .= "Erreur lors de la mise à jour du groupe $id_matiere[$i]";
+                                $msg .= "Erreur lors de la mise Ã  jour du groupe $id_matiere[$i]";
                             }
                             //else {
-                            //	$msg .= "Le groupe a bien été mis à jour.";
+                            //	$msg .= "Le groupe a bien Ã©tÃ© mis Ã  jour.";
                             //}
 
 
                         }
                     }
                     elseif($checkmat[$i]!=""){
-                        // Mise à jour du groupe $id_groupe=$checkmat[$i]
+                        // Mise Ã  jour du groupe $id_groupe=$checkmat[$i]
                         $id_groupe=$checkmat[$i];
                         //echo "\$id_groupe=$id_groupe<br />\n";
                         $group=get_group($id_groupe);
@@ -210,7 +210,7 @@ if (isset($_POST['is_posted'])) {
                         $create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $tabprof, $tabele);
 
                         if (!$create) {
-                            $msg .= "Erreur lors de la mise à jour du groupe $id_matiere[$i]";
+                            $msg .= "Erreur lors de la mise Ã  jour du groupe $id_matiere[$i]";
                         }
                         else{
                             if($prof[$i]==""){
@@ -225,7 +225,7 @@ if (isset($_POST['is_posted'])) {
                                     $resultat_prof=mysql_query($sql);
                                 }
                                 else{
-                                    // Le prof est déjà affecté au groupe.
+                                    // Le prof est dÃ©jÃ  affectÃ© au groupe.
                                 }
                             }
                         }
@@ -252,7 +252,7 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
 $titre_page = "Gestion des enseignements 'simples' par lot";
@@ -264,7 +264,7 @@ require_once("../lib/header.inc");
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 echo "<p class='bold'>\n";
 echo "<a href='../classes/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>";}
 
 if($chaine_options_classes!="") {
 
@@ -302,11 +302,11 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 // AJOUT: boireaus 20081224
 $titre="Navigation";
 $texte="";
-$texte.="<img src='../images/icons/date.png' alt='' /> <a href='../classes/periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Périodes</a><br />";
-$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='../classes/classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elèves</a><br />";
+$texte.="<img src='../images/icons/date.png' alt='' /> <a href='../classes/periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">PÃ©riodes</a><br />";
+$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='../classes/classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ElÃ¨ves</a><br />";
 $texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
-//$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
-$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='../classes/modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
+//$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiÃ©e</a><br />";
+$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='../classes/modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ParamÃ¨tres</a>";
 
 $ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 
@@ -343,20 +343,20 @@ echo "</form>\n";
 <?php
 echo "<h3>Gestion des enseignements simples pour la classe :" . $classe["classe"]."</h3>\n";
 
-echo "<p>Ne doivent être saisis ici que les enseignements ne concernant qu'une classe (<i>pas les regroupements</i>) et un seul professeur par matière.</p>\n";
+echo "<p>Ne doivent Ãªtre saisis ici que les enseignements ne concernant qu'une classe (<i>pas les regroupements</i>) et un seul professeur par matiÃ¨re.</p>\n";
 
 
 echo "<script language='javascript' type='text/javascript'>
 	function test_prof(nb){
-		// On ne décoche pas le fait de ne pas mettre de prof...
-		// ... il peut arriver en début d'année qu'un prof ne soit pas nommé...
+		// On ne dÃ©coche pas le fait de ne pas mettre de prof...
+		// ... il peut arriver en dÃ©but d'annÃ©e qu'un prof ne soit pas nommÃ©...
 		if(document.getElementById('prof_'+nb).selectedIndex!=0){
 			document.getElementById('checkmat_'+nb).checked='true';
 		}
 	}
 </script>\n";
 
-// On peut basculer entre deux modes de saisie : seulement les groupes déjà associés, ou bien nouveaux groupes
+// On peut basculer entre deux modes de saisie : seulement les groupes dÃ©jÃ  associÃ©s, ou bien nouveaux groupes
 if ($display == "current") {
 	echo "<p><img src='../images/icons/add.png' alt='' class='back_link' /> <a href='edit_class_grp_lot.php?id_classe=".$id_classe."&amp;display=new' onclick=\"return confirm_abandon (this, change, '$themessage')\">Ajouter de nouveaux groupes</a></p>";
 } else {
@@ -364,10 +364,10 @@ if ($display == "current") {
 }
 
 if($tri_matiere=='alpha') {
-	echo "<p style='font-size:x-small;'>Les matières sont triées par ordre alphabétique.<br /><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;display=$display&amp;tri_matiere=priorite'>Trier les matières par priorité</a></p>\n";
+	echo "<p style='font-size:x-small;'>Les matiÃ¨res sont triÃ©es par ordre alphabÃ©tique.<br /><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;display=$display&amp;tri_matiere=priorite'>Trier les matiÃ¨res par prioritÃ©</a></p>\n";
 }
 else {
-	echo "<p style='font-size:x-small;'>Les matières sont triées par priorité.<br /><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;display=$display&amp;tri_matiere=alpha'>Trier les matières par ordre alphabétique</a></p>\n";
+	echo "<p style='font-size:x-small;'>Les matiÃ¨res sont triÃ©es par prioritÃ©.<br /><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;display=$display&amp;tri_matiere=alpha'>Trier les matiÃ¨res par ordre alphabÃ©tique</a></p>\n";
 }
 
 //echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group' method='get'>";
@@ -375,10 +375,10 @@ echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name
 echo add_token_field();
 echo "<input type='hidden' name='tri_matiere' value='$tri_matiere' />\n";
 
-echo "<table border='0' class='boireaus' summary='Tableau des matières'>\n";
+echo "<table border='0' class='boireaus' summary='Tableau des matiÃ¨res'>\n";
 echo "<tr valign='top'>";
 echo "<th>&nbsp;</th>\n";
-echo "<th style='font-weight: bold;'>Matière</th>\n";
+echo "<th style='font-weight: bold;'>MatiÃ¨re</th>\n";
 echo "<th style='font-weight: bold;'>Professeur</th>\n";
 echo "</tr>\n";
 if($tri_matiere=='alpha') {
@@ -397,7 +397,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	$alt=$alt*(-1);
 
 	$display_current = false;
-	// Récupération des infos déjà saisies:
+	// RÃ©cupÃ©ration des infos dÃ©jÃ  saisies:
 	$sql="SELECT jgm.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='$id_classe' AND jgm.id_matiere='$ligne_matiere->matiere' AND jgc.id_groupe=jgm.id_groupe";
 	$result_grp=mysql_query($sql);
 	if(mysql_num_rows($result_grp)==0 and $display == "new") {
@@ -419,12 +419,12 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 		$sql="SELECT * FROM j_groupes_professeurs WHERE id_groupe='$ligne_grp->id_groupe'";
 		$result_verif_grp_prof=mysql_query($sql);
 		if(mysql_num_rows($result_verif_grp_prof)>1){
-			//echo "<td colspan='3'>Le groupe associé à la matière $ligne_matiere->matiere pour cette classe a plusieurs professeurs définis.<br />Ce n'est pas un enseignement 'simple'.<br />A traiter ailleurs...</td>\n";
+			//echo "<td colspan='3'>Le groupe associÃ© Ã  la matiÃ¨re $ligne_matiere->matiere pour cette classe a plusieurs professeurs dÃ©finis.<br />Ce n'est pas un enseignement 'simple'.<br />A traiter ailleurs...</td>\n";
 
 			echo "<td>&nbsp;</td>\n";
 
-			//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs professeurs</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
-			echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres professeurs impliqués</i>)</td>\n";
+			//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs professeurs</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">GÃ©rer les enseignements</a>.</td>\n";
+			echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">gÃ©rÃ© ici</a> (<i>autres professeurs impliquÃ©s</i>)</td>\n";
 			$groupe_existant="trop";
 		}
 		else {
@@ -440,12 +440,12 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 				$groupe_existant="oui";
 			}
 			else {
-				//echo "<td colspan='3'>Le groupe associé à la matière $ligne_matiere->matiere est associé à plusieurs classes.<br />Ce n'est pas un enseignement 'simple'.<br />A traiter ailleurs...</td>\n";
+				//echo "<td colspan='3'>Le groupe associÃ© Ã  la matiÃ¨re $ligne_matiere->matiere est associÃ© Ã  plusieurs classes.<br />Ce n'est pas un enseignement 'simple'.<br />A traiter ailleurs...</td>\n";
 
 				echo "<td>&nbsp;</td>\n";
 
-				//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
-				echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes impliquées</i>)</td>\n";
+				//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">GÃ©rer les enseignements</a>.</td>\n";
+				echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">gÃ©rÃ© ici</a> (<i>autres classes impliquÃ©es</i>)</td>\n";
 
 				$groupe_existant="trop";
 			}
@@ -454,13 +454,13 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	elseif(mysql_num_rows($result_grp)>1 and $display == "current") {
 		$display_current = true;
 		echo "<tr class='lig$alt'>\n";
-		// C'est le bazar... plusieurs groupes existent pour cette matière dans cette classe
-		//echo "<td colspan='3'>La matière $ligne_matiere->matiere a plusieurs groupes définis pour cette classe.<br />Ce n'est pas un enseignement 'simple'.<br />Elle devra être traitée ailleurs...</td>\n";
+		// C'est le bazar... plusieurs groupes existent pour cette matiÃ¨re dans cette classe
+		//echo "<td colspan='3'>La matiÃ¨re $ligne_matiere->matiere a plusieurs groupes dÃ©finis pour cette classe.<br />Ce n'est pas un enseignement 'simple'.<br />Elle devra Ãªtre traitÃ©e ailleurs...</td>\n";
 
 		echo "<td>&nbsp;</td>\n";
 
-		//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
-		echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes et plusieurs professeurs impliqués</i>)</td>\n";
+		//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">GÃ©rer les enseignements</a>.</td>\n";
+		echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">gÃ©rÃ© ici</a> (<i>autres classes et plusieurs professeurs impliquÃ©s</i>)</td>\n";
 
 		$groupe_existant="trop";
 	}

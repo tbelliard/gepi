@@ -39,11 +39,11 @@ if((isset($chaine_login_prof))&&($chaine_login_prof!='')) {
 }
 
 //========================================
-// Ajouter un test pour l'accès Inspecteur
+// Ajouter un test pour l'accÃ¨s Inspecteur
 
 //========================================
 
-// Contrôler en multisite que l'on a bien documents/archives/$_COOKIE['RNE']/ dans le chemin
+// ContrÃ´ler en multisite que l'on a bien documents/archives/$_COOKIE['RNE']/ dans le chemin
 // et documents/archives/etablissement/ sinon
 //if(getSettingValue('multisite')=='y') {
 if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
@@ -51,13 +51,13 @@ if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')
 
 		// A REVOIR: LES $msg NE SONT PAS PRIS EN COMPTE DANS logout.php
 
-		header("Location: $pref_arbo_include/logout.php?auto=1&msg=".rawurlencode("Tentative d'accès non autorisé à un autre établissement"));
+		header("Location: $pref_arbo_include/logout.php?auto=1&msg=".rawurlencode("Tentative d'accÃ¨s non autorisÃ© Ã  un autre Ã©tablissement"));
 		die();
 	}
 }
 else {
 	if(!preg_match('|documents/archives/etablissement/|',$_SERVER['SCRIPT_FILENAME'])) {
-		header("Location: $pref_arbo_include/logout.php?auto=1&msg=".rawurlencode("Tentative d'accès non autorisé à un autre établissement"));
+		header("Location: $pref_arbo_include/logout.php?auto=1&msg=".rawurlencode("Tentative d'accÃ¨s non autorisÃ© Ã  un autre Ã©tablissement"));
 		die();
 	}
 }

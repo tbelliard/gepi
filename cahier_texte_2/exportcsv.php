@@ -40,12 +40,12 @@ echo   ("checkAccess") ;
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
-// Vérification : est-ce que l'utilisateur a le droit d'Ãªtre ici ?
+// VÃ©rification : est-ce que l'utilisateur a le droit d'ÃƒÂªtre ici ?
 if (isset($current_group["id"]) AND ($current_group["id"] != "") ) {
     if (!check_prof_groupe($_SESSION['login'],$current_group["id"])) {
         header("Location: ../logout.php?auto=1");
@@ -61,7 +61,7 @@ if (is_numeric($id_groupe)) {
     die();
 }
 
-// Liste les données des tables ct_entry et ct_devoirs_entry
+// Liste les donnÃ©es des tables ct_entry et ct_devoirs_entry
 // -------------------------------------------
 $req_notices =
     "select 'Compte rendu' type, date_ct, contenu
@@ -80,7 +80,7 @@ header('Content-Type:  text/x-csv');
 $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
-//nom du fichier à telecharger
+//nom du fichier Ã  telecharger
 $str = substr($current_group["description"],0 , 4);
 foreach ($current_group["classes"]["classes"] as $classe) {
     $str .= $classe["classe"];
@@ -96,13 +96,13 @@ if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 }
 
 if (mysql_num_rows($sql_union) == 0) {
-    echo("aucune donnée"); 
+    echo("aucune donnÃ©e"); 
 } else {
     // titre des colonnes
     echo ("Date,Type,Contenu");
     echo "\n";
 
-    // données de la table
+    // donnÃ©es de la table
     while ($arrSelect = mysql_fetch_array($sql_union, MYSQL_ASSOC)) {
     	if ($arrSelect["date_ct"] != 0) {
         echo (strftime("%d/%m/%y", $arrSelect["date_ct"]).",");

@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent ViÃ©not-Hauger
 *
 * This file is part of GEPI.
 *
@@ -21,7 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 }
 
 
-// INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','V','V','F','F','F','F','F','F','Notanet: Saisie des appréciations','');
+// INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','V','V','F','F','F','F','F','F','Notanet: Saisie des apprÃ©ciations','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -109,7 +109,7 @@ if (isset($_POST['is_posted'])) {
 					$register=mysql_query($sql);
 				}
 				if (!$register) {
-					$msg = "Erreur lors de l'enregistrement des données pour $log_eleve[$i]<br />";
+					$msg = "Erreur lors de l'enregistrement des donnÃ©es pour $log_eleve[$i]<br />";
 					//echo "ERREUR<br />";
 					$pb_record = 'yes';
 				}
@@ -121,10 +121,10 @@ if (isset($_POST['is_posted'])) {
 }
 
 
-$themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_enregistrement = "Les modifications ont été enregistrées !";
+$themessage = 'Des apprÃ©ciations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 //**************** EN-TETE *****************
-$titre_page = "Fiches brevet | Saisie des appréciations";
+$titre_page = "Fiches brevet | Saisie des apprÃ©ciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -176,13 +176,13 @@ if(!isset($id_groupe)) {
 	//echo "$sql<br />";
 	$res_grp=mysql_query($sql);
 	if(mysql_num_rows($res_grp)==0) {
-		//echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore défini les classes/élèves concernés par le brevet.</p>\n";
-		echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore effectué l'extraction des moyennes pour le brevet.</p>\n";
+		//echo "<p>Aucune de vos classes n'est concernÃ©e par le Brevet des collÃ¨ges.<br />Ou alors votre administrateur n'a pas encore dÃ©fini les classes/Ã©lÃ¨ves concernÃ©s par le brevet.</p>\n";
+		echo "<p>Aucune de vos classes n'est concernÃ©e par le Brevet des collÃ¨ges.<br />Ou alors votre administrateur n'a pas encore effectuÃ© l'extraction des moyennes pour le brevet.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	echo "<p>Choisissez le groupe pour lequel vous souhaitez saisir les appréciations pour les fiches brevet: </p>\n";
+	echo "<p>Choisissez le groupe pour lequel vous souhaitez saisir les apprÃ©ciations pour les fiches brevet: </p>\n";
 	echo "<ul>\n";
 	while($lig_grp=mysql_fetch_object($res_grp)) {
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_groupe=$lig_grp->id'>$lig_grp->description (<i>$lig_grp->classe</i>)</a></li>\n";
@@ -190,7 +190,7 @@ if(!isset($id_groupe)) {
 	echo "</ul>\n";
 
 	/*
-	$affichage="<p>Choisissez le groupe pour lequel vous souhaitez saisir les appréciations pour les fiches brevet: </p>\n";
+	$affichage="<p>Choisissez le groupe pour lequel vous souhaitez saisir les apprÃ©ciations pour les fiches brevet: </p>\n";
 	$affichage.="<ul>\n";
 	while($lig_grp=mysql_fetch_object($res_grp)) {
 
@@ -222,17 +222,17 @@ else {
 	//echo "<table class='boireaus' width='100%'>\n";
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
-	echo "<th colspan='2'>Elève</th>\n";
+	echo "<th colspan='2'>ElÃ¨ve</th>\n";
 	if(count($current_group["classes"]["list"])>1) {
 		echo "<th>Classe</th>\n";
 	}
-	echo "<th>Moy.<br />périodes</th>\n";
-	echo "<th>Moy.<br />année</th>\n";
-	echo "<th>Appréciation</th>\n";
+	echo "<th>Moy.<br />pÃ©riodes</th>\n";
+	echo "<th>Moy.<br />annÃ©e</th>\n";
+	echo "<th>ApprÃ©ciation</th>\n";
 	echo "</tr>\n";
 
 
-	// Compteur pour les élèves
+	// Compteur pour les Ã©lÃ¨ves
 	$i=0;
 	// Compteur de champs TEXTAREA
 	$num_id=0;
@@ -248,7 +248,7 @@ else {
 			//$num_id++;
 
 			//
-			// si l'élève appartient au groupe pour cette période
+			// si l'Ã©lÃ¨ve appartient au groupe pour cette pÃ©riode
 			//
 			$eleve_nom = $current_group["eleves"]["all"]["users"][$eleve_login]["nom"];
 			$eleve_prenom = $current_group["eleves"]["all"]["users"][$eleve_login]["prenom"];
@@ -299,7 +299,7 @@ else {
 				$eleve_note="";
 			}
 
-			// Notes des périodes
+			// Notes des pÃ©riodes
 			$sql="SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe='$id_groupe') ORDER BY periode;";
 			$res_note_trim=mysql_query($sql);
 
@@ -377,8 +377,8 @@ else {
 					echo "<textarea id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$i."\" rows='2' cols='80' wrap='virtual' onchange=\"changement()\"";
 
 					//==================================
-					// Rétablissement: boireaus 20080219
-					// Pour revenir au champ suivant après validation/enregistrement:
+					// RÃ©tablissement: boireaus 20080219
+					// Pour revenir au champ suivant aprÃ¨s validation/enregistrement:
 					//echo " onfocus=\"focus_suivant(".$i.");\"";
 					echo " onfocus=\"focus_suivant(".$num_id.");\"";
 					//==================================
@@ -387,11 +387,11 @@ else {
 					$num_id++;
 				}
 				else {
-					echo $eleve_app." <span style='color:gray; font-size:xx-small;'>(saisie verrouillée)</span>\n";
+					echo $eleve_app." <span style='color:gray; font-size:xx-small;'>(saisie verrouillÃ©e)</span>\n";
 				}
 			}
 			else {
-				echo "Extraction des moyennes non encore effectuée.";
+				echo "Extraction des moyennes non encore effectuÃ©e.";
 			}
 			echo  "</td>\n";
 
@@ -411,16 +411,16 @@ else {
 	<center><div id='fixe'><input type='submit' value='Enregistrer' /><br />
 
 
-<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+<!-- DIV destinÃ© Ã  afficher un dÃ©compte du temps restant pour ne pas se faire piÃ©ger par la fin de session -->
 <div id='decompte'></div>
 
-<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+<!-- Champ destinÃ© Ã  recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus Ã  ce champ aprÃ¨s une validation -->
 <input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />
 </div></center>
 </form>
 ";
 
-	// Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
+	// Il faudra permettre de n'afficher ce dÃ©compte que si l'administrateur le souhaite.
 	echo "<script type='text/javascript'>
 	cpt=".$tmp_timeout.";
 	compte_a_rebours='y';
@@ -443,11 +443,11 @@ else {
 
 	function focus_suivant(num){
 		temoin='';
-		// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+		// La variable 'dernier' peut dÃ©passer de l'effectif de la classe... mais cela n'est pas dramatique
 		dernier=num+".$i."
-		// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
-		// (pour réussir à passer un élève qui ne serait plus dans la période)
-		// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+		// On parcourt les champs Ã  partir de celui de l'Ã©lÃ¨ve en cours jusqu'Ã  rencontrer un champ existant
+		// (pour rÃ©ussir Ã  passer un Ã©lÃ¨ve qui ne serait plus dans la pÃ©riode)
+		// AprÃ¨s validation, c'est ce champ qui obtiendra le focus si on n'Ã©tait pas Ã  la fin de la liste.
 		for(i=num;i<dernier;i++){
 			suivant=i+1;
 			if(temoin==''){
@@ -467,7 +467,7 @@ else {
 
 	";
 
-	// Après validation, on donne le focus au champ qui suivait celui qui vient d'être rempli
+	// AprÃ¨s validation, on donne le focus au champ qui suivait celui qui vient d'Ãªtre rempli
 	if(isset($_POST['champ_info_focus'])){
 		if($_POST['champ_info_focus']!=""){
 			echo "// On positionne le focus...

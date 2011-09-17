@@ -19,7 +19,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -90,12 +90,12 @@ class ClassFilter {
     }
   }
 
-  // On recupère les infos du module discipline sur sanctions,rôles......
+  // On recupÃ¨re les infos du module discipline sur sanctions,rÃ´les......
   private function get_params_module() {
 
     $this->liste_sanctions=$this->modele_incidents->get_types_sanctions();
     $this->liste_roles=$this->modele_incidents->get_types_roles();
-    $this->liste_categories=$this->add_choix_null($this->modele_incidents->get_infos_categories(),'categorie','Non affecté','NA');
+    $this->liste_categories=$this->add_choix_null($this->modele_incidents->get_infos_categories(),'categorie','Non affectÃ©','NA');
     $this->liste_mesures=$this->modele_incidents->get_types_mesures();    
   }
   

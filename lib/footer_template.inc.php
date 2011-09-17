@@ -1,12 +1,12 @@
 <?php
 /**
- * Préparation du pied de page des gabarits
+ * PrÃ©paration du pied de page des gabarits
  * 
  * @package General
  * @subpackage Affichage
 */
 
-	// Affichage de la durée de chargement de la page
+	// Affichage de la durÃ©e de chargement de la page
 
 	if (!isset($niveau_arbo)) $niveau_arbo = 1;
 	 if ($niveau_arbo == "0") {

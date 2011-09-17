@@ -84,12 +84,12 @@ if (isset($_POST['sup_ct'])) {
              if (!($del_ct)) $error = 'yes';
            }
            if ($error == 'no') {
-              $msg .= "Suppression des notices dans ct_entry réussie pour $id_prop sur le groupe n°$id_groupe.<br />";
+              $msg .= "Suppression des notices dans ct_entry rÃ©ussie pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
            } else {
-              $msg .= "Il y a eu un problème lors de la suppression des notices dans ct_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+              $msg .= "Il y a eu un problÃ¨me lors de la suppression des notices dans ct_entry pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
            }
          } else {
-           $msg .= "Pas de notice à supprimer dans ct_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+           $msg .= "Pas de notice Ã  supprimer dans ct_entry pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
          }
       }
    }
@@ -115,12 +115,12 @@ if (isset($_POST['sup_ct'])) {
            if (!($del_ct_devoirs)) {$error = 'yes';}
 
            if ($error == 'no') {
-             $msg .= "Suppression des notices dans ct_devoirs_entry réussie pour $id_prop sur le groupe n°$id_groupe.<br />";
+             $msg .= "Suppression des notices dans ct_devoirs_entry rÃ©ussie pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
            } else {
-             $msg .= "Il y a eu un problème lors de la suppression des notices dans ct_devoirs_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+             $msg .= "Il y a eu un problÃ¨me lors de la suppression des notices dans ct_devoirs_entry pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
            }
          } else {
-              $msg .= "Pas de notice à supprimer dans ct_devoirs_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+              $msg .= "Pas de notice Ã  supprimer dans ct_devoirs_entry pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
          }
       }
   }
@@ -144,12 +144,12 @@ if (isset($_POST['sup_ct'])) {
            $del_ct_devoirs = sql_query("delete  FROM ct_private_entry WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')");
            if (!($del_ct_devoirs)) $error = 'yes';
            if ($error == 'no') {
-               $msg .= "Suppression des notices dans ct_private_entry réussie pour $id_prop sur le groupe n°$id_groupe.<br />";
+               $msg .= "Suppression des notices dans ct_private_entry rÃ©ussie pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
            } else {
-               $msg .= "Il y a eu un problème lors de la suppression des notices dans ct_devoirs_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+               $msg .= "Il y a eu un problÃ¨me lors de la suppression des notices dans ct_devoirs_entry pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
            }
          } else {
-           $msg .= "Pas de notice à supprimer dans ct_private_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+           $msg .= "Pas de notice Ã  supprimer dans ct_private_entry pour $id_prop sur le groupe nÂ°$id_groupe.<br />";
          }
       }
    }
@@ -166,9 +166,9 @@ if (isset($_POST['action'])) {
      $sql1 = sql_query("UPDATE ct_entry SET id_groupe='".$id_groupe."' WHERE (id_groupe='".$id_former_group."' and id_login='".$id_prop."')");
      $sql2 = sql_query("UPDATE ct_devoirs_entry SET id_groupe='".$id_groupe."' WHERE (id_groupe='".$id_former_group."' and id_login='".$id_prop."')");
      if (($sql1) and ($sql2)) {
-        $msg = "Le changement de groupe a été effectué.";
+        $msg = "Le changement de groupe a Ã©tÃ© effectuÃ©.";
      } else {
-        $msg = "Il y a eu un problème lors du changement de groupe.";
+        $msg = "Il y a eu un problÃ¨me lors du changement de groupe.";
      }
   }
 
@@ -176,9 +176,9 @@ if (isset($_POST['action'])) {
      $sql1 = sql_query("UPDATE ct_entry SET id_login='".$id_prop."' WHERE (id_groupe='".$id_groupe."')");
      $sql2 = sql_query("UPDATE ct_entry SET id_login='".$id_prop."' WHERE (id_groupe='".$id_groupe."')");
      if (($sql1) and ($sql2)) {
-        $msg = "Le changement de propriétaire a été effectué.";
+        $msg = "Le changement de propriÃ©taire a Ã©tÃ© effectuÃ©.";
      } else {
-        $msg = "Il y a eu un problème lors du changement de propriétaire.";
+        $msg = "Il y a eu un problÃ¨me lors du changement de propriÃ©taire.";
      }
   }
 
@@ -228,8 +228,8 @@ if (isset($_GET['action'])) {
      echo "<H2>Cahier de texte - Modification du groupe</h2>\n";
      echo "<p>Groupe actuel : <b>".$nom_groupe."</b><br />\n";
      echo "Dans la (les) classe(s) de : <b>".$classes."</b><br />\n";
-     echo "Propriétaire actuel : <b>".$nom_prof."</b></p>\n";
-     echo "<p>Vous pouvez attribuer à ce cahier de texte un nouveau groupe.</p>\n";
+     echo "PropriÃ©taire actuel : <b>".$nom_prof."</b></p>\n";
+     echo "<p>Vous pouvez attribuer Ã  ce cahier de texte un nouveau groupe.</p>\n";
      echo "<p>Choisissez la nouvelle classe : </p>\n";
 
      $sql_groupe = sql_query("select g.id, g.name from groupes g, classes c, j_groupes_classes jc " .
@@ -267,12 +267,12 @@ if (isset($_GET['action'])) {
 
      echo "<form action=\"admin_ct.php\" name=\"formulaire2\" method=\"post\">\n";
 	echo add_token_field();
-     echo "<H2>Cahier de texte - Modification du propriétaire</h2>\n";
+     echo "<H2>Cahier de texte - Modification du propriÃ©taire</h2>\n";
      echo "<p>Groupe actuel : <b>".$nom_groupe."</b><br />\n";
      echo "Classe(s) de : <b>".$classes."</b><br />\n";
-     echo "Propriétaire actuel : <b>".$nom_prof."</b></p>\n";
-     echo "<p>Vous pouvez attribuer à ce cahier de texte un nouveau propriétaire.</p>\n";
-     echo "<p>Choisissez le nouveau propriétaire : </p>\n";
+     echo "PropriÃ©taire actuel : <b>".$nom_prof."</b></p>\n";
+     echo "<p>Vous pouvez attribuer Ã  ce cahier de texte un nouveau propriÃ©taire.</p>\n";
+     echo "<p>Choisissez le nouveau propriÃ©taire : </p>\n";
      $sql_matiere = sql_query("select DISTINCT u.login, u.nom, u.prenom from utilisateurs u, matieres m, j_groupes_professeurs j where " .
      		"(u.login=j.login and " .
      		"j.id_groupe='".$id_groupe."'" .
@@ -298,9 +298,9 @@ if (!(isset($_GET['action']))) {
   ?>
   <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
   <H2>Administration des cahiers de texte</h2>
-  <p>Le tableau ci-dessous présentent l'ensemble des cahiers de texte actuellement en ligne. Les problèmes sont signalés en rouge.
-  <br />Vous pouvez modifier le groupe ou le propriétaire d'un cahier de texte en cliquant sur le lien correspondant.
-  <br />Vous pouvez également supprimer définitivement un cahier de texte (notices et documents joints).</p>
+  <p>Le tableau ci-dessous prÃ©sentent l'ensemble des cahiers de texte actuellement en ligne. Les problÃ¨mes sont signalÃ©s en rouge.
+  <br />Vous pouvez modifier le groupe ou le propriÃ©taire d'un cahier de texte en cliquant sur le lien correspondant.
+  <br />Vous pouvez Ã©galement supprimer dÃ©finitivement un cahier de texte (notices et documents joints).</p>
 
 
   <form action="admin_ct.php" name="formulaire1" method="post">
@@ -310,12 +310,12 @@ if (!(isset($_GET['action']))) {
   <table border="1" class='boireaus' summary='Administration des CDT'><tr valign='center' align='center'>
   <th><b><a href='admin_ct.php?order_by=jc.id_classe,jm.id_matiere'>Classe(s)</a></b></th>
   <th><b><a href='admin_ct.php?order_by=jm.id_matiere,jc.id_classe'>Groupe</a></b></th>
-  <th><b><a href='admin_ct.php?order_by=ct.id_login,jc.id_classe,jm.id_matiere'>Propriétaire</a></b></th>
+  <th><b><a href='admin_ct.php?order_by=ct.id_login,jc.id_classe,jm.id_matiere'>PropriÃ©taire</a></b></th>
   <th><b>Nombre<br />de notices</b></th>
   <th><b>Nombre<br />de notices<br />"devoirs"</b></th>
   <th>
-  <b>Action</b></th><th><b><input type="submit" name="sup_ct" value="Suppression" onclick="return confirmlink(this, 'La suppression d\'un cahier de texte est définitive. Les notices ainsi que les documents joints seront supprimés. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')" /></b><br />
-  <a href="javascript:CocheCase(true)"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href="javascript:CocheCase(false)"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>
+  <b>Action</b></th><th><b><input type="submit" name="sup_ct" value="Suppression" onclick="return confirmlink(this, 'La suppression d\'un cahier de texte est dÃ©finitive. Les notices ainsi que les documents joints seront supprimÃ©s. Etes-vous sÃ»r de vouloir continuer ?', 'Confirmation de la suppression')" /></b><br />
+  <a href="javascript:CocheCase(true)"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href="javascript:CocheCase(false)"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' title='Tout dÃ©cocher' /></a>
   </th></tr>
 
   <?php
@@ -364,8 +364,8 @@ if (!(isset($_GET['action']))) {
       // Affichage des lignes
       $alt=$alt*(-1);
       echo "<tr class='lig$alt white_hover'><td>".$classes."</td>\n";
-      echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_groupe".add_token_in_url()."' title='modifier la matière'>".$nom_groupe."</a></td>\n";
-      echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_prop".add_token_in_url()."' title='modifier le propriétaire'>".$nom_prof."</a></td>\n";
+      echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_groupe".add_token_in_url()."' title='modifier la matiÃ¨re'>".$nom_groupe."</a></td>\n";
+      echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_prop".add_token_in_url()."' title='modifier le propriÃ©taire'>".$nom_prof."</a></td>\n";
       echo "<td>".$nb_ct."</td>\n";
       echo "<td>".$nb_ct_devoirs."</td>\n";
       //echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>\n";

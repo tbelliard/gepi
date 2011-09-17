@@ -21,12 +21,12 @@
 */
 
 // Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
+// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 Header('Pragma: public');
 
 //=============================
-// REMONTé:
+// REMONTÃ©:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -49,7 +49,7 @@ require_once("./class_pdf.php");
 require_once ("./liste.inc.php");
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -67,15 +67,15 @@ if ($ok==0) {
 		die();
 	}
 
-	//INSERT INTO droits VALUES ('/impression/parametres_impression_pdf_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis conseil classe PDF; réglage des paramètres', '');
+	//INSERT INTO droits VALUES ('/impression/parametres_impression_pdf_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis conseil classe PDF; rÃ©glage des paramÃ¨tres', '');
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=1");
 		die();
 	}
 
 	//**************** EN-TETE **************************************
-	//$titre_page = "Impression de listes au format PDF <br />Choix des paramètres".$periode;
-	$titre_page = "Impression des avis (PDF) | Choix des paramètres";
+	//$titre_page = "Impression de listes au format PDF <br />Choix des paramÃ¨tres".$periode;
+	$titre_page = "Impression des avis (PDF) | Choix des paramÃ¨tres";
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE **********************************
 	
@@ -84,19 +84,19 @@ if ($ok==0) {
 	echo " | <a href='../saisie/impression_avis.php'>Impression des avis</a>";
 	echo "</p>\n";
 	
-	echo "<h3>Choix des paramètres&nbsp;: </h3>\n";
+	echo "<h3>Choix des paramÃ¨tres&nbsp;: </h3>\n";
 	
 	echo "<div>\n";
 	echo "<fieldset>\n";
 	echo "<legend>Modifiez l'apparence du document PDF&nbsp;:</legend>\n";
 	echo "<form method=\"post\" action=\"../impression/parametres_impression_pdf_avis.php\" name=\"choix_parametres\">\n";
-	echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" /><br />\n";
+	echo "<input value=\"Valider les paramÃ¨tres\" name=\"Valider\" type=\"submit\" /><br />\n";
 	echo "<br />\n";
 
-	echo "<b>Définition des marges du document&nbsp;:</b></p>\n";
+	echo "<b>DÃ©finition des marges du document&nbsp;:</b></p>\n";
 	echo "<table style='margin-left: 1em;' border='0'>\n";
-	echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
-	echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
+	echo "<tr><td>Marge Ã  gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
+	echo "<tr><td>Marge Ã  droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
 	echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
 	echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
 	echo "<tr><td>Option marge reliure ?</td><td><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" checked /><label for='marge_reliure_1'> Oui</label> <input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_0\" value=\"0\" /><label for='marge_reliure_0'> Non</label></td></tr>\n";
@@ -104,7 +104,7 @@ if ($ok==0) {
 	echo "</table>\n";
 	echo "<br />\n";
 
-	echo "<b>Informations à afficher sur le document&nbsp;:</b><br />\n";
+	echo "<b>Informations Ã  afficher sur le document&nbsp;:</b><br />\n";
 	echo "&nbsp;&nbsp;Afficher le professeur responsable de la classe ? <input type=\"radio\" name=\"affiche_pp\" id=\"affiche_pp_1\" value=\"1\" checked /><label for='affiche_pp_1'> Oui</label> <input type=\"radio\" id=\"affiche_pp_0\" name=\"affiche_pp\" value=\"0\" /><label for='affiche_pp_0'> Non</label><br />\n";
 	echo "<br />\n";
 
@@ -112,11 +112,11 @@ if ($ok==0) {
 	echo "<table style='margin-left: 1em;' border='0'>\n";
 	echo "<tr><td>Tout sur une seule page ?</td><td><input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_1\" value=\"1\" checked /><label for='une_seule_page_1'> Oui</label> <input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_0\" value=\"0\" /><label for='une_seule_page_0'> Non</label></td></tr>\n";
 	echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"8\" /> </td></tr>\n";
-	echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"40\" /></td></tr>\n";
+	echo "<tr><td>Largeur colonne Nom / PrÃ©nom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"40\" /></td></tr>\n";
 	echo "</table>\n";
 	echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
 	echo "<br />\n";
-	echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" />\n";
+	echo "<input value=\"Valider les paramÃ¨tres\" name=\"Valider\" type=\"submit\" />\n";
 	echo "<br />\n";
 	echo "</form>\n";
 	echo "</fieldset>\n";

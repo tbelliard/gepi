@@ -31,12 +31,12 @@ $starttime = microtime();
 require_once("../lib/initialisations.inc.php");
 
 
-// Eric : Inclusion fichier contenant la bibliothèque pour les AID
+// Eric : Inclusion fichier contenant la bibliothÃ¨que pour les AID
 include ("aid_lib.inc");
-// Eric : Ajout : La variable pour sélectionner le bulletin
+// Eric : Ajout : La variable pour sÃ©lectionner le bulletin
 // 1 : initial
 // 2 : initial avec au  dessus de min / max / moy "Pour la calsse"
-// 3 : le précédent, mais le bloc Min Max Moy "Pour la classe" passe après la colonne  "appréciations"
+// 3 : le prÃ©cÃ©dent, mais le bloc Min Max Moy "Pour la classe" passe aprÃ¨s la colonne  "apprÃ©ciations"
 if(getSettingValue("choix_bulletin")){
 		$option_affichage_bulletin = getSettingValue("choix_bulletin");
 	}
@@ -98,22 +98,22 @@ if (!checkAccess()) {
 }
 
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")!='yes') {
-    die("Droits insuffisants pour effectuer cette opération");
+    die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
 include "../lib/periodes.inc.php";
-// On vérifie si la période est close
+// On vÃ©rifie si la pÃ©riode est close
 if ($ver_periode[$periode_num] == "N") {
-    echo "<p>Edition Impossible : la période n'est pas close.";
+    echo "<p>Edition Impossible : la pÃ©riode n'est pas close.";
     die();
 }
 
 
-// Stockage de la période par défaut pour les bulletins pour les impressions suivantes dans la même session
+// Stockage de la pÃ©riode par dÃ©faut pour les bulletins pour les impressions suivantes dans la mÃªme session
 $_SESSION['periode_par_defaut_bulletin']=$periode_num;
 
 
-// Récupération des variables concernant la liste des élèves et le bulletin unique par famille:
+// RÃ©cupÃ©ration des variables concernant la liste des Ã©lÃ¨ves et le bulletin unique par famille:
 //$liste_login_ele=isset($_POST['liste_login_ele']) ? $_POST['liste_login_ele'] : "_CLASSE_ENTIERE_";
 $selection=isset($_POST['selection']) ? $_POST['selection'] : "_CLASSE_ENTIERE_";
 $liste_login_ele=isset($_POST['liste_login_ele']) ? $_POST['liste_login_ele'] : NULL;
@@ -228,9 +228,9 @@ echo "}\n";
         padding-right: 20%;
         }\n";
 
-	// Récupération des variables du bloc adresses:
-	// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
-	// Il y a d'autres récupération de largeur et de positionnement du bloc adresse à extraire...
+	// RÃ©cupÃ©ration des variables du bloc adresses:
+	// Liste de rÃ©cupÃ©ration Ã  extraire de la boucle Ã©lÃ¨ves pour limiter le nombre de requÃªtes... A FAIRE
+	// Il y a d'autres rÃ©cupÃ©ration de largeur et de positionnement du bloc adresse Ã  extraire...
 	// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
 	if(!getSettingValue("addressblock_logo_etab_prop")){
 		$largeur1=40;
@@ -250,18 +250,18 @@ echo "}\n";
 	}
 
 
-	// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
+	// Taille de la cellule Classe et AnnÃ©e scolaire sur le bloc adresse:
 	if(!getSettingValue("addressblock_classe_annee")){
 		$addressblock_classe_annee=35;
 	}
 	else{
 		$addressblock_classe_annee=getSettingValue("addressblock_classe_annee");
 	}
-	// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
+	// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, AnnÃ©e,...
 	$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
 
 
-	// Débug sur l'entête pour afficher les cadres
+	// DÃ©bug sur l'entÃªte pour afficher les cadres
 	if(!getSettingValue("addressblock_debug")){
 		$addressblock_debug="n";
 	}
@@ -270,7 +270,7 @@ echo "}\n";
 	}
 
 
-	// Nombre de sauts de lignes entre le tableau logo+etab et le nom, prénom,... de l'élève
+	// Nombre de sauts de lignes entre le tableau logo+etab et le nom, prÃ©nom,... de l'Ã©lÃ¨ve
 	if(!getSettingValue("bull_ecart_bloc_nom")){
 		$bull_ecart_bloc_nom=0;
 	}
@@ -279,7 +279,7 @@ echo "}\n";
 	}
 
 
-	// Afficher l'établissement d'origine de l'élève:
+	// Afficher l'Ã©tablissement d'origine de l'Ã©lÃ¨ve:
 	if(!getSettingValue("bull_affiche_etab")){
 		$bull_affiche_etab="n";
 	}
@@ -321,7 +321,7 @@ echo "}\n";
 	$gepiSchoolCity=getSettingValue("gepiSchoolCity");
 	$gepiSchoolPays=getSettingValue("gepiSchoolPays");
 
-	// Affichage ou non du nom et de l'adresse de l'établissement
+	// Affichage ou non du nom et de l'adresse de l'Ã©tablissement
 	$bull_affich_nom_etab=getSettingValue("bull_affich_nom_etab");
 	$bull_affich_adr_etab=getSettingValue("bull_affich_adr_etab");
 	if(($bull_affich_nom_etab!="n")&&($bull_affich_nom_etab!="y")) {$bull_affich_nom_etab="y";}
@@ -393,7 +393,7 @@ echo "}\n";
 	}
 
 	if(!getSettingValue("bull_intitule_app")){
-		$bull_intitule_app="Appréciations/Conseils";
+		$bull_intitule_app="ApprÃ©ciations/Conseils";
 	}
 	else{
 		$bull_intitule_app=getSettingValue("bull_intitule_app");
@@ -454,7 +454,7 @@ echo "}\n";
 		$ratio_h=$hauteur/$bull_photo_hauteur_max;
 		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
-		// définit largeur et hauteur pour la nouvelle image
+		// dÃ©finit largeur et hauteur pour la nouvelle image
 		$nouvelle_largeur=round($largeur/$ratio);
 		$nouvelle_hauteur=round($hauteur/$ratio);
 
@@ -470,10 +470,10 @@ echo "}\n";
 
 	<?php
 		if(isset($style_screen_ajout)){
-			// Styles paramétrables depuis l'interface:
+			// Styles paramÃ©trables depuis l'interface:
 			if($style_screen_ajout=='y'){
-				// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-				// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+				// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+				// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 				echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 			}
 		}
@@ -486,11 +486,11 @@ echo "}\n";
 	//echo "\$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1))=".$addressblock_classe_annee2."<br />";
 
 
-// On teste la présence d'au moins un coeff pour afficher la colonne des coef
+// On teste la prÃ©sence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 //echo "\$test_coef=$test_coef<br />\n";
 
-// Afficher la moyenne générale? (également conditionné par la présence d'un coef non nul au moins)
+// Afficher la moyenne gÃ©nÃ©rale? (Ã©galement conditionnÃ© par la prÃ©sence d'un coef non nul au moins)
 $display_moy_gen = sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
 
 
@@ -510,7 +510,7 @@ if ($affiche_categories == "y") {
     $affiche_categories = false;
 }
 
-//Afficher les coefficients des matières (uniquement si au moins un coef différent de 0)
+//Afficher les coefficients des matiÃ¨res (uniquement si au moins un coef diffÃ©rent de 0)
 if($test_coef>0){
 	$affiche_coef = sql_query1("SELECT display_coef FROM classes WHERE id='".$id_classe."'");
 }
@@ -521,12 +521,12 @@ else{
 $sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='$periode_num';";
 $res_test_nb_ele=mysql_query($sql);
 if(mysql_num_rows($res_test_nb_ele)==0) {
-	echo "<p>La classe ne compte aucun élève sur la période choisie.</p>\n";
+	echo "<p>La classe ne compte aucun Ã©lÃ¨ve sur la pÃ©riode choisie.</p>\n";
 	require_once("../lib/footer.inc.php");
 	die();
 }
 
-// Si le rang des élèves est demandé, on met à jour le champ rang de la table matieres_notes
+// Si le rang des Ã©lÃ¨ves est demandÃ©, on met Ã  jour le champ rang de la table matieres_notes
 if ($affiche_rang == 'y'){include "../lib/calcul_rang.inc.php";}
 
 
@@ -538,7 +538,7 @@ $affiche_nbdev=sql_query1("SELECT display_nbdev FROM classes WHERE id='".$id_cla
 //============================================
 
 
-// Le cas échéant, calcul des moyennes générales
+// Le cas Ã©chÃ©ant, calcul des moyennes gÃ©nÃ©rales
 include "../lib/calcul_moy_gen.inc.php";
 
 //Initialisation des tableaux d'affichage
@@ -551,12 +551,12 @@ $col_boite_largeur = getSettingValue("col_boite_largeur");
 unset($call_data_aid_b);
 unset($call_data_aid_e);
 
-// Données nom de la classe et nom complet de la classe
+// DonnÃ©es nom de la classe et nom complet de la classe
 $calldata = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
 $current_classe = mysql_result($calldata, 0, "classe");
 $current_classe_nom_complet = mysql_result($calldata, 0, "nom_complet");
 
-// On appelle la liste des groupes si ça n'a pas été fait
+// On appelle la liste des groupes si Ã§a n'a pas Ã©tÃ© fait
 
 $appel_liste_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c
 WHERE (
@@ -568,7 +568,7 @@ ORDER BY e.nom, e.prenom");
 $nombre_eleves = mysql_num_rows($appel_liste_eleves);
 if (($affiche_rang != 'y') and ($test_coef==0)) {
     if ($affiche_categories) {
-		// On utilise les valeurs spécifiées pour la classe en question
+		// On utilise les valeurs spÃ©cifiÃ©es pour la classe en question
 		$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
 		"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
 		"WHERE ( " .
@@ -592,16 +592,16 @@ if (($affiche_rang != 'y') and ($test_coef==0)) {
     $nombre_groupes = mysql_num_rows($appel_liste_groupes);
 }
 
-// Préparation des données
+// PrÃ©paration des donnÃ©es
 $j=0;
 while ($j < $nombre_groupes) {
-    // si cela n'a pas été fait dans calcul_rang_inc.php ou dans calcul_moy_gen, on prépare le tableau $current_matiere
+    // si cela n'a pas Ã©tÃ© fait dans calcul_rang_inc.php ou dans calcul_moy_gen, on prÃ©pare le tableau $current_matiere
     if (($affiche_rang != 'y') and ($test_coef==0)) {
         $group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
         $current_group[$j] = get_group($group_id);
     }
 
-    // on prépare les données relatives aux professeurs
+    // on prÃ©pare les donnÃ©es relatives aux professeurs
 
     $nombre_profs[$j] = count($current_group[$j]["profs"]["list"]);
     $k=0;
@@ -611,16 +611,16 @@ while ($j < $nombre_groupes) {
     }
     //==========================================
     // MODIF: boireaus
-    // noms complets des matières
+    // noms complets des matiÃ¨res
     //$current_matiere_nom_complet[$j] = $current_group[$j]["description"];
-    // C'était le nom du groupe... voilà le nom de la matière:
+    // C'Ã©tait le nom du groupe... voilÃ  le nom de la matiÃ¨re:
     $current_matiere_nom_complet[$j] = $current_group[$j]["matiere"]["nom_complet"];
     //==========================================
 
-    // Si ça n'a pas été fait dans calcul_moy_inc.php, on prépare les :
+    // Si Ã§a n'a pas Ã©tÃ© fait dans calcul_moy_inc.php, on prÃ©pare les :
     // tableaux $current_eleve_note, $current_eleve_statut et $current_classe_matiere_moyenne
     if ($test_coef == 0) {
-        // Moyenne de la classe dans la matière $current_matiere[$j]
+        // Moyenne de la classe dans la matiÃ¨re $current_matiere[$j]
         $current_classe_matiere_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne
         FROM matieres_notes
         WHERE (
@@ -634,7 +634,7 @@ while ($j < $nombre_groupes) {
         $i=0;
         while ($i < $nombre_eleves) {
             $current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
-            // Maintenant on regarde si l'élève suit bien cette matière ou pas
+            // Maintenant on regarde si l'Ã©lÃ¨ve suit bien cette matiÃ¨re ou pas
             if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
                 // $count[$j][$i] == "0"
                 $current_eleve_note_query = mysql_query("SELECT distinct * FROM matieres_notes
@@ -646,12 +646,12 @@ while ($j < $nombre_groupes) {
                 $current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
                 $current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
 
-				// On détermine le coefficient pour cette matière
+				// On dÃ©termine le coefficient pour cette matiÃ¨re
 				if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")){
 					$current_eleve_coef[$j][$i]=1;
 				}
 				else{
-					// On teste si l'élève a un coef spécifique pour cette matière
+					// On teste si l'Ã©lÃ¨ve a un coef spÃ©cifique pour cette matiÃ¨re
 					$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
 							"login = '".$current_eleve_login[$i]."' AND " .
 							"id_groupe = '".$current_group[$j]["id"]."' AND " .
@@ -680,17 +680,17 @@ while ($j < $nombre_groupes) {
             //$current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
 
 			//echo "$current_eleve_login[$i]<br />";
-			// L'ordre a l'air d'être le même...
-			// Pas de modif de $current_eleve_login[$i], on récupère celui rempli par calcul_moy_inc.php
+			// L'ordre a l'air d'Ãªtre le mÃªme...
+			// Pas de modif de $current_eleve_login[$i], on rÃ©cupÃ¨re celui rempli par calcul_moy_inc.php
 
-            // Maintenant on regarde si l'élève suit bien cette matière ou pas
+            // Maintenant on regarde si l'Ã©lÃ¨ve suit bien cette matiÃ¨re ou pas
             if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
-				// On détermine le coefficient pour cette matière
+				// On dÃ©termine le coefficient pour cette matiÃ¨re
 				if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")){
 					$current_eleve_coef[$j][$i]=1;
 				}
 				else{
-					// On teste si l'élève a un coef spécifique pour cette matière
+					// On teste si l'Ã©lÃ¨ve a un coef spÃ©cifique pour cette matiÃ¨re
 					$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
 							"login = '".$current_eleve_login[$i]."' AND " .
 							"id_groupe = '".$current_group[$j]["id"]."' AND " .
@@ -724,13 +724,13 @@ if ($current_classe_formule == '') {
     $current_classe_formule = "<font color='red'>* FORMULE A PRECISER *</font>";
 }
 
-// On prépare l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
+// On prÃ©pare l'affichage des apprÃ©ciations des ActivitÃ©s Interdisciplinaires devant apparaÃ®tre en tÃªte des bulletins :
 if (!isset($call_data_aid_b)){
     $call_data_aid_b = mysql_query("SELECT * FROM aid_config WHERE (order_display1 ='b' and display_bulletin!='n') ORDER BY order_display2");
     $nb_aid_b = mysql_num_rows($call_data_aid_b);
 }
 
-// On prépare l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en fin des bulletins :
+// On prÃ©pare l'affichage des apprÃ©ciations des ActivitÃ©s Interdisciplinaires devant apparaÃ®tre en fin des bulletins :
 if (!isset($call_data_aid_e)){
     $call_data_aid_e = mysql_query("SELECT * FROM aid_config WHERE (order_display1 ='e' and display_bulletin!='n') ORDER BY order_display2");
     $nb_aid_e = mysql_num_rows($call_data_aid_e);
@@ -738,12 +738,12 @@ if (!isset($call_data_aid_e)){
 
 
 
-// On contrôle si on ne demande à imprimer qu'un seul bulletin ou si on veut imprimer la classe entière.
+// On contrÃ´le si on ne demande Ã  imprimer qu'un seul bulletin ou si on veut imprimer la classe entiÃ¨re.
 // Dans le cas du bulletin unique on re-remplit les tableaux $current_eleve_login, $current_eleve_note, $current_eleve_statut
 
-// On initialise $nombre_eleves2 à $nombre_eleves pour le cas où on aurait à traiter la classe entière et la boucle sur la liste d'élèves se fait sur $nombre_eleves2
-// $nombre_eleves est conservé pour Elève n°.../total
-// Et $nombre_eleves2 prend pour valeur 1 si on ne veut qu'un élève.
+// On initialise $nombre_eleves2 Ã  $nombre_eleves pour le cas oÃ¹ on aurait Ã  traiter la classe entiÃ¨re et la boucle sur la liste d'Ã©lÃ¨ves se fait sur $nombre_eleves2
+// $nombre_eleves est conservÃ© pour ElÃ¨ve nÂ°.../total
+// Et $nombre_eleves2 prend pour valeur 1 si on ne veut qu'un Ã©lÃ¨ve.
 $nombre_eleves2=$nombre_eleves;
 //echo "\$liste_login_ele=$liste_login_ele<br />";
 //if($liste_login_ele!="_CLASSE_ENTIERE_"){
@@ -751,7 +751,7 @@ $nombre_eleves2=$nombre_eleves;
 
 if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 
-	// On vérifie que les élèves choisis sont bien tous dans la classe sur la période choisie:
+	// On vÃ©rifie que les Ã©lÃ¨ves choisis sont bien tous dans la classe sur la pÃ©riode choisie:
 	unset($liste_login_ele2);
 	$liste_login_ele2=array();
 	for($i=0;$i<count($liste_login_ele);$i++){
@@ -770,13 +770,13 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 		unset($indice_ele);
 		$indice_ele=array();
 		for($i=0;$i<count($liste_login_ele2);$i++){
-			// On recherche l'indice du $login_ele dans l'appel précédent comprenant la liste de tous les élèves de la classe:
+			// On recherche l'indice du $login_ele dans l'appel prÃ©cÃ©dent comprenant la liste de tous les Ã©lÃ¨ves de la classe:
 			for($k=0;$k<count($current_eleve_login);$k++){
 				if($current_eleve_login[$k]==$liste_login_ele2[$i]){
 					$indice_ele[$i]=$k;
 				}
 			}
-			//echo "$liste_login_ele2[$i] indice $i anciennement à l'indice $indice_ele[$i]<br />";
+			//echo "$liste_login_ele2[$i] indice $i anciennement Ã  l'indice $indice_ele[$i]<br />";
 		}
 
 		$chaine_eleves="";
@@ -792,8 +792,8 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 			}
 			//echo "$chaine_eleves<br />";
 
-			// On va re-remplir des tableaux pour tenir compte de la liste des élèves souhaités...
-			// mais des calculs de moyennes ont été faits auparavant.
+			// On va re-remplir des tableaux pour tenir compte de la liste des Ã©lÃ¨ves souhaitÃ©s...
+			// mais des calculs de moyennes ont Ã©tÃ© faits auparavant.
 
 			//$appel_liste_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE (e.login = c.login and c.id_classe = '".$id_classe."' and c.periode='".$periode_num."' AND e.login='".$login_ele."') ORDER BY e.nom, e.prenom");
 			//$nombre_eleves2 = mysql_num_rows($appel_liste_eleves);
@@ -807,7 +807,7 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 				//$i=0;
 				//$current_eleve_login[$i]=mysql_result($appel_liste_eleves, $i, "login");
 				$current_eleve_login[$i]=$login_ele;
-				// Maintenant on regarde si l'élève suit bien cette matière ou pas
+				// Maintenant on regarde si l'Ã©lÃ¨ve suit bien cette matiÃ¨re ou pas
 				if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
 					$current_eleve_note_query = mysql_query("SELECT distinct * FROM matieres_notes
 					WHERE (
@@ -818,9 +818,9 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 					$current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
 					$current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
 
-					// On détermine le coefficient pour cette matière
+					// On dÃ©termine le coefficient pour cette matiÃ¨re
 
-					// On teste si l'élève a un coef spécifique pour cette matière
+					// On teste si l'Ã©lÃ¨ve a un coef spÃ©cifique pour cette matiÃ¨re
 					if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")){
 						$current_eleve_coef[$j][$i]=1;
 					}
@@ -841,13 +841,13 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 				$j++;
 			}
 
-			// Le calcul des moyennes générales a été effectué auparavant avec:
+			// Le calcul des moyennes gÃ©nÃ©rales a Ã©tÃ© effectuÃ© auparavant avec:
 			// include "../lib/calcul_moy_gen.inc.php";
-			// ... mais les indices ne coïncident pas.
-			// Idem sur les catégories
+			// ... mais les indices ne coÃ¯ncident pas.
+			// Idem sur les catÃ©gories
 			if(isset($indice_ele[$i])){
-				// Si l'élève n'est pas présent dans la classe sur toutes les périodes,
-				// il se peut que l'indice ne soit pas trouvé dans la liste des élèves récupérés par le premier $appel_liste_eleves
+				// Si l'Ã©lÃ¨ve n'est pas prÃ©sent dans la classe sur toutes les pÃ©riodes,
+				// il se peut que l'indice ne soit pas trouvÃ© dans la liste des Ã©lÃ¨ves rÃ©cupÃ©rÃ©s par le premier $appel_liste_eleves
 
 				// Avec le re-remplissage de $liste_login_ele2, le test ci-dessus ne devrait plus servir.
 
@@ -868,7 +868,7 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 		//echo "$chaine_eleves<br />";
 		//flush();
 
-		// On regénère la requête utilisée par la suite pour récupérer l'ERENO,...
+		// On regÃ©nÃ¨re la requÃªte utilisÃ©e par la suite pour rÃ©cupÃ©rer l'ERENO,...
 		$appel_liste_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c
 		WHERE (
 		e.login = c.login and
@@ -900,13 +900,13 @@ elseif($b_adr_pg=='yy') {
 $_SESSION['b_adr_pg']=$b_adr_pg;
 
 
-// On lance la première boucle : boucle 'élève'
+// On lance la premiÃ¨re boucle : boucle 'Ã©lÃ¨ve'
 // ---------------------------------------------
 $i=0;
 //while ($i < $nombre_eleves) {
 while ($i < $nombre_eleves2) {
 
-	// On est dans la première boucle. On appelle les données complètes de l'élève :
+	// On est dans la premiÃ¨re boucle. On appelle les donnÃ©es complÃ¨tes de l'Ã©lÃ¨ve :
 	//-------------------------------
 	$current_eleve_nom = mysql_result($appel_liste_eleves, $i, "nom");
 	$current_eleve_prenom = mysql_result($appel_liste_eleves, $i, "prenom");
@@ -929,11 +929,11 @@ while ($i < $nombre_eleves2) {
 	$query = mysql_query("SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '" . $current_eleve_login[$i] . "')");
 	$current_eleve_cperesp_login = @mysql_result($query, "0", "login");
 
-	// Numéro INE de l'élève:
+	// NumÃ©ro INE de l'Ã©lÃ¨ve:
 	$current_eleve_INE = mysql_result($appel_liste_eleves, $i, "no_gep");
 
 
-    //determination du nombre de bulletins à imprimer
+    //determination du nombre de bulletins Ã  imprimer
     $nb_bulletins = 1;
 
     // Impression d'une page de garde
@@ -1070,7 +1070,7 @@ while ($i < $nombre_eleves2) {
 		$ligne3 = "";
 	}
 
-	$info_eleve_page_garde="Elève: $current_eleve_nom $current_eleve_prenom, $current_classe";
+	$info_eleve_page_garde="ElÃ¨ve: $current_eleve_nom $current_eleve_prenom, $current_classe";
 
 
 	if ($affiche_page_garde == "yes") {
@@ -1079,7 +1079,7 @@ while ($i < $nombre_eleves2) {
 		echo "<p class='saut'>&nbsp;</p>\n";
 
 	}
-	//determination du nombre de bulletins à imprimer
+	//determination du nombre de bulletins Ã  imprimer
 	if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
 		if((
 		(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
@@ -1097,7 +1097,7 @@ while ($i < $nombre_eleves2) {
 
 
 
-	// On passe outre si il a été expressement demandé un seul bulletin.
+	// On passe outre si il a Ã©tÃ© expressement demandÃ© un seul bulletin.
 	if($un_seul_bull_par_famille=="oui"){
 		$nb_bulletins=1;
 	}
@@ -1110,11 +1110,11 @@ while ($i < $nombre_eleves2) {
 
         //====================================================================
         // AJOUT: boireaus
-        // On imprime la deuxième page de garde si nécessaire entre les deux bulletins pour permettre un recto-verso
+        // On imprime la deuxiÃ¨me page de garde si nÃ©cessaire entre les deux bulletins pour permettre un recto-verso
         if ($affiche_page_garde == "yes") {
-            // Pour le deuxième bulletin, $bulletin vaut 1:
+            // Pour le deuxiÃ¨me bulletin, $bulletin vaut 1:
             if($bulletin==1) {
-                // Impression d'une deuxième page de garde s'il y a un deuxième responsable
+                // Impression d'une deuxiÃ¨me page de garde s'il y a un deuxiÃ¨me responsable
 /*
                 if ((substr($adr1, 0, strlen($adr1)-1) != substr($adr2, 0, strlen($adr1)-1) or ($cp1 != $cp2) or ($commune1 != $commune2))
                     and ($adr2 != '') ) {
@@ -1175,7 +1175,7 @@ while ($i < $nombre_eleves2) {
         //====================================================================
 		//echo "<span style='color:green;'>$ligne1</span>";
 /*
-        // On est dans la première boucle. On appelle les données complètes de l'élève :
+        // On est dans la premiÃ¨re boucle. On appelle les donnÃ©es complÃ¨tes de l'Ã©lÃ¨ve :
         //-------------------------------
         $current_eleve_nom = mysql_result($appel_liste_eleves, $i, "nom");
         $current_eleve_prenom = mysql_result($appel_liste_eleves, $i, "prenom");
@@ -1200,14 +1200,14 @@ while ($i < $nombre_eleves2) {
 */
 
 
-        // début de l'affichage du bulletin
+        // dÃ©but de l'affichage du bulletin
 
         if ($affiche_adresse == "y") {
 		// CADRE AU-DESSUS DU TABLEAU DES APPRECIATIONS:
 		echo "<div";
 		if($addressblock_debug=="y"){echo " style='border:1px solid red;'";}
 		echo ">\n";
-		// Pour éviter que le bloc-adresse ne remonte au-delà du saut de page:
+		// Pour Ã©viter que le bloc-adresse ne remonte au-delÃ  du saut de page:
 		echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
 
 
@@ -1380,7 +1380,7 @@ $ligne3
 </div>\n";
 
 
-		// Cadre contenant le tableau Logo+Ad_etab et le nom, prénom,... de l'élève:
+		// Cadre contenant le tableau Logo+Ad_etab et le nom, prÃ©nom,... de l'Ã©lÃ¨ve:
 		echo "<div style='float:left;
 left:0px;
 top:0px;
@@ -1388,7 +1388,7 @@ width:".$largeur1."%;\n";
 if($addressblock_debug=="y"){echo "border: 1px solid green;\n";}
 echo "'>\n";
 
-		echo "<table summary='Tableau du logo et infos établissement'";
+		echo "<table summary='Tableau du logo et infos Ã©tablissement'";
 		if($addressblock_debug=="y"){echo " border='1'";}
 		echo ">\n";
 		echo "<tr>\n";
@@ -1459,14 +1459,14 @@ echo "'>\n";
 		}
 
 
-        	        //affichage des données sur une seule ligne ou plusieurs
+        	        //affichage des donnÃ©es sur une seule ligne ou plusieurs
         if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
 			if ($current_eleve_sexe == "M") {
-				echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
+				echo "NÃ©&nbsp;le&nbsp;$current_eleve_naissance";
 			} else {
-				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+				echo "NÃ©e&nbsp;le&nbsp;$current_eleve_naissance";
 			}
 			//Eric Ajout
 			echo "<br />";
@@ -1474,7 +1474,7 @@ echo "'>\n";
 			if ($current_eleve_regime == "ext.") {echo "Externe";}
 			if ($current_eleve_regime == "int.") {echo "Interne";}
 			if ($current_eleve_regime == "i-e"){
-			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externé";}else{echo "Interne&nbsp;externée";}
+			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externÃ©";}else{echo "Interne&nbsp;externÃ©e";}
 			}
 			//Eric Ajout
 			if ($bull_mention_doublant == 'yes'){
@@ -1497,16 +1497,16 @@ echo "'>\n";
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
 			if ($current_eleve_sexe == "M") {
-				echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
+				echo "NÃ©&nbsp;le&nbsp;$current_eleve_naissance";
 			} else {
-				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+				echo "NÃ©e&nbsp;le&nbsp;$current_eleve_naissance";
 			}
 
 			if ($current_eleve_regime == "d/p") {echo ", Demi-pensionnaire";}
 			if ($current_eleve_regime == "ext.") {echo ", Externe";}
 			if ($current_eleve_regime == "int.") {echo ", Interne";}
 			if ($current_eleve_regime == "i-e"){
-				if ($current_eleve_sexe == "M"){echo ", Interne&nbsp;externé";}else{echo ", Interne&nbsp;externée";}
+				if ($current_eleve_sexe == "M"){echo ", Interne&nbsp;externÃ©";}else{echo ", Interne&nbsp;externÃ©e";}
 			}
 			if ($bull_mention_doublant == 'yes'){
 				if ($current_eleve_doublant == 'R'){
@@ -1520,7 +1520,7 @@ echo "'>\n";
 
 		if($bull_affiche_INE_eleve=="y"){
 			echo "<br />\n";
-			echo "Numéro INE: $current_eleve_INE";
+			echo "NumÃ©ro INE: $current_eleve_INE";
 		}
 
 		if($bull_affiche_etab=="y"){
@@ -1565,8 +1565,8 @@ echo "'>\n";
 		//echo "<spacer type='vertical' size='10'>";
 
 
-		// Tableau contenant le nom de la classe, l'année et la période.
-		echo "<table width='".$largeur2."%' summary='Tableau des nom de classe, année et période' ";
+		// Tableau contenant le nom de la classe, l'annÃ©e et la pÃ©riode.
+		echo "<table width='".$largeur2."%' summary='Tableau des nom de classe, annÃ©e et pÃ©riode' ";
 		if($addressblock_debug=="y"){echo "border='1' ";}
 		echo "cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
 		echo "<tr>\n";
@@ -1574,7 +1574,7 @@ echo "'>\n";
 		echo "&nbsp;\n";
 		echo "</td>\n";
 		echo "<td style='width:".$addressblock_classe_annee2."%;'>\n";
-		echo "<p class='bulletin' align='center'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />Année scolaire ".$gepiYear."</span><br />\n";
+		echo "<p class='bulletin' align='center'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />AnnÃ©e scolaire ".$gepiYear."</span><br />\n";
 		$temp = strtolower($nom_periode[$periode_num]);
 		echo "Bulletin&nbsp;";
 		if($genre_periode=="M"){
@@ -1588,19 +1588,19 @@ echo "'>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 
-		// Pour que le tableau des appréciations ne vienne pas s'encastrer dans les DIV float:
+		// Pour que le tableau des apprÃ©ciations ne vienne pas s'encastrer dans les DIV float:
 		echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
 
-		// Fin du cadre entête:
+		// Fin du cadre entÃªte:
 		echo "</div>\n";
 
 	}
 	else{
 		//-------------------------------
-		// Maintenant, on affiche l'en-tête : Les données de l'élève, et l'adresse du lycée.
+		// Maintenant, on affiche l'en-tÃªte : Les donnÃ©es de l'Ã©lÃ¨ve, et l'adresse du lycÃ©e.
 		//-------------------------------
 
-		echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des données élève et établissement'>\n";
+		echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des donnÃ©es Ã©lÃ¨ve et Ã©tablissement'>\n";
 		//echo "<table width='$largeurtableau' border='1' cellspacing='".getSettingValue("cellspacing")."' cellpadding='".getSettingValue("cellpadding")."'>\n";
 
 		echo "<tr>\n";
@@ -1621,14 +1621,14 @@ echo "'>\n";
 			}
 		}
 
-	        //affichage des données sur une seule ligne ou plusieurs
+	        //affichage des donnÃ©es sur une seule ligne ou plusieurs
         if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
 			if ($current_eleve_sexe == "M") {
-				echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
+				echo "NÃ©&nbsp;le&nbsp;$current_eleve_naissance";
 			} else {
-				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+				echo "NÃ©e&nbsp;le&nbsp;$current_eleve_naissance";
 			}
 			//Eric Ajout
 			echo "<br />";
@@ -1636,7 +1636,7 @@ echo "'>\n";
 			if ($current_eleve_regime == "ext.") {echo "Externe";}
 			if ($current_eleve_regime == "int.") {echo "Interne";}
 			if ($current_eleve_regime == "i-e"){
-			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externé";}else{echo "Interne&nbsp;externée";}
+			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externÃ©";}else{echo "Interne&nbsp;externÃ©e";}
 			}
 			//Eric Ajout
 			if ($bull_mention_doublant == 'yes'){
@@ -1659,16 +1659,16 @@ echo "'>\n";
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
 			if ($current_eleve_sexe == "M") {
-				echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
+				echo "NÃ©&nbsp;le&nbsp;$current_eleve_naissance";
 			} else {
-				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+				echo "NÃ©e&nbsp;le&nbsp;$current_eleve_naissance";
 			}
 
 			if ($current_eleve_regime == "d/p") {echo ", Demi-pensionnaire";}
 			if ($current_eleve_regime == "ext.") {echo ", Externe";}
 			if ($current_eleve_regime == "int.") {echo ", Interne";}
 			if ($current_eleve_regime == "i-e"){
-				if ($current_eleve_sexe == "M"){echo ", Interne&nbsp;externé";}else{echo ", Interne&nbsp;externée";}
+				if ($current_eleve_sexe == "M"){echo ", Interne&nbsp;externÃ©";}else{echo ", Interne&nbsp;externÃ©e";}
 			}
 			if ($bull_mention_doublant == 'yes'){
 				if ($current_eleve_doublant == 'R'){
@@ -1714,7 +1714,7 @@ echo "'>\n";
 		echo "</p></td>\n<td style=\"width: 40%;text-align: center;\">\n";
 
 		if ($affiche_adresse != "y") {
-			echo "<p class='bulletin'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />Année scolaire ".$gepiYear."</span><br />";
+			echo "<p class='bulletin'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />AnnÃ©e scolaire ".$gepiYear."</span><br />";
 			$temp = strtolower($nom_periode[$periode_num]);
 			echo "Bulletin&nbsp;";
 			if($genre_periode=="M"){
@@ -1755,7 +1755,7 @@ echo "'>\n";
 
 	echo "</td>\n</tr>\n</table>\n";
 		//-------------------------------
-		// Fin de l'en-tête
+		// Fin de l'en-tÃªte
 	}
 
 
@@ -1769,7 +1769,7 @@ echo "'>\n";
 
         //=============================================
 
-		// Tableau des matières/notes/appréciations
+		// Tableau des matiÃ¨res/notes/apprÃ©ciations
 
 		// Eric
 		include ($fichier_bulletin);
@@ -1779,7 +1779,7 @@ echo "'>\n";
 
 		// Absences
 
-        // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+        // Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
         if ($bull_affiche_absences == 'y') {
             //
             // Tableau des absences
@@ -1790,13 +1790,13 @@ echo "'>\n";
             echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des absences et retards'>\n";
             echo "<tr>\n<td style=\"vertical-align: top;\"><p class='bulletin'>";
             if ($current_eleve_absences == '0') {
-                echo "<i>Aucune demi-journée d'absence</i>.";
+                echo "<i>Aucune demi-journÃ©e d'absence</i>.";
             } else {
-                echo "<i>Nombre de demi-journées d'absence ";
-                if ($current_eleve_nj == '0') {echo "justifiées ";}
+                echo "<i>Nombre de demi-journÃ©es d'absence ";
+                if ($current_eleve_nj == '0') {echo "justifiÃ©es ";}
                 echo ": </i><b>$current_eleve_absences</b>";
                 if ($current_eleve_nj != '0') {
-                    echo " (dont <b>$current_eleve_nj</b> non justifiée"; if ($current_eleve_nj != '1') {echo "s";}
+                    echo " (dont <b>$current_eleve_nj</b> non justifiÃ©e"; if ($current_eleve_nj != '1') {echo "s";}
                     echo ")";
                 }
                 echo ".";
@@ -1804,8 +1804,8 @@ echo "'>\n";
             if ($current_eleve_retards != '0') {
                 echo "<i> Nombre de retards : </i><b>$current_eleve_retards</b>";
             }
-            //echo "  (C.P.E. chargé du suivi : ". affiche_utilisateur($current_eleve_cperesp_login,$id_classe) . ")";
-        echo "  (C.P.E. chargé";
+            //echo "  (C.P.E. chargÃ© du suivi : ". affiche_utilisateur($current_eleve_cperesp_login,$id_classe) . ")";
+        echo "  (C.P.E. chargÃ©";
         $sql="SELECT civilite FROM utilisateurs WHERE login='$current_eleve_cperesp_login'";
         $res_civi=mysql_query($sql);
         if(mysql_num_rows($res_civi)>0){
@@ -1826,7 +1826,7 @@ echo "'>\n";
 		// Avis du conseil de classe
 
         // MODIF: boireaus
-        // Si la variable 'bull_affiche_avis' est à 'n',  mais que 'bull_affiche_signature' est à 'y', il faut quand même le tableau
+        // Si la variable 'bull_affiche_avis' est Ã  'n',  mais que 'bull_affiche_signature' est Ã  'y', il faut quand mÃªme le tableau
         if (($bull_affiche_avis == 'y')||($bull_affiche_signature == 'y')) {
             // Tableau de l'avis des conseil de classe
             //echo "<table $class_bordure style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
@@ -1840,7 +1840,7 @@ echo "'>\n";
             //
             // Avis du conseil de classe :
             //
-            // Appel des données :
+            // Appel des donnÃ©es :
             $current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num')");
             $current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 
@@ -1869,7 +1869,7 @@ echo "'>\n";
 				echo "<span class='avis_bulletin'>&nbsp;</span>";
 			}
             if ($current_eleve_avis == '') {
-                // Si il n'y a pas d'avis, on rajoute des lignes vides selon les paramètres d'impression
+                // Si il n'y a pas d'avis, on rajoute des lignes vides selon les paramÃ¨tres d'impression
                 $n = 0;
                 if ($bull_espace_avis >0){
                     while ($n < $bull_espace_avis) {
@@ -1911,7 +1911,7 @@ echo "'>\n";
 
         //=============================================
         // MODIF: boireaus
-        // Si une des deux variables 'bull_affiche_avis' ou 'bull_affiche_signature' est à 'y', il faut fermer le tableau
+        // Si une des deux variables 'bull_affiche_avis' ou 'bull_affiche_signature' est Ã  'y', il faut fermer le tableau
         if (($bull_affiche_avis == 'y')||($bull_affiche_signature == 'y')) {
             echo "</td>\n";
             // Fin du tableau
@@ -1925,7 +1925,7 @@ echo "'>\n";
         // Affichage de la formule de bas de page
 
         if (($bull_formule_bas != '') and ($bull_affiche_formule == 'y')) {
-            // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+            // Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
             echo "<table width='$largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau de la formule de bas de page'>\n";
             echo "<tr>";
             echo "<td><p align='center' class='bulletin'>".$bull_formule_bas."</p></td>\n";
@@ -1943,7 +1943,7 @@ echo "'>\n";
     }
     }  //fin de la boucle pour 1 ou 2 bulletins
 
-    $i++; // Repère de la boucle 'élève';
+    $i++; // RepÃ¨re de la boucle 'Ã©lÃ¨ve';
 }
 require_once("../lib/microtime.php");
 ?>

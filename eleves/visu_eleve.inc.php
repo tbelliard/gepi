@@ -23,7 +23,7 @@
 
 if(($_SERVER['SCRIPT_NAME']!="$gepiPath/eleves/visu_eleve.php")&&
 ($_SERVER['SCRIPT_NAME']!="$gepiPath/mod_abs2/fiche_eleve.php")) {
-	echo "<p style='color:red'>Inclusion non autorisée depuis ".$_SERVER['SCRIPT_NAME']."</p>\n";
+	echo "<p style='color:red'>Inclusion non autorisÃ©e depuis ".$_SERVER['SCRIPT_NAME']."</p>\n";
 	require_once("../lib/footer.inc.php");
 	die();
 }
@@ -55,7 +55,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
 		<p>
-		Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' value='' />
+		Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prÃ©nom</b> contient&nbsp;: <input type='text' name='rech_prenom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
 		</p>
@@ -124,7 +124,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('prenom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
-	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prÃ©nom</b> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
 	echo "</p>\n";
@@ -150,10 +150,10 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 			echo "<p>".ucfirst($gepiSettings['denomination_eleves'])." de la classe de ".get_class_from_id($id_classe).":</p>\n";
 
 			/*
-			echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
+			echo "<table class='boireaus' border='1' summary='Tableau des Ã©lÃ¨ves'>\n";
 			echo "<tr>\n";
 			echo "<th>Nom</th>\n";
-			echo "<th>Prénom</th>\n";
+			echo "<th>PrÃ©nom</th>\n";
 			echo "</tr>\n";
 			while($lig_ele=mysql_query($res_ele)) {
 				echo "";
@@ -215,7 +215,7 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 }
 //elseif(isset($_POST['Recherche_sans_js'])) {
 elseif(isset($Recherche_sans_js)) {
-	// On ne passe ici que si JavaScript est désactivé
+	// On ne passe ici que si JavaScript est dÃ©sactivÃ©
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
 	echo "</p>\n";
@@ -230,7 +230,7 @@ else {
 
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
-	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
+	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre Ã©lÃ¨ve</a>\n";
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ".$gepiSettings['denomination_eleve']."/classe</a>\n";
 
 	if(!isset($id_classe)) {
@@ -299,7 +299,7 @@ else {
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_prec&amp;id_classe=$id_classe";
 			echo "'";
 			echo " onclick=\"passer_a_eleve('$ele_login_prec','$id_classe');return false;\"";
-			echo ">".ucfirst($gepiSettings['denomination_eleve'])." précédent</a>";
+			echo ">".ucfirst($gepiSettings['denomination_eleve'])." prÃ©cÃ©dent</a>";
 		}
 		if($chaine_options_eleves!="") {
 			echo " | <select name='ele_login' onchange=\"document.forms['form1'].submit();\">\n";
@@ -328,17 +328,17 @@ else {
 	echo "' />\n";
 	echo "</form>\n";
 
-	// Affichage des onglets pour l'élève choisi
+	// Affichage des onglets pour l'Ã©lÃ¨ve choisi
 
 	echo "<div id='patience'>
 <noscript>
-Patientez pendant l'extraction des données... merci.
+Patientez pendant l'extraction des donnÃ©es... merci.
 </noscript>
 </div>\n";
-	// Avec ça, le message ne disparait pas quand on a désactivé JavaScript...
+	// Avec Ã§a, le message ne disparait pas quand on a dÃ©sactivÃ© JavaScript...
 
 	echo "<script type='text/javascript'>
-	document.getElementById('patience').innerHTML=\"Patientez pendant l'extraction des données... merci.\";
+	document.getElementById('patience').innerHTML=\"Patientez pendant l'extraction des donnÃ©es... merci.\";
 
 	function passer_a_eleve(ele_login,id_classe) {
 		if(document.getElementById('onglet_courant')) {
@@ -368,12 +368,12 @@ Patientez pendant l'extraction des données... merci.
 	$tab_couleur['discipline']="salmon";
     $tab_couleur['fp']="linen";
 
-	// On vérifie que l'élève existe
+	// On vÃ©rifie que l'Ã©lÃ¨ve existe
 	$sql="SELECT 1=1 FROM eleves WHERE login='$ele_login';";
 	$res_ele=mysql_query($sql);
 
 	if(mysql_num_rows($res_ele)==0){
-		// On ne devrait pas arriver là.
+		// On ne devrait pas arriver lÃ .
 		echo "<p>L'".$gepiSettings['denomination_eleve']." dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
 	}
 	else{
@@ -384,7 +384,7 @@ Patientez pendant l'extraction des données... merci.
 		$month = isset($_POST["month"]) ? $_POST["month"] : (isset($_GET["month"]) ? $_GET["month"] : date("m"));
 		unset($year);
 		$year = isset($_POST["year"]) ? $_POST["year"] : (isset($_GET["year"]) ? $_GET["year"] : date("Y"));
-		// Vérification
+		// VÃ©rification
 		settype($month,"integer");
 		settype($day,"integer");
 		settype($year,"integer");
@@ -400,7 +400,7 @@ Patientez pendant l'extraction des données... merci.
 		while (!checkdate($month, $day, $year)) $day--;
 		$today=mktime(0,0,0,$month,$day,$year);
 		//================================
-		// Dates pour l'extraction des cahiers de textes: 1j avant et 7j après
+		// Dates pour l'extraction des cahiers de textes: 1j avant et 7j aprÃ¨s
 		$date_ct1=$today-1*24*3600;
 		$date_ct2=$today+7*24*3600;
 
@@ -414,7 +414,7 @@ Patientez pendant l'extraction des données... merci.
 		//================================
 
 		// A FAIRE:
-		// Contrôler si la personne connectée a le droit de consulter les infos sur cet élève
+		// ContrÃ´ler si la personne connectÃ©e a le droit de consulter les infos sur cet Ã©lÃ¨ve
 		$acces_eleve="n";
 		$acces_responsables="n";
 		$acces_enseignements="n";
@@ -447,7 +447,7 @@ Patientez pendant l'extraction des données... merci.
 			    $test=mysql_query($sql);
 
 			    if(mysql_num_rows($test)==0) {
-				    echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
+				    echo "<p>Vous n'Ãªtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
 				    require_once("../lib/footer.inc.php");
 				    die();
 			    }
@@ -474,7 +474,7 @@ Patientez pendant l'extraction des données... merci.
 				else {
 					$AAScolResp=getSettingValue('AAScolResp');
 					//if(()&&($AAScolResp=="yes")) {
-					// On filtre plus haut: un compte scolarité n'a accès qu'aux élèves dont il est "responsable"
+					// On filtre plus haut: un compte scolaritÃ© n'a accÃ¨s qu'aux Ã©lÃ¨ves dont il est "responsable"
 					if($AAScolResp=="yes") {
 						$acces_anna="y";
 					}
@@ -489,7 +489,7 @@ Patientez pendant l'extraction des données... merci.
 			    $test=mysql_query($sql);
 
 			    if(mysql_num_rows($test)==0) {
-				    echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
+				    echo "<p>Vous n'Ãªtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
 				    require_once("../lib/footer.inc.php");
 				    die();
 			    }
@@ -516,7 +516,7 @@ Patientez pendant l'extraction des données... merci.
 				else {
 					$AACpeResp=getSettingValue('AACpeResp');
 					//if(()&&($AACpeResp=="yes")) {
-					// On filtre plus haut: un compte cpe n'a accès qu'aux élèves dont il est "responsable"
+					// On filtre plus haut: un compte cpe n'a accÃ¨s qu'aux Ã©lÃ¨ves dont il est "responsable"
 					if($AACpeResp=="yes") {
 						$acces_anna="y";
 					}
@@ -548,7 +548,7 @@ Patientez pendant l'extraction des données... merci.
 				$is_pp="n";
 			}
 
-			// Contrôle de l'accès à l'onglet Responsables
+			// ContrÃ´le de l'accÃ¨s Ã  l'onglet Responsables
 			$GepiAccesGestElevesProf=getSettingValue('GepiAccesGestElevesProf');
 			if($GepiAccesGestElevesProf=="yes") {
 				$acces_responsables="y";
@@ -560,7 +560,7 @@ Patientez pendant l'extraction des données... merci.
 				}
 			}
 
-			// Contrôle de l'accès du prof au relevé de notes:
+			// ContrÃ´le de l'accÃ¨s du prof au relevÃ© de notes:
 			$GepiAccesReleveProfP=getSettingValue('GepiAccesReleveProfP');
 			if(($GepiAccesReleveProfP=="yes")&&($is_pp=="y")) {
 				$acces_releves="y";
@@ -663,7 +663,7 @@ Patientez pendant l'extraction des données... merci.
 
 			//echo "\$acces_releves=$acces_releves<br />";
 
-			// Contrôle de l'accès du prof aux bulletins:
+			// ContrÃ´le de l'accÃ¨s du prof aux bulletins:
 			$GepiAccesBulletinSimplePP=getSettingValue('GepiAccesBulletinSimplePP');
 			if(($GepiAccesBulletinSimplePP=="yes")&&($is_pp=="y")) {
 				$acces_bulletins="y";
@@ -787,7 +787,7 @@ Patientez pendant l'extraction des données... merci.
 		}
 		elseif($_SESSION['statut'] == 'autre'){
 
-			// On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
+			// On rÃ©cupÃ¨re les droits de ce statuts pour savoir ce qu'on peut afficher
 			$sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
 			$query_d = mysql_query($sql_d);
 			$auth_other = array();
@@ -845,7 +845,7 @@ Patientez pendant l'extraction des données... merci.
 		}
 
 		//===========================================
-		// Extraction de quelques données sur l'établissement
+		// Extraction de quelques donnÃ©es sur l'Ã©tablissement
 		$RneEtablissement=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 		$gepiSchoolName=getSettingValue("gepiSchoolName") ? getSettingValue("gepiSchoolName") : "gepiSchoolName";
 		$gepiSchoolAdress1=getSettingValue("gepiSchoolAdress1") ? getSettingValue("gepiSchoolAdress1") : "";
@@ -864,11 +864,11 @@ Patientez pendant l'extraction des données... merci.
 		$photo_largeur_max=150;
 		$photo_hauteur_max=150;
 
-		// Lieu de naissance (peut ne pas être activé):
+		// Lieu de naissance (peut ne pas Ãªtre activÃ©):
 		$ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
 
 		//===========================================
-		// Initialisations concernant les relevés de notes
+		// Initialisations concernant les relevÃ©s de notes
 		$p_releve_margin=getSettingValue("p_releve_margin") ? getSettingValue("p_releve_margin") : "";
 		$releve_textsize=getSettingValue("releve_textsize") ? getSettingValue("releve_textsize") : 10;
 		$releve_titlesize=getSettingValue("releve_titlesize") ? getSettingValue("releve_titlesize") : 16;
@@ -902,9 +902,9 @@ Patientez pendant l'extraction des données... merci.
 
 		$active_cahiers_texte=getSettingValue("active_cahiers_texte") ? getSettingValue("active_cahiers_texte") : "n";
 
-		// Récupération des variables du bloc adresses:
-		// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
-		// Il y a d'autres récupération de largeur et de positionnement du bloc adresse à extraire...
+		// RÃ©cupÃ©ration des variables du bloc adresses:
+		// Liste de rÃ©cupÃ©ration Ã  extraire de la boucle Ã©lÃ¨ves pour limiter le nombre de requÃªtes... A FAIRE
+		// Il y a d'autres rÃ©cupÃ©ration de largeur et de positionnement du bloc adresse Ã  extraire...
 		// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
 		$releve_addressblock_logo_etab_prop=getSettingValue("releve_addressblock_logo_etab_prop") ? getSettingValue("releve_addressblock_logo_etab_prop") : 40;
 		$releve_addressblock_autre_prop=100-$releve_addressblock_logo_etab_prop;
@@ -912,18 +912,18 @@ Patientez pendant l'extraction des données... merci.
 		// Taille des polices sur le bloc adresse:
 		$releve_addressblock_font_size=getSettingValue("releve_addressblock_font_size") ? getSettingValue("releve_addressblock_font_size") : 12;
 
-		// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
+		// Taille de la cellule Classe et AnnÃ©e scolaire sur le bloc adresse:
 		$releve_addressblock_classe_annee=getSettingValue("releve_addressblock_classe_annee") ? getSettingValue("releve_addressblock_classe_annee") : 35;
-		// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
+		// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, AnnÃ©e,...
 		$releve_addressblock_classe_annee2=round(100*$releve_addressblock_classe_annee/(100-$releve_addressblock_logo_etab_prop));
 
-		// Débug sur l'entête pour afficher les cadres
+		// DÃ©bug sur l'entÃªte pour afficher les cadres
 		$releve_addressblock_debug=getSettingValue("releve_addressblock_debug") ? getSettingValue("releve_addressblock_debug") : "n";
 
-		// Nombre de sauts de lignes entre le tableau logo+etab et le nom, prénom,... de l'élève
+		// Nombre de sauts de lignes entre le tableau logo+etab et le nom, prÃ©nom,... de l'Ã©lÃ¨ve
 		$releve_ecart_bloc_nom=getSettingValue("releve_ecart_bloc_nom") ? getSettingValue("releve_ecart_bloc_nom") : 0;
 
-		// Afficher l'établissement d'origine de l'élève:
+		// Afficher l'Ã©tablissement d'origine de l'Ã©lÃ¨ve:
 		$releve_affiche_etab=getSettingValue("releve_affiche_etab") ? getSettingValue("releve_affiche_etab") : "n";
 
 		// Bordure classique ou trait-noir:
@@ -942,7 +942,7 @@ Patientez pendant l'extraction des données... merci.
 
 
 
-		// Affichage ou non du nom et de l'adresse de l'établissement
+		// Affichage ou non du nom et de l'adresse de l'Ã©tablissement
 		$releve_affich_nom_etab=getSettingValue("releve_affich_nom_etab") ? getSettingValue("releve_affich_nom_etab") : "y";
 		$releve_affich_adr_etab=getSettingValue("releve_affich_adr_etab") ? getSettingValue("releve_affich_adr_etab") : "y";
 		if(($releve_affich_nom_etab!="n")&&($releve_affich_nom_etab!="y")) {$releve_affich_nom_etab="y";}
@@ -964,7 +964,7 @@ Patientez pendant l'extraction des données... merci.
 		$releve_affiche_signature=getSettingValue("releve_affiche_signature") ? getSettingValue("releve_affiche_signature") : "y";
 
 		$releve_affiche_formule=getSettingValue("releve_affiche_formule") ? getSettingValue("releve_affiche_formule") : "n";
-		$releve_formule_bas=getSettingValue("releve_formule_bas") ? getSettingValue("releve_formule_bas") : "Relevé à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.";
+		$releve_formule_bas=getSettingValue("releve_formule_bas") ? getSettingValue("releve_formule_bas") : "RelevÃ© Ã  conserver prÃ©cieusement. Aucun duplicata ne sera dÃ©livrÃ©. - GEPI : solution libre de gestion et de suivi des rÃ©sultats scolaires.";
 
 
 		$releve_col_hauteur=getSettingValue("releve_col_hauteur") ? getSettingValue("releve_col_hauteur") : 0;
@@ -1005,12 +1005,12 @@ Patientez pendant l'extraction des données... merci.
 
 
 
-		// Bibliothèque de fonctions:
+		// BibliothÃ¨que de fonctions:
 		//include("visu_ele_func.lib.php");
 		//include("$gepiPath/eleves/visu_ele_func.lib.php");
 		include("../eleves/visu_ele_func.lib.php");
 
-		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
+		// On extrait un tableau de l'ensemble des infos sur l'Ã©lÃ¨ve (bulletins, relevÃ©s de notes,... inclus)
 		$tab_ele=info_eleve($ele_login);
 
 		echo "<script type='text/javascript'>
@@ -1024,7 +1024,7 @@ Patientez pendant l'extraction des données... merci.
 		}
 		*/
 		//====================================
-		// Onglet Informations générales sur l'élève
+		// Onglet Informations gÃ©nÃ©rales sur l'Ã©lÃ¨ve
 		echo "<div id='t_eleve' class='t_onglet' style='";
 		if($onglet=='eleve') {
 			echo "border-bottom-color: ".$tab_couleur['eleve']."; ";
@@ -1092,7 +1092,7 @@ Patientez pendant l'extraction des données... merci.
 			echo "</div>\n";
 		}
 
-		// Onglet Relevés de notes
+		// Onglet RelevÃ©s de notes
 		if($acces_releves=="y") {
 			echo "<div id='t_releves' class='t_onglet' style='";
 			if($onglet=='releves') {
@@ -1103,7 +1103,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['releves']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves' onclick=\"affiche_onglet('releves');return false;\">Relevés de notes</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves' onclick=\"affiche_onglet('releves');return false;\">RelevÃ©s de notes</a>";
 			echo "</div>\n";
 		}
 
@@ -1177,7 +1177,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 		}
 
-		// Onglet Années antérieures
+		// Onglet AnnÃ©es antÃ©rieures
 		if($acces_anna=="y") {
 			echo "<div id='t_anna' class='t_onglet' style='";
 			if($onglet=='anna') {
@@ -1188,7 +1188,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['anna']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=anna' onclick=\"affiche_onglet('anna');return false;\">Années ant.</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=anna' onclick=\"affiche_onglet('anna');return false;\">AnnÃ©es ant.</a>";
 			echo "</div>\n";
 		}
 		//=====================================================================================
@@ -1210,16 +1210,16 @@ Patientez pendant l'extraction des données... merci.
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
 		echo "<h2>Informations sur l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-		//affichage de la date de sortie de l'élève de l'établissement
+		//affichage de la date de sortie de l'Ã©lÃ¨ve de l'Ã©tablissement
 		if ($tab_ele['date_sortie']!=0) {
-		   echo "<span class=\"red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."<br/><br/></span>";;
+		   echo "<span class=\"red\">Date de sortie de l'Ã©tablissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."<br/><br/></span>";;
 		}
 		
-		echo "<table border='0' summary='Infos élève'>\n";
+		echo "<table border='0' summary='Infos Ã©lÃ¨ve'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
 
-			echo "<table class='boireaus' summary='Infos élève (1)'>\n";
+			echo "<table class='boireaus' summary='Infos Ã©lÃ¨ve (1)'>\n";
 			echo "<tr><th style='text-align: left;'>Nom&nbsp;:</th><td>";
 			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 				echo "<a href='modify_eleve.php?eleve_login=".$ele_login."&amp;quelles_classes=certaines&amp;order_type=nom,prenom&amp;motif_rech='>".$tab_ele['nom']."</a>";
@@ -1228,19 +1228,19 @@ Patientez pendant l'extraction des données... merci.
 				echo $tab_ele['nom'];
 			}
 			echo "</td></tr>\n";
-			echo "<tr><th style='text-align: left;'>Prénom&nbsp;:</th><td>".$tab_ele['prenom']."</td></tr>\n";
+			echo "<tr><th style='text-align: left;'>PrÃ©nom&nbsp;:</th><td>".$tab_ele['prenom']."</td></tr>\n";
 			echo "<tr><th style='text-align: left;'>Sexe&nbsp;:</th><td>".$tab_ele['sexe']."</td></tr>\n";
-			echo "<tr><th style='text-align: left;'>Né";
+			echo "<tr><th style='text-align: left;'>NÃ©";
 			if($tab_ele['sexe']=='F') {echo "e";}
 			echo " le&nbsp;:</th><td>".$tab_ele['naissance']."</td></tr>\n";
-			if(isset($tab_ele['lieu_naissance'])) {echo "<tr><th style='text-align: left;'>à&nbsp;:</th><td>".$tab_ele['lieu_naissance']."</td></tr>\n";}
+			if(isset($tab_ele['lieu_naissance'])) {echo "<tr><th style='text-align: left;'>Ã &nbsp;:</th><td>".$tab_ele['lieu_naissance']."</td></tr>\n";}
 
-			echo "<tr><th style='text-align: left;'>Régime&nbsp;:</th><td>";
+			echo "<tr><th style='text-align: left;'>RÃ©gime&nbsp;:</th><td>";
 			if ($tab_ele['regime'] == "d/p") {echo "Demi-pensionnaire";}
 			if ($tab_ele['regime'] == "ext.") {echo "Externe";}
 			if ($tab_ele['regime'] == "int.") {echo "Interne";}
 			if ($tab_ele['regime'] == "i-e"){
-				echo "Interne&nbsp;externé";
+				echo "Interne&nbsp;externÃ©";
 				if (strtoupper($tab_ele['sexe'])!= "F") {echo "e";}
 			}
 			echo "</td></tr>\n";
@@ -1257,7 +1257,7 @@ Patientez pendant l'extraction des données... merci.
 			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')) {
 				echo "<tr><th style='text-align: left;'>Elenoet&nbsp;:</th><td>".$tab_ele['elenoet']."</td></tr>\n";
 				echo "<tr><th style='text-align: left;'>Ele_id&nbsp;:</th><td>".$tab_ele['ele_id']."</td></tr>\n";
-				echo "<tr><th style='text-align: left;'>N°INE&nbsp;:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
+				echo "<tr><th style='text-align: left;'>NÂ°INE&nbsp;:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
 			}
 
 			echo "<tr><th style='text-align: left;'>Email&nbsp;:</th><td>";
@@ -1318,7 +1318,7 @@ Patientez pendant l'extraction des données... merci.
 			echo "<h2>Responsables de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			if((!isset($tab_ele['resp']))||(count($tab_ele['resp'])==0)) {
-				echo "<p>Aucun responsable n'a été enregistré.</p>\n";
+				echo "<p>Aucun responsable n'a Ã©tÃ© enregistrÃ©.</p>\n";
 			}
 			else {
 				echo "<table border='0' summary='Infos responsables'>\n";
@@ -1327,7 +1327,7 @@ Patientez pendant l'extraction des données... merci.
 				for($i=0;$i<count($tab_ele['resp']);$i++) {
 					if($tab_ele['resp'][$i]['resp_legal']!=0) {
 						echo "<td valign='top'>\n";
-						echo "<p>Responsable légal <b>".$tab_ele['resp'][$i]['resp_legal']."</b></p>\n";
+						echo "<p>Responsable lÃ©gal <b>".$tab_ele['resp'][$i]['resp_legal']."</b></p>\n";
 
 						echo "<table class='boireaus' summary='Infos responsables (1)'>\n";
 						echo "<tr><th style='text-align: left;'>Nom:</th><td>";
@@ -1340,11 +1340,11 @@ Patientez pendant l'extraction des données... merci.
 						}
 
 						echo "</td></tr>\n";
-						echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
-						echo "<tr><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
-						if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['tel_port']!='') {echo "<tr><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['tel_prof']!='') {echo "<tr><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";}
+						echo "<tr><th style='text-align: left;'>PrÃ©nom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
+						echo "<tr><th style='text-align: left;'>CivilitÃ©:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
+						if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>TÃ©l.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
+						if($tab_ele['resp'][$i]['tel_port']!='') {echo "<tr><th style='text-align: left;'>TÃ©l.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";}
+						if($tab_ele['resp'][$i]['tel_prof']!='') {echo "<tr><th style='text-align: left;'>TÃ©l.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";}
 						if($tab_ele['resp'][$i]['mel']!='') {
 							$tmp_date=getdate();
 							echo "<tr><th style='text-align: left;'>Courriel:</th><td>";
@@ -1390,7 +1390,7 @@ Patientez pendant l'extraction des données... merci.
 				echo "</tr>\n";
 				echo "</table>\n";
 
-				// Simples contacts non responsables légaux
+				// Simples contacts non responsables lÃ©gaux
 				if($cpt_resp_legal0>0) {
 					echo "<table border='0' summary='Infos responsables (0)'>\n";
 					echo "<tr>\n";
@@ -1398,15 +1398,15 @@ Patientez pendant l'extraction des données... merci.
 
 						if($tab_ele['resp'][$i]['resp_legal']==0) {
 							echo "<td valign='top'>\n";
-							echo "<p>Contact (<i>non responsable légal</i>)</p>\n";
+							echo "<p>Contact (<i>non responsable lÃ©gal</i>)</p>\n";
 
 							echo "<table class='boireaus' summary='Infos resp0'>\n";
 							echo "<tr><th style='text-align: left;'>Nom:</th><td>".$tab_ele['resp'][$i]['nom']."</td></tr>\n";
-							echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
-							echo "<tr><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
-							if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
-							if($tab_ele['resp'][$i]['tel_port']!='') {echo "<tr><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";}
-							if($tab_ele['resp'][$i]['tel_prof']!='') {echo "<tr><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";}
+							echo "<tr><th style='text-align: left;'>PrÃ©nom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
+							echo "<tr><th style='text-align: left;'>CivilitÃ©:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
+							if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>TÃ©l.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['tel_port']!='') {echo "<tr><th style='text-align: left;'>TÃ©l.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['tel_prof']!='') {echo "<tr><th style='text-align: left;'>TÃ©l.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";}
 							if($tab_ele['resp'][$i]['mel']!='') {echo "<tr><th style='text-align: left;'>Courriel:</th><td>".$tab_ele['resp'][$i]['mel']."</td></tr>\n";}
 
 							if(!isset($tab_ele['resp'][$i]['etat'])) {
@@ -1458,7 +1458,7 @@ Patientez pendant l'extraction des données... merci.
 			echo "<h2>Enseignements suivis par l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			if((!isset($tab_ele['periodes']))||(!isset($tab_ele['groupes']))) {
-				echo "<p>Aucune période ou aucun enseignement n'a été trouvé pour cet ".$gepiSettings['denomination_eleve'].".</p>\n";
+				echo "<p>Aucune pÃ©riode ou aucun enseignement n'a Ã©tÃ© trouvÃ© pour cet ".$gepiSettings['denomination_eleve'].".</p>\n";
 			}
 			else {
 				echo "<table class='boireaus' summary='Enseignements'>\n";
@@ -1534,7 +1534,7 @@ Patientez pendant l'extraction des données... merci.
 				}
 				echo "</p>\n";
 
-				echo "<p><b>CPE chargé(e) du suivi</b>: ";
+				echo "<p><b>CPE chargÃ©(e) du suivi</b>: ";
 				if($tab_ele['cpe']['email']!="") {
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
@@ -1550,11 +1550,11 @@ Patientez pendant l'extraction des données... merci.
 
 				if($tab_ele['equipe_liste_email']!="") {
 					$tmp_date=getdate();
-					//echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI&amp;body=";
-					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+					//echo "<p>Ecrire un email Ã  <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI&amp;body=";
+					echo "<p>Ecrire un email Ã  <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-					if(preg_match("/,/",$tab_ele['equipe_liste_email'])) {echo " à tou(te)s";}
-					echo ",%0d%0aCordialement.'>tous les enseignants et au CPE de l'élève</a>.</p>\n";
+					if(preg_match("/,/",$tab_ele['equipe_liste_email'])) {echo " Ã  tou(te)s";}
+					echo ",%0d%0aCordialement.'>tous les enseignants et au CPE de l'Ã©lÃ¨ve</a>.</p>\n";
 				}
 			}
 			echo "</div>\n";
@@ -1579,7 +1579,7 @@ Patientez pendant l'extraction des données... merci.
 			$res_per=mysql_query($sql);
 			if(mysql_num_rows($res_per)>0) {
 				$lig_per=mysql_fetch_object($res_per);
-				// Afficher les trois trimestres sur le bulletin simplifié affiche des infos erronées quant au nom des professeurs si l'élève a changé de classe.
+				// Afficher les trois trimestres sur le bulletin simplifiÃ© affiche des infos erronÃ©es quant au nom des professeurs si l'Ã©lÃ¨ve a changÃ© de classe.
 				$periode_numero_1=$lig_per->min_per;
 				$periode_numero_2=$lig_per->max_per;
 
@@ -1610,7 +1610,7 @@ Patientez pendant l'extraction des données... merci.
 						echo "'>";
 
 						echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins&amp;onglet2=bulletin_$periode1' onclick=\"affiche_onglet('bulletins');affiche_onglet_bull('bulletin_$periode1');return false;\">";
-						echo "Période $periode1";
+						echo "PÃ©riode $periode1";
 						echo "</a>";
 						echo "</div>\n";
 
@@ -1635,20 +1635,20 @@ Patientez pendant l'extraction des données... merci.
 
 						$id_classe=$tab_ele['periodes'][$index_per]['id_classe'];
 
-						// Boucle sur la liste des classes de l'élève pour que $id_classe soit fixé avant l'appel: periodes.inc.php
+						// Boucle sur la liste des classes de l'Ã©lÃ¨ve pour que $id_classe soit fixÃ© avant l'appel: periodes.inc.php
 						include "../lib/periodes.inc.php";
 
 
-						// On teste la présence d'au moins un coeff pour afficher la colonne des coef
+						// On teste la prÃ©sence d'au moins un coeff pour afficher la colonne des coef
 						$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
-						// Apparemment, $test_coef est réaffecté plus loin dans un des include()
+						// Apparemment, $test_coef est rÃ©affectÃ© plus loin dans un des include()
 						$nb_coef_superieurs_a_zero=$test_coef;
 
-						// On regarde si on affiche les catégories de matières
+						// On regarde si on affiche les catÃ©gories de matiÃ¨res
 						$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 						if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
 
-						// Si le rang des élèves est demandé, on met à jour le champ rang de la table matieres_notes
+						// Si le rang des Ã©lÃ¨ves est demandÃ©, on met Ã  jour le champ rang de la table matieres_notes
 						$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
 						if ($affiche_rang == 'y') {
 							$periode_num=$periode1;
@@ -1679,7 +1679,7 @@ Patientez pendant l'extraction des données... merci.
 							$tab_moy['periodes'][$periode_num]['moy_max_classe']=$moy_max_classe;
 							$tab_moy['periodes'][$periode_num]['moy_min_classe']=$moy_min_classe;
 
-							// Il faudrait récupérer/stocker les catégories?
+							// Il faudrait rÃ©cupÃ©rer/stocker les catÃ©gories?
 							$tab_moy['periodes'][$periode_num]['moy_cat_eleve']=$moy_cat_eleve;               // [$i][$cat]
 							$tab_moy['periodes'][$periode_num]['moy_cat_classe']=$moy_cat_classe;             // [$i][$cat]
 							$tab_moy['periodes'][$periode_num]['moy_cat_min']=$moy_cat_min;                   // [$i][$cat]
@@ -1708,7 +1708,7 @@ Patientez pendant l'extraction des données... merci.
 							$tab_moy['periodes'][$periode_num]['moy_min_classe_grp']=$moy_min_classe_grp;     // [$j]
 							$tab_moy['periodes'][$periode_num]['moy_max_classe_grp']=$moy_max_classe_grp;     // [$j]
 							if(isset($current_eleve_rang)) {
-								// $current_eleve_rang n'est pas renseigné si $affiche_rang='n'
+								// $current_eleve_rang n'est pas renseignÃ© si $affiche_rang='n'
 								$tab_moy['periodes'][$periode_num]['current_eleve_rang']=$current_eleve_rang; // [$j][$i]
 							}
 							$tab_moy['periodes'][$periode_num]['quartile1_grp']=$quartile1_grp;               // [$j]
@@ -1748,12 +1748,12 @@ Patientez pendant l'extraction des données... merci.
 				}
 				else {
 					// Il ne faut pas proposer de bulletin
-					echo "<p>Aucun bulletin à ce jour.</p>\n";
+					echo "<p>Aucun bulletin Ã  ce jour.</p>\n";
 				}
 			}
 			else {
 				// Il ne faut pas proposer de bulletin
-				echo "<p>Aucun bulletin à ce jour.</p>\n";
+				echo "<p>Aucun bulletin Ã  ce jour.</p>\n";
 			}
 
 			echo "</div>\n";
@@ -1782,10 +1782,10 @@ Patientez pendant l'extraction des données... merci.
 				$periode_numero_2=$lig_per->max_per;
 			}
 			else {
-				// Il ne faut pas proposer de relevé de notes?
+				// Il ne faut pas proposer de relevÃ© de notes?
 			}
 
-			echo "<h2>Relevés de notes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>RelevÃ©s de notes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			$id_releve_1="";
 
@@ -1812,7 +1812,7 @@ Patientez pendant l'extraction des données... merci.
 					echo "background-color: ".$tab_couleur['releve']."; ";
 					echo "'>";
 					echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves&amp;onglet2=releve_$periode1' onclick=\"affiche_onglet('releves');affiche_onglet_rel('releve_$periode1');return false;\">";
-					echo "Période $periode1";
+					echo "PÃ©riode $periode1";
 					echo "</a>";
 					echo "</div>\n";
 				}
@@ -1821,8 +1821,8 @@ Patientez pendant l'extraction des données... merci.
 				echo "<div style='clear:both;'></div>\n";
 				//====================================
 
-				// Liste des infos à faire apparaitre sur le relevé de notes:
-				// Si des appréciations ont été saisies et que dans les paramètres du devoir il est précisé qu'elles doivent être visibles des parents, il n'y a pas de raison de ne pas les afficher
+				// Liste des infos Ã  faire apparaitre sur le relevÃ© de notes:
+				// Si des apprÃ©ciations ont Ã©tÃ© saisies et que dans les paramÃ¨tres du devoir il est prÃ©cisÃ© qu'elles doivent Ãªtre visibles des parents, il n'y a pas de raison de ne pas les afficher
 				$tab_ele['rn_app']='y';
 				/*
 				$tab_ele['rn_app']='n';
@@ -1849,20 +1849,20 @@ Patientez pendant l'extraction des données... merci.
 					}
 
 					if($index_per!=-1) {
-						// On récupère la classe de l'élève sur la période considérée
+						// On rÃ©cupÃ¨re la classe de l'Ã©lÃ¨ve sur la pÃ©riode considÃ©rÃ©e
 						$id_classe=$tab_ele['periodes'][$index_per]['id_classe'];
 						//echo "\$id_classe=$id_classe<br />";
 
-						// Boucle sur la liste des classes de l'élève pour que $id_classe soit fixé avant l'appel: periodes.inc.php
+						// Boucle sur la liste des classes de l'Ã©lÃ¨ve pour que $id_classe soit fixÃ© avant l'appel: periodes.inc.php
 						include "../lib/periodes.inc.php";
 
-						// On teste la présence d'au moins un coeff pour afficher la colonne des coef
+						// On teste la prÃ©sence d'au moins un coeff pour afficher la colonne des coef
 						$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 						//echo "\$test_coef=$test_coef<br />";
-						// Apparemment, $test_coef est réaffecté plus loin dans un des include()
+						// Apparemment, $test_coef est rÃ©affectÃ© plus loin dans un des include()
 						$nb_coef_superieurs_a_zero=$test_coef;
 
-						// On regarde si on affiche les catégories de matières
+						// On regarde si on affiche les catÃ©gories de matiÃ¨res
 						$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 						if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
 
@@ -1891,7 +1891,7 @@ Patientez pendant l'extraction des données... merci.
 				}
 			}
 			else {
-				echo "<p>Aucune note à ce jour.</p>\n";
+				echo "<p>Aucune note Ã  ce jour.</p>\n";
 			}
 			echo "</div>\n";
 		}
@@ -1910,7 +1910,7 @@ Patientez pendant l'extraction des données... merci.
 			echo "<h2>Cahier de textes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			echo "<p align='center'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_prec&amp;month=$m_sem_prec&amp;year=$y_sem_prec'><img src='../images/icons/back.png' width='16' height='16' alt='Semaine précédente' /></a> ";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_prec&amp;month=$m_sem_prec&amp;year=$y_sem_prec'><img src='../images/icons/back.png' width='16' height='16' alt='Semaine prÃ©cÃ©dente' /></a> ";
 			echo "Du ".jour_en_fr(date("D",$date_ct1))." ".date("d/m/Y",$date_ct1)." au ".jour_en_fr(date("D",$date_ct2))." ".date("d/m/Y",$date_ct2);
 			echo " <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_suiv&amp;month=$m_sem_suiv&amp;year=$y_sem_suiv'><img src='../images/icons/forward.png' width='16' height='16' alt='Semaine suivante' /></a>";
 			echo "</p>\n";
@@ -1920,9 +1920,9 @@ Patientez pendant l'extraction des données... merci.
 
 			echo "<div align='center'>\n";
 			echo "<table class='boireaus' border='1' summary='CDT'>\n";
-			echo "<tr><th>Date</th><th>Travail à effectuer</th><th>Compte rendu de séance</th></tr>\n";
+			echo "<tr><th>Date</th><th>Travail Ã  effectuer</th><th>Compte rendu de sÃ©ance</th></tr>\n";
 
-			// On compte les entrées du cdt
+			// On compte les entrÃ©es du cdt
 			if (isset($tab_ele['cdt'])) {
 				$nbre_cdt = count($tab_ele['cdt']);
 			}else{
@@ -2072,7 +2072,7 @@ Patientez pendant l'extraction des données... merci.
   			echo "<h2>L'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']." n'est actuellement inscrit dans aucun projet.</h2>\n";
       }
 
-      // Affichage des projets des années antérieures
+      // Affichage des projets des annÃ©es antÃ©rieures
       $id_nat = sql_query1("select no_gep from eleves where login='".$ele_login."'");
       $call_data = mysql_query("select ta.annee, ta.id, a.id, ta.nom, a.nom, a.responsables
       from archivage_aids a, archivage_types_aid ta, archivage_aid_eleve ae
@@ -2084,7 +2084,7 @@ Patientez pendant l'extraction des données... merci.
 
       $nb_aid = mysql_num_rows($call_data);
       if ($nb_aid>0) {
-        echo "<h2>Les projets des années antérieures</h2>";
+        echo "<h2>Les projets des annÃ©es antÃ©rieures</h2>";
         echo "<table width=\"$larg_tab\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">";
         $z=0;
         while ($z < $nb_aid) {
@@ -2106,9 +2106,9 @@ Patientez pendant l'extraction des données... merci.
       }
 
       /**************************************************************************
-      * Cas ou le plugin "gestion_autorisations_publications" existe et est activé
+      * Cas ou le plugin "gestion_autorisations_publications" existe et est activÃ©
       ****************************************************************************/
-      //On vérifie si le module est activé
+      //On vÃ©rifie si le module est activÃ©
       $test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
       if ($test_plugin=='y') {
         include_once("../mod_plugins/gestion_autorisations_publications/functions_gestion_autorisations_publications.php");
@@ -2138,16 +2138,16 @@ Patientez pendant l'extraction des données... merci.
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			    if(count($tab_ele['absences'])==0) {
-				    echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
+				    echo "<p>Aucun bilan d'absences n'est enregistrÃ©.</p>\n";
 			    }
 			    else {
 				    echo "<table class='boireaus' summary='Bilan des absences'>\n";
 				    echo "<tr>\n";
-				    echo "<th>Période</th>\n";
+				    echo "<th>PÃ©riode</th>\n";
 				    echo "<th>Nombre d'absences</th>\n";
-				    echo "<th>Absences non justifiées</th>\n";
+				    echo "<th>Absences non justifiÃ©es</th>\n";
 				    echo "<th>Nombre de retards</th>\n";
-				    echo "<th>Appréciation</th>\n";
+				    echo "<th>ApprÃ©ciation</th>\n";
 				    echo "</tr>\n";
 				    $alt=1;
 				    for($loop=0;$loop<count($tab_ele['absences']);$loop++) {
@@ -2162,10 +2162,10 @@ Patientez pendant l'extraction des données... merci.
 				    }
 				    echo "</table>\n";
 			    }
-						    // On ajoute le suivi par créneaux si il y en a
+						    // On ajoute le suivi par crÃ©neaux si il y en a
 			    if ($tab_ele['abs_quotidien']['autorisation'] == 'oui') {
 				    // On affiche
-				    echo '<br /><p class="bold">Le détail des absences enregistrées : </p>';
+				    echo '<br /><p class="bold">Le dÃ©tail des absences enregistrÃ©es : </p>';
 
 				    echo '
 				    <table class="boireaus" style="margin-left: 4em;" summary="D&eacute;tail des absences">
@@ -2173,7 +2173,7 @@ Patientez pendant l'extraction des données... merci.
 						    <th>R/A</th>
 						    <th>Jour</th>
 						    <th>Heure</th>
-						    <th>Créneau</th>
+						    <th>CrÃ©neau</th>
 					    </tr>';
 				    foreach($tab_ele["abs_quotidien"] as $abs){
 					    if (isset($abs["retard_absence"]) AND ($abs["retard_absence"] == 'A' OR $abs["retard_absence"] == 'R')) {
@@ -2202,11 +2202,11 @@ Patientez pendant l'extraction des données... merci.
 
 			    echo "<table class='boireaus' summary='Bilan des absences'>\n";
 			    echo "<tr>\n";
-			    echo "<th>Période</th>\n";
-			    echo "<th>Nombre d'absences<br/>(1/2 journées)</th>\n";
-			    echo "<th>Absences non justifiées</th>\n";
+			    echo "<th>PÃ©riode</th>\n";
+			    echo "<th>Nombre d'absences<br/>(1/2 journÃ©es)</th>\n";
+			    echo "<th>Absences non justifiÃ©es</th>\n";
 			    echo "<th>Nombre de retards</th>\n";
-			    echo "<th>Appréciation</th>\n";
+			    echo "<th>ApprÃ©ciation</th>\n";
 			    echo "</tr>\n";
 			    $alt=1;
 			    foreach($eleve->getPeriodeNotes() as $periode_note) {
@@ -2221,7 +2221,7 @@ Patientez pendant l'extraction des données... merci.
 				    echo " du ".$periode_note->getDateDebut('d/m/Y');
 				    echo " au ";
                                     if ($periode_note->getDateFin() == null) {
-					echo '(non précisé)';
+					echo '(non prÃ©cisÃ©)';
 				    } else {
 					echo $periode_note->getDateFin('d/m/Y');
 				    }
@@ -2314,7 +2314,7 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="anna") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['anna']."; ";
 			echo "'>";
-			echo "<h2>Données d'années antérieures de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+			echo "<h2>DonnÃ©es d'annÃ©es antÃ©rieures de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			require("../mod_annees_anterieures/fonctions_annees_anterieures.inc.php");
 
@@ -2330,16 +2330,16 @@ Patientez pendant l'extraction des données... merci.
 
 
 
-			echo "<p>Liste des années scolaires et périodes pour lesquelles des données ont été conservées pour cet ".$gepiSettings['denomination_eleve']." :</p>\n";
+			echo "<p>Liste des annÃ©es scolaires et pÃ©riodes pour lesquelles des donnÃ©es ont Ã©tÃ© conservÃ©es pour cet ".$gepiSettings['denomination_eleve']." :</p>\n";
 
-			// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans archivage_disciplines
+			// RÃ©cupÃ©rer les annÃ©es-scolaires et pÃ©riodes pour lesquelles on trouve l'INE dans archivage_disciplines
 			//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
 			//$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC;";
 			$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='".$tab_ele['no_gep']."' ORDER BY annee ASC;";
 			$res_ant=mysql_query($sql);
 
 			if(mysql_num_rows($res_ant)==0){
-				echo "<p>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</p>\n";
+				echo "<p>Aucun rÃ©sultat antÃ©rieur n'a Ã©tÃ© conservÃ© pour cet ".$gepiSettings['denomination_eleve'].".</p>\n";
 			}
 			else{
 
@@ -2347,12 +2347,12 @@ Patientez pendant l'extraction des données... merci.
 
 				$nb_annees=mysql_num_rows($res_ant);
 
-				//echo "<p>Bulletins simplifiés:</p>\n";
+				//echo "<p>Bulletins simplifiÃ©s:</p>\n";
 				//echo "<table border='0'>\n";
 				echo "<table class='boireaus' summary='Bulletins'>\n";
 				$alt=1;
 				echo "<tr class='lig$alt'>\n";
-				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
+				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiÃ©s:</th>";
 				$cpt=0;
 				while($lig_ant=mysql_fetch_object($res_ant)){
 
@@ -2369,7 +2369,7 @@ Patientez pendant l'extraction des données... merci.
 					$res_ant2=mysql_query($sql);
 
 					if(mysql_num_rows($res_ant2)==0){
-						echo "<td>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</td>\n";
+						echo "<td>Aucun rÃ©sultat antÃ©rieur n'a Ã©tÃ© conservÃ© pour cet ".$gepiSettings['denomination_eleve'].".</td>\n";
 					}
 					else{
 
@@ -2411,7 +2411,7 @@ Patientez pendant l'extraction des données... merci.
 					//echo "<td style='font-weight:bold;'>\n";
 					echo "<td>\n";
 
-					echo "Année-scolaire <a href='../mod_annees_anterieures/popup_annee_anterieure.php?logineleve=".$ele_login."&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
+					echo "AnnÃ©e-scolaire <a href='../mod_annees_anterieures/popup_annee_anterieure.php?logineleve=".$ele_login."&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
 					if(isset($id_classe)){echo "&amp;id_classe=$id_classe";}
 					echo "' target='_blank'>$tab_annees[$i]</a>";
 					//echo "<br />\n";
@@ -2452,7 +2452,7 @@ Patientez pendant l'extraction des données... merci.
 		}
 		$chaine_tab_onglets_bull.=");";
 
-		// Liste des onglets dans l'onglet relevés de notes
+		// Liste des onglets dans l'onglet relevÃ©s de notes
 		$chaine_tab_onglets_rel="tab_onglets=new Array(";
 		for($i=0;$i<count($tab_onglets_rel);$i++) {
 			if($i>0) {$chaine_tab_onglets_rel.=", ";}

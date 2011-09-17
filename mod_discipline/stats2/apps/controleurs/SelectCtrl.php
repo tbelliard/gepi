@@ -19,7 +19,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -89,7 +89,7 @@ class SelectCtrl extends Controleur {
       $this->vue->setVar('noms_classes',$this->get_noms_classes());
     }
     catch (Exception $e) {
-      echo 'Exception reçue : ',  $e->getMessage(), "\n";
+      echo 'Exception reÃ§ue : ',  $e->getMessage(), "\n";
     }
     if (($this->messages)) {
       $this->vue->setVar('messages',$this->messages);
@@ -108,12 +108,12 @@ class SelectCtrl extends Controleur {
 
   private function test_edt_active() {
     if(! $this->objet_periodes->is_EDT_active())
-      echo"<script type='text/javascript'>alert('Activez le module EDT pour les administrateurs puis renseignez les périodes du calendrier en admin');
+      echo"<script type='text/javascript'>alert('Activez le module EDT pour les administrateurs puis renseignez les pÃ©riodes du calendrier en admin');
                document.location.href='../../accueil_modules.php'</script>";
   }
   private function test_db_periodes_calendrier() {
     if(! $this->objet_periodes->is_periodes_renseignees())
-      echo"<script type='text/javascript'>alert('Renseignez les périodes du calendrier en admin');
+      echo"<script type='text/javascript'>alert('Renseignez les pÃ©riodes du calendrier en admin');
                document.location.href='../../edt_organisation/edt_calendrier.php'</script>";
   }
 
@@ -130,15 +130,15 @@ class SelectCtrl extends Controleur {
   private function verif_date_selected() {
 
     if(!Gepi_Date::isValid_fr($this->du)) {
-      $this->messages[]=Array('class'=>'mess_orange','message'=>'La date de début n\'est pas au format JJ/MM/AAAA ; La date de début par défaut est sélectionnée');
+      $this->messages[]=Array('class'=>'mess_orange','message'=>'La date de dÃ©but n\'est pas au format JJ/MM/AAAA ; La date de dÃ©but par dÃ©faut est sÃ©lectionnÃ©e');
       return($this->du=Gepi_Date::get_date_begin_yearschool());
     }
     else if(!Gepi_Date::isValid_fr($this->au)) {
-      $this->messages[]=Array('class'=>'mess_orange','message'=>'La date de fin n\'est pas au format JJ/MM/AAAA ; La date de fin par défaut est sélectionnée');
+      $this->messages[]=Array('class'=>'mess_orange','message'=>'La date de fin n\'est pas au format JJ/MM/AAAA ; La date de fin par dÃ©faut est sÃ©lectionnÃ©e');
       return($this->au=date('d/m/Y'));
     }
     else if (Gepi_Date::compare_date($this->du,$this->au)) {
-      $this->messages[]=Array('class'=>'mess_orange','message'=>'La date de fin doit être postérieure à celle du début ; Les dates par défaut sont sélectionnées');
+      $this->messages[]=Array('class'=>'mess_orange','message'=>'La date de fin doit Ãªtre postÃ©rieure Ã  celle du dÃ©but ; Les dates par dÃ©faut sont sÃ©lectionnÃ©es');
       return Array($this->du=Gepi_Date::get_date_begin_yearschool(),$this->au=date('d/m/Y'));
     }
   }

@@ -3,7 +3,7 @@
 $Id$
 */
 
-// fonction qui recoit une date heure est recompose la date en français
+// fonction qui recoit une date heure est recompose la date en franÃ§ais
 function date_fr_dh($var)
 {
 
@@ -15,13 +15,13 @@ function date_fr_dh($var)
 
 }
 
-// fonction pour mettre la date en français
+// fonction pour mettre la date en franÃ§ais
 function date_frc($var)
 {
 
 	$var = explode("/",$var);
 	$date = "$var[0],$var[1],$var[2]";
-	$tab_mois = array('01'=>"Jan.", '02'=>"Fev.", '03'=>"Mar.", '04'=>"Avr.", '05'=>"Mai", '06'=>"Juin", '07'=>"Juil.", '08'=>"Août", '09'=>"Sept.", '10'=>"Oct.", '11'=>"Nov.", '12'=>"Dec.");
+	$tab_mois = array('01'=>"Jan.", '02'=>"Fev.", '03'=>"Mar.", '04'=>"Avr.", '05'=>"Mai", '06'=>"Juin", '07'=>"Juil.", '08'=>"AoÃ»t", '09'=>"Sept.", '10'=>"Oct.", '11'=>"Nov.", '12'=>"Dec.");
 	//$tab_jour = array("Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.");
 	$tab_date = explode(',', $date);
 
@@ -64,7 +64,7 @@ function redimensionne_image($photo, $L_max, $H_max)
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
+	// largeur et/ou hauteur maximum Ã  afficher en pixel
 	$taille_max_largeur = $L_max;
 	$taille_max_hauteur = $H_max;
 
@@ -73,7 +73,7 @@ function redimensionne_image($photo, $L_max, $H_max)
 	$ratio_h = $hauteur / $taille_max_hauteur;
 	$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	$nouvelle_largeur = $largeur / $ratio;
 	$nouvelle_hauteur = $hauteur / $ratio;
 
@@ -296,15 +296,15 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 //============================================================
 
-	// variable de la création du document
+	// variable de la crÃ©ation du document
 
-	// entête
+	// entÃªte
 	$X_entete_etab='5';
-	$caractere_utilse='arial'; // caractère utilisé dans le document
-	$affiche_logo_etab='1'; // affiché le logo de l'établissement
-	$entente_mel='0'; // afficher dans l'entête le mel de l'établissement
-	$entente_tel='0'; // afficher dans l'entête le téléphone de l'établissement
-	$entente_fax='0'; // afficher dans l'entête le fax de l'établissement
+	$caractere_utilse='arial'; // caractÃ¨re utilisÃ© dans le document
+	$affiche_logo_etab='1'; // affichÃ© le logo de l'Ã©tablissement
+	$entente_mel='0'; // afficher dans l'entÃªte le mel de l'Ã©tablissement
+	$entente_tel='0'; // afficher dans l'entÃªte le tÃ©lÃ©phone de l'Ã©tablissement
+	$entente_fax='0'; // afficher dans l'entÃªte le fax de l'Ã©tablissement
 	$L_max_logo='75'; // Longeur maxi du logo
 	$H_max_logo='75'; // hauteur maxi du logo
 
@@ -314,16 +314,16 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	$active_bloc_adresse_parent=$avec_adresse_responsable;
 	$X_parent=110; $Y_parent=40;
 
-	//information année
+	//information annÃ©e
 	$gepiYear = getSettingValue('gepiYear');
 	$annee_scolaire = $gepiYear;
 	$X_cadre_eleve = '130';
 
 	// cadre note
-	$titre_du_cadre='Relevé de notes du ';
+	$titre_du_cadre='RelevÃ© de notes du ';
 	$largeur_cadre_matiere='50';
 	$texte_observation='Observations:';
-	$cadre_titre='0'; // affiche le cadre autour du titre ici: "relevé de notes..."
+	$cadre_titre='0'; // affiche le cadre autour du titre ici: "relevÃ© de notes..."
 	$largeur_cadre_note_global = '200'; //largeur du cadre note global nom matiere | note | observation
 	$hauteur_dun_regroupement='4'; // hauteur de la cellule regroupement
 
@@ -337,7 +337,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 
 
-	// Définition de la page
+	// DÃ©finition de la page
 	$pdf=new rel_PDF("P","mm","A4");
 	$pdf->SetTopMargin(TopMargin);
 	$pdf->SetRightMargin(RightMargin);
@@ -347,7 +347,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	// Couleur des traits
 	$pdf->SetDrawColor(0,0,0);
 
-	// Caractéres utilisée
+	// CaractÃ©res utilisÃ©e
 	$caractere_utilse = 'arial';
 
 

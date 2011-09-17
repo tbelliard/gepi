@@ -44,7 +44,7 @@ if (!checkAccess()) {
 $liste_tables_del = array("j_eleves_classes");
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 
@@ -54,40 +54,40 @@ $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-echo "<center><h3 class='gepi'>Cinquième phase d'initialisation<br />Importation des associations élèves-classes</h3></center>";
+echo "<center><h3 class='gepi'>CinquiÃ¨me phase d'initialisation<br />Importation des associations Ã©lÃ¨ves-classes</h3></center>";
 
 
 if (!isset($_POST["action"])) {
 	//
-	// On sélectionne le fichier à importer
+	// On sÃ©lectionne le fichier Ã  importer
 	//
 
-	echo "<p>Vous allez effectuer la cinquième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
-	echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
-	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
-	echo "<ul><li>Identifiant (interne) de l'élève</li>\n" .
+	echo "<p>Vous allez effectuer la cinquiÃ¨me Ã©tape : elle consiste Ã  importer le fichier <b>g_eleves_classes.csv</b> contenant les donnÃ©es relatives aux disciplines.</p>\n";
+	echo "<p>Remarque : cette opÃ©ration n'efface par les classes. Elle ne fait qu'une mise Ã  jour, le cas Ã©chÃ©ant, de la liste des matiÃ¨res.</p>\n";
+	echo "<p>Les champs suivants doivent Ãªtre prÃ©sents, dans l'ordre, et <b>sÃ©parÃ©s par un point-virgule</b> : </p>\n";
+	echo "<ul><li>Identifiant (interne) de l'Ã©lÃ¨ve</li>\n" .
 			"<li>Identifiant court de la classe (ex: 1S2)</li>\n" .
 			"</ul>\n";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
+	echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
-    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier Ã  importer comporte une premiÃ¨re ligne d'en-tÃªte (non vide) Ã  ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 } else {
 	//
-	// Quelque chose a été posté
+	// Quelque chose a Ã©tÃ© postÃ©
 	//
 	if ($_POST['action'] == "save_data") {
 		check_token(false);
 		//
-		// On enregistre les données dans la base.
-		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
+		// On enregistre les donnÃ©es dans la base.
+		// Le fichier a dÃ©jÃ  Ã©tÃ© affichÃ©, et l'utilisateur est sÃ»r de vouloir enregistrer
 		//
 
 		$j=0;
@@ -101,7 +101,7 @@ if (!isset($_POST["action"])) {
 		$sql="SELECT * FROM tempo2;";
 		$res_temp=mysql_query($sql);
 		if(mysql_num_rows($res_temp)==0) {
-			echo "<p style='color:red'>ERREUR&nbsp;: Aucune association élève/classe n'a été trouvée&nbsp;???</p>\n";
+			echo "<p style='color:red'>ERREUR&nbsp;: Aucune association Ã©lÃ¨ve/classe n'a Ã©tÃ© trouvÃ©e&nbsp;???</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -122,7 +122,7 @@ if (!isset($_POST["action"])) {
 			$reg_id_int = $lig->col1;
 			$reg_classe = $lig->col2;
 
-			// On nettoie et on vérifie :
+			// On nettoie et on vÃ©rifie :
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
 			if (strlen($reg_id_int) > 50) $reg_id_int = substr($reg_id_int, 0, 50);
 			$reg_classe = preg_replace("/[^A-Za-z0-9.\-]/","",trim($reg_classe));
@@ -130,21 +130,21 @@ if (!isset($_POST["action"])) {
 
 
 			if(($reg_id_int!='')&&($reg_classe!='')){
-				// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
+				// PremiÃ¨re Ã©tape : on s'assure que l'Ã©lÃ¨ve existe et on rÃ©cupÃ¨re son login... S'il n'existe pas, on laisse tomber.
 				$sql="SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "'";
 				//echo "$sql<br />";
 				$test = mysql_query($sql);
 				if (mysql_num_rows($test) == 1) {
 					$login_eleve = mysql_result($test, 0, "login");
 
-					// Maintenant que tout est propre et que l'élève existe, on fait un test sur la table pour voir si la classe existe
+					// Maintenant que tout est propre et que l'Ã©lÃ¨ve existe, on fait un test sur la table pour voir si la classe existe
 
 					$sql="SELECT id FROM classes WHERE classe = '" . $reg_classe . "'";
 					//echo "$sql<br />";
 					$test = mysql_query($sql);
 
 					if (mysql_num_rows($test) == 0) {
-						// Test négatif : aucune classe avec ce nom court... on créé !
+						// Test nÃ©gatif : aucune classe avec ce nom court... on crÃ©Ã© !
 
 						$sql="INSERT INTO classes SET " .
 							"classe = '" . $reg_classe . "', " .
@@ -155,14 +155,14 @@ if (!isset($_POST["action"])) {
 							"display_coef = 'y'";
 						//echo "$sql<br />";
 						$insert1 = mysql_query($sql);
-						// On récupère l'ID de la classe nouvelle créée, pour enregistrer les périodes
+						// On rÃ©cupÃ¨re l'ID de la classe nouvelle crÃ©Ã©e, pour enregistrer les pÃ©riodes
 						$classe_id = mysql_insert_id();
 
 						for ($p=1;$p<4;$p++) {
 							if ($p == 1) {$v = "O";}
 							else {$v = "N";}
 							$sql="INSERT INTO periodes SET " .
-									"nom_periode = 'Période ".$p . "', " .
+									"nom_periode = 'PÃ©riode ".$p . "', " .
 									"num_periode = '" . $p . "', " .
 									"verouiller = '" . $v . "', " .
 									"id_classe = '" . $classe_id . "'";
@@ -173,12 +173,12 @@ if (!isset($_POST["action"])) {
 
 					} else {
 						// La classe existe
-						// On récupère son ID
+						// On rÃ©cupÃ¨re son ID
 						$classe_id = mysql_result($test, 0, "id");
 						$num_periods = mysql_result(mysql_query("SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $classe_id . "'"), 0);
 					}
 
-					// Maintenant qu'on a l'ID de la classe et le nombre de périodes, on enregistre l'association
+					// Maintenant qu'on a l'ID de la classe et le nombre de pÃ©riodes, on enregistre l'association
 
 					for ($p=1;$p<=$num_periods;$p++) {
 						$sql="INSERT INTO j_eleves_classes SET login = '" . $login_eleve . "', " .
@@ -203,30 +203,30 @@ if (!isset($_POST["action"])) {
 		}
 
 		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
-		if ($total > 0) echo "<p>" . $total . " associations eleves-classes ont été enregistrés.</p>\n";
+		if ($total > 0) echo "<p>" . $total . " associations eleves-classes ont Ã©tÃ© enregistrÃ©s.</p>\n";
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php'>Revenir Ã  la page prÃ©cÃ©dente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {
 		check_token(false);
 		//
-		// Le fichier vient d'être envoyé et doit être traité
-		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
-		// en proposant des champs de saisie pour modifier les données si on le souhaite
+		// Le fichier vient d'Ãªtre envoyÃ© et doit Ãªtre traitÃ©
+		// On va donc afficher le contenu du fichier tel qu'il va Ãªtre enregistrÃ© dans Gepi
+		// en proposant des champs de saisie pour modifier les donnÃ©es si on le souhaite
 		//
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
-		// autant forcer l'utilisateur à être rigoureux
+		// On vÃ©rifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
+		// autant forcer l'utilisateur Ã  Ãªtre rigoureux
 		if(strtolower($csv_file['name']) == "g_eleves_classes.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
 
 			if(!$fp) {
-				// Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
+				// Aie : on n'arrive pas Ã  ouvrir le fichier... Pas bon.
 				echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
 				echo "<p><a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
 			} else {
@@ -234,11 +234,11 @@ if (!isset($_POST["action"])) {
 				// Fichier ouvert ! On attaque le traitement
 
 				// On va stocker toutes les infos dans un tableau
-				// Une ligne du CSV pour une entrée du tableau
+				// Une ligne du CSV pour une entrÃ©e du tableau
 				$data_tab = array();
 
 				//=========================
-				// On lit une ligne pour passer la ligne d'entête:
+				// On lit une ligne pour passer la ligne d'entÃªte:
 				if($en_tete=="yes") {
 					$ligne = fgets($fp, 4096);
 				}
@@ -251,14 +251,14 @@ if (!isset($_POST["action"])) {
 
 						$tabligne=explode(";",$ligne);
 
-						// 0 : ID interne de l'élève
+						// 0 : ID interne de l'Ã©lÃ¨ve
 						// 1 : nom court de la classe
 
 
-						// On nettoie et on vérifie :
+						// On nettoie et on vÃ©rifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
 						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
-						$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[1]));
+						$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-Ã©Ã¨Ã¼Ã«Ã¯Ã¤Ãª]/","",trim($tabligne[1]));
 						if (strlen($tabligne[1]) > 100) $tabligne[1] = substr($tabligne[1], 0, 100);
 
 
@@ -278,7 +278,7 @@ if (!isset($_POST["action"])) {
 				fclose($fp);
 
 				// Fin de l'analyse du fichier.
-				// Maintenant on va afficher tout ça.
+				// Maintenant on va afficher tout Ã§a.
 
 				$sql="TRUNCATE TABLE tempo2;";
 				$vide_table = mysql_query($sql);
@@ -288,8 +288,8 @@ if (!isset($_POST["action"])) {
 				echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
-				echo "<table border='1' class='boireaus' summary='Tableau élèves/classes'>\n";
-				echo "<tr><th>ID interne de l'élève</th><th>Classe</th></tr>\n";
+				echo "<table border='1' class='boireaus' summary='Tableau Ã©lÃ¨ves/classes'>\n";
+				echo "<tr><th>ID interne de l'Ã©lÃ¨ve</th><th>Classe</th></tr>\n";
 
 				$alt=1;
 				for ($i=0;$i<$k-1;$i++) {
@@ -320,7 +320,7 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<span style='color:red'>$nb_error erreur(s) dÃ©tectÃ©e(s) lors de la prÃ©paration.</style><br />\n";
 				}
 
 				echo "<input type='submit' value='Enregistrer' />\n";
@@ -330,11 +330,11 @@ if (!isset($_POST["action"])) {
 
 		} else if (trim($csv_file['name'])=='') {
 
-			echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+			echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 			echo "<a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
 
 		} else {
-			echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+			echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />\n";
 			echo "<a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
 		}
 	}

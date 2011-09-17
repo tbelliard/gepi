@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,16 +52,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
 
-//récupération des id des notifications
+//rÃ©cupÃ©ration des id des notifications
 $nb = 100;
 if (isset($_POST["nb_checkbox"])) {
     $nb = $_POST["nb_checkbox"];
@@ -92,7 +92,7 @@ $notifications_col = AbsenceEleveNotificationQuery::create()->filterByPrimaryKey
 if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     $courrier_source_col = new PropelCollection();
     $courrier_recap_col = new PropelCollection();
-    $courrier_nouvellement_envoyés_col = new PropelCollection();
+    $courrier_nouvellement_envoyÃ©s_col = new PropelCollection();
     // Load the template
     include_once 'lib/function.php';
     $courrier_modele=repertoire_modeles('absence_modele_lettre_parents.odt');
@@ -127,7 +127,7 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
 	    $notif->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 	    $notif->setErreurMessageEnvoi('Echec de l\'impression par lot');
 	    $notif->save();
-	    $courrier_nouvellement_envoyés_col->append($notif);
+	    $courrier_nouvellement_envoyÃ©s_col->append($notif);
 	} else {
 	    $notif->setUpdatedAt('now');
 	    $notif->save();
@@ -152,7 +152,7 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     
     // Output as a download file (some automatic fields are merged here)
     //on change le statut des notifications
-    foreach($courrier_nouvellement_envoyés_col as $notif) {
+    foreach($courrier_nouvellement_envoyÃ©s_col as $notif) {
 	$notif->setDateEnvoi('now');
 	$notif->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_EN_COURS);
 	$notif->setErreurMessageEnvoi('');
@@ -179,7 +179,7 @@ include('menu_abs2.inc.php');
 echo "<div class='css-panes' style='background-color:#c7e3ec;' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 if ($id_notif_col->isEmpty()) {
-    echo 'Aucune notification sélectionnée -> ';
+    echo 'Aucune notification sÃ©lectionnÃ©e -> ';
     echo '<a href="liste_notifications.php">liste des notifications</a>';
     die;
 }
@@ -187,7 +187,7 @@ if ($id_notif_col->isEmpty()) {
 //
 //on envoi les emails
 //
-$nb_mail_envoyés = 0;
+$nb_mail_envoyÃ©s = 0;
 if (isset($_GET['envoyer_email']) && $_GET['envoyer_email'] == 'true') {
     // Load the template
     include_once 'lib/function.php';
@@ -197,10 +197,10 @@ if (isset($_GET['envoyer_email']) && $_GET['envoyer_email'] == 'true') {
 	$TBS = AbsencesNotificationHelper::MergeNotification($notif, $email_modele);
 	$retour_envoi = AbsencesNotificationHelper::EnvoiNotification($notif, $TBS->Source);
 	if ($retour_envoi == '') {
-	    $nb_mail_envoyés = $nb_mail_envoyés + 1;
+	    $nb_mail_envoyÃ©s = $nb_mail_envoyÃ©s + 1;
 	}
     }
-    echo 'Mail envoyés : '.$nb_mail_envoyés.'<br/>';
+    echo 'Mail envoyÃ©s : '.$nb_mail_envoyÃ©s.'<br/>';
 }
 //
 //on affiche les notifications de type email
@@ -217,7 +217,7 @@ foreach($notifications_col as $notif) {
     }
 }
 if (!$notif_mail_fini_col->isEmpty()) {$notif = new AbsenceEleveNotification();
-    echo 'Email envoyés';
+    echo 'Email envoyÃ©s';
     echo '<table id="table_liste_absents" style="border-spacing:0px;">';
     //en tete commentaire
     echo '</tr>';
@@ -235,9 +235,9 @@ if (!$notif_mail_fini_col->isEmpty()) {$notif = new AbsenceEleveNotification();
 	echo '<td>';
 	if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES
 		|| $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES_AVEC_ACCUSE_DE_RECEPTION) {
-	    echo '<div style="color : green;">envoi réussi</div>';
+	    echo '<div style="color : green;">envoi rÃ©ussi</div>';
 	} else {
-	    echo '<div style="color : red;">Erreur : '.$notif->getErreurMessageEnvoi().'</div>';
+	    echo '<div style="color : red;">ErreurÂ : '.$notif->getErreurMessageEnvoi().'</div>';
 	}
 	echo '</td>';
 	echo '<td>';
@@ -253,7 +253,7 @@ if (!$notif_mail_fini_col->isEmpty()) {$notif = new AbsenceEleveNotification();
     echo '<br/><br/>';
 }
 if (!$notif_mail_a_envoyer_col->isEmpty()) {$notif = new AbsenceEleveNotification();
-    echo 'Notifications à envoyer par mail';
+    echo 'Notifications Ã  envoyer par mail';
     echo '<table id="table_liste_absents" style="border-spacing:0px;">';
     //en tete commentaire
     echo '</tr>';
@@ -310,7 +310,7 @@ if (!$notif_courrier_fini->isEmpty()) {$notif = new AbsenceEleveNotification();
 	echo '<td><a href="visu_notification.php?id_notification='.$notif->getId().'">'.$notif->getId().'</a></td>';
 	echo '<td>';
 	if ($notif->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC) {
-	    echo '<div style="color : green;">Impression réussie</div>';
+	    echo '<div style="color : green;">Impression rÃ©ussie</div>';
 	} else {
 	    echo '<div style="color : red;">Erreur</div>';
 	}
@@ -414,7 +414,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 35;
              $taille_max_hauteur = 35;
 
@@ -423,7 +423,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 

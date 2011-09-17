@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 $sql = "SELECT 1=1 FROM `droits` WHERE id='/mod_discipline/definir_natures.php';";
 $test = mysql_query($sql);
 if (mysql_num_rows($test) == 0) {
-	$sql = "INSERT INTO droits VALUES ( '/mod_discipline/definir_natures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les natures', '')";
+	$sql = "INSERT INTO droits VALUES ( '/mod_discipline/definir_natures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir les natures', '')";
 	$test = mysql_query($sql);
 }
 
@@ -46,8 +46,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -74,10 +74,10 @@ if (isset($suppr_nature)) {
 			//echo "$sql<br />";
 			$suppr = mysql_query($sql);
 			if (!$suppr) {
-				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_lieu[$i].".<br />\n";
-				$msg.="ERREUR lors de la suppression de la nature n°" . $suppr_nature[$i] . ".<br />\n";
+				//$msg.="ERREUR lors de la suppression de la qualitÃ© nÂ°".$suppr_lieu[$i].".<br />\n";
+				$msg.="ERREUR lors de la suppression de la nature nÂ°" . $suppr_nature[$i] . ".<br />\n";
 			} else {
-				$msg.="Suppression de la nature n°" . $suppr_nature[$i] . ".<br />\n";
+				$msg.="Suppression de la nature nÂ°" . $suppr_nature[$i] . ".<br />\n";
 			}
 		}
 	}
@@ -109,7 +109,7 @@ if ((isset($nature))&&($nature != '')) {
 
 		if (in_array($nature, $tab_nature)) {
 			$a_enregistrer = 'n';
-			$msg.="La nature proposée existe déjà.<br />";
+			$msg.="La nature proposÃ©e existe dÃ©jÃ .<br />";
 		}
 	}
 
@@ -120,7 +120,7 @@ if ((isset($nature))&&($nature != '')) {
 
 		if(!array_key_exists($id_categorie_nature_nouvelle,$tab_categorie)) {
 			$id_categorie_nature_nouvelle=0;
-			$msg.="La catégorie choisie pour la nouvelle nature n'existe pas.<br />";
+			$msg.="La catÃ©gorie choisie pour la nouvelle nature n'existe pas.<br />";
 		}
 
 		$sql = "INSERT INTO s_natures SET nature='" . $nature . "', id_categorie='".$id_categorie_nature_nouvelle."';";
@@ -145,8 +145,8 @@ if((isset($id_nature))&&(count($id_nature)>0)&&(isset($id_categorie))&&(count($i
 			//echo "$sql<br />";
 			$update=mysql_query($sql);
 			if (!$update) {
-				//$msg.="Erreur lors de la mise à jour de la catégorie pour la nature ".$tab_nature[$id_nature[$i]]['nature']."<br />";
-				$msg.="Erreur lors de la mise à jour de la catégorie pour la nature n°".$id_nature[$i]."<br />";
+				//$msg.="Erreur lors de la mise Ã  jour de la catÃ©gorie pour la nature ".$tab_nature[$id_nature[$i]]['nature']."<br />";
+				$msg.="Erreur lors de la mise Ã  jour de la catÃ©gorie pour la nature nÂ°".$id_nature[$i]."<br />";
 			}
 		}
 	}
@@ -155,7 +155,7 @@ if((isset($id_nature))&&(count($id_nature)>0)&&(isset($id_categorie))&&(count($i
 $tab_nature=array();
 //$sql = "(SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie) UNION (SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature);";
 //$sql = "(SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature) UNION (SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie);";
-// Il y a un problème de tri avec UNION SELECT... je passe à deux requêtes
+// Il y a un problÃ¨me de tri avec UNION SELECT... je passe Ã  deux requÃªtes
 $sql = "SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie;";
 //echo "$sql<br />";
 $res = mysql_query($sql);
@@ -179,7 +179,7 @@ if((mysql_num_rows($res)>0)||(mysql_num_rows($res2)>0)) {
 	}
 }
 else {
-	$tab_natures_par_defaut=array('Refus de travail', 'Travail non fait', 'Degradation', 'Retards Répétés', 'Oubli de matériel', 'Insolence et comportement', 'Violence verbale', 'Violence physique', 'Violence verbale et physique', 'Bavardages répétés');
+	$tab_natures_par_defaut=array('Refus de travail', 'Travail non fait', 'Degradation', 'Retards RÃ©pÃ©tÃ©s', 'Oubli de matÃ©riel', 'Insolence et comportement', 'Violence verbale', 'Violence physique', 'Violence verbale et physique', 'Bavardages rÃ©pÃ©tÃ©s');
 
 	for($i=0;$i<count($tab_natures_par_defaut);$i++) {
 		$sql="INSERT INTO s_natures SET nature='".$tab_natures_par_defaut[$i]."';";
@@ -211,7 +211,7 @@ if((isset($id_nature))&&(count($id_nature)>0)&&(isset($id_categorie))&&(count($i
 			//echo "$sql<br />";
 			$update=mysql_query($sql);
 			if (!$update) {
-				$msg.="Erreur lors de la mise à jour de la catégorie pour la nature ".$tab_nature[$id_nature[$i]]['nature']."<br />";
+				$msg.="Erreur lors de la mise Ã  jour de la catÃ©gorie pour la nature ".$tab_nature[$id_nature[$i]]['nature']."<br />";
 			}
 		}
 	}
@@ -229,7 +229,7 @@ if(isset($_POST['DisciplineNaturesRestreintes'])) {
 		$msg.="Erreur lors de l'enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes'<br />\n";
 	}
 	else {
-		$msg.="Enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes' effectué.<br />\n";
+		$msg.="Enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes' effectuÃ©.<br />\n";
 	}
 }
 
@@ -238,10 +238,10 @@ if($DisciplineNaturesRestreintes=='') {
 	$DisciplineNaturesRestreintes=1;
 }
 
-$themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-//$titre_page = "Sanctions: Définition des qualités";
-$titre_page = "Discipline: Définition des natures";
+//$titre_page = "Sanctions: DÃ©finition des qualitÃ©s";
+$titre_page = "Discipline: DÃ©finition des natures";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -261,7 +261,7 @@ echo "<p>Natures existantes&nbsp;:</p>\n";
 echo "<table class='boireaus' border='1' summary='Tableau des natures existantes'>\n";
 echo "<tr>\n";
 echo "<th>Nature</th>\n";
-echo "<th>Catégorie</th>\n";
+echo "<th>CatÃ©gorie</th>\n";
 echo "<th>Supprimer</th>\n";
 echo "</tr>\n";
 $alt = 1;
@@ -301,7 +301,7 @@ echo "</blockquote>\n";
 
 echo "<table border='0'>\n";
 echo "<tr><td>Nouvelle nature&nbsp;: </td><td><input type='text' name='nature' value='' onchange='changement();' /></td></tr>\n";
-echo "<tr><td>Catégorie&nbsp;: </td><td>";
+echo "<tr><td>CatÃ©gorie&nbsp;: </td><td>";
 echo "<select name='id_categorie_nature_nouvelle'>\n";
 echo "<option value='0' selected='true'>---</option>\n";
 foreach($tab_categorie as $key => $value) {
@@ -317,7 +317,7 @@ echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 echo "<p>\n";
 echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_0' value='0' ";
 if($DisciplineNaturesRestreintes=="0") {echo "checked ";}
-echo "/><label for='DisciplineNaturesRestreintes_0'> Ne pas utiliser la liste de natures proposées ici.<br />Les utilisateurs pourront saisir des natures d'incident librement et ne se verront proposer que des natures parmi celles saisies précédemment lors d'autres incidents.</label><br />\n";
+echo "/><label for='DisciplineNaturesRestreintes_0'> Ne pas utiliser la liste de natures proposÃ©es ici.<br />Les utilisateurs pourront saisir des natures d'incident librement et ne se verront proposer que des natures parmi celles saisies prÃ©cÃ©demment lors d'autres incidents.</label><br />\n";
 
 echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_1' value='1' ";
 if($DisciplineNaturesRestreintes=="1") {echo "checked ";}
@@ -325,7 +325,7 @@ echo "/><label for='DisciplineNaturesRestreintes_1'> Les utilisateurs pourront s
 
 echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_2' value='2' ";
 if($DisciplineNaturesRestreintes=="2") {echo "checked ";}
-echo "/><label for='DisciplineNaturesRestreintes_2'> Restreindre les natures d'incidents pouvant être sélectionnées aux seules natures ci-dessus.<br />Les utilisateurs devront choisir une des natures de la liste ci-dessus.</label><br />\n";
+echo "/><label for='DisciplineNaturesRestreintes_2'> Restreindre les natures d'incidents pouvant Ãªtre sÃ©lectionnÃ©es aux seules natures ci-dessus.<br />Les utilisateurs devront choisir une des natures de la liste ci-dessus.</label><br />\n";
 echo "</p>\n";
 
 echo "<input type='hidden' name='is_posted' value='y' />\n";
@@ -337,8 +337,8 @@ echo "<p><br /></p>\n";
 echo "<p><i>NOTES&nbsp;:</i></p>
 <ul>
 	<li>
-		<p>Restreindre les natures d'incidents pouvant être sélectionnées aux seules natures ci-dessus permet d'éviter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).<br />
-		Cependant, trop les restreindre peut gêner les utilisateurs.</p>
+		<p>Restreindre les natures d'incidents pouvant Ãªtre sÃ©lectionnÃ©es aux seules natures ci-dessus permet d'Ã©viter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).<br />
+		Cependant, trop les restreindre peut gÃªner les utilisateurs.</p>
 	</li>
 </ul>\n";
 

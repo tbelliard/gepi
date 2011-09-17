@@ -48,7 +48,7 @@ $user_login2=isset($_POST['user_login2']) ? $_POST['user_login2'] : (isset($_GET
 
 if (isset($_GET['action'])) {
 	check_token();
-	// Une action a été demandée
+	// Une action a Ã©tÃ© demandÃ©e
 	switch ($_GET['action']) {
 		case "activer":
 			$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE (login = '".$_GET['user_login']."')");
@@ -73,7 +73,7 @@ if (isset($_GET['action'])) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Sécurité Gepi";
+$titre_page = "SÃ©curitÃ© Gepi";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -81,15 +81,15 @@ require_once("../lib/header.inc");
 
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 echo add_token_field();
-echo "<p class='bold'><a href='index.php#security_panel'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | ";
+echo "<p class='bold'><a href='index.php#security_panel'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>DÃ©finir la politique de sÃ©curitÃ©</a> | ";
 $sql="SELECT 1=1 FROM tentatives_intrusion WHERE statut='';";
 $test_arch=mysql_query($sql);
 if(mysql_num_rows($test_arch)>0) {
-	echo "<a href='security_panel_archives.php'>Historique des alertes sécurité</a>";
+	echo "<a href='security_panel_archives.php'>Historique des alertes sÃ©curitÃ©</a>";
 }
 
 //else {
-//	echo "Historique des alertes sécurité";
+//	echo "Historique des alertes sÃ©curitÃ©";
 
 	if($tri=='nom') {
 		$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, count(t.login) AS nb FROM utilisateurs u, tentatives_intrusion t WHERE t.login=u.login GROUP BY u.login ORDER BY u.nom, u.prenom;";
@@ -112,7 +112,7 @@ if(mysql_num_rows($test_arch)>0) {
 		echo "</select>\n";
 	}
 
-	// Lien: Trier par nom/prénom ou nombre d'alertes
+	// Lien: Trier par nom/prÃ©nom ou nombre d'alertes
 	echo " Trier par <a href='".$_SERVER['PHP_SELF']."?tri=nom'>nom</a> / <a href='".$_SERVER['PHP_SELF']."?tri=score'>score</a>";
 
 	echo "<input type='hidden' name='afficher_les_alertes_d_un_compte' value='y' />\n";
@@ -121,12 +121,12 @@ if(mysql_num_rows($test_arch)>0) {
 
 
 
-	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login :%' GROUP BY description ORDER BY description;";
+	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut Ãªtre simplement une faute de frappe. Cette alerte n''est significative qu''en cas de rÃ©pÃ©tition. (login :%' GROUP BY description ORDER BY description;";
 
-	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login :%' GROUP BY description ORDER BY nb DESC;";
+	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut Ãªtre simplement une faute de frappe. Cette alerte n''est significative qu''en cas de rÃ©pÃ©tition. (login :%' GROUP BY description ORDER BY nb DESC;";
 	$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect.%(login :%' GROUP BY description ORDER BY nb DESC;";
 	$res_erreur_mdp=mysql_query($sql);
-	// Récupérer les logins
+	// RÃ©cupÃ©rer les logins
 	if(mysql_num_rows($res_erreur_mdp)>0) {
 		echo " | ";
 
@@ -135,7 +135,7 @@ if(mysql_num_rows($test_arch)>0) {
 		echo "<option value=''>---</option>\n";
 		while($lig_erreur_login=mysql_fetch_object($res_erreur_mdp)) {
 			$tab_tmp=explode(':', $lig_erreur_login->description);
-			// On vire l'espace au début et la parenthèse à la fin
+			// On vire l'espace au dÃ©but et la parenthÃ¨se Ã  la fin
 			$current_login=substr($tab_tmp[1],1,strlen($tab_tmp[1])-2);
 
 			echo "<option value='$current_login'";
@@ -236,7 +236,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 
 	echo "<table class='boireaus' style='width: 90%;'>\n";
 	echo "<tr>\n";
-	echo "<th colspan='5'>Alertes récentes</th>\n";
+	echo "<th colspan='5'>Alertes rÃ©centes</th>\n";
 	echo "</tr>\n";
 	
 	echo "<tr>\n";
@@ -255,7 +255,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 	echo "</th>\n";
 */
 	echo "<th>\n";
-	// Le tri par date est le mode standard... pas besoin de paramètre
+	// Le tri par date est le mode standard... pas besoin de paramÃ¨tre
 	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y";
 	if(isset($tri)) {echo "&amp;tri=$tri";}
 	echo "' style='display:inline;'>Date</a>";
@@ -274,7 +274,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 		$sql="SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new' AND t.login='$user_login') ORDER BY ";
 	}
 	else {
-		$sql="SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new' AND t.description='Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login : $user_login)') ORDER BY ";
+		$sql="SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new' AND t.description='Tentative de connexion avec un mot de passe incorrect. Ce peut Ãªtre simplement une faute de frappe. Cette alerte n''est significative qu''en cas de rÃ©pÃ©tition. (login : $user_login)') ORDER BY ";
 	}
 	if(isset($_GET['order_by'])) {
 		$order_by=$_GET['order_by'];
@@ -304,7 +304,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 		/*
 		$user = null;
 		if ($row->login != "-") {
-			// On récupère des informations sur l'utilisateur :
+			// On rÃ©cupÃ¨re des informations sur l'utilisateur :
 			$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
 			$user = mysql_fetch_object($user_req);
 		}
@@ -318,12 +318,12 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 				//echo " (compte actif)";
 				echo " (<span style='color:green;'>compte actif</span>)";
 			} else {
-				//echo " (compte désactivé)";
-				echo " (<span style='color:red;'>compte désactivé</span>)";
+				//echo " (compte dÃ©sactivÃ©)";
+				echo " (<span style='color:red;'>compte dÃ©sactivÃ©</span>)";
 			}
-			echo "<br/>Score cumulé : ".$user['niveau_alerte'];
+			echo "<br/>Score cumulÃ© : ".$user['niveau_alerte'];
 		} else {
-			echo "<b>Attaque extérieure</b><br/>\n";
+			echo "<b>Attaque extÃ©rieure</b><br/>\n";
 			echo "Adresse IP : ".$row->adresse_ip."<br/>\n";
 		}
 		echo "</td>\n";
@@ -338,13 +338,13 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 				if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
 				if(isset($tri)) {echo "&amp;tri=$tri";}
 				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-				echo add_token_in_url()."'>Désactiver le compte</a>";
+				echo add_token_in_url()."'>DÃ©sactiver le compte</a>";
 			} else {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$user_login;
 				if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
 				if(isset($tri)) {echo "&amp;tri=$tri";}
 				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-				echo add_token_in_url()."'>Réactiver le compte</a>";
+				echo add_token_in_url()."'>RÃ©activer le compte</a>";
 			}
 			echo "<br />\n";
 			if ($user['observation_securite'] == 0) {
@@ -365,10 +365,10 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 			if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
 			if(isset($tri)) {echo "&amp;tri=$tri";}
 			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-			echo add_token_in_url()."'>Réinitialiser cumul</a>";
+			echo add_token_in_url()."'>RÃ©initialiser cumul</a>";
 			echo "</p>\n";
 		} else {
-			echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>\n";
+			echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liÃ©e Ã  un utilisateur du systÃ¨me)</p>\n";
 		}
 
 		echo "</td>\n";
@@ -381,7 +381,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 }
 //=======================================================================================================
 // Toutes les alertes:
-echo "<p>Les alertes 'récentes' (non archivées) sont celles dont le niveau est pris en compte sur la page d'accueil (information 'Niveaux cumulés'). Pour remettre à zéro le compteur de la page d'accueil, il vous suffit de cliquer sur 'Archiver'.</p>\n";
+echo "<p>Les alertes 'rÃ©centes' (non archivÃ©es) sont celles dont le niveau est pris en compte sur la page d'accueil (information 'Niveaux cumulÃ©s'). Pour remettre Ã  zÃ©ro le compteur de la page d'accueil, il vous suffit de cliquer sur 'Archiver'.</p>\n";
 
 
 $sql="SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte FROM utilisateurs u WHERE (u.observation_securite = '1') ORDER BY u.niveau_alerte DESC;";
@@ -391,19 +391,19 @@ elseif(mysql_num_rows($req_observation)>0) {
 	echo "<p style='color:red'><a href='#utilisateurs_en_observation'>".mysql_num_rows($req_observation)." utilisateur(s)</a> en <b>observation</b>.</p>\n";
 }
 
-// Comptes désactivés
+// Comptes dÃ©sactivÃ©s
 $sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte FROM utilisateurs u, tentatives_intrusion t WHERE (u.etat='inactif' AND t.login=u.login AND t.statut='new');";
 $req_desactive=mysql_query($sql);
 if (!$req_desactive) {echo mysql_error();}
 elseif(mysql_num_rows($req_desactive)>0) {
-	echo "<p style='color:red'><a href='#utilisateurs_desactives'>".mysql_num_rows($req_desactive)." utilisateur(s)</a> avec alerte dans cette page ont leur <b>compte désactivé</b>.</p>\n";
+	echo "<p style='color:red'><a href='#utilisateurs_desactives'>".mysql_num_rows($req_desactive)." utilisateur(s)</a> avec alerte dans cette page ont leur <b>compte dÃ©sactivÃ©</b>.</p>\n";
 }
 
 
 //echo "<table class='menu' style='width: 90%;'>\n";
 echo "<table class='boireaus' style='width: 90%;'>\n";
 echo "<tr>\n";
-echo "<th colspan='5'>Alertes récentes (<a href='security_panel.php?action=archiver".add_token_in_url()."'>archiver</a>)</th>\n";
+echo "<th colspan='5'>Alertes rÃ©centes (<a href='security_panel.php?action=archiver".add_token_in_url()."'>archiver</a>)</th>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
@@ -413,7 +413,7 @@ echo "/";
 echo "<a href='".$_SERVER['PHP_SELF']."?order_by=ip' style='display:inline;'>IP</a>";
 echo "</th>\n";
 echo "<th>\n";
-// Le tri par date est le mode standard... pas besoin de paramètre
+// Le tri par date est le mode standard... pas besoin de paramÃ¨tre
 echo "<a href='".$_SERVER['PHP_SELF']."' style='display:inline;'>Date</a>";
 echo "</th>\n";
 echo "<th>\n";
@@ -450,7 +450,7 @@ while ($row = mysql_fetch_object($req)) {
 	echo "<td>\n";
 	$user = null;
 	if ($row->login != "-") {
-		// On récupère des informations sur l'utilisateur :
+		// On rÃ©cupÃ¨re des informations sur l'utilisateur :
 		$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
 		$user = mysql_fetch_object($user_req);
 	}
@@ -463,12 +463,12 @@ while ($row = mysql_fetch_object($req)) {
 			//echo " (compte actif)";
 			echo " (<span style='color:green;'>compte actif</span>)";
 		} else {
-			//echo " (compte désactivé)";
-			echo " (<span style='color:red;'>compte désactivé</span>)";
+			//echo " (compte dÃ©sactivÃ©)";
+			echo " (<span style='color:red;'>compte dÃ©sactivÃ©</span>)";
 		}
-		echo "<br/>Score cumulé : ".$user->niveau_alerte;
+		echo "<br/>Score cumulÃ© : ".$user->niveau_alerte;
 	} else {
-		echo "<b>Attaque extérieure</b><br/>\n";
+		echo "<b>Attaque extÃ©rieure</b><br/>\n";
 		echo "Adresse IP : ".$row->adresse_ip."<br/>\n";
 	}
 	echo "</td>\n";
@@ -482,12 +482,12 @@ while ($row = mysql_fetch_object($req)) {
 			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$user->login;
 			if(isset($tri)) {echo "&amp;tri=$tri";}
 			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-			echo add_token_in_url()."'>Désactiver le compte</a>";
+			echo add_token_in_url()."'>DÃ©sactiver le compte</a>";
 		} else {
 			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$user->login;
 			if(isset($tri)) {echo "&amp;tri=$tri";}
 			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-			echo add_token_in_url()."'>Réactiver le compte</a>";
+			echo add_token_in_url()."'>RÃ©activer le compte</a>";
 		}
 		echo "<br />\n";
 		if ($user->observation_securite == 0) {
@@ -505,10 +505,10 @@ while ($row = mysql_fetch_object($req)) {
 		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login;
 		if(isset($tri)) {echo "&amp;tri=$tri";}
 		if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-		echo add_token_in_url()."'>Réinitialiser cumul</a>";
+		echo add_token_in_url()."'>RÃ©initialiser cumul</a>";
 		echo "</p>\n";
 	} else {
-		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>\n";
+		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liÃ©e Ã  un utilisateur du systÃ¨me)</p>\n";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -550,7 +550,7 @@ else {
 		if ($row->etat == "actif") {
 			echo "Compte actif";
 		} else {
-			echo "Compte désactivé";
+			echo "Compte dÃ©sactivÃ©";
 		}
 		echo "</td>\n";
 		echo "<td>".$row->niveau_alerte."</td>\n";
@@ -560,13 +560,13 @@ else {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$row->login;
 				if(isset($tri)) {echo "&amp;tri=$tri";}
 				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-				echo add_token_in_url()."'>Désactiver le compte</a>";
+				echo add_token_in_url()."'>DÃ©sactiver le compte</a>";
 				echo "<br />";
 			} else {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$row->login;
 				if(isset($tri)) {echo "&amp;tri=$tri";}
 				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-				echo add_token_in_url()."'>Réactiver le compte</a>";
+				echo add_token_in_url()."'>RÃ©activer le compte</a>";
 				echo "<br />";
 			}
 			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$row->login;
@@ -578,7 +578,7 @@ else {
 			echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$row->login;
 			if(isset($tri)) {echo "&amp;tri=$tri";}
 			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-			echo add_token_in_url()."'>Réinitialiser cumul</a>";
+			echo add_token_in_url()."'>RÃ©initialiser cumul</a>";
 			echo "</p>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -589,14 +589,14 @@ else {
 
 echo "<a name='utilisateurs_desactives'></a>\n";
 if(mysql_num_rows($req_desactive)==0) {
-	echo "<p>Aucun utilisateur avec alerte dans cette page n'est désactivé.</p>\n";
+	echo "<p>Aucun utilisateur avec alerte dans cette page n'est dÃ©sactivÃ©.</p>\n";
 }
 else {
-	echo "<p>".mysql_num_rows($req_desactive)." utilisateur(s) avec alerte dans cette page sont désactivés&nbsp;:</p>\n";
+	echo "<p>".mysql_num_rows($req_desactive)." utilisateur(s) avec alerte dans cette page sont dÃ©sactivÃ©s&nbsp;:</p>\n";
 	//echo "<table class='menu'>\n";
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
-	echo "<th colspan='3'>Utilisateurs désactivés</th>\n";
+	echo "<th colspan='3'>Utilisateurs dÃ©sactivÃ©s</th>\n";
 	echo "</tr>\n";
 	
 	echo "<tr>\n";
@@ -621,7 +621,7 @@ else {
 		if ($row->etat == "actif") {
 			echo "Compte actif";
 		} else {
-			echo "Compte désactivé";
+			echo "Compte dÃ©sactivÃ©";
 		}
 		echo "</td>\n";
 		echo "<td>".$row->niveau_alerte."</td>\n";
@@ -631,13 +631,13 @@ else {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$row->login;
 				if(isset($tri)) {echo "&amp;tri=$tri";}
 				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-				echo add_token_in_url()."'>Désactiver le compte</a>";
+				echo add_token_in_url()."'>DÃ©sactiver le compte</a>";
 				echo "<br />";
 			} else {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$row->login;
 				if(isset($tri)) {echo "&amp;tri=$tri";}
 				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-				echo add_token_in_url()."'>Réactiver le compte</a>";
+				echo add_token_in_url()."'>RÃ©activer le compte</a>";
 				echo "<br />";
 			}
 			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$row->login;
@@ -649,7 +649,7 @@ else {
 			echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$row->login;
 			if(isset($tri)) {echo "&amp;tri=$tri";}
 			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-			echo add_token_in_url()."'>Réinitialiser cumul</a>";
+			echo add_token_in_url()."'>RÃ©initialiser cumul</a>";
 			echo "</p>\n";
 		echo "</td>\n";
 		echo "</tr>\n";

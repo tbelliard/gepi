@@ -64,7 +64,7 @@ if(!isset($user_login)) {
 	if($mode=="personnels") {
 		$tab_statut=array('professeur', 'scolarite', 'cpe', 'autre');
 		if(!isset($user_statut)) {
-			// Imprimer les fiches bienvenue pour une ou des catégories... ou pour une sélection d'utilisateurs, ou pour une classe...
+			// Imprimer les fiches bienvenue pour une ou des catÃ©gories... ou pour une sÃ©lection d'utilisateurs, ou pour une classe...
 
 			//**************** EN-TETE *****************************
 			$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
@@ -77,7 +77,7 @@ if(!isset($user_login)) {
 			echo "</p>\n";
 	
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
-			echo "<p>Imprimer les fiches bienvenue pour une ou des catégories</p>\n";
+			echo "<p>Imprimer les fiches bienvenue pour une ou des catÃ©gories</p>\n";
 			for($i=0;$i<count($tab_statut);$i++) {
 				echo "<input type='checkbox' name='user_statut[]' id='user_statut_$tab_statut[$i]' value='$tab_statut[$i]' /><label for='user_statut_$tab_statut[$i]'> $tab_statut[$i]</label><br />\n";
 			}
@@ -126,11 +126,11 @@ if(!isset($user_login)) {
 										ORDER BY classe;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p>Aucune compte responsable n'a encore été créé.</p>\n";
+				echo "<p>Aucune compte responsable n'a encore Ã©tÃ© crÃ©Ã©.</p>\n";
 			}
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
-				echo "<p>Choisissez les classes pour lesquelles générer les fiches bienvenue&nbsp;:<br />\n";
+				echo "<p>Choisissez les classes pour lesquelles gÃ©nÃ©rer les fiches bienvenue&nbsp;:<br />\n";
 				while ($lig=mysql_fetch_object($res)) {
 					echo "<input type='checkbox' name='id_classe[]' id='id_classe_$lig->id' value='$lig->id' onchange='change_style_classe($lig->id)'><label id='clas_id_classe_$lig->id' for='id_classe_$lig->id'> ".$lig->classe."</label><br />\n";
 				}
@@ -206,14 +206,14 @@ if(!isset($user_login)) {
 				}
 			}
 			else {
-				$msg="L'identifiant de classe est erroné: '$id_classe'.";
+				$msg="L'identifiant de classe est erronÃ©: '$id_classe'.";
 			}
 		}
 	}
 	elseif($mode=="eleve") {
 		if(!isset($id_classe)) {
 			//**************** EN-TETE *****************************
-			$titre_page = "Gestion des utilisateurs | Impression fiches élèves";
+			$titre_page = "Gestion des utilisateurs | Impression fiches Ã©lÃ¨ves";
 			require_once("../lib/header.inc");
 			//**************** FIN EN-TETE *****************
 	
@@ -228,11 +228,11 @@ if(!isset($user_login)) {
 									ORDER BY classe;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
-				echo "<p>Aucune compte élève n'a encore été créé.</p>\n";
+				echo "<p>Aucune compte Ã©lÃ¨ve n'a encore Ã©tÃ© crÃ©Ã©.</p>\n";
 			}
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
-				echo "<p>Choisissez les classes pour lesquelles générer les fiches bienvenue&nbsp;:<br />\n";
+				echo "<p>Choisissez les classes pour lesquelles gÃ©nÃ©rer les fiches bienvenue&nbsp;:<br />\n";
 				while ($lig=mysql_fetch_object($res)) {
 					echo "<input type='checkbox' name='id_classe[]' id='id_classe_$lig->id' value='$lig->id'><label for='id_classe_$lig->id'> ".$lig->classe."</label><br />\n";
 				}
@@ -280,7 +280,7 @@ if(!isset($user_login)) {
 				}
 			}
 			else {
-				$msg="L'identifiant de classe est erroné: '$id_classe'.";
+				$msg="L'identifiant de classe est erronÃ©: '$id_classe'.";
 			}
 		}
 	}
@@ -298,7 +298,7 @@ if(!isset($user_login)) {
 		echo "<ul>\n";
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=personnels'>personnels</a></li>";
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=responsable'>responsables</a></li>";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=eleve'>élèves</a></li>";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=eleve'>Ã©lÃ¨ves</a></li>";
 		echo "</ul>\n";
 
 		require("../lib/footer.inc.php");
@@ -315,7 +315,7 @@ if(!isset($user_login)) {
 		echo " | <a href='".$_SERVER['PHP_SELF']."'> Fiches bienvenue</a>";
 		echo "</p>\n";
 
-		echo "<p>Aucun utilisateur (<i>$mode</i>) n'a été sélectionné.</p>\n";
+		echo "<p>Aucun utilisateur (<i>$mode</i>) n'a Ã©tÃ© sÃ©lectionnÃ©.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -370,9 +370,9 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL) {
 	}
 
 	if($affiche_adresse_resp=='y') {
-		// Récupération des variables du bloc adresses:
-		// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
-		// Il y a d'autres récupération de largeur et de positionnement du bloc adresse à extraire...
+		// RÃ©cupÃ©ration des variables du bloc adresses:
+		// Liste de rÃ©cupÃ©ration Ã  extraire de la boucle Ã©lÃ¨ves pour limiter le nombre de requÃªtes... A FAIRE
+		// Il y a d'autres rÃ©cupÃ©ration de largeur et de positionnement du bloc adresse Ã  extraire...
 		// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
 		$largeur1=getSettingValue("addressblock_logo_etab_prop") ? getSettingValue("addressblock_logo_etab_prop") : 40;
 		$largeur2=100-$largeur1;
@@ -380,12 +380,12 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL) {
 		// Taille des polices sur le bloc adresse:
 		$addressblock_font_size=getSettingValue("addressblock_font_size") ? getSettingValue("addressblock_font_size") : 12;
 	
-		// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
+		// Taille de la cellule Classe et AnnÃ©e scolaire sur le bloc adresse:
 		$addressblock_classe_annee=getSettingValue("addressblock_classe_annee") ? getSettingValue("addressblock_classe_annee") : 35;
-		// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
+		// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, AnnÃ©e,...
 		$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
 	
-		// Débug sur l'entête pour afficher les cadres
+		// DÃ©bug sur l'entÃªte pour afficher les cadres
 		$addressblock_debug=getSettingValue("addressblock_debug") ? getSettingValue("addressblock_debug") : "n";
 
 		$addressblock_length=getSettingValue("addressblock_length") ? getSettingValue("addressblock_length") : 6;
@@ -463,7 +463,7 @@ $ligne3
 
 
 
-		// Cadre contenant le tableau Logo+Ad_etab et le nom, prénom,... de l'élève:
+		// Cadre contenant le tableau Logo+Ad_etab et le nom, prÃ©nom,... de l'Ã©lÃ¨ve:
 		echo "<div style='float:left;
 left:0px;
 top:0px;
@@ -517,7 +517,7 @@ width:".$largeur1."%;\n";
 		$tab_tmp_info_classes=get_noms_classes_from_ele_login($user_login);
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "Élève de&nbsp;: \n";
+		echo "Ã‰lÃ¨ve de&nbsp;: \n";
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<span class = \"bold\">".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</span>";
@@ -557,7 +557,7 @@ width:".$largeur1."%;\n";
 	if($affiche_adresse_resp=='y') {
 		echo "</div>\n";
 
-		// Pour que le texte de la fiche bienvenue ne remonte pas au delà de l'adresse
+		// Pour que le texte de la fiche bienvenue ne remonte pas au delÃ  de l'adresse
 		echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
 	}
 
@@ -565,8 +565,8 @@ width:".$largeur1."%;\n";
 	echo $impression;
 
 	if($impression=='') {
-		echo "<div class='info_fiche_bienvenue'><div align='center'>Information (<i>non imprimée</i>) : La fiche bienvenue pour <b
-	>$user_statut</b> n'est pas renseignée.<br />Vous pouvez paramétrer les fiches bienvenue à la page suivante&nbsp;: <a href='../gestion/modify_impression.php?fiche=";
+		echo "<div class='info_fiche_bienvenue'><div align='center'>Information (<i>non imprimÃ©e</i>) : La fiche bienvenue pour <b
+	>$user_statut</b> n'est pas renseignÃ©e.<br />Vous pouvez paramÃ©trer les fiches bienvenue Ã  la page suivante&nbsp;: <a href='../gestion/modify_impression.php?fiche=";
 		if($user_statut=='responsable') {echo 'responsables';}
 		elseif($user_statut=='eleve') {echo 'eleves';}
 		else {echo 'personnels';}

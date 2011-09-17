@@ -198,10 +198,10 @@ function SwapContainers(&$tab_data, &$index_box, $jour) {
 
 // =============================================================================
 //
-//		Organise les créneaux Semaine A - Semaine B
-//		de façon à rendre la lecture plus élégante
-//		les créneaux Sem.B sont tous alignés à droite
-//		les créneaux Sem.A sont tous alignés à gauche
+//		Organise les crÃ©neaux Semaine A - Semaine B
+//		de faÃ§on Ã  rendre la lecture plus Ã©lÃ©gante
+//		les crÃ©neaux Sem.B sont tous alignÃ©s Ã  droite
+//		les crÃ©neaux Sem.A sont tous alignÃ©s Ã  gauche
 //
 // =============================================================================
 function FixColumnPositions(&$tab_data, $entetes) 
@@ -244,13 +244,13 @@ function FixColumnPositions(&$tab_data, $entetes)
 // ======================================================
 function VerifierTablesDelestage() 
 {
-	// ======= table pour optimiser les requêtes sql
+	// ======= table pour optimiser les requÃªtes sql
     $sql = "CREATE TABLE IF NOT EXISTS j_eleves_groupes_delestage (
                 login VARCHAR(50),
                 id_groupe INT(11),
                 periode INT(11))";
     $req_creation = mysql_query($sql) or die(mysql_error());
-	// ======= table pour optimiser les requêtes sql
+	// ======= table pour optimiser les requÃªtes sql
     $sql = "CREATE TABLE IF NOT EXISTS j_eleves_groupes_delestage2 (
                 login VARCHAR(50),
                 id_groupe INT(11),
@@ -265,7 +265,7 @@ function VerifierTablesDelestage()
 // ======================================================
 function EtudeDeCasTroisCours($tab_cours) 
 {
-    // ====================== travail préparatoire
+    // ====================== travail prÃ©paratoire
     $tab_cas['indice'] = 0;
 
     $duree1 = $tab_cours['duree'][0];
@@ -490,7 +490,7 @@ function ConstruireCreneauxEDT()
     $tab_data['nb_creneaux'] = $nbre_lignes;
 
     $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
-    //Cas où le nom des créneaux sont inscrits à gauche
+    //Cas oÃ¹ le nom des crÃ©neaux sont inscrits Ã  gauche
     if ($reglages_creneaux == "noms") {
 	    $tab_creneaux = retourne_creneaux();
 	    $i=0;
@@ -505,7 +505,7 @@ function ConstruireCreneauxEDT()
 	    }
     }
     
-    // Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
+    // Cas oÃ¹ les heures sont inscrites Ã  gauche au lieu du nom des crÃ©neaux
     elseif ($reglages_creneaux == "heures") {
 	    $tab_horaire = retourne_horaire();
 	    for($i=0; $i<count($tab_horaire); ) {
@@ -544,7 +544,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
         $tab_data_jour['heuredeb_dec'][$index_box] = 1;
     }
 
-    // ====================== Récupérer la durée chiffrée du cours (en heures)
+    // ====================== RÃ©cupÃ©rer la durÃ©e chiffrÃ©e du cours (en heures)
     preg_match_all('#[0-9]+#',$taille_box,$extract);
     if (isset($extract[0][0])) {
         $extract[0][0] = $extract[0][0] / 2;
@@ -553,7 +553,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
     else {
         $tab_data_jour['duree_valeur'][$index_box] = 0;
     }
-    // ===================== Récupérer le créneau de début de séance
+    // ===================== RÃ©cupÃ©rer le crÃ©neau de dÃ©but de sÃ©ance
 	$tab_creneaux = retourne_creneaux();
     $index_creneau = $elapse_time;
     if ($index_creneau % 2 != 0) {
@@ -568,10 +568,10 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
         $tab_data_jour['affiche_creneau'][$index_box] .= " milieu ";
     }
     else {
-        $tab_data_jour['affiche_creneau'][$index_box] .= " début ";
+        $tab_data_jour['affiche_creneau'][$index_box] .= " dÃ©but ";
     }
 
-    // ===================== Définir une couleur spécifique pour le créneau du repas
+    // ===================== DÃ©finir une couleur spÃ©cifique pour le crÃ©neau du repas
     if (($type == "vide") AND ($couleur == "cadre")) {
         $sql_request = "SELECT type_creneaux FROM edt_creneaux
 							        WHERE id_definie_periode  = '".$id_creneaux."'";
@@ -592,7 +592,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
 
 // =============================================================================
 //
-//     	Récupère le nom du dossier gepi/templates/... utilisé     
+//     	RÃ©cupÃ¨re le nom du dossier gepi/templates/... utilisÃ©     
 //
 // =============================================================================
 function NameTemplateEDT()
@@ -603,7 +603,7 @@ function NameTemplateEDT()
 
 // =============================================================================
 //
-//          fonction de Julien Jocal reprise et adaptée
+//          fonction de Julien Jocal reprise et adaptÃ©e
 //
 // =============================================================================
 function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $id_aid, $id_semaine, $period)
@@ -615,7 +615,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
         $calendrier = "1=1";
     }
     if (($id_semaine == "") OR ($id_semaine =="0") OR ($id_semaine == NULL)) {
-	    // On récupère l'id
+	    // On rÃ©cupÃ¨re l'id
         if ($enseignement == "") {
 	        $req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours, login_prof FROM edt_cours WHERE
 										        id_aid = '".$id_aid."' AND
@@ -635,7 +635,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 
 	}
     else {
-	    // On récupère l'id
+	    // On rÃ©cupÃ¨re l'id
         if ($enseignement == "") {
 
 	        $req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours, login_prof FROM edt_cours WHERE
@@ -659,7 +659,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 
 
 	}
-	// On vérifie si $enseignement est ou pas pas un AID (en vérifiant qu'il est bien renseigné)
+	// On vÃ©rifie si $enseignement est ou pas pas un AID (en vÃ©rifiant qu'il est bien renseignÃ©)
 
 	if (($id_aid != NULL) AND ($id_aid != "")) 
     {
@@ -667,14 +667,14 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$req_nom_aid = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$id_aid."'");
 		$rep_nom_aid = mysql_fetch_array($req_nom_aid);
 
-		// On récupère le nom de l'aid
+		// On rÃ©cupÃ¨re le nom de l'aid
 		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_nom_aid["indice_aid"]."'");
 		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
 		$aff_matiere = $rep_nom_complet["nom"]." ".$rep_nom_aid["nom"];
 
 		$contenu="";
 
-		// On compte les élèves de l'aid $aff_nbre_eleve
+		// On compte les Ã©lÃ¨ves de l'aid $aff_nbre_eleve
 		$req_nbre_eleves = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."' ORDER BY login");
 		$aff_nbre_eleve = mysql_num_rows($req_nbre_eleves);
 		for($a=0; $a < $aff_nbre_eleve; $a++) {
@@ -682,7 +682,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			$noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_eleves[$a]["login"]."'"));
 			$contenu .= $noms["nom"]." ".$noms["prenom"]."<br />";
 		}
-		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
+		$titre_listeleve = "Liste des Ã©lÃ¨ves (".$aff_nbre_eleve.")";
 		$id_div_p = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux.$enseignement;
 		$id_div = strtr($id_div_p, " -|/'&;", "wwwwwww");
 		//$classe_js = "<a href=\"#\" onclick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
@@ -704,7 +704,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	}
     else if ($enseignement != "") 
     {
-		// on récupère le nom court des groupes en question
+		// on rÃ©cupÃ¨re le nom court des groupes en question
 		$req_id_classe = mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe ='".$enseignement."'");
         $res="";
         while ($rep_id_classe = mysql_fetch_array($req_id_classe)) {
@@ -713,7 +713,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		    $res = $res." ".$rep_classe['classe'];
         }
         $rep_classe['classe'] = $res;
-		// On récupère la période active en passant d'abord par le calendrier
+		// On rÃ©cupÃ¨re la pÃ©riode active en passant d'abord par le calendrier
 		$query_cal = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
 														debut_calendrier_ts <= '".date("U")."'
 														AND fin_calendrier_ts >= '".date("U")."'
@@ -723,30 +723,30 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$p_c = mysql_fetch_array($query_cal);
 
 		$query_periode = mysql_query("SELECT num_periode FROM periodes WHERE verouiller = 'N' OR verouiller = 'P'")
-									OR trigger_error('Impossible de récupérer la bonne période.', E_USER_NOTICE);
+									OR trigger_error('Impossible de rÃ©cupÃ©rer la bonne pÃ©riode.', E_USER_NOTICE);
 		$p = mysql_fetch_array($query_periode);
 
 		$per = isset($p_c["numero_periode"]) ? $p_c["numero_periode"] : (isset($p["num_periode"]) ? $p["num_periode"] : "1");
 
-		// On compte le nombre d'élèves
+		// On compte le nombre d'Ã©lÃ¨ves
 		$req_compter_eleves = mysql_query("SELECT COUNT(*) FROM j_eleves_groupes WHERE periode = '".$per."' AND id_groupe ='".$enseignement."'");
 		$rep_compter_eleves = mysql_fetch_array($req_compter_eleves);
 		$aff_nbre_eleve = $rep_compter_eleves[0];
 
-		// On récupère la liste des élèves de l'enseignement
+		// On rÃ©cupÃ¨re la liste des Ã©lÃ¨ves de l'enseignement
 		if (($type_edt == "prof") OR ($type_edt == "salle")) {
 			$current_group = get_group($enseignement);
 
 			$contenu="";
 
-			// $per étant le numéro de la période
+			// $per Ã©tant le numÃ©ro de la pÃ©riode
 			if (isset($current_group["eleves"][$per]["users"])) {
 				foreach ($current_group["eleves"][$per]["users"] as $eleve_login) {
 					$contenu .= $eleve_login['nom']." ".$eleve_login['prenom']."<br />";
 				}
 			}
 
-			$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
+			$titre_listeleve = "Liste des Ã©lÃ¨ves (".$aff_nbre_eleve.")";
 
 			//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
 			$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux.rand();
@@ -755,7 +755,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			//	".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
             $classe_js = $rep_classe['classe'];
 		}
-		// On récupère le nom et la civilite du prof en question
+		// On rÃ©cupÃ¨re le nom et la civilite du prof en question
         if ($id_semaine == "") {
             $req_login_prof = mysql_query("SELECT login_prof FROM edt_cours WHERE 
                                                                         id_groupe ='".$enseignement."' AND
@@ -777,7 +777,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$rep_login_prof['login_prof']."'");
 		$rep_nom_prof = mysql_fetch_array($req_nom_prof);
 
-		// On récupère le nom de l'enseignement en question (en fonction du paramètre long ou court)
+		// On rÃ©cupÃ¨re le nom de l'enseignement en question (en fonction du paramÃ¨tre long ou court)
 		if (GetSettingEdt("edt_aff_matiere") == "long") {
 		    $req_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere IN (SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe ='".$enseignement."') ");
 		    $rep_matiere = mysql_fetch_array($req_matiere);
@@ -795,7 +795,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
     else
     {
 
-		// le groupe n'est pas renseigné, donc, on affiche en fonction
+		// le groupe n'est pas renseignÃ©, donc, on affiche en fonction
 		$aff_matiere = 'inc.';
 		$classe_js = NULL;
 		$aff_nbre_eleve = '0';
@@ -804,7 +804,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 
 	}
 
-	// On récupère le type de semaine si besoin
+	// On rÃ©cupÃ¨re le type de semaine si besoin
 	$req_sem = mysql_query("SELECT id_semaine FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'");
 	$rep_sem = mysql_fetch_array($req_sem);
 	if ($rep_sem["id_semaine"] == "0") {
@@ -814,7 +814,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$aff_sem = '- Sem.'.$rep_sem["id_semaine"];
 	}
 
-	// On récupère le nom complet de la salle en question
+	// On rÃ©cupÃ¨re le nom complet de la salle en question
 	if (GetSettingEdt("edt_aff_salle") == "nom") {
 		$salle_aff = "nom_salle";
 	}else {
@@ -843,7 +843,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
         $ChaineComplete = $ChaineComplete.$aff_sem." <i>".$rep_salle."</i>";
         if ($aff_nbre_eleve != 0)
         {
-            //$ChaineComplete = $ChaineComplete.",".$aff_nbre_eleve." él.\n";
+            //$ChaineComplete = $ChaineComplete.",".$aff_nbre_eleve." Ã©l.\n";
         }
         return $ChaineComplete;
 	}elseif (($type_edt == "classe") OR ($type_edt == "eleve")){
@@ -884,7 +884,7 @@ function nbre_colonnes_tab_edt(){
 }
 
 
-// Fonction qui renvoie la liste des créneaux (M1, M2, M3, ...) dans l'ordre de la journée
+// Fonction qui renvoie la liste des crÃ©neaux (M1, M2, M3, ...) dans l'ordre de la journÃ©e
 
 function retourne_creneaux(){
 
@@ -912,7 +912,7 @@ function retourne_horaire(){
 		for($i=0; $i<$num_nom_horaire; $i++) {
 			$horaire1[$i]["heure_debut"] = mysql_result($req_nom_horaire, $i, "heuredebut_definie_periode");
 			$exp_hor = explode(":", $horaire1[$i]["heure_debut"]);
-			$horaire[$i]["heure_debut"] = $exp_hor[0].":".$exp_hor[1]; // On enlève les secondes
+			$horaire[$i]["heure_debut"] = $exp_hor[0].":".$exp_hor[1]; // On enlÃ¨ve les secondes
 			$horaire1[$i]["heure_fin"] = mysql_result($req_nom_horaire, $i, "heurefin_definie_periode");
 			$exp_hor = explode(":", $horaire1[$i]["heure_fin"]);
 			$horaire[$i]["heure_fin"] = $exp_hor[0].":".$exp_hor[1];
@@ -925,14 +925,14 @@ function retourne_horaire(){
 }
 
 
-// Fonction qui renvoie la liste des id_creneaux dans l'ordre de la journée
+// Fonction qui renvoie la liste des id_creneaux dans l'ordre de la journÃ©e
 
 function retourne_id_creneaux(){
 
 	$req_id_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux
 								WHERE type_creneaux != 'pause'
 								ORDER BY heuredebut_definie_periode");
-	// On compte alors le nombre de réponses et on renvoie en fonction de la réponse
+	// On compte alors le nombre de rÃ©ponses et on renvoie en fonction de la rÃ©ponse
 	$nbre_rep = count($req_id_creneaux);
 	if ($nbre_rep == 0) {
 		return "aucun";
@@ -948,7 +948,7 @@ function retourne_id_creneaux(){
 }
 
 
-// Fonction qui renvoie un tableau des réglages de la table edt-setting
+// Fonction qui renvoie un tableau des rÃ©glages de la table edt-setting
 
 function retourne_setting_edt($reglage_edt){
 
@@ -961,13 +961,13 @@ function retourne_setting_edt($reglage_edt){
 }
 
 
-// Fonction qui renvoie les id_groupe à un horaire donné (jour_semaine id_definie_periode)
+// Fonction qui renvoie les id_groupe Ã  un horaire donnÃ© (jour_semaine id_definie_periode)
 
 function retourne_ens($jour_semaine, $id_creneaux){
 
 	$req_nom_creneaux = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode ='".$id_creneaux."'");
 	$rep_nom_creneaux = mysql_fetch_array($req_nom_creneaux);
-	// On récupère tous les enseignements de l'horaire
+	// On rÃ©cupÃ¨re tous les enseignements de l'horaire
 	$req_ens = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_definie_periode='".$id_creneaux."' && jour_semaine ='".$jour_semaine."'");
 
 	$result_ens = array();
@@ -1000,11 +1000,11 @@ function enseignements_prof($login_prof, $rep){
 function semaine_actu(){
 
 		/**
-		* On cherche à déterminer à quel type de semaine se rattache la semaine actuelle
-		* Il y a deux possibilités : soit l'établissement utilise les semaines classiques ISO soit il a défini
-		* des numéros spéciaux.
+		* On cherche Ã  dÃ©terminer Ã  quel type de semaine se rattache la semaine actuelle
+		* Il y a deux possibilitÃ©s : soit l'Ã©tablissement utilise les semaines classiques ISO soit il a dÃ©fini
+		* des numÃ©ros spÃ©ciaux.
  		*/
-	global $sem; // permet de modifier les requêtes si nécessaire pour avoir les cours sur une semaine donnée
+	global $sem; // permet de modifier les requÃªtes si nÃ©cessaire pour avoir les cours sur une semaine donnÃ©e
 		//
 		$rep = array();
 
@@ -1016,7 +1016,7 @@ function semaine_actu(){
 		return $rep;
 	}
 
-// Fonction qui renvoie la duree d'un enseignement à un créneau et un jour donné pour renseigner le rollspan
+// Fonction qui renvoie la duree d'un enseignement Ã  un crÃ©neau et un jour donnÃ© pour renseigner le rollspan
 
 function renvoie_duree($id_creneaux, $jour_semaine, $enseignement){
 	$req_duree = mysql_query("SELECT duree FROM edt_cours WHERE jour_semaine = '".$jour_semaine."' AND id_definie_periode = '".$id_creneaux."' AND id_groupe = '".$enseignement."'");
@@ -1055,12 +1055,12 @@ function renvoie_duree($id_creneaux, $jour_semaine, $enseignement){
 	return $duree;
 }
 
-// Fonction qui renvoie l'heure de début d'un cours
+// Fonction qui renvoie l'heure de dÃ©but d'un cours
 function renvoie_heuredeb($id_creneaux, $jour_semaine, $enseignement){
 	$req_heuredeb = mysql_query("SELECT heuredeb_dec FROM edt_cours WHERE jour_semaine = '".$jour_semaine."' AND id_definie_periode = '".$id_creneaux."' AND id_groupe = '".$enseignement."'");
 	$rep_heuredeb = mysql_fetch_array($req_heuredeb);
 	$reponse_heuredeb = $rep_heuredeb["heuredeb_dec"];
-		// Heure debut = 0 (debut créneau) ou 0.5 (milieu créneau)
+		// Heure debut = 0 (debut crÃ©neau) ou 0.5 (milieu crÃ©neau)
 	return $reponse_heuredeb;
 }
 
@@ -1126,7 +1126,7 @@ function renvoie_liste($type) {
 	}
 }
 
-// Fonction qui retourne le nom long et court de la classe d'un élève
+// Fonction qui retourne le nom long et court de la classe d'un Ã©lÃ¨ve
 
 function aff_nom_classe($log_eleve) {
 	$req_id_classe = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$log_eleve."'");
@@ -1140,7 +1140,7 @@ function aff_nom_classe($log_eleve) {
 	return $rep_nom_classe;
 }
 
-// Fonction qui renvoie la liste des élèves dont le nom commence par la lettre $alpha
+// Fonction qui renvoie la liste des Ã©lÃ¨ves dont le nom commence par la lettre $alpha
 
 function renvoie_liste_a($type, $alpha){
 	if ($type == "eleve") {
@@ -1159,7 +1159,7 @@ function renvoie_liste_a($type, $alpha){
 	}
 }
 
-// Fonction qui renvoie la liste des élèves d'une classe
+// Fonction qui renvoie la liste des Ã©lÃ¨ves d'une classe
 
 function renvoie_liste_classe($id_classe_post){
 	$req_liste_login = mysql_query("SELECT login FROM j_eleves_classes WHERE id_classe = '".$id_classe_post."' AND periode = '1'") OR die ('Erreur : renvoie_liste_classe() : '.mysql_error().'.');
@@ -1174,7 +1174,7 @@ function renvoie_liste_classe($id_classe_post){
 	return $rep_liste_eleves;
 }
 
-// Fonction qui renvoie le nom qui correspond à l'identifiant envoyé et au type (salle, prof, classe et élève)
+// Fonction qui renvoie le nom qui correspond Ã  l'identifiant envoyÃ© et au type (salle, prof, classe et Ã©lÃ¨ve)
 
 function renvoie_nom_long($id, $type){
 	{
@@ -1211,7 +1211,7 @@ function renvoie_nom_long($id, $type){
 }
 
 
-// Fonction qui affiche toutes les salles sans enseignements à un horaire donné
+// Fonction qui affiche toutes les salles sans enseignements Ã  un horaire donnÃ©
 
 function aff_salles_vides($id_creneaux, $id_jour_semaine){
 
@@ -1222,7 +1222,7 @@ function aff_salles_vides($id_creneaux, $id_jour_semaine){
 		{
 		$tab_toutes[]=$rep_toutes["id_salle"];
 		}
-	// Tous les id des salles qui ont cours à id_creneaux et id_jour_semaine
+	// Tous les id des salles qui ont cours Ã  id_creneaux et id_jour_semaine
 	$req_liste_salle_c = mysql_query("SELECT id_salle FROM edt_cours WHERE id_definie_periode = '".$id_creneaux."' AND jour_semaine = '".$id_jour_semaine."'");
 		$tab_utilisees = array();
 		while($rep_utilisees = mysql_fetch_array($req_liste_salle_c))
@@ -1236,7 +1236,7 @@ function aff_salles_vides($id_creneaux, $id_jour_semaine){
 }
 
 
-// checked pour le paramétrage de l'EdT
+// checked pour le paramÃ©trage de l'EdT
 function aff_checked($aff, $valeur){
 	$req_aff = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = '".$aff."'");
 	$rep_aff = mysql_fetch_array($req_aff);
@@ -1277,7 +1277,7 @@ function numero_salle($id_salle_r){
 	return $nom_salle_r;
 }
 
-// Fonction qui renvoie les AID en fonction du statut du demandeur (prof, classe, élève)
+// Fonction qui renvoie les AID en fonction du statut du demandeur (prof, classe, Ã©lÃ¨ve)
 function renvoieAid($statut, $nom){
 	$sql = "";
 	if ($statut == "prof") {
@@ -1289,9 +1289,9 @@ function renvoieAid($statut, $nom){
 	} else{
 		return NULL;
 	}
-	// On envoie la requête
+	// On envoie la requÃªte
 	if ($sql) {
-		$requete = mysql_query($sql) OR DIE('Erreur dans la requête : '.mysql_error());
+		$requete = mysql_query($sql) OR DIE('Erreur dans la requÃªte : '.mysql_error());
 		$nbre = mysql_num_rows($requete);
 		// Et on retourne le tableau
 			$resultat = array();

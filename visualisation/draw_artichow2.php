@@ -3,7 +3,7 @@
  $Id$
 */
 
-// On précise de ne pas traiter les données avec la fonction anti_inject
+// On prÃ©cise de ne pas traiter les donnÃ©es avec la fonction anti_inject
 $traite_anti_inject = 'no';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -12,7 +12,7 @@ require_once "../artichow/BarPlot.class.php";
 
 $nb_data = $_GET['nb_data'];
 
-// Définition des couleurs
+// DÃ©finition des couleurs
 $colors = array(
     new Color(173, 216, 230, 12),
     new Color(255, 165, 0, 70),

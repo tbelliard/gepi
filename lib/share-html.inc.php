@@ -1,6 +1,6 @@
 <?php
 /**
- * Fonctions créant du html
+ * Fonctions crÃ©ant du html
  * 
  * 
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
@@ -62,14 +62,14 @@ $GLOBALS['selected_eleve'] = '';
 /**
  * Construit du html pour les cahiers de textes
  *
- * @deprecated La requête SQL n'est plus valide
+ * @deprecated La requÃªte SQL n'est plus valide
  * @param string $link Le lien
  * @param <type> $current_classe
  * @param <type> $current_matiere
- * @param integer $year année
+ * @param integer $year annÃ©e
  * @param integer $month le mois
  * @param integer $day le jour
- * @return string echo résultat
+ * @return string echo rÃ©sultat
  */
 function make_area_list_html($link, $current_classe, $current_matiere, $year, $month, $day) {
   echo "<strong><em>Cahier&nbsp;de&nbsp;texte&nbsp;de&nbsp;:</em></strong><br />";
@@ -121,9 +121,9 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
  * @global int 
  * @global int 
  * @param int $id_conteneur Id du conteneur
- * @param int $periode_num Numéro de la période
- * @param text $empty existance de notes, no si le conteneur contient des notes (passage par référence) 
- * @param int $ver_periode Etat du vérouillage de la période
+ * @param int $periode_num NumÃ©ro de la pÃ©riode
+ * @param text $empty existance de notes, no si le conteneur contient des notes (passage par rÃ©fÃ©rence) 
+ * @param int $ver_periode Etat du vÃ©rouillage de la pÃ©riode
  * @return text no si le conteneur contient des notes, yes sinon
  * @see getSettingValue()
  * @see get_nom_prenom_eleve()
@@ -144,14 +144,14 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 	// Cas particulier de la racine
 	$gepi_denom_boite=getSettingValue("gepi_denom_boite");
 	if(getSettingValue("gepi_denom_boite_genre")=='m'){
-		$message_cont = "Etes-vous sûr de vouloir supprimer le ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
-		$message_cont_non_vide = "Le ".getSettingValue("gepi_denom_boite")." est non vide. Il ne peut pas être supprimé.";
+		$message_cont = "Etes-vous sÃ»r de vouloir supprimer le ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+		$message_cont_non_vide = "Le ".getSettingValue("gepi_denom_boite")." est non vide. Il ne peut pas Ãªtre supprimÃ©.";
 	}
 	else{
-		$message_cont = "Etes-vous sûr de vouloir supprimer la ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
-		$message_cont_non_vide = "La ".getSettingValue("gepi_denom_boite")." est non vide. Elle ne peut pas être supprimée.";
+		$message_cont = "Etes-vous sÃ»r de vouloir supprimer la ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+		$message_cont_non_vide = "La ".getSettingValue("gepi_denom_boite")." est non vide. Elle ne peut pas Ãªtre supprimÃ©e.";
 	}
-	$message_dev = "Etes-vous sûr de vouloir supprimer l\\'évaluation ci-dessous et les notes qu\\'elle contient ?";
+	$message_dev = "Etes-vous sÃ»r de vouloir supprimer l\\'Ã©valuation ci-dessous et les notes qu\\'elle contient ?";
 	$sql="SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')";
 	$appel_conteneurs = mysql_query($sql);
 	$nb_cont = mysql_num_rows($appel_conteneurs);
@@ -180,7 +180,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						echo '<input type="hidden" name="id" value="'.getSettingValue("sacoche_base").'"/>';
 						echo '<input type="hidden" name="page" value="professeur_eval"/>';
 						echo '<input type="hidden" name="section" value="groupe"/>';
-						echo '<input type="hidden" name="source" value="distant-gepi-saml"/>';//source simplesaml pour préselectionner la source dans le module multiauth et éviter de choisir le webmestre
+						echo '<input type="hidden" name="source" value="distant-gepi-saml"/>';//source simplesaml pour prÃ©selectionner la source dans le module multiauth et Ã©viter de choisir le webmestre
 						//encodage du devoir
 						mysql_data_seek($appel_dev, $j);
 						$devoir_array = mysql_fetch_array($appel_dev);
@@ -217,12 +217,12 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					if(isset($eff_groupe)) {echo "/$eff_groupe";}
 					echo ")</span>";
 
-					// Pour détecter une anomalie:
+					// Pour dÃ©tecter une anomalie:
 					 $sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
 					$test_anomalie=mysql_query($sql);
 					if(mysql_num_rows($test_anomalie)>0) {
-						$titre_infobulle="Note pour un fantôme";
-						$texte_infobulle="Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement&nbsp;:<br />";
+						$titre_infobulle="Note pour un fantÃ´me";
+						$texte_infobulle="Une ou des notes existent pour un ou des Ã©lÃ¨ves qui ne sont plus inscrits dans cet enseignement&nbsp;:<br />";
 						$cpt_ele_anomalie=0;
 						while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
 							if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
@@ -234,14 +234,14 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							$cpt_ele_anomalie++;
 						}
 						$texte_infobulle.="<br />";
-						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
+						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associÃ©es?";
 						$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
 						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
 					}
 
 					if (getSettingValue("utiliser_sacoche") == 'yes') {
-						echo " - <a href='#' onclick=\"document.getElementById('sacoche_form_".$j."').submit();\">Évaluer par compétence</a>";
+						echo " - <a href='#' onclick=\"document.getElementById('sacoche_form_".$j."').submit();\">Ã‰valuer par compÃ©tence</a>";
 					}
 
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
@@ -249,8 +249,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$display_parents=mysql_result($appel_dev, $j, 'display_parents');
 					$coef=mysql_result($appel_dev, $j, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
-					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
-					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
+					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevÃ© de notes' alt='Evaluation visible sur le relevÃ© de notes' />";}
+					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevÃ© de notes' alt='Evaluation non visible sur le relevÃ© de notes' />\n";}
 					echo "</i>)";
 					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo "</li>\n";
@@ -317,12 +317,12 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							if(isset($eff_groupe)) {echo "/$eff_groupe";}
 							echo ")</span>";
 
-							// Pour détecter une anomalie:
+							// Pour dÃ©tecter une anomalie:
 							$sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
 							$test_anomalie=mysql_query($sql);
 							if(mysql_num_rows($test_anomalie)>0) {
-								$titre_infobulle="Note pour un fantôme";
-								$texte_infobulle="Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement&nbsp;:<br />";
+								$titre_infobulle="Note pour un fantÃ´me";
+								$texte_infobulle="Une ou des notes existent pour un ou des Ã©lÃ¨ves qui ne sont plus inscrits dans cet enseignement&nbsp;:<br />";
 								$cpt_ele_anomalie=0;
 								while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
 									if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
@@ -334,7 +334,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 									$cpt_ele_anomalie++;
 								}
 								$texte_infobulle.="<br />";
-								$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
+								$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associÃ©es?";
 								$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 		
 								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
@@ -345,8 +345,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							$display_parents=mysql_result($appel_dev, $j, 'display_parents');
 							$coef=mysql_result($appel_dev, $j, 'coef');
 							echo " (<i><span title='Coefficient $coef'>$coef</span> ";
-							if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
-							else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
+							if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevÃ© de notes' alt='Evaluation visible sur le relevÃ© de notes' />";}
+							else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevÃ© de notes' alt='Evaluation non visible sur le relevÃ© de notes' />\n";}
 							echo "</i>)";
 
 							echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
@@ -412,7 +412,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
         $n++;
     }
     //------
-    // On appelle l'appréciation de l'élève, et sa note
+    // On appelle l'apprÃ©ciation de l'Ã©lÃ¨ve, et sa note
     //------
     $current_eleve_aid_appreciation_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
     $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
@@ -466,7 +466,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
 
     }
     //------
-    // On affiche l'appréciation aid :
+    // On affiche l'apprÃ©ciation aid :
     //------
     echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><strong>$AID_NOM_COMPLET</strong><br />";
     $chaine_prof="";
@@ -554,15 +554,15 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
 }
 
 /**
- * Affiche un tableau pour règler la taille d'un tableau
+ * Affiche un tableau pour rÃ¨gler la taille d'un tableau
  * 
- * Utilisé uniquement dans prepa_conseil/index1.php
+ * UtilisÃ© uniquement dans prepa_conseil/index1.php
  *
  * @param int $larg_tab largeur en pixel
  * @param int $bord bords en pixel
  */
 function parametres_tableau($larg_tab, $bord) {
-    echo "<table border='1' width='680' cellspacing='1' cellpadding='1' summary=\"Tableau de paramètres\">\n";
+    echo "<table border='1' width='680' cellspacing='1' cellpadding='1' summary=\"Tableau de paramÃ¨tres\">\n";
     echo "<tr><td><span class=\"norme\">largeur en pixel : <input type=\"text\" name=\"larg_tab\" size=\"3\" value=\"".$larg_tab."\" />\n";
     echo "bords en pixel : <input type=\"text\" name=\"bord\" size=\"3\" value=\"".$bord."\" />\n";
     echo "<input type=\"submit\" value=\"Valider\" />\n";
@@ -572,7 +572,7 @@ function parametres_tableau($larg_tab, $bord) {
 /**
  * Affiche un tableau
  *
- * Utilisé uniquement dans prepa_conseil et visu_toutes_notes2.php
+ * UtilisÃ© uniquement dans prepa_conseil et visu_toutes_notes2.php
  * 
  * @global type 
  * @global type 
@@ -667,19 +667,19 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 
 
 /**
- * Crée un formulaire avec une zone de sélection contenant les classes
+ * CrÃ©e un formulaire avec une zone de sÃ©lection contenant les classes
  *
- * @param type $link lien vers la page à atteindre ensuite
- * @param type $current Id de la classe courante pour qu'elle soit par défaut
- * @param type $year l'année
+ * @param type $link lien vers la page Ã  atteindre ensuite
+ * @param type $current Id de la classe courante pour qu'elle soit par dÃ©faut
+ * @param type $year l'annÃ©e
  * @param type $month le mois
  * @param type $day le jour
- * @return text la balise <form> complète
+ * @return text la balise <form> complÃ¨te
  */
 function make_classes_select_html($link, $current, $year, $month, $day)
 
 {
-  // Pour le multisite, on doit récupérer le RNE de l'établissement
+  // Pour le multisite, on doit rÃ©cupÃ©rer le RNE de l'Ã©tablissement
   $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
   $aff_input_rne = $aff_get_rne = NULL;
   if ($rne != 'aucun') {
@@ -756,15 +756,15 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 }
 
 /**
- * Crée un formulaire avec une zone de sélection contenant les groupes 
+ * CrÃ©e un formulaire avec une zone de sÃ©lection contenant les groupes 
  * 
- * $id_ref peut être soit l'ID d'une classe, auquel cas on affiche tous les groupes pour la classe,
- * soit le login d'un élève, auquel cas on affiche tous les groupes pour l'élève en question
+ * $id_ref peut Ãªtre soit l'ID d'une classe, auquel cas on affiche tous les groupes pour la classe,
+ * soit le login d'un Ã©lÃ¨ve, auquel cas on affiche tous les groupes pour l'Ã©lÃ¨ve en question
  * 
- * @param text $link lien vers la page à atteindre ensuite
- * @param int|text $id_ref Id d'une classe ou login d'un élève
+ * @param text $link lien vers la page Ã  atteindre ensuite
+ * @param int|text $id_ref Id d'une classe ou login d'un Ã©lÃ¨ve
  * @param int|text $current Id de la classe courante
- * @param int $year Année
+ * @param int $year AnnÃ©e
  * @param type $month Mois
  * @param type $day Jour
  * @param text $special
@@ -772,7 +772,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
  */
 function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day, $special='')
 {
-	// Pour le multisite, on doit récupérer le RNE de l'établissement
+	// Pour le multisite, on doit rÃ©cupÃ©rer le RNE de l'Ã©tablissement
 	$prof="";
 	
 	$rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
@@ -782,7 +782,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 		$aff_get_rne = '&amp;rne=' . $rne;
 	}
 		$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n" . $aff_input_rne . "\n
-	<h2 class='h2_label'> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label>\n</h2>\n<p>\n<select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
+	<h2 class='h2_label'> \n<label for=\"enseignement\"><strong><em>MatiÃ¨re :<br /></em></strong></label>\n</h2>\n<p>\n<select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
 	
 	if (is_numeric($id_ref)) {
 		$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>\n";
@@ -795,7 +795,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 			} else {
 				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
 			}
-			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
+			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matiÃ¨res</option>\n";
 		}
 	
 		$sql = "select DISTINCT g.id, g.name, g.description from j_groupes_classes jgc, groupes g, ct_entry ct where (" .
@@ -814,7 +814,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 			} else {
 				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
 			}
-			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
+			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matiÃ¨res</option>\n";
 		}
 
 		$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
@@ -874,13 +874,13 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 }
 
 /**
- * Crée un formulaire avec une zone de sélection contenant les élèves 
+ * CrÃ©e un formulaire avec une zone de sÃ©lection contenant les Ã©lÃ¨ves 
  *
  * @global text 
- * @param text $link lien vers la page à atteindre ensuite
+ * @param text $link lien vers la page Ã  atteindre ensuite
  * @param type $login_resp login du responsable
- * @param type $current login de l'élève actuellement sélectionné
- * @param type $year Année
+ * @param type $current login de l'Ã©lÃ¨ve actuellement sÃ©lectionnÃ©
+ * @param type $year AnnÃ©e
  * @param type $month Mois
  * @param type $day Jour
  * @return type la balise <form...>
@@ -888,7 +888,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 function make_eleve_select_html($link, $login_resp, $current, $year, $month, $day)
 {
 	global $selected_eleve;
-	// $current est le login de l'élève actuellement sélectionné
+	// $current est le login de l'Ã©lÃ¨ve actuellement sÃ©lectionnÃ©
 	$sql="SELECT e.login, e.nom, e.prenom " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
 			"WHERE (" .
@@ -898,16 +898,16 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	$get_eleves = mysql_query($sql);
 
 	if (mysql_num_rows($get_eleves) == 0) {
-			// Aucun élève associé
-		$out_html = "<p>Vous semblez n'être responsable d'aucun élève ! Contactez l'administrateur pour corriger cette erreur.</p>";
+			// Aucun Ã©lÃ¨ve associÃ©
+		$out_html = "<p>Vous semblez n'Ãªtre responsable d'aucun Ã©lÃ¨ve ! Contactez l'administrateur pour corriger cette erreur.</p>";
 	} elseif (mysql_num_rows($get_eleves) == 1) {
-			// Un seul élève associé : pas de formulaire nécessaire
+			// Un seul Ã©lÃ¨ve associÃ© : pas de formulaire nÃ©cessaire
 		$selected_eleve = mysql_fetch_object($get_eleves);
-		$out_html = "<p class='bold'>Elève : ".$selected_eleve->prenom." ".$selected_eleve->nom."</p>";
+		$out_html = "<p class='bold'>ElÃ¨ve : ".$selected_eleve->prenom." ".$selected_eleve->nom."</p>";
 	} else {
-		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
-	  $out_html = "<form id=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n<h2 class='h2_label'>\n<label for=\"choix_eleve\"><strong><em>Elève :</em></strong></label>\n</h2>\n<p>\n<select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
-	  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
+		// Plusieurs Ã©lÃ¨ves : on affiche un formulaire pour choisir l'Ã©lÃ¨ve
+	  $out_html = "<form id=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n<h2 class='h2_label'>\n<label for=\"choix_eleve\"><strong><em>ElÃ¨ve :</em></strong></label>\n</h2>\n<p>\n<select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
+	  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un Ã©lÃ¨ve)</option>\n";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		   if ($current) {
 		   	$selected = ($current_eleve->login == $current->login) ? "selected='selected'" : "";
@@ -944,11 +944,11 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 }
 
 /**
- * Construit une liste à puces des documents joints
+ * Construit une liste Ã  puces des documents joints
  *
  * @param int $id_ct Id du cahier de texte
  * @param type $type_notice c pour ct_documents, t pour ct_devoirs_documents
- * @return string La liste à puces
+ * @return string La liste Ã  puces
  * @see getSettingValue()
  */
 function affiche_docs_joints($id_ct,$type_notice) {
@@ -972,7 +972,7 @@ function affiche_docs_joints($id_ct,$type_notice) {
           ) {
                 $titre = $row[0];
                 $emplacement = $row[1];
-              // Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
+              // Ouverture dans une autre fenÃªtre conservÃ©e parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
               // alternative, utiliser un javascript
                 $html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
           }
@@ -983,17 +983,17 @@ function affiche_docs_joints($id_ct,$type_notice) {
  }
 
 /**
- * Fonction destinée à présenter une liste de liens répartis en $nbcol colonnes
+ * Fonction destinÃ©e Ã  prÃ©senter une liste de liens rÃ©partis en $nbcol colonnes
  * 
  *
  * @param type $tab_txt tableau des textes
  * @param type $tab_lien tableau des liens
  * @param int $nbcol Nombre de colonnes
- * @param type $extra_options Options supplémentaires
+ * @param type $extra_options Options supplÃ©mentaires
  */
 function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL){
 
-	// Nombre d'enregistrements à afficher
+	// Nombre d'enregistrements Ã  afficher
 	$nombreligne=count($tab_txt);
 
 	if(!is_int($nbcol)){
@@ -1028,9 +1028,9 @@ function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL){
 }
 
 /**
- * Crée des liens html
+ * CrÃ©e des liens html
  *
- * @param string $ele_login Login de l'élève
+ * @param string $ele_login Login de l'Ã©lÃ¨ve
  * @return string 
  */
 function liens_class_from_ele_login($ele_login){
@@ -1055,13 +1055,13 @@ function liens_class_from_ele_login($ele_login){
 }
 
 /**
- * Teste et construit un tableau html des dossiers qui doivent être accessibles en écriture
+ * Teste et construit un tableau html des dossiers qui doivent Ãªtre accessibles en Ã©criture
  *
- * Par défaut les dossiers nécessaires à GEPI
+ * Par dÃ©faut les dossiers nÃ©cessaires Ã  GEPI
  * 
- * Le chemin complet doit être passé
+ * Le chemin complet doit Ãªtre passÃ©
  * @global string
- * @param type $tab_restriction Le tableau des répertoires à tester
+ * @param type $tab_restriction Le tableau des rÃ©pertoires Ã  tester
  */
 function test_ecriture_dossier($tab_restriction=array()) {
     global $gepiPath, $multisite;
@@ -1072,7 +1072,7 @@ function test_ecriture_dossier($tab_restriction=array()) {
 	else {
 		$tab_dossiers_rw=array("artichow/cache","backup","documents","documents/archives","images","images/background","lib/standalone/HTMLPurifier/DefinitionCache/Serializer","mod_ooo/mes_modeles","mod_ooo/tmp","photos","temp");
     /**
-     * Pour Debug : Décommenter les 2 lignes si pas en multisites
+     * Pour Debug : DÃ©commenter les 2 lignes si pas en multisites
      */
     /* *
         $multisite='y';
@@ -1088,7 +1088,7 @@ function test_ecriture_dossier($tab_restriction=array()) {
 	$nom_fichier_test='test_acces_rw';
 
 	echo "<table class='boireaus'>\n";
-    echo "<caption style='display:none;'>dossiers devant être accessibles en écriture<caption>\n";
+    echo "<caption style='display:none;'>dossiers devant Ãªtre accessibles en Ã©criture<caption>\n";
 	echo "<tr>\n";
 	echo "<th>Dossier</th>\n";
 	echo "<th>Ecriture</th>\n";
@@ -1107,10 +1107,10 @@ function test_ecriture_dossier($tab_restriction=array()) {
 		echo "<td style='text-align:left;'>$gepiPath/$tab_dossiers_rw[$i]</td>\n";
 		echo "<td>";
 		if($ok_rw=='yes') {
-			echo "<img src='../images/enabled.png' height='20' width='20' alt=\"Le dossier est accessible en écriture.\" />";
+			echo "<img src='../images/enabled.png' height='20' width='20' alt=\"Le dossier est accessible en Ã©criture.\" />";
 		}
 		else {
-			echo "<img src='../images/disabled.png' height='20' width='20' alt=\"Le dossier n'est pas accessible en écriture.\" />";
+			echo "<img src='../images/disabled.png' height='20' width='20' alt=\"Le dossier n'est pas accessible en Ã©criture.\" />";
 		}
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1136,10 +1136,10 @@ function test_ecriture_dossier($tab_restriction=array()) {
 				echo "<td style='text-align:left;'>$gepiPath/$dossier_temp</td>\n";
 				echo "<td>";
 				if($ok_rw=='yes') {
-					echo "<img src='../images/enabled.png' height='20' width='20' alt=\"Le dossier est accessible en écriture.\" />";
+					echo "<img src='../images/enabled.png' height='20' width='20' alt=\"Le dossier est accessible en Ã©criture.\" />";
 				}
 				else {
-					echo "<img src='../images/disabled.png' height='20' width='20' alt=\"Le dossier n'est pas accessible en écriture.\" />";
+					echo "<img src='../images/disabled.png' height='20' width='20' alt=\"Le dossier n'est pas accessible en Ã©criture.\" />";
 				}
 				echo "</td>\n";
 				echo "</tr>\n";
@@ -1160,13 +1160,13 @@ function test_ecriture_dossier($tab_restriction=array()) {
  * -  60 -> "deux mois"
  * - 183 -> "six mois"
  * - 365 -> "un an"
- * - all -> "le début"
+ * - all -> "le dÃ©but"
  *
  * @param string $login Login de l'utilisateur
  * @param int|string $duree
  * @param string $page 'mon_compte' pour afficher ses propres connexions
  * @param string $pers_id Permet d'avoir une balise <input type='hidden' personnelle
- * @todo On pourrait utiliser $_SESSION['login'] plutôt que $page
+ * @todo On pourrait utiliser $_SESSION['login'] plutÃ´t que $page
  */
 function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	switch( $duree ) {
@@ -1189,7 +1189,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 		$display_duree="un an";
 		break;
 	case 'all':
-		$display_duree="le début";
+		$display_duree="le dÃ©but";
 		break;
 	}
 
@@ -1213,14 +1213,14 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	$now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_now);
 
 	echo "<ul>
-<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
-<li>Les lignes en orange signalent une session close pour laquelle vous ne vous êtes pas déconnecté correctement.</li>
+<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erronÃ©.</li>
+<li>Les lignes en orange signalent une session close pour laquelle vous ne vous Ãªtes pas dÃ©connectÃ© correctement.</li>
 <li>Les lignes en noir signalent une session close normalement.</li>
-<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement).</li>
+<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre Ã  une connexion actuellement close mais pour laquelle vous ne vous Ãªtes pas dÃ©connectÃ© correctement).</li>
 </ul>
 <table class='col' style='width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;' cellpadding='5' cellspacing='0' summary='Connexions'>
 	<tr>
-		<th class='col'>Début session</th>
+		<th class='col'>DÃ©but session</th>
 		<th class='col'>Fin session</th>
 		<th class='col'>Adresse IP et nom de la machine cliente</th>
 		<th class='col'>Navigateur</th>
@@ -1237,7 +1237,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			$heures_b = substr($row[0],11,2);
 			$minutes_b = substr($row[0],14,2);
 			$secondes_b = substr($row[0],17,2);
-			$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
+			$date_debut = $jour_b."/".$mois_b."/".$annee_b." Ã  ".$heures_b." h ".$minutes_b;
 
 			$annee_f = substr($row[5],0,4);
 			$mois_f =  substr($row[5],5,2);
@@ -1245,7 +1245,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			$heures_f = substr($row[5],11,2);
 			$minutes_f = substr($row[5],14,2);
 			$secondes_f = substr($row[5],17,2);
-			$date_fin = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
+			$date_fin = $jour_f."/".$mois_f."/".$annee_f." Ã  ".$heures_f." h ".$minutes_f;
 			$end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
 
 			$temp1 = '';
@@ -1266,7 +1266,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			echo "<tr>\n";
 			echo "<td class=\"col\">".$temp1.$date_debut.$temp2."</td>\n";
 			if ($row[4] == 2) {
-				echo "<td class=\"col\">".$temp1."Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
+				echo "<td class=\"col\">".$temp1."Tentative de connexion<br />avec mot de passe erronÃ©.".$temp2."</td>\n";
 			}
 			else {
 				echo "<td class=\"col\">".$temp1.$date_fin.$temp2."</td>\n";
@@ -1340,18 +1340,18 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	echo " value=365>Un an</option>\n";
 	echo "<option ";
 	if ($duree == 'all') echo "selected";
-	echo " value='all'>Le début</option>\n";
+	echo " value='all'>Le dÃ©but</option>\n";
 	echo "</select>\n";
 	echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />\n";
 
 	echo "</form>\n";
 
-	echo "<p class='small'>** Les renseignements ci-dessus peuvent vous permettre de vérifier qu'une connexion pirate n'a pas été effectuée sur votre compte.
-	Dans le cas d'une connexion inexpliquée, vous devez immédiatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.</p>\n";
+	echo "<p class='small'>** Les renseignements ci-dessus peuvent vous permettre de vÃ©rifier qu'une connexion pirate n'a pas Ã©tÃ© effectuÃ©e sur votre compte.
+	Dans le cas d'une connexion inexpliquÃ©e, vous devez immÃ©diatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.</p>\n";
 }
 
 /**
- * Affiche une action à effectuer
+ * Affiche une action Ã  effectuer
  */
 function affiche_infos_actions() {
 	$sql="SELECT ia.* FROM infos_actions ia, infos_actions_destinataires iad WHERE
@@ -1384,7 +1384,7 @@ function affiche_infos_actions() {
 
 				echo "<div id='info_action_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
 					echo "<div style='float:right; width: 9em; text-align: right;'>\n";
-					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sÃ»r de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
 					echo "</div>\n";
 
 					echo nl2br($lig->description);
@@ -1424,7 +1424,7 @@ function affiche_infos_actions() {
 
 
 /**
- * Affiche les accès aux cahiers de texte
+ * Affiche les accÃ¨s aux cahiers de texte
  */
 function affiche_acces_cdt() {
 	$retour="";
@@ -1456,7 +1456,7 @@ function affiche_acces_cdt() {
 					$retour.="<div id='info_acces_cdt_pliage' style='float:right; width: 1em'>\n";
 					$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('conteneur')\"><span id='img_pliage_acces_cdt_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 					$retour.="</div>\n";
-					$retour.="Accès ouvert à des CDT";
+					$retour.="AccÃ¨s ouvert Ã  des CDT";
 				$retour.="</div>\n";
 		
 				$retour.="<div id='info_acces_cdt_corps_conteneur'>\n";
@@ -1474,17 +1474,17 @@ function affiche_acces_cdt() {
 								$retour.="<div id='info_acces_cdt_pliage_$lig->id' style='float:right; width: 1em'>\n";
 								$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('$lig->id')\"><span id='img_pliage_acces_cdt_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 								$retour.="</div>\n";
-								$retour.="Accès CDT jusqu'au ".formate_date($lig->date2);
+								$retour.="AccÃ¨s CDT jusqu'au ".formate_date($lig->date2);
 							$retour.="</div>\n";
 			
 							$retour.="<div id='info_acces_cdt_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
 								if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 									$retour.="<div style='float:right; width: 9em; text-align: right;'>\n";
-									$retour.="<a href=\"".$_SERVER['PHP_SELF']."?del_id_acces_cdt=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->description)."', 'Etes-vous sûr de vouloir supprimer cet accès')\">Supprimer l'accès</span></a>";
+									$retour.="<a href=\"".$_SERVER['PHP_SELF']."?del_id_acces_cdt=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->description)."', 'Etes-vous sÃ»r de vouloir supprimer cet accÃ¨s')\">Supprimer l'accÃ¨s</span></a>";
 									$retour.="</div>\n";
 								}
 	
-								$retour.="<p><b>L'accès a été ouvert pour le motif suivant&nbsp;:</b><br />";
+								$retour.="<p><b>L'accÃ¨s a Ã©tÃ© ouvert pour le motif suivant&nbsp;:</b><br />";
 								$retour.=preg_replace("/\\\\r\\\\n/","<br />",$lig->description);
 								$retour.="</p>\n";
 	
@@ -1511,7 +1511,7 @@ function affiche_acces_cdt() {
 								}
 								$chaine_enseignements.="</ul>";
 								
-								$retour.="<p>Les CDT accessibles à l'adresse <a href='$lig->chemin' target='_blank'>$lig->chemin</a> sont&nbsp;:<br />".$chaine_enseignements."</p>";
+								$retour.="<p>Les CDT accessibles Ã  l'adresse <a href='$lig->chemin' target='_blank'>$lig->chemin</a> sont&nbsp;:<br />".$chaine_enseignements."</p>";
 							$retour.="</div>\n";
 						$retour.="</div>\n";
 						if($cpt_id>0) {$chaine_id.=", ";}
@@ -1551,7 +1551,7 @@ function affiche_acces_cdt() {
 }
 
 /**
- * Crée une balise <p> avec les actions possibles sur un compte
+ * CrÃ©e une balise <p> avec les actions possibles sur un compte
  *
  * @global string 
  * @param string $login Id de l'utilisateur
@@ -1568,10 +1568,10 @@ function affiche_actions_compte($login) {
 	$retour.="<p>\n";
 	if ($user['etat'] == "actif") {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Désactiver le compte</a>";
+		$retour.=add_token_in_url()."'>DÃ©sactiver le compte</a>";
 	} else {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Réactiver le compte</a>";
+		$retour.=add_token_in_url()."'>RÃ©activer le compte</a>";
 	}
 	$retour.="<br />\n";
 	if ($user['observation_securite'] == 0) {
@@ -1583,10 +1583,10 @@ function affiche_actions_compte($login) {
 	}
 	if($user['niveau_alerte']>0) {
 		$retour.="<br />\n";
-		$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
+		$retour.="Score cumulÃ©&nbsp;: ".$user['niveau_alerte'];
 		$retour.="<br />\n";
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Réinitialiser cumul</a>";
+		$retour.=add_token_in_url()."'>RÃ©initialiser cumul</a>";
 	}
 	$retour.="</p>\n";
 
@@ -1594,14 +1594,14 @@ function affiche_actions_compte($login) {
 }
 
 /**
- * Insère une fonction javascript pour passer en gras/normal le label associé à un champ checkbox
+ * InsÃ¨re une fonction javascript pour passer en gras/normal le label associÃ© Ã  un champ checkbox
  *
- * @param string $nom_js_func le nom de la fonction javascript (par défaut 'checkbox_change')
- * @param string $prefixe_texte le préfixe de l'id du label associé (par défaut 'texte_')
+ * @param string $nom_js_func le nom de la fonction javascript (par dÃ©faut 'checkbox_change')
+ * @param string $prefixe_texte le prÃ©fixe de l'id du label associÃ© (par dÃ©faut 'texte_')
  *               Si l'id du checkbox est id_groupe_12, le label doit avoir l'id texte_id_groupe_12
  * @param string $avec_balise_script 'n': On ne renvoye que le texte de la fonction
  *                                   'y': On renvoye le texte entre balises <script>
- * Sur les checkbox, insérer onchange="checkbox_change(this.id)"
+ * Sur les checkbox, insÃ©rer onchange="checkbox_change(this.id)"
  * @return string Le texte de la fonction javascript
  */
 function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n") {

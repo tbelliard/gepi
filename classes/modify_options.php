@@ -53,12 +53,12 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
         $j="1";
         while ($j < $nb_periode) {
             //
-            // on teste si l'ÈlËve appartient ‡ la classe pour la pÈriode en cours
+            // on teste si l'√©l√®ve appartient √† la classe pour la p√©riode en cours
             //
             $call_trim = mysql_query("SELECT periode FROM j_eleves_classes WHERE (id_classe = '$id_classe' and periode = '$j' and login = '$current_eleve_login')");
             $nb_ligne = mysql_num_rows($call_trim);
             if ($nb_ligne != 0) {
-                // si l'ÈlËve appartient ‡ la classe pour la pÈriode en cours, on continue
+                // si l'√©l√®ve appartient √† la classe pour la p√©riode en cours, on continue
                 $temp = $current_eleve_login."_".$j;
                 $option_eleve[$j] = isset($_POST[$temp])?$_POST[$temp]:NULL;
                 if ($option_eleve[$j] == 'yes') {
@@ -72,7 +72,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
                         $test2 = mysql_query("SELECT * FROM matieres_appreciations WHERE (matiere='$current_matiere' and login='$current_eleve_login' and periode = '$j')");
                         $nb_test2 = mysql_num_rows($test2);
                         if (($nb_test1 != 0) or ($nb_test2 != 0)) {
-                            $msg = $msg."--> Impossible de supprimer cette option pour l'ÈlËve $current_eleve_login car des moyennes ou apprÈciations ont dÈj‡ ÈtÈ rentrÈes en $current_matiere pour la pÈriode $j ! Commencez par supprimer ces donnÈes !<br />";
+                            $msg = $msg."--> Impossible de supprimer cette option pour l'√©l√®ve $current_eleve_login car des moyennes ou appr√©ciations ont d√©j√† √©t√© rentr√©es en $current_matiere pour la p√©riode $j ! Commencez par supprimer ces donn√©es !<br />";
                         } else {
                             $reg = mysql_query("INSERT INTO j_eleves_matieres SET matiere='$current_matiere' , login='$current_eleve_login', periode='$j'");
                         }
@@ -86,7 +86,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
     }
     $affiche_message = 'yes';
 }
-$message_enregistrement = "Les modifications ont ÈtÈ enregistrÈes !";
+$message_enregistrement = "Les modifications ont √©t√© enregistr√©es !";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes | Modification des options";
 require_once("../lib/header.inc");
@@ -161,11 +161,11 @@ $classe = mysql_result($call_nom_class, 0, 'classe');
 
 <p class=bold><a href="modify_class.php?id_classe=<?echo $id_classe?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="help.php"> Aide </a>| <input type='submit' value='Enregistrer' />
 </p>
-<b><a href="javascript:CocheCase(true)">Tout cocher</a> - <a href="javascript:CocheCase(false)">Tout dÈcocher</a></b>
+<b><a href="javascript:CocheCase(true)">Tout cocher</a> - <a href="javascript:CocheCase(false)">Tout d√©cocher</a></b>
 
 <?php
 echo add_token_field();
-echo "<p class='grand'>Classe : $classe | MatiËre : $current_matiere</p>";
+echo "<p class='grand'>Classe : $classe | Mati√®re : $current_matiere</p>";
 ?>
 
 <p>

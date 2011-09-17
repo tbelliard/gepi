@@ -11,7 +11,7 @@
 class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBase {
 
 	/**
-	 * Le statut requis pour cette connexion (utilisé pour l'admin simplesaml
+	 * Le statut requis pour cette connexion (utilisÃ© pour l'admin simplesaml
 	 */
 	private $requiredStatut = null;
 
@@ -101,7 +101,7 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		assert('is_string($organization)');
 		
 		if ($organization != '') {
-			//$organization contient le numéro de rne
+			//$organization contient le numÃ©ro de rne
 			setcookie('RNE', $organization, null, '/');
 		}
 
@@ -124,8 +124,8 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		
 		$session_gepi = new Session();
 		
-		# L'instance de Session permettant de gérer directement les authentifications
-		# SSO, on ne s'embête pas :
+		# L'instance de Session permettant de gÃ©rer directement les authentifications
+		# SSO, on ne s'embÃªte pas :
 		$auth = $session_gepi->authenticate_gepi($username, $password);
 				
 		if ($auth != "1") {
@@ -139,11 +139,11 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 
 		SimpleSAML_Logger::info('gepiauth:' . $this->authId . ': authenticated');
 		
-		# On interroge la base de données pour récupérer des attributs qu'on va retourner
+		# On interroge la base de donnÃ©es pour rÃ©cupÃ©rer des attributs qu'on va retourner
 		$query = mysql_query("SELECT nom, prenom, email, statut FROM utilisateurs WHERE (login = '".$username."')");
 		$row = mysql_fetch_object($query);
 		
-		//on vérifie le status
+		//on vÃ©rifie le status
 		if ($this->requiredStatut != null) {
 			if ($this->requiredStatut != $row->statut) {
 				# Echec d'authentification pour ce statut

@@ -37,12 +37,12 @@ extract($_POST, EXTR_OVERWRITE);
 header('Content-Type: application/pdf');
 
 // Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
+// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 Header('Pragma: public');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -76,7 +76,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
+	// largeur et/ou hauteur maximum Ã  afficher en pixel
 	 $taille_max_largeur = $L_max;
 	 $taille_max_hauteur = $H_max;
 
@@ -85,7 +85,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	 $ratio_h = $hauteur / $taille_max_hauteur;
 	 $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	 $nouvelle_largeur = $largeur / $ratio;
 	 $nouvelle_hauteur = $hauteur / $ratio;
 
@@ -115,16 +115,16 @@ function redimensionne_logo($photo, $L_max, $H_max)
 class bilan_PDF extends FPDF
 {
 
-    //En-tête du document
+    //En-tÃªte du document
     function Header()
     {
 	    global $prefix_base;
 			$X_etab = '10'; $Y_etab = '10';
 		        $caractere_utilse = 'Arial';
 			$affiche_logo_etab='1';
-			$entente_mel='0'; // afficher l'adresse mel dans l'entête
-			$entente_tel='0'; // afficher le numéro de téléphone dans l'entête
-			$entente_fax='0'; // afficher le numéro de fax dans l'entête
+			$entente_mel='0'; // afficher l'adresse mel dans l'entÃªte
+			$entente_tel='0'; // afficher le numÃ©ro de tÃ©lÃ©phone dans l'entÃªte
+			$entente_fax='0'; // afficher le numÃ©ro de fax dans l'entÃªte
 			$L_max_logo=75; $H_max_logo=75; //dimension du logo
 
     //Affiche le filigrame
@@ -135,7 +135,7 @@ class bilan_PDF extends FPDF
 	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 	{
 	 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
-	 //$X_logo et $Y_logo; placement du bloc identite de l'établissement
+	 //$X_logo et $Y_logo; placement du bloc identite de l'Ã©tablissement
 	 $X_logo=5; $Y_logo=5; $L_logo=$valeur[0]; $H_logo=$valeur[1];
 	 $X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
 	 //logo
@@ -158,8 +158,8 @@ class bilan_PDF extends FPDF
 	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
-	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
-	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
+	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'TÃ©l: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
+	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'TÃ©l: '.$gepiSchoolTel; }
 	if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 	if( isset($entete_communic) and $entete_communic != '' ) {
 	 $this->Cell(90,5, $entete_communic,0,2,'');
@@ -185,7 +185,7 @@ class bilan_PDF extends FPDF
                  $fax_etab = getSettingValue("gepiSchoolFax");
                  $mel_etab = getSettingValue("gepiSchoolEmail");
 
-        //Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+        //Positionnement Ã  1 cm du bas et 0,5cm + 0,5cm du cotÃ© gauche
    	$this->SetXY(5,-10);
         //Police Arial Gras 6
         $this->SetFont('Arial','B',8);
@@ -201,19 +201,19 @@ class bilan_PDF extends FPDF
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab!="")
 	{
-	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "TÃ©l : ".$telephone_etab." - Fax : ".$fax_etab." - MÃ¨l : ".$mel_etab;
 	}
 	if($telephone_etab=="" and $fax_etab!="" and $mel_etab!="")
 	{
-	  $adresse2 = "Fax : ".$fax_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "Fax : ".$fax_etab." - MÃ¨l : ".$mel_etab;
 	}
 	if($telephone_etab!="" and $fax_etab=="" and $mel_etab!="")
 	{
-	  $adresse2 = "Tél : ".$telephone_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "TÃ©l : ".$telephone_etab." - MÃ¨l : ".$mel_etab;
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab=="")
 	{
-	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab;
+	  $adresse2 = "TÃ©l : ".$telephone_etab." - Fax : ".$fax_etab;
 	}
 
 	$this->Cell(0, 4.5, traite_accents_utf8($adresse), 0, 1, 'C', '');
@@ -222,7 +222,7 @@ class bilan_PDF extends FPDF
 }
 
 
-//requete dans la base de donnée
+//requete dans la base de donnÃ©e
   	//etablissement
     $niveau_etab = "";
     $nom_etab = traite_accents_utf8(getSettingValue("gepiSchoolName"));
@@ -237,7 +237,7 @@ class bilan_PDF extends FPDF
     $mel_etab = getSettingValue("gepiSchoolEmail");
 
 	/* ********************************* */
-	/* DEBUT - préparation de la requête */
+	/* DEBUT - prÃ©paration de la requÃªte */
 
 	$select_requete = "e.login, e.nom, e.prenom, e.sexe, ae.type_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.motif_absence_eleve, ae.info_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, ae.saisie_absence_eleve, jec.id_classe";
 	$from_requete = $prefix_base . "absences_eleves ae, " . $prefix_base . " eleves e, " . $prefix_base . "j_eleves_classes jec";
@@ -277,12 +277,12 @@ class bilan_PDF extends FPDF
 
 		}
 
-	/* FIN - de prépation de la requête */
+	/* FIN - de prÃ©pation de la requÃªte */
 	/* ******************************** */
 
 
 	/* ******************************************* */
-	/* DEBUT - construction du tableau des données */
+	/* DEBUT - construction du tableau des donnÃ©es */
 
 		$cpt = 0;
 
@@ -312,12 +312,12 @@ class bilan_PDF extends FPDF
         	$tableau[$cpt]['motif'] = tronquer_texte($motif_texte[$motif_abrege], '20')." (".$donnee['type_absence_eleve'].")";
 
 			// horodatage
-			// début
+			// dÃ©but
 			$tableau[$cpt]['debut'] = date_fr($donnee['d_date_absence_eleve']);
 			if ( !empty($donnee['d_heure_absence_eleve']) )
 			{
 
-				$tableau[$cpt]['debut'] .= " à ".heure($donnee['d_heure_absence_eleve']);
+				$tableau[$cpt]['debut'] .= " Ã  ".heure($donnee['d_heure_absence_eleve']);
 
 			}
 
@@ -335,7 +335,7 @@ class bilan_PDF extends FPDF
             	if ( !empty($donnee['a_heure_absence_eleve']) )
             	{
 
-            		$tableau[$cpt]['fin'] .= " à ".heure($donnee['a_heure_absence_eleve']);
+            		$tableau[$cpt]['fin'] .= " Ã  ".heure($donnee['a_heure_absence_eleve']);
 
 				}
 
@@ -346,7 +346,7 @@ class bilan_PDF extends FPDF
 		};
 
 
-	/* FIN - construction du tableau des données */
+	/* FIN - construction du tableau des donnÃ©es */
 	/* ***************************************** */
 
 	/* ********************************* */
@@ -359,7 +359,7 @@ class bilan_PDF extends FPDF
     /* ******************************* */
 
 /* ************************* */
-/* DEBUT - Génération du PDF */
+/* DEBUT - GÃ©nÃ©ration du PDF */
 
 	$pdf=new bilan_PDF('P','mm','A4');
 	$pdf->Open();
@@ -367,9 +367,9 @@ class bilan_PDF extends FPDF
 
 	// champs facultatifs
 	$pdf->SetAuthor('');
-	$pdf->SetCreator('créer avec Fpdf');
-	$pdf->SetTitle('Bilan des absences général');
-	$pdf->SetSubject('Bilan des absences général');
+	$pdf->SetCreator('crÃ©er avec Fpdf');
+	$pdf->SetTitle('Bilan des absences gÃ©nÃ©ral');
+	$pdf->SetSubject('Bilan des absences gÃ©nÃ©ral');
 
 	$pdf->SetMargins(10,10);
 
@@ -422,7 +422,7 @@ while ( $page < $nb_page )
 	$pdf->SetX(30);
 	$pdf->SetY(52);
     $pdf->SetFont('Arial','',9.5);
-    $pdf->Cell(55, 5, traite_accents_utf8('Nom et Prénom'), 1, 0, 'C', '');
+    $pdf->Cell(55, 5, traite_accents_utf8('Nom et PrÃ©nom'), 1, 0, 'C', '');
     $pdf->Cell(17, 5, 'Classe', 1, 0, 'C', '');
     $pdf->Cell(42, 5, 'Motif', 1, 0, 'C', '');
     $pdf->Cell(38, 5, 'Du', 1, 0, 'C', '');
@@ -480,9 +480,9 @@ while ( $page < $nb_page )
 $datation_fichier = date("Ymd_Hi");
 $nom_fichier = 'Bilan_absence_' . $datation_fichier . '.pdf';
 
-// générer la sotie PDF
+// gÃ©nÃ©rer la sotie PDF
 $pdf->Output($nom_fichier,'I');
 
-/* FIN - Génération du PDF */
+/* FIN - GÃ©nÃ©ration du PDF */
 /* *********************** */
 ?>

@@ -63,7 +63,7 @@ function creer_repertoire($path) {
 
 function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	global $max_size, $total_max_size;
-	/* Vérification du type de fichier */
+	/* VÃ©rification du type de fichier */
 	$ext = '';
 	//if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
     if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))) {
@@ -75,31 +75,31 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	if ($row = @sql_row($result,0)) {
 		$id_type = $row[0];
 	} else {
-		echo ("Erreur : Ce type de fichier n'est pas autorisé en téléchargement");
+		echo ("Erreur : Ce type de fichier n'est pas autorisÃ© en tÃ©lÃ©chargement");
 		die();
 	}
 
-	/* Vérification de la taille du fichier */
+	/* VÃ©rification de la taille du fichier */
 	$max_size_ko = $max_size/1024;
 	$taille = $doc_file['size'][$cpt_doc];
 	if ($taille > $max_size) {
-		echo "Erreur : Téléchargement impossible : taille maximale autorisée : ".$max_size_ko." Ko";
+		echo "Erreur : TÃ©lÃ©chargement impossible : taille maximale autorisÃ©e : ".$max_size_ko." Ko";
 		die();
 	}
 	if ($taille == 0) {
-		echo "Le fichier sélectionné semble vide : transfert impossible.";
+		echo "Le fichier sÃ©lectionnÃ© semble vide : transfert impossible.";
 		die();
 	}
 	$query = "SELECT DISTINCT sum(taille) somme FROM ct_documents d, ct_entry e WHERE (e.id_groupe='".$id_groupe."' and e.id_ct = d.id_ct)";
 	$total = sql_query1($query);
 	if (($total+$taille) > $total_max_size) {
-		echo "Erreur : Téléchargement impossible : espace disque disponible (".(($total_max_size - $total)/1024)." Ko) insuffisant.";
+		echo "Erreur : TÃ©lÃ©chargement impossible : espace disque disponible (".(($total_max_size - $total)/1024)." Ko) insuffisant.";
 		die();
 	}
 
-	/* Crétion du répertoire de destination */
+	/* CrÃ©tion du rÃ©pertoire de destination */
 	if (!creer_repertoire($dest)) {
-		echo "Erreur : Problème d'écriture sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
+		echo "Erreur : ProblÃ¨me d'Ã©criture sur le rÃ©pertoire. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
                 echo $dest;
 		die();
 	}
@@ -108,7 +108,7 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	$nom_sans_ext = substr(basename($doc_file['name'][$cpt_doc]),0,strlen(basename($doc_file['name'][$cpt_doc]))-(strlen($ext)+1));
 	$nom_sans_ext = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $nom_sans_ext);
 	if (strstr($nom_sans_ext, "..")) {
-		echo "Erreur : Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
+		echo "Erreur : ProblÃ¨me de transfert : le fichier n'a pas pu Ãªtre transfÃ©rÃ© sur le rÃ©pertoire. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
 		die();
 	}
 
@@ -117,7 +117,7 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	$dest_file_path = $newFile;
 
 	if (!deplacer_fichier_upload($doc_file['tmp_name'][$cpt_doc], $dest_file_path)) {
-		echo "Erreur : Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
+		echo "Erreur : ProblÃ¨me de transfert : le fichier n'a pas pu Ãªtre transfÃ©rÃ© sur le rÃ©pertoire. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
 		die();
 	}
 
@@ -143,16 +143,16 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 //	$sql = "select emplacement from ct_documents where (id = '$id_document' and id_ct='$id_ct')";
 //	$empl = sql_query1($sql);
 //	if ($empl == -1) {
-//		$msg = "Il n' a pas de document à supprimer.";
+//		$msg = "Il n' a pas de document Ã  supprimer.";
 //	} else {
 //		$del = @unlink($empl);
 //		if (file_exists($empl)) {
-//			$msg = "Problème : le document n'a pa pu être supprimé. Contactez l'administrateur du site.";
+//			$msg = "ProblÃ¨me : le document n'a pa pu Ãªtre supprimÃ©. Contactez l'administrateur du site.";
 //		} else {
 //			if (sql_query("delete from ct_documents where id = '$id_document'")) {
-//				$msg = "Supression réussie";
+//				$msg = "Supression rÃ©ussie";
 //			} else {
-//				$msg = "Un problème est survenu lors de la suppression du document. Contactez l'administrateur du site.";
+//				$msg = "Un problÃ¨me est survenu lors de la suppression du document. Contactez l'administrateur du site.";
 //			}
 //		}
 //	}
@@ -163,9 +163,9 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 //	if ((trim($doc_name_modif)) != '') {
 //		$query = "UPDATE ct_documents SET titre='".corriger_caracteres($doc_name_modif)."' WHERE id='".$_POST['id_document']."'";
 //		if (sql_query($query)) {
-//			$msg = "Changement de nom réussi";
+//			$msg = "Changement de nom rÃ©ussi";
 //		} else {
-//			$msg = "Un problème est survenu lors du changement de nom du document. Contactez l'administrateur du site.";
+//			$msg = "Un problÃ¨me est survenu lors du changement de nom du document. Contactez l'administrateur du site.";
 //		}
 //
 //	} else {

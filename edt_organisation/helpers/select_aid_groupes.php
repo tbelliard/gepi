@@ -3,15 +3,15 @@
 /**
  * @copyright 2008-2011
  *
- * Fichier qui renvoie un select des professeurs de l'établissement
- * pour l'intégrer dans un fomulaire
+ * Fichier qui renvoie un select des professeurs de l'Ã©tablissement
+ * pour l'intÃ©grer dans un fomulaire
  *
  */
-// On récupère les infos utiles pour le fonctionnement des requêtes sql
+// On rÃ©cupÃ¨re les infos utiles pour le fonctionnement des requÃªtes sql
 $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
 
-// Sécurité : éviter que quelqu'un appelle ce fichier seul
+// SÃ©curitÃ© : Ã©viter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
 $analyse = explode("/", $serveur_script);
 $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
@@ -41,12 +41,12 @@ echo '
 	for($i = 0; $i < $nbre; $i++){
 		$nom[$i] = mysql_result($query, $i, "nom");
 		$indice_aid[$i] = mysql_result($query, $i, "id");
-		/*/ On récupère le nom précis de cette AID
+		/*/ On rÃ©cupÃ¨re le nom prÃ©cis de cette AID
 		$query2 = mysql_query("SELECT nom FROM aid WHERE id = '".$indice_aid[$i]."' ORDER BY nom");
 		$nom_aid = mysql_result($query2, 0,"nom");
 		$query3 = mysql_query("SELECT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid[$i]."'");
 		$nbre_eleves = mysql_num_rows($query3);
-		 ('.$nom_aid.' avec '.$nbre_eleves.' élèves)*/
+		 ('.$nom_aid.' avec '.$nbre_eleves.' Ã©lÃ¨ves)*/
 		// On teste le selected
 		if ($nom[$i] == $test_selected) {
 			$selected = ' selected="selected"';
@@ -66,13 +66,13 @@ echo '
 		$id_groupe[$a]["description"] = mysql_result($query, $a, "description");
 		$id_groupe[$a]["name"] = mysql_result($query, $a, "name");
 
-		// On récupère toutes les infos pour l'affichage
-		// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
+		// On rÃ©cupÃ¨re toutes les infos pour l'affichage
+		// On n'utilise pas getGroup() car elle est trop longue et rÃ©cupÃ¨re trop de choses dont on n'a pas besoin
 
 		$query1 = mysql_query("SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
 		$classe = mysql_fetch_array($query1);
 
-		// On teste le selected après s'être assuré qu'il n'était pas déjà renseigné
+		// On teste le selected aprÃ¨s s'Ãªtre assurÃ© qu'il n'Ã©tait pas dÃ©jÃ  renseignÃ©
 			if ($id_groupe[$a]["description"] == $test_selected) {
 				$selected = ' selected="selected"';
 			} elseif($id_groupe[$a]["id"] == $id_groupe_defaut) {

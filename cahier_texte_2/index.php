@@ -22,7 +22,7 @@
 
 $filtrage_extensions_fichiers_table_ct_types_documents='y';
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) || isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Initialisations files
@@ -55,9 +55,9 @@ if ($resultat_session == 'c') {
 //    die();
 //}
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 //recherche de l'utilisateur avec propel
@@ -67,7 +67,7 @@ if ($utilisateur == null) {
 	die();
 }
 
-// On met le header en petit par défaut
+// On met le header en petit par dÃ©faut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
@@ -108,7 +108,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 //-----------------------------------------------------------------------------------
 
-// si l'id d'un groupe est spécifié, on l'enregistre dans un champ hidden, il sera utilisé par le javascript d'initialisation pour basculer vers le groupe concerné
+// si l'id d'un groupe est spÃ©cifiÃ©, on l'enregistre dans un champ hidden, il sera utilisÃ© par le javascript d'initialisation pour basculer vers le groupe concernÃ©
 echo "<input type='hidden' name='id_groupe_init' id='id_groupe_init' value='";
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 if ($id_groupe != NULL) {
@@ -118,14 +118,14 @@ if ($id_groupe != NULL) {
 }
 echo "' />";
 
-echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entète\">\n";
+echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entÃ¨te\">\n";
 echo "<tr>\n";
 echo "<td valign='center'>\n";
 echo "<button style='width: 200px;' onclick=\"javascript:
 						getWinDernieresNotices().show();
 						getWinDernieresNotices().toFront();
 						return false;
-				\">Voir les dernières notices</button>\n";
+				\">Voir les derniÃ¨res notices</button>\n";
 echo "<br />";
 echo "<button style='width: 200px;' onclick=\"javascript:
 						getWinDernieresNotices().setLocation(155, 40);
@@ -146,8 +146,8 @@ echo "<img src='../images/icons/cdt2_1.png' alt='Utiliser la version 1 du cahier
 //				\">Utiliser la version 1 du cahier de textes</button>\n";
 echo "</td>";
 // **********************************************
-// Affichage des différents groupes du professeur
-// Récupération de toutes les infos sur le groupe
+// Affichage des diffÃ©rents groupes du professeur
+// RÃ©cupÃ©ration de toutes les infos sur le groupe
 echo "<td valign='center'>";
 $groups = $utilisateur->getGroupes();
 if ($groups->isEmpty()) {
@@ -184,7 +184,7 @@ $a = 1;
 	}
 }
 echo "<a href='creer_sequence.php'>Pr&eacute;parer une s&eacute;quence enti&egrave;re</a></td>";
-// Fin Affichage des différents groupes du professeur
+// Fin Affichage des diffÃ©rents groupes du professeur
 // **********************************************
 echo "<td width='250 px'></td>";
 echo "</tr>\n";

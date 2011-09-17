@@ -76,7 +76,7 @@ if((isset($id_classe))&&(isset($num_periode))&&(isset($_GET['confirmation_menage
 			while($lig_group=mysql_fetch_object($query)) {
 				$current_group=get_group($lig_group->id);
 				foreach($current_group["eleves"][$num_periode]["users"] as $tab_ele) {
-					// Pour ne traiter que les élèves de la classe courante:
+					// Pour ne traiter que les Ã©lÃ¨ves de la classe courante:
 					$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$tab_ele['login']."' AND periode='$num_periode' AND id_classe='$id_classe';";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)>0) {
@@ -98,17 +98,17 @@ if((isset($id_classe))&&(isset($num_periode))&&(isset($_GET['confirmation_menage
 	}
 
 	if($nb_desinscriptions==0) {
-		$msg="Aucune désinscription n'a été effectuée.";
+		$msg="Aucune dÃ©sinscription n'a Ã©tÃ© effectuÃ©e.";
 	}
 	elseif($nb_desinscriptions==0) {
-		$msg="Une désinscription a été effectuée.";
+		$msg="Une dÃ©sinscription a Ã©tÃ© effectuÃ©e.";
 	}
 	else {
-		$msg="$nb_desinscriptions désinscriptions ont été effectuées.";
+		$msg="$nb_desinscriptions dÃ©sinscriptions ont Ã©tÃ© effectuÃ©es.";
 	}
 
 	if($nb_erreurs_desinscriptions>0) {
-		$msg.="<br />$nb_erreurs_desinscriptions erreur(s) a(ont) eu lieu lors de la désinscription d'élèves.";
+		$msg.="<br />$nb_erreurs_desinscriptions erreur(s) a(ont) eu lieu lors de la dÃ©sinscription d'Ã©lÃ¨ves.";
 	}
 }
 
@@ -125,11 +125,11 @@ if(mysql_num_rows($res_class_tmp)>0){
 	$num_classe=-1;
 
 	if(!isset($id_classe)) {
-		// On choisit la première classe de la liste
+		// On choisit la premiÃ¨re classe de la liste
 		$lig_class_tmp=mysql_fetch_object($res_class_tmp);
 		$id_classe=$lig_class_tmp->id;
 
-		// On relance la requête pour récupérer le suivant et la chaine des classes
+		// On relance la requÃªte pour rÃ©cupÃ©rer le suivant et la chaine des classes
 		$sql="SELECT id, classe FROM classes ORDER BY classe";
 		$res_class_tmp=mysql_query($sql);
 	}
@@ -162,9 +162,9 @@ if(mysql_num_rows($res_class_tmp)>0){
 }
 // =================================
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
-$titre_page = "Gestion des groupes: Ménage";
+$titre_page = "Gestion des groupes: MÃ©nage";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
@@ -222,9 +222,9 @@ if(isset($num_periode)) {
 }
 
 // Choisir une autre classe
-//echo " | <a href='".$_SERVER['PHP_SELF']."'>Faire le ménage pour une autre classe</a>";
+//echo " | <a href='".$_SERVER['PHP_SELF']."'>Faire le mÃ©nage pour une autre classe</a>";
 if($id_class_prec!=0){
-	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_class_prec.$chaine_optionnelle."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_class_prec.$chaine_optionnelle."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>";
 }
 
 if($chaine_options_classes!="") {
@@ -262,10 +262,10 @@ echo "</p>\n";
 echo "</form>\n";
 
 $classe=get_class_from_id($id_classe);
-echo "<p>Cette page est destinée à désinscrire des groupes/enseignements de la classe de <b>".$classe."</b> pour une période donnée, tous les élèves qui n'ont ni note ni appréciation sur le bulletin.</p>\n";
+echo "<p>Cette page est destinÃ©e Ã  dÃ©sinscrire des groupes/enseignements de la classe de <b>".$classe."</b> pour une pÃ©riode donnÃ©e, tous les Ã©lÃ¨ves qui n'ont ni note ni apprÃ©ciation sur le bulletin.</p>\n";
 
 if(!isset($num_periode)) {
-	echo "<p>Pour quelle période souhaitez-vous effectuer le ménage dans la classe de <b>".$classe."</b>?</p>\n";
+	echo "<p>Pour quelle pÃ©riode souhaitez-vous effectuer le mÃ©nage dans la classe de <b>".$classe."</b>?</p>\n";
 	$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode;";
 	$res_per=mysql_query($sql);
 	while($lig_per=mysql_fetch_object($res_per)) {
@@ -277,12 +277,12 @@ if(!isset($num_periode)) {
 }
 
 if((isset($_GET['confirmation_menage']))&&($_GET['confirmation_menage']=='y')) {
-	echo "<p>Voici les groupes après validation des désinscriptions.</p>\n";
+	echo "<p>Voici les groupes aprÃ¨s validation des dÃ©sinscriptions.</p>\n";
 }
 else {
-	echo "<p>Contrôle des désinscriptions à effectuer en <b>$classe</b> en <b>période $num_periode</b>.";
+	echo "<p>ContrÃ´le des dÃ©sinscriptions Ã  effectuer en <b>$classe</b> en <b>pÃ©riode $num_periode</b>.";
 	echo "<br />\n";
-	echo "En <span style='color: green'>vert</span> la liste des élèves à <span style='color: green'>conserver</span> dans l'enseignement et en <span style='color: red'>rouge</span> ceux qui seront <span style='color: red'>désinscrits</span> de l'enseignement si vous validez.</p>\n";
+	echo "En <span style='color: green'>vert</span> la liste des Ã©lÃ¨ves Ã  <span style='color: green'>conserver</span> dans l'enseignement et en <span style='color: red'>rouge</span> ceux qui seront <span style='color: red'>dÃ©sinscrits</span> de l'enseignement si vous validez.</p>\n";
 }
 //$groups=get_groups_for_class($id_classe,"","n");
 //foreach($groups as $current_group) {
@@ -301,7 +301,7 @@ $query=mysql_query($sql);
 while($lig_group=mysql_fetch_object($query)) {
 	$current_group=get_group($lig_group->id);
 
-	echo "<p>Liste des élèves en ".htmlentities($current_group["name"])." - ".htmlentities($current_group["description"])." (<i>".$current_group["classlist_string"]."</i>)<br />\n";
+	echo "<p>Liste des Ã©lÃ¨ves en ".htmlentities($current_group["name"])." - ".htmlentities($current_group["description"])." (<i>".$current_group["classlist_string"]."</i>)<br />\n";
 	/*
 	echo "<pre>";
 	print_r($current_group);
@@ -309,7 +309,7 @@ while($lig_group=mysql_fetch_object($query)) {
 	*/
 	$cpt=0;
 	foreach($current_group["eleves"][$num_periode]["users"] as $tab_ele) {
-		// Pour ne traiter que les élèves de la classe courante:
+		// Pour ne traiter que les Ã©lÃ¨ves de la classe courante:
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='".$tab_ele['login']."' AND periode='$num_periode' AND id_classe='$id_classe';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
@@ -329,7 +329,7 @@ while($lig_group=mysql_fetch_object($query)) {
 }
 
 if((!isset($_GET['confirmation_menage']))||($_GET['confirmation_menage']=='n')) {
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;num_periode=$num_periode&amp;confirmation_menage=y".add_token_in_url()."'>Confirmer les désinscriptions</a>.</p>\n";
+	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;num_periode=$num_periode&amp;confirmation_menage=y".add_token_in_url()."'>Confirmer les dÃ©sinscriptions</a>.</p>\n";
 }
 
 echo "<p><br /></p>\n";

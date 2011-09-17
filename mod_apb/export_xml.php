@@ -23,32 +23,32 @@
 
 /*
 
-Génération du fichier XML devant être transmis au système
+GÃ©nÃ©ration du fichier XML devant Ãªtre transmis au systÃ¨me
 "admission post-bac"
 
-La structure de ce fichier est connue et documentée. Ce script génère
-un fichier XML conforme aux spécifications.
+La structure de ce fichier est connue et documentÃ©e. Ce script gÃ©nÃ¨re
+un fichier XML conforme aux spÃ©cifications.
 
-Trois types de données sont requises, chacune nécessitant un traitement
-spécifique :
-- les données de l'année en cours : facilement accessibles, connues
-- les données des années précédentes : plus difficilement accessible,
-et pas nécessairement complètes pour tous les élèves. Ce script part du
-principe qu'on intègre tout ce qu'on peut, et que l'absence de données ne
-constitue pas en soit une cause de blocage de l'export. Il serait néanmoins
-judicieux de vérifier que ce comportement est conforme à ce qui est attendu
+Trois types de donnÃ©es sont requises, chacune nÃ©cessitant un traitement
+spÃ©cifique :
+- les donnÃ©es de l'annÃ©e en cours : facilement accessibles, connues
+- les donnÃ©es des annÃ©es prÃ©cÃ©dentes : plus difficilement accessible,
+et pas nÃ©cessairement complÃ¨tes pour tous les Ã©lÃ¨ves. Ce script part du
+principe qu'on intÃ¨gre tout ce qu'on peut, et que l'absence de donnÃ©es ne
+constitue pas en soit une cause de blocage de l'export. Il serait nÃ©anmoins
+judicieux de vÃ©rifier que ce comportement est conforme Ã  ce qui est attendu
 par APB.
-- les données de configuration pour chaque enseignement, permettant de
-déterminer si l'enseignement est une LV1/2/3, s'il s'agit d'un enseignement
-de spécialité ou non, etc. Ces données sont paramétrées directement
-dans ce module, pour ne pas surcharger les pages de paramétrage des
-groupes. L'absences de paramètres pour un groupe donné entraîne un blocage
-de l'export, pour éviter les erreurs.
+- les donnÃ©es de configuration pour chaque enseignement, permettant de
+dÃ©terminer si l'enseignement est une LV1/2/3, s'il s'agit d'un enseignement
+de spÃ©cialitÃ© ou non, etc. Ces donnÃ©es sont paramÃ©trÃ©es directement
+dans ce module, pour ne pas surcharger les pages de paramÃ©trage des
+groupes. L'absences de paramÃ¨tres pour un groupe donnÃ© entraÃ®ne un blocage
+de l'export, pour Ã©viter les erreurs.
 
 
-Ce script n'a besoin d'aucun paramètre particulier pour pouvoir fonctionner.
-L'utilisation des informations de paramétrage pour chaque classe permet 
-de déterminer ce qui devra être inclus ou non.
+Ce script n'a besoin d'aucun paramÃ¨tre particulier pour pouvoir fonctionner.
+L'utilisation des informations de paramÃ©trage pour chaque classe permet 
+de dÃ©terminer ce qui devra Ãªtre inclus ou non.
 
 */
 
@@ -75,46 +75,46 @@ if (!checkAccess()) {
 require_once("./helpers.inc.php");
 
 /*
- * Liste des données requises :
+ * Liste des donnÃ©es requises :
  * - Etablissement : RNE, Nom, Code postal
- * - Classes : Code, année, nom, niveau [Premiere,Terminale], Prof principal (optionnel), decoupage des bulletins (en trimestre ou semestre)
- * - Services-notation (= enseignements évalués) : Code, année, trimestre, code-enseignants (lien vers l'enseignant), code-matiere (lien vers la matière), niveau langue-vivante [LV1, LV2, LV3], code langue vivante, nom groupe, moyenne classe, moyenne min, moyenne max, effectif
- * - Matières : Code, code-sconet, libellé, matiere-spécialité
- * - Langues vivantes : Code, libellé  // Cette distinction entre 'langue vivante' et 'services notation' est une abberration de modélisation...
- * - Enseignants : Code, nom, prénom
- * - Elèves : Code, INE, nom, prénom, date de naissance
+ * - Classes : Code, annÃ©e, nom, niveau [Premiere,Terminale], Prof principal (optionnel), decoupage des bulletins (en trimestre ou semestre)
+ * - Services-notation (= enseignements Ã©valuÃ©s) : Code, annÃ©e, trimestre, code-enseignants (lien vers l'enseignant), code-matiere (lien vers la matiÃ¨re), niveau langue-vivante [LV1, LV2, LV3], code langue vivante, nom groupe, moyenne classe, moyenne min, moyenne max, effectif
+ * - MatiÃ¨res : Code, code-sconet, libellÃ©, matiere-spÃ©cialitÃ©
+ * - Langues vivantes : Code, libellÃ©  // Cette distinction entre 'langue vivante' et 'services notation' est une abberration de modÃ©lisation...
+ * - Enseignants : Code, nom, prÃ©nom
+ * - ElÃ¨ves : Code, INE, nom, prÃ©nom, date de naissance
  * 
- * Imbrication des données :
- * 'Etablissement' contient Classes, Services-notation, Matières, Langues vivantes, Enseignants, Eleves
- * Ensuite toutes les données d'évaluation sont sous 'Eleves'
+ * Imbrication des donnÃ©es :
+ * 'Etablissement' contient Classes, Services-notation, MatiÃ¨res, Langues vivantes, Enseignants, Eleves
+ * Ensuite toutes les donnÃ©es d'Ã©valuation sont sous 'Eleves'
  * Etablissement/Eleves/Annees-scolaires/Bulletins/Notes
  * 
  */
 
 
 /*
- * Attributs utilisés spécifiquement par APB :
+ * Attributs utilisÃ©s spÃ©cifiquement par APB :
  * - classes : apb_niveau ['','premiere','terminale']
  * - j_groupes_classes : apb_langue_vivante ['LV1', 'LV2', 'LV3', '']
  * 
  */
 
 if (!isset($_POST)) {
-  echo "Vous ne pouvez pas accéder à ce script directement.";
+  echo "Vous ne pouvez pas accÃ©der Ã  ce script directement.";
   die();
 }
 
-// Initialisation des données de paramétrage de l'export
+// Initialisation des donnÃ©es de paramÃ©trage de l'export
 
-// Numéro de l'export
+// NumÃ©ro de l'export
 if (isset($_POST['num_export'])) {
   $numero_export = $_POST['num_export'];
   if (!is_numeric($numero_export)) {
-    echo "Le numéro d'export n'est pas correct.";
+    echo "Le numÃ©ro d'export n'est pas correct.";
     die();
   }
 } else {
-  echo "Impossible de déterminer le numéro de l'export.";
+  echo "Impossible de dÃ©terminer le numÃ©ro de l'export.";
   die();
 }
 
@@ -122,27 +122,27 @@ $req_classes = mysql_query("SELECT id, classe, nom_complet, MAX(p.num_periode) p
 $data_classes = array();
 $data_groupes = array();
 
-// Limites de périodes
+// Limites de pÃ©riodes
 $limites_periodes = array();
 
 while ($classe = mysql_fetch_object($req_classes)) {
   // On initialise ce tableau pour plus tard, lorsque l'on traitera des groupes.
   $data_groupes[$classe->classe] = array();
-  // On stocke les données relatives aux classes de terminale, qui sont la base de cet export
+  // On stocke les donnÃ©es relatives aux classes de terminale, qui sont la base de cet export
   $data_classes[$classe->classe] = array('code' => $classe->classe,
                         'classe' => $classe->classe,
                         'id' => $classe->id,
 												'nom' => $classe->nom_complet,
-												'annee' => strftime("%Y"), // L'année ici correspond toujours à l'année courante.
+												'annee' => strftime("%Y"), // L'annÃ©e ici correspond toujours Ã  l'annÃ©e courante.
 												'niveau' => $classe->apb_niveau,
 												'decoupage' => $classe->periodes);
-  // On s'occupe des limites de périodes, pour n'exporter que jusqu'à la dernière période saisie
+  // On s'occupe des limites de pÃ©riodes, pour n'exporter que jusqu'Ã  la derniÃ¨re pÃ©riode saisie
   if (!array_key_exists($classe->periodes,$limites_periodes)) {
     if (!isset($_POST[$classe->periodes.'per'])) {
-      echo "Impossible de trouver la limite de périodes.";
+      echo "Impossible de trouver la limite de pÃ©riodes.";
       die();
     } else if (!is_numeric($_POST[$classe->periodes.'per'])) {
-      echo "Impossible de déterminer la limite de périodes.";
+      echo "Impossible de dÃ©terminer la limite de pÃ©riodes.";
       die();
     }
     $limites_periodes[$classe->periodes] = $_POST[$classe->periodes.'per'];
@@ -150,22 +150,22 @@ while ($classe = mysql_fetch_object($req_classes)) {
 }
 
 
-// On va initialiser toutes les données dans diverses tableaux. Ensuite
-// on va parcourir les tableaux et utiliser les outils adéquats pour générer le XML
-// Ce n'est pas vraiment le plus efficace d'un point de vue de gestion de la mémoire,
+// On va initialiser toutes les donnÃ©es dans diverses tableaux. Ensuite
+// on va parcourir les tableaux et utiliser les outils adÃ©quats pour gÃ©nÃ©rer le XML
+// Ce n'est pas vraiment le plus efficace d'un point de vue de gestion de la mÃ©moire,
 // mais certainement le plus simple et le plus lisible dans le script.
-// Idéalement, il faudrait utiliser les classes Propel et faire proprement les
-// requêtes à travers des méthodes spécifiques (ou génériques, selon les cas).
-// Au pire, ce passage vers Propel pourra se faire ultérieurement. Ce fichier
+// IdÃ©alement, il faudrait utiliser les classes Propel et faire proprement les
+// requÃªtes Ã  travers des mÃ©thodes spÃ©cifiques (ou gÃ©nÃ©riques, selon les cas).
+// Au pire, ce passage vers Propel pourra se faire ultÃ©rieurement. Ce fichier
 // devrait $etre suffisamment lisible pour que la transition ne prenne que
-// peu de temps, une fois que toutes les modèles Propel sont correctement construits.
+// peu de temps, une fois que toutes les modÃ¨les Propel sont correctement construits.
 
 $data_etablissement  = array();
 $data_etablissement['rne'] = $gepiSettings['gepiSchoolRne'];
 $data_etablissement['nom'] = utf8_encode($gepiSettings['gepiSchoolName']);
 $data_etablissement['cp'] = $gepiSettings['gepiSchoolZipCode'];
 
-// Liste des élèves
+// Liste des Ã©lÃ¨ves
 
 $data_eleves = array();
 
@@ -189,14 +189,14 @@ foreach($data_classes as $classe) {
   }
 }
 
-// On traite maintenant les enseignements pour l'année en cours
-// Pour cela, on prend élève par élève, et on récupère tout au fur et à mesure.
-// Là encore, pas hyper optimisé au niveau des requêtes MySQL, puisqu'on boucle
-// sur les élèves. Il pourrait être judicieux de tenter ultérieurement des optimisations.
+// On traite maintenant les enseignements pour l'annÃ©e en cours
+// Pour cela, on prend Ã©lÃ¨ve par Ã©lÃ¨ve, et on rÃ©cupÃ¨re tout au fur et Ã  mesure.
+// LÃ  encore, pas hyper optimisÃ© au niveau des requÃªtes MySQL, puisqu'on boucle
+// sur les Ã©lÃ¨ves. Il pourrait Ãªtre judicieux de tenter ultÃ©rieurement des optimisations.
 
-// On boucle d'abord sur les élèves, puis sur les périodes, puis les enseignements.
+// On boucle d'abord sur les Ã©lÃ¨ves, puis sur les pÃ©riodes, puis les enseignements.
 
-// On va renseigner au fur et à mesure les information de 'services-notations' et 'enseignants'
+// On va renseigner au fur et Ã  mesure les information de 'services-notations' et 'enseignants'
 $data_services_notations = array();
 $data_enseignants = array();
 $data_matieres = array();
@@ -208,12 +208,12 @@ foreach($data_eleves as &$eleve) {
                                                                 'annee' => $annee,
                                                                 'code-classe' => $eleve['code-classe'],
                                                                 'bulletins' => array()));
-    // Boucle sur les périodes de l'année en cours
+    // Boucle sur les pÃ©riodes de l'annÃ©e en cours
     for($i=1;$i<=$limites_periodes[$data_classes[$eleve['code-classe']]['decoupage']];$i++) {
       $eleve['annees-scolaires'][$annee]['bulletins'][$i] = array('trimestre' => $i, 'notes' => array());
       
-      // Maintenant on boucle sur les différentes notes pour la période considérée
-      // On se base sur les mécanismes existants dans le bulletin
+      // Maintenant on boucle sur les diffÃ©rentes notes pour la pÃ©riode considÃ©rÃ©e
+      // On se base sur les mÃ©canismes existants dans le bulletin
       $req_notes = mysql_query("SELECT n.id_groupe, n.note, n.statut, n.rang, a.appreciation
                                   FROM matieres_notes n LEFT JOIN matieres_appreciations a USING (login, id_groupe, periode)
                                   WHERE n.periode = '".$i."' AND n.login = '".$eleve['login']."'");
@@ -221,7 +221,7 @@ foreach($data_eleves as &$eleve) {
       // On passe les notes une par une
       while ($note = mysql_fetch_object($req_notes)) {
         
-        // On enregistre ce groupe dans la liste des services_notations s'il n'y est pas déjà
+        // On enregistre ce groupe dans la liste des services_notations s'il n'y est pas dÃ©jÃ 
         if (!array_key_exists($note->id_groupe.'_'.$i, $data_services_notations)) {
           $req_groupe = mysql_query("SELECT DISTINCT(g.id), g.name, g.description, m.nom_complet, m.matiere, jgp.login
                                         FROM groupes g
@@ -254,7 +254,7 @@ foreach($data_eleves as &$eleve) {
                                                             'moyenne-haute' => $stats2->note_max,
                                                             'moyenne-basse' => $stats2->note_min);
                                                             
-          // On regarde si l'enseignant est déjà répertorié
+          // On regarde si l'enseignant est dÃ©jÃ  rÃ©pertoriÃ©
           if (!array_key_exists($groupe->login, $data_enseignants)) {
             // Non, alors on va le chercher...
             $req_enseignant = mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$groupe->login."'");
@@ -263,15 +263,15 @@ foreach($data_eleves as &$eleve) {
           }
           
           
-          // Idem pour la matière
+          // Idem pour la matiÃ¨re
           if (!array_key_exists($groupe->matiere, $data_matieres)) {
             $data_matieres[$groupe->matiere] = array('code' => $groupe->matiere, 'libelle' => $groupe->nom_complet);
           }          
         } 
         
-        // On regarde si on a déjà enregistré les infos spécifiques à cette classe pour ce groupe dans le tableau (il s'agit du coef)
+        // On regarde si on a dÃ©jÃ  enregistrÃ© les infos spÃ©cifiques Ã  cette classe pour ce groupe dans le tableau (il s'agit du coef)
         if (!array_key_exists($note->id_groupe, $data_groupes[$eleve['code-classe']])) {
-          // On récupère les informations nécessaires
+          // On rÃ©cupÃ¨re les informations nÃ©cessaires
           $coef = mysql_result(mysql_query("SELECT jgc.coef FROM j_groupes_classes jgc, classes c WHERE
                                                   jgc.id_groupe = '".$note->id_groupe."' AND
                                                   jgc.id_classe = c.id AND
@@ -281,7 +281,7 @@ foreach($data_eleves as &$eleve) {
         }
         
         //
-        // AJOUTER SUPPORT DES NOTES COMPOSANTES (oral/écrit, par exemple, basé sur les boîtes des carnets de notes)
+        // AJOUTER SUPPORT DES NOTES COMPOSANTES (oral/Ã©crit, par exemple, basÃ© sur les boÃ®tes des carnets de notes)
         //
         
         
@@ -315,7 +315,7 @@ foreach($data_eleves as &$eleve) {
 }
 
 
-// Génération du fichier XML à partir des données rassemblées ci-dessus
+// GÃ©nÃ©ration du fichier XML Ã  partir des donnÃ©es rassemblÃ©es ci-dessus
 
 
 $doc = new DOMDocument('1.0','iso-8859-15');
@@ -456,11 +456,11 @@ foreach($data_services_notations as $code => $sn) {
   }
 */
   
-  // Moyenne classe : à déterminer !!!
+  // Moyenne classe : Ã  dÃ©terminer !!!
   
 }
 
-// Les matières
+// Les matiÃ¨res
 
 $matieres = $doc->createElement('matieres');
 $etab->appendChild($matieres);
@@ -487,11 +487,11 @@ foreach($data_matieres as $matiere) {
 }
 
 //
-// LANGUES VIVANTES : il va faut trouver un moyen de les caractériser...
+// LANGUES VIVANTES : il va faut trouver un moyen de les caractÃ©riser...
 // Ca risque de devoir passer par une configuration manuelle, soit au moment
 // de l'export, soit dans la configuration du module.
-// Pour l'instant, on exporte une langue vivante vide et non utilisée, pour
-// être conforme au schéma...
+// Pour l'instant, on exporte une langue vivante vide et non utilisÃ©e, pour
+// Ãªtre conforme au schÃ©ma...
 
 
 $langues_vivantes = $doc->createElement('langues-vivantes');
@@ -534,7 +534,7 @@ foreach($data_enseignants as $prof) {
 }
 
 
-// Et enfin, les élèves
+// Et enfin, les Ã©lÃ¨ves
 
 $eleves = $doc->createElement('eleves');
 $etab->appendChild($eleves);
@@ -569,7 +569,7 @@ foreach($data_eleves as $el) {
   $e->appendChild($eNaissance);
   $eNaissance->appendChild($eNaissanceValue);
   
-  // On passe les années scolaires
+  // On passe les annÃ©es scolaires
   $annees_scolaires = $doc->createElement('annees-scolaires');
   $e->appendChild($annees_scolaires);
   
@@ -587,7 +587,7 @@ foreach($data_eleves as $el) {
     $annee->appendChild($anneeCodeClasse);
     $anneeCodeClasse->appendChild($anneeCodeClasseValue);
     
-    // Les bulletins pour l'année considérée
+    // Les bulletins pour l'annÃ©e considÃ©rÃ©e
     $bulletins = $doc->createElement('bulletins');
     $annee->appendChild($bulletins);
     

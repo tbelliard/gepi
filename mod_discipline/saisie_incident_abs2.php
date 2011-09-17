@@ -44,8 +44,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -65,7 +65,7 @@ $msg = "";
 if ($saisie->getIdSIncidents() == null || $saisie->getIdSIncidents() == -1) {
 	check_token();
 
-    //l'incident n'est pas encore enregistré, on l'enregistre donc
+    //l'incident n'est pas encore enregistrÃ©, on l'enregistre donc
     $sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
 									    date='".$saisie->getDebutAbs('Y-m-d')."',
 									    heure='".$saisie->getDebutAbs('H:i')."',
@@ -80,7 +80,7 @@ if ($saisie->getIdSIncidents() == null || $saisie->getIdSIncidents() == -1) {
     }
     else {
 	    $id_incident=mysql_insert_id();
-	    $msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
+	    $msg.="Enregistrement de l'incident nÂ°".$id_incident." effectuÃ©.<br />\n";
     }
     $saisie->setIdSIncidents($id_incident);
     $saisie->save();

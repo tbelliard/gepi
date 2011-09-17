@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=2");
     die();
@@ -52,9 +52,9 @@ $nom_long_gr = isset($_POST["nom_long_gr"]) ? $_POST["nom_long_gr"] : NULL;
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $aff_modif = NULL;
 
-// On récupère toutes les données du groupe
+// On rÃ©cupÃ¨re toutes les donnÃ©es du groupe
 if (isset($var) AND is_numeric($var)) {
-	// On y va pour récupérer les données
+	// On y va pour rÃ©cupÃ©rer les donnÃ©es
 	$query_d = mysql_query("SELECT nom, nom_long, subdivision_type, subdivision FROM edt_gr_nom WHERE id = '".$var."'");
 	$rep_d = mysql_fetch_array($query_d);
 }
@@ -62,7 +62,7 @@ if (isset($var) AND is_numeric($var)) {
 
 if ($var2 == "changer_nom") {
 	//echo '<p>Vous voulez changer de nom ?</p>';
-	// On récupère toutes les données du groupe
+	// On rÃ©cupÃ¨re toutes les donnÃ©es du groupe
 	if (isset($var) AND is_numeric($var)) {
 
 				$aff_modif .= '
@@ -89,24 +89,24 @@ if ($var2 == "changer_nom") {
 	';
 
 	}else{
-		$aff_modif = '<p>Impossible de récupérer les données de ce groupe.</p>';
+		$aff_modif = '<p>Impossible de rÃ©cupÃ©rer les donnÃ©es de ce groupe.</p>';
 	}
 
 }elseif($var2 == "liste_e"){
 
-	// On vérifie si ce gr ne correspond pas à une classe et à laquelle précisément
+	// On vÃ©rifie si ce gr ne correspond pas Ã  une classe et Ã  laquelle prÃ©cisÃ©ment
 	//$query_verif = mysql_fetch_array(mysql_query("SELECT subdivision_type, subdivision FROM edt_gr_nom WHERE id ='".$var."'"));
 
 	if ($rep_d["subdivision_type"] == "classe") {
-		// ça veut dire que ce groupe correspond à la classe dont l'id est $rep_d["subdivision"]
-		// On récupère donc la liste des élèves de cette classe
+		// Ã§a veut dire que ce groupe correspond Ã  la classe dont l'id est $rep_d["subdivision"]
+		// On rÃ©cupÃ¨re donc la liste des Ã©lÃ¨ves de cette classe
 		$sql_e = "SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec
 											WHERE jec.login = e.login
 											AND	jec.id_classe = '".$rep_d["subdivision"]."'
 											ORDER BY nom, prenom";
 
 	}else{
-		// Permet d'afficher la liste des élèves
+		// Permet d'afficher la liste des Ã©lÃ¨ves
 		$sql_e = "SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, edt_gr_eleves ege
 											WHERE ege.id_eleve = e.id_eleve
 											AND	ege.id_gr_nom = '".$var."'
@@ -116,11 +116,11 @@ if ($var2 == "changer_nom") {
 	// On met en place l'affichage
 	$aff_modif .= '<p style="text-align: right;"><a href="edt_liste_eleves.php?id_gr='.$var.'" target="_blank">Modifier cette liste</a></p>';
 
-	$query_e = mysql_query($sql_e) OR trigger_error('Impossible de récupérer la liste des élèves', E_USER_ERROR);
+	$query_e = mysql_query($sql_e) OR trigger_error('Impossible de rÃ©cupÃ©rer la liste des Ã©lÃ¨ves', E_USER_ERROR);
 
 	while($rep = mysql_fetch_array($query_e)){
 
-		// On récupère alors la classe
+		// On rÃ©cupÃ¨re alors la classe
 		$query_c = mysql_query("SELECT classe FROM j_eleves_classes jec, classes c
 										WHERE jec.login = '".$rep["login"]."'
 										AND jec.id_classe = c.id");
@@ -138,7 +138,7 @@ if ($var2 == "changer_nom") {
 										WHERE egp.id_utilisateurs = u.login
 										AND id_gr_nom = '".$var."'
 										ORDER BY nom, prenom";
-	$query_p = mysql_query($sql_p) OR trigger_error("Impossible de récupérer la liste des professeurs de ce groupe : ", E_USER_ERROR);
+	$query_p = mysql_query($sql_p) OR trigger_error("Impossible de rÃ©cupÃ©rer la liste des professeurs de ce groupe : ", E_USER_ERROR);
 
 	$aff_modif .= '<p style="text-align: right;"><a href="./edt_liste_profs.php?id_gr='.$var.'" target="_blank">Modifier cette liste</a></p>';
 
@@ -150,13 +150,13 @@ if ($var2 == "changer_nom") {
 }
 
 
-// On traite la modification si elle est demandée (liste d'élèves : obsolète)
+// On traite la modification si elle est demandÃ©e (liste d'Ã©lÃ¨ves : obsolÃ¨te)
 if ($action == "modifier_gr") {
 	$sql_m = "UPDATE edt_gr_nom SET nom = '".$nom_gr."', nom_long = '".$nom_long_gr."' WHERE id = '".$var."'";
-	$query_m = mysql_query($sql_m) OR trigger_error('Impossible de mettre à jour ce groupe '.mysql_error(), E_USER_ERROR);
+	$query_m = mysql_query($sql_m) OR trigger_error('Impossible de mettre Ã  jour ce groupe '.mysql_error(), E_USER_ERROR);
 	if ($query_m) {
-		// On ferme la fenêtre
-		echo '<html><body><p>La modification a bien été enregistrée, vous pouvez fermer cette fenêtre et rafraichir votre navigateur.</p></body></html>';
+		// On ferme la fenÃªtre
+		echo '<html><body><p>La modification a bien Ã©tÃ© enregistrÃ©e, vous pouvez fermer cette fenÃªtre et rafraichir votre navigateur.</p></body></html>';
 		trigger_error('Impossible d\'aller plus loin.', E_USER_ERROR);
 	}
 }

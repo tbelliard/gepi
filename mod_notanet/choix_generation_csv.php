@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// INSERT INTO droits VALUES('/mod_notanet/choix_generation_csv.php','V','F','F','F','F','F','F','F','Génération du CSV pour Notanet','');
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
+// INSERT INTO droits VALUES('/mod_notanet/choix_generation_csv.php','V','F','F','F','F','F','F','F','GÃ©nÃ©ration du CSV pour Notanet','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -50,17 +50,17 @@ if (!checkAccess()) {
 
 
 //**************** EN-TETE *****************
-$titre_page = "Notanet: Génération du CSV";
+$titre_page = "Notanet: GÃ©nÃ©ration du CSV";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
-// Bibliothèque pour Notanet et Fiches brevet
+// BibliothÃ¨que pour Notanet et Fiches brevet
 include("lib_brevets.php");
 
 echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
+echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour Ã  l'accueil Notanet</a>";
 
 $sql="SELECT DISTINCT type_brevet FROM notanet_ele_type ORDER BY type_brevet;";
 $res=mysql_query($sql);
@@ -68,7 +68,7 @@ if(mysql_num_rows($res)==0) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Aucune association élève/type de brevet n'a encore été réalisée.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a></p>\n";
+	echo "<p>Aucune association Ã©lÃ¨ve/type de brevet n'a encore Ã©tÃ© rÃ©alisÃ©e.<br />Commencez par <a href='select_eleves.php'>sÃ©lectionner les Ã©lÃ¨ves</a></p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -82,7 +82,7 @@ if($nb_type_brevet==0) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Aucune association matières/type de brevet n'a encore été réalisée.<br />Commencez par <a href='select_matieres.php'>sélectionner les matières</a></p>\n";
+	echo "<p>Aucune association matiÃ¨res/type de brevet n'a encore Ã©tÃ© rÃ©alisÃ©e.<br />Commencez par <a href='select_matieres.php'>sÃ©lectionner les matiÃ¨res</a></p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -96,11 +96,11 @@ echo "<p>Voulez-vous: ";
 echo "</p>\n";
 echo "<ul>\n";
 if($nb_type_brevet>1) {
-	echo "<li><a href='generer_csv.php?extract_mode=tous".add_token_in_url()."'>Générer le CSV Notanet pour tous les élèves associés à un type de brevet.</a></li>\n";
+	echo "<li><a href='generer_csv.php?extract_mode=tous".add_token_in_url()."'>GÃ©nÃ©rer le CSV Notanet pour tous les Ã©lÃ¨ves associÃ©s Ã  un type de brevet.</a></li>\n";
 }
-//echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=select'></a>Extraire une sélection d'élèves</li>\n";
+//echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=select'></a>Extraire une sÃ©lection d'Ã©lÃ¨ves</li>\n";
 while($lig=mysql_fetch_object($res)) {
-	echo "<li><a href='generer_csv.php?extract_mode=".$lig->type_brevet.add_token_in_url()."'>Générer le CSV Notanet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+	echo "<li><a href='generer_csv.php?extract_mode=".$lig->type_brevet.add_token_in_url()."'>GÃ©nÃ©rer le CSV Notanet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 }
 echo "</ul>\n";
 

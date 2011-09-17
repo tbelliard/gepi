@@ -2,15 +2,15 @@
 class LDAPServer {
 	
 	# Le chemin vers le fichier de configuration du LDAP.
-	# Le répertoire de Gepi est considéré comme la racine (mais il est possible
-	# de remonter plus haut en commençant par "../")
-        // Commenté car ne fonctionne pas en php4...
-        // On utilise donc la méthode config_file
+	# Le rÃ©pertoire de Gepi est considÃ©rÃ© comme la racine (mais il est possible
+	# de remonter plus haut en commenÃ§ant par "../")
+        // CommentÃ© car ne fonctionne pas en php4...
+        // On utilise donc la mÃ©thode config_file
 	#var $config_file = "secure/config_ldap.inc.php";
 
 	
-	# Les données pour se connecter à l'annuaire LDAP
-	# Les champs login et password peuvent être laissés vides
+	# Les donnÃ©es pour se connecter Ã  l'annuaire LDAP
+	# Les champs login et password peuvent Ãªtre laissÃ©s vides
 	# dans le cas d'une connexion anonyme.
 	var $host = "localhost";
 	var $port = "389";
@@ -19,16 +19,16 @@ class LDAPServer {
 	var $base_dn = "o=gouv,o=fr";
 	var $people_ou = "ou=People";
 
-	# Les classes de l'entrée LDAP d'un utilisateur. Elles doivent
-	# être cohérentes avec les attributs utilisés.
+	# Les classes de l'entrÃ©e LDAP d'un utilisateur. Elles doivent
+	# Ãªtre cohÃ©rentes avec les attributs utilisÃ©s.
 	var $people_object_classes = array("top","person","inetOrgPerson");
 
 	# Les attributs suivants permettent de lier les champs du
-	# LDAP à des champs de la table utilisateurs de Gepi.
-	# Seuls ces champs sont utilisés lors de la création à la
-	# volée de comptes utilisateurs depuis le LDAP, ou bien lors
-	# de la synchronisation dans le sens Gepi -> LDAP (accès en
-	# écriture.
+	# LDAP Ã  des champs de la table utilisateurs de Gepi.
+	# Seuls ces champs sont utilisÃ©s lors de la crÃ©ation Ã  la
+	# volÃ©e de comptes utilisateurs depuis le LDAP, ou bien lors
+	# de la synchronisation dans le sens Gepi -> LDAP (accÃ¨s en
+	# Ã©criture.
 	var $champ_login = "uid";
 	var $champ_prenom = "";
 	var $champ_nom = "sn";
@@ -42,11 +42,11 @@ class LDAPServer {
 	var $code_civilite_monsieur = "M.";
 	var $code_civilite_mademoiselle = "Mlle";
 
-	# Les attributs ci-dessous permettent de déterminer quel
-	# statut donner à des utilisateurs importés à la volée
+	# Les attributs ci-dessous permettent de dÃ©terminer quel
+	# statut donner Ã  des utilisateurs importÃ©s Ã  la volÃ©e
 	# depuis le LDAP.
-	# Le test est effectué sur la chaîne du DN. Ces attributs
-	# ne sont donc utiles que dans l'hypothèse où le DN contient
+	# Le test est effectuÃ© sur la chaÃ®ne du DN. Ces attributs
+	# ne sont donc utiles que dans l'hypothÃ¨se oÃ¹ le DN contient
 	# une information fiable quant au statut de l'utilisateur.
 	var $chaine_dn_statut_professeur = "";
 	var $chaine_dn_statut_eleve = "";
@@ -54,19 +54,19 @@ class LDAPServer {
 	var $chaine_dn_statut_scolarite = "";
 	var $chaine_dn_statut_cpe = "";
 
-	# Type de cryptage utilisé pour la génération des mots de passe
+	# Type de cryptage utilisÃ© pour la gÃ©nÃ©ration des mots de passe
 	var $password_encryption = "ssha"; # clear, crypt, md5, ssha
 
-	# Cet attribut contient la connexion à l'annuaire LDAP. Cela
-	# évite d'avoir à refaire plusieurs fois la connexion lors de
-	# l'exécution d'un même script faisant appel à plusieurs reprises
-	# à des requêtes vers l'annuaire.
+	# Cet attribut contient la connexion Ã  l'annuaire LDAP. Cela
+	# Ã©vite d'avoir Ã  refaire plusieurs fois la connexion lors de
+	# l'exÃ©cution d'un mÃªme script faisant appel Ã  plusieurs reprises
+	# Ã  des requÃªtes vers l'annuaire.
 	var $ds = false;
 
 
 	function LDAPServer() {
-		# On charge la configuration et on établit la connexion si
-		# le serveur a été configuré.
+		# On charge la configuration et on Ã©tablit la connexion si
+		# le serveur a Ã©tÃ© configurÃ©.
 		if (LDAPServer::is_setup()) {
 			$this->load_config();
 			$this->ds = $this->connect();
@@ -83,7 +83,7 @@ class LDAPServer {
 		return LDAPServer::connect_ldap($this->host, $this->port, $this->login, $this->password);
 	}
 
-	# Retourne true ou false selon qu'un utilisateur a été trouvé avec le login indiqué
+	# Retourne true ou false selon qu'un utilisateur a Ã©tÃ© trouvÃ© avec le login indiquÃ©
 	function test_user($_login) {
 		if ($this->get_user_profile($_login)) {
 			return true;
@@ -92,7 +92,7 @@ class LDAPServer {
 		}
 	}
 
-	# Retourne true ou false selon que l'utilisateur a pu être authentifié
+	# Retourne true ou false selon que l'utilisateur a pu Ãªtre authentifiÃ©
 	# avec son mot de passe.
 	function authenticate_user($_login, $_password) {
 		// On tente un bind
@@ -175,18 +175,18 @@ class LDAPServer {
 			}
 
 
-        	# La détermination du statut est la manipulation la plus délicate.
+        	# La dÃ©termination du statut est la manipulation la plus dÃ©licate.
         	# On dispose de deux moyens : un champ du LDAP (le plus simple...)
-        	# ou bien une chaîne à tester sur le DN.
+        	# ou bien une chaÃ®ne Ã  tester sur le DN.
         	if ($this->champ_statut != null) {
-        		// Le champ statut est défini, alors on teste
+        		// Le champ statut est dÃ©fini, alors on teste
         		if (array_key_exists($this->champ_statut, $user[0])) {
         			if (in_array($user[0][$this->champ_statut][0], array("administrateur","professeur","eleve","responsable","scolarite","cpe"))) {
         				$infos["statut"] = $user[0][$this->champ_statut][0];
         			}
         		}
         	} else {
-        		// Si on est là, ce qu'on va essayer de tester avec des chaînes de caractères sur le DN
+        		// Si on est lÃ , ce qu'on va essayer de tester avec des chaÃ®nes de caractÃ¨res sur le DN
         		// En raison du risque d'erreur en cas de mauvaise configuration, on ne teste pas
         		// le statut administrateur.
         		if ($this->chaine_dn_statut_professeur != '' && strstr($infos["dn"],$this->chaine_dn_statut_professeur)) {
@@ -211,13 +211,13 @@ class LDAPServer {
         }
 	}
 
-	/* Permet de récupérer tou sles utilisateurs du LDAP en fonction d'un paramètre
+	/* Permet de rÃ©cupÃ©rer tou sles utilisateurs du LDAP en fonction d'un paramÃ¨tre
 	* retourne la liste des utilisateurs
 	*/
 	function get_all_users($type, $param){
-		// On laisse la possibilité d'ajouter des lignes dans le code
+		// On laisse la possibilitÃ© d'ajouter des lignes dans le code
 		if ($type == 'rne') {
-			// On utilise le rne de l'établissement pour récupérer les utilisateurs
+			// On utilise le rne de l'Ã©tablissement pour rÃ©cupÃ©rer les utilisateurs
 			$filter = '('.$this->champ_rne.'='.$param.')';
 			$sr = ldap_search($this->ds, $this->get_dn(), $filter) ;
 			$infos = array();
@@ -237,16 +237,16 @@ class LDAPServer {
 	}
 
 
-	# Ajoute un utilisateur à l'annuaire.
+	# Ajoute un utilisateur Ã  l'annuaire.
 	# Retourne true/false.
 	function add_user($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut) {
 
-		# Si l'utilisateur existe déjà, on met à jour les informations sur le LDAP
+		# Si l'utilisateur existe dÃ©jÃ , on met Ã  jour les informations sur le LDAP
 		if ($this->test_user($_login)) {
 			return false;
 			exit;
 		} else {
-			# L'utilisateur n'existe pas, on formate les données, et on le créé.
+			# L'utilisateur n'existe pas, on formate les donnÃ©es, et on le crÃ©Ã©.
 			$dn = $this->champ_login."=".$_login.",".$this->people_ou.",".$this->base_dn;
 			$donnees = $this->format_user_data($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut);
 			$add = ldap_add($this->ds, $dn, $donnees);
@@ -254,17 +254,17 @@ class LDAPServer {
 		}
 	}
 
-	# Met à jour un utilisateur dans l'annuaire.
+	# Met Ã  jour un utilisateur dans l'annuaire.
 	# Retourne true/false
 	function update_user($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut) {
 
-		# Si l'utilisateur n'existe pas, on abandonne. L'ajout d'une entrée passe par
-		# une autre méthode.
+		# Si l'utilisateur n'existe pas, on abandonne. L'ajout d'une entrÃ©e passe par
+		# une autre mÃ©thode.
 		if (!$this->test_user($_login)) {
 			return false;
 			exit;
 		} else {
-			# L'utilisateur existe, on formate les données, et on modifie l'annuaire.
+			# L'utilisateur existe, on formate les donnÃ©es, et on modifie l'annuaire.
 			$dn = $this->champ_login."=".$_login.",".$this->people_ou.",".$this->base_dn;
 			$donnees = $this->format_user_data($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut);
 			$modify = ldap_modify($this->ds, $dn, $donnees);
@@ -275,7 +275,7 @@ class LDAPServer {
 	# Supprime un utilisateur du LDAP.
 	# Retourne true/false
 	function delete_user($_login) {
-		# Si l'utilisateur n'existe pas, on arrête tout de suite.
+		# Si l'utilisateur n'existe pas, on arrÃªte tout de suite.
 		if (!$this->test_user($_login)) {
 			return true;
 			exit;
@@ -288,7 +288,7 @@ class LDAPServer {
 	}
 
 
-	# Cette méthode est utilisée lorsque l'on dispose déjà d'un mot de passé crypté,
+	# Cette mÃ©thode est utilisÃ©e lorsque l'on dispose dÃ©jÃ  d'un mot de passÃ© cryptÃ©,
 	# et que l'on veut l'enregistrer manuellement.
 	function set_manual_password($_login, $_password) {
 		$user = $this->get_user_profile($_login);
@@ -297,18 +297,18 @@ class LDAPServer {
 	}
 
 	function connect_ldap($_adresse,$_port,$_login,$_password) {
-		# Pour avoir du débug en log serveur, décommenter la ligne suivante.
+		# Pour avoir du dÃ©bug en log serveur, dÃ©commenter la ligne suivante.
 		#ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
 	    $ds = ldap_connect($_adresse, $_port);
 	    if($ds) {
 	       // On dit qu'on utilise LDAP V3, sinon la V2 par d?faut est utilis? et le bind ne passe pas.
 	       $norme = ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-	       // Accès non anonyme
+	       // AccÃ¨s non anonyme
 	       if ($_login != '') {
 	          // On tente un bind
 	          $b = ldap_bind($ds, $_login, $_password);
 	       } else {
-	          // Accès anonyme
+	          // AccÃ¨s anonyme
 	          $b = ldap_bind($ds);
 	       }
 	       if ($b) {
@@ -325,7 +325,7 @@ class LDAPServer {
 		return file_exists(dirname(__FILE__)."/../".LDAPServer::config_file());
 	}
 
-	# On récupère les données de configuration présentes dans le fichier
+	# On rÃ©cupÃ¨re les donnÃ©es de configuration prÃ©sentes dans le fichier
 	# /secure/config_ldap.inc.php
 	function load_config() {
 		$ldap_config = array();
@@ -344,7 +344,7 @@ class LDAPServer {
 	}
 
 	# Encodage d'un mot de passe utilisateur pour l'enregistrer
-	# Ce code a été pris de phpLdapPasswd, par Karyl F. Stein
+	# Ce code a Ã©tÃ© pris de phpLdapPasswd, par Karyl F. Stein
 	# voir : http://www.karylstein.com/phpLdapPasswd
 	function encode_password ($password = '', $encoding = '') {
 		if ($encoding == '') $encoding = $this->password_encryption;
@@ -367,10 +367,10 @@ class LDAPServer {
 		return($encodedpass);
 	}
 
-	# Cette méthode prend trois paramètres : nom, prénom, nom complet.
-	# L'idée est de retourner les trois valeurs complètes en sortie en
-	# n'ayant que deux valeurs saisies en entrée. Il n'est en effet pas
-	# courant d'avoir les nom et prénom présents de manière distincte dans
+	# Cette mÃ©thode prend trois paramÃ¨tres : nom, prÃ©nom, nom complet.
+	# L'idÃ©e est de retourner les trois valeurs complÃ¨tes en sortie en
+	# n'ayant que deux valeurs saisies en entrÃ©e. Il n'est en effet pas
+	# courant d'avoir les nom et prÃ©nom prÃ©sents de maniÃ¨re distincte dans
 	# l'annuaire...
 	function format_name($_prenom, $_nom, $_nom_complet) {
 		$result = array();
@@ -380,7 +380,7 @@ class LDAPServer {
 			$result['prenom'] = '';
 			$result['nom_complet'] = '';
 		} elseif ($_prenom == '' and $_nom == '' and $_nom_complet != '') {
-			// On n'a que le nom complet. On prend le premier morceau pour le prénom
+			// On n'a que le nom complet. On prend le premier morceau pour le prÃ©nom
 			$parties = explode(" ", $_nom_complet);
 			if (count($parties) == 1) {
 				$result['prenom'] = '';
@@ -411,15 +411,15 @@ class LDAPServer {
 		return $result;
 	}
 
-	# Cette méthode formatte des données utilisateurs au format accepté par ldap_add ou ldap_modify.
-	# Les paramètres vides sont ignorés.
+	# Cette mÃ©thode formatte des donnÃ©es utilisateurs au format acceptÃ© par ldap_add ou ldap_modify.
+	# Les paramÃ¨tres vides sont ignorÃ©s.
 	function format_user_data($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut) {
 
 		$data = array();
 		$data['objectClass'] = $this->people_object_classes;
 		$data[$this->champ_login] = $_login;
 
-		// Les nom, prénom, nom complet
+		// Les nom, prÃ©nom, nom complet
 		if ($_prenom != '' and $_nom != '') {
 			$nom = $this->format_name($_prenom, $_nom, '');
 			if ($this->champ_prenom != '') {
@@ -438,7 +438,7 @@ class LDAPServer {
 			$data[$this->champ_email] = $_email;
 		}
 
-		// La civilité
+		// La civilitÃ©
 		if ($_civilite != '' and $this->champ_civilite != '') {
 		    switch ($_civilite) {
         		case "Mme":

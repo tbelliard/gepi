@@ -1,9 +1,9 @@
 0460001B;-;college;public;46160;Cajarc
-0460002C;Les Castors;college;public;46270;Bagnac-sur-Célé
-0460006G;Léon Gambetta;college;public;46005;Cahors
+0460002C;Les Castors;college;public;46270;Bagnac-sur-CÃ©lÃ©
+0460006G;LÃ©on Gambetta;college;public;46005;Cahors
 0460008J;Emile Vaysse;college;public;46170;Castelnau-Montratier
 0460015S;Jean Monnet;college;public;46120;Lacapelle-Marival
-0460018V;La Chataigneraie;college;public;46210;Latronquière
+0460018V;La Chataigneraie;college;public;46210;LatronquiÃ¨re
 0460020X;L'Impernal;college;public;46140;Luzech
 0460021Y;des Sept Tours;college;public;46600;Martel
 0460022Z;-;college;public;46800;Montcuq
@@ -11,69 +11,69 @@
 0460027E;-;college;public;46340;Salviac
 0460030H;du Puy d'Issolud;college;public;46110;Vayrac
 0460045Z;Saint-Louis;college;prive;46170;Castelnau-Montratier
-0460046A;Sainte-Hélène;college;prive;46500;Gramat
+0460046A;Sainte-HÃ©lÃ¨ne;college;prive;46500;Gramat
 0460047B;Saint-Paul;college;prive;46170;Pern
-0460048C;Sainte-Anne;college;prive;46400;Saint-Céré
+0460048C;Sainte-Anne;college;prive;46400;Saint-CÃ©rÃ©
 0460054J;Marcel Masbou;college;public;46100;Figeac
 0460062T;-;ecole;public;46800;Saint-Laurent-Lolmie
 0460063U;-;ecole;public;46330;Saint-Martin-Labouval
-0460071C;-;ecole;public;46130;Saint-Michel-Loubéjou
+0460071C;-;ecole;public;46130;Saint-Michel-LoubÃ©jou
 0460074F;-;ecole;public;46170;Saint-Paul-de-Loubressac
 0460076H;-;ecole;public;46100;Saint-Perdoux
 0460078K;-;ecole;public;46300;Saint-Projet
 0460083R;-;ecole;public;46140;Saint-Vincent-Rive-d'Olt
 0460087V;-;ecole;public;46600;Sarrazac
 0460090Y;-;ecole;public;46140;Sauzet
-0460094C;-;ecole;public;46700;Sérignac
+0460094C;-;ecole;public;46700;SÃ©rignac
 0460095D;-;ecole;public;46700;Soturac
 0460099H;-;ecole;public;46200;Souillac
 0460104N;-;ecole;public;46190;Sousceyrac
 0460112X;-;ecole;public;46130;Prudhomat
 0460113Y;-;ecole;public;46130;Puybrun
-0460115A;1;ecole;public;46700;Puy-l'Evêque
-0460116B;2;ecole;public;46700;Puy-l'Evêque
+0460115A;1;ecole;public;46700;Puy-l'EvÃªque
+0460116B;2;ecole;public;46700;Puy-l'EvÃªque
 0460119E;-;ecole;public;46340;Rampoux
 0460122H;-;ecole;public;46320;Reyrevignes
 0460125L;-;ecole;public;46500;Rocamadour
 0460126M;-;ecole;public;46300;Rouffilhac
-0460130S;-;ecole;public;46360;Sabadel-Lauzès
+0460130S;-;ecole;public;46360;Sabadel-LauzÃ¨s
 0460142E;-;ecole;public;46210;Saint-Cirgues
 0460149M;-;ecole;public;46800;Saint-Cyprien
 0460151P;-;ecole;public;46150;Saint-Denis-Catus
-0460155U;-;ecole;public;46330;Saint-Géry
+0460155U;-;ecole;public;46330;Saint-GÃ©ry
 0460164D;Lamothe-Timbergues;ecole;public;46200;Lachapelle-Auzac
 0460167G;-;ecole;public;46230;Lalbenque
 0460170K;-;ecole;public;46090;Lamagdelaine
-0460173N;-;ecole;public;46350;Lamothe-Fénelon
+0460173N;-;ecole;public;46350;Lamothe-FÃ©nelon
 0460174P;-;ecole;public;46200;Lanzac
 0460177T;-;ecole;public;46090;Laroque-des-Arcs
 0460181X;-;ecole;public;46400;Latouille-Lentillac
 0460185B;-;ecole;public;46210;Lauresses
-0460186C;-;ecole;public;46360;Lauzès
-0460187D;-;ecole;public;46130;Laval-de-Cère
+0460186C;-;ecole;public;46360;LauzÃ¨s
+0460187D;-;ecole;public;46130;Laval-de-CÃ¨re
 0460190G;-;ecole;public;46500;Lavergne
-0460194L;-;ecole;public;46300;Léobard
+0460194L;-;ecole;public;46300;LÃ©obard
 0460196N;-;ecole;public;46150;Lherm
 0460199S;-;ecole;public;46260;Limogne-en-Quercy
 0460202V;-;ecole;public;46100;Lissac-et-Mouret
 0460203W;-;ecole;public;46320;Livernon
 0460204X;-;ecole;public;46130;Loubressac
 0460207A;-;ecole;public;46100;Lunan
-0460210D;-;ecole;public;46160;Marcilhac-sur-Célé
+0460210D;-;ecole;public;46160;Marcilhac-sur-CÃ©lÃ©
 0460212F;-;ecole;public;46600;Martel
 0460214H;-;ecole;public;46350;Masclat
 0460215J;-;ecole;public;46700;Mauroux
-0460219N;-;ecole;public;46090;Mercuès
+0460219N;-;ecole;public;46090;MercuÃ¨s
 0460220P;-;ecole;public;46200;Meyronne
 0460221R;-;ecole;public;46500;Miers
-0460223T;-;ecole;public;46120;Molières
+0460223T;-;ecole;public;46120;MoliÃ¨res
 0460225V;-;ecole;public;46090;Le-Montat
 0460227X;-;ecole;public;46700;Montcabrier
-0460228Y;-;ecole;public;46250;Montcléra
+0460228Y;-;ecole;public;46250;MontclÃ©ra
 0460230A;Jacques Chapou;ecole;public;46800;Montcuq
 0460234E;de Lavitarelle;ecole;public;46210;Montet-et-Bouxal
 0460235F;-;ecole;public;46240;Montfaucon
-0460240L;-;ecole;public;46150;Nuzéjouls
+0460240L;-;ecole;public;46150;NuzÃ©jouls
 0460242N;-;ecole;public;46140;Parnac
 0460245S;-;ecole;public;46300;Payrignac
 0460246T;-;ecole;public;46170;Pern
@@ -86,7 +86,7 @@
 0460262K;-;ecole;public;46250;Cazals
 0460263L;-;ecole;public;46600;Cazillac
 0460267R;-;ecole;public;46230;Cieurac
-0460269T;-;ecole;public;46310;Concorès
+0460269T;-;ecole;public;46310;ConcorÃ¨s
 0460270U;-;ecole;public;46260;Concots
 0460271V;-;ecole;public;46110;Condat
 0460274Y;-;ecole;public;46090;Cours
@@ -94,17 +94,17 @@
 0460281F;-;ecole;public;46600;Creysse
 0460282G;-;ecole;public;46270;Cuzac
 0460283H;-;ecole;public;46600;Cuzance
-0460286L;-;ecole;public;46340;Dégagnac
+0460286L;-;ecole;public;46340;DÃ©gagnac
 0460288N;-;ecole;public;46140;Douelle
 0460290R;-;ecole;public;46700;Duravel
-0460293U;-;ecole;public;46090;Espère
+0460293U;-;ecole;public;46090;EspÃ¨re
 0460298Z;-;ecole;public;46100;Faycelles
 0460300B;Paul Bert;ecole;public;46100;Figeac
 0460303E;-;ecole;public;46270;Felzins
 0460305G;Jacques Chapou;ecole;public;46100;Figeac
 0460313R;-;ecole;public;46100;Fons
 0460314S;-;ecole;public;46230;Fontanes
-0460320Y;-;ecole;public;46250;Frayssinet-le-Gélat
+0460320Y;-;ecole;public;46250;Frayssinet-le-GÃ©lat
 0460321Z;-;ecole;public;46400;Frayssinhes
 0460324C;-;ecole;public;46600;Gignac
 0460325D;-;ecole;public;46150;Gigouzac
@@ -112,12 +112,12 @@
 0460333M;-;ecole;public;46250;Goujounac
 0460334N;Daniel Roques;ecole;public;46300;Gourdon
 0460335P;-;ecole;public;46300;Gourdon
-0460342X;Clément Brouqui;ecole;public;46500;Gramat
-0460343Y;-;ecole;public;46160;Gréalou
+0460342X;ClÃ©ment Brouqui;ecole;public;46500;Gramat
+0460343Y;-;ecole;public;46160;GrÃ©alou
 0460348D;-;ecole;public;46150;Les-Junies
 0460354K;-;ecole;public;46240;Labastide-Murat
 0460358P;-;ecole;public;46130;Tauriac
-0460362U;-;ecole;public;46150;Thédirac
+0460362U;-;ecole;public;46150;ThÃ©dirac
 0460366Y;-;ecole;public;46330;Tour-de-Faure
 0460367Z;-;ecole;public;46700;Touzac
 0460368A;-;ecole;public;46090;Trespoux-Rassiels
@@ -135,20 +135,20 @@
 0460399J;-;ecole;public;46090;Aujols
 0460402M;-;ecole;public;46120;Aynac
 0460404P;-;ecole;public;46800;Bagat-en-Quercy
-0460406S;Les Castors;ecole;public;46270;Bagnac-sur-Célé
+0460406S;Les Castors;ecole;public;46270;Bagnac-sur-CÃ©lÃ©
 0460409V;-;ecole;public;46600;Baladou
 0460417D;-;ecole;public;46230;Belfort-du-Quercy
 0460419F;-;ecole;public;46800;Belmontet
-0460421H;-;ecole;public;46110;Bétaille
-0460426N;-;ecole;public;46150;Boissières
-0460427P;-;ecole;public;46800;Le-Boulvé
+0460421H;-;ecole;public;46110;BÃ©taille
+0460426N;-;ecole;public;46150;BoissiÃ¨res
+0460427P;-;ecole;public;46800;Le-BoulvÃ©
 0460434X;-;ecole;public;46320;Brengues
 0460437A;Jean Calvet;ecole;public;46000;Cahors
 0460439C;Zacharie Lafage;ecole;public;46000;Cahors
 0460441E;Joseph Teysseyre;ecole;public;46000;Cahors
 0460442F;Lucien Benac - Terre Rouge;ecole;public;46000;Cahors
-0460445J;Pierre Ségala - Bellevue;ecole;public;46000;Cahors
-0460455V;de Bégoux;ecole;public;46000;Cahors
+0460445J;Pierre SÃ©gala - Bellevue;ecole;public;46000;Cahors
+0460455V;de BÃ©goux;ecole;public;46000;Cahors
 0460456W;Georges Coulonges - Lacapelle;ecole;public;46000;Cahors
 0460458Y;-;ecole;public;46130;Cahus
 0460459Z;-;ecole;public;46140;Caillac
@@ -161,45 +161,45 @@
 0460475S;-;ecole;public;46110;Carennac
 0460480X;-;ecole;public;46140;Castelfranc
 0460481Y;-;ecole;public;46170;Castelnau-Montratier
-0460509D;Louis Barrié;ecole;public;46100;Figeac
+0460509D;Louis BarriÃ©;ecole;public;46100;Figeac
 0460514J;-;ecole;public;46120;Lacapelle-Marival
-0460515K;-;ecole;public;46210;Latronquière
+0460515K;-;ecole;public;46210;LatronquiÃ¨re
 0460516L;-;ecole;public;46140;Luzech
 0460517M;-;ecole;public;46110;Vayrac
 0460518N;-;ecole;public;46130;Bretenoux
 0460519P;Louis Cance;ecole;public;46000;Cahors
 0460528Z;Olivier De Magny;college;public;46005;Cahors
-0460530B;d'Olt;college;public;46700;Puy-l'Evêque
+0460530B;d'Olt;college;public;46700;Puy-l'EvÃªque
 0460532D;Saint-Gabriel;ecole;prive;46000;Cahors
 0460534F;Jeanne D'Arc;ecole;prive;46000;Cahors
-0460539L;-;ecole;public;46130;Biars-sur-Cère
+0460539L;-;ecole;public;46130;Biars-sur-CÃ¨re
 0460541N;-;ecole;public;46210;Gorses
 0460542P;-;ecole;public;46350;Payrac
 0460545T;Saint-Louis;ecole;prive;46170;Castelnau-Montratier
 0460548W;Jeanne D'Arc;ecole;prive;46100;Figeac
-0460550Y;Sainte-Hélène;ecole;prive;46500;Gramat
-0460552A;Sainte-Thérèse;ecole;prive;46230;Lalbenque
+0460550Y;Sainte-HÃ©lÃ¨ne;ecole;prive;46500;Gramat
+0460552A;Sainte-ThÃ©rÃ¨se;ecole;prive;46230;Lalbenque
 0460553B;Saint-Joseph;ecole;prive;46260;Limogne-en-Quercy
 0460554C;Notre-Dame;ecole;prive;46500;Mayrinhac-Lentour
 0460555D;Sainte-Marie;ecole;prive;46800;Montcuq
 0460556E;Saint-Paul;ecole;prive;46170;Pern
-0460558G;Saint-Joseph;ecole;prive;46700;Puy-l'Evêque
-0460559H;Sainte-Anne;ecole;prive;46400;Saint-Céré
+0460558G;Saint-Joseph;ecole;prive;46700;Puy-l'EvÃªque
+0460559H;Sainte-Anne;ecole;prive;46400;Saint-CÃ©rÃ©
 0460562L;Notre-Dame;ecole;prive;46500;Alvignac
 0460565P;La Garenne;college;public;46500;Gramat
 0460568T;-;ecole;public;46600;Cressensac
 0460569U;-;ecole;public;46220;Prayssac
 0460571W;-;ecole;public;46340;Salviac
 0460573Y;d'Orlinde;college;public;46130;Bretenoux
-0460577C;Jean Jaurès;ecole;public;46120;Leyme
+0460577C;Jean JaurÃ¨s;ecole;public;46120;Leyme
 0460578D;Croix De Fer;ecole;public;46000;Cahors
 0460583J;-;ecole;public;46110;Les-Quatre-Routes-du-Lot
 0460592U;-;college;public;46300;Gourdon
-0460593V;Jean Lurçat;college;public;46400;Saint-Céré
+0460593V;Jean LurÃ§at;college;public;46400;Saint-CÃ©rÃ©
 0460594W;Le Puy d'Alon;college;public;46200;Souillac
 0460605H;-;ecole;public;46150;Catus
 0460620Z;Notre-Dame;college;prive;46000;Cahors
 0460621A;Jeanne D'Arc;college;prive;46100;Figeac
 0460647D;-;ecole;public;46090;Labastide-Marnhac
-0460681R;A. Salesse;ecole;public;46400;Saint-Céré
-0460682S;Jean Lurçat;ecole;public;46400;Saint-Laurent-les-Tours
+0460681R;A. Salesse;ecole;public;46400;Saint-CÃ©rÃ©
+0460682S;Jean LurÃ§at;ecole;public;46400;Saint-Laurent-les-Tours

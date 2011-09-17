@@ -44,7 +44,7 @@ if (!checkAccess()) {
     die();
 }
 // header
-$titre_page = "Définition des types de semaine de l'établissement";
+$titre_page = "DÃ©finition des types de semaine de l'Ã©tablissement";
 require_once("../../lib/header.inc");
 
 
@@ -67,8 +67,8 @@ $num_interne = isset($_GET["num_interne"]) ? $_GET["num_interne"] : (isset($_POS
 // ==============================
 
 function NumLastWeek() {
-/* On regarde si on est entre Aout ou décembre auquel cas on est en année scolaire AA - AA+1
-ou si on est avant auquel cas on est en année scolaire AA-1 - AA
+/* On regarde si on est entre Aout ou dÃ©cembre auquel cas on est en annÃ©e scolaire AA - AA+1
+ou si on est avant auquel cas on est en annÃ©e scolaire AA-1 - AA
 */
  if (date("m") >= 8) {
      $derniere_semaine=date("W",mktime(0, 0, 0, 12, 28, date("Y")));
@@ -78,7 +78,7 @@ ou si on est avant auquel cas on est en année scolaire AA-1 - AA
  return $derniere_semaine;
 }
 
-// ajout et mise à jour de la base
+// ajout et mise Ã  jour de la base
 if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 {
 	$i = '0';
@@ -128,12 +128,12 @@ if ( $action === 'visualiser' )
 
 echo "<p class=bold>".$retour."<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
-// On traite l'affichage du tableau récapitulatif
+// On traite l'affichage du tableau rÃ©capitulatif
 if ($action === "visualiser") {
 /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
 
-<h2>Définition des types de semaines</h2>
+<h2>DÃ©finition des types de semaines</h2>
 
 	<form method="post" action="admin_config_semaines.php?action=<?php echo $action; ?>" name="form1">
 		<input type="submit" name="submit" value="Enregistrer" />
@@ -141,23 +141,23 @@ if ($action === "visualiser") {
 <br /><br />
 
 <?php /* gestion des jours de chaque semaine */
-// On considère que la 32e semaine commence le 6 août 2007
+// On considÃ¨re que la 32e semaine commence le 6 aoÃ»t 2007
 // En timestamp Unix GMT, cette date vaut 1186358400 secondes
-// RAPPEL : une journée a 86400 secondes et une semaine en a 604800
+// RAPPEL : une journÃ©e a 86400 secondes et une semaine en a 604800
 
 
 
 function trouverDates($numero_semaine){
-	// fonction qui permet de déterminer la date de début de la semaine (lundi)
+	// fonction qui permet de dÃ©terminer la date de dÃ©but de la semaine (lundi)
 	/*
 	$ts_depart = 1186358400;
-	$ts_depart = 1217887200; // 5 aout 2008 à 00:00:00
+	$ts_depart = 1217887200; // 5 aout 2008 Ã  00:00:00
   $ts_depart = 1249336800;
   */
 
     $fin_temp = NumLastWeek();
   
-	// On recherche l'année
+	// On recherche l'annÃ©e
 	$maintenant = date("n");
 	if ($maintenant >= 8) {
 		$annee = date("Y");
@@ -165,7 +165,7 @@ function trouverDates($numero_semaine){
 		$annee = date("Y") - 1;
 	}
 	
-	// On recherche le premier lundi du mois d'Août
+	// On recherche le premier lundi du mois d'AoÃ»t
 	$lundi1=1;
 	while (date("N",mktime(0, 0, 0, 8, $lundi1, $annee))!=1) {
 		$lundi1++;
@@ -202,15 +202,15 @@ function trouverDates($numero_semaine){
 	<table cellpadding="0" cellspacing="1" class="tab_table" summary="Semaines">
 	<tbody>
 		<tr>
-			<th class="tab_th" style="width: 100px;">Semaine n°<br /> (officiel)</th>
+			<th class="tab_th" style="width: 100px;">Semaine nÂ°<br /> (officiel)</th>
 			<th class="tab_th" style="width: 100px;">Num&eacute;ro<br />interne</th>
 			<th class="tab_th" style="width: 100px;">Type</th>
 			<th class="tab_th" style="width: 200px;">Du</th>
 			<th class="tab_th" style="width: 200px;">au</th>
 		</tr>
     <?php
-    	// On permet l'affichage en commençant par la 32ème semaine et en terminant par la 31 ème de l'année suivante
-    	// attention, on part du lundi à 00:00:00, le samedi matin à la même heure est donc 86400*5 fois plus loin (et pas 6*86400 fois).
+    	// On permet l'affichage en commenÃ§ant par la 32Ã¨me semaine et en terminant par la 31 Ã¨me de l'annÃ©e suivante
+    	// attention, on part du lundi Ã  00:00:00, le samedi matin Ã  la mÃªme heure est donc 86400*5 fois plus loin (et pas 6*86400 fois).
 		$i = '31';
 		$ic = '1';
 		$fin = NumLastWeek();

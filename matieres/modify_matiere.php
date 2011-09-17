@@ -43,10 +43,10 @@ if (isset($_POST['isposted'])) {
 	check_token();
     $ok = 'yes';
     if (isset($_POST['reg_current_matiere'])) {
-        // On vérifie d'abord que l'identifiant est constitué uniquement de lettres et de chiffres :
+        // On vÃ©rifie d'abord que l'identifiant est constituÃ© uniquement de lettres et de chiffres :
         $matiere_name = $_POST['reg_current_matiere'];
         if (!is_numeric($_POST['matiere_categorie'])) {
-            // On empêche les mise à jour globale automatiques, car on n'est pas sûr de ce qui s'est passé si l'ID n'est pas numérique...
+            // On empÃªche les mise Ã  jour globale automatiques, car on n'est pas sÃ»r de ce qui s'est passÃ© si l'ID n'est pas numÃ©rique...
             $ok = "no";
             $matiere_categorie = "0";
         } else {
@@ -59,7 +59,7 @@ if (isset($_POST['isposted'])) {
             if ($verify == 0) {
                 //========================
                 // MODIF: boireaus
-                // Quand on poste un &, c'est un &amp; qui est reçu.
+                // Quand on poste un &, c'est un &amp; qui est reÃ§u.
                 //$matiere_nom_complet = $_POST['matiere_nom_complet'];
 				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
                 $matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
@@ -70,17 +70,17 @@ if (isset($_POST['isposted'])) {
 				//echo "$sql<br />\n";
                 $register_matiere = mysql_query($sql);
                 if (!$register_matiere) {
-                    $msg = "Une erreur s'est produite lors de l'enregistrement de la nouvelle matière. <br />";
+                    $msg = "Une erreur s'est produite lors de l'enregistrement de la nouvelle matiÃ¨re. <br />";
                     $ok = 'no';
                 } else {
-                    $msg = "La nouvelle matière a bien été enregistrée. <br />";
+                    $msg = "La nouvelle matiÃ¨re a bien Ã©tÃ© enregistrÃ©e. <br />";
                 }
             } else {
-                $msg = "Cette matière existe déjà !! <br />";
+                $msg = "Cette matiÃ¨re existe dÃ©jÃ  !! <br />";
                 $ok = 'no';
             }
         } else {
-            $msg = "L'identifiant de matière doit être constitué uniquement de lettres et de chiffres avec un maximum de 19 caractères ! <br />";
+            $msg = "L'identifiant de matiÃ¨re doit Ãªtre constituÃ© uniquement de lettres et de chiffres avec un maximum de 19 caractÃ¨res ! <br />";
             $ok = 'no';
         }
     } else {
@@ -100,10 +100,10 @@ if (isset($_POST['isposted'])) {
         $register_matiere = mysql_query($sql);
 
         if (!$register_matiere) {
-            $msg = "Une erreur s'est produite lors de la modification de la matière <br />";
+            $msg = "Une erreur s'est produite lors de la modification de la matiÃ¨re <br />";
             $ok = 'no';
         } else {
-            $msg = "Les modifications ont été enregistrées ! <br />";
+            $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es ! <br />";
         }
     }
     if ((isset($_POST['force_defaut'])) and ($ok == 'yes')) {
@@ -124,7 +124,7 @@ if (isset($_POST['isposted'])) {
 	if($ok=='yes') {
 		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : NULL;
 		if(isset($login_prof)) {
-			// Récupérer la liste des profs actuellement associés
+			// RÃ©cupÃ©rer la liste des profs actuellement associÃ©s
 			$tab_profs_associes=array();
 			$sql="SELECT u.login FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login and id_matiere='$matiere_name' ORDER BY u.nom, u.prenom;";
 			$res_profs=mysql_query($sql);
@@ -137,7 +137,7 @@ if (isset($_POST['isposted'])) {
 			$nb_inser=0;
 			for($loop=0;$loop<count($login_prof);$loop++) {
 				if(!in_array($login_prof[$loop], $tab_profs_associes)) {
-					// Recherche de l'ordre matière le plus élevé pour ce prof
+					// Recherche de l'ordre matiÃ¨re le plus Ã©levÃ© pour ce prof
 					$sql="SELECT MAX(ordre_matieres) max_ordre FROM j_professeurs_matieres WHERE id_professeur='".$login_prof[$loop]."';";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
@@ -151,7 +151,7 @@ if (isset($_POST['isposted'])) {
 					$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof[$loop]', id_matiere='$matiere_name', ordre_matieres='$ordre_matieres';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
-						$msg.="Erreur lors de l'association de ".$login_prof[$loop]." avec la matière $matiere_name<br />";
+						$msg.="Erreur lors de l'association de ".$login_prof[$loop]." avec la matiÃ¨re $matiere_name<br />";
 					}
 					else {
 						$nb_inser++;
@@ -160,7 +160,7 @@ if (isset($_POST['isposted'])) {
 			}
 	
 			if($nb_inser>0) {
-				$msg.="$nb_inser professeur(s) a(ont) été associé(s) avec la matière $matiere_name<br />";
+				$msg.="$nb_inser professeur(s) a(ont) Ã©tÃ© associÃ©(s) avec la matiÃ¨re $matiere_name<br />";
 			}
 	
 			$nb_suppr=0;
@@ -178,20 +178,20 @@ if (isset($_POST['isposted'])) {
 						$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='".$tab_profs_associes[$loop]."' AND id_matiere='$matiere_name';";
 						$suppr=mysql_query($sql);
 						if(!$suppr) {
-							$msg.="Erreur lors de la suppression de l'association de ".$tab_profs_associes[$loop]." avec la matière $matiere_name<br />";
+							$msg.="Erreur lors de la suppression de l'association de ".$tab_profs_associes[$loop]." avec la matiÃ¨re $matiere_name<br />";
 						}
 						else {
 							$nb_suppr++;
 						}
 					}
 					else {
-						$msg.="Dissociation impossible : Le professeur ".$tab_profs_associes[$loop]." enseigne la matière $matiere_name dans un ou des enseignements.<br />";
+						$msg.="Dissociation impossible : Le professeur ".$tab_profs_associes[$loop]." enseigne la matiÃ¨re $matiere_name dans un ou des enseignements.<br />";
 					}
 				}
 			}
 	
 			if($nb_suppr>0) {
-				$msg.="$nb_suppr professeur(s) a(ont) été dissocié(s) de la matière $matiere_name<br />";
+				$msg.="$nb_suppr professeur(s) a(ont) Ã©tÃ© dissociÃ©(s) de la matiÃ¨re $matiere_name<br />";
 			}
 	
 		}
@@ -203,9 +203,9 @@ if (isset($_POST['isposted'])) {
 
 }
 
-$themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage = 'Des modifications ont Ã©tÃ© effectuÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
-$titre_page = "Gestion des matières | Modifier une matière";
+$titre_page = "Gestion des matiÃ¨res | Modifier une matiÃ¨re";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ****************************
 ?>
@@ -214,7 +214,7 @@ require_once("../lib/header.inc");
 </p>
 <?php
 echo add_token_field();
-// On va chercher les infos de la matière que l'on souhaite modifier
+// On va chercher les infos de la matiÃ¨re que l'on souhaite modifier
 if (isset($_GET['current_matiere'])) {
     $call_data = mysql_query("SELECT nom_complet, priority, categorie_id from matieres WHERE matiere='".$_GET['current_matiere']."'");
     $matiere_nom_complet = mysql_result($call_data, 0, "nom_complet");
@@ -243,10 +243,10 @@ if (isset($_GET['current_matiere'])) {
 
 		if(count($tab_profs_associes)>0) {
 			if(count($tab_profs_associes)>1) {
-				echo "<p class='bold'>Les professeurs associés sont&nbsp;<br />\n";
+				echo "<p class='bold'>Les professeurs associÃ©s sont&nbsp;<br />\n";
 			}
 			elseif(count($tab_profs_associes)==1) {
-				echo "<p class='bold'>Un professeur est associé&nbsp;<br />\n";
+				echo "<p class='bold'>Un professeur est associÃ©&nbsp;<br />\n";
 			}
 			echo "<table class='boireaus' style='margin-left: 1em;'>\n";
 			$alt=1;
@@ -296,11 +296,11 @@ function checkbox_change(cpt) {
 
 <table>
 <tr>
-<td>Nom de matière : </td>
+<td>Nom de matiÃ¨re : </td>
 <td>
 <?php
 if (!isset($_GET['current_matiere'])) {
-    echo "<input type=text size='19' maxlength='19' name='reg_current_matiere' onchange='changement()' /> (<span style='font-style: italic; font-size: small;'>19 caractères maximum</span>)";
+    echo "<input type=text size='19' maxlength='19' name='reg_current_matiere' onchange='changement()' /> (<span style='font-style: italic; font-size: small;'>19 caractÃ¨res maximum</span>)";
 } else {
     echo "<input type=hidden name=matiere_name value=\"".$current_matiere."\" />".$current_matiere;
 }
@@ -311,7 +311,7 @@ if (!isset($_GET['current_matiere'])) {
 <td><input type='text' name='matiere_nom_complet' value="<?php echo $matiere_nom_complet;?>" onchange='changement()' /></td>
 </tr>
 <tr>
-<td>Priorité d'affichage par défaut</td>
+<td>PrioritÃ© d'affichage par dÃ©faut</td>
 <td>
 <?php
 echo "<select size='1' name='matiere_priorite' onchange='changement()' >\n";
@@ -327,7 +327,7 @@ while ($k < '51'){
 echo "</select></td>";
 ?>
 <tr>
-<td>Catégorie par défaut</td>
+<td>CatÃ©gorie par dÃ©faut</td>
 <td>
 <?php
 echo "<select size='1' name='matiere_categorie' onchange='changement()' >\n";
@@ -335,7 +335,7 @@ $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
 $test = mysql_num_rows($get_cat);
 
 if ($test == 0) {
-    echo "<option disabled>Aucune catégorie définie</option>";
+    echo "<option disabled>Aucune catÃ©gorie dÃ©finie</option>";
 } else {
     while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
         echo "<option value='".$row["id"]."'";
@@ -349,11 +349,11 @@ echo "</select>";
 </td>
 </table>
 <p>
-<label for='force_defaut' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la priorité d'affichage à la valeur par défaut ci-dessus :</b>
+<label for='force_defaut' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la prioritÃ© d'affichage Ã  la valeur par dÃ©faut ci-dessus :</b>
 <input type="checkbox" name="force_defaut" id="force_defaut" onchange="changement()" checked /></label>
 </p>
 <p>
-<label for='force_defaut_categorie' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la catégorie de matière à la valeur par défaut ci-dessus :</b>
+<label for='force_defaut_categorie' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la catÃ©gorie de matiÃ¨re Ã  la valeur par dÃ©faut ci-dessus :</b>
 <input type="checkbox" name="force_defaut_categorie" id="force_defaut_categorie" onchange="changement()" checked /></label>
 </p>
 <input type="hidden" name="isposted" value="yes" />
@@ -362,21 +362,21 @@ echo "</select>";
 <hr />
 <p><b>Aide :</b></p>
 <ul>
-<li><b>Nom de matière</b>
-<br /><br />Il s'agit de l'identifiant de la matière. Il est constitué au maximum de 20 caractères : lettres, chiffres ou "_" et ne doit pas commencer par un chiffre.
-Une fois enregistré, il n'est plus possible de le modifier.
+<li><b>Nom de matiÃ¨re</b>
+<br /><br />Il s'agit de l'identifiant de la matiÃ¨re. Il est constituÃ© au maximum de 20 caractÃ¨res : lettres, chiffres ou "_" et ne doit pas commencer par un chiffre.
+Une fois enregistrÃ©, il n'est plus possible de le modifier.
 </li>
 <li><b>Nom complet</b>
-<br /><br />Il s'agit de l'intitulé de la matière, tel qu'il apparaît aux utilisateurs sur les bulletins, les relevés de notes, etc.
-Une fois enregistré, il est toujours possible de le modifier.
+<br /><br />Il s'agit de l'intitulÃ© de la matiÃ¨re, tel qu'il apparaÃ®t aux utilisateurs sur les bulletins, les relevÃ©s de notes, etc.
+Une fois enregistrÃ©, il est toujours possible de le modifier.
 </li>
-<li><b>Priorité d'affichage par défaut</b>
-<br /><br />Permet de définir l'ordre d'affichage par défaut des matières dans le bulletin scolaire et dans les tableaux récapitulatifs des moyennes.
+<li><b>PrioritÃ© d'affichage par dÃ©faut</b>
+<br /><br />Permet de dÃ©finir l'ordre d'affichage par dÃ©faut des matiÃ¨res dans le bulletin scolaire et dans les tableaux rÃ©capitulatifs des moyennes.
 <br /><b>Remarques :</b>
 <ul>
-<li>Lors de la gestion des matières dans une classe, c'est cette valeur qui est enregistrée par défaut. Il est alors possible de changer la valeur pour une classe donnée.</li>
-<li>Il est possible d'attribuer le même poids à plusieurs matières n'apparaissant pas sur un même bulletin. Par exemple, toutes les LV1 peuvent avoir le même poids, etc.</li>
-<li>Si deux matières apparaissant sur un même bulletin ont la même priorité, GEPI affiche la première matière extraite de la base.</li>
+<li>Lors de la gestion des matiÃ¨res dans une classe, c'est cette valeur qui est enregistrÃ©e par dÃ©faut. Il est alors possible de changer la valeur pour une classe donnÃ©e.</li>
+<li>Il est possible d'attribuer le mÃªme poids Ã  plusieurs matiÃ¨res n'apparaissant pas sur un mÃªme bulletin. Par exemple, toutes les LV1 peuvent avoir le mÃªme poids, etc.</li>
+<li>Si deux matiÃ¨res apparaissant sur un mÃªme bulletin ont la mÃªme prioritÃ©, GEPI affiche la premiÃ¨re matiÃ¨re extraite de la base.</li>
 </ul>
 </ul>
 <!--/li>

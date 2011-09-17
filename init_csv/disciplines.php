@@ -42,52 +42,52 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil initialisation</a></p>
 <?php
 
-echo "<center><h3 class='gepi'>Troisième phase d'initialisation<br />Importation des matières</h3></center>\n";
+echo "<center><h3 class='gepi'>TroisiÃ¨me phase d'initialisation<br />Importation des matiÃ¨res</h3></center>\n";
 
 
 if (!isset($_POST["action"])) {
 	//
-	// On sélectionne le fichier à importer
+	// On sÃ©lectionne le fichier Ã  importer
 	//
 
-	echo "<p>Vous allez effectuer la troisième étape : elle consiste à importer le fichier <b>g_disciplines.csv</b> contenant les données relatives aux disciplines.</p>\n";
-	echo "<p><i>Remarque :</i> cette opération n'efface aucune donnée dans la base. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
-	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
-	echo "<ul><li>Nom court de la matière (il doit être unique)</li>\n" .
-			"<li>Nom long de la matière</li>\n" .
+	echo "<p>Vous allez effectuer la troisiÃ¨me Ã©tape : elle consiste Ã  importer le fichier <b>g_disciplines.csv</b> contenant les donnÃ©es relatives aux disciplines.</p>\n";
+	echo "<p><i>Remarque :</i> cette opÃ©ration n'efface aucune donnÃ©e dans la base. Elle ne fait qu'une mise Ã  jour, le cas Ã©chÃ©ant, de la liste des matiÃ¨res.</p>\n";
+	echo "<p>Les champs suivants doivent Ãªtre prÃ©sents, dans l'ordre, et <b>sÃ©parÃ©s par un point-virgule</b> : </p>\n";
+	echo "<ul><li>Nom court de la matiÃ¨re (il doit Ãªtre unique)</li>\n" .
+			"<li>Nom long de la matiÃ¨re</li>\n" .
 			"</ul>\n";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>g_disciplines.csv</b>.</p>\n";
+	echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>g_disciplines.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='disciplines.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
-	//echo "<p><input type=\"checkbox\" name=\"ligne_entete\" value='y' /> Cocher si le fichier comporte une ligne d'entête.</p>\n";
-    echo "<p><label for='ligne_entete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='ligne_entete' id='ligne_entete' value='yes' checked /></p>\n";
+	//echo "<p><input type=\"checkbox\" name=\"ligne_entete\" value='y' /> Cocher si le fichier comporte une ligne d'entÃªte.</p>\n";
+    echo "<p><label for='ligne_entete' style='cursor:pointer;'>Si le fichier Ã  importer comporte une premiÃ¨re ligne d'en-tÃªte (non vide) Ã  ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='ligne_entete' id='ligne_entete' value='yes' checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 } else {
 	//
-	// Quelque chose a été posté
+	// Quelque chose a Ã©tÃ© postÃ©
 	//
 	if ($_POST['action'] == "save_data") {
 		check_token(false);
 		//
-		// On enregistre les données dans la base.
-		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
+		// On enregistre les donnÃ©es dans la base.
+		// Le fichier a dÃ©jÃ  Ã©tÃ© affichÃ©, et l'utilisateur est sÃ»r de vouloir enregistrer
 		//
 
 		$sql="SELECT * FROM tempo2;";
 		$res_temp=mysql_query($sql);
 		if(mysql_num_rows($res_temp)==0) {
-			echo "<p style='color:red'>ERREUR&nbsp;: Aucune association élève/option n'a été trouvée&nbsp;???</p>\n";
+			echo "<p style='color:red'>ERREUR&nbsp;: Aucune association Ã©lÃ¨ve/option n'a Ã©tÃ© trouvÃ©e&nbsp;???</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -109,19 +109,19 @@ if (!isset($_POST["action"])) {
 			$reg_nom_court = $lig->col1;
 			$reg_nom_long = $lig->col2;
 
-			// On nettoie et on vérifie :
+			// On nettoie et on vÃ©rifie :
 			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($reg_nom_court)));
 			if (strlen($reg_nom_court) > 50) $reg_nom_court = substr($reg_nom_court, 0, 50);
-			//$reg_nom_long = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($reg_nom_long));
-			$reg_nom_long = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_nom_long))))));
+			//$reg_nom_long = preg_replace("/[^A-Za-z0-9 .\-Ã©Ã¨Ã¼Ã«Ã¯Ã¤ÃªÃ§]/","",trim($reg_nom_long));
+			$reg_nom_long = preg_replace("/Ã†/","AE",preg_replace("/Ã¦/","ae",preg_replace("/Â¼/","OE",preg_replace("/Â½/","oe",preg_replace("/[^A-Za-z0-9 .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim($reg_nom_long))))));
 			if (strlen($reg_nom_long) > 200) $reg_nom_long = substr($reg_nom_long, 0, 200);
 
-			// Maintenant que tout est propre, on fait un test sur la table pour voir si la matière existe déjà ou pas
+			// Maintenant que tout est propre, on fait un test sur la table pour voir si la matiÃ¨re existe dÃ©jÃ  ou pas
 
 			$test = mysql_result(mysql_query("SELECT count(matiere) FROM matieres WHERE matiere = '" . $reg_nom_court . "'"), 0);
 
 			if ($test == 0) {
-				// Test négatif : aucune matière avec ce nom court... on enregistre !
+				// Test nÃ©gatif : aucune matiÃ¨re avec ce nom court... on enregistre !
 
 				$insert = mysql_query("INSERT INTO matieres SET " .
 						"matiere = '" . $reg_nom_court . "', " .
@@ -154,48 +154,48 @@ if (!isset($_POST["action"])) {
 				echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
 			}
 		}
-		//if ($total > 0) echo "<p>" . $total . " matières ont été enregistrées.</p>\n";
+		//if ($total > 0) echo "<p>" . $total . " matiÃ¨res ont Ã©tÃ© enregistrÃ©es.</p>\n";
 		if ($total > 0){
 			if ($total == 1){
-				echo "<p>" . $total . " matière a été enregistrée.</p>\n";
+				echo "<p>" . $total . " matiÃ¨re a Ã©tÃ© enregistrÃ©e.</p>\n";
 			}
 			else{
-				echo "<p>" . $total . " matières ont été enregistrées.</p>\n";
+				echo "<p>" . $total . " matiÃ¨res ont Ã©tÃ© enregistrÃ©es.</p>\n";
 			}
 		}
 
 		if($nb_matieres_existantes>0) {
 			if ($nb_matieres_existantes == 1){
-				echo "<p>" . $nb_matieres_existantes . " matière existait déjà.</p>\n";
+				echo "<p>" . $nb_matieres_existantes . " matiÃ¨re existait dÃ©jÃ .</p>\n";
 			}
 			else{
-				echo "<p>" . $nb_matieres_existantes . " matières existaient déjà.</p>\n";
+				echo "<p>" . $nb_matieres_existantes . " matiÃ¨res existaient dÃ©jÃ .</p>\n";
 			}
 		}
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php'>Revenir Ã  la page prÃ©cÃ©dente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {
 		check_token(false);
 		//
-		// Le fichier vient d'être envoyé et doit être traité
-		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
-		// en proposant des champs de saisie pour modifier les données si on le souhaite
+		// Le fichier vient d'Ãªtre envoyÃ© et doit Ãªtre traitÃ©
+		// On va donc afficher le contenu du fichier tel qu'il va Ãªtre enregistrÃ© dans Gepi
+		// en proposant des champs de saisie pour modifier les donnÃ©es si on le souhaite
 		//
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 		$ligne_entete=isset($_POST['ligne_entete']) ? $_POST['ligne_entete'] : 'no';
 
-		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
-		// autant forcer l'utilisateur à être rigoureux
+		// On vÃ©rifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
+		// autant forcer l'utilisateur Ã  Ãªtre rigoureux
 		if(strtolower($csv_file['name']) == "g_disciplines.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
 
 			if(!$fp) {
-				// Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
+				// Aie : on n'arrive pas Ã  ouvrir le fichier... Pas bon.
 				echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
 				echo "<p><a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>\n";
 			} else {
@@ -203,12 +203,12 @@ if (!isset($_POST["action"])) {
 				// Fichier ouvert ! On attaque le traitement
 
 				// On va stocker toutes les infos dans un tableau
-				// Une ligne du CSV pour une entrée du tableau
+				// Une ligne du CSV pour une entrÃ©e du tableau
 				$data_tab = array();
 
 				//=========================
 				if($ligne_entete=="yes"){
-					// On lit une ligne pour passer la ligne d'entête:
+					// On lit une ligne pour passer la ligne d'entÃªte:
 					$ligne = fgets($fp, 4096);
 				}
 				//=========================
@@ -220,15 +220,15 @@ if (!isset($_POST["action"])) {
 
 							$tabligne=explode(";",$ligne);
 
-							// 0 : Nom court de la matière
-							// 1 : Nom long de la matière
+							// 0 : Nom court de la matiÃ¨re
+							// 1 : Nom long de la matiÃ¨re
 
 
-							// On nettoie et on vérifie :
+							// On nettoie et on vÃ©rifie :
 							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[0])));
 							if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
-							//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($tabligne[1]));
-							$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
+							//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-Ã©Ã¨Ã¼Ã«Ã¯Ã¤ÃªÃ§]/","",trim($tabligne[1]));
+							$tabligne[1] = preg_replace("/Ã†/","AE",preg_replace("/Ã¦/","ae",preg_replace("/Â¼/","OE",preg_replace("/Â½/","oe",preg_replace("/[^A-Za-z0-9 .\-Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡]/","",trim($tabligne[1]))))));
 							if (strlen($tabligne[1]) > 200) $tabligne[1] = substr($tabligne[1], 0, 200);
 
 							$data_tab[$k] = array();
@@ -245,7 +245,7 @@ if (!isset($_POST["action"])) {
 				fclose($fp);
 
 				// Fin de l'analyse du fichier.
-				// Maintenant on va afficher tout ça.
+				// Maintenant on va afficher tout Ã§a.
 
 				$sql="TRUNCATE TABLE tempo2;";
 				$vide_table = mysql_query($sql);
@@ -255,7 +255,7 @@ if (!isset($_POST["action"])) {
 				echo "<form enctype='multipart/form-data' action='disciplines.php' method='post'>\n";
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
-				echo "<table border='1' class='boireaus' summary='Tableau des matières'>\n";
+				echo "<table border='1' class='boireaus' summary='Tableau des matiÃ¨res'>\n";
 				echo "<tr><th>Nom court (unique)</th><th>Nom long</th></tr>\n";
 
 
@@ -288,7 +288,7 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<span style='color:red'>$nb_error erreur(s) dÃ©tectÃ©e(s) lors de la prÃ©paration.</style><br />\n";
 				}
 
 				echo "<input type='submit' value='Enregistrer' />\n";
@@ -298,11 +298,11 @@ if (!isset($_POST["action"])) {
 
 		} else if (trim($csv_file['name'])=='') {
 
-			echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+			echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 			echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>\n";
 
 		} else {
-			echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+			echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />\n";
 			echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>\n";
 		}
 	}

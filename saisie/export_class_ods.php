@@ -39,9 +39,9 @@ if (!checkAccess()) {
 }
 
 
-//On v�rifie si le module est activ�
+//On vérifie si le module est activé
 if(getSettingValue("export_cn_ods")!='y') {
-    die("L'export ODS n'est pas activ�.");
+    die("L'export ODS n'est pas activé.");
 }
 
 
@@ -70,7 +70,7 @@ if(isset($nettoyage)){
 	}
 	else{
 		if(strlen(my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
-			$msg="Le fichier propos� n'est pas valide: '".my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
+			$msg="Le fichier proposé n'est pas valide: '".my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
 		}
 		else{
 			if(!file_exists("$chemin_temp/$nettoyage")){
@@ -78,7 +78,7 @@ if(isset($nettoyage)){
 			}
 			else{
 				unlink("$chemin_temp/$nettoyage");
-				$msg=rawurlencode("Suppression r�ussie!");
+				$msg=rawurlencode("Suppression réussie!");
 			}
 		}
 	}
@@ -109,12 +109,12 @@ if((strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)||(strlen(my_ereg_replace(
 
 
 
-// On teste si le professeur est bien associ� au groupe
+// On teste si le professeur est bien associé au groupe
 if($_SESSION['statut']!='secours') {
 	$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE login='".$_SESSION['login']."' AND id_groupe='$id_groupe'";
 	$res_test=mysql_query($sql);
 	if (mysql_num_rows($res_test)==0) {
-		$mess=rawurlencode("Vous tentez d'acc�der � des donn�es qui ne vous appartiennent pas !");
+		$mess=rawurlencode("Vous tentez d'accéder à des données qui ne vous appartiennent pas !");
 		header("Location: index.php?msg=$mess");
 		die();
 	}
@@ -149,7 +149,7 @@ $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 
 //**************** EN-TETE *****************
-$titre_page = "Export des notes/appr�ciations";
+$titre_page = "Export des notes/appréciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -160,7 +160,7 @@ $nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_g
 $nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
 
 
-// G�n�ration d'un fichier tableur ODS
+// Génération d'un fichier tableur ODS
 
 $instant=getdate();
 $heure=$instant['hours'];
@@ -220,7 +220,7 @@ if($nb_ele>0){
 			if($lig_note->statut==''){
 				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="float" office:value="'.my_ereg_replace(',','.',$lig_note->note).'"><text:p>'.my_ereg_replace('.',',',$lig_note->note).'</text:p></table:table-cell>');
 
-				// ATTENTION: Il va falloir v�rifier qu'� l'import on g�re bien 13.5 et 13,5
+				// ATTENTION: Il va falloir vérifier qu'à l'import on gère bien 13.5 et 13,5
 			}
 			else{
 				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>'.$lig_note->statut.'</text:p></table:table-cell>');
@@ -238,9 +238,9 @@ if($nb_ele>0){
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.my_ereg_replace('\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.$lig_appreciation->appreciation.'</text:p></table:table-cell></table:table-row>');
 
-			// Il va falloir contr�ler si certaines saisies ne font pas de blagues...
+			// Il va falloir contrôler si certaines saisies ne font pas de blagues...
 			/*
-			// Les \n sont accept�s et correctement trait�s dans OOo, mais par contre, � l'export, cela donne:
+			// Les \n sont acceptés et correctement traités dans OOo, mais par contre, à l'export, cela donne:
 				IDENTIFIANT;NOTE;APPRECIATION
 				ANQUETIN_C;12;blabla blabli
 				BARRIER_B;13;blabla blabli blboblo
@@ -274,9 +274,9 @@ $nb_lig_restantes=65534-$nb_ele;
 $ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro3" table:number-rows-repeated="'.$nb_lig_restantes.'"><table:table-cell table:number-columns-repeated="3"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="3"/></table:table-row></table:table>');
 
 
-//$ecriture=fwrite($fichier_tmp_xml,'<table:table table:name="Infos" table:style-name="ta1" table:print="false"><table:table-column table:style-name="co2" table:default-cell-style-name="Default"/><table:table-column table:style-name="co4" table:default-cell-style-name="Default"/><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="2"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell/><table:table-cell table:style-name="ce7" office:value-type="string"><text:p>Vous devez saisir les appréciations sur une seule ligne (dans une seule cellule) et ne pas y saisir de point-virgule. Ce qui suit le point-virgule ne serait pas évalué lors de l&apos;export CSV.</text:p></table:table-cell></table:table-row></table:table></office:spreadsheet></office:body></office:document-content>');
+//$ecriture=fwrite($fichier_tmp_xml,'<table:table table:name="Infos" table:style-name="ta1" table:print="false"><table:table-column table:style-name="co2" table:default-cell-style-name="Default"/><table:table-column table:style-name="co4" table:default-cell-style-name="Default"/><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="2"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell/><table:table-cell table:style-name="ce7" office:value-type="string"><text:p>Vous devez saisir les apprÃ©ciations sur une seule ligne (dans une seule cellule) et ne pas y saisir de point-virgule. Ce qui suit le point-virgule ne serait pas Ã©valuÃ© lors de l&apos;export CSV.</text:p></table:table-cell></table:table-row></table:table></office:spreadsheet></office:body></office:document-content>');
 
-$ecriture=fwrite($fichier_tmp_xml,'<table:table table:name="Infos" table:style-name="ta1" table:print="false"><table:table-column table:style-name="co4" table:default-cell-style-name="Default"/><table:table-column table:style-name="co5" table:default-cell-style-name="ce11"/><table:table-row table:style-name="ro4"><table:table-cell table:style-name="ce9" office:value-type="string"><text:p>INFORMATIONS</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro5"><table:table-cell table:style-name="ce10" office:value-type="string"><text:p>Vous devez saisir les appréciations sur une seule ligne (dans une seule cellule) et ne pas y saisir de point-virgule. Ce qui suit le point-virgule ne serait pas évalué lors de l&apos;export CSV.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro6"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro7"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Lors de la génération de l&apos;export CSV, les points-virgules sont remplacés par des chaînes de caractères __POINT-VIRGULE__, d&apos;autres caractères susceptibles de causer des soucis sont également recherchés et traités.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro5"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>L&apos;absence de ces caractères peut provoquer des affichages sans conséquences (« Terme recherché introuvable »). C&apos;est normal et sans conséquences, contentez-vous de cliquer sur OK.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro5"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Lors de la génération de l&apos;export CSV, le feuillet Note_App est enregistré au format CSV. Cela provoque un avertissement comme quoi seul ce feuillet est enregistré dans le CSV. C&apos;est normal.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Pour finir, le fichier ODS est réenregistré si bien que toutes les informations sont conservées.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell table:style-name="ce9" office:value-type="string"><text:p>MACROS</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro5"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Il se peut que vous ayez droit à un avertissement concernant la présence de macros dans ce fichier. C&apos;est normal. Ces macros servent à générer le fichier CSV.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro7"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Il peut aussi arriver que vous ne puissiez pas utiliser ces macros parce que le niveau de sécurité d&apos;OpenOffice serait trop élevé. Vous pouvez alors ajuster le niveau de sécurité dans le menu Outils/Options/OpenOffice.org/Sécurité/Sécurité des macros</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3" table:number-rows-repeated="65520"><table:table-cell table:number-columns-repeated="2"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="2"/></table:table-row></table:table></office:spreadsheet></office:body></office:document-content>');
+$ecriture=fwrite($fichier_tmp_xml,'<table:table table:name="Infos" table:style-name="ta1" table:print="false"><table:table-column table:style-name="co4" table:default-cell-style-name="Default"/><table:table-column table:style-name="co5" table:default-cell-style-name="ce11"/><table:table-row table:style-name="ro4"><table:table-cell table:style-name="ce9" office:value-type="string"><text:p>INFORMATIONS</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro5"><table:table-cell table:style-name="ce10" office:value-type="string"><text:p>Vous devez saisir les apprÃ©ciations sur une seule ligne (dans une seule cellule) et ne pas y saisir de point-virgule. Ce qui suit le point-virgule ne serait pas Ã©valuÃ© lors de l&apos;export CSV.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro6"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro7"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Lors de la gÃ©nÃ©ration de l&apos;export CSV, les points-virgules sont remplacÃ©s par des chaÃ®nes de caractÃ¨res __POINT-VIRGULE__, d&apos;autres caractÃ¨res susceptibles de causer des soucis sont Ã©galement recherchÃ©s et traitÃ©s.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro5"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>L&apos;absence de ces caractÃ¨res peut provoquer des affichages sans consÃ©quences (Â«Â Terme recherchÃ© introuvableÂ Â»). C&apos;est normal et sans consÃ©quences, contentez-vous de cliquer sur OK.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro5"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Lors de la gÃ©nÃ©ration de l&apos;export CSV, le feuillet Note_App est enregistrÃ© au format CSV. Cela provoque un avertissement comme quoi seul ce feuillet est enregistrÃ© dans le CSV. C&apos;est normal.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Pour finir, le fichier ODS est rÃ©enregistrÃ© si bien que toutes les informations sont conservÃ©es.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro4"><table:table-cell table:style-name="ce9" office:value-type="string"><text:p>MACROS</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro5"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Il se peut que vous ayez droit Ã  un avertissement concernant la prÃ©sence de macros dans ce fichier. C&apos;est normal. Ces macros servent Ã  gÃ©nÃ©rer le fichier CSV.</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:style-name="ce11"/><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro7"><table:table-cell table:style-name="ce11" office:value-type="string"><text:p>Il peut aussi arriver que vous ne puissiez pas utiliser ces macros parce que le niveau de sÃ©curitÃ© d&apos;OpenOffice serait trop Ã©levÃ©. Vous pouvez alors ajuster le niveau de sÃ©curitÃ© dans le menu Outils/Options/OpenOffice.org/SÃ©curitÃ©/SÃ©curitÃ© des macros</text:p></table:table-cell><table:table-cell table:style-name="Default"/></table:table-row><table:table-row table:style-name="ro3" table:number-rows-repeated="65520"><table:table-cell table:number-columns-repeated="2"/></table:table-row><table:table-row table:style-name="ro3"><table:table-cell table:number-columns-repeated="2"/></table:table-row></table:table></office:spreadsheet></office:body></office:document-content>');
 
 $fermeture=fclose($fichier_tmp_xml);
 
@@ -350,7 +350,7 @@ echo "</div>\n";
 
 echo "<h2>$titre</h2>\n";
 
-echo "<p>T�l�charger: <a href='$chemin_temp/$nom_fic'>$nom_fic</a></p>\n";
+echo "<p>Télécharger: <a href='$chemin_temp/$nom_fic'>$nom_fic</a></p>\n";
 
 /*
 echo "filetype($chemin_modele_ods/$nom_fic)=".filetype("$chemin_modele_ods/$nom_fic")."<br />\n";
@@ -362,8 +362,8 @@ fclose($fp);
 echo "<pre>$ligne</pre>";
 */
 
-// AJOUTER UN LIEN POUR FAIRE LE MENAGE... et permettre � l'admin de faire le m�nage.
-echo "<p>Pour ne pas encombrer inutilement le serveur et par soucis de confidentialit�, il est recommand� de supprimer le fichier du serveur apr�s r�cup�ration du fichier ci-dessus.<br />\n";
+// AJOUTER UN LIEN POUR FAIRE LE MENAGE... et permettre à l'admin de faire le ménage.
+echo "<p>Pour ne pas encombrer inutilement le serveur et par soucis de confidentialité, il est recommandé de supprimer le fichier du serveur après récupération du fichier ci-dessus.<br />\n";
 echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic'>Supprimer le fichier</a>.";
 //echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=".$nom_fic."_truc'>Supprimer le fichier 2</a>.";
 //echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=_truc".$nom_fic."'>Supprimer le fichier 3</a>.";

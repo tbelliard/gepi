@@ -81,7 +81,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 
 	$nom_fic=$chaine_titre."_".$now.".csv";
 
-	// Filtrer les caractères dans le nom de fichier:
+	// Filtrer les caractÃ¨res dans le nom de fichier:
 	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
 
 	$fd="";
@@ -116,12 +116,12 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 	$nom_fic=$chaine_titre."_".$now.".pdf";
 
-	// Filtrer les caractères dans le nom de fichier:
+	// Filtrer les caractÃ¨res dans le nom de fichier:
 	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
 
 	//include("get_param_pdf.php");
 
-	// Extraire les infos générales sur l'établissement
+	// Extraire les infos gÃ©nÃ©rales sur l'Ã©tablissement
 	//require("../bulletin/header_bulletin_pdf.php");
 
 	require('../fpdf/fpdf.php');
@@ -133,7 +133,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 	// Fonctions php des bulletins pdf
 	require_once("../bulletin/bulletin_fonctions.php");
-	// Ensemble des données communes
+	// Ensemble des donnÃ©es communes
 	require_once("../bulletin/bulletin_donnees.php");
 
 	define('FPDF_FONTPATH','../fpdf/font/');
@@ -264,7 +264,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 
 	//===========================
-	// Ligne d'entête du tableau
+	// Ligne d'entÃªte du tableau
 	//$pdf->SetXY($x0,$y0);
 	$pdf->SetXY($x0,$y2);
 	$largeur_dispo=$largeur_col_nom_ele;
@@ -299,7 +299,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$k=1;
 	for($j=0;$j<count($lignes_csv);$j++) {
 		$tab=explode(";", $lignes_csv[$j]);
-		if(($tab[0]!='Moyenne')&&($tab[0]!='Min.')&&($tab[0]!='Max.')&&($tab[0]!='Quartile 1')&&($tab[0]!='Médiane')&&($tab[0]!='Quartile 3')) {
+		if(($tab[0]!='Moyenne')&&($tab[0]!='Min.')&&($tab[0]!='Max.')&&($tab[0]!='Quartile 1')&&($tab[0]!='MÃ©diane')&&($tab[0]!='Quartile 3')) {
 			$h_ligne=$h_cell;
 			$graisse="";
 		}
@@ -313,7 +313,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 			$pdf->AddPage();
 
 			//===========================
-			// Ligne d'entête du tableau
+			// Ligne d'entÃªte du tableau
 			$pdf->SetXY($x0,$y0);
 			$largeur_dispo=$largeur_col_nom_ele;
 			$texte=$ligne1_csv[1];
@@ -381,7 +381,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
-if ($en_tete == "yes") $titre_page = "Visualisation des moyennes et appréciations";
+if ($en_tete == "yes") $titre_page = "Visualisation des moyennes et apprÃ©ciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -398,8 +398,8 @@ if ($en_tete!="yes"){
 if($_SESSION['statut']=='professeur'){
 	//++++++++++++++++++++++++++++++++++++++++++++++++++
 	// A FAIRE
-	// TEST: Est-ce que le PP a accès aux appréciations ?
-	//       Créer un droit dans Droits d'accès ?
+	// TEST: Est-ce que le PP a accÃ¨s aux apprÃ©ciations ?
+	//       CrÃ©er un droit dans Droits d'accÃ¨s ?
 	if(getSettingValue("GepiAccesBulletinSimplePP")=='yes') {
 		$acces_pp="y";
 	}
@@ -435,7 +435,7 @@ if (!$current_group) {
 	//echo "\$lignes=$lignes<br />";
 
 	if($lignes==0) {
-		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Aucune classe ne vous est attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
 	}
 	else {
 		$nb_class_par_colonne=round($lignes/3);
@@ -465,7 +465,7 @@ if (!$current_group) {
 				$temoin_pp="no";
 				$flag2 = "no";
 				//if ($_SESSION['statut']!='scolarite') {
-				// Seuls les comptes scolarite, professeur et secours ont accès à cette page.
+				// Seuls les comptes scolarite, professeur et secours ont accÃ¨s Ã  cette page.
 				if ($_SESSION['statut']=='professeur') {
 					$test = mysql_query("SELECT count(*) FROM j_groupes_professeurs
 					WHERE (id_groupe='" . $group["id"]."' and login = '" . $_SESSION["login"] . "')");
@@ -560,7 +560,7 @@ if (!$current_group) {
 			$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
 		}
 
-		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matiÃ¨re");
 
 		if(!empty($tab_groups)) {
 
@@ -609,7 +609,7 @@ if (!$current_group) {
 			if(isset($id_grp_prec)){
 				if($id_grp_prec!=0){
 					echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
-					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement prÃ©cÃ©dent</a>";
 				}
 			}
 			*/
@@ -670,14 +670,14 @@ if (!$current_group) {
 	}
 
     if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours') and ($test_acces_pp=="n")) {
-        echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
-        echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
+        echo "<p>Vous n'Ãªtes pas dans cette classe le professeur de la matiÃ¨re choisie !</p>\n";
+        echo "<p><a href='index1.php'>Retour Ã  l'accueil</a></p>\n";
         die();
     }
 
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire\">";
-    echo "<p class='bold'>Groupe : " . htmlentities($current_group["description"]) ." " . htmlentities($current_group["classlist_string"]) . " | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /></p>\n";
-    echo "<p>Choisissez les données à imprimer (<i>vous pouvez cocher plusieurs cases</i>) : </p>\n";
+    echo "<p class='bold'>Groupe : " . htmlentities($current_group["description"]) ." " . htmlentities($current_group["classlist_string"]) . " | MatiÃ¨re : " . htmlentities($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /></p>\n";
+    echo "<p>Choisissez les donnÃ©es Ã  imprimer (<i>vous pouvez cocher plusieurs cases</i>) : </p>\n";
     $i="1";
 	$cpt=0;
     while ($i < $nb_periode) {
@@ -695,16 +695,16 @@ if (!$current_group) {
 		echo "<p><input type='checkbox' name='$name' id='$name' value='yes' ";
 		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 		echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
-		echo "/><label for='$name' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>".ucfirst($nom_periode[$i])." - Extraire les appréciations</span></label></p>\n";
+		echo "/><label for='$name' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>".ucfirst($nom_periode[$i])." - Extraire les apprÃ©ciations</span></label></p>\n";
 	    $i++;
 		$cpt++;
     }
 
 	//==========================================
 	// MODIF: boireaus 20080407
-	// Le rang doit-il être affiché
-	// On autorise le prof à obtenir les rangs même si on ne les met pas sur le bulletin
-	// Et le calcul des rangs est effectué après soumission du formulaire si l'option rang est cochée
+	// Le rang doit-il Ãªtre affichÃ©
+	// On autorise le prof Ã  obtenir les rangs mÃªme si on ne les met pas sur le bulletin
+	// Et le calcul des rangs est effectuÃ© aprÃ¨s soumission du formulaire si l'option rang est cochÃ©e
 	$aff_rang="y";
 	$affiche_categories="n";
 	/*
@@ -735,7 +735,7 @@ if (!$current_group) {
 	    echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' ";
 		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 		echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
-		echo "/><label for='afficher_rang' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher le rang des élèves.</span></label></p>\n";
+		echo "/><label for='afficher_rang' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher le rang des Ã©lÃ¨ves.</span></label></p>\n";
 		$cpt++;
 	}
 	//==========================================
@@ -743,7 +743,7 @@ if (!$current_group) {
 	echo "<p><input type='checkbox' name='afficher_mediane' id='afficher_mediane' value='yes' ";
 	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 	echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
-	echo "/><label for='afficher_mediane' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher les médiane, 1er et 3ème quartiles pour chaque colonne de note.</span></label></p>\n";
+	echo "/><label for='afficher_mediane' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher les mÃ©diane, 1er et 3Ã¨me quartiles pour chaque colonne de note.</span></label></p>\n";
 	$cpt++;
 	//==========================================
 
@@ -751,12 +751,12 @@ if (!$current_group) {
     echo "<p><input type='checkbox' name='stat' id='stat' value='yes' ";
 	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 	echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
-	echo "/><label for='stat' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher les statistiques sur les moyennes extraites (<i>moyenne générale, pourcentages,...</i>)</span></label></p>\n";
+	echo "/><label for='stat' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher les statistiques sur les moyennes extraites (<i>moyenne gÃ©nÃ©rale, pourcentages,...</i>)</span></label></p>\n";
 	$cpt++;
 
     if ($multiclasses) {
-        echo "<p><input type='radio' name='order_by' id='order_by_nom' value='nom' checked /><label for='order_by_nom' style='cursor: pointer;'> Classer les élèves par ordre alphabétique </label>";
-        echo "<br/><input type='radio' name='order_by' id='order_by_classe' value='classe' /><label for='order_by_classe' style='cursor: pointer;'> Classer les élèves par classe</label></p>";
+        echo "<p><input type='radio' name='order_by' id='order_by_nom' value='nom' checked /><label for='order_by_nom' style='cursor: pointer;'> Classer les Ã©lÃ¨ves par ordre alphabÃ©tique </label>";
+        echo "<br/><input type='radio' name='order_by' id='order_by_classe' value='classe' /><label for='order_by_classe' style='cursor: pointer;'> Classer les Ã©lÃ¨ves par classe</label></p>";
     }
 
 	$name="vmm_couleur_alterne";
@@ -798,8 +798,8 @@ function checkbox_change(champ, cpt) {
 	}
 
     if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours') and ($test_acces_pp=="n")) {
-        echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
-        echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
+        echo "<p>Vous n'Ãªtes pas dans cette classe le professeur de la matiÃ¨re choisie !</p>\n";
+        echo "<p><a href='index1.php'>Retour Ã  l'accueil</a></p>\n";
         die();
     }
 
@@ -807,24 +807,24 @@ function checkbox_change(champ, cpt) {
     $nombre_eleves = count($current_group["eleves"]["all"]["list"]);
 	//echo "\$nombre_eleves=$nombre_eleves<br />";
 
-    // On commence par mettre la liste dans l'ordre souhaité
+    // On commence par mettre la liste dans l'ordre souhaitÃ©
     if ($order_by != "classe") {
         $liste_eleves = $current_group["eleves"]["all"]["list"];
     } else {
         // Ici, on trie par classe
-        // On va juste créer une liste des élèves pour chaque classe
+        // On va juste crÃ©er une liste des Ã©lÃ¨ves pour chaque classe
         $tab_classes = array();
         foreach($current_group["classes"]["list"] as $classe_id) {
             $tab_classes[$classe_id] = array();
         }
-        // On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
+        // On passe maintenant Ã©lÃ¨ve par Ã©lÃ¨ve et on les met dans la bonne liste selon leur classe
         foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
             $classe = $current_group["eleves"]["all"]["users"][$eleve_login]["classe"];
             $tab_classes[$classe][] = $eleve_login;
 			//echo "$eleve_login ";
         }
 		//echo "<br />";
-        // On met tout ça à la suite
+        // On met tout Ã§a Ã  la suite
         $liste_eleves = array();
         foreach($current_group["classes"]["list"] as $classe_id) {
             $liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
@@ -836,8 +836,8 @@ function checkbox_change(champ, cpt) {
 	//==========================================
 	// MODIF: boireaus 20080407
 	$nb_eleves_avant_include=$nombre_eleves;
-	// Le rang doit-il être affiché
-	// On autorise le prof à obtenir les rangs même si on ne les met pas sur le bulletin
+	// Le rang doit-il Ãªtre affichÃ©
+	// On autorise le prof Ã  obtenir les rangs mÃªme si on ne les met pas sur le bulletin
 	$aff_rang="n";
 	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
 		$aff_rang="y";
@@ -892,7 +892,7 @@ function checkbox_change(champ, cpt) {
     $eleve_login = null;
     foreach($liste_eleves as $eleve_login) {
 		//echo "$eleve_login ";
-        // La variable affiche_ligne teste si on affiche une ligne ou non : si l'élève suit la matière pour au moins une période, on affiche la ligne concernant l'élève. Si l'élève ne suit pas la matière pour aucune des périodes, on n'affiche pas la ligne conernant l'élève.
+        // La variable affiche_ligne teste si on affiche une ligne ou non : si l'Ã©lÃ¨ve suit la matiÃ¨re pour au moins une pÃ©riode, on affiche la ligne concernant l'Ã©lÃ¨ve. Si l'Ã©lÃ¨ve ne suit pas la matiÃ¨re pour aucune des pÃ©riodes, on n'affiche pas la ligne conernant l'Ã©lÃ¨ve.
         $affiche_ligne[$i] = 'no';
         $login_eleve[$i] = $eleve_login;
         $k=0;
@@ -916,10 +916,10 @@ function checkbox_change(champ, cpt) {
         $i++;
     }
     //
-    // Calcul du nombre de colonnes à afficher et définition de la première ligne à afficher
+    // Calcul du nombre de colonnes Ã  afficher et dÃ©finition de la premiÃ¨re ligne Ã  afficher
     //
-    $ligne1[1] = "Nom Prénom";
-    $ligne1_csv[1] = "Nom Prénom";
+    $ligne1[1] = "Nom PrÃ©nom";
+    $ligne1_csv[1] = "Nom PrÃ©nom";
     if ($multiclasses) {
 		$ligne1[2] = "Classe";
 		$ligne1_csv[2] = "Classe";
@@ -961,8 +961,8 @@ function checkbox_change(champ, cpt) {
         $temp = "visu_app_".$k;
         if (isset($_POST[$temp]) or isset($_GET[$temp])) {
             $nb_col++;
-            $ligne1[$nb_col] = "Appréciation P".$k;
-            $ligne1_csv[$nb_col] = "Appréciation P".$k;
+            $ligne1[$nb_col] = "ApprÃ©ciation P".$k;
+            $ligne1_csv[$nb_col] = "ApprÃ©ciation P".$k;
         }
         $k++;
     }
@@ -1100,7 +1100,7 @@ function checkbox_change(champ, cpt) {
                     $app = @mysql_result($app_query, 0, "appreciation");
 
 					//++++++++++++++++++++++++
-					// Modif d'après F.Boisson
+					// Modif d'aprÃ¨s F.Boisson
 					// notes dans appreciation
 					$sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$login_eleve[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
 					$result_nbct=mysql_query($sql);
@@ -1139,11 +1139,11 @@ function checkbox_change(champ, cpt) {
             }
             if ($stat == "yes") {
                 if ($col[$nb_col][$nb_lignes] != '') {
-                    // moyenne de chaque élève
+                    // moyenne de chaque Ã©lÃ¨ve
                     $temp = round($col[$nb_col][$nb_lignes]/$nb_note[$nb_lignes],1);
                     $col[$nb_col][$nb_lignes] = "<center>".number_format($temp,1,',','')."</center>";
 					$col_csv[$nb_col][$nb_lignes] = number_format($temp,1,',','');
-                    // Total des moyennes de chaque élève
+                    // Total des moyennes de chaque Ã©lÃ¨ve
                     $total_notes += $temp;
                     $nb_notes++;
                     if ($min_notes== '-') $min_notes = 20;
@@ -1169,7 +1169,7 @@ function checkbox_change(champ, cpt) {
 
 	//==============================================
 	// AJOUT: boireaus 20080418
-	// Calculs pour la colonne RANG sur la moyenne des périodes
+	// Calculs pour la colonne RANG sur la moyenne des pÃ©riodes
 	if(($stat=="yes")&&($aff_rang=="y")) {
 		//$tmp_tab=$col[$nb_col];
 		//for($loop=0;$loop<count($tmp_tab);$loop++) {
@@ -1237,7 +1237,7 @@ function checkbox_change(champ, cpt) {
 			$nb_colonnes=$nb_col+1;
 		}
 
-		// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
+		// VÃ©rifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
 		if((strlen(preg_replace("/[0-9]/","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 			//echo "<table>";
 			//echo "<tr><td valign='top'>";
@@ -1249,7 +1249,7 @@ function checkbox_change(champ, cpt) {
 				// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
 				$tmp_tab[$loop]=preg_replace("/,/",".",$col_csv[$col_tri][$loop]);
 
-				// La colonne Rang sur la moyenne générale annuelle est ajoutée plus loin dans le code (c'est la seule)
+				// La colonne Rang sur la moyenne gÃ©nÃ©rale annuelle est ajoutÃ©e plus loin dans le code (c'est la seule)
 				if(($_POST['col_tri']>$nb_col)||
 					(preg_match('/^Rang/',$ligne1_csv[$_POST['col_tri']]))) {
 					if($tmp_tab[$loop]=='-') {$tmp_tab[$loop]=1000000;}
@@ -1280,7 +1280,7 @@ function checkbox_change(champ, cpt) {
 
 			//echo "count(\$rg)=".count($rg)."<br />";
 			//echo "count(\$tmp_tab)=".count($tmp_tab)."<br />";
-			// Tri du tableau avec stockage de l'ordre dans $rg d'après $tmp_tab
+			// Tri du tableau avec stockage de l'ordre dans $rg d'aprÃ¨s $tmp_tab
 			array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
 
 			/*
@@ -1293,7 +1293,7 @@ function checkbox_change(champ, cpt) {
 			echo "<td valign='top'>";
 			*/
 
-			// On utilise des tableaux temporaires le temps de la réaffectation dans l'ordre
+			// On utilise des tableaux temporaires le temps de la rÃ©affectation dans l'ordre
 			$tmp_col=array();
 			$tmp_col_csv=array();
 
@@ -1335,7 +1335,7 @@ function checkbox_change(champ, cpt) {
 			//echo "</td></tr>";
 			//echo "</table>";
 
-			// On réaffecte les valeurs dans le tableau initial à l'aide du tableau temporaire
+			// On rÃ©affecte les valeurs dans le tableau initial Ã  l'aide du tableau temporaire
 			if((isset($_POST['sens_tri']))&&($_POST['sens_tri']=="inverse")) {
 				for($m=1;$m<=$nb_colonnes;$m++) {
 					//for($i=0;$i<$nombre_eleves;$i++) {
@@ -1359,7 +1359,7 @@ function checkbox_change(champ, cpt) {
 
 
     //
-    // On teste s'il y a des moyennes, min et max à calculer :
+    // On teste s'il y a des moyennes, min et max Ã  calculer :
     //
     $k = 1;
     $test = 0;
@@ -1369,7 +1369,7 @@ function checkbox_change(champ, cpt) {
         $k++;
     }
     //
-    // S'il y a des moyennes, min et max à calculer, on le fait :
+    // S'il y a des moyennes, min et max Ã  calculer, on le fait :
     //
     if ($test == 1) {
         $k=1;
@@ -1469,7 +1469,7 @@ function checkbox_change(champ, cpt) {
 					}
 					echo "</pre>";
 					*/
-					//$tab_champs_stat=array('Quartile 1', 'Médiane', 'Quartile 3');
+					//$tab_champs_stat=array('Quartile 1', 'MÃ©diane', 'Quartile 3');
 					$tab_code_champs_stat=array('q1', 'mediane', 'q3');
 					for($loop_stat=0;$loop_stat<count($tab_code_champs_stat);$loop_stat++) {
 						if(($tab_stat[$tab_code_champs_stat[$loop_stat]]!='')&&($tab_stat[$tab_code_champs_stat[$loop_stat]]!='-')) {
@@ -1507,7 +1507,7 @@ function checkbox_change(champ, cpt) {
             $k++;
         }
         if ($stat == "yes") {
-            // moyenne générale de la classe
+            // moyenne gÃ©nÃ©rale de la classe
             if ($total_notes != 0) {
 				$col[$nb_col][$nb_lignes] ="<center>".number_format(round($total_notes/$nb_notes,1),1,',','')."</center>";
 				$col_csv[$nb_col][$nb_lignes] =number_format(round($total_notes/$nb_notes,1),1,',','');
@@ -1533,7 +1533,7 @@ function checkbox_change(champ, cpt) {
 					}
 					echo "</pre>";
 					*/
-					//$tab_champs_stat=array('Quartile 1', 'Médiane', 'Quartile 3');
+					//$tab_champs_stat=array('Quartile 1', 'MÃ©diane', 'Quartile 3');
 					$tab_code_champs_stat=array('q1', 'mediane', 'q3');
 					for($loop_stat=0;$loop_stat<count($tab_code_champs_stat);$loop_stat++) {
 						if(($tab_stat[$tab_code_champs_stat[$loop_stat]]!='')&&($tab_stat[$tab_code_champs_stat[$loop_stat]]!='-')) {
@@ -1597,7 +1597,7 @@ function checkbox_change(champ, cpt) {
         $col[1][$nb_lignes+2] = '<b>Max.</b>';
 		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
 			$col[1][$nb_lignes+3] = '<b>Quartile 1</b>';
-			$col[1][$nb_lignes+4] = '<b>Médiane</b>';
+			$col[1][$nb_lignes+4] = '<b>MÃ©diane</b>';
 			$col[1][$nb_lignes+5] = '<b>Quartile 3</b>';
 		}
         $col_csv[1][$nb_lignes] = 'Moyenne';
@@ -1605,7 +1605,7 @@ function checkbox_change(champ, cpt) {
         $col_csv[1][$nb_lignes+2] = 'Max.';
 		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
 			$col_csv[1][$nb_lignes+3] = 'Quartile 1';
-			$col_csv[1][$nb_lignes+4] = 'Médiane';
+			$col_csv[1][$nb_lignes+4] = 'MÃ©diane';
 			$col_csv[1][$nb_lignes+5] = 'Quartile 3';
 		}
 
@@ -1638,7 +1638,7 @@ function checkbox_change(champ, cpt) {
 
 	//==============================================
 	// AJOUT: boireaus 20080418
-	// Affichage de la colonne RANG sur la moyenne des périodes
+	// Affichage de la colonne RANG sur la moyenne des pÃ©riodes
 	if(($stat=="yes")&&($aff_rang=="y")) {
 
 		$nb_col++;
@@ -1669,7 +1669,7 @@ function checkbox_change(champ, cpt) {
     //
     if (!isset($larg_tab)) {$larg_tab = 680;}
     if (!isset($bord)) {$bord = 1;}
-	//echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
+	//echo "\n<!-- Formulaire pour l'affichage sans entÃªte -->\n";
     //echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
     //echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"";
     if ($en_tete == "yes") {
@@ -1688,7 +1688,7 @@ function checkbox_change(champ, cpt) {
 				$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
 			}
 
-			$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+			$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matiÃ¨re");
 
 			if(!empty($tab_groups)) {
 
@@ -1737,7 +1737,7 @@ function checkbox_change(champ, cpt) {
 				if(isset($id_grp_prec)){
 					if($id_grp_prec!=0){
 						echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
-						echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+						echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement prÃ©cÃ©dent</a>";
 					}
 				}
 				*/
@@ -1769,7 +1769,7 @@ function checkbox_change(champ, cpt) {
 
 					//echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
 					echo " | <select name='id_groupe' onchange=\"document.forms['form1'].submit();\">\n";
-					//echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+					//echo "PÃ©riode $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 					echo $chaine_options_classes;
 					echo "</select> | \n";
 				}
@@ -1786,7 +1786,7 @@ function checkbox_change(champ, cpt) {
 			// =================================
 		}
 
-		// Insérer les mêmes choix:
+		// InsÃ©rer les mÃªmes choix:
 
 		$k=1;
         while ($k < $nb_periode) {
@@ -1817,14 +1817,14 @@ function checkbox_change(champ, cpt) {
 
 		echo "</form>\n";
 
-		echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
+		echo "\n<!-- Formulaire pour l'affichage sans entÃªte -->\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
-		echo "<p><input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
+		echo "<p><input type=\"submit\" value=\"Visualiser sans l'en-tÃªte\" /></p>\n";
 		echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
 	}
 	else {
 		// On ne place ici cette annonce de formulaire que pour avoir du code HTML valide:
-		echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
+		echo "\n<!-- Formulaire pour l'affichage sans entÃªte -->\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
 	}
 	/*
@@ -1836,7 +1836,7 @@ function checkbox_change(champ, cpt) {
 	// MODIF: boireaus 20080421
 	// Pour permettre de trier autrement...
 	// Ligne de test:
-	// echo "<input type=\"button\" value=\"Visualiser sans l'en-tête et tri col 2\" onclick=\"document.getElementById('col_tri').value='2';document.forms['formulaire1'].submit();\" /><br />\n";
+	// echo "<input type=\"button\" value=\"Visualiser sans l'en-tÃªte et tri col 2\" onclick=\"document.getElementById('col_tri').value='2';document.forms['formulaire1'].submit();\" /><br />\n";
     //echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
 	//=========================
 
@@ -1864,7 +1864,7 @@ function checkbox_change(champ, cpt) {
     }
 	//=========================
 	// MODIF: boireaus 20080421
-	// Pour avoir le rang sur le tableau sans entête
+	// Pour avoir le rang sur le tableau sans entÃªte
 	//if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
 	if(((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes"))||((isset($_GET['afficher_rang']))&&($_GET['afficher_rang']=="yes"))) {
 		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
@@ -1891,7 +1891,7 @@ function checkbox_change(champ, cpt) {
 	//=======================================================
 	// MODIF: boireaus 20080421
 	// Pour permettre de trier autrement...
-	echo "\n<!-- Formulaire pour l'affichage avec tri sur la colonne cliquée -->\n";
+	echo "\n<!-- Formulaire pour l'affichage avec tri sur la colonne cliquÃ©e -->\n";
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire_tri\">\n";
 
     echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
@@ -1973,8 +1973,8 @@ function checkbox_change(champ, cpt) {
 	
 		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
 		echo "<input type='hidden' name='mode' value='csv' />\n";
-		// On ne met le bouton que pour l'affichage avec entête
-		if ($en_tete == "yes") {echo "<input type='submit' value='Générer un CSV' />\n";}
+		// On ne met le bouton que pour l'affichage avec entÃªte
+		if ($en_tete == "yes") {echo "<input type='submit' value='GÃ©nÃ©rer un CSV' />\n";}
 		echo "</form>\n";
 
 		echo "\n<!-- Formulaire pour l'export PDF -->\n";
@@ -2007,9 +2007,9 @@ function checkbox_change(champ, cpt) {
 	
 		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
 		echo "<input type='hidden' name='mode' value='pdf' />\n";
-		// On ne met le bouton que pour l'affichage avec entête
+		// On ne met le bouton que pour l'affichage avec entÃªte
 		if ($en_tete == "yes") {
-			echo "<input type='submit' value='Générer un PDF' />\n";
+			echo "<input type='submit' value='GÃ©nÃ©rer un PDF' />\n";
 			echo "<br />\n";
 			echo "Hauteur de ligne&nbsp;: <input type='text' name='h_cell' id='h_cell' value='10' size='2' onKeyDown=\"clavier_2(this.id,event,5,50);\" AutoComplete=\"off\" />mm\n";
 		}
@@ -2026,7 +2026,7 @@ function checkbox_change(champ, cpt) {
         parametres_tableau($larg_tab, $bord);
 	}
 //    else echo "<p class=small><a href=\"index1.php?id_classe=$id_classe&choix_matiere=$choix_matiere\">Retour</a>";
-    echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Groupe : " . htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ") | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]);
+    echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | AnnÃ©e : ".getSettingValue("gepiYear")." | Groupe : " . htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ") | MatiÃ¨re : " . htmlentities($current_group["matiere"]["nom_complet"]);
     echo "</p>\n";
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
@@ -2083,7 +2083,7 @@ function checkbox_change(champ, cpt) {
 
 	//function affiche_tableau_index1($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
 
-	// On commence en colonne 1: Nom Prénom
+	// On commence en colonne 1: Nom PrÃ©nom
 	//echo "$ligne1[1]<br />";
 
     if (isset($col)) {
@@ -2095,11 +2095,11 @@ function checkbox_change(champ, cpt) {
 		$j = 1;
 		while($j < $nb_col+1) {
 			echo "<th class='small'>";
-			if(!preg_match("/Appréciation/i",$ligne1[$j])) {
+			if(!preg_match("/ApprÃ©ciation/i",$ligne1[$j])) {
 				echo "<a href='#' onclick=\"document.getElementById('col_tri').value='$j';";
 				if(preg_match("/Rang/i",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
 				if($ligne1[$j]=="Classe") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='classe';}";}
-				if($ligne1[$j]=="Nom Prénom") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='nom';}";}
+				if($ligne1[$j]=="Nom PrÃ©nom") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='nom';}";}
 				echo "document.forms['formulaire_tri'].submit();\">";
 				echo $ligne1[$j];
 				echo "</a>";
@@ -2146,17 +2146,17 @@ function checkbox_change(champ, cpt) {
     if ($test == 1 and  $stat == "yes") {
         echo "<br />\n";
 		echo "<div style=\"border: ".$bord."px solid black; width: ".$larg_tab."px; margin-bottom: 5px;\">
-        <p><b>Moyenne générale de la classe : ".$moy_gen."</b>
-        <br /><br /><b>Pourcentage des élèves ayant une moyenne générale : </b>\n";
+        <p><b>Moyenne gÃ©nÃ©rale de la classe : ".$moy_gen."</b>
+        <br /><br /><b>Pourcentage des Ã©lÃ¨ves ayant une moyenne gÃ©nÃ©rale : </b>\n";
 		echo "<table style='margin-left: 3em;' border='0'>\n";
 		echo "<tr>\n";
-        echo "<td>inférieure strictement à 8 : </td><td class='bold'>".$pourcent_i8."</td>\n";
+        echo "<td>infÃ©rieure strictement Ã  8 : </td><td class='bold'>".$pourcent_i8."</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
         echo "<td>entre 8 et 12 : </td><td class='bold'>".$pourcent_se8_ie12."</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-        echo "<td>supérieure ou égale à 12 : </td><td class='bold'>".$pourcent_se12."</td>\n";
+        echo "<td>supÃ©rieure ou Ã©gale Ã  12 : </td><td class='bold'>".$pourcent_se12."</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";

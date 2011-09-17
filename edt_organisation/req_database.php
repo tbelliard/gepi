@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier req_database.php pour accéder à la base de données
+ * Fichier req_database.php pour accÃ©der Ã  la base de donnÃ©es
  *
  * @package		EmploisDuTemps
  * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero

@@ -98,10 +98,10 @@ echo "</p>";
 ?>
 
 <div style="text-align:center">
-    <h2>Définition des lieux d'absence</h2>
+    <h2>DÃ©finition des lieux d'absence</h2>
     <p>
-        Un lieu pourra être affecté à un type de saisie pour permettre de savoir ou se trouve l'élève saisie. <br />
-        Pour les types sans lieu défini on considèrera que l'élève n'est pas dans l'enceinte de l'établissement.<br />
+        Un lieu pourra Ãªtre affectÃ© Ã  un type de saisie pour permettre de savoir ou se trouve l'Ã©lÃ¨ve saisie. <br />
+        Pour les types sans lieu dÃ©fini on considÃ¨rera que l'Ã©lÃ¨ve n'est pas dans l'enceinte de l'Ã©tablissement.<br />
     </p>
 <?php if ($action == "ajouter" OR $action == "modifier") { ?>
 <div style="text-align:center">
@@ -147,7 +147,7 @@ echo add_token_field();
 
 	<a href="admin_lieux_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un lieu</a>
 	<br/><br/>
-	<a href="admin_lieux_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les lieux par défaut</a>
+	<a href="admin_lieux_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les lieux par dÃ©faut</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
@@ -166,7 +166,7 @@ echo add_token_field();
 	  <td><?php echo $lieu->getNom(); ?></td>
 	  <td><?php echo $lieu->getCommentaire(); ?></td>
           <td><a href="admin_lieux_absences.php?action=modifier&amp;id_lieu=<?php echo $lieu->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_lieux_absences.php?action=supprimer&amp;id_lieu=<?php echo $lieu->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce lieu ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td><a href="admin_lieux_absences.php?action=supprimer&amp;id_lieu=<?php echo $lieu->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sÃ»r de vouloir supprimer ce lieu ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
           <td><a href="admin_lieux_absences.php?action=monter&amp;id_lieu=<?php echo $lieu->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
           <td><a href="admin_lieux_absences.php?action=descendre&amp;id_lieu=<?php echo $lieu->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
         </tr>

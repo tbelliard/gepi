@@ -43,22 +43,22 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 //==============PROTOTYPE===============
 $utilisation_prototype = "ok";
 //============fin PROTOTYPE=============
-// On insère l'entête de Gepi
+// On insÃ¨re l'entÃªte de Gepi
 require_once("../lib/header.inc");
 
 // On ajoute le menu EdT
@@ -85,14 +85,14 @@ $truncate_cours = isset($_POST["truncate_cours"]) ? $_POST["truncate_cours"] : N
 $truncate_salles = isset($_POST["truncate_salles"]) ? $_POST["truncate_salles"] : NULL;
 $aff_infos = isset($_POST["aff_infos"]) ? $_POST["aff_infos"] : NULL;
 
-$aff_depart = ""; // pour ne plus afficher le html après une initialisation
-$compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont bien été enregistrés.
+$aff_depart = ""; // pour ne plus afficher le html aprÃ¨s une initialisation
+$compter_echecs = 2; // pour afficher Ã  la fin le message : Tous ces cours ont bien Ã©tÃ© enregistrÃ©s.
 
-	// Initialisation de l'EdT (fichier g_edt.csv). Librement copié du fichier init_csv/eleves.php
-        // On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
-        // en proposant des champs de saisie pour modifier les données si on le souhaite
+	// Initialisation de l'EdT (fichier g_edt.csv). Librement copiÃ© du fichier init_csv/eleves.php
+        // On va donc afficher le contenu du fichier tel qu'il va Ãªtre enregistrÃ© dans Gepi
+        // en proposant des champs de saisie pour modifier les donnÃ©es si on le souhaite
 	if ($action == "upload_file") {
-        // On vérifie le nom du fichier...
+        // On vÃ©rifie le nom du fichier...
         if(strtolower($csv_file['name']) == "g_edt.csv") {
 
             // Le nom est ok. On ouvre le fichier
@@ -104,7 +104,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
                 echo "<p><a href=\"./edt_init_csv.php\">Cliquer ici </a> pour recommencer !</center></p>";
             } //!$fp
             else {
-            	// A partir de là, on vide la table edt_cours
+            	// A partir de lÃ , on vide la table edt_cours
             if ($truncate_cours == "oui") {
             	$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
             }
@@ -112,7 +112,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
             	// On ouvre alors toutes les lignes de tous les champs
             	$nbre = 1;
 	while($tab = fgetcsv($fp, 1000, ";")) {
-			// On met le commentaire dans les variables et on l'affiche que s'il y a un problème
+			// On met le commentaire dans les variables et on l'affiche que s'il y a un problÃ¨me
 				$message = "";
 				$message1 = "";
 				$message2 = "";
@@ -126,32 +126,32 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
      					}
     			$message1 .= '</span> ';
 			$req_insert_csv = "";
-    	// On considère qu'il n'y a aucun problème dans la ligne
+    	// On considÃ¨re qu'il n'y a aucun problÃ¨me dans la ligne
     		$probleme = "";
-    // Pour chaque entrée, on cherche l'id_groupe qui correspond à l'association prof-matière-classe
-    	// On récupère le login du prof
-    	$prof_login = strtoupper(strtr($tab[0], "éèêë", "eeee"));
+    // Pour chaque entrÃ©e, on cherche l'id_groupe qui correspond Ã  l'association prof-matiÃ¨re-classe
+    	// On rÃ©cupÃ¨re le login du prof
+    	$prof_login = strtoupper(strtr($tab[0], "Ã©Ã¨ÃªÃ«", "eeee"));
     $req_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$prof_login."'");
     $rep_prof = mysql_fetch_array($req_prof);
     	if ($rep_prof["nom"] == "") {
     		$probleme .="<p>Le professeur n'est pas reconnu.</p>\n";
     	}
 
-		// On récupère l'id de la matière et l'id de la classe
-		$matiere = strtoupper(strtr($tab[1], "éèêë", "eeee"));
+		// On rÃ©cupÃ¨re l'id de la matiÃ¨re et l'id de la classe
+		$matiere = strtoupper(strtr($tab[1], "Ã©Ã¨ÃªÃ«", "eeee"));
 		$sql_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
 		$rep_matiere = mysql_fetch_array($sql_matiere);
 			if ($rep_matiere["nom_complet"] == "") {
 				$probleme .= "<p>Gepi ne retrouve pas la bonne mati&egrave;re.</p>\n";
 			}
-		$classe = strtoupper(strtr($tab[2], "éèêë", "eeee"));
+		$classe = strtoupper(strtr($tab[2], "Ã©Ã¨ÃªÃ«", "eeee"));
 	$sql_classe = mysql_query("SELECT id FROM classes WHERE classe = '".$classe."'");
 	$rep_classe = mysql_fetch_array($sql_classe);
 		if ($rep_classe == "") {
 			$probleme .= "<p>La classe n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
 		}
 
-		// On récupère l'id de la salle
+		// On rÃ©cupÃ¨re l'id de la salle
 	$sql_salle = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$tab[3]."'");
 	$req_salle = mysql_fetch_array($sql_salle);
 	$rep_salle = $req_salle["id_salle"];
@@ -162,7 +162,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
 		// Le jour
 	$rep_jour = $tab[4];
 
-		// Le créneau de début du cours
+		// Le crÃ©neau de dÃ©but du cours
 	$creneau_csv = $tab[5];
 	$verif_dec = explode("_", $creneau_csv);
 		if ($verif_dec[0] == "d") {
@@ -172,7 +172,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
 			$rep_heuredeb_dec = '0';
 			$verif_creneau = $verif_dec[0];
 		}
-	// On cherche l'id du créneau en question
+	// On cherche l'id du crÃ©neau en question
 	$req_creneau = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE nom_definie_periode = '".$verif_creneau."'");
 	$rep_creneau = mysql_fetch_array($req_creneau);
 			if ($rep_creneau == "") {
@@ -181,14 +181,14 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
 				$rep_heuredebut = $rep_creneau["id_definie_periode"];
 			}
 
-		// et la durée du cours et le type de semaine
-		// Il faudrait vérifier si la durée est valide ainsi que le type de semaine
+		// et la durÃ©e du cours et le type de semaine
+		// Il faudrait vÃ©rifier si la durÃ©e est valide ainsi que le type de semaine
 	$rep_duree = $tab[6] * 2;
 	$rep_typesemaine = $tab[7];
 
-		// le champ modif_edt = 0 pour toutes les entrées
+		// le champ modif_edt = 0 pour toutes les entrÃ©es
 		$rep_modifedt = '0';
-		// Vérifier si ce cours dure toute l'année ou seulement durant une période
+		// VÃ©rifier si ce cours dure toute l'annÃ©e ou seulement durant une pÃ©riode
 		if ($tab[8] == "0") {
 			$rep_calendar = '0';
 		}
@@ -202,7 +202,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
 				}
 		}
 
-		// On retrouve l'id_groupe et on vérifie qu'il est unique
+		// On retrouve l'id_groupe et on vÃ©rifie qu'il est unique
 	$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgp.login = '".$prof_login."' AND jgc.id_classe = '".$rep_classe["id"]."' AND jgm.id_matiere = '".$matiere."' AND jgp.id_groupe = jgc.id_groupe AND jgp.id_groupe = jgm.id_groupe");
     		$rep_groupe = mysql_fetch_array($req_groupe);
     		if ($rep_groupe == "") {
@@ -213,20 +213,20 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
     				for ($a=0; $a<count($rep_groupe); $a++) {
 						// Il faut trouver un truc pour que l'admin choisisse le bon groupe
 						// Il faut donc afficher les infos sur les groupes en question
-						// (liste d'élève, classe, matière en question) avec une infobulle.
+						// (liste d'Ã©lÃ¨ve, classe, matiÃ¨re en question) avec une infobulle.
 						echo $rep_groupe[$a]." - ";
 					}
     			}
     		} // fin du else
 
-		// Si tout est ok, on rentre la ligne dans la table sinon, on affiche le problème
+		// Si tout est ok, on rentre la ligne dans la table sinon, on affiche le problÃ¨me
 		$insert_csv = "INSERT INTO edt_cours
 						(`id_groupe`, `id_salle`, `jour_semaine`, `id_definie_periode`, `duree`, `heuredeb_dec`, `id_semaine`, `id_calendrier`, `modif_edt`, `login_prof`)
 						VALUES ('$rep_groupe[0]', '$rep_salle', '$rep_jour', '$rep_heuredebut', '$rep_duree', '$rep_heuredeb_dec', '$rep_typesemaine', '$rep_calendar', '0', '$prof_login')";
-			// On vérifie que les items existent
+			// On vÃ©rifie que les items existent
 		if ($rep_groupe[0] != "" AND $rep_jour != "" AND $rep_heuredebut != "" AND $probleme == "") {
 			$req_insert_csv = mysql_query($insert_csv);
-			// Si l'utilisateur décide de ne pas voir le suivi de ses entrées, on n'affiche rien
+			// Si l'utilisateur dÃ©cide de ne pas voir le suivi de ses entrÃ©es, on n'affiche rien
 			if ($aff_infos == "oui") {
 				echo "<br /><span class=\"accept\">".$message2."Cours enregistr&eacute;</span>\n";
 			} else {
@@ -237,38 +237,38 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
 			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi :</span>\n".$message."(".$message1.")".$probleme.".";
 			$compter_echecs = $compter_echecs++;
 		}
-    	//echo $rep_groupe[0]." salle n°".$tab[4]."(id n° ".$rep_salle["id_salle"]." ) le ".$rep_jour." dans le créneau dont l'id est ".$rep_heuredebut." et pour une durée de ".$rep_duree." demis-créneaux et le calend =".$rep_calendar.".";
+    	//echo $rep_groupe[0]." salle nÂ°".$tab[4]."(id nÂ° ".$rep_salle["id_salle"]." ) le ".$rep_jour." dans le crÃ©neau dont l'id est ".$rep_heuredebut." et pour une durÃ©e de ".$rep_duree." demis-crÃ©neaux et le calend =".$rep_calendar.".";
 	} // while
-			} // else du début
+			} // else du dÃ©but
 		fclose($fp);
 
-		// Si tous les cours ont été enregistrés, on affiche que tant de cours ont été enregistrés.
+		// Si tous les cours ont Ã©tÃ© enregistrÃ©s, on affiche que tant de cours ont Ã©tÃ© enregistrÃ©s.
 if ($aff_infos != "oui") {
-	// On vérifie $compter_echec
+	// On vÃ©rifie $compter_echec
 	if ($compter_echecs == 2) {
 		$aff_nbr = $nbre - 1;
-		echo "<br /><p class=\"accept\">Les ".$aff_nbr." cours ont bien été enregistrés.</p>";
+		echo "<br /><p class=\"accept\">Les ".$aff_nbr." cours ont bien Ã©tÃ© enregistrÃ©s.</p>";
 	}
 }
 
 		// on n'affiche plus le reste de la page
 		$aff_depart = "non";
-		echo "<hr /><a href=\"./edt_init_csv.php\">Revenir à l'initialisation par csv.</a>";
+		echo "<hr /><a href=\"./edt_init_csv.php\">Revenir Ã  l'initialisation par csv.</a>";
 	} // if ... == "g_edt.csv")
 	else
-	echo 'Ce n\'est pas le bon nom de fichier, revenez en arrière en <a href="edt_init_csv.php">cliquant ici</a> !';
+	echo 'Ce n\'est pas le bon nom de fichier, revenez en arriÃ¨re en <a href="edt_init_csv.php">cliquant ici</a> !';
 } // if ($action == "upload_file")
 
 
 	// On s'occupe maintenant du fichier des salles
 	if ($action == "upload_file_salle") {
-        // On vérifie le nom du fichier...
+        // On vÃ©rifie le nom du fichier...
         if(strtolower($csv_file['name']) == "g_salles.csv") {
 
             // Le nom est ok. On ouvre le fichier
             $fp = fopen($csv_file['tmp_name'],"r");
 
-            // A partir de là, on vide la table salle_cours
+            // A partir de lÃ , on vide la table salle_cours
             if ($truncate_salles == "oui") {
             	$vider_table = mysql_query("TRUNCATE TABLE salle_cours");
             }
@@ -284,14 +284,14 @@ if ($aff_infos != "oui") {
 				while($tab_salle = fgetcsv($fp, 1000, ";")) {
 					$numero = htmlentities($tab_salle[0]);
 					$nom_brut_salle = htmlentities($tab_salle[1]);
-				// On ne garde que les 30 premiers caractères du nom de la salle
+				// On ne garde que les 30 premiers caractÃ¨res du nom de la salle
 				$nom_salle = substr($nom_brut_salle, 0, 30);
 					if ($nom_salle == "") {
 						$affnom_salle = 'Sans nom';
 					} else {
 						$affnom_salle = $nom_salle;
 					}
-				// On lance la requête pour insérer les nouvelles salles
+				// On lance la requÃªte pour insÃ©rer les nouvelles salles
 				$req_insert_salle = mysql_query("INSERT INTO salle_cours (`numero_salle`, `nom_salle`) VALUES ('$numero', '$nom_salle')");
 					if (!$req_insert_salle) {
 						echo "La salle : ".$nom_salle." portant le num&eacute;ro : ".$numero." n'a pas &eacute;t&eacute; enregistr&eacute;e.<br />";
@@ -303,7 +303,7 @@ if ($aff_infos != "oui") {
 		fclose($fp);
 			// on n'affiche plus le reste de la page
 		$aff_depart = "non";
-		echo "<hr /><a href=\"./edt_init_csv.php\">Revenir à l'initialisation par csv.</a>";
+		echo "<hr /><a href=\"./edt_init_csv.php\">Revenir Ã  l'initialisation par csv.</a>";
 
 		} //if(strtolower($csv_file['name']) =....
 		else {
@@ -314,7 +314,7 @@ if ($aff_infos != "oui") {
 		}
 	} // if ($action == "upload_file_salle")
 
-	// On précise l'état du display du div aff_init_csv en fonction de $aff_depart
+	// On prÃ©cise l'Ã©tat du display du div aff_init_csv en fonction de $aff_depart
 	if ($aff_depart == "oui") {
 		$aff_div_csv = "block";
 	} elseif ($aff_depart == "non") {
@@ -323,14 +323,14 @@ if ($aff_infos != "oui") {
 		$aff_div_csv = "block";
 	}
 
-	// Pour la liste de <p> de l'aide id="aide_initcsv", on précise les contenus
+	// Pour la liste de <p> de l'aide id="aide_initcsv", on prÃ©cise les contenus
 		$forme_matiere = mysql_fetch_array(mysql_query("SELECT matiere, nom_complet FROM matieres"));
 			$aff1_forme_matiere = $forme_matiere["matiere"];
 			$aff2_forme_matiere = $forme_matiere["nom_complet"];
 	$contenu_matiere = "Attention de bien respecter le nom court utilis&eacute; dans Gepi. Il est de la forme $aff1_forme_matiere pour $aff2_forme_matiere.";
 		$forme_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '1'"));
 		$aff_forme_classe = $forme_classe["classe"];
-		// La liste des créneaux
+		// La liste des crÃ©neaux
 				$aff_liste_creneaux = "";
 		$sql_creneaux = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause'");
 		$nbre_creneaux = mysql_num_rows($sql_creneaux);
@@ -338,9 +338,9 @@ if ($aff_infos != "oui") {
 				$liste_creneaux[$a] = mysql_result($sql_creneaux, $a, "nom_definie_periode");
 				$aff_liste_creneaux .= $liste_creneaux[$a]." - ";
 			}
-		// Afficher les différents types de semaine : $aff_type_semaines
+		// Afficher les diffÃ©rents types de semaine : $aff_type_semaines
 		$aff_type_semaines = "";
-		$sql_semaines = mysql_query("SELECT DISTINCT type_edt_semaine FROM edt_semaines") or die ('Erreur dans la requête [Select distinct] : '.mysql_error());
+		$sql_semaines = mysql_query("SELECT DISTINCT type_edt_semaine FROM edt_semaines") or die ('Erreur dans la requÃªte [Select distinct] : '.mysql_error());
 		$nbre_types = mysql_num_rows($sql_semaines);
 			for($b=0; $b < $nbre_types; $b++) {
 				$liste_types[$b] = mysql_result($sql_semaines, $b, "type_edt_semaine");
@@ -349,12 +349,12 @@ if ($aff_infos != "oui") {
 				}
 				$aff_type_semaines .= $liste_types[$b]." - ";
 			}
-		// Afficher le nom des différentes périodes du calendrier
+		// Afficher le nom des diffÃ©rentes pÃ©riodes du calendrier
 		$aff_calendrier = "";
-		$sql_calendar = mysql_query("SELECT nom_calendrier FROM edt_calendrier") or die ('Erreur dans la requête nom_calendrier :'.mysql_error());
+		$sql_calendar = mysql_query("SELECT nom_calendrier FROM edt_calendrier") or die ('Erreur dans la requÃªte nom_calendrier :'.mysql_error());
 		$nbre_calendar = mysql_num_rows($sql_calendar);
 			if ($nbre_calendar === 0) {
-				$aff_calendrier = "<span class=\"red\">Vous n'avez pas d&eacute;fini de périodes de cours.</span>";
+				$aff_calendrier = "<span class=\"red\">Vous n'avez pas d&eacute;fini de pÃ©riodes de cours.</span>";
 			} else {
 				for ($c=0; $c < $nbre_calendar; $c++) {
 					$liste_calendar[$c] = mysql_result($sql_calendar, $c, "nom_calendrier");
@@ -383,7 +383,7 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 	<h4 class="refus">Troisi&egrave;me &eacute;tape</h4>
 	<p>Attention, cette initialisation efface toutes les donn&eacute;es concernant les salles d&eacute;j&agrave; pr&eacute;sentes sauf si vous d&eacute;cochez le bouton.
 	Pour les salles de votre &eacute;tablissement, vous devez fournir un fichier csv. Vous pourrez ensuite en ajouter, en supprimer ou modifier leur nom dans le menu Gestion des salles.</p>
-	<p>Les champs suivants doivent être pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
+	<p>Les champs suivants doivent Ãªtre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 	<ol>
 		<li>num&eacute;ro salle (5 caract&egrave;res max.)</li>
 		<li>nom salle (30 caract&egrave;res max.)</li>
@@ -425,7 +425,7 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 	 il faut pr&eacute;c&eacute;der le nom du cr&eacute;neau par le pr&eacute;fixe d_ (ex : d_M1 pour M1).</p>
 	<p>La dur&eacute;e s'exprime en nombre de cr&eacute;neaux occup&eacute;s. Pour les cours qui durent un cr&eacute;neau et demi,
 	il faut utiliser la forme "1.5" -</p>
-	<p>Le type de semaine est &eacute;gal à "0" pour les cours se d&eacute;roulant toutes les semaines. Pour les autres cours,
+	<p>Le type de semaine est &eacute;gal Ã  "0" pour les cours se d&eacute;roulant toutes les semaines. Pour les autres cours,
 	pr&eacute;cisez entre ces types : <?php echo $aff_type_semaines; ?>.</p>
 	<p>Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez le nom de la p&eacute;riode de cours.
 	(<?php echo $aff_calendrier; ?>)<br /> Pour les autres cours, ce champ doit &ecirc;tre &eacute;gal &agrave; "0".</p>
@@ -444,7 +444,7 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 		<li>Nom de la p&eacute;riode de cours</li>
 	</ol>
 
-	<p>Veuillez préciser le nom complet du fichier <b>g_edt.csv</b>.</p>
+	<p>Veuillez prÃ©ciser le nom complet du fichier <b>g_edt.csv</b>.</p>
 		<form enctype="multipart/form-data" action="edt_init_csv.php" method="post">
 			<input type="hidden" name="action" value="upload_file" />
 			<input type="hidden" name="initialiser" value="ok" />

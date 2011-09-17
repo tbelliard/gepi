@@ -2,7 +2,7 @@
 /**
  * Gestion des cahiers de textes
  * 
- * $_POST['activer'] activation/désactivation
+ * $_POST['activer'] activation/dÃ©sactivation
  * $_POST['export_cn_ods'] autorisation de l'export au format OD
  * $_POST['referentiel_note'] referentiel de note
  * $_POST['note_autre_que_sur_referentiel'] note autre que sur referentiel
@@ -61,7 +61,7 @@ if (!checkAccess()) {
 }
 
 /******************************************************************
- *    Enregistrement des variables passées en $_POST si besoin
+ *    Enregistrement des variables passÃ©es en $_POST si besoin
  ******************************************************************/
 $msg = '';
 $post_reussi=FALSE;
@@ -70,7 +70,7 @@ if(isset($_POST['is_posted'])) {
 	check_token();
 
 	if (isset($_POST['activer'])) {
-		if (!saveSetting("active_carnets_notes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		if (!saveSetting("active_carnets_notes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 	}
 
 	if (isset($_POST['export_cn_ods'])) {
@@ -109,7 +109,7 @@ if(isset($_POST['is_posted'])) {
 
 	if (isset($_POST['sacocheUrl'])) {
 		$sacocheUrl = $_POST['sacocheUrl'];
-		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, strlen($sacocheUrl)-1);} //on enleve le / a  la fin
+		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, strlen($sacocheUrl)-1);} //on enleve le / aÂ  la fin
 	  	saveSetting("sacocheUrl", $_POST['sacocheUrl']);
 	}
 
@@ -121,19 +121,19 @@ if(isset($_POST['is_posted'])) {
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')){
-  $msg = "Les modifications ont été enregistrées !";
+  $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
   $post_reussi=TRUE;
 }
 
 // on demande une validation si on quitte sans enregistrer les changements
-$messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?";
+$messageEnregistrer="Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?";
 /****************************************************************
                      HAUT DE PAGE
 ****************************************************************/
 
 // ====== Inclusion des balises head et du bandeau =====
 /**
- * Entête de la page
+ * EntÃªte de la page
  */
 include_once("../lib/header_template.inc");
 
@@ -142,7 +142,7 @@ include_once("../lib/header_template.inc");
 ****************************************************************/
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 
 /****************************************************************
 			BAS DE PAGE
@@ -152,20 +152,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/cahier_notes_admin/index_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 /**
  * Inclusion du gabarit
  */

@@ -32,7 +32,7 @@ class EdtHelper {
    public static $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 
  /**
-   * Renvoi vrai ou faux selon que l'établissement est ouvert à date et l'heure indiquée
+   * Renvoi vrai ou faux selon que l'Ã©tablissement est ouvert Ã  date et l'heure indiquÃ©e
    *
    * @param      mixed $dt
    * @return boolean
@@ -47,7 +47,7 @@ class EdtHelper {
 
 
   /**
-   * Renvoi vrai ou faux selon que l'établissement est ouvert à date (jour) indiquée
+   * Renvoi vrai ou faux selon que l'Ã©tablissement est ouvert Ã  date (jour) indiquÃ©e
    *
    * @param      dateTime $dt
    * @return boolean false/true
@@ -56,15 +56,15 @@ class EdtHelper {
             $jour_semaine = EdtHelper::$semaine_declaration[$dt->format("w")];
 	    $horaire_tab = EdtHorairesEtablissementPeer::retrieveAllEdtHorairesEtablissementArrayCopy();
             if (!isset($horaire_tab[$jour_semaine])) {
-                //etab fermé
+                //etab fermÃ©
                 return false;
             }
 
-            //est-ce une période ouverte
+            //est-ce une pÃ©riode ouverte
             $edt_periode_courante = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($dt);
             if ($edt_periode_courante != null
                     && ($edt_periode_courante->getEtabfermeCalendrier() == 0 || $edt_periode_courante->getEtabvacancesCalendrier() == 1)) {
-                //etab fermé
+                //etab fermÃ©
                 return false;
             }
 
@@ -72,7 +72,7 @@ class EdtHelper {
     }
 
  /**
-   * Renvoi vrai ou faux selon que l'établissement est ouvert à cette horaire (sans se préocupper des vacances)
+   * Renvoi vrai ou faux selon que l'Ã©tablissement est ouvert Ã  cette horaire (sans se prÃ©ocupper des vacances)
    *
    * @param      mixed $dt
    * @return boolean
@@ -87,7 +87,7 @@ class EdtHelper {
             }
             if ($dt->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')
                     ||	$dt->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
-                //etab fermé
+                //etab fermÃ©
                 return false;
             }
 
@@ -95,8 +95,8 @@ class EdtHelper {
     }
     
    /**
-   * Renvoi le premier jour de l'année scolaire sous forme d'objet DateTime
-   * @return     DateTime      $DateDebutAnneeScolaire premier septembre de l'année scolaire en cours à 00:00:00 (bascule d'annee semaine 33)
+   * Renvoi le premier jour de l'annÃ©e scolaire sous forme d'objet DateTime
+   * @return     DateTime      $DateDebutAnneeScolaire premier septembre de l'annÃ©e scolaire en cours Ã  00:00:00 (bascule d'annee semaine 33)
    *
    */
     public static function getPremierJourAnneeScolaire($v = 'now'){
@@ -123,7 +123,7 @@ class EdtHelper {
 	    }
 	    
         $annee_en_cours = $dt->format('Y');
-        if ($dt->format('W') < 33 || $dt->format('z') < 10) {//on rajoute $dt->format('z') < 10 pour le jour de l'année, sinon un 1 janvier peut etre semaine 52
+        if ($dt->format('W') < 33 || $dt->format('z') < 10) {//on rajoute $dt->format('z') < 10 pour le jour de l'annÃ©e, sinon un 1 janvier peut etre semaine 52
             $annee_en_cours=$annee_en_cours-1;
         } 
         $dt->setDate($annee_en_cours,8,31);
@@ -132,9 +132,9 @@ class EdtHelper {
     } 
     
   /**
-   * Renvoi le dernier jour de l'année scolaire sous forme d'objet DateTime
+   * Renvoi le dernier jour de l'annÃ©e scolaire sous forme d'objet DateTime
    *    
-   * @return     DateTime      $DateDebutAnneeScolaire 31 aout de l'année scolaire en cours à 23:59:59 (bascule d'annee semaine 33)
+   * @return     DateTime      $DateDebutAnneeScolaire 31 aout de l'annÃ©e scolaire en cours Ã  23:59:59 (bascule d'annee semaine 33)
    */
     public static function getDernierJourAnneeScolaire($v = 'now'){
     	$dt = EdtHelper::getPremierJourAnneeScolaire($v);
@@ -143,7 +143,7 @@ class EdtHelper {
     } 
     
    /**
-   * Renvoi le nombre de demi-journées ouvertes entre deux dates de debut ou de fin (ou premier et dernier jour de l'année scolaire si les dates ne sont pas spécifiées
+   * Renvoi le nombre de demi-journÃ©es ouvertes entre deux dates de debut ou de fin (ou premier et dernier jour de l'annÃ©e scolaire si les dates ne sont pas spÃ©cifiÃ©es
    *
    * @param      DateTime $date_debut 
    * @param      DateTime $date_fin
@@ -164,17 +164,17 @@ class EdtHelper {
             $date_fin_clone=clone $date_fin;
         }
         $date_fin_clone->setTime(23, 59, 59);
-        // on va tester demi journée par demi journée si l'étab est ouvert
+        // on va tester demi journÃ©e par demi journÃ©e si l'Ã©tab est ouvert
         
         $nbre_demi_journees_etab_ouvert=0;
         while ($date_debut_clone->format('U') < $date_fin_clone->format('U')){
             $date_clone= clone $date_debut_clone;            
             if($date_debut_clone->format('h:i')=="00:00"){                
-                $date_clone->setTime(09,00,00); //on met 9 heures au cas ou un étab commence à 8h30 par exemple                
+                $date_clone->setTime(09,00,00); //on met 9 heures au cas ou un Ã©tab commence Ã  8h30 par exemple                
             }elseif($date_debut_clone->format('h:i')=="12:00"){
-                $date_clone->setTime(15,00,00);//on met 15 heures pour être dans la demi journée de l'après-midi
+                $date_clone->setTime(15,00,00);//on met 15 heures pour Ãªtre dans la demi journÃ©e de l'aprÃ¨s-midi
             }else {
-                echo'Il y a un problème sur les heures';
+                echo'Il y a un problÃ¨me sur les heures';
                 die();
             }
             if(EdtHelper::isEtablissementOuvert($date_clone)){

@@ -20,7 +20,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 //$accessibilite="y";
 
 //https://127.0.0.1/steph/gepi-trunk/documents/acces_cdt_BIDON/acces_cdt.php
@@ -65,9 +65,9 @@ if (!checkAccess()) {
 }
 */
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 /*
@@ -85,7 +85,7 @@ $cal3 = new Calendrier("formulaire", "date2_acces");
 //=======================
 
 //=======================
-// Pour éviter de refaire le choix des dates en revenant ici, on utilise la SESSION...
+// Pour Ã©viter de refaire le choix des dates en revenant ici, on utilise la SESSION...
 $annee = strftime("%Y");
 $mois = strftime("%m");
 $jour = strftime("%d");
@@ -100,7 +100,7 @@ $action=isset($_POST['action']) ? $_POST['action'] : "export_zip";
 require($prefixe_arbo_acces_cdt."/cahier_texte_2/cdt_lib.php");
 
 //**************** EN-TETE *****************
-$titre_page = "Cahier de textes - Accès";
+$titre_page = "Cahier de textes - AccÃ¨s";
 //require_once($prefixe_arbo_acces_cdt."/lib/header.inc");
 $n_arbo=2;
 echo html_entete('Cahier de textes',$n_arbo,'n',$login_prof);
@@ -112,7 +112,7 @@ echo html_entete('Cahier de textes',$n_arbo,'n',$login_prof);
 // Le choix des groupes est fait
 //==============================
 
-// Préparation de l'arborescence
+// PrÃ©paration de l'arborescence
 
 $gepiSchoolName=getSettingValue('gepiSchoolName');
 $gepiYear=getSettingValue('gepiYear');
@@ -120,7 +120,7 @@ $gepiYear=getSettingValue('gepiYear');
 /*
 $dirname=get_user_temp_directory();
 if(!$dirname) {
-	echo "<p style='color:red;'>Problème avec le dossier temporaire.</p>\n";
+	echo "<p style='color:red;'>ProblÃ¨me avec le dossier temporaire.</p>\n";
 	require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");
 	die();
 }
@@ -137,7 +137,7 @@ else {
 //echo "<div id='div_archive_zip'></div>\n";
 //echo "<p class='bold'>Affichage des cahiers de textes extraits</p>\n";
 
-// Récupérer le max de getSettingValue("begin_bookings") et $display_date_debut
+// RÃ©cupÃ©rer le max de getSettingValue("begin_bookings") et $display_date_debut
 $tmp_tab=explode("/",$display_date_debut);
 $jour=$tmp_tab[0];
 $mois=$tmp_tab[1];
@@ -145,7 +145,7 @@ $annee=$tmp_tab[2];
 $date_debut_tmp=mktime(0,0,0,$mois,$jour,$annee);
 $timestamp_debut_export=max(getSettingValue("begin_bookings"),$date_debut_tmp);
 
-// Récupérer le min de getSettingValue("end_bookings") et $display_date_fin
+// RÃ©cupÃ©rer le min de getSettingValue("end_bookings") et $display_date_fin
 $tmp_tab=explode("/",$display_date_fin);
 $jour=$tmp_tab[0];
 $mois=$tmp_tab[1];
@@ -165,13 +165,13 @@ if($action=='acces') {
 	$dirname = "acces_cdt_".$r;
 	$create = mkdir("../documents/".$dirname, 0700);
 	if(!$create) {
-		echo "<p style='color:red;'>Problème avec le dossier temporaire../documents/".$dirname."</p>\n";
+		echo "<p style='color:red;'>ProblÃ¨me avec le dossier temporaire../documents/".$dirname."</p>\n";
 		require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");
 		die();
 	}
 
-	// Enregistrement dans la base de cet accès ouvert
-	// Il faut y stocker la liste des login profs concernés pour afficher en page d'accueil la présence d'un cdt ouvert en consultation
+	// Enregistrement dans la base de cet accÃ¨s ouvert
+	// Il faut y stocker la liste des login profs concernÃ©s pour afficher en page d'accueil la prÃ©sence d'un cdt ouvert en consultation
 	$date1_acces="$annee-$mois-$jour $heure:$minute:00";
 	$date2_acces=isset($_POST['date2_acces']) ? $_POST['date2_acces'] : "";
 
@@ -197,14 +197,14 @@ if($action=='acces') {
 		$login_prof=$_SESSION['login'];
 	}
 
-	// Préparation de l'arborescence
+	// PrÃ©paration de l'arborescence
 	//$nom_export="export_cdt_".$login_prof."_".strftime("%Y%m%d_%H%M%S");
 /*
 	if($action=='acces') {
 		$chemin_acces="documents/".$dirname."/".$nom_export."/index.html";
 		$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
 		if(!$res) {
-			echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
+			echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accÃ¨s.</p>\n";
 			require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");
 			die();
 		}
@@ -215,7 +215,7 @@ if($action=='acces') {
 
 	$chaine_id_groupe="";
 
-	// Générer la page d'index
+	// GÃ©nÃ©rer la page d'index
 	$html="";
 	//$html.=html_entete();
 	$html.="<h1 style='text-align:center;'>Cahiers de textes $chaine_info_prof<br />(".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
@@ -255,16 +255,16 @@ if($action=='acces') {
 	//$html.=html_pied_de_page();
 	
 	//================================================================
-	// Affichage dans la page d'export de ce qui va être fourni en zip
+	// Affichage dans la page d'export de ce qui va Ãªtre fourni en zip
 	echo "<a name='affichage_page_index'></a>";
 	echo "<div style='border: 1px solid black;'>\n";
 	echo $html;
 	echo "</div>\n";
 
-	// Précaution
+	// PrÃ©caution
 	$chaine_id_groupe=preg_replace("/^,/","",$chaine_id_groupe);
 
-	// Correctif des liens tels qu'affichés dans la page
+	// Correctif des liens tels qu'affichÃ©s dans la page
 	echo "<script type='text/javascript'>
 		tab_id_groupe=new Array($chaine_id_groupe);
 		for(i=0;i<tab_id_groupe.length;i++) {
@@ -294,7 +294,7 @@ if($action=='acces') {
 
 echo "<hr width='200px' />\n";
 
-// Dans la page générée, permettre de masquer via JavaScript telle ou telle catégorie Notices ou devoirs,...
+// Dans la page gÃ©nÃ©rÃ©e, permettre de masquer via JavaScript telle ou telle catÃ©gorie Notices ou devoirs,...
 for($i=0;$i<count($id_groupe);$i++) {
 	//echo "\$id_groupe[$i]=$id_groupe[$i]<br />";
 
@@ -428,7 +428,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 }
 
 
-// Générer des fichiers URL_documents.txt (URL seule), URL_documents.csv (chemin;URL), script bash/batch/auto-it pour télécharger en créant/parcourant l'arborescence des documents
+// GÃ©nÃ©rer des fichiers URL_documents.txt (URL seule), URL_documents.csv (chemin;URL), script bash/batch/auto-it pour tÃ©lÃ©charger en crÃ©ant/parcourant l'arborescence des documents
 /*
 if(isset($_SERVER['HTTP_REFERER'])) {
 	$tmp=explode("?",$_SERVER['HTTP_REFERER']);
@@ -452,7 +452,7 @@ if($action=='export_zip') {
 	if($v_list==0) {
 		echo "<p>Cahiers de textes extraits&nbsp;: <a href='$dossier_export'>$dossier_export</a></p>\n";
 	
-		echo "<p style='color:red;'>ERREUR lors de la création de l'archive&nbsp;:<br />";
+		echo "<p style='color:red;'>ERREUR lors de la crÃ©ation de l'archive&nbsp;:<br />";
 		echo $archive->errorInfo(true);
 		echo "</p>\n";
 	}
@@ -467,7 +467,7 @@ if($action=='export_zip') {
 </script>\n";
 	}
 
-	// On fait le ménage
+	// On fait le mÃ©nage
 	for($i=0;$i<count($tab_fichiers_a_zipper);$i++) {
 		//echo "unlink($tab_fichiers_a_zipper[$i]);<br />";
 		unlink($tab_fichiers_a_zipper[$i]);
@@ -479,7 +479,7 @@ if($action=='export_zip') {
 }
 elseif($action=='acces') {
 
-	$chaine_info_texte="<br /><p><b>Information&nbsp;:</b><br />Le(s) cahier(s) de textes extrait(s) est(sont) accessible(s) sans authentification à l'adresse suivante&nbsp;:<br /><a href='$dossier_export/index.html' target='_blank'>$dossier_export/index.html</a><br />Consultez la page, copiez l'adresse en barre d'adresse et transmettez la à qui vous souhaitez.<br />N'oubliez pas de supprimer cet accès lorsqu'il ne sera plus utile.<br />&nbsp;</p>";
+	$chaine_info_texte="<br /><p><b>Information&nbsp;:</b><br />Le(s) cahier(s) de textes extrait(s) est(sont) accessible(s) sans authentification Ã  l'adresse suivante&nbsp;:<br /><a href='$dossier_export/index.html' target='_blank'>$dossier_export/index.html</a><br />Consultez la page, copiez l'adresse en barre d'adresse et transmettez la Ã  qui vous souhaitez.<br />N'oubliez pas de supprimer cet accÃ¨s lorsqu'il ne sera plus utile.<br />&nbsp;</p>";
 
 	echo $chaine_info_texte;
 
@@ -529,7 +529,7 @@ $EspaceY = HauteurPage - $marge_haut - $marge_bas;
 $X_tableau = $marge_gauche;
 
 
-//entête classe et année scolaire
+//entÃªte classe et annÃ©e scolaire
 $L_entete_classe = 65;
 $H_entete_classe = 14;
 $X_entete_classe = $EspaceX - $L_entete_classe + $marge_gauche;

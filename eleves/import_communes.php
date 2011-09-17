@@ -61,7 +61,7 @@ function sexeMF($nombre) {
 */
 
 function affiche_debug($texte) {
-	// Passer à 1 la variable pour générer l'affichage des infos de debug...
+	// Passer Ã  1 la variable pour gÃ©nÃ©rer l'affichage des infos de debug...
 	$debug=0;
 	if($debug==1) {
 		echo "<font color='green'>".$texte."</font>";
@@ -69,7 +69,7 @@ function affiche_debug($texte) {
 	}
 }
 
-// Initialisation du répertoire actuel de sauvegarde
+// Initialisation du rÃ©pertoire actuel de sauvegarde
 $dirname = getSettingValue("backup_directory");
 
 function info_debug($texte) {
@@ -197,7 +197,7 @@ echo add_token_field();
 echo "</form>\n";
 		echo "</div>\n";
 
-		echo creer_div_infobulle("div_stop","","","Ce bouton permet s'il est coché d'interrompre les passages automatiques à la page suivante","",12,0,"n","n","y","n");
+		echo creer_div_infobulle("div_stop","","","Ce bouton permet s'il est cochÃ© d'interrompre les passages automatiques Ã  la page suivante","",12,0,"n","n","y","n");
 
 		echo "<script type='text/javascript'>
 	temporisation_chargement='ok';
@@ -276,26 +276,26 @@ echo "<p class=bold>";
 echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 //echo "</p>\n";
 
-// On fournit les fichiers CSV générés depuis les XML de SCONET...
+// On fournit les fichiers CSV gÃ©nÃ©rÃ©s depuis les XML de SCONET...
 //if (!isset($is_posted)) {
 if(!isset($step)) {
 	echo " | <a href=\"../utilitaires/import_pays.php\">Import des pays</a>";
 	echo "</p>\n";
 
-	echo "<h2>Import des communes de naissance des élèves</h2>\n";
+	echo "<h2>Import des communes de naissance des Ã©lÃ¨ves</h2>\n";
 
 	$sql="SELECT e.* FROM eleves e WHERE e.lieu_naissance='';";
 	$res=mysql_query($sql);
 	$nb_lieu_nais_non_renseignes=mysql_num_rows($res);
 	if($nb_lieu_nais_non_renseignes>0) {
 		if($nb_lieu_nais_non_renseignes==1) {
-			echo "<p>".$nb_lieu_nais_non_renseignes." lieu de naissance n'est pas renseigné&nbsp;: \n";
+			echo "<p>".$nb_lieu_nais_non_renseignes." lieu de naissance n'est pas renseignÃ©&nbsp;: \n";
 			$lig=mysql_fetch_object($res);
 			echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 			echo "</p>\n";
 		}
 		elseif($nb_lieu_nais_non_renseignes>1) {
-			echo "<p>".$nb_lieu_nais_non_renseignes." lieux de naissance ne sont pas renseignés&nbsp;: \n";
+			echo "<p>".$nb_lieu_nais_non_renseignes." lieux de naissance ne sont pas renseignÃ©s&nbsp;: \n";
 			$cpt=0;
 			while($lig=mysql_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
@@ -310,7 +310,7 @@ if(!isset($step)) {
 		// MODIFIER LA FICHE ELEVE POUR PERMETTRE LA SAISIE D'UNE COMMUNE ET FAIRE UNE RECHERCHE SUR LE CODE COMMUNE CORRESPONDANT DANS communes
 
 		if(getSettingValue('import_maj_xml_sconet')==1) {
-			echo "<p>Effectuez une <a href='../responsables/maj_import.php'>mise à jour depuis Sconet</a> pour renseigner les code_commune_insee des lieux de naissance des élèves.</p>\n";
+			echo "<p>Effectuez une <a href='../responsables/maj_import.php'>mise Ã  jour depuis Sconet</a> pour renseigner les code_commune_insee des lieux de naissance des Ã©lÃ¨ves.</p>\n";
 		}
 		echo "<p><br /></p>\n";
 
@@ -322,7 +322,7 @@ if(!isset($step)) {
 	$res=mysql_query($sql);
 	//if(mysql_num_rows($res)==0) {
 	if(mysql_num_rows($res)<=$nb_lieu_nais_non_renseignes) {
-		echo "<p>Tous les lieux de naissances saisis pour les élèves ont leur correspondant dans la table 'communes'.</p>\n";
+		echo "<p>Tous les lieux de naissances saisis pour les Ã©lÃ¨ves ont leur correspondant dans la table 'communes'.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -357,15 +357,15 @@ if(!isset($step)) {
 		echo "</p>\n";
 	}
 	else {
-		echo "<p>Tous les lieux de naissance dans une commune française sont renseignés.</p>\n";
+		echo "<p>Tous les lieux de naissance dans une commune franÃ§aise sont renseignÃ©s.</p>\n";
 	}
 
 	if($retour_commune_etrangere!='') {
-		echo "<p>Les lieux de naissance dans des communes étrangères sont&nbsp;:</p>\n";
+		echo "<p>Les lieux de naissance dans des communes Ã©trangÃ¨res sont&nbsp;:</p>\n";
 		echo "<p style='margin-left:3em;'>";
 		echo $retour_commune_etrangere;
 		echo "</p>\n";
-		echo "<p>Si ces lieux sont correctement renseignés, vous n'avez rien à faire.<br />Sinon... il faut attendre qu'une page soit développée pour remplir les lieux de naissance à l'étranger en dehors de la méthode 'Import Sconet'.</p>\n";
+		echo "<p>Si ces lieux sont correctement renseignÃ©s, vous n'avez rien Ã  faire.<br />Sinon... il faut attendre qu'une page soit dÃ©veloppÃ©e pour remplir les lieux de naissance Ã  l'Ã©tranger en dehors de la mÃ©thode 'Import Sconet'.</p>\n";
 	}
 
 	echo "<p><br /></p>\n";
@@ -374,8 +374,8 @@ if(!isset($step)) {
 		echo "<p>Vous allez importer les correspondances code_commune_insee/nom de commune depuis un fichier CSV.<br />
 Ce fichier est volumineux (<i>la France compte quelques communes;o</i>).<br />
 Il serait dommage de faire enfler inutilement votre base en la remplissant avec toutes les communes de France.<br />
-Cette page va donc parcourir le fichier, remplir une table temporaire et n'en retenir finalement que les communes correspondant à vos élèves.<br />
-Le fichier à fournir ci-dessous peut être téléchargé ici&nbsp;: <a href='https://www.sylogix.org/attachments/647/communes1102.csv.zip'>https://www.sylogix.org/attachments/647/communes1102.csv.zip</a></p>\n";
+Cette page va donc parcourir le fichier, remplir une table temporaire et n'en retenir finalement que les communes correspondant Ã  vos Ã©lÃ¨ves.<br />
+Le fichier Ã  fournir ci-dessous peut Ãªtre tÃ©lÃ©chargÃ© ici&nbsp;: <a href='https://www.sylogix.org/attachments/647/communes1102.csv.zip'>https://www.sylogix.org/attachments/647/communes1102.csv.zip</a></p>\n";
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	
@@ -383,10 +383,10 @@ Le fichier à fournir ci-dessous peut être téléchargé ici&nbsp;: <a href='https:/
 		echo "<input type=hidden name='step' value='0' />\n";
 		//echo "<input type=hidden name='mode' value='1' />\n";
 		if ($gepiSettings['unzipped_max_filesize']>=0) {
-			echo "<p>Sélectionnez le fichier <b>communes.csv.zip</b>&nbsp;:<br />\n";
+			echo "<p>SÃ©lectionnez le fichier <b>communes.csv.zip</b>&nbsp;:<br />\n";
 		}
 		else {
-			echo "<p>Veuillez dézipper le fichier (<i>évitez de l'ouvrir/modifier/enregistrer avec un tableur</i>) et fournissez le fichier <b>communes.csv</b>&nbsp;:<br />\n";
+			echo "<p>Veuillez dÃ©zipper le fichier (<i>Ã©vitez de l'ouvrir/modifier/enregistrer avec un tableur</i>) et fournissez le fichier <b>communes.csv</b>&nbsp;:<br />\n";
 		}
 		echo "<input type=\"file\" size=\"80\" name=\"communes_csv_file\" /><br />\n";
 	
@@ -394,7 +394,7 @@ Le fichier à fournir ci-dessous peut être téléchargé ici&nbsp;: <a href='https:/
 		//==============================
 		// AJOUT pour tenir compte de l'automatisation ou non:
 		//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
-		echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
+		echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> DÃ©sactiver le mode automatique.</label></p>\n";
 		//==============================
 
 		echo add_token_field();
@@ -418,10 +418,10 @@ else {
 
 	//echo "\$step=$step<br />\n";
 
-	// On va uploader le fichier CSV dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
+	// On va uploader le fichier CSV dans le tempdir de l'utilisateur (administrateur, ou scolaritÃ© pour les mÃ j Sconet)
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir) {
-		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?</p>\n";
 		// Il ne faut pas aller plus loin...
 		// SITUATION A GERER
 	}
@@ -436,15 +436,15 @@ else {
 	//if(!isset($_POST['step'])) {
 	switch($step) {
 		case 0:
-			// Affichage des informations élèves
+			// Affichage des informations Ã©lÃ¨ves
 			echo "<h2>Transfert du fichier des communes</h2>\n";
 
 			$csv_file = isset($_FILES["communes_csv_file"]) ? $_FILES["communes_csv_file"] : NULL;
 
 			if(!is_uploaded_file($csv_file['tmp_name'])) {
-				echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+				echo "<p style='color:red;'>L'upload du fichier a Ã©chouÃ©.</p>\n";
 
-				echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+				echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 				echo "post_max_size=$post_max_size<br />\n";
 				echo "upload_max_filesize=$upload_max_filesize<br />\n";
 				echo "</p>\n";
@@ -456,9 +456,9 @@ else {
 			}
 			else {
 				if(!file_exists($csv_file['tmp_name'])) {
-					echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+					echo "<p style='color:red;'>Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.</p>\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "et le volume de ".$csv_file['name']." serait<br />\n";
@@ -470,13 +470,13 @@ else {
 					die();
 				}
 
-				echo "<p>Le fichier a été uploadé.</p>\n";
+				echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 
 				/*
 				echo "\$csv_file['tmp_name']=".$csv_file['tmp_name']."<br />\n";
 				echo "\$tempdir=".$tempdir."<br />\n";
 
-				echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+				echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 				echo "post_max_size=$post_max_size<br />\n";
 				echo "upload_max_filesize=$upload_max_filesize<br />\n";
 				echo "\$csv_file['size']=".volume_human($csv_file['size'])."<br />\n";
@@ -494,7 +494,7 @@ else {
 
 				$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
 				// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
-				// $unzipped_max_filesize < 0    extraction zip désactivée
+				// $unzipped_max_filesize < 0    extraction zip dÃ©sactivÃ©e
 				if($unzipped_max_filesize>=0) {
 					$fichier_emis=$csv_file['name'];
 					$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
@@ -528,14 +528,14 @@ else {
 						//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 						if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dÃ©passe la limite paramÃ©trÃ©e (<i>$unzipped_max_filesize octets</i>).</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
 
 						$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 						if ($res_extract != 0) {
-							echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+							echo "<p>Le fichier uploadÃ© a Ã©tÃ© dÃ©zippÃ©.</p>\n";
 							$fichier_extrait=$res_extract[0]['filename'];
 							//echo "Fichier extrait: ".$fichier_extrait."<br />";
 							//unlink("$dest_file"); // Pour Wamp...
@@ -558,14 +558,14 @@ else {
 				//===============================================================
 
 				if(!$res_copy) {
-					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+					echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a Ã©chouÃ©.<br />VÃ©rifiez que l'utilisateur ou le groupe apache ou www-data a accÃ¨s au dossier temp/$tempdir</p>\n";
 					// Il ne faut pas aller plus loin...
 					// SITUATION A GERER
 					require("../lib/footer.inc.php");
 					die();
 				}
 				else {
-					echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+					echo "<p>La copie du fichier vers le dossier temporaire a rÃ©ussi.</p>\n";
 
 					$sql="TRUNCATE TABLE tempo2;";
 					$res0=mysql_query($sql);
@@ -633,8 +633,8 @@ else {
 			$fin_fichier='n';
 
 			$temoin_trouve=0;
-			// On ne va lire/traiter que les 100 premières lignes du fichier
-			// Le fichier en compte 38894... ça fait 389 passages si une commune recherchée est à la fin...
+			// On ne va lire/traiter que les 100 premiÃ¨res lignes du fichier
+			// Le fichier en compte 38894... Ã§a fait 389 passages si une commune recherchÃ©e est Ã  la fin...
 			$fich=fopen($dest_file,"r");
 			for($i=0;$i<$nblig;$i++) {
 				if(feof($fich)) {
@@ -657,7 +657,7 @@ else {
 					$commune=$tab[2];
 
 					if($temoin_trouve==0) {echo "<p>";}
-					echo "Lieu de naissance trouvé&nbsp;: $code_commune_insee -&gt; $commune<br />\n";
+					echo "Lieu de naissance trouvÃ©&nbsp;: $code_commune_insee -&gt; $commune<br />\n";
 
 					$sql="INSERT INTO communes SET code_commune_insee='$code_commune_insee', departement='$departement', commune='".addslashes($commune)."';";
 					//echo "$sql<br />\n";
@@ -678,29 +678,29 @@ else {
 			if($fin_fichier=='y') {
 				fclose($fich);
 				if($nb_eleves_a_traiter==0) {
-					echo "<p>Tous les lieux de naissance ont été trouvés.</p>\n";
+					echo "<p>Tous les lieux de naissance ont Ã©tÃ© trouvÃ©s.</p>\n";
 					unlink($dest_file);
 				}
 				else {
 					if($nb_eleves_a_traiter==1) {
-						echo "<p>Un lieu de naissance n'a pas été trouvé et le fichier communes.csv a été entièrement parcouru&nbsp;: \n";
+						echo "<p>Un lieu de naissance n'a pas Ã©tÃ© trouvÃ© et le fichier communes.csv a Ã©tÃ© entiÃ¨rement parcouru&nbsp;: \n";
 					}
 					else {
-						echo "<p>Le lieu de naissance n'a pas été trouvé pour $nb_eleves_a_traiter élèves et le fichier communes.csv a été entièrement parcouru (???)&nbsp;: ";
+						echo "<p>Le lieu de naissance n'a pas Ã©tÃ© trouvÃ© pour $nb_eleves_a_traiter Ã©lÃ¨ves et le fichier communes.csv a Ã©tÃ© entiÃ¨rement parcouru (???)&nbsp;: ";
 					}
 	
-					// A FAIRE: Lister les élèves
+					// A FAIRE: Lister les Ã©lÃ¨ves
 					$sql="SELECT e.login,e.nom,e.prenom,e.lieu_naissance, t.col2 FROM tempo2 t, eleves e WHERE e.login=t.col1 ORDER BY e.nom, e.prenom;";
 					$res=mysql_query($sql);
 					$cpt=0;
 					if(mysql_num_rows($res)==0) {
-						echo "Aucun élève trouvé";
+						echo "Aucun Ã©lÃ¨ve trouvÃ©";
 						echo ".</p>\n";
 					}
 					else {
-						echo "<table class='boireaus' summary=\"Tableau des élèves pour lequel le lieu de naissance n'est pas dans le CSV.\">\n";
+						echo "<table class='boireaus' summary=\"Tableau des Ã©lÃ¨ves pour lequel le lieu de naissance n'est pas dans le CSV.\">\n";
 						echo "<tr>\n";
-						echo "<th>Élève</th>\n";
+						echo "<th>Ã‰lÃ¨ve</th>\n";
 						echo "<th>Lieu</th>\n";
 						echo "</tr>\n";
 						$alt=1;
@@ -718,7 +718,7 @@ else {
 					}
 					//echo ".</p>\n";
 
-					echo "<p><b>NOTE</b>&nbsp;: Les élèves nés dans une commune étrangère peuvent apparaître comme non trouvés dans le fichier de communes.<br />Si les informations entre parenthèses sont correctes, il n'y a pas lieu de s'alarmer.</p>\n";
+					echo "<p><b>NOTE</b>&nbsp;: Les Ã©lÃ¨ves nÃ©s dans une commune Ã©trangÃ¨re peuvent apparaÃ®tre comme non trouvÃ©s dans le fichier de communes.<br />Si les informations entre parenthÃ¨ses sont correctes, il n'y a pas lieu de s'alarmer.</p>\n";
 				}
 			}
 			else {
@@ -733,18 +733,18 @@ else {
 				fclose($fich);
 
 				if($nb_eleves_a_traiter==0) {
-					echo "<p>Tous les lieux de naissance ont été trouvés.</p>\n";
+					echo "<p>Tous les lieux de naissance ont Ã©tÃ© trouvÃ©s.</p>\n";
 					unlink($dest_file);
 				}
 				else {
 					if($nb_eleves_a_traiter==1) {
-						echo "<p>Un lieu de naissance doit encore être recherché.</p>\n";
+						echo "<p>Un lieu de naissance doit encore Ãªtre recherchÃ©.</p>\n";
 					}
 					else {
-						echo "<p>Les lieux de naissance doivent encore être recherchés pour $nb_eleves_a_traiter élèves.</p>\n";
+						echo "<p>Les lieux de naissance doivent encore Ãªtre recherchÃ©s pour $nb_eleves_a_traiter Ã©lÃ¨ves.</p>\n";
 					}
 		
-					// Si on n'a pas trouvé tous les lieux de naissance manquants: Générer le code javascript pour relancer la boucle
+					// Si on n'a pas trouvÃ© tous les lieux de naissance manquants: GÃ©nÃ©rer le code javascript pour relancer la boucle
 	
 					$compteur++;
 	

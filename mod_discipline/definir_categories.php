@@ -36,18 +36,18 @@ if ($resultat_session == 'c') {
 $sql = "SELECT 1=1 FROM `droits` WHERE id='/mod_discipline/definir_categories.php';";
 $test = mysql_query($sql);
 if (mysql_num_rows($test) == 0) {
-    $sql = "INSERT INTO droits VALUES ( '/mod_discipline/definir_categories.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les catégories', '')";
+    $sql = "INSERT INTO droits VALUES ( '/mod_discipline/definir_categories.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir les catÃ©gories', '')";
     $test = mysql_query($sql);
 }
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les lieux', '');;";
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir les lieux', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -69,16 +69,16 @@ if (isset($suppr_categorie)) {
             $sql = "DELETE FROM s_categories WHERE id='$suppr_categorie[$i]';";
             $suppr = mysql_query($sql);
             if (!$suppr) {
-                //$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_lieu[$i].".<br />\n";
-                $msg.="ERREUR lors de la suppression de la catégorie n°" . $suppr_categorie[$i] . ".<br />\n";
+                //$msg.="ERREUR lors de la suppression de la qualitÃ© nÂ°".$suppr_lieu[$i].".<br />\n";
+                $msg.="ERREUR lors de la suppression de la catÃ©gorie nÂ°" . $suppr_categorie[$i] . ".<br />\n";
             } else {
-                $msg.="Suppression de la catégorie n°" . $suppr_categorie[$i] . ".<br />\n";
+                $msg.="Suppression de la catÃ©gorie nÂ°" . $suppr_categorie[$i] . ".<br />\n";
                 $sql = "UPDATE s_incidents SET id_categorie=0 WHERE id_categorie=" . $suppr_categorie[$i] . ";";
                 $res = mysql_query($sql);
                 if (!$res) {
-                    $msg.="ERREUR lors de la mise à jour des incidents de la catégorie supprimée !! <br />\n";
+                    $msg.="ERREUR lors de la mise Ã  jour des incidents de la catÃ©gorie supprimÃ©e !! <br />\n";
                 } else {
-                    $msg.="Mise à jour des incidents de la catégorie supprimée effectuée.<br />\n";
+                    $msg.="Mise Ã  jour des incidents de la catÃ©gorie supprimÃ©e effectuÃ©e.<br />\n";
                 }
             }
         }
@@ -133,7 +133,7 @@ if(isset($_POST['is_posted'])) {
 		$msg.="Erreur lors de l'enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes'<br />\n";
 	}
 	else {
-		$msg.="Enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes' effectué.<br />\n";
+		$msg.="Enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes' effectuÃ©.<br />\n";
 	}
 }
 
@@ -143,10 +143,10 @@ if(($DisciplineNaturesRestreintes!='y')&&($DisciplineNaturesRestreintes!='n')) {
 }
 */
 
-$themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-//$titre_page = "Sanctions: Définition des qualités";
-$titre_page = "Discipline: Définition des catégories";
+//$titre_page = "Sanctions: DÃ©finition des qualitÃ©s";
+$titre_page = "Discipline: DÃ©finition des catÃ©gories";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -157,24 +157,24 @@ echo "</p>\n";
 echo "<form enctype='multipart/form-data' action='" . $_SERVER['PHP_SELF'] . "' method='post' name='formulaire'>\n";
 echo add_token_field();
 
-//echo "<p class='bold'>Saisie des qualités dans un incident&nbsp;:</p>\n";
-echo "<p class='bold'>Saisie des catégories des incidents&nbsp;:</p>\n";
+//echo "<p class='bold'>Saisie des qualitÃ©s dans un incident&nbsp;:</p>\n";
+echo "<p class='bold'>Saisie des catÃ©gories des incidents&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt = 0;
 $sql = "SELECT * FROM s_categories ORDER BY categorie;";
 $res = mysql_query($sql);
 if (mysql_num_rows($res) == 0) {
-    //echo "<p>Aucune qualité n'est encore définie.</p>\n";
-    echo "<p>Aucune catégorie n'est encore définie.</p>\n";
+    //echo "<p>Aucune qualitÃ© n'est encore dÃ©finie.</p>\n";
+    echo "<p>Aucune catÃ©gorie n'est encore dÃ©finie.</p>\n";
 } else {
-    //echo "<p>Qualités existantes&nbsp;:</p>\n";
-    //echo "<table class='boireaus' border='1' summary='Tableau des qualités existantes'>\n";
-    echo "<p>Catégories existantes&nbsp;:</p>\n";
-    echo "<table class='boireaus' border='1' summary='Tableau des catégories existantes'>\n";
+    //echo "<p>QualitÃ©s existantes&nbsp;:</p>\n";
+    //echo "<table class='boireaus' border='1' summary='Tableau des qualitÃ©s existantes'>\n";
+    echo "<p>CatÃ©gories existantes&nbsp;:</p>\n";
+    echo "<table class='boireaus' border='1' summary='Tableau des catÃ©gories existantes'>\n";
     echo "<tr>\n";
-    //echo "<th>Qualité</th>\n";
-    echo "<th>Catégorie</th>\n";
+    //echo "<th>QualitÃ©</th>\n";
+    echo "<th>CatÃ©gorie</th>\n";
     echo "<th>Sigle</th>\n";
     echo "<th>Supprimer</th>\n";
     echo "</tr>\n";
@@ -206,7 +206,7 @@ if (mysql_num_rows($res) == 0) {
 echo "</blockquote>\n";
 
 echo "<table border='0'>\n";
-echo "<tr><td>Nouvelle catégorie&nbsp;: </td><td><input type='text' name='categorie' value='' onchange='changement();' /></td></tr>\n";
+echo "<tr><td>Nouvelle catÃ©gorie&nbsp;: </td><td><input type='text' name='categorie' value='' onchange='changement();' /></td></tr>\n";
 echo "<tr><td>Sigle&nbsp;: </td><td><input type='text' name='sigle' value='' onchange='changement();' /></td></tr>\n";
 echo "</table>\n";
 
@@ -217,7 +217,7 @@ echo "<p><input type='checkbox' name='DisciplineNaturesRestreintes' id='Discipli
 if($DisciplineNaturesRestreintes=="y") {
 	echo "checked ";
 }
-echo "/><label for='DisciplineNaturesRestreintes'> Restreindre les natures d'incidents pouvant être sélectionnées aux seules catégories ci-dessus.</label></p>\n";
+echo "/><label for='DisciplineNaturesRestreintes'> Restreindre les natures d'incidents pouvant Ãªtre sÃ©lectionnÃ©es aux seules catÃ©gories ci-dessus.</label></p>\n";
 */
 
 echo "<input type='hidden' name='is_posted' value='y' />\n";
@@ -226,7 +226,7 @@ echo "</form>\n";
 
 echo "<p><br /></p>\n";
 
-//echo "<p><i>NOTE&nbsp;:</i> Restreindre les natures d'incidents pouvant être sélectionnées aux seules catégories ci-dessus permet d'éviter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).</p>\n";
+//echo "<p><i>NOTE&nbsp;:</i> Restreindre les natures d'incidents pouvant Ãªtre sÃ©lectionnÃ©es aux seules catÃ©gories ci-dessus permet d'Ã©viter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).</p>\n";
 
 require("../lib/footer.inc.php");
 ?>

@@ -60,7 +60,7 @@ if (!checkAccess()) {
 }
 
 $rss = isset($_GET["rss"]) ? $_GET["rss"] : NULL;
-// Seul l'admin peut récupérer l'URI des rss des élèves
+// Seul l'admin peut rÃ©cupÃ©rer l'URI des rss des Ã©lÃ¨ves
 if ($rss == "y") {
 
 	if ($_SESSION["statut"] != "administrateur") {
@@ -125,7 +125,7 @@ while ($i < $nb_classes) {
 
         // Dispositif pour les URI des rss
         if ($rss == "y") {
-        	// On récupère l'URI de cet élève
+        	// On rÃ©cupÃ¨re l'URI de cet Ã©lÃ¨ve
         	$uri = mysql_query("SELECT user_uri FROM rss_users WHERE user_login = '".$eleve_login."' LIMIT 1");
         	$nb_uri = mysql_num_rows($uri);
         	if ($nb_uri == 1) {

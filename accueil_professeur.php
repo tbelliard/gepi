@@ -21,7 +21,7 @@
  */
 
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Begin standart header
@@ -32,7 +32,7 @@ $niveau_arbo = 0;
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
-// On teste s'il y a une mise à jour de la base de données à effectuer
+// On teste s'il y a une mise Ã  jour de la base de donnÃ©es Ã  effectuer
 if (test_maj()) {
 	header("Location: ./utilitaires/maj.php");
 }
@@ -48,14 +48,14 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
 	header("Location: ./logout.php?auto=2");
 	die();
 }
 
 unset ($_SESSION['order_by']);
-$test_https = 'y'; // pour ne pas avoir à refaire le test si on a besoin de l'URL complète (rss)
+$test_https = 'y'; // pour ne pas avoir Ã  refaire le test si on a besoin de l'URL complÃ¨te (rss)
 if (!isset($_SERVER['HTTPS'])
 	OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
 	OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
@@ -104,7 +104,7 @@ function affiche_ligne($chemin_, $titre_, $expli_, $statut_) {
 	}
 }
 
-//fonction compte_fin_module permet de mettre des balises tr ou td tous les deux modules affiché
+//fonction compte_fin_module permet de mettre des balises tr ou td tous les deux modules affichÃ©
 $compteur_module = 0;
 function compte_fin_module () {
 	global $compteur_module;
@@ -198,12 +198,12 @@ if ($condition_releve_note ||  (getSettingValue("GepiAccesBulletinSimplePP")=="y
 	echo '<tbody>';
 	echo '<th class="accueil">&nbsp;&nbsp;<img src="./images/icons/contact.png" alt="Trombi" class="link" /><img src="./images/icons/print.png" alt="Imprimer" class="link" />- Visualiser/Imprimer :</th>';
 
-/** relevés de notes**/
+/** relevÃ©s de notes**/
 	if ($condition_releve_note) {
 		affiche_ligne( "/cahier_notes/visu_releve_notes_bis.php", "Les relev&eacute;s de notes",   "Cet outil vous permet de visualiser &agrave; l'&eacute;cran et d'imprimer les relev&eacute;s de notes, ".$gepiSettings['denomination_eleve']." par ".$gepiSettings['denomination_eleve'].", classe par classe.", $_SESSION['statut']);
 	}
 
-	// Bulletins simplifiés
+	// Bulletins simplifiÃ©s
 	if (getSettingValue("GepiAccesBulletinSimplePP")=="yes") {
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
 		$test_pp=mysql_num_rows(mysql_query($sql));

@@ -26,7 +26,7 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complémentaires et/ou librairies utiles
+// fonctions complÃ©mentaires et/ou librairies utiles
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -50,7 +50,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Export de données des bulletins',
+description='Export de donnÃ©es des bulletins',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -64,7 +64,7 @@ if (!checkAccess()) {
 //$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 
 function clean_string_csv($texte) {
-	// Pour remplacer les ; par ., et les " par '' et virer les retours à la ligne
+	// Pour remplacer les ; par ., et les " par '' et virer les retours Ã  la ligne
 	$texte=my_ereg_replace(";",".,",$texte);
 	$texte=my_ereg_replace('"',"''",$texte);
 	$texte=my_ereg_replace('\\\r\\\n','',$texte);
