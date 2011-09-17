@@ -162,8 +162,9 @@
      <tarfileset dir="${source}"
                 preserveLeadingSlashes="true" prefix="gepi">
       <exclude name="build/**"/>
-      <exclude name="tests/**"/>
+      <exclude name="test/**"/>
       <exclude name=".git/**"/>
+      <exclude name="**/.gitignore"/>
     </tarfileset>
   </tar>
  </target>
