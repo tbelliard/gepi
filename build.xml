@@ -15,7 +15,7 @@
      ]]>
   </scriptdef>
   <property environment="env" />
-  <branch_end_string text="origin/developpement" property="branch_name" />
+  <branch_end_string text="${env.GIT_BRANCH}" property="branch_name" />
   <echo message="branch_name = ${branch_name}" />
 
 
