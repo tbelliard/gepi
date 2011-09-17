@@ -284,10 +284,16 @@ echo '<!--[if lt IE 7]>
 
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {
-		$barre_edt = '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof"'.insert_confirm_abandon().'>Emploi du tps</a></li>'."\n";
 
-// edt_organisation/index_edt.php?visioedt=prof1&login_edt=BOIREAUS&type_edt_2=prof
-// Proposer aussi les emplois du temps de ses classes
+		$barre_edt = '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof"'.insert_confirm_abandon().'>Emploi du tps</a>'."\n";
+
+		$barre_edt .= '   <ul class="niveau2">'."\n";
+		$barre_edt .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>EDT classe</a></li>'."\n";
+		$barre_edt .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1"'.insert_confirm_abandon().'>EDT prof</a></li>'."\n";
+		$barre_edt .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=salle1"'.insert_confirm_abandon().'>EDT salle</a></li>'."\n";
+		$barre_edt .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=eleve1"'.insert_confirm_abandon().'>EDT élève</a></li>'."\n";
+		$barre_edt .= '   </ul>'."\n";
+		$barre_edt .= '</li>'."\n";
 
 	}else{$barre_edt = '';}
 
@@ -301,11 +307,38 @@ echo '<!--[if lt IE 7]>
 		$barre_notanet = '<li class="li_inline"><a href="'.$gepiPath.'/mod_notanet/index.php"'.insert_confirm_abandon().'>Brevet</a></li>'."\n";
 	}else{ $barre_notanet = '';}
 
+	/*
 	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
 		$barre_consult_eleve = '<li class="li_inline"><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consult.élève</a></li>'."\n";
 	}
 	else{ $barre_consult_eleve = '';}
-	
+	*/
+	//=======================================================
+	$barre_eleve = '<li class="li_inline"><a href="'.$gepiPath.'/groupes/visu_mes_listes.php"'.insert_confirm_abandon().'>Élèves</a>';
+	$barre_eleve.= '   <ul class="niveau2">'."\n";
+
+	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
+		$barre_eleve.= '      <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consult.élève</a></li>'."\n";
+	}
+
+	if(getSettingValue('active_module_trombinoscopes')=='y') {
+		$barre_eleve.= '      <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscope</a>';
+		$barre_eleve.= '         <ul class="niveau3">'."\n";
+		foreach($mes_groupes as $tmp_group) {
+			$barre_eleve.= '            <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe=&groupe='.$tmp_group['id'].'&equipepeda=&discipline=&statusgepi=&affdiscipline="'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</a></li>'."\n";
+		}
+		$barre_eleve.= '         </ul>'."\n";
+		$barre_eleve.= '      </li>'."\n";
+	}
+
+	$barre_eleve.= '      <li><a href="'.$gepiPath.'/groupes/visu_mes_listes.php"'.insert_confirm_abandon().'>Mes listes</a></li>'."\n";
+	$barre_eleve.= '      <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Mes listes CSV</a></li>'."\n";
+	$barre_eleve.= '      <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Mes listes PDF</a></li>'."\n";
+
+	$barre_eleve.= '   </ul>'."\n";
+	$barre_eleve.= '</li>'."\n";
+	//=======================================================
+
 	
 // plugins
 
@@ -333,7 +366,7 @@ if ($barre_plugin!="")
 		'.$barre_edt.'
 		'.$barre_discipline.'
 		'.$barre_notanet.'
-		'.$barre_consult_eleve.'
+		'.$barre_eleve.'
 		'.$barre_plugin.'		  
 		<li class="li_inline"><a href="'.$gepiPath.'/utilisateurs/mon_compte.php">Mon compte</a></li>
 	</ul>
