@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id$
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -266,13 +265,13 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             <select style="font-size:12px" dojoType="dijit.form.Select" name="type_extrait">
                 <option value='1' <?php
             if ($type_extrait == '1') {
-                echo 'selected';
+                echo 'selected="selected"';
             }
             ?>
 			>Données occasionnant un manquement aux obligations de présence</option>
                 <option value='2' <?php
                         if ($type_extrait == '2') {
-                            echo 'selected';
+                            echo 'selected="selected"';
                         }
             ?>>Liste de toutes les données</option>
             </select><br />            

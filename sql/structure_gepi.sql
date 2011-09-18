@@ -1,3 +1,4 @@
+
 -- $Id: structure_gepi.sql 7944 2011-08-24 11:31:56Z crob $
 DROP TABLE IF EXISTS `absences`;
 CREATE TABLE `absences` (`login` varchar(50) NOT NULL default '', `periode` int(11) NOT NULL default '0', `nb_absences` char(2) NOT NULL default '', `non_justifie` char(2) NOT NULL default '', `nb_retards` char(2) NOT NULL default '', `appreciation` text NOT NULL, PRIMARY KEY  (`login`,`periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -73,9 +74,9 @@ CREATE TABLE eleves
 -- mef
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS mef;
+DROP TABLE IF EXISTS `mef`;
 
-CREATE TABLE mef
+CREATE TABLE `mef`
 (
 	id INTEGER NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la classe',
 	mef_code BIGINT(20) COMMENT 'Numero de la nomenclature officielle (numero MEF)',
@@ -330,7 +331,9 @@ CREATE TABLE IF NOT EXISTS ects_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT
 DROP TABLE IF EXISTS ects_global_credits;
 CREATE TABLE IF NOT EXISTS ects_global_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT, id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,id_eleve), INDEX ects_global_credits_FI_1 (id_eleve), CONSTRAINT ects_global_credits_FK_1 FOREIGN KEY (id_eleve) REFERENCES eleves (id_eleve)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS archivage_ects;
+
 CREATE TABLE IF NOT EXISTS archivage_ects (id INTEGER(11)  NOT NULL AUTO_INCREMENT, annee VARCHAR(255)  NOT NULL COMMENT 'Annee scolaire', ine VARCHAR(55)  NOT NULL COMMENT 'Identifiant de l\'eleve', classe VARCHAR(255)  NOT NULL COMMENT 'Classe de l\'eleve', num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode', nom_periode VARCHAR(255)  NOT NULL COMMENT 'Nom complet de la periode', special VARCHAR(255)  NOT NULL COMMENT 'Cle utilisee pour isoler certaines lignes (par exemple un credit ECTS pour une periode et non une matiere)', matiere VARCHAR(255) COMMENT 'Nom de l\'enseignement', profs VARCHAR(255) COMMENT 'Liste des profs de l\'enseignement', valeur DECIMAL  NOT NULL COMMENT 'Nombre de crédits obtenus par l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,ine,num_periode,special), INDEX archivage_ects_FI_1 (ine), CONSTRAINT archivage_ects_FK_1 FOREIGN KEY (ine) REFERENCES eleves (no_gep)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 DROP TABLE IF EXISTS ects_global_credits;
 CREATE TABLE IF NOT EXISTS ects_global_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT, id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,id_eleve), INDEX ects_global_credits_FI_1 (id_eleve), CONSTRAINT ects_global_credits_FK_1 FOREIGN KEY (id_eleve) REFERENCES eleves (id_eleve)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS ref_wiki;
@@ -554,8 +557,10 @@ CREATE TABLE a_traitements
 
 DROP TABLE IF EXISTS j_traitements_saisies;
 CREATE TABLE IF NOT EXISTS j_traitements_saisies(	a_saisie_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'absence saisie',	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement de ces absences',	PRIMARY KEY (a_saisie_id,a_traitement_id),	CONSTRAINT j_traitements_saisies_FK_1		FOREIGN KEY (a_saisie_id)		REFERENCES a_saisies (id)		ON DELETE CASCADE,	INDEX j_traitements_saisies_FI_2 (a_traitement_id),	CONSTRAINT j_traitements_saisies_FK_2		FOREIGN KEY (a_traitement_id)		REFERENCES a_traitements (id)		ON DELETE CASCADE) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT='Table de jointure entre la saisie et le traitement des absences';
+
 DROP TABLE IF EXISTS a_notifications;
 CREATE TABLE IF NOT EXISTS a_notifications(	id INTEGER(11)  NOT NULL AUTO_INCREMENT,	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui envoi la notification',	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement qu\'on notifie',	type_notification INTEGER(5) COMMENT 'type de notification (0 : email, 1 : courrier, 2 : sms)',	email VARCHAR(100) COMMENT 'email de destination (pour le type email)',	telephone VARCHAR(100) COMMENT 'numero du telephone de destination (pour le type sms)',	adr_id VARCHAR(10) COMMENT 'cle etrangere vers l\'adresse de destination (pour le type courrier)',	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',	statut_envoi INTEGER(5) default 0 COMMENT 'Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)',	date_envoi DATETIME COMMENT 'Date envoi',	erreur_message_envoi TEXT COMMENT 'Message d\'erreur retourné par le service d\'envoi',	created_at DATETIME,	updated_at DATETIME,	PRIMARY KEY (id),	INDEX a_notifications_FI_1 (utilisateur_id),	CONSTRAINT a_notifications_FK_1		FOREIGN KEY (utilisateur_id)		REFERENCES utilisateurs (login)		ON DELETE SET NULL,	INDEX a_notifications_FI_2 (a_traitement_id),	CONSTRAINT a_notifications_FK_2		FOREIGN KEY (a_traitement_id)		REFERENCES a_traitements (id)		ON DELETE CASCADE,	INDEX a_notifications_FI_3 (adr_id),	CONSTRAINT a_notifications_FK_3		FOREIGN KEY (adr_id)		REFERENCES resp_adr (adr_id)		ON DELETE SET NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT='Notification (a la famille) des absences';
+
 DROP TABLE IF EXISTS j_notifications_resp_pers;
 CREATE TABLE IF NOT EXISTS j_notifications_resp_pers(	a_notification_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de la notification',	pers_id VARCHAR(10)  NOT NULL COMMENT 'cle etrangere des personnes',	PRIMARY KEY (a_notification_id,pers_id),	CONSTRAINT j_notifications_resp_pers_FK_1		FOREIGN KEY (a_notification_id)		REFERENCES a_notifications (id)		ON DELETE CASCADE,	INDEX j_notifications_resp_pers_FI_2 (pers_id),	CONSTRAINT j_notifications_resp_pers_FK_2		FOREIGN KEY (pers_id)		REFERENCES resp_pers (pers_id)		ON DELETE CASCADE) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
 DROP TABLE IF EXISTS matieres_app_delais;

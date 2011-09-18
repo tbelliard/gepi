@@ -2,7 +2,6 @@
 /* 
  * Configuration for the module casserver.
  * 
- * $Id: $
  */
 
 $config = array (

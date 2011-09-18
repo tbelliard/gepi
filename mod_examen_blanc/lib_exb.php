@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 
 function bull_exb($tab_ele,$i) {
 	global

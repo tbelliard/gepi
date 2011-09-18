@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id$
  *
  * Copyright 2009-2011 Josselin Jacquard
  *
@@ -22,6 +21,7 @@
  */
 
 header('Content-Type: text/html; charset=utf-8');
+
 //Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la noice. La sortie est utilisée dans un javascript
 //
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on

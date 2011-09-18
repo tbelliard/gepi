@@ -97,7 +97,6 @@ if (file_exists($nom_fic)) {
 					echo "<p class='center'><a href = '../login.php'>Se connecter à GEPI</a></p>\n";
 				} else {
 					echo "<h1 class='gepi'>Espace interdit - GEPI est déjà installé.</h1>\n";
-
 				}
 				end_html();
 				die();
@@ -110,7 +109,8 @@ if ($etape == 4) {
 
 	begin_html();
 
-	echo "<h1 class='gepi'>Quatrième étape : Création des tables de la base</h1>\n";
+
+	echo "<h1 class='gepi'>Quatrième étape : Création des tables de la base</h2>\n";
 	echo "<p>";
 
 	$link = mysql_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']);
@@ -314,7 +314,7 @@ else if ($etape == 2) {
 	echo "<h1 class='gepi'>Deuxième étape : Essai de connexion au serveur Mysql</h1>\n";
 
 	echo "<!--";
-	$link = mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db']);
+	$link = mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db'],true);
 	$db_connect = mysql_errno();
 	echo "-->\n";
 
@@ -334,6 +334,7 @@ else if ($etape == 2) {
 		echo "</form>\n";
 	}
 	else {
+
 		echo "<p><strong>La connexion au serveur MySQL a échoué.</strong></p>\n";
 		echo "<p>Revenez à la page précédente, et vérifiez les informations que vous avez fournies.</p>\n";
 		echo mysql_error();
@@ -344,6 +345,7 @@ else if ($etape == 2) {
 }
 else if ($etape == 1) {
 	begin_html();
+
 
 	echo "<h1 class='gepi'>Première étape : la connexion MySQL</h1>\n";
 
@@ -400,7 +402,6 @@ else if ($etape == 1) {
 			echo "<p>Un fichier nommé <strong>\"connect.inc.php\"</strong> est actuellement présent dans le répertoire \"/secure\".
 			C'est peut-être la trace d'une ancienne installation. Par ailleurs, ce fichier contient peut-être les informations de connexion à la base MySql que vous souhaitez conserver.
 			<br /><strong>Attention : ce fichier et ce qu'il contient sera supprimé lors de cette nouvelle installation</strong>.</p>\n";
-
 		}
 
 

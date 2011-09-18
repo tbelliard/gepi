@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * $Id: admin_horaire_ouverture.php 3413 2009-09-12 08:05:14Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
  *

@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 */
 	$enregistrer_filtrage_html="n";
 

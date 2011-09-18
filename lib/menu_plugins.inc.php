@@ -1,7 +1,6 @@
 <?php
 /**
  * Construction du menu des plugins
- * @version $Id:  $
  * @license GNU/GPL 
  * @package General
  * @subpackage Affichage

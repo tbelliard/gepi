@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id$
  */
 //fonction tirée de la gestion des adresses pour les bulletins PDF
 function adresse_responsables($login_eleve) {	

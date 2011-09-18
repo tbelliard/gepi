@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * $Id$
  *
  * Copyright 2010-2011 Josselin Jacquard
  *
@@ -148,6 +147,11 @@ echo "</p>";
 
 <div style="text-align:center">
     <h2>Définition des types d'absence</h2>
+    <p>
+        <span style="font-weight: bold;">Attention :</span> Associer un type à une saisie implique la création d'un traitement de cette saisie.<br />
+        Pour éviter une multiplicité des traitements pour une saisie, il peut être intéressant de limiter les statuts pouvant saisir un type.<br />
+        Par exemple si l'on souhaite que seule la vie scolaire crée le traitement absence ou retard on n'affectera pas ces types au statut professeur.        
+    </p>
 <?php if ($action == "ajouter" OR $action == "modifier" OR $action == "supprimer_statut") { ?>
 <div style="text-align:center">
     <?php
@@ -311,7 +315,7 @@ echo add_token_field();
 	    ?>
 	  </td>
 	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
-      <td><?php if (!is_null($type->getIdLieu())) {echo $type->getAbsenceEleveLieu()->getNom();} ?></td>
+      <td><?php if ($type->getAbsenceEleveLieu() != null) {echo $type->getAbsenceEleveLieu()->getNom();} ?></td>
 	  <td><?php
 		foreach ($type->getAbsenceEleveTypeStatutAutorises() as $statut_saisie) {
 			echo $statut_saisie->getStatut();

@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id$
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -1238,10 +1237,16 @@ foreach ($results as $saisie) {
 	}
     }
    	echo '</td>';
-	$created_at = $saisie->getAllVersions()->getFirst()->getVersionCreatedAt('U');
     echo '<td>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d/%m/%Y %H:%M", $created_at));
+	$all_version = $saisie->getAllVersions()->getFirst();
+	if ($all_version != null) {
+		$created_at = $saisie->getAllVersions()->getFirst()->getVersionCreatedAt('U');
+    	echo (strftime("%a %d/%m/%Y %H:%M", $created_at));
+	}else{
+        $created_at = $saisie->getVersionCreatedAt('U');
+        echo (strftime("%a %d/%m/%Y %H:%M", $created_at)); 
+	}
     echo "</a>";
     echo '</td>';
 

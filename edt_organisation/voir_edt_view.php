@@ -3,7 +3,6 @@
 /**
  * Vue pour afficher les emplois du temps
  *
- * @version     $Id: view_edt_view.php 4059 2010-01-31 20:03:48Z adminpaulbert $
  * @package		GEPI
  * @subpackage	EmploisDuTemps
  * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero

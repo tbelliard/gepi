@@ -2,7 +2,6 @@
 /**
  * Pied de page
  * 
- * $Id$
  * 
  * @package General
  * @subpackage Affichage
@@ -154,6 +153,9 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 		$chemin_sound="../../sounds/".$footer_sound;
 	} elseif ($niveau_arbo == "3") {
 		$chemin_sound="../../../sounds/".$footer_sound;
+	}
+	else {
+		$chemin_sound="../sounds/".$footer_sound;
 	}
 
 	if(file_exists($chemin_sound)) {

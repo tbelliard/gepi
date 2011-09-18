@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 
 // Nettoyage des tables
 

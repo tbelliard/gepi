@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id$
 *
 * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -53,11 +52,11 @@ if (isset($_POST['sup_logo'])) {
 		include("$dest/.test");
 	}
 	if (!$ok) {
-		$msg = "ProblÃ¨me d'Ã©criture sur le rÃ©pertoire. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
+		$msg = "Problème d'écriture sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
 	} else {
 		$old = getSettingValue("logo_etab");
 		if (($old != '') and (file_exists($dest.$old))) unlink($dest.$old);
-		$msg = "Le logo a Ã©tÃ© supprimÃ©.";
+		$msg = "Le logo a été supprimé.";
 		if (!saveSetting("logo_etab", '')) $msg .= "Erreur lors de l'enregistrement dans la table setting !";
 
 	}
@@ -75,7 +74,7 @@ if (isset($_POST['valid_logo'])) {
 		$ext = strtolower($match[1]);
 		if ($ext!='jpg' and $ext!='png'and $ext!='gif') {
 		//if ($ext!='jpg' and $ext!='jpeg' and $ext!='png'and $ext!='gif') {
-			$msg = "les seules extensions autorisÃ©es sont gif, png et jpg";
+			$msg = "les seules extensions autorisées sont gif, png et jpg";
 		} else {
 			$dest = '../images/';
 			$ok = false;
@@ -85,7 +84,7 @@ if (isset($_POST['valid_logo'])) {
 				include("$dest/.test");
 			}
 			if (!$ok) {
-				$msg = "ProblÃ¨me d'Ã©criture sur le rÃ©pertoire IMAGES. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
+				$msg = "Problème d'écriture sur le répertoire IMAGES. Veuillez signaler ce problème à l'administrateur du site";
 			} else {
 				$old = getSettingValue("logo_etab");
 				if (file_exists($dest.$old)) @unlink($dest.$old);
@@ -93,9 +92,9 @@ if (isset($_POST['valid_logo'])) {
 				$ok = @copy($doc_file['tmp_name'], $dest.$doc_file['name']);
 				if (!$ok) $ok = @move_uploaded_file($doc_file['tmp_name'], $dest.$doc_file['name']);
 				if (!$ok) {
-					$msg = "ProblÃ¨me de transfert : le fichier n'a pas pu Ãªtre transfÃ©rÃ© sur le rÃ©pertoire IMAGES. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
+					$msg = "Problème de transfert : le fichier n'a pas pu Ãªtre transféré sur le répertoire IMAGES. Veuillez signaler ce problème à l'administrateur du site";
 				} else {
-					$msg = "Le fichier a Ã©tÃ© transfÃ©rÃ©.";
+					$msg = "Le fichier a été transféré.";
 				}
 				if (!saveSetting("logo_etab", $doc_file['name'])) {
 				$msg .= "Erreur lors de l'enregistrement dans la table setting !";
@@ -104,7 +103,7 @@ if (isset($_POST['valid_logo'])) {
 			}
 		}
 	} else {
-		$msg = "Le fichier sÃ©lectionnÃ© n'est pas valide !";
+		$msg = "Le fichier sélectionné n'est pas valide !";
 	}
 }
 
@@ -122,37 +121,37 @@ if (isset($_POST['is_posted'])) {
 				$_POST['sessionMaxLength'] = 30;
 			}
 			if (!saveSetting("sessionMaxLength", $_POST['sessionMaxLength'])) {
-				$msg .= "Erreur lors de l'enregistrement da durÃ©e max d'inactivitÃ© !";
+				$msg .= "Erreur lors de l'enregistrement da durée max d'inactivité !";
 			}
 		}
 		if (isset($_POST['gepiSchoolRne'])) {
 			$enregistrer_gepiSchoolRne='y';
 			if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
 				if(($_POST['gepiSchoolRne']!='')&&(strtoupper($_POST['gepiSchoolRne'])!=strtoupper($_COOKIE['RNE']))) {
-					$msg .= "Erreur lors de l'enregistrement du numÃ©ro RNE de l'Ã©tablissement !<br />Le paramÃ¨tre choisi risque de vous empÃªcher de vous connecter.<br />Enregistrement refusÃ©!";
+					$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !<br />Le paramètre choisi risque de vous empÃªcher de vous connecter.<br />Enregistrement refusé!";
 					$enregistrer_gepiSchoolRne='n';
 				}
 			}
 
 			if($enregistrer_gepiSchoolRne=='y') {
 				if (!saveSetting("gepiSchoolRne", $_POST['gepiSchoolRne'])) {
-					$msg .= "Erreur lors de l'enregistrement du numÃ©ro RNE de l'Ã©tablissement !";
+					$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !";
 				}
 			}
 		}
 		if (isset($_POST['gepiYear'])) {
 			if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
-				$msg .= "Erreur lors de l'enregistrement de l'annÃ©e scolaire !";
+				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
 			}
 		}
 		if (isset($_POST['gepiSchoolName'])) {
 			if (!saveSetting("gepiSchoolName", $_POST['gepiSchoolName'])) {
-				$msg .= "Erreur lors de l'enregistrement du nom de l'Ã©tablissement !";
+				$msg .= "Erreur lors de l'enregistrement du nom de l'établissement !";
 			}
 		}
 		if (isset($_POST['gepiSchoolStatut'])) {
 			if (!saveSetting("gepiSchoolStatut", $_POST['gepiSchoolStatut'])) {
-				$msg .= "Erreur lors de l'enregistrement du statut de l'Ã©tablissement !";
+				$msg .= "Erreur lors de l'enregistrement du statut de l'établissement !";
 			}
 		}
 		if (isset($_POST['gepiSchoolAdress1'])) {
@@ -182,22 +181,22 @@ if (isset($_POST['is_posted'])) {
 		}
 		if (isset($_POST['gepiSchoolAcademie'])) {
 			if (!saveSetting("gepiSchoolAcademie", $_POST['gepiSchoolAcademie'])) {
-				$msg .= "Erreur lors de l'enregistrement de l'acadÃ©mie !";
+				$msg .= "Erreur lors de l'enregistrement de l'académie !";
 			}
 		}
 		if (isset($_POST['gepiSchoolTel'])) {
 			if (!saveSetting("gepiSchoolTel", $_POST['gepiSchoolTel'])) {
-				$msg .= "Erreur lors de l'enregistrement du numÃ©ro de tÃ©lÃ©phone !";
+				$msg .= "Erreur lors de l'enregistrement du numéro de téléphone !";
 			}
 		}
 		if (isset($_POST['gepiSchoolFax'])) {
 			if (!saveSetting("gepiSchoolFax", $_POST['gepiSchoolFax'])) {
-				$msg .= "Erreur lors de l'enregistrement du numÃ©ro de fax !";
+				$msg .= "Erreur lors de l'enregistrement du numéro de fax !";
 			}
 		}
 		if (isset($_POST['gepiSchoolEmail'])) {
 			if (!saveSetting("gepiSchoolEmail", $_POST['gepiSchoolEmail'])) {
-				$msg .= "Erreur lors de l'adresse Ã©lectronique !";
+				$msg .= "Erreur lors de l'adresse électronique !";
 			}
 		}
 		if (isset($_POST['gepiAdminNom'])) {
@@ -207,7 +206,7 @@ if (isset($_POST['is_posted'])) {
 		}
 		if (isset($_POST['gepiAdminPrenom'])) {
 			if (!saveSetting("gepiAdminPrenom", $_POST['gepiAdminPrenom'])) {
-				$msg .= "Erreur lors de l'enregistrement du prÃ©nom de l'administrateur !";
+				$msg .= "Erreur lors de l'enregistrement du prénom de l'administrateur !";
 			}
 		}
 		if (isset($_POST['gepiAdminFonction'])) {
@@ -278,27 +277,27 @@ if (isset($_POST['is_posted'])) {
 		
 		if (isset($_POST['mode_generation_pwd_majmin'])) {
 			if (!saveSetting("mode_generation_pwd_majmin", $_POST['mode_generation_pwd_majmin'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre Min/Maj sur les mots de passe !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre Min/Maj sur les mots de passe !";
 			}
 		}
 	
 		if (isset($_POST['mode_generation_pwd_excl'])) {
 			if (!saveSetting("mode_generation_pwd_excl", $_POST['mode_generation_pwd_excl'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre d'exclusion des caractÃ¨res prÃªtant Ã  confusion sur les mots de passe !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prÃªtant à confusion sur les mots de passe !";
 			}
 		}
 		else{
 			if (!saveSetting("mode_generation_pwd_excl", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre d'exclusion des caractÃ¨res prÃªtant Ã  confusion sur les mots de passe !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prÃªtant à confusion sur les mots de passe !";
 			}
 		}
 
 		if (isset($_POST['mode_email_resp'])) {
 			if (!saveSetting("mode_email_resp", $_POST['mode_email_resp'])) {
-				$msg .= "Erreur lors de l'enregistrement du mode de mise Ã  jour des email responsables !";
+				$msg .= "Erreur lors de l'enregistrement du mode de mise à jour des email responsables !";
 			}
 			else {
-				$sql="SELECT * FROM infos_actions WHERE titre='ParamÃ©trage mode_email_resp requis';";
+				$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage mode_email_resp requis';";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)>0) {
 					while($lig_ia=mysql_fetch_object($res_test)) {
@@ -316,10 +315,10 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['mode_email_ele'])) {
 			if (!saveSetting("mode_email_ele", $_POST['mode_email_ele'])) {
-				$msg .= "Erreur lors de l'enregistrement du mode de mise Ã  jour des email Ã©lÃ¨ves !";
+				$msg .= "Erreur lors de l'enregistrement du mode de mise à jour des email élèves !";
 			}
 			else {
-				$sql="SELECT * FROM infos_actions WHERE titre='ParamÃ©trage mode_email_ele requis';";
+				$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage mode_email_ele requis';";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)>0) {
 					while($lig_ia=mysql_fetch_object($res_test)) {
@@ -335,94 +334,94 @@ if (isset($_POST['is_posted'])) {
 		}
 
 		//===============================================================
-		// Traitement des problemes de points d'interrogation Ã  la place des accents
+		// Traitement des problemes de points d'interrogation à la place des accents
 		if (isset($_POST['mode_utf8_bulletins_pdf'])) {
 			if (!saveSetting("mode_utf8_bulletins_pdf", $_POST['mode_utf8_bulletins_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mode_utf8_bulletins_pdf !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
 			}
 		}
 		else{
 			if (!saveSetting("mode_utf8_bulletins_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mode_utf8_bulletins_pdf !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
 			}
 		}
 		/*
 		if (isset($_POST['mode_utf8_listes_pdf'])) {
 			if (!saveSetting("mode_utf8_listes_pdf", $_POST['mode_utf8_listes_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mode_utf8_listes_pdf !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
 			}
 		}
 		else{
 			if (!saveSetting("mode_utf8_listes_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mode_utf8_listes_pdf !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
 			}
 		}
 		*/
 		if (isset($_POST['mode_utf8_visu_notes_pdf'])) {
 			if (!saveSetting("mode_utf8_visu_notes_pdf", $_POST['mode_utf8_visu_notes_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mode_utf8_visu_notes_pdf !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
 			}
 		}
 		else{
 			if (!saveSetting("mode_utf8_visu_notes_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mode_utf8_visu_notes_pdf !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
 			}
 		}
 	
 		if (isset($_POST['type_bulletin_par_defaut'])) {
 			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
 				if (!saveSetting("type_bulletin_par_defaut", $_POST['type_bulletin_par_defaut'])) {
-					$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre type_bulletin_par_defaut !";
+					$msg .= "Erreur lors de l'enregistrement du paramètre type_bulletin_par_defaut !";
 				}
 			}
 			else {
-				$msg .= "Valeur erronÃ©e pour l'enregistrement du paramÃ¨tre type_bulletin_par_defaut !";
+				$msg .= "Valeur erronée pour l'enregistrement du paramètre type_bulletin_par_defaut !";
 			}
 		}
 	
 		/*
 		if (isset($_POST['mode_utf8_releves_pdf'])) {
 			if (!saveSetting("mode_utf8_releves_pdf", $_POST['mode_utf8_releves_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mode_utf8_releves_pdf !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
 			}
 		}
 		else{
 			if (!saveSetting("mode_utf8_releves_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mode_utf8_releves_pdf !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
 			}
 		}
 		*/
 	
 		if (isset($_POST['exp_imp_chgt_etab'])) {
 			if (!saveSetting("exp_imp_chgt_etab", $_POST['exp_imp_chgt_etab'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre exp_imp_chgt_etab !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
 			}
 		}
 		else{
 			if (!saveSetting("exp_imp_chgt_etab", 'no')) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre exp_imp_chgt_etab !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
 			}
 		}
 	
 		if (isset($_POST['ele_lieu_naissance'])) {
 			if (!saveSetting("ele_lieu_naissance", $_POST['ele_lieu_naissance'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre ele_lieu_naissance !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
 			}
 		}
 		else{
 			if (!saveSetting("ele_lieu_naissance", 'no')) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre ele_lieu_naissance !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
 			}
 		}
 	
 		if (isset($_POST['avis_conseil_classe_a_la_mano'])) {
 			if (!saveSetting("avis_conseil_classe_a_la_mano", $_POST['avis_conseil_classe_a_la_mano'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre avis_conseil_classe_a_la_mano !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre avis_conseil_classe_a_la_mano !";
 			}
 		}
 		else{
 			if (!saveSetting("avis_conseil_classe_a_la_mano", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre avis_conseil_classe_a_la_mano !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre avis_conseil_classe_a_la_mano !";
 			}
 		}
 	
@@ -430,14 +429,14 @@ if (isset($_POST['is_posted'])) {
 		//===============================================================
 	
 	
-		// DÃ©nomination du professeur de suivi
+		// Dénomination du professeur de suivi
 		if (isset($_POST['gepi_prof_suivi'])) {
 			if (!saveSetting("gepi_prof_suivi", $_POST['gepi_prof_suivi'])) {
 				$msg .= "Erreur lors de l'enregistrement de gepi_prof_suivi !";
 			}
 		}
 		
-		// DÃ©nomination des professeurs
+		// Dénomination des professeurs
 		if (isset($_POST['denomination_professeur'])) {
 			if (!saveSetting("denomination_professeur", $_POST['denomination_professeur'])) {
 				$msg .= "Erreur lors de l'enregistrement de denomination_professeur !";
@@ -449,7 +448,7 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 		
-		// DÃ©nomination des responsables lÃ©gaux
+		// Dénomination des responsables légaux
 		if (isset($_POST['denomination_responsable'])) {
 			if (!saveSetting("denomination_responsable", $_POST['denomination_responsable'])) {
 				$msg .= "Erreur lors de l'enregistrement de denomination_responsable !";
@@ -461,7 +460,7 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 		
-		// DÃ©nomination des Ã©lÃ¨ves
+		// Dénomination des élèves
 		if (isset($_POST['denomination_eleve'])) {
 			if (!saveSetting("denomination_eleve", $_POST['denomination_eleve'])) {
 				$msg .= "Erreur lors de l'enregistrement de denomination_eleve !";
@@ -472,7 +471,7 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement de denomination_eleves !";
 			}
 		}
-		// Initialiser Ã  'Boite'
+		// Initialiser à 'Boite'
 		if (isset($_POST['gepi_denom_boite'])) {
 			if (!saveSetting("gepi_denom_boite", $_POST['gepi_denom_boite'])) {
 				$msg .= "Erreur lors de l'enregistrement de gepi_denom_boite !";
@@ -497,21 +496,21 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['gepi_stylesheet'])) {
 			if (!saveSetting("gepi_stylesheet", $_POST['gepi_stylesheet'])) {
-				$msg .= "Erreur lors de l'enregistrement de l'annÃ©e scolaire !";
+				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
 			}
 		}
 		
 		if (isset($_POST['num_enregistrement_cnil'])) {
 			if (!saveSetting("num_enregistrement_cnil", $_POST['num_enregistrement_cnil'])) {
-				$msg .= "Erreur lors de l'enregistrement du numÃ©ro d'enregistrement Ã  la CNIL !";
+				$msg .= "Erreur lors de l'enregistrement du numéro d'enregistrement à la CNIL !";
 			}
 		}
 		
 		if (isset($_POST['mode_generation_login'])) {
 			if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
-				$msg .= "Erreur lors de l'enregistrement du mode de gÃ©nÃ©ration des logins !";
+				$msg .= "Erreur lors de l'enregistrement du mode de génération des logins !";
 			}
-			// On en profite pour mettre Ã  jour la variable $longmax_login -> settings : longmax_login
+			// On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
 					$nbre_carac = 12;
 				if ($_POST['mode_generation_login'] == 'name8' OR $_POST['mode_generation_login'] == 'fname8' OR $_POST['mode_generation_login'] == 'namef8') {
 					$nbre_carac = 8;
@@ -535,11 +534,11 @@ if (isset($_POST['is_posted'])) {
 			if(substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
 			elseif(strlen(my_ereg_replace("[0-9]","",$unzipped_max_filesize))!=0) {
 				$unzipped_max_filesize=10;
-				$msg .= "CaractÃ¨res invalides pour le paramÃ¨tre unzipped_max_filesize<br />Initialisation Ã  10 Mo !";
+				$msg .= "Caractères invalides pour le paramètre unzipped_max_filesize<br />Initialisation à 10 Mo !";
 			}
 		
 			if (!saveSetting("unzipped_max_filesize", $unzipped_max_filesize)) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre unzipped_max_filesize !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre unzipped_max_filesize !";
 			}
 		}
 
@@ -547,7 +546,7 @@ if (isset($_POST['is_posted'])) {
 		if (isset($_POST['bul_rel_nom_matieres'])) {
 			$bul_rel_nom_matieres=$_POST['bul_rel_nom_matieres'];
 			if (!saveSetting("bul_rel_nom_matieres", $bul_rel_nom_matieres)) {
-				$msg .= "Erreur lors de l'enregistrement du paramÃ¨tre bul_rel_nom_matieres !";
+				$msg .= "Erreur lors de l'enregistrement du paramètre bul_rel_nom_matieres !";
 			}
 		}
 
@@ -608,14 +607,14 @@ if(isset($_POST['is_posted'])){
 if (!loadSettings()) {
 	die("Erreur chargement settings");
 }
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
+if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 // End standart header
-$titre_page = "ParamÃ¨tres gÃ©nÃ©raux";
+$titre_page = "Paramètres généraux";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -629,17 +628,17 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 <?php
 echo add_token_field();
 ?>
-<table style="width: 100%; border: 0;" cellpadding="5" cellspacing="5" summary='ParamÃ¨tres'>
+<table style="width: 100%; border: 0;" cellpadding="5" cellspacing="5" summary='Paramètres'>
 	<tr>
 		<td style="width: 60%;font-variant: small-caps;">
-		AnnÃ©e scolaire :
+		Année scolaire :
 		</td>
 		<td><input type="text" name="gepiYear" size="20" value="<?php echo(getSettingValue("gepiYear")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		NumÃ©ro RNE de l'Ã©tablissement :
+		Numéro RNE de l'établissement :
 		</td>
 		<td><input type="text" name="gepiSchoolRne" size="8" value="<?php echo(getSettingValue("gepiSchoolRne")); ?>" onchange='changement()' />
 		</td>
@@ -647,27 +646,27 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;">
-		Nom de l'Ã©tablissement :
+		Nom de l'établissement :
 		</td>
 		<td><input type="text" name="gepiSchoolName" size="20" value="<?php echo(getSettingValue("gepiSchoolName")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		Statut de l'Ã©tablissement :<br />
-		(<span style='font-style:italic;font-size:x-small'>utilisÃ© pour certains documents officiels</span>)
+		Statut de l'établissement :<br />
+		(<span style='font-style:italic;font-size:x-small'>utilisé pour certains documents officiels</span>)
 		</td>
 		<td>
                     <select name='gepiSchoolStatut' onchange='changement()'>
-			<option value='public'<?php if (getSettingValue("gepiSchoolStatut")=='public') echo " SELECTED"; ?>>Ã©tablissement public</option>
-			<option value='prive_sous_contrat'<?php if (getSettingValue("gepiSchoolStatut")=='prive_sous_contrat') echo " SELECTED"; ?>>Ã©tablissement privÃ© sous contrat</option>
-			<option value='prive_hors_contrat'<?php if (getSettingValue("gepiSchoolStatut")=='prive_hors_contrat') echo " SELECTED"; ?>>Ã©tablissement privÃ© hors contrat</option>
+			<option value='public'<?php if (getSettingValue("gepiSchoolStatut")=='public') echo " SELECTED"; ?>>établissement public</option>
+			<option value='prive_sous_contrat'<?php if (getSettingValue("gepiSchoolStatut")=='prive_sous_contrat') echo " SELECTED"; ?>>établissement privé sous contrat</option>
+			<option value='prive_hors_contrat'<?php if (getSettingValue("gepiSchoolStatut")=='prive_hors_contrat') echo " SELECTED"; ?>>établissement privé hors contrat</option>
                     </select>
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		Adresse de l'Ã©tablissement :
+		Adresse de l'établissement :
 		</td>
 		<td><input type="text" name="gepiSchoolAdress1" size="40" value="<?php echo(getSettingValue("gepiSchoolAdress1")); ?>" onchange='changement()' /><br />
 		<input type="text" name="gepiSchoolAdress2" size="40" value="<?php echo(getSettingValue("gepiSchoolAdress2")); ?>" onchange='changement()' />
@@ -690,36 +689,36 @@ echo add_token_field();
 	<tr>
 		<td style="font-variant: small-caps;">
 		Pays :<br />
-		(<span style='font-style:italic;font-size:x-small'>Le pays est utilisÃ© pour comparer avec celui des responsables dans les blocs adresse des courriers adressÃ©s aux responsables</span>)
+		(<span style='font-style:italic;font-size:x-small'>Le pays est utilisé pour comparer avec celui des responsables dans les blocs adresse des courriers adressés aux responsables</span>)
 		</td>
 		<td><input type="text" name="gepiSchoolPays" size="20" value="<?php echo(getSettingValue("gepiSchoolPays")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		AcadÃ©mie :<br />
-		(<span style='font-style:italic;font-size:x-small'>utilisÃ© pour certains documents officiels</span>)
+		Académie :<br />
+		(<span style='font-style:italic;font-size:x-small'>utilisé pour certains documents officiels</span>)
 		</td>
 		<td><input type="text" name="gepiSchoolAcademie" size="20" value="<?php echo(getSettingValue("gepiSchoolAcademie")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		TÃ©lÃ©phone Ã©tablissement :
+		Téléphone établissement :
 		</td>
 		<td><input type="text" name="gepiSchoolTel" size="20" value="<?php echo(getSettingValue("gepiSchoolTel")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		Fax Ã©tablissement :
+		Fax établissement :
 		</td>
 		<td><input type="text" name="gepiSchoolFax" size="20" value="<?php echo(getSettingValue("gepiSchoolFax")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		E-mail Ã©tablissement :
+		E-mail établissement :
 		</td>
 		<td><input type="text" name="gepiSchoolEmail" size="20" value="<?php echo(getSettingValue("gepiSchoolEmail")); ?>" onchange='changement()' />
 		</td>
@@ -733,7 +732,7 @@ echo add_token_field();
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		PrÃ©nom de l'administrateur du site :
+		Prénom de l'administrateur du site :
 		</td>
 		<td><input type="text" name="gepiAdminPrenom" size="20" value="<?php echo(getSettingValue("gepiAdminPrenom")); ?>" onchange='changement()' />
 		</td>
@@ -790,9 +789,9 @@ echo add_token_field();
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		<label for='envoi_mail_liste' style='cursor: pointer;'>Permettre d'envoyer des mails Ã  une liste d'Ã©lÃ¨ves :<br />
-		<span style='font-size: small'>(<i>sous rÃ©serve que les mails soient remplis</i>)</span><br />
-		<span style='font-size: small'>Nous attirons votre attention sur le fait qu'envoyer un mail Ã  une liste d'utilisateurs via un lien mailto permet Ã  chaque Ã©lÃ¨ve de connaitre les email des autres Ã©lÃ¨ves sans que l'autorisation de divulgation ou non paramÃ©trÃ©e dans <b>GÃ©rer mon compte</b> soit prise en compte.</span></label>
+		<label for='envoi_mail_liste' style='cursor: pointer;'>Permettre d'envoyer des mails à une liste d'élèves :<br />
+		<span style='font-size: small'>(<i>sous réserve que les mails soient remplis</i>)</span><br />
+		<span style='font-size: small'>Nous attirons votre attention sur le fait qu'envoyer un mail à une liste d'utilisateurs via un lien mailto permet à chaque élève de connaitre les email des autres élèves sans que l'autorisation de divulgation ou non paramétrée dans <b>Gérer mon compte</b> soit prise en compte.</span></label>
 		</td>
 		<td valign='top'>
 		<input type="checkbox" id='envoi_mail_liste' name="envoi_mail_liste" value="y"
@@ -804,8 +803,8 @@ echo add_token_field();
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		<a name='sessionMaxLength'></a>DurÃ©e maximum d'inactivitÃ© : <br />
-		<span class='small'>(<i>DurÃ©e d'inactivitÃ©, en minutes, au bout de laquelle un utilisateur est automatiquement dÃ©connectÃ© de Gepi.</i>) <b>Attention</b>, la variable <b>session.maxlifetime</b> dans le fichier <b>php.ini</b> est rÃ©glÃ©e Ã  <?php 
+		<a name='sessionMaxLength'></a>Durée maximum d'inactivité : <br />
+		<span class='small'>(<i>Durée d'inactivité, en minutes, au bout de laquelle un utilisateur est automatiquement déconnecté de Gepi.</i>) <b>Attention</b>, la variable <b>session.maxlifetime</b> dans le fichier <b>php.ini</b> est réglée à <?php 
 			$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
 			$session_gc_maxlifetime_minutes=$session_gc_maxlifetime/60;
 
@@ -831,21 +830,21 @@ echo add_token_field();
 		?>
 	<tr>
 		<td style="font-variant: small-caps;">
-		DÃ©nomination des professeurs :</td>
+		Dénomination des professeurs :</td>
 		<td>Sing. :<input type="text" name="denomination_professeur" size="20" value="<?php echo(getSettingValue("denomination_professeur")); ?>" onchange='changement()' />
 		<br/>Pluriel :<input type="text" name="denomination_professeurs" size="20" value="<?php echo(getSettingValue("denomination_professeurs")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		DÃ©nomination des Ã©lÃ¨ves :</td>
+		Dénomination des élèves :</td>
 		<td>Sing. :<input type="text" name="denomination_eleve" size="20" value="<?php echo(getSettingValue("denomination_eleve")); ?>" />
 		<br/>Pluriel :<input type="text" name="denomination_eleves" size="20" value="<?php echo(getSettingValue("denomination_eleves")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		DÃ©nomination des responsables lÃ©gaux :</td>
+		Dénomination des responsables légaux :</td>
 		<td>Sing. :<input type="text" name="denomination_responsable" size="20" value="<?php echo(getSettingValue("denomination_responsable")); ?>" onchange='changement()' />
 		<br/>Pluriel :<input type="text" name="denomination_responsables" size="20" value="<?php echo(getSettingValue("denomination_responsables")); ?>" onchange='changement()' />
 		</td>
@@ -855,18 +854,18 @@ echo add_token_field();
 		?>
 	<tr>
 		<td style="font-variant: small-caps;">
-		DÃ©nomination du professeur chargÃ© du suivi des Ã©lÃ¨ves :</td>
+		Dénomination du professeur chargé du suivi des élèves :</td>
 		<td><input type="text" name="gepi_prof_suivi" size="20" value="<?php echo(getSettingValue("gepi_prof_suivi")); ?>" onchange='changement()' />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		DÃ©signation des boites/conteneurs/emplacements/sous-matiÃ¨res :</td>
+		Désignation des boites/conteneurs/emplacements/sous-matières :</td>
 		<td>
 		<input type="text" name="gepi_denom_boite" size="20" value="<?php echo(getSettingValue("gepi_denom_boite")); ?>" onchange='changement()' /><br />
 		<table summary='Genre'><tr valign='top'><td>Genre :</td><td>
 		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_m" value="m" <?php if(getSettingValue("gepi_denom_boite_genre")=="m"){echo 'checked';} ?> onchange='changement()' /> <label for='gepi_denom_boite_genre_m' style='cursor: pointer;'>Masculin</label><br />
-		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_f" value="f" <?php if(getSettingValue("gepi_denom_boite_genre")=="f"){echo 'checked';} ?> onchange='changement()' /> <label for='gepi_denom_boite_genre_f' style='cursor: pointer;'>FÃ©minin</label><br />
+		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_f" value="f" <?php if(getSettingValue("gepi_denom_boite_genre")=="f"){echo 'checked';} ?> onchange='changement()' /> <label for='gepi_denom_boite_genre_f' style='cursor: pointer;'>Féminin</label><br />
 		</td></tr></table>
 		</td>
 	</tr>
@@ -874,11 +873,11 @@ echo add_token_field();
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
 		<a name='gepi_denom_mention'></a>
-		DÃ©signation des "mentions" pouvant Ãªtre saisies avec l'avis du conseil de classe :<br />
+		Désignation des "mentions" pouvant Ãªtre saisies avec l'avis du conseil de classe :<br />
 		(<i>terme au singulier</i>)<br />
 		<a href='../saisie/saisie_mentions.php' <?php 
 			echo "onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		?>>DÃ©finir des "mentions"</a></td>
+		?>>Définir des "mentions"</a></td>
 		<td>
 		<input type="text" name="gepi_denom_mention" size="20" value="<?php
 			
@@ -894,15 +893,17 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;">
-		Mode de gÃ©nÃ©ration automatique des logins :</td>
+
+		<a name='format_login_resp'></a>
+		Mode de génération automatique des logins :</td>
 	<td>
 	<select name='mode_generation_login' onchange='changement()'>
-			<option value='name8'<?php if (getSettingValue("mode_generation_login")=='name8') echo " SELECTED"; ?>> nom (tronquÃ© Ã  8 caractÃ¨res)</option>
-			<option value='fname8'<?php if (getSettingValue("mode_generation_login")=='fname8') echo " SELECTED"; ?>> pnom (tronquÃ© Ã  8 caractÃ¨res)</option>
-			<option value='fname19'<?php if (getSettingValue("mode_generation_login")=='fname19') echo " SELECTED"; ?>> pnom (tronquÃ© Ã  19 caractÃ¨res)</option>
-			<option value='firstdotname'<?php if (getSettingValue("mode_generation_login")=='firstdotname') echo " SELECTED"; ?>> prenom.nom (tronquÃ© Ã  30 caractÃ¨res)</option>
-			<option value='firstdotname19'<?php if (getSettingValue("mode_generation_login")=='firstdotname19') echo " SELECTED"; ?>> prenom.nom (tronquÃ© Ã  19 caractÃ¨res)</option>
-			<option value='namef8'<?php if (getSettingValue("mode_generation_login")=='namef8') echo " SELECTED"; ?>> nomp (tronquÃ© Ã  8 caractÃ¨res)</option>
+			<option value='name8'<?php if (getSettingValue("mode_generation_login")=='name8') echo " SELECTED"; ?>> nom (tronqué à 8 caractères)</option>
+			<option value='fname8'<?php if (getSettingValue("mode_generation_login")=='fname8') echo " SELECTED"; ?>> pnom (tronqué à 8 caractères)</option>
+			<option value='fname19'<?php if (getSettingValue("mode_generation_login")=='fname19') echo " SELECTED"; ?>> pnom (tronqué à 19 caractères)</option>
+			<option value='firstdotname'<?php if (getSettingValue("mode_generation_login")=='firstdotname') echo " SELECTED"; ?>> prenom.nom (tronqué à 30 caractères)</option>
+			<option value='firstdotname19'<?php if (getSettingValue("mode_generation_login")=='firstdotname19') echo " SELECTED"; ?>> prenom.nom (tronqué à 19 caractères)</option>
+			<option value='namef8'<?php if (getSettingValue("mode_generation_login")=='namef8') echo " SELECTED"; ?>> nomp (tronqué à 8 caractères)</option>
 	</select>
 	</td>
 	</tr>
@@ -910,7 +911,7 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		Mode de gÃ©nÃ©ration des mots de passe :<br />(<i style='font-size:small;'>Jeu de caractÃ¨res Ã  utiliser en plus des caractÃ¨res numÃ©riques</i>)</td>
+		Mode de génération des mots de passe :<br />(<i style='font-size:small;'>Jeu de caractères à utiliser en plus des caractères numériques</i>)</td>
 	<td valign='top'>
 		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_y" value="y" <?php if((getSettingValue("mode_generation_pwd_majmin")=="y")||(getSettingValue("mode_generation_pwd_majmin")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_generation_pwd_majmin_y' style='cursor: pointer;'>Majuscules et minuscules</label><br />
 		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_n" value="n" <?php if(getSettingValue("mode_generation_pwd_majmin")=="n"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_generation_pwd_majmin_n' style='cursor: pointer;'>Minuscules seulement</label><br />
@@ -920,7 +921,7 @@ echo add_token_field();
 		<td valign='top'>
 		<input type="checkbox" name="mode_generation_pwd_excl" id="mode_generation_pwd_excl" value="y" <?php if(getSettingValue("mode_generation_pwd_excl")=="y") {echo 'checked';} ?> onchange='changement()' />
 		</td>
-		<td valign='top'> <label for='mode_generation_pwd_excl' style='cursor: pointer;'>Exclure les caractÃ¨res prÃªtant Ã  confusion (<i>i, 1, l, I, 0, O, o</i>)</label><br />
+		<td valign='top'> <label for='mode_generation_pwd_excl' style='cursor: pointer;'>Exclure les caractères prÃªtant à confusion (<i>i, 1, l, I, 0, O, o</i>)</label><br />
 		</td>
 		</tr>
 		</table>
@@ -933,14 +934,14 @@ echo add_token_field();
 	<tr>
 	<td style="font-variant: small-caps;" valign='top'>
 		<a name='mode_email_resp'></a>
-		<!--Mode de mise Ã  jour des emails responsables et Ã©lÃ¨ves :<br />(<i style='font-size:small;'>Les Ã©lÃ¨ves et responsables peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('eleves' et 'utilisateurs' pour les premiers, 'resp_pers' et 'utilisateurs' pour les seconds)<br />Ces email peuvent donc se trouver non synchronisÃ©s entre les tables</i>)-->
-		Mode de mise Ã  jour des emails responsables :<br />(<i style='font-size:small;'>Les responsables peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('resp_pers' et 'utilisateurs')<br />Ces email peuvent donc se trouver non synchronisÃ©s entre les tables</i>)
+		<!--Mode de mise à jour des emails responsables et élèves :<br />(<i style='font-size:small;'>Les élèves et responsables peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('eleves' et 'utilisateurs' pour les premiers, 'resp_pers' et 'utilisateurs' pour les seconds)<br />Ces email peuvent donc se trouver non synchronisés entre les tables</i>)-->
+		Mode de mise à jour des emails responsables :<br />(<i style='font-size:small;'>Les responsables peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('resp_pers' et 'utilisateurs')<br />Ces email peuvent donc se trouver non synchronisés entre les tables</i>)
 	</td>
 	<td valign='top'>
-		<input type="radio" name="mode_email_resp" id="mode_email_resp_sconet" value="sconet" <?php if((getSettingValue("mode_email_resp")=="sconet")||(getSettingValue("mode_email_resp")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_sconet' style='cursor: pointer;'>Mise Ã  jour de l'email via Sconet uniquement</label><br />
-		<input type="radio" name="mode_email_resp" id="mode_email_resp_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_resp")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_mon_compte' style='cursor: pointer;'>Mise Ã  jour de l'email depuis GÃ©rer mon compte uniquement<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>modifications dans Sconet non prises en compte</i>)<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>sauf sso, voir dans ce cas [<a href='options_connect.php#cas_attribut_email'>Options de connexion</a>]</i>)</label><br />
+		<input type="radio" name="mode_email_resp" id="mode_email_resp_sconet" value="sconet" <?php if((getSettingValue("mode_email_resp")=="sconet")||(getSettingValue("mode_email_resp")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_sconet' style='cursor: pointer;'>Mise à jour de l'email via Sconet uniquement</label><br />
+		<input type="radio" name="mode_email_resp" id="mode_email_resp_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_resp")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_mon_compte' style='cursor: pointer;'>Mise à jour de l'email depuis Gérer mon compte uniquement<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>modifications dans Sconet non prises en compte</i>)<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>sauf sso, voir dans ce cas [<a href='options_connect.php#cas_attribut_email'>Options de connexion</a>]</i>)</label><br />
 		<!--
-		<input type="radio" name="mode_email_resp" id="mode_email_resp_sso" value="sso" <?php if(getSettingValue("mode_email_resp")=="sso"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_sso' style='cursor: pointer;'>Mise Ã  jour de l'email via SSO (<i>???</i>)</label><br />
+		<input type="radio" name="mode_email_resp" id="mode_email_resp_sso" value="sso" <?php if(getSettingValue("mode_email_resp")=="sso"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_sso' style='cursor: pointer;'>Mise à jour de l'email via SSO (<i>???</i>)</label><br />
 		-->
 	</td>
 	</tr>
@@ -949,25 +950,25 @@ echo add_token_field();
 	<tr>
 	<td style="font-variant: small-caps;" valign='top'>
 		<a name='mode_email_ele'></a>
-		Mode de mise Ã  jour des emails Ã©lÃ¨ves :<br />(<i style='font-size:small;'>Les Ã©lÃ¨ves peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('eleves' et 'utilisateurs')<br />Ces email peuvent donc se trouver non synchronisÃ©s entre les tables</i>)
+		Mode de mise à jour des emails élèves :<br />(<i style='font-size:small;'>Les élèves peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('eleves' et 'utilisateurs')<br />Ces email peuvent donc se trouver non synchronisés entre les tables</i>)
 	</td>
 	<td valign='top'>
-		<input type="radio" name="mode_email_ele" id="mode_email_ele_sconet" value="sconet" <?php if((getSettingValue("mode_email_ele")=="sconet")||(getSettingValue("mode_email_ele")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_sconet' style='cursor: pointer;'>Mise Ã  jour de l'email via Sconet uniquement</label><br />
-		<input type="radio" name="mode_email_ele" id="mode_email_ele_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_ele")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_mon_compte' style='cursor: pointer;'>Mise Ã  jour de l'email depuis GÃ©rer mon compte uniquement<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>modifications dans Sconet non prises en compte</i>)<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>sauf sso, voir dans ce cas [<a href='options_connect.php#cas_attribut_email'>Options de connexion</a>]</i>)</label><br />
+		<input type="radio" name="mode_email_ele" id="mode_email_ele_sconet" value="sconet" <?php if((getSettingValue("mode_email_ele")=="sconet")||(getSettingValue("mode_email_ele")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_sconet' style='cursor: pointer;'>Mise à jour de l'email via Sconet uniquement</label><br />
+		<input type="radio" name="mode_email_ele" id="mode_email_ele_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_ele")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_mon_compte' style='cursor: pointer;'>Mise à jour de l'email depuis Gérer mon compte uniquement<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>modifications dans Sconet non prises en compte</i>)<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>sauf sso, voir dans ce cas [<a href='options_connect.php#cas_attribut_email'>Options de connexion</a>]</i>)</label><br />
 		<!--
-		<input type="radio" name="mode_email_ele" id="mode_email_ele_sso" value="sso" <?php if(getSettingValue("mode_email_ele")=="sso"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_sso' style='cursor: pointer;'>Mise Ã  jour de l'email via SSO (<i>???</i>)</label><br />
+		<input type="radio" name="mode_email_ele" id="mode_email_ele_sso" value="sso" <?php if(getSettingValue("mode_email_ele")=="sso"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_sso' style='cursor: pointer;'>Mise à jour de l'email via SSO (<i>???</i>)</label><br />
 		-->
 	</td>
 	</tr>
 
 
-	<!-- Traitement des problemes de points d'interrogation Ã  la place des accents -->
+	<!-- Traitement des problemes de points d'interrogation à la place des accents -->
 <?php
 /*
 	// Apparemment, ce n'est pas utile...
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_releves_pdf' style='cursor: pointer;'>Traitement UTF8 des caractÃ¨res accentuÃ©s des relevÃ©s de notes PDF&nbsp;:</label>
+		<label for='mode_utf8_releves_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des relevés de notes PDF&nbsp;:</label>
 		</td>
 		<td>
 		<input type="checkbox" id='mode_utf8_releves_pdf' name="mode_utf8_releves_pdf" value="y"
@@ -981,7 +982,7 @@ echo add_token_field();
 ?>
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_visu_notes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractÃ¨res accentuÃ©s dans la visualisation des notes du carnet de notes&nbsp;:</label>
+		<label for='mode_utf8_visu_notes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués dans la visualisation des notes du carnet de notes&nbsp;:</label>
 		</td>
 		<td>
 		<input type="checkbox" id='mode_utf8_visu_notes_pdf' name="mode_utf8_visu_notes_pdf" value="y"
@@ -994,7 +995,7 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		Type de bulletins par dÃ©faut&nbsp;:
+		Type de bulletins par défaut&nbsp;:
 		</td>
 		<td>
 		<input type="radio" id='type_bulletin_par_defaut_pdf' name="type_bulletin_par_defaut" value="pdf"
@@ -1015,7 +1016,7 @@ echo add_token_field();
 	// Apparemment, ce n'est pas utile...
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_listes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractÃ¨res accentuÃ©s des listes PDF&nbsp;:</label>
+		<label for='mode_utf8_listes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des listes PDF&nbsp;:</label>
 		</td>
 		<td>
 		<input type="checkbox" id='mode_utf8_listes_pdf' name="mode_utf8_listes_pdf" value="y"
@@ -1029,7 +1030,7 @@ echo add_token_field();
 ?>
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_bulletins_pdf' style='cursor: pointer;'>Traitement UTF8 des caractÃ¨res accentuÃ©s des bulletins PDF&nbsp;:</label>
+		<label for='mode_utf8_bulletins_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des bulletins PDF&nbsp;:</label>
 		</td>
 		<td>
 		<input type="checkbox" id='mode_utf8_bulletins_pdf' name="mode_utf8_bulletins_pdf" value="y"
@@ -1042,7 +1043,7 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;">
-		Feuille de style Ã  utiliser :</td>
+		Feuille de style à utiliser :</td>
 	<td>
 	<select name='gepi_stylesheet' onchange='changement()'>
 			<option value='style'<?php if (getSettingValue("gepi_stylesheet")=='style') echo " SELECTED"; ?>> Nouveau design</option>
@@ -1054,7 +1055,7 @@ echo add_token_field();
 /*
 		echo "<tr>\n";
 		if(file_exists("../lib/ss_zip.class.php")){
-			echo "<td style='font-variant: small-caps;'>Permettre l'export des carnets de notes au format ODS :<br />(<i>si les professeurs ne font pas le mÃ©nage aprÃ¨s gÃ©nÃ©ration des exports,<br />ces fichiers peuvent prendre de la place sur le serveur</i>)</td>\n";
+			echo "<td style='font-variant: small-caps;'>Permettre l'export des carnets de notes au format ODS :<br />(<i>si les professeurs ne font pas le ménage après génération des exports,<br />ces fichiers peuvent prendre de la place sur le serveur</i>)</td>\n";
 			echo "<td><input type='checkbox' name='export_cn_ods' value='y'";
 			if(getSettingValue('export_cn_ods')=='y'){
 				echo ' checked';
@@ -1063,10 +1064,10 @@ echo add_token_field();
 			echo "</td>\n";
 		}
 		else{
-			echo "<td style='font-variant: small-caps;'>En mettant en place la bibliothÃ¨que 'ss_zip_.class.php' dans le dossier '/lib/', vous pouvez gÃ©nÃ©rer des fichiers tableur ODS pour permettre des saisies hors ligne, la conservation de donnÃ©es,...<br />Voir <a href='http://smiledsoft.com/demos/phpzip/' style=''>http://smiledsoft.com/demos/phpzip/</a><br />Une version limitÃ©e est disponible gratuitement.</td>\n";
+			echo "<td style='font-variant: small-caps;'>En mettant en place la bibliothèque 'ss_zip_.class.php' dans le dossier '/lib/', vous pouvez générer des fichiers tableur ODS pour permettre des saisies hors ligne, la conservation de données,...<br />Voir <a href='http://smiledsoft.com/demos/phpzip/' style=''>http://smiledsoft.com/demos/phpzip/</a><br />Une version limitée est disponible gratuitement.</td>\n";
 			echo "<td>&nbsp;</td>\n";
 
-			// Comme la bibliothÃ¨que n'est pas prÃ©sente, on force la valeur Ã  'n':
+			// Comme la bibliothèque n'est pas présente, on force la valeur à 'n':
 			$svg_param=saveSetting("export_cn_ods", 'n');
 		}
 		echo "</tr>\n";
@@ -1075,11 +1076,11 @@ echo add_token_field();
 	<?php
 		echo "<tr>\n";
 		if(file_exists("../lib/pclzip.lib.php")){
-			echo "<td style='font-variant: small-caps;'>Taille maximale extraite des fichiers dÃ©zippÃ©s:<br />
-(<i style='font-size:small;'>Un fichier dÃ©zippÃ© peut prendre Ã©normÃ©ment de place.<br />
-Par prudence, il convient de fixer une limite Ã  la taille d'un fichier extrait.<br />
-En mettant zÃ©ro, vous ne fixez aucune limite.<br />
-En mettant une valeur nÃ©gative, vous dÃ©sactivez le dÃ©sarchivage</i>)</td>\n";
+			echo "<td style='font-variant: small-caps;'>Taille maximale extraite des fichiers dézippés:<br />
+(<i style='font-size:small;'>Un fichier dézippé peut prendre énormément de place.<br />
+Par prudence, il convient de fixer une limite à la taille d'un fichier extrait.<br />
+En mettant zéro, vous ne fixez aucune limite.<br />
+En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 			echo "<td valign='top'><input type='text' name='unzipped_max_filesize' value='";
 			$unzipped_max_filesize=getSettingValue('unzipped_max_filesize');
 			if($unzipped_max_filesize==""){
@@ -1092,7 +1093,7 @@ En mettant une valeur nÃ©gative, vous dÃ©sactivez le dÃ©sarchivage</i>)</td>\n";
 			echo "</td>\n";
 		}
 		else{
-			echo "<td style='font-variant: small-caps;'>En mettant en place la bibliothÃ¨que 'pclzip.lib.php' dans le dossier '/lib/', vous pouvez envoyer des fichiers ZippÃ©s vers le serveur.<br />Voir <a href='http://www.phpconcept.net/pclzip/index.php' style=''";
+			echo "<td style='font-variant: small-caps;'>En mettant en place la bibliothèque 'pclzip.lib.php' dans le dossier '/lib/', vous pouvez envoyer des fichiers Zippés vers le serveur.<br />Voir <a href='http://www.phpconcept.net/pclzip/index.php' style=''";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo ">http://www.phpconcept.net/pclzip/index.php</a></td>\n";
 			echo "<td>&nbsp;</td>\n";
@@ -1103,14 +1104,14 @@ En mettant une valeur nÃ©gative, vous dÃ©sactivez le dÃ©sarchivage</i>)</td>\n";
 	<!--tr>
 		<td style="font-variant: small-caps;">
 		<a name='delais_apres_cloture'></a>
-		Nombre de jours avant dÃ©verrouillage de l'accÃ¨s aux apprÃ©ciations des bulletins pour les responsables et les Ã©lÃ¨ves une fois la pÃ©riode close&nbsp;:<br />
-		<div style='font-variant: normal; font-style: italic; font-size: small;'>Sous rÃ©serve:<br />
+		Nombre de jours avant déverrouillage de l'accès aux appréciations des bulletins pour les responsables et les élèves une fois la période close&nbsp;:<br />
+		<div style='font-variant: normal; font-style: italic; font-size: small;'>Sous réserve:<br />
 		<ul>
-			<li style='font-variant: normal; font-style: italic; font-size: small;'>de crÃ©er des comptes pour les responsables et Ã©lÃ¨ves,</li>
-			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accÃ¨s aux bulletins simplifiÃ©s ou aux graphes dans <a href='droits_acces.php'<?php
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>de créer des comptes pour les responsables et élèves,</li>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php'<?php
 			//echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			?>>Droits d'accÃ¨s</a></li>
-			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'opter pour le mode de dÃ©verrouillage automatique sur le critÃ¨re "pÃ©riode close".</li>
+			?>>Droits d'accès</a></li>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'opter pour le mode de déverrouillage automatique sur le critère "période close".</li>
 		</ul>
 		</div>
 		</td>
@@ -1130,7 +1131,7 @@ En mettant une valeur nÃ©gative, vous dÃ©sactivez le dÃ©sarchivage</i>)</td>\n";
 	<tr>
 		<td style="font-variant: small-caps; vertical-align:top;">
 		<a name='bul_rel_nom_matieres'></a>
-		Pour la colonne matiÃ¨re/enseignement dans les bulletins et relevÃ©s de notes, utiliser&nbsp;:
+		Pour la colonne matière/enseignement dans les bulletins et relevés de notes, utiliser&nbsp;:
 		</td>
 		<td valign='top'>
 
@@ -1141,7 +1142,7 @@ En mettant une valeur nÃ©gative, vous dÃ©sactivez le dÃ©sarchivage</i>)</td>\n";
 			echo "<input type='radio' name='bul_rel_nom_matieres' id='bul_rel_nom_matieres_nom_complet_matiere' value='nom_complet_matiere'";
 			if($bul_rel_nom_matieres=='nom_complet_matiere') {echo " checked";}
 			echo " onchange='changement()' />\n";
-			echo "<label for='bul_rel_nom_matieres_nom_complet_matiere' style='cursor: pointer'> le nom complet de matiÃ¨re</label>\n";
+			echo "<label for='bul_rel_nom_matieres_nom_complet_matiere' style='cursor: pointer'> le nom complet de matière</label>\n";
 			echo "<br />\n";
 
 			echo "<input type='radio' name='bul_rel_nom_matieres' id='bul_rel_nom_matieres_nom_groupe' value='nom_groupe'";
@@ -1164,14 +1165,14 @@ En mettant une valeur nÃ©gative, vous dÃ©sactivez le dÃ©sarchivage</i>)</td>\n";
 		<td style="font-variant: small-caps;">
 		<a name='mode_ouverture_acces_appreciations'></a>
 		<a name='delais_apres_cloture'></a>
-		Mode d'accÃ¨s aux bulletins et rÃ©sultats graphiques, pour les Ã©lÃ¨ves et leurs
+		Mode d'accès aux bulletins et résultats graphiques, pour les élèves et leurs
 responsables&nbsp;:<br />
-		<div style='font-variant: normal; font-style: italic; font-size: small;'>Sous rÃ©serve:<br />
+		<div style='font-variant: normal; font-style: italic; font-size: small;'>Sous réserve:<br />
 		<ul>
-			<li style='font-variant: normal; font-style: italic; font-size: small;'>de crÃ©er des comptes pour les responsables et Ã©lÃ¨ves,</li>
-			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accÃ¨s aux bulletins simplifiÃ©s ou aux graphes dans <a href='droits_acces.php#bull_simp_ele'<?php
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>de créer des comptes pour les responsables et élèves,</li>
+			<li style='font-variant: normal; font-style: italic; font-size: small;'>d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans <a href='droits_acces.php#bull_simp_ele'<?php
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			?>>Droits d'accÃ¨s</a></li>
+			?>>Droits d'accès</a></li>
 		</ul>
 		</div>
 		</td>
@@ -1182,18 +1183,18 @@ responsables&nbsp;:<br />
 
 			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_manuel' value='manuel' onchange='changement()' ";
 			if($acces_app_ele_resp=='manuel') {echo "checked ";}
-			echo "/><label for='acces_app_ele_resp_manuel'>manuel (<i>ouvert par la scolaritÃ©, classe par classe</i>)</label><br />\n";
+			echo "/><label for='acces_app_ele_resp_manuel'>manuel (<i>ouvert par la scolarité, classe par classe</i>)</label><br />\n";
 
 			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_date' value='date' onchange='changement()' ";
 			if($acces_app_ele_resp=='date') {echo "checked ";}
-			echo "/><label for='acces_app_ele_resp_date'>Ã  une date choisie (<i>par la scolaritÃ©</i>)</label><br />\n";
+			echo "/><label for='acces_app_ele_resp_date'>à une date choisie (<i>par la scolarité</i>)</label><br />\n";
 
 			$delais_apres_cloture=getSettingValue("delais_apres_cloture");
 			if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
 
 			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_periode_close' value='periode_close' onchange='changement()' ";
 			if($acces_app_ele_resp=='periode_close') {echo "checked ";}
-			echo "/><label for='acces_app_ele_resp_periode_close'> <input type='text' name='delais_apres_cloture' value='$delais_apres_cloture' size='1' onchange='changement()' /> jours aprÃ¨s la clÃ´ture de la pÃ©riode</label>\n";
+			echo "/><label for='acces_app_ele_resp_periode_close'> <input type='text' name='delais_apres_cloture' value='$delais_apres_cloture' size='1' onchange='changement()' /> jours après la clÃ´ture de la période</label>\n";
 			?>
 		</td>
 	</tr>
@@ -1219,7 +1220,7 @@ responsables&nbsp;:<br />
 			echo "<input type='radio' name='avis_conseil_classe_a_la_mano' id='avis_conseil_classe_a_la_mano' value='y'";
 			if($avis_conseil_classe_a_la_mano=='y') {echo " checked";}
 			echo " onchange='changement()' />";
-			echo "<label for='avis_conseil_classe_a_la_mano' style='cursor: pointer'> Ã  la main sur les bulletins imprimÃ©s</label>\n";
+			echo "<label for='avis_conseil_classe_a_la_mano' style='cursor: pointer'> à la main sur les bulletins imprimés</label>\n";
 			?>
 		</td>
 	</tr>
@@ -1227,9 +1228,9 @@ responsables&nbsp;:<br />
 	<tr>
 		<td style="font-variant: small-caps;">
 		<a name='ancre_ele_lieu_naissance'></a>
-		<label for='ele_lieu_naissance' style='cursor: pointer'>Faire apparaitre les lieux de naissance des Ã©lÃ¨ves&nbsp;:</label><br />
+		<label for='ele_lieu_naissance' style='cursor: pointer'>Faire apparaitre les lieux de naissance des élèves&nbsp;:</label><br />
 		<div style='font-variant: normal; font-style: italic; font-size: small;'>
-			ConditionnÃ© par l'utilisation des 'code_commune_insee' importÃ©s depuis Sconet et par l'import des correspondances 'code_commune_insee/commune' dans la table 'communes' depuis <a href='../eleves/import_communes.php' <?php
+			Conditionné par l'utilisation des 'code_commune_insee' importés depuis Sconet et par l'import des correspondances 'code_commune_insee/commune' dans la table 'communes' depuis <a href='../eleves/import_communes.php' <?php
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			?>>Import des communes</a>.<br />
 		</div>
@@ -1248,10 +1249,10 @@ responsables&nbsp;:<br />
 	<tr>
 		<td style="font-variant: small-caps;">
 		<a name='ancre_exp_imp_chgt_etab'></a>
-		<label for='exp_imp_chgt_etab' style='cursor: pointer'>Permettre l'export/import des bulletins d'Ã©lÃ¨ves au format CSV&nbsp;:</label><br />
+		<label for='exp_imp_chgt_etab' style='cursor: pointer'>Permettre l'export/import des bulletins d'élèves au format CSV&nbsp;:</label><br />
 		<div style='font-variant: normal; font-style: italic; font-size: small;'>
-			Le fichier peut Ãªtre gÃ©nÃ©rÃ© pour un Ã©lÃ¨ve qui quitte l'Ã©tablissement en cours d'annÃ©e.<br />
-			L'Ã©tablissement qui reÃ§oit l'Ã©lÃ¨ve peut utiliser ce fichier pour importer les bulletins.<br />
+			Le fichier peut Ãªtre généré pour un élève qui quitte l'établissement en cours d'année.<br />
+			L'établissement qui reÃ§oit l'élève peut utiliser ce fichier pour importer les bulletins.<br />
 		</div>
 		</td>
 		<td valign='top'>
@@ -1268,9 +1269,9 @@ responsables&nbsp;:<br />
 
 	<tr>
 		<td style="font-variant: small-caps;">
-		NÂ° d'enregistrement Ã  la CNIL : <br />
-		<span class='small'>ConformÃ©ment Ã  l'article 16 de la loi 78-17 du 6 janvier 1978, dite loi informatique et libertÃ©,
-		cette installation de GEPI doit faire l'objet d'une dÃ©claration de traitement automatisÃ© d'informations nominatives auprÃ¨s
+		NÂ° d'enregistrement à la CNIL : <br />
+		<span class='small'>Conformément à l'article 16 de la loi 78-17 du 6 janvier 1978, dite loi informatique et liberté,
+		cette installation de GEPI doit faire l'objet d'une déclaration de traitement automatisé d'informations nominatives auprès
 		de la CNIL. Si ce n'est pas encore le cas, laissez libre le champ ci-contre</span>
 		</td>
 		<td><input type="text" name="num_enregistrement_cnil" size="20" value="<?php echo(getSettingValue("num_enregistrement_cnil")); ?>" onchange='changement()' />
@@ -1287,7 +1288,7 @@ echo add_token_field();
 ?>
 <table border='0' cellpadding="5" cellspacing="5" summary='Logo'>
 <?php
-echo "<tr><td colspan=2 style=\"font-variant: small-caps;\"><b>Logo de l'Ã©tablissement : </b></td></tr>\n";
+echo "<tr><td colspan=2 style=\"font-variant: small-caps;\"><b>Logo de l'établissement : </b></td></tr>\n";
 echo "<tr><td colspan=2>Le logo est visible sur les bulletins officiels, ainsi que sur la page d'accueil publique des cahiers de texte</td></tr>\n";
 echo "<tr><td>Modifier le Logo (png, jpg et gif uniquement) : ";
 echo "<input type=\"file\" name=\"doc_file\" onchange='changement()' />\n";
@@ -1306,8 +1307,8 @@ echo "<td><b><i>Pas de logo actuellement</i></b></td>\n";
 echo "</tr></table></form>\n";
 ?>
 
-<p><i>Remarques&nbsp;</i> Les transparences sur les images PNG, GIF ne permettent pas une impression PDF (<i>canal alpha non supportÃ© par fpdf</i>).<br />
-Il a aussi Ã©tÃ© signalÃ© que les JPEG progressifs/entrelacÃ©s peuvent perturber la gÃ©nÃ©ration de PDF.</p>
+<p><i>Remarques&nbsp;</i> Les transparences sur les images PNG, GIF ne permettent pas une impression PDF (<i>canal alpha non supporté par fpdf</i>).<br />
+Il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF.</p>
 
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" name="form3" style="width: 100%;">
@@ -1317,7 +1318,7 @@ echo add_token_field();
 <table border='0' cellpadding="5" cellspacing="5" summary='Pmv'>
 	<tr>
 		<td style="font-variant: small-caps;">
-		Tester la prÃ©sence du module phpMyVisite (<i>pmv.php</i>) :</td>
+		Tester la présence du module phpMyVisite (<i>pmv.php</i>) :</td>
 	<td>
 		<input type="radio" name="gepi_pmv" id="gepi_pmv_y" value="y" <?php if(getSettingValue("gepi_pmv")!="n"){echo 'checked';} ?> onchange='changement()' /><label for='gepi_pmv_y' style='cursor: pointer;'> Oui</label><br />
 		<input type="radio" name="gepi_pmv" id="gepi_pmv_n" value="n" <?php if(getSettingValue("gepi_pmv")=="n"){echo 'checked';} ?> onchange='changement()' /><label for='gepi_pmv_n' style='cursor: pointer;'> Non</label><br />
@@ -1328,8 +1329,8 @@ echo add_token_field();
 <input type="hidden" name="is_posted" value="1" />
 <center><input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" /></center>
 
-<table summary='Remarque'><tr><td valign='top'><i>Remarque:</i></td><td>Il arrive que ce test de prÃ©sence provoque un affichage d'erreur (<i>Ã  propos de pmv.php</i>).<br />
-Dans ce cas, dÃ©sactivez simplement le test.</td></tr></table>
+<table summary='Remarque'><tr><td valign='top'><i>Remarque:</i></td><td>Il arrive que ce test de présence provoque un affichage d'erreur (<i>à propos de pmv.php</i>).<br />
+Dans ce cas, désactivez simplement le test.</td></tr></table>
 </form>
 <p><br /></p>
 

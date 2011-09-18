@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id$
  * @copyright 2008-2011
  * Fichier d'inclusion à la gestion des statuts 'autre'
  *

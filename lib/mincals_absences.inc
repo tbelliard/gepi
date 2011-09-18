@@ -1,6 +1,5 @@
 <?php
 
-// $Id$
 
 function minicals($year, $month, $day, $id_classe, $type, $dmy) {
 

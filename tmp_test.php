@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -48,7 +47,6 @@ if($_SESSION['statut']!='administrateur') {
     die();
 }
 
-$revision_svn='$Id$';
 
 //**************** EN-TETE *********************
 $titre_page = "Page de test";

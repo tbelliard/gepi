@@ -2,7 +2,6 @@
 /**
  * EdT Gepi : le menu pour les includes require_once().
  *
- * @version $Id: menu.inc.new.php $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
  *

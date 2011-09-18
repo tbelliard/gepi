@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id$
  * @copyright 2008
  *
  * Fichier qui renvoie un select des types de semaine ainsiq ue des différentes périodes du calendier de l'établissement

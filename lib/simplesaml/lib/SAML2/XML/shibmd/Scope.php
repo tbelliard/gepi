@@ -5,7 +5,6 @@
  *
  * @link https://spaces.internet2.edu/display/SHIB/ShibbolethMetadataProfile
  * @package simpleSAMLphp
- * @version $Id$
  */
 class SAML2_XML_shibmd_Scope {
 

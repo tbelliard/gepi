@@ -4,7 +4,6 @@
  * Fichier temporaire uniquement présent dans les versions RC pour teter les configurations serveur
  * et d'autres paramètres pour comprendre certaines erreurs.
  *
- * @version $Id$ 1.5.1RC1
  *
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal

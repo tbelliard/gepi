@@ -3,7 +3,6 @@
 /**
  * Fichier qui permet de construire la barre de menu cpe des pages utilisant un gabarit
  * 
- * $Id: header_barre_cpe_template.php 7793 2011-08-16 17:39:17Z crob 
  * 
  * Variables envoyées au gabarit
  * - $tbs_menu_admin : liens de la barre de menu 
@@ -138,6 +137,28 @@ if ($barre_plugin!="") {
 			$menus .= '</li>'."\n";
 			//=======================================================
 		}
+
+		//=======================================================
+		// Module emploi du temps
+		if (getSettingValue("autorise_edt_tous") == "y") {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>Emploi du tps</a>'."\n";
+
+			$menus .= '   <ul class="niveau2">'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>EDT classe</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1"'.insert_confirm_abandon().'>EDT prof</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=salle1"'.insert_confirm_abandon().'>EDT salle</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=eleve1"'.insert_confirm_abandon().'>EDT élève</a></li>'."\n";
+			$menus .= '   </ul>'."\n";
+			$menus .= '</li>'."\n";
+		}
+		//=======================================================
+
+		//=======================================================
+		// Module discipline
+		if (getSettingValue("active_mod_discipline")=='y') {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_discipline/index.php"'.insert_confirm_abandon().'>Discipline</a></li>'."\n";
+		}
+		//=======================================================
 
 		//=======================================================
 		// Gestion

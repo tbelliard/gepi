@@ -3,7 +3,6 @@
 /**
  * Fichier qui gère une requête ajax et qui renvoie la bonne couleur pour la matière
  *
- * @version $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

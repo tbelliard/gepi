@@ -7,7 +7,6 @@
  *
  * @author Olav Morken, UNINETT AS.
  * @package simpleSAMLphp
- * @version $Id$
  */
 
 //this file is a modification of module/core/www/loginuserpassorg.php

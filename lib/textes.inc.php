@@ -1,6 +1,6 @@
 <?php
-	/* $Id$
-	
+
+	/*
 		Fichier destiné à stocker des portions de texte susceptibles d'être appelées dans diverses pages.
 		Exemple:
 			require("../lib/textes.inc.php");
@@ -21,4 +21,5 @@ En ce qui concerne les travaux effectués dans le cadre de groupes, ou de sous-g
 Si aucune moyenne n'apparait sur le graphique, c'est probablement parce que les professeurs n'ont pas encore rempli les bulletins.<br />
 Avant la fin de la période, il se peut que seules les notes des devoirs soient saisies.<br />
 Elles seront consultables dans le Relevé de notes si vous y avez accès.";
+
 ?>

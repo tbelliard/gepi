@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 */
 /*
 function get_nom_prenom_eleve($login_ele) {

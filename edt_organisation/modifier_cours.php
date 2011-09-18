@@ -3,7 +3,6 @@
 /**
  * Fichier destiné à permettre la modification d'un cours
  *
- * @version $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

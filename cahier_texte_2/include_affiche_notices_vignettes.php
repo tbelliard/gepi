@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id$
  *
  * Copyright 2009-2011 Josselin Jacquard
  *
@@ -37,7 +36,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 		//$html_balise .=("<span style='color:coral'>".$_SESSION['login']."</span>");
 
 		$liens_edition_suppression="y";
-		if(($devoir->getIdLogin()!=$_SESSION['login'])&&(getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
+		if((strtoupper($devoir->getIdLogin())!=strtoupper($_SESSION['login']))&&(getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
 			$liens_edition_suppression="n";
 		}
 
@@ -89,7 +88,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 	//vise
 	$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_notice_privee_".$notice_privee->getIdCt()."'></div>");
 
-		if($notice_privee->getIdLogin()==$_SESSION['login']) {
+		if(strtoupper($notice_privee->getIdLogin())==strtoupper($_SESSION['login'])) {
 			$html_balise .= '<div style="margin: 0px; float: left;">';
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
 										id_groupe = '".$notice_privee->getIdGroupe()."';
@@ -127,7 +126,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 		if (($compte_rendu->getVise() != 'y') or (isset($visa_cdt_inter_modif_notices_visees) AND $visa_cdt_inter_modif_notices_visees == 'no')) {
 
 			$liens_edition_suppression="y";
-			if(($compte_rendu->getIdLogin()!=$_SESSION['login'])&&(getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
+			if((strtoupper($compte_rendu->getIdLogin())!=strtoupper($_SESSION['login']))&&(getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
 				$liens_edition_suppression="n";
 			}
 	

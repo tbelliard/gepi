@@ -2,9 +2,8 @@
 /**
  * Ensemble des fonctions qui permettent d'afficher les emplois du temps des profs
  *
- * @version $Id: fonctions_edt_prof.php $
  *
- * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -375,7 +374,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
                        }
                     }
                     $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
+                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_demicreneau['id_groupe']), $contenu);
 
                     $duree1 += (int)$rep_demicreneau['duree'];
                     $elapse_time1 += (int)$rep_demicreneau['duree'];
@@ -394,7 +393,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
  
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
+                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_demicreneau['id_groupe']), $contenu);
                     $duree1 += (int)$rep_demicreneau['duree'];
                     $elapse_time1 += (int)$rep_demicreneau['duree'];
 

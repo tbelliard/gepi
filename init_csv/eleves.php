@@ -1,7 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -128,8 +127,19 @@ if (!isset($_POST["action"])) {
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		while (true) {
 
+		$sql="SELECT * FROM temp_gep_import2;";
+		$res_temp=mysql_query($sql);
+		if(mysql_num_rows($res_temp)==0) {
+			echo "<p style='color:red'>ERREUR&nbsp;: Aucun élève n'a été trouvé&nbsp;???</p>\n";
+			echo "<p><br /></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		//while (true) {
+		while ($lig=mysql_fetch_object($res_temp)) {
+			/*
 			$reg_nom = $_POST["ligne".$i."_nom"];
 			$reg_prenom = $_POST["ligne".$i."_prenom"];
 			$reg_naissance = $_POST["ligne".$i."_naissance"];
@@ -139,6 +149,16 @@ if (!isset($_POST["action"])) {
 			$reg_double = $_POST["ligne".$i."_doublement"];
 			$reg_regime = $_POST["ligne".$i."_regime"];
 			$reg_sexe = $_POST["ligne".$i."_sexe"];
+			*/
+			$reg_nom = $lig->ELENOM;
+			$reg_prenom = $lig->ELEPRE;
+			$reg_naissance = $lig->ELEDATNAIS;
+			$reg_id_int = $lig->ELENOET;
+			$reg_id_nat = $lig->ELENONAT;
+			$reg_etab_prec = $lig->ETOCOD_EP;
+			$reg_double = $lig->ELEDOUBL;
+			$reg_regime = $lig->ELEREG;
+			$reg_sexe = $lig->ELESEXE;
 
 			//==========================
 			// DEBUG
@@ -333,7 +353,7 @@ if (!isset($_POST["action"])) {
 
 			}
 			$i++;
-			if (!isset($_POST['ligne'.$i.'_nom'])) break 1;
+			//if (!isset($_POST['ligne'.$i.'_nom'])) break 1;
 		}
 
 		if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>\n";
@@ -486,51 +506,113 @@ if (!isset($_POST["action"])) {
 				echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
 				echo "<tr><th>Nom</th><th>Prénom</th><th>Sexe</th><th>Date de naissance</th><th>n° étab.</th><th>n° nat.</th><th>Code étab.</th><th>Double.</th><th>Régime</th></tr>\n";
 
+
+				$chaine_mysql_collate="";
+				$sql="CREATE TABLE IF NOT EXISTS temp_gep_import2 (
+				ID_TEMPO varchar(40) NOT NULL default '',
+				LOGIN varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELENOM varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEPRE varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELESEXE varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEDATNAIS varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELENOET varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELE_ID varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEDOUBL varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELENONAT varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEREG varchar(40) $chaine_mysql_collate NOT NULL default '',
+				DIVCOD varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ETOCOD_EP varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT1 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT2 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT3 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT4 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT5 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT6 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT7 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT8 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT9 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT10 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT11 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				ELEOPT12 varchar(40) $chaine_mysql_collate NOT NULL default '',
+				LIEU_NAISSANCE varchar(50) $chaine_mysql_collate NOT NULL default '',
+				MEL varchar(255) $chaine_mysql_collate NOT NULL default ''
+				);";
+				$create_table = mysql_query($sql);
+
+				$sql="TRUNCATE TABLE temp_gep_import2;";
+				$vide_table = mysql_query($sql);
+
+				$nb_error=0;
+
 				$alt=1;
 				for ($i=0;$i<$k;$i++) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
-					echo $data_tab[$i]["nom"];
-					echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
+
+					$sql="INSERT INTO temp_gep_import2 SET id_tempo='$i',
+					elenom='".addslashes($data_tab[$i]["nom"])."',
+					elepre='".addslashes($data_tab[$i]["prenom"])."',
+					elesexe='".addslashes($data_tab[$i]["sexe"])."',
+					eledatnais='".addslashes($data_tab[$i]["naissance"])."',
+					elenoet='".addslashes($data_tab[$i]["id_int"])."',
+					elenonat='".addslashes($data_tab[$i]["id_nat"])."',
+					etocod_ep='".addslashes($data_tab[$i]["etab_prec"])."',
+					eledoubl='".addslashes($data_tab[$i]["doublement"])."',
+					elereg='".addslashes($data_tab[$i]["regime"])."';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						echo "<span style='color:red'>".$data_tab[$i]["nom"]."</span>";
+						$nb_error++;
+					}
+					else {
+						echo $data_tab[$i]["nom"];
+					}
+					//echo $data_tab[$i]["nom"];
+					//echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["prenom"];
-					echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["sexe"];
-					echo "<input type='hidden' name='ligne".$i."_sexe' value='" . $data_tab[$i]["sexe"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_sexe' value='" . $data_tab[$i]["sexe"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["naissance"];
-					echo "<input type='hidden' name='ligne".$i."_naissance' value='" . $data_tab[$i]["naissance"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_naissance' value='" . $data_tab[$i]["naissance"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["id_int"];
-					echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["id_nat"];
-					echo "<input type='hidden' name='ligne".$i."_id_nat' value='" . $data_tab[$i]["id_nat"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_id_nat' value='" . $data_tab[$i]["id_nat"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["etab_prec"];
-					echo "<input type='hidden' name='ligne".$i."_etab_prec' value='" . $data_tab[$i]["etab_prec"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_etab_prec' value='" . $data_tab[$i]["etab_prec"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["doublement"];
-					echo "<input type='hidden' name='ligne".$i."_doublement' value='" . $data_tab[$i]["doublement"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_doublement' value='" . $data_tab[$i]["doublement"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["regime"];
-					echo "<input type='hidden' name='ligne".$i."_regime' value='" . $data_tab[$i]["regime"] . "' />\n";
+					//echo "<input type='hidden' name='ligne".$i."_regime' value='" . $data_tab[$i]["regime"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
 
 				echo "</table>\n";
 				echo "$k élèves ont été détectés dans le fichier.<br />\n";
+
+				if($nb_error>0) {
+					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+				}
+
 				echo "<input type='submit' value='Enregistrer' />\n";
 
 				echo "</form>\n";

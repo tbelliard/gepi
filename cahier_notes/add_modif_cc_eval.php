@@ -2,7 +2,6 @@
 /**
  * Ajouter, modifier une évaluation cumule
  * 
- * $Id$
  * 
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

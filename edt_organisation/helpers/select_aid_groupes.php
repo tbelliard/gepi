@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @version $Id$
  * @copyright 2008-2011
  *
  * Fichier qui renvoie un select des professeurs de l'établissement

@@ -8,7 +8,6 @@
  * $_POST['note_autre_que_sur_referentiel'] note autre que sur referentiel
  * $_POST['is_posted']
  * 
- * @version: $Id$
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 

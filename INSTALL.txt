@@ -200,3 +200,4 @@ Vous devriez maintenant pouvoir vous connecter sans problème.
 
 En cas de problème, n'hésitez pas à nous contacter par le biais de la liste
 de diffusion gepi-users (voir site web officiel de Gepi : http://gepi.mutualibre.org).
+

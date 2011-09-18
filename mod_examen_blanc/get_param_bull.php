@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 */
 
 	$val_defaut_champ_bull_pdf["nom_model_bulletin"]="Nom du modèle";

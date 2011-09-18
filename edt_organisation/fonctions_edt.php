@@ -3,7 +3,6 @@
 /**
  * Fonctions pour l'EdT
  *
- * @version     $Id$
  * @package		GEPI
  * @subpackage	EmploisDuTemps
  * @copyright	Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero

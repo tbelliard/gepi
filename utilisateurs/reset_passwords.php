@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -262,7 +261,7 @@ else {
 				$call_user_info = mysql_query("SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, u.auth_mode " .
 						"FROM utilisateurs u, classes c, j_eleves_classes jec WHERE (" .
 						"u.login = jec.login AND " .
-						"jec.id_classe = '".$user_classe."')");
+						"jec.id_classe = '".$user_classe."') ORDER BY u.nom, u.prenom ");
 			}
 		}
 		else {
@@ -288,7 +287,7 @@ else {
 									AND jec.login = e.login
 									AND (r2.resp_legal='1' OR r2.resp_legal='2')
 									)
-									ORDER BY jec.id_classe";
+									ORDER BY jec.id_classe, rp.nom, rp.prenom";
 				//echo $sql_user_info;
 				$call_user_info = mysql_query($sql_user_info);
 				$cas_traite=2;

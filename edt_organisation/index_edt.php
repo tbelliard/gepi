@@ -3,7 +3,6 @@
 /**
  * Fichier de gestion de l'emploi du temps dans Gepi version 1.5.x
  *
- * @version     $Id$
  * @package		GEPI
  * @subpackage	EmploiDuTemps
  * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero

@@ -1734,7 +1734,7 @@ class Eleve extends BaseEleve {
 		} else if ($dateDebutClone == null || $dateFinClone == null){
             if ($this->debug) {
                 $this->affiche_duree();
-                }          
+            }
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		} else {
 			$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600*6-$dateDebutClone->format('U'))/(3600*12)); // on compte les tranches de 12h

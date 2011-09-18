@@ -3,7 +3,6 @@
 /**
  * EdT Gepi : le menu pour les includes require_once().
  *
- * @version $Id:  $
  *
  * Copyright 2011 Pascal Fautrero
  *

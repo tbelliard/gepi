@@ -1,0 +1,30 @@
+# Ignore configuration files that may contain sensitive information.
+secure/*
+!secure/modeles/
+
+# Ignore paths that contain user-generated content.
+/backup
+!/backup/donnees_test
+temp
+/documents/*
+!/documents/archives/entete.php
+!/documents/archives/index.php
+!/documents/index.html
+*.log
+lib/standalone/HTMLPurifier/DefinitionCache/Serializer/HTML
+
+# Ignore dev files
+.settings
+.project
+.buildpath
+*.orig
+commit-*
+nbproject
+*.sh
+*REMOTE*
+
+# Ignore build generated files
+/build/coverage
+/build/logs
+/build/api
+

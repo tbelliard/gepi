@@ -1,7 +1,6 @@
 <?php
 /**
  * Appel des fichiers de configuration de Propel
- * @version $Id$
  *
  * @Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *

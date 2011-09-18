@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: evolutions.php -1   $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *

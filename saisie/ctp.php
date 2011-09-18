@@ -1,6 +1,5 @@
 <?php
 	/*
-		$Id$
 	*/
 
 	// Hauteur du DIV des appréciations-types

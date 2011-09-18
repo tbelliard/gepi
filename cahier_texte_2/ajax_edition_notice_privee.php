@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id$
  *
  * Copyright 2009-2011 Josselin Jacquard
  *
@@ -22,6 +21,7 @@
  */
 
 header('Content-Type: text/html; charset=utf-8');
+
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");

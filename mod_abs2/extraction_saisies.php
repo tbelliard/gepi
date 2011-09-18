@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id$
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -108,7 +107,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    ?>
 	    <div id="contain_div" class="css-panes">
 	    <form dojoType="dijit.form.Form" id="choix_extraction" name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
-	    <h2>Etraire les saisies du 		
+	    <h2>Extraire les saisies du 		
 	    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
 	    au               
 	    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
@@ -143,8 +142,9 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    <p>
 	    Type :
 	    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait">
-	    <option value='1' <?php if ($type_extrait == '1') {echo 'selected';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
-	    <option value='2' <?php if ($type_extrait == '2') {echo 'selected';}?>>Liste de toutes les saisies</option>
+
+	    <option value='1' <?php if ($type_extrait == '1') {echo 'selected="selected"';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
+	    <option value='2' <?php if ($type_extrait == '2') {echo 'selected="selected"';}?>>Liste de toutes les saisies</option>
 	    </select>
 	    <br />
 	    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="html">Afficher</button>

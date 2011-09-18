@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id$
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -69,8 +68,8 @@ if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') 
 }
 
 if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") {
-    //header("Location: ./saisir_eleve.php");
-    //die();
+    header("Location: ./absences_du_jour.php");
+    die();
 } else if ($utilisateur->getStatut()=="professeur") {
     header("Location: ./saisir_groupe.php");
     die();

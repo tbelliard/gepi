@@ -1,7 +1,6 @@
 <?php
 	@set_time_limit(0);
 
-	// $Id$
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
@@ -327,6 +326,16 @@
 						$sql="TRUNCATE TABLE temp_gep_import2;";
 						$vide_table = mysql_query($sql);
 
+						$sql="CREATE TABLE IF NOT EXISTS temp_grp (
+						id smallint(6) unsigned NOT NULL auto_increment, 
+						ELE_ID varchar(40) NOT NULL default '',
+						NOM_GRP varchar(255) NOT NULL default '',
+						PRIMARY KEY id (id));";
+						$create_table = mysql_query($sql);
+
+						$sql="TRUNCATE TABLE temp_grp;";
+						$vide_table = mysql_query($sql);
+
 						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
 
 						$ele_xml=simplexml_load_file($dest_file);
@@ -393,6 +402,13 @@
 							}
 						}
 
+						//if(count($eleves)==0) {
+						if(!isset($eleves)) {
+							echo "<p style='color:red'>Les classes d'affectation des élèves ne sont pas définies dans le fichier XML.<br />Votre secrétaire n'a pas encore remonté cette information dans Sconet... ou bien la remontée n'est pas encore prise en compte dans les XML.<br />Pendant un temps, la saisie n'était prise en compte dans les XML que le lendemain de la saisie.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
 						$nb_err=0;
 						// $cpt: Identifiant id_tempo
 						$id_tempo=1;
@@ -404,12 +420,20 @@
 									for($j=0;$j<count($eleves[$i]["structures"]);$j++){
 										if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
 											$temoin_div_trouvee="oui";
-											break;
+											//break;
+
+											$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
+										}
+										elseif($eleves[$i]["structures"][$j]["type_structure"]=="G") {
+											$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".addslashes($eleves[$i]["structures"][$j]["code_structure"])."';";
+											$insert_assoc_grp=mysql_query($sql);
 										}
 									}
+									/*
 									if($temoin_div_trouvee!=""){
 										$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
 									}
+									*/
 								}
 							}
 

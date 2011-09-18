@@ -2,7 +2,6 @@
 /* 
  * Configuration for the DiscoPower module.
  * 
- * $Id: $
  */
 
 $config = array (

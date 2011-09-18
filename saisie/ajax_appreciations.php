@@ -4,7 +4,6 @@
  * ajax_appreciations.php
  * Fichier qui permet la sauvegarde automatique des appréciations au fur et à mesure de leur saisie
  *
- * @version $Id$
  * @copyright 2007-2011
  */
 

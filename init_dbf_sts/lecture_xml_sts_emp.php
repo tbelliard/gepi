@@ -2,7 +2,6 @@
 @set_time_limit(0);
 
 // Auteur: Stephane Boireau
-// $Id$
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");

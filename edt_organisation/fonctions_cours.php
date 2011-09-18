@@ -3,7 +3,6 @@
 /**
  * Ensemble des fonctions qui permettent de créer un nouveau cours en vérifiant les précédents
  *
- * @version $Id$
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

@@ -1,6 +1,5 @@
 <?php
 
-/* $Id$ */
 
 $debug_import="n";
 

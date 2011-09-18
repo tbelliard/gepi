@@ -5,7 +5,6 @@
  *
  * @author Andreas Åkre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
  * @package simpleSAMLphp
- * @version $Id$
  */
 class SimpleSAML_Utilities {
 
@@ -33,7 +32,21 @@ class SimpleSAML_Utilities {
 	 * Will return sp.example.org
 	 */
 	public static function getSelfHost() {
+
+		$url = self::getBaseURL();
+
+		$start = strpos($url,'://') + 3;
+		$length = strcspn($url,'/:',$start);
+
+		return substr($url, $start, $length);
+
+	}
 	
+	/**
+	 * Retrieve Host value from $_SERVER environment variables
+	 */
+	private static function getServerHost() {
+
 		if (array_key_exists('HTTP_HOST', $_SERVER)) {
 			$currenthost = $_SERVER['HTTP_HOST'];
 		} elseif (array_key_exists('SERVER_NAME', $_SERVER)) {
@@ -47,7 +60,8 @@ class SimpleSAML_Utilities {
 				$currenthostdecomposed = explode(":", $currenthost);
 				$currenthost = $currenthostdecomposed[0];
 		}
-		return $currenthost;# . self::getFirstPathElement() ;
+		return $currenthost;
+
 	}
 
 
@@ -55,27 +69,15 @@ class SimpleSAML_Utilities {
 	 * Will return https://sp.example.org
 	 */
 	public static function selfURLhost() {
-	
-		$currenthost = self::getSelfHost();
 
-		if (SimpleSAML_Utilities::isHTTPS()) {
-			$protocol = 'https';
-		} else {
-			$protocol = 'http';
-		}
-		
-		$portnumber = $_SERVER["SERVER_PORT"];
-		$port = ':' . $portnumber;
-		if ($protocol == 'http') {
-			if ($portnumber == '80') $port = '';
-		} elseif ($protocol == 'https') {
-			if ($portnumber == '443') $port = '';
-		}
-			
-		$querystring = '';
-		return $protocol."://" . $currenthost . $port;
-	
+		$url = self::getBaseURL();
+
+		$start = strpos($url,'://') + 3;
+		$length = strcspn($url,'/:',$start) + $start;
+
+		return substr($url, 0, $length);
 	}
+
 	
 	/**
 	 * This function checks if we should set a secure cookie.
@@ -84,8 +86,26 @@ class SimpleSAML_Utilities {
 	 */
 	public static function isHTTPS() {
 
+		$url = self::getBaseURL();
+
+		$end = strpos($url,'://');
+		$protocol = substr($url, 0, $end);
+
+		if ($protocol === 'https') {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+
+	}
+
+	/**
+	 * retrieve HTTPS status from $_SERVER environment variables
+	 */
+	private static function getServerHTTPS() {
+
 		if(!array_key_exists('HTTPS', $_SERVER)) {
-			/* Not a https-request. */
+			/* Not an https-request. */
 			return FALSE;
 		}
 
@@ -99,16 +119,37 @@ class SimpleSAML_Utilities {
 	}
 	
 	/**
+	 * Retrieve port number from $_SERVER environment variables
+	 * return it as a string such as ":80" if different from
+	 * protocol default port, otherwise returns an empty string
+	 */
+	private static function getServerPort() {
+
+		$portnumber = $_SERVER["SERVER_PORT"];
+		$port = ':' . $portnumber;
+
+		if (self::getServerHTTPS()) {
+			if ($portnumber == '443') $port = '';
+		} else {
+			if ($portnumber == '80') $port = '';
+		}
+
+		return $port;
+
+	}
+
+	
+	/**
 	 * Will return https://sp.example.org/universities/ruc/baz/simplesaml/saml2/SSOService.php
 	 */
-	public static function selfURLNoQuery() {
-	
-		$selfURLhost = self::selfURLhost();
+ 	public static function selfURLNoQuery() {
+ 	
+ 		$selfURLhost = self::selfURLhost();
 		$selfURLhost .= $_SERVER['SCRIPT_NAME'];
 		if (isset($_SERVER['PATH_INFO'])) {
 			$selfURLhost .= $_SERVER['PATH_INFO'];
 		}
-		return $selfURLhost;
+ 		return $selfURLhost;
 	
 	}
 
@@ -139,6 +180,7 @@ class SimpleSAML_Utilities {
 	
 
 	public static function selfURL() {
+
 		$selfURLhost = self::selfURLhost();
 
 		$requestURI = $_SERVER['REQUEST_URI'];
@@ -150,14 +192,14 @@ class SimpleSAML_Utilities {
 		}
 
 		return $selfURLhost . $requestURI;
+
 	}
 
 
 	/**
-	 * Retrieve the absolute base URL for the simpleSAMLphp installation.
+	 * Retrieve and return the absolute base URL for the simpleSAMLphp installation.
 	 *
-	 * This function will return the absolute base URL for the simpleSAMLphp
-	 * installation. For example: https://idp.example.org/simplesaml/
+	 * For example: https://idp.example.org/simplesaml/
 	 *
 	 * The URL will always end with a '/'.
 	 *
@@ -166,13 +208,35 @@ class SimpleSAML_Utilities {
 	public static function getBaseURL() {
 
 		$globalConfig = SimpleSAML_Configuration::getInstance();
-		$ret = SimpleSAML_Utilities::selfURLhost() . '/' . $globalConfig->getBaseURL();
-		if (substr($ret, -1) !== '/') {
-			throw new SimpleSAML_Error_Exception('Invalid value of \'baseurl\' in ' .
-				'config.php. It must end with a \'/\'.');
+		$baseURL = $globalConfig->getString('baseurlpath', 'simplesaml/');
+		
+		if (preg_match('#^https?://([^/]*)/(.*)/$#D', $baseURL, $matches)) {
+			/* full url in baseurlpath, override local server values */
+			return $baseURL;
+		} elseif (
+			(preg_match('#^/?([^/]?.*/)$#D', $baseURL, $matches)) ||
+			(preg_match('#^\*(.*)/$#D', $baseURL, $matches)) ||
+			($baseURL === '')) {
+			/* get server values */
+
+			if (self::getServerHTTPS()) {
+				$protocol = 'https://';
+			} else {
+				$protocol = 'http://';
+			}
+
+			$hostname = self::getServerHost();
+			$port = self::getServerPort();
+			$path = '/' . $globalConfig->getBaseURL();
+
+			return $protocol.$hostname.$port.$path;
+		} else {
+			throw new SimpleSAML_Error_Exception('Invalid value of \'baseurl\' in '.
+				'config.php. Valid format is in the form: '.
+				'[(http|https)://(hostname|fqdn)[:port]]/[path/to/simplesaml/]. '.
+				'It must end with a \'/\'.');
 		}
 
-		return $ret;
 	}
 
 

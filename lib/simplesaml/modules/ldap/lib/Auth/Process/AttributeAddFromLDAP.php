@@ -86,7 +86,6 @@
  *
  * @author Steve Moitozo, JAARS, Inc.
  * @package simpleSAMLphp
- * @version $Id$
  */
 class sspmod_ldap_Auth_Process_AttributeAddFromLDAP extends SimpleSAML_Auth_ProcessingFilter {
 

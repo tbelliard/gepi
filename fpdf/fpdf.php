@@ -617,7 +617,8 @@ function Link($x, $y, $w, $h, $link)
 
 function Text($x, $y, $txt)
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci Ã  l'acadÃ©mie de Guyane)
+
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
     if (getSettingValue('decode_pdf_utf8') == 'y') {
     	$txt = utf8_decode($txt);
     }
@@ -638,7 +639,8 @@ function AcceptPageBreak()
 
 function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci Ã  l'acadÃ©mie de Guyane)
+
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
     if (getSettingValue('decode_pdf_utf8') == 'y') {
     	$txt = utf8_decode($txt);
     }
@@ -721,7 +723,8 @@ function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link
 
 function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci Ã  l'acadÃ©mie de Guyane)
+
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
     if (getSettingValue('decode_pdf_utf8') == 'y') {
     	$txt = utf8_decode($txt);
     }
@@ -838,7 +841,8 @@ function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 
 function Write($h, $txt, $link='')
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci Ã  l'acadÃ©mie de Guyane)
+
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
     if (getSettingValue('decode_pdf_utf8') == 'y') {
     	$txt = utf8_decode($txt);
     }
@@ -1003,7 +1007,8 @@ function CloseTag($tag)
 
 function SetStyle($tag,$enable)
 {
-    //Modifie le style et sÃ©lectionne la police correspondante
+
+    //Modifie le style et sélectionne la police correspondante
     $this->$tag+=($enable ? 1 : -1);
     $style='';
     foreach(array('B','I','U') as $s)
@@ -1116,7 +1121,8 @@ function MyCloseTag($tag)
 
 function MySetStyle($tag,$enable)
 {
-	//Modifie le style et sÃ©lectionne la police correspondante
+
+	//Modifie le style et sélectionne la police correspondante
 	$this->$tag+=($enable ? 1 : -1);
 	$style='';
 	foreach(array('B','I','U') as $s)

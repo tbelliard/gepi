@@ -2,7 +2,6 @@
 /**
  * Préparation du pied de page des gabarits
  * 
- * $Id: footer_template.inc.php $
  * @package General
  * @subpackage Affichage
 */

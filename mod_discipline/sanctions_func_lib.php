@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 */
 
 // Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
@@ -1129,7 +1128,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jeg.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login AND u.email!='';";
 				}
 				elseif($lig->destinataire=='pp') {
-					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u, j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jep.login AND jep.professeur=u.login AND u.email!='';";
+					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u, j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.id_classe=jep.id_classe AND jec.login=jep.login AND jep.professeur=u.login AND u.email!='';";
 				}
 				elseif($lig->destinataire=='administrateur') {
 					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u WHERE u.statut='administrateur' AND u.email!='';";

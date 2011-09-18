@@ -1,7 +1,6 @@
 <?php
 /** Mise à jour des rangs
  * 
- * $Id$
  * 
  * Script à appeler dans le code
  * 

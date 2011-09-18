@@ -1,7 +1,6 @@
 <?php
 /** Fonctions de gestion des groupes
  * 
- * $Id$
  * 
  * @package Initialisation
  * @subpackage groupes

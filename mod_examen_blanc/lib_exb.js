@@ -1,5 +1,4 @@
 /*
-$Id$
 */
 
 // fonction permettant d'augmenter/réduire un nombre via onKeyDown

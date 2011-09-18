@@ -1,6 +1,5 @@
 <?php
 /*
-* @version: $Id$
 */
 
 function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$affiche_nbdev,$indice_aid, $aid_id,$current_eleve_login,$periode_num,$id_classe,$style_bulletin) {

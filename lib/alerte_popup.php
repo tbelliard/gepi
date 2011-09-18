@@ -1,7 +1,6 @@
 <?php
 /** Affiche un popup
  * 
- * $Id$
  * 
  * @package General
  * @subpackage Alertes

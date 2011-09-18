@@ -1,6 +1,12 @@
 AddType application/octet-stream .sql
 AddType application/octet-stream .csv
 
+# Protect files and directories from prying eyes.
+<FilesMatch "\.(engine|inc|info|install|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl|xml)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$">
+  Order allow,deny
+  deny from all
+</FilesMatch>
+
 <IfModule headers_module>
     # cache images for 1 month, do not require revalidation
     <FilesMatch "\.(gif|jpe?g|png|flv|swf|ico)$">
@@ -27,6 +33,22 @@ DirectoryIndex login.php index.html index.htm index.php
 
 <IfModule rewrite_module>
     RewriteEngine On
+
+    # Block access to "hidden" directories whose names begin with a period. This
+    # includes directories used by version control systems such as Subversion or
+    # Git to store control files. Files whose names begin with a period, as well
+    # as the control files used by CVS, are protected by the FilesMatch directive
+    # above.
+    #
+    # NOTE: This only works when mod_rewrite is loaded. Without mod_rewrite, it is
+    # not possible to block access to entire directories from .htaccess, because
+    # <DirectoryMatch> is not allowed here.
+    #
+    # If you do not have mod_rewrite installed, you should remove these
+    # directories from your webroot or otherwise protect them from being
+    # downloaded.
+    RewriteRule "(^|/)\." - [F]
+
     # acces simplesaml forcé en https.
     RewriteCond %{HTTPS} off
     RewriteRule ^simplesaml(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [NE,L,R]	# redirige en https pour l'authentification
@@ -35,5 +57,31 @@ DirectoryIndex login.php index.html index.htm index.php
     RewriteRule ^lib/simplesaml(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [NE,L,R]	# redirige en https pour l'authentification
     # fin forcage https
 
+    # redirection simplesaml
     RewriteRule ^simplesaml(.*)$ lib/simplesaml/www$1
+
+    <IfModule mod_headers.c>
+      # Serve gzip compressed CSS files if they exist and the client accepts gzip.
+      RewriteCond %{HTTP:Accept-encoding} gzip
+      RewriteCond %{REQUEST_FILENAME}\.gz -s
+      RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
+
+      # Serve gzip compressed JS files if they exist and the client accepts gzip.
+      RewriteCond %{HTTP:Accept-encoding} gzip
+      RewriteCond %{REQUEST_FILENAME}\.gz -s
+      RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
+
+      # Serve correct content types, and prevent mod_deflate double gzip.
+      RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
+      RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
+
+      <FilesMatch "(\.js\.gz|\.css\.gz)$">
+        # Serve correct encoding type.
+        Header append Content-Encoding gzip
+        # Force proxies to cache gzipped & non-gzipped css/js files separately.
+        Header append Vary Accept-Encoding
+      </FilesMatch>
+    </IfModule>
+
+
 </IfModule>

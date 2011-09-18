@@ -1,7 +1,6 @@
 <?php
 /** Fonctions accessibles dans toutes les pages
  * 
- * $Id$
  * 
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -4020,10 +4019,11 @@ function get_tab_prof_suivi($id_classe) {
 	$tab=array();
 
 	$sql="SELECT DISTINCT jep.professeur 
-        FROM j_eleves_professeurs jep, j_eleves_classes jec 
-        WHERE jec.id_classe='$id_classe' 
-        AND jec.login=jep.login 
-        ORDER BY professeur;";
+		FROM j_eleves_professeurs jep, j_eleves_classes jec 
+		WHERE jec.id_classe='$id_classe' 
+		AND jec.login=jep.login
+		AND jec.id_classe=jep.id_classe
+		ORDER BY professeur;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {

@@ -3,7 +3,6 @@
 /**
  * Fonctions pour l' affichage des EdT
  *
- * @version     $Id: fonctions_affichage.php $
  * @package		GEPI
  * @subpackage	EmploisDuTemps
  * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero

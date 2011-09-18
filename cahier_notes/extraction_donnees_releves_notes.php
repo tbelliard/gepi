@@ -2,7 +2,6 @@
 /**
  * Extrait les données pour les relevés de notes
  * 
- * $Id$
  * 
  * @package Notes
  * @subpackage scripts

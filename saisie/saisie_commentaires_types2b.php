@@ -1,5 +1,4 @@
 <?php
-	// $Id$
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");

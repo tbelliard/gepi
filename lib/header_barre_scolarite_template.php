@@ -3,7 +3,6 @@
 /**
  * Fichier qui permet de construire la barre de menu scolarité
  * 
- * $Id$
  *
  * Variables envoyées au gabarit : liens de la barre de menu scolarité
  * - $tbs_menu_admin = array(li)

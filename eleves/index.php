@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -95,7 +94,37 @@ else {
   $rep_photos='../photos/eleves/';
 }
 
+$tab_regimes_autorises=array('d/p', 'int.', 'ext.', 'i-e');
+if(($_SESSION['statut']=='administrateur')&&(isset($_GET['initialiser_regimes']))&&(in_array($_GET['initialiser_regimes'],$tab_regimes_autorises))) {
+	check_token();
 
+	$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec
+		LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
+		WHERE jer.login is null;";
+	//echo "$sql<br />";
+	$test_no_regime=mysql_query($sql);
+	$test_no_regime_effectif=mysql_num_rows($test_no_regime);
+	if($test_no_regime_effectif>0){
+		$nb_reg_regime=0;
+		$nb_err_regime=0;
+		while($lig_reg=mysql_fetch_object($test_no_regime)) {
+			$sql="INSERT INTO j_eleves_regime SET login='".$lig_reg->login."', regime='".$_GET['initialiser_regimes']."';";
+			$insert=mysql_query($sql);
+			if($insert) {$nb_reg_regime++;} else {$nb_err_regime++;}
+		}
+
+		$msg="";
+		if($nb_reg_regime>0) {
+			$msg.="$nb_reg_regime régime(s) ont été initialisés.<br />";
+		}
+		if($nb_err_regime>0) {
+			$msg.="$nb_err_regime erreur(s) se sont produites lors de l'initialisation des régimes.<br />";
+		}
+	}
+	else {
+		$msg="Tous les régimes étaient déjà renseignés.<br />";
+	}
+}
 
 $gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 if($_SESSION['statut']=="professeur") {
@@ -817,12 +846,27 @@ if (!isset($quelles_classes)) {
 		}
 		else{
 			echo "<tr>\n";
-			echo "<td>\n";
+			echo "<td style='vertical-align: top;'>\n";
 			echo "<input type='radio' name='quelles_classes' id='quelles_classes_no_regime' value='no_regime' onclick='verif2()' />\n";
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_regime' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élèves (<i>affectés dans des classes</i>) dont le régime est renseigné (<i>".$test_no_regime_effectif."</i>).</span><br />\n";
+
+			echo "<span class='norme'>Les élèves (<i>affectés dans des classes</i>) dont le régime n'est pas renseigné (<i>".$test_no_regime_effectif."</i>).</span><br />\n";
+			echo "<span style='color:red'>Le régime non renseigné est bloquant pour nombre de recherches dans cette page.</span><br />\n";
+			if($_SESSION['statut']=='administrateur') {
+				echo "<span style='color:red'>";
+				echo "Initialiser tous les régimes non renseignés à la valeur&nbsp;: ";
+				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=d/p".add_token_in_url()."'>demi-pensionnaire</a>, ";
+				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=int.".add_token_in_url()."'>interne</a>, ";
+				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=ext.".add_token_in_url()."'>externe</a> ou ";
+				echo "<a href='".$_SERVER['PHP_SELF']."?initialiser_regimes=i-e".add_token_in_url()."'>interne-externé</a>";
+				echo "</span>";
+				echo "<br />\n";
+			}
+			else {
+				echo "<span style='color:red'>Vous pouvez contacter l'administrateur pour initialiser tous les régimes manquants à la valeur de votre choix parmi demi-pensionnaire, interne, externe, interne-externé.</span><br />\n";
+			}
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -1303,9 +1347,9 @@ if(isset($quelles_classes)) {
 			}
 			//echo "$sql<br />";
 			$test_elenoet_ok=mysql_query($sql);
+			$tab_eleve=array();
 			if(mysql_num_rows($test_elenoet_ok)!=0){
 				//$chaine_photo_manquante="";
-				$tab_eleve=array();
 				$i=0;
 				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)) {
 					$test_photo=nom_photo($lig_tmp->elenoet);
@@ -1565,6 +1609,7 @@ if(isset($quelles_classes)) {
 	else{
 		$nombreligne = count($tab_eleve);
 	}
+	//echo "\$nombreligne=$nombreligne<br />";
 /*
 	echo "<p>Total : $nombreligne éleves</p>\n";
 	echo "<p>Remarque : le login ne permet pas aux élèves de se connecter à Gepi. Il sert simplement d'identifiant unique.</p>\n";
