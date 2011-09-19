@@ -3821,7 +3821,8 @@ $cpt_ordre = $cpt_ordre + 1;
 				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
 				//permet le calcul de la moyenne général de la classe
 				//if(empty($moyenne_classe[$id_classe][$id_periode])) { $total_moyenne_classe_en_calcul=$total_moyenne_classe_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
-				if(empty($moyenne_classe[$id_classe][$id_periode])) { $total_moyenne_classe_en_calcul=$total_moyenne_classe_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
+				if((!isset($moyenne_classe[$id_classe]))||(!isset($moyenne_classe[$id_classe][$id_periode]))||(empty($moyenne_classe[$id_classe][$id_periode]))) {
+					$total_moyenne_classe_en_calcul=$total_moyenne_classe_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
 					//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
@@ -4292,7 +4293,8 @@ $cpt_ordre = $cpt_ordre + 1;
 		}
 	}
 	$info_absence = $info_absence." du suivi : ".$cpe_eleve[$i].")";
-	$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
+	//$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
+	$pdf->ext_MultiCellTag(200, 5, $info_absence, '', 'J', '');
 
 
 	//if ( isset($Y_avis_cons_init) ) { $Y_avis_cons[$classe_id] = $Y_avis_cons_init; }
@@ -4325,7 +4327,8 @@ $cpt_ordre = $cpt_ordre + 1;
 		$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]+4);
 		//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
 		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
-		$pdf->MultiCellTag(200, 3, $info_absence_appreciation, '', 'J', '');
+		//$pdf->MultiCellTag(200, 3, $info_absence_appreciation, '', 'J', '');
+		$pdf->ext_MultiCellTag(200, 3, $info_absence_appreciation, '', 'J', '');
 		//$hauteur_avis_cons_init = $hauteur_avis_cons[$classe_id];
 		$val = $pdf->GetStringWidth($info_absence_appreciation);
 		// nombre de lignes que prend la remarque cpe
@@ -4432,7 +4435,8 @@ $cpt_ordre = $cpt_ordre + 1;
 		}
 		//$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
 		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',$taille);
-		$pdf->MultiCellTag(200, 5, $pp_classe[$i], '', 'J', '');
+		//$pdf->MultiCellTag(200, 5, $pp_classe[$i], '', 'J', '');
+		$pdf->ext_MultiCellTag(200, 5, $pp_classe[$i], '', 'J', '');
 	}
 
 // ======================= bloc du président du conseil de classe ================
