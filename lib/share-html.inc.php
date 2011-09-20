@@ -1079,7 +1079,7 @@ function test_ecriture_dossier($tab_restriction=array()) {
         $multisite='y';
         $_COOKIE['RNE']="essai";
      /* */
-        if ((isset($multisite) && $multisite=='y')&&(isset($_COOKIE['RNE']))) {
+        if ((isset($multisite))&&($multisite=='y')&&(isset($_COOKIE['RNE']))) {
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'];
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/eleves';
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/personnels';
@@ -1611,11 +1611,13 @@ function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte
 	$retour.="
 	function $nom_js_func(id) {
 		if(document.getElementById(id)) {
-			if(document.getElementById(id).checked) {
-				document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
-			}
-			else {
-				document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
+			if(document.getElementById('$prefixe_texte'+id)) {
+				if(document.getElementById(id).checked) {
+					document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
+				}
+				else {
+					document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
+				}
 			}
 		}
 	}\n";
