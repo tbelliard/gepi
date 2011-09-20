@@ -367,6 +367,9 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 		if (!isset($info)) {
 			$hier = $today - 3600*24;
 			$demain = $today + 3600*24;
+
+			$semaine_precedente= $today - 3600*24*7;
+			$semaine_suivante= $today + 3600*24*7;
 			/*
 			if(count($tab_jours_ouverture)>0) {
 				$cpt_jo=0; // Pour éviter une boucle infinie en cas de blague
@@ -384,10 +387,21 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 				\"><img src=\"../images/icons/date.png\" width='16' height='16' alt='Calendrier' /></a>\n";
 			echo "</td>\n";
 
-			echo "<td>\n";
-			echo "<a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'>&lt;&lt;</a></td>
-			<td align=center>Aujourd'hui</td>
-			<td align=right><a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'>&gt;&gt;</a></td></tr>\n";	echo "\n";
+			echo "<td style='text-align:center; width: 16px;'>\n";
+			echo "<a title=\"Aller à la semaine précédente\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($semaine_precedente);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left-double.png' width='16' height='16' title='Aller à la semaine précédente' alt='Aller à la semaine précédente' /></a> ";
+			echo "</td>\n";
+			echo "<td style='text-align:center; width: 16px;'>\n";
+			echo "<a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left.png' width='16' height='16' title='Aller au jour précédent' alt='Aller au jour précédent' /></a>\n";
+			echo "</td>\n";
+			echo "<td align='center'>Aujourd'hui</td>\n";
+			echo "<td style='text-align:center; width: 16px;'>\n";
+			echo "<a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right.png' width='16' height='16' title='Aller au jour suivant' alt='Aller au jour suivant' /></a>\n";
+			echo "</td>\n";
+			echo "<td style='text-align:center; width: 16px;'>\n";
+			echo " <a title=\"Aller à la semaine suivante\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($semaine_suivante);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right-double.png' width='16' height='16' title='Aller à la semaine suivante' alt='Aller à la semaine suivante' /></a>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+			echo "\n";
 		}
 		echo "<tr>
 				<td colspan='6'>";
