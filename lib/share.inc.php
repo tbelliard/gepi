@@ -3401,10 +3401,11 @@ function telecharge_fichier($sav_file,$dirname,$type,$ext){
 	return ("Erreur de téléchargement.");
   } else if (!file_exists($sav_file['tmp_name'])) {
 	return ("Erreur de téléchargement 2.");
-  } else if (!preg_match('/'.$ext.'$/',$sav_file['name'])){
+  } else if (!preg_match('/'.$ext.'$/i',$sav_file['name'])){
 	return ("Erreur : seuls les fichiers ayant l'extension .".$ext." sont autorisés.");
-  } else if ($sav_file['type']!=$type ){
-	return ("Erreur : seuls les fichiers de type '".$type."' sont autorisés.");
+  //} else if ($sav_file['type']!=$type ){
+  } else if (strripos($type,$sav_file['type'])===false) {
+	return ("Erreur : seuls les fichiers de type '".$type."' sont autorisés<br />Votre fichier est de type ".$sav_file['type']);
   } else {
 	$nom_corrige = preg_replace("/[^.a-zA-Z0-9_=-]+/", "_", $sav_file['name']);
 	if (!deplacer_upload($sav_file['tmp_name'], $dirname."/".$nom_corrige)) {
