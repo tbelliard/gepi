@@ -241,7 +241,7 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 					$nb_photos_eleves=0;
 					$dossier = opendir($folder);
 					while ($Fichier = readdir($dossier)) {
-						if ($Fichier != "." && $Fichier != "..") {
+						if ($Fichier != "." && $Fichier != ".." && ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier)))) {
 							$source=$folder.$Fichier;
 							if ($Fichier != "index.html") {
 								$dest=$repertoire."eleves/".$Fichier;
@@ -277,7 +277,7 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 					$dossier = opendir($folder);
 					while ($Fichier = readdir($dossier)) {
 						$source=$folder.$Fichier;
-						if ($Fichier != "." && $Fichier != "..") {
+						if ($Fichier != "." && $Fichier != ".." && ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier)))) {
 							if ($Fichier != "index.html") {
 								$dest=$repertoire."personnels/".$Fichier;
 								if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")) {
@@ -308,9 +308,10 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 				$dossier = opendir($folder);
 				while ($Fichier = readdir($dossier)) {
 					if ($Fichier != "." && $Fichier != "..") {
-					$source=$folder."/".$Fichier;
-					if (!@unlink ($source))
-						$msg .= "Erreur lors de la suppression de ".$source;
+						$source=$folder."/".$Fichier;
+						if (!@unlink ($source)) {
+							$msg .= "Erreur lors de la suppression de ".$source;
+						}
 					}
 				}
 				closedir($dossier);
