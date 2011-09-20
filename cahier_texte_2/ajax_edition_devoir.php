@@ -464,7 +464,10 @@ echo "<script type='text/javascript'>
 <?php echo "</form>\n";
 echo "</fieldset>\n";
 
-echo "<script type='text/javascript'>
+$ouverture_auto_WinDevoirsDeLaClasse=getPref($_SESSION['login'], 'ouverture_auto_WinDevoirsDeLaClasse', 'y');
+if($ouverture_auto_WinDevoirsDeLaClasse=='y') {
+	echo "<script type='text/javascript'>
 	getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+getCalendarUnixDate());
 </script>\n";
+}
 ?>
