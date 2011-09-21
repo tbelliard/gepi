@@ -2721,6 +2721,283 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	echo "<p>Terminé.</p>\n";
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'nettoyage_cdt') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Nettoyage des tables du cahier de textes&nbsp;:</b><br />\n";
+
+	if(!isset($_POST['confirmer_nettoyage_cdt'])) {
+		$cpt_scories=0;
+
+		$sql="select * from ct_entry where id_groupe not in (select id FROM groupes);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo mysql_num_rows($test)." compte-rendu(s) de séance(s) pour un ou des groupes n'existant plus a(ont) été trouvé(s).<br />\n";
+
+			echo "<table class='boireaus' summary='Tableau des compte-rendus orphelins de groupe'>\n";
+			echo "<tr>\n";
+			echo "<th>Date</th>\n";
+			echo "<th>Professeur</th>\n";
+			echo "<th>Contenu</th>\n";
+			echo "</tr>\n";
+			$alt=1;
+			while($lig=mysql_fetch_object($test)) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td>".strftime("%d/%m/%Y", $lig->date_ct)."</td>\n";
+				echo "<td>".civ_nom_prenom($lig->id_login)."</td>\n";
+				echo "<td>".$lig->contenu."</td>\n";
+				echo "</tr>\n";
+				$cpt_scories++;
+			}
+			echo "</table>\n";
+		}
+		else {
+			echo "Aucun défaut d'association à un enseignement n'a été trouvé dans 'ct_entry'.<br />\n";
+		}
+
+		$sql="select * from ct_documents where id_ct not in (select id_ct FROM ct_entry);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo mysql_num_rows($test)." document(s) joint(s) ne correspond(ent) à aucun compte-rendu existant.<br />\n";
+		}
+
+		$sql="select * from ct_devoirs_entry where id_groupe not in (select id FROM groupes);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo mysql_num_rows($test)." notice(s) de devoir(s) pour un ou des groupes n'existant plus a(ont) été trouvé(s).<br />\n";
+
+			echo "<table class='boireaus' summary='Tableau des notices de devoirs orphelines de groupe'>\n";
+			echo "<tr>\n";
+			echo "<th>Date</th>\n";
+			echo "<th>Professeur</th>\n";
+			echo "<th>Contenu</th>\n";
+			echo "</tr>\n";
+			$alt=1;
+			while($lig=mysql_fetch_object($test)) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td>".strftime("%d/%m/%Y", $lig->date_ct)."</td>\n";
+				echo "<td>".civ_nom_prenom($lig->id_login)."</td>\n";
+				echo "<td>".$lig->contenu."</td>\n";
+				echo "</tr>\n";
+				$cpt_scories++;
+			}
+			echo "</table>\n";
+		}
+		else {
+			echo "Aucun défaut d'association à un enseignement n'a été trouvé dans 'ct_devoirs_entry'.<br />\n";
+		}
+
+		$sql="select * from ct_devoirs_documents where id_ct_devoir not in (select id_ct FROM ct_devoirs_entry);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo mysql_num_rows($test)." document(s) joint(s) ne correspond(ent) à aucune notice de devoir existante.<br />\n";
+		}
+
+		$sql="select * from ct_private_entry where id_groupe not in (select id FROM groupes);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo mysql_num_rows($test)." notice(s) privée(s) pour un ou des groupes n'existant plus a(ont) été trouvé(s).<br />\n";
+
+			echo "<table class='boireaus' summary='Tableau des notices privées orphelines de groupe'>\n";
+			echo "<tr>\n";
+			echo "<th>Date</th>\n";
+			echo "<th>Professeur</th>\n";
+			echo "<th>Contenu</th>\n";
+			echo "</tr>\n";
+			$alt=1;
+			while($lig=mysql_fetch_object($test)) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td>".strftime("%d/%m/%Y", $lig->date_ct)."</td>\n";
+				echo "<td>".civ_nom_prenom($lig->id_login)."</td>\n";
+				echo "<td>".$lig->contenu."</td>\n";
+				echo "</tr>\n";
+				$cpt_scories++;
+			}
+			echo "</table>\n";
+		}
+		else {
+			echo "Aucun défaut d'association à un enseignement n'a été trouvé dans 'ct_private_entry'.<br />\n";
+		}
+
+		/*
+		$sql="select id from ct_sequences;";
+		$res_seq=mysql_query($sql);
+		if(mysql_num_rows($res_seq)>0) {
+			$tab_seq=array();
+			while($lig_seq=mysql_fetch_object($res_seq)) {
+				$tab_seq[]=$lig_seq->id;
+			}
+
+			$tab_seq2=array();
+			$sql="(select id_sequence FROM ct_entry) UNION (select id_sequence FROM ct_devoirs_entry) UNION (select id_sequence FROM ct_private_entry);";
+			$res_seq=mysql_query($sql);
+			if(mysql_num_rows($res_seq)>0) {
+				while($lig_seq=mysql_fetch_object($res_seq)) {
+					$tab_seq2[]=$lig_seq->id_sequence;
+				}
+			}
+
+			for($loop=0;$loop<count($tab_seq);$loop++) {
+				if(!in_array($tab_seq[$loop], $tab_seq2)) {
+					echo "La séquence n°".$tab_seq[$loop]." n'est associée à aucune notice.<br />";
+					$cpt_scories++;
+				}
+			}
+		}
+		else {
+			echo "Aucune séquence n'est saisie.<br />\n";
+		}
+		*/
+
+		if($cpt_scories>0) {
+			echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+			echo add_token_field();
+			echo "<center><input type=submit value=\"Supprimer les scories trouvées\" /></center>\n";
+			echo "<input type='hidden' name='action' value='nettoyage_cdt' />\n";
+			echo "<input type='hidden' name='confirmer_nettoyage_cdt' value='y' />\n";
+			echo "</form>\n";
+		}
+	}
+	else {
+		$cpt_nettoyage=0;
+
+		$sql="select * from ct_entry where id_groupe not in (select id FROM groupes);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo "Suppression de ".mysql_num_rows($test)." compte-rendu(s) de séance(s) pour un ou des groupes n'existant plus&nbsp;: ";
+
+			$sql="DELETE FROM ct_entry where id_groupe not in (select id FROM groupes);";
+			$del=mysql_query($sql);
+			if($del) {
+				echo "<span style='color:green'>OK</span>";
+			}
+			else {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			echo "<br />\n";
+		}
+		else {
+			echo "Aucune défaut d'association à un enseignement n'a été trouvé dans 'ct_entry'.<br />\n";
+		}
+
+		$sql="select * from ct_documents where id_ct not in (select id_ct FROM ct_entry);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$nb_err=0;
+			echo "Suppression de ".mysql_num_rows($test)." document(s) joint(s) ne correspondant à aucun compte-rendu existant&nbsp;: \n";
+			/*
+			$sql="DELETE FROM ct_documents where id_groupe not in (select id FROM groupes);";
+			$del=mysql_query($sql);
+			if($del) {
+				echo "<span style='color:green'>OK</span>";
+			}
+			else {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			*/
+			while($lig=mysql_fetch_object($test)) {
+				if(file_exists($lig->emplacement)) {
+					@unlink($lig->emplacement);
+				}
+
+				$sql="DELETE FROM ct_documents WHERE id_ct='$lig->id_ct';";
+				if(!$del) {
+					$nb_err++;
+				}
+			}
+
+			if($nb_err==0) {
+				echo "<span style='color:green'>OK</span>";
+			}
+			else {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			echo "<br />\n";
+		}
+
+		$sql="select * from ct_devoirs_entry where id_groupe not in (select id FROM groupes);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo mysql_num_rows($test)." notice(s) de devoir(s) pour un ou des groupes n'existant plus a(ont) été trouvé(s).<br />\n";
+			echo "Suppression de ".mysql_num_rows($test)." notice(s) de devoir(s) pour un ou des groupes n'existant plus&nbsp;: ";
+
+			$sql="DELETE FROM ct_devoirs_entry where id_groupe not in (select id FROM groupes);";
+			$del=mysql_query($sql);
+			if($del) {
+				echo "<span style='color:green'>OK</span>";
+			}
+			else {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			echo "<br />\n";
+		}
+		else {
+			echo "Aucune défaut d'association à un enseignement n'a été trouvé dans 'ct_devoirs_entry'.<br />\n";
+		}
+
+		$sql="select * from ct_devoirs_documents where id_ct_devoir not in (select id_ct FROM ct_devoirs_entry);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$nb_err=0;
+			echo "Suppression de ".mysql_num_rows($test)." document(s) joint(s) ne correspondant à aucune notice de devoir existante&nbsp;: \n";
+			/*
+			$sql="DELETE FROM ct_devoirs_documents where id_groupe not in (select id FROM groupes);";
+			$del=mysql_query($sql);
+			if($del) {
+				echo "<span style='color:green'>OK</span>";
+			}
+			else {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			*/
+			while($lig=mysql_fetch_object($test)) {
+				if(file_exists($lig->emplacement)) {
+					@unlink($lig->emplacement);
+				}
+
+				$sql="DELETE FROM ct_devoirs_documents WHERE id_ct='$lig->id_ct';";
+				if(!$del) {
+					$nb_err++;
+				}
+			}
+
+			if($nb_err==0) {
+				echo "<span style='color:green'>OK</span>";
+			}
+			else {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			echo "<br />\n";
+		}
+
+		$sql="select * from ct_private_entry where id_groupe not in (select id FROM groupes);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo "Suppression de ".mysql_num_rows($test)." notice(s) privée(s) pour un ou des groupes n'existant plus&nbsp;: ";
+
+			$sql="DELETE FROM ct_private_entry where id_groupe not in (select id FROM groupes);";
+			$del=mysql_query($sql);
+			if($del) {
+				echo "<span style='color:green'>OK</span>";
+			}
+			else {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			echo "<br />\n";
+
+		}
+		else {
+			echo "Aucune défaut d'association à un enseignement n'a été trouvé dans 'ct_private_entry'.<br />\n";
+		}
+
+	}
+
+	echo "<p>Terminé.</p>\n";
 }
 else {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
@@ -2859,7 +3136,7 @@ else {
 		echo "<input type=submit value=\"Contrôler les catégories de matières\" />\n";
 		echo "<input type='hidden' name='action' value='controle_categories_matieres' />\n";
 		echo "</form>\n";
-	
+
 		echo "<hr />\n";
 	
 		echo "<p>Nettoyage de scories dans le module Discipline.</p>\n";
@@ -2868,6 +3145,16 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Nettoyage des tables du module Discipline\" />\n";
 		echo "<input type='hidden' name='action' value='nettoyage_mod_discipline' />\n";
+		echo "</form>\n";
+
+		echo "<hr />\n";
+	
+		echo "<p>Nettoyage de scories dans les cahiers de textes.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Nettoyage des tables du cahier de textes\" />\n";
+		echo "<input type='hidden' name='action' value='nettoyage_cdt' />\n";
 		echo "</form>\n";
 	
 
