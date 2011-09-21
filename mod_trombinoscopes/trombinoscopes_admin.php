@@ -262,8 +262,20 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 					}
 					if($nb_photos_eleves>0) {$msg.="$nb_photos_eleves photo(s) élève(s) traitée(s).<br />";}
 					closedir($dossier);
-					if (!rmdir ($folder)) {
-						$msg .= "Erreur lors de la suppression de ".$folder;
+					if(file_exists($folder)) {
+						$dossier = opendir($folder);
+						while ($Fichier = readdir($dossier)) {
+							if ($Fichier != "." && $Fichier != "..") {
+								$source=$folder."/".$Fichier;
+								if (!@unlink ($source)) {
+									$msg .= "Erreur lors de la suppression de ".$source;
+								}
+							}
+						}
+						closedir($dossier);
+						if (!rmdir ($folder)) {
+								$msg .= "Erreur lors de la suppression de ".$folder;
+						}
 					}
 				}
 	
@@ -297,8 +309,20 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 					}
 					if($nb_photos_personnels>0) {$msg.="$nb_photos_personnels photo(s) personnel(s) traitée(s).<br />";}
 					closedir($dossier);
-					if (!rmdir ($folder)) {
-						$msg .= "Erreur lors de la suppression de ".$folder;
+					if(file_exists($folder)) {
+						$dossier = opendir($folder);
+						while ($Fichier = readdir($dossier)) {
+							if ($Fichier != "." && $Fichier != "..") {
+								$source=$folder."/".$Fichier;
+								if (!@unlink ($source)) {
+									$msg .= "Erreur lors de la suppression de ".$source;
+								}
+							}
+						}
+						closedir($dossier);
+						if (!rmdir ($folder)) {
+								$msg .= "Erreur lors de la suppression de ".$folder;
+						}
 					}
 				}
 			}
