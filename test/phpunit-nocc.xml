@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="tools/setup_new_database.php" colors="true">
+
+    <testsuite name="AllTests">
+     <directory>testsuite</directory>
+    </testsuite>
+
+    <logging>
+        <log type="junit" target="../build/logs/junit.xml" logIncompleteSkipped="false"/>
+    </logging>
+
+  <blacklist>
+    <directory>.</directory>
+  </blacklist>
+</phpunit>
