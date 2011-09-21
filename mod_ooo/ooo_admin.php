@@ -50,14 +50,20 @@ if (!checkAccess()) {
 //INSERT INTO droits VALUES ( '/mod_ooo/ooo_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Admin', '');
 //$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/ooo_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Admin', '');";
 
-//$msg = '';
+$msg = '';
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 	check_token();
-    if (!saveSetting("active_mod_ooo", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+    if (!saveSetting("active_mod_ooo", $_POST['activer'])) $msg.= "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+
+	if (isset($_POST['fb_dezip_ooo'])) {
+		if (!saveSetting("fb_dezip_ooo", $_POST['fb_dezip_ooo'])) {
+			$msg .= "Erreur lors de l'enregistrement de fb_dezip_ooo !";
+		}
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) {
-  $msg = "Les modifications ont été enregistrées !";
+  $msg.= "Les modifications ont été enregistrées !";
   $post_reussi=TRUE;
 }
 // header
