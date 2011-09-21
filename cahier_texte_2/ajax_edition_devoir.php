@@ -388,6 +388,7 @@ echo "<script type='text/javascript'>
 		echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: #000000; width: 100%\" cellspacing=\"1\" summary=\"Tableau des documents joints\">\n";
 		"<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_entete_fond[$type_couleur];\"><td style=\"text-align: center;\"><b>Titre</b></td><td style=\"text-align: center; width: 100px\"><b>Taille en Ko</b></td><td style=\"text-align: center; width: 100px\"></td></tr>\n";
 		if (!empty($documents)) {
+			$nb_documents_joints=0;
 			foreach ($documents as $document) {
 				//if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
 				//			$id_document[$i] = $document->getId();
@@ -408,17 +409,21 @@ echo "<script type='text/javascript'>
 							echo "</td>\n";
 						}
 						echo "<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."','".add_token_in_js_func()."')\">Supprimer</a></td></tr>\n";
+				$nb_documents_joints++;
 			}
 			echo "</table>\n";
 			//gestion de modification du nom d'un document
 
-			echo "Nouveau nom <input type=\"text\" name=\"doc_name_modif\" size=\"25\" /> pour\n";
-			echo "<select name=\"id_document\">\n";
-			echo "<option value='-1'>(choisissez)</option>\n";
-			foreach ($documents as $document) {
-				echo "<option value='".$document->getId()."'>".$document->getTitre()."</option>\n";
+			if($nb_documents_joints>0) {
+				echo "Nouveau nom <input type=\"text\" name=\"doc_name_modif\" size=\"25\" /> pour\n";
+				echo "<select name=\"id_document\">\n";
+				echo "<option value='-1'>(choisissez)</option>\n";
+				foreach ($documents as $document) {
+					echo "<option value='".$document->getId()."'>".$document->getTitre()."</option>\n";
+				}
+				echo "</select>\n";
+				echo "<br /><br />\n";
 			}
-			echo "</select>\n<br /><br />\n";
 		}
 		?>
 		<table style="border-style:solid; border-width:0px; border-color: <?php echo $couleur_bord_tableau_notice;?> ; background-color: #000000; width: 100%" cellspacing="1" summary="Tableau de...">
