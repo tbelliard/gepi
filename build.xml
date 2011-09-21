@@ -49,6 +49,14 @@
   </exec>
  </target>
 
+ <target name="phpunit_no_code_coverage"
+         description="Run unit tests using PHPUnit and generates junit.xml">
+  <exec executable="phpunit" failonerror="true">
+    <arg value="-c" />
+    <arg path="${basedir}/test/phpunit-nocc.xml" />
+  </exec>
+ </target>
+
  <target name="parallelTasks"
          description="Run the pdepend, phpmd, phpcpd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
   <parallel threadCount="2">
