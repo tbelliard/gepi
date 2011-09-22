@@ -466,6 +466,8 @@ function GetColor($id_groupe) {
 // =============================================================================
 function ConstruireEDTProf($login_edt, $period) 
 {
+	$debug_edt="n";
+
     $table_data = array();
     $type_edt = "prof";
 
@@ -495,15 +497,30 @@ if ($type_edt=="prof") {
     $tab_id_creneaux = retourne_id_creneaux();
     $j = 0;
     $elapse_time = 0;
+
+	if($debug_edt=='y') {
+		echo "<pre>";
+		print_r($tab_id_creneaux);
+		echo "</pre>";
+		echo "<hr />";
+	}
+
+	$nb_tours=0;
     while (isset($tab_id_creneaux[$j])) {
+    //while ((isset($tab_id_creneaux[$j]))&&($nb_tours<10)) {
         $req_creneau = LessonsFromDayTeacherSlotPeriod($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux[$j], $period);
  
 		$rep_creneau = mysql_fetch_array($req_creneau);
 		//print_r($rep_creneau);
         $nb_rows = mysql_num_rows($req_creneau);
 
+		if($debug_edt=='y') {
+			echo "\$nb_rows=$nb_rows<br />";
+			echo "<pre>";
+			print_r($rep_creneau);
+			echo "</pre>";
+		}
 
-      
         // ========================================== créneau vide
         if ($nb_rows == 0) {
             $heuredeb_dec = 0;
@@ -1168,6 +1185,14 @@ if ($type_edt=="prof") {
             $elapse_time += 2;
         }
         $j=(int)($elapse_time/2);
+
+		if($debug_edt=='y') {
+			echo "\$j=(int)($elapse_time/2)=$j<br />";
+			echo "<hr />";
+			$nb_tours++;
+			flush();
+			//$j++;
+		}
     }
 }
 
