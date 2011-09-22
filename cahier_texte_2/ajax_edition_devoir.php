@@ -121,6 +121,34 @@ if ($ctTravailAFaire->getVise() == 'y') {
 	die();
 }
 
+if(isset($_GET['change_visibilite'])) {
+	check_token();
+
+	//$ctDocument->setVisibleEleveParent(false);
+	//$id_ct_devoir=$_GET['id_ct_devoir'];
+	$id_ct_devoir=$id_devoir;
+	$id_document=$_GET['id_document'];
+	if(($id_ct_devoir!='')&&(preg_match("/^[0-9]*$/", $id_ct_devoir))&&($id_document!='')&&(preg_match("/^[0-9]*$/", $id_document))) {
+		$sql="SELECT visible_eleve_parent FROM ct_devoirs_documents WHERE id='$id_document' AND id_ct_devoir='$id_ct_devoir';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			if($lig->visible_eleve_parent=='0') {$visible_eleve_parent='1';} else {$visible_eleve_parent='0';}
+			$sql="UPDATE ct_devoirs_documents SET visible_eleve_parent='$visible_eleve_parent' WHERE id='$id_document' AND id_ct_devoir='$id_ct_devoir';";
+			$res=mysql_query($sql);
+			if($res) {
+				if($visible_eleve_parent=='1') {
+					echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
+				}
+				else {
+					echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+				}
+			}
+		}
+	}
+	die();
+}
+
 //on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $ctTravailAFaire->getIdGroupe();
 
@@ -400,12 +428,16 @@ echo "<script type='text/javascript'>
 						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>\n";
 						if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
 							echo "<td style=\"text-align: center;\">";
+							echo "<a href='javascript:modif_visibilite_doc_joint(\"devoir\", ".$ctTravailAFaire->getIdCt().", ".$document->getId().")'>";
+							echo "<span id='span_document_joint_".$document->getId()."'>";
 							if($document->getVisibleEleveParent()) {
 								echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
 							}
 							else {
 								echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
 							}
+							echo "</span>";
+							echo "</a>";
 							echo "</td>\n";
 						}
 						echo "<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."','".add_token_in_js_func()."')\">Supprimer</a></td></tr>\n";
@@ -425,6 +457,9 @@ echo "<script type='text/javascript'>
 				echo "<br /><br />\n";
 			}
 		}
+
+		echo add_token_field(true);
+
 		?>
 		<table style="border-style:solid; border-width:0px; border-color: <?php echo $couleur_bord_tableau_notice;?> ; background-color: #000000; width: 100%" cellspacing="1" summary="Tableau de...">
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
