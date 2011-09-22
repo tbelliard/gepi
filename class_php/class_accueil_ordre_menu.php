@@ -966,7 +966,7 @@ class class_accueil_ordre_menu extends class_page_accueil {
 
 		if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
 		  $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
-				supprimer_numero($menuItem->titre_item,$menuItem->description_item));
+				supprimer_numero($menuItem->titre_item),$menuItem->description_item);
 		}
 
 	  }
