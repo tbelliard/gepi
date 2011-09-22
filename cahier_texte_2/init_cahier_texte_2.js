@@ -918,6 +918,20 @@ function getWinListeNoticesPrivees() {
 	return winListeNoticesPrivees;
 }
 
+function modif_visibilite_doc_joint(notice, id_ct, id_document) {
+	csrf_alea=document.getElementById('csrf_alea').value;
+
+	if(notice=='compte_rendu') {
+		new Ajax.Updater($('span_document_joint_'+id_document),'ajax_edition_compte_rendu.php?id_ct='+id_ct+'&id_document='+id_document+'&change_visibilite=y&csrf_alea='+csrf_alea,{method: 'get'});
+	}
+	else {
+		if(notice=='devoir') {
+			//new Ajax.Updater($('span_document_joint_'+id_document),'ajax_edition_devoir.php?id_ct_devoir='+id_ct+'&id_document='+id_document+'&change_visibilite=y&csrf_alea='+csrf_alea,{method: 'get'});
+			new Ajax.Updater($('span_document_joint_'+id_document),'ajax_edition_devoir.php?id_devoir='+id_ct+'&id_document='+id_document+'&change_visibilite=y&csrf_alea='+csrf_alea,{method: 'get'});
+		}
+	}
+}
+
 //page initialisation
 Event.observe(window, 'load', initPage);
 

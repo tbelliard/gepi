@@ -80,7 +80,7 @@ if ($ctCompteRendu != null) {
 	}
 
 } else {
-	//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
+	//si pas de notice précisée, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
@@ -122,6 +122,34 @@ if ($ctCompteRendu->getVise() == 'y') {
 	echo("Erreur edition de compte rendu : Notices signée, edition impossible");
 	die();
 }
+
+if(isset($_GET['change_visibilite'])) {
+	check_token();
+
+	//$ctDocument->setVisibleEleveParent(false);
+	$id_ct=$_GET['id_ct'];
+	$id_document=$_GET['id_document'];
+	if(($id_ct!='')&&(preg_match("/^[0-9]*$/", $id_ct))&&($id_document!='')&&(preg_match("/^[0-9]*$/", $id_document))) {
+		$sql="SELECT visible_eleve_parent FROM ct_documents WHERE id='$id_document' AND id_ct='$id_ct';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			if($lig->visible_eleve_parent=='0') {$visible_eleve_parent='1';} else {$visible_eleve_parent='0';}
+			$sql="UPDATE ct_documents SET visible_eleve_parent='$visible_eleve_parent' WHERE id='$id_document' AND id_ct='$id_ct';";
+			$res=mysql_query($sql);
+			if($res) {
+				if($visible_eleve_parent=='1') {
+					echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
+				}
+				else {
+					echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+				}
+			}
+		}
+	}
+	die();
+}
+
 
 // Initialisation du type de couleur (voir global.inc.php)
 if ($ctCompteRendu->getDateCt() == null) {
@@ -434,13 +462,19 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
 						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>\n";
 				if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
+					//echo "<td style=\"text-align: center;\" id='td_document_joint_".$document->getId()."'>";
 					echo "<td style=\"text-align: center;\">";
+					//echo "<a href='#' onclick='modif_visibilite_doc_joint(".$document->getId().");return false;'>";
+					echo "<a href='javascript:modif_visibilite_doc_joint(\"compte_rendu\", ".$ctCompteRendu->getIdCt().", ".$document->getId().")'>";
+					echo "<span id='span_document_joint_".$document->getId()."'>";
 					if($document->getVisibleEleveParent()) {
 						echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
 					}
 					else {
 						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
 					}
+					echo "</span>";
+					echo "</a>";
 					echo "</td>\n";
 				}
 				echo "<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctCompteRendu->getIdCt()."','".add_token_in_js_func()."')\">Supprimer</a></td></tr>\n";
@@ -460,6 +494,9 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 				echo "<br /><br />";
 			}
 		}
+
+		echo add_token_field(true);
+
 		?>
 		<table style="border-style:solid; border-width:0px; border-color: <?php echo $couleur_bord_tableau_notice;?> ; background-color: #000000; width: 100%" cellspacing="1" summary="Tableau de...">
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
