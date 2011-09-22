@@ -172,14 +172,14 @@ function update_infos_action_nettoyage($id_info, $texte) {
 	$retour="";
 
 	$sql="SELECT description FROM infos_actions WHERE id='$id_info';";
-	//echo "$sql<br />";
+	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
 
 		//$sql="UPDATE infos_actions SET description='".addslashes($lig->description).addslashes($texte)."<hr align=\"center\" width=\"200\" />' WHERE id='$id_info';";
 		$sql="UPDATE infos_actions SET description='".addslashes($lig->description).addslashes($texte)."' WHERE id='$id_info';";
-		//echo "$sql<br />";
+		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
 		if(!$res) {$retour="ERREUR lors de la mise à jour de la description de l'information n°$id_info.";}
 	}
@@ -234,7 +234,7 @@ function clean_table_matieres_appreciations() {
 		$nb_lignes2 = mysql_num_rows($req2);
 		if ($nb_lignes2 > "1") {
 			$nb = $nb_lignes2-1;
-			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_appreciations where
 			login ='$login_user' and
@@ -280,10 +280,10 @@ function clean_table_matieres_appreciations() {
 			jeg.id_groupe = '$id_groupe'
 			";
 		$test = mysql_query($sql);
-		//echo "$sql<br />";
+		//echo "$sql<br />\n";
 		$nb_lignes2 = mysql_num_rows($test);
 		if ($nb_lignes2 == "0") {
-			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_appreciations where
 			login ='$login_user' and
@@ -299,7 +299,7 @@ function clean_table_matieres_appreciations() {
 		periode = '$periode'");
 		$nb_lignes2 = mysql_num_rows($test2);
 		if ($nb_lignes2 == "0") {
-			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_appreciations where
 			login ='$login_user' and
@@ -348,7 +348,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 		$nb_lignes2 = mysql_num_rows($req2);
 		if ($nb_lignes2 > "1") {
 			$nb = $nb_lignes2-1;
-			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'un doublon : login = $login_user - identifiant matiere = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_notes where
 			login ='$login_user' and
@@ -392,10 +392,10 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 			jeg.id_groupe = '$id_groupe'
 			";
 		$test = mysql_query($sql);
-		//echo "$sql<br />";
+		//echo "$sql<br />\n";
 		$nb_lignes2 = mysql_num_rows($test);
 		if ($nb_lignes2 == "0") {
-			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_notes where
 			login ='$login_user' and
@@ -411,7 +411,7 @@ function clean_table_matieres_notes($id_nettoyage=-1) {
 		periode = '$periode'");
 		$nb_lignes2 = mysql_num_rows($test2);
 		if ($nb_lignes2 == "0") {
-			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />";
+			//echo "Suppression d'une donnée orpheline : login = $login_user - identifiant matière = $id_matiere - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from matieres_notes where
 			login ='$login_user' and
@@ -538,20 +538,20 @@ function clean_tables_aid_et_autres() {
 					a.id = '$temp1'and
 					a.indice_aid = '$indice_aid' ");
 					if ($test == "-1") {
-						//echo "Suppression d'un doublon : $temp1 - $temp2<br />";
+						//echo "Suppression d'un doublon : $temp1 - $temp2<br />\n";
 						$del = mysql_query("delete from $key where ($val[2]='$temp1' and $val[3]='$temp2' and indice_aid='$indice_aid')");
 						$cpt++;
 					}
 					// autres cas
 				} else {
-					//echo "Suppression d'un doublon : $temp1 - $temp2<br />";
+					//echo "Suppression d'un doublon : $temp1 - $temp2<br />\n";
 					$del = mysql_query("delete from $key where ($val[2]='$temp1' and $val[3]='$temp2') LIMIT $nb");
 					$cpt++;
 				}
 			}
 			// On supprime les lignes inutiles
 			if ($nb_lignes2 == "0") {
-				//echo "Suppression d'une ligne inutile : $temp1 - $temp2<br />";
+				//echo "Suppression d'une ligne inutile : $temp1 - $temp2<br />\n";
 				$del = mysql_query("delete from $key where $val[2]='$temp1' and $val[3]='$temp2'");
 				$cpt++;
 			}
@@ -571,7 +571,7 @@ function clean_tables_aid_et_autres() {
 			if(mysql_num_rows($test)>0) {
 				$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
 				$del=mysql_query($sql);
-				if($del) {$retour.="<font color=\"red\">Suppression de ".mysql_num_rows($test)." enregistrements supplémentaires.</font><br />";}
+				if($del) {$retour.="<font color=\"red\">Suppression de ".mysql_num_rows($test)." enregistrements supplémentaires.</font><br />\n";}
 			}
 		}
 
@@ -609,7 +609,7 @@ function clean_table_j_eleves_professeurs() {
 		$nb_lignes2 = mysql_num_rows($req2);
 		if ($nb_lignes2 > "1") {
 			$nb = $nb_lignes2-1;
-			//$retour.="Suppression d'un doublon : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />";
+			//$retour.="Suppression d'un doublon : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from j_eleves_professeurs where
 			login ='$login_user' and
@@ -641,7 +641,7 @@ function clean_table_j_eleves_professeurs() {
 		$nb_lignes3 = mysql_num_rows($req3);
 		if ($nb_lignes3 == "0") {
 			$nb = $nb_lignes2-1;
-			//$retour.="Suppression d'une ligne inutile : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />";
+			//$retour.="Suppression d'une ligne inutile : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from j_eleves_professeurs where
 			login ='$login_user' and
@@ -691,7 +691,7 @@ function clean_table_j_eleves_classes() {
 		$nb_lignes2 = mysql_num_rows($req2);
 		if ($nb_lignes2 > "1") {
 			$nb = $nb_lignes2-1;
-			//$retour.="Suppression d'un doublon : login = $login_user - identifiant classe = $id_classe - Numéro période = $periode<br />";
+			//$retour.="Suppression d'un doublon : login = $login_user - identifiant classe = $id_classe - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from j_eleves_classes where
 			login ='$login_user' and
@@ -715,7 +715,7 @@ function clean_table_j_eleves_classes() {
 		$nb_lignes3 = mysql_num_rows($req3);
 		if ($nb_lignes3 == "0") {
 			$nb = $nb_lignes2-1;
-			//$retour.="Suppression d'une ligne inutile : login = $login_user - identifiant classe = $id_classe - Numéro période = $periode<br />";
+			//$retour.="Suppression d'une ligne inutile : login = $login_user - identifiant classe = $id_classe - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from j_eleves_classes where
 			login ='$login_user' and
@@ -783,7 +783,7 @@ function clean_tables_aid_appreciations_et_avis_conseil_classe() {
 		");
 		$nb_lignes2 = mysql_num_rows($test);
 		if ($nb_lignes2 == "0") {
-			//$retour.="Suppression d'une donnée orpheline : login = $login_user - identifiant aid = $id_aid - Numéro période = $periode<br />";
+			//$retour.="Suppression d'une donnée orpheline : login = $login_user - identifiant aid = $id_aid - Numéro période = $periode<br />\n";
 			// On efface les lignes en trop
 			$del = mysql_query("delete from aid_appreciations where
 			login ='$login_user' and
@@ -1576,7 +1576,7 @@ col2 varchar(100) NOT NULL default ''
 					}
 					else {
 						$sql="SELECT 1=1 FROM eleves e, resp_pers rp, responsables2 r WHERE rp.login='$lig1->col1' AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id;";
-						//echo "$sql<br />";
+						//echo "$sql<br />\n";
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)==0) {
 							if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
@@ -2317,7 +2317,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 			$alt=$alt*(-1);
 			$alt2=$alt;
-			//$texte_info_action.="\$tab[0]=$tab[0]<br />";
+			//$texte_info_action.="\$tab[0]=$tab[0]<br />\n";
 			//$sql="show fields from $tab[0] where type like 'varchar%' or type like 'char%';";
 			$sql="show full columns from $tab[0] where type like 'varchar%' or type like 'char%';";
 			$res_champs=mysql_query($sql);
@@ -2526,7 +2526,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 							$texte_info_action.="<span style='color:green'>Succès</span>";
 							$nb_corrections++;
 						}
-						$texte_info_action.="<br />";
+						$texte_info_action.="<br />\n";
 					}
 				}
 			}
@@ -2824,7 +2824,6 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			echo "Aucun défaut d'association à un enseignement n'a été trouvé dans 'ct_private_entry'.<br />\n";
 		}
 
-		/*
 		$sql="select id from ct_sequences;";
 		$res_seq=mysql_query($sql);
 		if(mysql_num_rows($res_seq)>0) {
@@ -2844,7 +2843,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 			for($loop=0;$loop<count($tab_seq);$loop++) {
 				if(!in_array($tab_seq[$loop], $tab_seq2)) {
-					echo "La séquence n°".$tab_seq[$loop]." n'est associée à aucune notice.<br />";
+					echo "La séquence n°".$tab_seq[$loop]." n'est associée à aucune notice.<br />\n";
 					$cpt_scories++;
 				}
 			}
@@ -2852,7 +2851,6 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		else {
 			echo "Aucune séquence n'est saisie.<br />\n";
 		}
-		*/
 
 		if($cpt_scories>0) {
 			echo "<form action=\"clean_tables.php\" method=\"post\">\n";
@@ -2875,6 +2873,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$del=mysql_query($sql);
 			if($del) {
 				echo "<span style='color:green'>OK</span>";
+				$cpt_nettoyage+=mysql_num_rows($test);
 			}
 			else {
 				echo "<span style='color:red'>ERREUR</span>";
@@ -2909,6 +2908,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				if(!$del) {
 					$nb_err++;
 				}
+				else {
+					$cpt_nettoyage++;
+				}
 			}
 
 			if($nb_err==0) {
@@ -2930,6 +2932,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$del=mysql_query($sql);
 			if($del) {
 				echo "<span style='color:green'>OK</span>";
+				$cpt_nettoyage+=mysql_num_rows($test);
 			}
 			else {
 				echo "<span style='color:red'>ERREUR</span>";
@@ -2964,6 +2967,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				if(!$del) {
 					$nb_err++;
 				}
+				else {
+					$cpt_nettoyage++;
+				}
 			}
 
 			if($nb_err==0) {
@@ -2984,6 +2990,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$del=mysql_query($sql);
 			if($del) {
 				echo "<span style='color:green'>OK</span>";
+				$cpt_nettoyage+=mysql_num_rows($test);
 			}
 			else {
 				echo "<span style='color:red'>ERREUR</span>";
@@ -2995,6 +3002,42 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			echo "Aucune défaut d'association à un enseignement n'a été trouvé dans 'ct_private_entry'.<br />\n";
 		}
 
+		$sql="select id from ct_sequences;";
+		$res_seq=mysql_query($sql);
+		if(mysql_num_rows($res_seq)>0) {
+			$tab_seq=array();
+			while($lig_seq=mysql_fetch_object($res_seq)) {
+				$tab_seq[]=$lig_seq->id;
+			}
+
+			$tab_seq2=array();
+			$sql="(select id_sequence FROM ct_entry) UNION (select id_sequence FROM ct_devoirs_entry) UNION (select id_sequence FROM ct_private_entry);";
+			$res_seq=mysql_query($sql);
+			if(mysql_num_rows($res_seq)>0) {
+				while($lig_seq=mysql_fetch_object($res_seq)) {
+					$tab_seq2[]=$lig_seq->id_sequence;
+				}
+			}
+
+			for($loop=0;$loop<count($tab_seq);$loop++) {
+				if(!in_array($tab_seq[$loop], $tab_seq2)) {
+					echo "Suppression de la séquence n°".$tab_seq[$loop]." associée à aucune notice&nbsp;: ";
+					$sql="DELETE FROM ct_sequences where id='".$tab_seq[$loop]."';";
+					$del=mysql_query($sql);
+					if($del) {
+						echo "<span style='color:green'>OK</span>";
+						$cpt_nettoyage++;
+					}
+					else {
+						echo "<span style='color:red'>ERREUR</span>";
+					}
+					echo "<br />\n";
+				}
+			}
+		}
+		else {
+			echo "Aucune séquence n'est saisie.<br />\n";
+		}
 	}
 
 	echo "<p>Terminé.</p>\n";
