@@ -56,9 +56,9 @@ function initPage () {
 }
 
 function initFenetreNotice(id_groupe_init) {
-	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'ISO-8859-1'});
+	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'UTF-8'});
 	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
-		    encoding: 'ISO-8859-1',
+		    encoding: 'UTF-8',
 		    onComplete :
 		    function() {
 			    initWysiwyg();
