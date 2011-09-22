@@ -135,12 +135,14 @@ if($_SESSION['statut']=='professeur'){
 			//echo "<td style='font-weight:bold;'>\n";
 			//echo htmlentities($lig_grp->description)." ($chaine_class):";
 			echo "<td>\n";
-			echo "<b>$chaine_class</b>: ".htmlentities($lig_grp->description);
+-			echo "<b>$chaine_class</b>: ".htmlentities($lig_grp->description);
+			echo "<b>$chaine_class</b>: ".htmlentities($lig_grp->description,ENT_QUOTES,"UTF-8");
 			echo "</td>\n";
 			for($i=0;$i<count($tabnumper);$i++){
 				if($i>0){echo "<td> - </td>\n";}
 				echo "<td>\n";
-				echo "<a href='get_csv.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]'>".htmlentities($tabnomper[$i])."</a>\n";
+-				//echo "<a href='get_csv.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]'>".htmlentities($tabnomper[$i])."</a>\n";
+				echo "<a href='get_csv.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]'>".htmlentities($tabnomper[$i],ENT_QUOTES,"UTF-8")."</a>\n";
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
