@@ -312,7 +312,8 @@ if (!strstr($ua, "MSIE 6.0")) {
 			echo $tab_creneaux[$lig->id_definie_periode];
 			echo "</td>\n";
 			// Il manque le period_id... mais on ne peut pas avoir le même id_cours avec plusieurs period_id
-			echo "<td><a href='modifier_cours_popup.php?period_id="."&id_cours=$lig->id_cours&type_edt=prof&identite=$lig->login_prof' target='_blank'><img src='../images/icons/saisie.png' width='16' height='16' title='Editer' alt='Editer' /></a></td>\n";
+			//echo "<td><a href='modifier_cours_popup.php?period_id="."&id_cours=$lig->id_cours&type_edt=prof&identite=$lig->login_prof' target='_blank'><img src='../images/icons/saisie.png' width='16' height='16' title='Editer' alt='Editer' /></a></td>\n";
+			echo "<td><a href='modifier_cours.php?period_id="."&id_cours=$lig->id_cours&type_edt=prof&identite=$lig->login_prof' target='_blank'><img src='../images/icons/saisie.png' width='16' height='16' title='Editer' alt='Editer' /></a></td>\n";
 			echo "<td><a href='effacer_cours.php?period_id="."&supprimer_cours=$lig->id_cours&type_edt=prof&identite=$lig->login_prof' target='_blank'><img src='../images/icons/delete.png' width='16' height='16' title='Supprimer' alt='Supprimer' /></a></td>\n";
 			echo "</tr>\n";
 		}
