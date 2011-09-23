@@ -119,7 +119,16 @@ if(isset($login_edt)){
     $type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
     if ($type_edt == "prof")
     {
-        $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
+		//debug_var();
+		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0' AND login_prof='$login_edt';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+	        $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
+		}
+		else {
+			$tab_data=array();
+			$msg="ANOMALIE&nbsp;: Un ou des cours de durée nulle perturbent l'affichage.<br />Contactez l'administrateur pour un Nettoyage des tables portant sur l'EDT.";
+		}
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
 		FixColumnPositions($tab_data, $entetes);		// en cours de devel
