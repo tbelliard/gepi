@@ -312,7 +312,12 @@ if ($pb_maj_bd != 'yes') {
 	} else {
 		echo "<h2 class='grand center'>Mise à jour de la base de données</h2>";
 		echo "<p class='center'><strong>Votre base de données est à jour. Vous n'avez pas de mise à jour à effectuer.</strong></p>";
-		echo "<p class='grand center'><strong><a href='../gestion/index.php#maj'>Retour</a></strong></p>";
+		if(isset($_SESSION['gepi_alea'])) {
+			echo "<p class='grand center'><strong><a href='../gestion/index.php#maj'>Retour</a></strong></p>";
+		}
+		else {
+			echo "<p class='grand center'><strong><a href='../logout.php'>Se reconnecter</a><br />après une mise à jour</strong></p>";
+		}
 		echo "<form action=\"maj.php\" method=\"post\">";
 		//echo add_token_field();
 		echo "<p class='center'><strong>Néanmoins, vous pouvez forcer la mise à jour. Cette procédure, bien que sans risque, n'est utile que dans certains cas précis.</strong><br />";
