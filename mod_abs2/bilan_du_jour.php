@@ -134,7 +134,7 @@ foreach($classe_col as $classe) {
 		->orderByNom()
 		->useAbsenceEleveSaisieQuery()->filterByPlageTemps($dt_debut, $dt_fin)->where('AbsenceEleveSaisie.DeletedAt is Null')->endUse()
 		->useJEleveClasseQuery()->filterByIdClasse($classe->getId())->endUse()
-        ->where('Eleve.DateSortie=?','0')
+        ->where('Eleve.DateSortie<?','0')
         ->orWhere('Eleve.DateSortie is NULL')
         ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
 		->distinct();
