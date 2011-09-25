@@ -174,7 +174,7 @@ class Session {
 
 		if ($_login != null && strtoupper($_login) != strtoupper($this->login)) {
 			//on a une connexion sous un nouveau login, on purge la session
-			$this->reset("4");
+			$this->reset("10");
 		}
 
 		if($debug_test_mdp=="y") {
@@ -620,7 +620,7 @@ class Session {
 		# 0 : logout normal
 		# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
 		# 3 : logout lié à un timeout
-		# 4 : logout lié à une nouvelle connexion sous un nouveau profil
+		# 10 : logout lié à une nouvelle connexion sous un nouveau profil
 
 	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
 	    if ($this->start) {

@@ -1253,7 +1253,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			if ($end_time > $now) {
 				$temp1 = "<font color='green'>";
 				$temp2 = "</font>";
-			} else if (($row[4] == 1) or ($row[4] == 2) or ($row[4] == 3)) {
+			} else if (($row[4] == 1) or ($row[4] == 2) or ($row[4] == 3) or ($row[4] == 10)) {
 				//$temp1 = "<font color=orange>\n";
 				$temp1 = "<font color='#FFA500'>";
 				$temp2 = "</font>";
