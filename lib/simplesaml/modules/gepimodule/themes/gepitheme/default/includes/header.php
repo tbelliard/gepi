@@ -2,7 +2,7 @@
 <?php
 
 // on reconstitue $gepiPath 
-$gepiPath=$this->data['baseurlpath'].'/../../..'; // par précaution
+$gepiPath=$this->data['baseurlpath'].'/../../..'; // par prÃ©caution
 if (!strpos($this->data['baseurlpath'],"lib/simplesaml/www/ "))
 	$gepiPath=substr($this->data['baseurlpath'],0,strpos($this->data['baseurlpath'],"lib/simplesaml/www/")-1);
 // pour afficher les infos dans le header
@@ -147,32 +147,32 @@ if($onLoad !== '') {
 		echo '<div id="languagebar">';
 		$languages = $this->getLanguageList();
 		$langnames = array(
-					'no' => 'Bokmål',
+					'no' => 'BokmÃ¥l',
 					'nn' => 'Nynorsk',
-					'se' => 'Sámegiella',
-					'sam' => 'Åarjelh-saemien giele',
+					'se' => 'SÃ¡megiella',
+					'sam' => 'Ãarjelh-saemien giele',
 					'da' => 'Dansk',
 					'en' => 'English',
 					'de' => 'Deutsch',
 					'sv' => 'Svenska',
 					'fi' => 'Suomeksi',
-					'es' => 'Español',
-					'fr' => 'Français',
+					'es' => 'EspaÃ±ol',
+					'fr' => 'FranÃ§ais',
 					'it' => 'Italiano',
 					'nl' => 'Nederlands',
 					'lb' => 'Luxembourgish', 
 					'cs' => 'Czech',
-					'sl' => 'Slovenščina', // Slovensk
-					'lt' => 'Lietuvių kalba', // Lithuanian
+					'sl' => 'SlovenÅ¡Äina', // Slovensk
+					'lt' => 'LietuviÅ³ kalba', // Lithuanian
 					'hr' => 'Hrvatski', // Croatian
 					'hu' => 'Magyar', // Hungarian
-					'pl' => 'Język polski', // Polish
-					'pt' => 'Português', // Portuguese
-					'pt-BR' => 'Português brasileiro', // Portuguese
-					'tr' => 'Türkçe',
-					'el' => 'ελληνικά',
-					'ja' => '日本語',
-					'zh-tw' => '中文',
+					'pl' => 'JÄzyk polski', // Polish
+					'pt' => 'PortuguÃªs', // Portuguese
+					'pt-BR' => 'PortuguÃªs brasileiro', // Portuguese
+					'tr' => 'TÃŒrkÃ§e',
+					'el' => 'ÎµÎ»Î»Î·ÎœÎ¹ÎºÎ¬',
+					'ja' => 'æ¥æ¬èª',
+					'zh-tw' => 'äž­æ',
 		);
 		
 		$textarray = array();
@@ -194,7 +194,7 @@ if($onLoad !== '') {
 	?>
 	<div id="content">
 	<?php if ((getSettingValue("disable_login"))!='no'){
-		// Fermeture du site � afficher en rouge et plus grand
+		// Fermeture du site à afficher en rouge et plus grand
 		echo "Le site est en cours de maintenance et temporairement inaccessible.";
 		echo "Veuillez nous excuser de ce d&eacute;rangement et r&eacute;essayer de vous connecter ult&eacute;rieurement.";
 	}?>
