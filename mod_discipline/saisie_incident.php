@@ -2184,6 +2184,25 @@ new Ajax.Autocompleter (
 
 	if($etat_incident!='clos') {
 		echo "<textarea id=\"description\" class='wrap' name=\"no_anti_inject_description\" rows='8' cols='60' onchange=\"changement()\">$description</textarea>\n";
+
+		echo "<div id='div_compteur_caracteres_textarea' style='width:20em; text-align:center'></div>
+
+<script type='text/javascript'>
+function compte_caracteres_textarea(textarea_id, compteur_id) {
+	if(document.getElementById(compteur_id)) {
+		if(document.getElementById(textarea_id)) {
+			document.getElementById(compteur_id).innerHTML=document.getElementById(textarea_id).value.length+' caractere(s).';
+		}
+	}
+}
+
+function comptage_caracteres_textarea() {
+	compte_caracteres_textarea('description', 'div_compteur_caracteres_textarea');
+	setTimeout('comptage_caracteres_textarea()', 1000);
+}
+
+setTimeout('comptage_caracteres_textarea()', 1000);
+</script>\n";
 	}
 	else {
 		echo nl2br($description);
