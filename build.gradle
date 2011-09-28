@@ -6,5 +6,5 @@ configurations {
 } 
 artifacts{
     archives new DefaultPublishArtifact(ant.antProject.properties["env.artifact_name"] + ".tar.gz", "tar.gz", "tar.gz", null, new Date(), 
-					file("build/"+ant.antProject.properties["env.artifact_name"] + ".tar.gz"))
+					file("build/"+ant.antProject.properties["artifact_name"] + ".tar.gz"))
 }
