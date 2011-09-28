@@ -1,0 +1,10 @@
+import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
+
+ant.importBuild 'build.xml'
+configurations {
+  archives
+} 
+artifacts{
+    archives new DefaultPublishArtifact(ant.antProject.properties["env.MY_ENV_VAR"] + ".tar.gz", "tar.gz", "tar.gz", null, new Date(), 
+					file(ant.antProject.properties["env.MY_ENV_VAR"] + ".tar.gz"))
+}
