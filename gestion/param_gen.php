@@ -368,6 +368,17 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
 			}
 		}
+
+		if (isset($_POST['mode_utf8_listes_pdf'])) {
+			if (!saveSetting("mode_utf8_listes_pdf", $_POST['mode_utf8_listes_pdf'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
+			}
+		}
+		else{
+			if (!saveSetting("mode_utf8_listes_pdf", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
+			}
+		}
 	
 		if (isset($_POST['type_bulletin_par_defaut'])) {
 			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
@@ -992,6 +1003,30 @@ echo add_token_field();
 		onchange='changement()' />
 		</td>
 	</tr>
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		<label for='mode_utf8_listes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués dans les listes PDF&nbsp;:</label>
+		</td>
+		<td>
+		<input type="checkbox" id='mode_utf8_listes_pdf' name="mode_utf8_listes_pdf" value="y"
+		<?php
+			if(getSettingValue("mode_utf8_listes_pdf")=='y'){echo " checked";}
+		?>
+		onchange='changement()' />
+		</td>
+	</tr>
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		<label for='mode_utf8_bulletins_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des bulletins PDF&nbsp;:</label>
+		</td>
+		<td>
+		<input type="checkbox" id='mode_utf8_bulletins_pdf' name="mode_utf8_bulletins_pdf" value="y"
+		<?php
+			if(getSettingValue("mode_utf8_bulletins_pdf")=='y'){echo " checked";}
+		?>
+		onchange='changement()' />
+		</td>
+	</tr>
 
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
@@ -1028,19 +1063,6 @@ echo add_token_field();
 	</tr>
 */
 ?>
-	<tr>
-		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_bulletins_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des bulletins PDF&nbsp;:</label>
-		</td>
-		<td>
-		<input type="checkbox" id='mode_utf8_bulletins_pdf' name="mode_utf8_bulletins_pdf" value="y"
-		<?php
-			if(getSettingValue("mode_utf8_bulletins_pdf")=='y'){echo " checked";}
-		?>
-		onchange='changement()' />
-		</td>
-	</tr>
-
 	<tr>
 		<td style="font-variant: small-caps;">
 		Feuille de style à utiliser :</td>
