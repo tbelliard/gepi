@@ -233,6 +233,16 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['ouverture_auto_WinDevoirs
 	}
 }
 
+if(isset($_POST['mod_discipline_travail_par_defaut'])) {
+	check_token();
+
+	if(!savePref($_SESSION['login'],'mod_discipline_travail_par_defaut',traitement_magic_quotes($_POST['mod_discipline_travail_par_defaut']))) {
+		$msg.="Erreur lors de l'enregistrement de mod_discipline_travail_par_defaut.<br />";
+	}
+	else {
+		$msg.="Enregistrement de mod_discipline_travail_par_defaut.<br />";
+	}
+}
 
 // Tester les valeurs de $page
 // Les valeurs autorisées sont (actuellement): accueil, add_modif_dev, add_modif_conteneur
@@ -1104,6 +1114,22 @@ if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "pro
 
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 
+	echo "</p>\n";
+	echo "</fieldset>\n";
+	echo "</form>\n";
+
+	echo "<br />\n";
+}
+
+if (getSettingValue('active_mod_discipline')!='n') {
+	$mod_discipline_travail_par_defaut=getPref($_SESSION['login'], 'mod_discipline_travail_par_defaut', 'Travail : ');
+	echo "<form name='form_cdt_pref' method='post' action='./config_prefs.php'>\n";
+	echo add_token_field();
+	echo "<fieldset style='border: 1px solid grey;'>\n";
+	echo "<legend style='border: 1px solid grey;'>Module Discipline et sanctions</legend>\n";
+	echo "<p>Lors de la saisie de travail à faire, le texte par défaut proposé sera&nbsp;: ,<br />\n";
+	echo "<input type='text' name='mod_discipline_travail_par_defaut' value='$mod_discipline_travail_par_defaut' size='30' /><br />\n";
+	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</p>\n";
 	echo "</fieldset>\n";
 	echo "</form>\n";
