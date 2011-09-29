@@ -60,6 +60,8 @@ $utiliser_compte_existant=isset($_POST["utiliser_compte_existant"]) ? $_POST["ut
 $compte_existant=isset($_POST["compte_existant"]) ? $_POST["compte_existant"] : "";
 $id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : "";
 
+$temoin_erreur="n";
+
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	check_token();
 
@@ -154,18 +156,20 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					$k++;
 				}
 			}
-	//
-	// actions si un nouvel utilisateur a été défini
-	//
+			//
+			// actions si un nouvel utilisateur a été défini
+			//
 			if (true) {
 	
 				$reg_password_c = md5($NON_PROTECT['password1']);
 				$resultat = "";
 				if (($_POST['no_anti_inject_password1'] != $_POST['reg_password2']) and ($is_pwd == "y")) {
 					$msg = "Erreur lors de la saisie : les deux mots de passe ne sont pas identiques, veuillez recommencer !";
+					$temoin_erreur="y";
 				} else if ((!(verif_mot_de_passe($_POST['no_anti_inject_password1'],0)))  and ($is_pwd == "y")) {
-					$msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
-	
+					$msg = "Erreur lors de la saisie du mot de passe (<em>voir les recommandations</em>), veuillez recommencer !";
+					if((isset($info_verif_mot_de_passe))&&($info_verif_mot_de_passe!="")) {$msg.="<br />".$info_verif_mot_de_passe;}
+					$temoin_erreur="y";
 				} else {
 					// CREATION DU LOGIN
 					// partie du code reprise dans /init_xml/prof_csv
@@ -219,34 +223,34 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						if ($mode_generation_login == "name") {
 							$temp1 = $affiche[0];
 							$temp1 = strtoupper($temp1);
-							$temp1 = my_ereg_replace(" ","", $temp1);
-							$temp1 = my_ereg_replace("-","_", $temp1);
-							$temp1 = my_ereg_replace("'","", $temp1);
+							$temp1 = preg_replace("/ /","", $temp1);
+							$temp1 = preg_replace("/-/","_", $temp1);
+							$temp1 = preg_replace("/'/","", $temp1);
 							$temp1 = strtoupper(remplace_accents($temp1,"all"));
 							//$temp1 = substr($temp1,0,8);
 	
 						} elseif ($mode_generation_login == "name8") {
 							$temp1 = $affiche[0];
 							$temp1 = strtoupper($temp1);
-							$temp1 = my_ereg_replace(" ","", $temp1);
-							$temp1 = my_ereg_replace("-","_", $temp1);
-							$temp1 = my_ereg_replace("'","", $temp1);
+							$temp1 = preg_replace("/ /","", $temp1);
+							$temp1 = preg_replace("/-/","_", $temp1);
+							$temp1 = preg_replace("/'/","", $temp1);
 							$temp1 = strtoupper(remplace_accents($temp1,"all"));
 							$temp1 = substr($temp1,0,8);
 						} elseif ($mode_generation_login == "fname8") {
 							$temp1 = $affiche[1]{0} . $affiche[0];
 							$temp1 = strtoupper($temp1);
-							$temp1 = my_ereg_replace(" ","", $temp1);
-							$temp1 = my_ereg_replace("-","_", $temp1);
-							$temp1 = my_ereg_replace("'","", $temp1);
+							$temp1 = preg_replace("/ /","", $temp1);
+							$temp1 = preg_replace("/-/","_", $temp1);
+							$temp1 = preg_replace("/'/","", $temp1);
 							$temp1 = strtoupper(remplace_accents($temp1,"all"));
 							$temp1 = substr($temp1,0,8);
 						} elseif ($mode_generation_login == "fname19") {
 							$temp1 = $affiche[1]{0} . $affiche[0];
 							$temp1 = strtoupper($temp1);
-							$temp1 = my_ereg_replace(" ","", $temp1);
-							$temp1 = my_ereg_replace("-","_", $temp1);
-							$temp1 = my_ereg_replace("'","", $temp1);
+							$temp1 = preg_replace("/ /","", $temp1);
+							$temp1 = preg_replace("/-/","_", $temp1);
+							$temp1 = preg_replace("/'/","", $temp1);
 							$temp1 = strtoupper(remplace_accents($temp1,"all"));
 							$temp1 = substr($temp1,0,19);
 						} elseif ($mode_generation_login == "firstdotname") {
@@ -258,9 +262,9 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							$temp1 = $firstname . "." . $affiche[0];
 							$temp1 = strtoupper($temp1);
 	
-							$temp1 = my_ereg_replace(" ","", $temp1);
-							$temp1 = my_ereg_replace("-","_", $temp1);
-							$temp1 = my_ereg_replace("'","", $temp1);
+							$temp1 = preg_replace("/ /","", $temp1);
+							$temp1 = preg_replace("/-/","_", $temp1);
+							$temp1 = preg_replace("/'/","", $temp1);
 							$temp1 = strtoupper(remplace_accents($temp1,"all"));
 							//$temp1 = substr($temp1,0,19);
 						} elseif ($mode_generation_login == "firstdotname19") {
@@ -271,17 +275,17 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							}
 							$temp1 = $firstname . "." . $affiche[0];
 							$temp1 = strtoupper($temp1);
-							$temp1 = my_ereg_replace(" ","", $temp1);
-							$temp1 = my_ereg_replace("-","_", $temp1);
-							$temp1 = my_ereg_replace("'","", $temp1);
+							$temp1 = preg_replace("/ /","", $temp1);
+							$temp1 = preg_replace("/-/","_", $temp1);
+							$temp1 = preg_replace("/'/","", $temp1);
 							$temp1 = strtoupper(remplace_accents($temp1,"all"));
 							$temp1 = substr($temp1,0,19);
 						} elseif ($mode_generation_login == "namef8") {
 							$temp1 =  substr($affiche[0],0,7) . $affiche[1]{0};
 							$temp1 = strtoupper($temp1);
-							$temp1 = my_ereg_replace(" ","", $temp1);
-							$temp1 = my_ereg_replace("-","_", $temp1);
-							$temp1 = my_ereg_replace("'","", $temp1);
+							$temp1 = preg_replace("/ /","", $temp1);
+							$temp1 = preg_replace("/-/","_", $temp1);
+							$temp1 = preg_replace("/'/","", $temp1);
 							$temp1 = strtoupper(remplace_accents($temp1,"all"));
 							//$temp1 = substr($temp1,0,8);
 						} elseif ($mode_generation_login == "lcs") {
@@ -334,7 +338,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							$mess_mdp = "aucun (sso)";
 							//echo "<tr><td colspan='4'>sso</td></tr>";
 						}
-	// Fin code génération login de init_xml
+						// Fin code génération login de init_xml
 	
 	
 						//choix du format
@@ -347,10 +351,12 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						}
 	
 						if ($resultat != "NON") {
-						if ($is_pwd == "y")
+							if ($is_pwd == "y") {
 								$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='$reg_password_c',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='y'");
-							else
+							}
+							else {
 								$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='n'");
+							}
 						}
 						$msg="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
 						//$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
@@ -417,9 +423,9 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$msg="La personne existe déjà dans la base (même nom et même prénom)";
 					}
 				}
-	//
-	//action s'il s'agit d'une modification
-	//
+				//
+				//action s'il s'agit d'une modification
+				//
 			}  else {
 				$msg = "L'identifiant de l'utilisateur doit être constitué uniquement de lettres et de chiffres !";
 	
@@ -580,6 +586,9 @@ elseif(isset($temoin_erreur_affect_compte_existant)) {
 	else {
 		echo "<p>Le compte '<b>$compte_existant</b>' a été déclaré remplaçant de '<b>$login_prof_remplace</b>'.</p>\n";
 	}
+}
+elseif($temoin_erreur=="y") {
+  echo "<center><br/><br/><b>Il s'est produit une erreur.</b></center>";
 }
 else {// fin affichage formulaire
   echo "<center><br/><br/><b>Remplaçant créé</b></center>";

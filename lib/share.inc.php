@@ -95,25 +95,43 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
  * @todo on déclare $char_spec alors qu'on ne l'utilise pas, n'y aurait-il pas un problème ?
  */
 function verif_mot_de_passe($password,$flag) {
+	global $info_verif_mot_de_passe;
+
 	if ($flag == 1) {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
+			$info_verif_mot_de_passe="Le mot de passe ne doit pas être uniquement numérique ou uniquement alphabétique.";
 			return FALSE;
 		}
 		elseif(preg_match("/^[[:alnum:]\W]{".getSettingValue("longmin_pwd").",}$/", $password) and preg_match("/[\W]+/", $password) and preg_match("/[0-9]+/", $password)) {
+			$info_verif_mot_de_passe="";
 			return TRUE;
 		}
 		else {
+			if(preg_match("/^[A-Za-z0-9]*$/", $password)) {
+				$info_verif_mot_de_passe="Le mot de passe doit comporter au moins un caractère spécial (#, *,...).";
+			}
+			elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+				$info_verif_mot_de_passe="La longueur du mot de passe doit être supérieure ou égale à ".getSettingValue("longmin_pwd").".";
+				return FALSE;
+			}
+			else {
+				// Euh... qu'est-ce qui a été saisi?
+				$info_verif_mot_de_passe="";
+			}
 			return FALSE;
 		}
 	}
 	else {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
+			$info_verif_mot_de_passe="Le mot de passe ne doit pas être uniquement numérique ou uniquement alphabétique.";
 			return FALSE;
 		}
 		elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+			$info_verif_mot_de_passe="La longueur du mot de passe doit être supérieure ou égale à ".getSettingValue("longmin_pwd").".";
 			return FALSE;
 		}
 		else {
+			$info_verif_mot_de_passe="";
 			return TRUE;
 		}
 	}

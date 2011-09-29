@@ -90,7 +90,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		if ($_POST['no_anti_inject_password'] != $_POST['reg_password2'])  {
 			$msg = "Erreur lors de la saisie : les deux mots de passe ne sont pas identiques, veuillez recommencer !";
 		} else if (!(verif_mot_de_passe($NON_PROTECT['password'],$flag))) {
-			$msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
+			$msg = "Erreur lors de la saisie du mot de passe (<em>voir les recommandations</em>), veuillez recommencer !";
+			if((isset($info_verif_mot_de_passe))&&($info_verif_mot_de_passe!="")) {$msg.="<br />".$info_verif_mot_de_passe;}
 		} else {
 			$auth_mode = mysql_result(mysql_query("SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 			if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == 'yes') {
