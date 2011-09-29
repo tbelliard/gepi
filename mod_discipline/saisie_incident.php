@@ -2372,7 +2372,15 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 					echo "<td>\n";
 					//echo "Travail&nbsp;: <textarea name='travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>Nature du travail pour la mesure demandée</textarea>\n";
 
-					$texte_travail="Travail: ";
+					$texte_travail="Travail : ";
+					$tmp_pref_texte_travail=getPref($_SESSION['login'], 'mod_discipline_travail_par_defaut', '');
+					if($tmp_pref_texte_travail!='') {
+						$texte_travail=$tmp_pref_texte_travail;
+					}
+					elseif(getSettingValue('mod_discipline_travail_par_defaut')!='') {
+						$texte_travail=getSettingValue('mod_discipline_travail_par_defaut');
+					}
+
 					$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$ele_login[$i]."';";
 					$res_travail_mesure_demandee=mysql_query($sql);
 					if(mysql_num_rows($res_travail_mesure_demandee)>0) {
