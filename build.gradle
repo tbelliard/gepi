@@ -5,6 +5,6 @@ configurations {
   archives
 } 
 artifacts{
-    archive new DefaultPublishArtifact("gepi", "tar.gz", "tar.gz", null, new Date(), 
+    archive new DefaultPublishArtifact(null, "tar.gz", "tar.gz", null, new Date(), 
 					file("build/"+ant.antProject.properties["artifact_name"] + ".tar.gz"))
 }
