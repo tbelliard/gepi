@@ -113,7 +113,9 @@ echo '</td></tr>';
 echo '<tr><TD>';
 echo 'Créé par : ';
 echo '</TD><TD>';
-echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom().' '.substr($traitement->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
+if ($traitement->getUtilisateurProfessionnel() != null) {
+	echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom().' '.substr($traitement->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
+}
 echo '</TD></tr>';
 
 if ($traitement->getModifieParUtilisateurId() != null && $traitement->getUtilisateurId() != $traitement->getModifieParUtilisateurId()) {

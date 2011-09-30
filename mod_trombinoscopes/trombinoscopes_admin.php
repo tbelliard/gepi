@@ -196,100 +196,159 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 
 if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 	check_token();
-  // Le téléchargement s'est-il bien passé ?
-  $sav_file = isset($_FILES["nom_du_fichier"]) ? $_FILES["nom_du_fichier"] : NULL;
-  if ($sav_file){
-	// copie du fichier vers /temp
-	$dirname ="../temp";
-	$reponse=telecharge_fichier($sav_file,$dirname,'application/zip',"zip" );
-	if ($reponse!="ok"){
-	  $msg = $reponse;
-	}else{
-	  // dézipage du fichier
-	  $reponse = dezip_PclZip_fichier($dirname."/".$sav_file['name'],$dirname,1);
-	  if ($reponse!="ok"){
-		$msg = $reponse;
-	  }else{
-		//suppression du fichier .zip
-		if (!@unlink ($dirname."/".$_FILES["nom_du_fichier"]['name']))
-		  $msg .= "Erreur lors de la suppression de ".$dirname."/".$_FILES["nom_du_fichier"];
-
-		// copy des fichiers vers /photos
-		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			  // On récupère le RNE de l'établissement
-		  if (!$repertoire=$_COOKIE['RNE'])
-			return ("Erreur lors de la récupération du dossier établissement.");
+	// Le téléchargement s'est-il bien passé ?
+	$sav_file = isset($_FILES["nom_du_fichier"]) ? $_FILES["nom_du_fichier"] : NULL;
+	if ($sav_file) {
+		// copie du fichier vers /temp
+		$dirname ="../temp";
+		//$reponse=telecharge_fichier($sav_file,$dirname,'application/zip',"zip" );
+		$reponse=telecharge_fichier($sav_file,$dirname,'application/zip application/octet-stream application/x-zip-compressed',"zip" );
+		if ($reponse!="ok") {
+			$msg = $reponse;
 		} else {
-		  $repertoire="";
-		}
-		if ($repertoire!="")
-		  $repertoire.="/";
-		$repertoire="../photos/".$repertoire;
-		//Elèves
-		$folder = $dirname."/photos/eleves/";
-		$dossier = opendir($folder);
-		while ($Fichier = readdir($dossier)) {
-		  if ($Fichier != "." && $Fichier != "..") {
-			$source=$folder.$Fichier;
-			if ($Fichier != "index.html") {
-			  $dest=$repertoire."eleves/".$Fichier;
-			  if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")){
-				@copy($source, $dest);
-			  }else{
-				if (!is_file($dest))
-				  @copy($source, $dest);
-			  }
+			// dézipage du fichier
+			$reponse = dezip_PclZip_fichier($dirname."/".$sav_file['name'],$dirname,1);
+			if ($reponse!="ok") {
+				$msg = $reponse;
+			} else {
+				//suppression du fichier .zip
+				if (!@unlink ($dirname."/".$_FILES["nom_du_fichier"]['name'])) {
+					$msg .= "Erreur lors de la suppression de ".$dirname."/".$_FILES["nom_du_fichier"];
+				}
+	
+				// copy des fichiers vers /photos
+				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+					// On récupère le RNE de l'établissement
+					if (!$repertoire=$_COOKIE['RNE']) {
+						return ("Erreur lors de la récupération du dossier établissement.");
+					}
+				} else {
+					$repertoire="";
+				}
+		
+				if ($repertoire!="") {
+					$repertoire.="/";
+				}
+		
+				$repertoire="../photos/".$repertoire;
+				//Elèves
+				$folder = $dirname."/photos/eleves/";
+				if(!file_exists($folder)) {
+					$msg.="Votre ZIP ne contient pas l'arborescence requise d'<b>élèves</b>.<br />Si vous souhaitiez restaurer des photos d'élèves, vous devriez avoir dans votre ZIP les photos des élèves dans un sous-dossier photos/eleves/<br />";
+				}
+				else {
+					$nb_photos_eleves=0;
+					$dossier = opendir($folder);
+					while ($Fichier = readdir($dossier)) {
+						if ($Fichier != "." && $Fichier != ".." && ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier)))) {
+							$source=$folder.$Fichier;
+							if ($Fichier != "index.html") {
+								$dest=$repertoire."eleves/".$Fichier;
+								if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")) {
+									@copy($source, $dest);
+									$nb_photos_eleves++;
+								} else {
+									if (!is_file($dest)) {
+										@copy($source, $dest);
+										$nb_photos_eleves++;
+									}
+								}
+							}
+							if (!@unlink ($source)) {
+								$msg .= "Erreur lors de la suppression de ".$source;
+							}
+						}
+					}
+					if($nb_photos_eleves>0) {$msg.="$nb_photos_eleves photo(s) élève(s) traitée(s).<br />";}
+					closedir($dossier);
+					if(file_exists($folder)) {
+						$dossier = opendir($folder);
+						while ($Fichier = readdir($dossier)) {
+							if ($Fichier != "." && $Fichier != "..") {
+								$source=$folder."/".$Fichier;
+								if (!@unlink ($source)) {
+									$msg .= "Erreur lors de la suppression de ".$source;
+								}
+							}
+						}
+						closedir($dossier);
+						if (!rmdir ($folder)) {
+								$msg .= "Erreur lors de la suppression de ".$folder;
+						}
+					}
+				}
+	
+				//Personnels
+				$folder = $dirname."/photos/personnels/";
+				if(!file_exists($folder)) {
+					$msg.="Votre ZIP ne contient pas l'arborescence requise pour des photos de <b>personnels</b>.<br />Si vous souhaitiez restaurer des photos de personnels, vous devriez avoir dans votre ZIP les photos des personnels dans un sous-dossier photos/personnels/<br />";
+				}
+				else {
+					$nb_photos_personnels=0;
+					$dossier = opendir($folder);
+					while ($Fichier = readdir($dossier)) {
+						$source=$folder.$Fichier;
+						if ($Fichier != "." && $Fichier != ".." && ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier)))) {
+							if ($Fichier != "index.html") {
+								$dest=$repertoire."personnels/".$Fichier;
+								if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")) {
+									@copy($source, $dest);
+									$nb_photos_personnels++;
+								} else {
+									if (!is_file($dest)) {
+										@copy($source, $dest);
+										$nb_photos_personnels++;
+									}
+								}
+							}
+							if (!@unlink ($source)) {
+								$msg .= "Erreur lors de la suppression de ".$source;
+							}
+						}
+					}
+					if($nb_photos_personnels>0) {$msg.="$nb_photos_personnels photo(s) personnel(s) traitée(s).<br />";}
+					closedir($dossier);
+					if(file_exists($folder)) {
+						$dossier = opendir($folder);
+						while ($Fichier = readdir($dossier)) {
+							if ($Fichier != "." && $Fichier != "..") {
+								$source=$folder."/".$Fichier;
+								if (!@unlink ($source)) {
+									$msg .= "Erreur lors de la suppression de ".$source;
+								}
+							}
+						}
+						closedir($dossier);
+						if (!rmdir ($folder)) {
+								$msg .= "Erreur lors de la suppression de ".$folder;
+						}
+					}
+				}
 			}
-			if (!@unlink ($source))
-			  $msg .= "Erreur lors de la suppression de ".$source;
-		  }
-		}
-		closedir($dossier);
-		if (!rmdir ($folder))
-			  $msg .= "Erreur lors de la suppression de ".$folder;
-		//Personnels
-		$folder = $dirname."/photos/personnels/";
-		$dossier = opendir($folder);
-		while ($Fichier = readdir($dossier)) {
-		  $source=$folder.$Fichier;
-		  if ($Fichier != "." && $Fichier != "..") {
-			if ($Fichier != "index.html") {
-			  $dest=$repertoire."personnels/".$Fichier;
-			  if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")){
-				@copy($source, $dest);
-			  }else{
-				if (!is_file($dest))
-				  @copy($source, $dest);
-			  }
+	
+			$folder = $dirname."/photos/";
+			if(file_exists($folder)) {
+				$dossier = opendir($folder);
+				while ($Fichier = readdir($dossier)) {
+					if ($Fichier != "." && $Fichier != "..") {
+						$source=$folder."/".$Fichier;
+						if (!@unlink ($source)) {
+							$msg .= "Erreur lors de la suppression de ".$source;
+						}
+					}
+				}
+				closedir($dossier);
+				if (!rmdir ($folder)) {
+						$msg .= "Erreur lors de la suppression de ".$folder;
+				}
 			}
-			if (!@unlink ($source))
-			  $msg .= "Erreur lors de la suppression de ".$source;
-		  }
 		}
-		closedir($dossier);
-		if (!rmdir ($folder))
-			  $msg .= "Erreur lors de la suppression de ".$folder;
-	  }
-	  $folder = $dirname."/photos/";
-	  $dossier = opendir($folder);
-	  while ($Fichier = readdir($dossier)) {
-		if ($Fichier != "." && $Fichier != "..") {
-		  $source=$folder."/".$Fichier;
-		  if (!@unlink ($source))
-			$msg .= "Erreur lors de la suppression de ".$source;
+		if ($msg==""){
+			$msg= "La restauration s'est bien déroulée";
+			$post_reussi=TRUE;
 		}
-	  }
-	  closedir($dossier);
-	  if (!rmdir ($folder))
-			$msg .= "Erreur lors de la suppression de ".$folder;
 	}
-  }
-  if ($msg==""){
-	$msg= "La restauration s'est bien déroulée";
-	$post_reussi=TRUE;
-  }
 }
-
 
 
 
@@ -323,7 +382,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
-
+//debug_var();
 if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 
   $req_trombino = mysql_query("select indice_aid, nom from aid_config order by nom");

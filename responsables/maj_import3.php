@@ -4423,8 +4423,11 @@ $update_tempo4=mysql_query($sql);
 						echo ";'>\n";
 						*/
 						echo "<tr class='lig$alt white_hover'>\n";
-						echo "<td>".$nom_groupe;
+						echo "<td>";
+						echo "<span title=\"".$tmp_group['description']."\" alt=\"".$tmp_group['description']."\">";
+						echo $nom_groupe;
 						echo " <span style='font-size: x-small'>(".$tmp_group['classlist_string'].")</span>";
+						echo "</span>";
 						echo "<br />";
 						//echo "<span style='font-size: x-small'>".$tmp_group['description']."</span>";
 						//echo "<br />";

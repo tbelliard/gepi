@@ -145,7 +145,8 @@ if (($donnees_personne_csv)) {
 				 "\nMot de passe : ".$password.
 				// "\nEmail : ".$email.
 				 "\nAdresse du site Gepi à saisir dans votre navigateur Internet : ".$adresse_site_gepi."\n".$texte_presentation."\n\n";
-		$pdf->MultiCell($EspaceX,3.5,$texte,'B',2,'L',0); 
+		//$pdf->MultiCell($EspaceX,3.5,$texte,'B',2,'L',0);
+		$pdf->MultiCell($EspaceX,3.5,$texte,'B','L',0);
 				
 		$y_tmp = $pdf->GetY();
 		

@@ -1078,7 +1078,7 @@ function test_ecriture_dossier($tab_restriction=array()) {
         $multisite='y';
         $_COOKIE['RNE']="essai";
      /* */
-        if (isset($multisite) && ($multisite=='y')&&(isset($_COOKIE['RNE']))) {
+        if ((isset($multisite))&&($multisite=='y')&&(isset($_COOKIE['RNE']))) {
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'];
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/eleves';
           $tab_dossiers_rw[] = 'photos/'.$_COOKIE['RNE'].'/personnels';
@@ -1213,10 +1213,10 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	$now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_now);
 
 	echo "<ul>
-<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
-<li>Les lignes en orange signalent une session close pour laquelle vous ne vous êtes pas déconnecté correctement.</li>
-<li>Les lignes en noir signalent une session close normalement.</li>
-<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement).</li>
+<li>Les lignes en <span style='color:red; font-weight:bold;'>rouge</span> signalent une tentative de connexion avec un <span style='color:red; font-weight:bold;'>mot de passe erroné</span>.</li>
+<li>Les lignes en <span style='color:orange; font-weight:bold;'>orange</span> signalent une session close pour laquelle vous ne vous êtes <span style='color:orange; font-weight:bold;'>pas déconnecté correctement</span>.</li>
+<li>Les lignes en <span style='color:black; font-weight:bold;'>noir</span> signalent une <span style='color:black; font-weight:bold;'>session close normalement</span>.</li>
+<li>Les lignes en <span style='color:green; font-weight:bold;'>vert</span> indiquent les <span style='color:green; font-weight:bold;'>sessions en cours</span> (<em>cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement</em>).</li>
 </ul>
 <table class='col' style='width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;' cellpadding='5' cellspacing='0' summary='Connexions'>
 	<tr>
@@ -1610,11 +1610,13 @@ function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte
 	$retour.="
 	function $nom_js_func(id) {
 		if(document.getElementById(id)) {
-			if(document.getElementById(id).checked) {
-				document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
-			}
-			else {
-				document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
+			if(document.getElementById('$prefixe_texte'+id)) {
+				if(document.getElementById(id).checked) {
+					document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
+				}
+				else {
+					document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
+				}
 			}
 		}
 	}\n";

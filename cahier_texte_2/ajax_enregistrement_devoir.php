@@ -70,8 +70,25 @@ $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GE
 // uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $_SESSION['uid_prime'] : 1;
+// Pour tester la mise en place d'une copie de sauvegarde, décommenter la ligne ci-dessous:
+//$uid_post=$uid_prime;
 if ($uid_post==$uid_prime) {
-	echo("Erreur enregistrement de devoir : formulaire dejà  posté précédemment.");
+	if(getSettingValue('cdt2_desactiver_copie_svg')!='y') {
+		$contenu_cor = traitement_magic_quotes(corriger_caracteres($contenu),'');
+		$contenu_cor = str_replace("\\r","",$contenu_cor);
+		$contenu_cor = str_replace("\\n","",$contenu_cor);
+		$contenu_cor = stripslashes($contenu_cor);
+		if ($contenu_cor == "" or $contenu_cor == "<br>") {$contenu_cor = "...";}
+	
+		$sql="INSERT INTO ct_private_entry SET date_ct='$date_devoir', heure_entry='".strftime("%H:%M:%S")."', id_login='".$_SESSION['login']."', id_groupe='$id_groupe', contenu='<b>COPIE DE SAUVEGARDE</b><br />$contenu_cor';";
+		$insert=mysql_query($sql);
+
+		echo("Erreur enregistrement de devoir : formulaire dejà posté précédemment.\nUne copie de sauvegarde a été créée en notice privée.");
+	}
+	else {
+		echo("Erreur enregistrement de devoir : formulaire dejà posté précédemment.");
+	}
+
 	die();
 }
 $_SESSION['uid_prime'] = $uid_post;

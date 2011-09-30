@@ -301,7 +301,12 @@
 		
 						$nom_racine=$sts_xml->getName();
 						if(strtoupper($nom_racine)!='STS_EDT') {
-							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;.<br />Sa racine devrait être 'STS_EDT'.</p>\n";
+							echo "<p style='color:red;'><b>ERREUR&nbsp;:</b> Le fichier XML fourni n'a pas l'air d'être un fichier XML STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;.<br />Sa racine devrait être 'STS_EDT'.</p>\n";
+
+							if(strtoupper($nom_racine)=='EDT_STS') {
+								echo "<p style='color:red;'>Vous vous êtes trompé d'export.<br />Vous avez probablement utilisé un export de votre logiciel EDT d'Index Education, au lieu de l'export XML provenant de STS.</p>\n";
+							}
+
 							require("../lib/footer.inc.php");
 							die();
 						}

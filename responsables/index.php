@@ -332,6 +332,9 @@ if($_SESSION['statut']=="scolarite") {
 	}
 }
 
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')) {
+	echo " | <a href='infos_parents.php'>Informations élèves/parents, tel, mail et adresse</a>";
+}
 echo "</p>\n";
 
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];

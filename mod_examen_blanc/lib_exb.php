@@ -2293,7 +2293,8 @@ function bull_exb($tab_ele,$i) {
 				else {
 					$pp_classe[$i]="";
 				}
-				$pdf->MultiCellTag(200, 5, traite_accents_utf8($pp_classe[$i]), '', 'J', '');
+				//$pdf->MultiCellTag(200, 5, traite_accents_utf8($pp_classe[$i]), '', 'J', '');
+				$pdf->ext_MultiCellTag(200, 5, traite_accents_utf8($pp_classe[$i]), '', 'J', '');
 			}
 
 

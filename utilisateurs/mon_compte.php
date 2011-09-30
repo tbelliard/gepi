@@ -116,11 +116,12 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					if  ($no_anti_inject_password_a == $no_anti_inject_password1) {
 						$msg = "ERREUR : Vous devez choisir un nouveau mot de passe différent de l'ancien.";
 					} else if (!(verif_mot_de_passe($NON_PROTECT['password1'],$flag))) {
-						$msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
+						$msg = "Erreur lors de la saisie du mot de passe (<em>voir les recommandations</em>), veuillez recommencer !";
+						if((isset($info_verif_mot_de_passe))&&($info_verif_mot_de_passe!="")) {$msg.="<br />".$info_verif_mot_de_passe;}
 					} else {
-                        			$reg = Session::change_password_gepi($session_gepi->login,$NON_PROTECT['password1']);
+						$reg = Session::change_password_gepi($session_gepi->login,$NON_PROTECT['password1']);
 						if ($reg) {
-                                                        mysql_query("UPDATE utilisateurs SET change_mdp='n' WHERE login = '$session_gepi->login'");
+							mysql_query("UPDATE utilisateurs SET change_mdp='n' WHERE login = '$session_gepi->login'");
 							$msg = "Le mot de passe a ete modifié !";
 							$no_modif = "no";
 							if (isset($_POST['retour'])) {

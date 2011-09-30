@@ -2183,6 +2183,25 @@ new Ajax.Autocompleter (
 
 	if($etat_incident!='clos') {
 		echo "<textarea id=\"description\" class='wrap' name=\"no_anti_inject_description\" rows='8' cols='60' onchange=\"changement()\">$description</textarea>\n";
+
+		echo "<div id='div_compteur_caracteres_textarea' style='width:20em; text-align:center'></div>
+
+<script type='text/javascript'>
+function compte_caracteres_textarea(textarea_id, compteur_id) {
+	if(document.getElementById(compteur_id)) {
+		if(document.getElementById(textarea_id)) {
+			document.getElementById(compteur_id).innerHTML=document.getElementById(textarea_id).value.length+' caractere(s).';
+		}
+	}
+}
+
+function comptage_caracteres_textarea() {
+	compte_caracteres_textarea('description', 'div_compteur_caracteres_textarea');
+	setTimeout('comptage_caracteres_textarea()', 1000);
+}
+
+setTimeout('comptage_caracteres_textarea()', 1000);
+</script>\n";
 	}
 	else {
 		echo nl2br($description);
@@ -2352,7 +2371,15 @@ new Ajax.Autocompleter (
 					echo "<td>\n";
 					//echo "Travail&nbsp;: <textarea name='travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>Nature du travail pour la mesure demandée</textarea>\n";
 
-					$texte_travail="Travail: ";
+					$texte_travail="Travail : ";
+					$tmp_pref_texte_travail=getPref($_SESSION['login'], 'mod_discipline_travail_par_defaut', '');
+					if($tmp_pref_texte_travail!='') {
+						$texte_travail=$tmp_pref_texte_travail;
+					}
+					elseif(getSettingValue('mod_discipline_travail_par_defaut')!='') {
+						$texte_travail=getSettingValue('mod_discipline_travail_par_defaut');
+					}
+
 					$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$ele_login[$i]."';";
 					$res_travail_mesure_demandee=mysql_query($sql);
 					if(mysql_num_rows($res_travail_mesure_demandee)>0) {

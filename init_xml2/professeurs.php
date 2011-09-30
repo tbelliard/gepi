@@ -469,31 +469,57 @@ else {
 
 	$tab_nouveaux_profs=array();
 
+	$info_pb_mdp="";
+
 	$alt=1;
 	for($k=0;$k<count($prof);$k++){
-		if(isset($prof[$k]["fonction"])){
-			if($prof[$k]["fonction"]=="ENS"){
-				if($prof[$k]["sexe"]=="1"){
-					$civilite="M.";
-				}
-				else{
-					$civilite="Mme";
-				}
+		//if(isset($prof[$k]["fonction"])) {
+		//	if($prof[$k]["fonction"]=="ENS"){
 
-				switch($prof[$k]["civilite"]){
-					case 1:
-						$civilite="M.";
-						break;
-					case 2:
+		if(((isset($prof[$k]["fonction"]))&&($prof[$k]["fonction"]=="ENS"))||
+			((!isset($prof[$k]["fonction"]))&&(isset($prof[$k]["nom_usage"]))&&(isset($prof[$k]["prenom"])))) {
+
+				$civilite="M.";
+				if(isset($prof[$k]["sexe"])) {
+					if($prof[$k]["sexe"]=="2"){
 						$civilite="Mme";
-						break;
-					case 3:
-						$civilite="Mlle";
-						break;
+					}
+					else{
+						$civilite="M.";
+					}
 				}
 
-				if($_POST['mode_mdp']=="alea"){
+				if(isset($prof[$k]["civilite"])) {
+					switch($prof[$k]["civilite"]){
+						case 1:
+							$civilite="M.";
+							break;
+						case 2:
+							$civilite="Mme";
+							break;
+						case 3:
+							$civilite="Mlle";
+							break;
+					}
+				}
+
+				if($_POST['mode_mdp']=="alea") {
 					$mdp=createRandomPassword();
+				}
+				elseif(!isset($prof[$k]["date_naissance"])) {
+					// Cela peut arriver avec des personnes ajoutées dans STS par le principal
+					// Elles peuvent apparaitre avec
+					/*
+						<INDIVIDU ID="3506" TYPE="local">
+							<SEXE/>
+							<CIVILITE>3</CIVILITE>
+							<NOM_USAGE>ZETOFREY</NOM_USAGE>
+							<NOM_PATRONYMIQUE/>
+							<PRENOM>MELANIE</PRENOM>
+						</INDIVIDU>
+					*/
+					$mdp=createRandomPassword();
+					$info_pb_mdp.="<p style='color:red'>".$prof[$k]["nom_usage"]." ".casse_mot($prof[$k]["prenom"],'majf2')." n'a pas de date de naissance renseignée.<br />Son mot de passe est généré aléatoirement.</p>\n";
 				}
 				else{
 					$date=str_replace("-","",$prof[$k]["date_naissance"]);
@@ -751,11 +777,14 @@ else {
 							$mess_mdp = "aucun (sso)";
 							$changemdp = 'n';
 						}
-						elseif (strlen($mdp)>2 and $prof[$k]["fonction"]=="ENS" and $_POST['sso'] == "no") {
+						elseif (strlen($mdp)>2 and (!isset($prof[$k]["fonction"]) or $prof[$k]["fonction"]=="ENS") and $_POST['sso'] == "no") {
 							//
-							$pwd = md5(trim($mdp)); //NUMEN
+							$pwd = md5(trim($mdp));
 							//$mess_mdp = "NUMEN";
 							if($_POST['mode_mdp']=='alea'){
+								$mess_mdp = "$mdp";
+							}
+							elseif(!isset($prof[$k]["date_naissance"])) {
 								$mess_mdp = "$mdp";
 							}
 							else{
@@ -812,7 +841,7 @@ else {
 						echo "<td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$prof[$k]["prenom"]."</p></td><td>Inchangé</td></tr>\n";
 					}
 				}
-			}
+			//}
 		}
 	}
 	echo "</table>\n";
@@ -828,6 +857,10 @@ else {
 		}
 		echo "<input type='submit' value='Imprimer' /></p>\n";
 		echo "</form>\n";
+	}
+
+	if((isset($info_pb_mdp))&&($info_pb_mdp!="")) {
+		echo $info_pb_mdp;
 	}
 
 	if ($nb_reg_no != 0) {
