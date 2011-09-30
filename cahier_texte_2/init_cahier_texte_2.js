@@ -56,6 +56,25 @@ function initPage () {
 	}
 }
 
+function temporiser_init() {
+	if(typeof(getWinCalendar)=='function') {
+		if(typeof(Calendar)=='function') {
+			if(typeof(Calendar.setup)=='function') {
+				initPage ();
+			}
+			else {
+				setTimeout("temporiser_init()", 500);
+			}
+		}
+		else {
+			setTimeout("temporiser_init()", 500);
+		}
+	}
+	else {
+		setTimeout("temporiser_init()", 500);
+	}
+}
+
 function initFenetreNotice(id_groupe_init) {
 	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'ISO-8859-1'});
 	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
@@ -87,8 +106,27 @@ function include(filename)
 //include('./ajax_functions.js');
 
 include('../lib/DHTMLcalendar/calendar.js');
-include('../lib/DHTMLcalendar/lang/calendar-fr.js');
-include('../lib/DHTMLcalendar/calendar-setup.js');
+// Les deux suivants sont insérés plus bas pour tenter d'éviter des erreurs du type:
+//	Erreur : Calendar is not defined
+//	Fichier Source : https://.../Gepi/lib/DHTMLcalendar/lang/calendar-fr.js
+//	Ligne : 13
+//	Erreur : Calendar is not defined
+//	Fichier Source : https://.../Gepi/lib/DHTMLcalendar/calendar-setup.js
+//	Ligne : 63
+//include('../lib/DHTMLcalendar/lang/calendar-fr.js');
+//include('../lib/DHTMLcalendar/calendar-setup.js');
+
+function temporiser_chargement_js() {
+	if(typeof(Calendar)=='function') {
+		include('../lib/DHTMLcalendar/lang/calendar-fr.js');
+		include('../lib/DHTMLcalendar/calendar-setup.js');
+		setTimeout("temporiser_init()", 500);
+	}
+	else {
+		setTimeout("temporiser_chargement_js()", 500);
+	}
+}
+
 //setTimeout("include('../lib/DHTMLcalendar/calendar-setup.js')", 500);
 include('../ckeditor/ckeditor.js');
 include('../edt_effets/javascripts/window.js');
@@ -552,6 +590,11 @@ function completeEnregistrementCompteRenduCallback(response) {
 	if (response.match('Erreur') || response.match('error') || response.match('Notice') || response.match('Warning')) {
 		alert(response);
 		getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {initWysiwyg();debut_alert = new Date();}});
+
+		if((response.match('formulaire d'))&&(response.match('Une copie de sauvegarde a'))) {
+			getWinListeNotices();
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+		}
 	} else {
 		//si response ne contient pas le mot erreur, il contient l'id du compte rendu
 		id_ct_en_cours = response;
@@ -587,6 +630,11 @@ function completeEnregistrementDevoirCallback(response) {
 	if (response.match('Erreur') || response.match('error') || response.match('Notice') || response.match('Warning')) {
  		alert(response);
 		getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:function() {initWysiwyg();debut_alert = new Date();}});
+
+		if((response.match('formulaire d'))&&(response.match('Une copie de sauvegarde a'))) {
+			getWinListeNotices();
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+		}
  	} else {
  		//si response ne contient pas le mot erreur, il contient l'id du compte rendu
  		id_ct_en_cours = response;
@@ -918,8 +966,29 @@ function getWinListeNoticesPrivees() {
 	return winListeNoticesPrivees;
 }
 
+function modif_visibilite_doc_joint(notice, id_ct, id_document) {
+	csrf_alea=document.getElementById('csrf_alea').value;
+
+	if(notice=='compte_rendu') {
+		new Ajax.Updater($('span_document_joint_'+id_document),'ajax_edition_compte_rendu.php?id_ct='+id_ct+'&id_document='+id_document+'&change_visibilite=y&csrf_alea='+csrf_alea,{method: 'get'});
+	}
+	else {
+		if(notice=='devoir') {
+			//new Ajax.Updater($('span_document_joint_'+id_document),'ajax_edition_devoir.php?id_ct_devoir='+id_ct+'&id_document='+id_document+'&change_visibilite=y&csrf_alea='+csrf_alea,{method: 'get'});
+			new Ajax.Updater($('span_document_joint_'+id_document),'ajax_edition_devoir.php?id_devoir='+id_ct+'&id_document='+id_document+'&change_visibilite=y&csrf_alea='+csrf_alea,{method: 'get'});
+		}
+	}
+}
+
+//include('../lib/DHTMLcalendar/lang/calendar-fr.js');
+//include('../lib/DHTMLcalendar/calendar-setup.js');
+
 //page initialisation
-Event.observe(window, 'load', initPage);
+//Event.observe(window, 'load', initPage);
+//Event.observe(window, 'load', temporiser_init);
+Event.observe(window, 'load', temporiser_chargement_js);
+
+//setTimeout('getWinCalendar();', 5000);
 
 /**
 *

@@ -638,7 +638,8 @@ if (!isset($suite)) {
 					$id_mat=$groupes[$i]['grp'][$i_grp]['code_matiere'];
 					$mat=get_code_gestion_from_code($id_mat);
 		
-					$nom_grp=$mat;
+					//$nom_grp=$mat;
+					$nom_grp=$mat."_".remplace_accents($code_groupe,'all');
 					$descr_grp=get_nom_complet_from_matiere($mat)." (".$code_groupe.")";
 
 					echo "<p>Création du groupe $descr_grp (<i>$nom_grp</i>) en $list_classe";
@@ -799,7 +800,7 @@ if (!isset($suite)) {
 
 	require("../lib/footer.inc.php");
 	die();
-
+	//=================================================================================================
 }
 else {
 

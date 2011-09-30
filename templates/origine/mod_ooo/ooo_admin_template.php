@@ -123,12 +123,50 @@ echo add_token_field();
 		Désactiver le module modèle Open Office
 	  </label>
 	</fieldset>
+
+<?php
+
+echo "<p><span class='bold'>Décompresseur d'archive&nbsp;:</span> <br /><em>Gepi a besoin d'un décompresseur d'archive pour créer les documents OOo.</em></p>\n";
+
+echo "<p>";
+$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
+echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_0' value='0' ";
+if($fb_dezip_ooo=="0"){
+	echo "checked='checked' />";
+}
+else{
+	echo "/>";
+}
+echo "<label for='fb_dezip_ooo_0'> ZIPARCHIVE et TinyDoc : le choix par défaut mais peut créer des fichiers corrompus si votre version de PHP est inférieur à 5.2.8 (<em>utiliser OOo 3.2 pour réparer les fichiers</em>) </label><br />\n";
+
+echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_1' value='1' ";
+if($fb_dezip_ooo=="1"){
+	echo "checked='checked' />";
+}
+else{
+	echo "/>";
+}
+echo "<label for='fb_dezip_ooo_1'> ZIP-UNZIP et TinyDoc : nécessite que ZIP et UNZIP soient installés sur le serveur et que leurs chemins soient définis dans la variable d'environnement PATH </label><br />\n";
+
+echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_2' value='2' ";
+if($fb_dezip_ooo=="2"){
+	echo "checked='checked' />";
+}
+else{
+	echo "/>";
+}
+echo "<label for='fb_dezip_ooo_2'> PCLZIP et TBSooo : classe plus ancienne, toutes les fonctionnalités de TinyDoc ne sont pas disponible dans les gabarits mais fonctionne avec PHP 5.2 </label><br />\n";
+
+echo "</p>";
+?>
+
 	
 	<p class="center">
 	  <input type="hidden" name="is_posted" value="1" />
 	  <input type="submit" value="Enregistrer"/>
 	</p>
 </form>
+
 
 <?php
   if (count($droitRepertoire)){

@@ -388,8 +388,9 @@ $titre_page = "Gestion des élèves";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE *****************
 
-//debug_var();
-
+if(getSettingValue('eleves_index_debug_var')=='y') {
+	debug_var();
+}
 ?>
 
 <script type='text/javascript' language="JavaScript">

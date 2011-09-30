@@ -397,7 +397,8 @@ var $wt_TempData; //some temporary info
         			These paramaters are the same and have the same behavior as at Multicell function
         @return     nothing
 	*/
-	function MultiCellTag($w, $h, $pData, $border=0, $align='J', $fill=0, $pDataIsString = true){
+	//function MultiCellTag($w, $h, $pData, $border=0, $align='J', $fill=0, $pDataIsString = true){
+	function ext_MultiCellTag($w, $h, $pData, $border=0, $align='J', $fill=0, $pDataIsString = true){
 
 		//save the current style settings, this will be the default in case of no style is specified
 		$this->SaveCurrentStyle();

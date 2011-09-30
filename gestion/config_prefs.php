@@ -220,7 +220,29 @@ if ($modifier_entete_prof == 'ok') {
 	}
 }
 
+if(($_SESSION['statut']=='professeur')&&(isset($_POST['ouverture_auto_WinDevoirsDeLaClasse']))) {
+	check_token();
 
+	if(($_POST['ouverture_auto_WinDevoirsDeLaClasse']=='y')||($_POST['ouverture_auto_WinDevoirsDeLaClasse']=='n')) {
+		if(!savePref($_SESSION['login'],'ouverture_auto_WinDevoirsDeLaClasse',$_POST['ouverture_auto_WinDevoirsDeLaClasse'])) {
+			$msg.="Erreur lors de l'enregistrement de ouverture_auto_WinDevoirsDeLaClasse.<br />";
+		}
+		else {
+			$msg.="Enregistrement de ouverture_auto_WinDevoirsDeLaClasse.<br />";
+		}
+	}
+}
+
+if(isset($_POST['mod_discipline_travail_par_defaut'])) {
+	check_token();
+
+	if(!savePref($_SESSION['login'],'mod_discipline_travail_par_defaut',traitement_magic_quotes($_POST['mod_discipline_travail_par_defaut']))) {
+		$msg.="Erreur lors de l'enregistrement de mod_discipline_travail_par_defaut.<br />";
+	}
+	else {
+		$msg.="Enregistrement de mod_discipline_travail_par_defaut.<br />";
+	}
+}
 
 // Tester les valeurs de $page
 // Les valeurs autorisées sont (actuellement): accueil, add_modif_dev, add_modif_conteneur
@@ -229,7 +251,7 @@ if((isset($page))&&($_SESSION['statut']=="administrateur")){
 	if(($page!="accueil_simpl")&&($page!="add_modif_dev")&&($page!="add_modif_conteneur")){
 		$page=NULL;
 		$enregistrer=NULL;
-		$msg="La page choisie ne convient pas.";
+		$msg.="La page choisie ne convient pas.";
 	}
 }
 
@@ -1074,6 +1096,47 @@ else{
 
 echo "</form>\n";
 
+if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "professeur")) {
+	$ouverture_auto_WinDevoirsDeLaClasse=getPref($_SESSION['login'], 'ouverture_auto_WinDevoirsDeLaClasse', 'y');
+	echo "<form name='form_cdt_pref' method='post' action='./config_prefs.php'>\n";
+	echo add_token_field();
+	echo "<fieldset style='border: 1px solid grey;'>\n";
+	echo "<legend style='border: 1px solid grey;'>Cahier de textes 2</legend>\n";
+	echo "<p>Lors de la saisie de notices de Travaux à faire dans le CDT2,<br />\n";
+	echo "<input type='radio' name='ouverture_auto_WinDevoirsDeLaClasse' id='ouverture_auto_WinDevoirsDeLaClasse_y' value='y' ";
+	echo "onchange=\"checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_y');checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_n');changement()\" ";
+	if($ouverture_auto_WinDevoirsDeLaClasse=='y') {echo " checked";}
+	echo "/><label for='ouverture_auto_WinDevoirsDeLaClasse_y' id='texte_ouverture_auto_WinDevoirsDeLaClasse_y'> ouvrir automatiquement la fenêtre listant les travaux donnés par les autres professeurs,</label><br />\n";
+	echo "<input type='radio' name='ouverture_auto_WinDevoirsDeLaClasse' id='ouverture_auto_WinDevoirsDeLaClasse_n' value='n' ";
+	echo "onchange=\"checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_y');checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_n');changement()\" ";
+	if($ouverture_auto_WinDevoirsDeLaClasse!='y') {echo " checked";}
+	echo "/><label for='ouverture_auto_WinDevoirsDeLaClasse_n' id='texte_ouverture_auto_WinDevoirsDeLaClasse_n'> ne pas ouvrir automatiquement la fenêtre listant les travaux donnés par les autres professeurs.</label><br />\n";
+
+	echo "<input type='submit' name='Valider' value='Valider' />\n";
+
+	echo "</p>\n";
+	echo "</fieldset>\n";
+	echo "</form>\n";
+
+	echo "<br />\n";
+}
+
+if (getSettingValue('active_mod_discipline')!='n') {
+	$mod_discipline_travail_par_defaut=getPref($_SESSION['login'], 'mod_discipline_travail_par_defaut', 'Travail : ');
+	echo "<form name='form_cdt_pref' method='post' action='./config_prefs.php'>\n";
+	echo add_token_field();
+	echo "<fieldset style='border: 1px solid grey;'>\n";
+	echo "<legend style='border: 1px solid grey;'>Module Discipline et sanctions</legend>\n";
+	echo "<p>Lors de la saisie de travail à faire, le texte par défaut proposé sera&nbsp;: ,<br />\n";
+	echo "<input type='text' name='mod_discipline_travail_par_defaut' value='$mod_discipline_travail_par_defaut' size='30' /><br />\n";
+	echo "<input type='submit' name='Valider' value='Valider' />\n";
+	echo "</p>\n";
+	echo "</fieldset>\n";
+	echo "</form>\n";
+
+	echo "<br />\n";
+}
+
 	// On ajoute le réglage pour le menu en barre horizontale
 	$aff = "non";
 if ($_SESSION["statut"] == "administrateur") {
@@ -1209,7 +1272,7 @@ function test_play_footer_sound() {
 	}
 }
 
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous');
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n');
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);

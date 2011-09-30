@@ -900,7 +900,8 @@ for($i=0;$i<10;$i++){
         $first = true;
         foreach($current_group["profs"]["list"] as $prof) {
             if (!$first) {echo ", ";}
-            echo $current_group["profs"]["users"][$prof]["prenom"];
+            //echo $current_group["profs"]["users"][$prof]["prenom"];
+            echo casse_mot($current_group["profs"]["users"][$prof]["prenom"],'majf2');
             echo " ";
             echo $current_group["profs"]["users"][$prof]["nom"];
 

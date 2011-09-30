@@ -115,11 +115,27 @@ if (!isset($login_edt)) {
 // =================== Construire les emplois du temps
 
 if(isset($login_edt)){
+	//debug_var();
 
     $type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
     if ($type_edt == "prof")
     {
-        $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
+		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0' AND login_prof='$login_edt';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+	        $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
+		}
+		else {
+			$tab_data=array();
+			$msg="<b>ANOMALIE&nbsp;:</b> Un ou des cours de durée nulle perturbent l'affichage.<br />Contactez l'administrateur pour un ";
+			if($_SESSION['statut']=='administrateur') {
+				$msg.="<a href='verifier_edt.php'>Nettoyage des tables</a>";
+			}
+			else {
+				$msg.="Nettoyage des tables";
+			}
+			$msg.=" portant sur l'EDT.";
+		}
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
 		FixColumnPositions($tab_data, $entetes);		// en cours de devel
@@ -127,7 +143,22 @@ if(isset($login_edt)){
     }
     else if ($type_edt == "classe")
     {
-        $tab_data = ConstruireEDTClasse($login_edt, $_SESSION['period_id']);
+		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$tab_data = ConstruireEDTClasse($login_edt, $_SESSION['period_id']);
+		}
+		else {
+			$tab_data=array();
+			$msg="<b>ANOMALIE&nbsp;:</b> Un ou des cours de durée nulle perturbent l'affichage.<br />Contactez l'administrateur pour un ";
+			if($_SESSION['statut']=='administrateur') {
+				$msg.="<a href='verifier_edt.php'>Nettoyage des tables</a>";
+			}
+			else {
+				$msg.="Nettoyage des tables";
+			}
+			$msg.=" portant sur l'EDT.";
+		}
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
         $DisplayEDT = true;
@@ -135,7 +166,22 @@ if(isset($login_edt)){
     }
     else if ($type_edt == "salle")
     {
-        $tab_data = ConstruireEDTSalle($login_edt , $_SESSION['period_id']);
+		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$tab_data = ConstruireEDTSalle($login_edt , $_SESSION['period_id']);
+		}
+		else {
+			$tab_data=array();
+			$msg="<b>ANOMALIE&nbsp;:</b> Un ou des cours de durée nulle perturbent l'affichage.<br />Contactez l'administrateur pour un ";
+			if($_SESSION['statut']=='administrateur') {
+				$msg.="<a href='verifier_edt.php'>Nettoyage des tables</a>";
+			}
+			else {
+				$msg.="Nettoyage des tables";
+			}
+			$msg.=" portant sur l'EDT.";
+		}
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
 		//FixColumnPositions($tab_data, $entetes);		// en cours de devel
@@ -144,7 +190,22 @@ if(isset($login_edt)){
     }
     else if ($type_edt == "eleve")
     {
-        $tab_data = ConstruireEDTEleve($login_edt , $_SESSION['period_id']);
+		$sql="SELECT 1=1 FROM edt_cours WHERE duree='0';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$tab_data = ConstruireEDTEleve($login_edt , $_SESSION['period_id']);
+		}
+		else {
+			$tab_data=array();
+			$msg="<b>ANOMALIE&nbsp;:</b> Un ou des cours de durée nulle perturbent l'affichage.<br />Contactez l'administrateur pour un ";
+			if($_SESSION['statut']=='administrateur') {
+				$msg.="<a href='verifier_edt.php'>Nettoyage des tables</a>";
+			}
+			else {
+				$msg.="Nettoyage des tables";
+			}
+			$msg.=" portant sur l'EDT.";
+		}
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
         $DisplayEDT = true;
