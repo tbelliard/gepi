@@ -15,7 +15,9 @@
      ]]>
   </scriptdef>
   <property environment="env" />
-  <branch_end_string text="origin/developpement" property="branch_name" />
+  <branch_end_string text="${env.GIT_BRANCH}" property="branch_name" />
+  <property name="artifact_name" value="gepi-${branch_name}-${env.BUILD_ID}" />
+  <echo message="artifact_name = ${artifact_name}" />
   <echo message="branch_name = ${branch_name}" />
 
 
@@ -183,15 +185,17 @@
  <target name="tarball" description="Make a tarball from src files" depends="version_replace">
   <echo message="taring ${source}"/>
 
-  <tar destfile="${basedir}/build/gepi-${branch_name}-${env.BUILD_ID}.tar.gz" compression="gzip">
-     <tarfileset dir="${source}"
-                preserveLeadingSlashes="true" prefix="gepi">
+  <tar destfile="${basedir}/build/gepi.tar.gz" compression="gzip">
+     <tarfileset dir="${source}" preserveLeadingSlashes="true" prefix="gepi">
+      <exclude name="build.xml"/>
+      <exclude name="build.gradle"/>
       <exclude name="build/**"/>
       <exclude name="test/**"/>
       <exclude name=".git/**"/>
       <exclude name="**/.gitignore"/>
     </tarfileset>
   </tar>
+  <copy file="${basedir}/build/gepi.tar.gz" tofile="${basedir}/build/${artifact_name}.tar.gz"/>
  </target>
 
  <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->
