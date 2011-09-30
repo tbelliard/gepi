@@ -187,6 +187,8 @@
 
   <tar destfile="${basedir}/build/gepi.tar.gz" compression="gzip">
      <tarfileset dir="${source}" preserveLeadingSlashes="true" prefix="gepi">
+      <exclude name="build.xml"/>
+      <exclude name="build.gradle"/>
       <exclude name="build/**"/>
       <exclude name="test/**"/>
       <exclude name=".git/**"/>
