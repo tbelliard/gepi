@@ -1698,7 +1698,12 @@ if(isset($quelles_classes)) {
 		}
 		echo "</p></td>\n";
 
-		echo "<td><p><a href='../classes/classes_const.php?id_classe=$eleve_id_classe'>$eleve_classe</a></p></td>\n";
+		if($_SESSION['statut']=='administrateur') {
+			echo "<td><p><a href='../classes/classes_const.php?id_classe=$eleve_id_classe'>$eleve_classe</a></p></td>\n";
+		}
+		else {
+			echo "<td><p>$eleve_classe</p></td>\n";
+		}
 
 		echo "<td><p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p></td>\n";
 
