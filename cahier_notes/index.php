@@ -771,9 +771,11 @@ if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset(
     }
 
     foreach($groups as $group) {
-       echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-       echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
-       echo "</span></p>\n";
+		if((!isset($group["visibilite"]["cahier_notes"]))||($group["visibilite"]["cahier_notes"]=='y')) {
+			echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
+			echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
+			echo "</span></p>\n";
+		}
     }
 }
   /**
