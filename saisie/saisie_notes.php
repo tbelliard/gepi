@@ -439,7 +439,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$temoin_tmp=0;
 		//foreach($tab_groups as $tmp_group) {
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
 				if($tab_groups[$loop]['id']==$id_groupe){
 					$num_groupe=$loop;
 	
