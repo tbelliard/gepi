@@ -8,11 +8,9 @@
  *
  * @method     JEleveProfesseurPrincipalQuery orderByLogin($order = Criteria::ASC) Order by the login column
  * @method     JEleveProfesseurPrincipalQuery orderByProfesseur($order = Criteria::ASC) Order by the professeur column
- * @method     JEleveProfesseurPrincipalQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
  *
  * @method     JEleveProfesseurPrincipalQuery groupByLogin() Group by the login column
  * @method     JEleveProfesseurPrincipalQuery groupByProfesseur() Group by the professeur column
- * @method     JEleveProfesseurPrincipalQuery groupByIdClasse() Group by the id_classe column
  *
  * @method     JEleveProfesseurPrincipalQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     JEleveProfesseurPrincipalQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -26,20 +24,14 @@
  * @method     JEleveProfesseurPrincipalQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
  * @method     JEleveProfesseurPrincipalQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     JEleveProfesseurPrincipalQuery leftJoinClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the Classe relation
- * @method     JEleveProfesseurPrincipalQuery rightJoinClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classe relation
- * @method     JEleveProfesseurPrincipalQuery innerJoinClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the Classe relation
- *
  * @method     JEleveProfesseurPrincipal findOne(PropelPDO $con = null) Return the first JEleveProfesseurPrincipal matching the query
  * @method     JEleveProfesseurPrincipal findOneOrCreate(PropelPDO $con = null) Return the first JEleveProfesseurPrincipal matching the query, or a new JEleveProfesseurPrincipal object populated from the query conditions when no match is found
  *
  * @method     JEleveProfesseurPrincipal findOneByLogin(string $login) Return the first JEleveProfesseurPrincipal filtered by the login column
  * @method     JEleveProfesseurPrincipal findOneByProfesseur(string $professeur) Return the first JEleveProfesseurPrincipal filtered by the professeur column
- * @method     JEleveProfesseurPrincipal findOneByIdClasse(int $id_classe) Return the first JEleveProfesseurPrincipal filtered by the id_classe column
  *
  * @method     array findByLogin(string $login) Return JEleveProfesseurPrincipal objects filtered by the login column
  * @method     array findByProfesseur(string $professeur) Return JEleveProfesseurPrincipal objects filtered by the professeur column
- * @method     array findByIdClasse(int $id_classe) Return JEleveProfesseurPrincipal objects filtered by the id_classe column
  *
  * @package    propel.generator.gepi.om
  */
@@ -84,16 +76,16 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	/**
 	 * Find object by primary key
 	 * <code>
-	 * $obj = $c->findPk(array(12, 34, 56), $con);
+	 * $obj = $c->findPk(array(12, 34), $con);
 	 * </code>
-	 * @param     array[$login, $professeur, $id_classe] $key Primary key to use for the query
+	 * @param     array[$login, $professeur] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
 	 * @return    JEleveProfesseurPrincipal|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = JEleveProfesseurPrincipalPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2]))))) && $this->getFormatter()->isObjectFormatter()) {
+		if ((null !== ($obj = JEleveProfesseurPrincipalPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
 		} else {
@@ -135,7 +127,6 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	{
 		$this->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $key[0], Criteria::EQUAL);
 		$this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $key[1], Criteria::EQUAL);
-		$this->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $key[2], Criteria::EQUAL);
 		
 		return $this;
 	}
@@ -156,8 +147,6 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 			$cton0 = $this->getNewCriterion(JEleveProfesseurPrincipalPeer::LOGIN, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JEleveProfesseurPrincipalPeer::PROFESSEUR, $key[1], Criteria::EQUAL);
 			$cton0->addAnd($cton1);
-			$cton2 = $this->getNewCriterion(JEleveProfesseurPrincipalPeer::ID_CLASSE, $key[2], Criteria::EQUAL);
-			$cton0->addAnd($cton2);
 			$this->addOr($cton0);
 		}
 		
@@ -218,34 +207,6 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $professeur, $comparison);
-	}
-
-	/**
-	 * Filter the query on the id_classe column
-	 * 
-	 * Example usage:
-	 * <code>
-	 * $query->filterByIdClasse(1234); // WHERE id_classe = 1234
-	 * $query->filterByIdClasse(array(12, 34)); // WHERE id_classe IN (12, 34)
-	 * $query->filterByIdClasse(array('min' => 12)); // WHERE id_classe > 12
-	 * </code>
-	 *
-	 * @see       filterByClasse()
-	 *
-	 * @param     mixed $idClasse The value to use as filter.
-	 *              Use scalar values for equality.
-	 *              Use array values for in_array() equivalent.
-	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
-	 */
-	public function filterByIdClasse($idClasse = null, $comparison = null)
-	{
-		if (is_array($idClasse) && null === $comparison) {
-			$comparison = Criteria::IN;
-		}
-		return $this->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $idClasse, $comparison);
 	}
 
 	/**
@@ -397,80 +358,6 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related Classe object
-	 *
-	 * @param     Classe|PropelCollection $classe The related object(s) to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
-	 */
-	public function filterByClasse($classe, $comparison = null)
-	{
-		if ($classe instanceof Classe) {
-			return $this
-				->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $classe->getId(), $comparison);
-		} elseif ($classe instanceof PropelCollection) {
-			if (null === $comparison) {
-				$comparison = Criteria::IN;
-			}
-			return $this
-				->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $classe->toKeyValue('PrimaryKey', 'Id'), $comparison);
-		} else {
-			throw new PropelException('filterByClasse() only accepts arguments of type Classe or PropelCollection');
-		}
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the Classe relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
-	 */
-	public function joinClasse($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('Classe');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		if ($previousJoin = $this->getPreviousJoin()) {
-			$join->setPreviousJoin($previousJoin);
-		}
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'Classe');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the Classe relation Classe object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    ClasseQuery A secondary query class using the current class as primary query
-	 */
-	public function useClasseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
-		return $this
-			->joinClasse($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'Classe', 'ClasseQuery');
-	}
-
-	/**
 	 * Exclude object from result
 	 *
 	 * @param     JEleveProfesseurPrincipal $jEleveProfesseurPrincipal Object to remove from the list of results
@@ -482,8 +369,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 		if ($jEleveProfesseurPrincipal) {
 			$this->addCond('pruneCond0', $this->getAliasedColName(JEleveProfesseurPrincipalPeer::LOGIN), $jEleveProfesseurPrincipal->getLogin(), Criteria::NOT_EQUAL);
 			$this->addCond('pruneCond1', $this->getAliasedColName(JEleveProfesseurPrincipalPeer::PROFESSEUR), $jEleveProfesseurPrincipal->getProfesseur(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond2', $this->getAliasedColName(JEleveProfesseurPrincipalPeer::ID_CLASSE), $jEleveProfesseurPrincipal->getIdClasse(), Criteria::NOT_EQUAL);
-			$this->combine(array('pruneCond0', 'pruneCond1', 'pruneCond2'), Criteria::LOGICAL_OR);
+			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
 	  }
 	  
 		return $this;

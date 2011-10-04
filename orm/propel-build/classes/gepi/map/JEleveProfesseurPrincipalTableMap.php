@@ -40,7 +40,6 @@ class JEleveProfesseurPrincipalTableMap extends TableMap
 		// columns
 		$this->addForeignPrimaryKey('LOGIN', 'Login', 'VARCHAR' , 'eleves', 'LOGIN', true, 50, null);
 		$this->addForeignPrimaryKey('PROFESSEUR', 'Professeur', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 50, null);
-		$this->addForeignPrimaryKey('ID_CLASSE', 'IdClasse', 'INTEGER' , 'classes', 'ID', true, 11, null);
 		// validators
 	} // initialize()
 
@@ -51,7 +50,6 @@ class JEleveProfesseurPrincipalTableMap extends TableMap
 	{
 		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
 		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('professeur' => 'login', ), 'CASCADE', null);
-		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JEleveProfesseurPrincipalTableMap

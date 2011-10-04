@@ -26,22 +26,19 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	const TM_CLASS = 'JEleveProfesseurPrincipalTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 3;
+	const NUM_COLUMNS = 2;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 3;
+	const NUM_HYDRATE_COLUMNS = 2;
 
 	/** the column name for the LOGIN field */
 	const LOGIN = 'j_eleves_professeurs.LOGIN';
 
 	/** the column name for the PROFESSEUR field */
 	const PROFESSEUR = 'j_eleves_professeurs.PROFESSEUR';
-
-	/** the column name for the ID_CLASSE field */
-	const ID_CLASSE = 'j_eleves_professeurs.ID_CLASSE';
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
@@ -62,12 +59,12 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Login', 'Professeur', 'IdClasse', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'professeur', 'idClasse', ),
-		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::PROFESSEUR, self::ID_CLASSE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN', 'PROFESSEUR', 'ID_CLASSE', ),
-		BasePeer::TYPE_FIELDNAME => array ('login', 'professeur', 'id_classe', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('Login', 'Professeur', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'professeur', ),
+		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::PROFESSEUR, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN', 'PROFESSEUR', ),
+		BasePeer::TYPE_FIELDNAME => array ('login', 'professeur', ),
+		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
 	/**
@@ -77,12 +74,12 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'Professeur' => 1, 'IdClasse' => 2, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'professeur' => 1, 'idClasse' => 2, ),
-		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::PROFESSEUR => 1, self::ID_CLASSE => 2, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN' => 0, 'PROFESSEUR' => 1, 'ID_CLASSE' => 2, ),
-		BasePeer::TYPE_FIELDNAME => array ('login' => 0, 'professeur' => 1, 'id_classe' => 2, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, )
+		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'Professeur' => 1, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'professeur' => 1, ),
+		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::PROFESSEUR => 1, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN' => 0, 'PROFESSEUR' => 1, ),
+		BasePeer::TYPE_FIELDNAME => array ('login' => 0, 'professeur' => 1, ),
+		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
 	/**
@@ -156,11 +153,9 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		if (null === $alias) {
 			$criteria->addSelectColumn(JEleveProfesseurPrincipalPeer::LOGIN);
 			$criteria->addSelectColumn(JEleveProfesseurPrincipalPeer::PROFESSEUR);
-			$criteria->addSelectColumn(JEleveProfesseurPrincipalPeer::ID_CLASSE);
 		} else {
 			$criteria->addSelectColumn($alias . '.LOGIN');
 			$criteria->addSelectColumn($alias . '.PROFESSEUR');
-			$criteria->addSelectColumn($alias . '.ID_CLASSE');
 		}
 	}
 
@@ -285,7 +280,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getLogin(), (string) $obj->getProfesseur(), (string) $obj->getIdClasse()));
+				$key = serialize(array((string) $obj->getLogin(), (string) $obj->getProfesseur()));
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -305,10 +300,10 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof JEleveProfesseurPrincipal) {
-				$key = serialize(array((string) $value->getLogin(), (string) $value->getProfesseur(), (string) $value->getIdClasse()));
-			} elseif (is_array($value) && count($value) === 3) {
+				$key = serialize(array((string) $value->getLogin(), (string) $value->getProfesseur()));
+			} elseif (is_array($value) && count($value) === 2) {
 				// assume we've been passed a primary key
-				$key = serialize(array((string) $value[0], (string) $value[1], (string) $value[2]));
+				$key = serialize(array((string) $value[0], (string) $value[1]));
 			} else {
 				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or JEleveProfesseurPrincipal object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
@@ -369,10 +364,10 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol] === null && $row[$startcol + 1] === null && $row[$startcol + 2] === null) {
+		if ($row[$startcol] === null && $row[$startcol + 1] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1], (string) $row[$startcol + 2]));
+		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
 	}
 
 	/**
@@ -386,7 +381,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	 */
 	public static function getPrimaryKeyFromRow($row, $startcol = 0)
 	{
-		return array((string) $row[$startcol], (string) $row[$startcol + 1], (int) $row[$startcol + 2]);
+		return array((string) $row[$startcol], (string) $row[$startcol + 1]);
 	}
 	
 	/**
@@ -548,56 +543,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related Classe table
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinClasse(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JEleveProfesseurPrincipalPeer::TABLE_NAME);
-
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(JEleveProfesseurPrincipalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
-
-	/**
 	 * Selects a collection of JEleveProfesseurPrincipal objects pre-filled with their Eleve objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
@@ -730,72 +675,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 
 
 	/**
-	 * Selects a collection of JEleveProfesseurPrincipal objects pre-filled with their Classe objects.
-	 * @param      Criteria  $criteria
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JEleveProfesseurPrincipal objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinClasse(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$criteria = clone $criteria;
-
-		// Set the correct dbName if it has not been overridden
-		if ($criteria->getDbName() == Propel::getDefaultDB()) {
-			$criteria->setDbName(self::DATABASE_NAME);
-		}
-
-		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
-		ClassePeer::addSelectColumns($criteria);
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doSelect($criteria, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JEleveProfesseurPrincipalPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JEleveProfesseurPrincipalPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://www.propelorm.org/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-
-				$cls = JEleveProfesseurPrincipalPeer::getOMClass(false);
-
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				JEleveProfesseurPrincipalPeer::addInstanceToPool($obj1, $key1);
-			} // if $obj1 already loaded
-
-			$key2 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol);
-			if ($key2 !== null) {
-				$obj2 = ClassePeer::getInstanceFromPool($key2);
-				if (!$obj2) {
-
-					$cls = ClassePeer::getOMClass(false);
-
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol);
-					ClassePeer::addInstanceToPool($obj2, $key2);
-				} // if obj2 already loaded
-
-				// Add the $obj1 (JEleveProfesseurPrincipal) to $obj2 (Classe)
-				$obj2->addJEleveProfesseurPrincipal($obj1);
-
-			} // if joined row was not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
 	 * @param      Criteria $criteria
@@ -834,8 +713,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -876,14 +753,9 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
-		ClassePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + ClassePeer::NUM_HYDRATE_COLUMNS;
-
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -938,24 +810,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 				$obj3->addJEleveProfesseurPrincipal($obj1);
 			} // if joined row not null
 
-			// Add objects for joined Classe rows
-
-			$key4 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol4);
-			if ($key4 !== null) {
-				$obj4 = ClassePeer::getInstanceFromPool($key4);
-				if (!$obj4) {
-
-					$cls = ClassePeer::getOMClass(false);
-
-					$obj4 = new $cls();
-					$obj4->hydrate($row, $startcol4);
-					ClassePeer::addInstanceToPool($obj4, $key4);
-				} // if obj4 loaded
-
-				// Add the $obj1 (JEleveProfesseurPrincipal) to the collection in $obj4 (Classe)
-				$obj4->addJEleveProfesseurPrincipal($obj1);
-			} // if joined row not null
-
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1000,8 +854,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		}
 	
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -1053,60 +905,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
-
-	/**
-	 * Returns the number of rows matching criteria, joining the related Classe table
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinAllExceptClasse(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JEleveProfesseurPrincipalPeer::TABLE_NAME);
-		
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(JEleveProfesseurPrincipalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-	
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1146,12 +944,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
-		ClassePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
-
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1190,25 +983,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 
 			} // if joined row is not null
 
-				// Add objects for joined Classe rows
-
-				$key3 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = ClassePeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = ClassePeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					ClassePeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JEleveProfesseurPrincipal) to the collection in $obj3 (Classe)
-				$obj3->addJEleveProfesseurPrincipal($obj1);
-
-			} // if joined row is not null
-
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1243,12 +1017,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		ElevePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
-		ClassePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
-
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1284,122 +1053,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 
 				// Add the $obj1 (JEleveProfesseurPrincipal) to the collection in $obj2 (Eleve)
 				$obj2->addJEleveProfesseurPrincipal($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined Classe rows
-
-				$key3 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = ClassePeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = ClassePeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					ClassePeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JEleveProfesseurPrincipal) to the collection in $obj3 (Classe)
-				$obj3->addJEleveProfesseurPrincipal($obj1);
-
-			} // if joined row is not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
-	 * Selects a collection of JEleveProfesseurPrincipal objects pre-filled with all related objects except Classe.
-	 *
-	 * @param      Criteria  $criteria
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JEleveProfesseurPrincipal objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinAllExceptClasse(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$criteria = clone $criteria;
-
-		// Set the correct dbName if it has not been overridden
-		// $criteria->getDbName() will return the same object if not set to another value
-		// so == check is okay and faster
-		if ($criteria->getDbName() == Propel::getDefaultDB()) {
-			$criteria->setDbName(self::DATABASE_NAME);
-		}
-
-		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol2 = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
-
-		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
-
-		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
-
-		$criteria->addJoin(JEleveProfesseurPrincipalPeer::PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
-
-
-		$stmt = BasePeer::doSelect($criteria, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JEleveProfesseurPrincipalPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JEleveProfesseurPrincipalPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://www.propelorm.org/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-				$cls = JEleveProfesseurPrincipalPeer::getOMClass(false);
-
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				JEleveProfesseurPrincipalPeer::addInstanceToPool($obj1, $key1);
-			} // if obj1 already loaded
-
-				// Add objects for joined Eleve rows
-
-				$key2 = ElevePeer::getPrimaryKeyHashFromRow($row, $startcol2);
-				if ($key2 !== null) {
-					$obj2 = ElevePeer::getInstanceFromPool($key2);
-					if (!$obj2) {
-	
-						$cls = ElevePeer::getOMClass(false);
-
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol2);
-					ElevePeer::addInstanceToPool($obj2, $key2);
-				} // if $obj2 already loaded
-
-				// Add the $obj1 (JEleveProfesseurPrincipal) to the collection in $obj2 (Eleve)
-				$obj2->addJEleveProfesseurPrincipal($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined UtilisateurProfessionnel rows
-
-				$key3 = UtilisateurProfessionnelPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = UtilisateurProfessionnelPeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = UtilisateurProfessionnelPeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					UtilisateurProfessionnelPeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JEleveProfesseurPrincipal) to the collection in $obj3 (UtilisateurProfessionnel)
-				$obj3->addJEleveProfesseurPrincipal($obj1);
 
 			} // if joined row is not null
 
@@ -1524,14 +1177,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 				$selectCriteria->setPrimaryTableName(JEleveProfesseurPrincipalPeer::TABLE_NAME);
 			}
 
-			$comparison = $criteria->getComparison(JEleveProfesseurPrincipalPeer::ID_CLASSE);
-			$value = $criteria->remove(JEleveProfesseurPrincipalPeer::ID_CLASSE);
-			if ($value) {
-				$selectCriteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $value, $comparison);
-			} else {
-				$selectCriteria->setPrimaryTableName(JEleveProfesseurPrincipalPeer::TABLE_NAME);
-			}
-
 		} else { // $values is JEleveProfesseurPrincipal object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
@@ -1613,7 +1258,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 			foreach ($values as $value) {
 				$criterion = $criteria->getNewCriterion(JEleveProfesseurPrincipalPeer::LOGIN, $value[0]);
 				$criterion->addAnd($criteria->getNewCriterion(JEleveProfesseurPrincipalPeer::PROFESSEUR, $value[1]));
-				$criterion->addAnd($criteria->getNewCriterion(JEleveProfesseurPrincipalPeer::ID_CLASSE, $value[2]));
 				$criteria->addOr($criterion);
 				// we can invalidate the cache for this single PK
 				JEleveProfesseurPrincipalPeer::removeInstanceFromPool($value);
@@ -1681,12 +1325,11 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	 * Retrieve object using using composite pkey values.
 	 * @param      string $login
 	 * @param      string $professeur
-	 * @param      int $id_classe
 	 * @param      PropelPDO $con
 	 * @return     JEleveProfesseurPrincipal
 	 */
-	public static function retrieveByPK($login, $professeur, $id_classe, PropelPDO $con = null) {
-		$_instancePoolKey = serialize(array((string) $login, (string) $professeur, (string) $id_classe));
+	public static function retrieveByPK($login, $professeur, PropelPDO $con = null) {
+		$_instancePoolKey = serialize(array((string) $login, (string) $professeur));
  		if (null !== ($obj = JEleveProfesseurPrincipalPeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
@@ -1697,7 +1340,6 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		$criteria = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
 		$criteria->add(JEleveProfesseurPrincipalPeer::LOGIN, $login);
 		$criteria->add(JEleveProfesseurPrincipalPeer::PROFESSEUR, $professeur);
-		$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $id_classe);
 		$v = JEleveProfesseurPrincipalPeer::doSelect($criteria, $con);
 
 		return !empty($v) ? $v[0] : null;
