@@ -16,26 +16,6 @@
 class Classe extends BaseClasse {
 
 	/**
-	 * Renvoi sous forme d'une collection la liste des groupes d'une classe.
-	 *
-	 * @return     PropelObjectCollection Groupe[]
-	 */
-	public function getGroupes() {
-		$groupes = new PropelObjectCollection();
-		if ($this->collJGroupesClassess !== null) {
-		    $collJGroupesClasses = $this->collJGroupesClassess;
-		} else {
-		    $collJGroupesClasses = $this->getJGroupesClassessJoinGroupe();
-		}
-		foreach($collJGroupesClasses as $ref) {
-		    if ($ref->getGroupe() != null) {
-			$groupes->append($ref->getGroupe());
-		    }
-		}
-		return $groupes;
-	}
-
-	/**
 	 *
 	 * Retourne les emplacements de cours de l'heure temps reel. retourne une collection vide si pas pas de cours actuel
 	 *
@@ -195,7 +175,7 @@ class Classe extends BaseClasse {
 
 	/**
 	 *
-	 * Ajoute un eleve a une classe. Si la periode de note est nulle, cela ajoute l'eleve la periode actuelle
+	 * Ajoute un eleve a une classe et sauve la relation. Si la periode de note est nulle, cela ajoute l'eleve la periode actuelle
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
 	 */

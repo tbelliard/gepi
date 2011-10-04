@@ -103,7 +103,7 @@
 		</foreign-key>
 	</table>
 
-	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
+	<table name="j_groupes_classes" isCrossRef="true" description="Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe"/>
 		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id"/>
@@ -115,9 +115,9 @@
 		<column name="priorite" type="SMALLINT" required="true"/>
 		<column name="coef" type="DECIMAL" required="true"/>
 		<column name="categorie_id" type="INTEGER" required="true"/>
-		<foreign-key foreignTable="matieres_categories">
+		<!--foreign-key foreignTable="matieres_categories" onDelete="cascade">Commenté car se superpose avec j_categorie_matiere_classe
 			<reference local="categorie_id" foreign="id"/>
-		</foreign-key>
+		</foreign-key-->
 		<column name="saisie_ects" type="BOOLEAN" required="false" default="0" description="Active ou non la saisie ECTS pour cet enseignement"/>
 		<column name="valeur_ects" type="DECIMAL" required="false" description="Valeur par défaut des ECTS pour cet enseignement"/>
 	</table>

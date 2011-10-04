@@ -20,10 +20,6 @@
  * @method     CategorieMatiereQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     CategorieMatiereQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     CategorieMatiereQuery leftJoinJGroupesClasses($relationAlias = null) Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
- * @method     CategorieMatiereQuery rightJoinJGroupesClasses($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
- * @method     CategorieMatiereQuery innerJoinJGroupesClasses($relationAlias = null) Adds a INNER JOIN clause to the query using the JGroupesClasses relation
- *
  * @method     CategorieMatiereQuery leftJoinMatiere($relationAlias = null) Adds a LEFT JOIN clause to the query using the Matiere relation
  * @method     CategorieMatiereQuery rightJoinMatiere($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Matiere relation
  * @method     CategorieMatiereQuery innerJoinMatiere($relationAlias = null) Adds a INNER JOIN clause to the query using the Matiere relation
@@ -273,79 +269,6 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(CategorieMatierePeer::PRIORITY, $priority, $comparison);
-	}
-
-	/**
-	 * Filter the query by a related JGroupesClasses object
-	 *
-	 * @param     JGroupesClasses $jGroupesClasses  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    CategorieMatiereQuery The current query, for fluid interface
-	 */
-	public function filterByJGroupesClasses($jGroupesClasses, $comparison = null)
-	{
-		if ($jGroupesClasses instanceof JGroupesClasses) {
-			return $this
-				->addUsingAlias(CategorieMatierePeer::ID, $jGroupesClasses->getCategorieId(), $comparison);
-		} elseif ($jGroupesClasses instanceof PropelCollection) {
-			return $this
-				->useJGroupesClassesQuery()
-					->filterByPrimaryKeys($jGroupesClasses->getPrimaryKeys())
-				->endUse();
-		} else {
-			throw new PropelException('filterByJGroupesClasses() only accepts arguments of type JGroupesClasses or PropelCollection');
-		}
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the JGroupesClasses relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    CategorieMatiereQuery The current query, for fluid interface
-	 */
-	public function joinJGroupesClasses($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('JGroupesClasses');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		if ($previousJoin = $this->getPreviousJoin()) {
-			$join->setPreviousJoin($previousJoin);
-		}
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'JGroupesClasses');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the JGroupesClasses relation JGroupesClasses object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    JGroupesClassesQuery A secondary query class using the current class as primary query
-	 */
-	public function useJGroupesClassesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
-		return $this
-			->joinJGroupesClasses($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'JGroupesClasses', 'JGroupesClassesQuery');
 	}
 
 	/**

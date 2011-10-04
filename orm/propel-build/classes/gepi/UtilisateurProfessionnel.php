@@ -573,7 +573,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * It seems that the groupes are passed by values and not by references.
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Groupes[]
+	 * @return     PropelObjectCollection Classes[]
 	 */
 	public function getClasses($criteria = null, $con = null) {
 		if(null === $this->collClasses || null !== $criteria) {
@@ -591,6 +591,30 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		return $this->collClasses;
 	}
 
+	/**
+	 *
+	 * Ajoute une classe à l'utilisateur scolarité
+	 *
+	 * @param      Classe $c Classe
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addClasse($c) {
+		if ($this->getStatut() != 'scolarite') {
+			throw new PropelException('addClasse() ne peut être appelé que pour un utilisateur scolarité');
+		}
+		if ($this->collClasses === null) {
+			$this->initClasses();
+		}
+		if (!$this->collClasses->contains($c)) { // only add it if the **same** object is not already associated
+			$jScolClasses = new JScolClasses();
+			$jScolClasses->setClasse($c);
+			$this->addJScolClasses($jScolClasses);
+
+			$this->collClasses[]= $c;
+		}
+	}
+	
 	/**
 	 * Initializes the collClasses collection.
 	 *

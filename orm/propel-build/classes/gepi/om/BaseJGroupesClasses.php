@@ -78,11 +78,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	protected $aClasse;
 
 	/**
-	 * @var        CategorieMatiere
-	 */
-	protected $aCategorieMatiere;
-
-	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -292,10 +287,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 			$this->modifiedColumns[] = JGroupesClassesPeer::CATEGORIE_ID;
 		}
 
-		if ($this->aCategorieMatiere !== null && $this->aCategorieMatiere->getId() !== $v) {
-			$this->aCategorieMatiere = null;
-		}
-
 		return $this;
 	} // setCategorieId()
 
@@ -427,9 +418,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		if ($this->aClasse !== null && $this->id_classe !== $this->aClasse->getId()) {
 			$this->aClasse = null;
 		}
-		if ($this->aCategorieMatiere !== null && $this->categorie_id !== $this->aCategorieMatiere->getId()) {
-			$this->aCategorieMatiere = null;
-		}
 	} // ensureConsistency
 
 	/**
@@ -471,7 +459,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 
 			$this->aGroupe = null;
 			$this->aClasse = null;
-			$this->aCategorieMatiere = null;
 		} // if (deep)
 	}
 
@@ -601,13 +588,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 				$this->setClasse($this->aClasse);
 			}
 
-			if ($this->aCategorieMatiere !== null) {
-				if ($this->aCategorieMatiere->isModified() || $this->aCategorieMatiere->isNew()) {
-					$affectedRows += $this->aCategorieMatiere->save($con);
-				}
-				$this->setCategorieMatiere($this->aCategorieMatiere);
-			}
-
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
@@ -703,12 +683,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 			if ($this->aClasse !== null) {
 				if (!$this->aClasse->validate($columns)) {
 					$failureMap = array_merge($failureMap, $this->aClasse->getValidationFailures());
-				}
-			}
-
-			if ($this->aCategorieMatiere !== null) {
-				if (!$this->aCategorieMatiere->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aCategorieMatiere->getValidationFailures());
 				}
 			}
 
@@ -815,9 +789,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 			}
 			if (null !== $this->aClasse) {
 				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-			}
-			if (null !== $this->aCategorieMatiere) {
-				$result['CategorieMatiere'] = $this->aCategorieMatiere->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -1138,55 +1109,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Declares an association between this object and a CategorieMatiere object.
-	 *
-	 * @param      CategorieMatiere $v
-	 * @return     JGroupesClasses The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setCategorieMatiere(CategorieMatiere $v = null)
-	{
-		if ($v === null) {
-			$this->setCategorieId(NULL);
-		} else {
-			$this->setCategorieId($v->getId());
-		}
-
-		$this->aCategorieMatiere = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the CategorieMatiere object, it will not be re-added.
-		if ($v !== null) {
-			$v->addJGroupesClasses($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated CategorieMatiere object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     CategorieMatiere The associated CategorieMatiere object.
-	 * @throws     PropelException
-	 */
-	public function getCategorieMatiere(PropelPDO $con = null)
-	{
-		if ($this->aCategorieMatiere === null && ($this->categorie_id !== null)) {
-			$this->aCategorieMatiere = CategorieMatiereQuery::create()->findPk($this->categorie_id, $con);
-			/* The following can be used additionally to
-				guarantee the related object contains a reference
-				to this object.  This level of coupling may, however, be
-				undesirable since it could result in an only partially populated collection
-				in the referenced object.
-				$this->aCategorieMatiere->addJGroupesClassess($this);
-			 */
-		}
-		return $this->aCategorieMatiere;
-	}
-
-	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -1223,7 +1145,6 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 
 		$this->aGroupe = null;
 		$this->aClasse = null;
-		$this->aCategorieMatiere = null;
 	}
 
 	/**

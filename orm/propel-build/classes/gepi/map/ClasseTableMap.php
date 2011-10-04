@@ -80,6 +80,7 @@ class ClasseTableMap extends TableMap
 		$this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null, 'JEleveProfesseurPrincipals');
 		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'SET NULL', null, 'AbsenceEleveSaisies');
 		$this->addRelation('JCategoriesMatieresClasses', 'JCategoriesMatieresClasses', RelationMap::ONE_TO_MANY, array('id' => 'classe_id', ), 'CASCADE', null, 'JCategoriesMatieresClassess');
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'Groupes');
 		$this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'CategorieMatieres');
 	} // buildRelations()
 

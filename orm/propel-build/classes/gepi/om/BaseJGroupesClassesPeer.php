@@ -568,56 +568,6 @@ abstract class BaseJGroupesClassesPeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related CategorieMatiere table
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinCategorieMatiere(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JGroupesClassesPeer::TABLE_NAME);
-
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			JGroupesClassesPeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(JGroupesClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-
-		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
-
-	/**
 	 * Selects a collection of JGroupesClasses objects pre-filled with their Groupe objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
@@ -750,72 +700,6 @@ abstract class BaseJGroupesClassesPeer {
 
 
 	/**
-	 * Selects a collection of JGroupesClasses objects pre-filled with their CategorieMatiere objects.
-	 * @param      Criteria  $criteria
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JGroupesClasses objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinCategorieMatiere(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$criteria = clone $criteria;
-
-		// Set the correct dbName if it has not been overridden
-		if ($criteria->getDbName() == Propel::getDefaultDB()) {
-			$criteria->setDbName(self::DATABASE_NAME);
-		}
-
-		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
-		CategorieMatierePeer::addSelectColumns($criteria);
-
-		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doSelect($criteria, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://www.propelorm.org/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-
-				$cls = JGroupesClassesPeer::getOMClass(false);
-
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				JGroupesClassesPeer::addInstanceToPool($obj1, $key1);
-			} // if $obj1 already loaded
-
-			$key2 = CategorieMatierePeer::getPrimaryKeyHashFromRow($row, $startcol);
-			if ($key2 !== null) {
-				$obj2 = CategorieMatierePeer::getInstanceFromPool($key2);
-				if (!$obj2) {
-
-					$cls = CategorieMatierePeer::getOMClass(false);
-
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol);
-					CategorieMatierePeer::addInstanceToPool($obj2, $key2);
-				} // if obj2 already loaded
-
-				// Add the $obj1 (JGroupesClasses) to $obj2 (CategorieMatiere)
-				$obj2->addJGroupesClasses($obj1);
-
-			} // if joined row was not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
 	 * Returns the number of rows matching criteria, joining all related tables
 	 *
 	 * @param      Criteria $criteria
@@ -854,8 +738,6 @@ abstract class BaseJGroupesClassesPeer {
 		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
 		$criteria->addJoin(JGroupesClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
-		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -896,14 +778,9 @@ abstract class BaseJGroupesClassesPeer {
 		ClassePeer::addSelectColumns($criteria);
 		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
-		CategorieMatierePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + CategorieMatierePeer::NUM_HYDRATE_COLUMNS;
-
 		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
 		$criteria->addJoin(JGroupesClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
-		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -958,24 +835,6 @@ abstract class BaseJGroupesClassesPeer {
 				$obj3->addJGroupesClasses($obj1);
 			} // if joined row not null
 
-			// Add objects for joined CategorieMatiere rows
-
-			$key4 = CategorieMatierePeer::getPrimaryKeyHashFromRow($row, $startcol4);
-			if ($key4 !== null) {
-				$obj4 = CategorieMatierePeer::getInstanceFromPool($key4);
-				if (!$obj4) {
-
-					$cls = CategorieMatierePeer::getOMClass(false);
-
-					$obj4 = new $cls();
-					$obj4->hydrate($row, $startcol4);
-					CategorieMatierePeer::addInstanceToPool($obj4, $key4);
-				} // if obj4 loaded
-
-				// Add the $obj1 (JGroupesClasses) to the collection in $obj4 (CategorieMatiere)
-				$obj4->addJGroupesClasses($obj1);
-			} // if joined row not null
-
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1020,8 +879,6 @@ abstract class BaseJGroupesClassesPeer {
 		}
 	
 		$criteria->addJoin(JGroupesClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
-		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -1073,60 +930,6 @@ abstract class BaseJGroupesClassesPeer {
 	
 		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
-		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
-
-	/**
-	 * Returns the number of rows matching criteria, joining the related CategorieMatiere table
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinAllExceptCategorieMatiere(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JGroupesClassesPeer::TABLE_NAME);
-		
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			JGroupesClassesPeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(JGroupesClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-	
-		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
-
-		$criteria->addJoin(JGroupesClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1166,12 +969,7 @@ abstract class BaseJGroupesClassesPeer {
 		ClassePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
-		CategorieMatierePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + CategorieMatierePeer::NUM_HYDRATE_COLUMNS;
-
 		$criteria->addJoin(JGroupesClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
-		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1210,25 +1008,6 @@ abstract class BaseJGroupesClassesPeer {
 
 			} // if joined row is not null
 
-				// Add objects for joined CategorieMatiere rows
-
-				$key3 = CategorieMatierePeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = CategorieMatierePeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = CategorieMatierePeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					CategorieMatierePeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JGroupesClasses) to the collection in $obj3 (CategorieMatiere)
-				$obj3->addJGroupesClasses($obj1);
-
-			} // if joined row is not null
-
 			$results[] = $obj1;
 		}
 		$stmt->closeCursor();
@@ -1263,12 +1042,7 @@ abstract class BaseJGroupesClassesPeer {
 		GroupePeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
-		CategorieMatierePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + CategorieMatierePeer::NUM_HYDRATE_COLUMNS;
-
 		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
-
-		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
@@ -1304,122 +1078,6 @@ abstract class BaseJGroupesClassesPeer {
 
 				// Add the $obj1 (JGroupesClasses) to the collection in $obj2 (Groupe)
 				$obj2->addJGroupesClasses($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined CategorieMatiere rows
-
-				$key3 = CategorieMatierePeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = CategorieMatierePeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = CategorieMatierePeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					CategorieMatierePeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JGroupesClasses) to the collection in $obj3 (CategorieMatiere)
-				$obj3->addJGroupesClasses($obj1);
-
-			} // if joined row is not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
-	 * Selects a collection of JGroupesClasses objects pre-filled with all related objects except CategorieMatiere.
-	 *
-	 * @param      Criteria  $criteria
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JGroupesClasses objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinAllExceptCategorieMatiere(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$criteria = clone $criteria;
-
-		// Set the correct dbName if it has not been overridden
-		// $criteria->getDbName() will return the same object if not set to another value
-		// so == check is okay and faster
-		if ($criteria->getDbName() == Propel::getDefaultDB()) {
-			$criteria->setDbName(self::DATABASE_NAME);
-		}
-
-		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol2 = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
-
-		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
-
-		ClassePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
-
-		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
-
-		$criteria->addJoin(JGroupesClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
-
-
-		$stmt = BasePeer::doSelect($criteria, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JGroupesClassesPeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JGroupesClassesPeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://www.propelorm.org/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-				$cls = JGroupesClassesPeer::getOMClass(false);
-
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				JGroupesClassesPeer::addInstanceToPool($obj1, $key1);
-			} // if obj1 already loaded
-
-				// Add objects for joined Groupe rows
-
-				$key2 = GroupePeer::getPrimaryKeyHashFromRow($row, $startcol2);
-				if ($key2 !== null) {
-					$obj2 = GroupePeer::getInstanceFromPool($key2);
-					if (!$obj2) {
-	
-						$cls = GroupePeer::getOMClass(false);
-
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol2);
-					GroupePeer::addInstanceToPool($obj2, $key2);
-				} // if $obj2 already loaded
-
-				// Add the $obj1 (JGroupesClasses) to the collection in $obj2 (Groupe)
-				$obj2->addJGroupesClasses($obj1);
-
-			} // if joined row is not null
-
-				// Add objects for joined Classe rows
-
-				$key3 = ClassePeer::getPrimaryKeyHashFromRow($row, $startcol3);
-				if ($key3 !== null) {
-					$obj3 = ClassePeer::getInstanceFromPool($key3);
-					if (!$obj3) {
-	
-						$cls = ClassePeer::getOMClass(false);
-
-					$obj3 = new $cls();
-					$obj3->hydrate($row, $startcol3);
-					ClassePeer::addInstanceToPool($obj3, $key3);
-				} // if $obj3 already loaded
-
-				// Add the $obj1 (JGroupesClasses) to the collection in $obj3 (Classe)
-				$obj3->addJGroupesClasses($obj1);
 
 			} // if joined row is not null
 
