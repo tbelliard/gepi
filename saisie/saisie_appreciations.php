@@ -553,40 +553,42 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$temoin_tmp=0;
 		//foreach($tab_groups as $tmp_group) {
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			/*
-			echo "\$tab_groups[$loop]['id']=".$tab_groups[$loop]['id']."<br />";
-			echo "\$tab_groups[$loop]['name']=".$tab_groups[$loop]['name']."<br />";
-			echo "\$tab_groups[$loop]['classlist_string']=".$tab_groups[$loop]['classlist_string']."<br />";
-			*/
-			// Pour s'assurer de ne pas avoir deux fois le même groupe...
-			if(!in_array($tab_groups[$loop]['id'],$tmp_group)) {
-				$tmp_group[]=$tab_groups[$loop]['id'];
-
-				if($tab_groups[$loop]['id']==$id_groupe){
-					$num_groupe=$loop;
-
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-
-					$temoin_tmp=1;
-					if(isset($tab_groups[$loop+1])){
-						$id_grp_suiv=$tab_groups[$loop+1]['id'];
-
-						//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+				/*
+				echo "\$tab_groups[$loop]['id']=".$tab_groups[$loop]['id']."<br />";
+				echo "\$tab_groups[$loop]['name']=".$tab_groups[$loop]['name']."<br />";
+				echo "\$tab_groups[$loop]['classlist_string']=".$tab_groups[$loop]['classlist_string']."<br />";
+				*/
+				// Pour s'assurer de ne pas avoir deux fois le même groupe...
+				if(!in_array($tab_groups[$loop]['id'],$tmp_group)) {
+					$tmp_group[]=$tab_groups[$loop]['id'];
+	
+					if($tab_groups[$loop]['id']==$id_groupe){
+						$num_groupe=$loop;
+	
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+	
+						$temoin_tmp=1;
+						if(isset($tab_groups[$loop+1])){
+							$id_grp_suiv=$tab_groups[$loop+1]['id'];
+	
+							//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+						}
+						else{
+							$id_grp_suiv=0;
+						}
 					}
-					else{
-						$id_grp_suiv=0;
+					else {
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					}
-				}
-				else {
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-				}
-
-				if($temoin_tmp==0){
-					$id_grp_prec=$tab_groups[$loop]['id'];
-
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+	
+					if($temoin_tmp==0){
+						$id_grp_prec=$tab_groups[$loop]['id'];
+	
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					}
 				}
 			}
 		}
