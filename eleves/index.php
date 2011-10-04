@@ -1552,25 +1552,25 @@ if(isset($quelles_classes)) {
 
 	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
 	echo "<tr>\n";
-	echo "<td><p>Identifiant</p></td>\n";
-	echo "<td><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
+	echo "<th><p>Identifiant</p></th>\n";
+	echo "<th><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	echo "'>Nom Prénom</a></p></td>\n";
-	echo "<td><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
+	echo "'>Nom Prénom</a></p></th>\n";
+	echo "<th><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	echo "'>Sexe</a></p></td>\n";
-	echo "<td><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
+	echo "'>Sexe</a></p></th>\n";
+	echo "<th><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	echo "'>Date de naissance</a></p></td>\n";
+	echo "'>Date de naissance</a></p></th>\n";
 
-	echo "<td><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
+	echo "<th><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	echo "'>Régime</a></p></td>\n";
+	echo "'>Régime</a></p></th>\n";
 
 	if ($quelles_classes == 'na') {
-		echo "<td><p>Classe</p></td>\n";
+		echo "<th><p>Classe</p></th>\n";
 	} else {
-		echo "<td><p>";
+		echo "<th><p>";
 		if($_SESSION['statut'] != 'professeur') {
 			echo "<a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes";
 			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
@@ -1579,27 +1579,28 @@ if(isset($quelles_classes)) {
 		else{
 			echo "Classe";
 		}
-		echo "</p></td>\n";
+		echo "</p></th>\n";
 	}
-//    echo "<td><p>Classe</p></td>";
-	echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td>\n";
+//    echo "<th><p>Classe</p></th>";
+	echo "<th><p>Enseign.<br />suivis</p></th>\n";
+	echo "<th><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></th>\n";
 
 	//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if($_SESSION['statut']=="administrateur") {
-		echo "<td><p><input type='submit' value='Supprimer' onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
+		echo "<th><p><input type='submit' value='Supprimer' onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></th>\n";
 	}
 	elseif($_SESSION['statut']=="scolarite") {
-		echo "<td><p><span title=\"La suppression n'est possible qu'avec un compte administrateur\">Supprimer</span></p></td>\n";
+		echo "<th><p><span title=\"La suppression n'est possible qu'avec un compte administrateur\">Supprimer</span></p></th>\n";
 	}
 
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
 		if($_SESSION['statut']=="professeur") {
 			if (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes') {
-				echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
+				echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
 			}
 		}
 		else{
-			echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
+			echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
 		}
 	}
 	echo "</tr>\n";
@@ -1665,7 +1666,8 @@ if(isset($quelles_classes)) {
 		if ($eleve_profsuivi_nom == '') {$eleve_profsuivi_nom = "<font color='red'>N/A</font>";}
 		//$delete_login = 'delete_'.$eleve_login;
 		$alt=$alt*(-1);
-		echo "<tr class='lig$alt'>\n";
+		echo "<tr class='lig$alt white_hover'>\n";
+
 		echo "<td><p>" . $eleve_login . "</p></td>\n";
 		echo "<td>";
 
@@ -1696,7 +1698,15 @@ if(isset($quelles_classes)) {
 		}
 		echo "</p></td>\n";
 
-		echo "<td><p>$eleve_classe</p></td>\n";
+		if($_SESSION['statut']=='administrateur') {
+			echo "<td><p><a href='../classes/classes_const.php?id_classe=$eleve_id_classe'>$eleve_classe</a></p></td>\n";
+		}
+		else {
+			echo "<td><p>$eleve_classe</p></td>\n";
+		}
+
+		echo "<td><p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p></td>\n";
+
 		echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
 
 		//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){

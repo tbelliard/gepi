@@ -94,7 +94,7 @@ if ($_POST['step'] == "4") {
             .$compte_utilisateur_prof->getPrenom()
             .$compte_utilisateur_prof->getNom()
             ." (".$compte_utilisateur_prof->getLogin()
-            .") existe d&eacute;ja<br>";
+            .") existe d&eacute;ja<br/>";
         }
         else {
             $new_compte_utilisateur = new UtilisateurProfessionnel();
@@ -112,30 +112,37 @@ if ($_POST['step'] == "4") {
 
         // Insertion de sa qualité de prof principal si c'est le cas
         if ($profs[$cpt]['typeadmin'][0] == 2) {
+        
+          for($cl=0; $cl<count($profs[$cpt]['divcod']); $cl++) {
             $crit_classe_courante = new Criteria();
-            $crit_classe_courante->add(ClassePeer::CLASSE, $profs[$cpt]['divcod'][0]); // indice contient le nom de la classe (son numero)
+            $crit_classe_courante->add(ClassePeer::CLASSE, $profs[$cpt]['divcod'][$cl]); // indice contient le nom de la classe (son numero)
             $classe_courante = ClassePeer::doSelect($crit_classe_courante);
+            $error = false;
             if ($classe_courante == null) {
-               die("Erreur : impossible de recuperer la classe $indice");
+              $error = true;
+              echo "Erreur : impossible de recuperer la classe $indice<br/>";
             }
             if (count($classe_courante) > 1) {
-               die("Erreur : plusieurs classes ayant le nom '$indice' sont pr&eacute;sentes.");
+              $error = true;
+              echo "Erreur : plusieurs classes ayant le nom '$indice' sont pr&eacute;sentes.<br/>";
             }
 
-           // Si on trouve la classe, et qu'il y en a bien qu'une seule, on recupere son id technique
-
-           $crit_eleves_de_la_classe = new Criteria();
-           $crit_eleves_de_la_classe->add(JEleveClassePeer::ID_CLASSE, $classe_courante[0]->getId());
-           $eleves_de_la_classe = JEleveClassePeer::doSelect($crit_eleves_de_la_classe);
-           if ($eleves_de_la_classe != null) {
-             foreach($eleves_de_la_classe as $eleve) {
-               $sql_ajout_rel_prof_princ = "INSERT INTO j_eleves_professeurs VALUES('".$eleve->getLogin()."','$uid_as_login',".$classe_courante[0]->getId().")";
-               mysql_query($sql_ajout_rel_prof_princ);
-             }
-           }
-        }
-        else {
-            echo "Le prof $prenom $nom n'est pas professeur principal<br>";
+            // Si on trouve la classe, et qu'il y en a bien qu'une seule, on recupere son id technique
+            if (!$error) {
+              $crit_eleves_de_la_classe = new Criteria();
+              $crit_eleves_de_la_classe->add(JEleveClassePeer::ID_CLASSE, $classe_courante[0]->getId());
+              $eleves_de_la_classe = JEleveClassePeer::doSelect($crit_eleves_de_la_classe);
+              if ($eleves_de_la_classe != null) {
+                foreach($eleves_de_la_classe as $eleve) {
+                  $sql_ajout_rel_prof_princ = "INSERT INTO j_eleves_professeurs VALUES('".$eleve->getLogin()."','$uid_as_login',".$classe_courante[0]->getId().")";
+                  mysql_query($sql_ajout_rel_prof_princ);
+                }
+              }
+            }
+          }
+          
+        } else {
+          echo "Le prof $prenom $nom n'est pas professeur principal<br/>";
         }
     } // fin parcours de tous les profs
         /*

@@ -51,7 +51,7 @@ echo '<!--[if lt IE 7]>
 <![endif]-->
 ';
 
-	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes'));
+	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes','visibilite'));
 	$tmp_mes_classes=array();
 	foreach($mes_groupes as $tmp_group) {
 		foreach($tmp_group["classes"]["classes"] as $key_id_classe => $value_tab_classe) {
@@ -117,23 +117,25 @@ echo '<!--[if lt IE 7]>
 		$barre_note = '<li class="li_inline"><a href="'.$gepiPath.'/cahier_notes/index.php"'.insert_confirm_abandon().'>Notes</a>'."\n";
 			$barre_note .= '	<ul class="niveau2">'."\n";
 				foreach($mes_groupes as $tmp_group) {
-					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
-		
-					$barre_note.= '			<ul class="niveau3">'."\n";
-					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-						$barre_note.= '				<li><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
-						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+					if((!isset($tmp_group["visibilite"]["cahier_notes"]))||($tmp_group["visibilite"]["cahier_notes"]=='y')) {
+						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
+						$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
+			
+						$barre_note.= '			<ul class="niveau3">'."\n";
+						for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
+							$barre_note.= '				<li><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
+							if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
+								$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+							}
+							else {
+								$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+							}
+							$barre_note.='</a>';
+							$barre_note.='</li>'."\n";
 						}
-						else {
-							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
-						}
-						$barre_note.='</a>';
-						$barre_note.='</li>'."\n";
+						$barre_note.= '			</ul>'."\n";
+						$barre_note.= '		</li>'."\n";
 					}
-					$barre_note.= '			</ul>'."\n";
-					$barre_note.= '		</li>'."\n";
 				}
 
 				if((getSettingValue("GepiAccesReleveProf") == "yes") OR
@@ -165,24 +167,26 @@ echo '<!--[if lt IE 7]>
 				$barre_note .= '		<ul class="niveau3">'."\n";
 	
 				foreach($mes_groupes as $tmp_group) {
-					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
-		
-					$barre_note.= '			<ul class="niveau4">'."\n";
-					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-						$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_notes.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
-						$barre_note.=' '.nb_saisies_bulletin("notes", $tmp_group["id"], $loop, "couleur");
-						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
+						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
+						$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
+			
+						$barre_note.= '			<ul class="niveau4">'."\n";
+						for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
+							$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_notes.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
+							$barre_note.=' '.nb_saisies_bulletin("notes", $tmp_group["id"], $loop, "couleur");
+							if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
+								$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+							}
+							else {
+								$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+							}
+							$barre_note.='</a>';
+							$barre_note.='</li>'."\n";
 						}
-						else {
-							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
-						}
-						$barre_note.='</a>';
-						$barre_note.='</li>'."\n";
+						$barre_note.= '			</ul>'."\n";
+						$barre_note.= '		</li>'."\n";
 					}
-					$barre_note.= '			</ul>'."\n";
-					$barre_note.= '		</li>'."\n";
 				}
 				$barre_note.= '	</ul>'."\n";
 			$barre_note.= '	</li>'."\n";
@@ -192,24 +196,26 @@ echo '<!--[if lt IE 7]>
 				$barre_note .= '		<ul class="niveau3">'."\n";
 	
 				foreach($mes_groupes as $tmp_group) {
-					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
-		
-					$barre_note.= '			<ul class="niveau4">'."\n";
-					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-						$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_appreciations.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
-						$barre_note.=' '.nb_saisies_bulletin("appreciations", $tmp_group["id"], $loop, "couleur");
-						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
+						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
+						$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
+			
+						$barre_note.= '			<ul class="niveau4">'."\n";
+						for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
+							$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_appreciations.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
+							$barre_note.=' '.nb_saisies_bulletin("appreciations", $tmp_group["id"], $loop, "couleur");
+							if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
+								$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+							}
+							else {
+								$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+							}
+							$barre_note.='</a>';
+							$barre_note.='</li>'."\n";
 						}
-						else {
-							$barre_note.=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
-						}
-						$barre_note.='</a>';
-						$barre_note.='</li>'."\n";
+						$barre_note.= '			</ul>'."\n";
+						$barre_note.= '		</li>'."\n";
 					}
-					$barre_note.= '			</ul>'."\n";
-					$barre_note.= '		</li>'."\n";
 				}
 				$barre_note.= '	</ul>'."\n";
 			$barre_note.= '	</li>'."\n";
@@ -218,8 +224,10 @@ echo '<!--[if lt IE 7]>
 			$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index1.php"'.insert_confirm_abandon().'>Mes moyennes et appréciations</a>';
 				$barre_note .= '		<ul class="niveau3">'."\n";
 				foreach($mes_groupes as $tmp_group) {
-					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index1.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
+					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
+						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
+						$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index1.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
+					}
 				}
 				$barre_note.= '			</ul>'."\n";
 			$barre_note.= '		</li>'."\n";
