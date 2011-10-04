@@ -444,7 +444,7 @@ if(isset($enregistrer)) {
 }
 
 // Style spécifique pour la page:
-$style_specifique="gestion/config_prefs";
+//$style_specifique="gestion/config_prefs";
 
 // Couleur pour les cases dans lesquelles une modif est faite:
 $couleur_modif='orange';

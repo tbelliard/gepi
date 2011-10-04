@@ -91,55 +91,66 @@ if ($_POST['step'] == "3") {
         // On créé les responsables en base (avec les classes ORM)
         // Table resp_pers
 
-        $resp = new ResponsableEleve();
-        $resp->setLogin($responsables[$nb][$ldap->champ_login][0]);
-        $resp->setNom($responsables[$nb][$ldap->champ_nom][0]);
-        $resp->setPrenom($responsables[$nb][$ldap->champ_prenom][0]);
-        $resp->setCivilite($responsables[$nb]['personaltitle'][0]);
-        
-        $homephone = array_key_exists('homephone', $responsables[$nb]) ? $responsables[$nb]['homephone'][0] : '';
-        $resp->setTelPers($homephone);
-        
-        $profphone = array_key_exists('telephonenumber', $responsables[$nb]) ? $responsables[$nb]['telephonenumber'][0] : '';
-        $resp->setTelProf($profphone);
-        
-        $mobilephone = array_key_exists('mobile', $responsables[$nb]) ? $responsables[$nb]['mobile'][0] : '';
-        $resp->setTelPort($mobilephone);
-        
-        $respemail = array_key_exists($ldap->champ_email, $responsables[$nb]) ? $responsables[$nb][$ldap->champ_email][0] : '';
-        $resp->setMel($respemail);
-        
+
         $pers_id = array_key_exists('intid', $responsables[$nb]) ? $responsables[$nb]['intid'][0] : '';
-        $resp->setPersId($pers_id);
         
+        // On teste si le responsable est déjà enregistré, sur la base de son identifiant sconet
+        $test_resp = mysql_num_rows(mysql_query("SELECT * FROM resp_pers WHERE pers_id = '".$pers_id."'"));
         
-        // On créé l'adresse associée
-        
-        $resp_addr = array_key_exists('entpersonadresse', $responsables[$nb]) ? $responsables[$nb]['entpersonadresse'][0] : null;
-        $resp_ville = array_key_exists('entpersonville', $responsables[$nb]) ? $responsables[$nb]['entpersonville'][0] : '';
-        $resp_cp = array_key_exists('entpersoncodepostal', $responsables[$nb]) ? $responsables[$nb]['entpersoncodepostal'][0] : '';
-        $resp_pays = array_key_exists('entpersonpays', $responsables[$nb]) ? $responsables[$nb]['entpersonpays'][0] : '';
-        
-        if ($resp_addr) {
-          $adr = new ResponsableEleveAdresse();
-          $adr->setAdrId($pers_id);
-          $adr->setAdr1($resp_addr);
-          $adr->setAdr2('');
-          $adr->setAdr3('');
-          $adr->setAdr4('');
-          $adr->setCommune($resp_ville);
-          $adr->setCp($resp_cp);
-          $adr->setPays($resp_pays);
-        
-          $resp->setResponsableEleveAdresse($adr);
+        if ($test_resp == 0) {
+          $resp = new ResponsableEleve();
+          $resp->setLogin($responsables[$nb][$ldap->champ_login][0]);
+          $resp->setNom($responsables[$nb][$ldap->champ_nom][0]);
+          $resp->setPrenom($responsables[$nb][$ldap->champ_prenom][0]);
+          $resp->setCivilite($responsables[$nb]['personaltitle'][0]);
+          
+          $homephone = array_key_exists('homephone', $responsables[$nb]) ? $responsables[$nb]['homephone'][0] : '';
+          $resp->setTelPers($homephone);
+          
+          $profphone = array_key_exists('telephonenumber', $responsables[$nb]) ? $responsables[$nb]['telephonenumber'][0] : '';
+          $resp->setTelProf($profphone);
+          
+          $mobilephone = array_key_exists('mobile', $responsables[$nb]) ? $responsables[$nb]['mobile'][0] : '';
+          $resp->setTelPort($mobilephone);
+          
+          $respemail = array_key_exists($ldap->champ_email, $responsables[$nb]) ? $responsables[$nb][$ldap->champ_email][0] : '';
+          $resp->setMel($respemail);
+          
+          
+          $resp->setPersId($pers_id);
+          
+          
+          // On créé l'adresse associée
+          
+          $resp_addr = array_key_exists('entpersonadresse', $responsables[$nb]) ? $responsables[$nb]['entpersonadresse'][0] : null;
+          $resp_ville = array_key_exists('entpersonville', $responsables[$nb]) ? $responsables[$nb]['entpersonville'][0] : '';
+          $resp_cp = array_key_exists('entpersoncodepostal', $responsables[$nb]) ? $responsables[$nb]['entpersoncodepostal'][0] : '';
+          $resp_pays = array_key_exists('entpersonpays', $responsables[$nb]) ? $responsables[$nb]['entpersonpays'][0] : '';
+          
+          $test_adr = mysql_num_rows(mysql_query("SELECT * FROM resp_adr WHERE adr_id = '".$pers_id."'"));
+          
+          if ($resp_addr && $test_adr == 0) {
+            $adr = new ResponsableEleveAdresse();
+            $adr->setAdrId($pers_id);
+            $adr->setAdr1($resp_addr);
+            $adr->setAdr2('');
+            $adr->setAdr3('');
+            $adr->setAdr4('');
+            $adr->setCommune($resp_ville);
+            $adr->setCp($resp_cp);
+            $adr->setPays($resp_pays);
+          
+            $resp->setResponsableEleveAdresse($adr);
+          }
+          
+          $resp->save();
+          $resp_inseres++;
+        } else {
+          $resp = ResponsableElevePeer::retrieveByPK($pers_id);
         }
         
-        $resp->save();
-        $resp_inseres++;
-
         // Pour chaque responsable, on cherche le ou les eleves associes
         // attribut de lien : ENTAuxPersRelEleveEleve
-
 
         $nb_eleves_a_charge = $responsables[$nb]['entauxpersreleleveeleve']['count'];
         $valid_associations = 0;
