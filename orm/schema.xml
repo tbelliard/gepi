@@ -332,7 +332,7 @@
   </table>
 
   <table name="aid" phpName="AidDetails" description="Liste des AID (Activites Inter-Disciplinaires)">
-    <column name="id" required="true" autoIncrement="true" primaryKey="true" type="VARCHAR" size="100" description="cle primaire auto-incremente"/>
+    <column name="id" required="true" primaryKey="true" type="VARCHAR" size="100" description="cle primaire auto-incremente"/>
     <column name="nom" required="true" type="VARCHAR" size="100" default="" description="Nom de l'AID"/>
     <column name="numero" required="true" type="VARCHAR" size="8" default="0" description="Numero d'ordre d'affichage"/>
     <column name="indice_aid" required="true" type="INTEGER" size="11" default="0" description="Cle etrangere, vers la liste des categories d'AID (aid_config)"/>
