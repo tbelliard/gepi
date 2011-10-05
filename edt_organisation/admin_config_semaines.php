@@ -124,24 +124,26 @@ function trouverDates($numero_semaine){
 if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 {
 	$i = '0';
-    $fin = NumLastWeek();
-
+	$fin = NumLastWeek();
+	
 	while ( $i < $fin )
 	{
 		if( isset($num_semaine[$i]) and !empty($num_semaine[$i]) )
 		{
-        	        $test_num_semaine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_semaines WHERE num_edt_semaine = '".$num_semaine[$i]."'"),0);
+			$test_num_semaine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_semaines WHERE num_edt_semaine = '".$num_semaine[$i]."'"),0);
 			$num_edt_semaine = $num_semaine[$i];
 			$type_edt_semaine = $type_semaine[$i];
-
+	
 			if ( $test_num_semaine === '0' ) { $requete = "INSERT INTO ".$prefix_base."edt_semaines (num_edt_semaine, type_edt_semaine) VALUES ('".$num_edt_semaine."', '".$type_edt_semaine."')"; }
 			if ( $test_num_semaine != '0' ) { $requete = "UPDATE ".$prefix_base."edt_semaines SET type_edt_semaine = '".$type_edt_semaine."', num_semaines_etab = '".$num_interne[$i]."' WHERE num_edt_semaine = '".$num_edt_semaine."'"; }
-	                mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+			//echo "$requete<br />";
+			mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 		}
-
+	
 	$i = $i + 1;
 	}
 
+	//$action='visualiser';
 }
 
 
@@ -154,7 +156,8 @@ if ( $action === 'visualiser' )
         while ( $donnee = mysql_fetch_array ($resultat))
 	{
 		$num_semaine[$i] = $donnee['num_edt_semaine'];
-		$num_interne[$i] = $donnee['id_edt_semaine'];
+		//$num_interne[$i] = $donnee['id_edt_semaine'];
+		$num_interne[$i] = $donnee['num_semaines_etab'];
 		$type_semaine[$i] = $donnee['type_edt_semaine'];
 		$i = $i + 1;
         }
@@ -169,16 +172,20 @@ if ( $action === 'visualiser' )
 
 
 if ($action === "visualiser") {
-
-// header
-$titre_page = "Définition des types de semaine de l'établissement";
-$style_specifique = "templates/".NameTemplateEdt()."/css/style_edt";
-require_once("../lib/header.inc");
-
-/* gestion des jours de chaque semaine */
-// On considère que la 32e semaine commence le 6 août 2007
-// En timestamp Unix GMT, cette date vaut 1186358400 secondes
-// RAPPEL : une journée a 86400 secondes et une semaine en a 604800
+	
+	//====================================
+	// header
+	$titre_page = "Définition des types de semaine de l'établissement";
+	$style_specifique = "templates/".NameTemplateEdt()."/css/style_edt";
+	require_once("../lib/header.inc");
+	//====================================
+	
+	//debug_var();
+	
+	/* gestion des jours de chaque semaine */
+	// On considère que la 32e semaine commence le 6 août 2007
+	// En timestamp Unix GMT, cette date vaut 1186358400 secondes
+	// RAPPEL : une journée a 86400 secondes et une semaine en a 604800
 
 	require_once("./menu.inc.php");
 	?>
