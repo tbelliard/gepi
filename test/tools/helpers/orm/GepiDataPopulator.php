@@ -41,7 +41,7 @@ class GepiDataPopulator
 		$aubert_scola->save($con);
 		
 		$florence_eleve = new Eleve();
-		$florence_eleve->setLogin('Florene Michu');
+		$florence_eleve->setLogin('Florence Michu');
 		$florence_eleve->setEleId('00112233');
 		$florence_eleve->save();
 		$dolto_cpe->addEleve($florence_eleve);
@@ -49,12 +49,22 @@ class GepiDataPopulator
 		$newton_prof->addEleve($florence_eleve);
 		$newton_prof->save();
 		
+		$nicolas_eleve = new Eleve();
+		$nicolas_eleve->setLogin('Nicolas Dupont');
+		$nicolas_eleve->setEleId('00112234');
+		$nicolas_eleve->save();
+		
 		$classe_6A = new Classe();
 		$classe_6A->setNom('6ieme A');
 		$classe_6A->addEleve($florence_eleve,1);
 		$classe_6A->addEleve($florence_eleve,2);
 		$aubert_scola->addClasse($classe_6A);
 		$aubert_scola->save();
+		
+		$classe_6B = new Classe();
+		$classe_6B->setNom('6ieme B');
+		$classe_6B->addEleve($nicolas_eleve,1);
+		$classe_6B->addEleve($nicolas_eleve,2);
 		
 		$groupe_math = new Groupe();
 		$groupe_math->setName('MATH6A');
@@ -64,7 +74,14 @@ class GepiDataPopulator
 		$groupe_math->addClasse($classe_6A);
 		$groupe_math->save();
 		
-//		$rowling = new Author();
+		$aid_1 = new AidDetails();
+		$aid_1->setNom('aid 1');
+		$aid_1->setId('1ai');
+		$aid_1->addEleve($florence_eleve);
+		$aid_1->addUtilisateurProfessionnel($newton_prof);
+		$aid_1->save();
+		
+		//		$rowling = new Author();
 //		$rowling->setFirstName("J.K.");
 //		$rowling->setLastName("Rowling");
 //		// no save()
@@ -220,7 +237,8 @@ class GepiDataPopulator
 			'ElevePeer',
 			'ClassePeer',
 			'GroupePeer',
-			//'Peer',
+			'AidDetailsPeer',
+		//'Peer',
 		);
 		// free the memory from existing objects
 		foreach ($peerClasses as $peerClass) {

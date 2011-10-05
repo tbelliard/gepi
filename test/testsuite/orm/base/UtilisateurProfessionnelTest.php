@@ -48,9 +48,21 @@ class UtilisateurProfessionnelTest extends GepiEmptyTestBase
 	
 	public function testGetClassesStatutProfesseur()
 	{
-		//pas implémentée
-		//le modele n'est pas clair : dans la table j_eleves_professeurs (pour les profs principaux) on peut associer des classes ET des élèves, ce qui n'est pas consitant.
-		//a voir avec la méthode testGetEleveStatutProfesseurPrincipal(), en fonction du modele choisi (association pp<->eleve ou pp<->classe
+		$newton = UtilisateurProfessionnelQuery::create()->findOneByLogin('Newton');
+		$classes = $newton->getClasses();
+		$this->assertEquals(1,$classes->count());
+		
+		$lebesgue = UtilisateurProfessionnelQuery::create()->findOneByLogin('Lebesgue');
+		$classes = $lebesgue->getClasses();//Lebesque n'a aucun eleve en tant que professeur principal
+		$this->assertEquals(0,$classes->count());
+	}
+	
+	public function testGetClassesStatutCpe()
+	{
+		$dolto = UtilisateurProfessionnelQuery::create()->findOneByLogin('Dolto');
+		$classes = $dolto->getClasses();
+		$this->assertEquals(1,$classes->count());
+		$this->assertEquals('6ieme A',$classes->getFirst()->getNom());
 	}
 	
 	public function testGetPreferenceValeur()
@@ -76,6 +88,32 @@ class UtilisateurProfessionnelTest extends GepiEmptyTestBase
 		$dolto = UtilisateurProfessionnelQuery::create()->findOneByLogin('Dolto');
 		$eleves = $dolto->getEleves();
 		$this->assertEquals(1,$eleves->count());
+	}
+	
+	public function testGetAidDetailssStatutScolarite()
+	{
+		$aubert = UtilisateurProfessionnelQuery::create()->findOneByLogin('Aubert');
+		$aid_detailss = $aubert->getAidDetailss();
+		$this->assertEquals(1,$aid_detailss->count());
+		$this->assertEquals('aid 1',$aid_detailss->getFirst()->getNom());
+	}
+	
+	public function testGetAidDetailssStatutProfesseur()
+	{
+		$newton = UtilisateurProfessionnelQuery::create()->findOneByLogin('Newton');
+		$aid_detailss = $newton->getAidDetailss();
+		$this->assertEquals(1,$aid_detailss->count());
+		
+		$lebesgue = UtilisateurProfessionnelQuery::create()->findOneByLogin('Lebesgue');
+		$aid_detailss = $lebesgue->getAidDetailss();
+		$this->assertEquals(0,$aid_detailss->count());
+	}
+	
+	public function testGetAidDetailssStatutCpe()
+	{
+		$dolto = UtilisateurProfessionnelQuery::create()->findOneByLogin('Dolto');
+		$aid_detailss = $dolto->getAidDetailss();
+		$this->assertEquals(1,$aid_detailss->count());
 	}
 	
 }
