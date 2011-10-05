@@ -635,7 +635,7 @@ DROP TABLE IF EXISTS aid;
 
 CREATE TABLE aid
 (
-	id VARCHAR(100) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incremente',
+	id VARCHAR(100) NOT NULL COMMENT 'cle primaire auto-incremente',
 	nom VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'Nom de l\'AID',
 	numero VARCHAR(8) DEFAULT '0' NOT NULL COMMENT 'Numero d\'ordre d\'affichage',
 	indice_aid INTEGER(11) DEFAULT 0 NOT NULL COMMENT 'Cle etrangere, vers la liste des categories d\'AID (aid_config)',
