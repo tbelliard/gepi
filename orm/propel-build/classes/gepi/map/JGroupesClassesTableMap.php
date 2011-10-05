@@ -42,7 +42,7 @@ class JGroupesClassesTableMap extends TableMap
 		$this->addForeignPrimaryKey('ID_CLASSE', 'IdClasse', 'INTEGER' , 'classes', 'ID', true, null, null);
 		$this->addColumn('PRIORITE', 'Priorite', 'SMALLINT', true, null, null);
 		$this->addColumn('COEF', 'Coef', 'DECIMAL', true, null, null);
-		$this->addForeignKey('CATEGORIE_ID', 'CategorieId', 'INTEGER', 'matieres_categories', 'ID', true, null, null);
+		$this->addColumn('CATEGORIE_ID', 'CategorieId', 'INTEGER', true, null, null);
 		$this->addColumn('SAISIE_ECTS', 'SaisieEcts', 'BOOLEAN', false, null, false);
 		$this->addColumn('VALEUR_ECTS', 'ValeurEcts', 'DECIMAL', false, null, null);
 		// validators
@@ -55,7 +55,6 @@ class JGroupesClassesTableMap extends TableMap
 	{
 		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
 		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
-		$this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_ONE, array('categorie_id' => 'id', ), null, null);
 	} // buildRelations()
 
 } // JGroupesClassesTableMap

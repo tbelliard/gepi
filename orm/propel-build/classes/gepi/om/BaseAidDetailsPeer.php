@@ -858,10 +858,6 @@ abstract class BaseAidDetailsPeer {
 			$criteria = $values->buildCriteria(); // build Criteria from AidDetails object
 		}
 
-		if ($criteria->containsKey(AidDetailsPeer::ID) && $criteria->keyContainsValue(AidDetailsPeer::ID) ) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key ('.AidDetailsPeer::ID.')');
-		}
-
 
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);

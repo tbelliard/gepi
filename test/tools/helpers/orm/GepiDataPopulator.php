@@ -14,36 +14,74 @@ class GepiDataPopulator
 		// Add utilisateur records
 		// ---------------------
 
-		$lebesgue = new UtilisateurProfessionnel();
-		$lebesgue->setLogin('Lebesgue');
-		$lebesgue->setStatut('professeur');
-		$lebesgue->save($con);
+		$lebesgue_prof = new UtilisateurProfessionnel();
+		$lebesgue_prof->setLogin('Lebesgue');
+		$lebesgue_prof->setStatut('professeur');
+		$lebesgue_prof->setPreferenceValeur('glace_parfum','chocolat');
+		$lebesgue_prof->save($con);
 		
-		$dolto = new UtilisateurProfessionnel();
-		$dolto->setLogin('Dolto');
-		$dolto->setStatut('cpe');
-		$dolto->save($con);
+		$newton_prof = new UtilisateurProfessionnel();
+		$newton_prof->setLogin('Newton');
+		$newton_prof->setStatut('professeur');
+		$newton_prof->save($con);
 		
-		$florence = new Eleve();
-		$florence->setLogin('Florene Michu');
-		$florence->setEleId('00112233');
-		$florence->save();
-		$dolto->addEleve($florence);
-		$dolto->save();
+		$curie_prof = new UtilisateurProfessionnel();
+		$curie_prof->setLogin('Curie');
+		$curie_prof->setStatut('professeur');
+		$curie_prof->save($con);
+		
+		$dolto_cpe = new UtilisateurProfessionnel();
+		$dolto_cpe->setLogin('Dolto');
+		$dolto_cpe->setStatut('cpe');
+		$dolto_cpe->save($con);
+		
+		$aubert_scola = new UtilisateurProfessionnel();
+		$aubert_scola->setLogin('Aubert');
+		$aubert_scola->setStatut('scolarite');
+		$aubert_scola->save($con);
+		
+		$florence_eleve = new Eleve();
+		$florence_eleve->setLogin('Florence Michu');
+		$florence_eleve->setEleId('00112233');
+		$florence_eleve->save();
+		$dolto_cpe->addEleve($florence_eleve);
+		$dolto_cpe->save();
+		$newton_prof->addEleve($florence_eleve);
+		$newton_prof->save();
+		
+		$nicolas_eleve = new Eleve();
+		$nicolas_eleve->setLogin('Nicolas Dupont');
+		$nicolas_eleve->setEleId('00112234');
+		$nicolas_eleve->save();
 		
 		$classe_6A = new Classe();
 		$classe_6A->setNom('6ieme A');
-		$classe_6A->addEleve($florence,1);
-		$classe_6A->addEleve($florence,2);
+		$classe_6A->addEleve($florence_eleve,1);
+		$classe_6A->addEleve($florence_eleve,2);
+		$aubert_scola->addClasse($classe_6A);
+		$aubert_scola->save();
+		
+		$classe_6B = new Classe();
+		$classe_6B->setNom('6ieme B');
+		$classe_6B->addEleve($nicolas_eleve,1);
+		$classe_6B->addEleve($nicolas_eleve,2);
 		
 		$groupe_math = new Groupe();
 		$groupe_math->setName('MATH6A');
-		$groupe_math->addEleve($florence, 1);
-		$groupe_math->addEleve($florence, 2);
-		$groupe_math->addUtilisateurProfessionnel($lebesgue);
+		$groupe_math->addEleve($florence_eleve, 1);
+		$groupe_math->addEleve($florence_eleve, 2);
+		$groupe_math->addUtilisateurProfessionnel($lebesgue_prof);
+		$groupe_math->addClasse($classe_6A);
 		$groupe_math->save();
 		
-//		$rowling = new Author();
+		$aid_1 = new AidDetails();
+		$aid_1->setNom('aid 1');
+		$aid_1->setId('1ai');
+		$aid_1->addEleve($florence_eleve);
+		$aid_1->addUtilisateurProfessionnel($newton_prof);
+		$aid_1->save();
+		
+		//		$rowling = new Author();
 //		$rowling->setFirstName("J.K.");
 //		$rowling->setLastName("Rowling");
 //		// no save()
@@ -199,7 +237,8 @@ class GepiDataPopulator
 			'ElevePeer',
 			'ClassePeer',
 			'GroupePeer',
-			//'Peer',
+			'AidDetailsPeer',
+		//'Peer',
 		);
 		// free the memory from existing objects
 		foreach ($peerClasses as $peerClass) {

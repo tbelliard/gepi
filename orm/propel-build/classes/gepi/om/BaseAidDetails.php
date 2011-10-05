@@ -1277,21 +1277,13 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 				$this->setAidConfiguration($this->aAidConfiguration);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = AidDetailsPeer::ID;
-			}
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
 					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(AidDetailsPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.AidDetailsPeer::ID.')');
-					}
-
 					$pk = BasePeer::doInsert($criteria, $con);
 					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
 					$this->setNew(false);
 				} else {
 					$affectedRows += AidDetailsPeer::doUpdate($this, $con);
@@ -1870,6 +1862,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
+		$copyObj->setId($this->getId());
 		$copyObj->setNom($this->getNom());
 		$copyObj->setNumero($this->getNumero());
 		$copyObj->setIndiceAid($this->getIndiceAid());
@@ -1927,7 +1920,6 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
-			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 

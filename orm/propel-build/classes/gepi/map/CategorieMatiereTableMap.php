@@ -50,7 +50,6 @@ class CategorieMatiereTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), null, null, 'JGroupesClassess');
 		$this->addRelation('Matiere', 'Matiere', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), null, null, 'Matieres');
 		$this->addRelation('JCategoriesMatieresClasses', 'JCategoriesMatieresClasses', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), 'CASCADE', null, 'JCategoriesMatieresClassess');
 		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'Classes');
