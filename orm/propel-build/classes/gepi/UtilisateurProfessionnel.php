@@ -40,7 +40,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * @return     void
 	 * @see        addEleves()
 	 */
-	public function clearEleves()
+	protected function clearEleves()
 	{
 		$this->collEleves = null; // important to set this to NULL since that means it is uninitialized
 		$this->collAccesFicheEleves = null;
@@ -55,7 +55,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 *
 	 * @return     void
 	 */
-	public function initEleves()
+	protected function initEleves()
 	{
 		$this->collEleves = new PropelObjectCollection();
 		$this->collEleves->setModel('Eleve');
@@ -140,59 +140,59 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	public function getAccesFicheEleve(Eleve $eleve) {
 	    if ($eleve === null) return false;
 	    if ($this->getStatut() == "admin") {
-		return true;
+			return true;
 	    } else if ($this->getStatut() == "secours") {
-		return true;
+			return true;
 	    } else if ($this->getStatut() == "scolarite") {
-		if (getSettingValue("GepiAccesTouteFicheEleveScolarite")=='yes') {
-		    return true;
-		} else {
-		    if (!isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
-			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = $this->getEleves()->contains($eleve);
-		    }
-		    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
-		}
+			if (getSettingValue("GepiAccesTouteFicheEleveScolarite")=='yes') {
+			    return true;
+			} else {
+			    if (!isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
+				$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = $this->getEleves()->contains($eleve);
+			    }
+			    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
+			}
 	    } else if ($this->getStatut() == "cpe") {
-		if (getSettingValue("GepiAccesTouteFicheEleveCpe")=='yes') {
-		    return true;
-		} else {
-		    if (!isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
-			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = $this->getEleves()->contains($eleve);
-		    }
-		    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
-		}
+			if (getSettingValue("GepiAccesTouteFicheEleveCpe")=='yes') {
+			    return true;
+			} else {
+			    if (!isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
+				$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = $this->getEleves()->contains($eleve);
+			    }
+			    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
+			}
 	    } else if ($this->getStatut() == "professeur") {
-		if (isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
-		    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
-		}
-		if (getSettingValue("GepiAccesGestElevesProfP")=='yes') {
-		    if ($this->getEleves()->contains($eleve)) {
-			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
-			return true;
-		    }
-		}
-		if (getSettingValue("GepiAccesGestElevesProf")=='yes') {
-		    //on cherche dans les groupes du professeur
-		    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
-			    ->useJEleveGroupeQuery()->useGroupeQuery()->useJGroupesProfesseursQuery()
-			    ->filterByUtilisateurProfessionnel($this)
-			    ->endUse()->endUse()->endUse();
-		    if ($query->findOne() != null) {
-			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
-			return true;
-		    }
-		    //on cherche dans les aid du professeur
-		    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
-			    ->useJAidElevesQuery()->useAidDetailsQuery()->useJAidUtilisateursProfessionnelsQuery()
-			    ->filterByUtilisateurProfessionnel($this)
-			    ->endUse()->endUse()->endUse();
-		    if ($query->findOne() != null) {
-			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
-			return true;
-		    }
-		}
-		$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = false;
-		return false;
+			if (isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
+			    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
+			}
+			if (getSettingValue("GepiAccesGestElevesProfP")=='yes') {
+			    if ($this->getEleves()->contains($eleve)) {
+				$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
+				return true;
+			    }
+			}
+			if (getSettingValue("GepiAccesGestElevesProf")=='yes') {
+			    //on cherche dans les groupes du professeur
+			    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
+				    ->useJEleveGroupeQuery()->useGroupeQuery()->useJGroupesProfesseursQuery()
+				    ->filterByUtilisateurProfessionnel($this)
+				    ->endUse()->endUse()->endUse();
+			    if ($query->findOne() != null) {
+				$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
+				return true;
+			    }
+			    //on cherche dans les aid du professeur
+			    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
+				    ->useJAidElevesQuery()->useAidDetailsQuery()->useJAidUtilisateursProfessionnelsQuery()
+				    ->filterByUtilisateurProfessionnel($this)
+				    ->endUse()->endUse()->endUse();
+			    if ($query->findOne() != null) {
+				$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
+				return true;
+			    }
+			}
+			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = false;
+			return false;
 	    } else if ($this->getStatut() == "autre") {
 		    if (isset($this->collAccesFicheEleves['statut_autre'])) {
 			return $this->collAccesFicheEleves['statut_autre'];
@@ -624,7 +624,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 *
 	 * @return     void
 	 */
-	public function initClasses()
+	protected function initClasses()
 	{
 		$this->collClasses = new PropelObjectCollection();
 		$this->collClasses->setModel('Classe');
@@ -632,12 +632,10 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
-	 * Renvoi sous forme d'un tableau la liste des groupes d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
+	 * Renvoi sous forme d'un tableau la liste des aid d'un utilisateur. Pour le statut cpe ou scolarité, renvoi la liste des aid des élèves sous la responsabilité de l'utilisateur
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Groupes[]
+	 * @return     PropelObjectCollection AidDetails[]
 	 */
 	public function getAidDetailss($criteria = null, PropelPDO $con = null) {
 		if(null === $this->collAidDetailss || null !== $criteria) {
