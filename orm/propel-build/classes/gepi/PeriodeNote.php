@@ -101,8 +101,7 @@ class PeriodeNote extends BasePeriodeNote {
 	}
 
 	/**
-	 * Get the [optionally formatted] temporal [date_fin] column value.
-	 * date de verrouillage de la periode
+	 * date de verrouillage de la periode. On rajoute le temps 23:59:59
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
