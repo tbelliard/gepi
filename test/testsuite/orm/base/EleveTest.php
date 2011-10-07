@@ -29,9 +29,9 @@ class EleveTest extends GepiEmptyTestBase
 	{
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$periode_col = $florence_eleve->getPeriodeNotes();
-		$this->assertEquals('2',$periode_col->count());
+		$this->assertEquals('3',$periode_col->count());
 		$this->assertEquals('1',$periode_col->getFirst()->getNumPeriode());
-		$this->assertEquals('2',$periode_col->getLast()->getNumPeriode());
+		$this->assertEquals('3',$periode_col->getLast()->getNumPeriode());
 				
 		$periode_2 = $florence_eleve->getPeriodeNoteOuverte();
 		$this->assertNotNull($periode_2,'La période de note ouverte de florence ne doit pas être nulle');
@@ -43,12 +43,21 @@ class EleveTest extends GepiEmptyTestBase
 		$periode_2->save();
 		$florence_eleve->reload();
 		$periode_col = $florence_eleve->getPeriodeNotes();
-		$this->assertEquals('2',$periode_col->count());
+		$this->assertEquals('3',$periode_col->count());
 		$this->assertNull($florence_eleve->getPeriodeNoteOuverte(),'Après verrouillage la période ouverte de note de florence doit être nulle');
 		
 		$periode = $florence_eleve->getPeriodeNote();
-		$this->assertNotNull($periode,'La période de note ouverte de florence ne doit pas être nulle');
-		$this->assertEquals('2',$periode->getNumPeriode(), 'Dans le cas ou toutes les périodes sont verouillées, et sans indication de temps, on retourne la dernière période');
+		$this->assertNotNull($periode);
+		$this->assertEquals('3',$periode->getNumPeriode(), 'Dans le cas ou toutes les périodes sont verouillées, et sans indication de temps, on retourne la dernière période');
+
+		$periode = $florence_eleve->getPeriodeNote(new DateTime('2010-10-01'));
+		$this->assertNotNull($periode);
+		$this->assertEquals('1',$periode->getNumPeriode());
+		
+		$periode = $florence_eleve->getPeriodeNote(new DateTime('2010-12-05'));
+		$this->assertNotNull($periode);
+		$this->assertEquals('2',$periode->getNumPeriode());
+		
 	}
 	
 }

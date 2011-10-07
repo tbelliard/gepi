@@ -50,7 +50,7 @@ class UtilisateurProfessionnelTest extends GepiEmptyTestBase
 	{
 		$newton = UtilisateurProfessionnelQuery::create()->findOneByLogin('Newton');
 		$classes = $newton->getClasses();
-		$this->assertEquals(1,$classes->count());
+		$this->assertEquals(2,$classes->count());
 		
 		$lebesgue = UtilisateurProfessionnelQuery::create()->findOneByLogin('Lebesgue');
 		$classes = $lebesgue->getClasses();//Lebesque n'a aucun eleve en tant que professeur principal
@@ -61,7 +61,7 @@ class UtilisateurProfessionnelTest extends GepiEmptyTestBase
 	{
 		$dolto = UtilisateurProfessionnelQuery::create()->findOneByLogin('Dolto');
 		$classes = $dolto->getClasses();
-		$this->assertEquals(1,$classes->count());
+		$this->assertEquals(2,$classes->count());
 		$this->assertEquals('6ieme A',$classes->getFirst()->getNom());
 	}
 	

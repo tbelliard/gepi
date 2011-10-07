@@ -18,17 +18,18 @@ class PeriodeNoteTest extends GepiEmptyTestBase
 	{
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$periode_col = $florence_eleve->getPeriodeNotes();
-		$this->assertEquals('2',$periode_col->count());
+		$this->assertEquals('3',$periode_col->count());
 		$this->assertEquals('1',$periode_col->getFirst()->getNumPeriode());
-		$this->assertEquals('2',$periode_col->getLast()->getNumPeriode());
+		$this->assertEquals('3',$periode_col->getLast()->getNumPeriode());
 		
 		$periode_1 = $periode_col->getFirst();
 		$this->assertEquals('2010-12-01 23:59:59',$periode_1->getDateFin('Y-m-d H:i:s'));
 		$this->assertEquals('2010-08-31 00:00:00',$periode_1->getDateDebut('Y-m-d H:i:s'));
 		
-		$periode_2 = $periode_col->getLast();
-		$this->assertEquals('2011-03-01 23:59:59',$periode_2->getDateFin('Y-m-d H:i:s'));
-		$this->assertEquals('2010-12-02 00:00:00',$periode_2->getDateDebut('Y-m-d H:i:s'));
+		$periode_3 = $periode_col->getLast();
+		$this->assertEquals('2011-07-01 23:59:59',$periode_3->getDateFin('Y-m-d H:i:s'));
+		$this->assertEquals('2011-03-02 00:00:00',$periode_3->getDateDebut('Y-m-d H:i:s'));
+
 	}
 	
 }
