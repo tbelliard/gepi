@@ -56,6 +56,22 @@ class GepiDataPopulator
 		
 		$classe_6A = new Classe();
 		$classe_6A->setNom('6ieme A');
+		$classe_6A->save();
+		$periode_6A_2 = new PeriodeNote();
+		$periode_6A_2->setClasse($classe_6A);
+		$periode_6A_2->setNumPeriode(2);
+		$periode_6A_2->setVerouiller('N');
+		$periode_6A_2->setNomPeriode('deuxième trimestre');
+		$periode_6A_2->setDateFin('2011-03-01 23:59:59');
+		$periode_6A_2->save();
+		$periode_6A_1 = new PeriodeNote();
+		$periode_6A_1->setClasse($classe_6A);
+		$periode_6A_1->setNumPeriode(1);
+		$periode_6A_1->setVerouiller('O');
+		$periode_6A_1->setNomPeriode('premier trimestre');
+		$periode_6A_1->setDateFin('2010-12-01 23:59:59');
+		$periode_6A_1->save();
+		
 		$classe_6A->addEleve($florence_eleve,1);
 		$classe_6A->addEleve($florence_eleve,2);
 		$aubert_scola->addClasse($classe_6A);
