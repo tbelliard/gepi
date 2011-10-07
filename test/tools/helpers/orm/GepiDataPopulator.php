@@ -69,7 +69,7 @@ class GepiDataPopulator
 		$periode_6A_1->setNumPeriode(1);
 		$periode_6A_1->setVerouiller('O');
 		$periode_6A_1->setNomPeriode('premier trimestre');
-		$periode_6A_1->setDateFin('2010-12-01 23:59:59');
+		$periode_6A_1->setDateFin('2010-12-01 00:00:00');
 		$periode_6A_1->save();
 		
 		$classe_6A->addEleve($florence_eleve,1);
