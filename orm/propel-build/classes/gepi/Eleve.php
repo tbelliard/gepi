@@ -71,8 +71,11 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getClasses($periode) {
-		$periode = $this->getPeriodeNote($periode);
-		require_once("helpers/PeriodeNoteHelper.php");
+		//pour vérifier que la période est bien enregistré en base, il faudrait rajouter le ligne : $periode = $this->getPeriodeNote($periode);
+		if ($periode == null) {
+			$periode = $this->getPeriodeNote();//on récupére la période actuelle
+		}
+		require_once(dirname(__FILE__)."/../../../helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		if(!isset($this->collClasses[$periode_num]) || null === $this->collClasses[$periode_num]) {
 			if ($this->isNew() && null === $this->collClasses[$periode_num]) {
@@ -98,7 +101,7 @@ class Eleve extends BaseEleve {
 					    $this->collClasses[$JEleveClasse->getPeriode()]->add($JEleveClasse->getClasse());
 					}
 				    }
-				    if ($this->collClasses[$periode_num] == null) {
+				    if (!isset($this->collClasses[$periode_num]) || $this->collClasses[$periode_num] == null) {
 					//rien n'a Ã©tÃ© trouvÃ© pour cette pÃ©riode, on renvoi une collection vide
 					$this->initClasses($periode_num);
 				    }
@@ -669,7 +672,7 @@ class Eleve extends BaseEleve {
 				//si on a une seule periode partiellement ouverte et aucune ouverte alors c'est la periode actuelle
 				$periode_result = $periode_verrouiller_p;
 			    } else {
-				//on va prendre la periode de numero la plus petite non verrouillee
+				//on va prendre la periode de numero la plus grande non verrouillee
 				if ($periode_verrouiller_n != null) {
 				    $periode_result = $periode_verrouiller_n;
 				} elseif ($periode_verrouiller_p != null) {
@@ -1011,7 +1014,7 @@ class Eleve extends BaseEleve {
 	 * d'un parametre numerique (numero de periode)
 	 * ou d'un parametre qui est deja un objet PeriodeNote (on renvoi le parametre)
 	 * ou d'une date DateTime , auquel cas on renvoi la periode de l'epoque ou null si pas de periode trouvee
-	 * ou d'un parametre null, auquel cas on renvoi la periode courante
+	 * ou d'un parametre null, auquel cas on renvoi la periode courante (période ouverte, ou période en cours temporellement)
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value or DateTime
 	 *
@@ -1020,29 +1023,33 @@ class Eleve extends BaseEleve {
 	public function getPeriodeNote($periode_param = null) {
 	    $result = null;
 	    if ($periode_param instanceof DateTime) {
-		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getDateDebut('U') <= $periode_param->format('U')
-			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode_param->format('U')))
-		    {
-			$result = $periode_temp;
-			break;
-		    }
-		}
+			foreach ($this->getPeriodeNotes() as $periode_temp) {
+			    if ($periode_temp->getDateDebut('U') <= $periode_param->format('U')
+				    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode_param->format('U')))
+				    {
+					$result = $periode_temp;
+					//break;
+			    }
+			}
 	    } else if ($periode_param === null) {
-		$periode = $this->getPeriodeNoteOuverte();
-		if ($periode == null) {
-			$now = new DateTime('now');
-			$result = $this->getPeriodeNote($now);
-		}
+			$result = $this->getPeriodeNoteOuverte();
+			if ($result == null) {
+				$now = new DateTime('now');
+				$result = $this->getPeriodeNote($now);//on récupére la période en cours temporellement
+			}
+			if ($result == null) {
+				//on récupére la dernière période
+				$result = $this->getPeriodeNotes()->getLast();//on récupére la période en cours temporellement
+			}
 	    } else if (is_numeric($periode_param)) {
-		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getNumPeriode() == $periode_param) {
-			$result = $periode_temp;
-			break;
-		    }
-		}
+			foreach ($this->getPeriodeNotes() as $periode_temp) {
+			    if ($periode_temp->getNumPeriode() == $periode_param) {
+				$result = $periode_temp;
+				break;
+			    }
+			}
 	    } else if ($periode_param instanceof PeriodeNote) {
-		$result = $periode_param;
+			$result = $periode_param;
 	    } else {
 		    throw new PropelException('Argument $periode doit etre de type numerique ou une instance de PeriodeNote ou un DateTime.');
 	    }
@@ -1356,8 +1363,8 @@ class Eleve extends BaseEleve {
 			    // return empty collection
 			    $this->initPeriodeNotes();
 		    } else {
-			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode";
-			    $con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode ORDER by periodes.NUM_PERIODE";
+			    $con = Propel::getConnection(null, Propel::CONNECTION_READ);
 			    $stmt = $con->prepare($sql);
 			    $stmt->execute();
 
