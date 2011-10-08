@@ -14,17 +14,6 @@ class EleveTest extends GepiEmptyTestBase
 		GepiDataPopulator::populate();
 	}
 
-	public function testGetClasse()
-	{
-		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$classe = $florence_eleve->getClasse(1);//on récupère la classe pour la période 1
-		$this->assertNotNull($classe,'La classe de florence ne doit pas être nulle pour la période 1');
-		$this->assertEquals('6ieme A',$classe->getNom());
-
-		$classe = $florence_eleve->getClasse(5);//on récupère la classe pour la période 1
-		$this->assertNull($classe,'La classe de florence doit pas être nulle pour la période 5');
-	}
-	
 	public function testGetPeriodeNote()
 	{
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
@@ -58,6 +47,21 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertNotNull($periode);
 		$this->assertEquals('2',$periode->getNumPeriode());
 		
+	}
+	
+	public function testGetClasse()
+	{
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$classe = $florence_eleve->getClasse(1);//on récupère la classe pour la période 1
+		$this->assertNotNull($classe,'La classe de florence ne doit pas être nulle pour la période 1');
+		$this->assertEquals('6ieme A',$classe->getNom());
+
+		$classe = $florence_eleve->getClasse(5);//on récupère la classe pour la période 1
+		$this->assertNull($classe,'La classe de florence doit pas être nulle pour la période 5');
+
+		$classe = $florence_eleve->getClasse(new DateTime('2010-10-01'));
+		$this->assertNotNull($classe,'La classe de florence ne doit pas être nulle pour la date 2010-10-01 (période 1)');
+		$this->assertEquals('6ieme A',$classe->getNom());
 	}
 	
 }
