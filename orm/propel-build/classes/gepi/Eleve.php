@@ -77,19 +77,22 @@ class Eleve extends BaseEleve {
 		if (is_numeric($periode)) {
 			$periode_num = $periode;
 		} else {
-			if ($periode instanceOf DateTime) {
-				$periode = $this->getPeriodeNote($periode);//on récupère un objet période qui englobe la date en paramètre
-			}
-			if ($periode == null) {
-				$periode = $this->getPeriodeNote();//on récupére la période actuelle
-			}
-			if ($periode != null) {
+			if ($periode instanceOf PeriodeNote) {
 				$periode_num = $periode->getNumPeriode();
-			} else  {
-				$periode_num = null;
+			} else {
+				if ($periode == null) {
+					$periode = new DateTime('now');//on récupére la période actuelle
+				}
+				//$periode devrait maintenant être un DateTime
+				$periode = $this->getPeriodeNote($periode);//on récupère un objet période qui englobe la date
+				if ($periode != null) {
+					$periode_num = $periode->getNumPeriode();
+				} else {
+					return new PropelCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour le paramêtre passé
+				}
 			}
 		}
-
+		
 		if(!isset($this->collClasses[$periode_num]) || null === $this->collClasses[$periode_num]) {
 			if ($this->isNew() && null === $this->collClasses[$periode_num]) {
 				// return empty collection

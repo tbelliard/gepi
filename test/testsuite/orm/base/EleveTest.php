@@ -62,6 +62,9 @@ class EleveTest extends GepiEmptyTestBase
 		$classe = $florence_eleve->getClasse(new DateTime('2010-10-01'));
 		$this->assertNotNull($classe,'La classe de florence ne doit pas être nulle pour la date 2010-10-01 (période 1)');
 		$this->assertEquals('6ieme A',$classe->getNom());
+		
+		$classe = $florence_eleve->getClasse(new DateTime('2005-01-01'));
+		$this->assertNull($classe,'La classe de florence doit être nulle pour la date 2005-01-01');
 	}
 	
 }
