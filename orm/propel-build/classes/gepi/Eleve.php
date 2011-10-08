@@ -189,7 +189,7 @@ class Eleve extends BaseEleve {
 	 * @param      integer $periode numero de la periode ou objet periodeNote
 	 * @return     void
 	 */
-	public function initClasses($periode_num)
+	protected function initClasses($periode_num)
 	{
 		$this->collClasses[$periode_num] = new PropelObjectCollection();
 		$this->collClasses[$periode_num]->setModel('Classe');
@@ -200,7 +200,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return     void
 	 */
-	public function initPeriodeNotes()
+	protected function initPeriodeNotes()
 	{
 		$this->collPeriodeNotes = new PropelObjectCollection();
 		$this->collPeriodeNotes->setModel('Classe');
@@ -212,7 +212,7 @@ class Eleve extends BaseEleve {
 	 * @param      strind $date_string clé date du jour format('d/m/Y')
 	 * @return     void
 	 */
-	public function initAbsenceEleveSaisiesParJour($date_string)
+	protected function initAbsenceEleveSaisiesParJour($date_string)
 	{
 		$this->collAbsenceEleveSaisiesParJour[$date_string] = new PropelObjectCollection();
 		$this->collAbsenceEleveSaisiesParJour[$date_string]->setModel('AbsenceEleveSaisie');
