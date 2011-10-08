@@ -66,17 +66,30 @@ class Eleve extends BaseEleve {
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
 	 * Manually added for N:M relationship
 	 *
-	 * @periode integer numero de la periode ou objet periodeNote
+	 * @periode integer|string|DateTime|PeriodeNote numero de la periode ou objet periodeNote ou date.
 	 * @return     PropelObjectCollection Classes[]
 	 *
 	 */
 	public function getClasses($periode) {
-		//pour vérifier que la période est bien enregistré en base, il faudrait rajouter le ligne : $periode = $this->getPeriodeNote($periode);
-		if ($periode == null) {
-			$periode = $this->getPeriodeNote();//on récupére la période actuelle
+		if ($periode != null && !is_numeric($periode) &&  !($periode instanceOf PeriodeNote) && !($periode instanceOf DateTime)) {
+			throw new PropelException('$periode doit être de type integer|string|DateTime|PeriodeNote');
 		}
-		require_once(dirname(__FILE__)."/../../../helpers/PeriodeNoteHelper.php");
-		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
+		if (is_numeric($periode)) {
+			$periode_num = $periode;
+		} else {
+			if ($periode instanceOf DateTime) {
+				$periode = $this->getPeriodeNote($periode);//on récupère un objet période qui englobe la date en paramètre
+			}
+			if ($periode == null) {
+				$periode = $this->getPeriodeNote();//on récupére la période actuelle
+			}
+			if ($periode != null) {
+				$periode_num = $periode->getNumPeriode();
+			} else  {
+				$periode_num = null;
+			}
+		}
+
 		if(!isset($this->collClasses[$periode_num]) || null === $this->collClasses[$periode_num]) {
 			if ($this->isNew() && null === $this->collClasses[$periode_num]) {
 				// return empty collection

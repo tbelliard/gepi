@@ -15,6 +15,7 @@ class PeriodeNoteHelper {
 	 * @param      array $groupes Le tableau de groupes
 	 * @return     array $groupes Un tableau de groupe ordonnés
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 * @deprecated
 	 */
 	public static function getNumPeriode($periode) {
 		if ($periode === null || $periode === '') {
