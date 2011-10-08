@@ -1030,7 +1030,7 @@ class Eleve extends BaseEleve {
 	 * d'un parametre numerique (numero de periode)
 	 * ou d'un parametre qui est deja un objet PeriodeNote (on renvoi le parametre)
 	 * ou d'une date DateTime , auquel cas on renvoi la periode de l'epoque ou null si pas de periode trouvee
-	 * ou d'un parametre null, auquel cas on renvoi la periode courante (période ouverte, ou période en cours temporellement)
+	 * ou d'un parametre null, auquel cas on renvoi la periode courante (ppériode en cours temporellement)
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value or DateTime
 	 *
@@ -1048,20 +1048,12 @@ class Eleve extends BaseEleve {
 			    }
 			}
 	    } else if ($periode_param === null) {
-			$result = $this->getPeriodeNoteOuverte();
-			if ($result == null) {
-				$now = new DateTime('now');
-				$result = $this->getPeriodeNote($now);//on récupére la période en cours temporellement
-			}
-			if ($result == null) {
-				//on récupére la dernière période
-				$result = $this->getPeriodeNotes()->getLast();//on récupére la période en cours temporellement
-			}
+			$result = $this->getPeriodeNote(new DateTime('now'));//on récupére la période en cours temporellement
 	    } else if (is_numeric($periode_param)) {
 			foreach ($this->getPeriodeNotes() as $periode_temp) {
 			    if ($periode_temp->getNumPeriode() == $periode_param) {
-				$result = $periode_temp;
-				break;
+					$result = $periode_temp;
+					break;
 			    }
 			}
 	    } else if ($periode_param instanceof PeriodeNote) {
