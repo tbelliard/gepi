@@ -657,6 +657,8 @@ function calcule_moy_mediane_quartiles($tab) {
 		$min=min($tab2);
 		$max=max($tab2);
 
+		$q1="-";
+		$q3="-";
 		if(count($tab2)>=4) {
 			$q1=$tab2[ceil(count($tab2)/4)-1];
 			$q3=$tab2[ceil(3*count($tab2)/4)-1];

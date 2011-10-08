@@ -187,7 +187,28 @@ function afficheDocuments ($documents) {
 		foreach ($documents as $document) {
 			// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
 			// alternative, utiliser un javascript
-			$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"".$document->getEmplacement()."\">".$document->getTitre()."</a></li>";
+			$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"".$document->getEmplacement()."\">".$document->getTitre()."</a>";
+
+			if(!$document->getVisibleEleveParent()) {
+				$html.="<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+			}
+
+			/*
+			$sql="SELECT 1=1 FROM ct_documents cd, ct_entry ce, j_groupes_professeurs jgp WHERE ce.id_ct=cd.id_ct AND cd.id='".$document->getId()."' AND jgp.id_groupe=ce.id_groupe AND jgp.login='".$_SESSION['login']."';";
+			//echo "$sql<br/>";
+			$test1=mysql_query($sql);
+
+			$sql="SELECT 1=1 FROM ct_devoirs_documents cd, ct_devoirs_entry ce, j_groupes_professeurs jgp WHERE ce.id_ct=cd.id_ct_devoir AND cd.id='".$document->getId()."' AND jgp.id_groupe=ce.id_groupe AND jgp.login='".$_SESSION['login']."';";
+			$test2=mysql_query($sql);
+
+			//if($_SESSION['statut']=='professeur') {
+			if(($_SESSION['statut']=='professeur')&&((mysql_num_rows($test1)>0)||(mysql_num_rows($test2)>0))) {
+				if(!$document->getVisibleEleveParent()) {
+					$html.="<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+				}
+			}
+			*/
+			$html.="</li>";
 
 		}
 		$html .= "</ul>";

@@ -917,28 +917,30 @@ if ($new_devoir=='yes') {
 		$alt=1;
 		$cpt=0;
 		for($i=0;$i<count($tab_group);$i++) {
-			if($tab_group[$i]['id']!=$id_groupe) {
-				// Tester si la période est aussi ouverte pour le groupe... ou sinon si une seule période est ouverte en saisie?
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'>\n";
-				echo "<td>\n";
-				if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
-					echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' />\n";
-					echo "</td>\n";
-					echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['name'])."</label></td>\n";
-					echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['description'])."</label></td>\n";
-					echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
-					$cpt++;
+			if((!isset($tab_group[$i]["visibilite"]["cahier_notes"]))||($tab_group[$i]["visibilite"]["cahier_notes"]=='y')) {
+				if($tab_group[$i]['id']!=$id_groupe) {
+					// Tester si la période est aussi ouverte pour le groupe... ou sinon si une seule période est ouverte en saisie?
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					echo "<td>\n";
+					if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
+						echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' />\n";
+						echo "</td>\n";
+						echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['name'])."</label></td>\n";
+						echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['description'])."</label></td>\n";
+						echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
+						$cpt++;
+					}
+					else {
+						echo "<span style='color:red;'>Clos</span>";
+						echo "</td>\n";
+						echo "<td>".htmlentities($tab_group[$i]['name'])."</td>\n";
+						echo "<td>".htmlentities($tab_group[$i]['description'])."</td>\n";
+						echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
+					}
+					//echo "<td>...</td>\n";
+					echo "</tr>\n";
 				}
-				else {
-					echo "<span style='color:red;'>Clos</span>";
-					echo "</td>\n";
-					echo "<td>".htmlentities($tab_group[$i]['name'])."</td>\n";
-					echo "<td>".htmlentities($tab_group[$i]['description'])."</td>\n";
-					echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
-				}
-				//echo "<td>...</td>\n";
-				echo "</tr>\n";
 			}
 		}
 		echo "</table>\n";
