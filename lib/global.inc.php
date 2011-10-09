@@ -170,9 +170,10 @@ $couleur_cellule_gen = "#F6F7EF";
 //les trois variables suivantes vont être remplies par un script de build avec les donnée svn ou git
 //dans le cas ou les variables ne sont pas remplies (donc pas de script de build), on regarde dans header.inc et header_template.inc
 //si on peut obtenir des informations sur la version dans le répertoire .git
-$gepiVersion = "";
+$gepiVersion = "1.5.5";
 $gepiSvnRev = "";
 $gepiGitCommit = "";
+$gepiGitBranch = "";
 
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI
 //
