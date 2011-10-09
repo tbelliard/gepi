@@ -902,16 +902,14 @@ class Eleve extends BaseEleve {
 	    return $result;
 	}
 	
-	/*
-	Renvoie le nom de la photo de l'élève
-	Renvoie NULL si :
-	- le module trombinoscope n'est pas activé
-	- ou bien la photo n'existe pas.
-
-	$_elenoet_ou_loginc : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
-	$repertoire : "eleves"
-	$arbo : niveau d'aborescence (1 ou 2).
-	*/
+	/**
+	 * Renvoie le nom de la photo de l'élève
+	 * Renvoie NULL si :
+	 * - le module trombinoscope n'est pas activé
+	 * - ou bien la photo n'existe pas.
+	 * 
+	 * @param $arbo : niveau d'aborescence (1 ou 2).
+	 */
 	public function getNomPhoto($arbo=1) {
 		if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 		$repertoire = "eleves";
@@ -919,43 +917,6 @@ class Eleve extends BaseEleve {
 			return NULL;
 			die();
 		}
-	  /*
-		// Cas des élèves
-		// En multisite, le login est préférable à l'ELENOET
-		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		    //$_elenoet_ou_login = $this->getElenoet();
-		    $_elenoet_ou_login = $this->getLogin();
-		} else {
-		    //$_elenoet_ou_login = $this->getLogin();
-			$_elenoet_ou_login = $this->getElenoet();
-		}
-
-		$photo= null;
-		if($_elenoet_ou_login!='') {
-			if(file_exists($chemin."../photos/eleves/".$_elenoet_ou_login.".jpg")) {
-				$photo="$_elenoet_ou_login.jpg";
-			}
-			else {
-				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=sprintf("%05d",$this->getLogin()).".jpg";
-				} else {
-					for($i=0;$i<5;$i++){
-						if(substr($this->getLogin(),$i,1)=="0"){
-							$test_photo=substr($this->getLogin(),$i+1);
-							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
-							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
-								$photo=$test_photo.".jpg";
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return $photo;
-		*/
-
 
 		$_elenoet_ou_login = $this->getElenoet();
 	  	if($_elenoet_ou_login!='') {
@@ -1030,13 +991,12 @@ class Eleve extends BaseEleve {
 		} elseif ($this->getSexe()=="F") {
 			return "Mlle";
 		}
-		return "";
 	}
 
 
 	/**
 	 *
-	 * Retourne l'objet periode correspondant a partir
+	 * Retourne l'objet periode correspondant a partir :
 	 * d'un parametre numerique (numero de periode)
 	 * ou d'un parametre qui est deja un objet PeriodeNote (on renvoi le parametre sans modification)
 	 * ou d'une date DateTime , auquel cas on renvoi la periode de l'epoque ou null si pas de periode trouvee
