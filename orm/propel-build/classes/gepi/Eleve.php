@@ -60,17 +60,16 @@ class Eleve extends BaseEleve {
         $this->timestamp_start=microtime(true);
     }
     
-    // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
-	 * Manually added for N:M relationship
+	 * Il peut y avoir dans le modèle plusieurs classes associés à un élève, mais il faut l'éviter en pratique
 	 *
-	 * @periode integer|string|DateTime|PeriodeNote numero de la periode ou objet periodeNote ou date.
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     PropelObjectCollection Classes[]
 	 *
 	 */
-	public function getClasses($periode) {
+	public function getClasses($periode = null) {
 		if ($periode != null && !is_numeric($periode) &&  !($periode instanceOf PeriodeNote) && !($periode instanceOf DateTime)) {
 			throw new PropelException('$periode doit être de type numeric|DateTime|PeriodeNote');
 		}
@@ -135,7 +134,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * Renvoi la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seule une classe est renvoyée
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     Classe
 	 *
 	 */
@@ -147,7 +146,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seule une% nom est renvoyée
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     Classe
 	 *
 	 */
@@ -165,7 +164,7 @@ class Eleve extends BaseEleve {
 	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seul un nom est renvoyée
 	 * Si pas de classe trouvée, renvoi null
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     string
 	 *
 	 */
@@ -280,9 +279,8 @@ class Eleve extends BaseEleve {
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des groupes d'un eleve pour une période donnée.
-	 * Manually added for N:M relationship
 	 *
-	 * @periode integer numero de la periode
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     PropelObjectCollection Groupes[]
 	 *
 	 */
@@ -362,7 +360,16 @@ class Eleve extends BaseEleve {
 	}
 
 	
-    public function getGroupesByCategories($periode) {
+	/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des groupes d'un eleve pour une période donnée, sous forme d'un table multi-dimensionnel, qui contient les catégories
+	 * dans le bon ordre, et les groupes sous chaque catégorie..
+	 *
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
+	 * @return     Array
+	 *
+	 */
+	public function getGroupesByCategories($periode) {
         // On commence par récupérer tous les groupes
         $groupes = $this->getGroupes($periode);
         // Ensuite, il nous faut les catégories. Pour ça, on passe par les classes.
