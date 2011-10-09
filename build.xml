@@ -7,11 +7,11 @@
      <![CDATA[
        var text = attributes.get("text");
        var pos = text.lastIndexOf("/");
-       if (pos == -1) {
-        project.setProperty(attributes.get("property"), text);
-       } else {
-        project.setProperty(attributes.get("property"), text.substring(pos+1));
-       }
+	   text = text.substring(pos+1);
+  	   if (text == "HEAD") {
+	     text = "production";
+  	   }
+       project.setProperty(attributes.get("property"), text);
      ]]>
   </scriptdef>
   <property environment="env" />
