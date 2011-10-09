@@ -233,6 +233,10 @@ if (isset ($_POST['maj'])) {
             require 'updates/154_to_155.inc.php';
 	}
 
+	if (($force_maj == 'yes') or (quelle_maj("dev"))) {
+            require 'updates/155_to_dev.inc.php';
+	}
+
 	// Mise à jour du numéro de version
 	saveSetting("version", $gepiVersion);
 	saveSetting("versionRc", $gepiRcVersion);

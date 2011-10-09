@@ -170,7 +170,7 @@
  <target name="version_replace">
   <exec executable="sed">
    <arg value="-i" />
-   <arg value='s/$gepiVersion = "".*/$gepiVersion = "${branch_name} ${env.BUILD_ID} build ${env.BUILD_TAG}";/g' />
+   <arg value='s/$gepiGitBranch = "".*/$gepiGitBranch = "${branch_name} ${env.BUILD_ID} build ${env.BUILD_TAG}";/g' />
    <arg value="${source}/lib/global.inc.php" />
   </exec>
 

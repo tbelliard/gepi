@@ -727,7 +727,7 @@ function affiche_date_naissance($date) {
  * @global mixed 
  * @global mixed 
  * @global mixed 
- * @return booleanTRUE si on a une nouvelle version 
+ * @return boolean TRUE si on a une nouvelle version 
  */
 function test_maj() {
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
@@ -735,7 +735,7 @@ function test_maj() {
     $versionRc_old = getSettingValue("versionRc");
     $versionBeta_old = getSettingValue("versionBeta");
 
-   if ($version_old =='') {
+    if ($version_old =='') {
        return TRUE;
        die();
    }
