@@ -54,6 +54,11 @@ class GepiDataPopulator
 		$nicolas_eleve->setEleId('00112234');
 		$nicolas_eleve->save();
 		
+		$michel_eleve = new Eleve();
+		$michel_eleve->setLogin('Michel Martin');
+		$michel_eleve->setEleId('00112235');
+		$michel_eleve->save();
+		
 		$classe_6A = new Classe();
 		$classe_6A->setNom('6ieme A');
 		$classe_6A->save();

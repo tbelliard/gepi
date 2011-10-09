@@ -47,6 +47,14 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertNotNull($periode);
 		$this->assertEquals('2',$periode->getNumPeriode());
 		
+		$michel_eleve = EleveQuery::create()->findOneByLogin('Michel Martin');
+		$this->assertEquals(0,$michel_eleve->getPeriodeNotes()->count());
+		
+		$periode = $michel_eleve->getPeriodeNote(new DateTime('2010-12-05'));
+		$this->assertNull($periode);
+		
+		$periode = $michel_eleve->getPeriodeNote();
+		$this->assertNull($periode);
 	}
 	
 	public function testGetClasse()
@@ -73,6 +81,10 @@ class EleveTest extends GepiEmptyTestBase
 		$classe = $florence_eleve->getClasse();
 		$this->assertNotNull($classe,'Si il n y a aucune période en cours, la classe de florence doit être la dernière classe affecté');
 		$this->assertEquals('6ieme B',$classe->getNom());
+		
+		$michel_eleve = EleveQuery::create()->findOneByLogin('Michel Martin');
+		$classe = $michel_eleve->getClasse();
+		$this->assertNull($classe);
 	}
 
 	public function testGetGroupes() {
@@ -93,5 +105,9 @@ class EleveTest extends GepiEmptyTestBase
 
 		$groupes = $florence_eleve->getGroupes();
 		$this->assertEquals(1,$groupes->count(),'Si il n y a aucune période en cours, les groupes de florence sont les groupes de la dernière période');
+		
+		$michel_eleve = EleveQuery::create()->findOneByLogin('Michel Martin');
+		$groupes = $michel_eleve->getGroupes();
+		$this->assertEquals(0,$groupes->count(),'La collection des groupes de Michel doit être vide pour la date courante (aucune période d assignée pour michel');
 	}
 }
