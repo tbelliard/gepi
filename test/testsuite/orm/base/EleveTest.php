@@ -110,4 +110,10 @@ class EleveTest extends GepiEmptyTestBase
 		$groupes = $michel_eleve->getGroupes();
 		$this->assertEquals(0,$groupes->count(),'La collection des groupes de Michel doit être vide pour la date courante (aucune période d assignée pour michel');
 	}
+
+	public function testGetAbsenceEleveSaisiesDuJour() {
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
+		$this->assertEquals(1,$saisies->count());
+	}
 }
