@@ -1038,17 +1038,17 @@ class Eleve extends BaseEleve {
 	}
 
 
-    /**
-     *
-     * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
-     * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
-     * Pour l'apres midi la date est 23/05/2010 à 12:30
-     *
-     * @param      DateTime $date_debut
-     * @param      DateTime $date_fin
-     *
-     * @return PropelCollection DateTime[]
-     */
+	/**
+	 *
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
+	 *
+	 * @param      DateTime $date_debut
+	 * @param      DateTime $date_fin
+	 *
+	 * @return PropelCollection DateTime[]
+	 */
 	public function getDemiJourneesAbsence($date_debut=null, $date_fin = null) {
         $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
         return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
