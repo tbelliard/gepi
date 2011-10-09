@@ -23,7 +23,8 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals('3',$periode_col->getLast()->getNumPeriode());
 				
 		$periode = $florence_eleve->getPeriodeNote();
-		$this->assertNull($periode,'à la date en cours, il ne doit y avoir aucune période d assigné');
+		$this->assertNotNull($periode,'à la date en cours, il ne doit y avoir aucune période d assigné, donc on doit retourner la dernière période');
+		$this->assertEquals('3',$periode->getNumPeriode());
 		
 		$periode_2 = $florence_eleve->getPeriodeNoteOuverte();
 		$this->assertNotNull($periode_2,'La période de note ouverte de florence ne doit pas être nulle');
@@ -64,5 +65,33 @@ class EleveTest extends GepiEmptyTestBase
 		
 		$classe = $florence_eleve->getClasse(new DateTime('2005-01-01'));
 		$this->assertNull($classe,'La classe de florence doit être nulle pour la date 2005-01-01');
+
+		$classe = $florence_eleve->getClasse(3);
+		$this->assertNotNull($classe,'La classe de florence ne doit pas être nulle pour la période 3');
+		$this->assertEquals('6ieme B',$classe->getNom());
+
+		$classe = $florence_eleve->getClasse();
+		$this->assertNotNull($classe,'Si il n y a aucune période en cours, la classe de florence doit être la dernière classe affecté');
+		$this->assertEquals('6ieme B',$classe->getNom());
+	}
+
+	public function testGetGroupes() {
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$groupes = $florence_eleve->getGroupes(1);//on récupère les groupes pour la période 1
+		$this->assertNotNull($groupes,'La collection des groupes ne doit jamais retourner null');
+		$this->assertEquals(1,$groupes->count());
+
+		$groupes = $florence_eleve->getGroupes(5);//on récupère la classe pour la période 1
+		$this->assertEquals(0,$groupes->count(),'Les groupes de florence sont vides pour la période 5');
+
+		$groupes = $florence_eleve->getGroupes(new DateTime('2010-10-01'));
+		$this->assertNotNull($groupes,'La collection des groupes ne doit jamais retourner null');
+		$this->assertEquals(1,$groupes->count(),'La collection des groupes de florence doit comporter un groupe pour la date 2010-10-01 (période 1)');
+		
+		$groupes = $florence_eleve->getGroupes(new DateTime('2005-01-01'));
+		$this->assertEquals(0,$groupes->count(),'La collection des groupes de florence doit être vide pour la date 2005-01-01');
+
+		$groupes = $florence_eleve->getGroupes();
+		$this->assertEquals(1,$groupes->count(),'Si il n y a aucune période en cours, les groupes de florence sont les groupes de la dernière période');
 	}
 }

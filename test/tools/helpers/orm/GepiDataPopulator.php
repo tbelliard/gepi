@@ -102,8 +102,10 @@ class GepiDataPopulator
 		$groupe_math->setName('MATH6A');
 		$groupe_math->addEleve($florence_eleve, 1);
 		$groupe_math->addEleve($florence_eleve, 2);
+		$groupe_math->addEleve($florence_eleve, 3);
 		$groupe_math->addUtilisateurProfessionnel($lebesgue_prof);
 		$groupe_math->addClasse($classe_6A);
+		$groupe_math->addClasse($classe_6B);
 		$groupe_math->save();
 		
 		$aid_1 = new AidDetails();
