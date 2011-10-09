@@ -485,33 +485,29 @@ if (isset($titre_page)) {
 		 //=== Affichage de la version de Gepi ===
 		 //=== Affichage de la version de Gepi ===
 	if ($_SESSION['statut'] == "administrateur") {
-		$version_gepi = ' ';
-		if ($gepiVersion != null) {
-			$version_gepi = 'version '.$gepiVersion;
-			if ($gepiGitCommit != null) {
-				$version_gepi .= ' git '.substr($gepiGitCommit, 0, 6);
-			} elseif ($gepiSvnRev != null) {
-				$version_gepi .= ' svn r'.$gepiSvnRev;
-			}
-		} else {
-			//rien n'as été rempli, il y a peut être un répertoire .git qui va nous renseigner
-			if (file_exists(dirname(__FILE__).'/../.git/HEAD')) {
-				$git_ref = file_get_contents((dirname(__FILE__).'/../.git/HEAD'));
-				if ($git_ref != null) {
-					if (substr($git_ref,0,4) == 'ref:') {
-						//on a une référence de branche git
-						$gepiVersion = trim(substr($git_ref, 1+strrpos( $git_ref  , '/')));
-						$gepiGitCommit = file_get_contents((dirname(__FILE__).'/../.git/refs/heads/'.$gepiVersion));
-						$version_gepi = 'version '.$gepiVersion.' git '.substr($gepiGitCommit, 0, 6);
-					} else {
-						//on a un commit git dans le HEAD
-						$gepiVersion = 'git détachée';
-						$gepiGitCommit = $git_ref;
-						$version_gepi = 'version '.$gepiVersion.' git '.substr($gepiGitCommit, 0, 6);
+		$version_gepi = 'version '.$gepiVersion;
+        if ($gepiSvnRev != null) {
+			$version_gepi .= ' svn r'.$gepiSvnRev;
+        } else {
+            if ($gepiGitCommit == null) {//on va essayer de trouver les infos dans l'arborescence actuelle
+				if (file_exists(dirname(__FILE__).'/../.git/HEAD')) {
+				    $git_ref = file_get_contents((dirname(__FILE__).'/../.git/HEAD'));
+					if ($git_ref != null) {
+						if (substr($git_ref,0,4) == 'ref:') {
+						    //on a une référence de branche git
+							$gepiGitBranch = trim(substr($git_ref, 1+strrpos( $git_ref  , '/')));
+							$gepiGitCommit = file_get_contents((dirname(__FILE__).'/../.git/refs/heads/'.$gepiGitBranch));
+						} else {
+							//on a un commit git dans le HEAD
+						    $gepiGitCommit = $git_ref;
+						}
+						
 					}
-					
 				}
-			}
+            }
+            if ($gepiGitCommit != null) {
+                $version_gepi .= ' git '.$gepiGitBranch.' '.substr($gepiGitCommit, 0, 6);
+            }
 		}
 		$tbs_version_gepi = $version_gepi;
 	} else {
