@@ -179,7 +179,16 @@ function CocheCase(rang,per) {
 }
 </script>
 <?php
-echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+
+if($_SESSION['statut']=='scolarite') {
+	echo " | <a href='bull_index.php'>Visualisation et impression des bulletins</a>";
+}
+
+if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
+	echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+}
+echo "</p>\n";
 
 $texte_deverrouiller = urlencode("Déverrouiller");
 $texte_verrouiller_part = urlencode("Verrouiller part.");
