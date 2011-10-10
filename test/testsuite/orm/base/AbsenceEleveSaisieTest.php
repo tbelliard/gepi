@@ -1,0 +1,90 @@
+<?php
+
+require_once dirname(__FILE__) . '/../../../tools/helpers/orm/GepiEmptyTestBase.php';
+
+/**
+ * Test class for UtilisateurProfessionnel.
+ *
+ */
+class AbsenceEleveSaisieTest extends GepiEmptyTestBase
+{
+	protected function setUp()
+	{
+		parent::setUp();
+		GepiDataPopulator::populate();
+	}
+
+	public function testSave()
+	{
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$lebesgue_prof = UtilisateurProfessionnelQuery::create()->findOneByLogin('Lebesgue');
+		$saisie = new AbsenceEleveSaisie();
+        $saisie->setEleve($florence_eleve);
+        $saisie->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie->setDebutAbs('2005-10-01 08:00:00');
+        try {
+            $saisie->save();
+            $this->fail('Une exception doit être soulevée lors de cette sauvegarde');
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+        }
+	}
+	
+	public function testHasTypeSaisie()
+	{
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertFalse($saisie->hasTypeSaisie());
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertFalse($saisie->hasTypeSaisie());
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertTrue($saisie->hasTypeSaisie());
+	}
+
+	public function testHasTypeSaisieDiscipline()
+	{
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertFalse($saisie->hasTypeSaisieDiscipline());
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertFalse($saisie->hasTypeSaisieDiscipline());
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertTrue($saisie->hasTypeSaisieDiscipline());
+	}
+
+	public function testGetTraitee()
+	{
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertFalse($saisie->getTraitee());
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertTrue($saisie->getTraitee());
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
+		$this->assertEquals(1,$saisies->count());
+		$saisie = $saisies->getFirst();
+		$this->assertTrue($saisie->getTraitee());
+	}
+
+}

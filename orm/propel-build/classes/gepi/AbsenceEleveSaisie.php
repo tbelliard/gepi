@@ -184,7 +184,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	}
     /**
 	 *
-	 * Renvoi true ou false si un type est defini ou non
+	 * Renvoi true ou false si un type de saisie est defini ou non
 	 *
 	 * @return     boolean
 	 *
@@ -192,7 +192,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function hasTypeSaisie() {
 	    $traitements = $this->getAbsenceEleveTraitements();
 	    foreach ($traitements as $traitement) {
-		if ($traitement->getAbsenceEleveType() != null ) {
+		if ($traitement->getAbsenceEleveType() != null 
+		    && $traitement->getAbsenceEleveType()->getTypeSaisie() != null 
+		    && $traitement->getAbsenceEleveType()->getTypeSaisie() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE ) {
 		    return true;
 		}
 	    }

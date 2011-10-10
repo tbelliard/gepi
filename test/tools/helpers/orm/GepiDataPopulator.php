@@ -127,12 +127,37 @@ class GepiDataPopulator
         ajoutJustificationsParDefaut();
         ajoutTypesParDefaut();
         
-        $saisie = new AbsenceEleveSaisie();
-        $saisie->setEleve($florence_eleve);
-        $saisie->setUtilisateurProfessionnel($lebesgue_prof);
-        $saisie->setDebutAbs('2010-10-01 08:00:00');//le 2010-10-01 est un vendredi
-        $saisie->setFinAbs('2010-10-01 09:00:00');
-        $saisie->save();
+        $saisie_1 = new AbsenceEleveSaisie();
+        $saisie_1->setEleve($florence_eleve);
+        $saisie_1->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_1->setDebutAbs('2010-10-01 08:00:00');//le 2010-10-01 est un vendredi
+        $saisie_1->setFinAbs('2010-10-01 09:00:00');
+        $saisie_1->save();
+        
+        $saisie_2 = new AbsenceEleveSaisie();
+        $saisie_2->setEleve($florence_eleve);
+        $saisie_2->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_2->setDebutAbs('2010-10-02 08:00:00');//le 2010-10-01 est un vendredi
+        $saisie_2->setFinAbs('2010-10-02 09:00:00');
+        $saisie_2->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_2);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+
+        $saisie_3 = new AbsenceEleveSaisie();
+        $saisie_3->setEleve($florence_eleve);
+        $saisie_3->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_3->setDebutAbs('2010-10-03 08:00:00');//le 2010-10-01 est un vendredi
+        $saisie_3->setFinAbs('2010-10-03 09:00:00');
+        $saisie_3->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_3);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Exclusion de cours')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+
         
         
 		$con->commit();
