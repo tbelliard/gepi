@@ -777,13 +777,16 @@ echo "<td valign='top'>\n";
 	if(isset($pers_id)){
 		echo " (<i>n°$pers_id</i>)";
 
-		$sql="SELECT u.login FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
+		$sql="SELECT u.login, u.email FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
 		$test_compte=mysql_query($sql);
 		if(mysql_num_rows($test_compte)>0) {
 			$compte_resp_existe="y";
 			$lig_resp_login=mysql_fetch_object($test_compte);
 
 			$resp_login=$lig_resp_login->login;
+			$resp_u_email=$lig_resp_login->email;
+
+			echo " (<em title=\"Compte d'utilisateur\">$resp_login</em>)";
 		}
 		else {
 			$compte_resp_existe="n";
@@ -863,6 +866,7 @@ echo "<td valign='top'>\n";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
 		echo "</a>";
 	}
+
 	echo "</td></tr>\n";
 	echo "</table>\n";
 

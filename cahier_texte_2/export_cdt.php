@@ -743,6 +743,7 @@ if($action=='acces2') {
 	}
 
 	$chemin_acces="documents/".$dirname."/index.php";
+        $chemin_accessansRNE = $chemin_acces;
 	if((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')&&(preg_match("/^[A-Za-z0-9]*$/", $_COOKIE['RNE']))) {
 		$chemin_acces.="?rne=".$_COOKIE['RNE'];
 	}
@@ -754,7 +755,7 @@ if($action=='acces2') {
 		die();
 	}
 
-	$f=fopen("../$chemin_acces","w+");
+	$f=fopen("../$chemin_accessansRNE","w+");
 	fwrite($f,'<?php
 /*
 *

@@ -512,6 +512,8 @@ echo "</a>";
 
 echo " | <a href='menage_eleves_groupes.php?id_classe=$id_classe'>Désinscriptions par lots</a>";
 
+echo " | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>";
+
 echo "</p>\n";
 echo "</form>\n";
 

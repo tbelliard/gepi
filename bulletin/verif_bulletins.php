@@ -59,6 +59,17 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 // Selection de la classe
 if (!(isset($id_classe))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+
+	if($_SESSION['statut']=='scolarite') {
+		echo " | <a href='bull_index.php'>Visualisation et impression des bulletins</a>";
+	}
+	
+	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
+		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+	}
+
+	echo "</p>\n";
+
 	echo "<b>Choisissez la classe&nbsp;:</b></p>\n<br />\n";
 	//<table><tr><td>\n";
 	if ($_SESSION["statut"] == "scolarite") {
@@ -187,6 +198,15 @@ if (!(isset($id_classe))) {
 			echo "'>Classe suivante</a>\n";
 		}
 	}
+
+	if($_SESSION['statut']=='scolarite') {
+		echo " | <a href='bull_index.php'>Visualisation et impression des bulletins</a>";
+	}
+	
+	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
+		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+	}
+
 	echo "</form>\n";
 	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
@@ -484,6 +504,15 @@ if (!(isset($id_classe))) {
 	if(isset($id_class_suiv)) {
 		if($id_class_suiv!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode'>Classe suivante</a>\n";}
 	}
+
+	if($_SESSION['statut']=='scolarite') {
+		echo " | <a href='bull_index.php'>Visualisation et impression des bulletins</a>";
+	}
+	
+	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
+		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+	}
+
 	echo "</form>\n";
 	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
