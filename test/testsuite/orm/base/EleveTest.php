@@ -85,6 +85,11 @@ class EleveTest extends GepiEmptyTestBase
 		$michel_eleve = EleveQuery::create()->findOneByLogin('Michel Martin');
 		$classe = $michel_eleve->getClasse();
 		$this->assertNull($classe);
+		
+		$classes = $florence_eleve->getClasses(5);
+		$this->assertEquals(0,$classes->count(),'Les classes de florence sont vides pour la période 5');
+		$this->assertEmpty($classes->getPrimaryKeys());
+
 	}
 
 	public function testGetGroupes() {
@@ -95,6 +100,7 @@ class EleveTest extends GepiEmptyTestBase
 
 		$groupes = $florence_eleve->getGroupes(5);//on récupère la classe pour la période 1
 		$this->assertEquals(0,$groupes->count(),'Les groupes de florence sont vides pour la période 5');
+		$this->assertEmpty($groupes->getPrimaryKeys());
 
 		$groupes = $florence_eleve->getGroupes(new DateTime('2010-10-01'));
 		$this->assertNotNull($groupes,'La collection des groupes ne doit jamais retourner null');

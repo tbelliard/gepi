@@ -85,7 +85,7 @@ class Eleve extends BaseEleve {
 				if ($periode != null) {
 					$periode_num = $periode->getNumPeriode();
 				} else {
-					return new PropelCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour le paramêtre passé
+					return new PropelObjectCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour le paramêtre passé
 				}
 			}
 		}
@@ -300,7 +300,7 @@ class Eleve extends BaseEleve {
 				if ($periode != null) {
 					$periode_num = $periode->getNumPeriode();
 				} else {
-					return new PropelCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour cette élève pour le paramêtre passé
+					return new PropelObjectCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour cette élève pour le paramêtre passé
 				}
 			}
 		}
