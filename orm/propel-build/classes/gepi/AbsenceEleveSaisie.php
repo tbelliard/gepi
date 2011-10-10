@@ -969,7 +969,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	}
 
 	/**
-	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie
+	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie, fait une validation avant la sauvegarde
 	 * Persists this object to the database.
 	 *
 	 * If the object is new, it inserts it; otherwise an update is performed.
@@ -999,8 +999,14 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    }
 		}
 
-		//on regarde les changements avec l'ancienne version pour mettre à jour la table d'agrégation
-		$oldVersionNumber = $this->version;
+		if (!$this->validate()) {  
+		    $error_message = "\n";
+		    foreach ($this->getValidationFailures() as $failure) {
+                $error_message .= $failure->getMessage() . "\n";
+            }
+		    
+		    throw new PropelException('AbsenceEleveSaisie ne passe pas la validation : '.$error_message);
+		}
 		
 		$result = parent::save($con);
 				

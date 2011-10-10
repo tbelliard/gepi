@@ -388,8 +388,8 @@ function verif_debut_fin_saisie(DateTime $dt_date_debut_appel, DateTime $dt_date
 function format_verif_failures($saisie) {
 	$message = '';
 	$no_br = true;
-	foreach ($saisie->getValidationFailures() as $erreurs) {
-	    $message .= $erreurs;
+	foreach ($saisie->getValidationFailures() as $failure) {
+	    $message .= $failure->getMessage();
 	    if ($no_br) {
 		$no_br = false;
 	    } else {
