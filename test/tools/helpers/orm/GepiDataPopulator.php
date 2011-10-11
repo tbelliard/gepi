@@ -158,6 +158,22 @@ class GepiDataPopulator
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
 
+        $saisie_4 = new AbsenceEleveSaisie();
+        $saisie_4->setEleve($florence_eleve);
+        $saisie_4->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_4->setDebutAbs('2010-10-04 08:00:00');//le 2010-10-01 est un vendredi
+        $saisie_4->setFinAbs('2010-10-04 09:00:00');
+        $saisie_4->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_4);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Retard intercours')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_4);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
         
         
 		$con->commit();
