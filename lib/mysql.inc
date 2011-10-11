@@ -13,7 +13,7 @@
  * - Including this file connects you to the database, or exits on error
  * 
  */
-
+global $dbHost,$dbDb,$dbUser,$dbPass;
 // Etablir la connexion à la base
 if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
   // On utilise le module pdo de php pour entrer en contact avec la base
