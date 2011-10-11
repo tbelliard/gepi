@@ -276,24 +276,29 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function getRetard() {
 	    if (!isset($this->retard) || $this->retard === null) {
-		$retard = false;
-		$nb_min = getSettingValue("abs2_retard_critere_duree");
-		if ($nb_min == null
-			|| $nb_min == '') {
-		    $nb_min = 30;
-		} if (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*$nb_min) {
-		    $retard = true;
-		} else {
-		    //on va regarder si il y a un retard dans les types
-		    foreach ($this->getAbsenceEleveTraitements() as $traitement) {
-			if ($traitement->getAbsenceEleveType() != null) {
-			    if ($traitement->getAbsenceEleveType()->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) {
-				$retard = true;
-				break;
-			    }
-			}
-		    }
-		}
+	        if (!$this->getManquementObligationPresence()) {//si ça n'est pas un manquement à l'obligation de présence, on ne le compte pas comme retard
+	            $this->retard = false;
+	            return false;
+	        }
+    		$retard = false;
+    		$nb_min = getSettingValue("abs2_retard_critere_duree");
+    		if ($nb_min == null
+    			|| $nb_min == '') {
+    		    $nb_min = 30;
+    		}
+    		if (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*$nb_min) {
+    		    $retard = true;
+    		} else {
+    		    //on va regarder si il y a un retard dans les types
+    		    foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+        			if ($traitement->getAbsenceEleveType() != null) {
+        			    if ($traitement->getAbsenceEleveType()->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) {
+        				$retard = true;
+        				break;
+        			    }
+        			}
+    		    }
+    		}
 		$this->retard = $retard;
 	    }
 	    return $this->retard;
@@ -1150,4 +1155,26 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			$this->setUpdatedAt('now');
 		}
         
+	/**
+	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
+	 * Ajouté manuellement : suppression du cache des $sousResponsabiliteEtablissement; $manquementObligationPresence; $manquementObligationPresenceSpecifie_NON_PRECISE;
+	 * $justifiee; $retard; $collectionSaisiesContradictoiresManquementObligation; $boolSaisiesContradictoiresManquementObligation;
+	 *
+	 * This will only work if the object has been saved and has a valid primary key set.
+	 *
+	 * @param      boolean $deep (optional) Whether to also de-associated any related objects.
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     void
+	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
+	 */
+	public function reload($deep = false, PropelPDO $con = null) {
+	    $this->sousResponsabiliteEtablissement = null;
+	    $this->manquementObligationPresence = null;
+	    $this->manquementObligationPresenceSpecifie_NON_PRECISE = null;
+	    $this->justifiee = null;
+	    $this->retard = null;
+	    $this->collectionSaisiesContradictoiresManquementObligation = null;
+	    $this->boolSaisiesContradictoiresManquementObligation = null;
+	    parent::reload($deep, $con);
+	}
 } // AbsenceEleveSaisie
