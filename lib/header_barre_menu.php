@@ -245,11 +245,20 @@ echo '<!--[if lt IE 7]>
 				$barre_note.= '		</li>'."\n";
 			}
 
-			$affiche_li_bull_simp="n";
+			//$affiche_li_bull_simp="n";
 			if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
-				$affiche_li_bull_simp="y";
+				//$affiche_li_bull_simp="y";
+
+				$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a>'."\n";
+					$barre_note .= '		<ul class="niveau3">'."\n";
+					foreach($tmp_mes_classes as $key => $value) {
+						$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index3.php?id_classe='.$key.'"'.insert_confirm_abandon().'>'.$value.'</a>'."\n";
+					}
+					$barre_note.= '			</ul>'."\n";
+				$barre_note.= '		</li>'."\n";
 			}
 			elseif(getSettingValue("GepiAccesBulletinSimplePP") == "yes") {
+				/*
 				$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
 											j_eleves_professeurs jep,
 											j_eleves_classes jec
@@ -257,11 +266,35 @@ echo '<!--[if lt IE 7]>
 												jec.login=jeg.login AND
 												jec.periode=jeg.periode AND
 												jep.professeur='".$_SESSION['login']."';";
+				*/
+				$sql="SELECT 1=1 FROM j_eleves_professeurs jep
+										WHERE jep.professeur='".$_SESSION['login']."';";
 				$res_test_affiche_bull_simp=mysql_num_rows(mysql_query($sql));
 				//echo "$sql";
-				if($res_test_affiche_bull_simp>0) {$affiche_li_bull_simp="y";}
+				if($res_test_affiche_bull_simp>0) {
+
+					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a>'."\n";
+						$barre_note .= '		<ul class="niveau3">'."\n";
+						foreach($tmp_mes_classes as $key => $value) {
+							$sql="SELECT 1=1 FROM j_eleves_professeurs jep,
+											j_eleves_classes jec
+										WHERE jep.login=jec.login AND
+												jec.id_classe='$key' AND
+												jep.professeur='".$_SESSION['login']."';";
+							$res_test_affiche_bull_simp=mysql_num_rows(mysql_query($sql));
+							//echo "$sql";
+							if($res_test_affiche_bull_simp>0) {
+								$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index3.php?id_classe='.$key.'"'.insert_confirm_abandon().'>'.$value.'</a>'."\n";
+							}
+						}
+						$barre_note.= '			</ul>'."\n";
+					$barre_note.= '		</li>'."\n";
+
+					//$affiche_li_bull_simp="y";
+				}
 			}
 
+			/*
 			if($affiche_li_bull_simp=="y") {
 				$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a>'."\n";
 					$barre_note .= '		<ul class="niveau3">'."\n";
@@ -271,7 +304,7 @@ echo '<!--[if lt IE 7]>
 					$barre_note.= '			</ul>'."\n";
 				$barre_note.= '		</li>'."\n";
 			}
-
+			*/
 
 			$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().'>Graphes</a>'."\n";
 				$barre_note .= '		<ul class="niveau3">'."\n";
