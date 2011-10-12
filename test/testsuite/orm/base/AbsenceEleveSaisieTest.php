@@ -33,57 +33,39 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 	public function testHasTypeSaisie()
 	{
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
 		$this->assertFalse($saisie->hasTypeSaisie());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
 		$this->assertFalse($saisie->hasTypeSaisie());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
 		$this->assertTrue($saisie->hasTypeSaisie());
 	}
 
 	public function testHasTypeSaisieDiscipline()
 	{
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
 		$this->assertFalse($saisie->hasTypeSaisieDiscipline());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
 		$this->assertFalse($saisie->hasTypeSaisieDiscipline());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
 		$this->assertTrue($saisie->hasTypeSaisieDiscipline());
 	}
 
 	public function testGetTraitee()
 	{
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
 		$this->assertFalse($saisie->getTraitee());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
 		$this->assertTrue($saisie->getTraitee());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
 		$this->assertTrue($saisie->getTraitee());
 	}
 
@@ -92,27 +74,19 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 	    $id_lieu = AbsenceEleveLieuQuery::create()->filterByNom("Etablissement")->findOne()->getId();
 	    
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
 		$this->assertTrue($saisie->hasLieuSaisie(null));
 		$this->assertFalse($saisie->hasLieuSaisie($id_lieu));
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
 		$this->assertTrue($saisie->hasLieuSaisie(null));
 		$this->assertFalse($saisie->hasLieuSaisie($id_lieu));
 				
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
 		$this->assertFalse($saisie->hasLieuSaisie(null));
 		$this->assertTrue($saisie->hasLieuSaisie($id_lieu));
 				
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
 		$this->assertTrue($saisie->hasLieuSaisie(null));
 		$this->assertTrue($saisie->hasLieuSaisie($id_lieu));
 	}
@@ -122,24 +96,16 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 	    $id_lieu = AbsenceEleveLieuQuery::create()->filterByNom("Etablissement")->findOne()->getId();
 	    
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
 		$this->assertFalse($saisie->hasTypeLikeErreurSaisie());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
 		$this->assertFalse($saisie->hasTypeLikeErreurSaisie());
 						
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
 		$this->assertFalse($saisie->hasTypeLikeErreurSaisie());
 						
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
 		$this->assertTrue($saisie->hasTypeLikeErreurSaisie());
 	}
 
@@ -148,29 +114,19 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 	    $id_lieu = AbsenceEleveLieuQuery::create()->filterByNom("Etablissement")->findOne()->getId();
 	    
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
 		$this->assertTrue($saisie->getManquementObligationPresence());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
 		$this->assertTrue($saisie->getManquementObligationPresence());
 								
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
 		$this->assertFalse($saisie->getRetard());
 								
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
 		$this->assertTrue($saisie->getManquementObligationPresence());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
 		$this->assertTrue($saisie->getManquementObligationPresence());
 		
 	}
@@ -180,37 +136,25 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 	    $id_lieu = AbsenceEleveLieuQuery::create()->filterByNom("Etablissement")->findOne()->getId();
 	    
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
 		$this->assertFalse($saisie->getRetard());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
 		$this->assertFalse($saisie->getRetard());
 								
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
 		$this->assertFalse($saisie->getRetard());
 								
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
 		$this->assertTrue($saisie->getRetard());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
 		$this->assertTrue($saisie->getRetard());
 		$saisie->reload();
 		saveSetting('abs2_retard_critere_duree',20);
 		$this->assertFalse($saisie->getRetard());
 		
-		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06');
-		$this->assertEquals(1,$saisies->count());
-		$saisie = $saisies->getFirst();
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
 		$this->assertTrue($saisie->getRetard());
 		
 	}

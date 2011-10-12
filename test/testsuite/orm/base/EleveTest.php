@@ -121,5 +121,20 @@ class EleveTest extends GepiEmptyTestBase
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01');
 		$this->assertEquals(1,$saisies->count());
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02');
+		$this->assertEquals(1,$saisies->count());
+								
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03');
+		$this->assertEquals(1,$saisies->count());
+								
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04');
+		$this->assertEquals(1,$saisies->count());
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05');
+		$saisie = $saisies->getFirst();
+		
+		$saisies = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06');
+		$this->assertEquals(1,$saisies->count());
 	}
 }
