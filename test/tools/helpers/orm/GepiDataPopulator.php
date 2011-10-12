@@ -209,7 +209,19 @@ class GepiDataPopulator
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
         
-		$con->commit();
+        $saisie_7 = new AbsenceEleveSaisie();
+        $saisie_7->setEleve($florence_eleve);
+        $saisie_7->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_7->setDebutAbs('2010-10-07 08:00:00');
+        $saisie_7->setFinAbs('2010-10-07 09:00:00');
+        $saisie_7->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_7);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Erreur de saisie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        
+        $con->commit();
 	}
 
 

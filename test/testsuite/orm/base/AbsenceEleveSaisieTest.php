@@ -133,6 +133,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 	
 	public function testGetRetard()
 	{
+		saveSetting('abs2_retard_critere_duree',30);
 	    $id_lieu = AbsenceEleveLieuQuery::create()->filterByNom("Etablissement")->findOne()->getId();
 	    
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
@@ -149,14 +150,54 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 		$this->assertTrue($saisie->getRetard());
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+		saveSetting('abs2_retard_critere_duree',30);
 		$this->assertTrue($saisie->getRetard());
 		$saisie->reload();
 		saveSetting('abs2_retard_critere_duree',20);
 		$this->assertFalse($saisie->getRetard());
+		saveSetting('abs2_retard_critere_duree',30);
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
 		$this->assertTrue($saisie->getRetard());
 		
 	}
 
+	public function testGetSousResponsabiliteEtablissement()
+	{
+	    $id_lieu = AbsenceEleveLieuQuery::create()->filterByNom("Etablissement")->findOne()->getId();
+	    
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+		saveSetting('abs2_saisie_par_defaut_sous_responsabilite_etab','y');
+		$this->assertTrue($saisie->getSousResponsabiliteEtablissement());
+		saveSetting('abs2_saisie_par_defaut_sous_responsabilite_etab','n');
+		$saisie->reload();
+		$this->assertFalse($saisie->getSousResponsabiliteEtablissement());
+		saveSetting('abs2_saisie_par_defaut_sous_responsabilite_etab','y');
+		
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+		$this->assertFalse($saisie->getSousResponsabiliteEtablissement());
+								
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
+		$this->assertTrue($saisie->getSousResponsabiliteEtablissement());
+								
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-04')->getFirst();
+		saveSetting('abs2_saisie_multi_type_sous_responsabilite_etab','y');
+		$this->assertTrue($saisie->getSousResponsabiliteEtablissement());
+		saveSetting('abs2_saisie_multi_type_sous_responsabilite_etab','n');
+		$saisie->reload();
+		$this->assertFalse($saisie->getSousResponsabiliteEtablissement());
+		saveSetting('abs2_saisie_multi_type_sous_responsabilite_etab','y');
+		
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
+		$this->assertTrue($saisie->getSousResponsabiliteEtablissement());
+		
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
+		$this->assertFalse($saisie->getSousResponsabiliteEtablissement());
+		
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-07')->getFirst();
+		$this->assertTrue($saisie->getSousResponsabiliteEtablissement());
+		
+	}
+	
 }
