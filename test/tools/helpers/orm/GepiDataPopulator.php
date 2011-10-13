@@ -144,7 +144,12 @@ class GepiDataPopulator
         $traitement->addAbsenceEleveSaisie($saisie_2);
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->setAbsenceEleveJustification(AbsenceEleveJustificationQuery::create()->filterByNom('Courrier familial')->findOne());
         $traitement->save();
+        $notification = new AbsenceEleveNotification();
+        $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_EN_COURS);
+        $notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
+        $notification->setAbsenceEleveTraitement($traitement);
 
         $saisie_3 = new AbsenceEleveSaisie();
         $saisie_3->setEleve($florence_eleve);
@@ -173,12 +178,17 @@ class GepiDataPopulator
         $traitement->addAbsenceEleveSaisie($saisie_4);
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->setAbsenceEleveJustification(AbsenceEleveJustificationQuery::create()->filterByNom('Courrier familial')->findOne());
         $traitement->save();
         $traitement = new AbsenceEleveTraitement();
         $traitement->addAbsenceEleveSaisie($saisie_4);
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Erreur de saisie')->findOne());
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
+        $notification = new AbsenceEleveNotification();
+        $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES);
+        $notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
+        $notification->setAbsenceEleveTraitement($traitement);
         
         $saisie_5 = new AbsenceEleveSaisie();
         $saisie_5->setEleve($florence_eleve);
@@ -218,6 +228,118 @@ class GepiDataPopulator
         $traitement = new AbsenceEleveTraitement();
         $traitement->addAbsenceEleveSaisie($saisie_7);
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Erreur de saisie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        
+        $saisie_8 = new AbsenceEleveSaisie();
+        $saisie_8->setEleve($florence_eleve);
+        $saisie_8->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_8->setDebutAbs('2010-10-08 08:00:00');
+        $saisie_8->setFinAbs('2010-10-08 09:00:00');
+        $saisie_8->save();
+        $saisie_81 = new AbsenceEleveSaisie();
+        $saisie_81->setEleve($florence_eleve);
+        $saisie_81->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_81->setDebutAbs('2010-10-08 08:00:00');
+        $saisie_81->setFinAbs('2010-10-08 08:10:00');
+        $saisie_81->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_81);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Retard exterieur')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        
+        $saisie_9 = new AbsenceEleveSaisie();
+        $saisie_9->setEleve($florence_eleve);
+        $saisie_9->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_9->setDebutAbs('2010-10-09 08:00:00');
+        $saisie_9->setFinAbs('2010-10-09 09:00:00');
+        $saisie_9->save();
+        $saisie_91 = new AbsenceEleveSaisie();
+        $saisie_91->setEleve($florence_eleve);
+        $saisie_91->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_91->setDebutAbs('2010-10-09 08:00:00');
+        $saisie_91->setFinAbs('2010-10-09 08:10:00');
+        $saisie_91->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_91);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        
+        $saisie_10 = new AbsenceEleveSaisie();
+        //$saisie_9->setEleve($florence_eleve);//aucun eleve : c'est un marqueur d'appel éffectué
+        $saisie_10->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_10->setDebutAbs('2010-10-10 08:00:00');
+        $saisie_10->setFinAbs('2010-10-10 09:00:00');
+        $saisie_10->setGroupe($groupe_math);
+        $saisie_10->save();
+        $saisie_101 = new AbsenceEleveSaisie();
+        $saisie_101->setEleve($florence_eleve);
+        $saisie_101->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_101->setDebutAbs('2010-10-10 08:00:00');
+        $saisie_101->setFinAbs('2010-10-10 08:10:00');
+        $saisie_101->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_101);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Retard exterieur')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        
+        $saisie_11 = new AbsenceEleveSaisie();
+        //$saisie_9->setEleve($florence_eleve);//aucun eleve : c'est un marqueur d'appel éffectué
+        $saisie_11->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_11->setDebutAbs('2010-10-11 08:00:00');
+        $saisie_11->setFinAbs('2010-10-11 09:00:00');
+        $saisie_11->setClasse($classe_6A);
+        $saisie_11->save();
+        $saisie_111 = new AbsenceEleveSaisie();
+        $saisie_111->setEleve($florence_eleve);
+        $saisie_111->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_111->setDebutAbs('2010-10-11 08:00:00');
+        $saisie_111->setFinAbs('2010-10-11 08:10:00');
+        $saisie_111->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_111);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Retard exterieur')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        
+        $saisie_12 = new AbsenceEleveSaisie();
+        //$saisie_9->setEleve($florence_eleve);//aucun eleve : c'est un marqueur d'appel éffectué
+        $saisie_12->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_12->setDebutAbs('2010-10-12 08:00:00');
+        $saisie_12->setFinAbs('2010-10-12 09:00:00');
+        $saisie_12->setAidDetails($aid_1);
+        $saisie_12->save();
+        $saisie_121 = new AbsenceEleveSaisie();
+        $saisie_121->setEleve($florence_eleve);
+        $saisie_121->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_121->setDebutAbs('2010-10-12 08:00:00');
+        $saisie_121->setFinAbs('2010-10-12 08:10:00');
+        $saisie_121->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_121);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Retard exterieur')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        
+        $saisie_13 = new AbsenceEleveSaisie();
+        //$saisie_9->setEleve($florence_eleve);//aucun eleve : c'est un marqueur d'appel éffectué
+        $saisie_13->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_13->setDebutAbs('2010-10-13 08:00:00');
+        $saisie_13->setFinAbs('2010-10-13 09:00:00');
+        $saisie_13->setClasse($classe_6A);
+        $saisie_13->save();
+        $saisie_131 = new AbsenceEleveSaisie();
+        $saisie_131->setEleve($florence_eleve);
+        $saisie_131->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_131->setDebutAbs('2010-10-13 08:00:00');
+        $saisie_131->setFinAbs('2010-10-13 08:10:00');
+        $saisie_131->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_131);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
         

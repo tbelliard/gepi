@@ -401,7 +401,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 *
 	 *
 	 * Renvoi true ou false si la saisie a un type de manquement spécifié a 'non précisé'
-	 * Cette propriété est calculé par l'intermediaire des types de traitement
+	 * Cette propriété est calculé par l'intermediaire des types de traitement.
+	 * Pour renvoyer vrai, la saisie ne doit comporter que des types dont le manquement est AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE
 	 *
 	 * @return     boolean
 	 *
@@ -530,7 +531,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		}
 
 		if ($justifiee_avec && $justifiee_sans ) {
-		    //on a aucune information on renvoit le reglage adequat
+		    //on a plusieurs informations contradictoires, on renvoit le reglage adequat
 		    $this->justifiee = (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y');
 		} else if ($justifiee_avec) {
 		    $this->justifiee =  true;
@@ -583,7 +584,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
-	 * Renvoi true si une notification a ete recue par la famille
+	 * Renvoi true si une notification a ete recue avec succès par la famille
 	 *
 	 * @return     boolean
 	 *
