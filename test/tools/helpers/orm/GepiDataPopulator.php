@@ -57,6 +57,7 @@ class GepiDataPopulator
 		$michel_eleve = new Eleve();
 		$michel_eleve->setLogin('Michel Martin');
 		$michel_eleve->setEleId('00112235');
+		$michel_eleve->setDateSortie('2010-12-20');
 		$michel_eleve->save();
 		
 		$classe_6A = new Classe();

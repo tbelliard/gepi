@@ -2018,4 +2018,30 @@ class Eleve extends BaseEleve {
 		}
 	}
 	
+	
+    /**
+	 *
+	 * Renvoi true/false selon que l'élève est sorti ou non de l'établissement (désinscription)
+	 *
+	 * @param DateTime $date_debut_test date de fin pour le test de sortie de l'élève. Si null, la date courrante est utilisée
+	 * @return Boolean
+	 *
+	 */
+    public function isEleveSorti($date_debut_test = null) {
+        if ($date_debut_test == null) {
+            $date_debut_test = new DateTime('now');
+        }
+        $date_sortie_eleve = $this->getDateSortie();            
+        if (is_null($date_sortie_eleve) || $date_sortie_eleve == 0) {
+            return false;
+        } else {
+            if ($date_debut_test > $date_sortie_eleve) {
+                return(true);
+            } else {
+                return(false);
+            }
+        }
+    }
+    
+	
 } // Eleve
