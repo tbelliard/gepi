@@ -381,7 +381,13 @@ class GepiDataPopulator
 		$con->beginTransaction();
 		foreach ($peerClasses as $peerClass) {
 			// $peerClass::doDeleteAll() crashes on PHP 5.2, see http://www.propelorm.org/ticket/1388
-			call_user_func(array($peerClass, 'doDeleteAll'), $con);
+			if (method_exists ($peerClass, 'disableSoftDelete')) {
+			    call_user_func(array($peerClass, 'disableSoftDelete'), $con);
+			}
+		    call_user_func(array($peerClass, 'doDeleteAll'), $con);
+			if (method_exists ($peerClass, 'enableSoftDelete')) {
+			    call_user_func(array($peerClass, 'enableSoftDelete'), $con);
+			}
 		}
 		$con->commit();
 	}

@@ -254,7 +254,6 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 
 	public function testGetNotifiee()
 	{
-		saveSetting('abs2_saisie_multi_type_non_justifiee','n');
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
@@ -281,7 +280,6 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 
 	public function testGetNotificationEnCours()
 	{
-		saveSetting('abs2_saisie_multi_type_non_justifiee','n');
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
@@ -308,7 +306,6 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 
 	public function testGetAbsenceEleveTraitements()
 	{
-		saveSetting('abs2_saisie_multi_type_non_justifiee','n');
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
@@ -340,7 +337,6 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 	
 	public function testGetSaisiesContradictoiresManquementObligation()
 	{
-		saveSetting('abs2_saisie_multi_type_non_justifiee','n');
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
@@ -367,7 +363,6 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 
 	public function testIsSaisiesContradictoiresManquementObligation()
 	{
-		saveSetting('abs2_saisie_multi_type_non_justifiee','n');
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
@@ -390,5 +385,38 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-13')->getFirst();
 		$this->assertFalse($saisie->isSaisiesContradictoiresManquementObligation());
+	}
+	
+	public function testDelete()
+	{
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+		//on va vérifier que le delete change bien le update_ad
+		$old_updated_at = $saisie->getUpdatedAt('U');
+		sleep(1);
+		$saisie->delete();
+		$this->assertGreaterThan($old_updated_at, $saisie->getUpdatedAt('U'), 'le delete doit changer le update_ad');
+
+		$saisie = AbsenceEleveSaisieQuery::create()->filterByEleve($florence_eleve)->filterByDebutAbs('2010-10-01 08:00:00')->findOne();
+		$this->assertNull($saisie);
+		
+		$saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->filterByEleve($florence_eleve)->filterByDebutAbs('2010-10-01 08:00:00')->findOne();
+		$this->assertNotNull($saisie);
+		
+	}
+
+	public function testToVersion()
+	{
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		
+		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+		//$saisie = new AbsenceEleveSaisie();
+		$saisie->setFinAbs('2010-10-02 11:00');
+		$saisie->save();
+		$old_updated_at = $saisie->getUpdatedAt('U');
+		sleep(1);
+		$saisie->toVersion(1);
+		$this->assertGreaterThan($old_updated_at, $saisie->getUpdatedAt('U'), 'le toVersion doit changer le update_ad');
 	}
 }
