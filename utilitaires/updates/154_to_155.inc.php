@@ -749,6 +749,7 @@ if (file_exists($test_file)) {
        $result.=msj_ok(" Réussi !"); 
     }
 }
+
 $result.="<br />";
 $result.="<strong>Module sso_table :</strong>";
 $result.="<br />";
@@ -845,5 +846,70 @@ if ($result_inter == '') {
 	$result.=msj_erreur(" !".$result_inter);
 }
 $result.="<br />";
+
+
+
+$test = sql_query1("SHOW TABLES LIKE 'temp_gep_import2'");
+if ($test == -1) {
+	$result .= "<strong>Ajout d'une table 'temp_gep_import2' :</strong><br />";
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS temp_gep_import2 (
+ID_TEMPO varchar(40) NOT NULL default '',
+LOGIN varchar(40) NOT NULL default '',
+ELENOM varchar(40) NOT NULL default '',
+ELEPRE varchar(40) NOT NULL default '',
+ELESEXE varchar(40) NOT NULL default '',
+ELEDATNAIS varchar(40) NOT NULL default '',
+ELENOET varchar(40) NOT NULL default '',
+ELE_ID varchar(40) NOT NULL default '',
+ELEDOUBL varchar(40) NOT NULL default '',
+ELENONAT varchar(40) NOT NULL default '',
+ELEREG varchar(40) NOT NULL default '',
+DIVCOD varchar(40) NOT NULL default '',
+ETOCOD_EP varchar(40) NOT NULL default '',
+ELEOPT1 varchar(40) NOT NULL default '',
+ELEOPT2 varchar(40) NOT NULL default '',
+ELEOPT3 varchar(40) NOT NULL default '',
+ELEOPT4 varchar(40) NOT NULL default '',
+ELEOPT5 varchar(40) NOT NULL default '',
+ELEOPT6 varchar(40) NOT NULL default '',
+ELEOPT7 varchar(40) NOT NULL default '',
+ELEOPT8 varchar(40) NOT NULL default '',
+ELEOPT9 varchar(40) NOT NULL default '',
+ELEOPT10 varchar(40) NOT NULL default '',
+ELEOPT11 varchar(40) NOT NULL default '',
+ELEOPT12 varchar(40) NOT NULL default '',
+LIEU_NAISSANCE varchar(50) NOT NULL default '',
+MEL varchar(255) NOT NULL default ''
+);");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+else {
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_gep_import2 LIKE 'LIEU_NAISSANCE';"));
+	if ($test_champ==0) {
+		$result .= "<br />&nbsp;->Ajout d'un champ 'LIEU_NAISSANCE' à la table 'temp_gep_import2'<br />";
+		$query = mysql_query("ALTER TABLE temp_gep_import2 ADD LIEU_NAISSANCE VARCHAR( 50 ) NOT NULL AFTER ELEOPT12;");
+		if ($query) {
+			$result .= msj_present("Le champ 'LIEU_NAISSANCE' de la table 'temp_gep_import2' a été ajouté.");
+		} else {
+			$result .= msj_erreur(": Le champ 'LIEU_NAISSANCE' de la table 'temp_gep_import2' n'a pas été ajouté");
+		}
+	}
+	
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_gep_import2 LIKE 'MEL';"));
+	if ($test_champ==0) {
+		$result .= "<br />&nbsp;->Ajout d'un champ 'MEL' à la table 'temp_gep_import2'<br />";
+		$query = mysql_query("ALTER TABLE temp_gep_import2 ADD MEL VARCHAR( 255 ) NOT NULL AFTER LIEU_NAISSANCE;");
+		if ($query) {
+			$result .= msj_present("Le champ 'MEL' de la table 'temp_gep_import2' a été ajouté.");
+		} else {
+			$result .= msj_erreur(": Le champ 'MEL' de la table 'temp_gep_import2' n'a pas été ajouté");
+		}
+	}
+}
 
 ?>
