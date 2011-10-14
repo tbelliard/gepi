@@ -704,3 +704,33 @@ id_mention INT(11) NOT NULL ,
 id_classe INT(11) NOT NULL ,
 ordre TINYINT(4) NOT NULL);
 
+DROP TABLE IF EXISTS temp_gep_import2;
+CREATE TABLE IF NOT EXISTS temp_gep_import2 (
+ID_TEMPO varchar(40) NOT NULL default '',
+LOGIN varchar(40) NOT NULL default '',
+ELENOM varchar(40) NOT NULL default '',
+ELEPRE varchar(40) NOT NULL default '',
+ELESEXE varchar(40) NOT NULL default '',
+ELEDATNAIS varchar(40) NOT NULL default '',
+ELENOET varchar(40) NOT NULL default '',
+ELE_ID varchar(40) NOT NULL default '',
+ELEDOUBL varchar(40) NOT NULL default '',
+ELENONAT varchar(40) NOT NULL default '',
+ELEREG varchar(40) NOT NULL default '',
+DIVCOD varchar(40) NOT NULL default '',
+ETOCOD_EP varchar(40) NOT NULL default '',
+ELEOPT1 varchar(40) NOT NULL default '',
+ELEOPT2 varchar(40) NOT NULL default '',
+ELEOPT3 varchar(40) NOT NULL default '',
+ELEOPT4 varchar(40) NOT NULL default '',
+ELEOPT5 varchar(40) NOT NULL default '',
+ELEOPT6 varchar(40) NOT NULL default '',
+ELEOPT7 varchar(40) NOT NULL default '',
+ELEOPT8 varchar(40) NOT NULL default '',
+ELEOPT9 varchar(40) NOT NULL default '',
+ELEOPT10 varchar(40) NOT NULL default '',
+ELEOPT11 varchar(40) NOT NULL default '',
+ELEOPT12 varchar(40) NOT NULL default '',
+LIEU_NAISSANCE varchar(50) NOT NULL default '',
+MEL varchar(255) NOT NULL default ''
+);
