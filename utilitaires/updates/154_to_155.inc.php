@@ -749,6 +749,7 @@ if (file_exists($test_file)) {
        $result.=msj_ok(" Réussi !"); 
     }
 }
+
 $result.="<br />";
 $result.="<strong>Module sso_table :</strong>";
 $result.="<br />";
