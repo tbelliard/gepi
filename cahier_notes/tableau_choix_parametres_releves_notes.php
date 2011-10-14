@@ -285,6 +285,10 @@
 		echo "</tr>\n";
 		echo "</table>\n";
 
+		echo "<p>Préfixe pour les coefficients&nbsp;: \n";
+		echo "<input type='text' name='chaine_coef' size='5' value='$chaine_coef' />\n";
+		echo "</p>\n";
+
 		//echo "<p>Formule à afficher en bas de page (<i>relevé HTML</i>):</p>\n";
 		echo "<p>Formule à afficher en bas de page&nbsp;: \n";
 
@@ -312,6 +316,9 @@
 			}
 			echo "\" /></td></tr>\n";
 		}
+
 	}
 	echo "</table>\n";
+
+//echo "\$chaine_coef=$chaine_coef<br />";
 ?>
