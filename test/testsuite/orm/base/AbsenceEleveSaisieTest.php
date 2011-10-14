@@ -112,9 +112,15 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 	{
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 		
+		saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
 		$this->assertTrue($saisie->getManquementObligationPresence());
-		
+		saveSetting('abs2_saisie_par_defaut_sans_manquement','y');
+		$saisie->reload();
+	    $this->assertFalse($saisie->getManquementObligationPresence());
+		saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
+		$saisie->reload();
+						
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
 		$this->assertTrue($saisie->getManquementObligationPresence());
 								

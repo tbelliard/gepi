@@ -44,6 +44,22 @@ class GepiDataPopulator
 		$florence_eleve->setLogin('Florence Michu');
 		$florence_eleve->setEleId('00112233');
 		$florence_eleve->save();
+		$adresse = new Adresse();
+		$adresse->setAdr1('13 rue du paradis');
+		$adresse->setCommune('Montendre');
+		$adresse->setCp('01001');
+		$adresse->save();
+		$responsable = new ResponsableEleve();
+		$responsable->setCivilite('M.');
+		$responsable->setNom('Michu');
+		$responsable->setPrenom('Mere');
+		$responsable->setResponsableEleveId('id 1');
+		$responsable->setAdresse($adresse);
+		$responsable->save();
+		$responsable_info = new ResponsableInformation();
+		$responsable_info->setEleve($florence_eleve);
+		$responsable_info->setNiveauResponsabilite(1);
+		$responsable_info->setResponsableEleve($responsable);
 		$dolto_cpe->addEleve($florence_eleve);
 		$dolto_cpe->save();
 		$newton_prof->addEleve($florence_eleve);
@@ -326,7 +342,7 @@ class GepiDataPopulator
         $traitement->save();
         
         $saisie_13 = new AbsenceEleveSaisie();
-        //$saisie_9->setEleve($florence_eleve);//aucun eleve : c'est un marqueur d'appel éffectué
+        //$saisie_13->setEleve($florence_eleve);//aucun eleve : c'est un marqueur d'appel effectué
         $saisie_13->setUtilisateurProfessionnel($lebesgue_prof);
         $saisie_13->setDebutAbs('2010-10-13 08:00:00');
         $saisie_13->setFinAbs('2010-10-13 09:00:00');
@@ -341,6 +357,18 @@ class GepiDataPopulator
         $traitement = new AbsenceEleveTraitement();
         $traitement->addAbsenceEleveSaisie($saisie_131);
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        
+        $saisie_14 = new AbsenceEleveSaisie();
+        $saisie_14->setEleve($florence_eleve);
+        $saisie_14->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_14->setDebutAbs('2010-10-14 08:00:00');
+        $saisie_14->setFinAbs('2010-10-14 09:00:00');
+        $saisie_14->setClasse($classe_6A);
+        $saisie_14->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_14);
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
         
@@ -364,6 +392,9 @@ class GepiDataPopulator
 		    'AbsenceEleveTypePeer',
 		    'AbsenceEleveJustificationPeer',
 			'AbsenceEleveMotifPeer',
+			'ResponsableElevePeer',
+			'ResponsableInformationPeer',
+			'AdressePeer',
 		);
 		// free the memory from existing objects
 		foreach ($peerClasses as $peerClass) {
