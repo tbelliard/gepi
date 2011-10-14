@@ -101,12 +101,12 @@ if ( isset($_POST["creation_notification"])) {
 	if ($responsable_eleve1 != null) {
 	    $notification->setEmail($responsable_eleve1->getMel());
 	    $notification->setTelephone($responsable_eleve1->getTelPort());
-	    $notification->setResponsableEleveAdresseId($responsable_eleve1->getResponsableEleveAdresseId());
+	    $notification->setAdresseId($responsable_eleve1->getAdresseId());
 	    $notification->addResponsableEleve($responsable_eleve1);
 	}
 	if ($responsable_eleve2 != null) {
 	    if ($responsable_eleve1 == null
-		    || $responsable_eleve2->getResponsableEleveAdresseId() == $responsable_eleve1->getResponsableEleveAdresseId()) {
+		    || $responsable_eleve2->getAdresseId() == $responsable_eleve1->getAdresseId()) {
 		$notification->addResponsableEleve($responsable_eleve2);
 	    }
 	}
@@ -143,7 +143,7 @@ if ( $modif == 'type') {
 } elseif ($modif == 'tel') {
     $notification->setTelephone($_POST["tel"]);
 } elseif ($modif == 'adresse') {
-    $notification->setResponsableEleveAdresseId($_POST["adr_id"]);
+    $notification->setAdresseId($_POST["adr_id"]);
 } elseif ($modif == 'duplication') {
     $clone = $notification->copy(); //no deep copy
     $clone->save();

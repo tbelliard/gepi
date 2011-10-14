@@ -300,12 +300,12 @@
 		<column name="tel_port" required="true" type="VARCHAR" size="255" description="Telephone portable du responsable legal"/>
 		<column name="tel_prof" required="true" type="VARCHAR" size="255" description="Telephone professionnel du responsable lega"/>
 		<column name="mel" required="true" type="VARCHAR" size="100" description="Courriel du responsable legal"/>
-		<column name="adr_id" phpName="ResponsableEleveAdresseId" type="VARCHAR" size="10" description="cle etrangere vers l'adresse du responsable lega"/>
+		<column name="adr_id" phpName="AdresseId" type="VARCHAR" size="10" description="cle etrangere vers l'adresse du responsable lega"/>
 		<foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
 	</table>
 
-	<table name="resp_adr" phpName="ResponsableEleveAdresse" description="Table de jointure entre les responsables legaux et leur adresse">
-		<column name="adr_id" phpName="ResponsableEleveAdresseId" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire, genere par sconet"/>
+	<table name="resp_adr" phpName="Adresse" description="Adresse">
+		<column name="adr_id" phpName="Id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire, genere par sconet"/>
 		<column name="adr1" required="true" type="VARCHAR" size="100" description="1ere ligne adresse"/>
 		<column name="adr2" required="true" type="VARCHAR" size="100" description="2eme ligne adresse"/>
 		<column name="adr3" required="true" type="VARCHAR" size="100" description="3eme ligne adresse"/>
@@ -514,7 +514,7 @@
     <column name="type_notification" required="false" type="ENUM" valueSet="courrier, email, sms, communication telephonique" default="null" description="type de notification (0 : courrier, 1 : email, 2 : sms, 3 : telephone"/>
     <column name="email" required="false" type="VARCHAR" size="100" description="email de destination (pour le type email)"/>
     <column name="telephone" required="false" type="VARCHAR" size="100" description="numero du telephone de destination (pour le type sms)"/>
-    <column name="adr_id" phpName="ResponsableEleveAdresseId" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>
+    <column name="adr_id" phpName="AdresseId" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>
     <foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
     <!--foreign-key foreignTable="a_type_envois" onDelete="setnull"><reference local="id_type_envoi" foreign="id"/></foreign-key-->
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>

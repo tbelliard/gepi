@@ -4,90 +4,90 @@
 /**
  * Base class that represents a query for the 'resp_adr' table.
  *
- * Table de jointure entre les responsables legaux et leur adresse
+ * Adresse
  *
- * @method     ResponsableEleveAdresseQuery orderByResponsableEleveAdresseId($order = Criteria::ASC) Order by the adr_id column
- * @method     ResponsableEleveAdresseQuery orderByAdr1($order = Criteria::ASC) Order by the adr1 column
- * @method     ResponsableEleveAdresseQuery orderByAdr2($order = Criteria::ASC) Order by the adr2 column
- * @method     ResponsableEleveAdresseQuery orderByAdr3($order = Criteria::ASC) Order by the adr3 column
- * @method     ResponsableEleveAdresseQuery orderByAdr4($order = Criteria::ASC) Order by the adr4 column
- * @method     ResponsableEleveAdresseQuery orderByCp($order = Criteria::ASC) Order by the cp column
- * @method     ResponsableEleveAdresseQuery orderByPays($order = Criteria::ASC) Order by the pays column
- * @method     ResponsableEleveAdresseQuery orderByCommune($order = Criteria::ASC) Order by the commune column
+ * @method     AdresseQuery orderById($order = Criteria::ASC) Order by the adr_id column
+ * @method     AdresseQuery orderByAdr1($order = Criteria::ASC) Order by the adr1 column
+ * @method     AdresseQuery orderByAdr2($order = Criteria::ASC) Order by the adr2 column
+ * @method     AdresseQuery orderByAdr3($order = Criteria::ASC) Order by the adr3 column
+ * @method     AdresseQuery orderByAdr4($order = Criteria::ASC) Order by the adr4 column
+ * @method     AdresseQuery orderByCp($order = Criteria::ASC) Order by the cp column
+ * @method     AdresseQuery orderByPays($order = Criteria::ASC) Order by the pays column
+ * @method     AdresseQuery orderByCommune($order = Criteria::ASC) Order by the commune column
  *
- * @method     ResponsableEleveAdresseQuery groupByResponsableEleveAdresseId() Group by the adr_id column
- * @method     ResponsableEleveAdresseQuery groupByAdr1() Group by the adr1 column
- * @method     ResponsableEleveAdresseQuery groupByAdr2() Group by the adr2 column
- * @method     ResponsableEleveAdresseQuery groupByAdr3() Group by the adr3 column
- * @method     ResponsableEleveAdresseQuery groupByAdr4() Group by the adr4 column
- * @method     ResponsableEleveAdresseQuery groupByCp() Group by the cp column
- * @method     ResponsableEleveAdresseQuery groupByPays() Group by the pays column
- * @method     ResponsableEleveAdresseQuery groupByCommune() Group by the commune column
+ * @method     AdresseQuery groupById() Group by the adr_id column
+ * @method     AdresseQuery groupByAdr1() Group by the adr1 column
+ * @method     AdresseQuery groupByAdr2() Group by the adr2 column
+ * @method     AdresseQuery groupByAdr3() Group by the adr3 column
+ * @method     AdresseQuery groupByAdr4() Group by the adr4 column
+ * @method     AdresseQuery groupByCp() Group by the cp column
+ * @method     AdresseQuery groupByPays() Group by the pays column
+ * @method     AdresseQuery groupByCommune() Group by the commune column
  *
- * @method     ResponsableEleveAdresseQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ResponsableEleveAdresseQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ResponsableEleveAdresseQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     AdresseQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     AdresseQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     AdresseQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ResponsableEleveAdresseQuery leftJoinResponsableEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableEleve relation
- * @method     ResponsableEleveAdresseQuery rightJoinResponsableEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
- * @method     ResponsableEleveAdresseQuery innerJoinResponsableEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableEleve relation
+ * @method     AdresseQuery leftJoinResponsableEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableEleve relation
+ * @method     AdresseQuery rightJoinResponsableEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
+ * @method     AdresseQuery innerJoinResponsableEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableEleve relation
  *
- * @method     ResponsableEleveAdresseQuery leftJoinAbsenceEleveNotification($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
- * @method     ResponsableEleveAdresseQuery rightJoinAbsenceEleveNotification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
- * @method     ResponsableEleveAdresseQuery innerJoinAbsenceEleveNotification($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     AdresseQuery leftJoinAbsenceEleveNotification($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     AdresseQuery rightJoinAbsenceEleveNotification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     AdresseQuery innerJoinAbsenceEleveNotification($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
  *
- * @method     ResponsableEleveAdresse findOne(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query
- * @method     ResponsableEleveAdresse findOneOrCreate(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query, or a new ResponsableEleveAdresse object populated from the query conditions when no match is found
+ * @method     Adresse findOne(PropelPDO $con = null) Return the first Adresse matching the query
+ * @method     Adresse findOneOrCreate(PropelPDO $con = null) Return the first Adresse matching the query, or a new Adresse object populated from the query conditions when no match is found
  *
- * @method     ResponsableEleveAdresse findOneByResponsableEleveAdresseId(string $adr_id) Return the first ResponsableEleveAdresse filtered by the adr_id column
- * @method     ResponsableEleveAdresse findOneByAdr1(string $adr1) Return the first ResponsableEleveAdresse filtered by the adr1 column
- * @method     ResponsableEleveAdresse findOneByAdr2(string $adr2) Return the first ResponsableEleveAdresse filtered by the adr2 column
- * @method     ResponsableEleveAdresse findOneByAdr3(string $adr3) Return the first ResponsableEleveAdresse filtered by the adr3 column
- * @method     ResponsableEleveAdresse findOneByAdr4(string $adr4) Return the first ResponsableEleveAdresse filtered by the adr4 column
- * @method     ResponsableEleveAdresse findOneByCp(string $cp) Return the first ResponsableEleveAdresse filtered by the cp column
- * @method     ResponsableEleveAdresse findOneByPays(string $pays) Return the first ResponsableEleveAdresse filtered by the pays column
- * @method     ResponsableEleveAdresse findOneByCommune(string $commune) Return the first ResponsableEleveAdresse filtered by the commune column
+ * @method     Adresse findOneById(string $adr_id) Return the first Adresse filtered by the adr_id column
+ * @method     Adresse findOneByAdr1(string $adr1) Return the first Adresse filtered by the adr1 column
+ * @method     Adresse findOneByAdr2(string $adr2) Return the first Adresse filtered by the adr2 column
+ * @method     Adresse findOneByAdr3(string $adr3) Return the first Adresse filtered by the adr3 column
+ * @method     Adresse findOneByAdr4(string $adr4) Return the first Adresse filtered by the adr4 column
+ * @method     Adresse findOneByCp(string $cp) Return the first Adresse filtered by the cp column
+ * @method     Adresse findOneByPays(string $pays) Return the first Adresse filtered by the pays column
+ * @method     Adresse findOneByCommune(string $commune) Return the first Adresse filtered by the commune column
  *
- * @method     array findByResponsableEleveAdresseId(string $adr_id) Return ResponsableEleveAdresse objects filtered by the adr_id column
- * @method     array findByAdr1(string $adr1) Return ResponsableEleveAdresse objects filtered by the adr1 column
- * @method     array findByAdr2(string $adr2) Return ResponsableEleveAdresse objects filtered by the adr2 column
- * @method     array findByAdr3(string $adr3) Return ResponsableEleveAdresse objects filtered by the adr3 column
- * @method     array findByAdr4(string $adr4) Return ResponsableEleveAdresse objects filtered by the adr4 column
- * @method     array findByCp(string $cp) Return ResponsableEleveAdresse objects filtered by the cp column
- * @method     array findByPays(string $pays) Return ResponsableEleveAdresse objects filtered by the pays column
- * @method     array findByCommune(string $commune) Return ResponsableEleveAdresse objects filtered by the commune column
+ * @method     array findById(string $adr_id) Return Adresse objects filtered by the adr_id column
+ * @method     array findByAdr1(string $adr1) Return Adresse objects filtered by the adr1 column
+ * @method     array findByAdr2(string $adr2) Return Adresse objects filtered by the adr2 column
+ * @method     array findByAdr3(string $adr3) Return Adresse objects filtered by the adr3 column
+ * @method     array findByAdr4(string $adr4) Return Adresse objects filtered by the adr4 column
+ * @method     array findByCp(string $cp) Return Adresse objects filtered by the cp column
+ * @method     array findByPays(string $pays) Return Adresse objects filtered by the pays column
+ * @method     array findByCommune(string $commune) Return Adresse objects filtered by the commune column
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
+abstract class BaseAdresseQuery extends ModelCriteria
 {
 
 	/**
-	 * Initializes internal state of BaseResponsableEleveAdresseQuery object.
+	 * Initializes internal state of BaseAdresseQuery object.
 	 *
 	 * @param     string $dbName The dabase name
 	 * @param     string $modelName The phpName of a model, e.g. 'Book'
 	 * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
 	 */
-	public function __construct($dbName = 'gepi', $modelName = 'ResponsableEleveAdresse', $modelAlias = null)
+	public function __construct($dbName = 'gepi', $modelName = 'Adresse', $modelAlias = null)
 	{
 		parent::__construct($dbName, $modelName, $modelAlias);
 	}
 
 	/**
-	 * Returns a new ResponsableEleveAdresseQuery object.
+	 * Returns a new AdresseQuery object.
 	 *
 	 * @param     string $modelAlias The alias of a model in the query
 	 * @param     Criteria $criteria Optional Criteria to build the query from
 	 *
-	 * @return    ResponsableEleveAdresseQuery
+	 * @return    AdresseQuery
 	 */
 	public static function create($modelAlias = null, $criteria = null)
 	{
-		if ($criteria instanceof ResponsableEleveAdresseQuery) {
+		if ($criteria instanceof AdresseQuery) {
 			return $criteria;
 		}
-		$query = new ResponsableEleveAdresseQuery();
+		$query = new AdresseQuery();
 		if (null !== $modelAlias) {
 			$query->setModelAlias($modelAlias);
 		}
@@ -106,11 +106,11 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
-	 * @return    ResponsableEleveAdresse|array|mixed the result, formatted by the current formatter
+	 * @return    Adresse|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = ResponsableEleveAdressePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ((null !== ($obj = AdressePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
 		} else {
@@ -146,11 +146,11 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @param     mixed $key Primary key to use for the query
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByPrimaryKey($key)
 	{
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $key, Criteria::EQUAL);
+		return $this->addUsingAlias(AdressePeer::ADR_ID, $key, Criteria::EQUAL);
 	}
 
 	/**
@@ -158,11 +158,11 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @param     array $keys The list of primary key to use for the query
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $keys, Criteria::IN);
+		return $this->addUsingAlias(AdressePeer::ADR_ID, $keys, Criteria::IN);
 	}
 
 	/**
@@ -170,27 +170,27 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByResponsableEleveAdresseId('fooValue');   // WHERE adr_id = 'fooValue'
-	 * $query->filterByResponsableEleveAdresseId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
+	 * $query->filterById('fooValue');   // WHERE adr_id = 'fooValue'
+	 * $query->filterById('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $responsableEleveAdresseId The value to use as filter.
+	 * @param     string $id The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
-	public function filterByResponsableEleveAdresseId($responsableEleveAdresseId = null, $comparison = null)
+	public function filterById($id = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($responsableEleveAdresseId)) {
+			if (is_array($id)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $responsableEleveAdresseId)) {
-				$responsableEleveAdresseId = str_replace('*', '%', $responsableEleveAdresseId);
+			} elseif (preg_match('/[\%\*]/', $id)) {
+				$id = str_replace('*', '%', $id);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleveAdresseId, $comparison);
+		return $this->addUsingAlias(AdressePeer::ADR_ID, $id, $comparison);
 	}
 
 	/**
@@ -206,7 +206,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByAdr1($adr1 = null, $comparison = null)
 	{
@@ -218,7 +218,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR1, $adr1, $comparison);
+		return $this->addUsingAlias(AdressePeer::ADR1, $adr1, $comparison);
 	}
 
 	/**
@@ -234,7 +234,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByAdr2($adr2 = null, $comparison = null)
 	{
@@ -246,7 +246,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR2, $adr2, $comparison);
+		return $this->addUsingAlias(AdressePeer::ADR2, $adr2, $comparison);
 	}
 
 	/**
@@ -262,7 +262,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByAdr3($adr3 = null, $comparison = null)
 	{
@@ -274,7 +274,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR3, $adr3, $comparison);
+		return $this->addUsingAlias(AdressePeer::ADR3, $adr3, $comparison);
 	}
 
 	/**
@@ -290,7 +290,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByAdr4($adr4 = null, $comparison = null)
 	{
@@ -302,7 +302,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR4, $adr4, $comparison);
+		return $this->addUsingAlias(AdressePeer::ADR4, $adr4, $comparison);
 	}
 
 	/**
@@ -318,7 +318,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByCp($cp = null, $comparison = null)
 	{
@@ -330,7 +330,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::CP, $cp, $comparison);
+		return $this->addUsingAlias(AdressePeer::CP, $cp, $comparison);
 	}
 
 	/**
@@ -346,7 +346,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByPays($pays = null, $comparison = null)
 	{
@@ -358,7 +358,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::PAYS, $pays, $comparison);
+		return $this->addUsingAlias(AdressePeer::PAYS, $pays, $comparison);
 	}
 
 	/**
@@ -374,7 +374,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByCommune($commune = null, $comparison = null)
 	{
@@ -386,7 +386,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::COMMUNE, $commune, $comparison);
+		return $this->addUsingAlias(AdressePeer::COMMUNE, $commune, $comparison);
 	}
 
 	/**
@@ -395,13 +395,13 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 * @param     ResponsableEleve $responsableEleve  the related object to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByResponsableEleve($responsableEleve, $comparison = null)
 	{
 		if ($responsableEleve instanceof ResponsableEleve) {
 			return $this
-				->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleve->getResponsableEleveAdresseId(), $comparison);
+				->addUsingAlias(AdressePeer::ADR_ID, $responsableEleve->getAdresseId(), $comparison);
 		} elseif ($responsableEleve instanceof PropelCollection) {
 			return $this
 				->useResponsableEleveQuery()
@@ -418,7 +418,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function joinResponsableEleve($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
@@ -468,13 +468,13 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 * @param     AbsenceEleveNotification $absenceEleveNotification  the related object to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = null)
 	{
 		if ($absenceEleveNotification instanceof AbsenceEleveNotification) {
 			return $this
-				->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $absenceEleveNotification->getResponsableEleveAdresseId(), $comparison);
+				->addUsingAlias(AdressePeer::ADR_ID, $absenceEleveNotification->getAdresseId(), $comparison);
 		} elseif ($absenceEleveNotification instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveNotificationQuery()
@@ -491,7 +491,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
 	public function joinAbsenceEleveNotification($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
@@ -538,17 +538,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Exclude object from result
 	 *
-	 * @param     ResponsableEleveAdresse $responsableEleveAdresse Object to remove from the list of results
+	 * @param     Adresse $adresse Object to remove from the list of results
 	 *
-	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 * @return    AdresseQuery The current query, for fluid interface
 	 */
-	public function prune($responsableEleveAdresse = null)
+	public function prune($adresse = null)
 	{
-		if ($responsableEleveAdresse) {
-			$this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleveAdresse->getResponsableEleveAdresseId(), Criteria::NOT_EQUAL);
+		if ($adresse) {
+			$this->addUsingAlias(AdressePeer::ADR_ID, $adresse->getId(), Criteria::NOT_EQUAL);
 	  }
 	  
 		return $this;
 	}
 
-} // BaseResponsableEleveAdresseQuery
+} // BaseAdresseQuery

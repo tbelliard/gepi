@@ -1428,12 +1428,12 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           $resp->setTelProf($user['raw']['telephonenumber'][0]);
           $resp->setTelPort($user['raw']['mobile'][0]);
           $resp->setMel($user['email']);
-          $resp->setResponsableEleveAdresseId($user['raw']['intid'][0]);
+          $resp->setAdresseId($user['raw']['intid'][0]);
                     
           // On créé l'adresse associée
           
-          $adr = new ResponsableEleveAdresse();
-          $adr->setResponsableEleveAdresseId($user['raw']['intid'][0]);
+          $adr = new Adresse();
+          $adr->setAdresseId($user['raw']['intid'][0]);
           $adr->setAdr1($user['raw']['entpersonadresse'][0]);
           $adr->setAdr2('');
           $adr->setAdr3('');
@@ -1442,7 +1442,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           $adr->setCp($user['raw']['entpersoncodepostal'][0]);
           $adr->setPays($user['raw']['entpersonpays'][0]);
           
-          $resp->setResponsableEleveAdresse($adr);
+          $resp->setAdresse($adr);
           
           $resp->save();
 

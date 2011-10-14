@@ -586,7 +586,7 @@ CREATE TABLE resp_adr
 	pays VARCHAR(50) NOT NULL COMMENT 'Pays (quand il est autre que France)',
 	commune VARCHAR(50) NOT NULL COMMENT 'Commune de residence',
 	PRIMARY KEY (adr_id)
-) ENGINE=MyISAM COMMENT='Table de jointure entre les responsables legaux et leur adresse';
+) ENGINE=MyISAM COMMENT='Adresse';
 
 -- ---------------------------------------------------------------------
 -- j_eleves_etablissements

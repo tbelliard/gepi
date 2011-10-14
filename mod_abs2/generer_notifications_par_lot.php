@@ -328,8 +328,8 @@ if (!$notif_courrier_fini->isEmpty()) {$notif = new AbsenceEleveNotification();
 	}
 	echo '</td>';
 	echo '<td>';
-	if ($notif->getResponsableEleveAdresse() != null) {
-	    echo $notif->getResponsableEleveAdresse()->getDescriptionSurUneLigne();
+	if ($notif->getAdresse() != null) {
+	    echo $notif->getAdresse()->getDescriptionSurUneLigne();
 	}
 	echo '</td>';
 	echo '<td>Statut '.$notif->getStatutEnvoi().'</td>';
@@ -373,8 +373,8 @@ if (!$notif_courrier_a_envoyer_col->isEmpty()) {$notif = new AbsenceEleveNotific
 	}
 	echo '</td>';
 	echo '<td>';
-	if ($notif->getResponsableEleveAdresse() != null) {
-	    echo $notif->getResponsableEleveAdresse()->getDescriptionSurUneLigne();
+	if ($notif->getAdresse() != null) {
+	    echo $notif->getAdresse()->getDescriptionSurUneLigne();
 	}
 	echo '</td>';
 	echo '<td>Statut '.$notif->getStatutEnvoi().'</td>';

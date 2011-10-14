@@ -421,31 +421,31 @@ if (($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_
     echo '<tr><td>';
     echo 'Adresse : ';
     echo '</td><td>';
-    if ($notification->getResponsableEleveAdresse() != null) {
+    if ($notification->getAdresse() != null) {
 	//pour information : Nom du ou des responsables sélectionnés
 	echo 'De : <i> ';
-	echo $notification->getResponsableEleveAdresse()->getDescriptionHabitant();
+	echo $notification->getAdresse()->getDescriptionHabitant();
 	echo '</i><br/><br/>';
-	if ($notification->getResponsableEleveAdresse()->getAdr1() != null && $notification->getResponsableEleveAdresse()->getAdr1() != '') {
-	    echo $notification->getResponsableEleveAdresse()->getAdr1();
+	if ($notification->getAdresse()->getAdr1() != null && $notification->getAdresse()->getAdr1() != '') {
+	    echo $notification->getAdresse()->getAdr1();
 	    echo '<br/>';
 	}
-	if ($notification->getResponsableEleveAdresse()->getAdr2() != null && $notification->getResponsableEleveAdresse()->getAdr2() != '') {
-	    echo $notification->getResponsableEleveAdresse()->getAdr2();
+	if ($notification->getAdresse()->getAdr2() != null && $notification->getAdresse()->getAdr2() != '') {
+	    echo $notification->getAdresse()->getAdr2();
 	    echo '<br/>';
 	}
-	if ($notification->getResponsableEleveAdresse()->getAdr3() != null && $notification->getResponsableEleveAdresse()->getAdr3() != '') {
-	    echo $notification->getResponsableEleveAdresse()->getAdr3();
+	if ($notification->getAdresse()->getAdr3() != null && $notification->getAdresse()->getAdr3() != '') {
+	    echo $notification->getAdresse()->getAdr3();
 	    echo '<br/>';
 	}
-	if ($notification->getResponsableEleveAdresse()->getAdr4() != null && $notification->getResponsableEleveAdresse()->getAdr4() != '') {
-	    echo $notification->getResponsableEleveAdresse()->getAdr4();
+	if ($notification->getAdresse()->getAdr4() != null && $notification->getAdresse()->getAdr4() != '') {
+	    echo $notification->getAdresse()->getAdr4();
 	    echo '<br/>';
 	}
-	echo $notification->getResponsableEleveAdresse()->getCp().' '.$notification->getResponsableEleveAdresse()->getCommune();
-	if ($notification->getResponsableEleveAdresse()->getPays() != null && $notification->getResponsableEleveAdresse()->getPays() != '' && $notification->getResponsableEleveAdresse()->getPays() != getsettingvalue('gepiSchoolPays')) {
+	echo $notification->getAdresse()->getCp().' '.$notification->getAdresse()->getCommune();
+	if ($notification->getAdresse()->getPays() != null && $notification->getAdresse()->getPays() != '' && $notification->getAdresse()->getPays() != getsettingvalue('gepiSchoolPays')) {
 	    echo '<br/>';
-	    echo $notification->getResponsableEleveAdresse()->getPays();
+	    echo $notification->getAdresse()->getPays();
 	}	
     }
 
@@ -460,16 +460,16 @@ if (($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_
 	$adresse_col = new PropelCollection();
 	if ($notification->getAbsenceEleveTraitement() != null) {
 	    foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
-		if ($responsable_information->getResponsableEleve() != null && $responsable_information->getResponsableEleve()->getResponsableEleveAdresse() != null) {
-		     $adresse_col->add($responsable_information->getResponsableEleve()->getResponsableEleveAdresse());
+		if ($responsable_information->getResponsableEleve() != null && $responsable_information->getResponsableEleve()->getAdresse() != null) {
+		     $adresse_col->add($responsable_information->getResponsableEleve()->getAdresse());
 		}
 	    }
 	}
 	foreach ($adresse_col as $responsable_addresse) {
-	    //$responsable_addresse = new ResponsableEleveAdresse();
+	    //$responsable_addresse = new Adresse();
 	    echo '<option value="'.$responsable_addresse->getPrimaryKey().'"';
-	    if ($notification->getResponsableEleveAdresse() != null &&
-		    $responsable_addresse->getPrimaryKey() == $notification->getResponsableEleveAdresse()->getPrimaryKey()) {
+	    if ($notification->getAdresse() != null &&
+		    $responsable_addresse->getPrimaryKey() == $notification->getAdresse()->getPrimaryKey()) {
 		echo " selected='selected' ";
 	    }
 	    echo ">";

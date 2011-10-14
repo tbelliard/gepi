@@ -15,7 +15,7 @@
  * @method     ResponsableEleveQuery orderByTelPort($order = Criteria::ASC) Order by the tel_port column
  * @method     ResponsableEleveQuery orderByTelProf($order = Criteria::ASC) Order by the tel_prof column
  * @method     ResponsableEleveQuery orderByMel($order = Criteria::ASC) Order by the mel column
- * @method     ResponsableEleveQuery orderByResponsableEleveAdresseId($order = Criteria::ASC) Order by the adr_id column
+ * @method     ResponsableEleveQuery orderByAdresseId($order = Criteria::ASC) Order by the adr_id column
  *
  * @method     ResponsableEleveQuery groupByResponsableEleveId() Group by the pers_id column
  * @method     ResponsableEleveQuery groupByLogin() Group by the login column
@@ -26,15 +26,15 @@
  * @method     ResponsableEleveQuery groupByTelPort() Group by the tel_port column
  * @method     ResponsableEleveQuery groupByTelProf() Group by the tel_prof column
  * @method     ResponsableEleveQuery groupByMel() Group by the mel column
- * @method     ResponsableEleveQuery groupByResponsableEleveAdresseId() Group by the adr_id column
+ * @method     ResponsableEleveQuery groupByAdresseId() Group by the adr_id column
  *
  * @method     ResponsableEleveQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ResponsableEleveQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ResponsableEleveQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ResponsableEleveQuery leftJoinResponsableEleveAdresse($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableEleveAdresse relation
- * @method     ResponsableEleveQuery rightJoinResponsableEleveAdresse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableEleveAdresse relation
- * @method     ResponsableEleveQuery innerJoinResponsableEleveAdresse($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableEleveAdresse relation
+ * @method     ResponsableEleveQuery leftJoinAdresse($relationAlias = null) Adds a LEFT JOIN clause to the query using the Adresse relation
+ * @method     ResponsableEleveQuery rightJoinAdresse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Adresse relation
+ * @method     ResponsableEleveQuery innerJoinAdresse($relationAlias = null) Adds a INNER JOIN clause to the query using the Adresse relation
  *
  * @method     ResponsableEleveQuery leftJoinResponsableInformation($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableInformation relation
  * @method     ResponsableEleveQuery rightJoinResponsableInformation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableInformation relation
@@ -56,7 +56,7 @@
  * @method     ResponsableEleve findOneByTelPort(string $tel_port) Return the first ResponsableEleve filtered by the tel_port column
  * @method     ResponsableEleve findOneByTelProf(string $tel_prof) Return the first ResponsableEleve filtered by the tel_prof column
  * @method     ResponsableEleve findOneByMel(string $mel) Return the first ResponsableEleve filtered by the mel column
- * @method     ResponsableEleve findOneByResponsableEleveAdresseId(string $adr_id) Return the first ResponsableEleve filtered by the adr_id column
+ * @method     ResponsableEleve findOneByAdresseId(string $adr_id) Return the first ResponsableEleve filtered by the adr_id column
  *
  * @method     array findByResponsableEleveId(string $pers_id) Return ResponsableEleve objects filtered by the pers_id column
  * @method     array findByLogin(string $login) Return ResponsableEleve objects filtered by the login column
@@ -67,7 +67,7 @@
  * @method     array findByTelPort(string $tel_port) Return ResponsableEleve objects filtered by the tel_port column
  * @method     array findByTelProf(string $tel_prof) Return ResponsableEleve objects filtered by the tel_prof column
  * @method     array findByMel(string $mel) Return ResponsableEleve objects filtered by the mel column
- * @method     array findByResponsableEleveAdresseId(string $adr_id) Return ResponsableEleve objects filtered by the adr_id column
+ * @method     array findByAdresseId(string $adr_id) Return ResponsableEleve objects filtered by the adr_id column
  *
  * @package    propel.generator.gepi.om
  */
@@ -434,65 +434,65 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByResponsableEleveAdresseId('fooValue');   // WHERE adr_id = 'fooValue'
-	 * $query->filterByResponsableEleveAdresseId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
+	 * $query->filterByAdresseId('fooValue');   // WHERE adr_id = 'fooValue'
+	 * $query->filterByAdresseId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $responsableEleveAdresseId The value to use as filter.
+	 * @param     string $adresseId The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function filterByResponsableEleveAdresseId($responsableEleveAdresseId = null, $comparison = null)
+	public function filterByAdresseId($adresseId = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($responsableEleveAdresseId)) {
+			if (is_array($adresseId)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $responsableEleveAdresseId)) {
-				$responsableEleveAdresseId = str_replace('*', '%', $responsableEleveAdresseId);
+			} elseif (preg_match('/[\%\*]/', $adresseId)) {
+				$adresseId = str_replace('*', '%', $adresseId);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresseId, $comparison);
+		return $this->addUsingAlias(ResponsableElevePeer::ADR_ID, $adresseId, $comparison);
 	}
 
 	/**
-	 * Filter the query by a related ResponsableEleveAdresse object
+	 * Filter the query by a related Adresse object
 	 *
-	 * @param     ResponsableEleveAdresse|PropelCollection $responsableEleveAdresse The related object(s) to use as filter
+	 * @param     Adresse|PropelCollection $adresse The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function filterByResponsableEleveAdresse($responsableEleveAdresse, $comparison = null)
+	public function filterByAdresse($adresse, $comparison = null)
 	{
-		if ($responsableEleveAdresse instanceof ResponsableEleveAdresse) {
+		if ($adresse instanceof Adresse) {
 			return $this
-				->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->getResponsableEleveAdresseId(), $comparison);
-		} elseif ($responsableEleveAdresse instanceof PropelCollection) {
+				->addUsingAlias(ResponsableElevePeer::ADR_ID, $adresse->getId(), $comparison);
+		} elseif ($adresse instanceof PropelCollection) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 			return $this
-				->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->toKeyValue('PrimaryKey', 'ResponsableEleveAdresseId'), $comparison);
+				->addUsingAlias(ResponsableElevePeer::ADR_ID, $adresse->toKeyValue('PrimaryKey', 'Id'), $comparison);
 		} else {
-			throw new PropelException('filterByResponsableEleveAdresse() only accepts arguments of type ResponsableEleveAdresse or PropelCollection');
+			throw new PropelException('filterByAdresse() only accepts arguments of type Adresse or PropelCollection');
 		}
 	}
 
 	/**
-	 * Adds a JOIN clause to the query using the ResponsableEleveAdresse relation
+	 * Adds a JOIN clause to the query using the Adresse relation
 	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function joinResponsableEleveAdresse($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	public function joinAdresse($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('ResponsableEleveAdresse');
+		$relationMap = $tableMap->getRelation('Adresse');
 		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
@@ -507,14 +507,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
-			$this->addJoinObject($join, 'ResponsableEleveAdresse');
+			$this->addJoinObject($join, 'Adresse');
 		}
 		
 		return $this;
 	}
 
 	/**
-	 * Use the ResponsableEleveAdresse relation ResponsableEleveAdresse object
+	 * Use the Adresse relation Adresse object
 	 *
 	 * @see       useQuery()
 	 * 
@@ -522,13 +522,13 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    ResponsableEleveAdresseQuery A secondary query class using the current class as primary query
+	 * @return    AdresseQuery A secondary query class using the current class as primary query
 	 */
-	public function useResponsableEleveAdresseQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	public function useAdresseQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
-			->joinResponsableEleveAdresse($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'ResponsableEleveAdresse', 'ResponsableEleveAdresseQuery');
+			->joinAdresse($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Adresse', 'AdresseQuery');
 	}
 
 	/**

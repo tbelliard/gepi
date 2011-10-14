@@ -83,8 +83,8 @@ abstract class BaseResponsableElevePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('ResponsableEleveId', 'Login', 'Nom', 'Prenom', 'Civilite', 'TelPers', 'TelPort', 'TelProf', 'Mel', 'ResponsableEleveAdresseId', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('responsableEleveId', 'login', 'nom', 'prenom', 'civilite', 'telPers', 'telPort', 'telProf', 'mel', 'responsableEleveAdresseId', ),
+		BasePeer::TYPE_PHPNAME => array ('ResponsableEleveId', 'Login', 'Nom', 'Prenom', 'Civilite', 'TelPers', 'TelPort', 'TelProf', 'Mel', 'AdresseId', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('responsableEleveId', 'login', 'nom', 'prenom', 'civilite', 'telPers', 'telPort', 'telProf', 'mel', 'adresseId', ),
 		BasePeer::TYPE_COLNAME => array (self::PERS_ID, self::LOGIN, self::NOM, self::PRENOM, self::CIVILITE, self::TEL_PERS, self::TEL_PORT, self::TEL_PROF, self::MEL, self::ADR_ID, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('PERS_ID', 'LOGIN', 'NOM', 'PRENOM', 'CIVILITE', 'TEL_PERS', 'TEL_PORT', 'TEL_PROF', 'MEL', 'ADR_ID', ),
 		BasePeer::TYPE_FIELDNAME => array ('pers_id', 'login', 'nom', 'prenom', 'civilite', 'tel_pers', 'tel_port', 'tel_prof', 'mel', 'adr_id', ),
@@ -98,8 +98,8 @@ abstract class BaseResponsableElevePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('ResponsableEleveId' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Civilite' => 4, 'TelPers' => 5, 'TelPort' => 6, 'TelProf' => 7, 'Mel' => 8, 'ResponsableEleveAdresseId' => 9, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('responsableEleveId' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'civilite' => 4, 'telPers' => 5, 'telPort' => 6, 'telProf' => 7, 'mel' => 8, 'responsableEleveAdresseId' => 9, ),
+		BasePeer::TYPE_PHPNAME => array ('ResponsableEleveId' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Civilite' => 4, 'TelPers' => 5, 'TelPort' => 6, 'TelProf' => 7, 'Mel' => 8, 'AdresseId' => 9, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('responsableEleveId' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'civilite' => 4, 'telPers' => 5, 'telPort' => 6, 'telProf' => 7, 'mel' => 8, 'adresseId' => 9, ),
 		BasePeer::TYPE_COLNAME => array (self::PERS_ID => 0, self::LOGIN => 1, self::NOM => 2, self::PRENOM => 3, self::CIVILITE => 4, self::TEL_PERS => 5, self::TEL_PORT => 6, self::TEL_PROF => 7, self::MEL => 8, self::ADR_ID => 9, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('PERS_ID' => 0, 'LOGIN' => 1, 'NOM' => 2, 'PRENOM' => 3, 'CIVILITE' => 4, 'TEL_PERS' => 5, 'TEL_PORT' => 6, 'TEL_PROF' => 7, 'MEL' => 8, 'ADR_ID' => 9, ),
 		BasePeer::TYPE_FIELDNAME => array ('pers_id' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'civilite' => 4, 'tel_pers' => 5, 'tel_port' => 6, 'tel_prof' => 7, 'mel' => 8, 'adr_id' => 9, ),
@@ -489,7 +489,7 @@ abstract class BaseResponsableElevePeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related ResponsableEleveAdresse table
+	 * Returns the number of rows matching criteria, joining the related Adresse table
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -497,7 +497,7 @@ abstract class BaseResponsableElevePeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinResponsableEleveAdresse(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAdresse(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -524,7 +524,7 @@ abstract class BaseResponsableElevePeer {
 			$con = Propel::getConnection(ResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(ResponsableElevePeer::ADR_ID, ResponsableEleveAdressePeer::ADR_ID, $join_behavior);
+		$criteria->addJoin(ResponsableElevePeer::ADR_ID, AdressePeer::ADR_ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -539,7 +539,7 @@ abstract class BaseResponsableElevePeer {
 
 
 	/**
-	 * Selects a collection of ResponsableEleve objects pre-filled with their ResponsableEleveAdresse objects.
+	 * Selects a collection of ResponsableEleve objects pre-filled with their Adresse objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
@@ -547,7 +547,7 @@ abstract class BaseResponsableElevePeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinResponsableEleveAdresse(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAdresse(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$criteria = clone $criteria;
 
@@ -558,9 +558,9 @@ abstract class BaseResponsableElevePeer {
 
 		ResponsableElevePeer::addSelectColumns($criteria);
 		$startcol = ResponsableElevePeer::NUM_HYDRATE_COLUMNS;
-		ResponsableEleveAdressePeer::addSelectColumns($criteria);
+		AdressePeer::addSelectColumns($criteria);
 
-		$criteria->addJoin(ResponsableElevePeer::ADR_ID, ResponsableEleveAdressePeer::ADR_ID, $join_behavior);
+		$criteria->addJoin(ResponsableElevePeer::ADR_ID, AdressePeer::ADR_ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -580,19 +580,19 @@ abstract class BaseResponsableElevePeer {
 				ResponsableElevePeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
-			$key2 = ResponsableEleveAdressePeer::getPrimaryKeyHashFromRow($row, $startcol);
+			$key2 = AdressePeer::getPrimaryKeyHashFromRow($row, $startcol);
 			if ($key2 !== null) {
-				$obj2 = ResponsableEleveAdressePeer::getInstanceFromPool($key2);
+				$obj2 = AdressePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = ResponsableEleveAdressePeer::getOMClass(false);
+					$cls = AdressePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
-					ResponsableEleveAdressePeer::addInstanceToPool($obj2, $key2);
+					AdressePeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (ResponsableEleve) to $obj2 (ResponsableEleveAdresse)
+				// Add the $obj1 (ResponsableEleve) to $obj2 (Adresse)
 				$obj2->addResponsableEleve($obj1);
 
 			} // if joined row was not null
@@ -640,7 +640,7 @@ abstract class BaseResponsableElevePeer {
 			$con = Propel::getConnection(ResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(ResponsableElevePeer::ADR_ID, ResponsableEleveAdressePeer::ADR_ID, $join_behavior);
+		$criteria->addJoin(ResponsableElevePeer::ADR_ID, AdressePeer::ADR_ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -675,10 +675,10 @@ abstract class BaseResponsableElevePeer {
 		ResponsableElevePeer::addSelectColumns($criteria);
 		$startcol2 = ResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 
-		ResponsableEleveAdressePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + ResponsableEleveAdressePeer::NUM_HYDRATE_COLUMNS;
+		AdressePeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + AdressePeer::NUM_HYDRATE_COLUMNS;
 
-		$criteria->addJoin(ResponsableElevePeer::ADR_ID, ResponsableEleveAdressePeer::ADR_ID, $join_behavior);
+		$criteria->addJoin(ResponsableElevePeer::ADR_ID, AdressePeer::ADR_ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -697,21 +697,21 @@ abstract class BaseResponsableElevePeer {
 				ResponsableElevePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
-			// Add objects for joined ResponsableEleveAdresse rows
+			// Add objects for joined Adresse rows
 
-			$key2 = ResponsableEleveAdressePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+			$key2 = AdressePeer::getPrimaryKeyHashFromRow($row, $startcol2);
 			if ($key2 !== null) {
-				$obj2 = ResponsableEleveAdressePeer::getInstanceFromPool($key2);
+				$obj2 = AdressePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = ResponsableEleveAdressePeer::getOMClass(false);
+					$cls = AdressePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
-					ResponsableEleveAdressePeer::addInstanceToPool($obj2, $key2);
+					AdressePeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 loaded
 
-				// Add the $obj1 (ResponsableEleve) to the collection in $obj2 (ResponsableEleveAdresse)
+				// Add the $obj1 (ResponsableEleve) to the collection in $obj2 (Adresse)
 				$obj2->addResponsableEleve($obj1);
 			} // if joined row not null
 

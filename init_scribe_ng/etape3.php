@@ -117,7 +117,7 @@ if ($_POST['step'] == "3") {
           $resp->setMel($respemail);
           
           
-          $resp->setResponsableEleveAdresseId($pers_id);
+          $resp->setAdresseId($pers_id);
           
           
           // On créé l'adresse associée
@@ -130,8 +130,8 @@ if ($_POST['step'] == "3") {
           $test_adr = mysql_num_rows(mysql_query("SELECT * FROM resp_adr WHERE adr_id = '".$pers_id."'"));
           
           if ($resp_addr && $test_adr == 0) {
-            $adr = new ResponsableEleveAdresse();
-            $adr->setResponsableEleveAdresseId($pers_id);
+            $adr = new Adresse();
+            $adr->setAdresseId($pers_id);
             $adr->setAdr1($resp_addr);
             $adr->setAdr2('');
             $adr->setAdr3('');
@@ -140,7 +140,7 @@ if ($_POST['step'] == "3") {
             $adr->setCp($resp_cp);
             $adr->setPays($resp_pays);
           
-            $resp->setResponsableEleveAdresse($adr);
+            $resp->setAdresse($adr);
           }
           
           $resp->save();
