@@ -31,9 +31,14 @@ if(!in_array($_SESSION["statut"],$tab_statuts)) {
 }
 
 if((isset($chaine_login_prof))&&($chaine_login_prof!='')) {
-	$tab_login=array($chaine_login_prof);
-	if(($_SESSION["statut"]=="professeur")&&(!in_array("'".$_SESSION["login"]."'",$tab_login))) {
-		header("Location: $pref_arbo_include/logout.php?auto=1");
+	$tab_login=array(strtolower($chaine_login_prof));
+	if(($_SESSION["statut"]=="professeur")&&(!in_array("'".strtolower($_SESSION["login"])."'",$tab_login))) {
+		if(getSettingValue('debug_acces_archives_cdt')=='y') {
+			echo "<p style='color:red'>Le login ".$_SESSION["login"]." n'est pas dans la liste autorisée ".$chaine_login_prof."</p>\n";
+		}
+		else {
+			header("Location: $pref_arbo_include/logout.php?auto=1");
+		}
 		die();
 	}
 }

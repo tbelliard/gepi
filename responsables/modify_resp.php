@@ -473,6 +473,8 @@ $titre_page = "Ajouter ou modifier un responsable";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 
+//debug_var();
+
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
@@ -582,7 +584,7 @@ if(isset($associer_eleve)) {
 
 	$lig_pers=mysql_fetch_object($res_resp);
 
-	$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom FROM eleves e ORDER BY e.nom,e.prenom";
+	$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom,e.login FROM eleves e ORDER BY e.nom,e.prenom";
 	$res_ele=mysql_query($sql);
 
 	if(mysql_num_rows($res_ele)==0){
@@ -592,6 +594,7 @@ if(isset($associer_eleve)) {
 		die();
 	}
 
+	$tab_anomalie_ele_id=array();
 	$compteur=0;
 	while($lig_ele=mysql_fetch_object($res_ele)){
 		// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
@@ -618,7 +621,12 @@ if(isset($associer_eleve)) {
 				echo "<option value=''>--- Ajouter un élève ---</option>\n";
 			}
 
-			echo "<option value='$lig_ele->ele_id'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
+			if($lig_ele->ele_id!='') {
+				echo "<option value='$lig_ele->ele_id'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
+			}
+			else {
+				$tab_anomalie_ele_id[]=$lig_ele->login;
+			}
 			$compteur++;
 		}
 	}
@@ -634,6 +642,15 @@ if(isset($associer_eleve)) {
 	}
 	else{
 		echo "<p>Tous les élèves ont leur deux responsables légaux.</p>\n";
+	}
+
+	if(count($tab_anomalie_ele_id)>0) {
+		echo "<p><span style='color:red'>ANOMALIE&nbsp;:</span> Un ou des élèves n'ont pas d'ELE_ID.<br />Comment avez-vous initialisé/importé/créé ces élèves&nbsp;?<br />En voici la liste&nbsp;:</p>";
+		echo "<ul>\n";
+		for($i=0;$i<count($tab_anomalie_ele_id);$i++) {
+			echo "<li><a href='../eleves/modify_eleve.php?eleve_login=".$tab_anomalie_ele_id[$i]."'>".get_nom_prenom_eleve($tab_anomalie_ele_id[$i],'avec_classe')."</li>\n";
+		}
+		echo "</ul>\n";
 	}
 
 	require("../lib/footer.inc.php");
