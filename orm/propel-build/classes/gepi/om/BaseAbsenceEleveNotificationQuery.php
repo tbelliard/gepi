@@ -12,7 +12,7 @@
  * @method     AbsenceEleveNotificationQuery orderByTypeNotification($order = Criteria::ASC) Order by the type_notification column
  * @method     AbsenceEleveNotificationQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     AbsenceEleveNotificationQuery orderByTelephone($order = Criteria::ASC) Order by the telephone column
- * @method     AbsenceEleveNotificationQuery orderByAdrId($order = Criteria::ASC) Order by the adr_id column
+ * @method     AbsenceEleveNotificationQuery orderByResponsableEleveAdresseId($order = Criteria::ASC) Order by the adr_id column
  * @method     AbsenceEleveNotificationQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveNotificationQuery orderByStatutEnvoi($order = Criteria::ASC) Order by the statut_envoi column
  * @method     AbsenceEleveNotificationQuery orderByDateEnvoi($order = Criteria::ASC) Order by the date_envoi column
@@ -26,7 +26,7 @@
  * @method     AbsenceEleveNotificationQuery groupByTypeNotification() Group by the type_notification column
  * @method     AbsenceEleveNotificationQuery groupByEmail() Group by the email column
  * @method     AbsenceEleveNotificationQuery groupByTelephone() Group by the telephone column
- * @method     AbsenceEleveNotificationQuery groupByAdrId() Group by the adr_id column
+ * @method     AbsenceEleveNotificationQuery groupByResponsableEleveAdresseId() Group by the adr_id column
  * @method     AbsenceEleveNotificationQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveNotificationQuery groupByStatutEnvoi() Group by the statut_envoi column
  * @method     AbsenceEleveNotificationQuery groupByDateEnvoi() Group by the date_envoi column
@@ -63,7 +63,7 @@
  * @method     AbsenceEleveNotification findOneByTypeNotification(string $type_notification) Return the first AbsenceEleveNotification filtered by the type_notification column
  * @method     AbsenceEleveNotification findOneByEmail(string $email) Return the first AbsenceEleveNotification filtered by the email column
  * @method     AbsenceEleveNotification findOneByTelephone(string $telephone) Return the first AbsenceEleveNotification filtered by the telephone column
- * @method     AbsenceEleveNotification findOneByAdrId(string $adr_id) Return the first AbsenceEleveNotification filtered by the adr_id column
+ * @method     AbsenceEleveNotification findOneByResponsableEleveAdresseId(string $adr_id) Return the first AbsenceEleveNotification filtered by the adr_id column
  * @method     AbsenceEleveNotification findOneByCommentaire(string $commentaire) Return the first AbsenceEleveNotification filtered by the commentaire column
  * @method     AbsenceEleveNotification findOneByStatutEnvoi(string $statut_envoi) Return the first AbsenceEleveNotification filtered by the statut_envoi column
  * @method     AbsenceEleveNotification findOneByDateEnvoi(string $date_envoi) Return the first AbsenceEleveNotification filtered by the date_envoi column
@@ -77,7 +77,7 @@
  * @method     array findByTypeNotification(string $type_notification) Return AbsenceEleveNotification objects filtered by the type_notification column
  * @method     array findByEmail(string $email) Return AbsenceEleveNotification objects filtered by the email column
  * @method     array findByTelephone(string $telephone) Return AbsenceEleveNotification objects filtered by the telephone column
- * @method     array findByAdrId(string $adr_id) Return AbsenceEleveNotification objects filtered by the adr_id column
+ * @method     array findByResponsableEleveAdresseId(string $adr_id) Return AbsenceEleveNotification objects filtered by the adr_id column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveNotification objects filtered by the commentaire column
  * @method     array findByStatutEnvoi(string $statut_envoi) Return AbsenceEleveNotification objects filtered by the statut_envoi column
  * @method     array findByDateEnvoi(string $date_envoi) Return AbsenceEleveNotification objects filtered by the date_envoi column
@@ -382,27 +382,27 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByAdrId('fooValue');   // WHERE adr_id = 'fooValue'
-	 * $query->filterByAdrId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
+	 * $query->filterByResponsableEleveAdresseId('fooValue');   // WHERE adr_id = 'fooValue'
+	 * $query->filterByResponsableEleveAdresseId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $adrId The value to use as filter.
+	 * @param     string $responsableEleveAdresseId The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
-	public function filterByAdrId($adrId = null, $comparison = null)
+	public function filterByResponsableEleveAdresseId($responsableEleveAdresseId = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($adrId)) {
+			if (is_array($responsableEleveAdresseId)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $adrId)) {
-				$adrId = str_replace('*', '%', $adrId);
+			} elseif (preg_match('/[\%\*]/', $responsableEleveAdresseId)) {
+				$responsableEleveAdresseId = str_replace('*', '%', $responsableEleveAdresseId);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(AbsenceEleveNotificationPeer::ADR_ID, $adrId, $comparison);
+		return $this->addUsingAlias(AbsenceEleveNotificationPeer::ADR_ID, $responsableEleveAdresseId, $comparison);
 	}
 
 	/**
@@ -779,13 +779,13 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	{
 		if ($responsableEleveAdresse instanceof ResponsableEleveAdresse) {
 			return $this
-				->addUsingAlias(AbsenceEleveNotificationPeer::ADR_ID, $responsableEleveAdresse->getAdrId(), $comparison);
+				->addUsingAlias(AbsenceEleveNotificationPeer::ADR_ID, $responsableEleveAdresse->getResponsableEleveAdresseId(), $comparison);
 		} elseif ($responsableEleveAdresse instanceof PropelCollection) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 			return $this
-				->addUsingAlias(AbsenceEleveNotificationPeer::ADR_ID, $responsableEleveAdresse->toKeyValue('PrimaryKey', 'AdrId'), $comparison);
+				->addUsingAlias(AbsenceEleveNotificationPeer::ADR_ID, $responsableEleveAdresse->toKeyValue('PrimaryKey', 'ResponsableEleveAdresseId'), $comparison);
 		} else {
 			throw new PropelException('filterByResponsableEleveAdresse() only accepts arguments of type ResponsableEleveAdresse or PropelCollection');
 		}

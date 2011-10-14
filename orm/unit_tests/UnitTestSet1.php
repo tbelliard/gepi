@@ -203,12 +203,12 @@ if ($respInfos[0] == null) {
 	echo('test ajout des responsables information a l eleve a <font color="red">echoue</font> <br><br/>');
 } else {
 	$respInformation = $respInfos[0];
-	if ($respInformation->getResponsableEleve()->getPersId() != UnitTestResponsableEleve::getResponsableEleve()->getPersId()) {
+	if ($respInformation->getResponsableEleve()->getResponsableEleveId() != UnitTestResponsableEleve::getResponsableEleve()->getResponsableEleveId()) {
 		echo ($logger->getDisplay());
 		echo('test ajout des responsables information a l eleve a <font color="red">echoue</font> <br><br/>');
 	} else {
 		$respEleve = $respInformation->getResponsableEleve();
-		if ($respEleve->getResponsableEleveAdresse()->getAdrId() != UnitTestResponsableEleve::getResponsableEleveAdresse()->getAdrId()) {
+		if ($respEleve->getResponsableEleveAdresse()->getResponsableEleveAdresseId() != UnitTestResponsableEleve::getResponsableEleveAdresse()->getResponsableEleveAdresseId()) {
 			echo ($logger->getDisplay());
 			echo('test ajout des responsables information a l eleve a <font color="red">echoue</font> <br><br/>');
 		} else {
@@ -266,7 +266,7 @@ function purgeDonneesTest($logger) {
 	//purge du responsable legal et de son adresse
 	echo "<br/>Purge du responsable legal et de son adresse<br/>";
 	$criteria = new Criteria();
-	$criteria->add(ResponsableElevePeer::PERS_ID, UnitTestResponsableEleve::getResponsableEleve()->getPersId());
+	$criteria->add(ResponsableElevePeer::PERS_ID, UnitTestResponsableEleve::getResponsableEleve()->getResponsableEleveId());
 	$responsableEleve = ResponsableElevePeer::doSelectOne($criteria);
 	if ($responsableEleve != null) {
 		$responsableEleveAdresse = $responsableEleve->getResponsableEleveAdresse();
@@ -276,7 +276,7 @@ function purgeDonneesTest($logger) {
 		$responsableEleve->delete();
 	}
 	$criteria = new Criteria();
-	$criteria->add(ResponsableEleveAdressePeer::ADR_ID, UnitTestResponsableEleve::getResponsableEleveAdresse()->getAdrId());
+	$criteria->add(ResponsableEleveAdressePeer::ADR_ID, UnitTestResponsableEleve::getResponsableEleveAdresse()->getResponsableEleveAdresseId());
 	$responsableEleveAdresse = ResponsableEleveAdressePeer::doSelectOne($criteria);
 	if ($responsableEleveAdresse != null) {
 		$responsableEleveAdresse->delete();

@@ -83,8 +83,8 @@ abstract class BaseResponsableElevePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('PersId', 'Login', 'Nom', 'Prenom', 'Civilite', 'TelPers', 'TelPort', 'TelProf', 'Mel', 'AdrId', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('persId', 'login', 'nom', 'prenom', 'civilite', 'telPers', 'telPort', 'telProf', 'mel', 'adrId', ),
+		BasePeer::TYPE_PHPNAME => array ('ResponsableEleveId', 'Login', 'Nom', 'Prenom', 'Civilite', 'TelPers', 'TelPort', 'TelProf', 'Mel', 'ResponsableEleveAdresseId', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('responsableEleveId', 'login', 'nom', 'prenom', 'civilite', 'telPers', 'telPort', 'telProf', 'mel', 'responsableEleveAdresseId', ),
 		BasePeer::TYPE_COLNAME => array (self::PERS_ID, self::LOGIN, self::NOM, self::PRENOM, self::CIVILITE, self::TEL_PERS, self::TEL_PORT, self::TEL_PROF, self::MEL, self::ADR_ID, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('PERS_ID', 'LOGIN', 'NOM', 'PRENOM', 'CIVILITE', 'TEL_PERS', 'TEL_PORT', 'TEL_PROF', 'MEL', 'ADR_ID', ),
 		BasePeer::TYPE_FIELDNAME => array ('pers_id', 'login', 'nom', 'prenom', 'civilite', 'tel_pers', 'tel_port', 'tel_prof', 'mel', 'adr_id', ),
@@ -98,8 +98,8 @@ abstract class BaseResponsableElevePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('PersId' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Civilite' => 4, 'TelPers' => 5, 'TelPort' => 6, 'TelProf' => 7, 'Mel' => 8, 'AdrId' => 9, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('persId' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'civilite' => 4, 'telPers' => 5, 'telPort' => 6, 'telProf' => 7, 'mel' => 8, 'adrId' => 9, ),
+		BasePeer::TYPE_PHPNAME => array ('ResponsableEleveId' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Civilite' => 4, 'TelPers' => 5, 'TelPort' => 6, 'TelProf' => 7, 'Mel' => 8, 'ResponsableEleveAdresseId' => 9, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('responsableEleveId' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'civilite' => 4, 'telPers' => 5, 'telPort' => 6, 'telProf' => 7, 'mel' => 8, 'responsableEleveAdresseId' => 9, ),
 		BasePeer::TYPE_COLNAME => array (self::PERS_ID => 0, self::LOGIN => 1, self::NOM => 2, self::PRENOM => 3, self::CIVILITE => 4, self::TEL_PERS => 5, self::TEL_PORT => 6, self::TEL_PROF => 7, self::MEL => 8, self::ADR_ID => 9, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('PERS_ID' => 0, 'LOGIN' => 1, 'NOM' => 2, 'PRENOM' => 3, 'CIVILITE' => 4, 'TEL_PERS' => 5, 'TEL_PORT' => 6, 'TEL_PROF' => 7, 'MEL' => 8, 'ADR_ID' => 9, ),
 		BasePeer::TYPE_FIELDNAME => array ('pers_id' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'civilite' => 4, 'tel_pers' => 5, 'tel_port' => 6, 'tel_prof' => 7, 'mel' => 8, 'adr_id' => 9, ),
@@ -320,7 +320,7 @@ abstract class BaseResponsableElevePeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getPersId();
+				$key = (string) $obj->getResponsableEleveId();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -340,7 +340,7 @@ abstract class BaseResponsableElevePeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof ResponsableEleve) {
-				$key = (string) $value->getPersId();
+				$key = (string) $value->getResponsableEleveId();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
@@ -961,13 +961,13 @@ abstract class BaseResponsableElevePeer {
 			// delete related ResponsableInformation objects
 			$criteria = new Criteria(ResponsableInformationPeer::DATABASE_NAME);
 			
-			$criteria->add(ResponsableInformationPeer::PERS_ID, $obj->getPersId());
+			$criteria->add(ResponsableInformationPeer::PERS_ID, $obj->getResponsableEleveId());
 			$affectedRows += ResponsableInformationPeer::doDelete($criteria, $con);
 
 			// delete related JNotificationResponsableEleve objects
 			$criteria = new Criteria(JNotificationResponsableElevePeer::DATABASE_NAME);
 			
-			$criteria->add(JNotificationResponsableElevePeer::PERS_ID, $obj->getPersId());
+			$criteria->add(JNotificationResponsableElevePeer::PERS_ID, $obj->getResponsableEleveId());
 			$affectedRows += JNotificationResponsableElevePeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;

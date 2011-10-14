@@ -77,8 +77,8 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('AdrId', 'Adr1', 'Adr2', 'Adr3', 'Adr4', 'Cp', 'Pays', 'Commune', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('adrId', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
+		BasePeer::TYPE_PHPNAME => array ('ResponsableEleveAdresseId', 'Adr1', 'Adr2', 'Adr3', 'Adr4', 'Cp', 'Pays', 'Commune', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('responsableEleveAdresseId', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
 		BasePeer::TYPE_COLNAME => array (self::ADR_ID, self::ADR1, self::ADR2, self::ADR3, self::ADR4, self::CP, self::PAYS, self::COMMUNE, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ADR_ID', 'ADR1', 'ADR2', 'ADR3', 'ADR4', 'CP', 'PAYS', 'COMMUNE', ),
 		BasePeer::TYPE_FIELDNAME => array ('adr_id', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
@@ -92,8 +92,8 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('AdrId' => 0, 'Adr1' => 1, 'Adr2' => 2, 'Adr3' => 3, 'Adr4' => 4, 'Cp' => 5, 'Pays' => 6, 'Commune' => 7, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('adrId' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
+		BasePeer::TYPE_PHPNAME => array ('ResponsableEleveAdresseId' => 0, 'Adr1' => 1, 'Adr2' => 2, 'Adr3' => 3, 'Adr4' => 4, 'Cp' => 5, 'Pays' => 6, 'Commune' => 7, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('responsableEleveAdresseId' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
 		BasePeer::TYPE_COLNAME => array (self::ADR_ID => 0, self::ADR1 => 1, self::ADR2 => 2, self::ADR3 => 3, self::ADR4 => 4, self::CP => 5, self::PAYS => 6, self::COMMUNE => 7, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ADR_ID' => 0, 'ADR1' => 1, 'ADR2' => 2, 'ADR3' => 3, 'ADR4' => 4, 'CP' => 5, 'PAYS' => 6, 'COMMUNE' => 7, ),
 		BasePeer::TYPE_FIELDNAME => array ('adr_id' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
@@ -310,7 +310,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getAdrId();
+				$key = (string) $obj->getResponsableEleveAdresseId();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -330,7 +330,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof ResponsableEleveAdresse) {
-				$key = (string) $value->getAdrId();
+				$key = (string) $value->getResponsableEleveAdresseId();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
@@ -714,7 +714,7 @@ abstract class BaseResponsableEleveAdressePeer {
 			// set fkey col in related ResponsableEleve rows to NULL
 			$selectCriteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
 			$updateValues = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$selectCriteria->add(ResponsableElevePeer::ADR_ID, $obj->getAdrId());
+			$selectCriteria->add(ResponsableElevePeer::ADR_ID, $obj->getResponsableEleveAdresseId());
 			$updateValues->add(ResponsableElevePeer::ADR_ID, null);
 
 			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
@@ -722,7 +722,7 @@ abstract class BaseResponsableEleveAdressePeer {
 			// set fkey col in related AbsenceEleveNotification rows to NULL
 			$selectCriteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
 			$updateValues = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveNotificationPeer::ADR_ID, $obj->getAdrId());
+			$selectCriteria->add(AbsenceEleveNotificationPeer::ADR_ID, $obj->getResponsableEleveAdresseId());
 			$updateValues->add(AbsenceEleveNotificationPeer::ADR_ID, null);
 
 			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey

@@ -106,8 +106,8 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'ATraitementId', 'TypeNotification', 'Email', 'Telephone', 'AdrId', 'Commentaire', 'StatutEnvoi', 'DateEnvoi', 'ErreurMessageEnvoi', 'CreatedAt', 'UpdatedAt', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'aTraitementId', 'typeNotification', 'email', 'telephone', 'adrId', 'commentaire', 'statutEnvoi', 'dateEnvoi', 'erreurMessageEnvoi', 'createdAt', 'updatedAt', ),
+		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'ATraitementId', 'TypeNotification', 'Email', 'Telephone', 'ResponsableEleveAdresseId', 'Commentaire', 'StatutEnvoi', 'DateEnvoi', 'ErreurMessageEnvoi', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'aTraitementId', 'typeNotification', 'email', 'telephone', 'responsableEleveAdresseId', 'commentaire', 'statutEnvoi', 'dateEnvoi', 'erreurMessageEnvoi', 'createdAt', 'updatedAt', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::A_TRAITEMENT_ID, self::TYPE_NOTIFICATION, self::EMAIL, self::TELEPHONE, self::ADR_ID, self::COMMENTAIRE, self::STATUT_ENVOI, self::DATE_ENVOI, self::ERREUR_MESSAGE_ENVOI, self::CREATED_AT, self::UPDATED_AT, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'A_TRAITEMENT_ID', 'TYPE_NOTIFICATION', 'EMAIL', 'TELEPHONE', 'ADR_ID', 'COMMENTAIRE', 'STATUT_ENVOI', 'DATE_ENVOI', 'ERREUR_MESSAGE_ENVOI', 'CREATED_AT', 'UPDATED_AT', ),
 		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'a_traitement_id', 'type_notification', 'email', 'telephone', 'adr_id', 'commentaire', 'statut_envoi', 'date_envoi', 'erreur_message_envoi', 'created_at', 'updated_at', ),
@@ -121,8 +121,8 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'ATraitementId' => 2, 'TypeNotification' => 3, 'Email' => 4, 'Telephone' => 5, 'AdrId' => 6, 'Commentaire' => 7, 'StatutEnvoi' => 8, 'DateEnvoi' => 9, 'ErreurMessageEnvoi' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'aTraitementId' => 2, 'typeNotification' => 3, 'email' => 4, 'telephone' => 5, 'adrId' => 6, 'commentaire' => 7, 'statutEnvoi' => 8, 'dateEnvoi' => 9, 'erreurMessageEnvoi' => 10, 'createdAt' => 11, 'updatedAt' => 12, ),
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'ATraitementId' => 2, 'TypeNotification' => 3, 'Email' => 4, 'Telephone' => 5, 'ResponsableEleveAdresseId' => 6, 'Commentaire' => 7, 'StatutEnvoi' => 8, 'DateEnvoi' => 9, 'ErreurMessageEnvoi' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'aTraitementId' => 2, 'typeNotification' => 3, 'email' => 4, 'telephone' => 5, 'responsableEleveAdresseId' => 6, 'commentaire' => 7, 'statutEnvoi' => 8, 'dateEnvoi' => 9, 'erreurMessageEnvoi' => 10, 'createdAt' => 11, 'updatedAt' => 12, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::A_TRAITEMENT_ID => 2, self::TYPE_NOTIFICATION => 3, self::EMAIL => 4, self::TELEPHONE => 5, self::ADR_ID => 6, self::COMMENTAIRE => 7, self::STATUT_ENVOI => 8, self::DATE_ENVOI => 9, self::ERREUR_MESSAGE_ENVOI => 10, self::CREATED_AT => 11, self::UPDATED_AT => 12, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'A_TRAITEMENT_ID' => 2, 'TYPE_NOTIFICATION' => 3, 'EMAIL' => 4, 'TELEPHONE' => 5, 'ADR_ID' => 6, 'COMMENTAIRE' => 7, 'STATUT_ENVOI' => 8, 'DATE_ENVOI' => 9, 'ERREUR_MESSAGE_ENVOI' => 10, 'CREATED_AT' => 11, 'UPDATED_AT' => 12, ),
 		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'a_traitement_id' => 2, 'type_notification' => 3, 'email' => 4, 'telephone' => 5, 'adr_id' => 6, 'commentaire' => 7, 'statut_envoi' => 8, 'date_envoi' => 9, 'erreur_message_envoi' => 10, 'created_at' => 11, 'updated_at' => 12, ),

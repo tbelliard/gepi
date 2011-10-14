@@ -101,7 +101,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * cle primaire, genere par sconet
 	 * @return     string
 	 */
-	public function getAdrId()
+	public function getResponsableEleveAdresseId()
 	{
 		return $this->adr_id;
 	}
@@ -182,7 +182,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * @param      string $v new value
 	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
 	 */
-	public function setAdrId($v)
+	public function setResponsableEleveAdresseId($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
@@ -194,7 +194,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		}
 
 		return $this;
-	} // setAdrId()
+	} // setResponsableEleveAdresseId()
 
 	/**
 	 * Set the value of [adr1] column.
@@ -712,7 +712,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	{
 		switch($pos) {
 			case 0:
-				return $this->getAdrId();
+				return $this->getResponsableEleveAdresseId();
 				break;
 			case 1:
 				return $this->getAdr1();
@@ -764,7 +764,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		$alreadyDumpedObjects['ResponsableEleveAdresse'][$this->getPrimaryKey()] = true;
 		$keys = ResponsableEleveAdressePeer::getFieldNames($keyType);
 		$result = array(
-			$keys[0] => $this->getAdrId(),
+			$keys[0] => $this->getResponsableEleveAdresseId(),
 			$keys[1] => $this->getAdr1(),
 			$keys[2] => $this->getAdr2(),
 			$keys[3] => $this->getAdr3(),
@@ -812,7 +812,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	{
 		switch($pos) {
 			case 0:
-				$this->setAdrId($value);
+				$this->setResponsableEleveAdresseId($value);
 				break;
 			case 1:
 				$this->setAdr1($value);
@@ -859,7 +859,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	{
 		$keys = ResponsableEleveAdressePeer::getFieldNames($keyType);
 
-		if (array_key_exists($keys[0], $arr)) $this->setAdrId($arr[$keys[0]]);
+		if (array_key_exists($keys[0], $arr)) $this->setResponsableEleveAdresseId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setAdr1($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setAdr2($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setAdr3($arr[$keys[3]]);
@@ -912,7 +912,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function getPrimaryKey()
 	{
-		return $this->getAdrId();
+		return $this->getResponsableEleveAdresseId();
 	}
 
 	/**
@@ -923,7 +923,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function setPrimaryKey($key)
 	{
-		$this->setAdrId($key);
+		$this->setResponsableEleveAdresseId($key);
 	}
 
 	/**
@@ -932,7 +932,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return null === $this->getAdrId();
+		return null === $this->getResponsableEleveAdresseId();
 	}
 
 	/**
@@ -948,7 +948,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setAdrId($this->getAdrId());
+		$copyObj->setResponsableEleveAdresseId($this->getResponsableEleveAdresseId());
 		$copyObj->setAdr1($this->getAdr1());
 		$copyObj->setAdr2($this->getAdr2());
 		$copyObj->setAdr3($this->getAdr3());

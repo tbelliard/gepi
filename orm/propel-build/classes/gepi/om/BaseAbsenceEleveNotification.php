@@ -235,7 +235,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 * cle etrangere vers l'adresse de destination (pour le type courrier)
 	 * @return     string
 	 */
-	public function getAdrId()
+	public function getResponsableEleveAdresseId()
 	{
 		return $this->adr_id;
 	}
@@ -529,7 +529,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 * @param      string $v new value
 	 * @return     AbsenceEleveNotification The current object (for fluent API support)
 	 */
-	public function setAdrId($v)
+	public function setResponsableEleveAdresseId($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
@@ -540,12 +540,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$this->modifiedColumns[] = AbsenceEleveNotificationPeer::ADR_ID;
 		}
 
-		if ($this->aResponsableEleveAdresse !== null && $this->aResponsableEleveAdresse->getAdrId() !== $v) {
+		if ($this->aResponsableEleveAdresse !== null && $this->aResponsableEleveAdresse->getResponsableEleveAdresseId() !== $v) {
 			$this->aResponsableEleveAdresse = null;
 		}
 
 		return $this;
-	} // setAdrId()
+	} // setResponsableEleveAdresseId()
 
 	/**
 	 * Set the value of [commentaire] column.
@@ -763,7 +763,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->aAbsenceEleveTraitement !== null && $this->a_traitement_id !== $this->aAbsenceEleveTraitement->getId()) {
 			$this->aAbsenceEleveTraitement = null;
 		}
-		if ($this->aResponsableEleveAdresse !== null && $this->adr_id !== $this->aResponsableEleveAdresse->getAdrId()) {
+		if ($this->aResponsableEleveAdresse !== null && $this->adr_id !== $this->aResponsableEleveAdresse->getResponsableEleveAdresseId()) {
 			$this->aResponsableEleveAdresse = null;
 		}
 	} // ensureConsistency
@@ -1144,7 +1144,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				return $this->getTelephone();
 				break;
 			case 6:
-				return $this->getAdrId();
+				return $this->getResponsableEleveAdresseId();
 				break;
 			case 7:
 				return $this->getCommentaire();
@@ -1199,7 +1199,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$keys[3] => $this->getTypeNotification(),
 			$keys[4] => $this->getEmail(),
 			$keys[5] => $this->getTelephone(),
-			$keys[6] => $this->getAdrId(),
+			$keys[6] => $this->getResponsableEleveAdresseId(),
 			$keys[7] => $this->getCommentaire(),
 			$keys[8] => $this->getStatutEnvoi(),
 			$keys[9] => $this->getDateEnvoi(),
@@ -1270,7 +1270,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				$this->setTelephone($value);
 				break;
 			case 6:
-				$this->setAdrId($value);
+				$this->setResponsableEleveAdresseId($value);
 				break;
 			case 7:
 				$this->setCommentaire($value);
@@ -1320,7 +1320,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if (array_key_exists($keys[3], $arr)) $this->setTypeNotification($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setEmail($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setTelephone($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setAdrId($arr[$keys[6]]);
+		if (array_key_exists($keys[6], $arr)) $this->setResponsableEleveAdresseId($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setCommentaire($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setStatutEnvoi($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setDateEnvoi($arr[$keys[9]]);
@@ -1418,7 +1418,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		$copyObj->setTypeNotification($this->getTypeNotification());
 		$copyObj->setEmail($this->getEmail());
 		$copyObj->setTelephone($this->getTelephone());
-		$copyObj->setAdrId($this->getAdrId());
+		$copyObj->setResponsableEleveAdresseId($this->getResponsableEleveAdresseId());
 		$copyObj->setCommentaire($this->getCommentaire());
 		$copyObj->setStatutEnvoi($this->getStatutEnvoi());
 		$copyObj->setDateEnvoi($this->getDateEnvoi());
@@ -1591,9 +1591,9 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	public function setResponsableEleveAdresse(ResponsableEleveAdresse $v = null)
 	{
 		if ($v === null) {
-			$this->setAdrId(NULL);
+			$this->setResponsableEleveAdresseId(NULL);
 		} else {
-			$this->setAdrId($v->getAdrId());
+			$this->setResponsableEleveAdresseId($v->getResponsableEleveAdresseId());
 		}
 
 		$this->aResponsableEleveAdresse = $v;

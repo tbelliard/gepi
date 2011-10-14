@@ -6,7 +6,7 @@
  *
  * Liste des responsables legaux des eleves
  *
- * @method     ResponsableEleveQuery orderByPersId($order = Criteria::ASC) Order by the pers_id column
+ * @method     ResponsableEleveQuery orderByResponsableEleveId($order = Criteria::ASC) Order by the pers_id column
  * @method     ResponsableEleveQuery orderByLogin($order = Criteria::ASC) Order by the login column
  * @method     ResponsableEleveQuery orderByNom($order = Criteria::ASC) Order by the nom column
  * @method     ResponsableEleveQuery orderByPrenom($order = Criteria::ASC) Order by the prenom column
@@ -15,9 +15,9 @@
  * @method     ResponsableEleveQuery orderByTelPort($order = Criteria::ASC) Order by the tel_port column
  * @method     ResponsableEleveQuery orderByTelProf($order = Criteria::ASC) Order by the tel_prof column
  * @method     ResponsableEleveQuery orderByMel($order = Criteria::ASC) Order by the mel column
- * @method     ResponsableEleveQuery orderByAdrId($order = Criteria::ASC) Order by the adr_id column
+ * @method     ResponsableEleveQuery orderByResponsableEleveAdresseId($order = Criteria::ASC) Order by the adr_id column
  *
- * @method     ResponsableEleveQuery groupByPersId() Group by the pers_id column
+ * @method     ResponsableEleveQuery groupByResponsableEleveId() Group by the pers_id column
  * @method     ResponsableEleveQuery groupByLogin() Group by the login column
  * @method     ResponsableEleveQuery groupByNom() Group by the nom column
  * @method     ResponsableEleveQuery groupByPrenom() Group by the prenom column
@@ -26,7 +26,7 @@
  * @method     ResponsableEleveQuery groupByTelPort() Group by the tel_port column
  * @method     ResponsableEleveQuery groupByTelProf() Group by the tel_prof column
  * @method     ResponsableEleveQuery groupByMel() Group by the mel column
- * @method     ResponsableEleveQuery groupByAdrId() Group by the adr_id column
+ * @method     ResponsableEleveQuery groupByResponsableEleveAdresseId() Group by the adr_id column
  *
  * @method     ResponsableEleveQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ResponsableEleveQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -47,7 +47,7 @@
  * @method     ResponsableEleve findOne(PropelPDO $con = null) Return the first ResponsableEleve matching the query
  * @method     ResponsableEleve findOneOrCreate(PropelPDO $con = null) Return the first ResponsableEleve matching the query, or a new ResponsableEleve object populated from the query conditions when no match is found
  *
- * @method     ResponsableEleve findOneByPersId(string $pers_id) Return the first ResponsableEleve filtered by the pers_id column
+ * @method     ResponsableEleve findOneByResponsableEleveId(string $pers_id) Return the first ResponsableEleve filtered by the pers_id column
  * @method     ResponsableEleve findOneByLogin(string $login) Return the first ResponsableEleve filtered by the login column
  * @method     ResponsableEleve findOneByNom(string $nom) Return the first ResponsableEleve filtered by the nom column
  * @method     ResponsableEleve findOneByPrenom(string $prenom) Return the first ResponsableEleve filtered by the prenom column
@@ -56,9 +56,9 @@
  * @method     ResponsableEleve findOneByTelPort(string $tel_port) Return the first ResponsableEleve filtered by the tel_port column
  * @method     ResponsableEleve findOneByTelProf(string $tel_prof) Return the first ResponsableEleve filtered by the tel_prof column
  * @method     ResponsableEleve findOneByMel(string $mel) Return the first ResponsableEleve filtered by the mel column
- * @method     ResponsableEleve findOneByAdrId(string $adr_id) Return the first ResponsableEleve filtered by the adr_id column
+ * @method     ResponsableEleve findOneByResponsableEleveAdresseId(string $adr_id) Return the first ResponsableEleve filtered by the adr_id column
  *
- * @method     array findByPersId(string $pers_id) Return ResponsableEleve objects filtered by the pers_id column
+ * @method     array findByResponsableEleveId(string $pers_id) Return ResponsableEleve objects filtered by the pers_id column
  * @method     array findByLogin(string $login) Return ResponsableEleve objects filtered by the login column
  * @method     array findByNom(string $nom) Return ResponsableEleve objects filtered by the nom column
  * @method     array findByPrenom(string $prenom) Return ResponsableEleve objects filtered by the prenom column
@@ -67,7 +67,7 @@
  * @method     array findByTelPort(string $tel_port) Return ResponsableEleve objects filtered by the tel_port column
  * @method     array findByTelProf(string $tel_prof) Return ResponsableEleve objects filtered by the tel_prof column
  * @method     array findByMel(string $mel) Return ResponsableEleve objects filtered by the mel column
- * @method     array findByAdrId(string $adr_id) Return ResponsableEleve objects filtered by the adr_id column
+ * @method     array findByResponsableEleveAdresseId(string $adr_id) Return ResponsableEleve objects filtered by the adr_id column
  *
  * @package    propel.generator.gepi.om
  */
@@ -182,27 +182,27 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByPersId('fooValue');   // WHERE pers_id = 'fooValue'
-	 * $query->filterByPersId('%fooValue%'); // WHERE pers_id LIKE '%fooValue%'
+	 * $query->filterByResponsableEleveId('fooValue');   // WHERE pers_id = 'fooValue'
+	 * $query->filterByResponsableEleveId('%fooValue%'); // WHERE pers_id LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $persId The value to use as filter.
+	 * @param     string $responsableEleveId The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function filterByPersId($persId = null, $comparison = null)
+	public function filterByResponsableEleveId($responsableEleveId = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($persId)) {
+			if (is_array($responsableEleveId)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $persId)) {
-				$persId = str_replace('*', '%', $persId);
+			} elseif (preg_match('/[\%\*]/', $responsableEleveId)) {
+				$responsableEleveId = str_replace('*', '%', $responsableEleveId);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableElevePeer::PERS_ID, $persId, $comparison);
+		return $this->addUsingAlias(ResponsableElevePeer::PERS_ID, $responsableEleveId, $comparison);
 	}
 
 	/**
@@ -434,27 +434,27 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByAdrId('fooValue');   // WHERE adr_id = 'fooValue'
-	 * $query->filterByAdrId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
+	 * $query->filterByResponsableEleveAdresseId('fooValue');   // WHERE adr_id = 'fooValue'
+	 * $query->filterByResponsableEleveAdresseId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $adrId The value to use as filter.
+	 * @param     string $responsableEleveAdresseId The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function filterByAdrId($adrId = null, $comparison = null)
+	public function filterByResponsableEleveAdresseId($responsableEleveAdresseId = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($adrId)) {
+			if (is_array($responsableEleveAdresseId)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $adrId)) {
-				$adrId = str_replace('*', '%', $adrId);
+			} elseif (preg_match('/[\%\*]/', $responsableEleveAdresseId)) {
+				$responsableEleveAdresseId = str_replace('*', '%', $responsableEleveAdresseId);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableElevePeer::ADR_ID, $adrId, $comparison);
+		return $this->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresseId, $comparison);
 	}
 
 	/**
@@ -469,13 +469,13 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	{
 		if ($responsableEleveAdresse instanceof ResponsableEleveAdresse) {
 			return $this
-				->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->getAdrId(), $comparison);
+				->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->getResponsableEleveAdresseId(), $comparison);
 		} elseif ($responsableEleveAdresse instanceof PropelCollection) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 			return $this
-				->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->toKeyValue('PrimaryKey', 'AdrId'), $comparison);
+				->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->toKeyValue('PrimaryKey', 'ResponsableEleveAdresseId'), $comparison);
 		} else {
 			throw new PropelException('filterByResponsableEleveAdresse() only accepts arguments of type ResponsableEleveAdresse or PropelCollection');
 		}
@@ -543,7 +543,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	{
 		if ($responsableInformation instanceof ResponsableInformation) {
 			return $this
-				->addUsingAlias(ResponsableElevePeer::PERS_ID, $responsableInformation->getPersId(), $comparison);
+				->addUsingAlias(ResponsableElevePeer::PERS_ID, $responsableInformation->getResponsableEleveId(), $comparison);
 		} elseif ($responsableInformation instanceof PropelCollection) {
 			return $this
 				->useResponsableInformationQuery()
@@ -616,7 +616,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	{
 		if ($jNotificationResponsableEleve instanceof JNotificationResponsableEleve) {
 			return $this
-				->addUsingAlias(ResponsableElevePeer::PERS_ID, $jNotificationResponsableEleve->getPersId(), $comparison);
+				->addUsingAlias(ResponsableElevePeer::PERS_ID, $jNotificationResponsableEleve->getResponsableEleveId(), $comparison);
 		} elseif ($jNotificationResponsableEleve instanceof PropelCollection) {
 			return $this
 				->useJNotificationResponsableEleveQuery()
@@ -704,7 +704,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	public function prune($responsableEleve = null)
 	{
 		if ($responsableEleve) {
-			$this->addUsingAlias(ResponsableElevePeer::PERS_ID, $responsableEleve->getPersId(), Criteria::NOT_EQUAL);
+			$this->addUsingAlias(ResponsableElevePeer::PERS_ID, $responsableEleve->getResponsableEleveId(), Criteria::NOT_EQUAL);
 	  }
 	  
 		return $this;

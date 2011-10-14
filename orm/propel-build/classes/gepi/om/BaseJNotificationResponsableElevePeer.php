@@ -59,8 +59,8 @@ abstract class BaseJNotificationResponsableElevePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('ANotificationId', 'PersId', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('aNotificationId', 'persId', ),
+		BasePeer::TYPE_PHPNAME => array ('ANotificationId', 'ResponsableEleveId', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('aNotificationId', 'responsableEleveId', ),
 		BasePeer::TYPE_COLNAME => array (self::A_NOTIFICATION_ID, self::PERS_ID, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('A_NOTIFICATION_ID', 'PERS_ID', ),
 		BasePeer::TYPE_FIELDNAME => array ('a_notification_id', 'pers_id', ),
@@ -74,8 +74,8 @@ abstract class BaseJNotificationResponsableElevePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('ANotificationId' => 0, 'PersId' => 1, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('aNotificationId' => 0, 'persId' => 1, ),
+		BasePeer::TYPE_PHPNAME => array ('ANotificationId' => 0, 'ResponsableEleveId' => 1, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('aNotificationId' => 0, 'responsableEleveId' => 1, ),
 		BasePeer::TYPE_COLNAME => array (self::A_NOTIFICATION_ID => 0, self::PERS_ID => 1, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('A_NOTIFICATION_ID' => 0, 'PERS_ID' => 1, ),
 		BasePeer::TYPE_FIELDNAME => array ('a_notification_id' => 0, 'pers_id' => 1, ),
@@ -280,7 +280,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getANotificationId(), (string) $obj->getPersId()));
+				$key = serialize(array((string) $obj->getANotificationId(), (string) $obj->getResponsableEleveId()));
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -300,7 +300,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof JNotificationResponsableEleve) {
-				$key = serialize(array((string) $value->getANotificationId(), (string) $value->getPersId()));
+				$key = serialize(array((string) $value->getANotificationId(), (string) $value->getResponsableEleveId()));
 			} elseif (is_array($value) && count($value) === 2) {
 				// assume we've been passed a primary key
 				$key = serialize(array((string) $value[0], (string) $value[1]));

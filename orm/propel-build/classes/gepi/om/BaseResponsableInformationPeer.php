@@ -65,8 +65,8 @@ abstract class BaseResponsableInformationPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('EleId', 'PersId', 'RespLegal', 'PersContact', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('eleId', 'persId', 'respLegal', 'persContact', ),
+		BasePeer::TYPE_PHPNAME => array ('EleId', 'ResponsableEleveId', 'NiveauResponsabilite', 'PersContact', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('eleId', 'responsableEleveId', 'niveauResponsabilite', 'persContact', ),
 		BasePeer::TYPE_COLNAME => array (self::ELE_ID, self::PERS_ID, self::RESP_LEGAL, self::PERS_CONTACT, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ELE_ID', 'PERS_ID', 'RESP_LEGAL', 'PERS_CONTACT', ),
 		BasePeer::TYPE_FIELDNAME => array ('ele_id', 'pers_id', 'resp_legal', 'pers_contact', ),
@@ -80,8 +80,8 @@ abstract class BaseResponsableInformationPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('EleId' => 0, 'PersId' => 1, 'RespLegal' => 2, 'PersContact' => 3, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('eleId' => 0, 'persId' => 1, 'respLegal' => 2, 'persContact' => 3, ),
+		BasePeer::TYPE_PHPNAME => array ('EleId' => 0, 'ResponsableEleveId' => 1, 'NiveauResponsabilite' => 2, 'PersContact' => 3, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('eleId' => 0, 'responsableEleveId' => 1, 'niveauResponsabilite' => 2, 'persContact' => 3, ),
 		BasePeer::TYPE_COLNAME => array (self::ELE_ID => 0, self::PERS_ID => 1, self::RESP_LEGAL => 2, self::PERS_CONTACT => 3, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ELE_ID' => 0, 'PERS_ID' => 1, 'RESP_LEGAL' => 2, 'PERS_CONTACT' => 3, ),
 		BasePeer::TYPE_FIELDNAME => array ('ele_id' => 0, 'pers_id' => 1, 'resp_legal' => 2, 'pers_contact' => 3, ),
@@ -290,7 +290,7 @@ abstract class BaseResponsableInformationPeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getEleId(), (string) $obj->getRespLegal()));
+				$key = serialize(array((string) $obj->getEleId(), (string) $obj->getNiveauResponsabilite()));
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -310,7 +310,7 @@ abstract class BaseResponsableInformationPeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof ResponsableInformation) {
-				$key = serialize(array((string) $value->getEleId(), (string) $value->getRespLegal()));
+				$key = serialize(array((string) $value->getEleId(), (string) $value->getNiveauResponsabilite()));
 			} elseif (is_array($value) && count($value) === 2) {
 				// assume we've been passed a primary key
 				$key = serialize(array((string) $value[0], (string) $value[1]));

@@ -38,7 +38,7 @@ class ResponsableEleveAdresseTableMap extends TableMap
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
 		// columns
-		$this->addPrimaryKey('ADR_ID', 'AdrId', 'VARCHAR', true, 10, null);
+		$this->addPrimaryKey('ADR_ID', 'ResponsableEleveAdresseId', 'VARCHAR', true, 10, null);
 		$this->addColumn('ADR1', 'Adr1', 'VARCHAR', true, 100, null);
 		$this->addColumn('ADR2', 'Adr2', 'VARCHAR', true, 100, null);
 		$this->addColumn('ADR3', 'Adr3', 'VARCHAR', true, 100, null);

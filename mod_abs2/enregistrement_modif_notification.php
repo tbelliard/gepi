@@ -92,21 +92,21 @@ if ( isset($_POST["creation_notification"])) {
 	$responsable_eleve1 = null;
 	$responsable_eleve2 = null;
 	foreach ($traitement->getResponsablesInformationsSaisies() as $responsable_information) {
-	    if ($responsable_information->getRespLegal() == '1') {
+	    if ($responsable_information->getNiveauResponsabilite() == '1') {
 		$responsable_eleve1 = $responsable_information->getResponsableEleve();
-	    } else if ($responsable_information->getRespLegal() == '2') {
+	    } else if ($responsable_information->getNiveauResponsabilite() == '2') {
 		$responsable_eleve2 = $responsable_information->getResponsableEleve();
 	    }
 	}
 	if ($responsable_eleve1 != null) {
 	    $notification->setEmail($responsable_eleve1->getMel());
 	    $notification->setTelephone($responsable_eleve1->getTelPort());
-	    $notification->setAdrId($responsable_eleve1->getAdrId());
+	    $notification->setResponsableEleveAdresseId($responsable_eleve1->getResponsableEleveAdresseId());
 	    $notification->addResponsableEleve($responsable_eleve1);
 	}
 	if ($responsable_eleve2 != null) {
 	    if ($responsable_eleve1 == null
-		    || $responsable_eleve2->getAdrId() == $responsable_eleve1->getAdrId()) {
+		    || $responsable_eleve2->getResponsableEleveAdresseId() == $responsable_eleve1->getResponsableEleveAdresseId()) {
 		$notification->addResponsableEleve($responsable_eleve2);
 	    }
 	}
@@ -125,7 +125,7 @@ if ( $modif == 'type') {
 } else if ( $modif == 'commentaire') {
     $notification->setCommentaire($_POST["commentaire"]);
 } elseif ($modif == 'enlever_responsable') {
-    if (0 != JNotificationResponsableEleveQuery::create()->filterByAbsenceEleveNotification($notification)->filterByPersId($_POST["pers_id"])->limit(1)->delete()) {
+    if (0 != JNotificationResponsableEleveQuery::create()->filterByAbsenceEleveNotification($notification)->filterByResponsableEleveId($_POST["pers_id"])->limit(1)->delete()) {
 	$message_enregistrement .= 'Responsable supprimé';
     } else {
 	$message_enregistrement .= 'Suppression impossible';
@@ -133,7 +133,7 @@ if ( $modif == 'type') {
     include("visu_notification.php");
     die;
 } elseif ($modif == 'ajout_responsable') {
-    $responsable = ResponsableEleveQuery::create()->findOneByPersId($_POST["pers_id"]);
+    $responsable = ResponsableEleveQuery::create()->findOneByResponsableEleveId($_POST["pers_id"]);
     if ($responsable != null && !$notification->getResponsableEleves()->contains($responsable)) {
 	$notification->addResponsableEleve($responsable);
 	$notification->save();
@@ -143,7 +143,7 @@ if ( $modif == 'type') {
 } elseif ($modif == 'tel') {
     $notification->setTelephone($_POST["tel"]);
 } elseif ($modif == 'adresse') {
-    $notification->setAdrId($_POST["adr_id"]);
+    $notification->setResponsableEleveAdresseId($_POST["adr_id"]);
 } elseif ($modif == 'duplication') {
     $clone = $notification->copy(); //no deep copy
     $clone->save();

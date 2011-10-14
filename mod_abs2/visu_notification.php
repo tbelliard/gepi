@@ -272,9 +272,9 @@ if ($notification->getModifiable()) {
 	    echo ("<select name=\"pers_id\">");
 	    foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
 		$responsable = $responsable_information->getResponsableEleve();
-		echo '<option value="'.$responsable->getPersId().'"';
+		echo '<option value="'.$responsable->getResponsableEleveId().'"';
 		echo ">".$responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom()
-			.' (Resp '.$responsable_information->getRespLegal().")</option>\n";
+			.' (Resp '.$responsable_information->getNiveauResponsabilite().")</option>\n";
 	    }
 	    echo "</select>";
 	    echo '<button type="submit">Ajouter</button>';
@@ -311,7 +311,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 			    echo " selected='selected' ";
 			    $selected = true;
 			}
-			echo ">".$responsable->getMel().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal().")</option>\n";
+			echo ">".$responsable->getMel().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getNiveauResponsabilite().")</option>\n";
 		    }
 		}
 	}
@@ -367,7 +367,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelPort().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal()." ; Tel portable)</option>\n";
+		echo ">".$responsable->getTelPort().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getNiveauResponsabilite()." ; Tel portable)</option>\n";
 	    }
 
 	    if ($responsable->getTelPers() != null || $responsable->getTelPers() != '') {
@@ -376,7 +376,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelPers().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal()." ; Tel personnel)</option>\n";
+		echo ">".$responsable->getTelPers().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getNiveauResponsabilite()." ; Tel personnel)</option>\n";
 	    }
 
 	    if ($responsable->getTelProf() != null || $responsable->getTelProf() != '') {
@@ -385,7 +385,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelProf().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal()." ; Tel professionnel)</option>\n";
+		echo ">".$responsable->getTelProf().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getNiveauResponsabilite()." ; Tel professionnel)</option>\n";
 	    }
 	}
 	if (!$selected) {

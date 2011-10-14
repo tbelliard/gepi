@@ -50,7 +50,7 @@ class AbsenceEleveNotificationTableMap extends TableMap
 ));
 		$this->addColumn('EMAIL', 'Email', 'VARCHAR', false, 100, null);
 		$this->addColumn('TELEPHONE', 'Telephone', 'VARCHAR', false, 100, null);
-		$this->addForeignKey('ADR_ID', 'AdrId', 'VARCHAR', 'resp_adr', 'ADR_ID', false, 10, null);
+		$this->addForeignKey('ADR_ID', 'ResponsableEleveAdresseId', 'VARCHAR', 'resp_adr', 'ADR_ID', false, 10, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'ENUM', false, null, 'etat initial');
 		$this->getColumn('STATUT_ENVOI', false)->setValueSet(array (

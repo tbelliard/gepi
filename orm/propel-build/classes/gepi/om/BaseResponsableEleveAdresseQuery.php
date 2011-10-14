@@ -6,7 +6,7 @@
  *
  * Table de jointure entre les responsables legaux et leur adresse
  *
- * @method     ResponsableEleveAdresseQuery orderByAdrId($order = Criteria::ASC) Order by the adr_id column
+ * @method     ResponsableEleveAdresseQuery orderByResponsableEleveAdresseId($order = Criteria::ASC) Order by the adr_id column
  * @method     ResponsableEleveAdresseQuery orderByAdr1($order = Criteria::ASC) Order by the adr1 column
  * @method     ResponsableEleveAdresseQuery orderByAdr2($order = Criteria::ASC) Order by the adr2 column
  * @method     ResponsableEleveAdresseQuery orderByAdr3($order = Criteria::ASC) Order by the adr3 column
@@ -15,7 +15,7 @@
  * @method     ResponsableEleveAdresseQuery orderByPays($order = Criteria::ASC) Order by the pays column
  * @method     ResponsableEleveAdresseQuery orderByCommune($order = Criteria::ASC) Order by the commune column
  *
- * @method     ResponsableEleveAdresseQuery groupByAdrId() Group by the adr_id column
+ * @method     ResponsableEleveAdresseQuery groupByResponsableEleveAdresseId() Group by the adr_id column
  * @method     ResponsableEleveAdresseQuery groupByAdr1() Group by the adr1 column
  * @method     ResponsableEleveAdresseQuery groupByAdr2() Group by the adr2 column
  * @method     ResponsableEleveAdresseQuery groupByAdr3() Group by the adr3 column
@@ -39,7 +39,7 @@
  * @method     ResponsableEleveAdresse findOne(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query
  * @method     ResponsableEleveAdresse findOneOrCreate(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query, or a new ResponsableEleveAdresse object populated from the query conditions when no match is found
  *
- * @method     ResponsableEleveAdresse findOneByAdrId(string $adr_id) Return the first ResponsableEleveAdresse filtered by the adr_id column
+ * @method     ResponsableEleveAdresse findOneByResponsableEleveAdresseId(string $adr_id) Return the first ResponsableEleveAdresse filtered by the adr_id column
  * @method     ResponsableEleveAdresse findOneByAdr1(string $adr1) Return the first ResponsableEleveAdresse filtered by the adr1 column
  * @method     ResponsableEleveAdresse findOneByAdr2(string $adr2) Return the first ResponsableEleveAdresse filtered by the adr2 column
  * @method     ResponsableEleveAdresse findOneByAdr3(string $adr3) Return the first ResponsableEleveAdresse filtered by the adr3 column
@@ -48,7 +48,7 @@
  * @method     ResponsableEleveAdresse findOneByPays(string $pays) Return the first ResponsableEleveAdresse filtered by the pays column
  * @method     ResponsableEleveAdresse findOneByCommune(string $commune) Return the first ResponsableEleveAdresse filtered by the commune column
  *
- * @method     array findByAdrId(string $adr_id) Return ResponsableEleveAdresse objects filtered by the adr_id column
+ * @method     array findByResponsableEleveAdresseId(string $adr_id) Return ResponsableEleveAdresse objects filtered by the adr_id column
  * @method     array findByAdr1(string $adr1) Return ResponsableEleveAdresse objects filtered by the adr1 column
  * @method     array findByAdr2(string $adr2) Return ResponsableEleveAdresse objects filtered by the adr2 column
  * @method     array findByAdr3(string $adr3) Return ResponsableEleveAdresse objects filtered by the adr3 column
@@ -170,27 +170,27 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByAdrId('fooValue');   // WHERE adr_id = 'fooValue'
-	 * $query->filterByAdrId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
+	 * $query->filterByResponsableEleveAdresseId('fooValue');   // WHERE adr_id = 'fooValue'
+	 * $query->filterByResponsableEleveAdresseId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $adrId The value to use as filter.
+	 * @param     string $responsableEleveAdresseId The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function filterByAdrId($adrId = null, $comparison = null)
+	public function filterByResponsableEleveAdresseId($responsableEleveAdresseId = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($adrId)) {
+			if (is_array($responsableEleveAdresseId)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $adrId)) {
-				$adrId = str_replace('*', '%', $adrId);
+			} elseif (preg_match('/[\%\*]/', $responsableEleveAdresseId)) {
+				$responsableEleveAdresseId = str_replace('*', '%', $responsableEleveAdresseId);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $adrId, $comparison);
+		return $this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleveAdresseId, $comparison);
 	}
 
 	/**
@@ -401,7 +401,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	{
 		if ($responsableEleve instanceof ResponsableEleve) {
 			return $this
-				->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleve->getAdrId(), $comparison);
+				->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleve->getResponsableEleveAdresseId(), $comparison);
 		} elseif ($responsableEleve instanceof PropelCollection) {
 			return $this
 				->useResponsableEleveQuery()
@@ -474,7 +474,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	{
 		if ($absenceEleveNotification instanceof AbsenceEleveNotification) {
 			return $this
-				->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $absenceEleveNotification->getAdrId(), $comparison);
+				->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $absenceEleveNotification->getResponsableEleveAdresseId(), $comparison);
 		} elseif ($absenceEleveNotification instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveNotificationQuery()
@@ -545,7 +545,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	public function prune($responsableEleveAdresse = null)
 	{
 		if ($responsableEleveAdresse) {
-			$this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleveAdresse->getAdrId(), Criteria::NOT_EQUAL);
+			$this->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleveAdresse->getResponsableEleveAdresseId(), Criteria::NOT_EQUAL);
 	  }
 	  
 		return $this;
