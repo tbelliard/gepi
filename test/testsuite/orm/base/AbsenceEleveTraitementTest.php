@@ -40,4 +40,21 @@ class AbsenceEleveTraitementTest extends GepiEmptyTestBase
 	    
 	}
 	
+	public function testGetSousResponsabiliteEtablissement()
+	{
+	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+	    
+	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+	    $traitement = $saisie->getAbsenceEleveTraitements()->getFirst();
+	    $this->assertFalse($traitement->getSousResponsabiliteEtablissement());
+	    
+		saveSetting('abs2_saisie_par_defaut_sous_responsabilite_etab','n');
+	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-14')->getFirst();
+	    $traitement = $saisie->getAbsenceEleveTraitements()->getFirst();
+	    $this->assertFalse($traitement->getSousResponsabiliteEtablissement());
+		saveSetting('abs2_saisie_par_defaut_sous_responsabilite_etab','y');
+	    $this->assertTrue($traitement->getSousResponsabiliteEtablissement());
+		saveSetting('abs2_saisie_par_defaut_sous_responsabilite_etab','n');
+	    
+	}
 }
