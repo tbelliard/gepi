@@ -183,6 +183,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
 
 		// et la durée du cours et le type de semaine
 		// Il faudrait vérifier si la durée est valide ainsi que le type de semaine
+	$tab[6]=preg_replace('/,/','.',$tab[6]);
 	$rep_duree = $tab[6] * 2;
 	$rep_typesemaine = $tab[7];
 

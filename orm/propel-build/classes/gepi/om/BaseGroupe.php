@@ -109,6 +109,11 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	protected $collMatieres;
 
 	/**
+	 * @var        array Classe[] Collection to store aggregation of Classe objects.
+	 */
+	protected $collClasses;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -370,6 +375,7 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 
 			$this->collUtilisateurProfessionnels = null;
 			$this->collMatieres = null;
+			$this->collClasses = null;
 		} // if (deep)
 	}
 
@@ -1566,31 +1572,6 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	{
 		$query = JGroupesClassesQuery::create(null, $criteria);
 		$query->joinWith('Classe', $join_behavior);
-
-		return $this->getJGroupesClassess($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Groupe is new, it will return
-	 * an empty collection; or if this Groupe has previously
-	 * been saved, it will retrieve related JGroupesClassess from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Groupe.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array JGroupesClasses[] List of JGroupesClasses objects
-	 */
-	public function getJGroupesClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JGroupesClassesQuery::create(null, $criteria);
-		$query->joinWith('CategorieMatiere', $join_behavior);
 
 		return $this->getJGroupesClassess($query, $con);
 	}
@@ -3127,6 +3108,119 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collClasses collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addClasses()
+	 */
+	public function clearClasses()
+	{
+		$this->collClasses = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collClasses collection.
+	 *
+	 * By default this just sets the collClasses collection to an empty collection (like clearClasses());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initClasses()
+	{
+		$this->collClasses = new PropelObjectCollection();
+		$this->collClasses->setModel('Classe');
+	}
+
+	/**
+	 * Gets a collection of Classe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_classes cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Classe[] List of Classe objects
+	 */
+	public function getClasses($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collClasses || null !== $criteria) {
+			if ($this->isNew() && null === $this->collClasses) {
+				// return empty collection
+				$this->initClasses();
+			} else {
+				$collClasses = ClasseQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collClasses;
+				}
+				$this->collClasses = $collClasses;
+			}
+		}
+		return $this->collClasses;
+	}
+
+	/**
+	 * Gets the number of Classe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_classes cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related Classe objects
+	 */
+	public function countClasses($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collClasses || null !== $criteria) {
+			if ($this->isNew() && null === $this->collClasses) {
+				return 0;
+			} else {
+				$query = ClasseQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collClasses);
+		}
+	}
+
+	/**
+	 * Associate a Classe object to this object
+	 * through the j_groupes_classes cross reference table.
+	 *
+	 * @param      Classe $classe The JGroupesClasses object to relate
+	 * @return     void
+	 */
+	public function addClasse($classe)
+	{
+		if ($this->collClasses === null) {
+			$this->initClasses();
+		}
+		if (!$this->collClasses->contains($classe)) { // only add it if the **same** object is not already associated
+			$jGroupesClasses = new JGroupesClasses();
+			$jGroupesClasses->setClasse($classe);
+			$this->addJGroupesClasses($jGroupesClasses);
+
+			$this->collClasses[]= $classe;
+		}
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -3215,6 +3309,11 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collClasses) {
+				foreach ($this->collClasses as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		if ($this->collJGroupesProfesseurss instanceof PropelCollection) {
@@ -3265,6 +3364,10 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 			$this->collMatieres->clearIterator();
 		}
 		$this->collMatieres = null;
+		if ($this->collClasses instanceof PropelCollection) {
+			$this->collClasses->clearIterator();
+		}
+		$this->collClasses = null;
 	}
 
 	/**

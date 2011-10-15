@@ -322,7 +322,10 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	$hauteur_dun_regroupement='4'; // hauteur de la cellule regroupement
 
 	$hauteur_du_titre = '4.5';
-	$largeur_cadre_note = '95';
+	//$largeur_cadre_note = '95';
+	$largeur_cadre_note_si_obs = '95';
+	// Sinon, on prend $largeur_cadre_note_global moins l'espace déjà utilisé pour la colonne matière.
+
 	$X_cadre_note = '5';
 
 	// cadre des signature

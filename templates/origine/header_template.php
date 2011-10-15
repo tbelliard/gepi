@@ -79,7 +79,7 @@
 		";
 	}
 ?>
-	<script type="text/javascript" src="./lib/cookieClass.js"></script>
+	<script type="text/javascript" src="<?php echo $tbs_gepiPath?>/lib/cookieClass.js"></script>
 	<script type="text/javascript">
 		//<![CDATA[ 
 		function changement() {

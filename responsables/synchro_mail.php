@@ -103,7 +103,6 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 		}
 		elseif($cpt==1) {
 			$msg="Une adresse a été mise à jour.<br />";
-
 			$suppr_infos_actions_diff_mail="y";
 		}
 		else {

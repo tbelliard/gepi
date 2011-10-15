@@ -655,7 +655,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'coef' size='4' value = \"".$coef."\" />\n";
+		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\"  onkeydown=\"clavier_2(this.id,event,0,10);\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -673,7 +673,7 @@ if($interface_simplifiee=="y"){
 		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>\n";
-	   		echo "<td><input type='text' name = 'note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" /></td>\n";
+	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" /></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>Ramener la note sur ".getSettingValue("referentiel_note")."<br />lors du calcul de la moyenne : </td>\n";
@@ -811,7 +811,7 @@ else{
 
 	echo "<h3 class='gepi'>Coefficient de l'évaluation</h3>\n";
 	echo "<table summary='Ponderation'><tr><td>Valeur de la pondération dans le calcul de la moyenne (si 0, la note de l'évaluation n'intervient pas dans le calcul de la moyenne) : </td>";
-	echo "<td><input type='text' name = 'coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" /></td></tr></table>\n";
+	echo "<td><input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,0,10);\" /></td></tr></table>\n";
 
 	//====================================
 	// Note autre que sur 20
@@ -819,7 +819,7 @@ else{
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 	    echo "<h3 class='gepi'>Notation</h3>\n";
 	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
-	    echo "<td><input type='text' name = 'note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
+	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
 		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />";
 		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";
@@ -917,28 +917,30 @@ if ($new_devoir=='yes') {
 		$alt=1;
 		$cpt=0;
 		for($i=0;$i<count($tab_group);$i++) {
-			if($tab_group[$i]['id']!=$id_groupe) {
-				// Tester si la période est aussi ouverte pour le groupe... ou sinon si une seule période est ouverte en saisie?
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'>\n";
-				echo "<td>\n";
-				if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
-					echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' />\n";
-					echo "</td>\n";
-					echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['name'])."</label></td>\n";
-					echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['description'])."</label></td>\n";
-					echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
-					$cpt++;
+			if((!isset($tab_group[$i]["visibilite"]["cahier_notes"]))||($tab_group[$i]["visibilite"]["cahier_notes"]=='y')) {
+				if($tab_group[$i]['id']!=$id_groupe) {
+					// Tester si la période est aussi ouverte pour le groupe... ou sinon si une seule période est ouverte en saisie?
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					echo "<td>\n";
+					if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
+						echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' />\n";
+						echo "</td>\n";
+						echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['name'])."</label></td>\n";
+						echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['description'])."</label></td>\n";
+						echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
+						$cpt++;
+					}
+					else {
+						echo "<span style='color:red;'>Clos</span>";
+						echo "</td>\n";
+						echo "<td>".htmlentities($tab_group[$i]['name'])."</td>\n";
+						echo "<td>".htmlentities($tab_group[$i]['description'])."</td>\n";
+						echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
+					}
+					//echo "<td>...</td>\n";
+					echo "</tr>\n";
 				}
-				else {
-					echo "<span style='color:red;'>Clos</span>";
-					echo "</td>\n";
-					echo "<td>".htmlentities($tab_group[$i]['name'])."</td>\n";
-					echo "<td>".htmlentities($tab_group[$i]['description'])."</td>\n";
-					echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
-				}
-				//echo "<td>...</td>\n";
-				echo "</tr>\n";
 			}
 		}
 		echo "</table>\n";

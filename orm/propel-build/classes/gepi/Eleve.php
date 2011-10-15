@@ -60,55 +60,68 @@ class Eleve extends BaseEleve {
         $this->timestamp_start=microtime(true);
     }
     
-    // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
-	 * Manually added for N:M relationship
+	 * Il peut y avoir dans le modèle plusieurs classes associés à un élève, mais il faut l'éviter en pratique
 	 *
-	 * @periode integer numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     PropelObjectCollection Classes[]
 	 *
 	 */
-	public function getClasses($periode) {
-		$periode = $this->getPeriodeNote($periode);
-		require_once("helpers/PeriodeNoteHelper.php");
-		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
+	public function getClasses($periode = null) {
+		if ($periode != null && !is_numeric($periode) &&  !($periode instanceOf PeriodeNote) && !($periode instanceOf DateTime)) {
+			throw new PropelException('$periode doit être de type numeric|DateTime|PeriodeNote');
+		}
+		//on va récupérer le numéro de période $periode_num
+		if (is_numeric($periode)) {
+			$periode_num = $periode;
+		} else {
+			if ($periode instanceOf PeriodeNote) {
+				$periode_num = $periode->getNumPeriode();
+			} else {
+				//$periode devrait maintenant être un DateTime (ou null)
+				$periode = $this->getPeriodeNote($periode);//on récupère un objet période qui englobe la date
+				if ($periode != null) {
+					$periode_num = $periode->getNumPeriode();
+				} else {
+					return new PropelObjectCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour le paramêtre passé
+				}
+			}
+		}
+		
 		if(!isset($this->collClasses[$periode_num]) || null === $this->collClasses[$periode_num]) {
 			if ($this->isNew() && null === $this->collClasses[$periode_num]) {
 				// return empty collection
 				$this->initClasses($periode_num);
 			} else {
+				//on optimise si les jointure sont déjà hydratées, sinon on fait une requete
 				$classe_hydrated = false;
 				if (null !== $this->collJEleveClasses) {
 				    //on teste si la collection de collJEleveClasses est hydratee avec les classes
 				    if ($this->collJEleveClasses->getFirst() != null) {
-					if ($this->collJEleveClasses->getFirst()->isClasseHydrated()) {
-					    $classe_hydrated = true;
-					}
+						if ($this->collJEleveClasses->getFirst()->isClasseHydrated()) {
+						    $classe_hydrated = true;
+						}
 				    }
 				}
 
 				if ($classe_hydrated) {
 				    foreach ($this->getJEleveClasses() as $JEleveClasse) {
-					if ($JEleveClasse->getClasse() != null) {
-					    if(!isset($this->collClasses[$JEleveClasse->getPeriode()]) || null === $this->collClasses[$JEleveClasse->getPeriode()]) {
-						$this->initClasses($JEleveClasse->getPeriode());
-					    }
-					    $this->collClasses[$JEleveClasse->getPeriode()]->add($JEleveClasse->getClasse());
-					}
+						if ($JEleveClasse->getClasse() != null) {
+						    if(!isset($this->collClasses[$JEleveClasse->getPeriode()]) || null === $this->collClasses[$JEleveClasse->getPeriode()]) {
+							$this->initClasses($JEleveClasse->getPeriode());
+						    }
+						    $this->collClasses[$JEleveClasse->getPeriode()]->add($JEleveClasse->getClasse());
+						}
 				    }
-				    if ($this->collClasses[$periode_num] == null) {
-					//rien n'a Ã©tÃ© trouvÃ© pour cette pÃ©riode, on renvoi une collection vide
-					$this->initClasses($periode_num);
+				    if (!isset($this->collClasses[$periode_num]) || $this->collClasses[$periode_num] == null) {
+						//rien n'a été trouvé pour cette période, on renvoi une collection vide
+						$this->initClasses($periode_num);
 				    }
 				} else {
 				    $query = ClasseQuery::create();
-				    if ($periode != null) {
-					    $query->useJEleveClasseQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
-				    } else {
-					    $query->useJEleveClasseQuery()->filterByEleve($this)->endUse();
-				    }
+				    $query->useJEleveClasseQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
 				    $query->orderByNomComplet()->distinct();
 				    $this->collClasses[$periode_num] = $query->find();
 				}
@@ -121,7 +134,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * Renvoi la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seule une classe est renvoyée
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     Classe
 	 *
 	 */
@@ -133,7 +146,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seule une% nom est renvoyée
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     Classe
 	 *
 	 */
@@ -151,7 +164,7 @@ class Eleve extends BaseEleve {
 	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seul un nom est renvoyée
 	 * Si pas de classe trouvée, renvoi null
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     string
 	 *
 	 */
@@ -170,7 +183,7 @@ class Eleve extends BaseEleve {
 	 * @param      integer $periode numero de la periode ou objet periodeNote
 	 * @return     void
 	 */
-	public function initClasses($periode_num)
+	protected function initClasses($periode_num)
 	{
 		$this->collClasses[$periode_num] = new PropelObjectCollection();
 		$this->collClasses[$periode_num]->setModel('Classe');
@@ -181,7 +194,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return     void
 	 */
-	public function initPeriodeNotes()
+	protected function initPeriodeNotes()
 	{
 		$this->collPeriodeNotes = new PropelObjectCollection();
 		$this->collPeriodeNotes->setModel('Classe');
@@ -193,7 +206,7 @@ class Eleve extends BaseEleve {
 	 * @param      strind $date_string clé date du jour format('d/m/Y')
 	 * @return     void
 	 */
-	public function initAbsenceEleveSaisiesParJour($date_string)
+	protected function initAbsenceEleveSaisiesParJour($date_string)
 	{
 		$this->collAbsenceEleveSaisiesParJour[$date_string] = new PropelObjectCollection();
 		$this->collAbsenceEleveSaisiesParJour[$date_string]->setModel('AbsenceEleveSaisie');
@@ -266,40 +279,47 @@ class Eleve extends BaseEleve {
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des groupes d'un eleve pour une période donnée.
-	 * Manually added for N:M relationship
 	 *
-	 * @periode integer numero de la periode
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     PropelObjectCollection Groupes[]
 	 *
 	 */
 	public function getGroupes($periode = null) {
-		//$periode = $this->getPeriodeNote($periode); on ne vérifie pas si l'objet période existe vraiment
-		require_once("helpers/PeriodeNoteHelper.php");
-		$periode_key = PeriodeNoteHelper::getNumPeriode($periode);
-                if ($periode_key === null) {
-                    $periode_key = 'null'; // utile pour le clés du vecteur $this->collGroupes
-                }
-		if(!isset($this->collGroupes[$periode_key]) || null === $this->collGroupes[$periode_key]) {
-			if ($this->isNew() && null === $this->collGroupes[$periode_key]) {
-				// return empty collection
-				$this->initGroupes($periode_key);
+		if ($periode != null && !is_numeric($periode) &&  !($periode instanceOf PeriodeNote) && !($periode instanceOf DateTime)) {
+			throw new PropelException('$periode doit être de type numeric|DateTime|PeriodeNote');
+		}
+		//on va récupérer le numéro de période $periode_num
+		if (is_numeric($periode)) {
+			$periode_num = $periode;
+		} else {
+			if ($periode instanceOf PeriodeNote) {
+				$periode_num = $periode->getNumPeriode();
 			} else {
-				$query = GroupeQuery::create();
-				if ($periode_key != 'null') {
-					$query->useJEleveGroupeQuery()
-					    ->filterByEleve($this)
-					    ->filterByPeriode($periode_key)
-					    ->endUse();
+				//$periode devrait maintenant être un DateTime (ou null)
+				$periode = $this->getPeriodeNote($periode);//on récupère un objet période qui englobe la date
+				if ($periode != null) {
+					$periode_num = $periode->getNumPeriode();
 				} else {
-					$query->useJEleveGroupeQuery()
-					    ->filterByEleve($this)
-					    ->endUse();
+					return new PropelObjectCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour cette élève pour le paramêtre passé
 				}
-				$query->orderByName()->distinct();
-				$this->collGroupes[$periode_key] = $query->find();
 			}
 		}
-		return $this->collGroupes[$periode_key];
+		
+		if(!isset($this->collGroupes[$periode_num]) || null === $this->collGroupes[$periode_num]) {
+			if ($this->isNew() && null === $this->collGroupes[$periode_num]) {
+				// return empty collection
+				$this->initGroupes($periode_num);
+			} else {
+				$query = GroupeQuery::create();
+				$query->useJEleveGroupeQuery()
+					    ->filterByEleve($this)
+					    ->filterByPeriode($periode_num)
+					    ->endUse();
+				$query->orderByName()->distinct();
+				$this->collGroupes[$periode_num] = $query->find();
+			}
+		}
+		return $this->collGroupes[$periode_num];
 	}
 
 	/**
@@ -307,7 +327,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return     void
 	 */
-	public function initGroupes($periode_num)
+	protected function initGroupes($periode_num)
 	{
 		$this->collGroupes[$periode_num] = new PropelObjectCollection();
 		$this->collGroupes[$periode_num]->setModel('Groupe');
@@ -340,7 +360,16 @@ class Eleve extends BaseEleve {
 	}
 
 	
-    public function getGroupesByCategories($periode) {
+	/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des groupes d'un eleve pour une période donnée, sous forme d'un table multi-dimensionnel, qui contient les catégories
+	 * dans le bon ordre, et les groupes sous chaque catégorie..
+	 *
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
+	 * @return     Array
+	 *
+	 */
+	public function getGroupesByCategories($periode) {
         // On commence par récupérer tous les groupes
         $groupes = $this->getGroupes($periode);
         // Ensuite, il nous faut les catégories. Pour ça, on passe par les classes.
@@ -669,7 +698,7 @@ class Eleve extends BaseEleve {
 				//si on a une seule periode partiellement ouverte et aucune ouverte alors c'est la periode actuelle
 				$periode_result = $periode_verrouiller_p;
 			    } else {
-				//on va prendre la periode de numero la plus petite non verrouillee
+				//on va prendre la periode de numero la plus grande non verrouillee
 				if ($periode_verrouiller_n != null) {
 				    $periode_result = $periode_verrouiller_n;
 				} elseif ($periode_verrouiller_p != null) {
@@ -873,16 +902,14 @@ class Eleve extends BaseEleve {
 	    return $result;
 	}
 	
-	/*
-	Renvoie le nom de la photo de l'élève
-	Renvoie NULL si :
-	- le module trombinoscope n'est pas activé
-	- ou bien la photo n'existe pas.
-
-	$_elenoet_ou_loginc : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
-	$repertoire : "eleves"
-	$arbo : niveau d'aborescence (1 ou 2).
-	*/
+	/**
+	 * Renvoie le nom de la photo de l'élève
+	 * Renvoie NULL si :
+	 * - le module trombinoscope n'est pas activé
+	 * - ou bien la photo n'existe pas.
+	 * 
+	 * @param $arbo : niveau d'aborescence (1 ou 2).
+	 */
 	public function getNomPhoto($arbo=1) {
 		if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 		$repertoire = "eleves";
@@ -890,43 +917,6 @@ class Eleve extends BaseEleve {
 			return NULL;
 			die();
 		}
-	  /*
-		// Cas des élèves
-		// En multisite, le login est préférable à l'ELENOET
-		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		    //$_elenoet_ou_login = $this->getElenoet();
-		    $_elenoet_ou_login = $this->getLogin();
-		} else {
-		    //$_elenoet_ou_login = $this->getLogin();
-			$_elenoet_ou_login = $this->getElenoet();
-		}
-
-		$photo= null;
-		if($_elenoet_ou_login!='') {
-			if(file_exists($chemin."../photos/eleves/".$_elenoet_ou_login.".jpg")) {
-				$photo="$_elenoet_ou_login.jpg";
-			}
-			else {
-				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=sprintf("%05d",$this->getLogin()).".jpg";
-				} else {
-					for($i=0;$i<5;$i++){
-						if(substr($this->getLogin(),$i,1)=="0"){
-							$test_photo=substr($this->getLogin(),$i+1);
-							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
-							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
-								$photo=$test_photo.".jpg";
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return $photo;
-		*/
-
 
 		$_elenoet_ou_login = $this->getElenoet();
 	  	if($_elenoet_ou_login!='') {
@@ -934,7 +924,7 @@ class Eleve extends BaseEleve {
 		// En multisite, on ajoute le répertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			  // On récupère le RNE de l'établissement
-		  $repertoire2=getSettingValue("gepiSchoolRne")+"/";
+		  $repertoire2=$_COOKIE['RNE']."/";
 		}else{
 		  $repertoire2="";
 		}
@@ -1001,17 +991,16 @@ class Eleve extends BaseEleve {
 		} elseif ($this->getSexe()=="F") {
 			return "Mlle";
 		}
-		return "";
 	}
 
 
 	/**
 	 *
-	 * Retourne l'objet periode correspondant a partir
+	 * Retourne l'objet periode correspondant a partir :
 	 * d'un parametre numerique (numero de periode)
-	 * ou d'un parametre qui est deja un objet PeriodeNote (on renvoi le parametre)
+	 * ou d'un parametre qui est deja un objet PeriodeNote (on renvoi le parametre sans modification)
 	 * ou d'une date DateTime , auquel cas on renvoi la periode de l'epoque ou null si pas de periode trouvee
-	 * ou d'un parametre null, auquel cas on renvoi la periode courante
+	 * ou d'un parametre null, auquel cas on renvoi la periode courante (période en cours temporellement), ou la dernière période si aucune période en cours
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value or DateTime
 	 *
@@ -1020,29 +1009,28 @@ class Eleve extends BaseEleve {
 	public function getPeriodeNote($periode_param = null) {
 	    $result = null;
 	    if ($periode_param instanceof DateTime) {
-		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getDateDebut('U') <= $periode_param->format('U')
-			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode_param->format('U')))
-		    {
-			$result = $periode_temp;
-			break;
-		    }
-		}
+			foreach ($this->getPeriodeNotes() as $periode_temp) {
+			    if ($periode_temp->getDateDebut('U') <= $periode_param->format('U')
+				    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode_param->format('U')))
+				    {
+					$result = $periode_temp;
+					//break;
+			    }
+			}
 	    } else if ($periode_param === null) {
-		$periode = $this->getPeriodeNoteOuverte();
-		if ($periode == null) {
-			$now = new DateTime('now');
-			$result = $this->getPeriodeNote($now);
-		}
-	    } else if (is_numeric($periode_param)) {
-		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getNumPeriode() == $periode_param) {
-			$result = $periode_temp;
-			break;
+			$result = $this->getPeriodeNote(new DateTime('now'));//on récupére la période en cours temporellement
+		    if ($periode_param == null && $result == null) {//si on a rien précisé, et qu'on ne trouve pas de période en cours, on renvoit la dernière période
+		    	return $this->getPeriodeNotes()->getLast();
 		    }
-		}
+	    } else if (is_numeric($periode_param)) {
+			foreach ($this->getPeriodeNotes() as $periode_temp) {
+			    if ($periode_temp->getNumPeriode() == $periode_param) {
+					$result = $periode_temp;
+					break;
+			    }
+			}
 	    } else if ($periode_param instanceof PeriodeNote) {
-		$result = $periode_param;
+			$result = $periode_param;
 	    } else {
 		    throw new PropelException('Argument $periode doit etre de type numerique ou une instance de PeriodeNote ou un DateTime.');
 	    }
@@ -1062,9 +1050,9 @@ class Eleve extends BaseEleve {
 	 * @return PropelCollection DateTime[]
 	 */
 	public function getDemiJourneesAbsence($date_debut=null, $date_fin = null) {
-	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
-            return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
-        }
+        $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
+        return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
+    }
 
 	/**
 	 *
@@ -1196,7 +1184,8 @@ class Eleve extends BaseEleve {
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
 	    return ($this->getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
 	}
-/**
+	
+	/**
 	 *
 	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence non justifiees
 	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
@@ -1210,7 +1199,7 @@ class Eleve extends BaseEleve {
 	 */
 	public function getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut=null,$date_fin=null) {
 	    if ($abs_saisie_col->isEmpty()) {
-		return new PropelCollection();
+			return new PropelCollection();
 	    }
 
 	    //on filtre les saisie qu'on ne veut pas compter
@@ -1356,8 +1345,8 @@ class Eleve extends BaseEleve {
 			    // return empty collection
 			    $this->initPeriodeNotes();
 		    } else {
-			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode";
-			    $con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode ORDER by periodes.NUM_PERIODE";
+			    $con = Propel::getConnection(null, Propel::CONNECTION_READ);
 			    $stmt = $con->prepare($sql);
 			    $stmt->execute();
 
@@ -1734,7 +1723,7 @@ class Eleve extends BaseEleve {
 		} else if ($dateDebutClone == null || $dateFinClone == null){
             if ($this->debug) {
                 $this->affiche_duree();
-            }
+                }        
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		} else {
 			$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600*6-$dateDebutClone->format('U'))/(3600*12)); // on compte les tranches de 12h

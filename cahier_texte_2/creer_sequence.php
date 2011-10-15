@@ -123,6 +123,11 @@ $titre_page = "Cr&eacute;er des s&eacute;quences pour le cahier de textes";
 $javascript_specifique = "cahier_texte_2/js/fonctionscdt2";
 include '../lib/header.inc';
 //debug_var();
+
+$nb_max_seq=getSettingValue('cdt2_sequence_nb_max_notice');
+if(($nb_max_seq=="")||(!preg_match("/^[0-9]*$/", $nb_max_seq))) {
+	$nb_max_seq=6;
+}
 ?>
 <p><a href="index.php"><img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a></p>
 <form action="#" method="post">
@@ -130,7 +135,7 @@ include '../lib/header.inc';
     <label for="idSeq">Cr&eacute;er une s&eacute;quence pour le cahier de textes (<i>pr&eacute;cisez le nombre de s&eacute;ances</i>)</label>
     <select id="idSeq" name="nbre_sequences">
       <option value="rien"> -- -- </option>
-      <?php for($a = 1 ; $a < 7 ; $a++){
+      <?php for($a = 1 ; $a <= $nb_max_seq ; $a++){
         echo '<option value="'.$a.'">'.$a.'</option>'."\n";
       }
       ?>

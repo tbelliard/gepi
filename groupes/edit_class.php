@@ -512,6 +512,8 @@ echo "</a>";
 
 echo " | <a href='menage_eleves_groupes.php?id_classe=$id_classe'>Désinscriptions par lots</a>";
 
+echo " | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>";
+
 echo "</p>\n";
 echo "</form>\n";
 
@@ -902,7 +904,8 @@ for($i=0;$i<10;$i++){
         $first = true;
         foreach($current_group["profs"]["list"] as $prof) {
             if (!$first) {echo ", ";}
-            echo $current_group["profs"]["users"][$prof]["prenom"];
+            //echo $current_group["profs"]["users"][$prof]["prenom"];
+            echo casse_mot($current_group["profs"]["users"][$prof]["prenom"],'majf2');
             echo " ";
             echo $current_group["profs"]["users"][$prof]["nom"];
 

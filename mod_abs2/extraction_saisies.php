@@ -142,7 +142,6 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    <p>
 	    Type :
 	    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait">
-
 	    <option value='1' <?php if ($type_extrait == '1') {echo 'selected="selected"';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
 	    <option value='2' <?php if ($type_extrait == '2') {echo 'selected="selected"';}?>>Liste de toutes les saisies</option>
 	    </select>

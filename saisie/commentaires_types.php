@@ -47,12 +47,13 @@ if (!checkAccess()) {
     die();
 }
 
-
+//==========================================
 // End standart header
 require_once("../lib/header.inc");
 if (!loadSettings()) {
 	die("Erreur chargement settings");
 }
+//==========================================
 
 $sql="CREATE TABLE IF NOT EXISTS `commentaires_types` (
 `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -80,10 +81,10 @@ function get_classe_from_id($id){
 
 ?>
 
-<p class="bold">|<a href="../accueil.php">Retour</a>
-|<a href="commentaires_types.php">Saisir des commentaires</a>
-|<a href="commentaires_types.php?recopie=oui">Recopier des commentaires</a>
-|</p>
+<p class="bold"><a href="../accueil.php">Retour</a>
+ | <a href="commentaires_types.php">Saisir des commentaires</a>
+ | <a href="commentaires_types.php?recopie=oui">Recopier des commentaires</a>
+</p>
 
 <?php
 /*

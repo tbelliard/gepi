@@ -576,7 +576,11 @@ if(!isset($_POST['recopie_select'])) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 
 	echo " | \n";
-	echo "<input type='submit' name='Autre_periode' value=\"Choisir d'autres périodes\" />\n";
+
+	echo "<input type='button' name='Autre_periode' id='Autre_periode' value=\"Choisir d'autres périodes\" onclick=\"confirm_changement_periode(change, '$themessage');\" style='display:none' />\n";
+	echo "<noscript>";
+	echo " <input type='submit' name='Autre_periode' value=\"Choisir d'autres périodes\" />\n";
+	echo "</noscript>";
 	echo "</p>\n";
 	echo "</form>\n";
 
@@ -587,10 +591,52 @@ if(!isset($_POST['recopie_select'])) {
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
 		echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 	echo "<input type='hidden' name='recopie_select' value='y' />\n";
+
+	echo "<input type='button' name='Passer_a_copie' id='Passer_a_copie' value=\"Recopier des affectations\" onclick=\"confirm_Passer_a_copie(change, '$themessage');\" style='display:none' /> pour d'autres périodes\n";
+	echo "<noscript>";
 	echo "<input type='submit' name='Passer_a_copie' value='Recopier des affectations' /> pour d'autres périodes\n";
+	echo "</noscript>";
+
 	echo "</form>\n";
 	echo "</div>\n";
 	//===============================
+
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	document.getElementById('Autre_periode').style.display='';
+	document.getElementById('Passer_a_copie').style.display='';
+
+	function confirm_changement_periode(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form0.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form0.submit();
+			}
+		}
+	}
+
+	function confirm_Passer_a_copie(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+		}
+	}
+
+</script>\n";
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	echo add_token_field();
@@ -622,6 +668,7 @@ if(!isset($_POST['recopie_select'])) {
 		echo "<br />\n";
 		echo "<span style='font-size:small;'>".$group[$i]['classlist_string']."</span>\n";
 		echo "<br /><span style='font-size:small; color:red;'>".$id_groupe[$i]."</span>";
+		echo "<br />".preg_replace("/,/","<br />",$group[$i]['profs']['proflist_string']);
 
 		//$tmp_tab_eleve=array_merge($tmp_tab_eleve,$group[$i]["eleves"][$num_periode]["list"]);
 		for($j=0;$j<count($group[$i]["eleves"][$num_periode]["list"]);$j++) {
@@ -695,10 +742,23 @@ if(!isset($_POST['recopie_select'])) {
 	// LISTE FOIREUSE UNE FOIS QU'ON A VALIDE UNE FOIS
 	//for($j=0;$j<count($group["eleves"]["all"]["list"]);$j++) {
 	$cpt=0;
+	$classe_prec="";
+	$nb_col=2+count($id_groupe)+1;
 	//foreach($tab_eleve as $key => $login_ele) {
 	for($j=0;$j<count($tab_eleve);$j++) {
 		$login_ele=$tab_eleve[$j];
-	
+		$tmp_tab_class_ele=get_class_from_ele_login($login_ele);
+
+		if(($classe_prec!="")&&($tmp_tab_class_ele["liste"]!=$classe_prec)) {
+			if($order_by=='classe') {
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td colspan='$nb_col' style='background-color:grey;'>".$tmp_tab_class_ele["liste"]."</td>\n";
+				echo "</tr>\n";
+			}
+		}
+
+		$classe_prec=$tmp_tab_class_ele["liste"];
+
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td>\n";
@@ -707,7 +767,6 @@ if(!isset($_POST['recopie_select'])) {
 		echo "</td>\n";
 	
 		echo "<td>\n";
-		$tmp_tab_class_ele=get_class_from_ele_login($login_ele);
 		echo $tmp_tab_class_ele["liste"];
 		echo "</td>\n";
 

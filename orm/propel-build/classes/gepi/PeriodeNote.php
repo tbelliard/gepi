@@ -42,15 +42,9 @@ class PeriodeNote extends BasePeriodeNote {
 				    $dateDebut = $edt_periode->getJourdebutCalendrier(null);
 				} else {
 				    //c'est la premiere periode
-				    //on va renvoyer par default le 31 aout
-				    $dateDebut = new DateTime('now');
-				    $dateDebut->setDate($dateDebut->format('Y'), 8, 31);
-				    $dateDebut->setTime(0,0,0);
-				    $now = new DateTime('now');
-				    if ($dateDebut->format('U') - $now->format('U') > 3600*24*30) {
-					//si la date est trop postérieure à maintenant c'est qu'on s'est trompé d'année
-					$dateDebut->setDate($dateDebut->format('Y') - 1, 8, 31);
-				    }
+				    //on va renvoyer par default le début de l'année scolaire
+				    include_once(dirname(__FILE__).'/../../../helpers/EdtHelper.php');
+				    $dateDebut = EdtHelper::getPremierJourAnneeScolaire($this->getDateFin());
 				}
 			    } else {
 				//on renvoi la date de fin de la periode precedente
@@ -107,8 +101,7 @@ class PeriodeNote extends BasePeriodeNote {
 	}
 
 	/**
-	 * Get the [optionally formatted] temporal [date_fin] column value.
-	 * date de verrouillage de la periode
+	 * date de verrouillage de la periode. On rajoute le temps 23:59:59
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.

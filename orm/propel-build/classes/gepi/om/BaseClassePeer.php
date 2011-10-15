@@ -486,9 +486,6 @@ abstract class BaseClassePeer {
 		// Invalidate objects in JEleveClassePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveClassePeer::clearInstancePool();
-		// Invalidate objects in JEleveProfesseurPrincipalPeer instance pool, 
-		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-		JEleveProfesseurPrincipalPeer::clearInstancePool();
 		// Invalidate objects in AbsenceEleveSaisiePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveSaisiePeer::clearInstancePool();
@@ -856,12 +853,6 @@ abstract class BaseClassePeer {
 			
 			$criteria->add(JEleveClassePeer::ID_CLASSE, $obj->getId());
 			$affectedRows += JEleveClassePeer::doDelete($criteria, $con);
-
-			// delete related JEleveProfesseurPrincipal objects
-			$criteria = new Criteria(JEleveProfesseurPrincipalPeer::DATABASE_NAME);
-			
-			$criteria->add(JEleveProfesseurPrincipalPeer::ID_CLASSE, $obj->getId());
-			$affectedRows += JEleveProfesseurPrincipalPeer::doDelete($criteria, $con);
 
 			// delete related JCategoriesMatieresClasses objects
 			$criteria = new Criteria(JCategoriesMatieresClassesPeer::DATABASE_NAME);

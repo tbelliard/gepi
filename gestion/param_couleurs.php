@@ -41,11 +41,10 @@ if (!checkAccess()) {
     die();
 }
 
+$tab_panneau_affichage=array('fil_blanc','fil_noir','fil_bleu','fil_vert','filet_noir','filet_noir_2','liege');
 
 // Liste des composantes
 $comp=array('R','V','B');
-
-
 
 function hex2nb($carac) {
 	switch(strtoupper($carac)) {
@@ -843,113 +842,114 @@ div.info_abs {
 		//=========================================
 		if(isset($_POST['select_panneau_affichage'])) {
 			$selected_panel = $_POST['select_panneau_affichage'];
-			if(saveSetting('style_panneau_affichage',$selected_panel)) {
-				//$msg.="Enregistrement effectué. ";
-
-				if ($GLOBALS['multisite'] == 'y') {
-					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
-				} else {
-					$fich=fopen("../style_screen_ajout.css","a+");
-				}
-				fwrite($fich,"
+			if(($selected_panel=='---')||(in_array($_POST['select_panneau_affichage'],$tab_panneau_affichage))) {
+				if(saveSetting('style_panneau_affichage',$selected_panel)) {
+					//$msg.="Enregistrement effectué. ";
+	
+					if(in_array($_POST['select_panneau_affichage'],$tab_panneau_affichage)) {
+	
+						if ($GLOBALS['multisite'] == 'y') {
+							$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+						} else {
+							$fich=fopen("../style_screen_ajout.css","a+");
+						}
+						fwrite($fich,"
 
 .panneau_droite {
 	background-image:url('./images/modeles/".$selected_panel."/right.png');
 	background-repeat: repeat-y;
-    background-position: right;
-    position:absolute;
-    top:0px;
-    right:-40px;
-    height:100%;
-    width:40px;
+	background-position: right;
+	position:absolute;
+	top:0px;
+	right:-40px;
+	height:100%;
+	width:40px;
 }
 .panneau_gauche {
 	background-image:url('./images/modeles/".$selected_panel."/left.png');
 	background-repeat: repeat-y;
-    background-position: right;
-    position:absolute;
-    top:0px;
-    left:-33px;
-    height:100%;
-    width:33px;
+	background-position: right;
+	position:absolute;
+	top:0px;
+	left:-33px;
+	height:100%;
+	width:33px;
 }
 
 .panneau_haut {
 	height:33px;
 	background-image:url('./images/modeles/".$selected_panel."/top.png');
 	background-repeat: repeat-x;
-    position:absolute;
-    width:100%;
+	position:absolute;
+	width:100%;
 	top:-33px;
-    left:00px;
+	left:00px;
 }
 .panneau_centre {
 	background-image:url('./images/modeles/".$selected_panel."/center.png');
 	background-repeat: repeat;
-    width:100%;
+	width:100%;
 	top:0px;
-    left:00px;
+	left:00px;
 	color:black;
-
 }
 .panneau_bas {
 	height:40px;
-    position:absolute;
+	position:absolute;
 	background-image:url('./images/modeles/".$selected_panel."/bottom.png');
 	background-repeat: repeat-x;
-    width:100%;
+	width:100%;
 	bottom:-40px;
-    left:00px;
+	left:00px;
 }
-
 .panneau_coingh {
-    width:33px;
-    position:absolute;
+	width:33px;
+	position:absolute;
 	height:33px;
 	background-image:url('./images/modeles/".$selected_panel."/top_left.png');
-    top:-33px;
-    left:-33px;		
+	top:-33px;
+	left:-33px;		
 	background-repeat: no-repeat;
 }
-
 .panneau_coindh {
-    position:absolute;
-    width:40px;
+	position:absolute;
+	width:40px;
 	height:33px;
 	background-image:url('./images/modeles/".$selected_panel."/top_right.png');
 	top:-33px;
-    right:-40px;
+	right:-40px;
 	background-repeat: no-repeat;
 }
-
 .panneau_coingb {
-    position:absolute;
-    bottom:-40px;
-    left:-33px;
-    width:33px;
+	position:absolute;
+	bottom:-40px;
+	left:-33px;
+	width:33px;
 	height:40px;
 	background-image:url('./images/modeles/".$selected_panel."/bottom_left.png');
 	float: left;
 }
-
 .panneau_coindb {
-    position:absolute;
-    bottom:-40px;
-    right:-40px;
-    width:40px;
+	position:absolute;
+	bottom:-40px;
+	right:-40px;
+	width:40px;
 	height:40px;
 	background-image:url('./images/modeles/".$selected_panel."/bottom_right.png');
 	float:right;
 }
-				
-				
-				
-");
-				fclose($fich);
 
+");
+						fclose($fich);
+					}
+				}
+				else {
+					$msg.="Erreur lors de la sauvegarde de 'style_panneau_affichage'.<br />";
+					$nb_err++;
+				}
 			}
 			else {
-				$msg.="Erreur lors de la sauvegarde de 'couleur_fond_postit'. ";
+				$msg.="Valeur de 'style_panneau_affichage' incorrecte.<br />";
 				$nb_err++;
 			}
 		}
@@ -1722,7 +1722,6 @@ echo add_token_field();
 
 							echo "<td>\n";
 							echo "<label for='id_couleur_infobulle_fond_entete_".$comp[$j]."' class='invisible'>".$comp[$j]."E entête ".$comp[$j]."</label>\n";
-
 							echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 							echo "</td>\n";
 						}
@@ -2191,7 +2190,9 @@ echo add_token_field();
 ?>
 <!-- ====================== Paramétrage du panneau d'affichage ========================== -->	
 
-<?php 	$tab_style = array('fil_blanc','fil_noir','fil_bleu','fil_vert','filet_noir','filet_noir_2','liege'); 
+<?php
+		//$tab_style = array('fil_blanc','fil_noir','fil_bleu','fil_vert','filet_noir','filet_noir_2','liege');
+		$tab_style = $tab_panneau_affichage;
 		$nom_style = array(	'fil_blanc' => 'fil de fer blanc',
 							'fil_noir' => 'fil de fer noir',
 							'fil_bleu' => 'fil de fer bleu',

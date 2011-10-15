@@ -86,6 +86,7 @@ if (isset($_POST['ok'])) {
 					if ((isset($_POST["date_fin_".$nom_classe]))&&($_POST["date_fin_".$nom_classe]!=""))  {
 						try {
 						    $date_fin = new DateTime(str_replace("/",".",$_POST["date_fin_".$nom_classe]));
+						    $date_fin->setTime(23,59,59);
 						    if ($date_fin->format('U') != $row_per[1]) {
 							$register = sql_query("UPDATE periodes SET date_fin='".$date_fin->format('Y-m-d')."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
 							if (!$register) {$pb_reg_ver = 'yes';}
@@ -179,7 +180,16 @@ function CocheCase(rang,per) {
 }
 </script>
 <?php
-echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+
+if($_SESSION['statut']=='scolarite') {
+	echo " | <a href='bull_index.php'>Visualisation et impression des bulletins</a>";
+}
+
+if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
+	echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+}
+echo "</p>\n";
 
 $texte_deverrouiller = urlencode("Déverrouiller");
 $texte_verrouiller_part = urlencode("Verrouiller part.");

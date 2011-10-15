@@ -181,7 +181,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [optionally formatted] temporal [date_fin] column value.
-	 * date de verrouillage de la periode
+	 * date de fin de la periode (utilisé notamment pour le décompte des absences)
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
@@ -325,7 +325,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 
 	/**
 	 * Sets the value of [date_fin] column to a normalized version of the date/time value specified.
-	 * date de verrouillage de la periode
+	 * date de fin de la periode (utilisé notamment pour le décompte des absences)
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.
 	 *               Empty strings are treated as NULL.
 	 * @return     PeriodeNote The current object (for fluent API support)

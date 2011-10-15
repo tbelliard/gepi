@@ -34,10 +34,6 @@
  * @method     JGroupesClassesQuery rightJoinClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classe relation
  * @method     JGroupesClassesQuery innerJoinClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the Classe relation
  *
- * @method     JGroupesClassesQuery leftJoinCategorieMatiere($relationAlias = null) Adds a LEFT JOIN clause to the query using the CategorieMatiere relation
- * @method     JGroupesClassesQuery rightJoinCategorieMatiere($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CategorieMatiere relation
- * @method     JGroupesClassesQuery innerJoinCategorieMatiere($relationAlias = null) Adds a INNER JOIN clause to the query using the CategorieMatiere relation
- *
  * @method     JGroupesClasses findOne(PropelPDO $con = null) Return the first JGroupesClasses matching the query
  * @method     JGroupesClasses findOneOrCreate(PropelPDO $con = null) Return the first JGroupesClasses matching the query, or a new JGroupesClasses object populated from the query conditions when no match is found
  *
@@ -323,8 +319,6 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 * $query->filterByCategorieId(array('min' => 12)); // WHERE categorie_id > 12
 	 * </code>
 	 *
-	 * @see       filterByCategorieMatiere()
-	 *
 	 * @param     mixed $categorieId The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
@@ -567,80 +561,6 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 		return $this
 			->joinClasse($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'Classe', 'ClasseQuery');
-	}
-
-	/**
-	 * Filter the query by a related CategorieMatiere object
-	 *
-	 * @param     CategorieMatiere|PropelCollection $categorieMatiere The related object(s) to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    JGroupesClassesQuery The current query, for fluid interface
-	 */
-	public function filterByCategorieMatiere($categorieMatiere, $comparison = null)
-	{
-		if ($categorieMatiere instanceof CategorieMatiere) {
-			return $this
-				->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieMatiere->getId(), $comparison);
-		} elseif ($categorieMatiere instanceof PropelCollection) {
-			if (null === $comparison) {
-				$comparison = Criteria::IN;
-			}
-			return $this
-				->addUsingAlias(JGroupesClassesPeer::CATEGORIE_ID, $categorieMatiere->toKeyValue('PrimaryKey', 'Id'), $comparison);
-		} else {
-			throw new PropelException('filterByCategorieMatiere() only accepts arguments of type CategorieMatiere or PropelCollection');
-		}
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the CategorieMatiere relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    JGroupesClassesQuery The current query, for fluid interface
-	 */
-	public function joinCategorieMatiere($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('CategorieMatiere');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		if ($previousJoin = $this->getPreviousJoin()) {
-			$join->setPreviousJoin($previousJoin);
-		}
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'CategorieMatiere');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the CategorieMatiere relation CategorieMatiere object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    CategorieMatiereQuery A secondary query class using the current class as primary query
-	 */
-	public function useCategorieMatiereQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
-		return $this
-			->joinCategorieMatiere($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'CategorieMatiere', 'CategorieMatiereQuery');
 	}
 
 	/**

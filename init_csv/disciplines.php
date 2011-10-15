@@ -114,7 +114,6 @@ if (!isset($_POST["action"])) {
 			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($reg_nom_court)));
 			if (strlen($reg_nom_court) > 50) $reg_nom_court = substr($reg_nom_court, 0, 50);
 			//$reg_nom_long = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($reg_nom_long));
-
 			$reg_nom_long = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_nom_long))))));
 			if (strlen($reg_nom_long) > 200) $reg_nom_long = substr($reg_nom_long, 0, 200);
 
@@ -231,7 +230,6 @@ if (!isset($_POST["action"])) {
 							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[0])));
 							if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 							//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($tabligne[1]));
-
 							$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
 							if (strlen($tabligne[1]) > 200) $tabligne[1] = substr($tabligne[1], 0, 200);
 
@@ -250,7 +248,6 @@ if (!isset($_POST["action"])) {
 
 				// Fin de l'analyse du fichier.
 				// Maintenant on va afficher tout ça.
-
 
 				$sql="TRUNCATE TABLE tempo2;";
 				$vide_table = mysql_query($sql);

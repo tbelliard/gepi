@@ -71,6 +71,8 @@ if (getSettingValue("active_carnets_notes")!='y') {
     die("Le module n'est pas activé.");
 }
 
+$msg="";
+
 unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
 if ($id_groupe == "no_group") {
@@ -115,6 +117,36 @@ if ((isset($_POST['id_racine'])) or (isset($_GET['id_racine']))) {
     }
 }
 
+if(isset($_GET['clean_anomalie_cn'])) {
+	check_token();
+
+	$suppr_id_dev=$_GET['suppr_id_dev'];
+	if(preg_match('/^[0-9]*$/', $suppr_id_dev)) {
+		$sql="SELECT 1=1 FROM cn_devoirs cd, cn_cahier_notes ccn, j_groupes_professeurs jgp WHERE cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND cd.id='".$suppr_id_dev."';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$sql="DELETE FROM cn_notes_devoirs WHERE id_devoir='".$suppr_id_dev."';";
+			$suppr=mysql_query($sql);
+			if(!$suppr) {
+				$msg.="Erreur lors de la suppression des notes associées au devoir n°$suppr_id_dev.<br />";
+			}
+			else {
+				$sql="DELETE FROM cn_devoirs WHERE id='".$suppr_id_dev."';";
+				$suppr=mysql_query($sql);
+				if(!$suppr) {
+					$msg.="Erreur lors de la suppression du devoir n°$suppr_id_dev.<br />";
+				}
+				else {
+					$msg.="Devoir n°$suppr_id_dev supprimé.<br />";
+				}
+			}
+		}
+		else {
+			$msg.="Vous tentez de supprimer un devoir qui ne vous appartient pas.<br />";
+		}
+	}
+}
+
 if(isset($_GET['clean_anomalie_dev'])) {
 
 	if((isset($_GET['id_groupe']))&&(isset($_GET['periode_num']))) {
@@ -154,7 +186,7 @@ if(isset($_GET['clean_anomalie_dev'])) {
 				$msg="Aucune anomalie n'est relevée pour le devoir n°".$_GET['clean_anomalie_dev'].".<br />";
 			}
 			else {
-				$msg="";
+				if(!isset($msg)) {$msg="";}
 				while($lig_a=mysql_fetch_object($res_a)) {
 					$sql="DELETE FROM cn_notes_devoirs WHERE id_devoir='".$_GET['clean_anomalie_dev']."' AND login NOT IN (select login from j_eleves_groupes where id_groupe='$tmp_id_groupe' and periode='$tmp_periode_num');";
 					//echo "$sql<br />";
@@ -420,28 +452,33 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
-			if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
-				if($tab_groups[$loop]['id']==$id_groupe){
-					$num_groupe=$loop;
-
-					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-
-					$temoin_tmp=1;
-					if(isset($tab_groups[$loop+1])){
-						$id_grp_suiv=$tab_groups[$loop+1]['id'];
+			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+				if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
+					if($tab_groups[$loop]['id']==$id_groupe){
+						$num_groupe=$loop;
+	
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+	
+						$temoin_tmp=1;
+						if(isset($tab_groups[$loop+1])){
+							$id_grp_suiv=$tab_groups[$loop+1]['id'];
+						}
+						else{
+							$id_grp_suiv=0;
+						}
 					}
-					else{
-						$id_grp_suiv=0;
+					else {
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					}
+	
+					if($temoin_tmp==0){
+						$id_grp_prec=$tab_groups[$loop]['id'];
 					}
 				}
-				else {
-					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-				}
-
-				if($temoin_tmp==0){
-					$id_grp_prec=$tab_groups[$loop]['id'];
-				}
+			}
+			elseif(get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num)!="") {
+				$tab_anomalie_cn_pour_groupe_hors_cn[$tab_groups[$loop]['id']]=get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num);
 			}
 		}
 		// =================================
@@ -589,6 +626,48 @@ var tab_per_cn=new Array();\n";
     }
     echo "</p>\n";
 
+	if((isset($tab_anomalie_cn_pour_groupe_hors_cn))&&(count($tab_anomalie_cn_pour_groupe_hors_cn)>0)) {
+		$info_anomalie="";
+		foreach($tab_anomalie_cn_pour_groupe_hors_cn as $tmp_id_groupe => $tmp_cn) {
+			$sql="SELECT * FROM cn_devoirs WHERE id_racine='$tmp_cn';";
+			$res_cn_dev=mysql_query($sql);
+			if(mysql_num_rows($res_cn_dev)>0) {
+				if($info_anomalie=="") {
+					$info_anomalie="<div style='border:1px solid red; margin: 1em;'><p><span style='color:red; font-weight:bold;'>ANOMALIE&nbsp;:</span> Un devoir au moins a été créé dans un enseignement qui ne doit normalement pas apparaître dans les Carnets de notes.<br />Il conviendrait de le supprimer, ou de le transférer (<em>si par exemple, il a été créé dans un sous-groupe, au lieu du groupe classe</em>).</p>\n";
+				}
+
+				$tmp_group=get_group($tmp_id_groupe);
+				$info_anomalie.="<p class='bold'>Devoir(s) en ".$tmp_group['name']." (<em>".$tmp_group['description']."</em>) en ".$tmp_group['classlist_string']."&nbsp;:</p>\n";
+				$info_anomalie.="<ul>\n";
+				while($lig_dev=mysql_fetch_object($res_cn_dev)) {
+					$info_anomalie.="<li>";
+					$info_anomalie.="<b>".$lig_dev->nom_court."</b>\n";
+					if($lig_dev->nom_complet!='') {$info_anomalie.=" (<em>".$lig_dev->nom_complet."</em>)";}
+
+					$sql="SELECT DISTINCT login FROM cn_notes_devoirs WHERE id_devoir='$lig_dev->id';";
+					$test_notes_dev=mysql_query($sql);
+					if(mysql_num_rows($test_notes_dev)==0) {
+						$info_anomalie.=" - Aucune note - ";
+					}
+					else {
+						$info_anomalie.=" - <a href='export_cahier_notes.php?id_racine=".$tmp_cn."' target='_blank'>Exporter les notes</a> - ";
+					}
+
+					$info_anomalie.="<a href='".$_SERVER['PHP_SELF']."?clean_anomalie_cn=y&amp;&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;suppr_id_dev=".$lig_dev->id.add_token_in_url()."'><img src='../images/delete16.png' width='16' height='16' alt='Supprimer ce devoir' title='Supprimer ce devoir' /></a>\n";
+					$info_anomalie.="</li>\n";
+				}
+				$info_anomalie.="</ul>\n";
+			}
+		}
+		if($info_anomalie!="") {
+			$info_anomalie.="<p>Si vous pensez qu'un de ces enseignements devrait apparaître dans les carnets de notes, prenez contact avec l'administration de votre établissement.</p>\n";
+			$info_anomalie.="</div>\n";
+		}
+
+		echo $info_anomalie;
+	}
+
+
     echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
     $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
     echo "</ul>\n";
@@ -691,9 +770,11 @@ if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset(
     }
 
     foreach($groups as $group) {
-       echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-       echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
-       echo "</span></p>\n";
+		if((!isset($group["visibilite"]["cahier_notes"]))||($group["visibilite"]["cahier_notes"]=='y')) {
+			echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
+			echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
+			echo "</span></p>\n";
+		}
     }
 }
   /**

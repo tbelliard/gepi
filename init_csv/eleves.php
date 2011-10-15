@@ -506,7 +506,6 @@ if (!isset($_POST["action"])) {
 				echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
 				echo "<tr><th>Nom</th><th>Prénom</th><th>Sexe</th><th>Date de naissance</th><th>n° étab.</th><th>n° nat.</th><th>Code étab.</th><th>Double.</th><th>Régime</th></tr>\n";
 
-
 				$chaine_mysql_collate="";
 				$sql="CREATE TABLE IF NOT EXISTS temp_gep_import2 (
 				ID_TEMPO varchar(40) NOT NULL default '',

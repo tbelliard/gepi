@@ -27,45 +27,6 @@ class Groupe extends BaseGroupe {
 	 */
 	protected $nameAvecClasses;
 
-
-	/**
-	 * @var        array Classe[] Collection to store aggregation of Classes objects.
-	 */
-	protected $collClasses;
-
-	/**
-	 *
-	 * Renvoi sous forme d'un tableau la liste des classes d'un groupe.
-	 * Manually added for N:M relationship
-	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Classes[]
-	 *
-	 */
-	public function getClasses($con = null) {
-		if(null === $this->collClasses) {
-			if ($this->isNew() && null === $this->collClasses) {
-				// return empty collection
-				$this->initClasses();
-			} else {
-				$collClasses = new PropelObjectCollection();
-				$collClasses->setModel('Classe');
-				if ($this->collJGroupesClassess !== null) {
-				    $collJGroupesClasses = $this->collJGroupesClassess;
-				} else {
-				    $collJGroupesClasses = $this->getJGroupesClassessJoinClasse($con);
-				}
-				foreach($collJGroupesClasses as $ref) {
-				    if ($ref != null) {
-					$collClasses->append($ref->getClasse());
-				    }
-				}
-				$this->collClasses = $collClasses;
-			}
-		}
-		return $this->collClasses;
-	}
-
 	/**
 	 * Initializes the collClasses collection.
 	 *

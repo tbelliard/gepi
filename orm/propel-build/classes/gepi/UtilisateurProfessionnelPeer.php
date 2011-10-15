@@ -17,24 +17,25 @@ class UtilisateurProfessionnelPeer extends BaseUtilisateurProfessionnelPeer {
 
 	/**
 	 *
-	 * Renvoi l'utilisateur de la session en crous
-	 * Manually added for N:M relationship
+	 * Renvoi l'utilisateur de la session en cours (null si aucun utilisateur trouvé dans la session
 	 *
 	 * @return     UtilisateurProfessionnel utilisateur
 	 */
 	public static function getUtilisateursSessionEnCours() {
-	    if (isset($_SESSION['objets_propel']['utilisateurProfessionnel'])
-		    && $_SESSION['objets_propel']['utilisateurProfessionnel'] != null
-		    && $_SESSION['objets_propel']['utilisateurProfessionnel'] instanceof UtilisateurProfessionnel) {
-		//echo 'utilisateur recupere dans la session';
-		return $_SESSION['objets_propel']['utilisateurProfessionnel'];
-	    } else {
-		$utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($_SESSION['login'])->findOne();
-		if ($utilisateur != null) {
-		    $_SESSION['objets_propel']['utilisateurProfessionnel'] = $utilisateur;
-		}
-		return $utilisateur;
-	    }
+        if (isset($_SESSION) && isset($_SESSION['objets_propel']) && isset($_SESSION['objets_propel']['utilisateurProfessionnel'])
+            && $_SESSION['objets_propel']['utilisateurProfessionnel'] != null
+            && $_SESSION['objets_propel']['utilisateurProfessionnel'] instanceof UtilisateurProfessionnel) {
+            //echo 'utilisateur recupere dans la session';
+            return $_SESSION['objets_propel']['utilisateurProfessionnel'];
+        } elseif (isset($_SESSION) && isset($_SESSION['login'])) {
+            $utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($_SESSION['login'])->findOne();
+            if ($utilisateur != null) {
+                $_SESSION['objets_propel']['utilisateurProfessionnel'] = $utilisateur;
+            }
+            return $utilisateur;
+        } else {
+            return null;
+        }
 	}
 
 } // UtilisateurProfessionnelPeer

@@ -475,7 +475,7 @@ if (!isset($aid_trouve)) {
 echo add_token_field();
 ?>
 		<legend class="bold">
-		  Restaurer les photos à partir d'un fichier Zip
+			Uploader et restaurer les photos à partir d'un fichier ZIP
 		</legend>
 		<input type="hidden" name="action" value="upload" />
 		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
@@ -495,12 +495,14 @@ echo add_token_field();
 		  </em>
 		</p>
 
+		<p>Le fichier ZIP doit contenir une arborescence <b>photos/eleves/</b> et les photos dans le sous-dossier doivent être nommée d'après les ELENOET des élèves (<em>photos/eleves/ELENOET.jpg</em>)<br />Et pour les photos des personnels, elles doivent se trouver dans un sous-dossier <b>photos/personnels/</b></p>
+
 		<p>La <b>taille maximale</b> d'un fichier uploadé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?></b><br />Effectuez si nécessaire votre upload en plusieurs fichiers Zip.</p>
 
 	  </fieldset>
 	</form>
 
-	<hr/>
+	<hr />
 
   <?php }
   if (isset ($eleves_sans_photo)){

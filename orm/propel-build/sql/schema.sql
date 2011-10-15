@@ -143,7 +143,7 @@ CREATE TABLE periodes
 	verouiller VARCHAR(1) DEFAULT 'O' NOT NULL COMMENT 'Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)',
 	id_classe INTEGER(11) NOT NULL COMMENT 'identifiant numerique de la classe.',
 	date_verrouillage DATETIME COMMENT 'date de verrouillage de la periode',
-	date_fin DATETIME COMMENT 'date de verrouillage de la periode',
+	date_fin DATETIME COMMENT 'date de fin de la periode (utilisé notamment pour le décompte des absences)',
 	PRIMARY KEY (num_periode,id_classe),
 	INDEX periodes_FI_1 (id_classe),
 	CONSTRAINT periodes_FK_1
@@ -191,7 +191,6 @@ CREATE TABLE j_groupes_classes
 	valeur_ects DECIMAL COMMENT 'Valeur par défaut des ECTS pour cet enseignement',
 	PRIMARY KEY (id_groupe,id_classe),
 	INDEX j_groupes_classes_FI_2 (id_classe),
-	INDEX j_groupes_classes_FI_3 (categorie_id),
 	CONSTRAINT j_groupes_classes_FK_1
 		FOREIGN KEY (id_groupe)
 		REFERENCES groupes (id)
@@ -199,10 +198,7 @@ CREATE TABLE j_groupes_classes
 	CONSTRAINT j_groupes_classes_FK_2
 		FOREIGN KEY (id_classe)
 		REFERENCES classes (id)
-		ON DELETE CASCADE,
-	CONSTRAINT j_groupes_classes_FK_3
-		FOREIGN KEY (categorie_id)
-		REFERENCES matieres_categories (id)
+		ON DELETE CASCADE
 ) ENGINE=MyISAM COMMENT='Table permettant la jointure entre groupe d\'enseignement et une classe. Cette jointure permet de definir un enseignement, c\'est à dire un groupe d\'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe';
 
 -- ---------------------------------------------------------------------
@@ -493,10 +489,8 @@ CREATE TABLE j_eleves_professeurs
 (
 	login VARCHAR(50) NOT NULL COMMENT 'cle etrangere, login de l\'eleve',
 	professeur VARCHAR(50) NOT NULL COMMENT 'cle etrangere, login du professeur (utilisateur professionnel)',
-	id_classe INTEGER(11) NOT NULL COMMENT 'cle etrangere, id de la classe',
-	PRIMARY KEY (login,professeur,id_classe),
+	PRIMARY KEY (login,professeur),
 	INDEX j_eleves_professeurs_FI_2 (professeur),
-	INDEX j_eleves_professeurs_FI_3 (id_classe),
 	CONSTRAINT j_eleves_professeurs_FK_1
 		FOREIGN KEY (login)
 		REFERENCES eleves (login)
@@ -504,10 +498,6 @@ CREATE TABLE j_eleves_professeurs
 	CONSTRAINT j_eleves_professeurs_FK_2
 		FOREIGN KEY (professeur)
 		REFERENCES utilisateurs (login)
-		ON DELETE CASCADE,
-	CONSTRAINT j_eleves_professeurs_FK_3
-		FOREIGN KEY (id_classe)
-		REFERENCES classes (id)
 		ON DELETE CASCADE
 ) ENGINE=MyISAM COMMENT='Table de jointure entre les professeurs principaux et les eleves';
 
@@ -645,7 +635,7 @@ DROP TABLE IF EXISTS aid;
 
 CREATE TABLE aid
 (
-	id VARCHAR(100) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incremente',
+	id VARCHAR(100) NOT NULL COMMENT 'cle primaire auto-incremente',
 	nom VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'Nom de l\'AID',
 	numero VARCHAR(8) DEFAULT '0' NOT NULL COMMENT 'Numero d\'ordre d\'affichage',
 	indice_aid INTEGER(11) DEFAULT 0 NOT NULL COMMENT 'Cle etrangere, vers la liste des categories d\'AID (aid_config)',

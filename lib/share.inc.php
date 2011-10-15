@@ -94,25 +94,43 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
  * @todo on déclare $char_spec alors qu'on ne l'utilise pas, n'y aurait-il pas un problème ?
  */
 function verif_mot_de_passe($password,$flag) {
+	global $info_verif_mot_de_passe;
+
 	if ($flag == 1) {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
+			$info_verif_mot_de_passe="Le mot de passe ne doit pas étre uniquement numérique ou uniquement alphabétique.";
 			return FALSE;
 		}
 		elseif(preg_match("/^[[:alnum:]\W]{".getSettingValue("longmin_pwd").",}$/", $password) and preg_match("/[\W]+/", $password) and preg_match("/[0-9]+/", $password)) {
+			$info_verif_mot_de_passe="";
 			return TRUE;
 		}
 		else {
+			if(preg_match("/^[A-Za-z0-9]*$/", $password)) {
+				$info_verif_mot_de_passe="Le mot de passe doit comporter au moins un caractére spécial (#, *,...).";
+			}
+			elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+				$info_verif_mot_de_passe="La longueur du mot de passe doit étre supérieure ou égale é ".getSettingValue("longmin_pwd").".";
+				return FALSE;
+			}
+			else {
+				// Euh... qu'est-ce qui a été saisi?
+				$info_verif_mot_de_passe="";
+			}
 			return FALSE;
 		}
 	}
 	else {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
+			$info_verif_mot_de_passe="Le mot de passe ne doit pas étre uniquement numérique ou uniquement alphabétique.";
 			return FALSE;
 		}
 		elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+			$info_verif_mot_de_passe="La longueur du mot de passe doit étre supérieure ou égale é ".getSettingValue("longmin_pwd").".";
 			return FALSE;
 		}
 		else {
+			$info_verif_mot_de_passe="";
 			return TRUE;
 		}
 	}
@@ -709,7 +727,7 @@ function affiche_date_naissance($date) {
  * @global mixed 
  * @global mixed 
  * @global mixed 
- * @return booleanTRUE si on a une nouvelle version 
+ * @return boolean TRUE si on a une nouvelle version 
  */
 function test_maj() {
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
@@ -717,7 +735,7 @@ function test_maj() {
     $versionRc_old = getSettingValue("versionRc");
     $versionBeta_old = getSettingValue("versionBeta");
 
-   if ($version_old =='') {
+    if ($version_old =='') {
        return TRUE;
        die();
    }
@@ -3421,10 +3439,11 @@ function telecharge_fichier($sav_file,$dirname,$type,$ext){
 	return ("Erreur de téléchargement.");
   } else if (!file_exists($sav_file['tmp_name'])) {
 	return ("Erreur de téléchargement 2.");
-  } else if (!preg_match('/'.$ext.'$/',$sav_file['name'])){
+  } else if (!preg_match('/'.$ext.'$/i',$sav_file['name'])){
 	return ("Erreur : seuls les fichiers ayant l'extension .".$ext." sont autorisés.");
-  } else if ($sav_file['type']!=$type ){
-	return ("Erreur : seuls les fichiers de type '".$type."' sont autorisés.");
+  //} else if ($sav_file['type']!=$type ){
+  } else if (strripos($type,$sav_file['type'])===false) {
+	return ("Erreur : seuls les fichiers de type '".$type."' sont autorisés<br />Votre fichier est de type ".$sav_file['type']);
   } else {
 	$nom_corrige = preg_replace("/[^.a-zA-Z0-9_=-]+/", "_", $sav_file['name']);
 	if (!deplacer_upload($sav_file['tmp_name'], $dirname."/".$nom_corrige)) {
@@ -3826,6 +3845,10 @@ function del_acces_cdt($id_acces) {
 			return FALSE;
 		}
 		else {
+                  if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')){
+                    $test = explode("?", $chemin);
+                    $chemin = count($test) > 1 ? $test[0] : $chemin;
+                  }
 			$suppr=deltree($chemin,TRUE);
 			if(!$suppr) {
 				echo "<p><span style='color:red'>Erreur lors de la suppression de $chemin</span></p>";

@@ -1,5 +1,4 @@
 <?php
-
 // on force la valeur de magic_quotes_runtime à off de façon à ce que les valeurs récupérées dans la base
 // puissent être affichées directement, sans caractère "\"
 @set_magic_quotes_runtime(0);
@@ -377,7 +376,7 @@ else {
 		// Et on traite les fichiers uploadés
 		if (!isset($AllowedFilesExtensions)) {
 			//$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","swf","txt","xcf","xls","zip","pps");
-			$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif", "gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","sql","swf","txt","xcf","xls","xml","zip","pps", "docx");
+			$AllowedFilesExtensions = array("bmp","csv","doc","dot","epg","gif", "gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","pptx","sql","swf","txt","xcf","xls","xlsx","xml","zip","pps","docx");
 		}
 		
 		if (isset($_FILES) and !empty($_FILES)) {		

@@ -1827,7 +1827,8 @@ function releve_pdf($tab_rel,$i) {
 		$hauteur_dun_regroupement,
 
 		$hauteur_du_titre,
-		$largeur_cadre_note,
+		//$largeur_cadre_note, // A supprimer... car réaffecté dans la fonction... on ne récupère pas nécessairement la valeur initiale de header_releve_pdf.php
+		$largeur_cadre_note_si_obs,
 		$X_cadre_note,
 		$hauteur_cachet,
 
@@ -1867,6 +1868,8 @@ function releve_pdf($tab_rel,$i) {
 			$rn_rapport_standard_min_font=$tab_rel['rn_rapport_standard_min_font'];
 		}
 
+	// Initialisation pour le cas où il n'y a aucune matière/note pour un élève (par exemple par choix des dates)
+	$largeur_cadre_note=$largeur_cadre_note_si_obs;
 
 	$id_classe=$tab_rel['id_classe'];
 	$classe_id=$id_classe;
@@ -2162,9 +2165,13 @@ function releve_pdf($tab_rel,$i) {
 		$affiche_cachet_pp=($tab_rel['rn_sign_pp']=='y') ? 1 : 0;
 		//$affiche_signature_parent=1;
 		$affiche_signature_parent=($tab_rel['rn_sign_resp']=='y') ? 1 : 0;
-	
+
 		if(($affiche_cachet_pp==1)||($affiche_signature_parent==1)) {$affiche_bloc_observation=1;}
-	
+
+//echo "==============================<br />\n";
+//echo $tab_rel['eleve'][$i]['nom']."<br />\n";
+//echo "\$affiche_bloc_observation=$affiche_bloc_observation<br />\n";
+
 		$texte_observation="Observations:";
 	
 		//$aff_classe_nom=1;
@@ -2770,14 +2777,19 @@ function releve_pdf($tab_rel,$i) {
 			
 						//NOTES
 						$largeur_utilise=$largeur_cadre_matiere;
+//echo "\$largeur_utilise=$largeur_utilise<br />\n";
+//echo "\$affiche_bloc_observation=$affiche_bloc_observation<br />\n";
 						//=======================
 						// AJOUT: chapel 20071019
 						//if ( $affiche_bloc_observation === '1' ) {
 						if ( $affiche_bloc_observation==1) {
-							$largeur_cadre_note = $largeur_cadre_note;
+							//$largeur_cadre_note = $largeur_cadre_note;
+							$largeur_cadre_note = $largeur_cadre_note_si_obs;
+//echo "\$largeur_cadre_note=$largeur_cadre_note<br />\n";
 						}
 						else {
 							$largeur_cadre_note = $largeur_cadre_note_global - $largeur_utilise;
+//echo "\$largeur_cadre_note=$largeur_cadre_note_global - $largeur_utilise = $largeur_cadre_note<br />\n";
 						}
 						//=======================
 						$pdf->SetXY($X_cadre_note+$largeur_utilise,$Y_cadre_note+$hauteur_utilise);
