@@ -6,10 +6,10 @@ function getHeure(input_check,input_go,form_choix){
 	var minutes=date_select.getMinutes();if(minutes<10){minutes="0"+minutes;}
 	// nom du formulaire
 	var form_action = form_choix;
-	// id des élèments
+	// id des Ã©lÃ¨ments
 	var input_go_id = input_go.id;
 	var input_check_id = input_check.id;
-	// modifie le contenue de l'élèment
+	// modifie le contenue de l'Ã©lÃ¨ment
 	if(document.forms[form_action].elements[input_check_id].checked) {
 		document.forms[form_action].elements[input_go_id].value=heures+":"+minutes;
 	} else {

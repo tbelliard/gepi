@@ -34,8 +34,8 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_ooo/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : Index', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo: Index : Index', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_ooo/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : Index', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo: Index : Index', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -43,7 +43,7 @@ if (!checkAccess()) {
 
 
 //**************** EN-TETE *****************
-$titre_page = "Modèle Open Office";
+$titre_page = "ModÃ¨le Open Office";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -53,22 +53,22 @@ echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.pn
 
 echo "</p>\n";
 
-echo "<p>Ce module est destiné à gérer les modèles Open Office de Gepi.</p>\n";
+echo "<p>Ce module est destinÃ© Ã  gÃ©rer les modÃ¨les Open Office de Gepi.</p>\n";
 
 $phrase_commentaire="";
 $_SESSION['retour']=$_SERVER['PHP_SELF'] ;
 
 
-//Début de la table configuration
+//DÃ©but de la table configuration
 if($_SESSION['statut']=='administrateur') {
   echo "<table class='menu' summary='Modele Open Office'>\n";
   echo "<tr>\n";
-  echo "<th colspan='2'><img src='../images/icons/control-center.png' alt='Configuration du module Modèle Open Office' class='link'/> - Configuration du module</th>\n";
+  echo "<th colspan='2'><img src='../images/icons/control-center.png' alt='Configuration du module ModÃ¨le Open Office' class='link'/> - Configuration du module</th>\n";
   echo "</tr>\n";
   echo "<tr>\n";
-  echo "<td width='30%'><a href='../mod_ooo/gerer_modeles_ooo.php'>Gérer ses propres modèles de document</a>";
+  echo "<td width='30%'><a href='../mod_ooo/gerer_modeles_ooo.php'>GÃ©rer ses propres modÃ¨les de document</a>";
   echo "</td>\n";
-  echo "<td>Gérer ses propres modèles de document Open Office</td>\n";
+  echo "<td>GÃ©rer ses propres modÃ¨les de document Open Office</td>\n";
   echo "</tr>\n"; 
   echo "</table>\n";
 }

@@ -49,13 +49,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Epreuve blanche: Définir les salles',
+description='Epreuve blanche: DÃ©finir les salles',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -74,7 +74,7 @@ if(isset($definition_salles)) {
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
+		$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
 	else {
 		$lig=mysql_fetch_object($res);
@@ -98,7 +98,7 @@ if(isset($definition_salles)) {
 					$sql="UPDATE eb_copies SET id_salle='-1' WHERE id_salle='".$id_salle[$i]."' AND id_epreuve='$id_epreuve';";
 					$nettoyage=mysql_query($sql);
 					if(!$nettoyage) {
-						$msg.="Erreur lors du nettoyage dans 'eb_copies' de la salle supprimée.<br />";
+						$msg.="Erreur lors du nettoyage dans 'eb_copies' de la salle supprimÃ©e.<br />";
 					}
 					else {
 						$sql="DELETE FROM eb_salles WHERE id='".$id_salle[$i]."' AND id_epreuve='$id_epreuve';";
@@ -107,7 +107,7 @@ if(isset($definition_salles)) {
 							$msg.="Erreur lors de la suppression de la salle $salle[$i].<br />";
 						}
 						else {
-							$msg.="Suppression de la salle $salle[$i] effectuée.<br />";
+							$msg.="Suppression de la salle $salle[$i] effectuÃ©e.<br />";
 						}
 					}
 				}
@@ -118,18 +118,18 @@ if(isset($definition_salles)) {
 						// Ou alors on supprime la salle
 					}
 					else {
-						// Ne pas renommer une salle au même nom qu'un salle existante pour l'épreuve
+						// Ne pas renommer une salle au mÃªme nom qu'un salle existante pour l'Ã©preuve
 						$sql="SELECT id FROM eb_salles WHERE salle='".$temp_salle."' AND id_epreuve='$id_epreuve';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
 							$sql="UPDATE eb_salles SET salle='".$temp_salle."' WHERE id='".$id_salle[$i]."' AND id_epreuve='$id_epreuve';";
 							$update=mysql_query($sql);
-							if(!$update) {$msg.="Erreur lors de la mise à jour de la salle n°$id_salle[$i]<br />";}
+							if(!$update) {$msg.="Erreur lors de la mise Ã  jour de la salle nÂ°$id_salle[$i]<br />";}
 						}
 						else {
-							// On n'affiche un avertissement que si ce n'est pas la salle courante que l'on renomme au même nom
+							// On n'affiche un avertissement que si ce n'est pas la salle courante que l'on renomme au mÃªme nom
 							$lig=mysql_fetch_object($res);
-							if($lig->id!=$id_salle[$i]) {$msg.="Une autre salle porte le même nom.<br />";}
+							if($lig->id!=$id_salle[$i]) {$msg.="Une autre salle porte le mÃªme nom.<br />";}
 						}
 					}
 				}
@@ -154,24 +154,24 @@ if(isset($definition_salles)) {
 				}
 		
 				for($i=0;$i<count($tab);$i++) {
-					// A faire: virer les espaces en début et fin de chaine
+					// A faire: virer les espaces en dÃ©but et fin de chaine
 					//$salle=remplace_accents(trim($tab[$i]),'all_nospace');
 					//$salle=remplace_accents(ereg_replace("^[ ]","",trim($tab[$i])),'all_nospace');
 					$salle=remplace_accents(trim($tab[$i]),'all_nospace');
-					// Ne pas ajouter une salle de même nom qu'un salle existante pour l'épreuve
+					// Ne pas ajouter une salle de mÃªme nom qu'un salle existante pour l'Ã©preuve
 					//if(in_array($tab[$i],$tab_salles)) {
-					//	$msg.="Une autre salle porte le même nom&nbsp;: '$tab[$i]'<br />";
+					//	$msg.="Une autre salle porte le mÃªme nom&nbsp;: '$tab[$i]'<br />";
 					if(in_array($salle,$tab_salles)) {
-						$msg.="Une autre salle porte le même nom&nbsp;: '$salle'<br />";
+						$msg.="Une autre salle porte le mÃªme nom&nbsp;: '$salle'<br />";
 					}
 					else {
 						//$sql="INSERT INTO eb_salles SET salle='".$tab[$i]."', id_epreuve='$id_epreuve';";
 						$sql="INSERT INTO eb_salles SET salle='".$salle."', id_epreuve='$id_epreuve';";
 						$insert=mysql_query($sql);
 						//if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$tab[$i]'<br />";}
-						//else {$msg.="Salle '$tab[$i]' ajoutée.<br />";}
+						//else {$msg.="Salle '$tab[$i]' ajoutÃ©e.<br />";}
 						if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$salle'<br />";}
-						else {$msg.="Salle '$salle' ajoutée.<br />";}
+						else {$msg.="Salle '$salle' ajoutÃ©e.<br />";}
 					}
 				}
 			}
@@ -192,7 +192,7 @@ if(isset($definition_salles)) {
 							$sql="INSERT INTO eb_salles SET salle='".$lig->salle."', id_epreuve='$id_epreuve';";
 							$insert=mysql_query($sql);
 							if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$lig->salle'<br />";}
-							else {$msg.="Salle '$lig->salle' ajoutée.<br />";}
+							else {$msg.="Salle '$lig->salle' ajoutÃ©e.<br />";}
 							$tab_salle_existante[]=$lig->salle;
 						}
 					}
@@ -211,7 +211,7 @@ if(isset($definition_salles)) {
 							$sql="INSERT INTO eb_salles SET salle='".$lig->nom_salle."', id_epreuve='$id_epreuve';";
 							$insert=mysql_query($sql);
 							if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$lig->nom_salle'<br />";}
-							else {$msg.="Salle '$lig->nom_salle' ajoutée.<br />";}
+							else {$msg.="Salle '$lig->nom_salle' ajoutÃ©e.<br />";}
 						}
 					}
 				}
@@ -219,7 +219,7 @@ if(isset($definition_salles)) {
 
 		}
 		else {
-			$msg="L'épreuve choisie (<i>$id_epreuve</i>) est close.\n";
+			$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) est close.\n";
 		}
 	}
 }
@@ -232,7 +232,7 @@ elseif(isset($_POST['valide_affect_eleves'])) {
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
+		$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
 	else {
 		$lig=mysql_fetch_object($res);
@@ -243,13 +243,13 @@ elseif(isset($_POST['valide_affect_eleves'])) {
 			for($i=0;$i<count($login_ele);$i++) {
 				$sql="UPDATE eb_copies SET id_salle='$id_salle_ele[$i]' WHERE id_epreuve='$id_epreuve' AND login_ele='$login_ele[$i]'";
 				$update=mysql_query($sql);
-				if(!$update) {$msg.="Erreur lors de la mise à jour de la salle n°$id_salle_ele[$i] pour $login_ele[$i].<br />";}
+				if(!$update) {$msg.="Erreur lors de la mise Ã  jour de la salle nÂ°$id_salle_ele[$i] pour $login_ele[$i].<br />";}
 			}
 		
-			if(($msg=="")&&(count($login_ele)>0)) {$msg="Enregistrement effectué.";}
+			if(($msg=="")&&(count($login_ele)>0)) {$msg="Enregistrement effectuÃ©.";}
 		}
 		else {
-			$msg="L'épreuve choisie (<i>$id_epreuve</i>) est close.\n";
+			$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) est close.\n";
 		}
 	}
 }
@@ -257,9 +257,9 @@ elseif(isset($_POST['valide_affect_eleves'])) {
 include('lib_eb.php');
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Epreuve blanche: Définition des salles";
+$titre_page = "Epreuve blanche: DÃ©finition des salles";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -278,14 +278,14 @@ echo ">Retour</a>";
 //if(!isset($definition_salles)) {
 //==================================================================
 if(!isset($mode)) {
-	// Définition des salles
+	// DÃ©finition des salles
 	echo "</p>\n";
 
-	echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
+	echo "<p class='bold'>Epreuve nÂ°$id_epreuve</p>\n";
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
+		echo "<p>L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -303,7 +303,7 @@ if(!isset($mode)) {
 	}
 	echo "</blockquote>\n";
 
-	// Définir les salles
+	// DÃ©finir les salles
 	if($etat!='clos') {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 		echo add_token_field();
@@ -318,7 +318,7 @@ if(!isset($mode)) {
 	$tab_salles=array();
 	$tab_id_salles=array();
 	if($nb_salles_epreuve_courante>0) {
-		// Parcours des salles déjà définies pour cette épreuve:
+		// Parcours des salles dÃ©jÃ  dÃ©finies pour cette Ã©preuve:
 		while($lig=mysql_fetch_object($res)) {
 			$tab_salles[]=$lig->salle;
 			$tab_id_salles[]=$lig->id;
@@ -329,7 +329,7 @@ if(!isset($mode)) {
 		echo "<div style='float:right; width:18em; text-align:center; border: 1px solid black;'>\n";
 		echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=affect_eleves&amp;id_epreuve=$id_epreuve'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">Affecter les élèves dans les salles</a>.</p>";
+		echo ">Affecter les Ã©lÃ¨ves dans les salles</a>.</p>";
 		echo "</div>\n";
 		*/
 		$menu_a_droite.="<div style='float:right; width:18em;'>\n";
@@ -337,12 +337,12 @@ if(!isset($mode)) {
 		$menu_a_droite.="<div style='text-align:center; border: 1px solid black;'>\n";
 		$menu_a_droite.="<p><a href='".$_SERVER['PHP_SELF']."?mode=affect_eleves&amp;id_epreuve=$id_epreuve'";
 		$menu_a_droite.=" onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		$menu_a_droite.=">Affecter les élèves dans les salles</a>.</p>";
+		$menu_a_droite.=">Affecter les Ã©lÃ¨ves dans les salles</a>.</p>";
 		$menu_a_droite.="</div>\n";
 
 	}
 
-	// Choisir des salles parmi les salles auparavant définies... et qui ne sont pas déjà choisies
+	// Choisir des salles parmi les salles auparavant dÃ©finies... et qui ne sont pas dÃ©jÃ  choisies
 	$sql="SELECT * FROM eb_salles ORDER BY salle;";
 	//echo "$sql<br />";
 	$res2=mysql_query($sql);
@@ -361,7 +361,7 @@ if(!isset($mode)) {
 		if($chaine_salles_existantes!='') {
 			/*
 			echo "<div style='width:15em; float:right; border:1px solid black;'>\n";
-			echo "<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
+			echo "<p>SÃ©lectionner des salles parmi les salles dÃ©finies antÃ©rieurement pour d'autres Ã©preuves.<br />\n";
 			echo $chaine_salles_existantes;
 			echo "</p>\n";
 			echo "</div>\n";
@@ -372,7 +372,7 @@ if(!isset($mode)) {
 			}
 
 			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;'>\n";
-			$menu_a_droite.="<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
+			$menu_a_droite.="<p>SÃ©lectionner des salles parmi les salles dÃ©finies antÃ©rieurement pour d'autres Ã©preuves.<br />\n";
 			$menu_a_droite.=$chaine_salles_existantes;
 			$menu_a_droite.="</p>\n";
 			$menu_a_droite.="</div>\n";
@@ -396,7 +396,7 @@ if(!isset($mode)) {
 		if($chaine_salles_cours_existantes!='') {
 			/*
 			echo "<div style='width:15em; float:right; border:1px solid black;'>\n";
-			echo "<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
+			echo "<p>SÃ©lectionner des salles parmi les salles dÃ©finies antÃ©rieurement pour d'autres Ã©preuves.<br />\n";
 			echo $chaine_salles_existantes;
 			echo "</p>\n";
 			echo "</div>\n";
@@ -407,7 +407,7 @@ if(!isset($mode)) {
 			}
 
 			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;'>\n";
-			$menu_a_droite.="<p>Sélectionner des salles parmi les salles de cours définies dans un autre module.<br />\n";
+			$menu_a_droite.="<p>SÃ©lectionner des salles parmi les salles de cours dÃ©finies dans un autre module.<br />\n";
 			$menu_a_droite.=$chaine_salles_cours_existantes;
 			$menu_a_droite.="</p>\n";
 			$menu_a_droite.="</div>\n";
@@ -421,7 +421,7 @@ if(!isset($mode)) {
 	echo $menu_a_droite;
 
 /*
-		// Parcours des salles déjà définies pour cette épreuve:
+		// Parcours des salles dÃ©jÃ  dÃ©finies pour cette Ã©preuve:
 		$tab_salles=array();
 		$tab_id_salles=array();
 		while($lig=mysql_fetch_object($res)) {
@@ -432,7 +432,7 @@ if(!isset($mode)) {
 
 
 
-		// Choisir des salles parmi les salles auparavant définies... et qui ne sont pas déjà choisies
+		// Choisir des salles parmi les salles auparavant dÃ©finies... et qui ne sont pas dÃ©jÃ  choisies
 		$sql="SELECT * FROM eb_salles ORDER BY salle;";
 		echo "$sql<br />";
 		$res2=mysql_query($sql);
@@ -450,7 +450,7 @@ if(!isset($mode)) {
 
 			if($chaine_salles_existantes!='') {
 				echo "<div style='width:15em; float:right;'>\n";
-				echo "<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
+				echo "<p>SÃ©lectionner des salles parmi les salles dÃ©finies antÃ©rieurement pour d'autres Ã©preuves.<br />\n";
 				echo $chaine_salles_existantes;
 				echo "</p>\n";
 				echo "</div>\n";
@@ -460,12 +460,12 @@ if(!isset($mode)) {
 
 	if($nb_salles_epreuve_courante>0) {
 
-		echo "<p><b>Liste des salles déjà définies&nbsp;:</b>\n";
+		echo "<p><b>Liste des salles dÃ©jÃ  dÃ©finies&nbsp;:</b>\n";
 		//echo "<br />\n";
 		echo "</p>\n";
 		echo "<blockquote>\n";
 		$alt=1;
-		echo "<table class='boireaus' summary='Salles associées'>\n";
+		echo "<table class='boireaus' summary='Salles associÃ©es'>\n";
 		echo "<tr>\n";
 		echo "<th>Salles</th>\n";
 		echo "<th>Effectif</th>\n";
@@ -518,27 +518,27 @@ if(!isset($mode)) {
 		echo "</table>\n";
 
 		if($eff_aff==0) {
-			echo "<p>Aucun élève n'est encore affecté dans une salle.</p>\n";
+			echo "<p>Aucun Ã©lÃ¨ve n'est encore affectÃ© dans une salle.</p>\n";
 		}
 		else {
 			$sql="SELECT login_ele FROM eb_copies WHERE id_salle='-1' AND id_epreuve='$id_epreuve';";
 			$res_eff=mysql_query($sql);
 			$eff[$cpt]=mysql_num_rows($res_eff);
 			if($eff[$cpt]==0) {
-				echo "<p>Tous les élèves sont affectés dans la/les salles.</p>\n";
+				echo "<p>Tous les Ã©lÃ¨ves sont affectÃ©s dans la/les salles.</p>\n";
 			}
 			elseif($eff[$cpt]==1) {
 				$lig=mysql_fetch_object($res_eff);
-				echo "<p>Un élève (".get_nom_prenom_eleve($lig->login_ele).") n'est pas affecté dans une salle.</p>\n";
+				echo "<p>Un Ã©lÃ¨ve (".get_nom_prenom_eleve($lig->login_ele).") n'est pas affectÃ© dans une salle.</p>\n";
 			}
 			else {
-				echo "<p>".$eff[$cpt]." élèves ne sont pas affectés dans une salle.</p>\n";
+				echo "<p>".$eff[$cpt]." Ã©lÃ¨ves ne sont pas affectÃ©s dans une salle.</p>\n";
 			}
 		}
 		echo "</blockquote>\n";
 	}
 	else {
-		echo "<p>Aucune salle n'est encore définie.</p>\n";
+		echo "<p>Aucune salle n'est encore dÃ©finie.</p>\n";
 	}
 
 	if($etat!='clos') {
@@ -552,30 +552,30 @@ if(!isset($mode)) {
 		echo "</form>\n";
 	}
 
-	//echo "<p><a href='".$_SERVER['PHP_SELF']."?salles=$salles'>Affecter les élèves dans les salles</a>.</p>";
+	//echo "<p><a href='".$_SERVER['PHP_SELF']."?salles=$salles'>Affecter les Ã©lÃ¨ves dans les salles</a>.</p>";
 	/*
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=affect_eleves&amp;id_epreuve=$id_epreuve'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo ">Affecter les élèves dans les salles</a>.</p>";
+	echo ">Affecter les Ã©lÃ¨ves dans les salles</a>.</p>";
 	*/
 
-	echo "<p style='color:red;'>Afficher le nombre d'élèves non affectés dans une salle.</p>\n";
-	echo "<p style='color:red;'>Si on saisit une/des heures pour l'épreuve, on pourrait détecter qu'une même salle a été affectée pour plusieurs épreuves sur même créneau.</p>\n";
-	echo "<p style='color:red;'>Pouvoir sélectionner des salles parmi celles déjà définies.</p>\n";
+	echo "<p style='color:red;'>Afficher le nombre d'Ã©lÃ¨ves non affectÃ©s dans une salle.</p>\n";
+	echo "<p style='color:red;'>Si on saisit une/des heures pour l'Ã©preuve, on pourrait dÃ©tecter qu'une mÃªme salle a Ã©tÃ© affectÃ©e pour plusieurs Ã©preuves sur mÃªme crÃ©neau.</p>\n";
+	echo "<p style='color:red;'>Pouvoir sÃ©lectionner des salles parmi celles dÃ©jÃ  dÃ©finies.</p>\n";
 }
 //==================================================================
 else {
-	// Affectation des élèves dans les salles
+	// Affectation des Ã©lÃ¨ves dans les salles
 	echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo ">Définition des salles</a>";
+	echo ">DÃ©finition des salles</a>";
 	echo "</p>\n";
 
-	echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
+	echo "<p class='bold'>Epreuve nÂ°$id_epreuve</p>\n";
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
+		echo "<p>L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -594,7 +594,7 @@ else {
 	$sql="SELECT DISTINCT id,salle FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucune salle n'est encore définie.</p>\n";
+		echo "<p>Aucune salle n'est encore dÃ©finie.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -612,11 +612,11 @@ else {
 	//$tri=isset($_POST['tri']) ? $_POST['tri'] : (isset($_GET['tri']) ? $_GET['tri'] : "groupe");
 	$tri=isset($_POST['tri']) ? $_POST['tri'] : (isset($_GET['tri']) ? $_GET['tri'] : "alpha");
 
-	echo "<p class='bold'>Trier les élèves par&nbsp;:</p>\n";
+	echo "<p class='bold'>Trier les Ã©lÃ¨ves par&nbsp;:</p>\n";
 	echo "<ul>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=affect_eleves&amp;id_epreuve=$id_epreuve&amp;tri=alpha'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo ">ordre alphabétique</a></li>\n";
+	echo ">ordre alphabÃ©tique</a></li>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=affect_eleves&amp;id_epreuve=$id_epreuve&amp;tri=groupe'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo ">groupe/enseignement</a></li>\n";
@@ -632,7 +632,7 @@ else {
 		$sql="SELECT DISTINCT g.* FROM eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name, g.description;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Aucun groupe  n'est encore associé à l'épreuve.</p>\n";
+			echo "<p>Aucun groupe  n'est encore associÃ© Ã  l'Ã©preuve.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -658,7 +658,7 @@ else {
 			//echo "$sql<br />";
 			$res2=mysql_query($sql);
 			if(mysql_num_rows($res2)==0) {
-				echo "<p>Aucune élève n'est encore associé à l'épreuve.</p>\n";
+				echo "<p>Aucune Ã©lÃ¨ve n'est encore associÃ© Ã  l'Ã©preuve.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -668,9 +668,9 @@ else {
 				$tab_ele_id_salle[$lig2->login_ele]=$lig2->id_salle;
 			}
 	
-			echo "<table class='boireaus' summary='Choix des élèves du groupe $lig->id'>\n";
+			echo "<table class='boireaus' summary='Choix des Ã©lÃ¨ves du groupe $lig->id'>\n";
 			echo "<tr>\n";
-			echo "<th>Elèves</th>\n";
+			echo "<th>ElÃ¨ves</th>\n";
 			echo "<th>Classes</th>\n";
 			for($i=0;$i<count($salle);$i++) {
 				echo "<th>\n";
@@ -685,7 +685,7 @@ else {
 			}
 			echo "<th>\n";
 			echo "<a href='javascript:coche($i,$compteur_groupe,true)'>\n";
-			echo "Non affecté";
+			echo "Non affectÃ©";
 			echo "</a>\n";
 			echo "</th>\n";
 			echo "</tr>\n";
@@ -724,7 +724,7 @@ else {
 					echo "<td>\n";
 					echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='$id_salle[$i]' ";
 					echo "onchange='calcule_effectif();changement()' ";
-					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les Ã©lÃ¨ves du groupe (toutes pÃ©riodes confondues)... Ã  amÃ©liorer
 					if($tab_ele_id_salle[$login_ele]==$id_salle[$i]) {echo "checked ";$affect="y";}
 					echo "/>\n";
 					echo "</td>\n";
@@ -774,7 +774,7 @@ else {
 			$chaine_cpt1_eleves.=",'$cpt'";
 		}
 		else {
-			// Une seule salle a été définie.
+			// Une seule salle a Ã©tÃ© dÃ©finie.
 			$chaine_cpt1_eleves.="'$cpt'";
 		}	
 	
@@ -833,7 +833,7 @@ function coche(colonne,rang_groupe,mode) {
 		$sql="SELECT DISTINCT g.* FROM eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name, g.description;";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			echo "<p>Aucun groupe n 'est encore associé à l'épreuve.</p>\n";
+			echo "<p>Aucun groupe n 'est encore associÃ© Ã  l'Ã©preuve.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -871,7 +871,7 @@ function coche(colonne,rang_groupe,mode) {
 
 				echo "<table class='boireaus' summary='Une tranche'>\n";
 				echo "<tr>\n";
-				echo "<th>Elèves</th>\n";
+				echo "<th>ElÃ¨ves</th>\n";
 				echo "<th>Classes</th>\n";
 				for($i=0;$i<count($salle);$i++) {
 					echo "<th>\n";
@@ -882,7 +882,7 @@ function coche(colonne,rang_groupe,mode) {
 				}
 				echo "<th>\n";
 				echo "<a href='javascript:coche($i,$compteur_tranche,true)'>\n";
-				echo "Non affecté";
+				echo "Non affectÃ©";
 				echo "</a>\n";
 				echo "</th>\n";
 				echo "</tr>\n";
@@ -920,7 +920,7 @@ function coche(colonne,rang_groupe,mode) {
 				echo "<td>\n";
 				echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='$id_salle[$i]' ";
 				echo "onchange='calcule_effectif();changement()' ";
-				// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+				// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les Ã©lÃ¨ves du groupe (toutes pÃ©riodes confondues)... Ã  amÃ©liorer
 				if($lig->id_salle==$id_salle[$i]) {echo "checked ";$affect="y";}
 				echo "/>\n";
 				echo "</td>\n";
@@ -970,7 +970,7 @@ function coche(colonne,rang_groupe,mode) {
 			$chaine_cpt1_eleves.=",'$cpt'";
 		}
 		else {
-			// Une seule salle a été définie.
+			// Une seule salle a Ã©tÃ© dÃ©finie.
 			$chaine_cpt1_eleves.="'$cpt'";
 		}	
 

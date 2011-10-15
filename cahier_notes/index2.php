@@ -53,14 +53,14 @@ if (!checkAccess()) {
     die();
 }
 
-// On fait quelques tests si le statut est 'prof', pour vérifier les restrictions d'accès
+// On fait quelques tests si le statut est 'prof', pour vÃ©rifier les restrictions d'accÃ¨s
 if ($_SESSION['statut'] == "professeur") {
 	if ( (getSettingValue("GepiAccesMoyennesProf") != "yes") AND
          (getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes") AND
          (getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes")
        ) {
-       	tentative_intrusion("1","Tentative d'accès par un prof aux moyennes des carnets de notes sans avoir les autorisations nécessaires.");
-       	echo "Vous n'êtes pas autorisé à être ici.";
+       	tentative_intrusion("1","Tentative d'accÃ¨s par un prof aux moyennes des carnets de notes sans avoir les autorisations nÃ©cessaires.");
+       	echo "Vous n'Ãªtes pas autorisÃ© Ã  Ãªtre ici.";
 /**
  * inclusion du pied de page
  */
@@ -76,7 +76,7 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 if (isset($id_classe)) {
 	// On regarde si le type est correct :
 	if (!is_numeric($id_classe)) {
-		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numérique.");
+		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numÃ©rique.");
 		echo "Erreur.";
 /**
  * inclusion du pied de page
@@ -84,12 +84,12 @@ if (isset($id_classe)) {
 		require ("../lib/footer.inc.php");
 		die();
 	}
-	// On teste si le professeur a le droit d'accéder à cette classe
+	// On teste si le professeur a le droit d'accÃ©der Ã  cette classe
 	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 		if ($test == "0") {
-			tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
-			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+			tentative_intrusion("2", "Tentative d'accÃ¨s par un prof Ã  une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
+			echo "Vous ne pouvez pas accÃ©der Ã  cette classe car vous n'y Ãªtes pas professeur !";
             /**
              * inclusion du pied de page
              */
@@ -104,7 +104,7 @@ $javascript_specifique="prepa_conseil/colorisation_visu_toutes_notes";
 $titre_page = "Visualisation des moyennes des carnets de notes";
 
 /**
- * Entête de la page
+ * EntÃªte de la page
  */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
@@ -121,7 +121,7 @@ if (isset($id_classe)) {
 	//echo "<a href=\"index2.php\">Choisir une autre classe</a> | Classe : ".$current_eleve_classe." |</p>\n";
 
 	// ===========================================
-	// Ajout lien classe précédente / classe suivante
+	// Ajout lien classe prÃ©cÃ©dente / classe suivante
 	if($_SESSION['statut']=='scolarite'){
 		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
@@ -166,7 +166,7 @@ if (isset($id_classe)) {
 	}
 	// =================================
 	if(isset($id_class_prec)){
-		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe prÃ©cÃ©dente</a>";}
 	}
 	if($chaine_options_classes!="") {
 		echo " | Classe : <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
@@ -176,7 +176,7 @@ if (isset($id_classe)) {
 	if(isset($id_class_suiv)){
 		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
 	}
-	//fin ajout lien classe précédente / classe suivante
+	//fin ajout lien classe prÃ©cÃ©dente / classe suivante
 	// ===========================================
 	//echo " | Classe : ".$current_eleve_classe."</p>\n";
 	echo "</p>\n";
@@ -194,10 +194,10 @@ if (isset($id_classe)) {
 
 	echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes2.php\">\n";
 	echo add_token_field();
-	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary='Choix de la période'><tr>";
-	echo "<td valign=\"top\"><b>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</b><br />\n";
+	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary='Choix de la pÃ©riode'><tr>";
+	echo "<td valign=\"top\"><b>Choisissez&nbsp;la&nbsp;pÃ©riode&nbsp;:&nbsp;</b><br />\n";
     /**
-     * Gestion des périodes
+     * Gestion des pÃ©riodes
      */
 	include "../lib/periodes.inc.php";
 	$i="1";
@@ -217,19 +217,19 @@ if (isset($id_classe)) {
 	if((isset($_SESSION['vtn_pref_num_periode']))&&($_SESSION['vtn_pref_num_periode']=='annee')) {echo "checked ";}
 	echo "/>&nbsp;";
 	echo "<label for='num_periode_annee' style='cursor:pointer;'>\n";
-	echo "Année entière";
+	echo "AnnÃ©e entiÃ¨re";
 	echo "</label>\n";
 	echo "</td>\n";
 
 	echo "<td valign=\"top\">\n";
-    echo "<b>Paramètres d'affichage</b><br />\n";
+    echo "<b>ParamÃ¨tres d'affichage</b><br />\n";
 	echo "<input type=\"hidden\" name=\"id_classe\" value=\"".$id_classe."\" />";
 
-	echo "<table border='0' width='100%' summary='Paramètres'>\n";
+	echo "<table border='0' width='100%' summary='ParamÃ¨tres'>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
 
-		echo "<table border='0' summary='Paramètres'>\n";
+		echo "<table border='0' summary='ParamÃ¨tres'>\n";
 		echo "<tr>\n";
 		echo "<td>Largeur en pixel du tableau : </td>\n";
 		echo "<td><input type=text name=larg_tab size=3 ";
@@ -255,7 +255,7 @@ if (isset($id_classe)) {
 		echo "<tr>\n";
 		echo "<td>\n";
 		echo "<label for='couleur_alterne' style='cursor:pointer;'>\n";
-		echo "Couleurs de fond des lignes alternées : \n";
+		echo "Couleurs de fond des lignes alternÃ©es : \n";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "<td><input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" value='y' ";
@@ -305,7 +305,7 @@ if (isset($id_classe)) {
 		echo "/></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_reg' style='cursor:pointer;'>\n";
-		echo "Afficher le régime\n";
+		echo "Afficher le rÃ©gime\n";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -328,7 +328,7 @@ if (isset($id_classe)) {
 		echo "</tr>\n";
 
 		$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
-		// On teste la présence d'au moins un coeff pour afficher la colonne des coef
+		// On teste la prÃ©sence d'au moins un coeff pour afficher la colonne des coef
 		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 
 		if (($affiche_rang == 'y') and ($test_coef != 0)) {
@@ -345,7 +345,7 @@ if (isset($id_classe)) {
 			echo " /></td>\n";
 			echo "<td>\n";
 			echo "<label for='aff_rang' style='cursor:pointer;'>\n";
-			echo "Afficher le rang des élèves\n";
+			echo "Afficher le rang des Ã©lÃ¨ves\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -355,7 +355,7 @@ if (isset($id_classe)) {
 		echo "<td valign='top'><input type=\"checkbox\" name=\"aff_date_naiss\" id=\"aff_date_naiss\" /></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_date_naiss' style='cursor:pointer;'>\n";
-		echo "Afficher la date de naissance des élèves\n";
+		echo "Afficher la date de naissance des Ã©lÃ¨ves\n";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -367,11 +367,11 @@ if (isset($id_classe)) {
 
 
 	echo "<br />\n<center><input type=\"submit\" name=\"ok\" value=\"Valider\" /></center>\n";
-	echo "<br />\n<span class='small'>Remarque : le tableau des notes s'affiche sans en-tête et dans une nouvelle page. Pour revenir à cet écran, il vous suffit de fermer la fenêtre du tableau des notes.</span>\n";
+	echo "<br />\n<span class='small'>Remarque : le tableau des notes s'affiche sans en-tÃªte et dans une nouvelle page. Pour revenir Ã  cet Ã©cran, il vous suffit de fermer la fenÃªtre du tableau des notes.</span>\n";
 	echo "</td></tr>\n</table>\n";
 
 	//============================================
-	// Colorisation des résultats
+	// Colorisation des rÃ©sultats
 	echo "<input type='checkbox' id='vtn_coloriser_resultats' name='vtn_coloriser_resultats' value='y' onchange=\"display_div_coloriser()\" ";
 	if(isset($_SESSION['vtn_pref_coloriser_resultats'])) {
 		if($_SESSION['vtn_pref_coloriser_resultats']=='y') {
@@ -381,7 +381,7 @@ if (isset($id_classe)) {
 	else {
 		echo "checked";
 	}
-	echo "/><label for='vtn_coloriser_resultats'> Coloriser les résultats.</label><br />\n";
+	echo "/><label for='vtn_coloriser_resultats'> Coloriser les rÃ©sultats.</label><br />\n";
 	
 
 	// Tableau des couleurs HTML:
@@ -390,10 +390,10 @@ if (isset($id_classe)) {
 	$tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
 	
 	echo "<div id='div_coloriser'>\n";
-	echo "<table id='table_couleur' class='boireaus' summary='Coloriser les résultats'>\n";
+	echo "<table id='table_couleur' class='boireaus' summary='Coloriser les rÃ©sultats'>\n";
 	echo "<thead>\n";
 		echo "<tr>\n";
-		echo "<th><a href='#colorisation_resultats' onclick='add_tr_couleur();return false;'>Borne<br />supérieure</a></th>\n";
+		echo "<th><a href='#colorisation_resultats' onclick='add_tr_couleur();return false;'>Borne<br />supÃ©rieure</a></th>\n";
 		echo "<th>Couleur texte</th>\n";
 		echo "<th>Couleur cellule</th>\n";
 		echo "<th>Supprimer</th>\n";
@@ -491,7 +491,7 @@ if (isset($id_classe)) {
 		// Couleurs prises en compte dans colorisation_visu_toutes_notes.js
 		var tab_couleur=new Array($chaine_couleurs);\n";
 
-		echo "	// Pour démarrer avec trois lignes:
+		echo "	// Pour dÃ©marrer avec trois lignes:
 	add_tr_couleur();
 	add_tr_couleur();
 	add_tr_couleur();
@@ -539,7 +539,7 @@ display_div_coloriser();
 	$lignes = mysql_num_rows($appel_donnees);
 
 	if($lignes==0){
-		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Aucune classe ne vous est attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
 	}
 	else{
 		$i = 0;
@@ -554,12 +554,12 @@ display_div_coloriser();
 		tab_liste($tab_txt,$tab_lien,3);
 	}
 }
-echo "<p><i>Remarque:</i> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";
-echo "Cela ne correspond pas nécessairement à ce qui apparaitra sur le bulletin après saisie d'autres résultats et ajustements éventuels des coefficients.</p>\n";
+echo "<p><i>Remarque:</i> Les moyennes visualisÃ©es ici sont des photos Ã  un instant t de ce qui a Ã©tÃ© saisi par les professeurs.<br />\n";
+echo "Cela ne correspond pas nÃ©cessairement Ã  ce qui apparaitra sur le bulletin aprÃ¨s saisie d'autres rÃ©sultats et ajustements Ã©ventuels des coefficients.</p>\n";
 if ($_SESSION['statut'] == "professeur"
 	AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes"
 	AND getSettingValue("GepiAccesMoyennesProfToutesTousEleves") != "yes") {
-		echo "<p>Si vous n'enseignez pas à des classes entières, seuls les élèves auxquels vous enseignez apparaîtront dans la liste, et les moyennes calculés ne prendront en compte que les élèves affichés.</p>";
+		echo "<p>Si vous n'enseignez pas Ã  des classes entiÃ¨res, seuls les Ã©lÃ¨ves auxquels vous enseignez apparaÃ®tront dans la liste, et les moyennes calculÃ©s ne prendront en compte que les Ã©lÃ¨ves affichÃ©s.</p>";
 	}
 
 /**

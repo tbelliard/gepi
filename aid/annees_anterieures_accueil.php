@@ -42,7 +42,7 @@ $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice
 $annee_scolaire = isset($_POST["annee_scolaire"]) ? $_POST["annee_scolaire"] : (isset($_GET["annee_scolaire"]) ? $_GET["annee_scolaire"] : NULL);
 
 //**************** EN-TETE *********************
-$titre_page = "Fiches projets des années antérieures";
+$titre_page = "Fiches projets des annÃ©es antÃ©rieures";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -56,7 +56,7 @@ if (!isset($annee_scolaire))  {
     if ($nb_annee >= 1) {
         echo "<form name=\"form1\" action=\"annees_anterieures_accueil.php\" method=\"post\">\n";
         echo "<center><h1 class='gepi'>Fiches projet</h1>";
-        echo "<h2>Choisissez l'année :</h2>\n";
+        echo "<h2>Choisissez l'annÃ©e :</h2>\n";
         echo "<select name=\"annee_scolaire\" size=\"1\">\n";
         $k = 0;
         while ($k < $nb_annee) {
@@ -75,7 +75,7 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
   echo "<p class=bold>";
   echo "<a href=\"annees_anterieures_accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
   echo "</p>\n";
-  echo "<center><h1 class='gepi'>Année scolaire " . $annee_scolaire."<br />";
+  echo "<center><h1 class='gepi'>AnnÃ©e scolaire " . $annee_scolaire."<br />";
   $call_aid = mysql_query("select * from archivage_types_aid where outils_complementaires='y' and annee='".$annee_scolaire."' order by nom");
 
   $nb_projet = mysql_num_rows($call_aid);
@@ -119,7 +119,7 @@ echo "</p>\n";
 echo "<center><H3>Liste des projets ".$nom_projet."</H3></center>";
 $_login = $_SESSION["login"];
 $message_avertissement = "";
-$non_defini = "<font color='red'>Non défini</font>";
+$non_defini = "<font color='red'>Non dÃ©fini</font>";
 $annee=$annee_scolaire;
 include "./fiches.inc.php";
 

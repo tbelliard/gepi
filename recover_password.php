@@ -21,15 +21,15 @@
  */
 $niveau_arbo = 0;
 
-// On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
-// ceci pour que les mots de passe ne soient pas altérés
+// On indique qu'il faut crÃ©e des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
+// ceci pour que les mots de passe ne soient pas altÃ©rÃ©s
 $variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
 if (getSettingValue("enable_password_recovery") != "yes") {
-	echo "<p>Vous n'avez pas à être ici.</p>";
+	echo "<p>Vous n'avez pas Ã  Ãªtre ici.</p>";
 	die();
 }
 $message = false;
@@ -37,15 +37,15 @@ $message = false;
 if (isset($_POST['login'])) {
 	$email = (isset($_POST['email'])) ? $_POST['email'] : "noemail";
 	$user_login = (!empty($_POST['login'])) ? $_POST['login'] : "nologin";
-	// Le formulaire de demande a été posté, on vérifie et on envoit un mail
+	// Le formulaire de demande a Ã©tÃ© postÃ©, on vÃ©rifie et on envoit un mail
 	$test = mysql_query("SELECT statut FROM utilisateurs WHERE (" .
 			"login = '" . $user_login . "' and " .
 			"email = '" . $email . "')");
 	if (mysql_num_rows($test) == 1) {
-		// On a un utilisateur qui a bien ces coordonnées.
+		// On a un utilisateur qui a bien ces coordonnÃ©es.
 
-		// On va maintenant vérifier son statut, et s'assurer que le statut en question
-		// est bien autorisé à utiliser l'outil de réinitialisation
+		// On va maintenant vÃ©rifier son statut, et s'assurer que le statut en question
+		// est bien autorisÃ© Ã  utiliser l'outil de rÃ©initialisation
 		$user_statut = mysql_result($test, 0);
 		$ok = false;
 
@@ -62,7 +62,7 @@ if (isset($_POST['login'])) {
 			$ok = false;
 		}
 
-    // dans le cas d'un SSO, existence d'utilisateurs SSO repérés grâce au champ password vide.
+    // dans le cas d'un SSO, existence d'utilisateurs SSO repÃ©rÃ©s grÃ¢ce au champ password vide.
     $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
     if ($testpassword == -1) {
 			$ok = false;
@@ -72,12 +72,12 @@ if (isset($_POST['login'])) {
     }
 
 		if (!$ok) {
-			$message = "Pour des raisons de sécurité, votre statut utilisateur ne vous permet pas de réinitialiser votre mot de passe par cette procédure. Vous devrez donc contacter l'administrateur pour obtenir un nouveau mot de passe.";
+			$message = "Pour des raisons de sÃ©curitÃ©, votre statut utilisateur ne vous permet pas de rÃ©initialiser votre mot de passe par cette procÃ©dure. Vous devrez donc contacter l'administrateur pour obtenir un nouveau mot de passe.";
       if ($sso=='yes')
-    			$message = "Ce n'est pas GEPI qui gère votre compte mais un système d'authentification unique. Vous ne pouvez donc pas réinitialiser votre mot de passe par cette procédure.";
+    			$message = "Ce n'est pas GEPI qui gÃ¨re votre compte mais un systÃ¨me d'authentification unique. Vous ne pouvez donc pas rÃ©initialiser votre mot de passe par cette procÃ©dure.";
 		} else {
 			//On envoie un mail!
-			// On génère le ticket
+			// On gÃ©nÃ¨re le ticket
 	        $length = rand(85, 100);
 	        for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 	        $ticket = $r;
@@ -89,9 +89,9 @@ if (isset($_POST['login'])) {
 	        		"ticket_expiration = '" . $expiration_date . "' WHERE (" .
 	        		"login = '" . $user_login . "')");
 	        if ($res) {
-	        	// Si l'enregistrement s'est bien passé, on envoi le mail
+	        	// Si l'enregistrement s'est bien passÃ©, on envoi le mail
 	        	$ticket_url = "";
-            // avec la possibilité de forcer le https si le serveur le cache
+            // avec la possibilitÃ© de forcer le https si le serveur le cache
             if ((!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] != "Off") OR (getSettingValue("use_https") == "y")) {
 	        		$ticket_url .= "https://";
 	        	} else {
@@ -99,35 +99,35 @@ if (isset($_POST['login'])) {
 	        	}
 	        	$ticket_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . "?ticket=".$ticket;
 	        	$mail_content = "Bonjour,\n" .
-	        			"Afin de réinitialiser votre mot de passe, veuillez cliquer sur le lien suivant : .\n" .
+	        			"Afin de rÃ©initialiser votre mot de passe, veuillez cliquer sur le lien suivant : .\n" .
 	        			$ticket_url . "\n" .
-	        			"Vous pouvez également copier/coller l'adresse complète dans votre navigateur.\n" .
-	        			"Ce lien doit être utilisé avant l'heure suivante : " .
+	        			"Vous pouvez Ã©galement copier/coller l'adresse complÃ¨te dans votre navigateur.\n" .
+	        			"Ce lien doit Ãªtre utilisÃ© avant l'heure suivante : " .
 	        			date("G:i:s",$expiration_timestamp) ."\n" .
-	        			", sous peine de n'être plus valide.\n";
+	        			", sous peine de n'Ãªtre plus valide.\n";
 
 	        	//- Debug - echo $mail_content;
 	        	//- Debug - if ($mail_content) {
-	        	if (mail($email, "Gepi - réinitialisation de votre mot de passe", $mail_content)) {
-	        		$message = "Un courriel vient de vous être envoyé.";
+	        	if (mail($email, "Gepi - rÃ©initialisation de votre mot de passe", $mail_content)) {
+	        		$message = "Un courriel vient de vous Ãªtre envoyÃ©.";
 	        	} else {
 	        		$message = "Erreur lors de l'envoi du courriel.";
 	        	}
 	        } else {
 	        	echo mysql_error();
 	        }
-		} // Fin: statut autorisé
+		} // Fin: statut autorisÃ©
 	} else {
 		$message = "Votre identifiant ou votre courriel n'est pas valide.";
 	}
 }
 
 if (isset($_POST['no_anti_inject_password'])) {
-	// Une réinitialisation de mot de passe vient d'être validée
-	// On vérifie que le mot de passe et sa confirmation sont correctes et
-	// que le mot de passe répond aux critères de sécurité requis
+	// Une rÃ©initialisation de mot de passe vient d'Ãªtre validÃ©e
+	// On vÃ©rifie que le mot de passe et sa confirmation sont correctes et
+	// que le mot de passe rÃ©pond aux critÃ¨res de sÃ©curitÃ© requis
 	$message = false;
-	// On récupère le statut de l'utilisateur associé au ticket, et l'heure d'expiration :
+	// On rÃ©cupÃ¨re le statut de l'utilisateur associÃ© au ticket, et l'heure d'expiration :
 	$req = mysql_query("SELECT statut, UNIX_TIMESTAMP(ticket_expiration) expiration, login FROM utilisateurs WHERE password_ticket = '" . $_GET['ticket'] . "'");
 	if (mysql_num_rows($req) != 1) {
 		$message = "Erreur : le lien n'est pas valide ! <a href='recover_password.php'>Cliquez ici</a> pour formuler une nouvelle demande de changement de mot de passe.";
@@ -135,13 +135,13 @@ if (isset($_POST['no_anti_inject_password'])) {
 		$user_status = mysql_result($req, 0, "statut");
 		$expiration = mysql_result($req, 0, "expiration");
 		if ($expiration < time()) {
-			$message = "Erreur : le délai de sécurité pour l'utilisation du lien est dépassé. Vous pouvez reformuler une demande en <a href='recover_password.php'>cliquant ici</a>.";
+			$message = "Erreur : le dÃ©lai de sÃ©curitÃ© pour l'utilisation du lien est dÃ©passÃ©. Vous pouvez reformuler une demande en <a href='recover_password.php'>cliquant ici</a>.";
 		} else {
 			if (($user_status == 'professeur') or ($user_status == 'cpe') or ($user_status == 'responsable') or ($user_status == 'eleve')) {
 			    // Mot de passe comportant des lettres et des chiffres
 			    $flag = 0;
 			} else {
-			    // Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
+			    // Mot de passe comportant des lettres et des chiffres et au moins un caractÃ¨re spÃ©cial
 			    $flag = 1;
 			}
 
@@ -151,14 +151,14 @@ if (isset($_POST['no_anti_inject_password'])) {
 				$message = "Mot de passe non conforme.";
 			}
 			if (!$message) {
-				// Si aucune erreur n 'a été renvoyée, on enregistre le mot de passe
+				// Si aucune erreur n 'a Ã©tÃ© renvoyÃ©e, on enregistre le mot de passe
                                 $user_login = mysql_result($req, 0, "login");
                                 $res = Session::change_password_gepi($user_login,$NON_PROTECT["password"]);
 				if ($res) {
                                         $res = mysql_query("UPDATE utilisateurs SET password_ticket = '' WHERE password_ticket = '" . $_GET['ticket'] . "'");
 					$update_successful = true;
 				} else {
-					$message = "Erreur lors de la mise à jour de votre mot de passe.";
+					$message = "Erreur lors de la mise Ã  jour de votre mot de passe.";
 				}
 			}
 		}
@@ -173,16 +173,16 @@ if (isset($_POST['no_anti_inject_password'])) {
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
 <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
 <META HTTP-EQUIV="Expires" CONTENT="0" />
-<title><?php echo getSettingValue("gepiSchoolName"); ?> : Récupération du mot de passe...</title>
+<title><?php echo getSettingValue("gepiSchoolName"); ?> : RÃ©cupÃ©ration du mot de passe...</title>
 <link rel="stylesheet" type="text/css" href="./style.css" />
 <script src="lib/functions.js" type="text/javascript" language="javascript"></script>
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 <link rel="icon" type="image/ico" href="./favicon.ico" />
 <?php
-	// Styles paramétrables depuis l'interface:
+	// Styles paramÃ©trables depuis l'interface:
 	if($style_screen_ajout=='y'){
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+		// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 	}
 ?>
@@ -192,14 +192,14 @@ if (isset($_POST['no_anti_inject_password'])) {
 <?php
 echo "<div class='center'>";
 
-// Inutile d'aller plus loin si les connexions ont été désactivées.
+// Inutile d'aller plus loin si les connexions ont Ã©tÃ© dÃ©sactivÃ©es.
 if ((getSettingValue("disable_login"))=='yes') {
-	echo "<br/><br/><font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br>";
+	echo "<br/><br/><font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dÃ©rangement et rÃ©essayer de vous connecter ultÃ©rieurement.</font><br>";
 	echo "</div></body></html>";
 }
 
 if (isset($update_successful)) {
-	echo "<p style='margin-top: 100px; color:red;'>Votre mot de passe a été mis à jour avec succès.</p>";
+	echo "<p style='margin-top: 100px; color:red;'>Votre mot de passe a Ã©tÃ© mis Ã  jour avec succÃ¨s.</p>";
 	echo "<p class=bold style='margin-left: auto; margin-right: auto; margin-top: 40px;'><a href=\"login.php\"><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour page de login</a></p>";
 	echo "</div></body></html>";
 	die();
@@ -207,7 +207,7 @@ if (isset($update_successful)) {
 
 if (isset($_GET['ticket']) and !isset($update_successful)) {
 
-	// Un ticket a été proposé. Il a déjà été filtré contre les injections.
+	// Un ticket a Ã©tÃ© proposÃ©. Il a dÃ©jÃ  Ã©tÃ© filtrÃ© contre les injections.
 	$error = false;
 	$ticket = $_GET['ticket'];
 	if (strlen($ticket) < 85) {
@@ -217,27 +217,27 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 		if (mysql_num_rows($test) != "1") {
 			$error = true;
 		} else {
-			// Si on arrive là, c'est que le ticket est valide !
+			// Si on arrive lÃ , c'est que le ticket est valide !
 			// On affiche le formulaire pour changer le mot de passe.
 			$user_status = mysql_result($test, 0);
 			if (($user_status == 'professeur') or ($user_status == 'cpe') or ($user_status == 'responsable') or ($user_status == 'eleve')) {
 			    // Mot de passe comportant des lettres et des chiffres
 			    $flag = 0;
 			} else {
-			    // Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
+			    // Mot de passe comportant des lettres et des chiffres et au moins un caractÃ¨re spÃ©cial
 			    $flag = 1;
 			}
 	?>
 <form action="recover_password.php?ticket=<?php echo $ticket; ?>" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
-<?php    echo "<p style='margin-top: 50px; color:red; margin-bottom: 30px;width: 80%;margin-left: auto; margin-right: auto;'><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd") ." caractères minimum. ";
+<?php    echo "<p style='margin-top: 50px; color:red; margin-bottom: 30px;width: 80%;margin-left: auto; margin-right: auto;'><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd") ." caractÃ¨res minimum. ";
     if ($flag == 1)
-        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".htmlentities($char_spec);
+        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractÃ¨re spÃ©cial parmi&nbsp;: ".htmlentities($char_spec);
     else
         echo "Il doit comporter au moins une lettre et au moins un chiffre.";
 ?>
 <fieldset id="login_box" style="width: 50%; margin-top: 0;">
 <div id="header">
-<h2>Réinitialisation du mot de passe</h2>
+<h2>RÃ©initialisation du mot de passe</h2>
 </div>
 <table style="width: 85%; border: 0; margin-top: 10px; margin-right: 15px; margin-left: auto;" cellpadding="3" cellspacing="0">
   <tr>
@@ -281,10 +281,10 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 } else {
 ?>
 
-<p style='margin-top: 60px;padding-left: 20%; padding-right: 20%;'>Afin de réinitialiser votre mot de passe, vous devez valider ce formulaire en indiquant votre identifiant et votre adresse de courriel.
-Cette adresse doit être déjà associée à votre compte au sein de Gepi.
-<br/>Si vos identifiant et adresse sont corrects, vous recevrez à cette adresse les instructions pour réinitialiser votre mot de passe.<br/>
-<span class='red'>Vous devez réinitialiser votre mot de passe dans les 15 minutes suivant la validation de ce formulaire.</span></p>
+<p style='margin-top: 60px;padding-left: 20%; padding-right: 20%;'>Afin de rÃ©initialiser votre mot de passe, vous devez valider ce formulaire en indiquant votre identifiant et votre adresse de courriel.
+Cette adresse doit Ãªtre dÃ©jÃ  associÃ©e Ã  votre compte au sein de Gepi.
+<br/>Si vos identifiant et adresse sont corrects, vous recevrez Ã  cette adresse les instructions pour rÃ©initialiser votre mot de passe.<br/>
+<span class='red'>Vous devez rÃ©initialiser votre mot de passe dans les 15 minutes suivant la validation de ce formulaire.</span></p>
 <form action="recover_password.php" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
 <fieldset id="login_box" style="width: 50%; margin-top: 0;">
 <div id="header">
@@ -330,7 +330,7 @@ Cette adresse doit être déjà associée à votre compte au sein de Gepi.
 		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
 		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
 		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
-		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		chaine_mel += "&body=Pour que le mail parvienne Ã  son destinataire, pensez Ã  remplacer la chaine de caractÃ¨res _CHEZ_ par un @";
 		//chaine_mel += "&body=Bonjour";
 		location.href = chaine_mel;
 	}
@@ -345,7 +345,7 @@ Cette adresse doit être déjà associée à votre compte au sein de Gepi.
 		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
 		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
 		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
-		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		chaine_mel += "&body=Pour que le mail parvienne Ã  son destinataire, pensez Ã  remplacer la chaine de caractÃ¨res _CHEZ_ par un @";
 		//chaine_mel += "&body=Bonjour";
 		location.href = chaine_mel;
 	}
@@ -361,7 +361,7 @@ Cette adresse doit être déjà associée à votre compte au sein de Gepi.
 		chaine_mel = "mailto:"+chaine_tmp+"?subject=[GEPI]";
 		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
 		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
-		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		chaine_mel += "&body=Pour que le mail parvienne Ã  son destinataire, pensez Ã  remplacer la chaine de caractÃ¨res _CHEZ_ par un @";
 		//chaine_mel += "&body=Bonjour";
 		location.href = chaine_mel;
 	}
@@ -410,7 +410,7 @@ Cette adresse doit être déjà associée à votre compte au sein de Gepi.
 ?>
 </div>
 <div id="login_footer">
-<a href="http://gepi.mutualibre.org">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
+<a href="http://gepi.mutualibre.org">GEPI : Outil de gestion, de suivi, et de visualisation graphique des rÃ©sultats scolaires (Ã©coles, collÃ¨ges, lycÃ©es)</a><br />
 Copyright &copy; 2001-2008
 </div>
 </div>

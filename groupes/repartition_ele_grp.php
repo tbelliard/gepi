@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-//INSERT INTO droits VALUES ('/groupes/repartition_ele_grp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'RÈpartir des ÈlËves dans des groupes', '');
+//INSERT INTO droits VALUES ('/groupes/repartition_ele_grp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'R√©partir des √©l√®ves dans des groupes', '');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -58,7 +58,7 @@ function test_before_eleve_grp_removal($_login, $_id_groupe, $_periode) {
 
 
 
-// Initialisation des variables utilisÈes dans le formulaire
+// Initialisation des variables utilis√©es dans le formulaire
 
 $chemin_retour=isset($_GET['chemin_retour']) ? $_GET['chemin_retour'] : (isset($_POST['chemin_retour']) ? $_POST["chemin_retour"] : NULL);
 
@@ -78,7 +78,7 @@ if(isset($_POST['enregistrer_repartition'])) {
 	$login_ele=isset($_POST['login_ele']) ? $_POST["login_ele"] : array();
 	$grp_eleve=isset($_POST['grp_eleve']) ? $_POST["grp_eleve"] : array();
 
-	// Listes initiales des ÈlËves dans les groupes
+	// Listes initiales des √©l√®ves dans les groupes
 	for($i=0;$i<count($id_groupe);$i++) {
 		$tab_eleve[$id_groupe[$i]]=array();
 		$sql="SELECT name FROM groupes WHERE id='".$id_groupe[$i]."';";
@@ -102,7 +102,7 @@ if(isset($_POST['enregistrer_repartition'])) {
 		}
 	}
 
-	// Traitement des rÈ-affectations
+	// Traitement des r√©-affectations
 	for($j=0;$j<count($login_ele);$j++) {
 		$temoin_insertion_possible="y";
 		$requete_insertion="";
@@ -116,16 +116,16 @@ if(isset($_POST['enregistrer_repartition'])) {
 		for($i=0;$i<count($id_groupe);$i++) {
 			if($grp_eleve[$j]==$id_groupe[$i]) {
 				if(!in_array($login_ele[$j],$tab_eleve[$id_groupe[$i]])) {
-					// On affecte l'ÈlËve dans le groupe
+					// On affecte l'√©l√®ve dans le groupe
 					//$sql="INSERT INTO j_eleves_groupes SET login='".$login_ele[$j]."', id_groupe='".$id_groupe[$i]."', periode='$num_periode';";
 					//$insert=mysql_query($sql);
 					$requete_insertion="INSERT INTO j_eleves_groupes SET login='".$login_ele[$j]."', id_groupe='".$id_groupe[$i]."', periode='$num_periode';";
 
-					// VÈrification s'il y a bien dÈj‡ une association du groupe avec la classe:
+					// V√©rification s'il y a bien d√©j√† une association du groupe avec la classe:
 					$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_classe='$current_id_classe_ele' AND id_groupe='".$id_groupe[$i]."';";
 					$test_clas_grp=mysql_query($sql);
 					if(mysql_num_rows($test_clas_grp)==0) {
-						// RÈcupÈrer les paramËtres de j_groupes_classes pour le groupe actuel pour imposer le mÍme dans l'association avec la classe de l'ÈlËve courant
+						// R√©cup√©rer les param√®tres de j_groupes_classes pour le groupe actuel pour imposer le m√™me dans l'association avec la classe de l'√©l√®ve courant
 						$sql="SELECT * FROM j_groupes_classes WHERE id_groupe='".$id_groupe[$i]."' LIMIT 1;";
 						$res_grp=mysql_query($sql);
 						$lig_grp=mysql_fetch_object($res_grp);
@@ -136,15 +136,15 @@ if(isset($_POST['enregistrer_repartition'])) {
 			}
 			else {
 				if(in_array($login_ele[$j],$tab_eleve[$id_groupe[$i]])) {
-					// On va tester si on peut dÈsinscrire l'ÈlËve
+					// On va tester si on peut d√©sinscrire l'√©l√®ve
 					if(test_before_eleve_grp_removal($login_ele[$j], $id_groupe[$i], $num_periode)) {
-						// On dÈsinscrit effectivement
+						// On d√©sinscrit effectivement
 						$sql="DELETE FROM j_eleves_groupes WHERE login='".$login_ele[$j]."' AND id_groupe='".$id_groupe[$i]."' AND periode='$num_periode';";
 						$suppr=mysql_query($sql);
-						if(!$suppr) {$msg.="Echec de la dÈsinscription de $login_ele[$j] du groupe $nom_groupe[$i] ($id_groupe[$i]) pour la pÈriode $num_periode.<br />";} else {$nb_modif++;}
+						if(!$suppr) {$msg.="Echec de la d√©sinscription de $login_ele[$j] du groupe $nom_groupe[$i] ($id_groupe[$i]) pour la p√©riode $num_periode.<br />";} else {$nb_modif++;}
 					}
 					else {
-						$msg.="Des donnÈes bloquent la dÈsincription de ".get_nom_prenom_eleve($login_ele[$j])." du groupe ".$nom_groupe[$i]." ($id_groupe[$i])<br />";
+						$msg.="Des donn√©es bloquent la d√©sincription de ".get_nom_prenom_eleve($login_ele[$j])." du groupe ".$nom_groupe[$i]." ($id_groupe[$i])<br />";
 						$temoin_insertion_possible="n";
 					}
 				}
@@ -152,18 +152,18 @@ if(isset($_POST['enregistrer_repartition'])) {
 		}
 
 		if(($temoin_insertion_possible=="y")&&($requete_insertion!='')) {
-			// On affecte l'ÈlËve dans son nouveau groupe
+			// On affecte l'√©l√®ve dans son nouveau groupe
 			$insert=mysql_query($requete_insertion);
-			if(!$insert) {$msg.="Echec de l'inscription de $login_ele[$j] dans le groupe $nom_groupe[$i] ($id_groupe[$i]) pour la pÈriode $num_periode.<br />";} else {$nb_modif++;}
+			if(!$insert) {$msg.="Echec de l'inscription de $login_ele[$j] dans le groupe $nom_groupe[$i] ($id_groupe[$i]) pour la p√©riode $num_periode.<br />";} else {$nb_modif++;}
 			if($requete_insertion_assoc_grp_clas!='') {
 				$insert=mysql_query($requete_insertion_assoc_grp_clas);
-				if(!$insert) {$msg.="Echec de l'insertion de l'association du groupe $nom_groupe[$i] ($id_groupe[$i]) avec la classe de l'ÈlËve sur la pÈriode $num_periode.<br />";}
+				if(!$insert) {$msg.="Echec de l'insertion de l'association du groupe $nom_groupe[$i] ($id_groupe[$i]) avec la classe de l'√©l√®ve sur la p√©riode $num_periode.<br />";}
 			}
 		}
 	}
 
 	if($nb_modif>0) {
-		$msg.="$nb_modif inscription(s)/dÈsinscription(s) enregistrÈe(s).<br />";
+		$msg.="$nb_modif inscription(s)/d√©sinscription(s) enregistr√©e(s).<br />";
 	}
 }
 
@@ -183,14 +183,14 @@ if(isset($_POST['enregistrer_recopie'])) {
 
 	//echo "\$maxper=$maxper<br />";
 
-	// RÈcupÈration des variables (checkbox)
+	// R√©cup√©ration des variables (checkbox)
 	for($i=0;$i<count($id_groupe);$i++) {
 		for($m=1;$m<=$maxper;$m++) {
 			$grp_eleve[$i][$m]=isset($_POST['grp_eleve_'.$i.'_'.$m]) ? $_POST['grp_eleve_'.$i.'_'.$m] : NULL;
 		}
 	}
 
-	// RÈcupÈration des noms des groupes
+	// R√©cup√©ration des noms des groupes
 	for($i=0;$i<count($id_groupe);$i++) {
 		$tab_eleve[$id_groupe[$i]]=array();
 		$sql="SELECT name FROM groupes WHERE id='".$id_groupe[$i]."';";
@@ -204,8 +204,8 @@ if(isset($_POST['enregistrer_recopie'])) {
 		}
 	}
 
-	// Listes initiales des ÈlËves dans les groupes
-	// Boucle pour rÈcupÈrer la liste actuelle des ÈlËves dans chaque groupe pour chaque pÈriode
+	// Listes initiales des √©l√®ves dans les groupes
+	// Boucle pour r√©cup√©rer la liste actuelle des √©l√®ves dans chaque groupe pour chaque p√©riode
 	$tab_eleve=array();
 	for($i=0;$i<count($id_groupe);$i++) {
 		$tab_eleve[$id_groupe[$i]]=array();
@@ -222,14 +222,14 @@ if(isset($_POST['enregistrer_recopie'])) {
 		}
 	}
 
-	// Traitement des rÈ-affectations
+	// Traitement des r√©-affectations
 	for($j=0;$j<count($login_ele);$j++) {
 		//echo "<p>\$login_ele[$j]=$login_ele[$j]<br />\n";
 		$temoin_insertion_possible="y";
 		$requete_insertion="";
 		$requete_insertion_assoc_grp_clas="";
 
-		// Classe de l'ÈlËve courant sur chaque pÈriode
+		// Classe de l'√©l√®ve courant sur chaque p√©riode
 		unset($current_id_classe_ele);
 		for($m=1;$m<=$maxper;$m++) {
 			$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$login_ele[$j]."' AND periode='$m';";
@@ -242,28 +242,28 @@ if(isset($_POST['enregistrer_recopie'])) {
 		// Boucle sur les groupes
 		for($i=0;$i<count($id_groupe);$i++) {
 			//echo "\$id_groupe[$i]=$id_groupe[$i]<br />\n";
-			// Boucle sur les pÈriodes
+			// Boucle sur les p√©riodes
 			for($m=1;$m<=$maxper;$m++) {
 				$requete_insertion='';
 				$requete_insertion_assoc_grp_clas='';
 
-				//echo "PÈriode $m<br />\n";
-				// Si la case est cochÈe pour cet ÈlËve, ce groupe et cette pÈriode
+				//echo "P√©riode $m<br />\n";
+				// Si la case est coch√©e pour cet √©l√®ve, ce groupe et cette p√©riode
 				if(isset($grp_eleve[$i][$m][$j])) {
 					//echo "\$grp_eleve[$i][$m][$j]=".$grp_eleve[$i][$m][$j]."<br />\n";
 					//if($grp_eleve[$i][$m][$j]==$id_groupe[$i]) {
-					//echo "Le groupe est sÈlectionnÈ: $id_groupe[$i]<br />\n";
+					//echo "Le groupe est s√©lectionn√©: $id_groupe[$i]<br />\n";
 					if(!in_array($login_ele[$j],$tab_eleve[$id_groupe[$i]][$m])) {
-						// On affecte l'ÈlËve dans le groupe
+						// On affecte l'√©l√®ve dans le groupe
 						//$sql="INSERT INTO j_eleves_groupes SET login='".$login_ele[$j]."', id_groupe='".$id_groupe[$i]."', periode='$num_periode';";
 						//$insert=mysql_query($sql);
 						$requete_insertion="INSERT INTO j_eleves_groupes SET login='".$login_ele[$j]."', id_groupe='".$id_groupe[$i]."', periode='$m';";
 	
-						// VÈrification s'il y a bien dÈj‡ une association du groupe avec la classe:
+						// V√©rification s'il y a bien d√©j√† une association du groupe avec la classe:
 						$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_classe='$current_id_classe_ele[$m]' AND id_groupe='".$id_groupe[$i]."';";
 						$test_clas_grp=mysql_query($sql);
 						if(mysql_num_rows($test_clas_grp)==0) {
-							// RÈcupÈrer les paramËtres de j_groupes_classes pour le groupe actuel pour imposer le mÍme dans l'association avec la classe de l'ÈlËve courant
+							// R√©cup√©rer les param√®tres de j_groupes_classes pour le groupe actuel pour imposer le m√™me dans l'association avec la classe de l'√©l√®ve courant
 							$sql="SELECT * FROM j_groupes_classes WHERE id_groupe='".$id_groupe[$i]."' LIMIT 1;";
 							$res_grp=mysql_query($sql);
 							$lig_grp=mysql_fetch_object($res_grp);
@@ -273,30 +273,30 @@ if(isset($_POST['enregistrer_recopie'])) {
 					}
 				}
 				else {
-					//echo "Le groupe n'est pas sÈlectionnÈ $id_groupe[$i]<br />\n";
+					//echo "Le groupe n'est pas s√©lectionn√© $id_groupe[$i]<br />\n";
 					if(in_array($login_ele[$j],$tab_eleve[$id_groupe[$i]][$m])) {
-						//echo "$login_ele[$j] Ètait dans le groupe.<br />On va tester si on peut le dÈsinscrire.<br />";
-						// On va tester si on peut dÈsinscrire l'ÈlËve
+						//echo "$login_ele[$j] √©tait dans le groupe.<br />On va tester si on peut le d√©sinscrire.<br />";
+						// On va tester si on peut d√©sinscrire l'√©l√®ve
 						if(test_before_eleve_grp_removal($login_ele[$j], $id_groupe[$i], $m)) {
-							//echo "On peut le dÈsinscrire.<br />";
-							// On dÈsinscrit effectivement
+							//echo "On peut le d√©sinscrire.<br />";
+							// On d√©sinscrit effectivement
 							$sql="DELETE FROM j_eleves_groupes WHERE login='".$login_ele[$j]."' AND id_groupe='".$id_groupe[$i]."' AND periode='$m';";
 							//echo "$sql<br />";
 							$suppr=mysql_query($sql);
-							if(!$suppr) {$msg.="Echec de la dÈsinscription de $login_ele[$j] du groupe $nom_groupe[$i] ($id_groupe[$i]) pour la pÈriode $m.<br />";}
+							if(!$suppr) {$msg.="Echec de la d√©sinscription de $login_ele[$j] du groupe $nom_groupe[$i] ($id_groupe[$i]) pour la p√©riode $m.<br />";}
 							else {$nb_modif++;}
 						}
 						else {
-							$msg.="Des donnÈes bloquent la dÈsincription de ".get_nom_prenom_eleve($login_ele[$j])." du groupe ".$nom_groupe[$i]." ($id_groupe[$i]) pour la pÈriode $m.<br />";
+							$msg.="Des donn√©es bloquent la d√©sincription de ".get_nom_prenom_eleve($login_ele[$j])." du groupe ".$nom_groupe[$i]." ($id_groupe[$i]) pour la p√©riode $m.<br />";
 							$temoin_insertion_possible="n";
 						}
 					}
 				}
 
 				if(($temoin_insertion_possible=="y")&&($requete_insertion!='')) {
-					// On affecte l'ÈlËve dans son nouveau groupe
+					// On affecte l'√©l√®ve dans son nouveau groupe
 					$insert=mysql_query($requete_insertion);
-					if(!$insert) {$msg.="Echec de l'inscription de $login_ele[$j] dans le groupe $nom_groupe[$i] ($id_groupe[$i]) pour la pÈriode $m.<br />";} else {$nb_modif++;}
+					if(!$insert) {$msg.="Echec de l'inscription de $login_ele[$j] dans le groupe $nom_groupe[$i] ($id_groupe[$i]) pour la p√©riode $m.<br />";} else {$nb_modif++;}
 					if($requete_insertion_assoc_grp_clas!='') {
 						$insert=mysql_query($requete_insertion_assoc_grp_clas);
 						if(!$insert) {$msg.="Echec de l'insertion de l'association du groupe $nom_groupe[$i] ($id_groupe[$i]) avec la classe $current_id_classe_ele[$m].<br />";}
@@ -309,13 +309,13 @@ if(isset($_POST['enregistrer_recopie'])) {
 	}
 
 	if($nb_modif>0) {
-		$msg.="$nb_modif modification(s) enregistrÈe(s).<br />";
+		$msg.="$nb_modif modification(s) enregistr√©e(s).<br />";
 	}
 }
 
-$themessage  = 'Des informations ont ÈtÈ modifiÈes. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont √©t√© modifi√©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
-$titre_page = "RÈpartition d'ÈlËves dans des groupes";
+$titre_page = "R√©partition d'√©l√®ves dans des groupes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
@@ -365,7 +365,7 @@ if(!isset($id_classe)) {
 	echo "</tr>\n";
 	echo "</table>\n";
 
-	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout dÈcocher</a></p>\n";
+	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout d√©cocher</a></p>\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -428,7 +428,7 @@ if(!isset($id_groupe)) {
 		echo "<td class='lig$alt' style='text-align:left; vertical-align:top;'>\n";
 		$groups = get_groups_for_class($id_classe[$i],"","n");
 		if(count($groups)==0){
-			echo "<p>Aucun enseignement n'a encore ÈtÈ crÈÈ dans cette classe.</p>\n";
+			echo "<p>Aucun enseignement n'a encore √©t√© cr√©√© dans cette classe.</p>\n";
 		}
 		else {
 			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
@@ -523,7 +523,7 @@ if(!isset($num_periode)) {
 	echo "</p>\n";
 	echo "</form>\n";
 
-	echo "<p class='bold'>Choisissez la pÈriode&nbsp;</p>\n";
+	echo "<p class='bold'>Choisissez la p√©riode&nbsp;</p>\n";
 
 	$maxper=0;
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
@@ -537,14 +537,14 @@ if(!isset($num_periode)) {
 			if($lig_per->maxper>$maxper) {$maxper=$lig_per->maxper;}
 		}
 		else {
-			echo "La classe ".get_class_from_id($id_classe[$i])." n'a pas de pÈriode?<br />\n";
+			echo "La classe ".get_class_from_id($id_classe[$i])." n'a pas de p√©riode?<br />\n";
 		}
 	}
 
 	for($i=1;$i<=$maxper;$i++) {
 		echo "<input type='radio' name='num_periode' id='num_periode_$i' value='$i' ";
 		if($i==1) {echo "checked ";}
-		echo "/><label for='num_periode_$i'> PÈriode $i</label>\n";
+		echo "/><label for='num_periode_$i'> P√©riode $i</label>\n";
 	}
 
 	$tmp_id_grp=array();
@@ -563,7 +563,7 @@ if(!isset($num_periode)) {
 
 //=================================================================================================
 
-// On passe ‡ la rÈpartition
+// On passe √† la r√©partition
 if(!isset($_POST['recopie_select'])) {
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form0' method='post'>\n";
 
@@ -577,9 +577,9 @@ if(!isset($_POST['recopie_select'])) {
 
 	echo " | \n";
 
-	echo "<input type='button' name='Autre_periode' id='Autre_periode' value=\"Choisir d'autres pÈriodes\" onclick=\"confirm_changement_periode(change, '$themessage');\" style='display:none' />\n";
+	echo "<input type='button' name='Autre_periode' id='Autre_periode' value=\"Choisir d'autres p√©riodes\" onclick=\"confirm_changement_periode(change, '$themessage');\" style='display:none' />\n";
 	echo "<noscript>";
-	echo " <input type='submit' name='Autre_periode' value=\"Choisir d'autres pÈriodes\" />\n";
+	echo " <input type='submit' name='Autre_periode' value=\"Choisir d'autres p√©riodes\" />\n";
 	echo "</noscript>";
 	echo "</p>\n";
 	echo "</form>\n";
@@ -592,9 +592,9 @@ if(!isset($_POST['recopie_select'])) {
 		echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 	echo "<input type='hidden' name='recopie_select' value='y' />\n";
 
-	echo "<input type='button' name='Passer_a_copie' id='Passer_a_copie' value=\"Recopier des affectations\" onclick=\"confirm_Passer_a_copie(change, '$themessage');\" style='display:none' /> pour d'autres pÈriodes\n";
+	echo "<input type='button' name='Passer_a_copie' id='Passer_a_copie' value=\"Recopier des affectations\" onclick=\"confirm_Passer_a_copie(change, '$themessage');\" style='display:none' /> pour d'autres p√©riodes\n";
 	echo "<noscript>";
-	echo "<input type='submit' name='Passer_a_copie' value='Recopier des affectations' /> pour d'autres pÈriodes\n";
+	echo "<input type='submit' name='Passer_a_copie' value='Recopier des affectations' /> pour d'autres p√©riodes\n";
 	echo "</noscript>";
 
 	echo "</form>\n";
@@ -647,18 +647,18 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<input type='hidden' name='repartition_eleves' value='y' />\n";
 	echo "<input type='hidden' name='order_by' value='$order_by' />\n";
 	
-	echo "<p class='bold'>RÈpartition des ÈlËves dans les groupes pour la pÈriode $num_periode&nbsp;:</p>\n";
+	echo "<p class='bold'>R√©partition des √©l√®ves dans les groupes pour la p√©riode $num_periode&nbsp;:</p>\n";
 
-	// Pour le moment, on ne rÈcupËre que les ÈlËves dÈj‡ inscrits dans ces groupes.
-	// A FAIRE: Permettre d'afficher tous les ÈlËves des classes concernÈes
+	// Pour le moment, on ne r√©cup√®re que les √©l√®ves d√©j√† inscrits dans ces groupes.
+	// A FAIRE: Permettre d'afficher tous les √©l√®ves des classes concern√©es
 
 	$tab_eleve=array();
 	//$tmp_tab_eleve=array();
-	echo "<table class='boireaus' summary='RÈpartition des ÈlËves'>\n";
+	echo "<table class='boireaus' summary='R√©partition des √©l√®ves'>\n";
 	echo "<tr>\n";
-	//echo "<th>ElËve</th>\n";
+	//echo "<th>El√®ve</th>\n";
 	echo "<th><input type='submit' name='Valider_repartition2' value='Valider' />\n";
-	echo "<br /><a href=\"javascript:document.getElementById('order_by_nom').checked=true;document.form3.submit();\">ElËve</a>";
+	echo "<br /><a href=\"javascript:document.getElementById('order_by_nom').checked=true;document.form3.submit();\">El√®ve</a>";
 	echo "</th>\n";
 	echo "<th><a href=\"javascript:document.getElementById('order_by_classe').checked=true;document.form3.submit();\">Classe</a></th>\n";
 	for($i=0;$i<count($id_groupe);$i++) {
@@ -804,7 +804,7 @@ if(!isset($_POST['recopie_select'])) {
 
 			$ligne_si_desinscription_impossible.="<td>\n";
 			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
-				$ligne_si_desinscription_impossible.="<img src='../images/enabled.png' width='20' height='20' alt='AffectÈ dans le groupe' title='AffectÈ dans le groupe' />\n";
+				$ligne_si_desinscription_impossible.="<img src='../images/enabled.png' width='20' height='20' alt='Affect√© dans le groupe' title='Affect√© dans le groupe' />\n";
 
 				if(!test_before_eleve_grp_removal($login_ele, $id_groupe[$i], $num_periode)) {
 					$ligne_si_desinscription_impossible.="<img src='../images/icons/securite.png' width='16' height='16' alt='Bulletin ou carnet de notes non vide' title='Bulletin ou carnet de notes non vide' />\n";
@@ -837,7 +837,7 @@ if(!isset($_POST['recopie_select'])) {
 	for($i=0;$i<count($id_groupe);$i++) {
 		echo "<th>\n";
 		echo "<a href=\"javascript:CocheColonne($i);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>\n";
-		//echo " / <a href=\"javascript:DecocheColonne($i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>";
+		//echo " / <a href=\"javascript:DecocheColonne($i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>";
 		echo "</th>\n";
 	}
 	echo "<th>\n";
@@ -909,12 +909,12 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 	echo "<input type='hidden' name='recopie_select' value='y' />\n";
 
-	echo "<input type='submit' name='Passer_a_copie' value='Recopier des affectations' /> pour d'autres pÈriodes\n";
+	echo "<input type='submit' name='Passer_a_copie' value='Recopier des affectations' /> pour d'autres p√©riodes\n";
 	echo "</form>\n";
 	*/
 }
 else {
-	// Recopie ou copie inverse des sÈlections pour d'autres pÈriodes
+	// Recopie ou copie inverse des s√©lections pour d'autres p√©riodes
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form0' method='post'>\n";
 	echo "<p class='bold'\n>";
@@ -926,7 +926,7 @@ else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 
 	echo " | \n";
-	echo "<input type='submit' name='Autre_periode' value=\"Choisir d'autres pÈriodes\" />\n";
+	echo "<input type='submit' name='Autre_periode' value=\"Choisir d'autres p√©riodes\" />\n";
 	echo "</p>\n";
 	echo "</form>\n";
 
@@ -953,7 +953,7 @@ else {
 			if($lig_per->maxper>$maxper) {$maxper=$lig_per->maxper;}
 		}
 		else {
-			echo "La classe ".get_class_from_id($id_classe[$i])." n'a pas de pÈriode?<br />\n";
+			echo "La classe ".get_class_from_id($id_classe[$i])." n'a pas de p√©riode?<br />\n";
 		}
 	}
 
@@ -966,16 +966,16 @@ else {
 	echo "<input type='hidden' name='recopie_select' value='y' />\n";
 	echo "<input type='hidden' name='order_by' value='$order_by' />\n";
 
-	echo "<p class='bold'>Recopie de la rÈpartition des ÈlËves dans les groupes&nbsp;:</p>\n";
+	echo "<p class='bold'>Recopie de la r√©partition des √©l√®ves dans les groupes&nbsp;:</p>\n";
 
-	// Pour le moment, on ne rÈcupËre que les ÈlËves dÈj‡ inscrits dans ces groupes.
-	// A FAIRE: Permettre d'afficher tous les ÈlËves des classes concernÈes
+	// Pour le moment, on ne r√©cup√®re que les √©l√®ves d√©j√† inscrits dans ces groupes.
+	// A FAIRE: Permettre d'afficher tous les √©l√®ves des classes concern√©es
 
 	$tab_eleve=array();
 	//$tmp_tab_eleve=array();
-	echo "<table class='boireaus' summary='Recopie de la rÈpartition des ÈlËves'>\n";
+	echo "<table class='boireaus' summary='Recopie de la r√©partition des √©l√®ves'>\n";
 	echo "<tr>\n";
-	echo "<th rowspan='2'><a href=\"javascript:document.getElementById('order_by_nom').checked=true;document.form3.submit();\">ElËve</a><br />\n";
+	echo "<th rowspan='2'><a href=\"javascript:document.getElementById('order_by_nom').checked=true;document.form3.submit();\">El√®ve</a><br />\n";
 	echo "<br /><input type='submit' name='Valider_recopie2' value='Valider' />\n";
 	echo "</th>\n";
 	//echo "<th rowspan='2'>Classe</th>\n";
@@ -1004,7 +1004,7 @@ else {
 
 
 	echo "<tr>\n";
-	//echo "<th>ElËve</th>\n";
+	//echo "<th>El√®ve</th>\n";
 	//echo "<th>Classe</th>\n";
 	for($i=0;$i<count($id_groupe);$i++) {
 		for($m=1;$m<=$maxper;$m++) {
@@ -1017,7 +1017,7 @@ else {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<th>ModËle de sÈlection</th>\n";
+	echo "<th>Mod√®le de s√©lection</th>\n";
 
 	echo "<th>\n";
 	echo "&nbsp;\n";
@@ -1076,12 +1076,12 @@ else {
 
 
 	echo "<tr>\n";
-	echo "<th>Coller la sÈlection</th>\n";
+	echo "<th>Coller la s√©lection</th>\n";
 	echo "<th>&nbsp;</th>\n";
 	for($i=0;$i<count($id_groupe);$i++) {
 		for($m=1;$m<=$maxper;$m++) {
 			echo "<th>";
-			echo "<a href='javascript:copier_selection($i,$m);changement();'><img src='../images/icons/coller_23x24.png' width='23' height='24' alt='Coller la sÈlection' title='Coller la sÈlection' /></a>\n";
+			echo "<a href='javascript:copier_selection($i,$m);changement();'><img src='../images/icons/coller_23x24.png' width='23' height='24' alt='Coller la s√©lection' title='Coller la s√©lection' /></a>\n";
 			echo "</th>\n";
 		}
 
@@ -1122,7 +1122,7 @@ else {
 
 					if(in_array($login_ele,$group[$i]["eleves"][$m]["list"])) {
 						if(!test_before_eleve_grp_removal($login_ele, $id_groupe[$i], $m)) {
-							echo "<img src='../images/enabled.png' width='20' height='20' alt='AffectÈ dans le groupe' title='AffectÈ dans le groupe' />\n";
+							echo "<img src='../images/enabled.png' width='20' height='20' alt='Affect√© dans le groupe' title='Affect√© dans le groupe' />\n";
 							echo "<input type='hidden' name='grp_eleve_".$i."_".$m."[$cpt]' id='grp_eleve_".$i."_".$m."_$cpt' value='$id_groupe[$i]' />\n";
 						}
 						else {
@@ -1140,7 +1140,7 @@ else {
 						if(in_array($login_ele,$group[$i]["eleves"][$m]["list"])) {
 							echo "value='".$id_groupe[$i]."' />\n";
 
-							echo "<img src='../images/enabled.png' width='20' height='20' alt='Groupe sÈlectionnÈ' />\n";
+							echo "<img src='../images/enabled.png' width='20' height='20' alt='Groupe s√©lectionn√©' />\n";
 						}
 						else {
 							echo "value='' />\n";
@@ -1179,7 +1179,7 @@ else {
 
 			$ligne_si_desinscription_impossible.="<td>\n";
 			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
-				$ligne_si_desinscription_impossible.="<img src='../images/enabled.png' width='20' height='20' alt='AffectÈ dans le groupe' title='AffectÈ dans le groupe' />\n";
+				$ligne_si_desinscription_impossible.="<img src='../images/enabled.png' width='20' height='20' alt='Affect√© dans le groupe' title='Affect√© dans le groupe' />\n";
 
 				if(!test_before_eleve_grp_removal($login_ele, $id_groupe[$i], $num_periode)) {
 					$ligne_si_desinscription_impossible.="<img src='../images/icons/securite.png' width='16' height='16' alt='Bulletin ou carnet de notes non vide' title='Bulletin ou carnet de notes non vide' />\n";
@@ -1210,7 +1210,7 @@ else {
 	for($i=0;$i<count($id_groupe);$i++) {
 		for($m=1;$m<=$maxper;$m++) {
 			echo "<th>\n";
-			echo "<a href=\"javascript:CocheColonne($i,$m)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne($i,$m)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÈcocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne($i,$m)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne($i,$m)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout d√©cocher' /></a>";
 			echo "</th>\n";
 		}
 	}
@@ -1258,7 +1258,7 @@ else {
 
 	echo "<script type='text/javascript'>
 	function copier_selection(indice_grp,num_per) {
-		// RÈcupÈration du bouton radio sÈlectionnÈ pour trouver la colonne modËle.
+		// R√©cup√©ration du bouton radio s√©lectionn√© pour trouver la colonne mod√®le.
 		modele='';
 		k=0;
 		for(s=0;s<".count($id_groupe).";s++) {
@@ -1274,29 +1274,29 @@ else {
 		if(modele!='') {
 			tab=modele.split('.');
 
-			// DÈcoupage du modËle formatÈ en 'indice_grp_modele.num_per_modele'
+			// D√©coupage du mod√®le format√© en 'indice_grp_modele.num_per_modele'
 			indice_grp_modele=tab[0];
 			num_per_modele=tab[1];
 
-			// On parcourt les lignes ÈlËves avec 'j'
+			// On parcourt les lignes √©l√®ves avec 'j'
 			for(j=0;j<$cpt;j++) {
 				//alert('Test du modele '+indice_grp_modele+'_'+num_per_modele+'_'+j+'...')
 				if(document.getElementById('grp_eleve_'+indice_grp_modele+'_'+num_per_modele+'_'+j)) {
-					// Le champ existe dans la colonne modËle pour l'ÈlËve n∞j
+					// Le champ existe dans la colonne mod√®le pour l'√©l√®ve n¬∞j
 					//alert('Le modele '+indice_grp_modele+'_'+num_per_modele+'_'+j+' existe.')
 					type_cible=document.getElementById('grp_eleve_'+indice_grp+'_'+num_per+'_'+j).getAttribute('type');
 
 					// Si le champ cible est de type checkbox on poursuit.
-					// S'il est hidden, on ne tente pas de le dÈcocher.
+					// S'il est hidden, on ne tente pas de le d√©cocher.
 					if(type_cible=='checkbox') {
 						type_modele=document.getElementById('grp_eleve_'+indice_grp_modele+'_'+num_per_modele+'_'+j).getAttribute('type');
 
-						// Si le modËle est hidden, il est comme sÈlectionnÈ/cochÈ
+						// Si le mod√®le est hidden, il est comme s√©lectionn√©/coch√©
 						if(type_modele=='hidden') {
 							document.getElementById('grp_eleve_'+indice_grp+'_'+num_per+'_'+j).checked=true;
 						}
 						else {
-							// Sinon, on teste si le modËle est cochÈ pour savoir s'il faut cocher ou dÈcocher la cible
+							// Sinon, on teste si le mod√®le est coch√© pour savoir s'il faut cocher ou d√©cocher la cible
 							if(document.getElementById('grp_eleve_'+indice_grp_modele+'_'+num_per_modele+'_'+j).checked) {
 								document.getElementById('grp_eleve_'+indice_grp+'_'+num_per+'_'+j).checked=true;
 							}

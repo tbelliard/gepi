@@ -17,7 +17,7 @@ class UtilisateurProfessionnelPeer extends BaseUtilisateurProfessionnelPeer {
 
 	/**
 	 *
-	 * Renvoi l'utilisateur de la session en cours (null si aucun utilisateur trouvé dans la session
+	 * Renvoi l'utilisateur de la session en cours (null si aucun utilisateur trouvÃ© dans la session
 	 *
 	 * @return     UtilisateurProfessionnel utilisateur
 	 */

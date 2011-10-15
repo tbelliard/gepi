@@ -23,7 +23,7 @@
 
 // ================================================
 //
-//          Fichier utilisé avec AJAX 
+//          Fichier utilisÃ© avec AJAX 
 //          pour le fichier voir_absences_viescolaire.php
 //
 // ================================================
@@ -47,7 +47,7 @@ else {
 require_once($CurrentPath."lib/initialisations.inc.php");
 //mes fonctions
 include($CurrentPath."edt_organisation/fonctions_calendrier.php");
-include($CurrentPath."edt_organisation/fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
+include($CurrentPath."edt_organisation/fonctions_edt.php");            // --- fonctions de base communes Ã  tous les emplois du temps
 include($CurrentPath."edt_organisation/fonctions_edt_prof.php");       // --- edt prof
 include($CurrentPath."edt_organisation/fonctions_edt_classe.php");     // --- edt classe
 include($CurrentPath."edt_organisation/fonctions_edt_salle.php");      // --- edt salle

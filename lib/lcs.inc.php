@@ -79,7 +79,7 @@ function get_lcs_login($elenoet, $statut) {
 				print_r($info);
 				echo "</pre>";
 				*/
-				// On récupère $info[0] et $info['count']
+				// On rÃ©cupÃ¨re $info[0] et $info['count']
 				//if((count($info)==1)&&(isset($info[0]["uid"][0]))) {
 				if((isset($info['count']))&&($info['count']==1)&&(isset($info[0]["uid"][0]))) {
 					//echo "\$info[0][\"uid\"][0]=".$info[0]["uid"][0]."<br />";

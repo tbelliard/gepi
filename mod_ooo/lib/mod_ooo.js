@@ -5,31 +5,31 @@ msgWindow.document.write("<CENTER><BIG><B>Patientez quelques instants...</B></BI
 return msgWindow;
 }
 
-function recup_extension(fichier) // fonction de récupération extension fichier
+function recup_extension(fichier) // fonction de rÃ©cupÃ©ration extension fichier
    {
          if (fichier!="")// si le champ fichier n'est pas vide
          {
-            nom_fichier=fichier;// on récupere le chemin complet du fichier
+            nom_fichier=fichier;// on rÃ©cupere le chemin complet du fichier
             nbchar = nom_fichier.length;// on compte le nombre de caracteres que compose ce chemin
-            extension = nom_fichier.substring(nbchar-4,nbchar); // on récupere les 4 derniers caracteres
-            extension=extension.toLowerCase(); //on uniforme les caracteres en minuscules au cas ou cela aurait été écrit en majuscule...
+            extension = nom_fichier.substring(nbchar-4,nbchar); // on rÃ©cupere les 4 derniers caracteres
+            extension=extension.toLowerCase(); //on uniforme les caracteres en minuscules au cas ou cela aurait Ã©tÃ© Ã©crit en majuscule...
             return extension; // on renvoit l'extension vers la fonction appelante
          }
    }
 
-function verif_extension(fichier)// fonction vérification de l'extension après avoir choisi le fichier
+function verif_extension(fichier)// fonction vÃ©rification de l'extension aprÃ¨s avoir choisi le fichier
    {
-   ext = recup_extension(fichier);// on appelle la fonction de récupération de l'extension et on récupere l'extension
+   ext = recup_extension(fichier);// on appelle la fonction de rÃ©cupÃ©ration de l'extension et on rÃ©cupere l'extension
             if(ext==".odt"||ext==".ods"){return true;}// si extension = a une des extensions suivantes alors tout est ok donc ... pas d'erreur
 			else if (ext==".txt"){return true;}
             else // sinon on alert l'user de la mauvaise extension
             {
-               alert("L'extension du fichier que vous voulez uploader est :'"+ext+"'\n cette extension n'est pas autorisée !\n Seules les extensions suivantes sont autorisées :\n'ODT - Texte ; ODS - Tableur' !");
+               alert("L'extension du fichier que vous voulez uploader est :'"+ext+"'\n cette extension n'est pas autorisÃ©e !\n Seules les extensions suivantes sont autorisÃ©es :\n'ODT - Texte ; ODS - Tableur' !");
 			   return false;
             }
    }
 
-function bonfich(f) { //vérifie le formulaire avant envoi
+function bonfich(f) { //vÃ©rifie le formulaire avant envoi
  var frm=eval('document.form'+f);
  var odt='odt';
  var nomfich,message;

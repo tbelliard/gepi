@@ -1,6 +1,6 @@
 <?php
 require_once('../edt_organisation/choix_langue.php');
-require_once("../edt_organisation/fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
+require_once("../edt_organisation/fonctions_edt.php");            // --- fonctions de base communes Ã  tous les emplois du temps
 require_once("../edt_organisation/fonctions_edt_prof.php");       // --- edt prof
 require_once("../edt_organisation/fonctions_edt_classe.php");     // --- edt classe
 require_once("../edt_organisation/fonctions_edt_salle.php");      // --- edt salle

@@ -50,9 +50,9 @@ if ($utilisateur == null) {
     die();
 }
 
-//On vÈrifie si le module est activÈ
+//On v√©rifie si le module est activ√©
 if (getSettingValue("active_module_absence") != '2') {
-    die("Le module n'est pas activÈ.");
+    die("Le module n'est pas activ√©.");
 }
 
 if ($utilisateur->getStatut() != "cpe" && $utilisateur->getStatut() != "scolarite") {
@@ -115,7 +115,7 @@ if ($affichage != 'ods') {
         }
         flush();
     }
-//recupÈration des ÈlËves   
+//recup√©ration des √©l√®ves   
     require_once("../orm/helpers/EdtHelper.php");
     $nbre_demi_journees = EdtHelper::getNbreDemiJourneesEtabOuvert($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
 
@@ -136,10 +136,10 @@ if ($affichage != 'ods') {
     }
     $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
     if ($eleve_col->isEmpty()) {
-        echo"<h2 class='no'>Aucun ÈlËve avec les paramËtres sÈlectionnÈs n'a ÈtÈ trouvÈ.</h2>";
+        echo"<h2 class='no'>Aucun √©l√®ve avec les param√®tres s√©lectionn√©s n'a √©t√© trouv√©.</h2>";
         die();
     }
-//recuperation des demi journÈees d'absence
+//recuperation des demi journ√©ees d'absence
     if ($affichage_motifs) {
         $motifs_col = AbsenceEleveMotifQuery::create()->find();
         $nbre_motifs = $motifs_col->count();
@@ -156,10 +156,10 @@ if ($affichage != 'ods') {
         $nombre_eleve_requete = $eleve_col->count();
 
 	    $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
-	    if (!$table_synchro_ok) {//la table n'est pas synchronisÈe. On va vÈrifier individuellement les ÈlËves qui se sont pas synchronisÈs
+	    if (!$table_synchro_ok) {//la table n'est pas synchronis√©e. On va v√©rifier individuellement les √©l√®ves qui se sont pas synchronis√©s
 			$eleve_col = $eleve_query->find();
 			if ($eleve_col->count()>150) {
-				echo 'Il semble que vous demander des statistiques sur trop d\'ÈlËves et votre table de statistiques n\'est pas synchronisÈe. Veuillez faire une demande pour moins d\'ÈlËves ou demander ‡ votre administrateur de remplir la table d\'agrÈgation.';
+				echo 'Il semble que vous demander des statistiques sur trop d\'√©l√®ves et votre table de statistiques n\'est pas synchronis√©e. Veuillez faire une demande pour moins d\'√©l√®ves ou demander √† votre administrateur de remplir la table d\'agr√©gation.';
 				if (ob_get_contents()) {
 					ob_flush();
 				}
@@ -223,15 +223,15 @@ if ($affichage != 'ods') {
     if ($affichage != 'ods') {
         ?>
     <?php if ($inverse_date) : ?>
-            <h3 class="no">Les dates de dÈbut et de fin ont ÈtÈ inversÈs.</h3>
+            <h3 class="no">Les dates de d√©but et de fin ont √©t√© invers√©s.</h3>
     <?php endif; ?>
         <p>
-            La formule utilisÈe pour le calcul du taux d'absentÈisme est le pourcentage du nombre de demi-journÈes d'absences par rapport au nombre de demi-journÈes ouvrÈes.<br /><br />
+            La formule utilis√©e pour le calcul du taux d'absent√©isme est le pourcentage du nombre de demi-journ√©es d'absences par rapport au nombre de demi-journ√©es ouvr√©es.<br /><br />
         </p>
         <form dojoType="dijit.form.Form" name="abs_statistiques" id="abs_statistiques" action="statistiques.php" method="post">
             <fieldset>
-                <legend>ParamÈtrage de l'export (dates, classes...) et affichage</legend>  
-                <h2>Taux d'absentÈisme  
+                <legend>Param√©trage de l'export (dates, classes...) et affichage</legend>  
+                <h2>Taux d'absent√©isme  
                     du  
                     <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d') ?>" />
                     au               
@@ -273,7 +273,7 @@ if ($affichage != 'ods') {
                     }
                     echo "</select> ";
                 } else {
-                    echo 'Aucune classe avec ÈlËve affectÈ n\'a ÈtÈ trouvÈe';
+                    echo 'Aucune classe avec √©l√®ve affect√© n\'a √©t√© trouv√©e';
                 }
                 ?>   
                 <br />    
@@ -281,30 +281,30 @@ if ($affichage != 'ods') {
             if ($affichage_motifs) {
                 echo'checked';
             }
-            ?> > Afficher le dÈtail par motif (Traitement plus long sur toutes les classes). 
+            ?> > Afficher le d√©tail par motif (Traitement plus long sur toutes les classes). 
                 <br />
-                <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Valider les modifications et afficher ‡ l'Ècran</button>   
+                <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Valider les modifications et afficher √† l'√©cran</button>   
                 <button type="submit" style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods" >Enregistrer au format ods</button>     
             </fieldset>
             <br />       
             <?php
         }
         if ($affichage == 'html') {
-            echo 'Total ÈlËves : ' . $eleve_col->count();
+            echo 'Total √©l√®ves : ' . $eleve_col->count();
             echo '<table style="border:1px solid">';
             echo '<tr style="border:1px solid;text-align:center;">';
 
             echo '<td colspan="2" style="border:1px solid;">';
-            echo 'Informations sur l\'ÈlËve';
+            echo 'Informations sur l\'√©l√®ve';
             echo '</td>';
 
             echo '<td colspan="3" style="border:1px solid;">';
-            echo 'Taux d\'absentÈisme(%)';
+            echo 'Taux d\'absent√©isme(%)';
             echo '</td>';
 
             if ($affichage_motifs) {
                 echo '<td colspan="' . $nbre_motifs . '" style="border:1px solid;">';
-                echo 'Taux d\'absentÈisme total par motifs(%)';
+                echo 'Taux d\'absent√©isme total par motifs(%)';
                 echo '</td>';
             }
 
@@ -317,7 +317,7 @@ if ($affichage != 'ods') {
             echo '<tr style="border:1px solid">';
 
             echo '<td style="border:1px solid;">';
-            echo 'Nom PrÈnom';
+            echo 'Nom Pr√©nom';
             echo '</td>';
 
             echo '<td style="border:1px solid;">';
@@ -329,11 +329,11 @@ if ($affichage != 'ods') {
             echo '</td>';
 
             echo '<td style="border:1px solid;">';
-            echo 'non justifiÈ';
+            echo 'non justifi√©';
             echo '</td>';
 
             echo '<td style="border:1px solid;">';
-            echo 'justifiÈ';
+            echo 'justifi√©';
             echo '</td>';
 
             if ($affichage_motifs) {
@@ -403,7 +403,7 @@ if ($affichage != 'ods') {
             echo '<tr style="border:1px solid">';
 
             echo '<td style="border:1px solid;">';
-            echo 'Nombre d\'ÈlËves : ';
+            echo 'Nombre d\'√©l√®ves : ';
             echo $eleve_col->count();
             echo '</td>';
 
@@ -448,7 +448,7 @@ if ($affichage != 'ods') {
             $extraction_taux_absenteisme = repertoire_modeles('absence_taux_absenteisme.ods');
             $TBS->LoadTemplate($extraction_taux_absenteisme);
 
-            $titre = 'Extrait du Taux d\'absentÈisme d\'absences du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
+            $titre = 'Extrait du Taux d\'absent√©isme d\'absences du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
             $classe = null;
             if ($id_classe != null && $id_classe != '') {
                 $classe = ClasseQuery::create()->findOneById($id_classe);
@@ -457,7 +457,7 @@ if ($affichage != 'ods') {
                 }
             }
             if ($nom_eleve != null && $nom_eleve != '') {
-                $titre .= ' pour les ÈlËves dont le nom ou le prÈnom contient ' . $nom_eleve;
+                $titre .= ' pour les √©l√®ves dont le nom ou le pr√©nom contient ' . $nom_eleve;
             }
             $TBS->MergeField('titre', $titre);
 
@@ -471,7 +471,7 @@ if ($affichage != 'ods') {
             } else {
                 $nbre_colonnes = 3;
             }
-            //colonnes toujours prÈsentes
+            //colonnes toujours pr√©sentes
             $colonnes_individu = array();
             $colonnes_individu[1] = 'nom';
             $colonnes_individu[2] = 'prenom';
@@ -483,9 +483,9 @@ if ($affichage != 'ods') {
 
             $libelle = Array();
             $libelle[] = 'Total';
-            $libelle[] = 'Non justifiÈ';
-            $libelle[] = 'JustifiÈ';
-            //partie si l'affichage par motif est cochÈ
+            $libelle[] = 'Non justifi√©';
+            $libelle[] = 'Justifi√©';
+            //partie si l'affichage par motif est coch√©
             if ($affichage_motifs) {
                 $j = 4;
                 foreach ($motifs_col as $motif) {
@@ -497,7 +497,7 @@ if ($affichage != 'ods') {
                 }
             }
 
-            // Remplissage du tableau de donnÈes individuelles
+            // Remplissage du tableau de donn√©es individuelles
             $donnees_indiv = array();
             foreach ($eleve_col as $eleve) {
                 $enregistrements = array();
@@ -541,7 +541,7 @@ if ($affichage != 'ods') {
             //colonnes dynamiques (nbre=$nbre_colonnes)
             $TBS->MergeBlock('c1,c2', 'num', $nbre_colonnes);
             $TBS->MergeBlock('a,b', $libelle);
-            //donnÈes individuelles et moyennes
+            //donn√©es individuelles et moyennes
             $TBS->MergeBlock('a2', $donnees_moy);
             $TBS->MergeBlock('b2', $donnees_indiv);
             $TBS->MergeField('eleve_count', $eleve_col->count());
@@ -572,7 +572,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 require_once("../lib/footer.inc.php");
 
 function getTauxAbsenteisme($nbreDemiJourneesAbsences, $nbreTotalDemiJournees, $nbreEleves) {
-    if ($nbreTotalDemiJournees == 0) { //l'Ètablissement est fermÈ sur toute la pÈriode
+    if ($nbreTotalDemiJournees == 0) { //l'√©tablissement est ferm√© sur toute la p√©riode
         return 0;
     } else {
         return(round(100 * (($nbreDemiJourneesAbsences / $nbreTotalDemiJournees) / $nbreEleves), 2));

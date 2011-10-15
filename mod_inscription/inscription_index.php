@@ -62,7 +62,7 @@ if (isset($_POST['is_posted'])) {
         }
         $i++;
     }
-    $msg = "Les modifications ont été enregistrées.";
+    $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es.";
 }
 
 
@@ -83,12 +83,12 @@ echo add_token_field();
 echo "<table width=\"100%\" border=\"1\" cellspacing=\"1\" cellpadding=\"5\">\n";
 
 echo "<tr>\n";
-echo "<td><p class='bold'><a href='inscription_index.php?order_by=id'>N°</a></p></td>\n";
+echo "<td><p class='bold'><a href='inscription_index.php?order_by=id'>NÂ°</a></p></td>\n";
 echo "<td><p class='bold'>Date</p></td>\n";
 echo "<td><p class='bold'>Heure</p></td>\n";
 //echo "<td><p class='bold'><a href='inscription_index.php?order_by=date'>Date</a></p></td>\n";
 //echo "<td><p class='bold'><a href='inscription_index.php?order_by=heure'>Heure</a></p></td>\n";
-echo "<td><p class='bold'><a href='inscription_index.php?order_by=description'>Intitulé</a></p></td>\n";
+echo "<td><p class='bold'><a href='inscription_index.php?order_by=description'>IntitulÃ©</a></p></td>\n";
 echo "<td><p class='bold'>Personnes actuellement inscrites</p></td>\n";
 echo "<td><p class='bold'>S'inscrire</p></td>\n";
 echo "</tr>\n";

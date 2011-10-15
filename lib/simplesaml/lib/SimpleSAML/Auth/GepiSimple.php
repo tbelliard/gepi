@@ -10,7 +10,7 @@
 class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 
 	/**
-	 * La configuration de la source sélectionnée
+	 * La configuration de la source sÃ©lectionnÃ©e
 	 *
 	 * @var array
 	 */
@@ -24,18 +24,18 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	private $authSource;
 	
 	/**
-	 * Initialise une authentification en utilisant les paramêtre renseignés dans gepi
+	 * Initialise une authentification en utilisant les paramÃªtre renseignÃ©s dans gepi
 	 *
-	 * @param string|NULL $auth  The authentication source. Si non précisé, utilise la source configurée dans gepi.
+	 * @param string|NULL $auth  The authentication source. Si non prÃ©cisÃ©, utilise la source configurÃ©e dans gepi.
 	 */
 	public function __construct($auth = null) {
 		if ($auth == null) {
 			if (isset($_SESSION['utilisateur_saml_source'])) {
-				//on prend la source précisée précedemment en session.
-				//Cela sert si le mode d'authentification a changé au cours de la session de l'utilisateur
+				//on prend la source prÃ©cisÃ©e prÃ©cedemment en session.
+				//Cela sert si le mode d'authentification a changÃ© au cours de la session de l'utilisateur
 				$auth = $_SESSION['utilisateur_saml_source'];
 			} else {
-			    //on va sélectionner la source d'authentification gepi
+			    //on va sÃ©lectionner la source d'authentification gepi
 			    $path = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
 			    include_once("$path/secure/connect.inc.php");
 			    // Database connection
@@ -52,21 +52,21 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
 		$sources = $config->getOptions();
 		if (!count($sources)) {
-			echo 'Erreur simplesaml : Aucune source configurée dans le fichier authsources.php';
+			echo 'Erreur simplesaml : Aucune source configurÃ©e dans le fichier authsources.php';
 			die;
 		}
 		if (!in_array($auth, $sources)) {
-			//si la source précisée n'est pas trouvée, utilisation par défaut d'une source proposant tout les choix possible
+			//si la source prÃ©cisÃ©e n'est pas trouvÃ©e, utilisation par dÃ©faut d'une source proposant tout les choix possible
 			//(voir le fichier authsources.php)
 			if ($auth == 'unset') {
-				//l'admin a réglé la source à unset, ce n'est pas la peine de mettre un message d'erreur
+				//l'admin a rÃ©glÃ© la source Ã  unset, ce n'est pas la peine de mettre un message d'erreur
 			} else {
-				echo 'Erreur simplesaml : source '.$auth.' non configurée. Utilisation par défaut de la source : «Authentification au choix entre toutes les sources configurees».';
+				echo 'Erreur simplesaml : source '.$auth.' non configurÃ©e. Utilisation par dÃ©faut de la source : Â«Authentification au choix entre toutes les sources configureesÂ».';
 			}
 			$auth = 'Authentification au choix entre toutes les sources configurees';
 		}
 		
-		//on utilise une variable en session pour se souvenir quelle est la source utilisé pour cette session. Utile pour le logout, si entretemps l'admin a changé la source d'authentification.
+		//on utilise une variable en session pour se souvenir quelle est la source utilisÃ© pour cette session. Utile pour le logout, si entretemps l'admin a changÃ© la source d'authentification.
 		$_SESSION['utilisateur_saml_source'] = $auth;
 		
 		//print_r($config);die;
@@ -124,7 +124,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	/**
 	 * Log the user out.
 	 * Ajout : Efface la variable de la source d'authentification de la session
-	 * Ajout : ne fait pas le logout de la source si c'est précisé dans la configuration. La fonction retourne dans ce cas là
+	 * Ajout : ne fait pas le logout de la source si c'est prÃ©cisÃ© dans la configuration. La fonction retourne dans ce cas lÃ 
 	 *
 	 * This function logs the user out. It will never return. By default,
 	 * it will cause a redirect to the current page after logging the user
@@ -178,7 +178,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 				$params['LogoutCompletedHandler'] = array(get_class(), 'logoutCompleted');
 			}
 			
-			//on rajoute dans la requet le portal_return_url, ça sera utilisé dans un refresh ultérieur (logout.php ou Session.class.php)
+			//on rajoute dans la requet le portal_return_url, Ã§a sera utilisÃ© dans un refresh ultÃ©rieur (logout.php ou Session.class.php)
 			if (isset($params["ReturnTo"])) {
 					$portal_return_url = $this->getPortalReturnUrl();
 					//echo $portal_return_url;die;
@@ -198,7 +198,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	
 	
 	/**
-	 * retourne la configuration de la source sélectionnée
+	 * retourne la configuration de la source sÃ©lectionnÃ©e
 	 *
 	 * @return array
 	 */
@@ -207,7 +207,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	}
 	
 	/**
-	 * retourne l'url de retour vers le portail soit des préférences gepi, ou sinon des préférence de la source configurée dans authsource
+	 * retourne l'url de retour vers le portail soit des prÃ©fÃ©rences gepi, ou sinon des prÃ©fÃ©rence de la source configurÃ©e dans authsource
 	 *
 	 * @return string
 	 */
@@ -224,12 +224,12 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	}
 	
 	/**
-	 * retourne la configuration de la source réelle utilisée pour l'authentification
+	 * retourne la configuration de la source rÃ©elle utilisÃ©e pour l'authentification
 	 *
 	 * @return array
 	 */
 	protected function getChosenSourceConfig() {
-		//si on est en multiauth, il va y avoir une délégation de source
+		//si on est en multiauth, il va y avoir une dÃ©lÃ©gation de source
 		//on va donc regarder la configuration de la source choisie par l'utilisateur
 		if($this->authSourceConfig[0] != 'multiauth:MultiAuth') {
 			return $this->authSourceConfig;

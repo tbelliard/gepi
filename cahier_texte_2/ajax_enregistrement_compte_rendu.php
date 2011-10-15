@@ -20,17 +20,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la notice. La sortie est utilisée dans un javascript
+//Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la notice. La sortie est utilisÃ©e dans un javascript
 
 header('Content-Type: text/html; charset=ISO-8859-1');
 
 $filtrage_extensions_fichiers_table_ct_types_documents='y';
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interfÃ©rer avec fckeditor
 $traite_anti_inject = 'no';
 
 require_once("../lib/initialisationsPropel.inc.php");
@@ -46,7 +46,7 @@ if ($utilisateur == null) {
 check_token();
 
 //debug_var();
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
 $date_ct = isset($_POST["date_ct"]) ? $_POST["date_ct"] :(isset($_GET["date_ct"]) ? $_GET["date_ct"] :NULL);
 $contenu = isset($_POST["contenu"]) ? $_POST["contenu"] :NULL;
@@ -63,10 +63,10 @@ $doc_masque = isset($_POST["doc_masque"]) ? $_POST["doc_masque"] :(isset($_GET["
 $doc_name_modif = isset($_POST["doc_name_modif"]) ? $_POST["doc_name_modif"] :(isset($_GET["doc_name_modif"]) ? $_GET["doc_name_modif"] :NULL);
 $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GET["id_document"]) ? $_GET["id_document"] :NULL);
 
-// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
+// uid de pour ne pas refaire renvoyer plusieurs fois le mÃƒÂªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $_SESSION['uid_prime'] : 1;
-// Pour tester la mise en place d'une copie de sauvegarde, décommenter la ligne ci-dessous:
+// Pour tester la mise en place d'une copie de sauvegarde, dÃ©commenter la ligne ci-dessous:
 //$uid_post=$uid_prime;
 if ($uid_post==$uid_prime) {
 	if(getSettingValue('cdt2_desactiver_copie_svg')!='y') {
@@ -79,17 +79,17 @@ if ($uid_post==$uid_prime) {
 		$sql="INSERT INTO ct_private_entry SET date_ct='$date_ct', heure_entry='".strftime("%H:%M:%S")."', id_login='".$_SESSION['login']."', id_groupe='$id_groupe', contenu='<b>COPIE DE SAUVEGARDE</b><br />$contenu_cor';";
 		$insert=mysql_query($sql);
 
-		echo("Erreur enregistrement de compte rendu : formulaire déjà posté précédemment.\nUne copie de sauvegarde a été créée en notice privée.");
+		echo("Erreur enregistrement de compte rendu : formulaire dÃ©jÃ  postÃ© prÃ©cÃ©demment.\nUne copie de sauvegarde a Ã©tÃ© crÃ©Ã©e en notice privÃ©e.");
 	}
 	else {
-		echo("Erreur enregistrement de compte rendu : formulaire déjà posté précédemment.");
+		echo("Erreur enregistrement de compte rendu : formulaire dÃ©jÃ  postÃ© prÃ©cÃ©demment.");
 	}
 
 	die();
 }
 $_SESSION['uid_prime'] = $uid_post;
 
-//récupération du compte rendu
+//rÃ©cupÃ©ration du compte rendu
 //$ctCompteRendu = new CahierTexteCompteRendu();
 if ($id_ct != null) {
 	//$criteria = new Criteria();
@@ -98,7 +98,7 @@ if ($id_ct != null) {
 	//$ctCompteRendu = $ctCompteRendus[0];
 	$ctCompteRendu = CahierTexteCompteRenduQuery::create()->findPk($id_ct);
 	if ($ctCompteRendu == null) {
-		echo "Erreur enregistrement de compte rendu : Compte rendu non trouvé";
+		echo "Erreur enregistrement de compte rendu : Compte rendu non trouvÃ©";
 		die();
 	}
 	$groupe = $ctCompteRendu->getGroupe();
@@ -108,19 +108,19 @@ if ($id_ct != null) {
 		die();
 	}
 } else {
-	//si pas  du compte rendu précisé, récupération du groupe dans la requete et création d'un nouvel objet CahierTexteCompteRendu
+	//si pas  du compte rendu prÃ©cisÃ©, rÃ©cupÃ©ration du groupe dans la requete et crÃ©ation d'un nouvel objet CahierTexteCompteRendu
 	foreach ($utilisateur->getGroupes() as $group) {
 		if ($id_groupe == $group->getId()) {
 			$groupe = $group;
 			break;
 		}
-	}// cela economise un acces db par rapport à  $current_group = GroupePeer::retrieveByPK($id_groupe), et permet de ne pas avoir a nettoyer les reference de utilisateurs.
+	}// cela economise un acces db par rapport Ã   $current_group = GroupePeer::retrieveByPK($id_groupe), et permet de ne pas avoir a nettoyer les reference de utilisateurs.
 	if ($groupe == null) {
-		echo("Erreur enregistrement de compte rendu : pas de groupe ou mauvais groupe spécifié");
+		echo("Erreur enregistrement de compte rendu : pas de groupe ou mauvais groupe spÃ©cifiÃ©");
 		die;
 	}
 
-	//pas de notices, on lance une création de notice
+	//pas de notices, on lance une crÃ©ation de notice
 	$ctCompteRendu = new CahierTexteCompteRendu();
 	$ctCompteRendu->setIdGroupe($groupe->getId());
 	$ctCompteRendu->setIdLogin($utilisateur->getLogin());
@@ -128,11 +128,11 @@ if ($id_ct != null) {
 
 // interdire la modification d'un visa par le prof si c'est un visa
 if ($ctCompteRendu->getVise() == 'y') {
-	echo("Erreur enregistrement de compte rendu : Notice signée, edition impossible/");
+	echo("Erreur enregistrement de compte rendu : Notice signÃ©e, edition impossible/");
 	die();
 }
 
-//affectation des parametres de la requete à l'objet ctCompteRendu
+//affectation des parametres de la requete Ã  l'objet ctCompteRendu
 $contenu_cor = traitement_magic_quotes(corriger_caracteres($contenu),'');
 $contenu_cor = str_replace("\\r","",$contenu_cor);
 $contenu_cor = str_replace("\\n","",$contenu_cor);
@@ -162,7 +162,7 @@ if (!empty($doc_file['name'][0])) {
 		if(!empty($doc_file['tmp_name'][$index_doc])) {
 			$file_path = ajout_fichier($doc_file, $dest_dir, $index_doc, $id_groupe);
 			if ($file_path != null) {
-				//création de l'objet ctDocument
+				//crÃ©ation de l'objet ctDocument
 				$ctDocument = new CahierTexteCompteRenduFichierJoint();
 				$ctDocument->setIdCt($ctCompteRendu->getIdCt());
 				$ctDocument->setTaille($doc_file['size'][$index_doc]);
@@ -195,12 +195,12 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 	$documents = $ctCompteRendu->getCahierTexteCompteRenduFichierJoints($criteria);
 
 	if (empty($documents)) {
-		echo "Erreur enregistrement de compte rendu : document non trouvé.";
+		echo "Erreur enregistrement de compte rendu : document non trouvÃ©.";
 		die();
 	}
 	$document = $documents[0];
 	if ($document == null) {
-		echo "Erreur enregistrement de compte rendu : document non trouvé.";
+		echo "Erreur enregistrement de compte rendu : document non trouvÃ©.";
 		die();
 	}
 	$document->setTitre(corriger_caracteres($doc_name_modif));

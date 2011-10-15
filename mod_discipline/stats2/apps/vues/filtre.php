@@ -19,14 +19,14 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 
 ?>
 <div id="result">
-    <h3 class="red">Choix des filtres pour les données</h3>
+    <h3 class="red">Choix des filtres pour les donnÃ©es</h3>
 
     <div id="filtres">
         <form action="index.php?ctrl=bilans&action=filtrer&action_from=<?php echo $action_from;?>" method="post"
@@ -34,11 +34,11 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             <div id="wrap">
             <div id="filtre_categories">
                 <fieldset>
-                    <legend>Choix des catégories</legend>
+                    <legend>Choix des catÃ©gories</legend>
                     <div id="recherche_classe">
                             <?php $max=count($categories);?>
                             <a href="javascript:modif_case('categories',true,<?php echo $max; ?>)"><img src='../../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>/
-                            <a href="javascript:modif_case('categories',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher'/></a>
+                            <a href="javascript:modif_case('categories',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' title='Tout dÃ©cocher'/></a>
                             <br />
                             <?php
                           $cpt=0;
@@ -58,7 +58,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     <div id="recherche_classe">
                             <?php $max=count($mesures);?>
                             <a href="javascript:modif_case('mesures',true,<?php echo $max; ?>)"><img src='../../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>/
-                            <a href="javascript:modif_case('mesures',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher'/></a>
+                            <a href="javascript:modif_case('mesures',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' title='Tout dÃ©cocher'/></a>
                             <br />
                                 <?php
                                 $cpt=0;
@@ -76,7 +76,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     <div id="recherche_classe">
                             <?php $max=count($sanctions)+3;?>
                             <a href="javascript:modif_case('sanctions',true,<?php echo $max; ?>)"><img src='../../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>/
-                            <a href="javascript:modif_case('sanctions',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher'/></a>
+                            <a href="javascript:modif_case('sanctions',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' title='Tout dÃ©cocher'/></a>
                             <br />
                                 <?php $cpt=0;?>
                                <input type='checkbox' name='sanctions[]' id='sanctions_<?php echo $cpt;?>' value='travail' <?php if ($filtres_sanctions){if( in_array('travail', $filtres_sanctions)) echo "checked";} ?>/><label for='sanction_<?php echo $cpt;?>'>Travail</label><br />
@@ -95,11 +95,11 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             </div>
                 <div id="filtre_categories">
                 <fieldset>
-                    <legend>Rôle dans l'incident</legend>
+                    <legend>RÃ´le dans l'incident</legend>
                     <div id="recherche_classe">
                             <?php $max=count($roles);?>
                             <a href="javascript:modif_case('roles',true,<?php echo $max; ?>)"><img src='../../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>/
-                            <a href="javascript:modif_case('roles',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher'/></a>
+                            <a href="javascript:modif_case('roles',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' title='Tout dÃ©cocher'/></a>
                             <br />
                                 <?php
                                 $cpt=0;

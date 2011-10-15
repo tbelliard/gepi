@@ -54,7 +54,7 @@ $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET
 if((!isset($login_eleve))||
 (!isset($periode_num))||
 (!isset($id_classe))) {
-	$msg="Erreur: Une des variables n'était pas initialisée ou n'avait pas une valeur correcte.";
+	$msg="Erreur: Une des variables n'Ã©tait pas initialisÃ©e ou n'avait pas une valeur correcte.";
 	header("Location: ../accueil.php?msg=".rawurlencode($msg));
 	die();
 }
@@ -62,7 +62,7 @@ if((!isset($login_eleve))||
 $sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND login='$login_eleve' AND periode='$periode_num';";
 $verif=mysql_query($sql);
 if(mysql_num_rows($verif)==0) {
-	$msg="Erreur: L'élève ne fait pas partie de la classe sur la période choisie.";
+	$msg="Erreur: L'Ã©lÃ¨ve ne fait pas partie de la classe sur la pÃ©riode choisie.";
 	header("Location: ../accueil.php?msg=".rawurlencode($msg));
 	die();
 }
@@ -88,7 +88,7 @@ $id_grp_fut=isset($_POST['id_grp_fut']) ? $_POST['id_grp_fut'] : (isset($_GET['i
 if(!is_array($id_grp_fut)) {unset($id_grp_fut);}
 else {
 	for($i=0;$i<count($id_grp_fut);$i++) {
-		// $grp_fut[$i] peut être vide si on abandonne les notes de la matière...
+		// $grp_fut[$i] peut Ãªtre vide si on abandonne les notes de la matiÃ¨re...
 		if(strlen(my_ereg_replace("[0-9]","",$id_grp_fut[$i]))!=0) {unset($id_grp_fut);break;}
 	}
 }
@@ -120,7 +120,7 @@ function recherche_enfant2($id_parent_tmp, $current_group, $periode_num, $id_rac
 }
 
 
-//$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+//$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Changement de classe";
@@ -143,25 +143,25 @@ $classe = mysql_result($call_classe, "0", "classe");
 $sql="SELECT * FROM eleves WHERE login='$login_eleve';";
 $res_ele=mysql_query($sql);
 if(mysql_num_rows($res_ele)==0) {
-	echo "<p><b>Erreur:</b> L'élève d'identifiant $login_eleve n'existe pas.</p>\n";
+	echo "<p><b>Erreur:</b> L'Ã©lÃ¨ve d'identifiant $login_eleve n'existe pas.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
 $lig_ele=mysql_fetch_object($res_ele);
 
-echo "<p>Vous souhaitez changer <b>".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</b> de classe sur la période <b>".$nom_periode[$periode_num]."</b>";
+echo "<p>Vous souhaitez changer <b>".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</b> de classe sur la pÃ©riode <b>".$nom_periode[$periode_num]."</b>";
 if($chgt_periode_sup=='y') {echo " et suivantes";}
 echo ".<br />\n";
 
 //==============================================
-// On vérifie qu'il n'y a pas de notes/app sur le bulletin pour cette période
+// On vÃ©rifie qu'il n'y a pas de notes/app sur le bulletin pour cette pÃ©riode
 $sql="SELECT 1=1 FROM matieres_notes WHERE login='".$login_eleve."' AND periode='".$periode_num."';";
 $verif=mysql_query($sql);
 $sql="SELECT 1=1 FROM matieres_appreciations WHERE login='".$login_eleve."' AND periode='".$periode_num."';";
 $verif2=mysql_query($sql);
 
 if((mysql_num_rows($verif)>0)||(mysql_num_rows($verif2)>0)) {
-	echo "<p>L'élève a des notes et/ou appréciations sur le bulletin.<br />Il n'est plus possible de changer l'élève de classe pour cette période.</p>\n";
+	echo "<p>L'Ã©lÃ¨ve a des notes et/ou apprÃ©ciations sur le bulletin.<br />Il n'est plus possible de changer l'Ã©lÃ¨ve de classe pour cette pÃ©riode.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -176,9 +176,9 @@ if(!isset($id_future_classe)) {
 	}
 	echo " est actuellement en <b>$classe</b>.</p>\n";
 
-	echo "<p><b>ATTENTION:</b> Il est fortement recommandé de prendre soin de générer un relevé de notes de l'élève pour la période ".$nom_periode[$periode_num]." avec toutes les informations utiles avant de procéder au changement de classe.<br />Vous pouvez aussi faire une sauvegarde de la base.<br />Ces précautions vous permettront de revenir en arrière si un problème se produisait.</p>\n";
+	echo "<p><b>ATTENTION:</b> Il est fortement recommandÃ© de prendre soin de gÃ©nÃ©rer un relevÃ© de notes de l'Ã©lÃ¨ve pour la pÃ©riode ".$nom_periode[$periode_num]." avec toutes les informations utiles avant de procÃ©der au changement de classe.<br />Vous pouvez aussi faire une sauvegarde de la base.<br />Ces prÃ©cautions vous permettront de revenir en arriÃ¨re si un problÃ¨me se produisait.</p>\n";
 
-	echo "<p>Vers quelle classe souhaitez vous déplacer l'élève?</p>\n";
+	echo "<p>Vers quelle classe souhaitez vous dÃ©placer l'Ã©lÃ¨ve?</p>\n";
 	$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id AND p.num_periode='$periode_num' ORDER BY classe");
 	$nb = mysql_num_rows($classes_list);
 	if ($nb !=0) {
@@ -228,7 +228,7 @@ else {
 	$call_classe_future = mysql_query($sql);
 	$classe_future = mysql_result($call_classe_future, "0", "classe");
 
-	echo "<p>Vous souhaitez déplacer l'élève de <b>$classe</b> vers <b>$classe_future</b> sur la période <b>".$nom_periode[$periode_num]."</b>";
+	echo "<p>Vous souhaitez dÃ©placer l'Ã©lÃ¨ve de <b>$classe</b> vers <b>$classe_future</b> sur la pÃ©riode <b>".$nom_periode[$periode_num]."</b>";
 	if($chgt_periode_sup=='y') {echo " et suivantes";}
 	echo ".</p>\n";
 
@@ -248,7 +248,7 @@ else {
 	affiche_debug("$sql<br />");
 	$res_grp_fut=mysql_query($sql);
 	if(mysql_num_rows($res_grp_fut)==0) {
-		echo "<p>La classe future de l'élève n'a semble-t-il aucun enseignement associé.<br />Vous devez créer des enseignements dans la classe future avant de procéder au changement de classe.</p>\n";
+		echo "<p>La classe future de l'Ã©lÃ¨ve n'a semble-t-il aucun enseignement associÃ©.<br />Vous devez crÃ©er des enseignements dans la classe future avant de procÃ©der au changement de classe.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -272,7 +272,7 @@ else {
 	//echo "$sql<br />";
 	affiche_debug("$sql<br />");
 	if(mysql_num_rows($res_grp)==0) {
-		echo "<p>La classe actuelle de l'élève n'a semble-t-il aucun enseignement associé.<br />Vous pouvez retirer l'élève de l'ancienne classe et l'ajouter dans la nouvelle sans autre formalité.</p>\n";
+		echo "<p>La classe actuelle de l'Ã©lÃ¨ve n'a semble-t-il aucun enseignement associÃ©.<br />Vous pouvez retirer l'Ã©lÃ¨ve de l'ancienne classe et l'ajouter dans la nouvelle sans autre formalitÃ©.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -280,7 +280,7 @@ else {
 
 
 	if((!isset($id_grp))||(!isset($id_grp_fut))) {
-		echo "<p>Veuillez compléter/confirmer les associations éventuellement proposées.</p>\n";
+		echo "<p>Veuillez complÃ©ter/confirmer les associations Ã©ventuellement proposÃ©es.</p>\n";
 
 		echo "<div align='center'>\n";
 
@@ -299,7 +299,7 @@ else {
 			$lig_grp=mysql_fetch_object($res_grp);
 			$group=get_group($lig_grp->id);
 
-			// L'élève est-il dans le groupe sur la période choisie?
+			// L'Ã©lÃ¨ve est-il dans le groupe sur la pÃ©riode choisie?
 			if(in_array($login_eleve,$group["eleves"][$periode_num]["list"])) {
 				$cpt_grp_mat=0;
 
@@ -332,7 +332,7 @@ else {
 					//echo ">".$tab_group_fut[$j]['name']." (<i>".$chaine_profs."</i>)</option>\n";
 					echo ">".$tab_group_fut[$j]['name']." (".$chaine_profs.") (".$tab_group_fut[$j]['id'].")</option>\n";
 
-					// Compteur des groupes de la classe future correspondant à la même matière que celle du groupe de l'actuelle classe
+					// Compteur des groupes de la classe future correspondant Ã  la mÃªme matiÃ¨re que celle du groupe de l'actuelle classe
 					if($tab_group_fut[$j]['matiere']['nom_complet']==$group['matiere']['nom_complet']) {$cpt_grp_mat++;}
 				}
 				echo "</select>\n";
@@ -353,7 +353,7 @@ else {
 		$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe' AND num_periode>$periode_num;";
 		$test_per=mysql_query($sql);
 		if(mysql_num_rows($test_per)>0) {
-			echo "<input type='checkbox' name='chgt_periode_sup' id='chgt_periode_sup' value='y' checked /><label for='chgt_periode_sup'> Changer l'élève de classe également pour les périodes qui suivent la période $periode_num<br />(<i>pour le reste de l'année scolaire en somme</i>)</label><br />\n";
+			echo "<input type='checkbox' name='chgt_periode_sup' id='chgt_periode_sup' value='y' checked /><label for='chgt_periode_sup'> Changer l'Ã©lÃ¨ve de classe Ã©galement pour les pÃ©riodes qui suivent la pÃ©riode $periode_num<br />(<i>pour le reste de l'annÃ©e scolaire en somme</i>)</label><br />\n";
 		}
 
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -361,7 +361,7 @@ else {
 		echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
 		echo "<input type='hidden' name='login_eleve' value='$login_eleve' />\n";
 
-		// Remplacer par un 'button' avec JavaScript de contrôle pour alerter si un des groupes destination n'est pas sélectionné
+		// Remplacer par un 'button' avec JavaScript de contrÃ´le pour alerter si un des groupes destination n'est pas sÃ©lectionnÃ©
 		// (avec confirm())
 		//echo "<p align='center'><input type='submit' value='Valider' style='margin: 30px 0 60px 0;'/></p>\n";
 		echo "<p align='center'><input type='button' value='Valider' style='margin: 30px 0 60px 0;' onClick=\"verifie_form()\" /></p>\n";
@@ -372,7 +372,7 @@ else {
 		$sql="SELECT a.nom, ac.nom_complet, jae.* FROM j_aid_eleves jae, aid a, aid_config ac WHERE jae.login='$login_eleve' AND jae.id_aid=a.id AND jae.indice_aid=a.indice_aid AND ac.indice_aid=a.indice_aid ORDER BY ac.nom_complet, a.nom";
 		$res_aid=mysql_query($sql);
 		if(mysql_num_rows($res_aid)>0) {
-			echo "<p><b>".get_nom_prenom_eleve($login_eleve)."</b> est inscrit(e) dans un ou des <b>AID</b>.<br />\nIl faudra contrôler si les contraintes d'emploi du temps permettent de conserver ces inscriptions ou s'il convient d'effectuer des modifications.<br />\nVoici la liste&nbsp;:<br />\n";
+			echo "<p><b>".get_nom_prenom_eleve($login_eleve)."</b> est inscrit(e) dans un ou des <b>AID</b>.<br />\nIl faudra contrÃ´ler si les contraintes d'emploi du temps permettent de conserver ces inscriptions ou s'il convient d'effectuer des modifications.<br />\nVoici la liste&nbsp;:<br />\n";
 			while($lig_aid=mysql_fetch_object($res_aid)) {
 				echo "&nbsp;&nbsp;&nbsp;-&nbsp;$lig_aid->nom (<i>$lig_aid->nom_complet</i>)";
 
@@ -381,10 +381,10 @@ else {
 				$nb_ele_fut_aid=mysql_num_rows($test);
 				if($nb_ele_fut_aid==1) {
 					$lig_ele_fut_aid=mysql_fetch_object($test);
-					echo "&nbsp;: ".$nb_ele_fut_aid." élève de la classe future est inscrit dans cet AID (<span style='font-size:small; font-style:italic;'>".get_nom_prenom_eleve($lig_ele_fut_aid->login)."</span>).";
+					echo "&nbsp;: ".$nb_ele_fut_aid." Ã©lÃ¨ve de la classe future est inscrit dans cet AID (<span style='font-size:small; font-style:italic;'>".get_nom_prenom_eleve($lig_ele_fut_aid->login)."</span>).";
 				}
 				elseif($nb_ele_fut_aid>1) {
-					echo "&nbsp;: ".$nb_ele_fut_aid." élèves de la classe future sont inscrits dans cet AID (<span style='font-size:small; font-style:italic;'>";
+					echo "&nbsp;: ".$nb_ele_fut_aid." Ã©lÃ¨ves de la classe future sont inscrits dans cet AID (<span style='font-size:small; font-style:italic;'>";
 					$cpt_ele_aid=0;
 					while($lig_ele_fut_aid=mysql_fetch_object($test)) {
 						if($cpt_ele_aid>0) {echo ", ";}
@@ -414,7 +414,7 @@ else {
 		}
 
 		if(temoin_assoc=='n') {
-			verif=confirm('ATTENTION:\\nUn enseignement de ".$classe." au moins n est pas associé à un enseignement de ".$classe_future.".\\nLes notes éventuelles de l élève à cet enseignement seront perdues si vous confirmez la volonté de procéder aux changements.');
+			verif=confirm('ATTENTION:\\nUn enseignement de ".$classe." au moins n est pas associÃ© Ã  un enseignement de ".$classe_future.".\\nLes notes Ã©ventuelles de l Ã©lÃ¨ve Ã  cet enseignement seront perdues si vous confirmez la volontÃ© de procÃ©der aux changements.');
 			if(verif) {
 				document.forms['form_assoc_grp'].submit();
 			}
@@ -428,9 +428,9 @@ else {
 
 		echo "<p><b>ATTENTION:</b></p>
 <blockquote>
-<p>Dans le cas où des groupes sont en commun entre la $classe et la $classe_future, si l'élève fait partie de plusieurs enseignements correspondant à la même matière (<i>exemple: l'élève fait partie de 2 enseignements de DecP3 partagés entre les deux classes</i>), il faut éviter d'intervertir les groupes.<br />
-Dans le cas contraire, lors de la migration du deuxième enseignement, l'inscription au premier est supprimé.</p>
-<p>La page propose normalement de ne pas changer de groupe lorsque le groupe est partagé par les deux classes (<i>le numéro de groupe est indiqué entre parenthèses</i>).<br />
+<p>Dans le cas oÃ¹ des groupes sont en commun entre la $classe et la $classe_future, si l'Ã©lÃ¨ve fait partie de plusieurs enseignements correspondant Ã  la mÃªme matiÃ¨re (<i>exemple: l'Ã©lÃ¨ve fait partie de 2 enseignements de DecP3 partagÃ©s entre les deux classes</i>), il faut Ã©viter d'intervertir les groupes.<br />
+Dans le cas contraire, lors de la migration du deuxiÃ¨me enseignement, l'inscription au premier est supprimÃ©.</p>
+<p>La page propose normalement de ne pas changer de groupe lorsque le groupe est partagÃ© par les deux classes (<i>le numÃ©ro de groupe est indiquÃ© entre parenthÃ¨ses</i>).<br />
 Evitez les 'fantaisies';o).</p>
 </blockquote>\n";
 	}
@@ -465,8 +465,8 @@ Evitez les 'fantaisies';o).</p>
             affiche_debug("\$id_grp_fut[$i]=$id_grp_fut[$i]<br />");
 
 			if($id_grp[$i]==$id_grp_fut[$i]) {
-				// C'était un groupe partagé entre les deux classes
-				echo "L'enseignement était partagé entre les deux classes.<br />\n";
+				// C'Ã©tait un groupe partagÃ© entre les deux classes
+				echo "L'enseignement Ã©tait partagÃ© entre les deux classes.<br />\n";
 				echo "On ne modifie rien pour cet enseignement.<br />\n";
 			}
 			else {
@@ -478,12 +478,12 @@ Evitez les 'fantaisies';o).</p>
 					affiche_debug("$sql<br />");
 					$res_ccn=mysql_query($sql);
 					if(mysql_num_rows($res_ccn)==0) {
-						echo "Aucune note n'était saisie (<i>carnet de notes non initialisé pour la période $current_periode_num</i>).<br />\n";
+						echo "Aucune note n'Ã©tait saisie (<i>carnet de notes non initialisÃ© pour la pÃ©riode $current_periode_num</i>).<br />\n";
 					}
 					else {
 						$lig_ccn=mysql_fetch_object($res_ccn);
 	
-						// Recherche des devoirs de l'ancien groupe pour lesquels l'élève a au moins une note
+						// Recherche des devoirs de l'ancien groupe pour lesquels l'Ã©lÃ¨ve a au moins une note
 						$sql="SELECT cd.*, cnd.login, cnd.note, cnd.comment, cnd.statut FROM cn_devoirs cd,
 											cn_notes_devoirs cnd
 							WHERE cd.id_racine='".$lig_ccn->id_cahier_notes."' AND
@@ -493,13 +493,13 @@ Evitez les 'fantaisies';o).</p>
 						$res_cd=mysql_query($sql);
 	
 						if(mysql_num_rows($res_cd)==0) {
-							echo "Aucune note n'était saisie (<i>aucun devoir dans le carnet de notes pour la période $current_periode_num</i>).<br />\n";
+							echo "Aucune note n'Ã©tait saisie (<i>aucun devoir dans le carnet de notes pour la pÃ©riode $current_periode_num</i>).<br />\n";
 						}
 						else {
 							if($id_grp_fut[$i]=='') {
-								echo "Aucun groupe futur n'a été sélectionné: Les notes éventuelles seront perdues.<br />\n";
+								echo "Aucun groupe futur n'a Ã©tÃ© sÃ©lectionnÃ©: Les notes Ã©ventuelles seront perdues.<br />\n";
 	
-								// Insérer le ménage à ce niveau
+								// InsÃ©rer le mÃ©nage Ã  ce niveau
 	
 								while($lig_cd=mysql_fetch_object($res_cd)) {
 									// Suppression de la note dans l'ancien carnet de notes
@@ -532,7 +532,7 @@ Evitez les 'fantaisies';o).</p>
 								$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_grp_fut[$i]."' AND periode='$current_periode_num'";
 								$res_ccn_fut=mysql_query($sql);
 								if(mysql_num_rows($res_ccn_fut)==0) {
-									// On crée le carnet de notes dans le groupe futur
+									// On crÃ©e le carnet de notes dans le groupe futur
 	
 									$nom_complet_matiere_fut = $group_fut["matiere"]["nom_complet"];
 									$nom_court_matiere_fut = $group_fut["matiere"]["matiere"];
@@ -555,21 +555,21 @@ Evitez les 'fantaisies';o).</p>
 										$sql="UPDATE cn_conteneurs SET id_racine='$id_racine_fut', parent = '0' WHERE id='$id_racine_fut';";
 										affiche_debug("$sql<br />");
 										$reg = mysql_query($sql);
-										// Je ne saisis pas l'intérêt de la requête au-dessus???
+										// Je ne saisis pas l'intÃ©rÃªt de la requÃªte au-dessus???
 										$sql="INSERT INTO cn_cahier_notes SET id_groupe = '".$group_fut['id']."', periode = '$current_periode_num', id_cahier_notes='$id_racine_fut';";
 										affiche_debug("$sql<br />");
 										$reg = mysql_query($sql);
-										echo "Création du carnet de notes pour la période ".$current_periode_num." dans le groupe de $classe_future: ";
+										echo "CrÃ©ation du carnet de notes pour la pÃ©riode ".$current_periode_num." dans le groupe de $classe_future: ";
 										if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 										echo "<br />\n";
 									}
 								}
 								else {
-									// On récupère l'identifiant du carnet de notes du groupe futur
+									// On rÃ©cupÃ¨re l'identifiant du carnet de notes du groupe futur
 									$lig_ccn_fut=mysql_fetch_object($res_ccn_fut);
 									$id_racine_fut=$lig_ccn_fut->id_cahier_notes;
 	
-									// On met un statut 'v' pour le nouvel élève sur tous les devoirs existants (avec des notes) du groupe futur
+									// On met un statut 'v' pour le nouvel Ã©lÃ¨ve sur tous les devoirs existants (avec des notes) du groupe futur
 									$sql="SELECT DISTINCT cd.id FROM cn_devoirs cd,
 																cn_notes_devoirs cnd
 												WHERE (cd.id=cnd.id_devoir AND
@@ -589,7 +589,7 @@ Evitez les 'fantaisies';o).</p>
 								// Boucle sur les devoirs de l'ancien carnet de notes
 								while($lig_cd=mysql_fetch_object($res_cd)) {
 									if($lig_cd->statut!='v') {
-										// Création du devoir si la note n'est pas vide
+										// CrÃ©ation du devoir si la note n'est pas vide
 										$sql="INSERT INTO cn_devoirs SET id_conteneur='$id_racine_fut',
 												id_racine='$id_racine_fut',
 												nom_court='".addslashes($lig_cd->nom_court."_".$classe)."',
@@ -605,12 +605,12 @@ Evitez les 'fantaisies';o).</p>
 										affiche_debug("$sql<br />");
 										$reg=mysql_query($sql);
 										$id_devoir_fut=mysql_insert_id();
-										echo "Création d'un devoir ".$lig_cd->nom_court."_".$classe." dans le groupe de $classe_future: ";
+										echo "CrÃ©ation d'un devoir ".$lig_cd->nom_court."_".$classe." dans le groupe de $classe_future: ";
 										if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 										echo "<br />\n";
 	
 										if($id_devoir_fut>0) {
-											// Insertion du statut 'v' pour tous les autres élèves du groupe futur
+											// Insertion du statut 'v' pour tous les autres Ã©lÃ¨ves du groupe futur
 											foreach($group_fut['eleves'][$current_periode_num]["list"] as $grp_fut_ele_login) {
 												$sql="INSERT INTO cn_notes_devoirs SET login='".$grp_fut_ele_login."', id_devoir='$id_devoir_fut', statut='v';";
 												affiche_debug("$sql<br />");
@@ -621,7 +621,7 @@ Evitez les 'fantaisies';o).</p>
 											$sql="INSERT INTO cn_notes_devoirs SET login='$login_eleve', id_devoir='$id_devoir_fut', note='$lig_cd->note', comment='$lig_cd->comment', statut='$lig_cd->statut';";
 											affiche_debug("$sql<br />");
 											$reg=mysql_query($sql);
-											echo "Insertion de la note du devoir n°".$lig_cd->id." dans le groupe de $classe_future: ";
+											echo "Insertion de la note du devoir nÂ°".$lig_cd->id." dans le groupe de $classe_future: ";
 											if($reg) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 											echo "<br />\n";
 										}
@@ -631,7 +631,7 @@ Evitez les 'fantaisies';o).</p>
 									$sql="DELETE FROM cn_notes_devoirs WHERE login='$login_eleve' AND id_devoir='$lig_cd->id';";
 									affiche_debug("$sql<br />");
 									$del=mysql_query($sql);
-									echo "Suppression de la note du devoir n°".$lig_cd->id.": ";
+									echo "Suppression de la note du devoir nÂ°".$lig_cd->id.": ";
 									if($del) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 									echo "<br />\n";
 								}
@@ -646,7 +646,7 @@ Evitez les 'fantaisies';o).</p>
 										$sql="DELETE FROM cn_notes_conteneurs WHERE login='$login_eleve' AND id_conteneur='".$lig_cn->id."';";
 										affiche_debug("$sql<br />");
 										$del=mysql_query($sql);
-										echo "Suppression de la note de $gepi_denom_boite n°".$lig_cn->id.": ";
+										echo "Suppression de la note de $gepi_denom_boite nÂ°".$lig_cn->id.": ";
 										if($del) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 										echo "<br />\n";
 									}
@@ -656,24 +656,24 @@ Evitez les 'fantaisies';o).</p>
 					}
 	
 					if($id_grp_fut[$i]!='') {
-						// Inscription dans le groupe pour la période
+						// Inscription dans le groupe pour la pÃ©riode
 						$sql="INSERT INTO j_eleves_groupes SET login='$login_eleve', id_groupe='".$id_grp_fut[$i]."', periode='$current_periode_num';";
 						affiche_debug("$sql<br />");
 						$inscription_grp=mysql_query($sql);
-						echo "Inscription dans le groupe de la $classe_future sur la période $current_periode_num: ";
+						echo "Inscription dans le groupe de la $classe_future sur la pÃ©riode $current_periode_num: ";
 						if($inscription_grp) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 						echo "<br />\n";
 					}
 	
-					// Suppression de l'élève de l'ancien groupe
+					// Suppression de l'Ã©lÃ¨ve de l'ancien groupe
 					$sql="DELETE FROM j_eleves_groupes WHERE login='$login_eleve' AND id_groupe='".$id_grp[$i]."' AND periode='$current_periode_num';";
 					affiche_debug("$sql<br />");
 					$desinscription_grp=mysql_query($sql);
-					echo "Suppression de l'appartenance au groupe de la $classe sur la période $current_periode_num: ";
+					echo "Suppression de l'appartenance au groupe de la $classe sur la pÃ©riode $current_periode_num: ";
 					if($desinscription_grp) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 					echo "<br />\n";
 	
-					// S'il y avait un ancien carnet de notes... peut-être des moyennes à recalculer
+					// S'il y avait un ancien carnet de notes... peut-Ãªtre des moyennes Ã  recalculer
 					if(mysql_num_rows($res_ccn)>0) {
 						// Provoquer le recalcul des moyennes de conteneurs sur l'ancienne et la nouvelle classe
 						$arret = 'no';
@@ -700,14 +700,14 @@ Evitez les 'fantaisies';o).</p>
 		for($jj=0;$jj<count($tab_per);$jj++) {
 			$current_periode_num=$tab_per[$jj];
 
-			// Inscription dans la nouvelle classe pour la période
+			// Inscription dans la nouvelle classe pour la pÃ©riode
 			$sql="INSERT INTO j_eleves_classes SET login='$login_eleve', id_classe='".$id_future_classe."', periode='$current_periode_num';";
 			affiche_debug("$sql<br />");
 			$inscription_classe=mysql_query($sql);
-			echo "<p>Inscription dans la classe de $classe_future sur la période $current_periode_num: ";
+			echo "<p>Inscription dans la classe de $classe_future sur la pÃ©riode $current_periode_num: ";
 			if($inscription_classe) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 			echo "<br />\n";
-			// Il y aura des rangs à recalculer
+			// Il y aura des rangs Ã  recalculer
 			$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_future_classe."' and coef > 0)"));
 			$affiche_categories=true;
 
@@ -719,14 +719,14 @@ Evitez les 'fantaisies';o).</p>
 			include("../lib/calcul_rang.inc.php");
 			$id_classe=$temp_id_classe;	
 	
-			// Désinscription de l'ancienne classe pour la période
+			// DÃ©sinscription de l'ancienne classe pour la pÃ©riode
 			$sql="DELETE FROM j_eleves_classes WHERE login='$login_eleve' AND id_classe='".$id_classe."' AND periode='$current_periode_num';";
 			affiche_debug("$sql<br />");
 			$desinscription_classe=mysql_query($sql);
-			echo "Suppression de l'appartenance à la classe de $classe sur la période $current_periode_num: ";
+			echo "Suppression de l'appartenance Ã  la classe de $classe sur la pÃ©riode $current_periode_num: ";
 			if($desinscription_classe) {echo "<span style='color:green'>OK</span>";} else {echo "<span style='color:red'>ECHEC</span>";}
 			echo "</p>\n";
-			// Il y aura des rangs à recalculer
+			// Il y aura des rangs Ã  recalculer
 			$affiche_categories=true;
 			$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 			include("../lib/calcul_rang.inc.php");
@@ -734,10 +734,10 @@ Evitez les 'fantaisies';o).</p>
 		}
 		echo "<p><br /></p>\n";
 
-		// CPE à modifier?
-		// Prof principal à modifier?
+		// CPE Ã  modifier?
+		// Prof principal Ã  modifier?
 		$ancre_login_eleve=my_ereg_replace("[^A-Za-z0-9_]","",$login_eleve);
-		echo "<p>N'oubliez pas de contrôler/corriger les associations CPE et ".getSettingValue("gepi_prof_suivi")." pour cet élève: <a href='classes_const.php?id_classe=$id_future_classe#$ancre_login_eleve'>$classe_future</a></p>\n";
+		echo "<p>N'oubliez pas de contrÃ´ler/corriger les associations CPE et ".getSettingValue("gepi_prof_suivi")." pour cet Ã©lÃ¨ve: <a href='classes_const.php?id_classe=$id_future_classe#$ancre_login_eleve'>$classe_future</a></p>\n";
 
 	}
 }
@@ -747,10 +747,10 @@ echo "<p><br /></p>\n";
 
 echo "<p><i>NOTES:</i></p>
 <ul>
-<li><p>Les devoirs sont transférés, mais pas les conteneurs/boites/sous-matières.<br />Les notes se retrouvent \"en vrac\" à la racine du cahier de notes du groupe pour la période choisie.</p></li>
-<li><p>Avant de procéder au changement de classe, il est bon d'imprimer le relevé de notes de la période pour l'élève (<i>compte scolarité</i>).<br />Effectuer une <a href='../gestion/accueil_sauve.php?action=dump' target='_blank'>sauvegarde préalable de la base</a> est aussi une sage précaution.</p></li>
+<li><p>Les devoirs sont transfÃ©rÃ©s, mais pas les conteneurs/boites/sous-matiÃ¨res.<br />Les notes se retrouvent \"en vrac\" Ã  la racine du cahier de notes du groupe pour la pÃ©riode choisie.</p></li>
+<li><p>Avant de procÃ©der au changement de classe, il est bon d'imprimer le relevÃ© de notes de la pÃ©riode pour l'Ã©lÃ¨ve (<i>compte scolaritÃ©</i>).<br />Effectuer une <a href='../gestion/accueil_sauve.php?action=dump' target='_blank'>sauvegarde prÃ©alable de la base</a> est aussi une sage prÃ©caution.</p></li>
 </ul>\n";
-//echo "<p>Il faudrait que le lien de retour mène à la nouvelle classe en fin de procédure et qu'un message invite à vérifier/changer le CPE et prof principal.</p>";
+//echo "<p>Il faudrait que le lien de retour mÃ¨ne Ã  la nouvelle classe en fin de procÃ©dure et qu'un message invite Ã  vÃ©rifier/changer le CPE et prof principal.</p>";
 
 require("../lib/footer.inc.php");
 ?>

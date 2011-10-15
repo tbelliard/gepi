@@ -45,13 +45,13 @@ if (!checkAccess()) {
 
 
 //**************** EN-TETE *****************
-$titre_page = "Vérification du remplissage des bulletins";
+$titre_page = "VÃ©rification du remplissage des bulletins";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 // On teste si un professeur peut effectuer cette operation
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")!='yes') {
-	die("Droits insuffisants pour effectuer cette opération");
+	die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
 //debug_var();
@@ -65,7 +65,7 @@ if (!(isset($id_classe))) {
 	}
 	
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
-		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+		echo " | <a href='param_bull.php'>ParamÃ©trage des bulletins</a>";
 	}
 
 	echo "</p>\n";
@@ -84,7 +84,7 @@ if (!(isset($id_classe))) {
 
 
 	if($lignes==0) {
-		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Aucune classe ne vous est attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
 	}
 	else{
 		unset($lien_classe);
@@ -134,7 +134,7 @@ if (!(isset($id_classe))) {
 
 
 	// ===========================================
-	// Ajout lien classe précédente / classe suivante
+	// Ajout lien classe prÃ©cÃ©dente / classe suivante
 	//if($_SESSION['statut']=='scolarite') {
 		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	/*
@@ -184,7 +184,7 @@ if (!(isset($id_classe))) {
 	if(isset($id_class_prec)) {
 		if($id_class_prec!=0) {
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
-			echo "'>Classe précédente</a>\n";
+			echo "'>Classe prÃ©cÃ©dente</a>\n";
 		}
 	}
 	if($chaine_options_classes!="") {
@@ -204,15 +204,15 @@ if (!(isset($id_classe))) {
 	}
 	
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
-		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+		echo " | <a href='param_bull.php'>ParamÃ©trage des bulletins</a>";
 	}
 
 	echo "</form>\n";
-	//fin ajout lien classe précédente / classe suivante
+	//fin ajout lien classe prÃ©cÃ©dente / classe suivante
 	// ===========================================
 
 
-	// On teste si les élèves ont bien un CPE responsable
+	// On teste si les Ã©lÃ¨ves ont bien un CPE responsable
 
 	$test1 = mysql_query("SELECT distinct(login) login from j_eleves_classes WHERE id_classe='" . $id_classe . "'");
 	$nb_eleves = mysql_num_rows($test1);
@@ -229,21 +229,21 @@ if (!(isset($id_classe))) {
 	}
 
 	if (!$flag) {
-		echo "<p>ATTENTION&nbsp;: certains élèves de cette classe n'ont pas de CPE responsable attribué. Cela génèrera un message d'erreur sur la page d'édition des bulletins. Il faut corriger ce problème avant impression (contactez l'administrateur).</p>\n";
+		echo "<p>ATTENTION&nbsp;: certains Ã©lÃ¨ves de cette classe n'ont pas de CPE responsable attribuÃ©. Cela gÃ©nÃ¨rera un message d'erreur sur la page d'Ã©dition des bulletins. Il faut corriger ce problÃ¨me avant impression (contactez l'administrateur).</p>\n";
 	}
 
 	$sql_classe="SELECT * FROM `classes`WHERE id=$id_classe";
 	$call_classe=mysql_query($sql_classe);
 	$nom_classe=mysql_result($call_classe,0,"classe");
 
-	//echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période&nbsp;: </b></p><br />\n";
-	echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période et les points à vérifier: </b></p><br />\n";
+	//echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la pÃ©riode&nbsp;: </b></p><br />\n";
+	echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la pÃ©riode et les points Ã  vÃ©rifier: </b></p><br />\n";
 	include "../lib/periodes.inc.php";
 
 
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
-	echo "<th rowspan='2'>Vérifier</th>\n";
+	echo "<th rowspan='2'>VÃ©rifier</th>\n";
 	$i=1;
 	while ($i < $nb_periode) {
 		echo "<th>".ucfirst($nom_periode[$i])."</th>\n";
@@ -252,17 +252,17 @@ if (!(isset($id_classe))) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	//echo "<th>Vérifier</th>\n";
+	//echo "<th>VÃ©rifier</th>\n";
 	$i=1;
 	while ($i < $nb_periode) {
 		echo "<th>";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+			echo " (pÃ©riode partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
 		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+			echo " (pÃ©riode entiÃ¨rement close, plus aucune saisie/modification n'est possible)\n";
 		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+			echo " (pÃ©riode ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
 		echo "</th>\n";
@@ -275,11 +275,11 @@ if (!(isset($id_classe))) {
 	while ($i < $nb_periode) {
 		echo "<p><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i'>".ucfirst($nom_periode[$i])."</a>\n";
 		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+			echo " (pÃ©riode partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
 		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+			echo " (pÃ©riode entiÃ¨rement close, plus aucune saisie/modification n'est possible)\n";
 		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+			echo " (pÃ©riode ouverte, les saisies/modifications sont possibles)\n";
 		}
 		//echo "<p>\n";
 		echo "</p>\n";
@@ -290,7 +290,7 @@ if (!(isset($id_classe))) {
 	$alt=1;
 	$i="1";
 	echo "<tr class='lig$alt white_hover'>\n";
-	echo "<th>Notes et appréciations</th>\n";
+	echo "<th>Notes et apprÃ©ciations</th>\n";
 	while ($i < $nb_periode) {
 
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=note_app'>";
@@ -299,11 +299,11 @@ if (!(isset($id_classe))) {
 		echo "<br />\n";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+			echo " (pÃ©riode partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
 		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+			echo " (pÃ©riode entiÃ¨rement close, plus aucune saisie/modification n'est possible)\n";
 		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+			echo " (pÃ©riode ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
 		*/
@@ -324,11 +324,11 @@ if (!(isset($id_classe))) {
 		echo "<br />\n";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+			echo " (pÃ©riode partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
 		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+			echo " (pÃ©riode entiÃ¨rement close, plus aucune saisie/modification n'est possible)\n";
 		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+			echo " (pÃ©riode ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
 		*/
@@ -349,11 +349,11 @@ if (!(isset($id_classe))) {
 		echo "<br />\n";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+			echo " (pÃ©riode partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
 		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+			echo " (pÃ©riode entiÃ¨rement close, plus aucune saisie/modification n'est possible)\n";
 		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+			echo " (pÃ©riode ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
 		*/
@@ -376,11 +376,11 @@ if (!(isset($id_classe))) {
 			echo "<br />\n";
 			echo "<span style='font-size:x-small;'>";
 			if ($ver_periode[$i] == "P")  {
-				echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+				echo " (pÃ©riode partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
 			} else if ($ver_periode[$i] == "O")  {
-				echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+				echo " (pÃ©riode entiÃ¨rement close, plus aucune saisie/modification n'est possible)\n";
 			} else {
-				echo " (période ouverte, les saisies/modifications sont possibles)\n";
+				echo " (pÃ©riode ouverte, les saisies/modifications sont possibles)\n";
 			}
 			echo "</span>\n";
 			*/
@@ -402,11 +402,11 @@ if (!(isset($id_classe))) {
 		echo "<br />\n";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+			echo " (pÃ©riode partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
 		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+			echo " (pÃ©riode entiÃ¨rement close, plus aucune saisie/modification n'est possible)\n";
 		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+			echo " (pÃ©riode ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
 		*/
@@ -419,7 +419,7 @@ if (!(isset($id_classe))) {
 		$alt=$alt*(-1);
         $i="1";
         echo "<tr class='lig$alt'>\n";
-        echo "<th>Crédits ECTS</th>\n";
+        echo "<th>CrÃ©dits ECTS</th>\n";
         while ($i < $nb_periode) {
 
             echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=ects'>";
@@ -445,7 +445,7 @@ if (!(isset($id_classe))) {
 
 
 	// ===========================================
-	// Ajout lien classe précédente / classe suivante
+	// Ajout lien classe prÃ©cÃ©dente / classe suivante
 	//if($_SESSION['statut']=='scolarite') {
 		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	/*
@@ -492,7 +492,7 @@ if (!(isset($id_classe))) {
 	}
 	// =================================
 	if(isset($id_class_prec)) {
-		if($id_class_prec!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode'>Classe précédente</a>\n";}
+		if($id_class_prec!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode'>Classe prÃ©cÃ©dente</a>\n";}
 	}
 	if($chaine_options_classes!="") {
 		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
@@ -510,11 +510,11 @@ if (!(isset($id_classe))) {
 	}
 	
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
-		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+		echo " | <a href='param_bull.php'>ParamÃ©trage des bulletins</a>";
 	}
 
 	echo "</form>\n";
-	//fin ajout lien classe précédente / classe suivante
+	//fin ajout lien classe prÃ©cÃ©dente / classe suivante
 	// ===========================================
 
 
@@ -522,55 +522,55 @@ if (!(isset($id_classe))) {
 	$bulletin_rempli = 'yes';
 	$call_classe = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = mysql_result($call_classe, "0", "classe");
-	echo "<p>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</p>";
+	echo "<p>Classe&nbsp;: $classe - $nom_periode[$per] - AnnÃ©e scolaire&nbsp;: ".getSettingValue("gepiYear")."</p>";
 
 	//
-	// Vérification de paramètres généraux
+	// VÃ©rification de paramÃ¨tres gÃ©nÃ©raux
 	//
 	$current_classe_nom_complet = mysql_result($call_classe, 0, "nom_complet");
 	if ($current_classe_nom_complet == '') {
 		$bulletin_rempli = 'no';
-		echo "<p>Le nom long de la classe n'est pas défini !</p>\n";
+		echo "<p>Le nom long de la classe n'est pas dÃ©fini !</p>\n";
 	}
 	$current_classe_suivi_par = mysql_result($call_classe, 0, "suivi_par");
 	if ($current_classe_suivi_par == '') {
 		$bulletin_rempli = 'no';
-		echo "<p>La personne de l'administration chargée de la classe n'est pas définie !</p>\n";
+		echo "<p>La personne de l'administration chargÃ©e de la classe n'est pas dÃ©finie !</p>\n";
 	}
 	$current_classe_formule = mysql_result($call_classe, 0, "formule");
 	if ($current_classe_formule == '') {
 		$bulletin_rempli = 'no';
-		echo "<p>La formule à la fin de chaque bulletin n'est pas définie !</p>\n";
+		echo "<p>La formule Ã  la fin de chaque bulletin n'est pas dÃ©finie !</p>\n";
 	}
 	$appel_donnees_eleves = mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login and j.periode='$per') ORDER BY login");
 	$nb_eleves = mysql_num_rows($appel_donnees_eleves);
 	$j = 0;
 	//
-	//Début de la boucle élève
+	//DÃ©but de la boucle Ã©lÃ¨ve
 	//
 
 	switch($mode) {
 		case 'note_app':
-			echo "<p class='bold'>Vérification du remplissage des moyennes et appréciations&nbsp;:</p>\n";
+			echo "<p class='bold'>VÃ©rification du remplissage des moyennes et apprÃ©ciations&nbsp;:</p>\n";
 			break;
 		case 'avis':
-			echo "<p class='bold'>Vérification du remplissage des avis du conseil de classe&nbsp;:</p>\n";
+			echo "<p class='bold'>VÃ©rification du remplissage des avis du conseil de classe&nbsp;:</p>\n";
 			break;
 		case 'abs':
-			echo "<p class='bold'>Vérification du remplissage des absences&nbsp;:</p>\n";
+			echo "<p class='bold'>VÃ©rification du remplissage des absences&nbsp;:</p>\n";
 			break;
 		case 'ects':
-			echo "<p class='bold'>Vérification du remplissage des crédits ECTS&nbsp;:</p>\n";
+			echo "<p class='bold'>VÃ©rification du remplissage des crÃ©dits ECTS&nbsp;:</p>\n";
 			break;
 		case 'tout_sauf_avis':
-			echo "<p class='bold'>Vérification du remplissage des moyennes, appréciations et absences&nbsp;:</p>\n";
+			echo "<p class='bold'>VÃ©rification du remplissage des moyennes, apprÃ©ciations et absences&nbsp;:</p>\n";
 			break;
 		case 'tout':
-			echo "<p class='bold'>Vérification du remplissage des moyennes, appréciations, absences et avis du conseil de classe&nbsp;:</p>\n";
+			echo "<p class='bold'>VÃ©rification du remplissage des moyennes, apprÃ©ciations, absences et avis du conseil de classe&nbsp;:</p>\n";
 			break;
 	}
 
-	// Tableau pour stocker les infos à envoyer aux profs à propos des notes/app non remplies
+	// Tableau pour stocker les infos Ã  envoyer aux profs Ã  propos des notes/app non remplies
 	$tab_alerte_prof=array();
 
 	// Affichage sur 3 colonnes
@@ -590,7 +590,7 @@ if (!(isset($id_classe))) {
 	$temoin_aid=0;
 	$temoin_abs=0;
     $temoin_ects=0;
-    $temoin_has_ects = false; // Ce témoin sert dans les cas où en réalité aucun élève ne suit d'enseignement ouvrant droit à ECTS.
+    $temoin_has_ects = false; // Ce tÃ©moin sert dans les cas oÃ¹ en rÃ©alitÃ© aucun Ã©lÃ¨ve ne suit d'enseignement ouvrant droit Ã  ECTS.
 	while($j < $nb_eleves) {
 
 		//affichage 2 colonnes
@@ -610,15 +610,15 @@ if (!(isset($id_classe))) {
 			$groupeinfo = mysql_query("SELECT DISTINCT id_groupe FROM j_eleves_groupes WHERE login='" . $id_eleve[$j] ."'");
 			$lignes_groupes = mysql_num_rows($groupeinfo);
 			//
-			//Vérification des appréciations
+			//VÃ©rification des apprÃ©ciations
 			//
 
 			$i= 0;
 			//
-			//Début de la boucle matière
+			//DÃ©but de la boucle matiÃ¨re
 			//
 
-			// Variable remontée hors du test sur $mode
+			// Variable remontÃ©e hors du test sur $mode
 			//$affiche_nom = 1;
 			$affiche_mess_app = 1;
 			$affiche_mess_note = 1;
@@ -626,9 +626,9 @@ if (!(isset($id_classe))) {
 				$group_id = mysql_result($groupeinfo, $i, "id_groupe");
 				$current_group = get_group($group_id);
 
-				if (in_array($id_eleve[$j], $current_group["eleves"][$per]["list"])) { // Si l'élève suit cet enseignement pour la période considérée
+				if (in_array($id_eleve[$j], $current_group["eleves"][$per]["list"])) { // Si l'Ã©lÃ¨ve suit cet enseignement pour la pÃ©riode considÃ©rÃ©e
 					//
-					//Vérification des appréciations :
+					//VÃ©rification des apprÃ©ciations :
 					//
 					$test_app = mysql_query("SELECT * FROM matieres_appreciations WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per')");
 					//$app = @mysql_result($test_app, 0, 'appreciation');
@@ -644,13 +644,13 @@ if (!(isset($id_classe))) {
 						}
 						if ($affiche_mess_app != 0) {
 							echo "<br /><br />\n";
-							echo "<b>Appréciations non remplies</b> pour les matières suivantes&nbsp;: \n";
+							echo "<b>ApprÃ©ciations non remplies</b> pour les matiÃ¨res suivantes&nbsp;: \n";
 						}
 						$affiche_nom = 0;
 						$affiche_mess_app = 0;
 						//============================================
 						// MODIF: boireaus
-						// Pour les matières comme Histoire & Géo,...
+						// Pour les matiÃ¨res comme Histoire & GÃ©o,...
 						//echo "<br />--> " . $current_group["description"] . " (" . $current_group["classlist_string"] . ")  --  (";
 						echo "<br />--> " . htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ")  --  (";
 						//============================================
@@ -701,19 +701,19 @@ if (!(isset($id_classe))) {
 			}
 
 			//
-			//Vérification des moyennes
+			//VÃ©rification des moyennes
 			//
 			$i= 0;
 			//
-			//Début de la boucle matière
+			//DÃ©but de la boucle matiÃ¨re
 			//
 			while($i < $lignes_groupes) {
 				$group_id = mysql_result($groupeinfo, $i, "id_groupe");
 				$current_group = get_group($group_id);
 
-				if (in_array($id_eleve[$j], $current_group["eleves"][$per]["list"])) { // Si l'élève suit cet enseignement pour la période considérée
+				if (in_array($id_eleve[$j], $current_group["eleves"][$per]["list"])) { // Si l'Ã©lÃ¨ve suit cet enseignement pour la pÃ©riode considÃ©rÃ©e
 					//
-					//Vérification des moyennes :
+					//VÃ©rification des moyennes :
 					//
 					$test_notes = mysql_query("SELECT * FROM matieres_notes WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per')");
 					//$note = @mysql_result($test_notes, 0, 'note');
@@ -728,12 +728,12 @@ if (!(isset($id_classe))) {
 							//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span> :";
 							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 						}
-						if ($affiche_mess_note != 0) {echo "<br /><br /><b>Moyennes non remplies</b> pour les matières suivantes&nbsp;: ";}
+						if ($affiche_mess_note != 0) {echo "<br /><br /><b>Moyennes non remplies</b> pour les matiÃ¨res suivantes&nbsp;: ";}
 						$affiche_nom = 0;
 						$affiche_mess_note = 0;
 						//============================================
 						// MODIF: boireaus
-						// Pour les matières comme Histoire & Géo,...
+						// Pour les matiÃ¨res comme Histoire & GÃ©o,...
 						//echo "<br />--> " . $current_group["description"] . " (" . $current_group["classlist_string"] . ")  --  (";
 						echo "<br />--> ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")  --   (";
 						//============================================
@@ -782,14 +782,14 @@ if (!(isset($id_classe))) {
 					}
 				}
 				$i++;
-			//Fin de la boucle matière
+			//Fin de la boucle matiÃ¨re
 			}
 		}
 
 
 		if(($mode=="avis")||($mode=="tout")) {
 			//
-			//Vérification des avis des conseils de classe
+			//VÃ©rification des avis des conseils de classe
 			//
 			$query_conseil = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login = '$id_eleve[$j]' and periode = '$per')");
 			//$avis = @mysql_result($query_conseil, 0, 'avis');
@@ -838,7 +838,7 @@ if (!(isset($id_classe))) {
 
 		if(($mode=="note_app")||($mode=="tout")||($mode=="tout_sauf_avis")) {
 			//
-			//Vérification des aid
+			//VÃ©rification des aid
 			//
 			$call_data = mysql_query("SELECT * FROM aid_config WHERE display_bulletin!='n' ORDER BY nom");
 			$nb_aid = mysql_num_rows($call_data);
@@ -858,7 +858,7 @@ if (!(isset($id_classe))) {
 						$query_resp = mysql_query("SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid = '$aid_id' and u.login = j.id_utilisateur and j.indice_aid='$indice_aid')");
 						$nb_prof = mysql_num_rows($query_resp);
 						//
-						// Vérification des appréciations
+						// VÃ©rification des apprÃ©ciations
 						//
 						$aid_app = @mysql_result($aid_app_query, 0, "appreciation");
 						if ($aid_app == '') {
@@ -871,7 +871,7 @@ if (!(isset($id_classe))) {
 								echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 							}
 							echo "<br /><br />\n";
-							echo "<b>Appréciation $nom_aid </b> non remplie (";
+							echo "<b>ApprÃ©ciation $nom_aid </b> non remplie (";
 							$m=0;
 							$virgule = 1;
 							while ($m < $nb_prof) {
@@ -899,7 +899,7 @@ if (!(isset($id_classe))) {
 							$temoin_aid++;
 						}
 						//
-						// Vérification des moyennes
+						// VÃ©rification des moyennes
 						//
 						$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 						$periode_max = mysql_num_rows($periode_query);
@@ -955,7 +955,7 @@ if (!(isset($id_classe))) {
 
 		if(($mode=="abs")||($mode=="tout")||($mode=="tout_sauf_avis")) {
 			//
-			//Vérification des absences
+			//VÃ©rification des absences
 			//
 			$abs_query = mysql_query("SELECT * FROM absences WHERE (login='$id_eleve[$j]' AND periode='$per')");
 			$abs1 = @mysql_result($abs_query, 0, "nb_absences");
@@ -1005,10 +1005,10 @@ if (!(isset($id_classe))) {
 
 		if($gepiSettings['active_mod_ects'] == 'y' && (($mode=="ects")||($mode=="tout")||($mode=="tout_sauf_avis"))) {
 			//
-			//Vérification des ECTS
+			//VÃ©rification des ECTS
 			//
 
-            // On commence par regarder si l'élève a des groupes qui ouvrent droit à des ECTS.
+            // On commence par regarder si l'Ã©lÃ¨ve a des groupes qui ouvrent droit Ã  des ECTS.
             $query_groupes_ects = mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.saisie_ects = '1' AND jgc.id_classe = '$id_classe' AND jgc.id_groupe = jeg.id_groupe AND jeg.login = '".$id_eleve[$j]."' AND jeg.periode = '$per'");
             if (mysql_num_rows($query_groupes_ects) > 0) {
                 $temoin_has_ects = true;
@@ -1020,9 +1020,9 @@ if (!(isset($id_classe))) {
                         echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]</span>";
                     }
                     echo "<br /><br />\n";
-                    echo "<b>Crédits ECTS</b> non remplis !";
+                    echo "<b>CrÃ©dits ECTS</b> non remplis !";
 
-                    // On récupère le prof principal, si celui-ci est autorisé à saisir les ECTS
+                    // On rÃ©cupÃ¨re le prof principal, si celui-ci est autorisÃ© Ã  saisir les ECTS
                     if ($gepiSettings['GepiAccesSaisieEctsPP'] == 'yes') {
                         $call_prof = mysql_query("SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login = '$id_eleve[$j]' and j.id_classe='$id_classe' and u.login=j.professeur)");
                         $nb_result = mysql_num_rows($call_prof);
@@ -1053,7 +1053,7 @@ if (!(isset($id_classe))) {
 		}
 
 		$j++;
-		//Fin de la boucle élève
+		//Fin de la boucle Ã©lÃ¨ve
 
 		$cpt_i++;
 
@@ -1070,7 +1070,7 @@ if (!(isset($id_classe))) {
 		$num=0;
 
 		//echo "<div style='border: 1px solid black'>";
-		echo "<p class='bold'>Récapitulatif&nbsp;:</p>\n";
+		echo "<p class='bold'>RÃ©capitulatif&nbsp;:</p>\n";
 		echo "<table class='boireaus' summary=\"Courriels\">\n";
 		$alt=1;
 
@@ -1080,10 +1080,10 @@ if (!(isset($id_classe))) {
 
 			$info_prof=$tab_alerte_prof[$login_prof]['civilite']." ".casse_mot($tab_alerte_prof[$login_prof]['nom'],'maj')." ".casse_mot($tab_alerte_prof[$login_prof]['prenom'],'majf2');
 
-			$message="Bonjour(soir) ".$info_prof.",\n\nDes moyennes et/ou appréciations ne sont pas remplies:\n";
+			$message="Bonjour(soir) ".$info_prof.",\n\nDes moyennes et/ou apprÃ©ciations ne sont pas remplies:\n";
 			foreach($tab_prof['groupe'] as $group_id => $tab_group) {
 				if(isset($tab_group['app_manquante'])) {
-					$message.="Appréciation(s) manquante(s) en ".$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']." pour ";
+					$message.="ApprÃ©ciation(s) manquante(s) en ".$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']." pour ";
 					//echo count($tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante']);
 					for($loop=0;$loop<count($tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante']);$loop++) {
 						if($loop>0) {$message.=", ";}
@@ -1105,7 +1105,7 @@ if (!(isset($id_classe))) {
 
 			}
 
-			$message.="\nLorsqu'un élève n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.\nEn revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problème d'affectation d'élèves.\n";
+			$message.="\nLorsqu'un Ã©lÃ¨ve n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.\nEn revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problÃ¨me d'affectation d'Ã©lÃ¨ves.\n";
 
 			$message.="\nJe vous serais reconnaissant(e) de bien vouloir les remplir rapidement.\n\nD'avance merci.\n-- \n".civ_nom_prenom($_SESSION['login']);
 
@@ -1141,7 +1141,7 @@ if (!(isset($id_classe))) {
 						break;
 					}
 				}
-				echo "<a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>Autoriser exceptionnellement la proposition de saisie bien que la période soit partiellement close.</a>";
+				echo "<a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>Autoriser exceptionnellement la proposition de saisie bien que la pÃ©riode soit partiellement close.</a>";
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
@@ -1186,27 +1186,27 @@ if (!(isset($id_classe))) {
 
 	//if ($bulletin_rempli == 'yes') {
 	if (($bulletin_rempli == 'yes')&&(($mode=='tout')||($mode=='tout_sauf_avis'))) {
-		echo "<p class='bold'>Toutes les rubriques des bulletins de cette classe ont été renseignées, vous pouvez procéder à l'impression finale.</p>\n";
-		echo "<ul><li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=rien'>cliquant ici.</a></p></li>\n";
-		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=retour'>cliquant ici.</a> puis revenir à la page outil de vérification.</p></li>\n";
-		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_bull'>cliquant ici.</a> puis aller à la page impression des bulletins.</p></li>\n";
-		//echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_html'>cliquant ici.</a> puis aller à la page impression des bulletins HTML.</p></li>\n";
-		//echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller à la page impression des bulletins PDF.</p></li></ul>\n";
+		echo "<p class='bold'>Toutes les rubriques des bulletins de cette classe ont Ã©tÃ© renseignÃ©es, vous pouvez procÃ©der Ã  l'impression finale.</p>\n";
+		echo "<ul><li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=rien'>cliquant ici.</a></p></li>\n";
+		echo "<li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=retour'>cliquant ici.</a> puis revenir Ã  la page outil de vÃ©rification.</p></li>\n";
+		echo "<li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_bull'>cliquant ici.</a> puis aller Ã  la page impression des bulletins.</p></li>\n";
+		//echo "<li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_html'>cliquant ici.</a> puis aller Ã  la page impression des bulletins HTML.</p></li>\n";
+		//echo "<li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller Ã  la page impression des bulletins PDF.</p></li></ul>\n";
 	} elseif(($temoin_note_app==0)&&($temoin_aid==0)&&($mode=='note_app')) {
-		echo "<p class='bold'>Toutes les moyennes et appréciations des bulletins de cette classe ont été renseignées.</p>\n";
+		echo "<p class='bold'>Toutes les moyennes et apprÃ©ciations des bulletins de cette classe ont Ã©tÃ© renseignÃ©es.</p>\n";
 	} elseif(($temoin_avis==0)&&($mode=='avis')) {
-		echo "<p class='bold'>Tous les avis de conseil de classe des bulletins de cette classe ont été renseignés.</p>\n";
+		echo "<p class='bold'>Tous les avis de conseil de classe des bulletins de cette classe ont Ã©tÃ© renseignÃ©s.</p>\n";
 	} elseif(($temoin_abs==0)&&($mode=='abs')) {
-		echo "<p class='bold'>Toutes les absences et retards des bulletins de cette classe ont été renseignés.</p>\n";
+		echo "<p class='bold'>Toutes les absences et retards des bulletins de cette classe ont Ã©tÃ© renseignÃ©s.</p>\n";
     }elseif ($gepiSettings['active_mod_ects'] == 'y' && $temoin_ects == 0 && $mode=='ects' && $temoin_has_ects) {
-        echo "<p class='bold'>Tous les crédits ECTS de cette classe ont été renseignés.</p>\n";
+        echo "<p class='bold'>Tous les crÃ©dits ECTS de cette classe ont Ã©tÃ© renseignÃ©s.</p>\n";
 	} else{
-		echo "<br /><p class='bold'>*** Fin des vérifications. ***</p>\n";
+		echo "<br /><p class='bold'>*** Fin des vÃ©rifications. ***</p>\n";
 		/*
-		echo "<ul><li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=rien'>cliquant ici.</a></p></li>";
-		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=retour'>cliquant ici.</a> puis revenir à la page outil de vérification.</p></li>";
-		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_html'>cliquant ici.</a> puis aller à la page impression des bulletins HTML.</p></li>";
-		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller à la page impression des bulletins PDF.</p></li></ul>";
+		echo "<ul><li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=rien'>cliquant ici.</a></p></li>";
+		echo "<li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=retour'>cliquant ici.</a> puis revenir Ã  la page outil de vÃ©rification.</p></li>";
+		echo "<li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_html'>cliquant ici.</a> puis aller Ã  la page impression des bulletins HTML.</p></li>";
+		echo "<li><p class='bold'>AccÃ©der directement au verrouillage de la pÃ©riode en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller Ã  la page impression des bulletins PDF.</p></li></ul>";
 			*/
 	}
 }

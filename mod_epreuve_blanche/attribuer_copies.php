@@ -55,7 +55,7 @@ $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -74,7 +74,7 @@ if(isset($_POST['valide_affect_eleves'])) {
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
+		$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
 	else {
 		$lig=mysql_fetch_object($res);
@@ -89,12 +89,12 @@ if(isset($_POST['valide_affect_eleves'])) {
 			for($i=0;$i<count($login_ele);$i++) {
 				$sql="UPDATE eb_copies SET login_prof='$id_prof_ele[$i]' WHERE id_epreuve='$id_epreuve' AND login_ele='$login_ele[$i]'";
 				$update=mysql_query($sql);
-				if(!$update) {$msg.="Erreur lors de l'attribution de la copie de '$login_ele[$i]' à '$login_prof[$i]'.<br />";}
+				if(!$update) {$msg.="Erreur lors de l'attribution de la copie de '$login_ele[$i]' Ã  '$login_prof[$i]'.<br />";}
 			}
-			if((count($login_ele)>0)&&($msg=="")) {$msg="Attribution des copies enregistrée.";}
+			if((count($login_ele)>0)&&($msg=="")) {$msg="Attribution des copies enregistrÃ©e.";}
 		}
 		else {
-			$msg="L'épreuve choisie (<i>$id_epreuve</i>) est close.\n";
+			$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) est close.\n";
 		}
 	}
 }
@@ -102,7 +102,7 @@ if(isset($_POST['valide_affect_eleves'])) {
 include('lib_eb.php');
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Attribution des copies";
 //echo "<div class='noprint'>\n";
@@ -122,11 +122,11 @@ echo "</p>\n";
 
 //==================================================================
 
-echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
+echo "<p class='bold'>Epreuve nÂ°$id_epreuve</p>\n";
 $sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
+	echo "<p>L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -180,7 +180,7 @@ if(($tri=='salle')&&($pas_de_salle=="y")) {
 	$tri='groupe';
 }
 
-echo "<p class='bold'>Trier les élèves par&nbsp;:</p>\n";
+echo "<p class='bold'>Trier les Ã©lÃ¨ves par&nbsp;:</p>\n";
 echo "<ul>\n";
 if($pas_de_salle=="y") {
 	echo "<li>Aucune salle n'est encore choisie</li>\n";
@@ -206,7 +206,7 @@ if($tri=='groupe') {
 	$sql="SELECT DISTINCT g.* FROM eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name, g.description;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucune groupe n'est encore associé à l'épreuve.</p>\n";
+		echo "<p>Aucune groupe n'est encore associÃ© Ã  l'Ã©preuve.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -246,9 +246,9 @@ if($tri=='groupe') {
 			$tab_ele_prof[$lig2->login_ele]=$lig2->login_prof;
 		}
 
-		echo "<table class='boireaus' summary='Choix des élèves du groupe $lig->id'>\n";
+		echo "<table class='boireaus' summary='Choix des Ã©lÃ¨ves du groupe $lig->id'>\n";
 		echo "<tr>\n";
-		echo "<th>Elèves</th>\n";
+		echo "<th>ElÃ¨ves</th>\n";
 		echo "<th>Classes</th>\n";
 		for($i=0;$i<count($info_prof);$i++) {
 			echo "<th>\n";
@@ -268,23 +268,23 @@ if($tri=='groupe') {
 			echo "<br />\n";
 			// coche(colonne,rang_groupe,mode)
 			//echo "<a href='javascript:coche($i,$compteur_groupe,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			//echo "<a href='javascript:coche($i,$compteur_groupe,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			//echo "<a href='javascript:coche($i,$compteur_groupe,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 
 			echo "</th>\n";
 		}
 		echo "<th>\n";
 		if($etat!='clos') {
 			echo "<a href='javascript:coche($i,$compteur_groupe,true)'>\n";
-			echo "Non affecté";
+			echo "Non affectÃ©";
 			echo "</a>\n";
 		}
 		else {
-			echo "Non affecté";
+			echo "Non affectÃ©";
 		}
 		echo "<br />\n";
 		// coche(colonne,rang_groupe,mode)
 		//echo "<a href='javascript:coche($i,$compteur_groupe,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-		//echo "<a href='javascript:coche($i,$compteur_groupe,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		//echo "<a href='javascript:coche($i,$compteur_groupe,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 		echo "</th>\n";
 		echo "</tr>\n";
 
@@ -330,7 +330,7 @@ if($tri=='groupe') {
 				else {
 					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
 					echo "onchange='calcule_effectif();changement();' ";
-					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les Ã©lÃ¨ves du groupe (toutes pÃ©riodes confondues)... Ã  amÃ©liorer
 					if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "checked ";$affect="y";}
 					echo "/>\n";
 				}
@@ -464,7 +464,7 @@ elseif($tri=='salle') {
 	$sql="SELECT DISTINCT es.* FROM eb_salles es WHERE id_epreuve='$id_epreuve' ORDER BY es.salle;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucune salle n'est encore associée à l'épreuve.</p>\n";
+		echo "<p>Aucune salle n'est encore associÃ©e Ã  l'Ã©preuve.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -489,9 +489,9 @@ elseif($tri=='salle') {
 		echo "<blockquote>\n";
 
 		//echo "\$cpt=$cpt<br />";
-		echo "<table class='boireaus' summary='Elèves de la salle $lig->id'>\n";
+		echo "<table class='boireaus' summary='ElÃ¨ves de la salle $lig->id'>\n";
 		echo "<tr>\n";
-		echo "<th>Elèves</th>\n";
+		echo "<th>ElÃ¨ves</th>\n";
 		echo "<th>Classes</th>\n";
 		for($i=0;$i<count($info_prof);$i++) {
 			echo "<th>\n";
@@ -512,11 +512,11 @@ elseif($tri=='salle') {
 		echo "<th>\n";
 		if($etat!='clos') {
 			echo "<a href='javascript:coche($i,$compteur_salle,true)'>\n";
-			echo "Non affecté";
+			echo "Non affectÃ©";
 			echo "</a>\n";
 		}
 		else {
-			echo "Non affecté";
+			echo "Non affectÃ©";
 		}
 		echo "</th>\n";
 		echo "</tr>\n";
@@ -564,13 +564,13 @@ elseif($tri=='salle') {
 				echo "<td>\n";
 
 				if((isset($tab_ele_prof_habituel[$login_ele]))&&($tab_ele_prof_habituel[$login_ele]==$login_prof[$i])) {
-					echo "<div style='float:right; width:17px;'><img src='../images/icons/flag.png' width='17' height='18' title='Professeur habituel de cet élève' alt='Professeur habituel de cet élève' /></div>\n";
+					echo "<div style='float:right; width:17px;'><img src='../images/icons/flag.png' width='17' height='18' title='Professeur habituel de cet Ã©lÃ¨ve' alt='Professeur habituel de cet Ã©lÃ¨ve' /></div>\n";
 				}
 
 				if($etat!='clos') {
 					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
 					echo "onchange='calcule_effectif();changement();' ";
-					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les Ã©lÃ¨ves du groupe (toutes pÃ©riodes confondues)... Ã  amÃ©liorer
 					if($lig2->login_prof==$login_prof[$i]) {echo "checked ";$affect="y";}
 					echo "/>\n";
 				}
@@ -604,7 +604,7 @@ elseif($tri=='salle') {
 	}
 
 	$compteur_salle++;
-	$tab_salle[]="Non affecté";
+	$tab_salle[]="Non affectÃ©";
 	$tab_id_salle[]='na';
 
 	$sql="SELECT ec.*, e.nom, e.prenom FROM eb_copies ec,eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login AND ec.id_salle='-1' ORDER BY e.nom,e.prenom;";
@@ -612,16 +612,16 @@ elseif($tri=='salle') {
 	$res2=mysql_query($sql);
 
 	if(mysql_num_rows($res2)==0) {
-		echo "<p>Tous les élèves sont affectés dans des salles.</p>\n";
+		echo "<p>Tous les Ã©lÃ¨ves sont affectÃ©s dans des salles.</p>\n";
 	}
 	else {
-		echo "<p>Elèves <b>non affectés</b> dans une salle&nbsp;:</p>\n";
+		echo "<p>ElÃ¨ves <b>non affectÃ©s</b> dans une salle&nbsp;:</p>\n";
 		echo "<blockquote>\n";
 	
 		//echo "\$cpt=$cpt<br />";
-		echo "<table class='boireaus' summary='Elèves non affectés'>\n";
+		echo "<table class='boireaus' summary='ElÃ¨ves non affectÃ©s'>\n";
 		echo "<tr>\n";
-		echo "<th>Elèves</th>\n";
+		echo "<th>ElÃ¨ves</th>\n";
 		echo "<th>Classes</th>\n";
 		for($i=0;$i<count($info_prof);$i++) {
 			echo "<th>\n";
@@ -638,11 +638,11 @@ elseif($tri=='salle') {
 		echo "<th>\n";
 		if($etat!='clos') {
 			echo "<a href='javascript:coche($i,$compteur_salle,true)'>\n";
-			echo "Non affecté";
+			echo "Non affectÃ©";
 			echo "</a>\n";
 		}
 		else {
-			echo "Non affecté";
+			echo "Non affectÃ©";
 		}
 		echo "</th>\n";
 		echo "</tr>\n";
@@ -687,7 +687,7 @@ elseif($tri=='salle') {
 				if($etat!='clos') {
 					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
 					echo "onchange='calcule_effectif();changement();' ";
-					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les Ã©lÃ¨ves du groupe (toutes pÃ©riodes confondues)... Ã  amÃ©liorer
 					if($lig2->login_prof==$login_prof[$i]) {echo "checked ";$affect="y";}
 					echo "/>\n";
 				}

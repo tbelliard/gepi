@@ -39,7 +39,7 @@ if (!checkAccess()) {
     die();
 }
 $error_login = false;
-// Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
+// Quelques filtrages de dÃ©part pour prÃ©-initialiser la variable qui nous importe ici : $login_eleve
 $login_eleve = isset($_GET['login_eleve']) ? $_GET['login_eleve'] : (isset($_POST['login_eleve']) ? $_POST["login_eleve"] : null);
 if ($_SESSION['statut'] == "responsable") {
 	$get_eleves = mysql_query("SELECT e.login " .
@@ -50,23 +50,23 @@ if ($_SESSION['statut'] == "responsable") {
 			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 
 	if (mysql_num_rows($get_eleves) == 1) {
-		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
+		// Un seul Ã©lÃ¨ve associÃ© : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
 	} elseif (mysql_num_rows($get_eleves) == 0) {
 		$error_login = true;
 	}
-	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter le formulaire.
+	// Si le nombre d'Ã©lÃ¨ves associÃ©s est supÃ©rieur Ã  1, alors soit $login_eleve a Ã©tÃ© dÃ©jÃ  dÃ©fini, soit il faut prÃ©senter le formulaire.
 
 } else if ($_SESSION['statut'] == "eleve") {
-	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
+	// Si l'utilisateur identifiÃ© est un Ã©lÃ¨ve, pas le choix, il ne peut consulter que son Ã©quipe pÃ©dagogique
 	if ($login_eleve != null and (strtoupper($login_eleve) != strtoupper($_SESSION['login']))) {
-		tentative_intrusion(2, "Tentative d'un élève d'accéder à l'équipe pédagogique d'un autre élève.");
+		tentative_intrusion(2, "Tentative d'un Ã©lÃ¨ve d'accÃ©der Ã  l'Ã©quipe pÃ©dagogique d'un autre Ã©lÃ¨ve.");
 	}
 	$login_eleve = $_SESSION['login'];
 }
 
 //**************** EN-TETE **************************************
-$titre_page = "Equipe pédagogique";
+$titre_page = "Equipe pÃ©dagogique";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
@@ -74,9 +74,9 @@ echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 
-// Quelques vérifications de droits d'accès.
+// Quelques vÃ©rifications de droits d'accÃ¨s.
 if ($_SESSION['statut'] == "responsable" and $error_login == true) {
-	echo "<p>Il semble que vous ne soyez associé à aucun élève. Contactez l'administrateur pour résoudre cette erreur.</p>";
+	echo "<p>Il semble que vous ne soyez associÃ© Ã  aucun Ã©lÃ¨ve. Contactez l'administrateur pour rÃ©soudre cette erreur.</p>";
 	require "../lib/footer.inc.php";
 	die();
 }
@@ -86,13 +86,13 @@ if (
 	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEleve") != "yes") OR
 	($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
 	) {
-	tentative_intrusion(1, "Tentative d'accès à l'équipe pédagogique sans y être autorisé.");
-	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+	tentative_intrusion(1, "Tentative d'accÃ¨s Ã  l'Ã©quipe pÃ©dagogique sans y Ãªtre autorisÃ©.");
+	echo "<p>Vous n'Ãªtes pas autorisÃ© Ã  visualiser cette page.</p>";
 	require "../lib/footer.inc.php";
 	die();
 }
 
-// Et une autre vérification de sécurité : est-ce que si on a un statut 'responsable' le $login_eleve est bien un élève dont le responsable a la responsabilité
+// Et une autre vÃ©rification de sÃ©curitÃ© : est-ce que si on a un statut 'responsable' le $login_eleve est bien un Ã©lÃ¨ve dont le responsable a la responsabilitÃ©
 if ($login_eleve != null and $_SESSION['statut'] == "responsable") {
 	$test = mysql_query("SELECT count(e.login) " .
 			"FROM eleves e, responsables2 re, resp_pers r " .
@@ -102,18 +102,18 @@ if ($login_eleve != null and $_SESSION['statut'] == "responsable") {
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2'))");
 	if (mysql_result($test, 0) == 0) {
-	    tentative_intrusion(2, "Tentative par un parent d'accéder à l'équipe pédagogique d'un élève dont il n'est pas responsable légal.");
-	    echo "Vous ne pouvez visualiser que les relevés de notes des élèves pour lesquels vous êtes responsable légal.\n";
+	    tentative_intrusion(2, "Tentative par un parent d'accÃ©der Ã  l'Ã©quipe pÃ©dagogique d'un Ã©lÃ¨ve dont il n'est pas responsable lÃ©gal.");
+	    echo "Vous ne pouvez visualiser que les relevÃ©s de notes des Ã©lÃ¨ves pour lesquels vous Ãªtes responsable lÃ©gal.\n";
 	    require("../lib/footer.inc.php");
 		die();
 	}
 }
 
-// Maintenant on arrive au code en lui-même.
-// On commence par traiter le cas où il faut sélectionner un élève (cas d'un responsable de plusieurs élèves)
+// Maintenant on arrive au code en lui-mÃªme.
+// On commence par traiter le cas oÃ¹ il faut sÃ©lectionner un Ã©lÃ¨ve (cas d'un responsable de plusieurs Ã©lÃ¨ves)
 
 if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
-	// Si on est là normalement c'est parce qu'on a un responsable de plusieurs élèves qui n'a pas encore choisi d'élève.
+	// Si on est lÃ  normalement c'est parce qu'on a un responsable de plusieurs Ã©lÃ¨ves qui n'a pas encore choisi d'Ã©lÃ¨ve.
 	$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
 				"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
 				"e.ele_id = re.ele_id AND " .
@@ -123,7 +123,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 	echo "<table summary='Choix'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
-	echo "<span class='bold'>Choisissez l'élève : </span>";
+	echo "<span class='bold'>Choisissez l'Ã©lÃ¨ve : </span>";
 	echo "</td>\n";
 	echo "<td valign='top'>\n";
 	echo "<select size=\"".mysql_num_rows($quels_eleves)."\" name=\"login_eleve\">";
@@ -144,19 +144,19 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     echo "</form>\n";
 
 } else {
-	// On a un élève. On affiche l'équipe pédagogique !
+	// On a un Ã©lÃ¨ve. On affiche l'Ã©quipe pÃ©dagogique !
 	$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
 	$nom_eleve = mysql_result($eleve, 0, "nom");
 	$prenom_eleve = mysql_result($eleve, 0, "prenom");
 	//$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
 
-	echo "<h3>Equipe pédagogique de l'élève : ".$prenom_eleve ." " . $nom_eleve;
+	echo "<h3>Equipe pÃ©dagogique de l'Ã©lÃ¨ve : ".$prenom_eleve ." " . $nom_eleve;
 
 	$sql="SELECT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1";
 	$res_class=mysql_query($sql);
 	if(mysql_num_rows($res_class)==0) {
 		echo "</h3>\n";
-		echo "<p>L'élève n'est dans aucune classe???</p>\n";
+		echo "<p>L'Ã©lÃ¨ve n'est dans aucune classe???</p>\n";
 		require "../lib/footer.inc.php";
 		die();
 	}
@@ -186,7 +186,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     $cpe = mysql_fetch_object($req);
     echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
     echo "<td>";
-    // On affiche l'email s'il est non nul, si le cpe l'a autorisé, et si l'utilisateur est autorisé par les droits d'accès globaux
+    // On affiche l'email s'il est non nul, si le cpe l'a autorisÃ©, et si l'utilisateur est autorisÃ© par les droits d'accÃ¨s globaux
     if ($cpe->email!="" AND $cpe->show_email == "yes" AND (
     	($_SESSION['statut'] == "responsable" AND
     			(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes" OR
@@ -205,8 +205,8 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     }
     echo "</td></tr>\n";
 
-	// On passe maintenant les groupes un par un, sans se préoccuper de la période : on affiche tous les groupes
-	// auxquel l'élève appartient ou a appartenu
+	// On passe maintenant les groupes un par un, sans se prÃ©occuper de la pÃ©riode : on affiche tous les groupes
+	// auxquel l'Ã©lÃ¨ve appartient ou a appartenu
 	$groupes = mysql_query("SELECT DISTINCT jeg.id_groupe, m.nom_complet " .
 							"FROM j_eleves_groupes jeg, matieres m, j_groupes_matieres jgm, j_groupes_classes jgc WHERE " .
 							"jeg.login = '".$login_eleve."' AND " .
@@ -218,7 +218,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 	while ($groupe = mysql_fetch_object($groupes)) {
 		// On est dans la boucle 'groupes'. On traite les groupes un par un.
 
-        // Matière correspondant au groupe:
+        // MatiÃ¨re correspondant au groupe:
         echo "<tr valign='top'><td>".htmlentities($groupe->nom_complet)."</td>\n";
 
         // Professeurs
@@ -227,7 +227,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
         $result_prof=mysql_query($sql);
         while($lig_prof=mysql_fetch_object($result_prof)){
 
-            // Le prof est-il PP de l'élève ?
+            // Le prof est-il PP de l'Ã©lÃ¨ve ?
             $sql="SELECT * FROM j_eleves_professeurs WHERE login = '".$login_eleve."' AND professeur='".$lig_prof->login."'";
             $res_pp=mysql_query($sql);
 

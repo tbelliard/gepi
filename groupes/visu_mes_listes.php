@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-//INSERT INTO droits VALUES ('/groupes/visu_mes_listes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Accès aux listes d élèves', '');
+//INSERT INTO droits VALUES ('/groupes/visu_mes_listes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'AccÃ¨s aux listes d Ã©lÃ¨ves', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -42,7 +42,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
-$titre_page = "Listes d'élèves";
+$titre_page = "Listes d'Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 //debug_var();
@@ -68,7 +68,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 	echo "<h3>Mes listes d'".$gepiSettings['denomination_eleves']."</h3>\n";
 
 	if($_SESSION['statut']=='professeur') {
-		echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleve']."s&nbsp;:</p>\n";
+		echo "<p>SÃ©lectionnez l'enseignement et la pÃ©riode pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleve']."s&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
 			jgp.login = '".$_SESSION['login']."' AND
 			g.id=jgp.id_groupe
@@ -104,7 +104,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 							$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
 							$res_per=mysql_query($sql);
 							if(mysql_num_rows($res_per)==0) {
-								echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+								echo "<p>ERREUR: Aucune pÃ©riode n'est dÃ©finie pour la classe $lig_class->classe</p>\n";
 								echo "</body></html>\n";
 								die();
 							}
@@ -139,11 +139,11 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visu_mes_listes la liste des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>SÃ©lectionnez la classe et la pÃ©riode pour lesquels vous souhaitez visu_mes_listes la liste des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
 	}
 	else{
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>SÃ©lectionnez la classe et la pÃ©riode pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
@@ -151,7 +151,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 	$nb_classes = mysql_num_rows($result_classes);
 
 	if(mysql_num_rows($result_classes)==0) {
-		echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Il semble qu'aucune classe n'ait encore Ã©tÃ© crÃ©Ã©e...<br />... ou alors aucune classe ne vous a Ã©tÃ© attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
 	}
 	else {
 		$nb_classes=mysql_num_rows($result_classes);
@@ -175,7 +175,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 			$res_per=mysql_query($sql);
 
 			if(mysql_num_rows($res_per)==0) {
-				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+				echo "<p>ERREUR: Aucune pÃ©riode n'est dÃ©finie pour la classe $lig_class->classe</p>\n";
 				echo "</body></html>\n";
 				die();
 			}

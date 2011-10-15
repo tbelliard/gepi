@@ -49,7 +49,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Liste des classes futures (appel ajax)',
+description='GÃ©nÃ¨se des classes: Liste des classes futures (appel ajax)',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -59,7 +59,7 @@ if (!checkAccess()) {
 	die();
 }
 
-// Page appelée via ajax depuis saisie_sanction.php->liste_retenues_jour.php
+// Page appelÃ©e via ajax depuis saisie_sanction.php->liste_retenues_jour.php
 
 $classe_fut=isset($_GET['classe_fut']) ? $_GET['classe_fut'] : NULL;
 $projet=isset($_GET['projet']) ? $_GET['projet'] : NULL;

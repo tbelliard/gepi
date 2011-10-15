@@ -56,50 +56,50 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold>Aide à l'importation</p>
-<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)
-<br />Le fichier doit contenir les différents champs suivants, tous obligatoires :<br />
---> <B>IDENTIFIANT</B> : l'identifiant de l'élève<br />
+<p class=bold>Aide Ã  l'importation</p>
+<p>Le fichier d'importation doit Ãªtre au format csv (sÃ©parateur : point-virgule)
+<br />Le fichier doit contenir les diffÃ©rents champs suivants, tous obligatoires :<br />
+--> <B>IDENTIFIANT</B> : l'identifiant de l'Ã©lÃ¨ve<br />
 --> <B>Nom</B><br />
---> <B>Prénom</B><br />
+--> <B>PrÃ©nom</B><br />
 --> <B>Sexe</B>  : F ou M<br />
 --> <B>Date de naissance</B> : jj/mm/aaaa<br />
---> <B>Classe (fac.)</B> : le nom court d'une classe déjà définie dans la base GEPI ou bien le caractère - si l'élève n'est pas affecté à une classe.<br />
---> <B>Régime</B> : d/p (demi-pensionnaire) ext. (externe) int. (interne) ou i-e (interne externé(e))<br />
+--> <B>Classe (fac.)</B> : le nom court d'une classe dÃ©jÃ  dÃ©finie dans la base GEPI ou bien le caractÃ¨re - si l'Ã©lÃ¨ve n'est pas affectÃ© Ã  une classe.<br />
+--> <B>RÃ©gime</B> : d/p (demi-pensionnaire) ext. (externe) int. (interne) ou i-e (interne externÃ©(e))<br />
 --> <B>Doublant</B> : R (pour un doublant)  - (pour un non-doublant)<br />
---> <B><?php echo ucfirst(getSettingValue("gepi_prof_suivi")); ?></B> : l'identifiant d'un <?php echo getSettingValue("gepi_prof_suivi"); ?> déjà défini dans la base GEPI ou bien le caractère - si l'élève n'a pas de <?php echo getSettingValue("gepi_prof_suivi"); ?>.<br />
---> <B>Identifiant de l'établissement d'origine </B> : le code RNE identifiant chaque établissement scolaire et déjà défini dans la base GEPI, ou bien le caractère - si l'établissement n'est pas connu.<br /></p>
+--> <B><?php echo ucfirst(getSettingValue("gepi_prof_suivi")); ?></B> : l'identifiant d'un <?php echo getSettingValue("gepi_prof_suivi"); ?> dÃ©jÃ  dÃ©fini dans la base GEPI ou bien le caractÃ¨re - si l'Ã©lÃ¨ve n'a pas de <?php echo getSettingValue("gepi_prof_suivi"); ?>.<br />
+--> <B>Identifiant de l'Ã©tablissement d'origine </B> : le code RNE identifiant chaque Ã©tablissement scolaire et dÃ©jÃ  dÃ©fini dans la base GEPI, ou bien le caractÃ¨re - si l'Ã©tablissement n'est pas connu.<br /></p>
 
 <p class='bold'>IDENTIFIANT</p>
-<p>Identifiant de l'élève : il peut s'agir de n'importe quelle suite de caractères et/ou de chiffres sans espace. Si ce format n'est pas respecté, la suite de caractères ??? apparaît à la place de l'identifiant. Les identifiants qui apparaissent en rouge correspondent à des noms d'utilisateur déjà existants dans la base GEPI. Les données existantes seront alors écrasées par les données présentes dans le fichier à importer !</p>
+<p>Identifiant de l'Ã©lÃ¨ve : il peut s'agir de n'importe quelle suite de caractÃ¨res et/ou de chiffres sans espace. Si ce format n'est pas respectÃ©, la suite de caractÃ¨res ??? apparaÃ®t Ã  la place de l'identifiant. Les identifiants qui apparaissent en rouge correspondent Ã  des noms d'utilisateur dÃ©jÃ  existants dans la base GEPI. Les donnÃ©es existantes seront alors Ã©crasÃ©es par les donnÃ©es prÃ©sentes dans le fichier Ã  importer !</p>
 <p class='bold'>Nom</p>
-<p>Nom de l'élève. Il peut s'agir de n'importe quelle suite de caractères et/ou de chiffres avec éventuellement des espaces</p>
-<p class='bold'>Prénom</p>
-<p>Prénom de l'élève. Même remarque que pour le nom. Les noms et prénoms qui apparaissent en bleu correspondent à des élèves existant dans la base GEPI et portant les mêmes noms et prénoms.</p>
+<p>Nom de l'Ã©lÃ¨ve. Il peut s'agir de n'importe quelle suite de caractÃ¨res et/ou de chiffres avec Ã©ventuellement des espaces</p>
+<p class='bold'>PrÃ©nom</p>
+<p>PrÃ©nom de l'Ã©lÃ¨ve. MÃªme remarque que pour le nom. Les noms et prÃ©noms qui apparaissent en bleu correspondent Ã  des Ã©lÃ¨ves existant dans la base GEPI et portant les mÃªmes noms et prÃ©noms.</p>
 <p class='bold'>Sexe</p>
-<p>Les seuls caractères acceptés sont F pour féminin et M pour masculin (respectez les majuscules). Si ce format n'est pas respecté, la suite de caractères ??? apparaît.</p>
+<p>Les seuls caractÃ¨res acceptÃ©s sont F pour fÃ©minin et M pour masculin (respectez les majuscules). Si ce format n'est pas respectÃ©, la suite de caractÃ¨res ??? apparaÃ®t.</p>
 <p class='bold'>Date de naissance</p>
-<p>Il s'agit de la date de naissance de l'élève. Le seul format autorisé est jj/mm/aaaa. Par exemple, pour un élève né le 15 avril 1985, on tapera 15/04/1985. Si ce format n'est pas respecté, la suite de caractères ??? apparaît.</p>
+<p>Il s'agit de la date de naissance de l'Ã©lÃ¨ve. Le seul format autorisÃ© est jj/mm/aaaa. Par exemple, pour un Ã©lÃ¨ve nÃ© le 15 avril 1985, on tapera 15/04/1985. Si ce format n'est pas respectÃ©, la suite de caractÃ¨res ??? apparaÃ®t.</p>
 <p class='bold'>Classe</p>
-<p>Classe dans laquelle l'élève est affecté. Les seuls données acceptées sont :
-<br />--> le nom court d'une classe déjà définie dans la base GEPI
-<br />--> ou bien le caractère - si l'élève n'est pas affecté à une classe.
-<br />Si la classe n'est pas définie dans la base GEPI, celle-ci sera considérée comme erronée.
-<br />La procédure d'importation ne permet pas de changer un élève de classe.
-<br />En revanche, il est possible d'affecter à une classe, un élève existant de la base qui n'est pas déjà affecté à une classe.<br /></p>
-<p class='bold'>Régime</p>
-<p>Les seules suites de caractères acceptées sont "d/p", "ext.", "int." et "i-e" (respectez les minuscules). Dans tous les autres cas, la suite de caractères ??? apparaît.
+<p>Classe dans laquelle l'Ã©lÃ¨ve est affectÃ©. Les seuls donnÃ©es acceptÃ©es sont :
+<br />--> le nom court d'une classe dÃ©jÃ  dÃ©finie dans la base GEPI
+<br />--> ou bien le caractÃ¨re - si l'Ã©lÃ¨ve n'est pas affectÃ© Ã  une classe.
+<br />Si la classe n'est pas dÃ©finie dans la base GEPI, celle-ci sera considÃ©rÃ©e comme erronÃ©e.
+<br />La procÃ©dure d'importation ne permet pas de changer un Ã©lÃ¨ve de classe.
+<br />En revanche, il est possible d'affecter Ã  une classe, un Ã©lÃ¨ve existant de la base qui n'est pas dÃ©jÃ  affectÃ© Ã  une classe.<br /></p>
+<p class='bold'>RÃ©gime</p>
+<p>Les seules suites de caractÃ¨res acceptÃ©es sont "d/p", "ext.", "int." et "i-e" (respectez les minuscules). Dans tous les autres cas, la suite de caractÃ¨res ??? apparaÃ®t.
 <br />--> d/p pour demi-pensionnaire,
 <br />--> ext. pour externe,
 <br />--> int. pour interne,
-<br />--> i-e  pour interne externé(e).</p>
+<br />--> i-e  pour interne externÃ©(e).</p>
 <p class='bold'>Doublant</p>
-<p>Les seuls caractères acceptés sont "R" et "-". Dans tous les autres cas, la suite de caractère ??? apparaît.
+<p>Les seuls caractÃ¨res acceptÃ©s sont "R" et "-". Dans tous les autres cas, la suite de caractÃ¨re ??? apparaÃ®t.
 <br />--> R pour un doublant,
 <br />--> - pour un non-doublant.</p>
 <p class='bold'><?php echo ucfirst(getSettingValue("gepi_prof_suivi")); ?></p>
-<p>L'identifiant d'un <?php echo getSettingValue("gepi_prof_suivi"); ?> déjà défini dans la base GEPI ou bien le caractère - si l'élève n'a pas de <?php echo getSettingValue("gepi_prof_suivi"); ?>.
-<br />Il s'agit obligatoirement d'un professeur de la classe de l'élève. Dans le cas contraire, la suite de caractères ??? apparaît. Il en est de même si la classe n'est pas définie.</p>
-<p class='bold'>Identifiant de l'établissement d'origine </p>
-<p>Le code RNE identifiant chaque établissement scolaire et déjà défini dans la base GEPI, ou bien le caractère - si l'établissement n'est pas connu.<br /></p>
+<p>L'identifiant d'un <?php echo getSettingValue("gepi_prof_suivi"); ?> dÃ©jÃ  dÃ©fini dans la base GEPI ou bien le caractÃ¨re - si l'Ã©lÃ¨ve n'a pas de <?php echo getSettingValue("gepi_prof_suivi"); ?>.
+<br />Il s'agit obligatoirement d'un professeur de la classe de l'Ã©lÃ¨ve. Dans le cas contraire, la suite de caractÃ¨res ??? apparaÃ®t. Il en est de mÃªme si la classe n'est pas dÃ©finie.</p>
+<p class='bold'>Identifiant de l'Ã©tablissement d'origine </p>
+<p>Le code RNE identifiant chaque Ã©tablissement scolaire et dÃ©jÃ  dÃ©fini dans la base GEPI, ou bien le caractÃ¨re - si l'Ã©tablissement n'est pas connu.<br /></p>
 <?php require("../lib/footer.inc.php");?>

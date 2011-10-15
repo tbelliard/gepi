@@ -1,10 +1,10 @@
 <?php
 /**
- * Affichage du temps de génération de la page
+ * Affichage du temps de gÃ©nÃ©ration de la page
  */
 if ($gepiShowGenTime == "yes") {
    $pageload_endtime = microtime(true);
    $pageload_time = $pageload_endtime - $pageload_starttime;
-   echo "<p class='microtime'>Page générée en ".$pageload_time." sec</p>";
+   echo "<p class='microtime'>Page gÃ©nÃ©rÃ©e en ".$pageload_time." sec</p>";
 }
 ?>

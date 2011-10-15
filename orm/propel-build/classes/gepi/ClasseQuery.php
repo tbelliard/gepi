@@ -17,7 +17,7 @@ class ClasseQuery extends BaseClasseQuery {
 	/**
 	 * Filtre la requete pour les classes qui sont sous la responsabilite de l'utilisateur
 	 * en tant que prof principal, cpe ou scolarite
-	 * Pour les status cpe et professeur, on renvoi une classe dès qu'un élève de cette classe est sous la responsabilité de l'utilisateur
+	 * Pour les status cpe et professeur, on renvoi une classe dÃ¨s qu'un Ã©lÃ¨ve de cette classe est sous la responsabilitÃ© de l'utilisateur
 	 *
 	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel the related object to use as filter
 	 *

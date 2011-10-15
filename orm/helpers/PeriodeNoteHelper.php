@@ -2,7 +2,7 @@
 
 /**
  * Description of PeriodeNoteHelper
- *  Classe qui implemente des methodes statiques pour géré es periode de notes
+ *  Classe qui implemente des methodes statiques pour gÃ©rÃ© es periode de notes
  *
  * @author joss
  */
@@ -10,10 +10,10 @@ class PeriodeNoteHelper {
  
  	/**
 	 * 
-	 * Classe un tableau de groupe par ordre alphabétique de leur nom (avec les noms de classes d'eleves associée)
+	 * Classe un tableau de groupe par ordre alphabÃ©tique de leur nom (avec les noms de classes d'eleves associÃ©e)
 	 *
 	 * @param      array $groupes Le tableau de groupes
-	 * @return     array $groupes Un tableau de groupe ordonnés
+	 * @return     array $groupes Un tableau de groupe ordonnÃ©s
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 * @deprecated
 	 */

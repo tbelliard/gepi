@@ -1,14 +1,14 @@
 0090001C;Mario Beulaygue;college;public;09110;Ax-les-Thermes
 0090007J;Victor Hugo;college;public;09300;Lavelanet
-0090009L;François Verdier;college;public;09210;Lézat-sur-Lèze
+0090009L;FranÃ§ois Verdier;college;public;09210;LÃ©zat-sur-LÃ¨ze
 0090010M;du Plantaurel;college;public;09290;Le-Mas-d'Azil
-0090012P;Victor Hugo;college;public;09270;Mazères
+0090012P;Victor Hugo;college;public;09270;MazÃ¨res
 0090023B;du Girbet;college;public;09700;Saverdun
 0090025D;Jules Palmade;college;public;09140;Seix
 0090028G;du Montcalm;college;public;09220;Vicdessos
 0090037S;Jean XXIII;college;prive;09100;Pamiers
-0090038T;du Sacré-Coeur;college;prive;09200;Saint-Girons
-0090041W;Saint-Joseph;college;prive;09400;Tarascon-sur-Ariège
+0090038T;du SacrÃ©-Coeur;college;prive;09200;Saint-Girons
+0090041W;Saint-Joseph;college;prive;09400;Tarascon-sur-AriÃ¨ge
 0090055L;Pierre Bayle;college;public;09100;Pamiers
 0090056M;Jean-Pierre Rambaud;college;public;09100;Pamiers
 0090060S;Laborie;ecole;public;09120;Varilhes
@@ -17,7 +17,7 @@
 0090068A;-;ecole;public;09340;Verniolle
 0090070C;-;ecole;public;09220;Vicdessos
 0090073F;-;ecole;public;09130;Villeneuve-du-Latou
-0090074G;-;ecole;public;09100;Villeneuve-du-Paréage
+0090074G;-;ecole;public;09100;Villeneuve-du-ParÃ©age
 0090080N;-;ecole;public;09600;Aigues-Vives
 0090081P;-;ecole;public;09300;L'Aiguillon
 0090087W;-;ecole;public;09240;Alzen
@@ -29,13 +29,13 @@
 0090102M;-;ecole;public;09220;Auzat
 0090112Y;-;ecole;public;09500;La-Bastide-de-Bousignac
 0090114A;-;ecole;public;09160;La-Bastide-du-Salat
-0090115B;-;ecole;public;09240;La-Bastide-de-Sérou
+0090115B;-;ecole;public;09240;La-Bastide-de-SÃ©rou
 0090118E;-;ecole;public;09600;La-Bastide-sur-l'Hers
-0090124L;-;ecole;public;09300;Bélesta
+0090124L;-;ecole;public;09300;BÃ©lesta
 0090137A;-;ecole;public;09320;Boussenac
 0090143G;-;ecole;public;09100;Benagues
 0090146K;-;ecole;public;09160;Betchat
-0090148M;-;ecole;public;09100;Bézac
+0090148M;-;ecole;public;09100;BÃ©zac
 0090150P;-;ecole;public;09400;Bompas
 0090153T;-;ecole;public;09350;Les-Bordes-sur-Arize
 0090155V;-;ecole;public;09000;Brassac
@@ -54,12 +54,12 @@
 0090197R;-;ecole;public;09300;Dreuilhe
 0090198S;-;ecole;public;09600;Dun
 0090201V;-;ecole;public;09800;Engomer
-0090202W;-;ecole;public;09140;Ercé
+0090202W;-;ecole;public;09140;ErcÃ©
 0090205Z;-;ecole;public;09100;Escosse
-0090207B;-;ecole;public;09420;Esplas-de-Sérou
+0090207B;-;ecole;public;09420;Esplas-de-SÃ©rou
 0090209D;-;ecole;public;09200;Eycheil
 0090210E;-;ecole;public;09230;Fabas
-0090211F;-;ecole;public;09000;Ferrières-sur-Ariège
+0090211F;-;ecole;public;09000;FerriÃ¨res-sur-AriÃ¨ge
 0090212G;Lucien Goron 1;ecole;public;09000;Foix
 0090216L;Les Bruilhols;ecole;public;09000;Foix
 0090219P;Le Courbet;ecole;public;09000;Foix
@@ -67,25 +67,25 @@
 0090225W;-;ecole;public;09130;Le-Fossat
 0090226X;-;ecole;public;09300;Fougax-et-Barrineuf
 0090229A;-;ecole;public;09000;Ganac
-0090235G;-;ecole;public;09390;L'Hospitalet-près-l'Andorre
+0090235G;-;ecole;public;09390;L'Hospitalet-prÃ¨s-l'Andorre
 0090244S;-;ecole;public;09500;Lagarde
-0090249X;Elysée Maury 1;ecole;public;09600;Laroque-d'Olmes
+0090249X;ElysÃ©e Maury 1;ecole;public;09600;Laroque-d'Olmes
 0090250Y;Joliot-Curie 2;ecole;public;09600;Laroque-d'Olmes
 0090252A;-;ecole;public;09230;Lasserre
 0090259H;George Sand 2;ecole;public;09300;Lavelanet
 0090260J;Lamartine 1;ecole;public;09300;Lavelanet
 0090263M;-;ecole;public;09420;Lescure
-0090272X;-;ecole;public;09210;Lézat-sur-Lèze
+0090272X;-;ecole;public;09210;LÃ©zat-sur-LÃ¨ze
 0090273Y;-;ecole;public;09300;Lieurac
 0090276B;-;ecole;public;09120;Loubens
-0090277C;-;ecole;public;09000;Loubières
+0090277C;-;ecole;public;09000;LoubiÃ¨res
 0090280F;d'Amplaing;ecole;public;09400;Mercus-Garrabet
 0090287N;-;ecole;public;09250;Luzenac
 0090295X;-;ecole;public;09290;Le-Mas-d'Azil
 0090299B;-;ecole;public;09320;Massat
-0090302E;-;ecole;public;09270;Mazères
-0090309M;-;ecole;public;09110;Mérens-les-Vals
-0090312R;Jean Jaurès;ecole;public;09500;Mirepoix
+0090302E;-;ecole;public;09270;MazÃ¨res
+0090309M;-;ecole;public;09110;MÃ©rens-les-Vals
+0090312R;Jean JaurÃ¨s;ecole;public;09500;Mirepoix
 0090315U;-;ecole;public;09700;Montaut
 0090321A;-;ecole;public;09300;Montferrier
 0090323C;du Centre;ecole;public;09330;Montgaillard
@@ -94,37 +94,37 @@
 0090345B;-;ecole;public;09110;Orlu
 0090347D;-;ecole;public;09140;Oust
 0090348E;-;ecole;public;09400;Ornolac-Ussat-les-Bains
-0090349F;-;ecole;public;09130;Pailhès
+0090349F;-;ecole;public;09130;PailhÃ¨s
 0090352J;Les Canonges;ecole;public;09100;Pamiers
 0090355M;Les Carmes;ecole;public;09100;Pamiers
 0090357P;Henri Cazale;ecole;public;09100;Pamiers
 0090359S;de Lestang;ecole;public;09100;Pamiers
 0090373G;-;ecole;public;09160;Prat-Bonrepaux
 0090376K;-;ecole;public;09100;Les-Pujols
-0090377L;-;ecole;public;09460;Quérigut
+0090377L;-;ecole;public;09460;QuÃ©rigut
 0090383T;2;ecole;public;09700;Saverdun
 0090385V;3;ecole;public;09700;Saverdun
 0090386W;-;ecole;public;09110;Savignac-les-Ormeaux
-0090387X;-;ecole;public;09120;Ségura
+0090387X;-;ecole;public;09120;SÃ©gura
 0090388Y;-;ecole;public;09140;Seix
 0090393D;-;ecole;public;09800;Sentein
 0090396G;-;ecole;public;09000;Serres-sur-Arget
 0090401M;-;ecole;public;09140;Soueix-Rogalle
 0090404R;-;ecole;public;09320;Soulan
-0090406T;Le Pradelet;ecole;public;09400;Tarascon-sur-Ariège
+0090406T;Le Pradelet;ecole;public;09400;Tarascon-sur-AriÃ¨ge
 0090412Z;-;ecole;public;09500;Teilhet
 0090414B;-;ecole;public;09100;La-Tour-du-Crieu
 0090417E;-;ecole;public;09500;Tourtrol
 0090423L;-;ecole;public;09140;Ustou
 0090426P;Paul Delpech;ecole;public;09120;Varilhes
-0090429T;-;ecole;public;09400;Quié
+0090429T;-;ecole;public;09400;QuiÃ©
 0090430U;-;ecole;public;09400;Rabat-les-Trois-Seigneurs
 0090431V;-;ecole;public;09500;Rieucros
 0090432W;-;ecole;public;09120;Rieux-de-Pelleport
 0090441F;-;ecole;public;09350;Sabarat
 0090442G;-;ecole;public;09100;Saint-Amadou
 0090445K;-;ecole;public;09230;Sainte-Croix-Volvestre
-0090446L;-;ecole;public;09120;Saint-Félix-de-Rieutord
+0090446L;-;ecole;public;09120;Saint-FÃ©lix-de-Rieutord
 0090448N;Saint-Alary;ecole;public;09200;Saint-Girons
 0090449P;Henri Maurel;ecole;public;09200;Saint-Girons
 0090451S;Les Jacobins;ecole;public;09200;Saint-Girons
@@ -134,7 +134,7 @@
 0090468K;-;ecole;public;09000;Saint-Martin-de-Caralp
 0090469L;-;ecole;public;09100;Saint-Martin-d'Oydes
 0090472P;Saint-Paulet;ecole;public;09000;Saint-Paul-de-Jarrat
-0090473R;-;ecole;public;09000;Saint-Pierre-de-Rivière
+0090473R;-;ecole;public;09000;Saint-Pierre-de-RiviÃ¨re
 0090474S;-;ecole;public;09500;Saint-Quentin-la-Tour
 0090475T;-;ecole;public;09700;Saint-Quirc
 0090477V;-;ecole;public;09210;Saint-Ybars
@@ -143,7 +143,7 @@
 0090487F;-;ecole;public;09190;Lorp-Sentaraille
 0090490J;Louis Pasteur;college;public;09300;Lavelanet
 0090503Y;-;ecole;public;09100;Bonnac
-0090509E;-;ecole;public;09600;Léran
+0090509E;-;ecole;public;09600;LÃ©ran
 0090512H;Le Seguela;ecole;public;09330;Montgaillard
 0090517N;-;ecole;public;09000;Saint-Paul-de-Jarrat
 0090518P;-;ecole;public;09400;Saurat
@@ -151,17 +151,17 @@
 0090531D;Jeanne D'Arc;ecole;prive;09100;Pamiers
 0090533F;Notre-Dame;ecole;prive;09100;Pamiers
 0090534G;Jean XXIII;ecole;prive;09100;Pamiers
-0090536J;Sacré-Coeur;ecole;prive;09200;Saint-Girons
-0090537K;Saint-Joseph;ecole;prive;09400;Tarascon-sur-Ariège
+0090536J;SacrÃ©-Coeur;ecole;prive;09200;Saint-Girons
+0090537K;Saint-Joseph;ecole;prive;09400;Tarascon-sur-AriÃ¨ge
 0090538L;-;ecole;public;09200;Moulis
 0090540N;-;ecole;public;09000;Montoulieu
 0090541P;Paul Bert;ecole;public;09000;Foix
-0090546V;du Sabarthes;college;public;09400;Tarascon-sur-Ariège
+0090546V;du Sabarthes;college;public;09400;Tarascon-sur-AriÃ¨ge
 0090551A;Roland Andry;ecole;public;09300;Villeneuve-d'Olmes
 0090573Z;-;college;public;09500;Mirepoix
 0090574A;-;college;public;09200;Saint-Girons
 0090591U;Notre-Dame;college;prive;09100;Pamiers
-0090616W;-;ecole;public;09120;Montégut-Plantaurel
+0090616W;-;ecole;public;09120;MontÃ©gut-Plantaurel
 0090621B;-;ecole;public;09320;Biert
 0090625F;-;ecole;public;09800;Orgibet
 0090626G;Enfontanges;ecole;public;09110;Ax-les-Thermes

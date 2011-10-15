@@ -33,9 +33,9 @@ die();
 die();
 };
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 //**************** EN-TETE *****************
@@ -47,22 +47,22 @@ $total_max_size_ko = getSettingValue("total_max_size")/1024;
 $current_group = get_group($_GET['id_groupe']);
 
 ?>
-<h1 class='gepi'>GEPI - Limites et restrictions concernant le téléchargement de fichiers</h1>
+<h1 class='gepi'>GEPI - Limites et restrictions concernant le tÃ©lÃ©chargement de fichiers</h1>
 
 <h2>Taille maximale d'un fichier</h2>
-<p>La taille maximale autorisée pour un fichier est : <b><?php echo $max_size_ko." Ko</b>"; ?></p>
-<h2>Espace disque autorisé</h2>
+<p>La taille maximale autorisÃ©e pour un fichier est : <b><?php echo $max_size_ko." Ko</b>"; ?></p>
+<h2>Espace disque autorisÃ©</h2>
 <?php
 $query = "SELECT DISTINCT sum(taille) somme FROM ct_documents d, ct_entry e WHERE (e.id_groupe='".$_GET['id_groupe']."' and e.id_ct = d.id_ct)";
 $result = round(sql_query1($query)/1024,1);
-echo "<p>L'espace disque maximal autorisé pour le groupe <i>".$current_group["description"]."</i> est : <b>".$total_max_size_ko." Ko</b>.";
+echo "<p>L'espace disque maximal autorisÃ© pour le groupe <i>".$current_group["description"]."</i> est : <b>".$total_max_size_ko." Ko</b>.";
 
-echo "<p>La taille totale des fichiers actuellement stockés pour le groupe <i>".$current_group["description"]."</i> est : <b>".$result." Ko</b>.</p>";
+echo "<p>La taille totale des fichiers actuellement stockÃ©s pour le groupe <i>".$current_group["description"]."</i> est : <b>".$result." Ko</b>.</p>";
 
 ?>
 
-<H2>Types de fichiers autorisés en téléchargement</h2>
-<p>Ci-dessous le tableau des extensions autorisées. Si vous souhaitez faire ajouter une ou plusieurs extensions,
+<H2>Types de fichiers autorisÃ©s en tÃ©lÃ©chargement</h2>
+<p>Ci-dessous le tableau des extensions autorisÃ©es. Si vous souhaitez faire ajouter une ou plusieurs extensions,
 <?php
          echo("<a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">contactez l'administrateur</a>");
 ?>

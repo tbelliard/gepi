@@ -37,10 +37,10 @@ if ($resultat_session == 'c') {
 $sql = "SELECT 1=1 FROM `droits` WHERE id='/mod_discipline/delegation.php';";
 $test = mysql_query($sql);
 if (mysql_num_rows($test) == 0) {
-    $sql = "INSERT INTO droits VALUES ( '/mod_discipline/delegation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les délégations pour exclusion temporaire', '')";
+    $sql = "INSERT INTO droits VALUES ( '/mod_discipline/delegation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir les dÃ©lÃ©gations pour exclusion temporaire', '')";
     $test = mysql_query($sql);
 }
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/delegation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les délégations pour exclusion temporaire', '');";
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/delegation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: DÃ©finir les dÃ©lÃ©gations pour exclusion temporaire', '');";
 */
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -48,8 +48,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -64,7 +64,7 @@ $nom_autorite=isset($_POST['nom_autorite']) ? $_POST['nom_autorite'] : NULL;
 
 if (isset($NON_PROTECT["fct_delegation"])){
 			$fct_delegation=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["fct_delegation"]));
-			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+			// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 			$fct_delegation=preg_replace('/(\\\r\\\n)+/',"\r\n",$fct_delegation);
 			$fct_delegation=preg_replace('/(\\\r)+/',"\r",$fct_delegation);
 			$fct_delegation=preg_replace('/(\\\n)+/',"\n",$fct_delegation);
@@ -81,15 +81,15 @@ if (isset($suppr_delegation)) {
 			//echo $sql;
             $suppr = mysql_query($sql);
             if (!$suppr) {
-                $msg.="ERREUR lors de la suppression de la délégation n°" . $suppr_delegation[$i] . ".<br />\n";
+                $msg.="ERREUR lors de la suppression de la dÃ©lÃ©gation nÂ°" . $suppr_delegation[$i] . ".<br />\n";
             } else {
-                  $msg.="Suppression de la delegation n°" . $suppr_delegation[$i] . ".<br />\n";
+                  $msg.="Suppression de la delegation nÂ°" . $suppr_delegation[$i] . ".<br />\n";
                  $sql = "UPDATE s_exclusions SET id_signataire=0 WHERE id_signataire=" . $suppr_delegation[$i] . ";";
                  $res = mysql_query($sql);
                 if (!$res) {
-                    $msg.="ERREUR lors de la mise à jour la delegation aux exclusions prononcées ! <br />\n";
+                    $msg.="ERREUR lors de la mise Ã  jour la delegation aux exclusions prononcÃ©es ! <br />\n";
                 } else {
-                    $msg.="Mise à jour de la delegation aux exclusions prononcées effectuée.<br />\n";
+                    $msg.="Mise Ã  jour de la delegation aux exclusions prononcÃ©es effectuÃ©e.<br />\n";
                 }
             }
         }
@@ -127,10 +127,10 @@ if ((isset($fct_autorite)) && ($fct_autorite != '')) {
     }
 }
 
-$themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-//$titre_page = "Sanctions: Définition des qualités";
-$titre_page = "Discipline: Gestion des délégations d'exclusion temporaire";
+//$titre_page = "Sanctions: DÃ©finition des qualitÃ©s";
+$titre_page = "Discipline: Gestion des dÃ©lÃ©gations d'exclusion temporaire";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
@@ -141,24 +141,24 @@ echo "</p>\n";
 echo "<form enctype='multipart/form-data' action='" . $_SERVER['PHP_SELF'] . "' method='post' name='formulaire'>\n";
 echo add_token_field();
 
-//echo "<p class='bold'>Saisie des qualités dans un incident&nbsp;:</p>\n";
-echo "<p class='bold'>Saisie des délégations&nbsp;:</p>\n";
+//echo "<p class='bold'>Saisie des qualitÃ©s dans un incident&nbsp;:</p>\n";
+echo "<p class='bold'>Saisie des dÃ©lÃ©gations&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt = 0;
 $sql = "SELECT * FROM s_delegation ORDER BY id_delegation;";
 $res = mysql_query($sql);
 if (mysql_num_rows($res) == 0) {
-    //echo "<p>Aucune qualité n'est encore définie.</p>\n";
-    echo "<p>Aucune délégation n'est encore définie.</p>\n";
+    //echo "<p>Aucune qualitÃ© n'est encore dÃ©finie.</p>\n";
+    echo "<p>Aucune dÃ©lÃ©gation n'est encore dÃ©finie.</p>\n";
 } else {
-    //echo "<p>Qualités existantes&nbsp;:</p>\n";
-    echo "<p>Délégations existantes&nbsp;:</p>\n";
-    echo "<table class='boireaus' border='1' summary='Tableau des délégations existantes'>\n";
+    //echo "<p>QualitÃ©s existantes&nbsp;:</p>\n";
+    echo "<p>DÃ©lÃ©gations existantes&nbsp;:</p>\n";
+    echo "<table class='boireaus' border='1' summary='Tableau des dÃ©lÃ©gations existantes'>\n";
     echo "<tr>\n";
-    echo "<th>Texte de délégation du chef d'établissement</th>\n";
-    echo "<th>Fonction de l'autorité signataire</th>\n";
-	echo "<th>Nom de l'autorité signataire</th>\n";
+    echo "<th>Texte de dÃ©lÃ©gation du chef d'Ã©tablissement</th>\n";
+    echo "<th>Fonction de l'autoritÃ© signataire</th>\n";
+	echo "<th>Nom de l'autoritÃ© signataire</th>\n";
     echo "<th>Supprimer</th>\n";
     echo "</tr>\n";
     $alt = 1;
@@ -195,26 +195,26 @@ if (mysql_num_rows($res) == 0) {
     echo "</table>\n";
 }
 	echo "</blockquote>\n";
-	echo "<table class='boireaus' border='1' summary='Saisie des informations de délégation'>\n";
+	echo "<table class='boireaus' border='1' summary='Saisie des informations de dÃ©lÃ©gation'>\n";
 	echo "<tr class='lig1'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Texte de la délégation du chef d'établissement&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Texte de la dÃ©lÃ©gation du chef d'Ã©tablissement&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<textarea name='no_anti_inject_fct_delegation' cols='50' onchange='changement();'></textarea>\n";
-	echo "<i>(facultatif) Ex : Pour le Chef d'établissement,</BR></BR>et par délégation,</i></td>\n";
+	echo "<i>(facultatif) Ex : Pour le Chef d'Ã©tablissement,</BR></BR>et par dÃ©lÃ©gation,</i></td>\n";
 	echo "</tr>\n";
 	
 	echo "<tr class='lig-1'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Fonction de l'autorité signataire&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Fonction de l'autoritÃ© signataire&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='fct_autorite' id='fct_autorite' value='' onchange='changement();' />\n";
-	echo "<i>Fonction du personnel de direction ou du délégataire</i></td>\n";
+	echo "<i>Fonction du personnel de direction ou du dÃ©lÃ©gataire</i></td>\n";
 	echo "</tr>\n";
 	
 	echo "<tr class='lig1'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nom de l'autorité signataire&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nom de l'autoritÃ© signataire&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='nom_autorite' id='nom_autorite' value='' onchange='changement();' />\n";
-	echo "<i>Nom du personnel de direction ou du délégataire</i></td>\n";
+	echo "<i>Nom du personnel de direction ou du dÃ©lÃ©gataire</i></td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 

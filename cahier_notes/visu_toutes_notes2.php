@@ -46,7 +46,7 @@ if (!checkAccess()) {
 
 //Initialisation
 
-// ModifiÈ pour pouvoir rÈcupÈrer ces variables en GET pour les CSV
+// Modifi√© pour pouvoir r√©cup√©rer ces variables en GET pour les CSV
 //$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] :  NULL;
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 //$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] :  NULL;
@@ -60,23 +60,23 @@ if ($num_periode=="annee") {
     $referent="une_periode";
 }
 
-// On filtre au niveau sÈcuritÈ pour s'assurer qu'un prof n'est pas en train de chercher
-// ‡ visualiser des donnÈes pour lesquelles il n'est pas autorisÈ
+// On filtre au niveau s√©curit√© pour s'assurer qu'un prof n'est pas en train de chercher
+// √† visualiser des donn√©es pour lesquelles il n'est pas autoris√©
 
 if (isset($id_classe)) {
 	// On regarde si le type est correct :
 	if (!is_numeric($id_classe)) {
-		tentative_intrusion("3", "Changement de la valeur de id_classe pour un type non numÈrique, en changeant la valeur d'un champ 'hidden' d'un formulaire.");
+		tentative_intrusion("3", "Changement de la valeur de id_classe pour un type non num√©rique, en changeant la valeur d'un champ 'hidden' d'un formulaire.");
 		echo "Erreur.";
 		require ("../lib/footer.inc.php");
 		die();
 	}
-	// On teste si le professeur a le droit d'accÈder ‡ cette classe
+	// On teste si le professeur a le droit d'acc√©der √† cette classe
 	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 		if ($test == "0") {
-			tentative_intrusion("3", "Tentative d'accËs par un prof ‡ une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation. Tentative avancÈe : changement des valeurs de champs de type 'hidden' du formulaire.");
-			echo "Vous ne pouvez pas accÈder ‡ cette classe car vous n'y Ítes pas professeur !";
+			tentative_intrusion("3", "Tentative d'acc√®s par un prof √† une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation. Tentative avanc√©e : changement des valeurs de champs de type 'hidden' du formulaire.");
+			echo "Vous ne pouvez pas acc√©der √† cette classe car vous n'y √™tes pas professeur !";
 			require ("../lib/footer.inc.php");
 			die();
 		}
@@ -110,7 +110,7 @@ $bord = isset($_POST['bord']) ? $_POST['bord'] :  NULL;
 //$aff_rang = isset($_POST['aff_rang']) ? $_POST['aff_rang'] :  NULL;
 //$aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] :  NULL;
 
-// ModifiÈ pour pouvoir rÈcupÈrer ces variables en GET pour les CSV
+// Modifi√© pour pouvoir r√©cup√©rer ces variables en GET pour les CSV
 $aff_abs = isset($_POST['aff_abs']) ? $_POST['aff_abs'] : (isset($_GET['aff_abs']) ? $_GET['aff_abs'] : NULL);
 $aff_reg = isset($_POST['aff_reg']) ? $_POST['aff_reg'] : (isset($_GET['aff_reg']) ? $_GET['aff_reg'] : NULL);
 $aff_doub = isset($_POST['aff_doub']) ? $_POST['aff_doub'] : (isset($_GET['aff_doub']) ? $_GET['aff_doub'] : NULL);
@@ -131,7 +131,7 @@ else{
 //================================
 
 //============================
-// Colorisation des rÈsultats
+// Colorisation des r√©sultats
 $vtn_couleur_texte=isset($_POST['vtn_couleur_texte']) ? $_POST['vtn_couleur_texte'] : array();
 $vtn_couleur_cellule=isset($_POST['vtn_couleur_cellule']) ? $_POST['vtn_couleur_cellule'] : array();
 $vtn_borne_couleur=isset($_POST['vtn_borne_couleur']) ? $_POST['vtn_borne_couleur'] : array();
@@ -140,11 +140,11 @@ $vtn_coloriser_resultats=isset($_POST['vtn_coloriser_resultats']) ? $_POST['vtn_
 
 include "../lib/periodes.inc.php";
 
-// On appelle les ÈlËves
+// On appelle les √©l√®ves
 if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
-	// On ne sÈlectionne que les ÈlËves que le professeur a en cours
+	// On ne s√©lectionne que les √©l√®ves que le professeur a en cours
 	if ($referent=="une_periode")
-		// Calcul sur une seule pÈriode
+		// Calcul sur une seule p√©riode
 		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
@@ -157,7 +157,7 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 				"jeg.periode = '$num_periode') " .
 				"ORDER BY e.nom,e.prenom");
 	else {
-		// Calcul sur l'annÈe
+		// Calcul sur l'ann√©e
 		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
@@ -170,10 +170,10 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 	}
 } else {
 	if ($referent=="une_periode")
-		// Calcul sur une seule pÈriode
+		// Calcul sur une seule p√©riode
 		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
 	else {
-		// Calcul sur l'annÈe
+		// Calcul sur l'ann√©e
 		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
 	}
 }
@@ -248,13 +248,13 @@ else{
 // =====================================
 
 
-// On teste la prÈsence d'au moins un coeff pour afficher la colonne des coef
+// On teste la pr√©sence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 $ligne_supl = 0;
 if ($test_coef != 0) $ligne_supl = 1;
 
 
-// On regarde si on doit afficher les moyennes des catÈgories de matiËres
+// On regarde si on doit afficher les moyennes des cat√©gories de mati√®res
 $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 if ($affiche_categories == "y") {
 	$affiche_categories = true;
@@ -263,18 +263,18 @@ if ($affiche_categories == "y") {
 }
 
 
-// Si le rang des ÈlËves est demandÈ, on met ‡ jour le champ rang de la table matieres_notes
+// Si le rang des √©l√®ves est demand√©, on met √† jour le champ rang de la table matieres_notes
 /*
 if (($aff_rang) and ($referent=="une_periode")) {
 	$periode_num=$num_periode;
 	include "../lib/calcul_rang.inc.php";
 	// Oui, mais pour la visualisation des moyennes des carnets de notes, 
-	// ce rang ne correspond pas nÈcessairement tant que la recopie des moyennes n'est pas faite.
+	// ce rang ne correspond pas n√©cessairement tant que la recopie des moyennes n'est pas faite.
 }
 */
 
 /*
-// On regarde si on doit afficher les moyennes des catÈgories de matiËres
+// On regarde si on doit afficher les moyennes des cat√©gories de mati√®res
 $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 if ($affiche_categories == "y") {
 	$affiche_categories = true;
@@ -299,10 +299,10 @@ if ($affiche_categories) {
 		$cat_names[$cat_id] = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
 	}
 }
-// Calcul du nombre de matiËres ‡ afficher
+// Calcul du nombre de mati√®res √† afficher
 
 if ($affiche_categories) {
-	// On utilise les valeurs spÈcifiÈes pour la classe en question
+	// On utilise les valeurs sp√©cifi√©es pour la classe en question
 	$groupeinfo = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
 	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
 	"WHERE ( " .
@@ -325,12 +325,12 @@ if ($affiche_categories) {
 $lignes_groupes = mysql_num_rows($groupeinfo);
 
 //
-// dÈfinition des premiËres colonnes nom, rÈgime, doublant, ...
+// d√©finition des premi√®res colonnes nom, r√©gime, doublant, ...
 //
 $displayed_categories = array();
 $j = 0;
 while($j < $nb_lignes_tableau) {
-	// colonne nom+prÈnom
+	// colonne nom+pr√©nom
 	$current_eleve_login[$j] = mysql_result($appel_donnees_eleves, $j, "login");
 	$col[1][$j+$ligne_supl] = @mysql_result($appel_donnees_eleves, $j, "nom")." ".@mysql_result($appel_donnees_eleves, $j, "prenom");
 	$ind = 2;
@@ -346,7 +346,7 @@ while($j < $nb_lignes_tableau) {
 	}
 	//=======================================
 
-	// colonne rÈgime
+	// colonne r√©gime
 	if (($aff_reg) or ($aff_doub))
 		$regime_doublant_eleve = mysql_query("SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login[$j]'");
 	if ($aff_reg) {
@@ -403,8 +403,8 @@ while($j < $nb_lignes_tableau) {
 	// Colonne rang
 	if (($aff_rang) and ($referent=="une_periode")) {
 		$ind_colonne_rang=$ind;
-		// La table j_eleves_classes ne contient les bonnes infos de rang qu'une fois la recopie des moyennes effectuÈe.
-		// Elle s'appuye sur la table matieres_notes qui n'est remplie qu'une fois la recopie faite, c'est-‡-dire en fin de pÈriode... pas au moment o˘ on utilise la Visualisation des moyennes des carnets de notes!
+		// La table j_eleves_classes ne contient les bonnes infos de rang qu'une fois la recopie des moyennes effectu√©e.
+		// Elle s'appuye sur la table matieres_notes qui n'est remplie qu'une fois la recopie faite, c'est-√†-dire en fin de p√©riode... pas au moment o√π on utilise la Visualisation des moyennes des carnets de notes!
 		/*
 		$rang = sql_query1("select rang from j_eleves_classes where (
 		periode = '".$num_periode."' and
@@ -427,12 +427,12 @@ $num_debut_colonnes_matieres=$ind;
 /*
 // Colonne rang
 if (($aff_rang) and ($referent!="une_periode")) {
-	// Calculer le rang dans le cas annÈe entiËre
+	// Calculer le rang dans le cas ann√©e enti√®re
 }
 */
 
 
-// Etiquettes des premiËres colonnes
+// Etiquettes des premi√®res colonnes
 //$ligne1[1] = "Nom ";
 $ligne1[1] = "<a href='#' onclick=\"document.getElementById('col_tri').value='1';".
 			"document.forms['formulaire_tri'].submit();\"".
@@ -441,44 +441,44 @@ $ligne1[1] = "<a href='#' onclick=\"document.getElementById('col_tri').value='1'
 			"</a>";
 $ligne1_csv[1] = "Nom ";
 
-//if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=RÈgime&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"rÈgime\">";
+//if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=R√©gime&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"r√©gime\">";
 //if ($aff_doub) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"doublant\">";
-//if ($aff_abs) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=1/2 journÈes d'absence&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"1/2 journÈes d'absence\">";
-//if (($aff_rang) and ($referent=="une_periode")) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Rang de l'ÈlËve&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"Rang de l'ÈlËve\">";
-//if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".htmlentities("RÈgime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"rÈgime\" />";
+//if ($aff_abs) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=1/2 journ√©es d'absence&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"1/2 journ√©es d'absence\">";
+//if (($aff_rang) and ($referent=="une_periode")) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Rang de l'√©l√®ve&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"Rang de l'√©l√®ve\">";
+//if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".htmlentities("R√©gime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"r√©gime\" />";
 //=========================
 if ($aff_date_naiss){
-	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Date de naissance")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"rÈgime\" />";
+	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Date de naissance")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"r√©gime\" />";
 	$ligne1_csv[] = "Date de naissance";
 }
 //=========================
 if ($aff_reg) {
-	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("RÈgime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"rÈgime\" />";
-	$ligne1_csv[]="RÈgime";
+	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("R√©gime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"r√©gime\" />";
+	$ligne1_csv[]="R√©gime";
 }
 if ($aff_doub) {
 	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"doublant\" />";
 	$ligne1_csv[]="Redoublant";
 }
 if ($aff_abs) {
-	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journÈes d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journÈes d'absence\" />";
+	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journ√©es d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journ√©es d'absence\" />";
 	$ligne1[] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".(count($ligne1)+1)."';".
 				"document.forms['formulaire_tri'].submit();\">".
-				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journÈes d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journÈes d'absence\" />".
+				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journ√©es d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journ√©es d'absence\" />".
 				"</a>";
-	$ligne1_csv[]="1/2 journÈes d'absence";
+	$ligne1_csv[]="1/2 journ√©es d'absence";
 }
 if (($aff_rang) and ($referent=="une_periode")) {
-	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'ÈlËve")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'ÈlËve\" />";
+	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'√©l√®ve")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'√©l√®ve\" />";
 	$ligne1[] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".(count($ligne1)+1)."';".
 				"document.getElementById('sens_tri').value='inverse';".
 				"document.forms['formulaire_tri'].submit();\">".
-				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'ÈlËve")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'ÈlËve\" />".
+				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'√©l√®ve")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'√©l√®ve\" />".
 				"</a>";
-	$ligne1_csv[]="Rang de l'ÈlËve";
+	$ligne1_csv[]="Rang de l'√©l√®ve";
 }
 
-// Etiquettes des quatre derniËres lignes
+// Etiquettes des quatre derni√®res lignes
 if ($test_coef != 0) $col[1][0] = "Coefficient";
 $col[1][$nb_lignes_tableau+$ligne_supl] = "Moyenne";
 $col[1][$nb_lignes_tableau+1+$ligne_supl] = "Min";
@@ -582,7 +582,7 @@ $chaine_moy_classe=array();
 //=============================
 
 //
-// dÈfinition des colonnes matiËres
+// d√©finition des colonnes mati√®res
 //
 $i= '0';
 
@@ -632,7 +632,7 @@ while($i < $lignes_groupes){
 
 
 	if ($affiche_categories) {
-	// On regarde si on change de catÈgorie de matiËre
+	// On regarde si on change de cat√©gorie de mati√®re
 		if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] != $prev_cat_id) {
 			$prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
 		}
@@ -640,7 +640,7 @@ while($i < $lignes_groupes){
 	$j = '0';
 	while($j < $nb_lignes_tableau) {
 
-		// Coefficient personnalisÈ pour l'ÈlËve?
+		// Coefficient personnalis√© pour l'√©l√®ve?
 		$sql="SELECT value FROM eleves_groupes_settings WHERE (" .
 				"login = '".$current_eleve_login[$j]."' AND " .
 				"id_groupe = '".$current_group["id"]."' AND " .
@@ -768,7 +768,7 @@ while($i < $lignes_groupes){
 			}
 		}
 		else {
-			// AnnÈe entiËre
+			// Ann√©e enti√®re
 			$p = "1";
 			$moy = 0;
 			$non_suivi = 2;
@@ -820,10 +820,10 @@ while($i < $lignes_groupes){
 			$moy_eleve_grp_courant_annee="-";
 
 			if ($non_suivi == (pow(2,$nb_periode))) {
-				// L'ÈlËve n'a suivi la matiËre sur aucune pÈriode
+				// L'√©l√®ve n'a suivi la mati√®re sur aucune p√©riode
 				$col[$k][$j+$ligne_supl] = "/";
 			} else if ($coef_moy != 0) {
-				// L'ÈlËve a au moins une note sur au moins une pÈriode
+				// L'√©l√®ve a au moins une note sur au moins une p√©riode
 				$moy = $moy/$coef_moy;
 				$moy_min = min($moy_min,$moy);
 				$moy_max = max($moy_max,$moy);
@@ -855,7 +855,7 @@ while($i < $lignes_groupes){
 					//$total_cat_points[$j+$ligne_supl][$prev_cat_id] += $current_coef*$moy;
 				}
 			} else {
-				// Bien que suivant la matiËre, l'ÈlËve n'a aucune note ‡ toutes les pÈriode (absent, pas de note, disp ...)
+				// Bien que suivant la mati√®re, l'√©l√®ve n'a aucune note √† toutes les p√©riode (absent, pas de note, disp ...)
 				$col[$k][$j+$ligne_supl] = "-";
 			}
 
@@ -989,10 +989,10 @@ while($i < $lignes_groupes){
 					//"&amp;periode=$periode".
 					$col[1][$loop+$ligne_supl].="&amp;tronquer_nom_court=$tronquer_nom_court";
 					if($referent == "une_periode"){
-						$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("PÈriode ".$num_periode);
+						$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("P√©riode ".$num_periode);
 					}
 					else{
-						$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("AnnÈe");
+						$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("Ann√©e");
 					}
 					$col[1][$loop+$ligne_supl].="&amp;largeur_graphe=$largeur_graphe".
 					"&amp;hauteur_graphe=$hauteur_graphe".
@@ -1072,9 +1072,9 @@ while($i < $lignes_groupes){
 
 	$i++;
 }
-// DerniËre colonne des moyennes gÈnÈrales
+// Derni√®re colonne des moyennes g√©n√©rales
 if ($ligne_supl == 1) {
-	// Les moyennes pour chaque catÈgorie
+	// Les moyennes pour chaque cat√©gorie
 	//echo "\$displayed_categories=$displayed_categories<br />";
 	foreach($displayed_categories as $cat_id) {
 		$nb_col++;
@@ -1126,18 +1126,18 @@ if ($ligne_supl == 1) {
 		}
 	}
 
-	// La moyenne gÈnÈrale
+	// La moyenne g√©n√©rale
 	$nb_col++;
-	//$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Moyenne gÈnÈrale&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
-	//$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne gÈnÈrale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne gÈnÈrale\" />";
+	//$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Moyenne g√©n√©rale&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
+	//$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne g√©n√©rale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne g√©n√©rale\" />";
 
 	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
 	if(preg_match("/^Rang/i",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
 	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
-    $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne gÈnÈrale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne gÈnÈrale\" />";
+    $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne g√©n√©rale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne g√©n√©rale\" />";
 	$ligne1[$nb_col].="</a>";
 
-	$ligne1_csv[$nb_col] = "Moyenne gÈnÈrale";
+	$ligne1_csv[$nb_col] = "Moyenne g√©n√©rale";
 
 	$j = '0';
 	while($j < $nb_lignes_tableau) {
@@ -1172,7 +1172,7 @@ if ($ligne_supl == 1) {
 	}
 
 
-	// Colonne Rang: Cas du choix d'une pÈriode: on calcule le rang d'aprËs la moyenne gÈnÈrale de l'ÈlËve
+	// Colonne Rang: Cas du choix d'une p√©riode: on calcule le rang d'apr√®s la moyenne g√©n√©rale de l'√©l√®ve
 	if (($aff_rang)&&(isset($ind_colonne_rang))) {
 		// On va calculer les rangs
 		//$ind_colonne_rang
@@ -1204,9 +1204,9 @@ if ($ligne_supl == 1) {
 
 	}
 
-	// Colonne rang (en fin de tableau (derniËre colonne) dans le cas AnnÈe entiËre)
+	// Colonne rang (en fin de tableau (derni√®re colonne) dans le cas Ann√©e enti√®re)
 	if (($aff_rang) and ($referent!="une_periode")) {
-		// Calculer le rang dans le cas annÈe entiËre
+		// Calculer le rang dans le cas ann√©e enti√®re
 		//$nb_col++;
 
 		/*
@@ -1218,9 +1218,9 @@ if ($ligne_supl == 1) {
 		}
 		*/
 
-		// PrÈparatifs
+		// Pr√©paratifs
 
-		// Initialisation d'un tableau pour les rangs et affectation des valeurs rÈindexÈes dans un tableau temporaire
+		// Initialisation d'un tableau pour les rangs et affectation des valeurs r√©index√©es dans un tableau temporaire
 		my_echo("<table>");
 		my_echo("<tr>");
 		my_echo("<td>");
@@ -1272,14 +1272,14 @@ if ($ligne_supl == 1) {
 		// On ajoute une colonne
 		$nb_col++;
 
-		// Initialisation de la colonne ajoutÈe
+		// Initialisation de la colonne ajout√©e
 		$j=1;
 		while($j <= $nb_lignes_tableau) {
 			$col[$nb_col][$j]="-";
 			$j++;
 		}
 
-		// Affectation des rangs dans la colonne ajoutÈe
+		// Affectation des rangs dans la colonne ajout√©e
 		$k=0;
 		while($k < $nb_lignes_tableau) {
 			if(isset($rg[$k])) {
@@ -1289,20 +1289,20 @@ if ($ligne_supl == 1) {
 		}
 
 		// Remplissage de la ligne de titre
-        //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'ÈlËve")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Rang de l'ÈlËve\" />";
+        //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'√©l√®ve")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Rang de l'√©l√®ve\" />";
 
 		$ligne1[$nb_col] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".$nb_col."';".
 				"document.getElementById('sens_tri').value='inverse';".
 				"document.forms['formulaire_tri'].submit();\">".
-				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'ÈlËve")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'ÈlËve\" />".
+				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'√©l√®ve")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'√©l√®ve\" />".
 				"</a>";
 
-        $ligne1_csv[$nb_col] = "Rang de l'ÈlËve";
+        $ligne1_csv[$nb_col] = "Rang de l'√©l√®ve";
 
 		// Remplissage de la ligne coefficients
         $col[$nb_col][0] = "-";
 
-		// Remplissage des lignes Moyenne gÈnÈrale, minimale et maximale
+		// Remplissage des lignes Moyenne g√©n√©rale, minimale et maximale
         $col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
         $col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
         $col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
@@ -1312,10 +1312,10 @@ if ($ligne_supl == 1) {
 
 //===============================
 // A FAIRE: 20080424
-// INTERCALER ICI un dispositif analogue ‡ celui de index1.php pour trier autrement
+// INTERCALER ICI un dispositif analogue √† celui de index1.php pour trier autrement
 
 if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
-	// Pour activer my_echo ‡ des fins de debug, passer $debug ‡ 1 dans la dÈclaration de la fonction plus haut dans la page
+	// Pour activer my_echo √† des fins de debug, passer $debug √† 1 dans la d√©claration de la fonction plus haut dans la page
 	my_echo("\$_POST['col_tri']=".$_POST['col_tri']."<br />");
 	$col_tri=$_POST['col_tri'];
 
@@ -1323,7 +1323,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 
 	// if ($test_coef != 0) $col[1][0] = "Coefficient";
 
-	// Ajout d'une ligne de dÈcalage si il y a une ligne de coeff
+	// Ajout d'une ligne de d√©calage si il y a une ligne de coeff
 	if($col[1][0]=="Coefficient") {
 		//$b_inf=1;
 		//$b_sup=$nb_lignes_tableau+1;
@@ -1335,7 +1335,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 		$corr=0;
 	}
 
-	// VÈrifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
+	// V√©rifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
 	if((strlen(preg_replace("/[0-9]/","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 		my_echo("<table>");
 		my_echo("<tr><td valign='top'>");
@@ -1374,7 +1374,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 			$i++;
 		}
 
-		// Tri du tableau avec stockage de l'ordre dans $rg d'aprËs $tmp_tab
+		// Tri du tableau avec stockage de l'ordre dans $rg d'apr√®s $tmp_tab
 		array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
 
 
@@ -1387,7 +1387,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 		my_echo("<td valign='top'>");
 
 
-		// On utilise des tableaux temporaires le temps de la rÈaffectation dans l'ordre
+		// On utilise des tableaux temporaires le temps de la r√©affectation dans l'ordre
 		$tmp_col=array();
 		//$tmp_col_csv=array();
 
@@ -1423,7 +1423,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 		my_echo("</td></tr>");
 		my_echo("</table>");
 
-		// On rÈaffecte les valeurs dans le tableau initial ‡ l'aide du tableau temporaire
+		// On r√©affecte les valeurs dans le tableau initial √† l'aide du tableau temporaire
 		if((isset($_POST['sens_tri']))&&($_POST['sens_tri']=="inverse")) {
 			for($m=1;$m<=$nb_colonnes;$m++) {
 				for($i=0;$i<$nb_lignes_tableau;$i++) {
@@ -1506,7 +1506,7 @@ if(isset($_GET['mode'])) {
 
 		$nom_fic=$chaine_titre."_".$now.".csv";
 
-		// Filtrer les caractËres dans le nom de fichier:
+		// Filtrer les caract√®res dans le nom de fichier:
 		$nom_fic=preg_replace("/[^a-zA-Z0-9_.-]/","",remplace_accents($nom_fic,'all'));
 
 		/*
@@ -1575,7 +1575,7 @@ $_SESSION['vtn_pref_coloriser_resultats']=$vtn_coloriser_resultats;
 
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
-// Lien pour gÈnÈrer un CSV
+// Lien pour g√©n√©rer un CSV
 echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 7em; height: 1em; text-align: center; padding-bottom:3px;'>
 <a href='".$_SERVER['PHP_SELF']."?mode=csv&amp;id_classe=$id_classe&amp;num_periode=$num_periode";
 
@@ -1603,11 +1603,11 @@ $la_date=date("d/m/Y H:i");
 if($vtn_coloriser_resultats=='y') {
 	echo "<div class='noprint' style='float: right; width: 10em; text-align: center; padding-bottom:3px;'>\n";
 
-	echo "<p class='bold' style='text-align:center;'>LÈgende de la colorisation</p>\n";
-	$legende_colorisation="<table class='boireaus' summary='LÈgende de la colorisation'>\n";
+	echo "<p class='bold' style='text-align:center;'>L√©gende de la colorisation</p>\n";
+	$legende_colorisation="<table class='boireaus' summary='L√©gende de la colorisation'>\n";
 	$legende_colorisation.="<thead>\n";
 		$legende_colorisation.="<tr>\n";
-		$legende_colorisation.="<th>Borne<br />supÈrieure</th>\n";
+		$legende_colorisation.="<th>Borne<br />sup√©rieure</th>\n";
 		$legende_colorisation.="<th>Couleur texte</th>\n";
 		$legende_colorisation.="<th>Couleur cellule</th>\n";
 		$legende_colorisation.="</tr>\n";
@@ -1632,22 +1632,22 @@ echo "</div>\n";
 echo "<div>\n";
 
 if ($referent == "une_periode") {
-	//echo "<p class=bold>Classe : $classe - RÈsultats : $nom_periode[$num_periode] - AnnÈe scolaire : ".getSettingValue("gepiYear")."</p>";
+	//echo "<p class=bold>Classe : $classe - R√©sultats : $nom_periode[$num_periode] - Ann√©e scolaire : ".getSettingValue("gepiYear")."</p>";
 	echo "<p class='bold'>Classe : $classe - Moyennes du carnet de notes du $nom_periode[$num_periode] - (<i>".$la_date."</i>) - ".getSettingValue("gepiYear")."</p>\n";
 }
 else {
-	//echo "<p class=bold>Classe : $classe - RÈsultats : Moyennes annuelles - AnnÈe scolaire : ".getSettingValue("gepiYear")."</p>";
+	//echo "<p class=bold>Classe : $classe - R√©sultats : Moyennes annuelles - Ann√©e scolaire : ".getSettingValue("gepiYear")."</p>";
 	echo "<p class='bold'>Classe : $classe - Moyennes annuelles du carnet de notes - (<i>".$la_date."</i>) - ".getSettingValue("gepiYear")."</p>\n";
 }
 
 //affiche_tableau($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
 
 function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
-	// $col1_centre = 1 --> la premiËre colonne est centrÈe
-	// $col1_centre = 0 --> la premiËre colonne est alignÈe ‡ gauche
-	// $col_centre = 1 --> toutes les autres colonnes sont centrÈes.
-	// $col_centre = 0 --> toutes les autres colonnes sont alignÈes.
-	// $couleur_alterne --> les couleurs de fond des lignes sont alternÈs
+	// $col1_centre = 1 --> la premi√®re colonne est centr√©e
+	// $col1_centre = 0 --> la premi√®re colonne est align√©e √† gauche
+	// $col_centre = 1 --> toutes les autres colonnes sont centr√©es.
+	// $col_centre = 0 --> toutes les autres colonnes sont align√©es.
+	// $couleur_alterne --> les couleurs de fond des lignes sont altern√©s
 	global $num_debut_colonnes_matieres, $num_debut_lignes_eleves, $vtn_coloriser_resultats, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
 
 	echo "<table summary=\"Moyennes des carnets de notes\" class='boireaus' border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
@@ -1721,19 +1721,19 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 affiche_tableau2($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
 
 if($vtn_coloriser_resultats=='y') {
-	echo "<p class='bold'>LÈgende de la colorisation&nbsp;:</p>\n";
+	echo "<p class='bold'>L√©gende de la colorisation&nbsp;:</p>\n";
 	echo $legende_colorisation;
 }
 
 echo "<div class='noprint'>\n";
-echo "<p><b>Attention:</b> Les moyennes visualisÈes ici sont des photos ‡ un instant t de ce qui a ÈtÈ saisi par les professeurs.<br />\n";
-echo "Cela ne correspond pas nÈcessairement ‡ ce qui apparaitra sur le bulletin aprËs saisie d'autres rÈsultats et ajustements Èventuels des coefficients.</p>\n";
+echo "<p><b>Attention:</b> Les moyennes visualis√©es ici sont des photos √† un instant t de ce qui a √©t√© saisi par les professeurs.<br />\n";
+echo "Cela ne correspond pas n√©cessairement √† ce qui apparaitra sur le bulletin apr√®s saisie d'autres r√©sultats et ajustements √©ventuels des coefficients.</p>\n";
 echo "</div>\n";
 
 //=======================================================
 // MODIF: boireaus 20080424
 // Pour permettre de trier autrement...
-echo "\n<!-- Formulaire pour l'affichage avec tri sur la colonne cliquÈe -->\n";
+echo "\n<!-- Formulaire pour l'affichage avec tri sur la colonne cliqu√©e -->\n";
 echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" name=\"formulaire_tri\">\n";
 echo add_token_field();
 echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";

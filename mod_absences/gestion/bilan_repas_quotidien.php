@@ -41,13 +41,13 @@ if ($resultat_session == 'c') {
 die();
 };
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
 die();
 }
 
-// Insertion du style spécifique
+// Insertion du style spÃ©cifique
 $style_specifique = "mod_absences/gestion/style_absences";
 
 //+++++++++++++++++++++++++++++++++
@@ -62,7 +62,7 @@ $choix_date = explode("/", $date_choisie);
 $date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
 $date_voulue = $choix_date[2]."-".$choix_date[1]."-".$choix_date[0];
-// On récupère le nom des créneaux
+// On rÃ©cupÃ¨re le nom des crÃ©neaux
 
 
 
@@ -96,33 +96,33 @@ $date_voulue = $choix_date[2]."-".$choix_date[1]."-".$choix_date[0];
 
 <?php
 // ===================== Quelques variables utiles ===============
-	// On détermine le jour en Français actuel
+	// On dÃ©termine le jour en FranÃ§ais actuel
 	$jour_choisi = retourneJour(date("w", $date_choisie_ts));
 	$query = mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'");
-	$attention = ''; // message de prévention au cas où $query ne retourne rien
+	$attention = ''; // message de prÃ©vention au cas oÃ¹ $query ne retourne rien
 
 	$nbre_rep = mysql_num_rows($query);
 	if ($nbre_rep >= 1) {
-		// Avec le résultat, on calcule les timestamps UNIX
+		// Avec le rÃ©sultat, on calcule les timestamps UNIX
 		$req = mysql_fetch_array($query);
 		$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
 		$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
 		$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		$time_actu_fin = mktime($rep_fin[0], $rep_fin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 	}else{
-		// Si on ne récupère rien, on donne par défaut les ts du jour actuel
+		// Si on ne rÃ©cupÃ¨re rien, on donne par dÃ©faut les ts du jour actuel
 		$time_actu_deb = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 		$time_actu_fin = mktime(23, 59, 0, date("m"), date("d"), date("Y"));
 		// et on affiche un petit message
-		$attention = "L'établissement est censé être fermé aujourd'hui.";
+		$attention = "L'Ã©tablissement est censÃ© Ãªtre fermÃ© aujourd'hui.";
 	}
 
-// Affichage des noms répartis par classe
+// Affichage des noms rÃ©partis par classe
 $req_classe = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
 $nbre = mysql_num_rows($req_classe);
 
 for($i = 0; $i < $nbre; $i++) {
-	// On récupère le nom de toutes les classes
+	// On rÃ©cupÃ¨re le nom de toutes les classes
 	$rep_classe[$i]["classe"] = mysql_result($req_classe, $i, "classe");
 	$rep_classe[$i]["id"] = mysql_result($req_classe, $i, "id");
 	echo '
@@ -131,7 +131,7 @@ for($i = 0; $i < $nbre; $i++) {
 			<td colspan="2"></td>
 		</tr>
 		';
-	// On traite alors l'affichage de tous les élèves de chaque classe
+	// On traite alors l'affichage de tous les Ã©lÃ¨ves de chaque classe
 	$sql_repas = "SELECT DISTINCT eleve_id FROM absences_repas WHERE date_repas = '$date_voulue' ORDER BY eleve_id";
 	//echo $sql_repas;
 	$req_repas = mysql_query($sql_repas);
@@ -142,9 +142,9 @@ for($i = 0; $i < $nbre; $i++) {
 		$rep_absences[$b]["eleve_id"] = mysql_result($req_repas, $b, "eleve_id");
 		$req_id_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 
-		// On affiche l'élève en fonction de la classe à laquelle il appartient
+		// On affiche l'Ã©lÃ¨ve en fonction de la classe Ã  laquelle il appartient
 		if ($rep_classe[$i]["id"] == $req_id_classe["id_classe"]) {
-			// On récupère nom et prénom de l'élève
+			// On rÃ©cupÃ¨re nom et prÃ©nom de l'Ã©lÃ¨ve
 			$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 			echo '<tr>
 			<td></td>
@@ -165,6 +165,6 @@ echo "Nombre de repas : $nbre_a";
 
 <h5>Impression faite le <?php echo date("d/m/Y - h:i"); ?>.</h5>
 <?php
-echo '<p class="red">'.$attention.'</p>'; // message d'information si le jour demandé est un jour fermé normalement
+echo '<p class="red">'.$attention.'</p>'; // message d'information si le jour demandÃ© est un jour fermÃ© normalement
 require("../../lib/footer.inc.php");
 ?>

@@ -51,7 +51,7 @@ require_once("../../lib/header.inc");
 
 <?php /* page liste absences */ 
 include "gestion_absences_liste.php";?>
-<?php /* fiche élève sélection */ ?>
+<?php /* fiche Ã©lÃ¨ve sÃ©lection */ ?>
 <?php if ( $fiche_eleve != '' ) {
 
          $cpt_liste = 0;
@@ -70,7 +70,7 @@ include "gestion_absences_liste.php";?>
 <div style="text-align:center; margin: auto;">
     <table style="margin: auto; width: 500px;" border="0" cellspacing="2" cellpadding="0">
        <tr class="fond_rouge">
-           <td class="titre_tableau_gestion"><b>Liste des élèves</b></td>
+           <td class="titre_tableau_gestion"><b>Liste des Ã©lÃ¨ves</b></td>
        </tr>
        <?php $cpt_aff_liste = 0; $ic = 1;
              while ($cpt_aff_liste < $cpt_liste)
@@ -84,7 +84,7 @@ include "gestion_absences_liste.php";?>
 <?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>
-<?php /* fiche élève */ 
+<?php /* fiche Ã©lÃ¨ve */ 
 if ( $select_fiche_eleve != '' ) {
 
 	$requete_liste_fiche = "SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.login = '".$select_fiche_eleve."'";
@@ -107,9 +107,9 @@ if ( $select_fiche_eleve != '' ) {
 
     <br />
 
-<?php /* fiche identitée de l'élève */ ?>
+<?php /* fiche identitÃ©e de l'Ã©lÃ¨ve */ ?>
 <a name="ident"></a>
-<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identité élève</div>
+<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">IdentitÃ© Ã©lÃ¨ve</div>
 <div style="border-top: 2px solid #2C7E8F; /* #FF9F2F */ border-bottom: 2px solid #2C7E8F; width: 100%; margin: auto; padding: 0; position: relative;">
 	<div style="height: 175px; background: transparent url(../images/grid_10.png)">
 		<div style="float: left; margin: 12.5px;">
@@ -132,7 +132,7 @@ if ( $select_fiche_eleve != '' ) {
 		</div>
 		<div style="float: left; margin: 12.5px 0px 0px 0px; width: 36%">
 			Nom : <strong><?php echo $nom_eleve; ?></strong><br />
-			Prénom : <strong><?php echo $prenom_eleve; ?></strong><br />
+			PrÃ©nom : <strong><?php echo $prenom_eleve; ?></strong><br />
 			Date de naissance : <?php echo $naissance_eleve; ?><br />
 			Age : <strong><?php echo age($date_de_naissance); ?> ans</strong><br />
 			<br />
@@ -141,7 +141,7 @@ if ( $select_fiche_eleve != '' ) {
 		<div style="float: left; background-image: url(../images/responsable.png); background-repeat:no-repeat; height: 175px; width: 20px; margin-left: 10px;">&nbsp;</div>
 		<div style="float: left; margin: 12.5px; overflow: auto;  width: 40%;">
 	<?php
-		// L'affichage des responsables : le 1 est en rouge et est identifié comme tel
+		// L'affichage des responsables : le 1 est en rouge et est identifiÃ© comme tel
 		$cpt_responsable = 0;
 		while ( !empty($responsable_eleve[$cpt_responsable]) )
 		{
@@ -162,13 +162,13 @@ if ( $select_fiche_eleve != '' ) {
 					.ucfirst($responsable_eleve[$cpt_responsable]['prenom']) . $text . '</span>';
 			$telephone = '';
 			if ( !empty($responsable_eleve[$cpt_responsable]['tel_pers']) ) {
-				$telephone = $telephone.'Tél. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_pers']).'</strong> ';
+				$telephone = $telephone.'TÃ©l. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_pers']).'</strong> ';
 			}
 			if ( !empty($responsable_eleve[$cpt_responsable]['tel_prof']) ) {
 				$telephone = $telephone.'Prof. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_prof']).'</strong> ';
 			}
 			if ( !empty($responsable_eleve[$cpt_responsable]['tel_port']) ) {
-				$telephone = $telephone.'<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($responsable_eleve[$cpt_responsable]['tel_port']);
+				$telephone = $telephone.'<br />Port.<img src="../images/attention.png" alt="Attention numÃ©ro surtaxÃ©" title="Attention numÃ©ro surtaxÃ©" border="0" height="14" width="14" /> '.present_tel($responsable_eleve[$cpt_responsable]['tel_port']);
 			}
 			//ajout adresse didier
 			if ( !empty($responsable_eleve[$cpt_responsable]['adr1']) ) {
@@ -186,42 +186,42 @@ if ( $select_fiche_eleve != '' ) {
 		</div>
 	</div>
 </div>
-<?php /* fin fiche identitée de l'élève */ ?>
+<?php /* fin fiche identitÃ©e de l'Ã©lÃ¨ve */ ?>
 <!--
-Pour éviter un centrage bizarre:
+Pour Ã©viter un centrage bizarre:
 -->
 <div style='clear: both;'>&nbsp;</div>
 <?php /* ajout impressions didier */ ?>
     <div style="text-align: center;">
-	[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#suivieleve" title="consulter le suivi de l'élève">Suivi de l'élève</a> |
-	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=abseleve#abseleve" title="consulter l'absentéisme non justifié">Absentéisme non justifié</a> | 
-	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=tableauannuel" title="consulter la fiche de l'élève">Statistique annuelle</a> | 
-	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#tab_sem_abs" title="Répartissement des absences">Répartition des absences</a> |
+	[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#suivieleve" title="consulter le suivi de l'Ã©lÃ¨ve">Suivi de l'Ã©lÃ¨ve</a> |
+	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=abseleve#abseleve" title="consulter l'absentÃ©isme non justifiÃ©">AbsentÃ©isme non justifiÃ©</a> | 
+	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=tableauannuel" title="consulter la fiche de l'Ã©lÃ¨ve">Statistique annuelle</a> | 
+	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#tab_sem_abs" title="RÃ©partissement des absences">RÃ©partition des absences</a> |
 	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=impbilan#impbilan" title="Impression bilan des absences">Impression bilan des absences </a> |
-	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=impfic#impfic" title="Impression fiche récapitulative">Impression fiche récapitulative </a> ]
+	<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=impfic#impfic" title="Impression fiche rÃ©capitulative">Impression fiche rÃ©capitulative </a> ]
     </div><br />
 
 <?php /* DIV global */ ?>
 <div style="margin: auto; position: relative;">
 
-<?php /* DIV coté Gauche */ ?>
+<?php /* DIV cotÃ© Gauche */ ?>
 	<div style="float: left; width: 370px;">
 
-<?php /* DIV du suivi de l'élève */ ?>
+<?php /* DIV du suivi de l'Ã©lÃ¨ve */ ?>
 	   <?php if ( $aff_fiche==='suivieleve' or $aff_fiche==='' ) { ?>
 		<a name="suivieleve"></a>
-		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Actualité élève</div>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">ActualitÃ© Ã©lÃ¨ve</div>
 		<div style="border-top: 2px solid #2C7E8F; border-bottom: 2px solid #2C7E8F;">
 			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
 
-			<?php /* formulaire pour l'ajout de l'actualitée de l'élève */ ?>
+			<?php /* formulaire pour l'ajout de l'actualitÃ©e de l'Ã©lÃ¨ve */ ?>
 			<a name="formulaire"></a>
 		            <form method="post" action="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>">
 		               <fieldset>
 		                 <legend>Ajouter un suivi</legend>
 			                 <select id="info_suivi" onchange="data_info_suivi.value += info_suivi.options[info_suivi.selectedIndex].text + '\n'" style="width: 210px;">
-			                   <option>Sélectionné un texte rapide</option>
-					  		   <option>[Exclusion du cours] A été exclus du cours de:   à:</option>
+			                   <option>SÃ©lectionnÃ© un texte rapide</option>
+					  		   <option>[Exclusion du cours] A Ã©tÃ© exclus du cours de:   Ã :</option>
 			                   <option>Rencontre avec les parents</option>
 			                 </select>
 				         <input type="hidden" name="eleve_suivi_eleve_cpe" value="<?php echo $login_eleve; ?>" />
@@ -240,7 +240,7 @@ Pour éviter un centrage bizarre:
 						</td>
 						<td>
 						<div style="font-family: Arial; font-size: 0.8em; background-color: #FFFFFF; border : 1px solid #0061BD; height: 70px; padding-left: 2px; width: 100px;">
-							Niveau de priorité<br />
+							Niveau de prioritÃ©<br />
 							<input name="niveau_urgent" id="nur1" value="1" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='1') { ?>checked="checked"<?php } else { ?>checked="checked"<?php } ?> /><label for="nur1" style="cursor: pointer;">Information</label><br />
 							<input name="niveau_urgent" id="nur2" value="2" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='2') { ?>checked="checked"<?php } ?> /><label for="nur2" style="cursor: pointer;">Important</label><br />
 							<input name="niveau_urgent" id="nur3" value="3" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='3') { ?>checked="checked"<?php } ?> /><label for="nur3" style="cursor: pointer;">Prioritaire</label><br />
@@ -257,9 +257,9 @@ Pour éviter un centrage bizarre:
 		                                     <option value="<?php echo $data_liste_action['init_absence_action']; ?>" <?php if(!empty($data_modif_fiche['action_suivi_eleve_cpe']) and $data_modif_fiche['action_suivi_eleve_cpe'] === $data_liste_action['init_absence_action']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_action['init_absence_action']." - ".$data_liste_action['def_absence_action']; ?></option>
 		                              <?php } ?>
 					</select><br />
-					Méthode&nbsp;:
+					MÃ©thode&nbsp;:
 						<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '1') { ?>checked="checked"<?php } ?> onclick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
-						<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '2') { ?>checked="checked"<?php } ?> onclick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label>
+						<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '2') { ?>checked="checked"<?php } ?> onclick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">TÃ©l.</label>
 						<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '3') { ?>checked="checked"<?php } ?> onclick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label>
 						<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '5') { ?>checked="checked"<?php } ?> onclick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label>
 						<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -304,7 +304,7 @@ Pour éviter un centrage bizarre:
 
 	<?php $cpt_komenti = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."'"),0); ?>
 	<div style="text-align: center;">
-	  <?php if($debut_selection_suivi!='0') { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi-'2'; ?>">Page précédente</a><?php } ?>
+	  <?php if($debut_selection_suivi!='0') { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi-'2'; ?>">Page prÃ©cÃ©dente</a><?php } ?>
 	  <?php $debut_selection_suivi_suivant = $debut_selection_suivi+'2'; if($debut_selection_suivi!='0' and $debut_selection_suivi_suivant<=$cpt_komenti) { ?> | <?php } ?>
 	  <?php if($debut_selection_suivi_suivant<=$cpt_komenti) { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi+'2'; ?>">Page suivant</a><?php } ?>
 	</div>
@@ -322,13 +322,13 @@ Pour éviter un centrage bizarre:
 			  } else { $couleur='#FFFFFF'; $couleur2='#4DFF2F'; $couleur3='#FDFFEF'; $drapeau=''; } ?>
                     <div class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe'].$action_pour_eleve; ?><br /><br /><span class="dimi_texte">Ecrit par : <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />
 			<?php
-				// vérifie si on n'a le droit de supprimer la fiche on ne peut pas s'il y a un courrier attaché
+				// vÃ©rifie si on n'a le droit de supprimer la fiche on ne peut pas s'il y a un courrier attachÃ©
 				$autorise_supprimer = 'non';
 			        $cpt_lettre_recus = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'suivi_eleve_cpe' AND partdenum_lettre_suivi = '".$data_komenti['id_suivi_eleve_cpe']."'"),0);
 			          if( $cpt_lettre_recus === '0' ) { $autorise_supprimer = 'oui'; }
 			?>
 				[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action=modifier#formulaire">modifier</a> <?php if ( $autorise_supprimer === 'oui' ) { ?>|<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=supprimer">supprimer</a><?php } ?> ] <?php /* [ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>">action</a> ] */ ?></span></div>
-		<?php // courrier attaché
+		<?php // courrier attachÃ©
 	        $courrier_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partdenum_lettre_suivi = '".$data_komenti['id_suivi_eleve_cpe']."' AND partde_lettre_suivi = 'suivi_eleve_cpe'"),0);
 	        if ($courrier_existance != '0') { ?>
 			<?php
@@ -336,24 +336,24 @@ Pour éviter un centrage bizarre:
 	               $execution_1 = mysql_query($requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysql_error());
 	               while ( $data_1 = mysql_fetch_array($execution_1)) {
 			       $datation = ''; ?>
-			    <div class="info_eleve_courrier" style="background: <?php echo $couleur3; ?>;"><?php if(empty($data_1['envoye_date_lettre_suivi']) or $data_1['envoye_date_lettre_suivi'] === '0000-00-00') { ?><div style="float: right; margin: 0;"><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;id_lettre_suivi=<?php echo $data_1['id_lettre_suivi']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=detacher_courrier">Supprimer</a></div><?php } ?><strong>Courrier attaché:</strong><br />
+			    <div class="info_eleve_courrier" style="background: <?php echo $couleur3; ?>;"><?php if(empty($data_1['envoye_date_lettre_suivi']) or $data_1['envoye_date_lettre_suivi'] === '0000-00-00') { ?><div style="float: right; margin: 0;"><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;id_lettre_suivi=<?php echo $data_1['id_lettre_suivi']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=detacher_courrier">Supprimer</a></div><?php } ?><strong>Courrier attachÃ©:</strong><br />
 				Titre: <strong><?php echo $data_1['titre_lettre_type']; ?></strong><?php
-				$datation = '<span title="par: '.qui($data_1['quiemet_lettre_suivi']).'">'.date_frl($data_1['emis_date_lettre_suivi']).'<small> à '.heure($data_1['emis_heure_lettre_suivi']).'</small></span>'; ?>
-				<br />&nbsp;&nbsp;&nbsp;émis le: <?php echo $datation;
+				$datation = '<span title="par: '.qui($data_1['quiemet_lettre_suivi']).'">'.date_frl($data_1['emis_date_lettre_suivi']).'<small> Ã  '.heure($data_1['emis_heure_lettre_suivi']).'</small></span>'; ?>
+				<br />&nbsp;&nbsp;&nbsp;Ã©mis le: <?php echo $datation;
 			      if($data_1['statu_lettre_suivi'] != 'annuler') {
-				if($data_1['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = '<span title="par: '.qui($data_1['quienvoi_lettre_suivi']).'">'.date_frl($data_1['envoye_date_lettre_suivi']).'<small> à '.heure($data_1['envoye_heure_lettre_suivi']).'</small></span>'; } else { $datation = 'en attente'; } ?>
-				<br />&nbsp;&nbsp;&nbsp;expédié le: <?php echo $datation;
+				if($data_1['envoye_date_lettre_suivi'] != '0000-00-00') { $datation = '<span title="par: '.qui($data_1['quienvoi_lettre_suivi']).'">'.date_frl($data_1['envoye_date_lettre_suivi']).'<small> Ã  '.heure($data_1['envoye_heure_lettre_suivi']).'</small></span>'; } else { $datation = 'en attente'; } ?>
+				<br />&nbsp;&nbsp;&nbsp;expÃ©diÃ© le: <?php echo $datation;
 				if($data_1['reponse_date_lettre_suivi'] != '0000-00-00') { $datation = '<span title="par: '.qui($data_1['quireception_lettre_suivi']).'">'.date_frl($data_1['reponse_date_lettre_suivi']).'</span>'; } else { $datation = 'en attente'; } ?>
-				<br />&nbsp;&nbsp;&nbsp;réponse reçus le: <?php echo $datation;
+				<br />&nbsp;&nbsp;&nbsp;rÃ©ponse reÃ§us le: <?php echo $datation;
 				       if ( !empty($data_1['reponse_remarque_lettre_suivi']) ) { ?><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Remarque : <?php echo $data_1['reponse_remarque_lettre_suivi']; }
-			        } else { ?><br />&nbsp;&nbsp;&nbsp;<span style="color: #EF000A;"><strong>Courrier annulé par <?php echo qui($data_1['quireception_lettre_suivi']); ?></strong></span><?php } ?>
+			        } else { ?><br />&nbsp;&nbsp;&nbsp;<span style="color: #EF000A;"><strong>Courrier annulÃ© par <?php echo qui($data_1['quireception_lettre_suivi']); ?></strong></span><?php } ?>
 			    </div>
 		 <?php } ?>
 		<?php } ?>
            <?php } ?>
 
            	<div style="text-align: center;">
-	  <?php if($debut_selection_suivi!='0') { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi-'2'; ?>">Page précédente</a><?php } ?>
+	  <?php if($debut_selection_suivi!='0') { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi-'2'; ?>">Page prÃ©cÃ©dente</a><?php } ?>
 	  <?php $debut_selection_suivi_suivant = $debut_selection_suivi+'2'; if($debut_selection_suivi!='0' and $debut_selection_suivi_suivant<=$cpt_komenti) { ?> | <?php } ?>
 	  <?php if($debut_selection_suivi_suivant<=$cpt_komenti) { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi+'2'; ?>">Page suivant</a><?php } ?>
 	</div>
@@ -362,26 +362,26 @@ Pour éviter un centrage bizarre:
 		</div>
 	</div>
 	<?php } ?>
-<?php /* fin du DIV du suivi de l'élève */ ?>
+<?php /* fin du DIV du suivi de l'Ã©lÃ¨ve */ ?>
 
 
-<?php /* DIV de l'absentéisme de l'élève */ ?>
+<?php /* DIV de l'absentÃ©isme de l'Ã©lÃ¨ve */ ?>
 	<?php if ( $aff_fiche === 'abseleve' ) { ?>
 		<a name="abseleve"></a>
-		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Absentéisme de l'élève</div>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">AbsentÃ©isme de l'Ã©lÃ¨ve</div>
 		<div style="border-top: 2px solid #2C7E8F; /* #FF9F2F */ border-bottom: 2px solid #2C7E8F; width: 100%; margin: auto; padding: 0; position: relative;">
 			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
 
-	   <?php /* tableau des absences non justifiée */ ?>
+	   <?php /* tableau des absences non justifiÃ©e */ ?>
            <?php $cpt_absences = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'A'"),0);
-// modification du critère pour compter aussi les non justifs par telephone didier		
+// modification du critÃ¨re pour compter aussi les non justifs par telephone didier		
 		$cpt_absences_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'A' AND justify_absence_eleve != 'O'"),0);
            if ( $cpt_absences != 0 ) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=A',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Absences"><?php echo $cpt_absences; ?></a></b> Absence(s)</p>
                <?php if ( $cpt_absences_nj != 0 ) { ?>
-           	   Liste des absences non justifiée(s)<br />
+           	   Liste des absences non justifiÃ©e(s)<br />
 		   <ul>
-        	   <?php // modification du critère pour compter aussi les non justifs par telephone didier	
+        	   <?php // modification du critÃ¨re pour compter aussi les non justifs par telephone didier	
 			   $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' AND justify_absence_eleve != 'O' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
                 	 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
 	                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
@@ -399,7 +399,7 @@ Pour éviter un centrage bizarre:
                 	      <a href="ajout_abs.php?action=modifier&amp;type=A&amp;id=<?php echo $data_absences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui">
 			      <?php
 					if ( $data_absences_nr['d_date_absence_eleve'] != $data_absences_nr['a_date_absence_eleve'] ) { echo 'du '.date_fr($data_absences_nr['d_date_absence_eleve']).' au '.date_fr($data_absences_nr['a_date_absence_eleve']); }
-					elseif ( $data_absences_nr['d_date_absence_eleve'] === $data_absences_nr['a_date_absence_eleve'] ) { echo date_fr($data_absences_nr['d_date_absence_eleve'])." de ".$data_absences_nr['d_heure_absence_eleve']." à ".$data_absences_nr['a_heure_absence_eleve']; }
+					elseif ( $data_absences_nr['d_date_absence_eleve'] === $data_absences_nr['a_date_absence_eleve'] ) { echo date_fr($data_absences_nr['d_date_absence_eleve'])." de ".$data_absences_nr['d_heure_absence_eleve']." Ã  ".$data_absences_nr['a_heure_absence_eleve']; }
 			      ?></a></li><?php
         	         }
 	           ?>
@@ -407,17 +407,17 @@ Pour éviter un centrage bizarre:
 		<?php } ?>
 	   <?php } ?>
 
-	   <?php /* tableau des retards non justifiée */ ?>
+	   <?php /* tableau des retards non justifiÃ©e */ ?>
 	   <?php $cpt_retards = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'R'"),0);
-		 // modification du critère pour compter aussi les non justifs par telephone didier
+		 // modification du critÃ¨re pour compter aussi les non justifs par telephone didier
 		 $cpt_retards_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'R' AND justify_absence_eleve != 'O '"),0);
 
            if ( $cpt_retards != 0 ) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=R',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Retards"><?php echo $cpt_retards; ?></a></b> Retards</p>
                <?php if($cpt_retards_nj != 0) { ?>
-	           Liste des retards non justifié(s)<br />
+	           Liste des retards non justifiÃ©(s)<br />
 		   <ul>
-	           <?php // modification du critère pour compter aussi les non justifs par telephone didier	
+	           <?php // modification du critÃ¨re pour compter aussi les non justifs par telephone didier	
 			   $requete_retards_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' AND justify_absence_eleve != 'O' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
         	         $execution_retards_nr = mysql_query($requete_retards_nr) or die('Erreur SQL !'.$requete_retards_nr.'<br />'.mysql_error());
 	                 while ($data_retards_nr = mysql_fetch_array($execution_retards_nr))
@@ -438,7 +438,7 @@ Pour éviter un centrage bizarre:
            if( $cpt_dispences != 0 ) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=D',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Dispences"><?php echo $cpt_dispences; ?></a></b> Dispenses</p>
                <?php if($cpt_dispences_nj != 0) { ?>
-	           Liste des dispenses non justifiée(s)<br />
+	           Liste des dispenses non justifiÃ©e(s)<br />
 		   <ul>
 	           <?php $requete_dispences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
         	         $execution_dispences_nr = mysql_query($requete_dispences_nr) or die('Erreur SQL !'.$requete_dispences_nr.'<br />'.mysql_error());
@@ -462,7 +462,7 @@ Pour éviter un centrage bizarre:
 
 
 		</div>
-<?php /* fin du DIV de l'absentéisme de l'élève */ ?>
+<?php /* fin du DIV de l'absentÃ©isme de l'Ã©lÃ¨ve */ ?>
 	</div>
 	<?php } ?>
 <?php /* DIV impression bilan  */ ?>
@@ -478,8 +478,8 @@ $retardnj='';
 <div style="text-align: center;">
    <form method="post" action="bilan_absence.php?type_impr=bda&amp;choix=<?php echo $choix; ?>" target="blank" name="form3">
       <fieldset style="width: 340px; margin: auto;" class="couleur_ligne_3">
-         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-            <div class="titre_tableau_gestion">Bilan général des absences</div>
+         <legend class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
+            <div class="titre_tableau_gestion">Bilan gÃ©nÃ©ral des absences</div>
             <div class="norme_absence" style="text-align: left;">
              <br />
 			 <input type="hidden" name="classe" value="tous" />
@@ -492,7 +492,7 @@ $retardnj='';
 		  	<br /><input name="retardnj" id="retardnj" value="1" type="checkbox" onclick="activedesactive('absencenj','retardnj');" <?php if ( $retardnj === '1' ) { ?>checked="checked"<?php } ?> /><label for="retardnj" style="cursor: pointer;">Lister seulement les retards non justifi&eacute;s</label>
 		  </span>
 		</div>
-		<br /><div style="text-align: right;"><input type="submit" name="Submit2" value="Valider la sélection" /></div>
+		<br /><div style="text-align: right;"><input type="submit" name="Submit2" value="Valider la sÃ©lection" /></div>
             </div>
       </fieldset>
     </form>
@@ -507,11 +507,11 @@ $retardnj='';
 <?php } ?>
 <?php /* DIV fiche recap  */ ?>
 	   <?php if ( $aff_fiche==='impfic') { 
-	   // mise en session du login de l'élève pour impression
+	   // mise en session du login de l'Ã©lÃ¨ve pour impression
 	   $_SESSION['eleve_multiple'][0] = $select_fiche_eleve;
 	   ?>
 		<a name="impfic"></a>
-		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Impression fiche récapitulative</div>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Impression fiche rÃ©capitulative</div>
 		<div style="border-top: 2px solid #2C7E8F; border-bottom: 2px solid #2C7E8F;">
 			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
 <?php
@@ -521,8 +521,8 @@ $retardnj='';
 <div style="text-align: center;">
    <form method="post" action="fiche_pdf.php" target="blank" name="form3">
       <fieldset style="width: 340px; margin: auto;" class="couleur_ligne_3">
-         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-            <div class="titre_tableau_gestion">Fiche récapitulative</div>
+         <legend class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
+            <div class="titre_tableau_gestion">Fiche rÃ©capitulative</div>
             <div class="norme_absence" style="text-align: left;">
              <br />
 			    du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du2; ?>" /><a href="#calend" onClick="<?php  echo $cal_3->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
@@ -531,7 +531,7 @@ $retardnj='';
 				<br />
 				<div id="div_1" style="display: <?php if( $absencenj != '' or $retardnj != '' ) { ?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF"><a name="ao"></a>
 		</div>
-		<br /><div style="text-align: right;"><input type="submit" name="Submit2" value="Valider la sélection" /></div>
+		<br /><div style="text-align: right;"><input type="submit" name="Submit2" value="Valider la sÃ©lection" /></div>
             </div>
       </fieldset>
     </form>
@@ -544,15 +544,15 @@ $retardnj='';
 <?php /* fin du DIV impression fiche recap*/ ?>
 </div>
 <?php } ?>
-<?php /* fin DIV coté gauche */ ?>
+<?php /* fin DIV cotÃ© gauche */ ?>
 </div>
 
-<?php /* DIV coté droit */ ?>
+<?php /* DIV cotÃ© droit */ ?>
 <div style="float: left; width: 370px; margin-left: 2px;">
 
-<?php /* DIV des statistique de l'élève ajout avec impression didier*/ ?>
+<?php /* DIV des statistique de l'Ã©lÃ¨ve ajout avec impression didier*/ ?>
 	<?php if ( $aff_fiche === 'suivieleve' or  $aff_fiche === '' or $aff_fiche==='abseleve' or $aff_fiche==='impbilan' or $aff_fiche==='impfic') { ?>
-		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Statistique élève</div>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Statistique Ã©lÃ¨ve</div>
 		<div style="border-top: 2px solid #2C7E8F; border-bottom: 2px solid #2C7E8F;">
 			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
 			<?php
@@ -603,7 +603,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 */
 
 
-	//préparation des valeurs
+	//prÃ©paration des valeurs
 	// axe x
 	if ( !isset($valeur_x) ) {
 		$i = '0';
@@ -638,12 +638,12 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 		$_SESSION['axe_y_ret'] = $valeur_y_ret;
 
 
-	// génération du graphique
-	?><div style="font-size: 14px; text-align: center; margin: auto;"><strong>Graphique des absences et retard sur l'année</strong></div>
+	// gÃ©nÃ©ration du graphique
+	?><div style="font-size: 14px; text-align: center; margin: auto;"><strong>Graphique des absences et retard sur l'annÃ©e</strong></div>
 	<img src="../lib/graph_double_ligne_fiche.php" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/><?php
 
 
-	// tableau des nombre d'absences par jour et par heure (période)
+	// tableau des nombre d'absences par jour et par heure (pÃ©riode)
    $i = '0';
 
 //	     $requete_comptage = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."'  AND type_absence_eleve = 'A'"),0);
@@ -661,7 +661,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			$i = $i + 1;
 		}
 
-	// si aucune absences alors on initialise le tab à vide
+	// si aucune absences alors on initialise le tab Ã  vide
 	if ( $i > 0 ) {
 	$tab = crer_tableau_jaj($tableau);
 	} else { $tab = ''; }
@@ -688,7 +688,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 
 	?><br /><br /><a name="tab_sem_abs"></a>
 	<table style="border-style: solid; border-width: 2px; border-color: black; width: 320px; border-collapse: collapse; margin: auto;">
-		<caption style="font-size: 14px; text-align: center; margin: auto;"><strong>Nombre d'absences par créneau horaire</strong></caption>
+		<caption style="font-size: 14px; text-align: center; margin: auto;"><strong>Nombre d'absences par crÃ©neau horaire</strong></caption>
 		<tr style="background-color: #F0FFCF;">
 			<td class="td_semaine_jour"></td>
 			<?php if ( isset($semaine['lundi']['ouverture']) ) { ?><td class="td_semaine_jour">Lun.</td><?php } ?>
@@ -701,11 +701,11 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 	<?php
 	$i = '0';
 
-		// calcul du nombre de période à affiché dans la semaine
+		// calcul du nombre de pÃ©riode Ã  affichÃ© dans la semaine
 		$maxHor = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_creneaux
 							WHERE suivi_definie_periode = '1'"),0);
 
-		// si il est égale à 0 alors on l'initialise à 11
+		// si il est Ã©gale Ã  0 alors on l'initialise Ã  11
 		if ( $maxHor === '0' or $maxHor > '11' ) { $maxHor = '11'; }
 
 	$icouleur = '1';
@@ -729,10 +729,10 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 		<br /><br />
 	</div>
 </div>
-<?php /* fin du DIV des statistique de l'élève */ ?>
+<?php /* fin du DIV des statistique de l'Ã©lÃ¨ve */ ?>
 <?php } ?>
 
-<?php /* fin du coté droit */ ?>
+<?php /* fin du cotÃ© droit */ ?>
 </div>
 
 <?php /* fin du DIV global */ ?>
@@ -741,7 +741,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 <?php if ( $aff_fiche === 'tableauannuel' ) { ?>
 <div style="margin: auto; position: relative;">
 	<div style="float: left; width: 781px">
-		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">L'élève sur l'année</div>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">L'Ã©lÃ¨ve sur l'annÃ©e</div>
 		<div style="border-top: 2px solid #2C7E8F; /* #FF9F2F */ border-bottom: 2px solid #2C7E8F; width: 100%; margin: auto; padding: 0; position: relative;">
 			<div style="background: transparent url(../images/grid_10.png)"><br />
 		<?php
@@ -776,7 +776,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			if(empty($tableau_info_donnee[$date_fin])) { $tableau_info_donnee[$date_fin]=''; }
 			$tableau_info_donnee[$date_fin]['retard'] = 'oui';
                    }
-	?><div style="font-size: 14px; text-align: center; margin: auto;"><strong>Statistique sur une année</strong></div>
+	?><div style="font-size: 14px; text-align: center; margin: auto;"><strong>Statistique sur une annÃ©e</strong></div>
 	<?php
 		$gepiYear = getSettingValue('gepiYear');
 		$annee_select = explode('-',$gepiYear);
@@ -821,7 +821,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='3') { $couleur='#FFDFDF'; $couleur2='#FF0000'; $drapeau='[prioritaire]'; }
 			  } else { $couleur='#FFFFFF'; $couleur2='#4DFF2F'; $drapeau=''; } ?>
-                    <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe']; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe']; ?><br /><br /><span class="dimi_texte">Ecrit par : <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />Concerne : <strong><a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>" title="consulter le suivi élève"><?php echo qui_eleve($data_komenti['eleve_suivi_eleve_cpe']); ?></a></strong> de <?php echo classe_de($data_komenti['eleve_suivi_eleve_cpe']) ?><br />[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>">lire</a> ]</span></p>
+                    <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe']; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe']; ?><br /><br /><span class="dimi_texte">Ecrit par : <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />Concerne : <strong><a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>" title="consulter le suivi Ã©lÃ¨ve"><?php echo qui_eleve($data_komenti['eleve_suivi_eleve_cpe']); ?></a></strong> de <?php echo classe_de($data_komenti['eleve_suivi_eleve_cpe']) ?><br />[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>">lire</a> ]</span></p>
            <?php } ?>
 	   </td>
            <td class="norme_absence_min" valign="top">
@@ -835,7 +835,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='3') { $couleur='#FFDFDF'; $couleur2='#FF0000'; $drapeau='[prioritaire]'; }
 			  } else { $couleur='#FFFFFF'; $couleur2='#4DFF2F'; $drapeau=''; } ?>
-                    <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe']; ?><br /><br /><span class="dimi_texte">Ecrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />Concerne : <strong><a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>" title="consulter le suivi élève"><?php echo qui_eleve($data_komenti['eleve_suivi_eleve_cpe']); ?></a></strong> de <?php echo classe_de($data_komenti['eleve_suivi_eleve_cpe']) ?><br />[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>">lire</a> ]</span></p>
+                    <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe']; ?><br /><br /><span class="dimi_texte">Ecrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />Concerne : <strong><a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>" title="consulter le suivi Ã©lÃ¨ve"><?php echo qui_eleve($data_komenti['eleve_suivi_eleve_cpe']); ?></a></strong> de <?php echo classe_de($data_komenti['eleve_suivi_eleve_cpe']) ?><br />[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>">lire</a> ]</span></p>
            <?php } ?>
 	   </td>
        </tr>
@@ -852,7 +852,7 @@ if ($choix === 'alert' and $fiche_eleve === '' and $select_fiche_eleve === '') {
 <br />
     <table style="margin: auto; width: 700px;" border="0" cellspacing="1" cellpadding="0">
        <tr class="fond_rouge">
-           <td colspan="1" class="titre_tableau_alert"><b>Système d'alert</b></td>
+           <td colspan="1" class="titre_tableau_alert"><b>SystÃ¨me d'alert</b></td>
        </tr>
        <tr class="td_tableau_absence_1">
            <td class="norme_absence_min" style="text-align: center; width: 50%;">Les alerts</td>
@@ -862,7 +862,7 @@ if ($choix === 'alert' and $fiche_eleve === '' and $select_fiche_eleve === '') {
 
 <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
       <fieldset style="width: 450px; margin: auto;">
-         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
+         <legend class="legend_texte">&nbsp;SÃ©lection&nbsp;</legend>
             <div class="titre_tableau_gestion">Profils des recherchers</div>
             <div class="norme_absence" style="text-align: center; background-color: #E8F1F4">
 		<table style="border: 0px; text-align: center; width: 100%;"><tr><td>
@@ -886,7 +886,7 @@ if ($choix === 'alert' and $fiche_eleve === '' and $select_fiche_eleve === '') {
 		  <select name="eleve_multiple[]" size="5" multiple="multiple" tabindex="4">
 		  <optgroup label="----- Listes des &eacute;l&egrave;ves -----">
 		    <?php
-			// sélection des id eleves sélectionné.
+			// sÃ©lection des id eleves sÃ©lectionnÃ©.
 			if(!empty($classe_multiple[0]))
 			{
 				$cpt_classe_selec = 0; $selection_classe = "";
@@ -907,7 +907,7 @@ if ($choix === 'alert' and $fiche_eleve === '' and $select_fiche_eleve === '') {
 			<select name="ajout_type_alert" size="1" style="width: 200px;">
 				<option>Type action</option>
 				<option>Type lettre</option>
-				<option>Fiche élève</option>
+				<option>Fiche Ã©lÃ¨ve</option>
 			</select>
 			<input type="submit" name="Submit10" value="Ajouter" />
 </td>

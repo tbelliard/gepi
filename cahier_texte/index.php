@@ -20,11 +20,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interfÃ©rer avec fckeditor
 if (isset($_POST['notes'])) {$traite_anti_inject = 'no';}
 
 $filtrage_extensions_fichiers_table_ct_types_documents='y';
@@ -51,9 +51,9 @@ if (!checkAccess()) {
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 $message_avertissement_navigateur = "";
@@ -82,7 +82,7 @@ $visa_cdt_inter_modif_notices_visees=getSettingValue("visa_cdt_inter_modif_notic
 
 include "../lib/mincals.inc";
 
-// uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
+// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 if(!isset($_SESSION['uid_prime'])) {
     $_SESSION['uid_prime']='';
@@ -138,15 +138,15 @@ if ($id_groupe != "") {
 
 
 // $id_ct : identifiant de la notice
-// $edit_devoir : si $edit_devoir est défini, la notice est de type "devoir à faire", sinon, elle est de type "compte-rendu"
+// $edit_devoir : si $edit_devoir est dÃ©fini, la notice est de type "devoir Ã  faire", sinon, elle est de type "compte-rendu"
 // $id_groupe : identifiant du groupe
-// $id_matiere : identifiant de la matière
+// $id_matiere : identifiant de la matiÃ¨re
 // $day : le jour courant
 // $month : le mois courant
-// $year : l'année courante
-// $heure_entry : heure de création d'une notice
-// $ajout :  prend la valeur "yes" ou bien n'est pas défini. $ajout='yes' si on ajoute une notice à une journée lorqu'une notice existe déjà
-// $info  : si $info est défini, la notice en cours de modification est la notice d'information générale
+// $year : l'annÃ©e courante
+// $heure_entry : heure de crÃ©ation d'une notice
+// $ajout :  prend la valeur "yes" ou bien n'est pas dÃ©fini. $ajout='yes' si on ajoute une notice Ã  une journÃ©e lorqu'une notice existe dÃ©jÃ 
+// $info  : si $info est dÃ©fini, la notice en cours de modification est la notice d'information gÃ©nÃ©rale
 // $doc_name : tableau contenant les noms des documents joints
 // $doc_name_modif : nouveau nom d'un document
 // $id_document : tableau des identifiants des documents joints
@@ -157,7 +157,7 @@ if (is_numeric($id_groupe)) {
     $current_group = false;
 }
 
-// Vérification : est-ce que l'utilisateur a le droit d'être ici ?
+// VÃ©rification : est-ce que l'utilisateur a le droit d'Ãªtre ici ?
 if (($current_group["id"] != "") ) {
     if (!check_prof_groupe($_SESSION['login'],$current_group["id"])) {
         header("Location: ../logout.php?auto=1");
@@ -166,7 +166,7 @@ if (($current_group["id"] != "") ) {
 }
 
 // Modification d'un enregistrement
-// on récupère la date
+// on rÃ©cupÃ¨re la date
 if (isset($id_ct))
  {
      if (isset($edit_devoir)) {
@@ -174,23 +174,23 @@ if (isset($id_ct))
      } else {
          $sql = "SELECT date_ct FROM ct_entry WHERE id_ct='$id_ct'";
     }
-    // On récupère la date dans la table
+    // On rÃ©cupÃ¨re la date dans la table
     $date_ct = sql_query1($sql);
 
     if ($date_ct != 0) {
-        // Il ne s'agit pas de la notice d'info générale : la date courante devient celle de la notice
+        // Il ne s'agit pas de la notice d'info gÃ©nÃ©rale : la date courante devient celle de la notice
         $day = strftime("%d", $date_ct);
         $month = strftime("%m", $date_ct);
         $year = strftime("%Y", $date_ct);
     } else {
-        // Il s'agit de la notice d'info générale, on ne change pas date courante
+        // Il s'agit de la notice d'info gÃ©nÃ©rale, on ne change pas date courante
         $day = isset($_POST["day"]) ? $_POST["day"] : (isset($_GET["day"]) ? $_GET["day"] : date("d"));
         $month = isset($_POST["month"]) ? $_POST["month"] : (isset($_GET["month"]) ? $_GET["month"] : date("m"));
         $year = isset($_POST["year"]) ? $_POST["year"] : (isset($_GET["year"]) ? $_GET["year"] : date("Y"));
     }
 }
 
-// Vérification
+// VÃ©rification
 settype($month,"integer");
 settype($day,"integer");
 settype($year,"integer");
@@ -240,15 +240,15 @@ if ((isset($_POST['action'])) and ($_POST['action'] == 'sup_serie') and $valide_
        }
        $del_doc = sql_query("delete from ct_documents where id_ct='".$id_ctexte."'");
        if (!($del_doc)) $error = 'yes';
-	   //Modif Eric ==> ne pas supprimer les visas et les notices visées
+	   //Modif Eric ==> ne pas supprimer les visas et les notices visÃ©es
        //$del_ct = sql_query("delete from ct_entry where id_ct='".$id_ctexte."'");
 	   $del_ct = sql_query("delete from ct_entry where (id_ct='".$id_ctexte."' and vise != 'y')");
        if (!($del_ct)) $error = 'yes';
      }
      if ($error == 'no') {
-        $msg = "Suppression réussie";
+        $msg = "Suppression rÃ©ussie";
      } else {
-        $msg = "Il y a eu un problème lors de la suppression.";
+        $msg = "Il y a eu un problÃ¨me lors de la suppression.";
      }
    } else {
      $msg = "Rien a supprimer.";
@@ -267,9 +267,9 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_entry') and $valide_fo
     if (($res) and (sql_count($res)!=0)) {
         $msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
     } else {
-	    //modif Eric interdire la suppression de notice visée
+	    //modif Eric interdire la suppression de notice visÃ©e
         $res = sql_query("delete from ct_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
-        if ($res) $msg = "Suppression réussie";
+        if ($res) $msg = "Suppression rÃ©ussie";
     }
 }
 //
@@ -284,9 +284,9 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_devoirs') and $valide_
     if (($res) and (sql_count($res)!=0)) {
         $msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
     } else {
-	//modif Eric interdire la suppression de notice visée
+	//modif Eric interdire la suppression de notice visÃ©e
     $res = mysql_query("delete from ct_devoirs_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
-        if ($res) $msg = "Suppression réussie";
+        if ($res) $msg = "Suppression rÃ©ussie";
     }
 
 
@@ -306,13 +306,13 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 			//echo "$heure_visibilite<br />\n";
 			if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/",$heure_visibilite)) {
 				$heure_courante=strftime("%H:%M");
-				//echo "Heure de visibilité mal formatée : $heure_visibilite<br />";
+				//echo "Heure de visibilitÃ© mal formatÃ©e : $heure_visibilite<br />";
 				//die();
 				if (isset($id_ct))  {
-					$msg.="Heure de visibilité mal formatée : $heure_visibilite.<br />L'heure de visibilité ne sera pas modifiée.<br />";
+					$msg.="Heure de visibilitÃ© mal formatÃ©e : $heure_visibilite.<br />L'heure de visibilitÃ© ne sera pas modifiÃ©e.<br />";
 				}
 				else {
-					$msg.="Heure de visibilité mal formatée : $heure_visibilite.<br />L'heure courante sera utilisée : $heure_courante<br />";
+					$msg.="Heure de visibilitÃ© mal formatÃ©e : $heure_visibilite.<br />L'heure courante sera utilisÃ©e : $heure_courante<br />";
 				}
 				$heure_visibilite=$heure_courante;
 
@@ -325,15 +325,15 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 			//if(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}$#",$jour_visibilite)) {
 			if(!preg_match( '`^\d{1,2}/\d{1,2}/\d{4}$`', $jour_visibilite)) {
 				$jour_courant=strftime("%d/%m/%Y");
-				//echo "Le jour de visibilité est mal formaté : $jour_visibilite<br />";
+				//echo "Le jour de visibilitÃ© est mal formatÃ© : $jour_visibilite<br />";
 				//die();
 				if (isset($id_ct))  {
-					$msg.="Le jour de visibilité est mal formaté : $jour_visibilite.<br />Le jour de visibilité ne sera pas modifié.<br />";
+					$msg.="Le jour de visibilitÃ© est mal formatÃ© : $jour_visibilite.<br />Le jour de visibilitÃ© ne sera pas modifiÃ©.<br />";
 				}
 				else {
-					$msg.="Le jour de visibilité est mal formaté : $jour_visibilite.<br />Le jour courant sera utilisé : $jour_courant<br />";
+					$msg.="Le jour de visibilitÃ© est mal formatÃ© : $jour_visibilite.<br />Le jour courant sera utilisÃ© : $jour_courant<br />";
 				}
-				//echo "alert('Le jour de visibilité est mal formaté : $jour_visibilite. Le jour courant sera utilisé : $jour_courant')";
+				//echo "alert('Le jour de visibilitÃ© est mal formatÃ© : $jour_visibilite. Le jour courant sera utilisÃ© : $jour_courant')";
 				$jour_visibilite=$jour_courant;
 
 				$date_visibilite_mal_formatee="y";
@@ -351,14 +351,14 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 		}
 		//==========================================================
 
-        // Il s'agit d'un devoir à faire : on récupère la date à l'aide de $_POST['display_date']
+        // Il s'agit d'un devoir Ã  faire : on rÃ©cupÃ¨re la date Ã  l'aide de $_POST['display_date']
         if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date'])) {
             $_year = substr($_POST['display_date'],6,4);
             $_month = substr($_POST['display_date'],3,2);
             $_day = substr($_POST['display_date'],0,2);
             $date_travail_a_faire=mktime(0,0,0,$_month,$_day,$_year);
         } else {
-            $msg_error_date = "La date choisie pour le travail à faire n'est pas conforme";
+            $msg_error_date = "La date choisie pour le travail Ã  faire n'est pas conforme";
 		}
         $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
         if ($contenu_cor == '') {$contenu_cor="...";}
@@ -372,7 +372,7 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 			//echo "$sql<br />";
             $req = mysql_query($sql);
           } else {
-            // On insère la notice dans ct_devoirs_entry
+            // On insÃ¨re la notice dans ct_devoirs_entry
             $sql="INSERT INTO ct_devoirs_entry SET id_ct='0', contenu = '$contenu_cor', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$date_travail_a_faire'";
 			if(isset($date_visibilite_eleve)) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}
 			$sql.=";";
@@ -380,7 +380,7 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
             $req = mysql_query($sql);
             $id_ct = mysql_insert_id();
           }
-          if ($req) {$msg.= "Enregistrement réussi.";} else {$msg .= "Problème lors de l'enregistrement !";}
+          if ($req) {$msg.= "Enregistrement rÃ©ussi.";} else {$msg .= "ProblÃ¨me lors de l'enregistrement !";}
         } else {
           $msg = $msg_error_date;
 		}
@@ -396,12 +396,12 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
             $id_ct = mysql_insert_id();
 //            $today = $temp;
         }
-        if ($req) $msg = "Enregistrement réussi."; else $msg = "Problème lors de l'enregistrement !";
+        if ($req) $msg = "Enregistrement rÃ©ussi."; else $msg = "ProblÃ¨me lors de l'enregistrement !";
 
     }
 }
 //
-// Traitement du téléchargement de fichier
+// Traitement du tÃ©lÃ©chargement de fichier
 //
 // Ajout d'un document
 if (isset($doc_file['tmp_name']) AND (!empty($doc_file['tmp_name'][0]) and $valide_form=='yes') or
@@ -418,15 +418,15 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'del') and $valide_form=='y
 }
 
 // si aucune notice n'existe dans ct_entry et qu'il existe des notices dans ct_devoirs_entry
-// on crée une notice "info générales" vide
+// on crÃ©e une notice "info gÃ©nÃ©rales" vide
 $test_ct_vide = sql_count(sql_query("SELECT id_ct FROM ct_entry WHERE (id_groupe='" . $current_group["id"]."')"));
 $test_ct_devoirs_vide = sql_count(sql_query("SELECT id_ct FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] ."')"));
 if (($test_ct_vide == 0) and ($test_ct_devoirs_vide != 0)) {$req = mysql_query("INSERT INTO ct_entry SET id_ct='0', contenu = '', id_login='".$_SESSION['login']."', id_groupe='" . $current_group["id"]. "', date_ct=''");}
 
 
-// Détermination de $id_ct
+// DÃ©termination de $id_ct
 if($ajout=='oui') {
-    // Compte-rendu supplémentaire : on ne va pas chercher une notice existante
+    // Compte-rendu supplÃ©mentaire : on ne va pas chercher une notice existante
     $test_cahier_texte = 0;
 }
 else {
@@ -447,10 +447,10 @@ else {
 }
 
 if ($test_cahier_texte != 0) {
-    // Il y a une notice à modifier
+    // Il y a une notice Ã  modifier
     if (!isset($edit_devoir))
         $heure_entry = mysql_result($appel_cahier_texte, 0,'heure_entry');
-    // on initialise heure_entry si nouveau = heure actuelle si modification on prend celui de la base de donéne
+    // on initialise heure_entry si nouveau = heure actuelle si modification on prend celui de la base de donÃ©ne
     $contenu = mysql_result($appel_cahier_texte, 0,'contenu');
 
     $id_ct = mysql_result($appel_cahier_texte, 0,'id_ct');
@@ -459,7 +459,7 @@ if ($test_cahier_texte != 0) {
     $contenu = '';
 }
 
-// On met le header en petit par défaut
+// On met le header en petit par dÃ©faut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
@@ -471,12 +471,12 @@ require_once("../lib/header.inc");
 echo "<script type=\"text/javascript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>";
 //-----------------------------------------------------------------------------------
 
-echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entête\">\n";
+echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entÃªte\">\n";
 
-// Première ligne du tableau
+// PremiÃ¨re ligne du tableau
 echo "<tr>\n";
 
-// Première cellule de la première ligne du tableau
+// PremiÃ¨re cellule de la premiÃ¨re ligne du tableau
 echo "<td valign='top'>\n";
 
 echo $message_avertissement_navigateur;
@@ -490,10 +490,10 @@ echo "</p>\n";
 
 
 // **********************************************
-// Affichage des différents groupes du professeur
-// Récupération de toutes les infos sur le groupe
+// Affichage des diffÃ©rents groupes du professeur
+// RÃ©cupÃ©ration de toutes les infos sur le groupe
 //$groups = get_groups_for_prof($_SESSION["login"]);
-$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+$groups = get_groups_for_prof($_SESSION["login"],"classe puis matiÃ¨re");
 if (empty($groups)) {
     echo "<br /><br />\n";
     echo "<b>Aucun cahier de textes n'est disponible.</b>";
@@ -529,13 +529,13 @@ foreach($groups as $group) {
 			$a = 2;
 		}
 }
-// Fin Affichage des différents groupes du professeur
+// Fin Affichage des diffÃ©rents groupes du professeur
 // **********************************************
 
-// Fin première cellule de la première ligne du tableau
+// Fin premiÃ¨re cellule de la premiÃ¨re ligne du tableau
 echo "</td>\n";
 
-// Deuxième cellule de la première ligne du tableau
+// DeuxiÃ¨me cellule de la premiÃ¨re ligne du tableau
 echo "<td style=\"text-align: center; vertical-align: top;\">\n";
 echo "<p><span class='grand'>Cahier de textes</span><br />";
 if (getSettingValue("GepiCahierTexteVersion") == '2') {
@@ -547,9 +547,9 @@ echo "<img src='../images/icons/cdt1_2.png' alt='Utiliser la version 2 du cahier
 if ($id_groupe != null) {
 
 	if(getSettingValue('cahier_texte_acces_public')!='no'){
-	    echo "<a href='../public/index.php?id_groupe=" . $current_group["id"] ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n";
+	    echo "<a href='../public/index.php?id_groupe=" . $current_group["id"] ."' target='_blank'>Visualiser le cahier de textes en accÃ¨s public</a>\n";
 	} else {
-		echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accès restreint)</a>\n";
+		echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accÃ¨s restreint)</a>\n";
 	}
 
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != '')) {
@@ -560,10 +560,10 @@ if ($id_groupe != null) {
 	if ($delai > 0) {
 		$cr_cours = "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["c"]."; font-weight: bold;\">
 			<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les comptes rendus de s&eacute;ance de cours\">
-			Comptes rendus de séance</a></p>\n";
+			Comptes rendus de sÃ©ance</a></p>\n";
 		$travaux_perso = "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["t"]."; font-weight: bold;\">
 			<a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">
-			Travaux personnels à effectuer</a></p>\n";
+			Travaux personnels Ã  effectuer</a></p>\n";
 		// Si la notice d'info est en modification, on affiche les deux liens
 		if (isset($info)) {
 			echo $cr_cours.$travaux_perso;
@@ -574,7 +574,7 @@ if ($id_groupe != null) {
 		}
 	}
 	echo "<br />\n";
-	// Ajout des différentes notices
+	// Ajout des diffÃ©rentes notices
 	$nb_total_notices = sql_query1("select count(id_ct) from ct_entry where contenu != '' and id_groupe = '" . $current_group["id"] ."'");
 	$nb_total_notices += sql_query1("select count(id_ct) from ct_devoirs_entry where contenu != '' and id_groupe = '" . $current_group["id"] ."'");
 	if ($nb_total_notices > 1) {
@@ -605,7 +605,7 @@ if ($id_groupe != null) {
 	//echo "</center>\n";
 	echo "</td>\n";
 
-    // Troisième cellule de la première ligne du tableau
+    // TroisiÃ¨me cellule de la premiÃ¨re ligne du tableau
     echo "<td align=\"right\">\n";
     echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\">\n";
     genDateSelector("", $day, $month, $year,'');
@@ -619,54 +619,54 @@ if ($id_groupe != null) {
         minicals($year, $month, $day, $current_group["id"],'index.php?');
     }
 } else {
-    echo "<span class='grand'> - Sélectionnez un groupe.</span>\n";
+    echo "<span class='grand'> - SÃ©lectionnez un groupe.</span>\n";
 }
-// Fin deuxième ou troixième cellule de la première ligne du tableau
+// Fin deuxiÃ¨me ou troixiÃ¨me cellule de la premiÃ¨re ligne du tableau
 echo "</td>\n";
 echo "</tr>\n</table>\n<hr />\n";
 
-// Si le choix du groupe n'a pas été fait, on affiche un texte d'explication et de mise en garde
+// Si le choix du groupe n'a pas Ã©tÃ© fait, on affiche un texte d'explication et de mise en garde
 if (($id_groupe == null)) {
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != '')) {
-       echo " <b>AVERTISSEMENT</b> : En raison du caractère personnel du contenu, l'accès au <a href=\"../public\">site de consultation publique du cahier de textes</a> est restreint.
-       Pour accéder aux cahiers de textes, le visiteur (élève, parent, ...) doit être en possession d'un nom d'utilisateur et d'un mot de passe valides.\n";
+       echo " <b>AVERTISSEMENT</b> : En raison du caractÃ¨re personnel du contenu, l'accÃ¨s au <a href=\"../public\">site de consultation publique du cahier de textes</a> est restreint.
+       Pour accÃ©der aux cahiers de textes, le visiteur (Ã©lÃ¨ve, parent, ...) doit Ãªtre en possession d'un nom d'utilisateur et d'un mot de passe valides.\n";
     } elseif(getSettingValue('cahier_texte_acces_public') == 'no'){
-		echo '<p style="font-weight: bold;">L\'accès aux cahiers de textes est protégé.</p>';
+		echo '<p style="font-weight: bold;">L\'accÃ¨s aux cahiers de textes est protÃ©gÃ©.</p>';
 	} else {
-       echo " <b><span style='font-weight:bold;'>AVERTISSEMENT</span> : l'accès à l'interface de consultation publique du cahier de textes est entièrement libre et n'est soumise à aucune restriction.</b>\n";
+       echo " <b><span style='font-weight:bold;'>AVERTISSEMENT</span> : l'accÃ¨s Ã  l'interface de consultation publique du cahier de textes est entiÃ¨rement libre et n'est soumise Ã  aucune restriction.</b>\n";
     }
-    echo "<br /><br />En utilisant le cahier de textes électronique de GEPI :
+    echo "<br /><br />En utilisant le cahier de textes Ã©lectronique de GEPI :
     <ul>\n";
 
 	if(getSettingValue('cahier_texte_acces_public')!='no'){
-		echo "<li>vous acceptez que vos nom, initiale de prénom, classes et matières enseignées apparaissent sur le <a href=\"../public\">site de consultation publique du cahier de textes</a>,</li>\n";
+		echo "<li>vous acceptez que vos nom, initiale de prÃ©nom, classes et matiÃ¨res enseignÃ©es apparaissent sur le <a href=\"../public\">site de consultation publique du cahier de textes</a>,</li>\n";
 	}
 	else {
-		echo "<li>l'accès au cahier de textes est limité aux utilisateurs disposant d'un compte (<i>ce peuvent être les élèves, les parents d'élèves si des comptes ont été créés pour eux, mais dans ce cas, les élèves n'ont accès qu'aux cahiers de textes des enseignements qu'ils suivent et les parents n'ont accès qu'aux cahiers de textes de leurs enfants</i>),</li>\n";
+		echo "<li>l'accÃ¨s au cahier de textes est limitÃ© aux utilisateurs disposant d'un compte (<i>ce peuvent Ãªtre les Ã©lÃ¨ves, les parents d'Ã©lÃ¨ves si des comptes ont Ã©tÃ© crÃ©Ã©s pour eux, mais dans ce cas, les Ã©lÃ¨ves n'ont accÃ¨s qu'aux cahiers de textes des enseignements qu'ils suivent et les parents n'ont accÃ¨s qu'aux cahiers de textes de leurs enfants</i>),</li>\n";
 	}
 
-    echo "<li>vous acceptez que toutes les informations que vous fournissez dans ce module soient diffusées sur ce même site.</li>
-    <li>vous vous engagez à respecter les règles fixées concernant les cahiers de textes (Circulaire du 3 mai 1961 adressée aux recteurs - RLR, 550-1 b)</li>
-    <li>vous vous engagez à ne pas faire figurer d'informations nominatives concernant les élèves</li>
+    echo "<li>vous acceptez que toutes les informations que vous fournissez dans ce module soient diffusÃ©es sur ce mÃªme site.</li>
+    <li>vous vous engagez Ã  respecter les rÃ¨gles fixÃ©es concernant les cahiers de textes (Circulaire du 3 mai 1961 adressÃ©e aux recteurs - RLR, 550-1 b)</li>
+    <li>vous vous engagez Ã  ne pas faire figurer d'informations nominatives concernant les Ã©lÃ¨ves</li>
     </ul>\n";
-    echo "<b>RAPPEL</b> : le cahier de textes constitue un outil de communication pour l'élève, les équipes disciplinaires
-    et pluridisciplinaires, l'administration, le chef d'établissement, les corps d'inspection et les familles.
-    Il relate le travail réalisé en classe :
+    echo "<b>RAPPEL</b> : le cahier de textes constitue un outil de communication pour l'Ã©lÃ¨ve, les Ã©quipes disciplinaires
+    et pluridisciplinaires, l'administration, le chef d'Ã©tablissement, les corps d'inspection et les familles.
+    Il relate le travail rÃ©alisÃ© en classe :
     <ul>
-    <li>projet de l'équipe pédagogique,</li>
-    <li>contenu pédagogique de chaque séance, chronologie, objectif visé, travail à faire ...</li>
+    <li>projet de l'Ã©quipe pÃ©dagogique,</li>
+    <li>contenu pÃ©dagogique de chaque sÃ©ance, chronologie, objectif visÃ©, travail Ã  faire ...</li>
     <li>documents divers,</li>
-    <li>évaluations, ...</li>
+    <li>Ã©valuations, ...</li>
     </ul>\n";
     //echo "</body></html>\n";
 	require("../lib/footer.inc.php");
     die();
 }
 
-/*/ Deuxième tableau
+/*/ DeuxiÃ¨me tableau
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
 echo "<tr>\n";
-// Première colonne du tableau
+// PremiÃ¨re colonne du tableau
 echo "<td valign=\"top\" width=\"20%\">\n";
 // Nombre total de notices :
 $nb_total_notices = sql_query1("select count(id_ct) from ct_entry where contenu != '' and id_groupe = '" . $current_group["id"] ."'");
@@ -694,37 +694,37 @@ if ($nb_total_notices > 15) {
 }
 
 echo "</td>\n";
-// Deuxième colonne
+// DeuxiÃ¨me colonne
 echo "<td valign=\"top\" width=\"60%\">\n";
 echo "<center>\n";
 echo "<p class='grand'>".strftime("%A %d %B %Y", $today)."</p>";
 if ($delai > 0) {
     if (isset($edit_devoir)) {
-    	//echo "<a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveaux travaux personnels à effectuer</a> - \n";
-        echo "<b>>> Travaux personnels à effectuer<<</b> - \n";
-        echo "<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les comptes rendus de s&eacute;ance de cours\">Comptes rendus de séance</a>\n";
+    	//echo "<a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveaux travaux personnels Ã  effectuer</a> - \n";
+        echo "<b>>> Travaux personnels Ã  effectuer<<</b> - \n";
+        echo "<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les comptes rendus de s&eacute;ance de cours\">Comptes rendus de sÃ©ance</a>\n";
     } else {
-        echo "<a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">Travaux personnels à effectuer</a> - \n";
-        echo "<b>>> Comptes rendus de séance <<</b>\n";
+        echo "<a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">Travaux personnels Ã  effectuer</a> - \n";
+        echo "<b>>> Comptes rendus de sÃ©ance <<</b>\n";
     }
 }
 echo "</center>\n";
 echo "</td>\n";
-// Troisième colonne
+// TroisiÃ¨me colonne
 echo "<td valign=\"top\" width=\"20%\">\n";
 echo "</td>\n";
 echo "</tr></table>\n";
 
 echo "<hr />";
 */ // ============================== fin modif
-// Début tableau d'affichage des notices
+// DÃ©but tableau d'affichage des notices
 echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\" summary=\"Tableau d'affichage des notices\">\n";
 echo "<tr>\n";
 
-// Début colonne de gauche
+// DÃ©but colonne de gauche
 echo "<td width = \"30%\" valign=\"top\">\n";
 
-// recherche des "travaux à faire" futurs, toutes matières confondues
+// recherche des "travaux Ã  faire" futurs, toutes matiÃ¨res confondues
 $debutCdt = getSettingValue("begin_bookings");
 foreach ($current_group["classes"]["list"] as $_id_classe) {
     $total[$_id_classe] = null;
@@ -743,7 +743,7 @@ foreach ($current_group["classes"]["list"] as $_id_classe) {
     }
 }
 
-// Affichage des travaux à faire futurs, toutes matières confondues
+// Affichage des travaux Ã  faire futurs, toutes matiÃ¨res confondues
 foreach ($current_group["classes"]["list"] as $_id_classe) {
     if ($total[$_id_classe] > 0) {
         echo "<p>La classe " . $current_group["classes"]["classes"][$_id_classe]["classe"] . " a  <a href=\"javascript:centrerpopup('liste_tous_devoirs.php?classe=$_id_classe&amp;debut=$aujourdhui',260,320,'scrollbars=yes,statusbar=no,resizable=yes');\"><strong>" . $total[$_id_classe] . "</strong> ";
@@ -760,7 +760,7 @@ if(mysql_num_rows($res_test)>0) {
 	$lig=mysql_fetch_object($res_test);
 	if(strstr($lig->contenu,"<![endif]-->")) {
 		echo "<div style='background-color:white; border: 1px dashed black;'>\n";
-		// Pour dépolluer les copier/coller depuis M$Office
+		// Pour dÃ©polluer les copier/coller depuis M$Office
 		echo ereg_replace('.*<\!\[endif\]-->',"",$lig->contenu);
 		echo "</div>\n";
 	}
@@ -769,7 +769,7 @@ if(mysql_num_rows($res_test)>0) {
 //================================================
 
 //Modif vise ==> ERIC ajout champs vise visa dans les requetes
-// recherche et affichage des prochains travaux futurs pour la matière en cours
+// recherche et affichage des prochains travaux futurs pour la matiÃ¨re en cours
 $req_devoirs_arendre =
     "select 't' type, contenu, date_ct, id_ct, vise
     from ct_devoirs_entry
@@ -816,28 +816,28 @@ $devoir = mysql_fetch_object($res_devoirs);
 $date_ct_old = -1;
 while (true) {
     if ($dev_arendre) {
-        // Il reste des "travaux à faire"
-        // On le copie dans $not_dev et on récupère le suivant
+        // Il reste des "travaux Ã  faire"
+        // On le copie dans $not_dev et on rÃ©cupÃ¨re le suivant
         $not_dev = $dev_arendre;
         $dev_arendre = mysql_fetch_object($res_devoirs_arendre);
     } else {
-        // On a épuisé les devoirs à rendre
-        // On met les notices du jour avant les devoirs à rendre aujourd'hui
+        // On a Ã©puisÃ© les devoirs Ã  rendre
+        // On met les notices du jour avant les devoirs Ã  rendre aujourd'hui
         if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
-            // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
+            // Il y a encore une notice et elle est plus rÃ©cente que le prochain devoir, oÃ¹ il n'y a plus de devoirs
             $not_dev = $notice;
             $notice = mysql_fetch_object($res_notices);
         } elseif($devoir) {
-            // Plus de notices et toujours un devoir, ou devoir plus récent
+            // Plus de notices et toujours un devoir, ou devoir plus rÃ©cent
             $not_dev = $devoir;
             $devoir = mysql_fetch_object($res_devoirs);
         } else {
-            // Plus rien à afficher, on sort de la boucle
+            // Plus rien Ã  afficher, on sort de la boucle
             break;
         }
     }
 
-    // dans le cas ou il y a plusieurs notices pour une journée, il faut les numéroter.
+    // dans le cas ou il y a plusieurs notices pour une journÃ©e, il faut les numÃ©roter.
 
     // Passage en HTML
 	// INSERT INTO setting SET name='depolluer_MSOffice', value='y';
@@ -857,17 +857,17 @@ while (true) {
     }
     echo("<b>" . strftime("%a %d %b %y", $not_dev->date_ct) . "</b>\n");
 
-    // Numérotation des notices si plusieurs notice sur la même journée
+    // NumÃ©rotation des notices si plusieurs notice sur la mÃªme journÃ©e
     if ($not_dev->type == "c") {
     if ($date_ct_old == $not_dev->date_ct) {
         $num_notice++;
-        echo " <b><i>(notice N° ".$num_notice.")</i></b>";
+        echo " <b><i>(notice NÂ° ".$num_notice.")</i></b>";
     } else {
-        // on affiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
+        // on affiche "(notice NÂ° 1)" uniquement s'il y a plusieurs notices dans la mÃªme journÃ©e
         $nb_notices = sql_query1("SELECT count(id_ct) FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='".$not_dev->date_ct."')");
         if ($nb_notices > 1)
-            echo " <b><i>(notice N° 1)</i></b>";
-        // On réinitialise le compteur
+            echo " <b><i>(notice NÂ° 1)</i></b>";
+        // On rÃ©initialise le compteur
         $num_notice = 1;
     }
     }
@@ -883,7 +883,7 @@ while (true) {
           echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 	}
 
-	//Modif  Eric visa des notices et interdiction de modifier suite à un visa des notices
+	//Modif  Eric visa des notices et interdiction de modifier suite Ã  un visa des notices
     $html_balise = '<div style="margin: 0px; float: left;">'."\n";
 	//$html_balise.=" $not_dev->id_ct ";
     if ($not_dev->type == "c") {
@@ -898,7 +898,7 @@ while (true) {
     		    $html_balise = " ";
 			} else {
 			if ($not_dev->vise == 'y') {
-			   $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+			   $html_balise .= "<i><span  class=\"red\">Notice signÃ©e</span></i>";
 			}
 			}
 		} else {
@@ -906,7 +906,7 @@ while (true) {
              if ($not_dev->visa == 'y') {
     		    $html_balise .= " ";
 		     } else {
-		        $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+		        $html_balise .= "<i><span  class=\"red\">Notice signÃ©e</span></i>";
 		     }
 		}
     } else {
@@ -917,11 +917,11 @@ while (true) {
             "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_devoirs&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression du devoir du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
 			 );
 			if ($not_dev->vise == 'y') {
-			   $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+			   $html_balise .= "<i><span  class=\"red\">Notice signÃ©e</span></i>";
 			}
 
 		} else {
-		  $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+		  $html_balise .= "<i><span  class=\"red\">Notice signÃ©e</span></i>";
 		}
     }
     $html_balise .= "</div>\n";
@@ -935,7 +935,7 @@ mysql_free_result($res_devoirs_arendre);
 mysql_free_result($res_devoirs);
 mysql_free_result($res_notices);
 
-// Affichage des info générales
+// Affichage des info gÃ©nÃ©rales
 $appel_info_cahier_texte = mysql_query("SELECT heure_entry, contenu, id_ct  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' and date_ct='') ORDER BY heure_entry");
 $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0,'contenu');
@@ -954,10 +954,10 @@ include "../lib/transform.php";
    }
    $html .= "</ul>\n";
   }
-echo "<b>Informations Générales</b>\n";
+echo "<b>Informations GÃ©nÃ©rales</b>\n";
 if ($id_ctexte == $id_ct) {echo "<b><font color=\"red\"> - en&nbsp;modification</font></b>";}
 
-$html_balise = "<div style=\"margin: 0px; float: left;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."' onclick=\"return confirmlink(this,'suppression de la notice Informations générales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>";
+$html_balise = "<div style=\"margin: 0px; float: left;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."' onclick=\"return confirmlink(this,'suppression de la notice Informations gÃ©nÃ©rales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>";
 //$html_balise.="Export au <a href='../cahier_texte_2/exportcsv.php?id_groupe=".$current_group["id"]."'>format csv</a> / <a href='../cahier_texte_2/export_cdt.php?id_groupe=".$current_group["id"]."'>format html</a><br/>";
 $html_balise.="</div>\n";
 
@@ -981,7 +981,7 @@ echo "</fieldset>\n";
 // Fin de la colonne de gauche
 echo "</td>\n";
 
-// Début de la colonne de droite
+// DÃ©but de la colonne de droite
 echo "<td valign=\"top\">\n";
 $test_ct_vide = sql_count(sql_query("SELECT id_ct FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "')"));
 if ($test_ct_vide == 0) {echo "<b><font color='red'>Actuellement ce cahier de textes est vide. Il n'est donc pas visible dans l'espace public.</font></b>\n";}
@@ -1002,7 +1002,7 @@ else {
 $num_notice = NULL;
 
 $appel_cahier_texte_liste = mysql_query("SELECT * FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='$today') ORDER BY heure_entry ASC");
-// Si plusieurs notices pour ce jour, on numérote la notice en cours
+// Si plusieurs notices pour ce jour, on numÃ©rote la notice en cours
 //if (mysql_num_rows($appel_cahier__liste) > 1) {
 if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
     $cpt_compte_rendu_liste = "1";
@@ -1021,16 +1021,16 @@ if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
   }
 }
 
-// ======================= Correctif Pascal Fautrero : permet d'afficher la fenêtre de saisie dans une fenêtre flottante
+// ======================= Correctif Pascal Fautrero : permet d'afficher la fenÃªtre de saisie dans une fenÃªtre flottante
 
 $reduce = isset($_POST["reduce"]) ? $_POST["reduce"] :(isset($_GET["reduce"]) ? $_GET["reduce"] :'off');
 if ($reduce == "off") {
     echo "<div style=\"position:absolute;top:350px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">\n";
-    echo "<a href=\"./index.php?reduce=on\">cacher la fenêtre de saisie</a>";
+    echo "<a href=\"./index.php?reduce=on\">cacher la fenÃªtre de saisie</a>";
 }
 else {
     echo "<div style=\"position:absolute;top:350px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">\n";
-    echo "<a href=\"./index.php?reduce=off\">montrer la fenêtre de saisie</a>";
+    echo "<a href=\"./index.php?reduce=off\">montrer la fenÃªtre de saisie</a>";
     echo "</div>\n";
     echo "<div style=\"display:none;\">\n";
 }
@@ -1043,7 +1043,7 @@ if (isset($edit_devoir)) {
     $test_appel_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
     if (isset($id_ct)) {
 		echo " - <b><font color=\"red\">Modification de la notice</font></b>";
-		// Pour permettre d'ajouter directement une nouvelle notice sur le travail à effectuer, on ajoute un jour à la date précédente ($today)
+		// Pour permettre d'ajouter directement une nouvelle notice sur le travail Ã  effectuer, on ajoute un jour Ã  la date prÃ©cÃ©dente ($today)
 		echo " - <a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveau travail</a>";
 	} else {
 		echo " - <b><font color=\"red\">Nouvelle notice</font></b>\n";
@@ -1051,11 +1051,11 @@ if (isset($edit_devoir)) {
     echo "</legend>\n";
 } else {
     if (isset($info))
-        echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Informations générales ";
+        echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Informations gÃ©nÃ©rales ";
     else
         echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte rendu ";
-	if (isset($num_notice)) echo " <b>N° ".$num_notice."</b> ";
-//    echo "de la séance du " . strftime("%A %d %B %Y", $today);
+	if (isset($num_notice)) echo " <b>NÂ° ".$num_notice."</b> ";
+//    echo "de la sÃ©ance du " . strftime("%A %d %B %Y", $today);
     if (isset($id_ct)) {
         echo " - <b><font color=\"red\">Modification de la notice</font></b>";
         if (!isset($info))
@@ -1079,7 +1079,7 @@ if (!isset($edit_devoir) and $info !='yes') {
 }
 
 if (isset($_GET['info']) or isset($_POST['info']))
-    $temp = "Informations Générales : ";
+    $temp = "Informations GÃ©nÃ©rales : ";
 else if (isset($edit_devoir)) {
     //Configuration du calendrier
     include("../lib/calendrier/calendrier.class.php");
@@ -1108,7 +1108,7 @@ $td = date("d",$i);
 
 // Si c'est une notice de devoir
 if (isset($edit_devoir)) {
-	// Date de visibilité
+	// Date de visibilitÃ©
 	$heure_courante=strftime("%H:%M");
 	$jour_courant=strftime("%d/%m/%Y");
 	if($id_ct!='') {
@@ -1122,7 +1122,7 @@ if (isset($edit_devoir)) {
 	}
 
 	echo "<br />\n";
-	echo "<span title='Vous pouvez modifier les dates et heure de visibilité avec les flèches Haut/Bas, PageUp/PageDown du clavier.' style='font-weight: bold;'>Date de visibilité</span>&nbsp;:\n";
+	echo "<span title='Vous pouvez modifier les dates et heure de visibilitÃ© avec les flÃ¨ches Haut/Bas, PageUp/PageDown du clavier.' style='font-weight: bold;'>Date de visibilitÃ©</span>&nbsp;:\n";
 	echo " <input type='text' name='jour_visibilite' id='jour_visibilite' value='$jour_courant' size='7' onkeydown='clavier_date(this.id,event)' 
 	onblur=\"date_v=document.getElementById('jour_visibilite').value;
 		tab=date_v.split('/');
@@ -1130,11 +1130,11 @@ if (isset($edit_devoir)) {
 		mois_v=tab[1];
 		annee_v=tab[2];
 		if(!checkdate(mois_v, jour_v, annee_v)) {
-			alert('La date de visibilité saisie n est pas valide.');
+			alert('La date de visibilitÃ© saisie n est pas valide.');
 		}
 	\" />\n";
 // onblur='verif_date_visibilite()' />\n";
-	echo " à <input type='text' name='heure_visibilite' id='heure_visibilite' value='$heure_courante' size='3' onkeydown='clavier_heure(this.id,event)' 
+	echo " Ã  <input type='text' name='heure_visibilite' id='heure_visibilite' value='$heure_courante' size='3' onkeydown='clavier_heure(this.id,event)' 
 	onblur=\"instant_v=document.getElementById('heure_visibilite').value;
 		var exp=new RegExp('^[0-9]{1,2}:[0-9]{0,2}$','g');
 		erreur='n';
@@ -1150,7 +1150,7 @@ if (isset($edit_devoir)) {
 		}
 
 		if(erreur=='y') {
-			alert('L heure de visibilité saisie n est pas valide.');
+			alert('L heure de visibilitÃ© saisie n est pas valide.');
 		}
 	\" />\n";
 }
@@ -1159,9 +1159,9 @@ if (isset($edit_devoir)) {
 echo "</td>\n";
 echo "<td>\n";
 if (isset($edit_devoir)) {
-	echo "<a title=\"Aller au jour précédent\" href=\"index.php?edit_devoir=yes&amp;year=$yy&amp;month=$ym&amp;day=$yd&amp;id_groupe=" . $current_group["id"] . "\">&lt;&lt;</a></td><td align=center><a href=\"index.php?edit_devoir=yes&amp;id_groupe=" . $current_group["id"] ."&amp;id_matiere=$id_matiere\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?edit_devoir=yes&amp;year=$ty&amp;month=$tm&amp;day=$td&amp;id_groupe=" . $current_group["id"]."&amp;id_matiere=$id_matiere\">&gt;&gt;</a>\n";
+	echo "<a title=\"Aller au jour prÃ©cÃ©dent\" href=\"index.php?edit_devoir=yes&amp;year=$yy&amp;month=$ym&amp;day=$yd&amp;id_groupe=" . $current_group["id"] . "\">&lt;&lt;</a></td><td align=center><a href=\"index.php?edit_devoir=yes&amp;id_groupe=" . $current_group["id"] ."&amp;id_matiere=$id_matiere\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?edit_devoir=yes&amp;year=$ty&amp;month=$tm&amp;day=$td&amp;id_groupe=" . $current_group["id"]."&amp;id_matiere=$id_matiere\">&gt;&gt;</a>\n";
 } else {
-	echo "<a title=\"Aller au jour précédent\" href=\"index.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_groupe=" . $current_group["id"] . "\">&lt;&lt;</a></td><td align=center><a href=\"index.php?id_groupe=" . $current_group["id"] . "\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_groupe=" . $current_group["id"]."&amp;id_matiere=$id_matiere\">&gt;&gt;</a>\n";
+	echo "<a title=\"Aller au jour prÃ©cÃ©dent\" href=\"index.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_groupe=" . $current_group["id"] . "\">&lt;&lt;</a></td><td align=center><a href=\"index.php?id_groupe=" . $current_group["id"] . "\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_groupe=" . $current_group["id"]."&amp;id_matiere=$id_matiere\">&gt;&gt;</a>\n";
 }
 echo "</td>\n";
 echo "</tr>\n";
@@ -1180,9 +1180,9 @@ $oFCKeditor->Create() ;
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('notes').value='TRUC'; return false;\">CLIC</a>";
 //echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('notes').value); return false;\">CLOC</a>";
 
-// gestion des fichiers attachés
+// gestion des fichiers attachÃ©s
 echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">
-<b>Fichier(s) attaché(s) : </b><br />'."\n";
+<b>Fichier(s) attachÃ©(s) : </b><br />'."\n";
 echo '<div id="div_fichier">'."\n";
 if (isset($edit_devoir)) {
     $architecture= "/documents/cl_dev".$current_group["id"];
@@ -1262,7 +1262,7 @@ while($nb_doc_choisi_compte<$nb_doc_choisi) { ?>
 </td>
 </tr>
 <tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
-<td colspan="2" style="text-align: center;"><?php  echo "Tous les documents ne sont pas acceptés, voir <a href='javascript:centrerpopup(\"limites_telechargement.php?id_groupe=" . $current_group["id"] . "\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>les limites et restrictions</a>\n"; ?>
+<td colspan="2" style="text-align: center;"><?php  echo "Tous les documents ne sont pas acceptÃ©s, voir <a href='javascript:centrerpopup(\"limites_telechargement.php?id_groupe=" . $current_group["id"] . "\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>les limites et restrictions</a>\n"; ?>
 </td>
 </tr>
 </table>
@@ -1278,7 +1278,7 @@ while($nb_doc_choisi_compte<$nb_doc_choisi) { ?>
 
 <?php
 //
-// Suppression du cahier de textes jusqu'à une date choisie
+// Suppression du cahier de textes jusqu'Ã  une date choisie
 //
 $last_date1 = sql_query1("SELECT date_ct FROM ct_entry WHERE (contenu != '' and id_groupe='" . $current_group["id"] . "' and date_ct != '') order by date_ct  LIMIT 1 ");
 $last_date2 = sql_query1("SELECT date_ct FROM ct_devoirs_entry WHERE (contenu != '' and id_groupe='" . $current_group["id"] . "' and date_ct != '') order by date_ct  LIMIT 1 ");
@@ -1299,14 +1299,14 @@ if ($last_date != "-1") {
 
     echo "Date de la notice la plus ancienne : ".strftime("%A %d %B %Y", $last_date)."<br /><br />";
 
-    echo "<b>Effacer toutes les données</b> (textes et documents joints) du cahier de textes avant la date ci-dessous :<br />\n";
+    echo "<b>Effacer toutes les donnÃ©es</b> (textes et documents joints) du cahier de textes avant la date ci-dessous :<br />\n";
     genDateSelector("sup_", $sday, $smonth, $syear,"more_years");
     echo "<input type='hidden' name='action' value='sup_serie' />\n";
     echo "<input type='hidden' name='id_groupe' value='".$current_group["id"]."' />\n";
     ?>
     <input type="hidden" name="uid_post" value="<?php echo $uid; ?>" />
     <?php
-    echo "<input type='submit' value='Valider' onclick=\"return confirmlink(this,'Etes-vous sûr de vouloir supprimer les notices et les documents joints jusqu\'à la date selectionnée ?','Confirmation de suppression')\" />\n";
+    echo "<input type='submit' value='Valider' onclick=\"return confirmlink(this,'Etes-vous sÃ»r de vouloir supprimer les notices et les documents joints jusqu\'Ã  la date selectionnÃ©e ?','Confirmation de suppression')\" />\n";
     echo "</form>\n";
     echo "</td>\n</tr>\n</table>\n</fieldset>\n";
     echo "</div>\n";

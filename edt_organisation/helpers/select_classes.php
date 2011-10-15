@@ -3,15 +3,15 @@
 /**
  * @copyright 2008
  *
- * Fichier qui renvoie un select des classes de l'établissement
- * pour l'intégrer dans un fomulaire
+ * Fichier qui renvoie un select des classes de l'Ã©tablissement
+ * pour l'intÃ©grer dans un fomulaire
  *
  */
-// On récupère les infos utiles pour le fonctionnement des requêtes sql
+// On rÃ©cupÃ¨re les infos utiles pour le fonctionnement des requÃªtes sql
 $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
 
-// Sécurité : éviter que quelqu'un appelle ce fichier seul
+// SÃ©curitÃ© : Ã©viter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
 $analyse = explode("/", $serveur_script);
 $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
@@ -34,7 +34,7 @@ echo '
 		$classe[$i] = mysql_result($query, $i, "id");
 		$nom[$i] = strtoupper(remplace_accents(mysql_result($query, $i, "classe"), 'all_nospace'));
 
-		// On détermine le selected si c'est possible
+		// On dÃ©termine le selected si c'est possible
 		if (trim($nom[$i]) == $classe_selected OR $nom[$i] == $classe_selected) {
 			$selected = ' selected="selected"';
 		}else{

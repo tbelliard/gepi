@@ -22,7 +22,7 @@
  */
 
 $accessibilite="y";
-$titre_page = "Gestion du module modèle Open Office";
+$titre_page = "Gestion du module modÃ¨le Open Office";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 $post_reussi=FALSE;
@@ -47,13 +47,13 @@ if (!checkAccess()) {
   die();
 }
 
-//INSERT INTO droits VALUES ( '/mod_ooo/ooo_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Admin', '');
-//$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/ooo_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modèle Ooo : Admin', '');";
+//INSERT INTO droits VALUES ( '/mod_ooo/ooo_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : Admin', '');
+//$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/ooo_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : Admin', '');";
 
 $msg = '';
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 	check_token();
-    if (!saveSetting("active_mod_ooo", $_POST['activer'])) $msg.= "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+    if (!saveSetting("active_mod_ooo", $_POST['activer'])) $msg.= "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 
 	if (isset($_POST['fb_dezip_ooo'])) {
 		if (!saveSetting("fb_dezip_ooo", $_POST['fb_dezip_ooo'])) {
@@ -63,11 +63,11 @@ if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) {
-  $msg.= "Les modifications ont été enregistrées !";
+  $msg.= "Les modifications ont Ã©tÃ© enregistrÃ©es !";
   $post_reussi=TRUE;
 }
 // header
-//$titre_page = "Gestion du module modèle Open Office";
+//$titre_page = "Gestion du module modÃ¨le Open Office";
 //require_once("../lib/header.inc");
 
 
@@ -77,24 +77,24 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc");
 
-if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion modèle Open Office"))
-		echo "erreur lors de la création du fil d'ariane";
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion modÃ¨le Open Office"))
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
 
-// ====== Vérification des répertoires =====
-$nom_fichier_modele_ooo =''; //pour éviter un notice (la variable ne sert pas ici ..
+// ====== VÃ©rification des rÃ©pertoires =====
+$nom_fichier_modele_ooo =''; //pour Ã©viter un notice (la variable ne sert pas ici ..
 $nom_dossier_modeles_ooo_mes_modeles="";
 $droitRepertoire =array();
 include_once ("./lib/chemin.inc.php");
-// test d'écriture dans le dossier mes_modeles
+// test d'Ã©criture dans le dossier mes_modeles
 $dossier_test = "./".$nom_dossier_modeles_ooo_mes_modeles."dossier_test";
 @rmdir($dossier_test);
 $resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
-  $droitRepertoire[]="ATTENTION : Les droits d'écriture sur le dossier
-  /mod_ooo/$nom_dossier_modeles_ooo_mes_modeles sont incorrects. Gepi doit avoir les droits de création
+  $droitRepertoire[]="ATTENTION : Les droits d'Ã©criture sur le dossier
+  /mod_ooo/$nom_dossier_modeles_ooo_mes_modeles sont incorrects. Gepi doit avoir les droits de crÃ©ation
   de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module";
 }
 else {
@@ -105,8 +105,8 @@ $dossier_test = "./tmp/dossier_test";
 @rmdir($dossier_test);
 $resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
-  $droitRepertoire[]="ATTENTION : Les droits d'écriture sur le dossier /mod_ooo/tmp/ sont incorrects.
-	Gepi doit avoir les droits de création de dossiers et de fichiers dans ce dossier pour assurer
+  $droitRepertoire[]="ATTENTION : Les droits d'Ã©criture sur le dossier /mod_ooo/tmp/ sont incorrects.
+	Gepi doit avoir les droits de crÃ©ation de dossiers et de fichiers dans ce dossier pour assurer
 	le bon fonctionnement du module";
 }
 else {
@@ -125,47 +125,47 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_ooo/ooo_admin_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
 /*
 ?>
 <p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<h2>Configuration générale</h2>
-<i>La désactivation du module modèle Open Office n'entraîne aucune suppression des données. Lorsque le module est désactivé, il n'est plus possible de gérer ses propres modèles.</i>
+<h2>Configuration gÃ©nÃ©rale</h2>
+<i>La dÃ©sactivation du module modÃ¨le Open Office n'entraÃ®ne aucune suppression des donnÃ©es. Lorsque le module est dÃ©sactivÃ©, il n'est plus possible de gÃ©rer ses propres modÃ¨les.</i>
 
 <br />
 <form action="ooo_admin.php" name="form1" method="post">
 <p>
-<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_mod_ooo")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module modèle Open Office</label><br />
-<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_mod_ooo")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver le module modèle Open Office</label>
+<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_mod_ooo")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module modÃ¨le Open Office</label><br />
+<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_mod_ooo")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>DÃ©sactiver le module modÃ¨le Open Office</label>
 </p>
 
 <input type="hidden" name="is_posted" value="1" />
 <center><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></center>
 </form>
 <?php
-$nom_fichier_modele_ooo =''; //pour éviter un notice (la variable ne sert pas ici ..
+$nom_fichier_modele_ooo =''; //pour Ã©viter un notice (la variable ne sert pas ici ..
 include_once ("./lib/chemin.inc.php");
-// test d'écriture dans le dossier mes_modeles
+// test d'Ã©criture dans le dossier mes_modeles
 $dossier_test = "./".$nom_dossier_modeles_ooo_mes_modeles."dossier_test";
 $resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
-	echo "<p style=\"color: red;\">ATTENTION : Les droits d'écriture sur le dossier /mod_ooo/$nom_dossier_modeles_ooo_mes_modeles sont incorrects. Gepi doit avoir les droits de création de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module</p>";
+	echo "<p style=\"color: red;\">ATTENTION : Les droits d'Ã©criture sur le dossier /mod_ooo/$nom_dossier_modeles_ooo_mes_modeles sont incorrects. Gepi doit avoir les droits de crÃ©ation de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module</p>";
 	//@rmdir($dossier_test);
 }
 else {
@@ -175,7 +175,7 @@ else {
 $dossier_test = "./tmp/dossier_test";
 $resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
-	echo "<p style=\"color: red;\">ATTENTION : Les droits d'écriture sur le dossier /mod_ooo/tmp/ sont incorrects. Gepi doit avoir les droits de création de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module</p>";
+	echo "<p style=\"color: red;\">ATTENTION : Les droits d'Ã©criture sur le dossier /mod_ooo/tmp/ sont incorrects. Gepi doit avoir les droits de crÃ©ation de dossiers et de fichiers dans ce dossier pour assurer le bon fonctionnement du module</p>";
 	//@rmdir($dossier_test);
 }
 else {

@@ -43,7 +43,7 @@ if (!checkAccess()) {
 die();
 }
 
-// Page bourrinée... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
+// Page bourrinÃ©e... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
 check_token();
 
 $liste_tables_del = array(
@@ -63,19 +63,19 @@ $liste_tables_del = array(
 );
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Nettoyage des tables";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Nettoyage des tables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
-echo "<center><h3 class='gepi'>Septième phase d'initialisation<br />Nettoyage des tables</h3></center>";
+echo "<center><h3 class='gepi'>SeptiÃ¨me phase d'initialisation<br />Nettoyage des tables</h3></center>";
 if (!isset($is_posted)) {
-   echo "<p><b>ATTENTION ...</b> : vous ne devez procéder à cette opération uniquement si toutes les données (élèves, classes, professeurs, disciplines, options) ont été définies !</p>";
-   echo "<p>Les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p>";
+   echo "<p><b>ATTENTION ...</b> : vous ne devez procÃ©der Ã  cette opÃ©ration uniquement si toutes les donnÃ©es (Ã©lÃ¨ves, classes, professeurs, disciplines, options) ont Ã©tÃ© dÃ©finies !</p>";
+   echo "<p>Les donnÃ©es inutiles importÃ©es Ã  partir des fichiers GEP lors des diffÃ©rentes phases d'initialisation seront effacÃ©es !</p>";
    echo "<form enctype='multipart/form-data' action='clean_tables.php' method='post'>";
    echo "<input type=hidden name='is_posted' value='yes' />";
-   echo "<p><input type=submit value='Procéder au nettoyage' />";
+   echo "<p><input type=submit value='ProcÃ©der au nettoyage' />";
    echo "</form>";
 } else {
    $j=0;
@@ -88,11 +88,11 @@ if (!isset($is_posted)) {
    }
    if ($flag != 0){
        echo "<p><b>ATTENTION ...</b><br />";
-       echo "L'initialisation des données de l'année n'est pas terminée, certaines données concernant les élèves, les classes, les groupes, les professeurs ou les matières sont manquantes. La procédure ne peut continuer !</p></body></html>";
+       echo "L'initialisation des donnÃ©es de l'annÃ©e n'est pas terminÃ©e, certaines donnÃ©es concernant les Ã©lÃ¨ves, les classes, les groupes, les professeurs ou les matiÃ¨res sont manquantes. La procÃ©dure ne peut continuer !</p></body></html>";
        die();
    }
-   //Suppression des données inutiles dans la tables utilisateurs
-   echo "<h3 class='gepi'>Vérification des données concernant les professeurs</h3>";
+   //Suppression des donnÃ©es inutiles dans la tables utilisateurs
+   echo "<h3 class='gepi'>VÃ©rification des donnÃ©es concernant les professeurs</h3>";
    $req = mysql_query("select login from utilisateurs where (statut = 'professeur' and etat='actif')");
    $sup = 'no';
    $nb_prof = mysql_num_rows($req);
@@ -102,23 +102,23 @@ if (!isset($is_posted)) {
        $test = mysql_query("select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
        if (mysql_num_rows($test)==0) {
            $del = @mysql_query("delete from utilisateurs where login = '$login_prof'");
-           echo "Le professeur $login_prof a été supprimé de la base.<br />";
+           echo "Le professeur $login_prof a Ã©tÃ© supprimÃ© de la base.<br />";
            $sup = 'yes';
        } else {
            $test = mysql_query("select login from j_groupes_professeurs where login = '$login_prof'");
            if (mysql_num_rows($test)==0) {
                $del = @mysql_query("delete from utilisateurs where login = '$login_prof'");
-               echo "Le professeur $login_prof a été supprimé de la base.<br />";
+               echo "Le professeur $login_prof a Ã©tÃ© supprimÃ© de la base.<br />";
                $sup = 'yes';
             }
        }
        $i++;
    }
    if ($sup == 'no') {
-       echo "<p>Aucun professeur n'a été supprimé !</p>";
+       echo "<p>Aucun professeur n'a Ã©tÃ© supprimÃ© !</p>";
     }
-    //Suppression des données inutiles dans la tables des matières
-   echo "<h3 class='gepi'>Vérification des données concernant les matières</h3>";
+    //Suppression des donnÃ©es inutiles dans la tables des matiÃ¨res
+   echo "<h3 class='gepi'>VÃ©rification des donnÃ©es concernant les matiÃ¨res</h3>";
    $req = mysql_query("select matiere from matieres");
     $sup = 'no';
    $nb_mat = mysql_num_rows($req);
@@ -130,17 +130,17 @@ if (!isset($is_posted)) {
             $test2 = mysql_query("select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
            if (mysql_num_rows($test2)==0) {
                $del = @mysql_query("delete from matieres where matiere = '$mat'");
-               echo "La matière $mat a été supprimée de la base.<br />";
+               echo "La matiÃ¨re $mat a Ã©tÃ© supprimÃ©e de la base.<br />";
                $sup = 'yes';
            }
        }
        $i++;
     }
    if ($sup == 'no') {
-       echo "<p>Aucune matière n'a été supprimée !</p>";
+       echo "<p>Aucune matiÃ¨re n'a Ã©tÃ© supprimÃ©e !</p>";
     }
-    //Suppression des données inutiles dans la tables des responsables
-   echo "<h3 class='gepi'>Vérification des données concernant les responsables des élèves</h3>";
+    //Suppression des donnÃ©es inutiles dans la tables des responsables
+   echo "<h3 class='gepi'>VÃ©rification des donnÃ©es concernant les responsables des Ã©lÃ¨ves</h3>";
    $req = mysql_query("select ereno, nom1, prenom1 from responsables");
    $sup = 'no';
    $nb_resp = mysql_num_rows($req);
@@ -152,18 +152,18 @@ if (!isset($is_posted)) {
            $nom_resp = mysql_result($req, $i, 'nom1');
            $prenom_resp = mysql_result($req, $i, 'prenom1');
            $del = @mysql_query("delete from responsables where ereno = '$resp'");
-           echo "Le responsable ".$prenom_resp." ".$nom_resp." a été supprimé de la base.<br />";
+           echo "Le responsable ".$prenom_resp." ".$nom_resp." a Ã©tÃ© supprimÃ© de la base.<br />";
           $sup = 'yes';
        }
        $i++;
    }
    if ($sup == 'no') {
-       echo "<p>Aucun responsable n'a été supprimé !</p>";
+       echo "<p>Aucun responsable n'a Ã©tÃ© supprimÃ© !</p>";
     }
 
 
-	//Suppression des données inutiles dans la table j_eleves_etablissements
-	echo "<h3 class='gepi'>Vérification des données concernant l'établissement d'origine des élèves</h3>\n";
+	//Suppression des donnÃ©es inutiles dans la table j_eleves_etablissements
+	echo "<h3 class='gepi'>VÃ©rification des donnÃ©es concernant l'Ã©tablissement d'origine des Ã©lÃ¨ves</h3>\n";
 
 	//SELECT e.* FROM eleves e LEFT JOIN j_eleves_etablissements jec ON jec.id_eleve=e.elenoet WHERE jec.id_eleve is NULL;
 	//SELECT jec.* FROM j_eleves_etablissements jec LEFT JOIN eleves e ON jec.id_eleve=e.elenoet WHERE e.elenoet IS NULL;
@@ -172,7 +172,7 @@ if (!isset($is_posted)) {
 			WHERE e.elenoet IS NULL;";
 	$res_jee=mysql_query($sql);
 	if(mysql_num_rows($res_jee)==0) {
-		echo "<p>Aucune association élève/établissement n'a été supprimée.</p>\n";
+		echo "<p>Aucune association Ã©lÃ¨ve/Ã©tablissement n'a Ã©tÃ© supprimÃ©e.</p>\n";
 	}
 	else {
 		$cpt_suppr_jee=0;
@@ -183,14 +183,14 @@ if (!isset($is_posted)) {
 				$cpt_suppr_jee++;
 			}
 		}
-		echo "<p>$cpt_suppr_jee association(s) élève/établissement a(ont) été supprimée(s).<br />(<i>pour des élèves qui ne sont plus dans l'établissement</i>).</p>\n";
+		echo "<p>$cpt_suppr_jee association(s) Ã©lÃ¨ve/Ã©tablissement a(ont) Ã©tÃ© supprimÃ©e(s).<br />(<i>pour des Ã©lÃ¨ves qui ne sont plus dans l'Ã©tablissement</i>).</p>\n";
 	}
 
 
 	echo "<p><br /></p>\n";
-   //echo "<p>Fin de la procédure !</p>";
-   echo "<p>Fin de la procédure d'importation!</p>";
-   //echo "<p><b>Etape ajoutée:</b> Si vous disposez du F_DIV.CSV, vous pouvez <a href='init_pp.php'>initialiser les professeurs principaux</a>.</p>";
+   //echo "<p>Fin de la procÃ©dure !</p>";
+   echo "<p>Fin de la procÃ©dure d'importation!</p>";
+   //echo "<p><b>Etape ajoutÃ©e:</b> Si vous disposez du F_DIV.CSV, vous pouvez <a href='init_pp.php'>initialiser les professeurs principaux</a>.</p>";
 }
 require("../lib/footer.inc.php");
 ?>

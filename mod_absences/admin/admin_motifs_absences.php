@@ -72,13 +72,13 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 {
    while ($total < $nb_ajout)
       {
-            // VÈrifcation des variable
+            // V√©rifcation des variable
               $init_motif_absence_ins = $_POST['init_motif_absence'][$total];
               $def_motif_absence_ins = securite_texte($_POST['def_motif_absence'][$total]);
 
               if ($action_sql == "modifier") { $id_motif_absence_ins = $_POST['id_motif'][$total]; }
 
-            // VÈrification des champs nom et prenom (si il ne sont pas vides ?)
+            // V√©rification des champs nom et prenom (si il ne sont pas vides ?)
             if($init_motif_absence_ins != "" && $def_motif_absence_ins != "")
             {
                  if($action_sql == "ajouter") { $test = mysql_result(mysql_query("SELECT count(*) FROM absences_motifs WHERE init_motif_absence = '".$init_motif_absence_ins."'"),0); }
@@ -92,7 +92,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                       }
                      if($action_sql == "modifier")
                       {
-                            // Requete de mise ‡ jour MYSQL
+                            // Requete de mise √† jour MYSQL
                               $requete = "UPDATE absences_motifs SET
                                                   init_motif_absence = '$init_motif_absence_ins',
                                                   def_motif_absence = '$def_motif_absence_ins'
@@ -102,12 +102,12 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                              mysql_query($requete) or die('Erreur SQL !'.$sql.'<br />'.mysql_error());
                              $verification[$total] = 1;
                     } else {
-                               // vÈrification = 2 - C'est initiale pour les motif existe dÈjas
+                               // v√©rification = 2 - C'est initiale pour les motif existe d√©jas
                                  $verification[$total] = 2;
                                  $erreur = 1;
                             }
             } else {
-                     // vÈrification = 3 - Tous les champs ne sont pas remplie
+                     // v√©rification = 3 - Tous les champs ne sont pas remplie
                      $verification[$total] = 3;
                      $erreur = 1;
                    }
@@ -148,9 +148,9 @@ if ($action_sql == "supprimer") {
             $requete = "DELETE FROM absences_motifs WHERE id_motif_absence ='$id_motif'";
          // Execution de cette requete
             mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-            $msg = "La suppresion a ÈtÈ effectuÈe avec succËs.";
+            $msg = "La suppresion a √©t√© effectu√©e avec succ√®s.";
       } else {
-          $msg = "Suppression impossible car une ou plusieurs absences ont ÈtÈ enregistrÈes avec ce type de motif. Commencez par supprimer les absences concernÈes";
+          $msg = "Suppression impossible car une ou plusieurs absences ont √©t√© enregistr√©es avec ce type de motif. Commencez par supprimer les absences concern√©es";
       }
 
 }
@@ -179,13 +179,13 @@ echo "</p>";
 <?php if ($action == "visualiser") { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
-    <h2>DÈfinition des motifs d'absence</h2>
+    <h2>D√©finition des motifs d'absence</h2>
 	<a href="admin_motifs_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un ou plusieurs motif(s)</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="tab_table">
       <tr>
         <td class="tab_th">Code</td>
-        <td class="tab_th">DÈfinition</td>
+        <td class="tab_th">D√©finition</td>
         <td class="tab_th" style="width: 25px;"></td>
         <td class="tab_th" style="width: 25px;"></td>
       </tr>
@@ -199,7 +199,7 @@ echo "</p>";
           <td><?php echo $data_motif['init_motif_absence']; ?></td>
           <td><?php echo $data_motif['def_motif_absence']; ?></td>
           <td><a href="admin_motifs_absences.php?action=modifier&amp;id_motif=<?php echo $data_motif['id_motif_absence']; ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><?php if ( $data_motif['init_motif_absence'] != 'A' ) { ?><a href="admin_motifs_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_motif=<?php echo $data_motif['id_motif_absence']; ?>" onClick="return confirm('Etes-vous s˚r de vouloir supprimer ce motif ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a><?php } ?></td>
+          <td><?php if ( $data_motif['init_motif_absence'] != 'A' ) { ?><a href="admin_motifs_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_motif=<?php echo $data_motif['id_motif_absence']; ?>" onClick="return confirm('Etes-vous s√ªr de vouloir supprimer ce motif ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a><?php } ?></td>
         </tr>
      <?php } ?>
     </table>
@@ -224,10 +224,10 @@ echo "</p>";
      <fieldset class="fieldset_efface">
       <table cellpadding="2" cellspacing="2" class="tab_table">
         <tr>
-          <th class="tab_th">Nombre de motifs ‡ ajouter</th>
+          <th class="tab_th">Nombre de motifs √† ajouter</th>
         </tr>
         <tr style="text-align: right;">
-          <td class="couleur_ligne_1"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Mettre ‡ jour" /></td>
+          <td class="couleur_ligne_1"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Mettre √† jour" /></td>
         </tr>
       </table>
      </fieldset>
@@ -250,7 +250,7 @@ echo "</p>";
          <tr>
         <td class="centre"><img src="../images/attention.png" width="28" height="28" alt="" /></td>
           <td colspan="2" class="erreur_rouge_jaune"><b>- Erreur -<br />
-          <?php if ($verification_erreur[$nb] === 2) { ?>Cette initiale pour le motif existe dÈj‡<?php } ?>
+          <?php if ($verification_erreur[$nb] === 2) { ?>Cette initiale pour le motif existe d√©j√†<?php } ?>
           <?php if ($verification_erreur[$nb] === 3) { ?>Tous les champs ne sont pas remplis<?php } ?>
           </b><br /></td>
          </tr>

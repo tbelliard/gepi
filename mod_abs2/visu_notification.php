@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,16 +52,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_notification = isset($_POST["id_notification"]) ? $_POST["id_notification"] :(isset($_GET["id_notification"]) ? $_GET["id_notification"] :(isset($_SESSION["id_notification"]) ? $_SESSION["id_notification"] : NULL));
 if (isset($id_notification) && $id_notification != null) $_SESSION['id_notification'] = $id_notification;
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
@@ -98,7 +98,7 @@ if ($notification == null) {
     $criteria->setLimit(1);
     $notification = $utilisateur->getAbsenceEleveNotifications($criteria)->getFirst();
     if ($notification == null) {
-	echo "Notification non trouvée";
+	echo "Notification non trouvÃ©e";
 	die();
     }
 }
@@ -106,7 +106,7 @@ if ($notification == null) {
 echo '<table class="normal">';
 echo '<tbody>';
 echo '<tr><td>';
-echo 'N° de notification';
+echo 'NÂ° de notification';
 echo '</td><td>';
 echo $notification->getPrimaryKey();
 if ($notification->getAbsenceEleveTraitement() == null) {
@@ -415,14 +415,14 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
     echo '</td></tr>';
 }
 
-// 	Affichage des adresses pour l'envoi du SMS (permettre de savoir à quel responsable l'envoyer selon l'adresse)
+// 	Affichage des adresses pour l'envoi du SMS (permettre de savoir Ã  quel responsable l'envoyer selon l'adresse)
 if (($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) ||
     ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS))  {
     echo '<tr><td>';
     echo 'Adresse : ';
     echo '</td><td>';
     if ($notification->getResponsableEleveAdresse() != null) {
-	//pour information : Nom du ou des responsables sélectionnés
+	//pour information : Nom du ou des responsables sÃ©lectionnÃ©s
 	echo 'De : <i> ';
 	echo $notification->getResponsableEleveAdresse()->getDescriptionHabitant();
 	echo '</i><br/><br/>';
@@ -510,7 +510,7 @@ if (($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_
 echo '<tr><td>';
 echo 'Statut : ';
 echo '</td><td>';
-//on ne modifie manuellement le statut si le type est courrier ou communication téléphonique
+//on ne modifie manuellement le statut si le type est courrier ou communication tÃ©lÃ©phonique
 if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER || $notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COMMUNICATION_TELEPHONIQUE) {
     echo '<form method="post" action="enregistrement_modif_notification.php">';
     echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
@@ -559,7 +559,7 @@ echo '</td></tr>';
 
 
 echo '<tr><td>';
-echo 'Créé par : ';
+echo 'CrÃ©Ã© par : ';
 echo '</td><td>';
 if ($notification->getUtilisateurProfessionnel() != null) {
     echo $notification->getUtilisateurProfessionnel()->getCivilite();
@@ -576,14 +576,14 @@ if ($notification->getdateEnvoi() != null) {
     echo '</td></tr>';
 } else {
     echo '<tr><td>';
-    echo 'Créé le : ';
+    echo 'CrÃ©Ã© le : ';
     echo '</td><td>';
     echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
     echo '</td></tr>';
 
     if ($notification->getCreatedAt() != $notification->getUpdatedAt()) {
 	echo '<tr><td>';
-	echo 'Modifiée le : ';
+	echo 'ModifiÃ©e le : ';
 	echo '</td><td>';
 	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getUpdatedAt('U')));
 	echo '</td></tr>';
@@ -600,12 +600,12 @@ if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_N
     echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
-	echo '<button type="submit" onclick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); setTimeout("window.location = \"visu_notification.php\"", 1000); return false;\'>Génerer la notification</button>';
+	echo '<button type="submit" onclick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); setTimeout("window.location = \"visu_notification.php\"", 1000); return false;\'>GÃ©nerer la notification</button>';
     } else {
 	if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL && ($notification->getEmail() == null || $notification->getEmail() == '')) {
 	    //on affiche pas le bouton de generation car l'adresse n'est pas renseignee
 	} else {
-	    echo '<button type="submit">Générer la notification</button>';
+	    echo '<button type="submit">GÃ©nÃ©rer la notification</button>';
 	}
     }
     echo '</p>';
@@ -619,7 +619,7 @@ if ($notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVO
 	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="duplication"/>';
-    echo '<button type="submit">Créer une autre notification</button>';
+    echo '<button type="submit">CrÃ©er une autre notification</button>';
 	echo '</p>';
     echo '</form>';
     echo '</td></tr>';
@@ -642,7 +642,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 35;
              $taille_max_hauteur = 35;
 
@@ -651,7 +651,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 

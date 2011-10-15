@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -44,8 +44,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -68,7 +68,7 @@ if(isset($suppr_mesure)) {
 			$sql="SELECT 1=1 FROM s_traitement_incident sti WHERE sti.id_mesure='".$suppr_mesure[$i]."';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0) {
-				$msg.="Suppression de la mesure n°".$suppr_mesure[$i]." impossible car associée à ".mysql_num_rows($test)." incidents.<br />\n";
+				$msg.="Suppression de la mesure nÂ°".$suppr_mesure[$i]." impossible car associÃ©e Ã  ".mysql_num_rows($test)." incidents.<br />\n";
 			}
 			else {
 				//$sql="DELETE FROM s_mesures WHERE mesure='$suppr_mesure[$i]';";
@@ -76,7 +76,7 @@ if(isset($suppr_mesure)) {
 				$suppr=mysql_query($sql);
 				if(!$suppr) {
 					//$msg.="ERREUR lors de la suppression de la mesure ".$suppr_mesure[$i].".<br />\n";
-					$msg.="ERREUR lors de la suppression de la mesure n°".$suppr_mesure[$i].".<br />\n";
+					$msg.="ERREUR lors de la suppression de la mesure nÂ°".$suppr_mesure[$i].".<br />\n";
 				}
 			}
 		}
@@ -108,13 +108,13 @@ if(isset($mesure)) {
 				//echo "$sql<br />\n";
 				$update=mysql_query($sql);
 				if(!$update) {
-					$msg.="ERREUR lors de la mise à jour de ".$lig->mesure."<br />\n";
+					$msg.="ERREUR lors de la mise Ã  jour de ".$lig->mesure."<br />\n";
 				}
 			}
 		}
 
 		if($msg=="") {
-			$msg.="Mise à jour des commentaires des mesures précédemment saisies effectué.<br />";
+			$msg.="Mise Ã  jour des commentaires des mesures prÃ©cÃ©demment saisies effectuÃ©.<br />";
 		}
 		//if(in_array($mesure,$tab_mesure)) {$a_enregistrer='n';}
 	}
@@ -147,16 +147,16 @@ if(isset($mesure)) {
 				$msg.="ERREUR lors de l'enregistrement de ".$mesure."<br />\n";
 			}
 			else {
-				$msg.="Enregistrement de ".$mesure." effectué.<br />\n";
+				$msg.="Enregistrement de ".$mesure." effectuÃ©.<br />\n";
 			}
 		}
 	}
 
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Discipline: Définition des mesures";
+$titre_page = "Discipline: DÃ©finition des mesures";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -168,14 +168,14 @@ echo "</p>\n";
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 echo add_token_field();
 
-echo "<p class='bold'>Saisie des mesures prises ou demandées suite à un incident&nbsp;:</p>\n";
+echo "<p class='bold'>Saisie des mesures prises ou demandÃ©es suite Ã  un incident&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt=0;
 $sql="SELECT * FROM s_mesures ORDER BY type,mesure;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucune mesure n'est encore définie.</p>\n";
+	echo "<p>Aucune mesure n'est encore dÃ©finie.</p>\n";
 }
 else {
 	echo "<p>Mesures existantes&nbsp;:</p>\n";
@@ -209,7 +209,7 @@ else {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo preg_replace("/demandee/","demandée",$lig->type);
+		echo preg_replace("/demandee/","demandÃ©e",$lig->type);
 		echo "</td>\n";
 
 		//echo "<td><input type='checkbox' name='suppr_mesure[]' id='suppr_mesure_$cpt' value=\"$lig->mesure\" onchange='changement();' /></td>\n";
@@ -248,7 +248,7 @@ echo "</label>";
 echo "<br />\n";
 echo "<input type='radio' name='type' id='type_demandee' value='demandee' onchange='changement();' />\n";
 echo "<label for='type_demandee' style='cursor:pointer;'>";
-echo " Demandée\n";
+echo " DemandÃ©e\n";
 echo "</label>";
 echo "</td>\n";
 echo "</tr>\n";
@@ -266,8 +266,8 @@ echo "<p><br /></p>\n";
 
 echo "<p><em>NOTES&nbsp;:</em></p>\n";
 echo "<ul>\n";
-echo "<li><p>Une mesure demandée (<em>par un professeur</em>) doit être validée par un CPE/scol.</p></li>\n";
-echo "<li><p>Le commentaire est affiché en infobulle dans la page de saisie d'incident.</p></li>\n";
+echo "<li><p>Une mesure demandÃ©e (<em>par un professeur</em>) doit Ãªtre validÃ©e par un CPE/scol.</p></li>\n";
+echo "<li><p>Le commentaire est affichÃ© en infobulle dans la page de saisie d'incident.</p></li>\n";
 echo "</ul>\n";
 echo "<p><br /></p>\n";
 

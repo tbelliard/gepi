@@ -21,7 +21,7 @@
  */
 
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite = "y";
 $traite_anti_inject = 'no';
 
@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
   die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=2");
     die();
@@ -63,31 +63,31 @@ $cr                 = isset($_POST["cr"]) ? $_POST["cr"] : NULL;
 $msg = NULL;
 $verif = 'ok'; // indicateur pour le suivi des erreurs
 
-// =================================================== Le code métier =======================================/
+// =================================================== Le code mÃ©tier =======================================/
 
 //debug_var();
 
-# Un appel à enregistrer est lancé
+# Un appel Ã  enregistrer est lancÃ©
 if ($enregistrer == "Enregistrer"){
 	check_token();
 
-  // On pense à vérifier quelques trucs comme les entités html
+  // On pense Ã  vÃ©rifier quelques trucs comme les entitÃ©s html
   $sequence = new CahierTexteSequence();
   $sequence->setTitre(htmlentities($titresequence));
   $sequence->setDescription($descsequence);
   $sequence->save();
 
-  // Maintenant on peut relier les compte-rendus avec cette séquence
+  // Maintenant on peut relier les compte-rendus avec cette sÃ©quence
   $nbre = count ($cr);
 
   for($i = 1 ; $i <= $nbre ; $i++){
     $contenu = $seance = NULL;
-    // On vérifie si le CR est bien renseigné ainsi que sa date
+    // On vÃ©rifie si le CR est bien renseignÃ© ainsi que sa date
     if ($dateseance[$i] == ''){
       // On ne fait rien, on n'enregistre pas un CR sans date
     }else{
-      $contenu = ($cr[$i] == '') ? '...' : $cr[$i]; // pour rester cohérent avec le module cdt
-      // On formate la date demandée
+      $contenu = ($cr[$i] == '') ? '...' : $cr[$i]; // pour rester cohÃ©rent avec le module cdt
+      // On formate la date demandÃ©e
       $test_date = explode("/", $dateseance[$i]);
       $ts_seance = mktime(0, 0, 0, $test_date[1], $test_date[0], $test_date[2]);
       // on enregistre alors ce CR
@@ -144,5 +144,5 @@ if(($nb_max_seq=="")||(!preg_match("/^[0-9]*$/", $nb_max_seq))) {
 
 </form>
   <?php echo $msg; ?>
-<div id="aff_result" style="display: none;"><!-- Affichage des données AJAX --></div>
+<div id="aff_result" style="display: none;"><!-- Affichage des donnÃ©es AJAX --></div>
 <?php include '../lib/footer.inc.php'; ?>

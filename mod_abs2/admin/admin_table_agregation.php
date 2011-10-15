@@ -60,7 +60,7 @@ $date_fin = EdtHelper::getDernierJourAnneeScolaire();
 $date_fin->setTime(23,59,59);
 
 // header
-$titre_page = "Gestion de la table d'agrégation des demi-journées d'absence";
+$titre_page = "Gestion de la table d'agrÃ©gation des demi-journÃ©es d'absence";
 $javascript_specifique[] = "mod_abs2/lib/include";
 require_once("../../lib/header.inc");
 
@@ -71,11 +71,11 @@ echo "</p>";
 ?>
 
 <div style="text-align:center">
-   <h2>Maintenance de la table d'agrégation des demi-journées d'absence</h2>    
+   <h2>Maintenance de la table d'agrÃ©gation des demi-journÃ©es d'absence</h2>    
     
     <div style="text-align:center">
         <?php if ($action == "vidage" || $action=="regeneration") : ?>
-            <h2>Vidage et regénération de la table d'agrégation</h2>
+            <h2>Vidage et regÃ©nÃ©ration de la table d'agrÃ©gation</h2>
                 <?php
                 if ($action == "vidage") {
                     $del = AbsenceAgregationDecompteQuery::create()->deleteAll();
@@ -84,14 +84,14 @@ echo "</p>";
                         echo"<p>La Table est vide.</p>";
                         die();
                     } else {
-                        echo"<p>Un problème est survenu.</p>";
+                        echo"<p>Un problÃ¨me est survenu.</p>";
                         die();
                     }
                 } elseif ($action == "regeneration") {
                     $eleve_col = EleveQuery::create()->paginate($page, $maxPerPage);
                     echo'<div id="contain_div" class="css-panes">
-                        <p> Traitement de la tranche d\'élève ' . $page . '/' . $eleve_col->getLastPage() . ' en cours... <br />
-                            Attention cette opération peut être longue.</p>
+                        <p> Traitement de la tranche d\'Ã©lÃ¨ve ' . $page . '/' . $eleve_col->getLastPage() . ' en cours... <br />
+                            Attention cette opÃ©ration peut Ãªtre longue.</p>
                          </div>';
                     if(ob_get_contents()){
                        ob_flush(); 
@@ -101,10 +101,10 @@ echo "</p>";
                         $eleve->checkAndUpdateSynchroAbsenceAgregationTable($date_debut, $date_fin);
                     }
                     if ($page != $eleve_col->getLastPage()) {
-                        echo"<p> Traitement de la tranche d'élève " . $page . "/" . $eleve_col->getLastPage() . " terminé <br /></p>";
+                        echo"<p> Traitement de la tranche d'Ã©lÃ¨ve " . $page . "/" . $eleve_col->getLastPage() . " terminÃ© <br /></p>";
                         $page++;
                     } else {
-                        echo"<p>Traitement terminé</p>";
+                        echo"<p>Traitement terminÃ©</p>";
                         die();
                     }
                 }
@@ -129,7 +129,7 @@ echo "</p>";
             <input type="hidden" name="page" value="<?php echo $page; ?>" />
             <br /><br /><br />            
             <?php if ($action !== "regeneration" &&  $action !== "vidage") : ?> 
-                <input type="submit" name="Submit" value="Valider" onclick="return(confirm('Etes-vous sûr de vouloir lancer le processus ?'));" /> 
+                <input type="submit" name="Submit" value="Valider" onclick="return(confirm('Etes-vous sÃ»r de vouloir lancer le processus ?'));" /> 
             <?php else : ?> 
                 <script type="text/javascript">
                     postform(document.getElementById('form_table'));

@@ -63,7 +63,7 @@ if (isset($_POST['ok_enr_visa'])) {
 			}
 	}
 	if (!$error) {
-		$msg = "Le visa a bien été enregistré.";
+		$msg = "Le visa a bien Ã©tÃ© enregistrÃ©.";
 	}
 }
 
@@ -76,7 +76,7 @@ if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST
 	if (!saveSetting("date_signature", $date_signature)) $msg .= "Erreur lors de l'enregistrement de date de signature des cahiers de textes !";
 }
 
-//on récupère la date butoir pour la signture des CDT
+//on rÃ©cupÃ¨re la date butoir pour la signture des CDT
 $date_signature = getSettingValue("date_signature");
 
 // visa d'un ou plusieurs cahiers de texte
@@ -91,8 +91,8 @@ if (isset($_POST['visa_ct'])) {
 		$texte_visa_cdt = preg_replace('/\\\r\\\n/','',html_entity_decode_all_version($_POST['texte_visa_FCK']));
 	}
 
-	// les entrées
-	// on vise les notices (le champs vise de la table ct_entry est mis à 'y')
+	// les entrÃ©es
+	// on vise les notices (le champs vise de la table ct_entry est mis Ã  'y')
 	$query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_entry ORDER BY id_groupe");
 
 	$iterateur = 0;
@@ -109,7 +109,7 @@ if (isset($_POST['visa_ct'])) {
 			//echo "$sql_visa_ct<br />\n";
 			$visa_ct = sql_query($sql_visa_ct);
 			if(!$visa_ct) {
-				$msg.="Erreur lors de l'enregistrement du visa des comptes-rendus pour le groupe n°$id_groupe et le professeur $id_professeur<br />\n";
+				$msg.="Erreur lors de l'enregistrement du visa des comptes-rendus pour le groupe nÂ°$id_groupe et le professeur $id_professeur<br />\n";
 			}
 		
 			// On ajoute une notice montrant la signature du cahier de texte
@@ -121,10 +121,10 @@ if (isset($_POST['visa_ct'])) {
 			//echo "$sql_insertion_visa<br />\n";
 			$insertion_visa = sql_query($sql_insertion_visa);
 			if ($error == 'no') {
-				//$msg .= "Cahier(s) de textes signé(s).<br />\n";
+				//$msg .= "Cahier(s) de textes signÃ©(s).<br />\n";
 				$nb_cdt_signes++;
 			} else {
-				$msg .= "Il y a eu un problème lors de la signature du cahier de textes.<br />\n";
+				$msg .= "Il y a eu un problÃ¨me lors de la signature du cahier de textes.<br />\n";
 			}
 		}
 		$iterateur++;
@@ -132,7 +132,7 @@ if (isset($_POST['visa_ct'])) {
 	
 	$query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_devoirs_entry ORDER BY id_groupe");
 	//les devoirs
-	// on vise les notices devoirs (le champs vise de la table ct_devoirs_entry est mis à 'y')
+	// on vise les notices devoirs (le champs vise de la table ct_devoirs_entry est mis Ã  'y')
 	$itera = 0;
 	for ($i=0; ($row=sql_row($query,$i)); $i++) {
 		$id_groupe = $row[0];
@@ -148,14 +148,14 @@ if (isset($_POST['visa_ct'])) {
 			//echo "$sql_visa_ct<br />\n";
 			$visa_ct = sql_query($sql_visa_ct);
 			if(!$visa_ct) {
-				$msg.="Erreur lors de l'enregistrement du visa des notices de devoirs pour le groupe n°$id_groupe et le professeur $id_professeur<br />\n";
+				$msg.="Erreur lors de l'enregistrement du visa des notices de devoirs pour le groupe nÂ°$id_groupe et le professeur $id_professeur<br />\n";
 			}
 		}
 		$itera++;
 	}
 
 	if($nb_cdt_signes>0) {
-		$msg .= "$nb_cdt_signes cahier(s) de textes signé(s).<br />\n";
+		$msg .= "$nb_cdt_signes cahier(s) de textes signÃ©(s).<br />\n";
 	}
 }
 
@@ -181,7 +181,7 @@ if(isset($definir_visa_par_defaut)) {
 	echo " | <a href='visa_ct.php'>Viser les CDT</a>";
 }
 else {
-	echo " | <a href='visa_ct.php?definir_visa_par_defaut=y'>Définir le texte du visa par défaut</a>";
+	echo " | <a href='visa_ct.php?definir_visa_par_defaut=y'>DÃ©finir le texte du visa par dÃ©faut</a>";
 }
 echo "</p>\n";
 
@@ -194,7 +194,7 @@ if(isset($definir_visa_par_defaut)) {
 	
 	echo "<form enctype=\"multipart/form-data\" action=\"visa_ct.php\" method=\"post\">\n";
 	echo add_token_field();
-	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa par défaut</h2>\n";
+	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa par dÃ©faut</h2>\n";
 	echo "<p><em>Mise en forme du visa :</em></p><p>\n";
 	
 	$oFCKeditor = new FCKeditor('texte_visa_FCK') ;
@@ -217,11 +217,11 @@ if(isset($definir_visa_par_defaut)) {
 	die();
 }
 
-echo "<p>Le tableau ci-dessous présente l'ensemble des cahiers de textes actuellement en ligne.</p>\n";
+echo "<p>Le tableau ci-dessous prÃ©sente l'ensemble des cahiers de textes actuellement en ligne.</p>\n";
 echo "<ul>\n";
-echo "<li>&nbsp;&nbsp;Vous pouvez trier le tableau par le groupe ou le propriétaire d'un cahier de textes en cliquant sur le lien correspondant.</li>\n";
+echo "<li>&nbsp;&nbsp;Vous pouvez trier le tableau par le groupe ou le propriÃ©taire d'un cahier de textes en cliquant sur le lien correspondant.</li>\n";
 echo "<li>&nbsp;&nbsp;Vous pouvez visualiser un cahier de textes.</li>\n";
-echo "<li>&nbsp;&nbsp;Vous pouvez également signer un ou plusieurs cahiers de textes avec le texte ci-dessous.<br />Le texte par défaut peut être défini <a href='visa_ct.php?definir_visa_par_defaut=y'>ici</a></li>\n";
+echo "<li>&nbsp;&nbsp;Vous pouvez Ã©galement signer un ou plusieurs cahiers de textes avec le texte ci-dessous.<br />Le texte par dÃ©faut peut Ãªtre dÃ©fini <a href='visa_ct.php?definir_visa_par_defaut=y'>ici</a></li>\n";
 echo "</ul>\n";
 
 //echo "<br /><br />\n";
@@ -239,8 +239,8 @@ echo "</ul>\n";
 	
 	//echo "<form enctype=\"multipart/form-data\" action=\"visa_ct.php\" method=\"post\">\n";
 	//echo add_token_field();
-	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa à apposer sur les cahiers de textes</h2>\n";
-	echo "<p><em>Mise en forme du visa :</em> <a href='visa_ct.php'>Réinitialiser au visa par défaut</a></p><p>\n";
+	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa Ã  apposer sur les cahiers de textes</h2>\n";
+	echo "<p><em>Mise en forme du visa :</em> <a href='visa_ct.php'>RÃ©initialiser au visa par dÃ©faut</a></p><p>\n";
 	
 	$oFCKeditor = new FCKeditor('texte_visa_FCK') ;
 	$oFCKeditor->BasePath = '../fckeditor/' ;
@@ -261,13 +261,13 @@ echo "</ul>\n";
 <table class='boireaus' border="1"><tr valign='middle' align='center'>
 <th><b><a href='visa_ct.php?order_by=jc.id_classe,jm.id_matiere'>Classe(s)</a></b></th>
 <th><b><a href='visa_ct.php?order_by=jm.id_matiere,jc.id_classe'>Groupe</a></b></th>
-<th><b><a href='visa_ct.php?order_by=ct.id_login,jc.id_classe,jm.id_matiere'>Propriétaire</a></b></th>
+<th><b><a href='visa_ct.php?order_by=ct.id_login,jc.id_classe,jm.id_matiere'>PropriÃ©taire</a></b></th>
 <th><b>Nombre<br />de notices</b></th>
 <th><b>Nombre<br />de notices<br />"devoirs"</b></th>
 <th>
 <b>Action</b></th>
-<th><b><input type="submit" name="visa_ct" value="Signer les cahiers" onclick="return confirmlink(this, 'La signature d\'un cahier de texte est définitive. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la signature')" /></b>
-<p><b>dont la date est inférieure au</b></p>
+<th><b><input type="submit" name="visa_ct" value="Signer les cahiers" onclick="return confirmlink(this, 'La signature d\'un cahier de texte est dÃ©finitive. Etes-vous sÃ»r de vouloir continuer ?', 'Confirmation de la signature')" /></b>
+<p><b>dont la date est infÃ©rieure au</b></p>
 <?php
 		$bday = strftime("%d", getSettingValue("date_signature"));
 		$bmonth = strftime("%m", getSettingValue("date_signature"));
@@ -284,7 +284,7 @@ if (!isset($_GET['order_by'])) {
 	$order_by = $_GET['order_by'];
 }
 
-$iter = 0; // itérateur
+$iter = 0; // itÃ©rateur
 
 	$alt=1;
 $query = sql_query("SELECT DISTINCT ct.id_groupe, ct.id_login FROM ct_entry ct, j_groupes_classes jc, j_groupes_matieres jm WHERE (jc.id_groupe = ct.id_groupe AND jm.id_groupe = ct.id_groupe) ORDER BY ".$order_by);

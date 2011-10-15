@@ -289,7 +289,7 @@ class calendar {
 	}
 /*******************************************************************
  *
- *			Générer la liste des calendriers existants
+ *			GÃ©nÃ©rer la liste des calendriers existants
  *
  *******************************************************************/
 	public static function GenerateCalendarList()
@@ -306,7 +306,7 @@ class calendar {
 				$result.= "<div style=\"padding-top:3px;float:left;width:60%;top:0px;padding-left:10px;\">".$calendriers['nom'][$i]."</div>";
 				$result.="<div class=\"bouton_loupe\">
 							<a href=\"index.php?action=calendrier&id_calendrier=".$calendriers['id'][$i]."\">
-							<img src=\"./lib/template/images/loupe.png\" alt=\"voir les périodes calendaires\" title=\"voir les périodes calendaires\"/>
+							<img src=\"./lib/template/images/loupe.png\" alt=\"voir les pÃ©riodes calendaires\" title=\"voir les pÃ©riodes calendaires\"/>
 							</a>
 							</div>";
 				$result.="<div class=\"bouton_supprimer\">
@@ -380,7 +380,7 @@ class calendar {
 		else {
 			$annee = date("Y")+1;
 		}
-		$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+		$ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
 		while (date("D", $ts) != "Mon") {
 			$ts-=86400;
 		}
@@ -448,7 +448,7 @@ class calendar {
  *
  *		echo $calendar::getPeriodName(time());
  *		result = string
- *		renvoie le nom des périodes contenant le timestamp spécifié (si définies dans les edt)
+ *		renvoie le nom des pÃ©riodes contenant le timestamp spÃ©cifiÃ© (si dÃ©finies dans les edt)
  *
  *******************************************************************/
 
@@ -469,7 +469,7 @@ class calendar {
  *
  *		echo $calendar::getSinglePeriodName($date_ts, $calendar_id);
  *		result = string
- *		renvoie le nom des périodes contenant le timestamp spécifié (si définies dans les edt)
+ *		renvoie le nom des pÃ©riodes contenant le timestamp spÃ©cifiÃ© (si dÃ©finies dans les edt)
  *
  *******************************************************************/
 
@@ -501,7 +501,7 @@ class calendar {
  *
  *		echo $calendar::getNumLastWeek();
  *		result = integer
- *		Renvoie le numéro de la dernière semaine de l'année civile (52 ou 53)
+ *		Renvoie le numÃ©ro de la derniÃ¨re semaine de l'annÃ©e civile (52 ou 53)
  *
  *******************************************************************/	
 
@@ -518,7 +518,7 @@ class calendar {
 /*******************************************************************
  *
  *		result = array
- *      Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
+ *      RÃ©cupÃ¨re les dates des lundis et vendredis de toutes les semaines de l'annÃ©e scolaire courante
  *      Usage : 
  *      $tab = $calendar::getDaysTable();
  *      echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01     
@@ -537,7 +537,7 @@ class calendar {
     else {
 	    $annee = date("Y")+1;
     }
-    $ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+    $ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
     while (date("D", $ts) != "Mon") {
 	    $ts-=86400;
     }
@@ -640,7 +640,7 @@ class calendar {
 		else {
 			$annee = date("Y")+1;
 		}
-		$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+		$ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
 		while (date("D", $ts) != "Mon") {
 			$ts-=86400;
 		}
@@ -684,7 +684,7 @@ class calendar {
 		else {
 			$annee = date("Y")+1;
 		}
-		$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+		$ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
 		while (date("D", $ts) != "Mon") {
 			$ts-=86400;
 		}
@@ -748,7 +748,7 @@ class calendar {
 		else {
 			$annee = date("Y")+1;
 		}
-		$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+		$ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
 		while (date("D", $ts) != "Mon") {
 			$ts-=86400;
 		}
@@ -804,7 +804,7 @@ class calendar {
 		else {
 			$annee = date("Y")+1;
 		}
-		$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+		$ts = mktime(0,0,0,1,4,$annee); // dÃ©finition ISO de la semaine 01 : semaine du 4 janvier.
 		while (date("D", $ts) != "Mon") {
 			$ts-=86400;
 		}

@@ -1,9 +1,9 @@
 /*
 accessibilite_print.css
-Mise en page pour impression sans passer par des pages spéciales
+Mise en page pour impression sans passer par des pages spÃ©ciales
 */
 
-/*  Général */
+/*  GÃ©nÃ©ral */
 #essaiMenu, .lien_retour, .no_print, .choix_fin {
 	display:none;
 }

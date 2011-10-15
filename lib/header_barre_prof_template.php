@@ -4,7 +4,7 @@
  * Fichier qui permet de construire la barre de menu professeur
  * 
  * 
- * Variables envoyÈes au gabarit : liens de la barre de menu prof
+ * Variables envoy√©es au gabarit : liens de la barre de menu prof
  * - $tbs_menu_prof = array(lien , texte)
  *
  * @license GNU/GPL v2
@@ -43,7 +43,7 @@ if (!$_SESSION["login"]) {
     die();
 }
 
-// Fonction gÈnÈrant le menu Plugins
+// Fonction g√©n√©rant le menu Plugins
 include("tbs_menu_plugins.inc.php");
 
 	//=======================================================
@@ -60,13 +60,13 @@ include("tbs_menu_plugins.inc.php");
 	// Pour permettre d'utiliser le module EdT avec les autres modules
 	$groupe_abs = $groupe_text = '';
 	if (getSettingValue("autorise_edt_tous") == "y") {
-		// Actuellement, ce professeur ‡ ce cours (id_cours):
+		// Actuellement, ce professeur √† ce cours (id_cours):
 		$cours_actu = retourneCours($_SESSION["login"]);
-		// Qui correspond ‡ cet id_groupe :
+		// Qui correspond √† cet id_groupe :
 		if ($cours_actu != "non") {
 			$queryG = mysql_query("SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'");
 			$groupe_actu = mysql_fetch_array($queryG);
-			// Il faudrait vÈrifier si ce n'est pas une AID
+			// Il faudrait v√©rifier si ce n'est pas une AID
 			if ($groupe_actu["id_aid"] != NULL) {
 				$groupe_abs = '?groupe=AID|'.$groupe_actu["id_aid"].'&amp;menuBar=ok';
 				$groupe_text = '';
@@ -145,10 +145,10 @@ include("tbs_menu_plugins.inc.php");
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop;
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group["periodes"][$loop]["nom_periode"];
 				if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-					$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="PÈriode non verrouillÈe: Saisie possible" title="PÈriode non verrouillÈe: Saisie possible" />';
+					$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="P√©riode non verrouill√©e: Saisie possible" title="P√©riode non verrouill√©e: Saisie possible" />';
 				}
 				else {
-					$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="PÈriode verrouillÈe: Saisie impossible" title="PÈriode verrouillÈe: Saisie impossible" />';
+					$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="P√©riode verrouill√©e: Saisie impossible" title="P√©riode verrouill√©e: Saisie impossible" />';
 				}
 				$cpt_sous_menu2++;
 			}
@@ -160,7 +160,7 @@ include("tbs_menu_plugins.inc.php");
 		if((getSettingValue("GepiAccesReleveProf") == "yes") OR
 		(getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
 		(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes")) {
-			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/cahier_notes/visu_releve_notes_bis.php' , "texte"=>"RelevÈs de notes");
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/cahier_notes/visu_releve_notes_bis.php' , "texte"=>"Relev√©s de notes");
 			$cpt_sous_menu++;
 		}
 
@@ -180,7 +180,7 @@ include("tbs_menu_plugins.inc.php");
 		}
 
 		if (getSettingValue('utiliser_sacoche') == 'yes' && getSettingValue('sacocheUrl') != '') {
-			$tmp_sous_menu[$cpt_sous_menu] = array("lien"=> getSettingValue('sacocheUrl').'?sso&amp;id='.getSettingValue('sacoche_base') , "texte"=>"…valuation par compÈtence");
+			$tmp_sous_menu[$cpt_sous_menu] = array("lien"=> getSettingValue('sacocheUrl').'?sso&amp;id='.getSettingValue('sacoche_base') , "texte"=>"√âvaluation par comp√©tence");
 			$cpt_sous_menu++;
 		}
 
@@ -210,10 +210,10 @@ include("tbs_menu_plugins.inc.php");
 					$tmp_sous_menu3[$cpt_sous_menu3]["texte"]=$tmp_group["periodes"][$loop]["nom_periode"];
 					$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' '.nb_saisies_bulletin("notes", $tmp_group["id"], $loop, "couleur");
 					if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="PÈriode non verrouillÈe: Saisie possible" title="PÈriode non verrouillÈe: Saisie possible" />';
+						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="P√©riode non verrouill√©e: Saisie possible" title="P√©riode non verrouill√©e: Saisie possible" />';
 					}
 					else {
-						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="PÈriode verrouillÈe: Saisie impossible" title="PÈriode verrouillÈe: Saisie impossible" />';
+						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="P√©riode verrouill√©e: Saisie impossible" title="P√©riode verrouill√©e: Saisie impossible" />';
 					}
 					$cpt_sous_menu3++;
 				}
@@ -228,8 +228,8 @@ include("tbs_menu_plugins.inc.php");
 
 
 
-			// ApprÈciations des bulletins
-			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/index.php' , "texte"=>"ApprÈciations");
+			// Appr√©ciations des bulletins
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/index.php' , "texte"=>"Appr√©ciations");
 			$tmp_sous_menu2=array();
 			$cpt_sous_menu2=0;
 			foreach($mes_groupes as $tmp_group) {
@@ -244,10 +244,10 @@ include("tbs_menu_plugins.inc.php");
 					$tmp_sous_menu3[$cpt_sous_menu3]["texte"]=$tmp_group["periodes"][$loop]["nom_periode"];
 					$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' '.nb_saisies_bulletin("appreciations", $tmp_group["id"], $loop, "couleur");
 					if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="PÈriode non verrouillÈe: Saisie possible" title="PÈriode non verrouillÈe: Saisie possible" />';
+						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="P√©riode non verrouill√©e: Saisie possible" title="P√©riode non verrouill√©e: Saisie possible" />';
 					}
 					else {
-						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="PÈriode verrouillÈe: Saisie impossible" title="PÈriode verrouillÈe: Saisie impossible" />';
+						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="P√©riode verrouill√©e: Saisie impossible" title="P√©riode verrouill√©e: Saisie impossible" />';
 					}
 					$cpt_sous_menu3++;
 				}
@@ -261,8 +261,8 @@ include("tbs_menu_plugins.inc.php");
 			$cpt_sous_menu++;
 
 
-			// Mes moyennes et apprÈciations
-			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/prepa_conseil/index1.php' , "texte"=>"Mes moyennes et apprÈciations");
+			// Mes moyennes et appr√©ciations
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/prepa_conseil/index1.php' , "texte"=>"Mes moyennes et appr√©ciations");
 			$tmp_sous_menu2=array();
 			$cpt_sous_menu2=0;
 			foreach($mes_groupes as $tmp_group) {
@@ -293,7 +293,7 @@ include("tbs_menu_plugins.inc.php");
 			}
 
 
-			// Visualisation des bulletins simplifiÈs
+			// Visualisation des bulletins simplifi√©s
 			$affiche_li_bull_simp="n";
 			if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
 				$affiche_li_bull_simp="y";
@@ -312,7 +312,7 @@ include("tbs_menu_plugins.inc.php");
 			}
 
 			if($affiche_li_bull_simp=="y") {
-				$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/prepa_conseil/index3.php' , "texte"=>"Bulletins simplifiÈs");
+				$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/prepa_conseil/index3.php' , "texte"=>"Bulletins simplifi√©s");
 				$tmp_sous_menu2=array();
 				$cpt_sous_menu2=0;
 				foreach($tmp_mes_classes as $key => $value) {
@@ -363,7 +363,7 @@ include("tbs_menu_plugins.inc.php");
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=salle1' , "texte"=>"EDT salle");
 		$cpt_sous_menu++;
 
-		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=eleve1' , "texte"=>"EDT ÈlËve");
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=eleve1' , "texte"=>"EDT √©l√®ve");
 		$cpt_sous_menu++;
 
 		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
@@ -387,12 +387,12 @@ include("tbs_menu_plugins.inc.php");
 	}else{ $barre_notanet = '';}
 
 	//=======================================================
-	$tbs_menu_prof[$compteur_menu]=array("lien"=> '/groupes/visu_mes_listes.php' , "texte"=>"…lËves");
+	$tbs_menu_prof[$compteur_menu]=array("lien"=> '/groupes/visu_mes_listes.php' , "texte"=>"√âl√®ves");
 	$tmp_sous_menu=array();
 	$cpt_sous_menu=0;
 
 	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
-		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/eleves/visu_eleve.php' , "texte"=>"Consult.ÈlËve");
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/eleves/visu_eleve.php' , "texte"=>"Consult.√©l√®ve");
 		$cpt_sous_menu++;
 	}
 	//else{ $barre_consult_eleve = '';}

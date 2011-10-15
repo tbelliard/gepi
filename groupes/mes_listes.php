@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-//INSERT INTO droits VALUES ('/groupes/mes_listes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Accès aux CSV des listes d élèves', '');
+//INSERT INTO droits VALUES ('/groupes/mes_listes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'AccÃ¨s aux CSV des listes d Ã©lÃ¨ves', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -75,7 +75,7 @@ echo "</p>\n";
 echo "<h3>Mes listes d'".$gepiSettings['denomination_eleves']."</h3>\n";
 
 if($_SESSION['statut']=='professeur'){
-	echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleve']."s&nbsp;:</p>\n";
+	echo "<p>SÃ©lectionnez l'enseignement et la pÃ©riode pour lesquels vous souhaitez tÃ©lÃ©charger un fichier CSV des ".$gepiSettings['denomination_eleve']."s&nbsp;:</p>\n";
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
 	//$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classe c WHERE
 	$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
@@ -113,7 +113,7 @@ if($_SESSION['statut']=='professeur'){
 						$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
 						$res_per=mysql_query($sql);
 						if(mysql_num_rows($res_per)==0){
-							echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+							echo "<p>ERREUR: Aucune pÃ©riode n'est dÃ©finie pour la classe $lig_class->classe</p>\n";
 							echo "</body></html>\n";
 							die();
 						}
@@ -154,7 +154,7 @@ if($_SESSION['statut']=='professeur'){
 		if(count($groups)>0) {
 			echo "<fieldset>\n";
 			echo "<form action='get_csv.php' method='post'>\n";
-			echo "<p class='bold'>Listes personnalisées&nbsp;:</p>\n";
+			echo "<p class='bold'>Listes personnalisÃ©es&nbsp;:</p>\n";
 
 			echo "<select name='id_groupe' id='id_groupe' onchange='update_champs_periode()'>\n";
 			foreach($groups as $current_group) {
@@ -175,7 +175,7 @@ if($_SESSION['statut']=='professeur'){
 				else {
 					if($i==1) {echo "checked ";}
 				}
-				echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
+				echo "/><label for='periode_num_$i'> PÃ©riode $i</label><br />\n";
 			}
 			echo "</div>\n";
 
@@ -199,7 +199,7 @@ if($_SESSION['statut']=='professeur'){
 			echo "<input type='checkbox' id='avec_login' name='avec_login' value='y' ";
 			if(((isset($_SESSION['mes_listes_avec_login']))&&($_SESSION['mes_listes_avec_login']=='y'))||
 				(!isset($_SESSION['mes_listes_avec_login']))) {echo "checked ";}
-			echo "/><label for='avec_login'> le login des élèves</label><br />\n";
+			echo "/><label for='avec_login'> le login des Ã©lÃ¨ves</label><br />\n";
 		
 			echo "<input type='checkbox' id='avec_nom' name='avec_nom' value='y' ";
 			if(((isset($_SESSION['mes_listes_avec_nom']))&&($_SESSION['mes_listes_avec_nom']=='y'))||
@@ -209,12 +209,12 @@ if($_SESSION['statut']=='professeur'){
 			echo "<input type='checkbox' id='avec_prenom' name='avec_prenom' value='y' ";
 			if(((isset($_SESSION['mes_listes_avec_prenom']))&&($_SESSION['mes_listes_avec_prenom']=='y'))||
 				(!isset($_SESSION['mes_listes_avec_prenom']))) {echo "checked ";}
-			echo "/><label for='avec_prenom'> le prénom</label><br />\n";
+			echo "/><label for='avec_prenom'> le prÃ©nom</label><br />\n";
 		
 			echo "<input type='checkbox' id='avec_sexe' name='avec_sexe' value='y' ";
 			if(((isset($_SESSION['mes_listes_avec_sexe']))&&($_SESSION['mes_listes_avec_sexe']=='y'))||
 				(!isset($_SESSION['mes_listes_avec_sexe']))) {echo "checked ";}
-			echo "/><label for='avec_sexe'> le sexe des élèves</label><br />\n";
+			echo "/><label for='avec_sexe'> le sexe des Ã©lÃ¨ves</label><br />\n";
 
 			echo "<input type='checkbox' id='avec_naiss' name='avec_naiss' value='y' ";
 			if(((isset($_SESSION['mes_listes_avec_naiss']))&&($_SESSION['mes_listes_avec_naiss']=='y'))||
@@ -242,15 +242,15 @@ if($_SESSION['statut']=='professeur'){
 			//echo "<input type='checkbox' id='avec_statut' name='avec_statut' value='y' /><label for='avec_statut'> le statut</label><br />\n";
 			echo "<input type='checkbox' id='avec_no_gep' name='avec_no_gep' value='y' ";
 			if((isset($_SESSION['mes_listes_avec_no_gep']))&&($_SESSION['mes_listes_avec_no_gep']=='y')) {echo "checked ";}
-			echo "/><label for='avec_no_gep'> le numéro national des élèves (INE)</label><br />\n";
+			echo "/><label for='avec_no_gep'> le numÃ©ro national des Ã©lÃ¨ves (INE)</label><br />\n";
 		
 			echo "<input type='checkbox' id='avec_elenoet' name='avec_elenoet' value='y' ";
 			if((isset($_SESSION['mes_listes_avec_elenoet']))&&($_SESSION['mes_listes_avec_elenoet']=='y')) {echo "checked ";}
-			echo "/><label for='avec_elenoet'> le numéro interne (ELENOET)</label><br />\n";
+			echo "/><label for='avec_elenoet'> le numÃ©ro interne (ELENOET)</label><br />\n";
 		
 			echo "<input type='checkbox' id='avec_ele_id' name='avec_ele_id' value='y' ";
 			if((isset($_SESSION['mes_listes_avec_ele_id']))&&($_SESSION['mes_listes_avec_ele_id']=='y')) {echo "checked ";}
-			echo "/><label for='avec_ele_id'> le numéro ELE_ID</label><br />\n";
+			echo "/><label for='avec_ele_id'> le numÃ©ro ELE_ID</label><br />\n";
 			*/
 
 			echo "<input type='hidden' name='mode' value='personnalise' />\n";
@@ -274,23 +274,23 @@ elseif(isset($id_classe)) {
 }
 else {
 	if($_SESSION['statut']=='cpe'){
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>SÃ©lectionnez la classe et la pÃ©riode pour lesquels vous souhaitez tÃ©lÃ©charger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='scol'){
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>SÃ©lectionnez la classe et la pÃ©riode pour lesquels vous souhaitez tÃ©lÃ©charger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	else {
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>SÃ©lectionnez la classe et la pÃ©riode pour lesquels vous souhaitez tÃ©lÃ©charger un fichier CSV des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY classe";
 	}
 	$result_classes=mysql_query($sql);
 	$nb_classes = mysql_num_rows($result_classes);
 
 	if(mysql_num_rows($result_classes)==0){
-		echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Il semble qu'aucune classe n'ait encore Ã©tÃ© crÃ©Ã©e...<br />... ou alors aucune classe ne vous a Ã©tÃ© attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -321,7 +321,7 @@ else {
 		$res_per=mysql_query($sql);
 
 		if(mysql_num_rows($res_per)==0){
-			echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+			echo "<p>ERREUR: Aucune pÃ©riode n'est dÃ©finie pour la classe $lig_class->classe</p>\n";
 			echo "</body></html>\n";
 			die();
 		}
@@ -359,7 +359,7 @@ elseif(isset($classe)) {
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 }
 else {
-	echo "<p class='bold'>Listes personnalisées&nbsp;:</p>\n";
+	echo "<p class='bold'>Listes personnalisÃ©es&nbsp;:</p>\n";
 	echo "<select name='id_classe' id='id_classe' onchange='update_champs_periode()'>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<option value='".$tab_id_classe[$i]."'>".$tab_classe[$i]."</option>\n";
@@ -382,7 +382,7 @@ else {
 		else {
 			if($i==1) {echo "checked ";}
 		}
-		echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
+		echo "/><label for='periode_num_$i'> PÃ©riode $i</label><br />\n";
 	}
 	echo "</div>\n";
 
@@ -406,7 +406,7 @@ echo "/><label for='avec_classe'> le nom de la classe</label><br />\n";
 echo "<input type='checkbox' id='avec_login' name='avec_login' value='y' ";
 if(((isset($_SESSION['mes_listes_avec_login']))&&($_SESSION['mes_listes_avec_login']=='y'))||
 	(!isset($_SESSION['mes_listes_avec_login']))) {echo "checked ";}
-echo "/><label for='avec_login'> le login des élèves</label><br />\n";
+echo "/><label for='avec_login'> le login des Ã©lÃ¨ves</label><br />\n";
 
 echo "<input type='checkbox' id='avec_nom' name='avec_nom' value='y' ";
 if(((isset($_SESSION['mes_listes_avec_nom']))&&($_SESSION['mes_listes_avec_nom']=='y'))||
@@ -416,12 +416,12 @@ echo "/><label for='avec_nom'> le nom</label><br />\n";
 echo "<input type='checkbox' id='avec_prenom' name='avec_prenom' value='y' ";
 if(((isset($_SESSION['mes_listes_avec_prenom']))&&($_SESSION['mes_listes_avec_prenom']=='y'))||
 	(!isset($_SESSION['mes_listes_avec_prenom']))) {echo "checked ";}
-echo "/><label for='avec_prenom'> le prénom</label><br />\n";
+echo "/><label for='avec_prenom'> le prÃ©nom</label><br />\n";
 
 echo "<input type='checkbox' id='avec_sexe' name='avec_sexe' value='y' ";
 if(((isset($_SESSION['mes_listes_avec_sexe']))&&($_SESSION['mes_listes_avec_sexe']=='y'))||
 	(!isset($_SESSION['mes_listes_avec_sexe']))) {echo "checked ";}
-echo "/><label for='avec_sexe'> le sexe des élèves</label><br />\n";
+echo "/><label for='avec_sexe'> le sexe des Ã©lÃ¨ves</label><br />\n";
 
 echo "<input type='checkbox' id='avec_naiss' name='avec_naiss' value='y' ";
 if(((isset($_SESSION['mes_listes_avec_naiss']))&&($_SESSION['mes_listes_avec_naiss']=='y'))||
@@ -457,20 +457,20 @@ if(isset($current_group)) {
 
 	echo "<input type='checkbox' id='avec_statut' name='avec_statut' value='y' ";
 	if((isset($_SESSION['mes_listes_avec_statut']))&&($_SESSION['mes_listes_avec_statut']=='y')) {echo "checked ";}
-	echo "/><label for='avec_statut'> le statut (<i>élève ou professeur</i>)</label><br />\n";
+	echo "/><label for='avec_statut'> le statut (<i>Ã©lÃ¨ve ou professeur</i>)</label><br />\n";
 }
 
 echo "<input type='checkbox' id='avec_no_gep' name='avec_no_gep' value='y' ";
 if((isset($_SESSION['mes_listes_avec_no_gep']))&&($_SESSION['mes_listes_avec_no_gep']=='y')) {echo "checked ";}
-echo "/><label for='avec_no_gep'> le numéro national des élèves (INE)</label><br />\n";
+echo "/><label for='avec_no_gep'> le numÃ©ro national des Ã©lÃ¨ves (INE)</label><br />\n";
 
 echo "<input type='checkbox' id='avec_elenoet' name='avec_elenoet' value='y' ";
 if((isset($_SESSION['mes_listes_avec_elenoet']))&&($_SESSION['mes_listes_avec_elenoet']=='y')) {echo "checked ";}
-echo "/><label for='avec_elenoet'> le numéro interne (ELENOET)</label><br />\n";
+echo "/><label for='avec_elenoet'> le numÃ©ro interne (ELENOET)</label><br />\n";
 
 echo "<input type='checkbox' id='avec_ele_id' name='avec_ele_id' value='y' ";
 if((isset($_SESSION['mes_listes_avec_ele_id']))&&($_SESSION['mes_listes_avec_ele_id']=='y')) {echo "checked ";}
-echo "/><label for='avec_ele_id'> le numéro ELE_ID</label><br />\n";
+echo "/><label for='avec_ele_id'> le numÃ©ro ELE_ID</label><br />\n";
 
 echo "<input type='hidden' name='mode' value='personnalise' />\n";
 

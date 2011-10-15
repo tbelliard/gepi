@@ -73,7 +73,7 @@ function creer_repertoire($base, $subdir) {
 
 function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
     global $max_size, $total_max_size, $edit_devoir, $multisite;
-    /* Vérification du type de fichier */
+    /* VÃ©rification du type de fichier */
     //if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
     if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))) {
         $ext = corriger_caracteres(strtolower($match[1]));
@@ -88,28 +88,28 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
         $id_type = $row[0];
     }
     else {
-        return "Ce type de fichier n'est pas autorisé en téléchargement";
+        return "Ce type de fichier n'est pas autorisÃ© en tÃ©lÃ©chargement";
         die();
     }
 
-    /* Vérification de la taille du fichier */
+    /* VÃ©rification de la taille du fichier */
 
     $sql = "select id_groupe from ct_entry where id_ct='$id_ct'";
     $id_groupe = sql_query1($sql);
     $max_size_ko = $max_size/1024;
     $taille = $doc_file['size'][$cpt_doc];
     if ($taille > $max_size) {
-        return "Téléchargement impossible : taille maximale autorisée : ".$max_size_ko." Ko";
+        return "TÃ©lÃ©chargement impossible : taille maximale autorisÃ©e : ".$max_size_ko." Ko";
         die();
     }
     if ($taille == 0) {
-        return "Le fichier sélectionné semble vide : transfert impossible.";
+        return "Le fichier sÃ©lectionnÃ© semble vide : transfert impossible.";
         die();
     }
     $query = "SELECT DISTINCT sum(taille) somme FROM ct_documents d, ct_entry e WHERE (e.id_groupe='".$id_groupe."' and e.id_ct = d.id_ct)";
     $total = sql_query1($query);
     if (($total+$taille) > $total_max_size) {
-        return "Téléchargement impossible : espace disque disponible (".(($total_max_size - $total)/1024)." Ko) insuffisant.";
+        return "TÃ©lÃ©chargement impossible : espace disque disponible (".(($total_max_size - $total)/1024)." Ko) insuffisant.";
         die();
     }
 
@@ -131,13 +131,13 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
     if (creer_repertoire($dest, $dossier)) {
       $dest .= $dossier.'/';
     } else {
-      return "Problème d'écriture sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
+      return "ProblÃ¨me d'Ã©criture sur le rÃ©pertoire. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
       die();
     }
     $nom_sans_ext = substr(basename($doc_file['name'][$cpt_doc]),0,strlen(basename($doc_file['name'][$cpt_doc]))-(strlen($ext)+1));
     $nom_sans_ext = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $nom_sans_ext);
     if (strstr($nom_sans_ext, "..")) {
-        return "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
+        return "ProblÃ¨me de transfert : le fichier n'a pas pu Ãªtre transfÃ©rÃ© sur le rÃ©pertoire. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
         die();
     }
 
@@ -146,7 +146,7 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
     $dest_path = $newFile;
 
     if (!deplacer_fichier_upload($doc_file['tmp_name'][$cpt_doc], $dest_path)) {
-        return "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
+        return "ProblÃ¨me de transfert : le fichier n'a pas pu Ãªtre transfÃ©rÃ© sur le rÃ©pertoire. Veuillez signaler ce problÃ¨me Ã  l'administrateur du site";
         die();
     }
 
@@ -168,9 +168,9 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
 	    $query = "UPDATE ct_documents SET taille='$taille', emplacement='$dest_path', id_ct='$id_ct', titre='$titre' WHERE id_document=$id_document";
         sql_query($query);
     }
-    return "Téléchargement réussi !";
+    return "TÃ©lÃ©chargement rÃ©ussi !";
 }
-/* Vérification : est-ce que l'utilisateur a les droits suffisant ? */
+/* VÃ©rification : est-ce que l'utilisateur a les droits suffisant ? */
 if (isset($edit_devoir))
     $sql = "select id_groupe from ct_devoirs_entry where id_ct='$id_ct'";
 else
@@ -182,7 +182,7 @@ $total_max_size = getSettingValue("total_max_size");
 $max_size = getSettingValue("max_size");
 
 if (!check_prof_groupe($_SESSION['login'],$id_groupe)) {
-    $msg = "Accès non autorisé à ce document.";
+    $msg = "AccÃ¨s non autorisÃ© Ã  ce document.";
 } else {
 
 // Ajout de un ou plusieurs documents
@@ -207,20 +207,20 @@ if ((isset($_GET["action"])) and ($_GET["action"] == 'del')) {
 	$sql = "select emplacement from ct_documents where (id = '$id_document' and id_ct='$id_ct')";
     $empl = sql_query1($sql);
     if ($empl == -1) {
-        $msg = "Il n' a pas de document à supprimer.";
+        $msg = "Il n' a pas de document Ã  supprimer.";
     } else {
         $del = @unlink($empl);
         if (file_exists($empl)) {
-            $msg = "Problème : le document n'a pa pu être supprimé. Contactez l'administrateur du site.";
+            $msg = "ProblÃ¨me : le document n'a pa pu Ãªtre supprimÃ©. Contactez l'administrateur du site.";
         } else {
 	    if (isset($edit_devoir))
 		$sql_query = "delete from ct_devoirs_documents where id = '$id_document'";
 	    else
 		$sql_query = "delete from ct_documents where id = '$id_document'";
             if (sql_query($sql_query)) {
-                $msg = "Supression réussie";
+                $msg = "Supression rÃ©ussie";
             } else {
-                $msg = "Un problème est survenu lors de la suppression du document. Contactez l'administrateur du site.";
+                $msg = "Un problÃ¨me est survenu lors de la suppression du document. Contactez l'administrateur du site.";
             }
         }
     }
@@ -234,9 +234,9 @@ if (!empty($doc_name_modif) and !empty($id_document)) {
 	else
 	    $query = "UPDATE ct_documents SET titre='".corriger_caracteres($doc_name_modif)."' WHERE id='".$_POST['id_document']."'";
         if (sql_query($query)) {
-            $msg = "Changement de nom réussi";
+            $msg = "Changement de nom rÃ©ussi";
         } else {
-            $msg = "Un problème est survenu lors du changement de nom du document. Contactez l'administrateur du site.";
+            $msg = "Un problÃ¨me est survenu lors du changement de nom du document. Contactez l'administrateur du site.";
         }
 
     } else {

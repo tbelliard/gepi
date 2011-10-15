@@ -40,12 +40,12 @@ if (!checkAccess()) {
     die();
 }
 
-// Enregistrement des données postées
+// Enregistrement des donnÃ©es postÃ©es
 
 if (isset($_POST) and !empty($_POST)) {
 	check_token();
 
-	// Envoyer un email à l'administrateur systématiquement
+	// Envoyer un email Ã  l'administrateur systÃ©matiquement
 	if (isset($_POST['security_alert_email_admin'])) {
 		$reg = "yes";
 	} else {
@@ -66,7 +66,7 @@ if (isset($_POST) and !empty($_POST)) {
 
 	// Niveau d'alerte 1
 	
-	// Utilisateur sans antécédent
+	// Utilisateur sans antÃ©cÃ©dent
 	
 	// Seuil
 	if (isset($_POST['security_alert1_normal_cumulated_level'])) {
@@ -77,7 +77,7 @@ if (isset($_POST) and !empty($_POST)) {
 		}
 	}
 
-	// Envoyer un email à l'administrateur
+	// Envoyer un email Ã  l'administrateur
 	if (isset($_POST['security_alert1_normal_email_admin'])) {
 		$reg = "yes";
 	} else {
@@ -87,7 +87,7 @@ if (isset($_POST) and !empty($_POST)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_normal_email_admin !";
     }
 
-	// Désactiver le compte de l'utilisateur
+	// DÃ©sactiver le compte de l'utilisateur
 	if (isset($_POST['security_alert1_normal_block_user'])) {
 		$reg = "yes";
 	} else {
@@ -97,7 +97,7 @@ if (isset($_POST) and !empty($_POST)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_normal_block_user !";
     }
 
-	// Utilisateur surveillé
+	// Utilisateur surveillÃ©
 	
 	// Seuil
 	if (isset($_POST['security_alert1_probation_cumulated_level'])) {
@@ -108,7 +108,7 @@ if (isset($_POST) and !empty($_POST)) {
 		}
 	}
 
-	// Envoyer un email à l'administrateur
+	// Envoyer un email Ã  l'administrateur
 	if (isset($_POST['security_alert1_probation_email_admin'])) {
 		$reg = "yes";
 	} else {
@@ -118,7 +118,7 @@ if (isset($_POST) and !empty($_POST)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_probation_email_admin !";
     }
 
-	// Désactiver le compte de l'utilisateur
+	// DÃ©sactiver le compte de l'utilisateur
 	if (isset($_POST['security_alert1_probation_block_user'])) {
 		$reg = "yes";
 	} else {
@@ -130,7 +130,7 @@ if (isset($_POST) and !empty($_POST)) {
 
 	// Niveau d'alerte 2
 	
-	// Utilisateur sans antécédent
+	// Utilisateur sans antÃ©cÃ©dent
 	
 	// Seuil
 	if (isset($_POST['security_alert2_normal_cumulated_level'])) {
@@ -141,7 +141,7 @@ if (isset($_POST) and !empty($_POST)) {
 		}
 	}
 	
-	// Envoyer un email à l'administrateur
+	// Envoyer un email Ã  l'administrateur
 	if (isset($_POST['security_alert2_normal_email_admin'])) {
 		$reg = "yes";
 	} else {
@@ -151,7 +151,7 @@ if (isset($_POST) and !empty($_POST)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_normal_email_admin !";
     }
 
-	// Désactiver le compte de l'utilisateur
+	// DÃ©sactiver le compte de l'utilisateur
 	if (isset($_POST['security_alert2_normal_block_user'])) {
 		$reg = "yes";
 	} else {
@@ -161,7 +161,7 @@ if (isset($_POST) and !empty($_POST)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_normal_block_user !";
     }
 
-	// Utilisateur surveillé
+	// Utilisateur surveillÃ©
 	
 	// Seuil
 	if (isset($_POST['security_alert2_probation_cumulated_level'])) {
@@ -172,7 +172,7 @@ if (isset($_POST) and !empty($_POST)) {
 		}
 	}
 	
-	// Envoyer un email à l'administrateur
+	// Envoyer un email Ã  l'administrateur
 	if (isset($_POST['security_alert2_probation_email_admin'])) {
 		$reg = "yes";
 	} else {
@@ -182,7 +182,7 @@ if (isset($_POST) and !empty($_POST)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_probation_email_admin !";
     }
 
-	// Désactiver le compte de l'utilisateur
+	// DÃ©sactiver le compte de l'utilisateur
 	if (isset($_POST['security_alert2_probation_block_user'])) {
 		$reg = "yes";
 	} else {
@@ -193,7 +193,7 @@ if (isset($_POST) and !empty($_POST)) {
     }
 
 	if (empty($msg)) {
-		$msg = "Les données ont bien été enregistrées.";
+		$msg = "Les donnÃ©es ont bien Ã©tÃ© enregistrÃ©es.";
 	}
 
 }
@@ -229,7 +229,7 @@ if (isset($_POST['filtrage_html'])) {
 			$msg = "Erreur lors de l'enregistrement de csrf_mode !";
 		}
 		else {
-			$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage csrf_mode requis';";
+			$sql="SELECT * FROM infos_actions WHERE titre='ParamÃ©trage csrf_mode requis';";
 			$res_test=mysql_query($sql);
 			if(mysql_num_rows($res_test)>0) {
 				while($lig_ia=mysql_fetch_object($res_test)) {
@@ -275,13 +275,13 @@ if(($filtrage_html!='inputfilter')&&
 //echo "\$filtrage_html=$filtrage_html<br />";
 
 //**************** EN-TETE *********************
-$titre_page = "Politique de sécurité";
+$titre_page = "Politique de sÃ©curitÃ©";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
 
-//on récupère le chemin de la page d'appel pour en faire le lien de retour
+//on rÃ©cupÃ¨re le chemin de la page d'appel pour en faire le lien de retour
 if(isset($_SERVER['HTTP_REFERER'])) {
 	$url_retour = parse_url($_SERVER['HTTP_REFERER']);
 
@@ -310,14 +310,14 @@ echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 echo "<h2>Gestion des tentatives d'intrusion</h2>\n";
 echo "<div style='margin-left:3em;'>\n";
 	
-	// Options générales
-	echo "<h3>Options générales</h3>\n";
+	// Options gÃ©nÃ©rales
+	echo "<h3>Options gÃ©nÃ©rales</h3>\n";
 	echo "<div style='margin-left:3em;'>\n";
 		echo "<input type='checkbox' name='security_alert_email_admin' value='yes'";
 		if (getSettingValue("security_alert_email_admin") == "yes") echo " CHECKED";
 		echo " />\n";
-		echo " Envoyer systématiquement un email à l'administrateur lors d'une tentative d'intrusion.<br/>\n";
-		echo "Niveau de gravité minimal pour l'envoi du mail : ";
+		echo " Envoyer systÃ©matiquement un email Ã  l'administrateur lors d'une tentative d'intrusion.<br/>\n";
+		echo "Niveau de gravitÃ© minimal pour l'envoi du mail : ";
 		echo "<select name='security_alert_email_min_level' size='1'>\n";
 		for ($i = 1; $i <= 3;$i++) {
 			echo "<option value='$i'";
@@ -327,17 +327,17 @@ echo "<div style='margin-left:3em;'>\n";
 		echo "</select>\n";
 	echo "</div>\n";
 
-	// Seuils d'alerte et actions à entreprendre
+	// Seuils d'alerte et actions Ã  entreprendre
 	echo "<h3>Seuils d'alertes</h3>\n";
 	echo "<div style='margin-left:3em;'>\n";
-		echo "<p>Vous pouvez définir deux seuils d'alerte et leurs actions associées. Ces seuils s'appliquent aux tentatives d'intrusion effectuées par les utilisateurs de Gepi. Chaque tentative a un niveau de gravité de 1 à 3 ; les seuils correspondent au cumul de ces niveaux de gravité pour un même utilisateur.</p>\n";
-		echo "<p>Un utilisateur peut être placé en observation par l'administrateur, avec des seuils d'alerte distincts. Cela permet de définir une politique plus restrictive en cas de récidive.</p>\n";
+		echo "<p>Vous pouvez dÃ©finir deux seuils d'alerte et leurs actions associÃ©es. Ces seuils s'appliquent aux tentatives d'intrusion effectuÃ©es par les utilisateurs de Gepi. Chaque tentative a un niveau de gravitÃ© de 1 Ã  3 ; les seuils correspondent au cumul de ces niveaux de gravitÃ© pour un mÃªme utilisateur.</p>\n";
+		echo "<p>Un utilisateur peut Ãªtre placÃ© en observation par l'administrateur, avec des seuils d'alerte distincts. Cela permet de dÃ©finir une politique plus restrictive en cas de rÃ©cidive.</p>\n";
 		
 		echo "<table class='normal' summary=\"Seuils d'alerte\">\n";
 		echo "<tr>\n";
 		echo "<th>Seuil</th>\n";
-		echo "<th>Utilisateur sans antécédent</th>\n";
-		echo "<th>Utilisateur surveillé</th>\n";
+		echo "<th>Utilisateur sans antÃ©cÃ©dent</th>\n";
+		echo "<th>Utilisateur surveillÃ©</th>\n";
 		echo "</tr>\n";
 		
 		// Niveau d'alerte 1
@@ -347,8 +347,8 @@ echo "<div style='margin-left:3em;'>\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		
-		// Utilisateur sans antécédent
-		echo "Niveau cumulé : ";
+		// Utilisateur sans antÃ©cÃ©dent
+		echo "Niveau cumulÃ© : ";
 		echo "<select name='security_alert1_normal_cumulated_level' size='1'>\n";
 		for ($i = 1; $i <= 15;$i++) {
 			echo "<option value='$i'";
@@ -359,15 +359,15 @@ echo "<div style='margin-left:3em;'>\n";
 		echo "<br/>Actions :<br/>\n";
 		echo "<input type='checkbox' name='security_alert1_normal_email_admin' value='yes'";
 		if (getSettingValue("security_alert1_normal_email_admin") == "yes") echo " CHECKED";
-		echo " /> Envoyer un email à l'administrateur<br/>\n";
+		echo " /> Envoyer un email Ã  l'administrateur<br/>\n";
 		echo "<input type='checkbox' name='security_alert1_normal_block_user' value='yes'";
 		if (getSettingValue("security_alert1_normal_block_user") == "yes") echo " CHECKED";
-		echo " /> Désactiver le compte de l'utilisateur<br/>\n";
+		echo " /> DÃ©sactiver le compte de l'utilisateur<br/>\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		
 		// Utilisateur en observation
-		echo "Niveau cumulé : ";
+		echo "Niveau cumulÃ© : ";
 		echo "<select name='security_alert1_probation_cumulated_level' size='1'>\n";
 		for ($i = 1; $i <= 15;$i++) {
 			echo "<option value='$i'";
@@ -378,10 +378,10 @@ echo "<div style='margin-left:3em;'>\n";
 		echo "<br/>Actions :<br/>\n";
 		echo "<input type='checkbox' name='security_alert1_probation_email_admin' value='yes'";
 		if (getSettingValue("security_alert1_probation_email_admin") == "yes") echo " CHECKED";
-		echo " /> Envoyer un email à l'administrateur<br/>\n";
+		echo " /> Envoyer un email Ã  l'administrateur<br/>\n";
 		echo "<input type='checkbox' name='security_alert1_probation_block_user' value='yes'";
 		if (getSettingValue("security_alert1_probation_block_user") == "yes") echo " CHECKED";
-		echo " /> Désactiver le compte de l'utilisateur<br/>\n";
+		echo " /> DÃ©sactiver le compte de l'utilisateur<br/>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 		
@@ -392,8 +392,8 @@ echo "<div style='margin-left:3em;'>\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		
-		// Utilisateur sans antécédent
-		echo "Niveau cumulé : ";
+		// Utilisateur sans antÃ©cÃ©dent
+		echo "Niveau cumulÃ© : ";
 		echo "<select name='security_alert2_normal_cumulated_level' size='1'>\n";
 		for ($i = 1; $i <= 15;$i++) {
 			echo "<option value='$i'";
@@ -404,15 +404,15 @@ echo "<div style='margin-left:3em;'>\n";
 		echo "<br/>Actions :<br/>\n";
 		echo "<input type='checkbox' name='security_alert2_normal_email_admin' value='yes'";
 		if (getSettingValue("security_alert2_normal_email_admin") == "yes") echo " CHECKED";
-		echo " /> Envoyer un email à l'administrateur<br/>\n";
+		echo " /> Envoyer un email Ã  l'administrateur<br/>\n";
 		echo "<input type='checkbox' name='security_alert2_normal_block_user' value='yes'";
 		if (getSettingValue("security_alert2_normal_block_user") == "yes") echo " CHECKED";
-		echo " /> Désactiver le compte de l'utilisateur<br/>\n";
+		echo " /> DÃ©sactiver le compte de l'utilisateur<br/>\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		
 		// Utilisateur en observation
-		echo "Niveau cumulé : ";
+		echo "Niveau cumulÃ© : ";
 		echo "<select name='security_alert2_probation_cumulated_level' size='1'>\n";
 		for ($i = 1; $i <= 15;$i++) {
 			echo "<option value='$i'";
@@ -423,10 +423,10 @@ echo "<div style='margin-left:3em;'>\n";
 		echo "<br/>Actions :<br/>\n";
 		echo "<input type='checkbox' name='security_alert2_probation_email_admin' value='yes'";
 		if (getSettingValue("security_alert2_probation_email_admin") == "yes") echo " CHECKED";
-		echo " /> Envoyer un email à l'administrateur<br/>\n";
+		echo " /> Envoyer un email Ã  l'administrateur<br/>\n";
 		echo "<input type='checkbox' name='security_alert2_probation_block_user' value='yes'";
 		if (getSettingValue("security_alert2_probation_block_user") == "yes") echo " CHECKED";
-		echo " /> Désactiver le compte de l'utilisateur<br/>\n";
+		echo " /> DÃ©sactiver le compte de l'utilisateur<br/>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 		
@@ -439,7 +439,7 @@ echo "</div>\n";
 echo "<h2>Filtrage HTML</h2>\n";
 echo "<div style='margin-left:3em;'>\n";
 
-	echo "<p>Pour prévenir des tentatives d'injection de code HTML malicieux dans les formulaires, GEPI propose deux dispositifs&nbsp;:</p>\n";
+	echo "<p>Pour prÃ©venir des tentatives d'injection de code HTML malicieux dans les formulaires, GEPI propose deux dispositifs&nbsp;:</p>\n";
 	echo "<table summary='Mode de filtrage'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
@@ -484,9 +484,9 @@ echo "<div style='margin-left:3em;'>\n";
 		echo "<label for='filtrage_html_htmlpurifier'> HTMLpurifier (<i>php>=5.0.5</i>)</label><br />\n";
 	}
 	echo "<span style='font-size:small'>\n";
-	echo "Plus complet qu'InputFilter dans les filtrages réalisés.<br />\n";
-	echo "Il tente également de rendre le code HTML plus correct/valide au sens W3C.<br />\n";
-	echo "<i>A noter&nbsp;:</i> HTMLpurifier ne fonctionne pas bien lorsque les magic_quotes_gpc sont activées (<i>cf. <a href='http://htmlpurifier.org/docs#toclink4'>http://htmlpurifier.org/docs#toclink4</a></i>).<br />\nCe dispositif doit disparaître à terme avec PHP6, mais s'il est activé, on bascule de HTMLpurifier à InputFilter pour éviter le problème.";
+	echo "Plus complet qu'InputFilter dans les filtrages rÃ©alisÃ©s.<br />\n";
+	echo "Il tente Ã©galement de rendre le code HTML plus correct/valide au sens W3C.<br />\n";
+	echo "<i>A noter&nbsp;:</i> HTMLpurifier ne fonctionne pas bien lorsque les magic_quotes_gpc sont activÃ©es (<i>cf. <a href='http://htmlpurifier.org/docs#toclink4'>http://htmlpurifier.org/docs#toclink4</a></i>).<br />\nCe dispositif doit disparaÃ®tre Ã  terme avec PHP6, mais s'il est activÃ©, on bascule de HTMLpurifier Ã  InputFilter pour Ã©viter le problÃ¨me.";
 	echo "</span>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -500,20 +500,20 @@ echo "<div style='margin-left:3em;'>\n";
 	echo "<td>\n";
 	echo "<label for='pas_de_filtrage_html'> Pas de filtrage HTML</label><br />\n";
 	echo "<span style='font-size:small'>\n";
-	echo "Si vous optez pour ce choix, il est possible à des utilisateurs malintentionnés de déposer dans les formulaires du code dangereux.<br />\n";
+	echo "Si vous optez pour ce choix, il est possible Ã  des utilisateurs malintentionnÃ©s de dÃ©poser dans les formulaires du code dangereux.<br />\n";
 	echo "</span>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "</table>\n";
 
-	echo "<p style='font-weight:bold; color:red;'>Il est très fortement déconseillé de désactiver le filtrage.</p>\n";
+	echo "<p style='font-weight:bold; color:red;'>Il est trÃ¨s fortement dÃ©conseillÃ© de dÃ©sactiver le filtrage.</p>\n";
 
 	echo "<br />";
 
 	echo "<p><input type='checkbox' id='utiliser_no_php_in_img' name='utiliser_no_php_in_img' value='y' ";
 	if($utiliser_no_php_in_img=='y') {echo "checked ";}
-	echo "/><label for='utiliser_no_php_in_img'> Interdire d'insérer dans des appréciations, des notices de cahiers de textes des images générées par PHP</label>.</p>\n";
+	echo "/><label for='utiliser_no_php_in_img'> Interdire d'insÃ©rer dans des apprÃ©ciations, des notices de cahiers de textes des images gÃ©nÃ©rÃ©es par PHP</label>.</p>\n";
 
 	echo "<br />";
 
@@ -525,21 +525,21 @@ echo "<div style='margin-left:3em;'>\n";
 	echo "<p>";
 	echo "<input type='radio' id='csrf_mode_vide' name='csrf_mode' value='' ";
 	if(getSettingValue('csrf_mode')=='') {echo "checked ";}
-	echo "/><label for='csrf_mode_vide'> Laisser faire l'enregistrement sans même informer l'administrateur (<i>fortement déconseillé</i>)</label>.<br />";
+	echo "/><label for='csrf_mode_vide'> Laisser faire l'enregistrement sans mÃªme informer l'administrateur (<i>fortement dÃ©conseillÃ©</i>)</label>.<br />";
 
 	echo "<input type='radio' id='csrf_mode_mail_seul' name='csrf_mode' value='mail_seul' ";
 	if(getSettingValue('csrf_mode')=='mail_seul') {echo "checked ";}
-	echo "/><label for='csrf_mode_mail_seul'> Envoyer un mail à l'administrateur, mais laisser faire l'enregistrement (<i>déconseillé, parce que certains dégats ne sont pas simples à réparer</i>)</label>.<br />";
+	echo "/><label for='csrf_mode_mail_seul'> Envoyer un mail Ã  l'administrateur, mais laisser faire l'enregistrement (<i>dÃ©conseillÃ©, parce que certains dÃ©gats ne sont pas simples Ã  rÃ©parer</i>)</label>.<br />";
 
 	echo "<input type='radio' id='csrf_mode_strict' name='csrf_mode' value='strict' ";
 	if(getSettingValue('csrf_mode')=='strict') {echo "checked ";}
-	echo "/><label for='csrf_mode_strict'> Refuser l'enregistrement et envoyer un mail à l'administrateur (<i>conseillé</i>)</label>.";
+	echo "/><label for='csrf_mode_strict'> Refuser l'enregistrement et envoyer un mail Ã  l'administrateur (<i>conseillÃ©</i>)</label>.";
 
 	echo "</p>\n";
 
-	echo "<p>Il est recommandé de se prémunir d'éventuelles attaques CSRF dont les utilisateurs pourraient être victimes.<br />
+	echo "<p>Il est recommandÃ© de se prÃ©munir d'Ã©ventuelles attaques CSRF dont les utilisateurs pourraient Ãªtre victimes.<br />
 Vous devriez choisir le dernier mode ci-dessus.<br />
-Voir <a href='http://fr.wikipedia.org/wiki/CSRF'>http://fr.wikipedia.org/wiki/CSRF</a> pour plus de détails.</p>\n";
+Voir <a href='http://fr.wikipedia.org/wiki/CSRF'>http://fr.wikipedia.org/wiki/CSRF</a> pour plus de dÃ©tails.</p>\n";
 
 
 echo "</div>\n";

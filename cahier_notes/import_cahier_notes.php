@@ -65,9 +65,9 @@ if (!checkAccess()) {
 }
 
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 
@@ -75,9 +75,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
 unset($id_racine);
 $id_racine=isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);
 
-// On teste si le carnet de notes appartient bien à la personne connectée
+// On teste si le carnet de notes appartient bien Ã  la personne connectÃ©e
 if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
-    $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+    $mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes qui ne vous appartient pas !");
     header("Location: index.php?msg=$mess");
     die();
 }
@@ -96,13 +96,13 @@ if (count($current_group["classes"]["list"]) > 1) {
 }
 
 /**
- * Gestion des périodes
+ * Gestion des pÃ©riodes
  */
 include "../lib/periodes.inc.php";
 
-// On teste si la periode est vérouillée !
+// On teste si la periode est vÃ©rouillÃ©e !
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) and (isset($id_devoir)) and ($id_devoir!='') ) {
-    $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
+    $mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes dont la pÃ©riode est bloquÃ©e !");
     header("Location: index.php?msg=$mess");
     die();
 }
@@ -132,7 +132,7 @@ $annee=$instant['year'];
 //**************** EN-TETE *****************
 $titre_page = "Import de devoirs dans le cahier de notes";
 /**
- * Entête de la page
+ * EntÃªte de la page
  */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
@@ -147,8 +147,8 @@ $titre .= " - IMPORT";
 echo "<center><h3 class='gepi'>Import de devoirs dans le cahier de notes</h3></center>\n";
 
 if (!isset($is_posted)) {
-	echo "<p>Pour importer des devoirs dans le carnet de notes, vous devez fournir un fichier correctement formaté...</p>";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>CSV</b> à importer.";
+	echo "<p>Pour importer des devoirs dans le carnet de notes, vous devez fournir un fichier correctement formatÃ©...</p>";
+	echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>CSV</b> Ã  importer.";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>\n";
 	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
@@ -161,8 +161,8 @@ if (!isset($is_posted)) {
 	echo "<p><br /</p>\n";
 
 	echo "<p><i>NOTE&nbsp;</i>: Le format du CSV est un peu complexe.<br />
-La première ligne sert à repérer les champs.<br />
-Le premier champ des lignes élèves doit contenir la chaine GEPI_LOGIN_ELEVE.</p>
+La premiÃ¨re ligne sert Ã  repÃ©rer les champs.<br />
+Le premier champ des lignes Ã©lÃ¨ves doit contenir la chaine GEPI_LOGIN_ELEVE.</p>
 
 <pre>
 GEPI_INFOS;GEPI_LOGIN_ELEVE;NOM;PRENOM;CLASSE;MOYENNE;GEPI_COL_1ER_DEVOIR
@@ -176,7 +176,7 @@ GEPI_LOGIN_ELEVE;ZETOFRE_M_L;ZETOFREY;Melanie;3 A2;;10,5;14,5;19,0
 ...
 </pre>
 
-<p>Il est plus simple de créer une évaluation et d'Exporter ensuite le carnet de notes (<i>même vide</i>) pour disposer d'un CSV correctement formaté.</p>\n";
+<p>Il est plus simple de crÃ©er une Ã©valuation et d'Exporter ensuite le carnet de notes (<i>mÃªme vide</i>) pour disposer d'un CSV correctement formatÃ©.</p>\n";
 
 }
 else {
@@ -185,7 +185,7 @@ else {
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 		if (trim($csv_file['name'])=='') {
-			echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+			echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 			echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>";
 		}
 		else{
@@ -198,7 +198,7 @@ else {
 			}
 			else{
 
-				// on constitue le tableau des champs à extraire
+				// on constitue le tableau des champs Ã  extraire
 				$tabchamps=array("GEPI_INFOS","GEPI_LOGIN_ELEVE","GEPI_COL_1ER_DEVOIR");
 
 				$ligne=fgets($fp, 4096);
@@ -221,7 +221,7 @@ else {
 				}
 
 				if($temoin!=count($tabchamps)){
-					echo "<p><b>ERREUR:</b> La ligne d'entête du fichier n'est pas conforme à ce qui est attendu.</p>\n";
+					echo "<p><b>ERREUR:</b> La ligne d'entÃªte du fichier n'est pas conforme Ã  ce qui est attendu.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					/**
                      * Pied de page
@@ -231,7 +231,7 @@ else {
 				}
 
 				$fp=fopen($csv_file['tmp_name'],"r");
-				// On lit une ligne pour passer la ligne d'entête:
+				// On lit une ligne pour passer la ligne d'entÃªte:
 				$ligne = fgets($fp, 4096);
 				//=========================
 				unset($tab_dev);
@@ -250,13 +250,13 @@ else {
 								unset($nomc_dev);
 								$nomc_dev=array();
 								for($i=$tabindice[2];$i<sizeof($tabligne);$i++){
-									// Contrôler qu'il n'y a pas de caractères invalides...
+									// ContrÃ´ler qu'il n'y a pas de caractÃ¨res invalides...
 									//corriger_caracteres()
 
 									// On ne compte pas les champs avec un nom de devoir vide
-									// Si: il faut que les nomc_dev, coef_dev et date_dev aient le même nombre de colonnes...
-									// ... le test est fait plus loin pour ne pas créer de devoir avec un nom vide.
-									$nomc_dev[]=preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_\. - ]/","",corriger_caracteres($tabligne[$i]));
+									// Si: il faut que les nomc_dev, coef_dev et date_dev aient le mÃªme nombre de colonnes...
+									// ... le test est fait plus loin pour ne pas crÃ©er de devoir avec un nom vide.
+									$nomc_dev[]=preg_replace("/[^a-zA-Z0-9Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼_\. - ]/","",corriger_caracteres($tabligne[$i]));
 									
 								}
 								break;
@@ -289,11 +289,11 @@ else {
 								unset($date_dev);
 								$date_dev=array();
 								for($i=$tabindice[2];$i<sizeof($tabligne);$i++){
-									// Comment la date va-t-elle être formatée?
+									// Comment la date va-t-elle Ãªtre formatÃ©e?
 									
-									// Dans le cas d'un import de CSV réalisé depuis l'enregistrement ODS->CSV, on a 46 colonnes de devoirs
-									// Le tabeau $date_dev[] est rempli jusqu'à l'indice 45.
-									// Par contre, pour les devoirs, ne sont créés que ceux dont le nomc_dev[] est non vide
+									// Dans le cas d'un import de CSV rÃ©alisÃ© depuis l'enregistrement ODS->CSV, on a 46 colonnes de devoirs
+									// Le tabeau $date_dev[] est rempli jusqu'Ã  l'indice 45.
+									// Par contre, pour les devoirs, ne sont crÃ©Ã©s que ceux dont le nomc_dev[] est non vide
 									if((strlen(preg_replace("#[0-9/]#","",$tabligne[$i]))!=0)||($tabligne[$i]=="")){
 										$tabligne[$i]="$jour/$mois/$annee";
 									}
@@ -317,17 +317,17 @@ else {
 									unset($tab_dev[$cpt_ele]);
 									$tab_dev[$cpt_ele]=array();
 									$tab_dev[$cpt_ele]['login']=$tabligne[$tabindice[1]];
-									// Il faudrait tester qu'il n'y a pas de caractères invalides dans le login...
+									// Il faudrait tester qu'il n'y a pas de caractÃ¨res invalides dans le login...
 
 									if(strlen(preg_replace("/[A-Z0-9_]/","",$tabligne[$tabindice[1]]))==0){
-										// L'élève fait-il partie du groupe?
+										// L'Ã©lÃ¨ve fait-il partie du groupe?
 										$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (login='".$tab_dev[$cpt_ele]['login']."' AND id_groupe='$id_groupe' AND periode='$periode_num')";
 										$test=mysql_query($sql);
 										if(mysql_num_rows($test)>0){
 											$tab_dev[$cpt_ele]['note']=array();
 											$tab_dev[$cpt_ele]['statut']=array();
 											for($i=$tabindice[2];$i<sizeof($tabligne);$i++){
-												// Reformater la note... et générer un statut...
+												// Reformater la note... et gÃ©nÃ©rer un statut...
 
 												$note=$tabligne[$i];
 												$elev_statut='';
@@ -362,7 +362,7 @@ else {
 											$cpt_ele++;
 										}
 										else{
-											$info_erreur.=$tab_dev[$cpt_ele]['login']." n'est pas membre du groupe sur la période choisie. <br />\n";
+											$info_erreur.=$tab_dev[$cpt_ele]['login']." n'est pas membre du groupe sur la pÃ©riode choisie. <br />\n";
 										}
 									}
 								}
@@ -373,7 +373,7 @@ else {
 				fclose($fp);
 
 				if(count($nomc_dev)==0){
-					echo "<p><b>Erreur:</b> Aucun nom de devoir n'a été trouvé.</p>\n";
+					echo "<p><b>Erreur:</b> Aucun nom de devoir n'a Ã©tÃ© trouvÃ©.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					/**
                      * Pied de page
@@ -386,7 +386,7 @@ else {
 				if(count($nomc_dev)!=count($date_dev)
                                    ||count($nomc_dev)!=count($coef_dev)
                                   ){
-					echo "<p><b>Erreur:</b> Le nombre de champs ne coïncide pas pour les noms courts, coefficients et dates.</p>\n";
+					echo "<p><b>Erreur:</b> Le nombre de champs ne coÃ¯ncide pas pour les noms courts, coefficients et dates.</p>\n";
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 					/**
                      * Pied de page
@@ -401,7 +401,7 @@ else {
 				}
 
 /**
- * @todo AFFICHER UN TABLEAU DE CE QUI VA ETRE CRéé à CE STADE... AVEC DES CASES à COCHER POUR CONFIRMER.
+ * @todo AFFICHER UN TABLEAU DE CE QUI VA ETRE CRÃ©Ã© Ã  CE STADE... AVEC DES CASES Ã  COCHER POUR CONFIRMER.
  */
 
 				echo "<div align='center'>\n";
@@ -464,7 +464,7 @@ else {
 				echo "</tr>\n";
 
 				echo "<tr>\n";
-				echo "<th>Cocher le(s) devoir(s) à importer</th>\n";
+				echo "<th>Cocher le(s) devoir(s) Ã  importer</th>\n";
 				for($i=0;$i<count($nomc_dev);$i++){
 					if($nomc_dev[$i]!=""){
 						echo "<th><input type='checkbox' name='valide_import_dev[$i]' value='y' /></th>\n";
@@ -472,7 +472,7 @@ else {
 				}
 				echo "</tr>\n";
 
-				// Les notes des élèves
+				// Les notes des Ã©lÃ¨ves
 				$alt=1;
 				for($i=0;$i<count($tab_dev);$i++){
 					$alt=$alt*(-1);
@@ -517,7 +517,7 @@ else {
 		// RECUPERER LES SAISIES/VALIDATIONS...
 		$nomc_dev=isset($_POST['nomc_dev']) ? $_POST['nomc_dev'] : NULL;
 		if(!isset($nomc_dev)){
-			echo "<p>ERREUR: Aucun devoir importé.</p>\n";
+			echo "<p>ERREUR: Aucun devoir importÃ©.</p>\n";
 			/**
              * Pied de page
              */
@@ -526,7 +526,7 @@ else {
 
 		$date_dev=isset($_POST['date_dev']) ? $_POST['date_dev'] : NULL;
 		if(!isset($date_dev)){
-			echo "<p>ERREUR: Aucune date définie.</p>\n";
+			echo "<p>ERREUR: Aucune date dÃ©finie.</p>\n";
 			/**
              * Pied de page
              */
@@ -535,7 +535,7 @@ else {
 
 		$coef_dev=isset($_POST['coef_dev']) ? $_POST['coef_dev'] : NULL;
 		if(!isset($coef_dev)){
-			echo "<p>ERREUR: Aucun coefficient défini.</p>\n";
+			echo "<p>ERREUR: Aucun coefficient dÃ©fini.</p>\n";
 			/**
              * Pied de page
              */
@@ -544,7 +544,7 @@ else {
 
 		$note_sur_dev=isset($_POST['note_sur_dev']) ? $_POST['note_sur_dev'] : NULL;
 		if(!isset($note_sur_dev)){
-			echo "<p>ERREUR: Aucun référentiel de notation défini.</p>\n";
+			echo "<p>ERREUR: Aucun rÃ©fÃ©rentiel de notation dÃ©fini.</p>\n";
 			/**
              * Pied de page
              */
@@ -553,7 +553,7 @@ else {
 
 		$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : NULL;
 		if(!isset($login_ele)){
-			echo "<p>ERREUR: Aucun élève importé.</p>\n";
+			echo "<p>ERREUR: Aucun Ã©lÃ¨ve importÃ©.</p>\n";
 			/**
              * Pied de page
              */
@@ -567,8 +567,8 @@ else {
 			$tab_dev_note[$i]=$_POST['tab_dev_'.$i.'_note'];
 		}
 
-		// Création des devoirs:
-		// On crée les devoirs à la racine... pas de gestion des boites pour le moment
+		// CrÃ©ation des devoirs:
+		// On crÃ©e les devoirs Ã  la racine... pas de gestion des boites pour le moment
 		$id_conteneur=$id_racine;
 		echo "<p>\n";
 		for($i=0;$i<count($nomc_dev);$i++){
@@ -583,7 +583,7 @@ else {
 						$id_dev[$i]=mysql_insert_id();
 					}
 					else{
-						echo "<p><b>Erreur</b> lors de la création du devoir n°$i (<i>$nomc_dev[$i]</i>).</p>\n";
+						echo "<p><b>Erreur</b> lors de la crÃ©ation du devoir nÂ°$i (<i>$nomc_dev[$i]</i>).</p>\n";
 						echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 						/**
                          * Pied de page
@@ -599,11 +599,11 @@ else {
 												note_sur='".$note_sur_dev[$i]."',
 												display_parents='1'
 											WHERE id='$id_dev[$i]';";
-					echo "Création du devoir n°$i: $nomc_dev[$i]<br />\n";
+					echo "CrÃ©ation du devoir nÂ°$i: $nomc_dev[$i]<br />\n";
 					//echo "$sql<br />\n";
 					$res_update=mysql_query($sql);
 					if(!$res_update){
-						echo "<p><b>Erreur</b> lors de la création du devoir n°$i (<i>$nomc_dev[$i]</i>).</p>\n";
+						echo "<p><b>Erreur</b> lors de la crÃ©ation du devoir nÂ°$i (<i>$nomc_dev[$i]</i>).</p>\n";
 						echo "<p><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine'>Cliquer ici</a> pour recommencer !</center></p>\n";
 						/**
                          * Pied de page
@@ -617,7 +617,7 @@ else {
 		}
 		echo "</p>\n";
 
-		// On passe à l'insertion des notes
+		// On passe Ã  l'insertion des notes
 		echo "<p>Insertion des notes pour ";
 
 		for($i=0;$i<count($login_ele);$i++){
@@ -665,10 +665,10 @@ else {
 							if($i==count($login_ele)-1){
 								$arret = 'no';
 								mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur,$arret);
-								// La boite courante est mise à jour...
+								// La boite courante est mise Ã  jour...
 								// ... mais pas la boite destination.
-								// Il faudrait rechercher pour $id_racine les derniers descendants et lancer la mise à jour sur chacun de ces descendants.
-								// C'est fait là:
+								// Il faudrait rechercher pour $id_racine les derniers descendants et lancer la mise Ã  jour sur chacun de ces descendants.
+								// C'est fait lÃ :
 								recherche_enfant($id_racine);
 							}
 							flush();

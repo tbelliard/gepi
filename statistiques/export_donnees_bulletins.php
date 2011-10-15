@@ -26,7 +26,7 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complémentaires et/ou librairies utiles
+// fonctions complÃ©mentaires et/ou librairies utiles
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -50,7 +50,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Export de données des bulletins',
+description='Export de donnÃ©es des bulletins',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -64,14 +64,14 @@ if (!checkAccess()) {
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 
 $choix_periodes=isset($_POST['choix_periodes']) ? $_POST['choix_periodes'] : NULL;
-//num_periode_".$id_classe[$i]."[] à récupérer
+//num_periode_".$id_classe[$i]."[] Ã  rÃ©cupÃ©rer
 $max_per=isset($_POST['max_per']) ? $_POST['max_per'] : NULL;
 
 $choix_matieres=isset($_POST['choix_matieres']) ? $_POST['choix_matieres'] : NULL;
-//id_groupe_".$id_classe[$i]."[] à récupérer
+//id_groupe_".$id_classe[$i]."[] Ã  rÃ©cupÃ©rer
 
 $choix_eleves=isset($_POST['choix_eleves']) ? $_POST['choix_eleves'] : NULL;
-//login_eleve_".$id_classe[$i]."[] à récupérer
+//login_eleve_".$id_classe[$i]."[] Ã  rÃ©cupÃ©rer
 
 $choix_donnees=isset($_POST['choix_donnees']) ? $_POST['choix_donnees'] : NULL;
 $champ_eleve=isset($_POST['champ_eleve']) ? $_POST['champ_eleve'] : NULL;
@@ -79,7 +79,7 @@ $champ_enseignant=isset($_POST['champ_enseignant']) ? $_POST['champ_enseignant']
 $champ_autre=isset($_POST['champ_autre']) ? $_POST['champ_autre'] : NULL;
 
 function clean_string_csv($texte) {
-	// Pour remplacer les ; par ., et les " par '' et virer les retours à la ligne
+	// Pour remplacer les ; par ., et les " par '' et virer les retours Ã  la ligne
 	$texte=my_ereg_replace(";",".,",$texte);
 	$texte=my_ereg_replace('"',"''",$texte);
 	$texte=my_ereg_replace('\\\r\\\n','',$texte);
@@ -97,7 +97,7 @@ if((isset($id_classe))&&
 	//$csv="";
 	$csv='"ID_ELEVE"';
 	for($loop=0;$loop<count($champ_eleve);$loop++) {
-		// Pour éviter les colonnes app et note ici
+		// Pour Ã©viter les colonnes app et note ici
 		if(($champ_eleve[$loop]!='note')&&($champ_eleve[$loop]!='app')) {
 			$csv.=';"'.strtoupper($champ_eleve[$loop]).'"';
 		}
@@ -137,7 +137,7 @@ if((isset($id_classe))&&
 		$tab_per=array();
 		$temoin_periode="y";
 		if($choix_periodes=='certaines') {
-			// TESTER si il y a au moins une période sélectionnée
+			// TESTER si il y a au moins une pÃ©riode sÃ©lectionnÃ©e
 			if(isset($_POST['num_periode_'.$id_classe[$i]])) {
 				$tmp_per=$_POST['num_periode_'.$id_classe[$i]];
 				for($loop=0;$loop<count($tmp_per);$loop++) {
@@ -145,12 +145,12 @@ if((isset($id_classe))&&
 				}
 			}
 			else {
-				// La classe a été sélectionnée, mais n'est associée à aucune période???
+				// La classe a Ã©tÃ© sÃ©lectionnÃ©e, mais n'est associÃ©e Ã  aucune pÃ©riode???
 				$temoin_periode="n";
 			}
 		}
 		else {
-			// On boucle sur les périodes jusqu'à $max_per
+			// On boucle sur les pÃ©riodes jusqu'Ã  $max_per
 			for($loop=1;$loop<=$max_per;$loop++) {
 				$tab_per[]=$loop;
 			}
@@ -165,7 +165,7 @@ if((isset($id_classe))&&
 				if(isset($_POST['login_eleve_'.$id_classe[$i]])) {
 					$tmp_ele=$_POST['login_eleve_'.$id_classe[$i]];
 					for($loop=0;$loop<count($tmp_ele);$loop++) {
-						// On contrôle que l'élève existe dans la table eleves
+						// On contrÃ´le que l'Ã©lÃ¨ve existe dans la table eleves
 						$sql="SELECT * FROM eleves WHERE login='$tmp_ele[$loop]';";
 						$res_ele_info=mysql_query($sql);
 						if(mysql_num_rows($res_ele_info)>0) {
@@ -182,7 +182,7 @@ if((isset($id_classe))&&
 					}
 				}
 				else {
-					// La classe a été sélectionnée, mais n'est associée à aucune période???
+					// La classe a Ã©tÃ© sÃ©lectionnÃ©e, mais n'est associÃ©e Ã  aucune pÃ©riode???
 					$temoin_ele="n";
 				}
 	
@@ -192,7 +192,7 @@ if((isset($id_classe))&&
 				$res_ele_clas=mysql_query($sql);
 				if(mysql_num_rows($res_ele_clas)>0) {
 					while($lig_ele=mysql_fetch_object($res_ele_clas)) {
-						// On contrôle que l'élève existe dans la table eleves
+						// On contrÃ´le que l'Ã©lÃ¨ve existe dans la table eleves
 						$sql="SELECT * FROM eleves WHERE login='$lig_ele->login';";
 						$res_ele_info=mysql_query($sql);
 						if(mysql_num_rows($res_ele_clas)>0) {
@@ -218,7 +218,7 @@ if((isset($id_classe))&&
 					$tab_id_groupe=array();
 					$temoin_grp="y";
 					if($choix_matieres=='certaines') {
-						// TESTER si il y a au moins une matière sélectionnée
+						// TESTER si il y a au moins une matiÃ¨re sÃ©lectionnÃ©e
 						if(isset($_POST['id_groupe_'.$id_classe[$i]])) {
 							$tmp_grp=$_POST['id_groupe_'.$id_classe[$i]];
 							for($loop=0;$loop<count($tmp_grp);$loop++) {
@@ -228,7 +228,7 @@ if((isset($id_classe))&&
 							}
 						}
 						else {
-							// La classe a été sélectionnée, mais n'est associée à aucune période???
+							// La classe a Ã©tÃ© sÃ©lectionnÃ©e, mais n'est associÃ©e Ã  aucune pÃ©riode???
 							$temoin_grp="n";
 						}
 					}
@@ -259,7 +259,7 @@ if((isset($id_classe))&&
 									while($lig_note=mysql_fetch_object($res_note)) {
 		
 										for($m=0;$m<count($tab_ele);$m++) {
-											// On contrôle si l'élève est dans la classe pour la période
+											// On contrÃ´le si l'Ã©lÃ¨ve est dans la classe pour la pÃ©riode
 											$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$tab_ele[$m]' AND periode='$tab_per[$j]';";
 											$test_ele_clas_per=mysql_query($sql);
 											if(mysql_num_rows($test_ele_clas_per)>0) {
@@ -280,7 +280,7 @@ if((isset($id_classe))&&
 									while($lig_app=mysql_fetch_object($res_app)) {
 		
 										for($m=0;$m<count($tab_ele);$m++) {
-											// On contrôle si l'élève est dans la classe pour la période
+											// On contrÃ´le si l'Ã©lÃ¨ve est dans la classe pour la pÃ©riode
 											$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$tab_ele[$m]' AND periode='$tab_per[$j]';";
 											$test_ele_clas_per=mysql_query($sql);
 											if(mysql_num_rows($test_ele_clas_per)>0) {
@@ -294,7 +294,7 @@ if((isset($id_classe))&&
 							}
 	
 							for($m=0;$m<count($tab_ele);$m++) {
-								// On contrôle si l'élève est dans la classe pour la période
+								// On contrÃ´le si l'Ã©lÃ¨ve est dans la classe pour la pÃ©riode
 								$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$tab_ele[$m]' AND periode='$tab_per[$j]';";
 								$test_ele_clas_per=mysql_query($sql);
 								if(mysql_num_rows($test_ele_clas_per)>0) {
@@ -302,7 +302,7 @@ if((isset($id_classe))&&
 									// DONNEES PROFS -> STOCKER DANS TABLEAU
 									if(!isset($tab_prof[$tab_id_groupe[$k]])) {
 										$tab_prof[$tab_id_groupe[$k]]=array();
-										// PROBLEME: On ne récupère qu'un seul prof si on fait un unique fichier CSV monolithique
+										// PROBLEME: On ne rÃ©cupÃ¨re qu'un seul prof si on fait un unique fichier CSV monolithique
 										$sql="SELECT u.* FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.login=jgp.login AND jgp.id_groupe='$tab_id_groupe[$k]';";
 										$res_prof_grp=mysql_query($sql);
 										if(mysql_num_rows($res_prof_grp)>0) {
@@ -320,7 +320,7 @@ if((isset($id_classe))&&
 
 									$csv.='"'.$tab_id_csv_eleve[$tab_ele[$m]].'"';
 									for($loop=0;$loop<count($champ_eleve);$loop++) {
-										// Pour éviter les colonnes app et note ici
+										// Pour Ã©viter les colonnes app et note ici
 										if(isset($tab_info_ele[$tab_ele[$m]][$champ_eleve[$loop]])) {
 											$csv.=';"'.$tab_info_ele[$tab_ele[$m]][$champ_eleve[$loop]].'"';
 										}
@@ -360,14 +360,14 @@ if((isset($id_classe))&&
 		
 									if(in_array('note',$champ_eleve)) {
 										$csv.=';"';
-										// Si on fait l'export avant que les bulletins ne soient remplis, on ne récupère rien:
+										// Si on fait l'export avant que les bulletins ne soient remplis, on ne rÃ©cupÃ¨re rien:
 										if(isset($tab_ele_note_grp[$tab_ele[$m]])) {$csv.=$tab_ele_note_grp[$tab_ele[$m]];}
 										$csv.='"';
 									}
 		
 									if(in_array('app',$champ_eleve)) {
 										$csv.=';"';
-										// Si on fait l'export avant que les bulletins ne soient remplis, on ne récupère rien:
+										// Si on fait l'export avant que les bulletins ne soient remplis, on ne rÃ©cupÃ¨re rien:
 										//echo "\$tab_ele[$m]=$tab_ele[$m]<br />";
 										//echo "\$tab_ele_app_grp[$tab_ele[$m]]=".$tab_ele_app_grp[$tab_ele[$m]]."<br />";
 										if(isset($tab_ele_app_grp[$tab_ele[$m]])) {$csv.=clean_string_csv($tab_ele_app_grp[$tab_ele[$m]]);}
@@ -387,7 +387,7 @@ if((isset($id_classe))&&
 
 		}
 	}
-	// AU CAS OU ON NE VEUT PAS LES IDENTIFIANTS ELEVES, CREER SYSTEMATIQUEMENT UN IDENTIFIANT TEMPORAIRE ASSOCIé A UN LOGIN ELEVE
+	// AU CAS OU ON NE VEUT PAS LES IDENTIFIANTS ELEVES, CREER SYSTEMATIQUEMENT UN IDENTIFIANT TEMPORAIRE ASSOCIÃ© A UN LOGIN ELEVE
 	// $tab_id_csv_eleve[login]=id_temp
 
 	$nom_fic = "export_donnees_bulletins_".date("Ymd_His").".csv";
@@ -416,7 +416,7 @@ $utilisation_jsdivdrag = "non";
 //$style_specifique = ".css";
 
 // ===================== entete Gepi ======================================//
-$titre_page = "Export de données des bulletins";
+$titre_page = "Export de donnÃ©es des bulletins";
 require_once("../lib/header.inc");
 // ===================== fin entete =======================================//
 
@@ -430,13 +430,13 @@ if(!isset($id_classe)) {
 
 	echo "<p class='bold'>Choix des classes&nbsp;:</p>\n";
 
-	// Liste des classes avec élève:
+	// Liste des classes avec Ã©lÃ¨ve:
 	$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
 	$call_classes=mysql_query($sql);
 
 	$nb_classes=mysql_num_rows($call_classes);
 	if($nb_classes==0){
-		echo "<p>Aucune classe avec élève affecté n'a été trouvée.</p>\n";
+		echo "<p>Aucune classe avec Ã©lÃ¨ve affectÃ© n'a Ã©tÃ© trouvÃ©e.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -470,7 +470,7 @@ if(!isset($id_classe)) {
 	echo "</tr>\n";
 	echo "</table>\n";
 
-	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout décocher</a></p>\n";
+	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout dÃ©cocher</a></p>\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -502,18 +502,18 @@ elseif(!isset($choix_periodes)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes</a>";
 	echo "</p>\n";
 
-	echo "<p class='bold'>Choix des périodes&nbsp;:</p>\n";
+	echo "<p class='bold'>Choix des pÃ©riodes&nbsp;:</p>\n";
 
-	//echo "<p style='color:red;'>A FAIRE: afficher les périodes closes...</p>\n";
+	//echo "<p style='color:red;'>A FAIRE: afficher les pÃ©riodes closes...</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
 	echo "<ul style='list-style-type: none;'>\n";
 	echo "<li>\n";
-	echo "<input type='radio' name='choix_periodes' id='choix_periodes_toutes' value='toutes' onchange='display_div_liste_periodes()' checked /><label for='choix_periodes_toutes'> Toutes les périodes</label>\n";
+	echo "<input type='radio' name='choix_periodes' id='choix_periodes_toutes' value='toutes' onchange='display_div_liste_periodes()' checked /><label for='choix_periodes_toutes'> Toutes les pÃ©riodes</label>\n";
 	echo "</li>\n";
 	echo "<li>\n";
-	echo "<input type='radio' name='choix_periodes' id='choix_periodes_certaines' onchange='display_div_liste_periodes()' value='certaines' /><label for='choix_periodes_certaines'> Certaines périodes seulement</label>\n";
+	echo "<input type='radio' name='choix_periodes' id='choix_periodes_certaines' onchange='display_div_liste_periodes()' value='certaines' /><label for='choix_periodes_certaines'> Certaines pÃ©riodes seulement</label>\n";
 
 	echo "<div id='div_liste_periodes' style='margin-left: 2em;'>\n";
 
@@ -527,13 +527,13 @@ elseif(!isset($choix_periodes)) {
 		$call_per=mysql_query($sql);
 		$nombre_ligne=mysql_num_rows($call_per);
 		if($nombre_ligne==0) {
-			echo "<p style='color:red;'>Aucune période  n'est définie dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
+			echo "<p style='color:red;'>Aucune pÃ©riode  n'est dÃ©finie dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
 		}
 		else {
 			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 
 			$first_per[$id_classe[$i]]=$cpt;
-			echo "<table class='boireaus' summary='Classe n°$id_classe[$i]'/>\n";
+			echo "<table class='boireaus' summary='Classe nÂ°$id_classe[$i]'/>\n";
 			echo "<tr>\n";
 			echo "<th colspan='4'>\n";
 			echo "Classe de ".get_class_from_id($id_classe[$i])."\n";
@@ -542,11 +542,11 @@ elseif(!isset($choix_periodes)) {
 
 			echo "<tr>\n";
 			echo "<th>\n";
-			//echo "Cocher/décocher\n";
-			echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></p>\n";
+			//echo "Cocher/dÃ©cocher\n";
+			echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a></p>\n";
 			echo "</th>\n";
 			echo "<th>Num</th>\n";
-			echo "<th>Période</th>\n";
+			echo "<th>PÃ©riode</th>\n";
 			echo "<th>Etat</th>\n";
 			echo "</tr>\n";
 
@@ -581,7 +581,7 @@ elseif(!isset($choix_periodes)) {
 		echo "<br />\n";
 	}
 
-	echo "<p><a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a>  toutes les périodes</p>\n";
+	echo "<p><a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>dÃ©cocher</a>  toutes les pÃ©riodes</p>\n";
 
 	echo "</div>\n";
 
@@ -595,9 +595,9 @@ elseif(!isset($choix_periodes)) {
 
 	$chaine_div_coche_lot="Pour toutes les classes,<br />";
 	for($j=1;$j<=$max_per;$j++) {
-		$chaine_div_coche_lot.="<a href='javascript:coche_lot($j,true)'>Cocher</a> / <a href='javascript:coche_lot($j,false)'>décocher</a> la période $j<br />";
+		$chaine_div_coche_lot.="<a href='javascript:coche_lot($j,true)'>Cocher</a> / <a href='javascript:coche_lot($j,false)'>dÃ©cocher</a> la pÃ©riode $j<br />";
 	}
-	$chaine_div_coche_lot.="<a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a>  toutes les périodes";
+	$chaine_div_coche_lot.="<a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>dÃ©cocher</a>  toutes les pÃ©riodes";
 
 	echo "<script type='text/javascript'>
 	document.getElementById('div_liste_periodes').style.display='none';
@@ -673,10 +673,10 @@ elseif(!isset($choix_periodes)) {
 }
 elseif(!isset($choix_matieres)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes</a>";
-	echo " | <a href='javascript: history.go(-1);'>Retour au choix des périodes</a>";
+	echo " | <a href='javascript: history.go(-1);'>Retour au choix des pÃ©riodes</a>";
 	echo "</p>\n";
 
-	echo "<p class='bold'>Choix des matières/enseignements&nbsp;:</p>\n";
+	echo "<p class='bold'>Choix des matiÃ¨res/enseignements&nbsp;:</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	echo "<input type='hidden' name='choix_periodes' value='$choix_periodes' />\n";
@@ -684,10 +684,10 @@ elseif(!isset($choix_matieres)) {
 
 	echo "<ul style='list-style-type: none;'>\n";
 	echo "<li>\n";
-	echo "<input type='radio' name='choix_matieres' id='choix_matieres_toutes' value='toutes' onchange='display_div_liste_enseignements()' checked /><label for='choix_matieres_toutes'> Tous les enseignements/matières</label>\n";
+	echo "<input type='radio' name='choix_matieres' id='choix_matieres_toutes' value='toutes' onchange='display_div_liste_enseignements()' checked /><label for='choix_matieres_toutes'> Tous les enseignements/matiÃ¨res</label>\n";
 	echo "</li>\n";
 	echo "<li>\n";
-	echo "<input type='radio' name='choix_matieres' id='choix_matieres_certaines' onchange='display_div_liste_enseignements()' value='certaines' /><label for='choix_matieres_certaines'> Certains enseignements/matières seulement</label>\n";
+	echo "<input type='radio' name='choix_matieres' id='choix_matieres_certaines' onchange='display_div_liste_enseignements()' value='certaines' /><label for='choix_matieres_certaines'> Certains enseignements/matiÃ¨res seulement</label>\n";
 
 	echo "<div id='div_liste_enseignements' style='margin-left: 2em;'>\n";
 
@@ -703,14 +703,14 @@ elseif(!isset($choix_matieres)) {
 		$call_group = mysql_query($sql);
 		$nombre_ligne = mysql_num_rows($call_group);
 		if($nombre_ligne==0) {
-			echo "<p style='color:red;'>Aucun enseignement n'est défini dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
+			echo "<p style='color:red;'>Aucun enseignement n'est dÃ©fini dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
 		}
 		else {
 
 			$temoin_classe[$i]='y';
 			if($choix_periodes=='certaines') {
 				// =============
-				// AJOUTER UN TEST... si on a choisi 'certaines' périodes, mais sans aucune période cochée
+				// AJOUTER UN TEST... si on a choisi 'certaines' pÃ©riodes, mais sans aucune pÃ©riode cochÃ©e
 				// =============
 				if(isset($_POST['num_periode_'.$id_classe[$i]])) {
 					$tmp_per=$_POST['num_periode_'.$id_classe[$i]];
@@ -729,7 +729,7 @@ elseif(!isset($choix_matieres)) {
 				echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 
 				$first_grp[$id_classe[$i]]=$cpt;
-				echo "<table class='boireaus' summary='Classe n°$id_classe[$i]'/>\n";
+				echo "<table class='boireaus' summary='Classe nÂ°$id_classe[$i]'/>\n";
 				echo "<tr>\n";
 				echo "<th colspan='3'>\n";
 				echo "Classe de ".get_class_from_id($id_classe[$i])."\n";
@@ -738,8 +738,8 @@ elseif(!isset($choix_matieres)) {
 	
 				echo "<tr>\n";
 				echo "<th>\n";
-				//echo "Cocher/décocher\n";
-				echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></p>\n";
+				//echo "Cocher/dÃ©cocher\n";
+				echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a></p>\n";
 				echo "</th>\n";
 				echo "<th>Enseignement</th>\n";
 				echo "<th>Professeur</th>\n";
@@ -780,7 +780,7 @@ elseif(!isset($choix_matieres)) {
 	}
 
 
-	echo "<p><a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a>  tous les enseignements</p>\n";
+	echo "<p><a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>dÃ©cocher</a>  tous les enseignements</p>\n";
 
 
 	echo "</div>\n";
@@ -795,7 +795,7 @@ elseif(!isset($choix_matieres)) {
 	$chaine_div_coche_lot="Pour toutes les classes,<br />";
 
 	for($j=0;$j<count($tab_id_matiere);$j++) {
-		$chaine_div_coche_lot.="<a href='javascript:coche_lot($j,true)'>Cocher</a> / <a href='javascript:coche_lot($j,false)'>décocher</a> $tab_id_matiere[$j]<br />";
+		$chaine_div_coche_lot.="<a href='javascript:coche_lot($j,true)'>Cocher</a> / <a href='javascript:coche_lot($j,false)'>dÃ©cocher</a> $tab_id_matiere[$j]<br />";
 
 		for($k=0;$k<count($tab_liste_index_grp_matiere[$tab_id_matiere[$j]]);$k++) {
 			if(!isset($chaine_array_index[$j])) {
@@ -811,7 +811,7 @@ elseif(!isset($choix_matieres)) {
 			$chaine_array_index[$j].=");";
 		}
 	}
-	$chaine_div_coche_lot.="<a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a>  tous les enseignements";
+	$chaine_div_coche_lot.="<a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>dÃ©cocher</a>  tous les enseignements";
 
 	echo "<script type='text/javascript'>
 	document.getElementById('div_liste_enseignements').style.display='none';
@@ -895,11 +895,11 @@ elseif(!isset($choix_matieres)) {
 }
 elseif(!isset($choix_eleves)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes</a>";
-	echo " | <a href='javascript: history.go(-2);'>Retour au choix des périodes</a>";
+	echo " | <a href='javascript: history.go(-2);'>Retour au choix des pÃ©riodes</a>";
 	echo " | <a href='javascript: history.go(-1);'>Retour au choix des enseignements</a>";
 	echo "</p>\n";
 
-	echo "<p class='bold'>Choix des élèves&nbsp;:</p>\n";
+	echo "<p class='bold'>Choix des Ã©lÃ¨ves&nbsp;:</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	echo "<input type='hidden' name='choix_periodes' value='$choix_periodes' />\n";
@@ -908,10 +908,10 @@ elseif(!isset($choix_eleves)) {
 
 	echo "<ul style='list-style-type: none;'>\n";
 	echo "<li>\n";
-	echo "<input type='radio' name='choix_eleves' id='choix_eleves_tous' value='tous' onchange='display_div_liste_eleves()' checked /><label for='choix_eleves_tous'> Tous les élèves</label>\n";
+	echo "<input type='radio' name='choix_eleves' id='choix_eleves_tous' value='tous' onchange='display_div_liste_eleves()' checked /><label for='choix_eleves_tous'> Tous les Ã©lÃ¨ves</label>\n";
 	echo "</li>\n";
 	echo "<li>\n";
-	echo "<input type='radio' name='choix_eleves' id='choix_eleves_certains' onchange='display_div_liste_eleves()' value='certains' /><label for='choix_eleves_certains'> Certains élèves seulement</label>\n";
+	echo "<input type='radio' name='choix_eleves' id='choix_eleves_certains' onchange='display_div_liste_eleves()' value='certains' /><label for='choix_eleves_certains'> Certains Ã©lÃ¨ves seulement</label>\n";
 
 	echo "<div id='div_liste_eleves' style='margin-left: 2em;'>\n";
 
@@ -922,7 +922,7 @@ elseif(!isset($choix_eleves)) {
 		$call_eleves=mysql_query($sql);
 		$nombre_ligne=mysql_num_rows($call_eleves);
 		if($nombre_ligne==0) {
-			echo "<p style='color:red;'>Aucun élève n'est inscrit dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
+			echo "<p style='color:red;'>Aucun Ã©lÃ¨ve n'est inscrit dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
 		}
 		else {
 
@@ -930,7 +930,7 @@ elseif(!isset($choix_eleves)) {
 			if($choix_matieres=='certaines') {
 				// Parcours de la liste des groupes
 				// =============
-				// AJOUTER UN TEST... si on a choisi 'certains' enseignements, mais sans aucun enseignement coché
+				// AJOUTER UN TEST... si on a choisi 'certains' enseignements, mais sans aucun enseignement cochÃ©
 				// =============
 				if(isset($_POST['id_groupe_'.$id_classe[$i]])) {
 					$tmp_grp=$_POST['id_groupe_'.$id_classe[$i]];
@@ -944,9 +944,9 @@ elseif(!isset($choix_eleves)) {
 			}
 
 			if($choix_periodes=='certaines') {
-				// Parcours de la liste des périodes
+				// Parcours de la liste des pÃ©riodes
 				// =============
-				// AJOUTER UN TEST... si on a choisi 'certaines' périodes, mais sans aucune période cochée
+				// AJOUTER UN TEST... si on a choisi 'certaines' pÃ©riodes, mais sans aucune pÃ©riode cochÃ©e
 				// =============
 				if(isset($_POST['num_periode_'.$id_classe[$i]])) {
 					$tmp_per=$_POST['num_periode_'.$id_classe[$i]];
@@ -965,7 +965,7 @@ elseif(!isset($choix_eleves)) {
 				echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 	
 				$first_ele[$id_classe[$i]]=$cpt;
-				echo "<table class='boireaus' summary='Classe n°$id_classe[$i]'/>\n";
+				echo "<table class='boireaus' summary='Classe nÂ°$id_classe[$i]'/>\n";
 				echo "<tr>\n";
 				echo "<th colspan='4'>\n";
 				echo "Classe de ".get_class_from_id($id_classe[$i])."\n";
@@ -974,10 +974,10 @@ elseif(!isset($choix_eleves)) {
 	
 				echo "<tr>\n";
 				echo "<th>\n";
-				//echo "Cocher/décocher\n";
-				echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></p>\n";
+				//echo "Cocher/dÃ©cocher\n";
+				echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a></p>\n";
 				echo "</th>\n";
-				echo "<th>Elève</th>\n";
+				echo "<th>ElÃ¨ve</th>\n";
 				echo "<th>Sexe</th>\n";
 				echo "<th>Naissance</th>\n";
 				echo "</tr>\n";
@@ -1009,7 +1009,7 @@ elseif(!isset($choix_eleves)) {
 		echo "<br />\n";
 	}
 
-	echo "<p><a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a>  tous les élèves</p>\n";
+	echo "<p><a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>dÃ©cocher</a>  tous les Ã©lÃ¨ves</p>\n";
 
 	echo "</div>\n";
 
@@ -1079,15 +1079,15 @@ elseif(!isset($choix_eleves)) {
 }
 elseif(!isset($choix_donnees)) {
 
-	// Anonymat souhaité
+	// Anonymat souhaitÃ©
 
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes</a>";
-	echo " | <a href='javascript: history.go(-3);'>Retour au choix des périodes</a>";
+	echo " | <a href='javascript: history.go(-3);'>Retour au choix des pÃ©riodes</a>";
 	echo " | <a href='javascript: history.go(-2);'>Retour au choix des enseignements</a>";
-	echo " | <a href='javascript: history.go(-1);'>Retour au choix des élèves</a>";
+	echo " | <a href='javascript: history.go(-1);'>Retour au choix des Ã©lÃ¨ves</a>";
 	echo "</p>\n";
 
-	echo "<p class='bold'>Choix des données à exporter&nbsp;:</p>\n";
+	echo "<p class='bold'>Choix des donnÃ©es Ã  exporter&nbsp;:</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	echo "<input type='hidden' name='choix_periodes' value='$choix_periodes' />\n";
@@ -1102,7 +1102,7 @@ elseif(!isset($choix_donnees)) {
 			// Parcours de la liste des groupes
 			if(isset($_POST['id_groupe_'.$id_classe[$i]])) {
 // =============
-// AJOUTER UN TEST... si on a choisi 'certains' enseignements, mais sans aucun enseignement coché
+// AJOUTER UN TEST... si on a choisi 'certains' enseignements, mais sans aucun enseignement cochÃ©
 // =============
 				$tmp_grp=$_POST['id_groupe_'.$id_classe[$i]];
 				for($loop=0;$loop<count($tmp_grp);$loop++) {
@@ -1112,10 +1112,10 @@ elseif(!isset($choix_donnees)) {
 		}
 
 		if($choix_periodes=='certaines') {
-			// Parcours de la liste des périodes
+			// Parcours de la liste des pÃ©riodes
 			if(isset($_POST['num_periode_'.$id_classe[$i]])) {
 // =============
-// AJOUTER UN TEST... si on a choisi 'certaines' périodes, mais sans aucune période cochée
+// AJOUTER UN TEST... si on a choisi 'certaines' pÃ©riodes, mais sans aucune pÃ©riode cochÃ©e
 // =============
 				$tmp_per=$_POST['num_periode_'.$id_classe[$i]];
 				for($loop=0;$loop<$max_per;$loop++) {
@@ -1127,7 +1127,7 @@ elseif(!isset($choix_donnees)) {
 		}
 
 		if($choix_eleves=='certains') {
-			// Parcours de la liste des périodes
+			// Parcours de la liste des pÃ©riodes
 			if(isset($_POST['login_eleve_'.$id_classe[$i]])) {
 // =============
 // AJOUTER UN TEST...
@@ -1141,15 +1141,15 @@ elseif(!isset($choix_donnees)) {
 	}
 
 	$tab_champ_eleve=array('login', 'ele_id', 'elenoet', 'no_gep', 'nom', 'prenom', 'sexe', 'naissance', 'note', 'app');
-	$tab_descr_champ_eleve=array('Login', 'Identifiant ele_id', 'Identifiant elenoet', 'Identifiant national (INE)', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Moyenne du bulletin', 'Appréciation du bulletin');
+	$tab_descr_champ_eleve=array('Login', 'Identifiant ele_id', 'Identifiant elenoet', 'Identifiant national (INE)', 'Nom', 'PrÃ©nom', 'Sexe', 'Date de naissance', 'Moyenne du bulletin', 'ApprÃ©ciation du bulletin');
 	$tab_incl_champ_eleve=array('sexe', 'naissance', 'note', 'app');
 
 	echo "<div style='float:left; width:30%'>\n";
-	echo "<table class='boireaus' summary='Données élève à inclure'>\n";
+	echo "<table class='boireaus' summary='DonnÃ©es Ã©lÃ¨ve Ã  inclure'>\n";
 	echo "<tr>\n";
 	echo "<th>\n";
 	echo "</th>\n";
-	echo "<th>Données élève à inclure</th>\n";
+	echo "<th>DonnÃ©es Ã©lÃ¨ve Ã  inclure</th>\n";
 	echo "</tr>\n";
 
 	$alt=1;
@@ -1166,16 +1166,16 @@ elseif(!isset($choix_donnees)) {
 	echo "</div>\n";
 
 	$tab_champ_autre=array('id_classe', 'classe', 'id_groupe', 'nom_groupe', 'matiere', 'matiere_nom_complet');
-	$tab_descr_champ_autre=array('Identifiant de classe', 'Nom de classe', 'Identifiant de groupe', 'Nom de groupe', 'Nom court de matière', 'Nom long de matière');
+	$tab_descr_champ_autre=array('Identifiant de classe', 'Nom de classe', 'Identifiant de groupe', 'Nom de groupe', 'Nom court de matiÃ¨re', 'Nom long de matiÃ¨re');
 	//$tab_incl_champ_autre=array('id_classe', 'classe', 'id_groupe', 'nom_groupe', 'matiere', 'matiere_nom_complet');
 	$tab_incl_champ_autre=array('matiere_nom_complet');
 
 	echo "<div style='float:left; width:30%'>\n";
-	echo "<table class='boireaus' summary='Données autres à inclure'>\n";
+	echo "<table class='boireaus' summary='DonnÃ©es autres Ã  inclure'>\n";
 	echo "<tr>\n";
 	echo "<th>\n";
 	echo "</th>\n";
-	echo "<th>Autres données à inclure</th>\n";
+	echo "<th>Autres donnÃ©es Ã  inclure</th>\n";
 	echo "</tr>\n";
 
 	$alt=1;
@@ -1193,15 +1193,15 @@ elseif(!isset($choix_donnees)) {
 
 
 	$tab_champ_enseignant=array('login', 'nom', 'prenom', 'civilite');
-	$tab_descr_champ_enseignant=array('Login', 'Nom', 'Prénom', 'Civilité');
+	$tab_descr_champ_enseignant=array('Login', 'Nom', 'PrÃ©nom', 'CivilitÃ©');
 	$tab_incl_champ_enseignant=array('civilite');
 
 	echo "<div style='float:left; width:30%'>\n";
-	echo "<table class='boireaus' summary='Données enseignant à inclure'>\n";
+	echo "<table class='boireaus' summary='DonnÃ©es enseignant Ã  inclure'>\n";
 	echo "<tr>\n";
 	echo "<th>\n";
 	echo "</th>\n";
-	echo "<th>Données enseignant à inclure</th>\n";
+	echo "<th>DonnÃ©es enseignant Ã  inclure</th>\n";
 	echo "</tr>\n";
 
 	$alt=1;
@@ -1226,11 +1226,11 @@ elseif(!isset($choix_donnees)) {
 	echo "<br />\n";
 
 	echo "<p><i>NOTE&nbsp;:</i></p>
-	<p style='margin-left:3em;'>L'export CSV monolithique a un inconvénient&nbsp;:<br />On ne récupère que le premier professeur dans le cas d'enseignements assurés par plusieurs professeurs pour un même groupe.</p>\n";
+	<p style='margin-left:3em;'>L'export CSV monolithique a un inconvÃ©nient&nbsp;:<br />On ne rÃ©cupÃ¨re que le premier professeur dans le cas d'enseignements assurÃ©s par plusieurs professeurs pour un mÃªme groupe.</p>\n";
 }
 else {
-	// On ne devrait pas arriver là
-	echo "<p style='color:red'>Soit on a envoyé via header() le CSV, soit il faut fournir ici un lien de telechargement depuis temp.</p>\n";
+	// On ne devrait pas arriver lÃ 
+	echo "<p style='color:red'>Soit on a envoyÃ© via header() le CSV, soit il faut fournir ici un lien de telechargement depuis temp.</p>\n";
 
 	if(isset($csv)) {
 		echo "<pre>$csv</pre>";

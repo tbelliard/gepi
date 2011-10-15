@@ -6,37 +6,37 @@
 	echo "</td>\n";
 
 	echo "<td colspan='2' style='border: 1px solid black; text-align:center; font-size:".$fb_titretab."pt;'>\n";
-	echo "NOTE MOYENNE<br />affectée du coefficient";
+	echo "NOTE MOYENNE<br />affectÃ©e du coefficient";
 	echo "</td>\n";
 
 	echo "<td rowspan='3' valign='bottom' width='".$fb_largeur_col_note."%' style='line-height: ".$fb_txttab_lineheight."pt;'>\n";
 	echo "Note<br />moyenne<br />de la<br />classe";
-	//echo "Note<br />moyenne<br />de la<br />classe<br />0 à 20";
+	//echo "Note<br />moyenne<br />de la<br />classe<br />0 Ã  20";
 	echo "</td>\n";
 
 	echo "<td rowspan='3' style='line-height: ".$fb_txttab_lineheight."pt; font-size:".$fb_titretab."pt;' width='".$fb_largeur_col_app."%'>\n";
-	echo "Appréciations des professeurs";
+	echo "ApprÃ©ciations des professeurs";
 	echo "</td>\n";
 
 	echo "</tr>\n";
 	//=====================
 	echo "<tr>\n";
 
-	// La colonne discipline est dans le rowspan de la ligne précédente.
+	// La colonne discipline est dans le rowspan de la ligne prÃ©cÃ©dente.
 
 	//echo "<td style='border: 1px solid black; text-align:center;'>\n";
 	echo "<td colspan='2' style='font-weight:bold; font-size:".$fb_titretab."pt;'>\n";
-	//echo "3ème à option";
-	echo "3ème";
+	//echo "3Ã¨me Ã  option";
+	echo "3Ã¨me";
 	echo "</td>\n";
 
-	// Les colonnes note moyenne de la classe et appréciations des profs sont dans le rowspan de la ligne précédente.
+	// Les colonnes note moyenne de la classe et apprÃ©ciations des profs sont dans le rowspan de la ligne prÃ©cÃ©dente.
 
 	echo "</tr>\n";
 	//=====================
 	echo "<tr>\n";
 
-	// La colonne discipline est dans le rowspan de la ligne précédente.
+	// La colonne discipline est dans le rowspan de la ligne prÃ©cÃ©dente.
 
 	//echo "<td style='border: 1px solid black; text-align:center;'>\n";
 	echo "<td width='".$fb_largeur_col_opt."%' style='font-size:".$fb_titretab."pt;'>\n";
@@ -46,12 +46,12 @@
 	echo "</td>\n";
 
 	echo "<td width='".$fb_largeur_col_opt."%' style='line-height: ".$fb_txttab_lineheight."pt; font-size:".$fb_titretab."pt;'>\n";
-	//echo "A module découverte professionnelle<br />6 heures";
+	//echo "A module dÃ©couverte professionnelle<br />6 heures";
 	//echo $fb_intitule_col[2];
 	echo $tabmatieres["fb_intitule_col"][2];
 	echo "</td>\n";
 
-	// Les colonnes note moyenne de la classe et appréciations des profs sont dans le rowspan de la ligne précédente.
+	// Les colonnes note moyenne de la classe et apprÃ©ciations des profs sont dans le rowspan de la ligne prÃ©cÃ©dente.
 
 	echo "</tr>\n";
 
@@ -105,7 +105,7 @@
 
 				// Discipline
 				//echo "<td style='border: 1px solid black; text-align:left;'>\n";
-				// Les trois colonnes du colspan='3' servent à couvrir les découpages de colonnes sur les lignes B2i,...
+				// Les trois colonnes du colspan='3' servent Ã  couvrir les dÃ©coupages de colonnes sur les lignes B2i,...
 				echo "<td colspan='4' style='font-size:".$fb_textetab."pt;'";
 				//if($tabmatieres[$j][-1]=='PTSUP'){
 				//	echo " rowspan='2'";
@@ -117,8 +117,8 @@
 				if(!isset($tabmatieres[$j]["lig_speciale"])) {
 
 					/*
-					// Il n'y a pas d'option facultative en série PROFESSIONNELLE
-					// ET la langue vivante correspond à une lig_speciale
+					// Il n'y a pas d'option facultative en sÃ©rie PROFESSIONNELLE
+					// ET la langue vivante correspond Ã  une lig_speciale
 
 					//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
 					//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
@@ -144,7 +144,7 @@
 							$lignes_opt_facultative_alternative.="<td>&nbsp;</td>\n";
 						}
 						elseif($type_brevet==1) {
-							$lignes_opt_facultative_alternative.="Latin ou grec<br />ou découverte professionnelle 3 h\n";
+							$lignes_opt_facultative_alternative.="Latin ou grec<br />ou dÃ©couverte professionnelle 3 h\n";
 							$lignes_opt_facultative_alternative.="</p></td>\n";
 							$lignes_opt_facultative_alternative.="<td>&nbsp;</td>\n";
 							$lignes_opt_facultative_alternative.="<td style='background-color:lightgrey;'>&nbsp;</td>\n";
@@ -154,7 +154,7 @@
 						$lignes_opt_facultative_alternative.="</tr>\n";
 
 						if($type_brevet==1) {
-							// Pour le brevet COLLEGE DP6, on insère la ligne alternative correspondant au brevet COLLEGE série LV2
+							// Pour le brevet COLLEGE DP6, on insÃ¨re la ligne alternative correspondant au brevet COLLEGE sÃ©rie LV2
 							echo $lignes_opt_facultative_alternative;
 						}
 
@@ -176,7 +176,7 @@
 						echo "$nom_opt";
 
 						// ==============================
-						// recherche de la matière facultative pour l'élève
+						// recherche de la matiÃ¨re facultative pour l'Ã©lÃ¨ve
 						//$sql_mat_fac="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 						$sql_mat_fac="SELECT m.nom_complet AS matiere FROM notanet n, matieres m WHERE n.login='$lig1->login' AND n.id_classe='$id_classe[$i]' AND n.notanet_mat='".$tabmatieres[$j][0]."' AND m.matiere=n.matiere";
 						$res_mat_fac=mysql_query($sql_mat_fac);
@@ -199,7 +199,7 @@
 						echo ucfirst(strtolower($tabmatieres[$j][0]))." : ";
 
 						// ==============================
-						// recherche de la langue vivante pour l'élève
+						// recherche de la langue vivante pour l'Ã©lÃ¨ve
 						//$sql_mat_fac="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 						$sql_mat_lv="SELECT m.nom_complet AS matiere FROM notanet n, matieres m WHERE n.login='$lig1->login' AND n.id_classe='$id_classe[$i]' AND n.notanet_mat='".$tabmatieres[$j][0]."' AND m.matiere=n.matiere";
 						$res_mat_lv=mysql_query($sql_mat_lv);
@@ -225,7 +225,7 @@
 
 
 
-				// EXTRACTION POUR LA(ES) COLONNE(S) "NOTE MOYENNE affectée du coefficient"
+				// EXTRACTION POUR LA(ES) COLONNE(S) "NOTE MOYENNE affectÃ©e du coefficient"
 				$valeur_tmp="&nbsp;";
 				//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 				$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
@@ -243,7 +243,7 @@
 						}
 						else{
 						*/
-						// Le cas PTSUP est calculé plus loin
+						// Le cas PTSUP est calculÃ© plus loin
 						if($tabmatieres[$j][-1]!='PTSUP'){
 							//$TOTAL+=$lig_note->note;
 							$TOTAL+=$valeur_tmp;
@@ -299,13 +299,13 @@
 
 
 
-				// COLONNE série LV2
+				// COLONNE sÃ©rie LV2
 				echo "<td ";
 				//echo "style='border: 1px solid black; text-align:right;'>\n";
 				/*
 				if($tabmatieres[$j][-1]=='PTSUP'){
 					echo "style='border: 1px solid black; text-align:center;'>\n";
-					echo "<b>Points > à 10</b>";
+					echo "<b>Points > Ã  10</b>";
 				}
 				else{
 				*/
@@ -340,7 +340,7 @@
 					}
 					else{
 						echo " text-align:right;";
-						//if (strtolower($tabmatieres[$j][0])=='découverte professionnelle 6 heures') {echo " background-color:lightgrey;";}
+						//if (strtolower($tabmatieres[$j][0])=='dÃ©couverte professionnelle 6 heures') {echo " background-color:lightgrey;";}
 						if($tabmatieres[$j]['fb_col'][1]=="X") {
 							echo " background-color:lightgrey;";
 						}
@@ -351,7 +351,7 @@
 					//$nb=$tabmatieres[$j][-2]*20;
 					//echo " / $nb";
 					//if($tabmatieres[$j][-1]!='PTSUP'){
-					if(($tabmatieres[$j][-1]!='PTSUP')&&(strtolower($tabmatieres[$j][0])!='découverte professionnelle 6 heures')) {
+					if(($tabmatieres[$j][-1]!='PTSUP')&&(strtolower($tabmatieres[$j][0])!='dÃ©couverte professionnelle 6 heures')) {
 						if($tabmatieres[$j]['fb_col'][1]!="X"){
 							if(($temoin_note_non_numerique=="n")||($num_fb_col==2)) {
 								echo " / ".$tabmatieres[$j]['fb_col'][1];
@@ -367,20 +367,20 @@
 				echo "</td>\n";
 
 
-				// COLONNE série DP6
+				// COLONNE sÃ©rie DP6
 				//echo "style='border: 1px solid black; text-align:center;'>\n";
 				echo "<td ";
 				/*
 				if($tabmatieres[$j][-1]=='PTSUP'){
 					echo "style='border: 1px solid black; text-align:center;'>\n";
-					echo "<b>Points > à 10</b>";
+					echo "<b>Points > Ã  10</b>";
 				}
 				else{
 				*/
 					/*
 					echo "style='border: 1px solid black; text-align:right;'>\n";
-					// TRICHE... Mon dispositif ne permet pas de gérer correctement ce double affichage
-					// Il faudrait /40 pour la 2è LV ou découverte professionnelle 6H.
+					// TRICHE... Mon dispositif ne permet pas de gÃ©rer correctement ce double affichage
+					// Il faudrait /40 pour la 2Ã¨ LV ou dÃ©couverte professionnelle 6H.
 					if($tabmatieres[$j][0]=='DEUXIEME LANGUE VIVANTE'){
 						echo " / 40";
 					}
@@ -457,7 +457,7 @@
 
 
 
-				// Appréciation
+				// ApprÃ©ciation
 				echo "<td ";
 				//echo "style='border: 1px solid black; text-align:center;'>\n";
 				echo "style='border: 1px solid black; text-align:left; font-size:".$fb_textetab."pt;'>\n";
@@ -498,8 +498,8 @@
 		}
 		else{
 
-			// Cas de la série professionnelle sans option de série:
-			// Il faut quand même ajouter l'option alternative pour la série professionnelle avec option DP6h
+			// Cas de la sÃ©rie professionnelle sans option de sÃ©rie:
+			// Il faut quand mÃªme ajouter l'option alternative pour la sÃ©rie professionnelle avec option DP6h
 			if(isset($tabmatieres[$j]['fb_lig_alt'])) {
 				echo "<tr>\n";
 
@@ -600,7 +600,7 @@
 		echo "</td>\n";
 
 
-		// Colonne Appréciations
+		// Colonne ApprÃ©ciations
 		echo "<td style='border: 1px solid black; text-align:center;'>\n";
 		echo "&nbsp;";
 		echo "</td>\n";
@@ -608,7 +608,7 @@
 		echo "</tr>\n";
 
 		$num_lig=0;
-		// On repasse en revue toutes les matières en ne retenant que celles qui sont NOTNONCA
+		// On repasse en revue toutes les matiÃ¨res en ne retenant que celles qui sont NOTNONCA
 		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			//if($tabmatieres[$j][0]!=''){
 			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-1]=='NOTNONCA')){
@@ -652,7 +652,7 @@
 					echo "</td>\n";
 					*/
 
-					// Moyenne de l'élève
+					// Moyenne de l'Ã©lÃ¨ve
 					//echo "<td style='border: 1px solid black; text-align:center;'>\n";
 					//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 					$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
@@ -666,12 +666,12 @@
 					}
 					//echo "</td>\n";
 
-					// Appréciation
+					// ApprÃ©ciation
 					//echo "<td style='border: 1px solid black; text-align:center;'>\n";
 					//echo "&nbsp;";
 					//echo "</td>\n";
 
-					// Colonne total des lignes calculées (non NOTNONCA)...
+					// Colonne total des lignes calculÃ©es (non NOTNONCA)...
 					if($num_lig==0){
 						$nb_info=$temoin_NOTNONCA;
 
@@ -716,7 +716,7 @@
 					}
 					*/
 
-					// Appréciation
+					// ApprÃ©ciation
 					echo "<td ";
 					//style='border: 1px solid black; text-align:center;'>\n";
 					//echo "&nbsp;";
@@ -755,8 +755,8 @@
 					echo "</tr>\n";
 				}
 				else{
-					// Matière 'non dispensee dans l etablissement'
-					// On affiche seulement les intitulés et le total des barèmes...
+					// MatiÃ¨re 'non dispensee dans l etablissement'
+					// On affiche seulement les intitulÃ©s et le total des barÃ¨mes...
 					echo "<tr>\n";
 
 					echo "<td colsapn='4' style='border: 1px solid black; text-align:left; font-size:".$fb_textetab."pt;'>\n";
@@ -832,7 +832,7 @@
 						//$num_lig++;
 					}
 
-					// Appréciation
+					// ApprÃ©ciation
 					echo "<td style='border: 1px solid black; text-align:center;'>\n";
 					echo "&nbsp;";
 					echo "</td>\n";

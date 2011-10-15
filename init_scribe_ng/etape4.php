@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. OrlÃ©ans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -45,7 +45,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des enseignants";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des enseignants";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -62,7 +62,7 @@ if ($_POST['step'] == "4") {
 
     // Si on a bien les donnees dans la session, on peut continuer
     /*
-     * Recherche de tous les profs de l'établissement (pour ce RNE)
+     * Recherche de tous les profs de l'Ã©tablissement (pour ce RNE)
     */
     $profs = $ldap->get_all_profs();
     $nb_profs = $profs['count'];
@@ -72,7 +72,7 @@ if ($_POST['step'] == "4") {
     * Ajout des profs
     */
 
-    // Infos nécessaires pour le prof
+    // Infos nÃ©cessaires pour le prof
     $nom_complet = '';
     $uid_as_login = '';
     $mail = '';
@@ -88,8 +88,8 @@ if ($_POST['step'] == "4") {
         // On test si l'uid est deja connu de GEPI
         $compte_utilisateur_prof = UtilisateurProfessionnelPeer::retrieveByPK($uid_as_login);
         if ($compte_utilisateur_prof != null) {
-            // Un prof ayant cet UID existe deja : soit c'est le même, on ne touche pas
-            // Soit c'est un prof différent qui a cet uid
+            // Un prof ayant cet UID existe deja : soit c'est le mÃªme, on ne touche pas
+            // Soit c'est un prof diffÃ©rent qui a cet uid
             echo "le professeur "
             .$compte_utilisateur_prof->getPrenom()
             .$compte_utilisateur_prof->getNom()
@@ -110,7 +110,7 @@ if ($_POST['step'] == "4") {
             $new_compte_utilisateur->save();
         }
 
-        // Insertion de sa qualité de prof principal si c'est le cas
+        // Insertion de sa qualitÃ© de prof principal si c'est le cas
         if ($profs[$cpt]['typeadmin'][0] == 2) {
         
           for($cl=0; $cl<count($profs[$cpt]['divcod']); $cl++) {
@@ -146,9 +146,9 @@ if ($_POST['step'] == "4") {
         }
     } // fin parcours de tous les profs
         /*
-         * Résumé des profs trouvés :
+         * RÃ©sumÃ© des profs trouvÃ©s :
          */
-    echo "<br/><br/>Professeurs trouvés : $nb_profs"."<br/><br/>";
+    echo "<br/><br/>Professeurs trouvÃ©s : $nb_profs"."<br/><br/>";
 
     echo "<form enctype='multipart/form-data' action='etape5.php' method=post>";
 	//echo add_token_field();
@@ -167,7 +167,7 @@ else {
     echo "<form enctype='multipart/form-data' action='etape4.php' method=post>";
 	echo add_token_field();
     echo "<input type=hidden name='step' value='4'>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
     echo "<br>";
 

@@ -34,8 +34,8 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_ooo/retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : retenue', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Modèle Ooo : Retenue', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_ooo/retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : retenue', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/retenue.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'ModÃ¨le Ooo : Retenue', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
@@ -54,11 +54,11 @@ include_once('../mod_discipline/sanctions_func_lib.php'); // la librairie de fon
 //debug_var();
 
 //
-// Zone de traitement des données qui seront fusionnées au modèle
-// Chacune correspond à une variable définie dans le modèle
-// ATTENTION S'il y a des TABLEAUX à TRAITER Voir en BAS DU FICHIER PARTIE TABLEAU (Merge)
+// Zone de traitement des donnÃ©es qui seront fusionnÃ©es au modÃ¨le
+// Chacune correspond Ã  une variable dÃ©finie dans le modÃ¨le
+// ATTENTION S'il y a des TABLEAUX Ã  TRAITER Voir en BAS DU FICHIER PARTIE TABLEAU (Merge)
 //
-//On récupère les coordonnées du collège dans Gepi ==> $gepiSettings['nom_setting']
+//On rÃ©cupÃ¨re les coordonnÃ©es du collÃ¨ge dans Gepi ==> $gepiSettings['nom_setting']
 $ets_anne_scol = $gepiSettings['gepiSchoolName'];
 $ets_nom = $gepiSettings['gepiSchoolName'];
 $ets_adr1 = $gepiSettings['gepiSchoolAdress1'];
@@ -70,13 +70,13 @@ $ets_fax = $gepiSettings['gepiSchoolFax'];
 $ets_email = $gepiSettings['gepiSchoolEmail'];
  
  
-// recupération des parametres
-$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL); // Les informations viennent d'où ? si mode = module_discipline ==> du module discipline
+// recupÃ©ration des parametres
+$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL); // Les informations viennent d'oÃ¹ ? si mode = module_discipline ==> du module discipline
 $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET['id_incident']) ? $_GET['id_incident'] : NULL); 
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL); 
 $id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : (isset($_GET['id_sanction']) ? $_GET['id_sanction'] : NULL); 
 
-//Initialisation des données du modèle Ooo Retenue
+//Initialisation des donnÃ©es du modÃ¨le Ooo Retenue
 $date ='';
 $nom_prenom_eleve ='';
 $classe ='';
@@ -98,7 +98,7 @@ $texte_report='';
 // mode = module_discipline, on vient de la page saisie incident du module discipline
 // mode = module_retenue, on vient de la partie sanction du module discipline et de la sanction : retenue
 if (($mode=='module_discipline')||($mode=='module_retenue')) {
-	// on récupère les données à transmettre au modèle de retenue open office.
+	// on rÃ©cupÃ¨re les donnÃ©es Ã  transmettre au modÃ¨le de retenue open office.
 	$sql_incident="SELECT * FROM `s_incidents` WHERE `id_incident`=$id_incident";
 	$res_incident=mysql_query($sql_incident);
 	if(mysql_num_rows($res_incident)>0) {
@@ -109,14 +109,14 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 		
 		//traitement du motif et du travail
 		$motif = $lig_incident->description;
-		$travail ='Donné sur place'; // texte par défaut, c'est un enseignant qui rédige l'incident, il n'y a pas de possibilité de saisir le travail.
+		$travail ='DonnÃ© sur place'; // texte par dÃ©faut, c'est un enseignant qui rÃ©dige l'incident, il n'y a pas de possibilitÃ© de saisir le travail.
 
 		$nature_incident=$lig_incident->nature;
 
-		// le nom et le prénom de l'élève
+		// le nom et le prÃ©nom de l'Ã©lÃ¨ve
 		$nom_prenom_eleve =p_nom($ele_login,"Pn");
 		
-		// la classe de l'élève
+		// la classe de l'Ã©lÃ¨ve
 		$tmp_tab=get_class_from_ele_login($ele_login);
 		if(isset($tmp_tab['liste'])) {
 			$classe= $tmp_tab['liste'];
@@ -144,7 +144,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			$commune_resp=$lig_resp->commune;
 		}
 
-		//le déclarant On récupère le nom et le prénom (et la qualité)
+		//le dÃ©clarant On rÃ©cupÃ¨re le nom et le prÃ©nom (et la qualitÃ©)
 		$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig_incident->declarant';";
 		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
@@ -182,7 +182,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 	//var retenue
 	$num_incident = $id_incident;
 
-	//On Traite ici la date et l'heure de la retenue posée
+	//On Traite ici la date et l'heure de la retenue posÃ©e
 	if ($mode=='module_retenue') {	
 	     $sql_sanction = "SELECT * FROM `s_retenues` WHERE `id_sanction`=$id_sanction";
 	     $res_sanction=mysql_query($sql_sanction);
@@ -200,27 +200,27 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			$travail = $lig_sanction->travail;
 			$lieu = $lig_sanction->lieu;
 			
-			//recherche de l'heure de début. C'est le crénaux qui est enregistré.
+			//recherche de l'heure de dÃ©but. C'est le crÃ©naux qui est enregistrÃ©.
 			$sql_heure = "SELECT * FROM `edt_creneaux` WHERE `nom_definie_periode`='$lig_sanction->heure_debut'";
 			//echo $sql_heure;
 			$res_heure = mysql_query($sql_heure);
 			if(mysql_num_rows($res_heure)>0) {
 			    $lig_heure=mysql_fetch_object($res_heure); 
 				$h_deb = $lig_heure->heuredebut_definie_periode;
-				//on affiche que les 5 1er caratèeres de l'heure
+				//on affiche que les 5 1er caratÃ¨eres de l'heure
 				$h_deb=substr($h_deb,0,5);
 				//remplacement des : par H dans la chaine
 				$h_deb=str_replace(":","H", $h_deb);
 			} else {
 			  
-			  // LE CRENEAU EST INCONNU on se retrouve dans le cas d'une heure saisie à la main.
+			  // LE CRENEAU EST INCONNU on se retrouve dans le cas d'une heure saisie Ã  la main.
 			  $h_deb = $lig_sanction->heure_debut;
 			}
 
 			//Traitement d'un eventuel report
 			$nb_report=nombre_reports($lig_sanction->id_sanction,0);
 			if ($nb_report<>0) {
-			  $texte_report="REPORT N° ".$nb_report;
+			  $texte_report="REPORT NÂ° ".$nb_report;
 			} else {
 			  $texte_report="";
 			}
@@ -231,7 +231,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 	} // mode = module retenue	
 } //if mode = module discipline  
 
-if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire 
+if ($mode=='formulaire_retenue') { //les donnÃ©e provenant du formulaire 
     if (isset($_SESSION['retenue_date'])) {
         $date = datemysql_to_jj_mois_aaaa($_SESSION['retenue_date'],'/','n');
 	    //session_unregister("retenue_date");
@@ -250,7 +250,7 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 	if (isset($_SESSION['retenue_motif'])) {
 		$motif = $_SESSION['retenue_motif'];
 		$motif=traitement_magic_quotes(corriger_caracteres($motif));
-		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+		// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 		$motif=my_ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
 		//session_unregister("retenue_motif");
 	    unset($_SESSION['retenue_motif']);
@@ -258,7 +258,7 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 	if (isset($_SESSION['retenue_travail'])) {
 		$travail = $_SESSION['retenue_travail'];
 		$travail=traitement_magic_quotes(corriger_caracteres($travail));
-		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+		// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 		$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
 		//session_unregister("retenue_travail");
 	    unset($_SESSION['retenue_travail']);
@@ -277,7 +277,7 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 	if (isset($_SESSION['retenue_nature_incident'])) {
 		$nature_incident = $_SESSION['retenue_nature_incident'];
 		$nature_incident=traitement_magic_quotes(corriger_caracteres($nature_incident));
-		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+		// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 		$nature_incident=my_ereg_replace('(\\\r\\\n)+',"\r\n",$nature_incident);
 		// session_unregister("retenue_nature_incident");
 	    unset($_SESSION['retenue_nature_incident']);
@@ -298,18 +298,18 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 
 //$nature_incident='Scrogneugneu';
 
-// Quand on génère la retenue par le module Modèle OpenOffice, la $nature_incident n'est pas récupérée.
-// Elle ne l'est que si on génère la retenue depuis le module Discipline
+// Quand on gÃ©nÃ¨re la retenue par le module ModÃ¨le OpenOffice, la $nature_incident n'est pas rÃ©cupÃ©rÃ©e.
+// Elle ne l'est que si on gÃ©nÃ¨re la retenue depuis le module Discipline
 if(!isset($nature_incident)) {$nature_incident="";}
 
 //
-// Fin zone de traitement Les données qui seront fusionnées au modèle
+// Fin zone de traitement Les donnÃ©es qui seront fusionnÃ©es au modÃ¨le
 //
 
 //
-//Les variables à modifier pour le traitement  du modèle ooo
+//Les variables Ã  modifier pour le traitement  du modÃ¨le ooo
 //
-//Le chemin et le nom du fichier ooo à traiter (le modèle de document)
+//Le chemin et le nom du fichier ooo Ã  traiter (le modÃ¨le de document)
 $nom_fichier_modele_ooo ='retenue.odt';
 // Par defaut tmp
 $nom_dossier_temporaire ='tmp';
@@ -317,19 +317,19 @@ $nom_dossier_temporaire ='tmp';
 $nom_fichier_xml_a_traiter ='content.xml';
 
 
-//Procédure du traitement à effectuer
-//les chemins contenant les données
+//ProcÃ©dure du traitement Ã  effectuer
+//les chemins contenant les donnÃ©es
 include_once ("./lib/chemin.inc.php");
 
 
 // instantiate a TBS OOo class
 $OOo = new clsTinyButStrongOOo;
 // setting the object
-$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
+$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier oÃ¹ se fait le traitement (dÃ©compression / traitement / compression)
 // create a new openoffice document from the template with an unique id 
-$OOo->NewDocFromTpl($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+$OOo->NewDocFromTpl($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiquÃ© Ã  partir de l'emplacement de ce fichier
 // merge data with openoffice file named 'content.xml'
-$OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
+$OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit Ãªtre parsÃ© (il sera extrait)
 
 // Traitement des tableaux si necessaire
 //$OOo->MergeBlock('blk1',$array_type1) ;
@@ -340,11 +340,11 @@ $OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les 
 $OOo->SaveXmlToDoc(); //traitement du fichier extrait
 
 
-//Génération du nom du fichier
+//GÃ©nÃ©ration du nom du fichier
 $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
-//$nom_fic = $nom_fichier_modele[0]."_".$classe."_".$nom_prenom_eleve."_généré_le_".$now.".".$nom_fichier_modele[1];
-$nom_fic = remplace_accents($nom_fichier_modele[0]."_".$classe."_".$nom_prenom_eleve."_généré_le_".$now.".".$nom_fichier_modele[1],'all');
+//$nom_fic = $nom_fichier_modele[0]."_".$classe."_".$nom_prenom_eleve."_gÃ©nÃ©rÃ©_le_".$now.".".$nom_fichier_modele[1];
+$nom_fic = remplace_accents($nom_fichier_modele[0]."_".$classe."_".$nom_prenom_eleve."_gÃ©nÃ©rÃ©_le_".$now.".".$nom_fichier_modele[1],'all');
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
 
@@ -360,7 +360,7 @@ if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 // display
 header('Content-type: '.$OOo->GetMimetypeDoc());
 header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
-$OOo->FlushDoc(); //envoi du fichier traité
+$OOo->FlushDoc(); //envoi du fichier traitÃ©
 $OOo->RemoveDoc(); //suppression des fichiers de travail
 // Fin de traitement des tableaux
 

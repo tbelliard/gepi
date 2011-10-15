@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,16 +52,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_saisie = isset($_POST["id_saisie"]) ? $_POST["id_saisie"] :(isset($_GET["id_saisie"]) ? $_GET["id_saisie"] :NULL);
 $date_debut = isset($_POST["date_debut"]) ? $_POST["date_debut"] :(isset($_GET["date_debut"]) ? $_GET["date_debut"] :NULL);
 $date_fin = isset($_POST["date_fin"]) ? $_POST["date_fin"] :(isset($_GET["date_fin"]) ? $_GET["date_fin"] :NULL);
@@ -71,7 +71,7 @@ $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["m
 $message_enregistrement = '';
 $saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($id_saisie);
 if ($saisie == null) {
-    $message_enregistrement .= 'Modification impossible : saisie non trouvée.';
+    $message_enregistrement .= 'Modification impossible : saisie non trouvÃ©e.';
     include("visu_saisie.php");
     die();
 }
@@ -91,18 +91,18 @@ if ( isset($_POST["creation_traitement"])) {
 } elseif ( isset($_POST["modifier_type"])) {
     $message_enregistrement .= modif_type($saisie, $utilisateur);
     if ($message_enregistrement == '') {
-	$message_enregistrement = 'Modification du type enregistrée';
+	$message_enregistrement = 'Modification du type enregistrÃ©e';
     }
     include("visu_saisie.php");
     die();
 } elseif (isset($_GET["version"])) {
 	if ($utilisateur->getStatut() != 'cpe' && $utilisateur->getStatut() != 'scolarite') {
-	    $message_enregistrement .= 'Modification non autorisée.';
+	    $message_enregistrement .= 'Modification non autorisÃ©e.';
 	    include("visu_saisie.php");
 	    die();
 	}
         if ($saisie->getDeletedAt() != null) {
-        $message_enregistrement .= 'Cette saisie est supprimée. Vous devez la restaurer pour la modifier.';
+        $message_enregistrement .= 'Cette saisie est supprimÃ©e. Vous devez la restaurer pour la modifier.';
         include("visu_saisie.php");
         die();
         }
@@ -121,7 +121,7 @@ if ( isset($_POST["creation_traitement"])) {
 		|| ($utilisateur->getStatut() == 'professeur' && $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey()) ) {
 			//ok
 	} else {
-	    $message_enregistrement .= 'Modification non autorisée.';
+	    $message_enregistrement .= 'Modification non autorisÃ©e.';
 	    include("visu_saisie.php");
 	    die();
 	}
@@ -138,17 +138,17 @@ if ( isset($_POST["creation_traitement"])) {
 
 
 //la saisie est-elle modifiable ?
-//Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session si c'est un prof,
-//elle date de moins d'une heure et l'option a ete coché partie admin
+//Une saisie est modifiable ssi : elle appartient Ã  l'utilisateur de la session si c'est un prof,
+//elle date de moins d'une heure et l'option a ete cochÃ© partie admin
 if ($utilisateur->getStatut() == 'professeur') {
 	if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || $saisie->getUtilisateurId() != $utilisateur->getPrimaryKey() || $saisie->getVersionCreatedAt('U') < (time() - 3600)) {
-	    $message_enregistrement .= 'Modification non autorisée.';
+	    $message_enregistrement .= 'Modification non autorisÃ©e.';
 	    include("visu_saisie.php");
 	    die();	
 	}
 } else {
 	if ($utilisateur->getStatut() != 'cpe' && $utilisateur->getStatut() != 'scolarite') {
-	    $message_enregistrement .= 'Modification non autorisée.';
+	    $message_enregistrement .= 'Modification non autorisÃ©e.';
 	    include("visu_saisie.php");
 	    die();
 	}
@@ -164,14 +164,14 @@ $jours_actuel = date('d/m/Y');
 if ($utilisateur->getStatut() == 'professeur') {
     if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
 	if ($date_debut->format('d/m/Y') != $jours_actuel) {
-	    $message_enregistrement .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
+	    $message_enregistrement .= "Saisie d'une date differente de la date courante non autorisÃ©e.<br/>";
 	    include("visu_saisie.php");
 	    die();
 	}
     }
     if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
        if ($saisie->getEdtCreneau() == null || $saisie->getEdtCreneau()->getHeuredebutDefiniePeriode('Hi') > $date_debut->format('Hi')) {
-	    $message_enregistrement .= "Saisie hors creneau actuel non autorisée.<br/>";
+	    $message_enregistrement .= "Saisie hors creneau actuel non autorisÃ©e.<br/>";
 	    include("visu_saisie.php");
 	    die();
        }
@@ -185,14 +185,14 @@ $date_fin->setTime($heure_fin->format('H'), $heure_fin->format('i'));
 if ($utilisateur->getStatut() == 'professeur') {
     if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
 	if ($date_fin->format('d/m/Y') != $jours_actuel) {
-	    $message_enregistrement .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
+	    $message_enregistrement .= "Saisie d'une date differente de la date courante non autorisÃ©e.<br/>";
 	    include("visu_saisie.php");
 	    die();
 	}
     }
     if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
        if ($saisie->getEdtCreneau() == null || $saisie->getEdtCreneau()->getHeurefinDefiniePeriode('Hi') < $date_fin->format('Hi')) {
-	    $message_enregistrement .= "Saisie hors creneau actuel non autorisée.<br/>";
+	    $message_enregistrement .= "Saisie hors creneau actuel non autorisÃ©e.<br/>";
 	    include("visu_saisie.php");
 	    die();
        }
@@ -204,7 +204,7 @@ modif_type($saisie, $utilisateur);
 
 if ($saisie->validate()) {
     $saisie->save();
-    $message_enregistrement .= 'Modification enregistrée';
+    $message_enregistrement .= 'Modification enregistrÃ©e';
     if ($saisie->getEleve() != null) {
     	$saisie->getEleve()->clearAbsenceEleveSaisiesParJour();
     	$saisie->getEleve()->clearAbsenceEleveSaisies();
@@ -237,7 +237,7 @@ function modif_type ($saisie, $utilisateur) {
 	    continue;
 	}
 
-	//il faut trouver le traitement corespondant à l'id
+	//il faut trouver le traitement corespondant Ã  l'id
 	$criteria = new Criteria();
 	$criteria->add(AbsenceEleveTraitementPeer::ID, $_POST['id_traitement'][$i]);
 	$traitement = $saisie->getAbsenceEleveTraitements($criteria);
@@ -257,7 +257,7 @@ function modif_type ($saisie, $utilisateur) {
 	    continue;
 	}
 	if (!$type->isStatutAutorise($utilisateur->getStatut())) {
-	    $message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
+	    $message_enregistrement .= "Type d'absence non autorisÃ© pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    continue;
 	}
 	$traitement->getFirst()->setAbsenceEleveType($type);
@@ -269,7 +269,7 @@ function modif_type ($saisie, $utilisateur) {
 	$type = AbsenceEleveTypeQuery::create()->findPk($ajout_type_absence);
 	if ($type != null) {
 	    if ($type->isStatutAutorise($utilisateur->getStatut())) {
-		//on va creer un traitement avec le type d'absence associé
+		//on va creer un traitement avec le type d'absence associÃ©
 		$traitement = new AbsenceEleveTraitement();
 		$traitement->addAbsenceEleveSaisie($saisie);
 		$traitement->setAbsenceEleveType($type);
@@ -277,13 +277,13 @@ function modif_type ($saisie, $utilisateur) {
 		$traitement->save();
 		$saisie->addAbsenceEleveTraitement($traitement);
 	    } else {
-		$message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
+		$message_enregistrement .= "Type d'absence non autorisÃ© pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
 	} else {
 	    $message_enregistrement .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	}
     } else if ($ajout_type_absence == -1) {
-	$message_enregistrement .= "Il faut préciser un type<br/>";
+	$message_enregistrement .= "Il faut prÃ©ciser un type<br/>";
     }
 
     return $message_enregistrement;

@@ -60,11 +60,11 @@ die();
 $titre_page = "Aide en ligne";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<p>Le tableau suivant indique quelles fonctions de GEPI sont accessibles aux utilisateurs connectés selon leur statut (administrateur, professeur, C.P.E., scolarité, ou secours).";
-echo "<br />Le symbole * signale que l'accès à la fonction est configurable.<br /><br />";
-echo "<b>Astuce</b> : Le statut visiteur n'existe pas dans GEPI. Mais on obtient un résultat équivalent en affectant à un utilisateur le statut professeur sans affectation de matières ni de classe.<br /><br /></p>";
+echo "<p>Le tableau suivant indique quelles fonctions de GEPI sont accessibles aux utilisateurs connectÃ©s selon leur statut (administrateur, professeur, C.P.E., scolaritÃ©, ou secours).";
+echo "<br />Le symbole * signale que l'accÃ¨s Ã  la fonction est configurable.<br /><br />";
+echo "<b>Astuce</b> : Le statut visiteur n'existe pas dans GEPI. Mais on obtient un rÃ©sultat Ã©quivalent en affectant Ã  un utilisateur le statut professeur sans affectation de matiÃ¨res ni de classe.<br /><br /></p>";
 if (!isset($_GET['order_by'])) $order_by = "description"; else $order_by = $_GET['order_by']." ".$_GET['order'];
-echo "<table cellpadding=2 cellspacing=0 border=0><tr><td><b><a href='help.php?order_by=description&order='>Description</a></b></td><td><b><a href='help.php?order_by=administrateur&order=DESC'>Administrateur</a></b></td><td><b><a href='help.php?order_by=professeur&order=DESC'>Professeur</a></b></td><td><b><a href='help.php?order_by=cpe&order=DESC'>C.P.E.</a></b></td><td><b><a href='help.php?order_by=scolarite&order=DESC'>Scolarité</a></b></td><td><b><a href='help.php?order_by=secours&order=DESC'>Secours</a></b></td></tr>";
+echo "<table cellpadding=2 cellspacing=0 border=0><tr><td><b><a href='help.php?order_by=description&order='>Description</a></b></td><td><b><a href='help.php?order_by=administrateur&order=DESC'>Administrateur</a></b></td><td><b><a href='help.php?order_by=professeur&order=DESC'>Professeur</a></b></td><td><b><a href='help.php?order_by=cpe&order=DESC'>C.P.E.</a></b></td><td><b><a href='help.php?order_by=scolarite&order=DESC'>ScolaritÃ©</a></b></td><td><b><a href='help.php?order_by=secours&order=DESC'>Secours</a></b></td></tr>";
 $sql = "select distinct description, administrateur, professeur, cpe, scolarite, secours, statut  from droits where description != '' group by description order by ".$order_by."";
 $flag = 1;
 $res = sql_query($sql);

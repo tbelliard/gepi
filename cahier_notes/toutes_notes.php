@@ -38,14 +38,14 @@ if (!checkAccess()) {
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 //Initialisation pour le pdf
 $w_pdf=array();
-$w1 = "i"; //largeur de la première colonne
+$w1 = "i"; //largeur de la premiÃ¨re colonne
 $w2 = "n"; // largeur des colonnes "notes"
 $w3 = "c"; // largeur des colonnes "commentaires"
 
@@ -68,7 +68,7 @@ $nom_classe = $current_group["classlist_string"];
 include "../lib/periodes.inc.php";
 
 //**************** EN-TETE *****************
-$titre_page = "Visualisation de toutes les notes de l'année";
+$titre_page = "Visualisation de toutes les notes de l'annÃ©e";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -93,7 +93,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
 	}
 
-	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matiÃ¨re");
 
 	if(!empty($tab_groups)) {
 
@@ -169,25 +169,25 @@ echo "</form>\n";
 echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["description"] . "</b></p>\n";
 
 
-// Couleurs utilisées
+// Couleurs utilisÃ©es
 $couleur_devoirs = '#AAE6AA';
 $couleur_moy_cont = '#96C8F0';
 $couleur_moy_sous_cont = '#FAFABE';
 $couleur_calcul_moy = '#AAAAE6';
 
-// Calcul du nombre de periodes à afficher : $nb_cahier_note
+// Calcul du nombre de periodes Ã  afficher : $nb_cahier_note
 $appel_cahier_notes = mysql_query("SELECT periode, id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe') ORDER BY periode");
 $nb_cahier_note = mysql_num_rows($appel_cahier_notes);
 
 if ($nb_cahier_note == 0) {
-   echo "<p class='grand'>Aucune données à afficher !</p>\n";
+   echo "<p class='grand'>Aucune donnÃ©es Ã  afficher !</p>\n";
    echo "</div>\n";
    echo "</body></html>";
    die();
 }
 
 
-// Déclaration des tableaux
+// DÃ©claration des tableaux
 $nb_dev  = array();
 $id_sous_cont  = array();
 $nom_sous_cont = array();
@@ -214,22 +214,22 @@ while ($num_per < $nb_cahier_note) {
     $periode_num = mysql_result($appel_cahier_notes , $num_per, 'periode');
     $nom_periode[$num_per] = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
-    // On teste si les cahiers de notes appartiennent bien à la personne connectée
+    // On teste si les cahiers de notes appartiennent bien Ã  la personne connectÃ©e
     if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_conteneur[$num_per]))) {
-        $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+        $mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes qui ne vous appartient pas !");
         header("Location: index.php?msg=$mess");
         die();
     }
     //
-    // Détermination des sous-conteneurs
+    // DÃ©termination des sous-conteneurs
     //
     $nb_sous_cont[$num_per] = $nb_sous_cont[$num_per-1];
     sous_conteneurs($id_conteneur[$num_per],$nb_sous_cont[$num_per],$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
 
-    // Détermination du nombre de devoirs à afficher
+    // DÃ©termination du nombre de devoirs Ã  afficher
     $appel_dev = mysql_query("select * from cn_devoirs where (id_conteneur='".$id_conteneur[$num_per]."' and id_racine='".$id_conteneur[$num_per]."') order by date");
     $nb_dev[$num_per]  = $nb_dev[$num_per-1] + mysql_num_rows($appel_dev);
-    // Détermination des noms et identificateurs des devoirs
+    // DÃ©termination des noms et identificateurs des devoirs
     $k=0;
     for ($j = $nb_dev[$num_per-1]; $j < $nb_dev[$num_per]; $j++) {
         $nom_dev[$j] = mysql_result($appel_dev, $k, 'nom_court');
@@ -295,11 +295,11 @@ foreach ($current_group["eleves"]["all"]["list"] as $_login) {
 //
 echo "<table summary='Toutes les notes' border='1' cellspacing='2' cellpadding='1'>\n";
 
-// Affichage première ligne
+// Affichage premiÃ¨re ligne
 echo "<tr><td class=cn>&nbsp;</td>\n";
 $num_per = 0;
 while ($num_per < $nb_cahier_note) {
-    // on calcule le nombre de colonnes à scinder
+    // on calcule le nombre de colonnes Ã  scinder
     $nb_colspan = $nb_dev[$num_per]-$nb_dev[$num_per-1];
     $i = $nb_sous_cont[$num_per-1];
     while ($i < $nb_sous_cont[$num_per]) {
@@ -308,14 +308,14 @@ while ($num_per < $nb_cahier_note) {
         $nb_colspan += mysql_num_rows($query_nb_dev);
         $i++;
     }
-    // On rajoute 1 à colspan pour l'afichage de la colonne moyenne
+    // On rajoute 1 Ã  colspan pour l'afichage de la colonne moyenne
     $nb_colspan++;
     echo "<td class=cn colspan='$nb_colspan' valign='top'><center><b>".ucfirst($nom_periode[$num_per])."</b></center></td>\n";
     $num_per++;
 }
 echo "</tr>\n";
 
-// Affichage deuxième ligne
+// Affichage deuxiÃ¨me ligne
 //echo "<tr><td class=cn><b>Boite :</b></td>\n";
 echo "<tr><td class=cn><b>".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))." :</b></td>\n";
 $num_per = 0;
@@ -355,7 +355,7 @@ while ($num_per < $nb_cahier_note) {
 }
 echo "</tr>";
 
-// Troisième ligne
+// TroisiÃ¨me ligne
 echo "<tr><td class=cn valign='top'>&nbsp;</td>\n";
 $header_pdf[] = "Evaluation :";
 $w_pdf[] = $w1;
@@ -375,7 +375,7 @@ while ($num_per < $nb_cahier_note) {
 		if ($ramener_sur_referentiel[$i] != 'V') {
 			echo "<font size=-2>Note sur $note_sur[$i]<br />";
 		} else {
-			$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+			$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramenÃ© sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
 			echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_$i','y',-150,20	);\" >";
 			echo "<font size=-2>Note sur $note_sur[$i]";
 			echo "</a><br />";
@@ -402,7 +402,7 @@ while ($num_per < $nb_cahier_note) {
 		if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
 			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
 		} else {
-			$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramené sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
+			$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramenÃ© sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",14,0,'y','y','n','n');
 			echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20	);\" >";
 			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m];
 			echo "</a><br />";
@@ -433,13 +433,13 @@ echo "</tr>";
 
 
 //
-// quatrième ligne
+// quatriÃ¨me ligne
 //
-echo "<tr><td class=cn valign='top'><b>Nom&nbsp;Prénom&nbsp;\&nbsp;Coef.</b></td>\n";
+echo "<tr><td class=cn valign='top'><b>Nom&nbsp;PrÃ©nom&nbsp;\&nbsp;Coef.</b></td>\n";
 if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-	$data_pdf[0][] = "Nom Prénom\Coef. /Note sur";
+	$data_pdf[0][] = "Nom PrÃ©nom\Coef. /Note sur";
 } else {
-	$data_pdf[0][] = "Nom Prénom\Coef.";
+	$data_pdf[0][] = "Nom PrÃ©nom\Coef.";
 }
 $num_per = 0;
 while ($num_per < $nb_cahier_note) {
@@ -485,7 +485,7 @@ while ($num_per < $nb_cahier_note) {
 echo "</tr>\n";
 
 //
-// Affichage des lignes "elèves"
+// Affichage des lignes "elÃ¨ves"
 //
 $i = 0;
 $tot_data_pdf = 1;
@@ -563,7 +563,7 @@ while($i < $nombre_lignes) {
 }
 
 //
-// Dernière ligne
+// DerniÃ¨re ligne
 //
 echo "<tr><td class=cn><b>Moyennes :</b></td>\n";
 $data_pdf[$tot_data_pdf][] = "Moyennes";
@@ -652,7 +652,7 @@ while ($num_per < $nb_cahier_note) {
 }
 echo "</tr></table>\n";
 
-// Préparation du pdf
+// PrÃ©paration du pdf
 $header_pdf=serialize($header_pdf);
 $_SESSION['header_pdf']=$header_pdf;
 $w_pdf=serialize($w_pdf);

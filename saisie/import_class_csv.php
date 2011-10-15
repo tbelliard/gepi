@@ -167,7 +167,7 @@ if ($current_group) {
 		}
 	}
 } else {
-	// Cas où on demande un fichier pour importation d'appréciations du conseil
+	// Cas oÃ¹ on demande un fichier pour importation d'apprÃ©ciations du conseil
 	$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.*
 		FROM eleves e, j_eleves_classes j
 		WHERE (

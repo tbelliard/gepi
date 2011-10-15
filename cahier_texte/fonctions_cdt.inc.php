@@ -6,8 +6,8 @@
  * @copyright 2008
  */
 
-// Fonction qui renvoie la liste des devoirs à faire à partir d'aujourd'hui 00:00:00 sans limitation de temps
-// le tout classés de plus récents au plus lointain
+// Fonction qui renvoie la liste des devoirs Ã  faire Ã  partir d'aujourd'hui 00:00:00 sans limitation de temps
+// le tout classÃ©s de plus rÃ©cents au plus lointain
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -15,7 +15,7 @@ require_once("../lib/initialisations.inc.php");
 function retourneDevoirs($ele_login){
 	$date_ct1 = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 
-	// On récupère tous les devoirs depuis aujourd'hui 00:00:00
+	// On rÃ©cupÃ¨re tous les devoirs depuis aujourd'hui 00:00:00
 	$sql="SELECT DISTINCT ctde.* FROM ct_devoirs_entry ctde, j_eleves_groupes jeg
 								WHERE ctde.id_groupe = jeg.id_groupe
 								AND jeg.login = '".$ele_login."'

@@ -55,7 +55,7 @@ if (isset($is_posted) and ($is_posted=='sans_id_etape_4')) {echo "<a href=\"expo
 
 echo "</p>";
 
-// $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
+// $long_max : doit Ãªtre plus grand que la plus grande ligne trouvÃ©e dans le fichier CSV
 
 $long_max = 8000;
 
@@ -67,7 +67,7 @@ if (!isset($is_posted)) {
 
     if ($nb_test == 0) {
 
-        // Par sécurité, on efface d'éventuelles données résiduelles dans les tables j_aid_utilisateurs et j_aid_eleves
+        // Par sÃ©curitÃ©, on efface d'Ã©ventuelles donnÃ©es rÃ©siduelles dans les tables j_aid_utilisateurs et j_aid_eleves
         $del = mysql_query("DELETE FROM j_aidcateg_super_gestionnaires WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_utilisateurs_gest WHERE indice_aid='$indice_aid'");
@@ -81,7 +81,7 @@ if (!isset($is_posted)) {
 
         if (!isset($confirm) or ($confirm != 'Effacer')) {
 
-            echo "<p><b>ATTENTION</b> : Des $nom_generique_aid ont déjà été enregistré(e)s. La procédure d'importation permet l'insertion de <b>nouvelles données</b> et la <b>mise à jour</b> des données  existantes. <br /><b>Les données déjà présentes dans GEPI ne sont donc pas détruites par cette procédure</b>.<br /><br />Cliquez sur <b>\"Effacer\"</b> si vous souhaitez effacer <b>toutes</b> les données déjà présentes concernant les $nom_generique_aid,<br />Cliquez sur <b>\"Continuer\"</b> si vous souhaitez conserver les données existantes.</p>";
+            echo "<p><b>ATTENTION</b> : Des $nom_generique_aid ont dÃ©jÃ  Ã©tÃ© enregistrÃ©(e)s. La procÃ©dure d'importation permet l'insertion de <b>nouvelles donnÃ©es</b> et la <b>mise Ã  jour</b> des donnÃ©es  existantes. <br /><b>Les donnÃ©es dÃ©jÃ  prÃ©sentes dans GEPI ne sont donc pas dÃ©truites par cette procÃ©dure</b>.<br /><br />Cliquez sur <b>\"Effacer\"</b> si vous souhaitez effacer <b>toutes</b> les donnÃ©es dÃ©jÃ  prÃ©sentes concernant les $nom_generique_aid,<br />Cliquez sur <b>\"Continuer\"</b> si vous souhaitez conserver les donnÃ©es existantes.</p>";
 
             echo "<table border=0><tr><td>";
 
@@ -109,7 +109,7 @@ if (!isset($is_posted)) {
 
         } else {
 
-            echo "<p><b>Etes-vous sûr de vouloir effacer toutes les données concernant les $nom_generique_aid ?</b></p>";
+            echo "<p><b>Etes-vous sÃ»r de vouloir effacer toutes les donnÃ©es concernant les $nom_generique_aid ?</b></p>";
 
             echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
 
@@ -138,21 +138,21 @@ if (isset($is_posted) and ($is_posted == 'debut')) {
         $del = mysql_query("DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM aid_appreciations WHERE indice_aid='$indice_aid'");
-        echo "<p>Les données concernant les $nom_generique_aid ont été définitivement supprimées !</p>";
+        echo "<p>Les donnÃ©es concernant les $nom_generique_aid ont Ã©tÃ© dÃ©finitivement supprimÃ©es !</p>";
     }
     echo "<p>Choisissez une des deux options suivantes :</p>";
     echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
 
     echo add_token_field();
 
-    echo "<p>--&gt; Vous avez <b>vous-même</b> défini un identifiant unique pour chaque $nom_generique_aid.";
+    echo "<p>--&gt; Vous avez <b>vous-mÃªme</b> dÃ©fini un identifiant unique pour chaque $nom_generique_aid.";
     echo "<INPUT TYPE=SUBMIT value = 'Valider' /></p>";
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'avec_id_etape_1' /> ";
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
     echo "</FORM>";
     echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire2>";
     echo add_token_field();
-    echo "<p>--&gt; Vous voulez laisser <b>GEPI</b> définir un identifiant unique pour chaque $nom_generique_aid .";
+    echo "<p>--&gt; Vous voulez laisser <b>GEPI</b> dÃ©finir un identifiant unique pour chaque $nom_generique_aid .";
     echo "<INPUT TYPE=SUBMIT value = 'Valider' /></p>";
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_1' /> ";
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
@@ -160,14 +160,14 @@ if (isset($is_posted) and ($is_posted == 'debut')) {
 }
 
 //*************************************************************************************************
-// Début de la procédure dans laquelle on laisse GEPI définir un identifiant unique pour chaque AID
+// DÃ©but de la procÃ©dure dans laquelle on laisse GEPI dÃ©finir un identifiant unique pour chaque AID
 //*************************************************************************************************
 
 if (isset($is_posted) and ($is_posted == "sans_id_etape_1")) {
     check_token(false);
 
     echo "<table border=0>";
-    //    cas où on importe un fichier ELEVES-AID
+    //    cas oÃ¹ on importe un fichier ELEVES-AID
     echo "<tr><td><p>Importer un fichier <b>\"ELEVES-$nom_generique_aid\"</b></p></td>";
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
     echo add_token_field();
@@ -176,7 +176,7 @@ if (isset($is_posted) and ($is_posted == "sans_id_etape_1")) {
     echo "<INPUT TYPE=HIDDEN name=type_import value = 1 /> ";
     echo "<INPUT TYPE=SUBMIT value = Valider />";
     echo "</FORM></td></tr>";
-    //    cas où on importe un fichier prof-AID
+    //    cas oÃ¹ on importe un fichier prof-AID
     echo "<tr><td><p>Importer un fichier <b>\"PROF-$nom_generique_aid\"</b></p></td>";
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire2>";
     echo add_token_field();
@@ -198,24 +198,24 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_2')) {
     $csvfile="";
     echo add_token_field();
     ?>
-    <p>Fichier CSV à Importer <a href='help_import.php'>Aide </a> : <input TYPE=FILE NAME="csvfile" /></p>
+    <p>Fichier CSV Ã  Importer <a href='help_import.php'>Aide </a> : <input TYPE=FILE NAME="csvfile" /></p>
     <input TYPE=HIDDEN name=is_posted value = 'sans_id_etape_3' />
     <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
     <input TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
-    <p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
+    <p>Le fichier Ã  importer comporte une premiÃ¨re ligne d'en-tÃªte, Ã  ignorer&nbsp;
     <input TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
     <input TYPE=SUBMIT value = "Valider" /><br />
     </form>
     <?php
-    echo "<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)<br />";
+    echo "<p>Le fichier d'importation doit Ãªtre au format csv (sÃ©parateur : point-virgule)<br />";
     if ($type_import == 1) {
         echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
-        echo "--&gt; <B>IDENTIFIANT</B> : l'identifiant de l'élève<br />";
-        echo "--&gt; <B>Nom complet de l'activité</B><br /></p>";
+        echo "--&gt; <B>IDENTIFIANT</B> : l'identifiant de l'Ã©lÃ¨ve<br />";
+        echo "--&gt; <B>Nom complet de l'activitÃ©</B><br /></p>";
     } else if ($type_import == 2) {
         echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
         echo "--&gt; <B>IDENTIFIANT</B> : l'identifiant du professeur<br />";
-        echo "--&gt; <B>Nom complet de l'activité</B><br /></p>";
+        echo "--&gt; <B>Nom complet de l'activitÃ©</B><br /></p>";
     }
 }
 
@@ -231,7 +231,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
             echo "Impossible d'ouvrir le fichier CSV (".$csvfile['name'].")";
         } else {
             $erreur = 'no';
-            //    Dans le cas où on importe un fichier PROF-AID ou ELEVE-AID, on vérifie le login
+            //    Dans le cas oÃ¹ on importe un fichier PROF-AID ou ELEVE-AID, on vÃ©rifie le login
             $row = 0;
             while(!feof($fp)) {
                 if ($en_tete == 'yes') {
@@ -252,7 +252,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
                     $test = mysql_num_rows($call_login);
                     if ($test == 0) {
                         $erreur = 'yes';
-                        echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : $data[0] ne correspond à aucun identifiant GEPI.</font></p>";
+                        echo "<p><font color='red'>Erreur dans le fichier Ã  la ligne $row : $data[0] ne correspond Ã  aucun identifiant GEPI.</font></p>";
                     }
                 }
             }
@@ -314,7 +314,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                 if ($erreur_reg == 'no') {
 
-                    // On affiche les aid détectées dans la table tempo2
+                    // On affiche les aid dÃ©tectÃ©es dans la table tempo2
 
                     echo "<form enctype='multipart/form-data' action='export_csv_aid.php' method=post >";
 
@@ -322,11 +322,11 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                     if ($type_import == 1) {
 
-                        echo "<input type=submit value='Enregistrer les $nom_generique_aid et mettre à jour les élèves' />";
+                        echo "<input type=submit value='Enregistrer les $nom_generique_aid et mettre Ã  jour les Ã©lÃ¨ves' />";
 
                     } else if ($type_import == 2) {
 
-                        echo "<input type=submit value='Enregistrer les $nom_generique_aid et mettre à jour les professeurs' />";
+                        echo "<input type=submit value='Enregistrer les $nom_generique_aid et mettre Ã  jour les professeurs' />";
 
                     } else {
 
@@ -342,7 +342,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                     echo "</FORM>";
 
-                    echo "<p>Si un(e) $nom_generique_aid existe déjà dans la base GEPI, seule une mise à jour des données sera effectuée conformément aux données figurant dans le fichier csv</p>";
+                    echo "<p>Si un(e) $nom_generique_aid existe dÃ©jÃ  dans la base GEPI, seule une mise Ã  jour des donnÃ©es sera effectuÃ©e conformÃ©ment aux donnÃ©es figurant dans le fichier csv</p>";
 
 
 
@@ -374,11 +374,11 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                         if ($nb_test == 0) {
 
-                            $mess = "<font color='green'>Cette activité n'existe pas dans GEPI.</font>";
+                            $mess = "<font color='green'>Cette activitÃ© n'existe pas dans GEPI.</font>";
 
                         } else {
 
-                            $mess = "<font color='blue'>Cette activité existe déjà dans GEPI.</font>";
+                            $mess = "<font color='blue'>Cette activitÃ© existe dÃ©jÃ  dans GEPI.</font>";
 
                         }
 
@@ -398,13 +398,13 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                     $del = mysql_query("delete from tempo2");
 
-                    echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées lors de l'enregistrement des données dans la table temporaire : l'opération d'importation ne peut continuer !</p>";
+                    echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont Ã©tÃ© dÃ©tectÃ©es lors de l'enregistrement des donnÃ©es dans la table temporaire : l'opÃ©ration d'importation ne peut continuer !</p>";
 
                 }
 
             } else {
 
-                echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées dans le fichier : l'opération d'importation ne peut continuer !</p>";
+                echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont Ã©tÃ© dÃ©tectÃ©es dans le fichier : l'opÃ©ration d'importation ne peut continuer !</p>";
 
             }
 
@@ -412,7 +412,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
     } else {
 
-        echo "<p>Aucun fichier n'a été sélectionné !</p>";
+        echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !</p>";
 
     }
 
@@ -423,11 +423,11 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
     check_token(false);
 
-    echo "<p class='bold'>Mise à jour de la liste des $nom_generique_aid</p>";
+    echo "<p class='bold'>Mise Ã  jour de la liste des $nom_generique_aid</p>";
 
     echo "<table border=1 cellpadding=2 cellspacing=2><tr>";
 
-    echo "<td><p class=\"small\">Nom de l'acticité</p></td>";
+    echo "<td><p class=\"small\">Nom de l'acticitÃ©</p></td>";
 
     echo "<td><p class=\"small\">Remarque</p></td></tr>";
 
@@ -465,11 +465,11 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
             if ($reg) {
 
-                $mess = "<font color='green'>L'activité a été enregistrée avec succès !</font>";
+                $mess = "<font color='green'>L'activitÃ© a Ã©tÃ© enregistrÃ©e avec succÃ¨s !</font>";
 
             } else {
 
-                $mess = "<font color='red'>Problème lors de l'enregistrement !</font>";
+                $mess = "<font color='red'>ProblÃ¨me lors de l'enregistrement !</font>";
 
                 $pb_reg = 'yes';
 
@@ -477,7 +477,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
         } else {
 
-            $mess = "<font color='blue'>Pas d'enregistrement : cette acticité existait déjà dans GEPI !</font>";
+            $mess = "<font color='blue'>Pas d'enregistrement : cette acticitÃ© existait dÃ©jÃ  dans GEPI !</font>";
 
         }
 
@@ -497,7 +497,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
     if ($pb_reg == 'yes') {
 
-        echo "<p>Il y a eu un problème lors de l'enregistrement des $nom_generique_aid, l'opération d'importation ne peut continuer : la table des identifiants pour les $nom_generique_aid n'a pas été mise à jour !</p>";
+        echo "<p>Il y a eu un problÃ¨me lors de l'enregistrement des $nom_generique_aid, l'opÃ©ration d'importation ne peut continuer : la table des identifiants pour les $nom_generique_aid n'a pas Ã©tÃ© mise Ã  jour !</p>";
 
     } else {
 
@@ -547,7 +547,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
             if ($test != 0) {
 
-                // cas où un login existe dans la table eleves ou utilisateurs
+                // cas oÃ¹ un login existe dans la table eleves ou utilisateurs
 
                 // On peut continuer !
 
@@ -571,9 +571,9 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
                 $test2 = mysql_num_rows($call_test);
 
-                // pour les élèves : un élève ne peut suivre qu'une seule AID. Si une ligne existe déjà on la met à jour (update)
+                // pour les Ã©lÃ¨ves : un Ã©lÃ¨ve ne peut suivre qu'une seule AID. Si une ligne existe dÃ©jÃ  on la met Ã  jour (update)
 
-                // pour les prof : un prof peut être responsable de plusieurs AID, mais on teste qu'il n'y ait pas de lignes 'doublons' dans le fichier j_aid_utilisateurs.
+                // pour les prof : un prof peut Ãªtre responsable de plusieurs AID, mais on teste qu'il n'y ait pas de lignes 'doublons' dans le fichier j_aid_utilisateurs.
 
                 if ($test2 == 0) {
 
@@ -617,25 +617,25 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
         if ($type_import == 1) {
 
-            echo "<p class='bold'>Mise à jour des élèves</p>";
+            echo "<p class='bold'>Mise Ã  jour des Ã©lÃ¨ves</p>";
 
-            echo "<p>$nb lignes élèves ont été mises à jour dans la table de liaison <b>Eleves&lt;--&gt;$nom_generique_aid</b> !</p>";
+            echo "<p>$nb lignes Ã©lÃ¨ves ont Ã©tÃ© mises Ã  jour dans la table de liaison <b>Eleves&lt;--&gt;$nom_generique_aid</b> !</p>";
 
             if ($pb_reg == "yes") {
 
-                echo "<p><font color = 'red'>Il y a eu des problèmes d'enregistrement pour un ou plusieurs autres élèves !</font></p>";
+                echo "<p><font color = 'red'>Il y a eu des problÃ¨mes d'enregistrement pour un ou plusieurs autres Ã©lÃ¨ves !</font></p>";
 
             }
 
         } else {
 
-            echo "<p class='bold'>Mise à jour des professeurs</p>";
+            echo "<p class='bold'>Mise Ã  jour des professeurs</p>";
 
-            echo "<p>$nb lignes professeurs ont été mises à jour dans la table de liaison <b>Professeurs&lt;--&gt;$nom_generique_aid</b> !</p>";
+            echo "<p>$nb lignes professeurs ont Ã©tÃ© mises Ã  jour dans la table de liaison <b>Professeurs&lt;--&gt;$nom_generique_aid</b> !</p>";
 
             if ($pb_reg == "yes") {
 
-                echo "<p><font color = 'red'>Il y a eu des problèmes d'enregistrement pour un ou plusieurs autres professeurs !</font></p>";
+                echo "<p><font color = 'red'>Il y a eu des problÃ¨mes d'enregistrement pour un ou plusieurs autres professeurs !</font></p>";
 
             }
 
@@ -653,7 +653,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
 //*************************************************************************************************
 
-// Fin de la procédure dans laquelle on laisse GEPI définir un identifiant unique pour chaque AID
+// Fin de la procÃ©dure dans laquelle on laisse GEPI dÃ©finir un identifiant unique pour chaque AID
 
 //*************************************************************************************************
 
@@ -661,7 +661,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
 //*************************************************************************************************
 
-// Début de la procédure dans laquelle l'utilisateur définie lui-même un identifiant unique pour chaque AID
+// DÃ©but de la procÃ©dure dans laquelle l'utilisateur dÃ©finie lui-mÃªme un identifiant unique pour chaque AID
 
 //*************************************************************************************************
 
@@ -672,7 +672,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
 
     echo "<table border=0>";
 
-    //    cas où on importe un fichier numéro-AID
+    //    cas oÃ¹ on importe un fichier numÃ©ro-AID
 
     echo "<tr><td><p>Importer un fichier <b>\"$nom_generique_aid - Identifiant $nom_generique_aid\"</b></p></td>";
 
@@ -690,7 +690,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
 
     echo "</FORM></td></tr>";
 
-    //    cas où on Importe un fichier ELEVES-N° AID
+    //    cas oÃ¹ on Importe un fichier ELEVES-NÂ° AID
 
     echo "<tr><td><p>Importer un fichier <b>\"ELEVES-Identifiant $nom_generique_aid\"</b></p></td>";
 
@@ -708,7 +708,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
 
     echo "</FORM></td></tr>";
 
-    //    cas où on importe un fichier prof-AID
+    //    cas oÃ¹ on importe un fichier prof-AID
 
     echo "<tr><td><p>Importer un fichier <b>\"PROF-Identifiant $nom_generique_aid\"</b></p></td>";
 
@@ -748,7 +748,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
     echo add_token_field();
     ?>
 
-    <p>Fichier CSV à importer <a href='help_import.php'>Aide </a> : <INPUT TYPE=FILE NAME="csvfile" /></p>
+    <p>Fichier CSV Ã  importer <a href='help_import.php'>Aide </a> : <INPUT TYPE=FILE NAME="csvfile" /></p>
 
     <input TYPE=HIDDEN name=is_posted value = 'avec_id_etape_3' />
 
@@ -756,7 +756,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
 
     <input TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
 
-    <p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
+    <p>Le fichier Ã  importer comporte une premiÃ¨re ligne d'en-tÃªte, Ã  ignorer&nbsp;
 
     <input TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
 
@@ -766,15 +766,15 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
 
     <?php
 
-    echo "<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)<br />";
+    echo "<p>Le fichier d'importation doit Ãªtre au format csv (sÃ©parateur : point-virgule)<br />";
 
     if ($type_import == 1) {
 
         echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
 
-        echo "--&gt; <B>l'identifiant de l'élève</b><br />";
+        echo "--&gt; <B>l'identifiant de l'Ã©lÃ¨ve</b><br />";
 
-        echo "--&gt; <B>L'identifiant de l'activité</B><br /></p>";
+        echo "--&gt; <B>L'identifiant de l'activitÃ©</B><br /></p>";
 
     } else if ($type_import == 2) {
 
@@ -782,15 +782,15 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
 
         echo "--&gt; <B>l'identifiant du professeur</b><br />";
 
-        echo "--&gt; <B>L'identifiant de l'activité</B><br /></p>";
+        echo "--&gt; <B>L'identifiant de l'activitÃ©</B><br /></p>";
 
     } else {
 
         echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
 
-        echo "--&gt; <B>Nom complet de l'activité</B><br />";
+        echo "--&gt; <B>Nom complet de l'activitÃ©</B><br />";
 
-        echo "--&gt; <B>L'identifiant de l'activité</B><br /></p>";
+        echo "--&gt; <B>L'identifiant de l'activitÃ©</B><br /></p>";
 
     }
 
@@ -819,9 +819,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
             //
 
-            //    Dans le cas où on importe un fichier PROF-AID ou ELEVE-AID, on vérifie le login
+            //    Dans le cas oÃ¹ on importe un fichier PROF-AID ou ELEVE-AID, on vÃ©rifie le login
 
-            //  ainsi que l'existence d'une AID corrspondant à chaque identifiant AID
+            //  ainsi que l'existence d'une AID corrspondant Ã  chaque identifiant AID
 
             //
 
@@ -847,7 +847,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                     $row++;
 
-                    // vérification du login
+                    // vÃ©rification du login
 
                     if ($type_import == 1) {
 
@@ -871,13 +871,13 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         $erreur = 'yes';
 
-                        echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : $data[0] ne correspond à aucun identifiant GEPI.</font></p>";
+                        echo "<p><font color='red'>Erreur dans le fichier Ã  la ligne $row : $data[0] ne correspond Ã  aucun identifiant GEPI.</font></p>";
 
                     }
 
                     //
 
-                    // Vérification sur l'identifiant AID
+                    // VÃ©rification sur l'identifiant AID
 
                     //
 
@@ -885,7 +885,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         $erreur = 'yes';
 
-                        echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : l'identifiant $nom_generique_aid n'est pas valide (un identifiant doit être constitué de uniquement de chiffres, de lettres et caractères de soulignement).</font></p>";
+                        echo "<p><font color='red'>Erreur dans le fichier Ã  la ligne $row : l'identifiant $nom_generique_aid n'est pas valide (un identifiant doit Ãªtre constituÃ© de uniquement de chiffres, de lettres et caractÃ¨res de soulignement).</font></p>";
 
                     }
 
@@ -895,23 +895,23 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                     if (($test == 0) and ($type_import != 3)) {
 
-                        // Vérification de l'existence d'une AID correspondant à chaque identifiant AID
+                        // VÃ©rification de l'existence d'une AID correspondant Ã  chaque identifiant AID
 
                         //
 
                         $erreur = 'yes';
 
-                        echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : l'identifiant $nom_generique_aid ne correspond à aucun(e) $nom_generique_aid déjà enregistré(e).</font></p>";
+                        echo "<p><font color='red'>Erreur dans le fichier Ã  la ligne $row : l'identifiant $nom_generique_aid ne correspond Ã  aucun(e) $nom_generique_aid dÃ©jÃ  enregistrÃ©(e).</font></p>";
 
                     } else if (($test != 0) and ($type_import == 3)) {
 
-                        // Vérification que l'identifiant n'existe pas déjà
+                        // VÃ©rification que l'identifiant n'existe pas dÃ©jÃ 
 
                         //
 
                         $erreur = 'yes';
 
-                        echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : l'identifiant $nom_generique_aid existe déjà pour un(e) $nom_generique_aid déjà enregistré(e) !</font></p>";
+                        echo "<p><font color='red'>Erreur dans le fichier Ã  la ligne $row : l'identifiant $nom_generique_aid existe dÃ©jÃ  pour un(e) $nom_generique_aid dÃ©jÃ  enregistrÃ©(e) !</font></p>";
 
                     }
 
@@ -1002,7 +1002,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                 if ($erreur_reg == 'no') {
 
-                    // On affiche les aid détectées dans la table tempo2
+                    // On affiche les aid dÃ©tectÃ©es dans la table tempo2
 
                     echo "<form enctype='multipart/form-data' action='export_csv_aid.php' method=post >";
 
@@ -1018,7 +1018,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         echo "<table border=1 cellpadding=2 cellspacing=2>";
 
-                        echo "<tr><td><p class=\"small\">Nom prénom</p></td><td><p class=\"small\">Nom de l'activité</p></td></tr>";
+                        echo "<tr><td><p class=\"small\">Nom prÃ©nom</p></td><td><p class=\"small\">Nom de l'activitÃ©</p></td></tr>";
 
                         $i = "0";
 
@@ -1068,7 +1068,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         echo "<table border=1 cellpadding=2 cellspacing=2>";
 
-                        echo "<tr><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom de l'activité</p></td></tr>";
+                        echo "<tr><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom de l'activitÃ©</p></td></tr>";
 
                         $i = "0";
 
@@ -1102,7 +1102,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                     $del = mysql_query("delete from tempo2");
 
-                    echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées lors de l'enregistrement des données dans la table temporaire : l'opération d'importation ne peut continuer !</p>";
+                    echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont Ã©tÃ© dÃ©tectÃ©es lors de l'enregistrement des donnÃ©es dans la table temporaire : l'opÃ©ration d'importation ne peut continuer !</p>";
 
                 }
 
@@ -1110,7 +1110,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
             } else {
 
-                echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées dans le fichier : l'opération d'importation ne peut continuer !</p>";
+                echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont Ã©tÃ© dÃ©tectÃ©es dans le fichier : l'opÃ©ration d'importation ne peut continuer !</p>";
 
             }
 
@@ -1118,7 +1118,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
     } else {
 
-        echo "<p>Aucun fichier n'a été sélectionné !</p>";
+        echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !</p>";
 
     }
 
@@ -1157,17 +1157,17 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
                 if ($reg) {
 
-                    echo "<p><font color='green'>L'activité $nom_aid a été enregistrée avec succès !</font></p>";
+                    echo "<p><font color='green'>L'activitÃ© $nom_aid a Ã©tÃ© enregistrÃ©e avec succÃ¨s !</font></p>";
 
                 } else {
 
-                    echo "<p><font color='red'>Il y a eu un problème lors de l'enregistrement de l'activité $nom_aid  !</font></p>";
+                    echo "<p><font color='red'>Il y a eu un problÃ¨me lors de l'enregistrement de l'activitÃ© $nom_aid  !</font></p>";
 
                 }
 
             } else {
 
-                echo "<p><font color='red'>L'activité $nom_aid n'a pas été enregistrée, car un(e) $nom_generique_aid ayant le même identifiant existe déjà dans la base !</font></p>";
+                echo "<p><font color='red'>L'activitÃ© $nom_aid n'a pas Ã©tÃ© enregistrÃ©e, car un(e) $nom_generique_aid ayant le mÃªme identifiant existe dÃ©jÃ  dans la base !</font></p>";
 
             }
 
@@ -1223,7 +1223,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
             if ($test != 0) {
 
-                // cas où un login existe dans la table eleves ou utilisateurs
+                // cas oÃ¹ un login existe dans la table eleves ou utilisateurs
 
                 // On peut continuer !
 
@@ -1247,9 +1247,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
                     $test2 = mysql_num_rows($call_test);
 
-                    // pour les élèves : un élève ne peut suivre qu'une seule AID. Si une ligne existe déjà on la met à jour (update)
+                    // pour les Ã©lÃ¨ves : un Ã©lÃ¨ve ne peut suivre qu'une seule AID. Si une ligne existe dÃ©jÃ  on la met Ã  jour (update)
 
-                    // pour les prof : un prof peut être responsable de plusieurs AID, mais on teste qu'il n'y ait pas de lignes 'doublons' dans le fichier j_aid_utilisateurs.
+                    // pour les prof : un prof peut Ãªtre responsable de plusieurs AID, mais on teste qu'il n'y ait pas de lignes 'doublons' dans le fichier j_aid_utilisateurs.
 
                     if ($test2 == 0) {
 
@@ -1297,25 +1297,25 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
     if ($type_import == 1) {
 
-        echo "<p class='bold'>Mise à jour des élèves</p>";
+        echo "<p class='bold'>Mise Ã  jour des Ã©lÃ¨ves</p>";
 
-        echo "<p>$nb élèves ont été mis à jour dans la table de liaison <b>Eleves&lt;--&gt;$nom_generique_aid</b> !</p>";
+        echo "<p>$nb Ã©lÃ¨ves ont Ã©tÃ© mis Ã  jour dans la table de liaison <b>Eleves&lt;--&gt;$nom_generique_aid</b> !</p>";
 
         if ($pb_reg == "yes") {
 
-            echo "<p><font color = 'red'>Il y a eu des problèmes d'enregistrement pour un ou plusieurs autres élèves !</font></p>";
+            echo "<p><font color = 'red'>Il y a eu des problÃ¨mes d'enregistrement pour un ou plusieurs autres Ã©lÃ¨ves !</font></p>";
 
         }
 
     } else if ($type_import == 2) {
 
-        echo "<p class='bold'>Mise à jour des professeurs</p>";
+        echo "<p class='bold'>Mise Ã  jour des professeurs</p>";
 
-        echo "<p>$nb professeurs ont été mis à jour dans la table de liaison <b>Professeurs&lt;--&gt;$nom_generique_aid</b> !</p>";
+        echo "<p>$nb professeurs ont Ã©tÃ© mis Ã  jour dans la table de liaison <b>Professeurs&lt;--&gt;$nom_generique_aid</b> !</p>";
 
         if ($pb_reg == "yes") {
 
-            echo "<p><font color = 'red'>Il y a eu des problèmes d'enregistrement pour un ou plusieurs autres professeurs !</font></p>";
+            echo "<p><font color = 'red'>Il y a eu des problÃ¨mes d'enregistrement pour un ou plusieurs autres professeurs !</font></p>";
 
         }
 
@@ -1327,7 +1327,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
 //*************************************************************************************************
 
-// Fin de la procédure dans laquelle l'utilisateur définie lui-même un identifiant unique pour chaque AID
+// Fin de la procÃ©dure dans laquelle l'utilisateur dÃ©finie lui-mÃªme un identifiant unique pour chaque AID
 
 //*************************************************************************************************
 

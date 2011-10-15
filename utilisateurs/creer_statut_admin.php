@@ -23,7 +23,7 @@
  */
 
 $accessibilite="y";
-$titre_page = "Module statuts personnalisés";
+$titre_page = "Module statuts personnalisÃ©s";
 $gepiPathJava="./..";
 $post_reussi=FALSE;
 $msg = '';
@@ -51,10 +51,10 @@ $autorise = isset($_POST["autorise"]) ? $_POST["autorise"] : 'n';
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $aff_msg = NULL;
 
-// ============== Le code métier ========================
+// ============== Le code mÃ©tier ========================
 if ($action == 'valide') {
 	check_token();
-	// On change le setting en question ou on le crée avec la fonction ...... qui gère tout
+	// On change le setting en question ou on le crÃ©e avec la fonction ...... qui gÃ¨re tout
   /*
 	$test = saveSetting('statuts_prives', $autorise);
 	$decalage = ($autorise == 'y') ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : NULL;
@@ -62,20 +62,20 @@ if ($action == 'valide') {
    */
   if ($autorise!=getSettingValue('statuts_prives')){
 	if  (saveSetting('statuts_prives', $autorise)){
-	  $msg="La modification a bien été enregistrée.";
+	  $msg="La modification a bien Ã©tÃ© enregistrÃ©e.";
 	  $post_reussi=TRUE;
 	} else {
-	  $msg="Échec lors de l'enregistrement de la modification.";
+	  $msg="Ã‰chec lors de l'enregistrement de la modification.";
 
 	}
   }
 }
 
-// On détermine le selected
+// On dÃ©termine le selected
 //$selected = (getSettingValue('statuts_prives') == 'y') ? ' checked="checked"' : NULL;
 
 // ++++++++++++++++++++++ ENTETE ++++++++++++++++++++++++
-//$titre_page = "Module statuts personnalisés";
+//$titre_page = "Module statuts personnalisÃ©s";
 //require_once("../lib/header.inc");
 // ++++++++++++++++++++ FIN ENTETE ++++++++++++++++++++++
 
@@ -84,7 +84,7 @@ if ($action == 'valide') {
 include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -99,20 +99,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/utilisateurs/creer_statut_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -134,7 +134,7 @@ include($nom_gabarit);
 	</p>
 	<?php if($aff_msg == 'y') { ?>
 
-	<p style="color: green; font-weight: bold;"><?php echo $decalage; ?>La modification a bien été enregistrée.</p>
+	<p style="color: green; font-weight: bold;"><?php echo $decalage; ?>La modification a bien Ã©tÃ© enregistrÃ©e.</p>
 
 	<?php } ?>
 

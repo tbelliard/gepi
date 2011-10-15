@@ -19,7 +19,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -29,8 +29,8 @@ require_once("Modele.Select.php");
 
 class ClassPeriodes {
 private $periodes_calendrier=Null;
-private $months=Array("09"=>"Septembre","10"=>"Octobre","11"=>"Novembre","12"=>"Décembre",
-          "01"=>"Janvier","02"=>"Février","03"=>"Mars","04"=>"Avril","05"=>"Mai","06"=>"Juin");
+private $months=Array("09"=>"Septembre","10"=>"Octobre","11"=>"Novembre","12"=>"DÃ©cembre",
+          "01"=>"Janvier","02"=>"FÃ©vrier","03"=>"Mars","04"=>"Avril","05"=>"Mai","06"=>"Juin");
   function  __construct() {
     $this->modele_select=new modele_select();
     $this->periodes_calendrier=$this->modele_select->get_db_periodes_calendrier();

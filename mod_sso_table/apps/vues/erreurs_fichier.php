@@ -19,7 +19,7 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -28,7 +28,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <p>Les lignes suivantes du fichier csv ne comportent pas le bon nombre de champs</p>
 <table  border="1" cellpadding="2" cellspacing="0">
   <tr bgcolor="#CACACA">
-    <td ><strong>Numéro de la ligne :</strong></td>
+    <td ><strong>NumÃ©ro de la ligne :</strong></td>
   </tr>
   <tr bgcolor="#F0F0F0">    
     <td>[b1.ligne;block=tr]</td>

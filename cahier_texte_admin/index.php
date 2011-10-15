@@ -23,15 +23,15 @@
 /**
  * Gestion des cahiers de textes
  * 
- * @param $_POST['activer'] activation/désactivation
+ * @param $_POST['activer'] activation/dÃ©sactivation
  * @param $_POST['version'] numero de version du cahier de texte
- * @param $_POST['cahiers_texte_login_pub'] identifiant accès public
- * @param $_POST['cahiers_texte_passwd_pub'] mot de passe accès public
- * @param $_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year'] Date de début du cahier de texte
+ * @param $_POST['cahiers_texte_login_pub'] identifiant accÃ¨s public
+ * @param $_POST['cahiers_texte_passwd_pub'] mot de passe accÃ¨s public
+ * @param $_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year'] Date de dÃ©but du cahier de texte
  * @param $_POST['end_month'],$_POST['end_day'],$_POST['end_year'] Date de fin du cahier de texte
- * @param $_POST['cahier_texte_acces_public'] Accès public du cahier de texte
- * @param $_POST['visa_cdt_inter_modif_notices_visees'] Interdiction de modifier les notices visées
- * @param $_POST['delai_devoirs'] Délai de visualisation des devoirs
+ * @param $_POST['cahier_texte_acces_public'] AccÃ¨s public du cahier de texte
+ * @param $_POST['visa_cdt_inter_modif_notices_visees'] Interdiction de modifier les notices visÃ©es
+ * @param $_POST['delai_devoirs'] DÃ©lai de visualisation des devoirs
  * @param $_POST['is_posted']
  *
  */
@@ -61,14 +61,14 @@ if (!checkAccess()) {
 }
 
 /******************************************************************
- *    Enregistrement des variables passées en $_POST si besoin
+ *    Enregistrement des variables passÃ©es en $_POST si besoin
  ******************************************************************/
 $msg = "";
 if (isset($_POST['is_posted'])) {
 	check_token();
 	//debug_var();
 	if (isset($_POST['activer'])) {
-		if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 	}
 	
 	if (isset($_POST['version'])) {
@@ -133,7 +133,7 @@ if (isset($_POST['is_posted'])) {
 	
 	if (isset($_POST['delai_devoirs'])) {
 		if (!saveSetting("delai_devoirs", $_POST['delai_devoirs']))
-				$msg .= "Erreur lors de l'enregistrement du délai de visualisation des devoirs";
+				$msg .= "Erreur lors de l'enregistrement du dÃ©lai de visualisation des devoirs";
 	}
 
 
@@ -150,7 +150,7 @@ if (isset($_POST['is_posted'])) {
 
 
 	if (isset($_POST['is_posted']) && ($msg=="") ) {
-		$msg = "Les modifications ont été enregistrées !";
+		$msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 		$post_reussi=TRUE;
 	}
 	
@@ -167,7 +167,7 @@ if (isset($_POST['is_posted'])) {
 }
 
 // on demande une validation si on quitte sans enregistrer les changements
-$messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?";
+$messageEnregistrer="Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?";
 
 /****************************************************************
                      HAUT DE PAGE
@@ -181,7 +181,7 @@ include_once("../lib/header_template.inc");
 ****************************************************************/
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 //$titre_page = "Gestion des cahiers de textes";
 //require_once("../lib/header.inc");
 /****************************************************************
@@ -192,35 +192,35 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 <p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h2>Activation des cahiers de textes</h2>
 <form action="index.php" name="form1" method="post">
-<i>La désactivation des cahiers de textes n'entraîne aucune suppression des données. Lorsque le module est désactivé, les professeurs n'ont pas accès au module et la consultation publique des cahiers de textes est impossible.</i>
+<i>La dÃ©sactivation des cahiers de textes n'entraÃ®ne aucune suppression des donnÃ©es. Lorsque le module est dÃ©sactivÃ©, les professeurs n'ont pas accÃ¨s au module et la consultation publique des cahiers de textes est impossible.</i>
 <br />
 <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked='checked'"; ?> />
-&nbsp;Activer les cahiers de textes (consultation et édition)</label><br />
+&nbsp;Activer les cahiers de textes (consultation et Ã©dition)</label><br />
 <label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked='checked'"; ?> />
 
-&nbsp;Désactiver les cahiers de textes (consultation et édition)</label><br />
+&nbsp;DÃ©sactiver les cahiers de textes (consultation et Ã©dition)</label><br />
 <h2>Version des cahiers de textes</h2>
 <?php $extensions = get_loaded_extensions();
 		if(!in_array('pdo_mysql',$extensions)) {
-		    echo "<span style='color:red'>ATTENTION&nbsp;</span> Il semble que l'extension php 'pdo_mysql' ne soit pas présente.<br />Cela risque de rendre impossible l'utilisation de la version 2 du cahier de texte<br />";
+		    echo "<span style='color:red'>ATTENTION&nbsp;</span> Il semble que l'extension php 'pdo_mysql' ne soit pas prÃ©sente.<br />Cela risque de rendre impossible l'utilisation de la version 2 du cahier de texte<br />";
 		}?>
 <p style="font-style: italic;">La version 2 du cahier de texte necessite php 5.2.x minimum</p>
 	<label for='version_1' style='cursor: pointer;'>
 	<input type="radio" name="version" id="version_1" value="1" <?php if (getSettingValue("GepiCahierTexteVersion")=='1') echo " checked='checked'"; ?> />
-&nbsp;Cahier de texte version 1</label> (<span style='font-size: small; font-style: italic;'>le cahier de texte version 1 ne sera plus supporté dans la future version 1.5.3</span>)<br />
+&nbsp;Cahier de texte version 1</label> (<span style='font-size: small; font-style: italic;'>le cahier de texte version 1 ne sera plus supportÃ© dans la future version 1.5.3</span>)<br />
 	<label for='version_2' style='cursor: pointer;'>
 	<input type="radio" name="version" id="version_2" value="2" <?php if (getSettingValue("GepiCahierTexteVersion")=='2') echo " checked='checked'"; ?> />
 &nbsp;Cahier de texte version 2</label><br />
 
-<h2>Début et fin des cahiers de textes</h2>
-<i>Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers de textes sont visibles dans
+<h2>DÃ©but et fin des cahiers de textes</h2>
+<i>Seules les rubriques dont la date est comprise entre la date de dÃ©but et la date de fin des cahiers de textes sont visibles dans
 l'interface de consultation publique.
-<br />L'édition (modification/suppression/ajout) des cahiers de textes par les utilisateurs de GEPI n'est pas affectée par ces dates.
+<br />L'Ã©dition (modification/suppression/ajout) des cahiers de textes par les utilisateurs de GEPI n'est pas affectÃ©e par ces dates.
 </i><br />
 <table>
      <tr>
         <td>
-        Date de début des cahiers de textes :
+        Date de dÃ©but des cahiers de textes :
         </td>
         <td><?php
         $bday = strftime("%d", getSettingValue("begin_bookings"));
@@ -242,11 +242,11 @@ l'interface de consultation publique.
     </tr>
 </table>
 <input type="hidden" name="is_posted" value="1" />
-<h2>Accès public</h2>
-<label for='cahier_texte_acces_public_n' style='cursor: pointer;'><input type='radio' name='cahier_texte_acces_public' id='cahier_texte_acces_public_n' value='no'<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " checked='checked'";?> /> Désactiver la consultation publique des cahiers de textes (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)</label><br />
+<h2>AccÃ¨s public</h2>
+<label for='cahier_texte_acces_public_n' style='cursor: pointer;'><input type='radio' name='cahier_texte_acces_public' id='cahier_texte_acces_public_n' value='no'<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " checked='checked'";?> /> DÃ©sactiver la consultation publique des cahiers de textes (seuls des utilisateurs loguÃ©s pourront y avoir accÃ¨s en consultation, s'ils y sont autorisÃ©s)</label><br />
 <label for='cahier_texte_acces_public_y' style='cursor: pointer;'><input type='radio' name='cahier_texte_acces_public' id='cahier_texte_acces_public_y' value='yes'<?php if (getSettingValue("cahier_texte_acces_public") == "yes") echo " checked='checked'";?> /> Activer la consultation publique des cahiers de textes (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)</label><br />
-<p>-> Accès à l'<a href='../public/index.php?id_classe=-1' target='_blank'>interface publique de consultation des cahiers de textes</a></p>
-<i>En l'absence de mot de passe et d'identifiant, l'accès à l'interface publique de consultation des cahiers de textes est totalement libre.</i>
+<p>-> AccÃ¨s Ã  l'<a href='../public/index.php?id_classe=-1' target='_blank'>interface publique de consultation des cahiers de textes</a></p>
+<i>En l'absence de mot de passe et d'identifiant, l'accÃ¨s Ã  l'interface publique de consultation des cahiers de textes est totalement libre.</i>
 <br />
 Identifiant :
 <input type="text" name="cahiers_texte_login_pub" value="<?php echo getSettingValue("cahiers_texte_login_pub"); ?>" size="20" />
@@ -254,20 +254,20 @@ Identifiant :
 <input type="text" name="cahiers_texte_passwd_pub" value="<?php echo getSettingValue("cahiers_texte_passwd_pub"); ?>" size="20" />
 
  
-<h2>Délai de visualisation des devoirs</h2>
-<i>Indiquez ici le délai en jours pendant lequel les devoirs seront visibles, à compter du jour de visualisation sélectionné, dans l'interface publique de consulation des cahiers de textes.
+<h2>DÃ©lai de visualisation des devoirs</h2>
+<i>Indiquez ici le dÃ©lai en jours pendant lequel les devoirs seront visibles, Ã  compter du jour de visualisation sÃ©lectionnÃ©, dans l'interface publique de consulation des cahiers de textes.
 <br />Mettre la valeur 0 si vous ne souhaitez pas activer le module de remplissage des devoirs.
-Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case que le contenu des séances.
+Dans ce cas, les professeurs font figurer les devoirs Ã  faire dans la mÃªme case que le contenu des sÃ©ances.
 </i>
-<br />Délai :
+<br />DÃ©lai :
 <input type="text" name="delai_devoirs" value="<?php echo getSettingValue("delai_devoirs"); ?>" size="2" /> jours
 
 <br /><br />
 
 
 <h2>Visa des cahiers de texte</h2>
-<label for='visa_cdt_inter_modif_notices_visees_y' style='cursor: pointer;'><input type='radio' name='visa_cdt_inter_modif_notices_visees' id='visa_cdt_inter_modif_notices_visees_y' value='yes'<?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "yes") echo " checked='checked'";?> /> Activer l'interdiction pour les enseignants de modifier une notice après la signature des cahiers de textes</label><br />
-<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'><input type='radio' name='visa_cdt_inter_modif_notices_visees' id='visa_cdt_inter_modif_notices_visees_n' value='no'<?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "no") echo " checked='checked'";?> /> Désactiver l'interdiction pour les enseignants de modifier une notice après la signature des cahiers de textes</label><br />
+<label for='visa_cdt_inter_modif_notices_visees_y' style='cursor: pointer;'><input type='radio' name='visa_cdt_inter_modif_notices_visees' id='visa_cdt_inter_modif_notices_visees_y' value='yes'<?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "yes") echo " checked='checked'";?> /> Activer l'interdiction pour les enseignants de modifier une notice aprÃ¨s la signature des cahiers de textes</label><br />
+<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'><input type='radio' name='visa_cdt_inter_modif_notices_visees' id='visa_cdt_inter_modif_notices_visees_n' value='no'<?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "no") echo " checked='checked'";?> /> DÃ©sactiver l'interdiction pour les enseignants de modifier une notice aprÃ¨s la signature des cahiers de textes</label><br />
 
 <br /><br />
 
@@ -279,8 +279,8 @@ Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case 
 <h2>Gestion des cahiers de textes</h2>
 <ul>
 	<li><a href='modify_limites.php'>Espace disque maximal, taille maximale d'un fichier</a></li>
-	<li><a href='modify_type_doc.php'>Types de fichiers autorisés en téléchargement</a></li>
-	<li><a href='admin_ct.php'>Administration des cahiers de textes</a> (recherche des incohérences, modifications, suppressions)</li>
+	<li><a href='modify_type_doc.php'>Types de fichiers autorisÃ©s en tÃ©lÃ©chargement</a></li>
+	<li><a href='admin_ct.php'>Administration des cahiers de textes</a> (recherche des incohÃ©rences, modifications, suppressions)</li>
 	<li><a href='visa_ct.php'>Viser les cahiers de textes</a> (Signer les cahiers de textes)</li>
 </ul>
 
@@ -301,20 +301,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/cahier_texte_admin/index_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----

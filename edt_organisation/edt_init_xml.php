@@ -6,7 +6,7 @@
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 * Ajout Sandrine Dangreville
 * Divison Informatique -Rectorat de Creteil
-* Importation de données des fichiers sts_emp et emp_sts
+* Importation de donnÃ©es des fichiers sts_emp et emp_sts
 * pour injection dans gepi
 *
 *
@@ -47,7 +47,7 @@
 	}
 */
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation de l'emploi du temps";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation de l'emploi du temps";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -55,10 +55,10 @@ require_once("../lib/header.inc");
 $xml_sts_emp = simplexml_load_file('sts_emp.xml');
 $xml_emp_sts = simplexml_load_file('emp_sts.xml');
 //====================================================
-//export des données de l etablissement
+//export des donnÃ©es de l etablissement
 
 
-//initialisations des tableaux utilisés
+//initialisations des tableaux utilisÃ©s
 $ar_prof=array();
 $ar_etab=array();
 $ar_matiere=array();
@@ -73,7 +73,7 @@ $ar_horaires=array();
 $ar_periodes=array();
 $ar_periodes_mktime=array();
 
-//debut du décodage
+//debut du dÃ©codage
 foreach ($xml_sts_emp->xpath('//UAJ') as $rne_xml) {
 $rne=(string)$rne_xml["CODE"];
 /*echo "rne".strtolower($rne)."<br>";
@@ -82,13 +82,13 @@ $rne=(string)$rne_xml["CODE"];
  echo "code acad" , $ar_etab["CODE_ACAD"] , "libelle" , $ar_etab["LIBELLE"],"<br>"; */
 }
 
-//export des données relatives a l annee
+//export des donnÃ©es relatives a l annee
 foreach ($xml_sts_emp->xpath('//ANNEE_SCOLAIRE') as $annee_xml) {
 $s_annee=(string)$annee_xml["ANNEE"];
 //echo "annee",$s_annee,"<br>";
 }
 
-//construction du tableau des jours de la semaine ' à partir de la table gepi
+//construction du tableau des jours de la semaine ' Ã  partir de la table gepi
 
 $query_horaires="select id_horaire_etablissement,jour_horaire_etablissement from horaires_etablissement";
 $result_horaires=mysql_query($query_horaires) or die(mysql_error());
@@ -124,7 +124,7 @@ unset($i);
 $query_matiere="SELECT `matiere` FROM `matieres`;";
 $result_matiere = mysql_query($query_matiere) or die(mysql_error());
 
-//construction des tableaux des matieres deja présente dans l'emploi du temps
+//construction des tableaux des matieres deja prÃ©sente dans l'emploi du temps
 while ($ar_matiere_temp = mysql_fetch_array($result_matiere, MYSQL_NUM)) {
    array_push($ar_matiere_cdt,$ar_matiere_temp[0]);
 }
@@ -148,7 +148,7 @@ $result_insert=mysql_query($insert) or die($insert.mysql_error());
 }
 }
 
-//export des données des profs
+//export des donnÃ©es des profs
 foreach ($xml_sts_emp->xpath('//INDIVIDU') as $o_nom)
 	{
 	$s_fonction=(string)$o_nom->FONCTION;
@@ -158,10 +158,10 @@ foreach ($xml_sts_emp->xpath('//INDIVIDU') as $o_nom)
  	   $ar_prof["$ID"]["NOM"]=(string)$o_nom->NOM_USAGE;
  	   $prenom=(string)$o_nom->PRENOM;
     	list($prenom1,$prenom2)=split(" ",$prenom);
-//dans le cas ou on met un - au prenom composé
+//dans le cas ou on met un - au prenom composÃ©
  //   	if ($prenom2) { $ar_prof["$ID"]["PRENOM"]=$prenom1."-".$prenom2; }
  //	 	else { $ar_prof["$ID"]["PRENOM"]=$prenom; }
-//dans le cas ou on coupe le prénom
+//dans le cas ou on coupe le prÃ©nom
  	$ar_prof["$ID"]["PRENOM"]=$prenom1;
 
 
@@ -176,7 +176,7 @@ foreach ($xml_sts_emp->xpath('//INDIVIDU') as $o_nom)
 
 //lecture des alternances
 //construction d'un tableau pour chaque alternance
-//construction d'un tableau avec les différents type d'alternances;
+//construction d'un tableau avec les diffÃ©rents type d'alternances;
 //***************cette partie ne semble pas correspodnre avec la demande de julien*******************
 unset($i);
 
@@ -202,7 +202,7 @@ foreach ($xml_emp_sts->xpath('//ALTERNANCE') as $ar_alternance_temp)
 				$i++;
 				echo "Insertion des semaines pour les cours ".$ar_alternance["$s_code"]["LIBELLE_LONG"]."<br>";
 	}
-//nombre d'éléments du tableau $ar_alternance["$s_code"][$i]
+//nombre d'Ã©lÃ©ments du tableau $ar_alternance["$s_code"][$i]
 	$ar_alternance["$s_code"]["NOMBRE_SEMAINES"]=$i-1;
 */
 	}
@@ -218,7 +218,7 @@ foreach ($xml_emp_sts->xpath('//SALLE_COURS') as $ar_salle_cours)
 
 	if (mysql_num_rows($result_salle)<1)
 	{
-//insertion de la salle si la salle n'a pas été trouvée
+//insertion de la salle si la salle n'a pas Ã©tÃ© trouvÃ©e
 $query_ajout_salle="insert into salle_cours(`numero_salle`,`nom_salle`) values ('$salle','salle $salle');";
 $result_insert_salle=mysql_query($query_ajout_salle) or die(mysql_error());
 echo "Insertion de la salle $salle dans la base <br>";
@@ -230,7 +230,7 @@ echo "Insertion de la salle $salle dans la base <br>";
 
 //export des divisions et des services
 
-echo "<h1>Traitement des classes entières</h1>";
+echo "<h1>Traitement des classes entiÃ¨res</h1>";
 	foreach ($xml_emp_sts->xpath('//DIVISION') as $o_classe)
 	{
 	$s_nom_classe=(string)$o_classe["CODE"];
@@ -252,7 +252,7 @@ $s_prenom_prof=$ar_prof["$ID_prof"]["PRENOM"];
 $query="select login from utilisateurs where nom='$s_nom_prof' and prenom='$s_prenom_prof';";
 $result_recherche_prof=mysql_query($query);
 if (mysql_num_rows($result_recherche_prof)==0)
-{ echo "<font color=red> Un professeur n'a pas été trouvé dans la base, vérifiez sa présence et relancez le script<br>Nom:$s_nom_prof et Prénom:$s_prenom_prof</font>"; next;}
+{ echo "<font color=red> Un professeur n'a pas Ã©tÃ© trouvÃ© dans la base, vÃ©rifiez sa prÃ©sence et relancez le script<br>Nom:$s_nom_prof et PrÃ©nom:$s_prenom_prof</font>"; next;}
 
 $row_prof=mysql_fetch_row($result_recherche_prof);
 $query_classe="select j_groupes_classes.id_groupe from classes,j_groupes_classes,j_groupes_professeurs,j_groupes_matieres where classes.classe='$s_nom_classe' and classes.id=j_groupes_classes.id_classe and j_groupes_classes.id_groupe=j_groupes_professeurs.id_groupe and j_groupes_classes.id_groupe=j_groupes_matieres.id_groupe and j_groupes_professeurs.login='".$row_prof[0]."' and j_groupes_matieres.id_matiere='".$ar_matiere["$s_code_matiere"]."';";
@@ -263,7 +263,7 @@ if (mysql_num_rows($result_classe)>0) {
 		$id_groupe=$row_cours[0];
 		}
 	else {
-			echo "<br> Pas de groupes correspondant avec les données  suivantes : Classe entiere $s_nom_classe  Prof : ".$row_prof[0]." Matiere ".$ar_matiere["$s_code_matiere"]." Traitement a faire ulterieurement <br>";
+			echo "<br> Pas de groupes correspondant avec les donnÃ©es  suivantes : Classe entiere $s_nom_classe  Prof : ".$row_prof[0]." Matiere ".$ar_matiere["$s_code_matiere"]." Traitement a faire ulterieurement <br>";
 		continue;
 		}
 foreach ($o_service->ENSEIGNANTS->ENSEIGNANT->COURS_RATTACHES->COURS as $o_cours) {
@@ -291,7 +291,7 @@ $i_duree=((integer)$s_duree_h*2+(integer)$s_duree_min);
 $mktime_cours=mktime ($s_heure, $s_minute, 0, 0, 0, 0);
 
 //************************* pour la recherche du code des semaines ou a lieu le cours
-// j'extraie le code qui permet la lecture des semaines rattachées
+// j'extraie le code qui permet la lecture des semaines rattachÃ©es
 $code_repetition_cours=(string)$o_cours->CODE_ALTERNANCE;
 
 //recherche du champ id_definie_periode
@@ -303,8 +303,8 @@ foreach ($ar_periodes as $id_periodes=>$periodes)
 if (($mktime_cours>=$periodes["mktime_debut"]) and ($mktime_cours<$periodes["mktime_fin"]))
 {
 $id_definie_periode=$periodes["id_definie_periode"];
-// ******************les horaires effectifs et ceux indiqués dans l'emploi du temps different a cause des pause et des intercours
-//on suppose donc que tous cours commencant 15 minutes après un créneau en fait partie
+// ******************les horaires effectifs et ceux indiquÃ©s dans l'emploi du temps different a cause des pause et des intercours
+//on suppose donc que tous cours commencant 15 minutes aprÃ¨s un crÃ©neau en fait partie
 if ($mktime_cours>$periodes["mktime_debut"]+1500) { $heuredeb_cours=0.5; }
 }
 }
@@ -314,10 +314,10 @@ $result_search_edt=mysql_query($query_verif_edt) or die(mysql_error());
 if (!$result_search_edt) { continue;}
 if (mysql_num_rows($result_search_edt)>0)
 {
-echo "<br>Le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle existe déja <br>";
+echo "<br>Le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle existe dÃ©ja <br>";
 }
 else
-//insertion du cours qui n'est pas encore défini
+//insertion du cours qui n'est pas encore dÃ©fini
 {
 //***************************************************************
 //les champs  id_semaine, modif_edt ne sont pas correctement remplis
@@ -350,11 +350,11 @@ $result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
 }
 $i_duree=$i_duree-2;
 }
-// le cours peut aussi finir en milieu de créneaux, on rajoute une demi-heure sur le créneau suivant
+// le cours peut aussi finir en milieu de crÃ©neaux, on rajoute une demi-heure sur le crÃ©neau suivant
 
 }
 
-	echo "<p><font color=green>Insertion du cours pour le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle pour la période ".$ar_alternance[$code_repetition_cours]["LIBELLE_LONG"]."</font></p>";
+	echo "<p><font color=green>Insertion du cours pour le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle pour la pÃ©riode ".$ar_alternance[$code_repetition_cours]["LIBELLE_LONG"]."</font></p>";
 }
 unset($periodes);
 }
@@ -375,7 +375,7 @@ echo "<h1>Traitement des groupes</h1>";
 	foreach ($o_groupe->DIVISIONS_APPARTENANCE->DIVISION_APPARTENANCE as $o_groupe_division)
 	{
 	$s_nom_classe=(string)$o_groupe_division["CODE"];
-	echo "Ce groupe a des éléments dans la classe ".$s_nom_classe."<br>";
+	echo "Ce groupe a des Ã©lÃ©ments dans la classe ".$s_nom_classe."<br>";
 
 
 foreach ($o_groupe->SERVICES->SERVICE as $o_service_groupe) {
@@ -391,7 +391,7 @@ $s_prenom_prof=$ar_prof["$ID_prof"]["PRENOM"];
 $query="select login from utilisateurs where nom='$s_nom_prof' and prenom = '$s_prenom_prof';";
 $result_recherche_prof=mysql_query($query);
 if (mysql_num_rows($result_recherche_prof)==0)
-{ echo " <font color=red>Un professeur n'a pas été trouvé dans la base, vérifiez sa présence et relancez le script<br>Nom:$s_nom_prof et Prénom:$s_prenom_prof</font>"; next;}
+{ echo " <font color=red>Un professeur n'a pas Ã©tÃ© trouvÃ© dans la base, vÃ©rifiez sa prÃ©sence et relancez le script<br>Nom:$s_nom_prof et PrÃ©nom:$s_prenom_prof</font>"; next;}
 $row_prof=mysql_fetch_row($result_recherche_prof);
 $query_classe="select j_groupes_classes.id_groupe from classes,j_groupes_classes,j_groupes_professeurs,j_groupes_matieres where classes.classe='$s_nom_classe' and classes.id=j_groupes_classes.id_classe and j_groupes_classes.id_groupe=j_groupes_professeurs.id_groupe and j_groupes_classes.id_groupe=j_groupes_matieres.id_groupe and  j_groupes_professeurs.login='".$row_prof[0]."' and j_groupes_matieres.id_matiere='".$ar_matiere["$s_code_matiere_groupe"]."';";
 $result_classe=mysql_query($query_classe) or die(mysql_error());
@@ -402,7 +402,7 @@ if (mysql_num_rows($result_classe)>0) {
 		$id_groupe=$row_cours[0];
 		}
 	else {
-		echo "<br> Pas de groupes correspondant avec les données  suivantes : Groupe  $s_nom_classe  Prof : ".$row_prof[0]." Matiere ".$ar_matiere["$s_code_matiere_groupe"]." Traitement a faire ulterieurement <br>";
+		echo "<br> Pas de groupes correspondant avec les donnÃ©es  suivantes : Groupe  $s_nom_classe  Prof : ".$row_prof[0]." Matiere ".$ar_matiere["$s_code_matiere_groupe"]." Traitement a faire ulterieurement <br>";
 		continue;
 		}
 foreach ($o_service_groupe->ENSEIGNANTS->ENSEIGNANT->COURS_RATTACHES->COURS as $o_cours_groupe) {
@@ -418,7 +418,7 @@ foreach ($o_service_groupe->ENSEIGNANTS->ENSEIGNANT->COURS_RATTACHES->COURS as $
 	$s_day_cours=(string)$o_cours_groupe->JOUR;
 
 	//************************* pour la recherche du code des semaines ou a lieu le cours
-// j'extraie le code qui permet la lecture des semaines rattachées
+// j'extraie le code qui permet la lecture des semaines rattachÃ©es
 $code_repetition_cours=(string)$o_cours_groupe->CODE_ALTERNANCE;
 
 
@@ -443,8 +443,8 @@ foreach ($ar_periodes as $id_periodes=>$periodes)
 if (($mktime_cours>=$periodes["mktime_debut"]) and ($mktime_cours<$periodes["mktime_fin"]))
 {
 $id_definie_periode=$periodes["id_definie_periode"];
-// ******************les horaires effectifs et ceux indiqués dans l'emploi du temps different a cause des pause et des intercours
-//on suppose donc que tous cours commencant 15 minutes après un créneau en fait partie
+// ******************les horaires effectifs et ceux indiquÃ©s dans l'emploi du temps different a cause des pause et des intercours
+//on suppose donc que tous cours commencant 15 minutes aprÃ¨s un crÃ©neau en fait partie
 if ($mktime_cours>$periodes["mktime_debut"]+1500) { $heuredeb_cours=0.5; }
 }
 }
@@ -454,10 +454,10 @@ $result_search_edt=mysql_query($query_verif_edt) or die(mysql_error());
 if (!$result_search_edt) { continue;}
 if (mysql_num_rows($result_search_edt)>0)
 {
-echo "<br>Le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere_groupe"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle existe déja <br>";
+echo "<br>Le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere_groupe"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle existe dÃ©ja <br>";
 }
 else
-//insertion du cours qui n'est pas encore défini
+//insertion du cours qui n'est pas encore dÃ©fini
 {
 //***************************************************************
 //les champs  id_semaine, modif_edt ne sont pas correctement remplis
@@ -490,11 +490,11 @@ $result_insert_edt=mysql_query($query_insert_edt) or die(mysql_error());
 }
 $i_duree=$i_duree-2;
 }
-// le cours peut aussi finir en milieu de créneaux, on rajoute une demi-heure sur le créneau suivant
+// le cours peut aussi finir en milieu de crÃ©neaux, on rajoute une demi-heure sur le crÃ©neau suivant
 
 }
 
-	echo "<p><font color=green>Insertion du cours pour le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere_groupe"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle pour la période ".$ar_alternance[$code_repetition_cours]["LIBELLE_LONG"]."</font></p>";
+	echo "<p><font color=green>Insertion du cours pour le groupe de la classe $s_nom_classe, matiere ".$ar_matiere["$s_code_matiere_groupe"].", prof $s_nom_prof,jour ".$ar_horaires["jour_horaire_etab"][$s_day_cours].", heure ".$ar_periodes[$id_definie_periode]["nom_definie_periode"]." , salle $s_salle pour la pÃ©riode ".$ar_alternance[$code_repetition_cours]["LIBELLE_LONG"]."</font></p>";
 }
 unset($periodes);
 }

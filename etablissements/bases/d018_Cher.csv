@@ -1,10 +1,10 @@
-0180002E;GÈrard Philipe;college;public;18700;Aubigny-sur-NËre
+0180002E;G√©rard Philipe;college;public;18700;Aubigny-sur-N√®re
 0180004G;George Sand;college;public;18520;Avord
-0180013S;Antoine Meillet;college;public;18370;Ch‚teaumeillant
-0180014T;FranÁois Le Champi;college;public;18170;Le-Ch‚telet
-0180019Y;BÈthune-Sully;college;public;18250;Henrichemont
-0180020Z;Philibert Lautissier;college;public;18160;LigniËres
-0180023C;Julien Dumas;college;public;18350;NÈrondes
+0180013S;Antoine Meillet;college;public;18370;Ch√¢teaumeillant
+0180014T;Fran√ßois Le Champi;college;public;18170;Le-Ch√¢telet
+0180019Y;B√©thune-Sully;college;public;18250;Henrichemont
+0180020Z;Philibert Lautissier;college;public;18160;Ligni√®res
+0180023C;Julien Dumas;college;public;18350;N√©rondes
 0180028H;Voltaire;college;public;18400;Saint-Florent-sur-Cher
 0180031L;-;college;public;18300;Sancerre
 0180033N;Marguerite Audoux;college;public;18600;Sancoins
@@ -15,18 +15,18 @@
 0180061U;-;ecole;public;18210;Bannegon
 0180064X;-;ecole;public;18210;Bessais-le-Fromental
 0180066Z;-;ecole;public;18240;Boulleret
-0180073G;-;ecole;public;18370;Ch‚teaumeillant
+0180073G;-;ecole;public;18370;Ch√¢teaumeillant
 0180083T;-;ecole;public;18210;Coust
-0180085V;-;ecole;public;18300;CrÈzancy-en-Sancerre
+0180085V;-;ecole;public;18300;Cr√©zancy-en-Sancerre
 0180089Z;-;ecole;public;18300;Feux
 0180100L;-;ecole;public;18600;Givardon
 0180101M;-;ecole;public;18600;Grossouvre
 0180103P;-;ecole;public;18300;Jalognes
-0180104R;Camille Boistard;ecole;public;18240;LÈrÈ
-0180107U;-;ecole;public;18300;Menetou-R‚tel
-0180109W;-;ecole;public;18300;MÈnÈtrÈol-sous-Sancerre
+0180104R;Camille Boistard;ecole;public;18240;L√©r√©
+0180107U;-;ecole;public;18300;Menetou-R√¢tel
+0180109W;-;ecole;public;18300;M√©n√©tr√©ol-sous-Sancerre
 0180111Y;-;ecole;public;18600;Mornay-sur-Allier
-0180112Z;-;ecole;public;18160;LigniËres
+0180112Z;-;ecole;public;18160;Ligni√®res
 0180113A;-;ecole;public;18600;Neuilly-en-Dun
 0180114B;-;ecole;public;18600;Neuvy-le-Barrois
 0180118F;-;ecole;public;18270;Reigny
@@ -51,20 +51,20 @@
 0180160B;-;ecole;public;18110;Allogny
 0180162D;-;ecole;public;18500;Allouis
 0180163E;-;ecole;public;18340;Annoix
-0180164F;-;ecole;public;18340;ArÁay
+0180164F;-;ecole;public;18340;Ar√ßay
 0180165G;-;ecole;public;18410;Argent-sur-Sauldre
 0180167J;-;ecole;public;18500;Berry-Bouy
 0180168K;-;ecole;public;18410;Blancafort
 0180170M;-;ecole;public;18410;Brinon-sur-Sauldre
 0180173R;-;ecole;public;18130;Chalivoy-Milon
-0180180Y;-;ecole;public;18310;Dampierre-en-GraÁay
-0180186E;-;ecole;public;18500;FoÎcy
+0180180Y;-;ecole;public;18310;Dampierre-en-Gra√ßay
+0180186E;-;ecole;public;18500;Fo√´cy
 0180188G;-;ecole;public;18310;Genouilly
-0180191K;-;ecole;public;18380;Ivoy-le-PrÈ
+0180191K;-;ecole;public;18380;Ivoy-le-Pr√©
 0180195P;-;ecole;public;18340;Levet
-0180201W;Les Charmilles;ecole;public;18500;Mehun-sur-YËvre
-0180203Y;du Ch‚teau;ecole;public;18500;Mehun-sur-YËvre
-0180208D;-;ecole;public;18380;MÈry-Ës-Bois
+0180201W;Les Charmilles;ecole;public;18500;Mehun-sur-Y√®vre
+0180203Y;du Ch√¢teau;ecole;public;18500;Mehun-sur-Y√®vre
+0180208D;-;ecole;public;18380;M√©ry-√®s-Bois
 0180211G;-;ecole;public;18130;Osmery
 0180212H;-;ecole;public;18110;Pigny
 0180213J;-;ecole;public;18340;Plaimpied-Givaudins
@@ -77,50 +77,50 @@
 0180233F;Louis Dezelot 2;ecole;public;18400;Saint-Florent-sur-Cher
 0180234G;Louis Dezelot 1;ecole;public;18400;Saint-Florent-sur-Cher
 0180236J;-;ecole;public;18110;Saint-Georges-sur-Moulon
-0180237K;-;ecole;public;18100;Saint-Georges-sur-la-PrÈe
+0180237K;-;ecole;public;18100;Saint-Georges-sur-la-Pr√©e
 0180238L;-;ecole;public;18340;Saint-Germain-des-Bois
 0180239M;-;ecole;public;18340;Saint-Just
 0180241P;-;ecole;public;18330;Saint-Laurent
 0180246V;-;ecole;public;18110;Saint-Palais
 0180248X;-;ecole;public;18500;Sainte-Thorette
-0180250Z;-;ecole;public;18340;SenneÁay
+0180250Z;-;ecole;public;18340;Senne√ßay
 0180252B;-;ecole;public;18570;Le-Subdray
 0180253C;-;ecole;public;18570;Trouy
 0180255E;-;ecole;public;18110;Vasselay
 0180257G;-;ecole;public;18110;Vignoux-sous-les-Aix
 0180258H;-;ecole;public;18400;Villeneuve-sur-Cher
 0180259J;-;ecole;public;18340;Vorly
-0180261L;du Ch‚teau;ecole;public;18100;Vierzon
+0180261L;du Ch√¢teau;ecole;public;18100;Vierzon
 0180262M;du Colombier;ecole;public;18100;Vierzon
 0180263N;Fay A;ecole;public;18100;Vierzon
 0180265R;Joliot-Curie;ecole;public;18100;Vierzon
 0180267T;Emile Charot;ecole;public;18100;Vierzon
 0180269V;route de Paris;ecole;public;18100;Vierzon
 0180272Y;Fay B;ecole;public;18100;Vierzon
-0180277D;MoliËre;ecole;public;18100;Vierzon
-0180290T;-;ecole;public;18290;Ch‚rost
+0180277D;Moli√®re;ecole;public;18100;Vierzon
+0180290T;-;ecole;public;18290;Ch√¢rost
 0180292V;-;ecole;public;18290;Civray
-0180295Y;GÈrard Jamet;ecole;public;18400;Lunery
+0180295Y;G√©rard Jamet;ecole;public;18400;Lunery
 0180299C;-;ecole;public;18290;Mareuil-sur-Arnon
 0180301E;-;ecole;public;18120;Massay
-0180303G;-;ecole;public;18100;MÈry-sur-Cher
+0180303G;-;ecole;public;18100;M√©ry-sur-Cher
 0180304H;-;ecole;public;18570;Morthomiers
-0180305J;-;ecole;public;18330;NanÁay
+0180305J;-;ecole;public;18330;Nan√ßay
 0180307L;-;ecole;public;18330;Neuvy-sur-Barangeon
 0180309N;-;ecole;public;18290;Plou
 0180311R;-;ecole;public;18100;Saint-Hilaire-de-Court
-0180312S;-;ecole;public;18100;ThÈnioux
+0180312S;-;ecole;public;18100;Th√©nioux
 0180313T;-;ecole;public;18500;Vignoux-sur-Barangeon
 0180315V;-;ecole;public;18330;Vouzeron
 0180316W;Jules Ferry;ecole;public;18000;Bourges
 0180318Y;Jean-Jacques Rousseau;ecole;public;18000;Bourges
 0180320A;Auron B;ecole;public;18000;Bourges
-0180321B;BarbËs;ecole;public;18000;Bourges
+0180321B;Barb√®s;ecole;public;18000;Bourges
 0180322C;Beaumont;ecole;public;18000;Bourges
 0180324E;Grand Meaulnes;ecole;public;18000;Bourges
 0180325F;Cour Chertier;ecole;public;18000;Bourges
 0180329K;des Merlattes;ecole;public;18000;Bourges
-0180331M;de l'AÈroport;ecole;public;18000;Bourges
+0180331M;de l'A√©roport;ecole;public;18000;Bourges
 0180332N;de Carolus;ecole;public;18000;Bourges
 0180334R;Auron A;ecole;public;18000;Bourges
 0180336T;du Bouillet;ecole;public;18000;Bourges
@@ -128,11 +128,11 @@
 0180340X;Marcel Plaisant;ecole;public;18000;Bourges
 0180343A;Nicolas Leblanc;ecole;public;18000;Bourges
 0180344B;de Pignoux;ecole;public;18000;Bourges
-0180364Y;-;ecole;public;18700;MÈnÈtrÈol-sur-Sauldre
-0180365Z;-;ecole;public;18120;MÈreau
+0180364Y;-;ecole;public;18700;M√©n√©tr√©ol-sur-Sauldre
+0180365Z;-;ecole;public;18120;M√©reau
 0180366A;-;ecole;public;18170;Morlac
 0180367B;-;ecole;public;18220;Morogues
-0180369D;-;ecole;public;18200;NoziËres
+0180369D;-;ecole;public;18200;Nozi√®res
 0180370E;-;ecole;public;18700;Oizon
 0180372G;-;ecole;public;18200;Orcenais
 0180375K;-;ecole;public;18220;Parassy
@@ -149,19 +149,19 @@
 0180416E;-;ecole;public;18170;Ardenais
 0180421K;-;ecole;public;18220;Aubinges
 0180423M;-;ecole;public;18220;Azy
-0180426R;-;ecole;public;18220;BrÈcy
+0180426R;-;ecole;public;18220;Br√©cy
 0180428T;-;ecole;public;18120;Brinay
 0180431W;-;ecole;public;18200;La-Celle
 0180432X;-;ecole;public;18360;La-Celette
 0180433Y;-;ecole;public;18120;Cerbois
-0180440F;-;ecole;public;18120;ChÈry
+0180440F;-;ecole;public;18120;Ch√©ry
 0180441G;-;ecole;public;18200;Colombiers
 0180442H;-;ecole;public;18200;Drevant
 0180443J;du Moulin;ecole;public;18360;Epineuil-le-Fleuriel
 0180452U;-;ecole;public;18170;Ids-Saint-Roch
 0180453V;-;ecole;public;18120;Lazenay
 0180457Z;-;ecole;public;18120;Lury-sur-Arnon
-0180462E;-;ecole;public;18250;AchËres
+0180462E;-;ecole;public;18250;Ach√®res
 0180466J;-;ecole;public;18520;Avord
 0180468L;-;ecole;public;18260;Barlieu
 0180469M;-;ecole;public;18800;Baugy
@@ -174,7 +174,7 @@
 0180486F;-;ecole;public;18350;Cornusse
 0180488H;-;ecole;public;18140;Couy
 0180489J;-;ecole;public;18340;Crosses
-0180494P;-;ecole;public;18800;EtrÈchy
+0180494P;-;ecole;public;18800;Etr√©chy
 0180495R;-;ecole;public;18800;Farges-en-Septaine
 0180497T;-;ecole;public;18140;Garigny
 0180498U;-;ecole;public;18150;Germigny-l'Exempt
@@ -187,17 +187,17 @@
 0180516N;-;ecole;public;18260;Jars
 0180520T;-;ecole;public;18140;Jussy-le-Chaudrier
 0180528B;-;ecole;public;18250;Montigny
-0180531E;-;ecole;public;18350;NÈrondes
+0180531E;-;ecole;public;18350;N√©rondes
 0180535J;-;ecole;public;18250;Neuvy-Deux-Clochers
-0180536K;-;ecole;public;18390;Nohant-en-Go˚t
+0180536K;-;ecole;public;18390;Nohant-en-Go√ªt
 0180539N;-;ecole;public;18350;Ourouer-les-Bourdelins
 0180546W;-;ecole;public;18140;Sancergues
 0180549Z;-;ecole;public;18260;Subligny
-0180567U;Sainte-Marie;college;prive;18350;NÈrondes
+0180567U;Sainte-Marie;college;prive;18350;N√©rondes
 0180568V;Saint-Jean-Baptiste De La Salle;college;prive;18000;Bourges
 0180570X;Notre-Dame;college;prive;18100;Vierzon
-0180586P;IrËne Joliot-Curie;college;public;18500;Mehun-sur-YËvre
-0180591V;Antoine De Saint-ExupÈry;college;public;18000;Bourges
+0180586P;Ir√®ne Joliot-Curie;college;public;18500;Mehun-sur-Y√®vre
+0180591V;Antoine De Saint-Exup√©ry;college;public;18000;Bourges
 0180592W;Albert Camus;college;public;18100;Vierzon
 0180593X;Victor Hugo;college;public;18000;Bourges
 0180602G;Marceau;ecole;public;18200;Saint-Amand-Montrond
@@ -209,26 +209,26 @@
 0180608N;-;ecole;public;18360;Saulzais-le-Potier
 0180637V;Les Barbottes;ecole;public;18000;Bourges
 0180643B;Louis Armand;college;public;18230;Saint-Doulchard
-0180644C;Fernand LÈger;college;public;18100;Vierzon
+0180644C;Fernand L√©ger;college;public;18100;Vierzon
 0180645D;des Pressavois;ecole;public;18000;Bourges
 0180646E;Jean Valette;college;public;18200;Saint-Amand-Montrond
-0180650J;-;ecole;public;18200;BruËre-Allichamps
+0180650J;-;ecole;public;18200;Bru√®re-Allichamps
 0180652L;-;ecole;public;18210;Charenton-du-Cher
-0180653M;-;ecole;public;18170;Le-Ch‚telet
-0180654N;-;ecole;public;18410;ClÈmont
+0180653M;-;ecole;public;18170;Le-Ch√¢telet
+0180654N;-;ecole;public;18410;Cl√©mont
 0180656R;-;ecole;public;18500;Marmagne
 0180658T;-;ecole;public;18230;Saint-Doulchard
-0180659U;-;ecole;public;18160;Saint-Hilaire-en-LigniËres
+0180659U;-;ecole;public;18160;Saint-Hilaire-en-Ligni√®res
 0180660V;-;ecole;public;18390;Savigny-en-Septaine
 0180661W;P. Bodin - J. Zay;ecole;public;18100;Vierzon
 0180673J;Jules Verne;college;public;18000;Bourges
-0180676M;Sainte-Solange;ecole;prive;18700;Aubigny-sur-NËre
+0180676M;Sainte-Solange;ecole;prive;18700;Aubigny-sur-N√®re
 0180678P;Sainte-Marie - Saint-Dominique;ecole;prive;18000;Bourges
-0180682U;SacrÈ-Coeur;ecole;prive;18000;Bourges
+0180682U;Sacr√©-Coeur;ecole;prive;18000;Bourges
 0180683V;Saint-Joseph;ecole;prive;18600;Sancoins
 0180684W;Sainte-Marthe;ecole;prive;18000;Bourges
 0180685X;Notre-Dame La Blanche;ecole;prive;18000;Bourges
-0180694G;Sainte-Marie;ecole;prive;18350;NÈrondes
+0180694G;Sainte-Marie;ecole;prive;18350;N√©rondes
 0180696J;Saint-Joseph - Jeanne D'Arc;ecole;prive;18200;Saint-Amand-Montrond
 0180700N;Notre-Dame;ecole;prive;18300;Sancerre
 0180701P;Sainte-Solange;ecole;prive;18110;Vasselay
@@ -238,9 +238,9 @@
 0180713C;Maurice Genevoix;ecole;public;18150;La-Guerche-sur-l'Aubois
 0180715E;-;ecole;public;18320;Jouet-sur-l'Aubois
 0180716F;-;ecole;public;18110;Saint-Eloy-de-Gy
-0180717G;Chaillot - J. PrÈvert;ecole;public;18100;Vierzon
+0180717G;Chaillot - J. Pr√©vert;ecole;public;18100;Vierzon
 0180719J;-;ecole;public;18200;Meillant
-0180721L;Emile LittrÈ;college;public;18000;Bourges
+0180721L;Emile Littr√©;college;public;18000;Bourges
 0180725R;-;ecole;public;18320;Cours-les-Barres
 0180727T;du Paradis;ecole;public;18230;Saint-Doulchard
 0180728U;-;ecole;public;18150;Cuffy
@@ -248,43 +248,43 @@
 0180736C;Le Colombier;college;public;18130;Dun-sur-Auron
 0180738E;-;ecole;public;18380;La-Chapelle-d'Angillon
 0180739F;-;ecole;public;18130;Dun-sur-Auron
-0180740G;-;ecole;public;18310;GraÁay
+0180740G;-;ecole;public;18310;Gra√ßay
 0180743K;Les Talleries;ecole;public;18570;Trouy
-0180744L;Sainte-ThÈrËse;ecole;prive;18130;Dun-sur-Auron
+0180744L;Sainte-Th√©r√®se;ecole;prive;18130;Dun-sur-Auron
 0180745M;Roger-Martin Du Gard;college;public;18140;Sancergues
 0180746N;Les Verdins;ecole;public;18230;Saint-Doulchard
 0180766K;Grand Meaulnes;college;public;18000;Bourges
 0180769N;Jean Moulin;college;public;18200;Saint-Amand-Montrond
 0180771R;-;ecole;public;18570;La-Chapelle-Saint-Ursin
 0180777X;Jean Renoir;college;public;18000;Bourges
-0180780A;-;ecole;public;18160;Chezal-BenoÓt
-0180781B;Turly - La BussiËre;ecole;public;18000;Bourges
+0180780A;-;ecole;public;18160;Chezal-Beno√Æt
+0180781B;Turly - La Bussi√®re;ecole;public;18000;Bourges
 0180787H;Le Vernet;ecole;public;18200;Saint-Amand-Montrond
 0180794R;des Machereaux;ecole;public;18000;Bourges
 0180796T;Sainte-Marie - Saint-Dominique;college;prive;18000;Bourges
-0180811J;Jean MacÈ;ecole;public;18000;Bourges
+0180811J;Jean Mac√©;ecole;public;18000;Bourges
 0180836L;-;ecole;public;18200;La-Groutte
-0180856H;Les Grands Jardins;ecole;public;18700;Aubigny-sur-NËre
+0180856H;Les Grands Jardins;ecole;public;18700;Aubigny-sur-N√®re
 0180863R;Camille Claudel;ecole;public;18000;Bourges
 0180866U;-;ecole;public;18520;Bengy-sur-Craon
 0180867V;Gibjoncs;ecole;public;18000;Bourges
 0180868W;Marcel Sembat;ecole;public;18000;Bourges
 0180869X;Les Buissonnets;ecole;public;18200;Saint-Amand-Montrond
 0180870Y;des Forges;ecole;public;18100;Vierzon
-0180871Z;Raoul NÈron;ecole;public;18390;Saint-Germain-du-Puy
-0180881K;Louis Aragon - Jacques PrÈvert;ecole;public;18000;Bourges
-0180882L;Marcel Pagnol;ecole;public;18500;Mehun-sur-YËvre
+0180871Z;Raoul N√©ron;ecole;public;18390;Saint-Germain-du-Puy
+0180881K;Louis Aragon - Jacques Pr√©vert;ecole;public;18000;Bourges
+0180882L;Marcel Pagnol;ecole;public;18500;Mehun-sur-Y√®vre
 0180883M;Jacques Ganne;ecole;public;18200;Orval
-0180884N;-;ecole;public;18370;PrÈveranges
+0180884N;-;ecole;public;18370;Pr√©veranges
 0180885P;Puits Berteau;ecole;public;18100;Vierzon
 0180891W;-;ecole;public;18240;Belleville-sur-Loire
-0180892X;-;ecole;public;18190;Ch‚teauneuf-sur-Cher
+0180892X;-;ecole;public;18190;Ch√¢teauneuf-sur-Cher
 0180893Y;-;ecole;public;18270;Culan
 0180894Z;-;ecole;public;18110;Fussy
 0180896B;-;ecole;public;18510;Menetou-Salon
 0180897C;-;ecole;public;18220;Sainte-Solange
 0180898D;-;ecole;public;18190;Vallenay
 0180899E;du Bourgneuf;ecole;public;18100;Vierzon
-0180907N;RosiËres - R. Mariat;ecole;public;18400;Lunery
-0180908P;-;ecole;public;18170;MarÁais
-0180914W;-;ecole;public;18320;Marseilles-lËs-Aubigny
+0180907N;Rosi√®res - R. Mariat;ecole;public;18400;Lunery
+0180908P;-;ecole;public;18170;Mar√ßais
+0180914W;-;ecole;public;18320;Marseilles-l√®s-Aubigny

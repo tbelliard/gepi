@@ -37,17 +37,17 @@
 
 // =============================================================================
 //
-//          Si des cours se déroulent sur les mêmes créneaux (cas classique semaine A semaine B)
-//          cette fonction permet de déterminer la hauteur maximum des deux colonnes à afficher
-//          de façon à créer deux "div" conteneurs de width = 50% que l'on remplit par la suite
+//          Si des cours se dÃ©roulent sur les mÃªmes crÃ©neaux (cas classique semaine A semaine B)
+//          cette fonction permet de dÃ©terminer la hauteur maximum des deux colonnes Ã  afficher
+//          de faÃ§on Ã  crÃ©er deux "div" conteneurs de width = 50% que l'on remplit par la suite
 //
 //          $jour_sem = lundi, mardi...
 //          $login_edt = login du prof
-//          $tab_id_creneaux = tableau contenant les créneaux (M1, M2...)
-//          $elapse_time = position du pointeur de remplissage (0 = M1(début), 1 = M1(milieu), 2 = M2 etc...)
-//          $req_creneau = requête sql passée
-//          $j = indice pour indiquer le créneau concerné dans $tab_id_creneau
-//          $rang1, $rang2 = indique sur quels enregistrements de la requête porte le calcul           
+//          $tab_id_creneaux = tableau contenant les crÃ©neaux (M1, M2...)
+//          $elapse_time = position du pointeur de remplissage (0 = M1(dÃ©but), 1 = M1(milieu), 2 = M2 etc...)
+//          $req_creneau = requÃªte sql passÃ©e
+//          $j = indice pour indiquer le crÃ©neau concernÃ© dans $tab_id_creneau
+//          $rang1, $rang2 = indique sur quels enregistrements de la requÃªte porte le calcul           
 //          
 //
 // =============================================================================
@@ -60,7 +60,7 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
             $rep_creneau = mysql_fetch_array($req_creneau);
             $id_semaine2 = $rep_creneau['id_semaine'];
             $duree2 = $rep_creneau['duree'];
-            // ===== tests de sécurité sur $rang1 et $rang2
+            // ===== tests de sÃ©curitÃ© sur $rang1 et $rang2
             if ($rang1 <=0) {
                 $rang1 = 1;
             }
@@ -69,7 +69,7 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
             }
             if ((mysql_num_rows($req_creneau) == 2) AND ($id_semaine1 == $id_semaine2) AND ($id_semaine1 != '0'))
             {
-                // ========= étude du cas rebelle 15'' !!
+                // ========= Ã©tude du cas rebelle 15'' !!
 
                 if ($duree1 == 1) {
                     $elapse_time1 = $elapse_time + $duree2;
@@ -85,7 +85,7 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
                 $j++;
             }
             else {
-                // ************************ calcul de la durée max des deux colonnes dans tous les autres cas
+                // ************************ calcul de la durÃ©e max des deux colonnes dans tous les autres cas
                 $elapse_time1 = $elapse_time;
                 $elapse_time2 = $elapse_time;
                 //echo "init ".$elapse_time." ";
@@ -183,7 +183,7 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
                     $elapse_time2 = $elapse_time1;
                 }
             }
-            // ======= tests de sécurité "$elapse_time1 < 25"
+            // ======= tests de sÃ©curitÃ© "$elapse_time1 < 25"
             while (($elapse_time1 != $elapse_time2) AND ($elapse_time1 < 25) AND ($elapse_time2 < 25));
             //echo $elapse_time1 - $elapse_time;
             return ($elapse_time1 - $elapse_time);
@@ -192,18 +192,18 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
 
 // =============================================================================
 //
-//          Si des cours se déroulent sur les mêmes créneaux (cas classique semaine A semaine B)
+//          Si des cours se dÃ©roulent sur les mÃªmes crÃ©neaux (cas classique semaine A semaine B)
 //          cette fonction permet de remplir un des deux div conteneurs
 //
-//          $elapse_time = position du pointeur de remplissage (0 = M1(début), 1 = M1(milieu), 2 = M2 etc...)
-//          $req_creneau = requête sql passée
-//          $duree_max = hauteur maximum de la colonne (renvoyée par la fonction DureeMax2Colonnes)
+//          $elapse_time = position du pointeur de remplissage (0 = M1(dÃ©but), 1 = M1(milieu), 2 = M2 etc...)
+//          $req_creneau = requÃªte sql passÃ©e
+//          $duree_max = hauteur maximum de la colonne (renvoyÃ©e par la fonction DureeMax2Colonnes)
 //          $jour_sem = lundi, mardi...
-//          $tab_id_creneaux = tableau contenant les créneaux (M1, M2...)
-//          $j = indice pour indiquer le créneaux concerné dans $tab_id_creneau
-//          $type_edt = "prof", "classe"... utilisé par la fonction AfficheCreneau de Julien Jocal
+//          $tab_id_creneaux = tableau contenant les crÃ©neaux (M1, M2...)
+//          $j = indice pour indiquer le crÃ©neaux concernÃ© dans $tab_id_creneau
+//          $type_edt = "prof", "classe"... utilisÃ© par la fonction AfficheCreneau de Julien Jocal
 //          $login_edt = login du prof
-//          $id_semaine_previous = '0', 'A' ou 'B'. uniquement utilisé pour remplir la seconde colonne et pour savoir quelle est l'id de la colonne précédente
+//          $id_semaine_previous = '0', 'A' ou 'B'. uniquement utilisÃ© pour remplir la seconde colonne et pour savoir quelle est l'id de la colonne prÃ©cÃ©dente
 //
 // =============================================================================
 function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $jour, $tab_id_creneaux, $j, $type_edt, $login_edt, $id_semaine_previous, &$tab_data, &$index_box, $period)
@@ -229,7 +229,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
                 $elapse_time1 += $duree1;
                 $k = (int)($elapse_time1 / 2);
             }
-            // =============== aucun enregistrement trouvé : initialisation
+            // =============== aucun enregistrement trouvÃ© : initialisation
             else {
                 RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$duree_max, "", "");
                 if ($elapse_time1%2 == 0) {
@@ -246,22 +246,22 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
 
             }
 
-            // ================= procédure de remplissage
+            // ================= procÃ©dure de remplissage
             $end_process = false;
             if (($rep_creneau['heuredeb_dec']==0) AND ($rep_creneau['duree']==1)) {
 
 
                 if ((mysql_num_rows($req_creneau) == 1) OR (mysql_num_rows($req_creneau) == 2)) {
-                    // ========== étude des cas n°14,15
+                    // ========== Ã©tude des cas nÂ°14,15
                     RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                     $duree1++;
                     $elapse_time1 ++;
                     $k = (int)($elapse_time1 / 2);  
                 }
                 else if (mysql_num_rows($req_creneau) == 3) {
-                    // ========== étude des cas n°19, 20
-                    $req_creneau_aux = $req_creneau;        // à voir : utiliser une requête auxiliaire ne permet pas apparemment de conserver la requête d'origine dans son état initial
-                                                            // c'est embêtant mais j'en ai tenu compte
+                    // ========== Ã©tude des cas nÂ°19, 20
+                    $req_creneau_aux = $req_creneau;        // Ã  voir : utiliser une requÃªte auxiliaire ne permet pas apparemment de conserver la requÃªte d'origine dans son Ã©tat initial
+                                                            // c'est embÃªtant mais j'en ai tenu compte
                     mysql_data_seek($req_creneau_aux,0);
                     $rep_creneau_aux = mysql_fetch_array($req_creneau_aux);
                     $heuredeb_dec_1 = $rep_creneau_aux['heuredeb_dec'];
@@ -343,7 +343,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
                 }
                 $rep_demicreneau = mysql_fetch_array($req_demicreneau);
                 if (mysql_num_rows($req_demicreneau) == 2) {
-                    // =========== récupérer les deux cours
+                    // =========== rÃ©cupÃ©rer les deux cours
                     mysql_data_seek($req_demicreneau,0);
                     $rep_demicreneau = mysql_fetch_array($req_demicreneau);
                     $heuredeb_dec_demi1 = $rep_demicreneau['heuredeb_dec'];
@@ -450,17 +450,17 @@ function GetColor($id_groupe) {
 // =============================================================================
 //
 //          Permet de construire l'emploi du temps du prof choisi
-//          pour simplifier l'implémentation et faciliter le debuggage, la routine étudie séparément 
-//          les cas de figures possibles. J'ai dénombré 26 situations différentes en prenant en compte les situations 
-//          les plus improbables (exemple : Sur un créneau donné, le prof a deux cours d'1/2 heure chacun).
-//          Ceci permet de contrôler les erreurs de saisies commises par l'admin ou permet simplement résister aux tests loufoques :)
-//          j'ai numéroté et répertorié chacune de ces situations
-//          Si Nombre d'enregistrements (sur le créneau observé) = 0 : 1 cas (n° 1)
-//          Si Nombre d'enregistrements (sur le créneau observé) = 1 : 7 cas (n° 2 ,2' ,3 ,4 ,5 ,6 ,7)        
-//          Si Nombre d'enregistrements (sur le créneau observé) = 2 : 12 cas (n° 8, 9 ,10 ,11 ,12 ,12',13, 14 ,15,15',15'' ,16)
-//          Si Nombre d'enregistrements (sur le créneau observé) = 3 : 5 cas (n°17, 18, 19, 20 ,21)
-//          Si Nombre d'enregistrements (sur le créneau observé) = 4 : 1 cas (n°22)
-//          Si Nombre d'enregistrements (sur le créneau observé) >= 5 : situation non envisagée (pour l'emploi du temps d'un prof)
+//          pour simplifier l'implÃ©mentation et faciliter le debuggage, la routine Ã©tudie sÃ©parÃ©ment 
+//          les cas de figures possibles. J'ai dÃ©nombrÃ© 26 situations diffÃ©rentes en prenant en compte les situations 
+//          les plus improbables (exemple : Sur un crÃ©neau donnÃ©, le prof a deux cours d'1/2 heure chacun).
+//          Ceci permet de contrÃ´ler les erreurs de saisies commises par l'admin ou permet simplement rÃ©sister aux tests loufoques :)
+//          j'ai numÃ©rotÃ© et rÃ©pertoriÃ© chacune de ces situations
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 0 : 1 cas (nÂ° 1)
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 1 : 7 cas (nÂ° 2 ,2' ,3 ,4 ,5 ,6 ,7)        
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 2 : 12 cas (nÂ° 8, 9 ,10 ,11 ,12 ,12',13, 14 ,15,15',15'' ,16)
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 3 : 5 cas (nÂ°17, 18, 19, 20 ,21)
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 4 : 1 cas (nÂ°22)
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) >= 5 : situation non envisagÃ©e (pour l'emploi du temps d'un prof)
 //
 // =============================================================================
 function ConstruireEDTProf($login_edt, $period) 
@@ -520,7 +520,7 @@ if ($type_edt=="prof") {
 			echo "</pre>";
 		}
 
-        // ========================================== créneau vide
+        // ========================================== crÃ©neau vide
         if ($nb_rows == 0) {
             $heuredeb_dec = 0;
             if ($elapse_time%2 != 0) 
@@ -538,7 +538,7 @@ if ($type_edt=="prof") {
             if ($rep_creneau['id_semaine'] != '0') {
                 $duree_max = $rep_creneau['duree'];
                 $heuredeb_dec = $rep_creneau['heuredeb_dec'];
-                // ========= études des cas n°2 , 6 et 7
+                // ========= Ã©tudes des cas nÂ°2 , 6 et 7
                 if (($duree_max == 1)) {        // ||(($duree_max == 2) AND ($rep_creneau['heuredeb_dec'] == 0))
                     if (($heuredeb_dec == 0) AND ($elapse_time%2 != 0))
                     {
@@ -577,7 +577,7 @@ if ($type_edt=="prof") {
                     }
            
                 }
-                // ======== étude du cas n°2' 
+                // ======== Ã©tude du cas nÂ°2' 
                 else {
                     $duree_max1 = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j,1,2 ,$period);
                     $duree_max2 = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j,2,1 ,$period);
@@ -594,20 +594,20 @@ if ($type_edt=="prof") {
                 }
             }
             else {
-                // ======== étude du cas n°5
+                // ======== Ã©tude du cas nÂ°5
                 if (($rep_creneau['heuredeb_dec'] != 0) AND ($elapse_time%2 == 0)) {
 
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                     $elapse_time++;
                 }
-                // ======== étude du cas n°3
+                // ======== Ã©tude du cas nÂ°3
                 if (($rep_creneau['heuredeb_dec'] == 0) AND ($elapse_time%2 == 1) AND ($rep_creneau['duree'] == 1)) { 
 
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                     $elapse_time++;
                 }
     
-                // ======== étude du cas n°4
+                // ======== Ã©tude du cas nÂ°4
                 else {           
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
@@ -629,7 +629,7 @@ if ($type_edt=="prof") {
             mysql_data_seek($req_creneau,0);
             $rep_creneau = mysql_fetch_array($req_creneau);
 
-            // ========= étude du cas PapaTango 1 (Problème de Transition de edt version 1 vers edt version 2) 
+            // ========= Ã©tude du cas PapaTango 1 (ProblÃ¨me de Transition de edt version 1 vers edt version 2) 
 
             if (($id_semaine1 == '0') || ($id_semaine2 == '0')) {            
                 if (($heuredeb_dec1 == 0) AND ($heuredeb_dec2 == 0)) {
@@ -642,7 +642,7 @@ if ($type_edt=="prof") {
                     $PapaTango = 0;
                 }
             }
-            // ========= étude des cas n°11, 12 et 13
+            // ========= Ã©tude des cas nÂ°11, 12 et 13
 
             if ((($id_semaine1 == '0') || ($id_semaine2 == '0')) AND ($PapaTango == 0)) {
                 if ($heuredeb_dec1 == 0) {
@@ -662,7 +662,7 @@ if ($type_edt=="prof") {
                     }
                     $elapse_time++;
                     $rep_creneau = mysql_fetch_array($req_creneau);
-                    // ====================== étude du cas 12'
+                    // ====================== Ã©tude du cas 12'
                     if ($id_semaine2 != '0') {
                         $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 2,3 , $period);
                         mysql_data_seek($req_creneau,0);
@@ -700,7 +700,7 @@ if ($type_edt=="prof") {
                     $elapse_time++;
                     mysql_data_seek($req_creneau,0);
                     $rep_creneau = mysql_fetch_array($req_creneau);
-                    // ====================== étude du cas n°12'
+                    // ====================== Ã©tude du cas nÂ°12'
                     if ($id_semaine1 != '0') {
                         $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 1,3 , $period);
                         mysql_data_seek($req_creneau,0);
@@ -728,7 +728,7 @@ if ($type_edt=="prof") {
                 $heuredeb_dec2 = $rep_creneau['heuredeb_dec'];
 
                 if ($id_semaine1 != $id_semaine2) {
-                    // ========= étude des cas n°8 et n°9 et n°14 et n°15 et n°16 et 10
+                    // ========= Ã©tude des cas nÂ°8 et nÂ°9 et nÂ°14 et nÂ°15 et nÂ°16 et 10
                     $duree_max1 = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j ,1,2, $period);
                     $duree_max2 = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j ,2,1, $period);
                     if ($duree_max1 >= $duree_max2) {
@@ -743,7 +743,7 @@ if ($type_edt=="prof") {
                     $elapse_time += $duree_max;
                 }
                 else {
-                    // ========= étude du cas rebelle 15''
+                    // ========= Ã©tude du cas rebelle 15''
                     if ($heuredeb_dec1 == 0) {
                         if ($id_semaine1 != '0') {
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule1", "", "");
@@ -842,7 +842,7 @@ if ($type_edt=="prof") {
 
             
             if (($id_semaine1 == '0') || ($id_semaine2 == '0')|| ($id_semaine3 == '0')) {
-                // ======= étude du cas 17
+                // ======= Ã©tude du cas 17
                 if (($heuredeb_dec1  == 0) AND ($id_semaine1 == '0')) {
                     mysql_data_seek($req_creneau,0);
                     $rep_creneau = mysql_fetch_array($req_creneau);
@@ -893,7 +893,7 @@ if ($type_edt=="prof") {
                     ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem_tab[$jour], $jour, $tab_id_creneaux, $j, $type_edt, $login_edt, $id_semaine_to_use, $tab_data,$index_box, $period);
                     $elapse_time += $duree_max;
                 }
-                // ======= étude du cas 18
+                // ======= Ã©tude du cas 18
                 else if (($heuredeb_dec1  == 0) AND ($heuredeb_dec2  == 0)){
                     mysql_data_seek($req_creneau,0);
 
@@ -979,7 +979,7 @@ if ($type_edt=="prof") {
                     $elapse_time+=2;
                 }
             }
-            // ========== étude des cas 19,20 et 21
+            // ========== Ã©tude des cas 19,20 et 21
             else {
 
                 if (($heuredeb_dec1  == 0) AND ($heuredeb_dec2  == 0)){
@@ -1089,8 +1089,8 @@ if ($type_edt=="prof") {
                     $elapse_time += $duree_max;
                 }
                 else {
-                    // ============== 3 enseignements sur le même créneau
-                    // ============== situation non envisagée
+                    // ============== 3 enseignements sur le mÃªme crÃ©neau
+                    // ============== situation non envisagÃ©e
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "erreur", $tab_id_creneaux[$j], "none", "none", "cellule2", "cadreRouge", "C03");
 
                     $elapse_time+=2;
@@ -1100,7 +1100,7 @@ if ($type_edt=="prof") {
         }
         else if ($nb_rows == 4)
         {
-        // ============= damned !! 4 cours sur le même créneau...
+        // ============= damned !! 4 cours sur le mÃªme crÃ©neau...
             $rang1 = 0;
             $rang2 = 0;
             mysql_data_seek($req_creneau,0);
@@ -1148,7 +1148,7 @@ if ($type_edt=="prof") {
             if (($rang1 == 0) OR ($rang2 == 0))
             {
                 // ============= trois enseignements de front sur les 4
-                // ============= situation non envisagée
+                // ============= situation non envisagÃ©e
                 RemplirBox($elapse_time,$tab_data[$jour], $index_box, "erreur", $tab_id_creneaux[$j], "none", "none", "cellule2", "cadreRouge", "C04");
 
                 $elapse_time += 2;
@@ -1177,8 +1177,8 @@ if ($type_edt=="prof") {
         }
         else
         {
-            // ============= gloups ! 5 enseignements ou plus sur le même créneau
-            //               il y a une erreur dans la table edt_cours ou c'est une situation non envisagée
+            // ============= gloups ! 5 enseignements ou plus sur le mÃªme crÃ©neau
+            //               il y a une erreur dans la table edt_cours ou c'est une situation non envisagÃ©e
             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "erreur", $tab_id_creneaux[$j], "none", "none", "cellule2", "cadreRouge", "C05");
 
             $elapse_time += 2;
@@ -1199,11 +1199,11 @@ $jour++;
 $index_box = 0;
 }
 
-// ***************************************    Remplissage des créneaux
+// ***************************************    Remplissage des crÃ©neaux
 
 
 $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
-//Cas où le nom des créneaux sont inscrits à gauche
+//Cas oÃ¹ le nom des crÃ©neaux sont inscrits Ã  gauche
 if ($reglages_creneaux == "noms") {
 	$tab_creneaux = retourne_creneaux();
 	$i=0;
@@ -1219,7 +1219,7 @@ if ($reglages_creneaux == "noms") {
 	}
 }
 
-// Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
+// Cas oÃ¹ les heures sont inscrites Ã  gauche au lieu du nom des crÃ©neaux
 elseif ($reglages_creneaux == "heures") {
 	$tab_horaire = retourne_horaire();
 	for($i=0; $i<count($tab_horaire); ) {
@@ -1242,17 +1242,17 @@ return $tab_data;
 // =============================================================================
 //
 //          Permet de construire l'emploi du temps du prof choisi
-//          pour simplifier l'implémentation et faciliter le debuggage, la routine étudie séparément 
-//          les cas de figures possibles. J'ai dénombré 26 situations différentes en prenant en compte les situations 
-//          les plus improbables (exemple : Sur un créneau donné, le prof a deux cours d'1/2 heure chacun).
-//          Ceci permet de contrôler les erreurs de saisies commises par l'admin ou permet simplement résister aux tests loufoques :)
-//          j'ai numéroté et répertorié chacune de ces situations
-//          Si Nombre d'enregistrements (sur le créneau observé) = 0 : 1 cas (n° 1)
-//          Si Nombre d'enregistrements (sur le créneau observé) = 1 : 7 cas (n° 2 ,2' ,3 ,4 ,5 ,6 ,7)        
-//          Si Nombre d'enregistrements (sur le créneau observé) = 2 : 12 cas (n° 8, 9 ,10 ,11 ,12 ,12',13, 14 ,15,15',15'' ,16)
-//          Si Nombre d'enregistrements (sur le créneau observé) = 3 : 5 cas (n°17, 18, 19, 20 ,21)
-//          Si Nombre d'enregistrements (sur le créneau observé) = 4 : 1 cas (n°22)
-//          Si Nombre d'enregistrements (sur le créneau observé) >= 5 : situation non envisagée (pour l'emploi du temps d'un prof)
+//          pour simplifier l'implÃ©mentation et faciliter le debuggage, la routine Ã©tudie sÃ©parÃ©ment 
+//          les cas de figures possibles. J'ai dÃ©nombrÃ© 26 situations diffÃ©rentes en prenant en compte les situations 
+//          les plus improbables (exemple : Sur un crÃ©neau donnÃ©, le prof a deux cours d'1/2 heure chacun).
+//          Ceci permet de contrÃ´ler les erreurs de saisies commises par l'admin ou permet simplement rÃ©sister aux tests loufoques :)
+//          j'ai numÃ©rotÃ© et rÃ©pertoriÃ© chacune de ces situations
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 0 : 1 cas (nÂ° 1)
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 1 : 7 cas (nÂ° 2 ,2' ,3 ,4 ,5 ,6 ,7)        
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 2 : 12 cas (nÂ° 8, 9 ,10 ,11 ,12 ,12',13, 14 ,15,15',15'' ,16)
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 3 : 5 cas (nÂ°17, 18, 19, 20 ,21)
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) = 4 : 1 cas (nÂ°22)
+//          Si Nombre d'enregistrements (sur le crÃ©neau observÃ©) >= 5 : situation non envisagÃ©e (pour l'emploi du temps d'un prof)
 //
 // =============================================================================
 function ConstruireEDTProfDuJour($login_edt, $period, $jour) 
@@ -1294,7 +1294,7 @@ if ($type_edt=="prof") {
 
 
       
-        // ========================================== créneau vide
+        // ========================================== crÃ©neau vide
         if ($nb_rows == 0) {
             $heuredeb_dec = 0;
             if ($elapse_time%2 != 0) 
@@ -1312,7 +1312,7 @@ if ($type_edt=="prof") {
             if ($rep_creneau['id_semaine'] != '0') {
                 $duree_max = $rep_creneau['duree'];
                 $heuredeb_dec = $rep_creneau['heuredeb_dec'];
-                // ========= études des cas n°2 , 6 et 7
+                // ========= Ã©tudes des cas nÂ°2 , 6 et 7
                 if (($duree_max == 1)) {        // ||(($duree_max == 2) AND ($rep_creneau['heuredeb_dec'] == 0))
                     if (($heuredeb_dec == 0) AND ($elapse_time%2 != 0))
                     {
@@ -1351,7 +1351,7 @@ if ($type_edt=="prof") {
                     }
            
                 }
-                // ======== étude du cas n°2' 
+                // ======== Ã©tude du cas nÂ°2' 
                 else {
                     $duree_max1 = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j,1,2 ,$period);
                     $duree_max2 = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j,2,1 ,$period);
@@ -1368,20 +1368,20 @@ if ($type_edt=="prof") {
                 }
             }
             else {
-                // ======== étude du cas n°5
+                // ======== Ã©tude du cas nÂ°5
                 if (($rep_creneau['heuredeb_dec'] != 0) AND ($elapse_time%2 == 0)) {
 
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                     $elapse_time++;
                 }
-                // ======== étude du cas n°3
+                // ======== Ã©tude du cas nÂ°3
                 if (($rep_creneau['heuredeb_dec'] == 0) AND ($elapse_time%2 == 1) AND ($rep_creneau['duree'] == 1)) { 
 
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                     $elapse_time++;
                 }
     
-                // ======== étude du cas n°4
+                // ======== Ã©tude du cas nÂ°4
                 else {           
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
@@ -1403,7 +1403,7 @@ if ($type_edt=="prof") {
             mysql_data_seek($req_creneau,0);
             $rep_creneau = mysql_fetch_array($req_creneau);
 
-            // ========= étude du cas PapaTango 1 (Problème de Transition de edt version 1 vers edt version 2) 
+            // ========= Ã©tude du cas PapaTango 1 (ProblÃ¨me de Transition de edt version 1 vers edt version 2) 
 
             if (($id_semaine1 == '0') || ($id_semaine2 == '0')) {            
                 if (($heuredeb_dec1 == 0) AND ($heuredeb_dec2 == 0)) {
@@ -1416,7 +1416,7 @@ if ($type_edt=="prof") {
                     $PapaTango = 0;
                 }
             }
-            // ========= étude des cas n°11, 12 et 13
+            // ========= Ã©tude des cas nÂ°11, 12 et 13
 
             if ((($id_semaine1 == '0') || ($id_semaine2 == '0')) AND ($PapaTango == 0)) {
                 if ($heuredeb_dec1 == 0) {
@@ -1436,7 +1436,7 @@ if ($type_edt=="prof") {
                     }
                     $elapse_time++;
                     $rep_creneau = mysql_fetch_array($req_creneau);
-                    // ====================== étude du cas 12'
+                    // ====================== Ã©tude du cas 12'
                     if ($id_semaine2 != '0') {
                         $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 2,3 , $period);
                         mysql_data_seek($req_creneau,0);
@@ -1474,7 +1474,7 @@ if ($type_edt=="prof") {
                     $elapse_time++;
                     mysql_data_seek($req_creneau,0);
                     $rep_creneau = mysql_fetch_array($req_creneau);
-                    // ====================== étude du cas n°12'
+                    // ====================== Ã©tude du cas nÂ°12'
                     if ($id_semaine1 != '0') {
                         $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 1,3 , $period);
                         mysql_data_seek($req_creneau,0);
@@ -1502,7 +1502,7 @@ if ($type_edt=="prof") {
                 $heuredeb_dec2 = $rep_creneau['heuredeb_dec'];
 
                 if ($id_semaine1 != $id_semaine2) {
-                    // ========= étude des cas n°8 et n°9 et n°14 et n°15 et n°16 et 10
+                    // ========= Ã©tude des cas nÂ°8 et nÂ°9 et nÂ°14 et nÂ°15 et nÂ°16 et 10
                     $duree_max1 = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j ,1,2, $period);
                     $duree_max2 = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j ,2,1, $period);
                     if ($duree_max1 >= $duree_max2) {
@@ -1517,7 +1517,7 @@ if ($type_edt=="prof") {
                     $elapse_time += $duree_max;
                 }
                 else {
-                    // ========= étude du cas rebelle 15''
+                    // ========= Ã©tude du cas rebelle 15''
                     if ($heuredeb_dec1 == 0) {
                         if ($id_semaine1 != '0') {
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule1", "", "");
@@ -1616,7 +1616,7 @@ if ($type_edt=="prof") {
 
             
             if (($id_semaine1 == '0') || ($id_semaine2 == '0')|| ($id_semaine3 == '0')) {
-                // ======= étude du cas 17
+                // ======= Ã©tude du cas 17
                 if (($heuredeb_dec1  == 0) AND ($id_semaine1 == '0')) {
                     mysql_data_seek($req_creneau,0);
                     $rep_creneau = mysql_fetch_array($req_creneau);
@@ -1667,7 +1667,7 @@ if ($type_edt=="prof") {
                     ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem_tab[$jour], $jour, $tab_id_creneaux, $j, $type_edt, $login_edt, $id_semaine_to_use, $tab_data,$index_box, $period);
                     $elapse_time += $duree_max;
                 }
-                // ======= étude du cas 18
+                // ======= Ã©tude du cas 18
                 else if (($heuredeb_dec1  == 0) AND ($heuredeb_dec2  == 0)){
                     mysql_data_seek($req_creneau,0);
 
@@ -1753,7 +1753,7 @@ if ($type_edt=="prof") {
                     $elapse_time+=2;
                 }
             }
-            // ========== étude des cas 19,20 et 21
+            // ========== Ã©tude des cas 19,20 et 21
             else {
 
                 if (($heuredeb_dec1  == 0) AND ($heuredeb_dec2  == 0)){
@@ -1863,8 +1863,8 @@ if ($type_edt=="prof") {
                     $elapse_time += $duree_max;
                 }
                 else {
-                    // ============== 3 enseignements sur le même créneau
-                    // ============== situation non envisagée
+                    // ============== 3 enseignements sur le mÃªme crÃ©neau
+                    // ============== situation non envisagÃ©e
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "erreur", $tab_id_creneaux[$j], "none", "none", "cellule2", "cadreRouge", "C03");
 
                     $elapse_time+=2;
@@ -1874,7 +1874,7 @@ if ($type_edt=="prof") {
         }
         else if ($nb_rows == 4)
         {
-        // ============= damned !! 4 cours sur le même créneau...
+        // ============= damned !! 4 cours sur le mÃªme crÃ©neau...
             $rang1 = 0;
             $rang2 = 0;
             mysql_data_seek($req_creneau,0);
@@ -1922,7 +1922,7 @@ if ($type_edt=="prof") {
             if (($rang1 == 0) OR ($rang2 == 0))
             {
                 // ============= trois enseignements de front sur les 4
-                // ============= situation non envisagée
+                // ============= situation non envisagÃ©e
                 RemplirBox($elapse_time,$tab_data[$jour], $index_box, "erreur", $tab_id_creneaux[$j], "none", "none", "cellule2", "cadreRouge", "C04");
 
                 $elapse_time += 2;
@@ -1951,8 +1951,8 @@ if ($type_edt=="prof") {
         }
         else
         {
-            // ============= gloups ! 5 enseignements ou plus sur le même créneau
-            //               il y a une erreur dans la table edt_cours ou c'est une situation non envisagée
+            // ============= gloups ! 5 enseignements ou plus sur le mÃªme crÃ©neau
+            //               il y a une erreur dans la table edt_cours ou c'est une situation non envisagÃ©e
             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "erreur", $tab_id_creneaux[$j], "none", "none", "cellule2", "cadreRouge", "C05");
 
             $elapse_time += 2;
@@ -1965,11 +1965,11 @@ $jour++;
 $index_box = 0;
 }
 
-// ***************************************    Remplissage des créneaux
+// ***************************************    Remplissage des crÃ©neaux
 
 
 $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
-//Cas où le nom des créneaux sont inscrits à gauche
+//Cas oÃ¹ le nom des crÃ©neaux sont inscrits Ã  gauche
 if ($reglages_creneaux == "noms") {
 	$tab_creneaux = retourne_creneaux();
 	$i=0;
@@ -1985,7 +1985,7 @@ if ($reglages_creneaux == "noms") {
 	}
 }
 
-// Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
+// Cas oÃ¹ les heures sont inscrites Ã  gauche au lieu du nom des crÃ©neaux
 elseif ($reglages_creneaux == "heures") {
 	$tab_horaire = retourne_horaire();
 	for($i=0; $i<count($tab_horaire); ) {

@@ -21,12 +21,12 @@
  */
 
 // Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
+// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 Header('Pragma: public');
 
 //=============================
-// REMONTé:
+// REMONTÃ©:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -49,7 +49,7 @@ require_once("./class_pdf.php");
 require_once ("./liste.inc.php");
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -66,7 +66,7 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-//INSERT INTO droits VALUES ('/impression/parametres_impression_pdf.php', 'V', 'V', 'V', 'V', 'V', 'V', 'Impression des listes PDF; réglage des paramètres', '');
+//INSERT INTO droits VALUES ('/impression/parametres_impression_pdf.php', 'V', 'V', 'V', 'V', 'V', 'V', 'Impression des listes PDF; rÃ©glage des paramÃ¨tres', '');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -99,10 +99,10 @@ INDEX id_modele_champ (id_modele, nom)
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 
-// Contrôle des valeurs validées
+// ContrÃ´le des valeurs validÃ©es
 if(isset($id_modele)) {
 	if(($id_modele=='')||(!preg_match("/^[0-9]*$/",$id_modele))) {
-		$msg="Le modèle '$id_modele' n'a pas une valeur correcte.<br />";
+		$msg="Le modÃ¨le '$id_modele' n'a pas une valeur correcte.<br />";
 		unset($id_modele);
 	}
 }
@@ -111,7 +111,7 @@ if(isset($id_modele)) {
 	$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg.="ERREUR&nbsp;: Le modèle '$id_modele' n'existe pas ou ne vous est pas associé.<br />\n";
+		$msg.="ERREUR&nbsp;: Le modÃ¨le '$id_modele' n'existe pas ou ne vous est pas associÃ©.<br />\n";
 		unset($id_modele);
 	}
 }
@@ -120,15 +120,15 @@ if(isset($nom_modele)) {
 	$nom_modele_initial=$nom_modele;
 	$nom_modele=preg_replace("/[^A-Za-z0-9_.\-]/","",remplace_accents($nom_modele,'all'));
 	if($nom_modele=='') {
-		$msg="Le nom de modèle '$nom_modele_initial' n'est pas correct.<br />";
+		$msg="Le nom de modÃ¨le '$nom_modele_initial' n'est pas correct.<br />";
 		unset($nom_modele);
 	}
 	unset($nom_modele_initial);
 }
 
-// Liste des champs de paramétrage des grilles
+// Liste des champs de paramÃ©trage des grilles
 $tab_champs=array('marge_gauche', 'marge_droite', 'marge_haut', 'marge_bas', 'marge_reliure', 'avec_emplacement_trous', 'affiche_pp', 'avec_ligne_texte', 'ligne_texte', 'afficher_effectif', 'une_seule_page', 'h_ligne', 'l_colonne', 'l_nomprenom', 'nb_ligne_avant', 'h_ligne1_avant', 'nb_ligne_apres', 'encadrement_total_cellules', 'nb_cellules_quadrillees', 'zone_vide', 'hauteur_zone_finale');
-// Valeurs par défaut des champs
+// Valeurs par dÃ©faut des champs
 $tab_val=array('10', '10', '10', '10', '1', '1', '1', '1', ' ', '1', '1', '8', '8', '40', '2', '25', '1', '1', '5', '1', '20');
 
 $temoin_erreur="n";
@@ -142,7 +142,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 		$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			$msg.="Le modèle '$id_modele' n'existe pas ou ne vous est pas associé.<br />";
+			$msg.="Le modÃ¨le '$id_modele' n'existe pas ou ne vous est pas associÃ©.<br />";
 			unset($id_modele);
 		}
 	}
@@ -151,7 +151,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 		$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE nom_modele='$nom_modele' AND login='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			$msg.="ERREUR: Un modèle du même nom existe déjà.<br />";
+			$msg.="ERREUR: Un modÃ¨le du mÃªme nom existe dÃ©jÃ .<br />";
 		}
 	}
 
@@ -170,7 +170,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(!$res) {
-				$msg.="ERREUR lors de la création du modèle '$nom_modele'.<br />";
+				$msg.="ERREUR lors de la crÃ©ation du modÃ¨le '$nom_modele'.<br />";
 			}
 			else {
 				$id_modele=mysql_insert_id();
@@ -181,7 +181,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(!$res) {
-				$msg.="ERREUR lors de la mise à jour du nom de modèle.<br />";
+				$msg.="ERREUR lors de la mise Ã  jour du nom de modÃ¨le.<br />";
 			}
 		}
 	
@@ -194,7 +194,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 					//echo "$sql<br />";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de l'enregistrement de ".$tab_champs[$loop]." -&gt; ".$_POST[$tab_champs[$loop]]." pour le modèle '$nom_modele'.<br />";
+						$msg.="ERREUR lors de l'enregistrement de ".$tab_champs[$loop]." -&gt; ".$_POST[$tab_champs[$loop]]." pour le modÃ¨le '$nom_modele'.<br />";
 						$cpt_erreur++;
 					}
 					else {
@@ -204,7 +204,7 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 				}
 			}
 			if(($cpt_reg>0)&&($cpt_erreur==0)) {
-				$msg.="Enregistrement effectué pour le modèle n°$id_modele.<br />";
+				$msg.="Enregistrement effectuÃ© pour le modÃ¨le nÂ°$id_modele.<br />";
 			}
 		}
 	}
@@ -227,17 +227,17 @@ elseif(isset($choix_action_modele)) {
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(!$res) {
-				$msg.="ERREUR lors du nettoyage du modèle par défaut.<br />\n";
+				$msg.="ERREUR lors du nettoyage du modÃ¨le par dÃ©faut.<br />\n";
 			}
 			else {
 				$sql="UPDATE modeles_grilles_pdf SET par_defaut='y' WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="ERREUR lors de la définition du modèle par défaut à $id_modele.<br />\n";
+					$msg.="ERREUR lors de la dÃ©finition du modÃ¨le par dÃ©faut Ã  $id_modele.<br />\n";
 				}
 				else {
-					$msg.="Modèle n°$id_modele défini par défaut.<br />\n";
+					$msg.="ModÃ¨le nÂ°$id_modele dÃ©fini par dÃ©faut.<br />\n";
 				}
 			}
 
@@ -249,17 +249,17 @@ elseif(isset($choix_action_modele)) {
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(!$res) {
-				$msg.="ERREUR lors de la suppression des valeurs associées au modèle n°$id_modele.<br />\n";
+				$msg.="ERREUR lors de la suppression des valeurs associÃ©es au modÃ¨le nÂ°$id_modele.<br />\n";
 			}
 			else {
 				$sql="DELETE FROM modeles_grilles_pdf WHERE id_modele='$id_modele' AND login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="ERREUR lors de la suppression du modèle n°$id_modele.<br />\n";
+					$msg.="ERREUR lors de la suppression du modÃ¨le nÂ°$id_modele.<br />\n";
 				}
 				else {
-					$msg.="Modèle n°$id_modele supprimé.<br />\n";	
+					$msg.="ModÃ¨le nÂ°$id_modele supprimÃ©.<br />\n";	
 					unset($choix_action_modele);
 				}
 			}
@@ -268,8 +268,8 @@ elseif(isset($choix_action_modele)) {
 }
 
 //**************** EN-TETE **************************************
-//$titre_page = "Impression de listes au format PDF <br />Choix des paramètres".$periode;
-$titre_page = "Impression de listes au format PDF <br />Choix des paramètres";
+//$titre_page = "Impression de listes au format PDF <br />Choix des paramÃ¨tres".$periode;
+$titre_page = "Impression de listes au format PDF <br />Choix des paramÃ¨tres";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
@@ -277,15 +277,15 @@ require_once("../lib/header.inc");
 
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo " | <a href='./impression.php'>Impression rapide à l'unité</a>";
-echo " | <a href='./impression_serie.php'>Impression en série</a>";
-echo " | <a href='".$_SERVER['PHP_SELF']."'>Régler les paramètres du PDF</a>";
+echo " | <a href='./impression.php'>Impression rapide Ã  l'unitÃ©</a>";
+echo " | <a href='./impression_serie.php'>Impression en sÃ©rie</a>";
+echo " | <a href='".$_SERVER['PHP_SELF']."'>RÃ©gler les paramÃ¨tres du PDF</a>";
 echo "</p>\n";
 
 if(!isset($enregistrer_parametres)) {
 	if(!isset($choix_action_modele)) {
 		echo "<fieldset>\n";
-		echo "<legend>Modèles de documents PDF&nbsp;:</legend>\n";
+		echo "<legend>ModÃ¨les de documents PDF&nbsp;:</legend>\n";
 	
 		$sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
 		//echo "$sql<br />";
@@ -302,30 +302,30 @@ if(!isset($enregistrer_parametres)) {
 	
 		echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_nouveau_modele\">\n";
 		echo add_token_field();
-		echo "<p>Créer un nouveau modèle sous le nom&nbsp;: ";
+		echo "<p>CrÃ©er un nouveau modÃ¨le sous le nom&nbsp;: ";
 		echo "<input type='text' name='nom_modele' value='Modele_".strftime('%Y%m%d_%H%M%S')."' />\n";
 		echo "<input type='hidden' name='choix_action_modele' value='nouveau_modele' />\n";
-		echo " <input type='submit' name='nouveau_modele' value='Créer' />\n";
+		echo " <input type='submit' name='nouveau_modele' value='CrÃ©er' />\n";
 		echo "</p>\n";
 		echo "</form>\n";
 	
 		if($nb_modeles>0) {
 			echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_modele_par_defaut\">\n";
 			echo add_token_field();
-			echo "<p>Modèle&nbsp;: \n";
+			echo "<p>ModÃ¨le&nbsp;: \n";
 			echo "<select name='id_modele'>\n";
 			for($loop=0;$loop<count($tab_modele);$loop++) {
 				echo "<option value='".$tab_modele[$loop]['id_modele']."'>".$tab_modele[$loop]['nom_modele']."</option>\n";
 			}
 			echo "</select>\n";
 			echo " <input type='hidden' name='choix_action_modele' value='modele_par_defaut' />\n";
-			echo " <input type='submit' name='modele_par_defaut' value='Définir comme modèle par défaut' />\n";
+			echo " <input type='submit' name='modele_par_defaut' value='DÃ©finir comme modÃ¨le par dÃ©faut' />\n";
 			echo "</p>\n";
 			echo "</form>\n";
 		
 			echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_modifier_modele\">\n";
 			echo add_token_field();
-			echo "<p>Modifier le modèle&nbsp;: \n";
+			echo "<p>Modifier le modÃ¨le&nbsp;: \n";
 			echo "<select name='id_modele'>\n";
 			for($loop=0;$loop<count($tab_modele);$loop++) {
 				echo "<option value='".$tab_modele[$loop]['id_modele']."'>".$tab_modele[$loop]['nom_modele']."</option>\n";
@@ -338,7 +338,7 @@ if(!isset($enregistrer_parametres)) {
 		
 			echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_supprimer_modele\">\n";
 			echo add_token_field();
-			echo "<p>Supprimer le modèle&nbsp;: \n";
+			echo "<p>Supprimer le modÃ¨le&nbsp;: \n";
 			echo "<select name='id_modele'>\n";
 			for($loop=0;$loop<count($tab_modele);$loop++) {
 				echo "<option value='".$tab_modele[$loop]['id_modele']."'>".$tab_modele[$loop]['nom_modele']."</option>\n";
@@ -357,7 +357,7 @@ if(!isset($enregistrer_parametres)) {
 }
 
 if(isset($nouveau_modele)) {
-	// Récupération des valeurs courantes... ou utilisation des valeurs par défaut
+	// RÃ©cupÃ©ration des valeurs courantes... ou utilisation des valeurs par dÃ©faut
 	for($loop=0;$loop<count($tab_champs);$loop++) {
 		$nom=$tab_champs[$loop];
 		$$nom=isset($_SESSION[$nom]) ? $_SESSION[$nom] : $tab_val[$loop];
@@ -369,13 +369,13 @@ elseif(isset($modif_modele)) {
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
-		// Initialisation au valeurs par défaut
+		// Initialisation au valeurs par dÃ©faut
 		for($loop=0;$loop<count($tab_champs);$loop++) {
 			$nom=$tab_champs[$loop];
 			$$nom=isset($_SESSION[$nom]) ? $_SESSION[$nom] : $tab_val[$loop];
 		}
 
-		// Remplacement par les valeurs enregistrées
+		// Remplacement par les valeurs enregistrÃ©es
 		while($lig=mysql_fetch_object($res)) {
 			$nom=$lig->nom;
 			$$nom=$lig->valeur;
@@ -388,13 +388,13 @@ elseif(isset($modif_modele)) {
 			$nom_modele=$lig->nom_modele;
 		}
 		else {
-			echo "<p style='color:red;'>ERREUR&nbsp;: Le modèle '$id_modele' n'existe pas dans la table 'modeles_grilles_pdf'.</p>\n";
+			echo "<p style='color:red;'>ERREUR&nbsp;: Le modÃ¨le '$id_modele' n'existe pas dans la table 'modeles_grilles_pdf'.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 	}
 	else {
-		echo "<p style='color:red;'>ERREUR&nbsp;: Le modèle '$id_modele' n'existe pas ou ne vous est pas associé.</p>\n";
+		echo "<p style='color:red;'>ERREUR&nbsp;: Le modÃ¨le '$id_modele' n'existe pas ou ne vous est pas associÃ©.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -406,7 +406,7 @@ else {
 	die();
 }
 
-echo "<h3>Choix des paramètres&nbsp;: </h3>\n";
+echo "<h3>Choix des paramÃ¨tres&nbsp;: </h3>\n";
 
 echo "<div>\n
    <fieldset>\n";
@@ -416,18 +416,18 @@ echo "<div>\n
 
 		echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"choix_parametres\">\n";
 		echo add_token_field();
-		echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" /><br />\n";
+		echo "<input value=\"Valider les paramÃ¨tres\" name=\"Valider\" type=\"submit\" /><br />\n";
 		echo "<br />\n";
 
 		if(isset($id_modele)) {
 			echo "<input type='hidden' name=\"id_modele\" value=\"$id_modele\" /><br />\n";
 		}
-		echo "<b>Nom du modèle</b>&nbsp;: <input type='text' name=\"nom_modele\" value=\"$nom_modele\" /><br /><br />\n";
+		echo "<b>Nom du modÃ¨le</b>&nbsp;: <input type='text' name=\"nom_modele\" value=\"$nom_modele\" /><br /><br />\n";
 
-		echo "<b>Définition des marges du document&nbsp;:</b></p>\n";
+		echo "<b>DÃ©finition des marges du document&nbsp;:</b></p>\n";
 		echo "<table style='margin-left: 1em;' border='0'>\n";
-		echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"$marge_gauche\" /></td></tr>\n";
-		echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"$marge_droite\" /></td></tr>\n";
+		echo "<tr><td>Marge Ã  gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"$marge_gauche\" /></td></tr>\n";
+		echo "<tr><td>Marge Ã  droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"$marge_droite\" /></td></tr>\n";
 		echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"$marge_haut\" /></td></tr>\n";
 		echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"$marge_bas\" /></td></tr>\n";
 
@@ -445,7 +445,7 @@ echo "<div>\n
 
 		echo "<br />\n";
 
-		echo "<b>Informations à afficher sur le document&nbsp;:</b><br />\n";
+		echo "<b>Informations Ã  afficher sur le document&nbsp;:</b><br />\n";
 		echo "<table style='margin-left: 1em;' border='0'>\n";
 		echo "<tr><td>Afficher le professeur responsable de la classe ?</td><td><input type=\"radio\" name=\"affiche_pp\" id=\"affiche_pp_1\" value=\"1\" ";
 		if($affiche_pp==1) {echo "checked ";}
@@ -475,21 +475,21 @@ echo "<div>\n
 		echo "/><label for='une_seule_page_0'> Non</label></td></tr>\n";
 		echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$h_ligne\" /> </td></tr>\n";
 		echo "<tr><td>Largeur d'une colonne&nbsp;:</td><td><input type=\"text\" name=\"l_colonne\" size=\"2\" maxlength=\"2\" value=\"$l_colonne\" /> </td></tr>\n";
-		echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$l_nomprenom\" /> </td></tr>\n";
+		echo "<tr><td>Largeur colonne Nom / PrÃ©nom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$l_nomprenom\" /> </td></tr>\n";
 		echo "<tr><td>Nombre ligne(s) avant&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_avant\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_avant\" /> \n";
-		echo "<tr><td>Hauteur de la première ligne avant&nbsp;:</td><td><input type=\"text\" name=\"h_ligne1_avant\" size=\"2\" maxlength=\"$h_ligne1_avant\" value=\"25\" /> </td></tr>\n";
-		echo "<tr><td>Nombre ligne(s) après&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_apres\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_apres\" /> </td></tr>\n";
+		echo "<tr><td>Hauteur de la premiÃ¨re ligne avant&nbsp;:</td><td><input type=\"text\" name=\"h_ligne1_avant\" size=\"2\" maxlength=\"$h_ligne1_avant\" value=\"25\" /> </td></tr>\n";
+		echo "<tr><td>Nombre ligne(s) aprÃ¨s&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_apres\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_apres\" /> </td></tr>\n";
 		echo "<tr><td>Quadrillage total des cellules ?</td><td><input type=\"radio\" name=\"encadrement_total_cellules\" id=\"encadrement_total_cellules_1\" value=\"1\" ";
 		if($encadrement_total_cellules==1) {echo "checked ";}
 		echo "/><label for='encadrement_total_cellules_1'> Oui</label> [ <input type=\"radio\" name=\"encadrement_total_cellules\" id=\"encadrement_total_cellules_0\" value=\"0\" ";
 		if($encadrement_total_cellules!=1) {echo "checked ";}
 		echo "/><label for='encadrement_total_cellules_0'> Non</label> \n";
-		echo "<tr><td>&nbsp;</td><td>Nombre de cellules quadrillées après le nom&nbsp;: <input type=\"text\" name=\"nb_cellules_quadrillees\" size=\"2\" maxlength=\"2\" value=\"$nb_cellules_quadrillees\" /> ] </td></tr>\n";
+		echo "<tr><td>&nbsp;</td><td>Nombre de cellules quadrillÃ©es aprÃ¨s le nom&nbsp;: <input type=\"text\" name=\"nb_cellules_quadrillees\" size=\"2\" maxlength=\"2\" value=\"$nb_cellules_quadrillees\" /> ] </td></tr>\n";
 		echo "</table>\n";
 		echo "<br />\n";
 
 		echo "<b>Informations en bas du document&nbsp;: </b><br />\n";
-		echo "&nbsp;&nbsp;Réserver une zone vide sous le tableau ? <input type=\"radio\" name=\"zone_vide\" id=\"zone_vide_1\" value=\"1\" ";
+		echo "&nbsp;&nbsp;RÃ©server une zone vide sous le tableau ? <input type=\"radio\" name=\"zone_vide\" id=\"zone_vide_1\" value=\"1\" ";
 		if($zone_vide==1) {echo "checked ";}
 		echo "/><label for='zone_vide_1'> Oui</label> <input type=\"radio\" name=\"zone_vide\" id=\"zone_vide_0\" value=\"0\" ";
 		if($zone_vide!=1) {echo "checked ";}
@@ -499,7 +499,7 @@ echo "<div>\n
 		//echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
 		echo "<input type=\"hidden\" name=\"enregistrer_parametres\" value=\"1\" />\n";
 		echo "<br />\n";
-		echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" />\n";
+		echo "<input value=\"Valider les paramÃ¨tres\" name=\"Valider\" type=\"submit\" />\n";
 		echo "<br />\n";
 		echo "</form>\n";
    echo "</fieldset>\n

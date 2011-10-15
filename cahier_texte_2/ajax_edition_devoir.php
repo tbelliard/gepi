@@ -21,7 +21,7 @@
  */
 
 header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -41,9 +41,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -52,7 +52,7 @@ if ($utilisateur == null) {
 	die();
 }
 
-//récupération de la notice
+//rÃ©cupÃ©ration de la notice
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $succes = isset($_POST["succes"]) ? $_POST["succes"] :(isset($_GET["succes"]) ? $_GET["succes"] :NULL);
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
@@ -64,33 +64,33 @@ if ($ctTravailAFaire != null) {
 	$today = $ctTravailAFaire->getDateCt();
 
 	if ($groupe == null) {
-		echo("Erreur edition de devoir : Pas de groupe associé au devoir");
+		echo("Erreur edition de devoir : Pas de groupe associÃ© au devoir");
 		die;
 	}
 
-	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
 		echo "Erreur edition de devoir : le groupe n'appartient pas au professeur";
 		die();
 	}
 
 } else {
-	//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
-	//pas de notices, on lance une création de notice
+	//si pas de notice prÃ©cisÃ©, rÃ©cupÃ©ration du groupe dans la requete et recherche d'une notice pour la date prÃ©cisÃ©e ou crÃ©ation d'une nouvelle notice
+	//pas de notices, on lance une crÃ©ation de notice
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 	$groupe = GroupePeer::retrieveByPK($id_groupe);
 	if ($groupe == null) {
-		echo("Erreur edition de devoir : pas de groupe spécifié");
+		echo("Erreur edition de devoir : pas de groupe spÃ©cifiÃ©");
 		die;
 	}
 
-	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	// VÃ©rification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
 		echo "Erreur edition de devoir : le groupe n'appartient pas au professeur";
 		die();
 	}
 
-	//on cherche si il y a une notice pour le groupe à la date précisée
+	//on cherche si il y a une notice pour le groupe Ã  la date prÃ©cisÃ©e
 	$criteria = new Criteria(CahierTexteTravailAFairePeer::DATABASE_NAME);
 	$criteria->add(CahierTexteTravailAFairePeer::DATE_CT, $today, '=');
 	$criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $utilisateur->getLogin());
@@ -106,17 +106,17 @@ if ($ctTravailAFaire != null) {
 	}
 }
 
-// Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
+// VÃ©rification : est-ce que l'utilisateur a le droit de modifier cette entrÃ© ?
 if ((strtolower($ctTravailAFaire->getIdLogin()) != strtolower($utilisateur->getLogin()))&&
 (getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
-	echo("Erreur edition de devoir : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
+	echo("Erreur edition de devoir : vous n'avez pas le droit de modifier cette notice car elle appartient Ã  un autre professeur.");
 	die();
 }
 
 
 if ($ctTravailAFaire->getVise() == 'y') {
 	// interdire la modification d'un visa par le prof si c'est un visa
-	echo("Erreur edition de devoir : Notice signée, edition impossible");
+	echo("Erreur edition de devoir : Notice signÃ©e, edition impossible");
 	die();
 }
 
@@ -137,10 +137,10 @@ if(isset($_GET['change_visibilite'])) {
 			$res=mysql_query($sql);
 			if($res) {
 				if($visible_eleve_parent=='1') {
-					echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
+					echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des Ã©lÃ¨ves et responsables' title='Document visible des Ã©lÃ¨ves et responsables' />";
 				}
 				else {
-					echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+					echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des Ã©lÃ¨ves et responsables' title='Document invisible des Ã©lÃ¨ves et responsables' />";
 				}
 			}
 		}
@@ -155,7 +155,7 @@ $_SESSION['id_groupe_session'] = $ctTravailAFaire->getIdGroupe();
 $type_couleur = "t";
 
 // **********************************************
-// Affichage des différents groupes du professeur
+// Affichage des diffÃ©rents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
 echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la liste des de notices\" /></div>&nbsp;";
 
@@ -284,10 +284,10 @@ echo("<input type='hidden' id='id_groupe' name='id_groupe' value='".$groupe->get
 //hidden input utilise pour indiquer a la fenetre ListeNotice a quel endroit mettre un petit texte rouge "modification"
 echo("<input type='hidden' id='div_id_ct' value='devoir_".$ctTravailAFaire->getIdCt()."' />\n");
 
-//si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
+//si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient SuccÃ¨s
 $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_modification"] :(isset($_GET["succes_modification"]) ? $_GET["succes_modification"] :NULL);
 $label_enregistrer = "Enregistrer";
-if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
+if ($succes_modification == 'oui') {$label_enregistrer='SuccÃ¨s';}
 
 //echo $ctTravailAFaire->getDateVisibiliteEleve();
 if($ctTravailAFaire->getDateVisibiliteEleve()=='') {
@@ -319,13 +319,13 @@ echo "<script type='text/javascript'>
 		mois_v=tab[1];
 		annee_v=tab[2];
 		if(!checkdate(mois_v, jour_v, annee_v)) {
-			alert(\"La date de visibilité saisie n'est pas valide.\");
+			alert(\"La date de visibilitÃ© saisie n'est pas valide.\");
 		}
 	}
 </script>\n";
 */
 			echo "<br />\n";
-			echo "<span title='Vous pouvez modifier les dates et heure de visibilité avec les flèches Haut/Bas, PageUp/PageDown du clavier.'>Visibilité</span>&nbsp;:\n";
+			echo "<span title='Vous pouvez modifier les dates et heure de visibilitÃ© avec les flÃ¨ches Haut/Bas, PageUp/PageDown du clavier.'>VisibilitÃ©</span>&nbsp;:\n";
 			echo " <input type='text' name='jour_visibilite' id='jour_visibilite' value='$jour_courant' size='7' onkeydown='clavier_date(this.id,event)' 
 			onblur=\"date_v=document.getElementById('jour_visibilite').value;
 				tab=date_v.split('/');
@@ -333,11 +333,11 @@ echo "<script type='text/javascript'>
 				mois_v=tab[1];
 				annee_v=tab[2];
 				if(!checkdate(mois_v, jour_v, annee_v)) {
-					alert('La date de visibilité saisie n est pas valide.');
+					alert('La date de visibilitÃ© saisie n est pas valide.');
 				}
 			\" />\n";
 		// onblur='verif_date_visibilite()' />\n";
-			echo " à <input type='text' name='heure_visibilite' id='heure_visibilite' value='$heure_courante' size='3' onkeydown='clavier_heure(this.id,event)' 
+			echo " Ã  <input type='text' name='heure_visibilite' id='heure_visibilite' value='$heure_courante' size='3' onkeydown='clavier_heure(this.id,event)' 
 			onblur=\"instant_v=document.getElementById('heure_visibilite').value;
 				var exp=new RegExp('^[0-9]{1,2}:[0-9]{0,2}$','g');
 				erreur='n';
@@ -353,7 +353,7 @@ echo "<script type='text/javascript'>
 				}
 
 				if(erreur=='y') {
-					alert('L heure de visibilité saisie n est pas valide.');
+					alert('L heure de visibilitÃ© saisie n est pas valide.');
 				}
 			\" />\n";
 		?>
@@ -383,17 +383,17 @@ echo "<script type='text/javascript'>
 			echo "</td>\n";
 
 			echo "<td style='text-align:center; width: 16px;'>\n";
-			echo "<a title=\"Aller à la semaine précédente\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($semaine_precedente);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left-double.png' width='16' height='16' title='Aller à la semaine précédente' alt='Aller à la semaine précédente' /></a> ";
+			echo "<a title=\"Aller Ã  la semaine prÃ©cÃ©dente\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($semaine_precedente);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left-double.png' width='16' height='16' title='Aller Ã  la semaine prÃ©cÃ©dente' alt='Aller Ã  la semaine prÃ©cÃ©dente' /></a> ";
 			echo "</td>\n";
 			echo "<td style='text-align:center; width: 16px;'>\n";
-			echo "<a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left.png' width='16' height='16' title='Aller au jour précédent' alt='Aller au jour précédent' /></a>\n";
+			echo "<a title=\"Aller au jour prÃ©cÃ©dent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left.png' width='16' height='16' title='Aller au jour prÃ©cÃ©dent' alt='Aller au jour prÃ©cÃ©dent' /></a>\n";
 			echo "</td>\n";
 			echo "<td align='center'>Aujourd'hui</td>\n";
 			echo "<td style='text-align:center; width: 16px;'>\n";
 			echo "<a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right.png' width='16' height='16' title='Aller au jour suivant' alt='Aller au jour suivant' /></a>\n";
 			echo "</td>\n";
 			echo "<td style='text-align:center; width: 16px;'>\n";
-			echo " <a title=\"Aller à la semaine suivante\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($semaine_suivante);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right-double.png' width='16' height='16' title='Aller à la semaine suivante' alt='Aller à la semaine suivante' /></a>\n";
+			echo " <a title=\"Aller Ã  la semaine suivante\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($semaine_suivante);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right-double.png' width='16' height='16' title='Aller Ã  la semaine suivante' alt='Aller Ã  la semaine suivante' /></a>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 			echo "\n";
@@ -405,9 +405,9 @@ echo "<script type='text/javascript'>
 
 		echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea>\n";
 
-		//// gestion des fichiers attaché
+		//// gestion des fichiers attachÃ©
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';
-		echo "<b>Fichier(s) attaché(s) : </b><br />\n";
+		echo "<b>Fichier(s) attachÃ©(s) : </b><br />\n";
 		echo '<div id="div_fichier">';
 		// Affichage des documents joints
 		$document = new CahierTexteTravailAFaireFichierJoint(); //for ide completion
@@ -430,10 +430,10 @@ echo "<script type='text/javascript'>
 							echo "<a href='javascript:modif_visibilite_doc_joint(\"devoir\", ".$ctTravailAFaire->getIdCt().", ".$document->getId().")'>";
 							echo "<span id='span_document_joint_".$document->getId()."'>";
 							if($document->getVisibleEleveParent()) {
-								echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
+								echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des Ã©lÃ¨ves et responsables' title='Document visible des Ã©lÃ¨ves et responsables' />";
 							}
 							else {
-								echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+								echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des Ã©lÃ¨ves et responsables' title='Document invisible des Ã©lÃ¨ves et responsables' />";
 							}
 							echo "</span>";
 							echo "</a>";
@@ -495,7 +495,7 @@ echo "<script type='text/javascript'>
 			</tr>
 			<?php $nb_doc_choisi_compte++;
 			}
-			//fin gestion des fichiers attaché
+			//fin gestion des fichiers attachÃ©
 			?>
 
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice;?>; background-color: <?php echo $couleur_cellule[$type_couleur]; ?>;">
@@ -507,7 +507,7 @@ echo "<script type='text/javascript'>
 				</td>
 			</tr>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
-				<td colspan="<?php echo $nb_col_tableau_pj;?>" style="text-align: center;"><?php  echo "Tous les documents ne sont pas acceptés, voir <a href='javascript:centrerpopup(\"limites_telechargement.php?id_groupe=" . $groupe->getId() . "\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>les limites et restrictions</a>\n"; ?>
+				<td colspan="<?php echo $nb_col_tableau_pj;?>" style="text-align: center;"><?php  echo "Tous les documents ne sont pas acceptÃ©s, voir <a href='javascript:centrerpopup(\"limites_telechargement.php?id_groupe=" . $groupe->getId() . "\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>les limites et restrictions</a>\n"; ?>
 				</td>
 			</tr>
 		</table>

@@ -48,13 +48,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Liste des options de classes existantes',
+description='GÃ©nÃ¨se des classes: Liste des options de classes existantes',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -91,7 +91,7 @@ function LETTRE_COLONNE($num_col) {
 }
 
 function suppr_accents($chaine){
-	$caract_accentues=array("à","â","ä","ç","é","è","ê","ë","î","ï","ô","ö","ù","û","ü");
+	$caract_accentues=array("Ã ","Ã¢","Ã¤","Ã§","Ã©","Ã¨","Ãª","Ã«","Ã®","Ã¯","Ã´","Ã¶","Ã¹","Ã»","Ã¼");
 	$caract_sans_accent=array("a","a","a","c","e","e","e","e","i","i","o","o","u","u","u");
 
 	$retour=$chaine;
@@ -299,7 +299,7 @@ if(isset($_POST['valider_param'])) {
 
 		$nb_lig++;
 		//==========================================
-		// Lignes élèves
+		// Lignes Ã©lÃ¨ves
 
 		for($k=0;$k<count($id_classe);$k++) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$k]' ORDER BY nom,prenom;";
@@ -395,9 +395,9 @@ if(isset($_POST['valider_param'])) {
 	}
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Liste des options";
+$titre_page = "GÃ©nÃ¨se classe: Liste des options";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -434,7 +434,7 @@ while($lig=mysql_fetch_object($res)) {
 echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 echo "<input type='hidden' name='projet' value='".$projet."' />\n";
 if(!isset($_POST['choix_param'])) {
-	echo "<table summary='Choix des paramètres'>\n";
+	echo "<table summary='Choix des paramÃ¨tres'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
 		echo "<p>Choix des classes&nbsp;:\n";
@@ -476,7 +476,7 @@ if(!isset($_POST['choix_param'])) {
 		echo "</table>\n";
 	echo "</td>\n";
 	echo "<td valign='top'>\n";
-		echo "<p>Choix des informations à faire apparaître&nbsp;:<br />\n";
+		echo "<p>Choix des informations Ã  faire apparaÃ®tre&nbsp;:<br />\n";
 		echo "<blockquote>\n";
 		echo "<p><input type='checkbox' name='nom' id='nom' value='y' checked ";
 		echo "onchange=\"checkbox_champ_change('nom')\" ";
@@ -484,7 +484,7 @@ if(!isset($_POST['choix_param'])) {
 
 		echo "<input type='checkbox' name='prenom' id='prenom' value='y' checked ";
 		echo "onchange=\"checkbox_champ_change('prenom')\" ";
-		echo "/><label for='prenom'><span id='texte_prenom'>Prénom</span></label><br />\n"; 
+		echo "/><label for='prenom'><span id='texte_prenom'>PrÃ©nom</span></label><br />\n"; 
 
 		echo "<input type='checkbox' name='sexe' id='sexe' value='y' checked ";
 		echo "onchange=\"checkbox_champ_change('sexe')\" ";
@@ -500,15 +500,15 @@ if(!isset($_POST['choix_param'])) {
 
 		echo "<input type='checkbox' name='elenoet' id='elenoet' value='y' checked ";
 		echo "onchange=\"checkbox_champ_change('elenoet')\" ";
-		echo "/><label for='elenoet'><span id='texte_elenoet'>Numéro elenoet</span></label><br />\n"; 
+		echo "/><label for='elenoet'><span id='texte_elenoet'>NumÃ©ro elenoet</span></label><br />\n"; 
 
 		echo "<input type='checkbox' name='ele_id' id='ele_id' value='y' ";
 		echo "onchange=\"checkbox_champ_change('ele_id')\" ";
-		echo "/><label for='ele_id'><span id='texte_ele_id'>Numéro ele_id</span></label><br />\n"; 
+		echo "/><label for='ele_id'><span id='texte_ele_id'>NumÃ©ro ele_id</span></label><br />\n"; 
 
 		echo "<input type='checkbox' name='no_gep' id='no_gep' value='y' ";
 		echo "onchange=\"checkbox_champ_change('no_gep')\" ";
-		echo "/><label for='no_gep'><span id='texte_no_gep'>Numéro INE</span></label><br />\n"; 
+		echo "/><label for='no_gep'><span id='texte_no_gep'>NumÃ©ro INE</span></label><br />\n"; 
 
 		echo "<input type='checkbox' name='email' id='email' value='y' ";
 		echo "onchange=\"checkbox_champ_change('email')\" ";
@@ -520,7 +520,7 @@ if(!isset($_POST['choix_param'])) {
 		echo "</blockquote>\n";
 	echo "</td>\n";
 	echo "<td valign='top'>\n";
-		echo "<p>Choix des matières à faire apparaître&nbsp;:<br />\n";
+		echo "<p>Choix des matiÃ¨res Ã  faire apparaÃ®tre&nbsp;:<br />\n";
 		echo "<blockquote>\n";
 	
 		$tab_options=array();
@@ -597,7 +597,7 @@ else {
 			$liste_champs.=$tab_champs[$i];
 		}
 	}
-	echo "<p>Vous souhaitez faire apparaître les champs&nbsp;: $liste_champs</p>\n";
+	echo "<p>Vous souhaitez faire apparaÃ®tre les champs&nbsp;: $liste_champs</p>\n";
 
 	$liste_matiere="";
 	$li_select_matiere="";
@@ -634,10 +634,10 @@ else {
 }
 echo "</form>\n";
 
-echo "<p>Cette page est destinée à générer un CSV des options à pointer en conseil de classe pour les préparatifs de conception de classe de l'année suivante.<br />
-Ce fichier correctement dûment sera réclamé à l'étape 4 'Importer les options futures des élèves d'après un CSV'.<br />
-Il conviendra d'ajouter des lignes de totaux (SOMME()) à l'aide du tableur si vous souhaitez faire un usage autre de ce fichier que l'import dans le module 'Génèse des classes'.<br />
-Les champs comme login, elenoet, ele_id,... sont destinés à faciliter l'import en retour des choix dans les tables 'gc_*'.</p>\n";
+echo "<p>Cette page est destinÃ©e Ã  gÃ©nÃ©rer un CSV des options Ã  pointer en conseil de classe pour les prÃ©paratifs de conception de classe de l'annÃ©e suivante.<br />
+Ce fichier correctement dÃ»ment sera rÃ©clamÃ© Ã  l'Ã©tape 4 'Importer les options futures des Ã©lÃ¨ves d'aprÃ¨s un CSV'.<br />
+Il conviendra d'ajouter des lignes de totaux (SOMME()) Ã  l'aide du tableur si vous souhaitez faire un usage autre de ce fichier que l'import dans le module 'GÃ©nÃ¨se des classes'.<br />
+Les champs comme login, elenoet, ele_id,... sont destinÃ©s Ã  faciliter l'import en retour des choix dans les tables 'gc_*'.</p>\n";
 
 
 require("../lib/footer.inc.php");

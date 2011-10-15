@@ -40,7 +40,7 @@ if (!checkAccess()) {
     die();
 }
 
-// Initialisation du répertoire actuel de sauvegarde
+// Initialisation du rÃ©pertoire actuel de sauvegarde
 $dirname = getSettingValue("backup_directory");
 //$fileid=isset($_POST['fileid']) ? $_POST['fileid'] : (isset($_GET['fileid']) ? $_GET['fileid'] : NULL);
 $fileid=isset($_GET['fileid']) ? $_GET['fileid'] : NULL;

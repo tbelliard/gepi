@@ -49,9 +49,9 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 //initialisation des variables
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
@@ -105,9 +105,9 @@ $dt_debut = clone $dt_date_absence_eleve;
 $dt_debut->setTime(0,0,0);
 $dt_fin = clone $dt_date_absence_eleve;
 $dt_fin->setTime(23,59,59);
-//on récupere les saisies avant puis on va filtrer avec les ids car filterManquementObligationPresence bug un peu avec les requetes imbriquées
+//on rÃ©cupere les saisies avant puis on va filtrer avec les ids car filterManquementObligationPresence bug un peu avec les requetes imbriquÃ©es
 $saisie_query = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut, $dt_fin)->setFormatter(ModelCriteria::FORMAT_ARRAY);
-//On filtre les manquement à l'obligation de présence
+//On filtre les manquement Ã  l'obligation de prÃ©sence
 if ($filtre_actif == "manquement") {
     $saisie_query->filterByManquementObligationPresence();
 } else {
@@ -127,8 +127,8 @@ $eleve_col = $query
 ?>
 <div class='css-panes' id='containDiv'>
     <p>
-        Cette page affiche par créneau le nombre d'élèves ayant une saisie correspondant au filtre défini.<br />
-        Les saisies renseignées en retard ne sont pas comptabilisées.<br /><br />
+        Cette page affiche par crÃ©neau le nombre d'Ã©lÃ¨ves ayant une saisie correspondant au filtre dÃ©fini.<br />
+        Les saisies renseignÃ©es en retard ne sont pas comptabilisÃ©es.<br /><br />
     </p>
     <table border="1" >
         <tr align="center">
@@ -138,9 +138,9 @@ $eleve_col = $query
             <td>
                 <?php
                 if ($filtre_actif == "manquement") {
-                    echo 'Manquement aux obligations de présence';
+                    echo 'Manquement aux obligations de prÃ©sence';
                 } elseif($id_lieu==Null) {
-                     echo 'Sans lieu défini';
+                     echo 'Sans lieu dÃ©fini';
                 }else{
                     $lieu=AbsenceEleveLieuQuery::create()->findOneById($id_lieu);
                     echo $lieu->getNom();
@@ -150,7 +150,7 @@ $eleve_col = $query
         </tr>
         <tr align="center">
             <td style="border: 1px solid black; background-color: grey;">
-                Types de saisies concernées :
+                Types de saisies concernÃ©es :
             </td>
             <td>
                 <?php
@@ -161,7 +161,7 @@ $eleve_col = $query
                 }
                 $besoin_echo_virgule = false;
                 if ($filtre_actif == "manquement" && getSettingValue("abs2_saisie_par_defaut_sans_manquement") != 'y') {
-                    echo'Sans type défini';
+                    echo'Sans type dÃ©fini';
                     $besoin_echo_virgule = true;
                 }
                 foreach ($types as $type) {
@@ -182,14 +182,14 @@ $eleve_col = $query
             <td>
                 <?php
                 if ($filtre_actif == "manquement") {
-                    echo 'Sont comptabilisées toutes les saisies correspondant à un manquement aux obligations de présence. <br />
-                        Sur un même créneau un élève ne sera comptabilisé qu\'une fois en retard et/ou qu\'une fois comme manquant à ses obligations.';
+                    echo 'Sont comptabilisÃ©es toutes les saisies correspondant Ã  un manquement aux obligations de prÃ©sence. <br />
+                        Sur un mÃªme crÃ©neau un Ã©lÃ¨ve ne sera comptabilisÃ© qu\'une fois en retard et/ou qu\'une fois comme manquant Ã  ses obligations.';
                 } elseif ($id_lieu == Null) {
-                    echo 'Sont comptabilisées toutes les saisies n\'ayant pas de lieu défini (élèves n\'étant pas dans l\'enceinte de l\'établissement). <br />
-                        Sur un même créneau un élève ne sera comptabilisé qu\'une fois en retard et/ou qu\'une fois pour des saisies sans lieu défini.';
+                    echo 'Sont comptabilisÃ©es toutes les saisies n\'ayant pas de lieu dÃ©fini (Ã©lÃ¨ves n\'Ã©tant pas dans l\'enceinte de l\'Ã©tablissement). <br />
+                        Sur un mÃªme crÃ©neau un Ã©lÃ¨ve ne sera comptabilisÃ© qu\'une fois en retard et/ou qu\'une fois pour des saisies sans lieu dÃ©fini.';
                 } else {
-                    echo 'Sont comptabilisées toutes les saisies ayant pour lieu celui du filtre. <br />
-                        Sur un même créneau un élève ne sera comptabilisé qu\'une fois en retard et/ou qu\'une fois pour des saisies avec ce lieu.';
+                    echo 'Sont comptabilisÃ©es toutes les saisies ayant pour lieu celui du filtre. <br />
+                        Sur un mÃªme crÃ©neau un Ã©lÃ¨ve ne sera comptabilisÃ© qu\'une fois en retard et/ou qu\'une fois pour des saisies avec ce lieu.';
                 }
                 ?>
             </td>
@@ -203,7 +203,7 @@ $eleve_col = $query
             <legend>Date</legend>
             <p class="expli_page choix_fin">
                 <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
-                <button dojoType="dijit.form.Button"  name="nav_date" type="submit"  value="precedent">Jour précédent</button>
+                <button dojoType="dijit.form.Button"  name="nav_date" type="submit"  value="precedent">Jour prÃ©cÃ©dent</button>
                 <input onchange="document.totaux_du_jour.submit()" style="width : 8em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
                 <button dojoType="dijit.form.Button"  name="nav_date" type="submit"  value="suivant">Jour suivant</button>
             </p>
@@ -212,11 +212,11 @@ $eleve_col = $query
 			    <span>Choix du filtre</span>
 			    <div dojoType="dijit.Menu" style="display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById('filtre_actif').value = 'manquement'; document.totaux_du_jour.submit()">
-				 Manquement aux obligations de présence
+				 Manquement aux obligations de prÃ©sence
 				</button>
 			<?php
             echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'filtre_actif\').value = \'lieu\'; document.getElementById(\'id_lieu\').value = \''.Null.'\';document.totaux_du_jour.submit() ">'."\n";
-			echo '	Sans lieu défini'."\n";
+			echo '	Sans lieu dÃ©fini'."\n";
 			echo '	</button>'."\n";
             $lieux=AbsenceEleveLieuQuery::create()->findList();
             if (!$lieux->isempty()) {
@@ -234,9 +234,9 @@ $eleve_col = $query
     $col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
     echo'<table border="1" >';
     echo'<tr align="center">
-        <th style="border: 1px solid black; background-color: grey;">Créneau</th>
+        <th style="border: 1px solid black; background-color: grey;">CrÃ©neau</th>
         <th style="border: 1px solid black; background-color: grey;">Heure</th>
-        <th style="border: 1px solid black; background-color: grey;">Nombre d\'élèves absents</th>
+        <th style="border: 1px solid black; background-color: grey;">Nombre d\'Ã©lÃ¨ves absents</th>
         <th style="border: 1px solid black; background-color: grey;">Nombre de demi_pensionnaires </th>
         <th style="border: 1px solid black; background-color: grey;">Nombre d\'internes</th>
         <th style="border: 1px solid black; background-color: grey;">Nombre d\'externes</th>
@@ -283,7 +283,7 @@ $eleve_col = $query
         }        
         echo'<tr align="center">
             <td  style="border: 1px solid black; background-color: grey;">'.$creneau->getNomDefiniePeriode().'</td>
-            <td>De '.$creneau->getHeureDebutDefiniePeriode().' à '.$creneau->getHeureFinDefiniePeriode().'</td>
+            <td>De '.$creneau->getHeureDebutDefiniePeriode().' Ã  '.$creneau->getHeureFinDefiniePeriode().'</td>
             <td>'.$decompte_du_creneau.'</td>
             <td>'.$nb_dp.'</td>
             <td>'.$nb_int.'</td>
@@ -293,8 +293,8 @@ $eleve_col = $query
     echo'</table>';    
     echo'<br />';
     echo'<table border="1" >';
-    echo'<tr><td style="border: 1px solid black; background-color: grey;">Nombre d\'élèves différents comptabilisés dans le tableau ci-dessus </td><td>'.count($eleves_absents).'</td></tr>';
-    echo'<tr><td style="border: 1px solid black; background-color: grey;">Nombre de retards sur la journée correspondant au filtre sélectionné</td><td>'.$nbre_total_retards.'</td></tr>';
+    echo'<tr><td style="border: 1px solid black; background-color: grey;">Nombre d\'Ã©lÃ¨ves diffÃ©rents comptabilisÃ©s dans le tableau ci-dessus </td><td>'.count($eleves_absents).'</td></tr>';
+    echo'<tr><td style="border: 1px solid black; background-color: grey;">Nombre de retards sur la journÃ©e correspondant au filtre sÃ©lectionnÃ©</td><td>'.$nbre_total_retards.'</td></tr>';
     echo'</table>';
     ?>
    

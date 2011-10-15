@@ -55,7 +55,7 @@ $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -71,7 +71,7 @@ if(isset($_POST['saisie_notes'])) {
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
+		$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
 	else {
 		$lig=mysql_fetch_object($res);
@@ -134,11 +134,11 @@ if(isset($_POST['saisie_notes'])) {
 			}
 		
 			if(($msg=='')&&(count($n_anonymat)>0)) {
-				$msg="Enregistrement effectué.";
+				$msg="Enregistrement effectuÃ©.";
 			}
 		}
 		else {
-			$msg="L'épreuve choisie (<i>$id_epreuve</i>) est close.\n";
+			$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) est close.\n";
 		}
 	}
 }
@@ -147,7 +147,7 @@ elseif((isset($mode))&&($mode=='export_csv')) {
 
 	$export="y";
 
-	// Vérifier que l'accès est autorisé
+	// VÃ©rifier que l'accÃ¨s est autorisÃ©
 	if($_SESSION['statut']=='professeur') {
 		$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
@@ -214,7 +214,7 @@ elseif((isset($mode))&&($mode=='export_csv')) {
 include('lib_eb.php');
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Saisie des notes";
 //echo "<div class='noprint'>\n";
@@ -230,7 +230,7 @@ require_once("../lib/header.inc");
 if(isset($id_epreuve)) {
 	echo "<p class='bold'><a href='index.php?id_epreuve=$id_epreuve&amp;mode=modif_epreuve'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo ">Epreuve blanche n°$id_epreuve</a>";
+	echo ">Epreuve blanche nÂ°$id_epreuve</a>";
 }
 else {
 	echo "<p class='bold'><a href='index.php'";
@@ -245,7 +245,7 @@ else {
 
 if(!isset($id_epreuve)) {
 	echo "</p>\n";
-	// Accéder aux épreuves blanches: non closes
+	// AccÃ©der aux Ã©preuves blanches: non closes
 	if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 		$sql="SELECT * FROM eb_epreuves WHERE etat!='clos' ORDER BY date, intitule;";
 	}
@@ -253,7 +253,7 @@ if(!isset($id_epreuve)) {
 		$sql="SELECT ee.* FROM eb_epreuves ee, eb_profs ep WHERE ee.etat!='clos' AND ee.id=ep.id_epreuve AND ep.login_prof='".$_SESSION['login']."' ORDER BY ee.date, ee.intitule;";
 	}
 	else {
-		echo "<p>Accès non autorisé.</p>\n";
+		echo "<p>AccÃ¨s non autorisÃ©.</p>\n";
 
 		// Mettre un tentative_intrusion()
 		// Envisager une saisie par le compte secours
@@ -265,7 +265,7 @@ if(!isset($id_epreuve)) {
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucune épreuve non close.</p>\n";
+		echo "<p>Aucune Ã©preuve non close.</p>\n";
 	}
 	else {
 		echo "<p><b>Epreuves en cours&nbsp;:</b></p>\n";
@@ -277,7 +277,7 @@ if(!isset($id_epreuve)) {
 			if($lig->description!='') {
 				echo " onmouseover=\"delais_afficher_div('div_epreuve_".$lig->id."','y',-100,20,1000,20,20)\" onmouseout=\"cacher_div('div_epreuve_".$lig->id."')\"";
 
-				$titre="Epreuve n°$lig->id";
+				$titre="Epreuve nÂ°$lig->id";
 				$texte="<p><b>".$lig->intitule."</b><br />";
 				$texte.=$lig->description;
 				$tabdiv_infobulle[]=creer_div_infobulle('div_epreuve_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');
@@ -295,7 +295,7 @@ if(!isset($id_epreuve)) {
 
 echo " | <a href='".$_SERVER['PHP_SELF']."'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo ">Choix de l'épreuve</a>";
+echo ">Choix de l'Ã©preuve</a>";
 
 echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=export_csv".add_token_in_url()."'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -304,13 +304,13 @@ echo ">Exporter au format CSV</a>";
 echo "</p>\n";
 
 //========================================================
-// Si prof, tester si id_epreuve est bien associé au prof
+// Si prof, tester si id_epreuve est bien associÃ© au prof
 if($_SESSION['statut']=='professeur') {
 	$sql="SELECT * FROM eb_epreuves ee, eb_profs ep WHERE ee.etat!='clos' AND ee.id=ep.id_epreuve AND ep.login_prof='".$_SESSION['login']."' AND ep.id_epreuve='$id_epreuve' ORDER BY ee.date, ee.intitule;";
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Accès non autorisé.</p>\n";
+		echo "<p>AccÃ¨s non autorisÃ©.</p>\n";
 
 		// Mettre un tentative_intrusion()
 		// Envisager une saisie par le compte secours
@@ -321,12 +321,12 @@ if($_SESSION['statut']=='professeur') {
 }
 
 //========================================================
-echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
+echo "<p class='bold'>Epreuve nÂ°$id_epreuve</p>\n";
 
 $sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
+	echo "<p>L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -352,7 +352,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	$res=mysql_query($sql);
 	
 	if(mysql_num_rows($res)==0) {
-		echo "<p style='color:red;'>Aucune copie n'a été trouvée.<br />Avez-vous associé des groupes/enseignements à l'épreuve?</p>\n";
+		echo "<p style='color:red;'>Aucune copie n'a Ã©tÃ© trouvÃ©e.<br />Avez-vous associÃ© des groupes/enseignements Ã  l'Ã©preuve?</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -362,13 +362,13 @@ elseif($_SESSION['statut']=='professeur') {
 	$res=mysql_query($sql);
 	
 	if(mysql_num_rows($res)==0) {
-		echo "<p style='color:red;'>Aucune copie ne vous a été attribuée.<br />Pour un peu, vous auriez corrigé les copies pour rien;o)</p>\n";
+		echo "<p style='color:red;'>Aucune copie ne vous a Ã©tÃ© attribuÃ©e.<br />Pour un peu, vous auriez corrigÃ© les copies pour rien;o)</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 }
 else {
-	echo "<p>Accès non autorisé.</p>\n";
+	echo "<p>AccÃ¨s non autorisÃ©.</p>\n";
 	// Mettre un tentative_intrusion()
 	// Envisager une saisie par le compte secours
 	require("../lib/footer.inc.php");
@@ -383,7 +383,7 @@ $test1=mysql_query($sql);
 $sql="SELECT DISTINCT n_anonymat FROM eb_copies WHERE id_epreuve='$id_epreuve';";
 $test2=mysql_query($sql);
 if(mysql_num_rows($test1)!=mysql_num_rows($test2)) {
-	echo "<p style='color:red;'>Les numéros anonymats ne sont pas uniques sur l'épreuve (<i>cela ne devrait pas arriver</i>).<br />La saisie n'est pas possible.</p>\n";
+	echo "<p style='color:red;'>Les numÃ©ros anonymats ne sont pas uniques sur l'Ã©preuve (<i>cela ne devrait pas arriver</i>).<br />La saisie n'est pas possible.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -391,7 +391,7 @@ if(mysql_num_rows($test1)!=mysql_num_rows($test2)) {
 $sql="SELECT login_ele FROM eb_copies WHERE n_anonymat='' AND id_epreuve='$id_epreuve';";
 $test3=mysql_query($sql);
 if(mysql_num_rows($test3)>0) {
-	echo "<p style='color:red;'>Un ou des numéros anonymats ne sont pas valides sur l'épreuve&nbsp;: ";
+	echo "<p style='color:red;'>Un ou des numÃ©ros anonymats ne sont pas valides sur l'Ã©preuve&nbsp;: ";
 	$cpt=0;
 	while($lig=mysql_fetch_object($test3)) {
 		if($cpt>0) {echo ", ";}
@@ -406,13 +406,13 @@ if(mysql_num_rows($test3)>0) {
 $sql="SELECT 1=1 FROM eb_groupes WHERE transfert='y' AND id_epreuve='$id_epreuve';";
 $test4=mysql_query($sql);
 if(mysql_num_rows($test4)>0) {
-	echo "<p style='color:red;'><b>Anomalie&nbsp;:</b> L'épreuve n'est pas close et le transfert des notes vers les carnets de notes a déjà été effectué pour un enseignement/groupe au moins.<br />Merci de prendre contact avec l'administrateur ou avec le responsable de l'épreuve (<i>en principe titulaire d'un compte 'scolarité'</i>) pour qu'il effectue à nouveau le transfert une fois les notes modifiées/corrigées.";
+	echo "<p style='color:red;'><b>Anomalie&nbsp;:</b> L'Ã©preuve n'est pas close et le transfert des notes vers les carnets de notes a dÃ©jÃ  Ã©tÃ© effectuÃ© pour un enseignement/groupe au moins.<br />Merci de prendre contact avec l'administrateur ou avec le responsable de l'Ã©preuve (<i>en principe titulaire d'un compte 'scolaritÃ©'</i>) pour qu'il effectue Ã  nouveau le transfert une fois les notes modifiÃ©es/corrigÃ©es.";
 }
 
 //========================================================
 
 
-// Couleurs utilisées
+// Couleurs utilisÃ©es
 $couleur_devoirs = '#AAE6AA';
 $couleur_fond = '#AAE6AA';
 $couleur_moy_cn = '#96C8F0';
@@ -424,10 +424,10 @@ if($etat!='clos') {
 
 echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus' summary='Saisie'>\n";
 echo "<tr>\n";
-echo "<th>Numéro anonymat</th>\n";
+echo "<th>NumÃ©ro anonymat</th>\n";
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
-	$title_col_sp=" title='Colonne non affichée pour un professeur'";
-	echo "<th$title_col_sp>Nom Prénom</th>\n";
+	$title_col_sp=" title='Colonne non affichÃ©e pour un professeur'";
+	echo "<th$title_col_sp>Nom PrÃ©nom</th>\n";
 }
 //echo "<th width='100px'>Note</th>\n";
 echo "<th style='width:5em;'>Note sur $note_sur</th>\n";
@@ -531,10 +531,10 @@ echo "<p><br /></p>\n";
 echo "<p style='color:red;'>A FAIRE:</p>\n";
 echo "<ul>\n";
 //echo "<li><p style='color:red;'>Permettre de saisir des notes sur autre chose que 20.</p>\n";
-//echo "<li><p style='color:red;'>Calculer la moyenne, médiane,...</p></li>\n";
+//echo "<li><p style='color:red;'>Calculer la moyenne, mÃ©diane,...</p></li>\n";
 echo "<li><p style='color:red;'>Permettre d'importer/exporter ses saisies au format CSV</p></li>\n";
 echo "</ul>\n";
-//echo "<p style='color:red;'>Vérifier que l'on n'a pas deux numéros anonymat identiques sur l'épreuve... pour verrouiller les saisies si nécessaire.</p>\n";
+//echo "<p style='color:red;'>VÃ©rifier que l'on n'a pas deux numÃ©ros anonymat identiques sur l'Ã©preuve... pour verrouiller les saisies si nÃ©cessaire.</p>\n";
 
 require("../lib/footer.inc.php");
 ?>

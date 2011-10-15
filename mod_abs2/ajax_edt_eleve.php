@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -44,9 +44,9 @@ if (!checkAccess()) {
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 $eleve_login = isset($_POST["eleve_login"]) ? $_POST["eleve_login"] :(isset($_GET["eleve_login"]) ? $_GET["eleve_login"] : NULL);
@@ -56,7 +56,7 @@ if ($eleve_login == null) {
     die;
 }
 
-require_once("../edt_organisation/fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
+require_once("../edt_organisation/fonctions_edt.php");            // --- fonctions de base communes Ã  tous les emplois du temps
 require_once("../edt_organisation/fonctions_edt_eleve.php");      // --- edt eleve
 require_once("../edt_organisation/fonctions_affichage.php");
 require_once("../edt_organisation/req_database.php");

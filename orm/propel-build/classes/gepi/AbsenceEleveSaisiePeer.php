@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for performing query and update operations on the 'a_saisies' table.
  *
- * Chaque saisie d'absence doit faire l'objet d'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durÃ©e (plusieurs jours), dÃ©fini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisÃ© dans debut_abs. Un cours de l'emploi du temps, le jours du cours etant precisÃ© dans debut_abs.
+ * Chaque saisie d'absence doit faire l'objet d'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durÃƒÂ©e (plusieurs jours), dÃƒÂ©fini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisÃƒÂ© dans debut_abs. Un cours de l'emploi du temps, le jours du cours etant precisÃƒÂ© dans debut_abs.
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -48,7 +48,7 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		$id_relation = $id_relation + 1;
 	    }
 	    if ($id_relation > 1) {
-		$failureMap[AbsenceEleveSaisiePeer::ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ID,"Il ne peut y avoir un groupe, une classe et une aid simultanéments pécisé.<br/>");
+		$failureMap[AbsenceEleveSaisiePeer::ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ID,"Il ne peut y avoir un groupe, une classe et une aid simultanÃ©ments pÃ©cisÃ©.<br/>");
 	    }
 
 	    if ($obj->getEleveId() !== null) {
@@ -76,30 +76,30 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		}
 	    }
 
-	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
+	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, Ã  la classe ou Ã  l'aid prÃ©cisÃ©
 	    if ($obj->getAidDetails() != null && $obj->getEleve() != null) {
 		$criteria = new Criteria();
 		$criteria->add(JAidElevesPeer::LOGIN, $obj->getEleve()->getLogin());
 		if ($obj->getAidDetails()->countJAidElevess($criteria) == 0) {
-		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas à l'aid selectionné : ".$obj->getAidDetails()->getNom());
+		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas Ã  l'aid selectionnÃ© : ".$obj->getAidDetails()->getNom());
 		}
 	    }
 
-	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
+	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, Ã  la classe ou Ã  l'aid prÃ©cisÃ©
 	    if ($obj->getGroupe() != null && $obj->getEleve() != null) {
 		$criteria = new Criteria();
 		$criteria->add(JEleveGroupePeer::LOGIN, $obj->getEleve()->getLogin());
 		if ($obj->getGroupe()->countJEleveGroupes($criteria) == 0) {
-		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas au groupe selectionné.");
+		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas au groupe selectionnÃ©.");
 		}
 	    }
 
-	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, à la classe ou à l'aid précisé
+	    //si il y a un eleve, on verifie qu'il appartient bien au groupe, Ã  la classe ou Ã  l'aid prÃ©cisÃ©
 	    if ($obj->getClasse() != null && $obj->getEleve() != null) {
 		$criteria = new Criteria();
 		$criteria->add(JEleveClassePeer::LOGIN, $obj->getEleve()->getLogin());
 		if ($obj->getClasse()->countJEleveClasses($criteria) == 0) {
-		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas à la classe selectionnée.");
+		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas Ã  la classe selectionnÃ©e.");
 		}
 	    }
 
@@ -116,7 +116,7 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 	    }
 
 	    if ($obj->getDebutAbs('U') >= $obj->getFinAbs('U')) {
-		$failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = new ValidationFailed(AbsenceEleveSaisiePeer::FIN_ABS,"La date de debut d'absence doit etre strictement anterieure à la date de fin.");
+		$failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = new ValidationFailed(AbsenceEleveSaisiePeer::FIN_ABS,"La date de debut d'absence doit etre strictement anterieure Ã  la date de fin.");
 	    }
 
 	    return (!empty($failureMap) ? $failureMap : true);

@@ -35,22 +35,22 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/saisie_qualites.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Saisie des qualités', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_qualites.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Saisie des qualités', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_discipline/saisie_qualites.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Saisie des qualitÃ©s', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_qualites.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Saisie des qualitÃ©s', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// REMARQUE: Le terme de 'qualité' a été remplacé par 'rôle'
+// REMARQUE: Le terme de 'qualitÃ©' a Ã©tÃ© remplacÃ© par 'rÃ´le'
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 require('sanctions_func_lib.php');
@@ -69,11 +69,11 @@ if(isset($suppr_qualite)) {
 			$sql="DELETE FROM s_qualites WHERE id='$suppr_qualite[$i]';";
 			$suppr=mysql_query($sql);
 			if(!$suppr) {
-				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_qualite[$i].".<br />\n";
-				$msg.="ERREUR lors de la suppression du rôle n°".$suppr_qualite[$i].".<br />\n";
+				//$msg.="ERREUR lors de la suppression de la qualitÃ© nÂ°".$suppr_qualite[$i].".<br />\n";
+				$msg.="ERREUR lors de la suppression du rÃ´le nÂ°".$suppr_qualite[$i].".<br />\n";
 			}
 			else {
-				$msg.="Suppression du rôle n°".$suppr_qualite[$i].".<br />\n";
+				$msg.="Suppression du rÃ´le nÂ°".$suppr_qualite[$i].".<br />\n";
 			}
 		}
 	}
@@ -111,10 +111,10 @@ if((isset($qualite))&&($qualite!='')) {
 	}
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-//$titre_page = "Sanctions: Définition des qualités";
-$titre_page = "Discipline: Définition des rôles";
+//$titre_page = "Sanctions: DÃ©finition des qualitÃ©s";
+$titre_page = "Discipline: DÃ©finition des rÃ´les";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -126,25 +126,25 @@ echo "</p>\n";
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 echo add_token_field();
 
-//echo "<p class='bold'>Saisie des qualités dans un incident&nbsp;:</p>\n";
-echo "<p class='bold'>Saisie des rôles dans un incident&nbsp;:</p>\n";
+//echo "<p class='bold'>Saisie des qualitÃ©s dans un incident&nbsp;:</p>\n";
+echo "<p class='bold'>Saisie des rÃ´les dans un incident&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt=0;
 $sql="SELECT * FROM s_qualites ORDER BY qualite;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	//echo "<p>Aucune qualité n'est encore définie.</p>\n";
-	echo "<p>Aucun rôle n'est encore défini.</p>\n";
+	//echo "<p>Aucune qualitÃ© n'est encore dÃ©finie.</p>\n";
+	echo "<p>Aucun rÃ´le n'est encore dÃ©fini.</p>\n";
 }
 else {
-	//echo "<p>Qualités existantes&nbsp;:</p>\n";
-	//echo "<table class='boireaus' border='1' summary='Tableau des qualités existantes'>\n";
-	echo "<p>Rôles existants&nbsp;:</p>\n";
-	echo "<table class='boireaus' border='1' summary='Tableau des rôles existants'>\n";
+	//echo "<p>QualitÃ©s existantes&nbsp;:</p>\n";
+	//echo "<table class='boireaus' border='1' summary='Tableau des qualitÃ©s existantes'>\n";
+	echo "<p>RÃ´les existants&nbsp;:</p>\n";
+	echo "<table class='boireaus' border='1' summary='Tableau des rÃ´les existants'>\n";
 	echo "<tr>\n";
-	//echo "<th>Qualité</th>\n";
-	echo "<th>Rôle</th>\n";
+	//echo "<th>QualitÃ©</th>\n";
+	echo "<th>RÃ´le</th>\n";
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";
 	$alt=1;
@@ -168,7 +168,7 @@ else {
 }
 echo "</blockquote>\n";
 
-echo "<p>Nouvelle qualité&nbsp;: <input type='text' name='qualite' value='' onchange='changement();' /></p>\n";
+echo "<p>Nouvelle qualitÃ©&nbsp;: <input type='text' name='qualite' value='' onchange='changement();' /></p>\n";
 
 echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 

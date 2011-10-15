@@ -1,5 +1,5 @@
 0160001P;-;college;public;16140;Aigre
-0160005U;Jules Michelet;college;public;16000;Angoulême
+0160005U;Jules Michelet;college;public;16000;AngoulÃªme
 0160012B;Alfred De Vigny;college;public;16250;Blanzac-Porcheresse
 0160015E;-;college;public;16210;Chalais
 0160016F;de l'Argentor;college;public;16350;Champagne-Mouton
@@ -9,36 +9,36 @@
 0160030W;-;college;public;16220;Montbron
 0160031X;-;college;public;16310;Montemboeuf
 0160032Y;Antoine Delafont;college;public;16190;Montmoreau-Saint-Cybard
-0160034A;Claudie Haigneré;college;public;16170;Rouillac
+0160034A;Claudie HaignerÃ©;college;public;16170;Rouillac
 0160039F;du Val de Charente;college;public;16700;Ruffec
-0160040G;Eugène Delacroix;college;public;16330;Saint-Amant-de-Boixe
+0160040G;EugÃ¨ne Delacroix;college;public;16330;Saint-Amant-de-Boixe
 0160042J;Font-Belle;college;public;16130;Segonzac
 0160043K;Henri Martin;college;public;16320;Villebois-Lavalette
-0160050T;Jules Verne;college;public;16000;Angoulême
-0160061E;Sainte-Marthe - Chavagnes;college;prive;16000;Angoulême
+0160050T;Jules Verne;college;public;16000;AngoulÃªme
+0160061E;Sainte-Marthe - Chavagnes;college;prive;16000;AngoulÃªme
 0160073T;Saint-Gauthier;college;prive;16500;Confolens
 0160075V;Jean XXIII;college;prive;16200;Jarnac
-0160076W;de l'Enfant Jésus;college;prive;16110;La-Rochefoucauld
-0160077X;Sacré-Coeur;college;prive;16700;Ruffec
+0160076W;de l'Enfant JÃ©sus;college;prive;16110;La-Rochefoucauld
+0160077X;SacrÃ©-Coeur;college;prive;16700;Ruffec
 0160094R;Norbert Casteret;college;public;16600;Ruelle-sur-Touvre
 0160100X;Romain Rolland;college;public;16800;Soyaux
-0160106D;René Cassin;college;public;16160;Gond-Pontouvre
-0160113L;La Grande Garenne;college;public;16000;Angoulême
+0160106D;RenÃ© Cassin;college;public;16160;Gond-Pontouvre
+0160113L;La Grande Garenne;college;public;16000;AngoulÃªme
 0160115N;Albert Micheneau;college;public;16240;Villefagnan
-0160116P;Elisée Mousnier;college;public;16100;Cognac
-0160117R;Félix Gaillard;college;public;16100;Cognac
+0160116P;ElisÃ©e Mousnier;college;public;16100;Cognac
+0160117R;FÃ©lix Gaillard;college;public;16100;Cognac
 0160120U;Jean De La Quintinie;college;public;16150;Chabanais
-0160123X;René Defarge;ecole;public;16000;Angoulême
-0160124Y;P. Cézanne - J. Renoir;ecole;public;16000;Angoulême
-0160125Z;Paul Bert;ecole;public;16000;Angoulême
-0160127B;Jules Ferry;ecole;public;16000;Angoulême
-0160130E;Ferdinand Buisson;ecole;public;16000;Angoulême
-0160134J;Docteur Emile Roux;ecole;public;16000;Angoulême
-0160135K;George Sand - La Grand Font;ecole;public;16000;Angoulême
-0160137M;Mario Roustan;ecole;public;16000;Angoulême
-0160138N;Victor Hugo;ecole;public;16000;Angoulême
-0160139P;Marie Curie;ecole;public;16000;Angoulême
-0160144V;Victor Duruy;ecole;public;16000;Angoulême
+0160123X;RenÃ© Defarge;ecole;public;16000;AngoulÃªme
+0160124Y;P. CÃ©zanne - J. Renoir;ecole;public;16000;AngoulÃªme
+0160125Z;Paul Bert;ecole;public;16000;AngoulÃªme
+0160127B;Jules Ferry;ecole;public;16000;AngoulÃªme
+0160130E;Ferdinand Buisson;ecole;public;16000;AngoulÃªme
+0160134J;Docteur Emile Roux;ecole;public;16000;AngoulÃªme
+0160135K;George Sand - La Grand Font;ecole;public;16000;AngoulÃªme
+0160137M;Mario Roustan;ecole;public;16000;AngoulÃªme
+0160138N;Victor Hugo;ecole;public;16000;AngoulÃªme
+0160139P;Marie Curie;ecole;public;16000;AngoulÃªme
+0160144V;Victor Duruy;ecole;public;16000;AngoulÃªme
 0160164S;-;ecole;public;16210;Bardenac
 0160168W;-;ecole;public;16390;Laprade
 0160175D;-;ecole;public;16390;Bonnes
@@ -65,9 +65,9 @@
 0160222E;-;ecole;public;16410;Torsac
 0160223F;-;ecole;public;16410;Vouzan
 0160228L;-;ecole;public;16430;Vindelle
-0160229M;Célestin Freinet;ecole;public;16800;Soyaux
+0160229M;CÃ©lestin Freinet;ecole;public;16800;Soyaux
 0160230N;Edouard Herriot;ecole;public;16800;Soyaux
-0160232R;Alphonse Daudet;ecole;public;16730;Fléac
+0160232R;Alphonse Daudet;ecole;public;16730;FlÃ©ac
 0160234T;du Pontouvre;ecole;public;16160;Gond-Pontouvre
 0160235U;Alfred De Vigny;ecole;public;16440;Nersac
 0160239Y;Louis Pasteur;ecole;public;16470;Saint-Michel
@@ -76,7 +76,7 @@
 0160248H;Jean Moulin;ecole;public;16800;Soyaux
 0160249J;Jean Monnet;ecole;public;16800;Soyaux
 0160250K;Pierre et Marie Curie;ecole;public;16160;Gond-Pontouvre
-0160265B;Les Frères Chabasse;ecole;public;16410;Bouëx
+0160265B;Les FrÃ¨res Chabasse;ecole;public;16410;BouÃ«x
 0160267D;-;ecole;public;16430;Champniers
 0160268E;Marcel Radeuil;ecole;public;16430;Champniers
 0160269F;-;ecole;public;16600;Mornac
@@ -92,24 +92,24 @@
 0160297L;-;ecole;public;16380;Grassac
 0160298M;-;ecole;public;16380;Marthon
 0160300P;-;ecole;public;16220;Vouthon
-0160302S;François Marvaud;ecole;public;16220;Montbron
+0160302S;FranÃ§ois Marvaud;ecole;public;16220;Montbron
 0160313D;-;ecole;public;16140;Verdille
 0160315F;-;ecole;public;16140;Aigre
 0160316G;-;ecole;public;16140;Fouqueure
-0160319K;-;ecole;public;16230;Luxé
+0160319K;-;ecole;public;16230;LuxÃ©
 0160320L;-;ecole;public;16140;Marcillac-Lanville
 0160321M;-;ecole;public;16140;Ranville-Breuillaud
 0160323P;-;ecole;public;16140;Tusson
 0160326T;-;ecole;public;16250;Champagne-Vigny
-0160332Z;-;ecole;public;16190;Aignes-et-Puypéroux
-0160333A;-;ecole;public;16250;Bécheresse
+0160332Z;-;ecole;public;16190;Aignes-et-PuypÃ©roux
+0160333A;-;ecole;public;16250;BÃ©cheresse
 0160334B;-;ecole;public;16250;Chadurie
 0160335C;-;ecole;public;16190;Deviat
 0160336D;-;ecole;public;16250;Jurignac
-0160337E;-;ecole;public;16250;Péreuil
-0160338F;-;ecole;public;16250;Pérignac
+0160337E;-;ecole;public;16250;PÃ©reuil
+0160338F;-;ecole;public;16250;PÃ©rignac
 0160339G;-;ecole;public;16250;Plassac-Rouffiac
-0160340H;-;ecole;public;16250;Voulgézac
+0160340H;-;ecole;public;16250;VoulgÃ©zac
 0160349T;-;ecole;public;16120;Vibrac
 0160353X;-;ecole;public;16120;Angeac-Charente
 0160355Z;-;ecole;public;16120;Bonneuil
@@ -117,22 +117,22 @@
 0160358C;-;ecole;public;16120;Mosnac
 0160359D;-;ecole;public;16130;Saint-Preuil
 0160360E;-;ecole;public;16120;Saint-Simeux
-0160364J;-;ecole;public;16720;Saint-Même-les-Carrières
+0160364J;-;ecole;public;16720;Saint-MÃªme-les-CarriÃ¨res
 0160370R;Yves Duteil;ecole;public;16400;Voeuil-et-Giget
-0160373U;Marcel Pagnol;ecole;public;16440;Roullet-Saint-Estèphe
-0160375W;Jacques Prévert;ecole;public;16400;La-Couronne
+0160373U;Marcel Pagnol;ecole;public;16440;Roullet-Saint-EstÃ¨phe
+0160375W;Jacques PrÃ©vert;ecole;public;16400;La-Couronne
 0160377Y;Marie Curie;ecole;public;16400;La-Couronne
-0160381C;-;ecole;public;16290;Asnières-sur-Nouère
+0160381C;-;ecole;public;16290;AsniÃ¨res-sur-NouÃ¨re
 0160382D;-;ecole;public;16290;Douzat
 0160383E;-;ecole;public;16170;Echallat
-0160386H;-;ecole;public;16200;Mérignac
+0160386H;-;ecole;public;16200;MÃ©rignac
 0160387J;-;ecole;public;16290;Moulidars
 0160388K;Jean Zay;ecole;public;16440;Sireuil
 0160389L;Georges Brassens;ecole;public;16730;Trois-Palis
-0160390M;Jérôme et Jean Tharaud;ecole;public;16290;Hiersac
+0160390M;JÃ©rÃ´me et Jean Tharaud;ecole;public;16290;Hiersac
 0160394S;-;ecole;public;16230;Cellettes
 0160396U;-;ecole;public;16230;Maine-de-Boixe
-0160398W;-;ecole;public;16230;Puyréaux
+0160398W;-;ecole;public;16230;PuyrÃ©aux
 0160400Y;-;ecole;public;16460;Valence
 0160401Z;-;ecole;public;16460;Aunac
 0160402A;-;ecole;public;16230;Fontclaireau
@@ -151,41 +151,41 @@
 0160444W;-;ecole;public;16330;Montignac-Charente
 0160445X;-;ecole;public;16560;Tourriers
 0160446Y;Paul Buard;ecole;public;16330;Xambes
-0160448A;Françoise Dolto;ecole;public;16330;Vars
-0160460N;-;ecole;public;16140;Charmé
+0160448A;FranÃ§oise Dolto;ecole;public;16330;Vars
+0160460N;-;ecole;public;16140;CharmÃ©
 0160463S;-;ecole;public;16240;Montjean
 0160464T;-;ecole;public;16240;Paizay-Naudouin-Embourie
 0160470Z;Marie Curie;ecole;public;16700;Ruffec
 0160481L;-;ecole;public;16480;Oriolles
-0160483N;-;ecole;public;16360;Le-Tâtre
-0160484P;-;ecole;public;16360;Touvérac
-0160486S;Honoré De Balzac;ecole;public;16480;Brossac
+0160483N;-;ecole;public;16360;Le-TÃ¢tre
+0160484P;-;ecole;public;16360;TouvÃ©rac
+0160486S;HonorÃ© De Balzac;ecole;public;16480;Brossac
 0160497D;-;ecole;public;16300;Barret
 0160498E;-;ecole;public;16480;Berneuil
 0160501H;-;ecole;public;16300;Montchaude
 0160502J;-;ecole;public;16300;Saint-Aulais-la-Chapelle
 0160503K;-;ecole;public;16300;Saint-Bonnet
 0160504L;L'Eau Vive;ecole;public;16300;Barbezieux-Saint-Hilaire
-0160506N;-;ecole;public;16300;Saint-Palais-du-Né
+0160506N;-;ecole;public;16300;Saint-Palais-du-NÃ©
 0160507P;-;ecole;public;16300;Salles-de-Barbezieux
-0160509S;Jacques Prévert;ecole;public;16300;Barbezieux-Saint-Hilaire
-0160510T;Félix Gaillard;ecole;public;16300;Barbezieux-Saint-Hilaire
+0160509S;Jacques PrÃ©vert;ecole;public;16300;Barbezieux-Saint-Hilaire
+0160510T;FÃ©lix Gaillard;ecole;public;16300;Barbezieux-Saint-Hilaire
 0160515Y;de Cagouillet;ecole;public;16100;Cognac
 0160518B;Paul Bert;ecole;public;16100;Cognac
 0160525J;-;ecole;public;16500;Abzac
 0160526K;-;ecole;public;16490;Ambernac
 0160527L;Pierre et Marie Curie;ecole;public;16500;Confolens
 0160529N;-;ecole;public;16500;Esse
-0160532S;François Tisseuil;ecole;public;16420;Lesterps
-0160554R;-;ecole;public;16310;Cherves-Châtelars
-0160555S;-;ecole;public;16310;Lésignac-Durand
+0160532S;FranÃ§ois Tisseuil;ecole;public;16420;Lesterps
+0160554R;-;ecole;public;16310;Cherves-ChÃ¢telars
+0160555S;-;ecole;public;16310;LÃ©signac-Durand
 0160556T;-;ecole;public;16310;Le-Lindois
 0160557U;-;ecole;public;16310;Mazerolles
 0160558V;-;ecole;public;16310;Montemboeuf
-0160561Y;-;ecole;public;16220;Rouzède
+0160561Y;-;ecole;public;16220;RouzÃ¨de
 0160567E;-;ecole;public;16110;Agris
 0160575N;-;ecole;public;16150;Chirac
-0160576P;-;ecole;public;16270;La-Péruse
+0160576P;-;ecole;public;16270;La-PÃ©ruse
 0160577R;-;ecole;public;16150;Saint-Quentin-sur-Charente
 0160605W;-;ecole;public;16450;Lussac
 0160611C;-;ecole;public;16260;Cellefrouin
@@ -202,27 +202,27 @@
 0160625T;-;ecole;public;16220;Vilhonneur
 0160626U;-;ecole;public;16110;Yvrac-et-Malleyrand
 0160628W;-;ecole;public;16380;Chazelles
-0160633B;-;ecole;public;16110;Rivières
+0160633B;-;ecole;public;16110;RiviÃ¨res
 0160640J;-;ecole;public;16270;Genouillac
 0160662H;-;ecole;public;16700;Les-Adjots
 0160663J;-;ecole;public;16700;La-Faye
-0160665L;-;ecole;public;16700;Taizé-Aizie
-0160667N;Edmond Méningaud;ecole;public;16700;Ruffec
+0160665L;-;ecole;public;16700;TaizÃ©-Aizie
+0160667N;Edmond MÃ©ningaud;ecole;public;16700;Ruffec
 0160670S;Pierre et Marie Curie;ecole;public;16100;Cognac
 0160680C;-;ecole;public;16130;Ars
-0160681D;-;ecole;public;16370;Bréville
+0160681D;-;ecole;public;16370;BrÃ©ville
 0160682E;-;ecole;public;16130;Gimeux
 0160683F;-;ecole;public;16200;Houlette
-0160684G;-;ecole;public;16100;Louzac-Saint-André
-0160686J;-;ecole;public;16200;Réparsac
+0160684G;-;ecole;public;16100;Louzac-Saint-AndrÃ©
+0160686J;-;ecole;public;16200;RÃ©parsac
 0160689M;-;ecole;public;16100;Saint-Laurent-de-Cognac
-0160691P;-;ecole;public;16200;Sainte-Sévère
+0160691P;-;ecole;public;16200;Sainte-SÃ©vÃ¨re
 0160692R;de Buhet;ecole;public;16370;Saint-Sulpice-de-Cognac
-0160696V;La Combe des Dames;ecole;public;16100;Châteaubernard
+0160696V;La Combe des Dames;ecole;public;16100;ChÃ¢teaubernard
 0160702B;Charles Baudelaire;ecole;public;16100;Merpins
 0160703C;-;ecole;public;16200;Nercillac
 0160714P;Jean Monnet;ecole;public;16130;Salles-d'Angles
-0160720W;Prince De Condé;ecole;public;16200;Triac-Lautrait
+0160720W;Prince De CondÃ©;ecole;public;16200;Triac-Lautrait
 0160721X;-;ecole;public;16200;Sigogne
 0160722Y;-;ecole;public;16200;Julienne
 0160723Z;-;ecole;public;16200;Gondeville
@@ -233,47 +233,47 @@
 0160735M;Raoul Dupuy;ecole;public;16300;Ambleville
 0160736N;-;ecole;public;16300;Criteuil-la-Magdeleine
 0160737P;-;ecole;public;16200;Mainxe
-0160738R;-;ecole;public;16130;Saint-Fort-sur-le-Né
-0160739S;-;ecole;public;16130;Verrières
+0160738R;-;ecole;public;16130;Saint-Fort-sur-le-NÃ©
+0160739S;-;ecole;public;16130;VerriÃ¨res
 0160770A;-;ecole;public;16250;Blanzac-Porcheresse
 0160771B;-;ecole;public;16150;Chabanais
 0160772C;-;ecole;public;16350;Champagne-Mouton
-0160773D;Pablo Picasso;ecole;public;16100;Châteaubernard
-0160774E;Martin Nadaud;ecole;public;16120;Châteauneuf-sur-Charente
+0160773D;Pablo Picasso;ecole;public;16100;ChÃ¢teaubernard
+0160774E;Martin Nadaud;ecole;public;16120;ChÃ¢teauneuf-sur-Charente
 0160775F;-;ecole;public;16230;Mansle
 0160776G;-;ecole;public;16170;Rouillac
-0160777H;Jean-Jacques Rousseau;ecole;public;16440;Roullet-Saint-Estèphe
+0160777H;Jean-Jacques Rousseau;ecole;public;16440;Roullet-Saint-EstÃ¨phe
 0160778J;Jean Tautou;ecole;public;16320;Villebois-Lavalette
-0160793A;Jean Michaud;college;public;16270;Roumazières-Loubert
-0160794B;-;ecole;public;16360;Condéon
+0160793A;Jean Michaud;college;public;16270;RoumaziÃ¨res-Loubert
+0160794B;-;ecole;public;16360;CondÃ©on
 0160795C;-;ecole;public;16270;Nieuil
 0160796D;-;ecole;public;16380;Saint-Germain-de-Montbron
 0160797E;-;ecole;public;16120;Touzac
 0160798F;Jules Michelet;ecole;public;16100;Cognac
 0160799G;-;ecole;public;16800;Soyaux
-0160802K;Saint-Paul;ecole;prive;16000;Angoulême
-0160803L;Sainte-Marthe - Chavagnes;ecole;prive;16000;Angoulême
+0160802K;Saint-Paul;ecole;prive;16000;AngoulÃªme
+0160803L;Sainte-Marthe - Chavagnes;ecole;prive;16000;AngoulÃªme
 0160804M;Sainte-Marie;ecole;prive;16300;Barbezieux-Saint-Hilaire
 0160806P;Sainte-Colette;ecole;prive;16100;Cognac
 0160807R;Notre-Dame;ecole;prive;16140;Aigre
-0160809T;de l'Enfant Jésus;ecole;prive;16000;Angoulême
+0160809T;de l'Enfant JÃ©sus;ecole;prive;16000;AngoulÃªme
 0160813X;Castel Marie;ecole;prive;16210;Chalais
-0160815Z;Sainte-Marthe;ecole;prive;16120;Châteauneuf-sur-Charente
+0160815Z;Sainte-Marthe;ecole;prive;16120;ChÃ¢teauneuf-sur-Charente
 0160816A;Sainte-Eustelle;ecole;prive;16370;Cherves-Richemont
 0160817B;Notre-Dame;ecole;prive;16400;La-Couronne
 0160818C;Notre-Dame du Rosaire;ecole;prive;16140;Fouqueure
-0160819D;Sainte-Thérèse;ecole;prive;16170;Genac
+0160819D;Sainte-ThÃ©rÃ¨se;ecole;prive;16170;Genac
 0160820E;Sainte-Marie - Saint-Maurice;ecole;prive;16200;Jarnac
-0160823H;Sainte-Marie;ecole;prive;16720;Saint-Même-les-Carrières
-0160825K;de l'Enfant Jésus;ecole;prive;16240;Villefagnan
-0160826L;Sacré-Coeur;ecole;prive;16130;Segonzac
-0160827M;Sacré-Coeur;ecole;prive;16700;Ruffec
-0160828N;de l'Enfant Jésus;ecole;prive;16110;La-Rochefoucauld
+0160823H;Sainte-Marie;ecole;prive;16720;Saint-MÃªme-les-CarriÃ¨res
+0160825K;de l'Enfant JÃ©sus;ecole;prive;16240;Villefagnan
+0160826L;SacrÃ©-Coeur;ecole;prive;16130;Segonzac
+0160827M;SacrÃ©-Coeur;ecole;prive;16700;Ruffec
+0160828N;de l'Enfant JÃ©sus;ecole;prive;16110;La-Rochefoucauld
 0160829P;La Providence;ecole;prive;16100;Cognac
 0160830R;Saint-Gauthier;ecole;prive;16500;Confolens
 0160833U;-;ecole;public;16300;Guimps
 0160834V;-;ecole;public;16400;Puymoyen
-0160835W;François Lassagne;ecole;public;16730;Linars
+0160835W;FranÃ§ois Lassagne;ecole;public;16730;Linars
 0160841C;-;ecole;public;16490;Pleuville
 0160843E;-;ecole;public;16130;Gensac-la-Pallue
 0160844F;-;ecole;public;16150;Etagnac
@@ -282,73 +282,73 @@
 0160849L;-;ecole;public;16350;Benest
 0160850M;-;ecole;public;16360;Baignes-Sainte-Radegonde
 0160851N;Ratier - Lacouture;ecole;public;16500;Ansac-sur-Vienne
-0160863B;Maurice Genevoix;college;public;16120;Châteauneuf-sur-Charente
+0160863B;Maurice Genevoix;college;public;16120;ChÃ¢teauneuf-sur-Charente
 0160864C;Claude Boucher;college;public;16100;Cognac
 0160866E;Jean Moulin;college;public;16300;Barbezieux-Saint-Hilaire
 0160867F;Jean Rostand;college;public;16110;La-Rochefoucauld
 0160871K;-;ecole;public;16500;Manot
 0160872L;-;ecole;public;16290;Saint-Saturnin
-0160875P;Alain Fournier;ecole;public;16000;Angoulême
+0160875P;Alain Fournier;ecole;public;16000;AngoulÃªme
 0160876R;-;ecole;public;16150;Exideuil
-0160877S;-;ecole;public;16200;Les-Métairies
-0160878T;-;ecole;public;16450;Saint-Laurent-de-Céris
+0160877S;-;ecole;public;16200;Les-MÃ©tairies
+0160878T;-;ecole;public;16450;Saint-Laurent-de-CÃ©ris
 0160879U;-;ecole;public;16240;Villefagnan
 0160882X;Louis Pasteur;college;public;16260;Chasseneuil-sur-Bonnieure
-0160884Z;Marguerite De Valois;college;public;16000;Angoulême
+0160884Z;Marguerite De Valois;college;public;16000;AngoulÃªme
 0160888D;-;ecole;public;16100;Boutiers-Saint-Trojan
-0160889E;Condorcet;ecole;public;16000;Angoulême
+0160889E;Condorcet;ecole;public;16000;AngoulÃªme
 0160892H;Jean Rostand;ecole;public;16100;Javrezac
 0160893J;Maurice Genevoix;ecole;public;16110;La-Rochefoucauld
-0160894K;Pierre Mendès-France;college;public;16800;Soyaux
-0160895L;André Malraux;college;public;16360;Baignes-Sainte-Radegonde
+0160894K;Pierre MendÃ¨s-France;college;public;16800;Soyaux
+0160895L;AndrÃ© Malraux;college;public;16360;Baignes-Sainte-Radegonde
 0160896M;de Relette;ecole;public;16600;Magnac-sur-Touvre
 0160897N;-;ecole;public;16410;Dirac
 0160899R;-;ecole;public;16100;Saint-Brice
 0160915H;-;ecole;public;16620;Montboyer
 0160916J;-;ecole;public;16480;Passirac
-0160917K;Jérôme et Jean Tharaud;ecole;public;16710;Saint-Yrieix-sur-Charente
+0160917K;JÃ©rÃ´me et Jean Tharaud;ecole;public;16710;Saint-Yrieix-sur-Charente
 0160918L;-;ecole;public;16330;Saint-Amant-de-Boixe
 0160919M;-;ecole;public;16420;Saulgond
 0160920N;-;ecole;public;16220;Saint-Sornin
-0160921P;-;ecole;public;16700;Nanteuil-en-Vallée
+0160921P;-;ecole;public;16700;Nanteuil-en-VallÃ©e
 0160922R;-;ecole;public;16310;Massignac
 0160923S;-;ecole;public;16500;Lessac
 0160925U;-;ecole;public;16170;Gourville
-0160926V;-;ecole;public;16130;Genté
+0160926V;-;ecole;public;16130;GentÃ©
 0160927W;-;ecole;public;16220;Ecuras
 0160928X;-;ecole;public;16440;Claix
 0160929Y;des Six Arbres;ecole;public;16210;Chalais
 0160930Z;-;ecole;public;16590;Brie
 0160931A;-;ecole;public;16190;Bors
 0160932B;Jean Caillaud;ecole;public;16430;Balzac
-0160933C;Jean Moulin;ecole;public;16000;Angoulême
-0160944P;Noël-Noël;college;public;16500;Confolens
+0160933C;Jean Moulin;ecole;public;16000;AngoulÃªme
+0160944P;NoÃ«l-NoÃ«l;college;public;16500;Confolens
 0160958E;-;ecole;public;16130;Segonzac
 0160962J;Paul Garandeau;ecole;public;16370;Cherves-Richemont
 0160963K;-;ecole;public;16410;Garat
 0160964L;-;ecole;public;16170;Saint-Cybardeaux
 0160965M;-;ecole;public;16500;Saint-Maurice-des-Lions
 0160966N;-;ecole;public;16510;Verteuil-sur-Charente
-0160968R;-;EREA;public;16000;Angoulême
+0160968R;-;EREA;public;16000;AngoulÃªme
 0160969S;Puygrelier;college;public;16470;Saint-Michel
-0160975Y;Jean Mermoz;ecole;public;16000;Angoulême
-0161009K;Pierre Ronsard;ecole;public;16000;Angoulême
+0160975Y;Jean Mermoz;ecole;public;16000;AngoulÃªme
+0161009K;Pierre Ronsard;ecole;public;16000;AngoulÃªme
 0161010L;-;ecole;public;16130;Juillac-le-Coq
-0161011M;-;ecole;public;16390;Saint-Séverin
+0161011M;-;ecole;public;16390;Saint-SÃ©verin
 0161012N;-;ecole;public;16420;Brigueuil
 0161013P;Anatole France;ecole;public;16100;Cognac
 0161014R;Victor Hugo;ecole;public;16100;Cognac
 0161015S;-;ecole;public;16170;Genac
-0161016T;-;ecole;public;16440;Mouthiers-sur-Boëme
-0161017U;Jean Everhard;ecole;public;16270;Roumazières-Loubert
-0161026D;André Clerjaud;ecole;public;16300;Lachaise
+0161016T;-;ecole;public;16440;Mouthiers-sur-BoÃ«me
+0161017U;Jean Everhard;ecole;public;16270;RoumaziÃ¨res-Loubert
+0161026D;AndrÃ© Clerjaud;ecole;public;16300;Lachaise
 0161027E;Le Treuil;ecole;public;16160;Gond-Pontouvre
-0161034M;Georges Brassens;ecole;public;16000;Angoulême
-0161048C;Saint-Paul;college;prive;16000;Angoulême
+0161034M;Georges Brassens;ecole;public;16000;AngoulÃªme
+0161048C;Saint-Paul;college;prive;16000;AngoulÃªme
 0161049D;Sainte-Marie;college;prive;16300;Barbezieux-Saint-Hilaire
 0161050E;Saint-Joseph;college;prive;16100;Cognac
-0161075G;Pierre Bodet;college;public;16000;Angoulême
+0161075G;Pierre Bodet;college;public;16000;AngoulÃªme
 0161085T;-;ecole;public;16290;Champmillon
 0161091Z;-;ecole;public;16100;Cognac
-0161092A;-;ecole;public;16100;Châteaubernard
-0161106R;Anatole France;college;public;16000;Angoulême
+0161092A;-;ecole;public;16100;ChÃ¢teaubernard
+0161106R;Anatole France;college;public;16000;AngoulÃªme

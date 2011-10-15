@@ -65,7 +65,7 @@
 									<div class="art-post-inner art-article">
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
-												<div style="font-size:12px;color:white;width:80%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[Gestionnaire de calendriers] : Définissez ici vos différents calendriers auxquels vous associez les classes concernées.</div> 
+												<div style="font-size:12px;color:white;width:80%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[Gestionnaire de calendriers] : DÃ©finissez ici vos diffÃ©rents calendriers auxquels vous associez les classes concernÃ©es.</div> 
                                                 <div class="cleared"></div>
                                                 <!-- /article-content -->
                                             </div>
@@ -121,7 +121,7 @@
 													<?php echo add_token_field(false); ?>
 													<input name="operation" type="hidden" value="new">
 													<input name="nom_calendrier" style="width:200px;" type="text" title="Entrez le nom du nouveau calendrier">
-													<input name="bouton_submit" type="submit" value="Créer un nouveau calendrier">
+													<input name="bouton_submit" type="submit" value="CrÃ©er un nouveau calendrier">
 												</fieldset>
 												</form>
 												</div>

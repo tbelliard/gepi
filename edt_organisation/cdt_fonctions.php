@@ -37,13 +37,13 @@ function RecupereNotices(&$tab_data, $entetes) {
 }
 // =============================================================================
 //
-//          Affiche un "+" pour créer un nouveau cours sur un créneau vide
+//          Affiche un "+" pour crÃ©er un nouveau cours sur un crÃ©neau vide
 //
 // =============================================================================
 function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_dec, $jour, $id_ct)
 {
 
-    // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
+    // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donnÃ© le droit aux professeurs
     if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND strtolower($login_edt) == strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
         $deb = "milieu";
         if ($heuredeb_dec == 0) 
@@ -97,7 +97,7 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
 // ======================================================
 //
 //      Lorsqu'on est en mode "emplois du temps semaines"
-//      permet de passer d'une semaine à l'autre
+//      permet de passer d'une semaine Ã  l'autre
 //
 // ======================================================
 function AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $week_min, $week_selected)
@@ -146,7 +146,7 @@ function AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $
     echo "<div class=\"spacer\"></div>";
 
     echo "<div style=\"float:left;width:100%;\";>";
-    echo "<p>Semaine sélectionnée : ";
+    echo "<p>Semaine sÃ©lectionnÃ©e : ";
 
     echo $tab[$week_selected-1]["lundis"]." - ";      
     echo $tab[$week_selected-1]["vendredis"];
@@ -179,7 +179,7 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
 
 
 // ===== affichage des colonnes
-// ===== Les "display:none" sont utilisés pour l'accessibilité
+// ===== Les "display:none" sont utilisÃ©s pour l'accessibilitÃ©
     $jour = 0;
     $isIconeAddUsable = true;
     while (isset($entetes['entete'][$jour])) {
@@ -193,7 +193,7 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
             if ($tab_data[$jour]['type'][$index_box] == "vide") {
                 
                 echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\">");
-                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
+                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durÃ©e = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
                 echo ("<div class=\"".$tab_data[$jour]['couleur'][$index_box]."\">\n");
                 echo ("<div class=\"ButtonBar\">");
                 //AfficheIconePlusNew_CDT($tab_data[$jour]['id_cours'][$index_box], $login_edt, $type_edt, $tab_data[$jour]['heuredeb_dec'][$index_box]);
@@ -205,7 +205,7 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
             {
     
                 echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\">");
-                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
+                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durÃ©e = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
                 echo("<div class=\"cadreRouge\">\n");
                 echo $tab_data[$jour]['contenu'][$index_box];
                 echo ("<div class=\"ButtonBar\">");
@@ -222,7 +222,7 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
             else if ($tab_data[$jour]['type'][$index_box] == "cours")
             {
                 echo("<div class=\"".$tab_data[$jour]['duree'][$index_box]."\">");
-                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durée = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
+                echo("<div style=\"display:none;\">".$tab_data[$jour]['affiche_creneau'][$index_box]." - durÃ©e = ".$tab_data[$jour]['duree_valeur'][$index_box]." heure(s)</div>\n");
                 echo ("<div class=\"".$tab_data[$jour]['couleur'][$index_box]."\">");
                 echo $tab_data[$jour]['contenu'][$index_box];
                 echo ("<div class=\"ButtonBar\">");
@@ -230,7 +230,7 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
 					AfficheIconePlusNew_CDT($tab_data[$jour]['id_groupe'][$index_box], $login_edt, $type_edt, $tab_data[$jour]['heuredeb_dec'][$index_box], $jour, $tab_data[$jour]['id_ct'][$index_box]);
 				}
 				else {
-					// -------- C'est un AID, non géré par CDT2
+					// -------- C'est un AID, non gÃ©rÃ© par CDT2
 				}
                 echo ("</div>\n");
                 echo ("</div></div>\n");   
@@ -243,7 +243,7 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
             }
             else 
             {
-                // ========= type de box non implémentée
+                // ========= type de box non implÃ©mentÃ©e
     
             }
 
@@ -255,7 +255,7 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
         $jour++;
     }
 
-// ===== affichage de la colonne créneaux
+// ===== affichage de la colonne crÃ©neaux
 
     echo ("<div class=\"creneaux".$creneaux['nb_creneaux']."\">\n");
     echo ("<div class=\"entete_creneaux\"></div>\n");

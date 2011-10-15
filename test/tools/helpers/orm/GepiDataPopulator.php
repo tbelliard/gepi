@@ -73,7 +73,7 @@ class GepiDataPopulator
 		$periode_6A_2->setClasse($classe_6A);
 		$periode_6A_2->setNumPeriode(2);
 		$periode_6A_2->setVerouiller('N');
-		$periode_6A_2->setNomPeriode('deuxième trimestre');
+		$periode_6A_2->setNomPeriode('deuxiÃ¨me trimestre');
 		$periode_6A_2->setDateFin('2011-03-01 23:59:59');
 		$periode_6A_2->save();
 		
@@ -89,14 +89,14 @@ class GepiDataPopulator
 		$periode_6B_2->setClasse($classe_6B);
 		$periode_6B_2->setNumPeriode(2);
 		$periode_6B_2->setVerouiller('O');
-		$periode_6B_2->setNomPeriode('deuxième trimestre');
+		$periode_6B_2->setNomPeriode('deuxiÃ¨me trimestre');
 		$periode_6B_2->setDateFin('2011-03-01 23:59:59');
 		$periode_6B_2->save();
 		$periode_6B_3 = new PeriodeNote();
 		$periode_6B_3->setClasse($classe_6B);
 		$periode_6B_3->setNumPeriode(3);
 		$periode_6B_3->setVerouiller('O');
-		$periode_6B_3->setNomPeriode('troisième trimestre');
+		$periode_6B_3->setNomPeriode('troisiÃ¨me trimestre');
 		$periode_6B_3->setDateFin('2011-07-01 23:59:59');
 		$periode_6B_3->save();
 		$classe_6B->addEleve($nicolas_eleve,1);

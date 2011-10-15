@@ -19,7 +19,7 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -117,7 +117,7 @@ class NettoyageCtrl extends Controleur {
       $this->vue->LoadTemplate('nettoyage.php');
       $this->vue->MergeBlock('b1', $this->table);
       $this->vue->show();
-    } else { //la table est déja vide; normalement on n'arrivera jamais ici car le test a été fait avant
+    } else { //la table est dÃ©ja vide; normalement on n'arrivera jamais ici car le test a Ã©tÃ© fait avant
       $this->setVarGlobal('choix_info', 'table_vide');
       $this->vue->LoadTemplate('nettoyage.php');
       $this->vue->show();
@@ -202,16 +202,16 @@ class NettoyageCtrl extends Controleur {
 
   function get_message($code) {
     //$NomBloc   : nom du bloc qui appel la fonction (lecture seule)
-    //$CurrRec   : tableau contenant les champs de l'enregistrement en cours (lecture/écriture)
-    //$RecNum    : numéro de l'enregsitrement en cours (lecture seule)
+    //$CurrRec   : tableau contenant les champs de l'enregistrement en cours (lecture/Ã©criture)
+    //$RecNum    : numÃ©ro de l'enregsitrement en cours (lecture seule)
     switch ($code) {
       case 0:
         $this->class = "message_red";
-        $this->message = 'La suppression ne semble pas avoir réussie';
+        $this->message = 'La suppression ne semble pas avoir rÃ©ussie';
         break;
       case 1:
         $this->class = "message_green";
-        $this->message = 'La suppression a réussie';
+        $this->message = 'La suppression a rÃ©ussie';
         break;
     }
     return array($this->class, $this->message);

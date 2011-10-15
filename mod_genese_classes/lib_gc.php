@@ -55,11 +55,11 @@ $chaine_couleur_lv1="'palegoldenrod',
 $chaine_couleur_lv2="'lightgreen','lightpink','lightblue','gold','lightgray','gray','olive'";
 $chaine_couleur_lv3="'purple','greenyellow','violet','chartreuse','lightgray','gray','olive'";
 
-// Les variables $chaine_couleur_* sont utilisées pour initialiser des tableaux javascript.
+// Les variables $chaine_couleur_* sont utilisÃ©es pour initialiser des tableaux javascript.
 
 
 $tab_profil=array('GC','C','RAS','B','TB');
-// Pour le moment les valeurs testées dans les scripts javascript et les couleurs associées sont en dur dans les pages.
+// Pour le moment les valeurs testÃ©es dans les scripts javascript et les couleurs associÃ©es sont en dur dans les pages.
 // A modifier...
 $chaine_couleur_profil="'red','orangered','gray','green','blue'";
 $chaine_profil="'GC','C','RAS','B','TB'";
@@ -153,7 +153,7 @@ function necessaire_bull_simple() {
 	echo "<script type='text/javascript'>
 	// <![CDATA[
 	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
-		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifiÃ© de '+login_eleve+' pÃ©riode '+num_per1+' Ã  '+num_per2;
 		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
 	}
 	//]]>
@@ -172,19 +172,19 @@ function image_sexe($sexe) {
 /*
 function tableau_eleves_req($id_req) {
 
-	echo "<table class='boireaus' border='1' summary='Requête n°$id_req'>\n";
+	echo "<table class='boireaus' border='1' summary='RequÃªte nÂ°$id_req'>\n";
 
 	//==========================================
 	echo "<tr>\n";
 
-	echo "<th>Elève</th>\n";
+	echo "<th>ElÃ¨ve</th>\n";
 
 	echo "<th>Profil</th>\n";
 	echo "<th>Niveau</th>\n";
 	echo "<th>Absences</th>\n";
 	echo "<th>Classe<br />actuelle</th>\n";
-	//$fich_csv.="Elève;Classe actuelle;";
-	$fich_csv.="Elève;Clas.act;";
+	//$fich_csv.="ElÃ¨ve;Classe actuelle;";
+	$fich_csv.="ElÃ¨ve;Clas.act;";
 
 	if(count($lv1)>0) {echo "<th>LV1</th>\n";$fich_csv.="LV1;";}
 	if(count($lv2)>0) {echo "<th>LV2</th>\n";$fich_csv.="LV2;";}
@@ -221,7 +221,7 @@ function tableau_eleves_req($id_req) {
 	$eff_tot_select_M=0;
 	$eff_tot_select_F=0;
 
-	// Pour effectuer des moyennes, médiane,...
+	// Pour effectuer des moyennes, mÃ©diane,...
 	$tab_moy_eleves=array();
 
 	$chaine_id_classe="";
@@ -295,7 +295,7 @@ function tableau_eleves_req($id_req) {
 					$non_justifie="-";
 					$nb_retards="-";
 
-					// On récupère les classe future, lv1, lv2, lv3 et autres options de l'élève $lig->login
+					// On rÃ©cupÃ¨re les classe future, lv1, lv2, lv3 et autres options de l'Ã©lÃ¨ve $lig->login
 					$fut_classe="";
 
 					$tab_ele_opt=array();
@@ -320,7 +320,7 @@ function tableau_eleves_req($id_req) {
 						}
 					}
 					else {
-						// On récupère les options de l'année écoulée (année qui se termine)
+						// On rÃ©cupÃ¨re les options de l'annÃ©e Ã©coulÃ©e (annÃ©e qui se termine)
 						$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='$lig->login';";
 						$res_opt=mysql_query($sql);
 						if(mysql_num_rows($res_opt)>0) {
@@ -574,7 +574,7 @@ function tableau_eleves_req($id_aff, $id_req) {
 	//}
 
 	//=========================
-	// Début de la requête à forger pour ne retenir que les élèves souhaités
+	// DÃ©but de la requÃªte Ã  forger pour ne retenir que les Ã©lÃ¨ves souhaitÃ©s
 	$sql_ele="SELECT DISTINCT login FROM gc_eleves_options WHERE projet='$projet' AND classe_future!='Dep' AND classe_future!='Red'";
 
 	$sql_ele_id_classe_act="";
@@ -770,7 +770,7 @@ function ligne_choix_classe_future($ele_login) {
 		}
 	}
 	else {
-		// On récupère les options de l'année écoulée
+		// On rÃ©cupÃ¨re les options de l'annÃ©e Ã©coulÃ©e
 		$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='ele_';";
 		$res_opt=mysql_query($sql);
 		if(mysql_num_rows($res_opt)>0) {

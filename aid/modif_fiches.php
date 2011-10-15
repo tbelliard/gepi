@@ -21,7 +21,7 @@
 
 // Initialisations files
 $nb_max_cases = 3;
-$non_defini = "<font color='red'>Non défini</font>";
+$non_defini = "<font color='red'>Non dÃ©fini</font>";
 require_once("../lib/initialisations.inc.php");
 
 $resultat_session = $session_gepi->security_check();
@@ -43,9 +43,9 @@ $indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET[
 $aid_id = isset($_POST["aid_id"]) ? $_POST["aid_id"] : (isset($_GET["aid_id"]) ? $_GET["aid_id"] : NULL);
 $annee = isset($_POST["annee"]) ? $_POST["annee"] : (isset($_GET["annee"]) ? $_GET["annee"] : '');
 
-// Vérification de la validité de $indice_aid et $aid_id
+// VÃ©rification de la validitÃ© de $indice_aid et $aid_id
 if (!VerifAidIsAcive($indice_aid,$aid_id,$annee)) {
-    echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
+    echo "<p>Vous tentez d'accÃ©der Ã  des outils qui ne sont pas activÃ©s. veuillez contacter l'administrateur.</p></body></html>";
     die();
 }
 // Gestion du lien retour
@@ -56,7 +56,7 @@ if (isset($_GET["retour"])) {
     if ($_GET["retour"]=="annees_anterieures_accueil.php") $_SESSION['retour'] .= "&amp;annee_scolaire=".$annee;
     if ($_GET["retour"]=="index_fiches.php") $_SESSION['retour'] .= "&amp;action=liste_projet";
 }
-// Par défaut, on revient à index_fiches.php.
+// Par dÃ©faut, on revient Ã  index_fiches.php.
 if (!isset($_SESSION['retour'])) $_SESSION['retour'] = "index_fiches.php?indice_aid=".$indice_aid."&amp;action=liste_projet";
  $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : "visu");
 if ($annee=='') {
@@ -70,14 +70,14 @@ $nb_productions = mysql_num_rows($call_productions);
 $call_public = mysql_query("select * from aid_public order by ordre_affichage");
 $nb_public = mysql_num_rows($call_public );
 
-// Si l'utilisateur n'est pas autorisé à modifier la fiche, on force $action = "visu"
+// Si l'utilisateur n'est pas autorisÃ© Ã  modifier la fiche, on force $action = "visu"
 if (!VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','',$annee)) $action = "visu";
 
-// Enregistrement des données
+// Enregistrement des donnÃ©es
 if (isset($_POST["is_posted"])) {
 	check_token();
 
-    // La personne connectée a-t-telle le droit d'enregistrer ?
+    // La personne connectÃ©e a-t-telle le droit d'enregistrer ?
     if (!VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','',$annee))
         die();
     $msg = "";
@@ -87,12 +87,12 @@ if (isset($_POST["is_posted"])) {
         $sql_aid = "update archivage_aids set ";
 
     $met_virgule='n';
-    // Résumé
+    // RÃ©sumÃ©
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume','W',$annee)) and (isset($_POST["reg_resume"]))) {
       $reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
       if (strlen($reg_resume) > 600) {
         $reg_resume = substr($reg_resume,0,597)."...";
-        $msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
+        $msg .= "Erreur : Votre rÃ©sumÃ© excÃ¨de 600 caractÃ¨res.<br />";
       }
       if ($met_virgule=='y') $sql_aid .=",";
       $sql_aid .= "resume = '".$reg_resume."'";
@@ -103,7 +103,7 @@ if (isset($_POST["is_posted"])) {
       $reg_divers = isset($_POST["reg_divers"]) ? $_POST["reg_divers"] : NULL;
       if (strlen($reg_divers) > 600) {
         if ($msg != "") $msg .= "<br />";
-        $msg .= "Erreur : le champs divers excède 600 caractères.<br />";
+        $msg .= "Erreur : le champs divers excÃ¨de 600 caractÃ¨res.<br />";
         $reg_divers = substr($reg_divers,0,597)."...";
       }
       if ($met_virgule=='y') $sql_aid .=",";
@@ -115,7 +115,7 @@ if (isset($_POST["is_posted"])) {
       $reg_contacts = isset($_POST["reg_contacts"]) ? $_POST["reg_contacts"] : NULL;
       if (strlen($reg_contacts) > 600) {
         if ($msg != "") $msg .= "<br />";
-        $msg .= "Erreur : le champs \"Contacts Extérieurs\" excède 600 caractères.<br />";
+        $msg .= "Erreur : le champs \"Contacts ExtÃ©rieurs\" excÃ¨de 600 caractÃ¨res.<br />";
         $reg_contacts = substr($reg_contacts,0,597)."...";
       }
       if ($met_virgule=='y') $sql_aid .=",";
@@ -139,7 +139,7 @@ if (isset($_POST["is_posted"])) {
       }
       if ($nb_cases > $nb_max_cases) {
         if ($msg != "") $msg .= "<br />";
-        $msg .= "Erreur : vous devez cocher au maximum ".$nb_max_cases." items pour caractériser votre projet.";
+        $msg .= "Erreur : vous devez cocher au maximum ".$nb_max_cases." items pour caractÃ©riser votre projet.";
       }
       if ($met_virgule=='y') $sql_aid .=",";
       $sql_aid .= "productions = '".$reg_productions."'";
@@ -160,7 +160,7 @@ if (isset($_POST["is_posted"])) {
       $sql_aid .= "public_destinataire = '".$reg_public."'";
       $met_virgule='y';
     }
-    //Mots clés :
+    //Mots clÃ©s :
     if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'mots_cles','W',$annee)) {
       $reg_mots_cles = "";
       $k = 0;
@@ -222,14 +222,14 @@ if (isset($_POST["is_posted"])) {
     }
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'nom','W',$annee)) and (isset($_POST["reg_nom"]))) {
       if ($annee=='') {
-      //  On regarde si une aid porte déjà le même nom
+      //  On regarde si une aid porte dÃ©jÃ  le mÃªme nom
         $test = sql_query1("SELECT count(id) FROM aid WHERE (nom='".$_POST["reg_nom"]."' and indice_aid='".$indice_aid."' and id!='".$aid_id."')");
         if ($test == "1") {
             if ($msg != "") $msg .= "<br />";
-            $msg .= " Attention, une AID portant le même nom existait déja !";
+            $msg .= " Attention, une AID portant le mÃªme nom existait dÃ©ja !";
         } else if ($test > 1) {
             if ($msg != "") $msg .= "<br />";
-            $msg .= " Attention, plusieurs AID portant le même nom existaient déja !";
+            $msg .= " Attention, plusieurs AID portant le mÃªme nom existaient dÃ©ja !";
         }
       }
       if ($met_virgule=='y') $sql_aid .=",";
@@ -290,7 +290,7 @@ if (isset($_POST["is_posted"])) {
         $sql_aid .= "en_construction = '".$reg_en_construction."'";
         $met_virgule='y';
     }
-    // Fin de la requête
+    // Fin de la requÃªte
     if ($annee=='')
         $sql_aid .= " where (id = '".$aid_id."' and indice_aid='".$indice_aid."')";
     else
@@ -301,7 +301,7 @@ if (isset($_POST["is_posted"])) {
     if (!$enr_aid)
         $msg .= "Erreur lors de l'enregistrement !";
     else
-        $msg .= "Enregistrement réussi !";
+        $msg .= "Enregistrement rÃ©ussi !";
 
 
 }
@@ -355,14 +355,14 @@ require_once("../lib/header.inc");
 if ($action != "visu") {
 ?>
 <script type="text/javascript">
-//*** Paramètres
-//*** texte : objet représentant le textarea
-//*** max : nombre de caractères maximum
+//*** ParamÃ¨tres
+//*** texte : objet reprÃ©sentant le textarea
+//*** max : nombre de caractÃ¨res maximum
 function CaracMax(texte, max)
 {
 if (texte.value.length >= max)
 {
-alert('Pas plus de ' + max + ' caractère(s) !!!') ;
+alert('Pas plus de ' + max + ' caractÃ¨re(s) !!!') ;
 texte.value = texte.value.substr(0, max - 1) ;
 }
 }
@@ -401,7 +401,7 @@ echo "</p>\n";
 // Nom du projet
 echo "<p class='grand'>projet ".$nom_projet." : ".$aid_nom."</p>\n";
 
-// Début du formulaire
+// DÃ©but du formulaire
 If ($action != "visu") {
     echo "<form action=\"modif_fiches.php\" name=\"form\" method=\"post\">\n";
 	echo add_token_field();
@@ -409,10 +409,10 @@ If ($action != "visu") {
 
 echo "<div class='bloc'>";
 
-// Elèves responsables
-echo "<span class = 'bold'>Elèves responsables du projet :</span>\n";
+// ElÃ¨ves responsables
+echo "<span class = 'bold'>ElÃ¨ves responsables du projet :</span>\n";
 if ($annee=='') {
-  // appel de la liste des élèves de l'AID :
+  // appel de la liste des Ã©lÃ¨ves de l'AID :
   $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom
   FROM eleves e, j_aid_eleves_resp j
   WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid')
@@ -495,7 +495,7 @@ if ($annee=='') {
 }
 echo "</div>\n";
 
-// Partie réservée à l'admin
+// Partie rÃ©servÃ©e Ã  l'admin
 if ($_SESSION["statut"]=="administrateur") {
     echo "<div class='bloc'>\n";
     If ($action != "visu") {
@@ -503,12 +503,12 @@ if ($_SESSION["statut"]=="administrateur") {
         echo "<p>Nom : <input type=\"text\" name=\"reg_nom\" size=\"50\" value=\"".htmlentities($aid_nom)."\" /></p>\n";
         if ($annee=='') {
           //numero
-          echo "<p>Numéro (fac.) : <input type=\"text\" name=\"reg_num\" size=\"4\" value=\"".$reg_num."\" /></p>\n";
+          echo "<p>NumÃ©ro (fac.) : <input type=\"text\" name=\"reg_num\" size=\"4\" value=\"".$reg_num."\" /></p>\n";
           //eleve_peut_modifier
           echo "<p><input type=\"checkbox\" name=\"reg_eleve_peut_modifier\" value=\"y\" ";
           if ($reg_eleve_peut_modifier == 'y') echo " checked ";
           echo "/> \n";
-          echo "Les élèves responsables peuvent modifier la fiche.</p>\n";
+          echo "Les Ã©lÃ¨ves responsables peuvent modifier la fiche.</p>\n";
           //prof_peut_modifier
           echo "<p><input type=\"checkbox\" name=\"reg_prof_peut_modifier\" value=\"y\" ";
           if ($reg_prof_peut_modifier == 'y') echo " checked ";
@@ -529,20 +529,20 @@ if ($_SESSION["statut"]=="administrateur") {
         echo "<p><input type=\"checkbox\" name=\"reg_affiche_adresse1\" value=\"y\" ";
         if ($reg_affiche_adresse1 == 'y') echo " checked ";
         echo "/> \n";
-        echo "L'adresse publique d'accès à la production est en lien sur la fiche publique.</p>\n";
+        echo "L'adresse publique d'accÃ¨s Ã  la production est en lien sur la fiche publique.</p>\n";
         //en_construction
         echo "<p><input type=\"checkbox\" name=\"reg_en_construction\" value=\"y\" ";
         if ($reg_en_construction == 'y') echo " checked ";
         echo "/> \n";
-        echo "L'adresse publique est déclarée \"en construction\" sur la fiche publique.</p>\n";
+        echo "L'adresse publique est dÃ©clarÃ©e \"en construction\" sur la fiche publique.</p>\n";
     } else {
         echo "<ul>";
         if ($annee=='') {
           //eleve_peut_modifier
           if ($reg_eleve_peut_modifier == 'y')
-              echo "<li>Les élèves responsables peuvent modifier la fiche.</li>\n";
+              echo "<li>Les Ã©lÃ¨ves responsables peuvent modifier la fiche.</li>\n";
           else
-              echo "<li>Les élèves responsables ne peuvent pas modifier la fiche.</li>\n";
+              echo "<li>Les Ã©lÃ¨ves responsables ne peuvent pas modifier la fiche.</li>\n";
           //prof_peut_modifier
           if ($reg_prof_peut_modifier == 'y')
               echo "<li>Les professeurs responsables peuvent modifier la fiche.</li>\n";
@@ -561,14 +561,14 @@ if ($_SESSION["statut"]=="administrateur") {
             echo "<li>La fiche n'est pas visible dans <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">l'interface publique</a>.</li>\n";
         //affiche_adresse1
         if ($reg_affiche_adresse1 == 'y')
-            echo "<li>L'adresse publique d'accès à la production est en lien sur la fiche publique.</li>\n";
+            echo "<li>L'adresse publique d'accÃ¨s Ã  la production est en lien sur la fiche publique.</li>\n";
         else
-            echo "<li>Il n'y a pas de lien sur la fiche publique vers l'adresse publique d'accès à la production.</li>\n";
+            echo "<li>Il n'y a pas de lien sur la fiche publique vers l'adresse publique d'accÃ¨s Ã  la production.</li>\n";
         //en_construction
         if ($reg_en_construction == 'y')
-            echo "<li>L'adresse publique est déclarée \"en construction\" sur la fiche publique.</li>\n";
+            echo "<li>L'adresse publique est dÃ©clarÃ©e \"en construction\" sur la fiche publique.</li>\n";
         else
-            echo "<li>L'adresse publique n'est pas déclarée \"en construction\" sur la fiche publique.</li>\n";
+            echo "<li>L'adresse publique n'est pas dÃ©clarÃ©e \"en construction\" sur la fiche publique.</li>\n";
         echo "</ul>\n";
 
     }
@@ -577,16 +577,16 @@ if ($_SESSION["statut"]=="administrateur") {
     echo "</div>\n";
 }
 
-// résumé
+// rÃ©sumÃ©
 if ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"W",$annee)) {
-    echo "<div class='bloc'><span class = 'bold'>Résumé</span> (limité à 600 caractères) :\n";
-    echo "<br /><i>Présentation du projet, objectifs, réalisations, ....</i>\n";
+    echo "<div class='bloc'><span class = 'bold'>RÃ©sumÃ©</span> (limitÃ© Ã  600 caractÃ¨res) :\n";
+    echo "<br /><i>PrÃ©sentation du projet, objectifs, rÃ©alisations, ....</i>\n";
     echo "<br /><textarea name=\"reg_resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlentities($reg_resume)."</textarea>\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"R",$annee)) {
-    echo "<div class='bloc'><span class = 'bold'>Résumé</span> (Présentation du projet, objectifs, réalisations, ....)\n";
+    echo "<div class='bloc'><span class = 'bold'>RÃ©sumÃ©</span> (PrÃ©sentation du projet, objectifs, rÃ©alisations, ....)\n";
     if ($reg_resume == "")
         echo "<br />".$non_defini."\n";
     else
@@ -614,19 +614,19 @@ If ($action != "visu") {
         $k++;
     }
     echo "</select>\n";
-    echo "<br />N'hésitez à demander conseil au documentatiste.
-    Pour vous aider, <a href=\"javascript:centrerpopup('100cases.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">un tableau détaillé est également disponible</a>.";
+    echo "<br />N'hÃ©sitez Ã  demander conseil au documentatiste.
+    Pour vous aider, <a href=\"javascript:centrerpopup('100cases.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">un tableau dÃ©taillÃ© est Ã©galement disponible</a>.";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'famille',"R",$annee)) {
     $famille = sql_query1("select type from aid_familles where id = '".$reg_famille."'");
     if ($famille == -1) $famille = $non_defini;
-    echo "<span class = 'bold'>Projet classé dans la famille</span> : ".$famille."\n";
+    echo "<span class = 'bold'>Projet classÃ© dans la famille</span> : ".$famille."\n";
   }
 }
 echo "</div>\n";
 
-//Mots clés :
+//Mots clÃ©s :
 $mc = explode("|",$reg_mots_cles);
 $k = 0;
 while ($k < 5) {
@@ -637,7 +637,7 @@ while ($k < 5) {
 echo "<div class='bloc'>\n";
 If ($action != "visu")  {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'mots_cles',"W",$annee)) {
-    echo "<span class = 'bold'>Mots clés </span> :\n";
+    echo "<span class = 'bold'>Mots clÃ©s </span> :\n";
     echo "<br /><i>Tapez entre 3 et 5 mots-cles</i>";
     echo "<table><tr>";
     $k = 0;
@@ -649,7 +649,7 @@ If ($action != "visu")  {
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'mots_cles',"R",$annee)) {
-    echo "<span class = 'bold'>Mots clés </span> :\n";
+    echo "<span class = 'bold'>Mots clÃ©s </span> :\n";
     $aff_motcle = "";
     $k = 0;
     while ($k < 5) {
@@ -679,7 +679,7 @@ echo "<div class='bloc'>\n";
 If ($action != "visu")  {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'productions',"W",$annee)) {
     echo "<p><span class = 'bold'>Production </span> :\n";
-    echo "<br /><i>Cochez au maximum ".$nb_max_cases." items qui caractérisent au mieux votre projet.</i>";
+    echo "<br /><i>Cochez au maximum ".$nb_max_cases." items qui caractÃ©risent au mieux votre projet.</i>";
     echo "<table border = 1>";
     $newligne = 1;
     $k = 0;
@@ -782,29 +782,29 @@ echo "</div>\n";
 echo "<div class='bloc'>\n";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1',"W",$annee)) {
-    echo "<span class = 'bold'>Indiquez éventuellemenet ci-dessous un <b>lien public de type internet</B> qui donne accès à la production :</span>\n";
+    echo "<span class = 'bold'>Indiquez Ã©ventuellemenet ci-dessous un <b>lien public de type internet</B> qui donne accÃ¨s Ã  la production :</span>\n";
     echo "<br /><input type=\"text\" name=\"reg_adresse1\" value=\"".htmlentities($reg_adresse1)."\" size=\"50\" />\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1',"R",$annee)) {
-    echo "<span class = 'bold'>Lien public donnant accès à la production : </span>\n";
+    echo "<span class = 'bold'>Lien public donnant accÃ¨s Ã  la production : </span>\n";
     if ($reg_adresse1 == "") echo $non_defini;
     else echo "<br />".$reg_adresse1;
   }
 }
 echo "</div>\n";
 
-// Adresses à accès restreint :
+// Adresses Ã  accÃ¨s restreint :
 echo "<div class='bloc'>\n";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse2',"W",$annee)) {
-    echo "<span class = 'bold'>Indiquez ci-dessous un <b>lien à accès restreint</B>
-    <br />(par exemple, <b>chemin d'accès à la production sur un serveur</b>) :</span>\n";
+    echo "<span class = 'bold'>Indiquez ci-dessous un <b>lien Ã  accÃ¨s restreint</B>
+    <br />(par exemple, <b>chemin d'accÃ¨s Ã  la production sur un serveur</b>) :</span>\n";
     echo "<br /><input type=\"text\" name=\"reg_adresse2\" value=\"".htmlentities($reg_adresse2)."\" size=\"50\" />\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse2',"R",$annee)) {
-    echo "<span class = 'bold'>Accès restreint à la production : </span>\n";
+    echo "<span class = 'bold'>AccÃ¨s restreint Ã  la production : </span>\n";
     if ($reg_adresse2 == "") echo $non_defini;
     else echo "<br />".$reg_adresse2;
   }
@@ -814,13 +814,13 @@ echo "</div>\n";
 // Contacts
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'contacts',"W",$annee)) {
-    echo "<div class='bloc'><span class = 'bold'>Contacts pris à l'extérieur de l'établissement, personnes ressources...</span> (limité à 600 caractères) :\n";
-    echo "<br /><i>Liste des contacts extérieurs (nom, prénom, association, raison sociale, ... )</i>\n";
+    echo "<div class='bloc'><span class = 'bold'>Contacts pris Ã  l'extÃ©rieur de l'Ã©tablissement, personnes ressources...</span> (limitÃ© Ã  600 caractÃ¨res) :\n";
+    echo "<br /><i>Liste des contacts extÃ©rieurs (nom, prÃ©nom, association, raison sociale, ... )</i>\n";
     echo "<br /><textarea name=\"reg_contacts\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlentities($reg_contacts)."</textarea>\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'contacts',"R",$annee)) {
-    echo "<div class='bloc'><span class = 'bold'>Liste des contacts extérieurs, personnes ressources...</span>\n";
+    echo "<div class='bloc'><span class = 'bold'>Liste des contacts extÃ©rieurs, personnes ressources...</span>\n";
     if ($reg_contacts == "")
         echo "<br />".$non_defini."\n";
     else
@@ -834,7 +834,7 @@ echo "</div>\n";
 echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere1',"W",$annee)) {
-    echo "<span class = 'bold'>Indiquez la discipline principale à laquelle se rattache votre projet : </span><br />\n";
+    echo "<span class = 'bold'>Indiquez la discipline principale Ã  laquelle se rattache votre projet : </span><br />\n";
     $call_discipline = mysql_query("select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
     $nb_discipline = mysql_num_rows($call_discipline);
     echo "<select name=\"reg_discipline1\" size=\"1\">\n";
@@ -866,7 +866,7 @@ If ($action != "visu") {
         $discipline1 = $reg_discipline1;
     }
 
-    echo "<span class = 'bold'>Discipline principale à laquelle se rattache le projet</span> : ".$discipline1."\n";
+    echo "<span class = 'bold'>Discipline principale Ã  laquelle se rattache le projet</span> : ".$discipline1."\n";
   }
 }
 echo "</div>\n";
@@ -875,7 +875,7 @@ echo "</div>\n";
 echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere2',"W,$annee")) {
-    echo "<span class = 'bold'>Indiquez la discipline secondaire à laquelle se rattache votre projet : </span><br />\n";
+    echo "<span class = 'bold'>Indiquez la discipline secondaire Ã  laquelle se rattache votre projet : </span><br />\n";
     $call_discipline = mysql_query("select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
     $nb_discipline = mysql_num_rows($call_discipline);
     echo "<select name=\"reg_discipline2\" size=\"1\">\n";
@@ -908,7 +908,7 @@ If ($action != "visu") {
       else
         $discipline2 = $reg_discipline2;
     }
-    echo "<span class = 'bold'>Discipline secondaire à laquelle se rattache le projet</span> : ".$discipline2."\n";
+    echo "<span class = 'bold'>Discipline secondaire Ã  laquelle se rattache le projet</span> : ".$discipline2."\n";
   }
 }
 echo "</div>\n";
@@ -917,7 +917,7 @@ echo "</div>\n";
 // divers
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'divers',"W",$annee)) {
-    echo "<div class='bloc'><span class = 'bold'>Divers</span> (limité à 600 caractères) :\n";
+    echo "<div class='bloc'><span class = 'bold'>Divers</span> (limitÃ© Ã  600 caractÃ¨res) :\n";
     echo "<br /><textarea name=\"reg_divers\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlentities($reg_divers)."</textarea>\n";
   }
 } else {

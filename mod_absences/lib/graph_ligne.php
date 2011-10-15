@@ -49,11 +49,11 @@ die();
 // Mes fonctions
 	include("functions.php");
 
-// Variable prédéfinit
+// Variable prÃ©dÃ©finit
 	date_default_timezone_set('Europe/Paris');
 	$date_act = date('Y-m-d');
 
-// Variable non définit
+// Variable non dÃ©finit
 	if (empty($_GET['donnee_titre']) and empty($_POST['donnee_titre'])) { $donnee_titre = ''; }
 	   else { if (isset($_GET['donnee_titre'])) { $donnee_titre = $_GET['donnee_titre']; } if (isset($_POST['donnee_titre'])) { $donnee_titre = $_POST['donnee_titre']; } }
 	if (empty($_GET['echelle_x']) and empty($_POST['echelle_x'])) { $echelle_x = ''; }
@@ -93,7 +93,7 @@ $y = array_values($_SESSION['donnee_e']);
 	}
 
 
-// si en donnee_y === heure alors on converti les munites en heures pour affiché le label sur le graphique
+// si en donnee_y === heure alors on converti les munites en heures pour affichÃ© le label sur le graphique
 	if ( $echelle_y === 'H' ) {
 		$i = 0;
 		while ( !empty($y[$i]) )
@@ -113,21 +113,21 @@ $y = array_values($_SESSION['donnee_e']);
 		// titre de l'axe X
 		if($echelle_x === 'M') { $titre_axe_x = "Mois"; }
 		if($echelle_x === 'J') { $titre_axe_x = "Jour"; }
-		if($echelle_x === 'P') { $titre_axe_x = "Période)"; }
+		if($echelle_x === 'P') { $titre_axe_x = "PÃ©riode)"; }
 		if($echelle_x === 'C') { $titre_axe_x = "Classe"; }
-		if($echelle_x === 'E') { $titre_axe_x = "Elève"; }
+		if($echelle_x === 'E') { $titre_axe_x = "ElÃ¨ve"; }
 
 		//titre de l'axe Y
 		if($echelle_y === 'H') { $titre_axe_y = "Total de minute"; }
 		if($echelle_y === 'E') { $titre_axe_y = "Total"; }
-		if($echelle_y === 'D') { $titre_axe_y = "Demi-journée"; }
+		if($echelle_y === 'D') { $titre_axe_y = "Demi-journÃ©e"; }
 
-// donnée de l'axe Y
+// donnÃ©e de l'axe Y
 //$y = array('60','135','30','60','15','60','135','30','60','15','60','15');
-// donnée des étiquette du graphique
+// donnÃ©e des Ã©tiquette du graphique
 //$y2 = array('1h','2h15','0h30','1h','0h15','1h','2h15','0h30','1h','0h15','1h','2h15');
-// donnée de l'axe X
-//$x = array('janvier','février','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre');
+// donnÃ©e de l'axe X
+//$x = array('janvier','fÃ©vrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre');
 
 //$y = array($nb_mois[11],$nb_mois[10],$nb_mois[9],$nb_mois[8],$nb_mois[7],$nb_mois[6],$nb_mois[5],$nb_mois[4],$nb_mois[3],$nb_mois[2],$nb_mois[1],$nb_mois[0]);
 //$x = array($mois_aff[11],$mois_aff[10],$mois_aff[9],$mois_aff[8],$mois_aff[7],$mois_aff[6],$mois_aff[5],$mois_aff[4],$mois_aff[3],$mois_aff[2],$mois_aff[1],$mois_aff[0]);
@@ -143,7 +143,7 @@ $plot->grid->setNoBackground();
 // TITRE
 	// titre du graphique
 	$plot->title->set($donnee_titre[0]);
-	// police de caractère du titre
+	// police de caractÃ¨re du titre
 	$plot->title->setFont(new Tuffy(10));
 	// fond du cadre du titre
 	$plot->title->setBackgroundColor(new Color(255, 255, 255, 25));
@@ -157,11 +157,11 @@ $plot->grid->setNoBackground();
 // LE GRAPHIQUE
 	// Change la couleur de fond de la grille
 	$plot->grid->setBackgroundColor(new Color(255, 255, 255, 30));
-	// décalement du 0 et de la fin
+	// dÃ©calement du 0 et de la fin
 	$plot->setSpace(4, 4, 10, 0);
 	// padding du graphique
 	$plot->setPadding(50, 15, 10, 60);
-	// couleur de dégradé du fond du graphique
+	// couleur de dÃ©gradÃ© du fond du graphique
 	$plot->setBackgroundGradient(
 	    new LinearGradient(
 	        new Color(210, 210, 210),
@@ -171,7 +171,7 @@ $plot->grid->setNoBackground();
 	);
 	// couleur de la ligne
 	$plot->setColor(new Color(0, 0, 150, 20));
-	// couleur de dégradé sous la ligne
+	// couleur de dÃ©gradÃ© sous la ligne
 	$plot->setFillGradient(
 	    new LinearGradient(
 	        new Color(150, 150, 210),
@@ -185,7 +185,7 @@ $plot->grid->setNoBackground();
 	$plot->mark->border->show();
 
 // AXE Y
-	// définie les traits grand petit tout les 10 point
+	// dÃ©finie les traits grand petit tout les 10 point
 	$plot->yAxis->setNumberByTick('minor', 'major', 5);
 
 // titre de l'axe Y
@@ -193,14 +193,14 @@ $plot->grid->setNoBackground();
 	$plot->yAxis->title->move(-15, 0);
 	// texte du titre de l'axe Y
 	$plot->yAxis->title->set($titre_axe_y);
-	// police de caractère du titre de l'axe Y
+	// police de caractÃ¨re du titre de l'axe Y
 	$plot->yAxis->title->setFont(new Tuffy(10));
 
 	// label du graphique
 	$plot->label->set($y2);
 	// disposition du label sur le graphique
 	$plot->label->move(0, 10);
-	// On donne aux étiquettes un dégradé de fond
+	// On donne aux Ã©tiquettes un dÃ©gradÃ© de fond
 	$plot->label->setBackgroundGradient(
 	      new LinearGradient(
 	         new Color(250, 250, 250, 10),
@@ -208,18 +208,18 @@ $plot->grid->setNoBackground();
 	         0
 	      )
 	);
-	// Bordure des étiquettes
+	// Bordure des Ã©tiquettes
 	$plot->label->border->setColor(new Color(20, 20, 20, 20));
-	// Enfin, on ajoute un espace interne entre la bordure et le texte des étiquettes
+	// Enfin, on ajoute un espace interne entre la bordure et le texte des Ã©tiquettes
 	$plot->label->setPadding(3, 1, 1, 0);
 
 
 // AXE X
-	// donnée de l'axe X
+	// donnÃ©e de l'axe X
 	$plot->xAxis->setLabelText($x);
-	// police de caractère de l'axe X
+	// police de caractÃ¨re de l'axe X
 	$plot->xAxis->label->setFont(new Tuffy(8));
-	// rotation du texte de l'axe X en degré
+	// rotation du texte de l'axe X en degrÃ©
 	$plot->xAxis->label->setAngle("30");
 	// positionement du texte de l'axe X
 	$plot->xAxis->label->move(10, 0);
@@ -233,7 +233,7 @@ $plot->grid->setNoBackground();
 	$plot->xAxis->title->move(0, 20);
 	// texte du titre de l'axe X
 	$plot->xAxis->title->set($titre_axe_x);
-	// police de caractère du titre de l'axe X
+	// police de caractÃ¨re du titre de l'axe X
 	$plot->xAxis->title->setFont(new Tuffy(10));
 
 $graph->add($plot);

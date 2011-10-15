@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,16 +52,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" && $utilisateur->getStatut()!="autre") {
     die("acces interdit");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["id_creneau"]) ? $_GET["id_creneau"] :NULL);
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :NULL);
 $type_absence = isset($_POST["type_absence"]) ? $_POST["type_absence"] :NULL;
@@ -98,7 +98,7 @@ if ($type_absence != null && $type_absence != -1) {
     $type = AbsenceEleveTypeQuery::create()->findPk($type_absence);
     if ($type != null) {
 	if (!$type->isStatutAutorise($utilisateur->getStatut())) {
-	    $message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence']."<br/>";
+	    $message_enregistrement .= "Type d'absence non autorisÃ© pour ce statut : ".$_POST['type_absence']."<br/>";
 	    $type = null;
 	}
     } else {
@@ -164,7 +164,7 @@ if ($current_cours != null) {
     }
 
     if ($date_debut->format('U') > $date_fin->format('U')) {
-	$message_enregistrement .= "La date de debut d'absence ne peut pas être postérieure à la date de fin.<br/>";
+	$message_enregistrement .= "La date de debut d'absence ne peut pas Ãªtre postÃ©rieure Ã  la date de fin.<br/>";
     }
 
     if ($message_enregistrement == "") {
@@ -172,7 +172,7 @@ if ($current_cours != null) {
 	//on va creer une saisie par jour
 	    $date_compteur = $date_debut;
 	    $compteur = 0;
-	    while (!($date_compteur->format('U') > $date_fin->format('U')) && $compteur < 50) { //maximum 50 saisies simultanées
+	    while (!($date_compteur->format('U') > $date_fin->format('U')) && $compteur < 50) { //maximum 50 saisies simultanÃ©es
 		$compteur = $compteur + 1;
 		$date_debut_saisie = clone $date_compteur;
 		$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
@@ -215,7 +215,7 @@ for($i=0; $i<$total_eleves; $i++) {
 
     //$id_eleve = $_POST['id_eleve_absent'][$i];
 
-    //on test si l'eleve est enregistré absent
+    //on test si l'eleve est enregistrÃ© absent
     if (!isset($_POST['active_absence_eleve'][$i])) {
 	continue;
     }
@@ -247,10 +247,10 @@ for($i=0; $i<$total_eleves; $i++) {
 	    if (isset($traitement)) {
 		$traitement->save();
 	    }
-	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'eleve : ".$eleve->getNom()."</a>";
+	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrÃ©e pour l'eleve : ".$eleve->getNom()."</a>";
 	    if (isset($saisie_discipline) && $saisie_discipline == true) {
 		$message_enregistrement .= " &nbsp;<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
-		    $saisie->getId()."&return_url=no_return".add_token_in_url()."'>Saisir un incident disciplinaire pour l'élève : ".$eleve->getNom()."</a>";
+		    $saisie->getId()."&return_url=no_return".add_token_in_url()."'>Saisir un incident disciplinaire pour l'Ã©lÃ¨ve : ".$eleve->getNom()."</a>";
 	    }
 	    $message_enregistrement .= "<br/>";
 	} else {

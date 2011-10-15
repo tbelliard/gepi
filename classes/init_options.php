@@ -70,8 +70,8 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
                 }
 
                 if ($suit_option == 'no') {
-                    // on gère le cas ou on a choisit au moins deux fois la meme matiere GEPI pour deux matières GEP différentes
-                    // Si la matière a déjà été traitée, on va accumuler les élèves qui suivent l'option.
+                    // on gÃ¨re le cas ou on a choisit au moins deux fois la meme matiere GEPI pour deux matiÃ¨res GEP diffÃ©rentes
+                    // Si la matiÃ¨re a dÃ©jÃ  Ã©tÃ© traitÃ©e, on va accumuler les Ã©lÃ¨ves qui suivent l'option.
                     $inser = 'yes';
                     $m = 0;
                     while ($m < $j) {
@@ -126,11 +126,11 @@ require_once("../lib/header.inc");
 
 echo add_token_field();
 
-// Test d'existence de données concernant les options et affichage le cas échéant d'un message d'avertissement
+// Test d'existence de donnÃ©es concernant les options et affichage le cas Ã©chÃ©ant d'un message d'avertissement
 $test = mysql_query("SELECT * FROM j_eleves_matieres m, j_eleves_classes j, classes c WHERE (m.login=j.login and j.id_classe = c.id and c.id = '$id_classe')");
 $nb = mysql_num_rows($test);
 if ($nb != 0) {
-    echo "<p><b><font color='red'>ATTENTION : des données concernant les options suivies dans cette classe ont déjà été enregistrées. Si vous validez cette page, les données déjà enregistrées seront effacées et mises à jour.</font></b></p>";
+    echo "<p><b><font color='red'>ATTENTION : des donnÃ©es concernant les options suivies dans cette classe ont dÃ©jÃ  Ã©tÃ© enregistrÃ©es. Si vous validez cette page, les donnÃ©es dÃ©jÃ  enregistrÃ©es seront effacÃ©es et mises Ã  jour.</font></b></p>";
 }
 
 $call_nom_class = mysql_query("SELECT classe, nom_complet FROM classes WHERE id = '$id_classe'");
@@ -139,9 +139,9 @@ $nom_complet_classe = mysql_result($call_nom_class, 0, 'nom_complet');
 
 
 
-// Reste à faire :
-// tester si tous les élèves appartiennent à la classe pour toutes les périodes
-// tester si j_eleves_matieres est vide pour les élèves de la classe
+// Reste Ã  faire :
+// tester si tous les Ã©lÃ¨ves appartiennent Ã  la classe pour toutes les pÃ©riodes
+// tester si j_eleves_matieres est vide pour les Ã©lÃ¨ves de la classe
 
 
 $nb_options = 0;
@@ -158,7 +158,7 @@ while ($i < 13) {
     while ($m < $nb_lignes) {
         $temp = mysql_result($call_data, $m, $tempo);
         if ($temp!='') {
-            // On s'assure de ne pas ranger dans le tableau tab_options, plusieurs fois la même option
+            // On s'assure de ne pas ranger dans le tableau tab_options, plusieurs fois la mÃªme option
             $n = 0;
             $double = 'no';
             while ($n < $nb_options) {
@@ -179,18 +179,18 @@ while ($i < 13) {
 }
 if ($info == 'no') {
     echo "<p class='grand'>Aucune information disponible concernant cette classe.
-    Soit vous n'avez pas utilisé les fichiers GEP pour initialiser les données,
-    soit la table temp_gep_import contenant les données sur les options a été vidée.</p>";
+    Soit vous n'avez pas utilisÃ© les fichiers GEP pour initialiser les donnÃ©es,
+    soit la table temp_gep_import contenant les donnÃ©es sur les options a Ã©tÃ© vidÃ©e.</p>";
     die();
 } else {
     echo "<p>Classe : $nom_complet_classe <input type=submit value=Enregistrer></p>";
-    echo "<p><b>Attention</b> : vous ne devez utiliser cette procédure qu'en tout début d'année et lorsque <b>toutes</b> les matières ont été définies pour cette classe.</p>";
-    echo "<p>Les données du tableau ci-dessous sont fournies par les fichiers GEP. Si vous désirez importer ces informations dans GEPI, vous devez, pour chacune des colonnes, mettre en correspondance le nom de la matière dans GEPI (menu déroulant) avec le nom de l'option tel qu'elle est définie dans le fichier GEP.</p>";
+    echo "<p><b>Attention</b> : vous ne devez utiliser cette procÃ©dure qu'en tout dÃ©but d'annÃ©e et lorsque <b>toutes</b> les matiÃ¨res ont Ã©tÃ© dÃ©finies pour cette classe.</p>";
+    echo "<p>Les donnÃ©es du tableau ci-dessous sont fournies par les fichiers GEP. Si vous dÃ©sirez importer ces informations dans GEPI, vous devez, pour chacune des colonnes, mettre en correspondance le nom de la matiÃ¨re dans GEPI (menu dÃ©roulant) avec le nom de l'option tel qu'elle est dÃ©finie dans le fichier GEP.</p>";
 }
 ?>
 <p>
 <table border=1 cellspacing=2 cellpadding=5>
-<tr><td><b>Nom GEPI de la matière : </b></td>
+<tr><td><b>Nom GEPI de la matiÃ¨re : </b></td>
 <?php
 $i="0";
 while ($i < $nb_options) {

@@ -33,16 +33,16 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: EDT élève', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: EDT élève', '');;";
+// SQL : INSERT INTO droits VALUES ( '/mod_discipline/edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: EDT Ã©lÃ¨ve', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: EDT Ã©lÃ¨ve', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -65,7 +65,7 @@ $style_specifique = "edt_organisation/style_edt";
 $utilisation_prototype="ok";
 $mode_header_reduit="y";
 //**************** EN-TETE *****************
-$titre_page = "Discipline: EDT élève";
+$titre_page = "Discipline: EDT Ã©lÃ¨ve";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -91,7 +91,7 @@ echo "<p>Test: <a href='#' onclick=\"clic_edt('a','b');return false;\">Clic</a><
 
 // gestion de l'affichage de l'edt de la semaine suivante
 
-echo "<p><a href=\"edt_eleve.php?ele_login=".$ele_login."&amp;sem=".$aff_precedent."\">semaine préc.</a> - Emploi du temps de <strong>".p_nom($ele_login)."</strong>";
+echo "<p><a href=\"edt_eleve.php?ele_login=".$ele_login."&amp;sem=".$aff_precedent."\">semaine prÃ©c.</a> - Emploi du temps de <strong>".p_nom($ele_login)."</strong>";
 echo " (<em>";
 $tmp_tab=get_class_from_ele_login($ele_login);
 if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];} else {echo "???";}
@@ -100,18 +100,18 @@ echo ".</p>\n";
 
 echo '<p style="color: red; font-size: 12 em;">'.edt::jours_de_la_semaine().'</p>';
 
-/*/ Affichage de l'emploi du temps sur une semaine précise
+/*/ Affichage de l'emploi du temps sur une semaine prÃ©cise
 
 $cours = new edtAfficher(); // on instancie l'objet edtAfficher
 
 $cours->sem = isset($_GET["sem"]) ? $_GET["sem"] : 0;
 
-$cours->type_edt = 'eleve'; // on précise le type
-// on récupère la liste des jours ouverts dans l'établissement (à définir depuis le module absences)
-// La classe edt possède une méthode publique donc accessible
+$cours->type_edt = 'eleve'; // on prÃ©cise le type
+// on rÃ©cupÃ¨re la liste des jours ouverts dans l'Ã©tablissement (Ã  dÃ©finir depuis le module absences)
+// La classe edt possÃ¨de une mÃ©thode publique donc accessible
 $jours = edt::joursOuverts();
 
-// On affiche l'entête
+// On affiche l'entÃªte
 echo $cours->entete_creneaux();
 
 for($a = 0 ; $a < $jours["nbre"] ; $a++){
@@ -121,12 +121,12 @@ for($a = 0 ; $a < $jours["nbre"] ; $a++){
 
 }
 */
-// Comme on veut utiliser les types de semaine, on précise la variable
+// Comme on veut utiliser les types de semaine, on prÃ©cise la variable
 $utilise_type_semaine = 'y';
 require_once("../edt_organisation/fonctions_edt.php");
-premiere_ligne_tab_edt(); // On affiche la première ligne
-// le login de l'élève est attrapé directement par la fonction avec $_GET["ele_login"]
-// On récupère le choix de l'admin sur l'affichage à gauche
+premiere_ligne_tab_edt(); // On affiche la premiÃ¨re ligne
+// le login de l'Ã©lÃ¨ve est attrapÃ© directement par la fonction avec $_GET["ele_login"]
+// On rÃ©cupÃ¨re le choix de l'admin sur l'affichage Ã  gauche
 $reglages_creneaux = GetSettingEdt("edt_aff_creneaux"); // on peut l'ajouter avec quelques lignes de code en plus
 $reglages_creneaux = "noms";
 
@@ -137,7 +137,7 @@ if ($reglages_creneaux == "noms") {
 	// Affichage par les horaires des cours
 	$tab_creneaux = retourne_horaire();
 }else{
-	// par défaut
+	// par dÃ©faut
 	$tab_creneaux = retourne_creneaux();
 }
 	$i=0;
@@ -172,7 +172,7 @@ echo "<p><br /></p>\n";
 <?php
 echo "<p><em>Remarque&nbsp;:</em></p>\n";
 echo "<blockquote>\n";
-echo "<p>Cette page est destinée à déterminer les créneaux sans cours pour l'élève.</p>\n";
+echo "<p>Cette page est destinÃ©e Ã  dÃ©terminer les crÃ©neaux sans cours pour l'Ã©lÃ¨ve.</p>\n";
 echo "</blockquote>\n";
 echo "<p><br /></p>\n";
 

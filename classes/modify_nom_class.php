@@ -124,9 +124,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			if (!$register_class) {
 					$msg .= "Une erreur s'est produite lors de la modification de la classe.";
 					} else {
-					$msg .= "La classe a bien été modifiée.";
+					$msg .= "La classe a bien Ã©tÃ© modifiÃ©e.";
 			}
-			// On enregistre les infos relatives aux catégories de matières
+			// On enregistre les infos relatives aux catÃ©gories de matiÃ¨res
 			$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 			while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 				$reg_priority = $_POST['priority_'.$row["id"]];
@@ -140,19 +140,19 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				$test = mysql_result($res_test, 0);
 
 				if ($test == 0) {
-					// Pas d'entrée... on créé
+					// Pas d'entrÃ©e... on crÃ©Ã©
 					$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
 				} else {
-					// Entrée existante, on met à jour
+					// EntrÃ©e existante, on met Ã  jour
 					$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
 				}
 				if (!$res) {
-					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
+					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des donnÃ©es de catÃ©gorie.";
 				}
 			}
 
 		} else {
-		$msg .= "Veuillez préciser le nom de la classe !";
+		$msg .= "Veuillez prÃ©ciser le nom de la classe !";
 		}
 	} else {
 		if ($reg_class_name) {
@@ -188,10 +188,10 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		if (!$register_class) {
 			$msg .= "Une erreur s'est produite lors de l'enregistrement de la nouvelle classe.";
 		} else {
-			$msg .= "La nouvelle classe a bien été enregistrée.";
+			$msg .= "La nouvelle classe a bien Ã©tÃ© enregistrÃ©e.";
 			$id_classe = mysql_insert_id();
 
-			// On enregistre les infos relatives aux catégories de matières
+			// On enregistre les infos relatives aux catÃ©gories de matiÃ¨res
 			$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 			while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 				$reg_priority = $_POST['priority_'.$row["id"]];
@@ -202,21 +202,21 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
 
 				if (!$res) {
-					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
+					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des donnÃ©es de catÃ©gorie.";
 				}
 			}
 		}
 
 		} else {
-		$msg .= "Veuillez préciser le nom de la classe !";
+		$msg .= "Veuillez prÃ©ciser le nom de la classe !";
 		}
 	}
 }
 
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
-$titre_page = "Gestion des classes | Modifier les paramètres";
+$titre_page = "Gestion des classes | Modifier les paramÃ¨tres";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 
@@ -270,7 +270,7 @@ if (isset($id_classe)) {
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>";}
 
 if($chaine_options_classes!="") {
 
@@ -305,16 +305,16 @@ if($chaine_options_classes!="") {
 if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 
 //=========================
-// On ne propose l'infobulle de navigation que pour une classe déjà existante.
+// On ne propose l'infobulle de navigation que pour une classe dÃ©jÃ  existante.
 $ouvrir_infobulle_nav="n";
 if(isset($id_classe)) {
 	$titre="Navigation";
 	$texte="";
-	$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Périodes</a><br />";
-	$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elèves</a><br />";
+	$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">PÃ©riodes</a><br />";
+	$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ElÃ¨ves</a><br />";
 	$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
-	$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
-	//$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
+	$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiÃ©e</a><br />";
+	//$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ParamÃ¨tres</a>";
 	
 	$ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 	
@@ -346,7 +346,7 @@ echo "</p>\n";
 echo "</form>\n";
 
 if(getSettingValue('GepiAdminImprBulSettings')!='yes') {
-	echo "<p><b>Remarque&nbsp;: </b>Connectez vous avec un compte ayant le statut \"scolarité\" pour éditer les bulletins et avoir accès à d'autres paramètres d'affichage.</p>\n";
+	echo "<p><b>Remarque&nbsp;: </b>Connectez vous avec un compte ayant le statut \"scolaritÃ©\" pour Ã©diter les bulletins et avoir accÃ¨s Ã  d'autres paramÃ¨tres d'affichage.</p>\n";
 }
 
 if (isset($id_classe)) {
@@ -436,41 +436,41 @@ echo add_token_field();
 ?>
 <p>Nom court de la classe&nbsp;: <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
 <p>Nom complet de la classe&nbsp;: <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
-<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant)&nbsp;: <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
+<p>PrÃ©nom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'Ã©tablissement ou son reprÃ©sentant)&nbsp;: <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
 <?php
 if ($gepiSettings['active_mod_ects'] == "y") {
     ?>
-<p>Fonction du signataire sus-nommé (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
+<p>Fonction du signataire sus-nommÃ© (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
 <?php
 }
     ?>
-<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus&nbsp;:<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
+<p>Formule Ã  insÃ©rer sur les bulletins (cette formule sera suivie des nom et prÃ©nom de la personne dÃ©signÃ©e ci_dessus&nbsp;:<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
 
-<p><b>Formatage de l'identité des professeurs pour les bulletins&nbsp;:</b>
+<p><b>Formatage de l'identitÃ© des professeurs pour les bulletins&nbsp;:</b>
 <br /><br />
 <input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked "; ?> onchange='changement()' />
-<label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (Durand Albert)</label>
+<label for='reg_format_np' style='cursor: pointer;'>Nom PrÃ©nom (Durand Albert)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom=="pn") echo " checked "; ?> onchange='changement()' />
-<label for='reg_format_pn' style='cursor: pointer;'>Prénom Nom (Albert Durand)</label>
+<label for='reg_format_pn' style='cursor: pointer;'>PrÃ©nom Nom (Albert Durand)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_in' value="<?php echo "in"; ?>" <?php   if ($format_nom=="in") echo " checked "; ?> onchange='changement()' />
-<label for='reg_format_in' style='cursor: pointer;'>Initiale-Prénom Nom (A. Durand)</label>
+<label for='reg_format_in' style='cursor: pointer;'>Initiale-PrÃ©nom Nom (A. Durand)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_ni' value="<?php echo "ni"; ?>" <?php   if ($format_nom=="ni") echo " checked "; ?> onchange='changement()' />
-<label for='reg_format_ni' style='cursor: pointer;'>Initiale-Prénom Nom (Durand A.)</label>
+<label for='reg_format_ni' style='cursor: pointer;'>Initiale-PrÃ©nom Nom (Durand A.)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_cnp' value="<?php echo "cnp"; ?>" <?php   if ($format_nom=="cnp") echo " checked "; ?> onchange='changement()' />
-<label for='reg_format_cnp' style='cursor: pointer;'>Civilité Nom Prénom (M. Durand Albert)</label>
+<label for='reg_format_cnp' style='cursor: pointer;'>CivilitÃ© Nom PrÃ©nom (M. Durand Albert)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_cpn' value="<?php echo "cpn"; ?>" <?php   if ($format_nom=="cpn") echo " checked "; ?> onchange='changement()' />
-<label for='reg_format_cpn' style='cursor: pointer;'>Civilité Prénom Nom (M. Albert Durand)</label>
+<label for='reg_format_cpn' style='cursor: pointer;'>CivilitÃ© PrÃ©nom Nom (M. Albert Durand)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_cin' value="<?php echo "cin"; ?>" <?php   if ($format_nom=="cin") echo " checked "; ?> onchange='changement()' />
-<label for='reg_format_cin' style='cursor: pointer;'>Civ. initiale-Prénom Nom (M. A. Durand)</label>
+<label for='reg_format_cin' style='cursor: pointer;'>Civ. initiale-PrÃ©nom Nom (M. A. Durand)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_cni' value="<?php echo "cni"; ?>" <?php   if ($format_nom=="cni") echo " checked "; ?> onchange='changement()' />
-<label for='reg_format_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom  (M. Durand A.)</label>
+<label for='reg_format_cni' style='cursor: pointer;'>Civ. Nom initiale-PrÃ©nom  (M. Durand A.)</label>
 
 <input type=hidden name=is_posted value=1 />
 <?php if (isset($id_classe)) {echo "<input type=hidden name=id_classe value=$id_classe />";} ?>
@@ -480,13 +480,13 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <table style="border: 0;" cellpadding="5" cellspacing="5">
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres généraux&nbsp;: </b></h2>
+	  <h2><b>ParamÃ¨tres gÃ©nÃ©raux&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_mat_cat' style='cursor: pointer;'>Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation&nbsp;:</label>
+    <label for='display_mat_cat' style='cursor: pointer;'>Afficher les catÃ©gories de matiÃ¨res sur le bulletin (HTML), les relevÃ©s de notes (HTML), et les outils de visualisation&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_mat_cat" id="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> onchange='changement()' />
     </td>
@@ -494,17 +494,17 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
-	Paramétrage des catégories de matière pour cette classe (uniquement si case ci-dessus cochée)
+	ParamÃ©trage des catÃ©gories de matiÃ¨re pour cette classe (uniquement si case ci-dessus cochÃ©e)
 	</td>
 	<td>
 		<table style='border: 1px solid black;'>
 		<tr>
-			<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
+			<td style='width: auto;'>CatÃ©gorie</td><td style='width: 100px; text-align: center;'>PrioritÃ© d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
 		</tr>
 		<?php
 		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
 		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-			// Pour la catégorie, on récupère les infos déjà enregistrées pour la classe
+			// Pour la catÃ©gorie, on rÃ©cupÃ¨re les infos dÃ©jÃ  enregistrÃ©es pour la classe
 			if (isset($id_classe)) {
 				$infos = mysql_fetch_object(mysql_query("SELECT priority, affiche_moyenne FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] ."' and classe_id = '" . $id_classe . "')"));
 			} else {
@@ -543,13 +543,13 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres bulletin HTML&nbsp;: </b></h2>
+	  <h2><b>ParamÃ¨tres bulletin HTML&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps; width: 35%;">
-    <label for='display_rang' style='cursor: pointer;'>Afficher sur le bulletin le rang de chaque élève&nbsp;:</label>
+    <label for='display_rang' style='cursor: pointer;'>Afficher sur le bulletin le rang de chaque Ã©lÃ¨ve&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_rang" id="display_rang"  <?php   if ($display_rang=="y") echo " checked "; ?>  onchange='changement()' />
     </td>
@@ -557,7 +557,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_address' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'élève&nbsp;:</label>
+    <label for='display_address' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'Ã©lÃ¨ve&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_address" id="display_address"  <?php   if ($display_address=="y") echo " checked "; ?>  onchange='changement()' />
     </td>
@@ -565,7 +565,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_coef' style='cursor: pointer;'>Afficher les coefficients des matières (uniquement si au moins un coef différent de 0)&nbsp;:</label>
+    <label for='display_coef' style='cursor: pointer;'>Afficher les coefficients des matiÃ¨res (uniquement si au moins un coef diffÃ©rent de 0)&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_coef" id="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?>  onchange='changement()' />
     </td>
@@ -573,7 +573,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    <label for='display_moy_gen' style='cursor: pointer;'>Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0)&nbsp;:</label>
+    <label for='display_moy_gen' style='cursor: pointer;'>Afficher les moyennes gÃ©nÃ©rales sur les bulletins (uniquement si au moins un coef diffÃ©rent de 0)&nbsp;:</label>
     </td>
     <td><input type="checkbox" value="y" name="display_moy_gen" id="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> onchange='changement()' />
     </td>
@@ -589,29 +589,29 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres bulletin PDF&nbsp;: </b></h2>
+	  <h2><b>ParamÃ¨tres bulletin PDF&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
-	   Sélectionner le modèle de bulletin pour l'impression en PDF&nbsp;:
+	   SÃ©lectionner le modÃ¨le de bulletin pour l'impression en PDF&nbsp;:
 	</td>
 	<td><?php
-	    // Pour la classe, quel est le modèle de bulletin déja selectionné
+	    // Pour la classe, quel est le modÃ¨le de bulletin dÃ©ja selectionnÃ©
 	    $quel_modele=$modele_bulletin_pdf;
 
 
-		// sélection des modèle des bulletins.
+		// sÃ©lection des modÃ¨le des bulletins.
 	    //$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
 		$requete_modele = mysql_query("SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
 		if(mysql_num_rows($requete_modele)==0) {
-			echo "<p style='color:red'>ANOMALIE&nbsp;: Il n'existe aucun modèle de bulletin PDF.";
+			echo "<p style='color:red'>ANOMALIE&nbsp;: Il n'existe aucun modÃ¨le de bulletin PDF.";
 			if($_SESSION['login']=='administrateur') {
-				echo "Vous devriez effectuer/forcer une <a href='../utilitaires/maj.php'>mise à jour de la base</a> pour corriger.<br />Prenez tout de même soin de vérifier que personne d'autre que vous n'est connecté.\n";
+				echo "Vous devriez effectuer/forcer une <a href='../utilitaires/maj.php'>mise Ã  jour de la base</a> pour corriger.<br />Prenez tout de mÃªme soin de vÃ©rifier que personne d'autre que vous n'est connectÃ©.\n";
 			}
 			else {
-				echo "Contactez l'administrateur pour qu'il effectue une mise à jour de la base.\n";
+				echo "Contactez l'administrateur pour qu'il effectue une mise Ã  jour de la base.\n";
 			}
 			echo "</p>\n";
 		}
@@ -619,7 +619,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 			//echo $quel_modele;
 			echo "<select tabindex=\"5\" name=\"modele_bulletin\" onchange='changement()'>";
 			if ($quel_modele == NULL) {
-			echo "<option value=\"NULL\" selected=\"selected\" >Aucun modèle de sélectionné</option>";
+			echo "<option value=\"NULL\" selected=\"selected\" >Aucun modÃ¨le de sÃ©lectionnÃ©</option>";
 			}
 			while($donner_modele = mysql_fetch_array($requete_modele)) {
 				echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
@@ -637,14 +637,14 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps; vertical-align: top;">
-	   <?php echo ucfirst($gepi_denom_mention);?>s pouvant apparaître dans l'avis du conseil de classe sur les bulletins&nbsp;:
+	   <?php echo ucfirst($gepi_denom_mention);?>s pouvant apparaÃ®tre dans l'avis du conseil de classe sur les bulletins&nbsp;:
 	</td>
 	<td><?php
 		$sql="SELECT DISTINCT m.* FROM j_mentions_classes j, mentions m WHERE j.id_classe='$id_classe' AND j.id_mention=m.id ORDER BY j.ordre, m.mention;";
 		//echo "$sql<br />\n";
 		 $res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Aucune $gepi_denom_mention n'est définie pour cette classe.</p>\n";
+			echo "<p>Aucune $gepi_denom_mention n'est dÃ©finie pour cette classe.</p>\n";
 		}
 		else {
 			echo "<ol>\n";
@@ -653,29 +653,29 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 			}
 			echo "</ol>\n";
 		}
-		echo "<p><a href='../saisie/saisie_mentions.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer les ".$gepi_denom_mention."s</a></p>\n";
+		echo "<p><a href='../saisie/saisie_mentions.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">ParamÃ©trer les ".$gepi_denom_mention."s</a></p>\n";
 		?>
 	</td>
 </tr>
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres des relevés de notes&nbsp;: </b></h2>
+	  <h2><b>ParamÃ¨tres des relevÃ©s de notes&nbsp;: </b></h2>
 	</td>
 </tr>
 <!--
 Afficher le nom des devoirs.
 Afficher tous les coefficients des devoirs.
-Afficher les coefficients des devoirs si des coefficients différents
-> > sont présents.
+Afficher les coefficients des devoirs si des coefficients diffÃ©rents
+> > sont prÃ©sents.
 Afficher les dates des devoirs.
 > >
 > >Et
-Afficher un texte... (correspondant à ta demande)
+Afficher un texte... (correspondant Ã  ta demande)
 > >Et encore
 Afficher une case pour la signature des parents/responsables
 Afficher une case pour la signature du prof principal
-Afficher une case pour la signature du chef d'établissement
+Afficher une case pour la signature du chef d'Ã©tablissement
 -->
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
@@ -692,7 +692,7 @@ Afficher une case pour la signature du chef d'établissement
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_coefdev_si_diff' style='cursor: pointer;'>Afficher les coefficients des devoirs si des coefficients différents sont présents&nbsp;:</label></td>
+	<label for='rn_coefdev_si_diff' style='cursor: pointer;'>Afficher les coefficients des devoirs si des coefficients diffÃ©rents sont prÃ©sents&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_coefdev_si_diff" id="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
@@ -704,14 +704,14 @@ Afficher une case pour la signature du chef d'établissement
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td style="font-variant: small-caps;">Formule/Message à insérer sous le relevé de notes&nbsp;:</td>
+	<td style="font-variant: small-caps;">Formule/Message Ã  insÃ©rer sous le relevÃ© de notes&nbsp;:</td>
 	<td><input type=text size=40 name="rn_formule" value="<?php echo $rn_formule; ?>" onchange='changement()' /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-	<label for='rn_sign_chefetab' style='cursor: pointer;'>Afficher une case pour la signature du chef d'établissement&nbsp;:</label></td>
+	<label for='rn_sign_chefetab' style='cursor: pointer;'>Afficher une case pour la signature du chef d'Ã©tablissement&nbsp;:</label></td>
     <td><input type="checkbox" value="y" name="rn_sign_chefetab" id="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
@@ -738,12 +738,12 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     ?>
 <tr>
 	<td colspan='3'>
-	  <h2><b>Paramètres des attestations ECTS&nbsp;: </b></h2>
+	  <h2><b>ParamÃ¨tres des attestations ECTS&nbsp;: </b></h2>
 	</td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Type de formation (ex: "Classe préparatoire scientifique")&nbsp;:</td>
+    <td style="font-variant: small-caps;">Type de formation (ex: "Classe prÃ©paratoire scientifique")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_type_formation" value="<?php echo $ects_type_formation;?>" onchange='changement()' /></td>
 </tr>
 <tr>
@@ -758,7 +758,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Domaines d'étude (ex: "Biologie, Chimie, Physique, Mathématiques, Sciences de la Terre")&nbsp;:</td>
+    <td style="font-variant: small-caps;">Domaines d'Ã©tude (ex: "Biologie, Chimie, Physique, MathÃ©matiques, Sciences de la Terre")&nbsp;:</td>
     <td><input type="text" size="40" name="ects_domaines_etude" value="<?php echo $ects_domaines_etude;?>" onchange='changement()' /></td>
 </tr>
 

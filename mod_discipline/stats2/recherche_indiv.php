@@ -24,9 +24,9 @@ $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
 
-// En multisite, on ajoute le répertoire RNE
+// En multisite, on ajoute le rÃ©pertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			  // On récupère le RNE de l'établissement
+			  // On rÃ©cupÃ¨re le RNE de l'Ã©tablissement
 		  $repertoire="../../photos/".$_COOKIE['RNE']."/eleves/";
 		}else{
 		  $repertoire="../../photos/eleves/";

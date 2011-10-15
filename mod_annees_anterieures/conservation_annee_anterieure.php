@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();};
 
-// INSERT INTO droits VALUES ('/mod_annees_anterieures/conservation_annee_anterieure.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Conservation des données antérieures', '');
+// INSERT INTO droits VALUES ('/mod_annees_anterieures/conservation_annee_anterieure.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Conservation des donnÃ©es antÃ©rieures', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -53,10 +53,10 @@ $deja_traitee_id_classe=isset($_POST['deja_traitee_id_classe']) ? $_POST['deja_t
 $annee_scolaire=isset($_POST['annee_scolaire']) ? $_POST['annee_scolaire'] : NULL;
 $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 
-// Si le module n'est pas activé...
+// Si le module n'est pas activÃ©...
 if($gepiSettings['active_annees_anterieures'] !="y"){
 	// A DEGAGER
-	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+	// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
 
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -67,22 +67,22 @@ $msg="";
 if(isset($enregistrer)){
 
 	if($msg==""){
-		$msg="Enregistrement réussi.";
+		$msg="Enregistrement rÃ©ussi.";
 	}
 
 	unset($page);
 }
 */
 
-// Suppression des données archivées pour une année donnée.
+// Suppression des donnÃ©es archivÃ©es pour une annÃ©e donnÃ©e.
 if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 	check_token();
 
 	$sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
 	$res_suppr1=mysql_query($sql);
 
-	// Maintenant, on regarde si l'année est encore utilisée dans archivage_types_aid
-	// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
+	// Maintenant, on regarde si l'annÃ©e est encore utilisÃ©e dans archivage_types_aid
+	// Sinon, on supprime les entrÃ©es correspondantes Ã  l'annÃ©e dans archivage_eleves2 car elles ne servent plus Ã  rien.
 	$test = sql_query1("select count(annee) from archivage_types_aid where annee='".$_GET['annee_supp']."'");
 	if ($test == 0) {
 		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
@@ -94,23 +94,23 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 	$sql="DELETE FROM archivage_ects WHERE annee='".$_GET["annee_supp"]."';";
 	$res_suppr3=mysql_query($sql);
 
-	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
+	// Maintenant, il faut supprimer les donnÃ©es Ã©lÃ¨ves qui ne servent plus Ã  rien
 	suppression_donnees_eleves_inutiles();
 
 	if (($res_suppr1) and ($res_suppr2) and ($res_suppr3)) {
-		$msg = "La suppression des données a été correctement effectuée.";
+		$msg = "La suppression des donnÃ©es a Ã©tÃ© correctement effectuÃ©e.";
 	} else {
-		$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+		$msg = "Un ou plusieurs problÃ¨mes ont Ã©tÃ© rencontrÃ©s lors de la suppression.";
 	}
 
 }
 
 if(isset($_GET['chgt_annee'])) {$_SESSION['chgt_annee']="y";}
 
-$themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données concerant cette année ?';
+$themessage  = 'Etes-vous sÃ»r de vouloir supprimer toutes les donnÃ©es concerant cette annÃ©e ?';
 
 //**************** EN-TETE *****************
-$titre_page = "Conservation des données antérieures (autres que AID)";
+$titre_page = "Conservation des donnÃ©es antÃ©rieures (autres que AID)";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -131,14 +131,14 @@ if(!isset($annee_scolaire)){
 	$res_annee=mysql_query($sql);
 	//if(){
 	if(mysql_num_rows($res_annee)==0){
-		echo "<p>Concernant les données autres que les AIDs, aucune année n'est encore sauvegardée.</p>\n";
+		echo "<p>Concernant les donnÃ©es autres que les AIDs, aucune annÃ©e n'est encore sauvegardÃ©e.</p>\n";
 	}
 	else{
-		echo "<p>Voici la liste des années sauvegardées:</p>\n";
+		echo "<p>Voici la liste des annÃ©es sauvegardÃ©es:</p>\n";
 		echo "<ul>\n";
 		while($lig_annee=mysql_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
-			echo "<li><b>Année $annee_scolaire (<a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données archivées pour cette année</a>) :<br /></b> ";
+			echo "<li><b>AnnÃ©e $annee_scolaire (<a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les donnÃ©es archivÃ©es pour cette annÃ©e</a>) :<br /></b> ";
 			$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire' ORDER BY classe;";
 			$res_classes=mysql_query($sql);
 			if(mysql_num_rows($res_classes)==0){
@@ -158,7 +158,7 @@ if(!isset($annee_scolaire)){
 		echo "<p><br /></p>\n";
 
 	}
-	echo "<p>Sous quel nom d'année voulez-vous sauvegarder l'année?</p>\n";
+	echo "<p>Sous quel nom d'annÃ©e voulez-vous sauvegarder l'annÃ©e?</p>\n";
 	$default_annee=getSettingValue('gepiYear');
 
 	if($default_annee==""){
@@ -170,7 +170,7 @@ if(!isset($annee_scolaire)){
 		$default_annee=$annee."-".$annee2;
 	}
 
-	echo "<p>Année&nbsp;: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
+	echo "<p>AnnÃ©e&nbsp;: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
 
 	echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 
@@ -200,10 +200,10 @@ else{
 					$chaine_classes.=", ".$lig_classe->classe;
 				}
 
-				echo "<p>Des données ont déjà été sauvegardées pour l'année $annee_scolaire (<i>classes de $chaine_classes</i>).<br />Si vous confirmez, ces données seront écrasées avec les nouvelles données (<i>si vous ne cochez pas les mêmes classes, les données seront seulement complétées</i>).</p>\n";
+				echo "<p>Des donnÃ©es ont dÃ©jÃ  Ã©tÃ© sauvegardÃ©es pour l'annÃ©e $annee_scolaire (<i>classes de $chaine_classes</i>).<br />Si vous confirmez, ces donnÃ©es seront Ã©crasÃ©es avec les nouvelles donnÃ©es (<i>si vous ne cochez pas les mÃªmes classes, les donnÃ©es seront seulement complÃ©tÃ©es</i>).</p>\n";
 			}
 			else{
-				echo "<p>Des données ont déjà été sauvegardées pour l'année $annee_scolaire (<i>classe de $chaine_classes</i>).<br />Si vous confirmez, ces données seront écrasées avec les nouvelles données (<i>si vous ne cochez pas les mêmes classes, les données seront seulement complétées</i>).</p>\n";
+				echo "<p>Des donnÃ©es ont dÃ©jÃ  Ã©tÃ© sauvegardÃ©es pour l'annÃ©e $annee_scolaire (<i>classe de $chaine_classes</i>).<br />Si vous confirmez, ces donnÃ©es seront Ã©crasÃ©es avec les nouvelles donnÃ©es (<i>si vous ne cochez pas les mÃªmes classes, les donnÃ©es seront seulement complÃ©tÃ©es</i>).</p>\n";
 			}
 
 			echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";
@@ -220,19 +220,19 @@ else{
 
 		echo "<h2>Choix des classes</h2>\n";
 
-		echo "<p>Conservation des données pour l'année scolaire: $annee_scolaire</p>\n";
+		echo "<p>Conservation des donnÃ©es pour l'annÃ©e scolaire: $annee_scolaire</p>\n";
 
-		echo "<p>Choisissez les classes dont vous souhaitez archiver les résultats, appréciations,...</p>";
-		echo "<p>Tout <a href='javascript:modif_coche(true)'>cocher</a> / <a href='javascript:modif_coche(false)'>décocher</a>.</p>";
+		echo "<p>Choisissez les classes dont vous souhaitez archiver les rÃ©sultats, apprÃ©ciations,...</p>";
+		echo "<p>Tout <a href='javascript:modif_coche(true)'>cocher</a> / <a href='javascript:modif_coche(false)'>dÃ©cocher</a>.</p>";
 
 
-		// Afficher les classes pour lesquelles les données sont déjà migrées...
+		// Afficher les classes pour lesquelles les donnÃ©es sont dÃ©jÃ  migrÃ©es...
 
 		$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$res1=mysql_query($sql);
 		$nb_classes=mysql_num_rows($res1);
 		if($nb_classes==0){
-			echo "<p>ERREUR: Il semble qu'aucune classe ne soit encore définie.</p>\n";
+			echo "<p>ERREUR: Il semble qu'aucune classe ne soit encore dÃ©finie.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -288,7 +288,7 @@ else{
 		echo "</div>\n";
 
 		if(count($id_classe)==0){
-			echo "<p>ERREUR: Vous n'avez pas coché de classe.</p>\n";
+			echo "<p>ERREUR: Vous n'avez pas cochÃ© de classe.</p>\n";
 			echo "</form>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -297,7 +297,7 @@ else{
 		check_token(false);
 
 		/*
-		echo "<p>Mise à jour du calcul du rang des élèves dans les matières...</p>\n";
+		echo "<p>Mise Ã  jour du calcul du rang des Ã©lÃ¨ves dans les matiÃ¨res...</p>\n";
 		include "../lib/periodes.inc.php";
 		include("../lib/calcul_rang.inc.php");
 		*/
@@ -317,7 +317,7 @@ else{
 		//===================================
 
 		if(isset($deja_traitee_id_classe)){
-			echo "<p>Classes déjà traitées: ";
+			echo "<p>Classes dÃ©jÃ  traitÃ©es: ";
 
 			echo "<input type='hidden' name='deja_traitee_id_classe[]' value='$deja_traitee_id_classe[0]' />";
 			echo get_nom_classe($deja_traitee_id_classe[0]);
@@ -341,11 +341,11 @@ else{
 		//if($chaine!=""){
 		if($temoin_encore_des_classes>0) {
 			// Pour faire sauter un "' ":
-			//echo "<p>Classes restant à traiter: ".substr($chaine,2)."</p>\n";
-			echo "<p>Classes restant à traiter: ".$chaine."</p>\n";
+			//echo "<p>Classes restant Ã  traiter: ".substr($chaine,2)."</p>\n";
+			echo "<p>Classes restant Ã  traiter: ".$chaine."</p>\n";
 		}
 		else {
-			echo "<p>Traitement de la dernière classe sélectionnée: <span id='annonce_fin_traitement' style='font-weight:bold; font-size:2em; color: green;'></span></p>\n";
+			echo "<p>Traitement de la derniÃ¨re classe sÃ©lectionnÃ©e: <span id='annonce_fin_traitement' style='font-weight:bold; font-size:2em; color: green;'></span></p>\n";
 		}
 		//===================================
 
@@ -357,12 +357,12 @@ else{
 
 		//echo "<p>Classe de $classe</p>\n";
 
-		// Boucle sur les périodes de la classe
+		// Boucle sur les pÃ©riodes de la classe
 		$sql="SELECT * FROM periodes WHERE id_classe='".$id_classe[0]."' ORDER BY num_periode";
 		$res_periode=mysql_query($sql);
 
 		if(mysql_num_rows($res_periode)==0){
-			echo "<p>Aucune période ne semble définie pour la classe $classe</p>\n";
+			echo "<p>Aucune pÃ©riode ne semble dÃ©finie pour la classe $classe</p>\n";
 		}
 		else{
 			unset($tab_periode);
@@ -381,14 +381,14 @@ else{
 			$res_ele=mysql_query($sql);
 
 			if(mysql_num_rows($res_ele)==0){
-				echo "<p>Aucun élève dans la classe $classe???</p>\n";
+				echo "<p>Aucun Ã©lÃ¨ve dans la classe $classe???</p>\n";
 			}
 			else{
 				unset($tab_eleve);
 				$tab_eleve=array();
 				$cpt=0;
 				while($lig_ele=mysql_fetch_object($res_ele)){
-					// Infos élève
+					// Infos Ã©lÃ¨ve
 					$tab_eleve[$cpt]=array();
 
 					$tab_eleve[$cpt]['nom']=$lig_ele->nom;
@@ -404,7 +404,7 @@ else{
 						$tab_eleve[$cpt]['ine'] = cree_substitut_INE_unique($tab_eleve[$cpt]['ine']);
 					}
 
-					// On vérifie que l'élève est enregistré dans archive_eleves. Sinon, on l'enregistre
+					// On vÃ©rifie que l'Ã©lÃ¨ve est enregistrÃ© dans archive_eleves. Sinon, on l'enregistre
 			
 					$error_enregistre_eleve[$tab_eleve[$cpt]['login_eleve']] = insert_eleve($tab_eleve[$cpt]['login_eleve'],$tab_eleve[$cpt]['ine'],$annee_scolaire,'y');
 					//echo "insert_eleve(\$tab_eleve[$cpt]['login_eleve'],\$tab_eleve[$cpt]['ine'],$annee_scolaire,'y') soit insert_eleve(".$tab_eleve[$cpt]['login_eleve'].",".$tab_eleve[$cpt]['ine'].",$annee_scolaire,'y')<br />";
@@ -422,7 +422,7 @@ else{
 					}
 
 
-					// CPE associé(s) à l'élève
+					// CPE associÃ©(s) Ã  l'Ã©lÃ¨ve
 					$sql="SELECT jec.cpe_login FROM j_eleves_cpe jec WHERE jec.e_login='".$tab_eleve[$cpt]['login_eleve']."';";
 					$res_cpe=mysql_query($sql);
 
@@ -458,18 +458,18 @@ else{
 
 
 
-				echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
+				echo "<table class='boireaus' border='1' summary='Tableau des Ã©lÃ¨ves'>\n";
 
-				// Boucle sur les périodes
+				// Boucle sur les pÃ©riodes
 				echo "<tr>\n";
-				echo "<th>Élève</th>\n";
+				echo "<th>Ã‰lÃ¨ve</th>\n";
 				//for($i=0;$i<count($tab_periode);$i++){
 				for($i=1;$i<=count($tab_periode);$i++){
 					echo "<th>$tab_periode[$i]</th>\n";
 				}
 				echo "</tr>\n";
 
-				// Boucle sur les élèves
+				// Boucle sur les Ã©lÃ¨ves
 				$alt=1;
 				for($j=0;$j<count($tab_eleve);$j++){
 					$alt=$alt*(-1);
@@ -485,7 +485,7 @@ else{
 				echo "</table>\n";
 
 
-				// Début du traitement
+				// DÃ©but du traitement
 
 				for($i=1;$i<=count($tab_periode);$i++){
 					// Nettoyage:
@@ -505,7 +505,7 @@ else{
 					$nom_periode=$tab_periode[$i];
 
 
-					// Calculer les moyennes de classe, rechercher min et max pour tous les groupes associés à la classe sur la période.
+					// Calculer les moyennes de classe, rechercher min et max pour tous les groupes associÃ©s Ã  la classe sur la pÃ©riode.
 					//$sql="SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
 					$sql="SELECT DISTINCT id_groupe, priorite FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
 					$res_groupes=mysql_query($sql);
@@ -516,7 +516,7 @@ else{
 					$ordre_matiere=array();
 
 					if(mysql_num_rows($res_groupes)==0){
-						// Dans ce cas, il ne doit pas y avoir de note,... pour les élèves
+						// Dans ce cas, il ne doit pas y avoir de note,... pour les Ã©lÃ¨ves
 					}
 					else{
 						while($lig_groupes=mysql_fetch_object($res_groupes)){
@@ -558,7 +558,7 @@ else{
 					}
 
 
-					// Boucle sur les élèves
+					// Boucle sur les Ã©lÃ¨ves
 					for($j=0;$j<count($tab_eleve);$j++){
 						$ine=$tab_eleve[$j]['ine'];
 						$nom=$tab_eleve[$j]['nom'];
@@ -577,7 +577,7 @@ else{
 
 
 
-						// Absences, retards,... de l'élève
+						// Absences, retards,... de l'Ã©lÃ¨ve
 						$sql="SELECT * FROM absences WHERE login='".$login_eleve."' AND periode='$i'";
 						$res_abs=mysql_query($sql);
 
@@ -677,7 +677,7 @@ else{
 
 
 
-						// Boucle sur les matières de l'élève
+						// Boucle sur les matiÃ¨res de l'Ã©lÃ¨ve
 						/*
 						$sql="SELECT mn.*,g.description FROM groupes g,matieres_notes mn
 														WHERE login='$login_eleve' AND
@@ -702,10 +702,10 @@ else{
 						if(mysql_num_rows($res_grp)==0){
 							// Que faire? Est-il possible qu'il y ait quelque chose dans matieres_appreciations dans ce cas?
 							// Ca ne devrait pas...
-							// Si... on peut avoir un professeur qui n'a pas saisi de note ni même un tiret (malheureusement), mais mis une appréciation
-							//echo "<!-- Aucune note sur le bulletin de période $num_periode pour l'élève $login_eleve -->\n";
+							// Si... on peut avoir un professeur qui n'a pas saisi de note ni mÃªme un tiret (malheureusement), mais mis une apprÃ©ciation
+							//echo "<!-- Aucune note sur le bulletin de pÃ©riode $num_periode pour l'Ã©lÃ¨ve $login_eleve -->\n";
 
-							echo "<!-- En période $num_periode, l'élève $login_eleve n'est associé à aucun enseignement -->\n";
+							echo "<!-- En pÃ©riode $num_periode, l'Ã©lÃ¨ve $login_eleve n'est associÃ© Ã  aucun enseignement -->\n";
 						}
 						else{
 							while($lig_grp=mysql_fetch_object($res_grp)){
@@ -734,7 +734,7 @@ else{
 									$rang=$lig_note->rang;
 								}
 
-								// Récupération de l'appréciation
+								// RÃ©cupÃ©ration de l'apprÃ©ciation
 								$sql="SELECT appreciation FROM matieres_appreciations
 														WHERE login='$login_eleve' AND
 																periode='$num_periode' AND
@@ -751,7 +751,7 @@ else{
 								}
 
 								if(($note!='')||($appreciation!='-')) {
-									// Récupération des professeurs associés
+									// RÃ©cupÃ©ration des professeurs associÃ©s
 									$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' ORDER BY login";
 									echo "<!-- $sql -->\n";
 									$res_prof=mysql_query($sql);
@@ -767,7 +767,7 @@ else{
 										}
 									}
 	
-									// Insertion de la note, l'appréciation,... dans la matière,...
+									// Insertion de la note, l'apprÃ©ciation,... dans la matiÃ¨re,...
 									if (!isset($moymin[$id_groupe])) $moymin[$id_groupe]="-";
 									if (!isset($moymax[$id_groupe])) $moymax[$id_groupe]="-";
 									if (!isset($moyclasse[$id_groupe])) $moyclasse[$id_groupe]="-";
@@ -806,18 +806,18 @@ else{
 									}
 								}
 
-							} // Fin de la boucle matières
+							} // Fin de la boucle matiÃ¨res
 
 
-							echo "<!-- Avant les crédits ECTS de l'élève $login_eleve -->\n";
+							echo "<!-- Avant les crÃ©dits ECTS de l'Ã©lÃ¨ve $login_eleve -->\n";
 
 							if($temoin_ects=="y") {
 								//--------------------
-								// Les crédits ECTS
+								// Les crÃ©dits ECTS
 								//--------------------
 	
 								// On a besoin de : annee, ine, classe, num_periode, nom_periode, matiere, prof, valeur_ects, mention_ects
-								// On a déjà pratiquement tout... ça ne va pas être compliqué !
+								// On a dÃ©jÃ  pratiquement tout... Ã§a ne va pas Ãªtre compliquÃ© !
 								$Eleve = ElevePeer::retrieveByLOGIN($login_eleve);
 								$Groupes = $Eleve->getGroupes($num_periode);
 	
@@ -841,7 +841,7 @@ else{
 									}
 								}
 							}
-							echo "<!-- Après les crédits ECTS de l'élève $login_eleve -->\n";
+							echo "<!-- AprÃ¨s les crÃ©dits ECTS de l'Ã©lÃ¨ve $login_eleve -->\n";
 
 							if($erreur==0){
 								echo "<script type='text/javascript'>
@@ -880,7 +880,7 @@ else{
 			$chaine.=", ".get_nom_classe($id_classe[$i]);
 		}
 		if($chaine!=""){
-			echo "<p>Classes restant à traiter: ".substr($chaine,2)."</p>\n";
+			echo "<p>Classes restant Ã  traiter: ".substr($chaine,2)."</p>\n";
 		}
 		*/
 
@@ -891,9 +891,9 @@ else{
 			echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 		}
 		else{
-			echo "<p style='text-align:center; font-weight:bold; font-size:2em; color: green;'>Traitement terminé.</p>\n";
+			echo "<p style='text-align:center; font-weight:bold; font-size:2em; color: green;'>Traitement terminÃ©.</p>\n";
 			echo "<script type='text/javascript'>
-	document.getElementById('annonce_fin_traitement').innerHTML='Traitement terminé.';
+	document.getElementById('annonce_fin_traitement').innerHTML='Traitement terminÃ©.';
 </script>\n";
 
 		}

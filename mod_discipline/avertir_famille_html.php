@@ -44,8 +44,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -95,7 +95,7 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 		//$courrier=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["courrier"]));
 		$courrier=$NON_PROTECT["courrier"];
 
-		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+		// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 		$courrier=preg_replace('/(\\\r\\\n)+/',"\r\n",$courrier);
 		$courrier=preg_replace('/(\\\r)+/',"\r",$courrier);
 		$courrier=preg_replace('/(\\\n)+/',"\n",$courrier);
@@ -121,7 +121,7 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 		$ratio_h=$hauteur/$bull_photo_hauteur_max;
 		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
-		// définit largeur et hauteur pour la nouvelle image
+		// dÃ©finit largeur et hauteur pour la nouvelle image
 		$nouvelle_largeur=round($largeur/$ratio);
 		$nouvelle_hauteur=round($hauteur/$ratio);
 
@@ -142,10 +142,10 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 
 	if(isset($style_screen_ajout)){
 
-		// Styles paramétrables depuis l'interface:
+		// Styles paramÃ©trables depuis l'interface:
 		if($style_screen_ajout=='y'){
-			// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-			// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+			// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+			// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 			echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 		}
 	}
@@ -177,7 +177,7 @@ margin-bottom:".$margin_bottom."mm;
 
 
 
-	// Logo et étab en haut à gauche:
+	// Logo et Ã©tab en haut Ã  gauche:
 	echo "<div style='float:left;
 left:0px;
 top:0px;
@@ -191,7 +191,7 @@ border: 1px solid green;\n";
 	}
 	echo "'>\n";
 
-	echo "<table summary='Tableau du logo et infos établissement'";
+	echo "<table summary='Tableau du logo et infos Ã©tablissement'";
 	//if($addressblock_debug=="y"){echo " border='1'";}
 	echo ">\n";
 	echo "<tr>\n";
@@ -266,7 +266,7 @@ $ligne3
 	echo "'>".nl2br($courrier)."</div>\n";
 
 /*
-	echo "<pre style='color:red;'><b>A FAIRE:</b> Paramètres:
+	echo "<pre style='color:red;'><b>A FAIRE:</b> ParamÃ¨tres:
 Avec/sans logo, tel/fax
 Marges
 Dimensions et position du bloc adresse resp.

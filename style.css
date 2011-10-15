@@ -76,7 +76,7 @@ table.normal td {
 }
 
 /*==================================*/
-/* Styles généraux */
+/* Styles gÃ©nÃ©raux */
 p {
 	font: normal normal 11pt Verdana, sans-serif;
 	letter-spacing: -0.05em;
@@ -267,7 +267,7 @@ div#lien_cahier_texte {
 	font-size: x-small;
 }
 /*==================================*/
-/*Début - header*/
+/*DÃ©but - header*/
 div#version_gepi {
 	position: absolute;
 	top: 0;
@@ -453,7 +453,7 @@ p.saut {
 	page-break-after: always;
 }
 
-/* Correction Régis pour centrer les menus sans balise <center>...</center> */
+/* Correction RÃ©gis pour centrer les menus sans balise <center>...</center> */
 /*
  table#messagerie {
 	width: 70%;
@@ -672,7 +672,7 @@ img.link {
 	font-family: Verdana;
 	font-size: 14pt;
 }
-	/* Correction Régis : h3 doit être contenu dans h2 qui doit être contenu dans h1 */
+	/* Correction RÃ©gis : h3 doit Ãªtre contenu dans h2 qui doit Ãªtre contenu dans h1 */
 #td_headerLeft h1 {
 	text-align: center;
 	margin: 0px;
@@ -944,7 +944,7 @@ div.conteneur_infobulle_css:hover div.infobulle_css {
 div.conteneur_infobulle_css div.infobulle_css:hover {display: inline;}
 
 /*=====================================================*/
-/* Affichage/masquage de span.details_saisie_abs lorsqu'un champ radio .abs_crob avec LABEL est coché */
+/* Affichage/masquage de span.details_saisie_abs lorsqu'un champ radio .abs_crob avec LABEL est cochÃ© */
 input[type=radio].abs_crob:checked + label {
 	font-weight: bold;
 }
@@ -1025,7 +1025,7 @@ div.resize-handle {
 }
 /* ===================== */
 div.appreciations_deroulantes_graphe_old {
-position : absolute;/*j"ai choisi de positionner la boite à partir de l'entête*/
+position : absolute;/*j"ai choisi de positionner la boite Ã  partir de l'entÃªte*/
 top : 515px;/*idem*/
 left : 5px;/*idem*/
 font-family: Tahoma, Arial, Helvetica, Sans-Serif;
@@ -1040,7 +1040,7 @@ border: 1px solid black;
 }
 
 div.appreciations_deroulantes_graphe {
-position : relative;/*j"ai choisi de positionner la boite à partir de l'entête*/
+position : relative;/*j"ai choisi de positionner la boite Ã  partir de l'entÃªte*/
 top : 0px;/*idem*/
 left : 5px;/*idem*/
 font-family: Tahoma, Arial, Helvetica, Sans-Serif;
@@ -1070,7 +1070,7 @@ border: 1px solid black;
 	height:20px;
 }
 
-/* ul ul pour ne masquer par défaut que les sous-menus */
+/* ul ul pour ne masquer par dÃ©faut que les sous-menus */
 #menu_barre ul ul {
 	border-right: #b0b0b0 1px solid; 
 	padding-right: 0px; 
@@ -1121,7 +1121,7 @@ border: 1px solid black;
 	/*background-color: #e0e0e0;*/
 }
 
-/* Pour éviter de déborder hors du DIV sur les LI horizontaux (niveau1) */
+/* Pour Ã©viter de dÃ©border hors du DIV sur les LI horizontaux (niveau1) */
 #menu_barre .niveau1 li {
 	padding-bottom: 0px;
 }
@@ -1196,7 +1196,7 @@ border: 1px solid black;
 	display: inline;
 }
 
-/* =================== Création du panneau d'affichage ============= */
+/* =================== CrÃ©ation du panneau d'affichage ============= */
 .panneau_droite {
 	background-image:url('./images/right.png');
 	background-repeat: repeat-y;

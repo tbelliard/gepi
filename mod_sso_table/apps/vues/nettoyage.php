@@ -19,7 +19,7 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -31,27 +31,27 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 </div>
 
 <div>[onload;block=div; when [var.choix_info]='avertissement_vidage_complet']
-  Vous allez supprimer [nbre_entrees] entrées de la table de correspondances. <br/>
+  Vous allez supprimer [nbre_entrees] entrÃ©es de la table de correspondances. <br/>
   <form action="index.php?ctrl=nettoyage&action=vidage_complet" enctype='multipart/form-data' method="post">
-    <p>Cette action est irréversible. Valider en cliquant sur le bouton Vider.</p>
+    <p>Cette action est irrÃ©versible. Valider en cliquant sur le bouton Vider.</p>
     <input type='submit' value='Vider' />
   </form>
 </div>
 
 
 <div>[onload;block=div; when [var.choix_info]='vidage_complet']
-  Vous avez supprimé [nbre_entrees_nettoyees] entrées de la table de correspondances. <br/>
+  Vous avez supprimÃ© [nbre_entrees_nettoyees] entrÃ©es de la table de correspondances. <br/>
 </div>
 <div>[onload;block=div; when [var.choix_info]='aucun_anciens_comptes']
-  <p> Aucune entrée ne semble à supprimer dans la table de correspondance.
+  <p> Aucune entrÃ©e ne semble Ã  supprimer dans la table de correspondance.
 </div>
 
 
 <div>[onload;block=div; when [var.choix_info]='avertissement_anciens_comptes']
-  <p>Voici les logins des correspondances à supprimer:</p>
+  <p>Voici les logins des correspondances Ã  supprimer:</p>
   <table width="70%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
-      <td width="20%"><strong>Logins Gépi n'ayant pas de compte utilisateurs dans l'application</strong></td>
+      <td width="20%"><strong>Logins GÃ©pi n'ayant pas de compte utilisateurs dans l'application</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
       <td>[b1.login_gepi;block=tr]</td>
@@ -74,8 +74,8 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
   <br />
   <table width="70%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
-      <td width="40%"><strong>Logins Gépi n'ayant pas de compte utilisateurs dans l'application</strong></td>
-      <td ><strong>Action réalisée</strong></td>
+      <td width="40%"><strong>Logins GÃ©pi n'ayant pas de compte utilisateurs dans l'application</strong></td>
+      <td ><strong>Action rÃ©alisÃ©e</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
       <td>[b1.login_gepi;block=tr]</td>
@@ -94,13 +94,13 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
   <div class="red">[onload;block=div; when [var.message]!='']
     [var.message]
   </div>
-  <p>Vous allez choisir un ou plusieurs profils d'utilisateurs pour remettre à zéro les correspondances; Plusieurs choix sont possibles mais tout nettoyage est irreversible</p>
-  <p class="title-page">Attention , Une fois leur correspondance nettoyée les utilisateurs ne pourront plus se connecter en SSO avec ce module</p>
+  <p>Vous allez choisir un ou plusieurs profils d'utilisateurs pour remettre Ã  zÃ©ro les correspondances; Plusieurs choix sont possibles mais tout nettoyage est irreversible</p>
+  <p class="title-page">Attention , Une fois leur correspondance nettoyÃ©e les utilisateurs ne pourront plus se connecter en SSO avec ce module</p>
   <form action="index.php?ctrl=nettoyage&action=choix_profil" enctype='multipart/form-data' method="post">
     <p>
       <input type="checkbox" name="choix_profil[]" value="Administrateur"  />Administrateur<br/>
       <input type="checkbox" name="choix_profil[]" value="Cpe"  />Cpe<br/>
-      <input type="checkbox" name="choix_profil[]" value="Scolarite"  />Scolarité<br/>
+      <input type="checkbox" name="choix_profil[]" value="Scolarite"  />ScolaritÃ©<br/>
       <input type="checkbox" name="choix_profil[]" value="Secours"  />Secours<br/>
       <input type="checkbox" name="choix_profil[]" value="Autre"  />Autre<br/>
       <input type="checkbox" name="choix_profil[]" value="Professeur"  />Professeur<br/>
@@ -112,11 +112,11 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 </div>
 
 <div>[onload;block=div; when [var.choix_info]='avertissement_profil']
-  <p>Nombre de correspondances à supprimer</p>
+  <p>Nombre de correspondances Ã  supprimer</p>
   <table width="70%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
       <td width="40%"><strong>Profil</strong></td>
-      <td ><strong>Nombres de correspondances à supprimer</strong></td>
+      <td ><strong>Nombres de correspondances Ã  supprimer</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
       <td>[b1.profil;block=tr]</td>
@@ -137,11 +137,11 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 </div>
 
 <div>[onload;block=div; when [var.choix_info]='resultat_profil']
-  <p>Résultats des suppressions :</p>
+  <p>RÃ©sultats des suppressions :</p>
   <table width="70%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
       <td width="40%"><strong>Profil</strong></td>
-      <td ><strong>Nombres de correspondances supprimés</strong></td>
+      <td ><strong>Nombres de correspondances supprimÃ©s</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
       <td>[b1.profil;block=tr]</td>
@@ -161,8 +161,8 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
   <div class="red">[onload;block=div; when [var.message]!='']
     [var.message]
   </div>
-  <p>Vous allez remettre à zéro les correspondances pour une ou plusieurs classes (eleves et/ou responsables); Plusieurs choix sont possibles mais tout nettoyage est irreversible</p>
-  <p class="title-page">Attention , Une fois leur correspondance nettoyée les utilisateurs ne pourront plus se connecter en SSO avec ce module</p>
+  <p>Vous allez remettre Ã  zÃ©ro les correspondances pour une ou plusieurs classes (eleves et/ou responsables); Plusieurs choix sont possibles mais tout nettoyage est irreversible</p>
+  <p class="title-page">Attention , Une fois leur correspondance nettoyÃ©e les utilisateurs ne pourront plus se connecter en SSO avec ce module</p>
   <form action="index.php?ctrl=nettoyage&action=choix_classe" enctype='multipart/form-data' method="post">
     <div class="left">
       <p>
@@ -180,12 +180,12 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 </div>
 
 <div>[onload;block=div; when [var.choix_info]='avertissement_classe']
-  <p>Nombre de correspondances à supprimer</p>
+  <p>Nombre de correspondances Ã  supprimer</p>
   <table width="70%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
       <td width="20%"><strong>Classe</strong></td>
       <td width="20%"><strong>Profil</strong></td>
-      <td ><strong>Nombres de correspondances à supprimer</strong></td>
+      <td ><strong>Nombres de correspondances Ã  supprimer</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
       <td>[b1.classe;block=tr]</td>
@@ -208,12 +208,12 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 </div>
 
 <div>[onload;block=div; when [var.choix_info]='resultat_classe']
-  <p>Nombre de correspondances supprimées</p>
+  <p>Nombre de correspondances supprimÃ©es</p>
   <table width="70%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
       <td width="20%"><strong>Classe</strong></td>
       <td width="20%"><strong>Profil</strong></td>
-      <td ><strong>Nombres de correspondances supprimées</strong></td>
+      <td ><strong>Nombres de correspondances supprimÃ©es</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
       <td>[b1.classe;block=tr]</td>

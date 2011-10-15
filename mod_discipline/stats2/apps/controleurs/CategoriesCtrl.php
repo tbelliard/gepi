@@ -19,7 +19,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -54,8 +54,8 @@ class CategoriesCtrl extends Controleur {
   private function add_infos_categories($liste_nat,$liste_cat) {
     foreach($liste_nat as $nature) {
       if (!$nature->id_categorie) {
-        $nature->categorie='Non affecté';
-        $nature->categorie_sigle='Non affecté';
+        $nature->categorie='Non affectÃ©';
+        $nature->categorie_sigle='Non affectÃ©';
       } else {
         foreach($liste_cat as $categorie) {
           if($categorie->id==$nature->id_categorie) {
@@ -71,7 +71,7 @@ class CategoriesCtrl extends Controleur {
     check_token(false);
     $this->natures_selected=isset($_POST['natures_incidents'])?$_POST['natures_incidents']:(isset($_GET['natures_incidents'])?$_GET['natures_incidents']:Null);
     if(is_null($this->natures_selected)) {
-      echo"<script type='text/javascript'>alert('Selectionnez des natures d\'incidents et une catégorie')</script>";
+      echo"<script type='text/javascript'>alert('Selectionnez des natures d\'incidents et une catÃ©gorie')</script>";
     }
     else {
       $this->categorie_selected=isset($_POST['categorie'])?$_POST['categorie']:(isset($_GET['categorie'])?$_GET['categorie']:Null);

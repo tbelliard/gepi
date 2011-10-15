@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Document destiné à constituer les AID (élèves) en partant d'un lot de classes.
+ * Document destinÃ© Ã  constituer les AID (Ã©lÃ¨ves) en partant d'un lot de classes.
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -66,7 +66,7 @@ $style_specifique = "aid/style_aid";
 $utilisation_prototype = "ok";
 $javascript_specifique = "aid/aid_ajax";
 
-// Vérification du niveau de gestion des AIDs
+// VÃ©rification du niveau de gestion des AIDs
 if (NiveauGestionAid($_SESSION["login"],$indice_aid,$id_aid) <= 0) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -74,26 +74,26 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$id_aid) <= 0) {
 
 
 //**************** EN-TETE **************************************
-$titre_page = "Gestion des élèves dans les AID";
+$titre_page = "Gestion des Ã©lÃ¨ves dans les AID";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
-	//================ TRAITEMENT des entrées ===================
+	//================ TRAITEMENT des entrÃ©es ===================
 	if (isset($aff_liste_m) AND isset($id_aid) AND isset($id_eleve) AND isset($indice_aid)) {
 		check_token(false);
 
-		// Cas de la classe entière
+		// Cas de la classe entiÃ¨re
 		if ($id_eleve == "tous") {
-			// On récupère tous les login de cette classe
+			// On rÃ©cupÃ¨re tous les login de cette classe
 			$req_login = mysql_query("SELECT login FROM j_eleves_classes WHERE id_classe = '".$aff_liste_m."' ORDER BY login");
 			$nbre_login = mysql_num_rows($req_login);
 			for($i=0; $i<$nbre_login; $i++){
 				$rep_log_eleve[$i]["login"] = mysql_result($req_login, $i, "login");
-				// On teste si cet élève n'est pas déjà membre de l'AID
+				// On teste si cet Ã©lÃ¨ve n'est pas dÃ©jÃ  membre de l'AID
         if ($autoriser_inscript_multiples == 'y')
-  				$req_verif = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysql_error().'.');
+  				$req_verif = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requÃªte1 : '.mysql_error().'.');
         else
-  				$req_verif = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND id_aid = '".$id_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysql_error().'.');
+  				$req_verif = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND id_aid = '".$id_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requÃªte1 : '.mysql_error().'.');
 				$verif = mysql_num_rows($req_verif);
 				if ($verif === 0) {
 					$req_ajout = mysql_query("INSERT INTO j_aid_eleves SET login='".$rep_log_eleve[$i]["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
@@ -102,24 +102,24 @@ require_once("../lib/header.inc");
 				}
 			}
 		}else {
-		// On intègre cet élève dans la base s'il n'y est pas déjà
-		// Pour l'instant on récupère son login à partir de id_eleve
+		// On intÃ¨gre cet Ã©lÃ¨ve dans la base s'il n'y est pas dÃ©jÃ 
+		// Pour l'instant on rÃ©cupÃ¨re son login Ã  partir de id_eleve
 		$rep_log_eleve = mysql_fetch_array(mysql_query("SELECT DISTINCT login FROM eleves WHERE id_eleve = '".$id_eleve."'"));
-		// On vérifie s'il n'est pas déjà membre de cet aid
-		// Par cette méthode, on ne peut enregistrer deux fois le même
+		// On vÃ©rifie s'il n'est pas dÃ©jÃ  membre de cet aid
+		// Par cette mÃ©thode, on ne peut enregistrer deux fois le mÃªme
 		$req_ajout = mysql_query("INSERT INTO j_aid_eleves SET login='".$rep_log_eleve["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
 		}// fin du else
 	}
 
 	//================= TRAITEMENT des sorties =======================
-	// Attention de penser à sortir les lignes des notes et appréciations si elles existent
+	// Attention de penser Ã  sortir les lignes des notes et apprÃ©ciations si elles existent
 	if (isset($action) AND $action == "del_eleve_aid") {
 		check_token(false);
 
-		// On supprime l'élève de l'AID
+		// On supprime l'Ã©lÃ¨ve de l'AID
 		$req_suppr1 = mysql_query("DELETE FROM j_aid_eleves WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
 		$req_suppr2 = mysql_query("DELETE FROM j_aid_eleves_resp WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
-		//On teste ensuite si cet élève avait des appréciations / notes
+		//On teste ensuite si cet Ã©lÃ¨ve avait des apprÃ©ciations / notes
 		$req_test_notes = mysql_query("SELECT * FROM aid_appreciations WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
 		$test_notes = mysql_num_rows($req_test_notes);
 		if ($test_notes !== 0) {
@@ -128,11 +128,11 @@ require_once("../lib/header.inc");
 	} //if isset($action...
 
 // Affichage du retour
-	// On récupère l'indice de l'aid en question
+	// On rÃ©cupÃ¨re l'indice de l'aid en question
 	$aff_infos_g .= "<span class=\"aid_a\"><a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid.add_token_in_url()."\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></span>";
 
 
-//Affichage du nom et des précisions sur l'AID en question
+//Affichage du nom et des prÃ©cisions sur l'AID en question
 	$req_aid = mysql_query("SELECT nom FROM aid WHERE id = '".$id_aid."'");
 	$rep_aid = mysql_fetch_array($req_aid);
 	$aff_infos_g .= "<p class=\"bold\">Liste des classes</p>\n";
@@ -146,21 +146,21 @@ require_once("../lib/header.inc");
 		$liste_classe[$a]["id"] = mysql_result($req_liste_classe, $a, "id");
 		$liste_classe[$a]["classe"] = mysql_result($req_liste_classe, $a, "classe");
 
-		$aff_classes_g .= "<tr><td style=\"width: 196px;\"><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid.add_token_in_url()."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>\n";
+		$aff_classes_g .= "<tr><td style=\"width: 196px;\"><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid.add_token_in_url()."\">ElÃ¨ves de la ".$liste_classe[$a]["classe"]."</a></td></tr>\n";
 	}
 
-// Affichage de la liste des élèves de la classe choisie (au milieu) par $aff_classes_m
+// Affichage de la liste des Ã©lÃ¨ves de la classe choisie (au milieu) par $aff_classes_m
 
 if (isset($aff_liste_m)) {
 
 	$aff_nom_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$aff_liste_m."'"));
 
-	// Récupérer la liste des élèves de la classe en question
+	// RÃ©cupÃ©rer la liste des Ã©lÃ¨ves de la classe en question
 	$req_ele = mysql_query("SELECT DISTINCT e.login, e.id_eleve, nom, prenom, sexe
 					FROM j_eleves_classes jec, eleves e
 					WHERE id_classe = '".$aff_liste_m."'
 					AND jec.login = e.login ORDER BY nom, prenom")
-						OR DIE('Erreur dans la requête $req_ele : '.mysql_error());
+						OR DIE('Erreur dans la requÃªte $req_ele : '.mysql_error());
 	$nbre_ele_m = mysql_num_rows($req_ele);
 
 	$aff_classes_m .= "
@@ -168,9 +168,9 @@ if (isset($aff_liste_m)) {
 
 	<table class=\"aid_tableau\" summary=\"Liste des &eacute;l&egrave;ves\">
 	";
-		// Ligne paire, ligne impaire (inutile dans un premier temps), on s'en sert pour faire ladifférence avec une ligne vide.
+		// Ligne paire, ligne impaire (inutile dans un premier temps), on s'en sert pour faire ladiffÃ©rence avec une ligne vide.
 			$aff_tr_css = "aid_lignepaire";
-		// On ajoute un lien qui permet d'intégrer toute la classe d'un coup
+		// On ajoute un lien qui permet d'intÃ©grer toute la classe d'un coup
 		$aff_classes_m .= "
 		<tr class=\"".$aff_tr_css."\">
 			<td>
@@ -180,20 +180,20 @@ if (isset($aff_liste_m)) {
 			</td>
 		</tr>
 		<tr>
-			<td>Liste des élèves
+			<td>Liste des Ã©lÃ¨ves
 			</td>
 		</tr>
 						";
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
-		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysql_error());
+		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requÃªte liste_eleves : '.mysql_error());
 
 			$aff_ele_m[$b]["id_eleve"] = mysql_result($req_ele, $b, "id_eleve");
 			$aff_ele_m[$b]["nom"] = mysql_result($req_ele, $b, "nom");
 			$aff_ele_m[$b]["prenom"] = mysql_result($req_ele, $b, "prenom");
 			$aff_ele_m[$b]["sexe"] = mysql_result($req_ele, $b, "sexe");
 
-			// On vérifie que cet élève n'est pas déjà membre de l'AID
+			// On vÃ©rifie que cet Ã©lÃ¨ve n'est pas dÃ©jÃ  membre de l'AID
 			if ($autoriser_inscript_multiples == 'y')
   			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' and id_aid='$id_aid' AND indice_aid = '".$indice_aid."'");
   		else
@@ -219,14 +219,14 @@ if (isset($aff_liste_m)) {
 	$aff_classes_m .= "</table>\n";
 }// if isset...
 
-// Dans le div de droite, on affiche la liste des élèves de l'AID
+// Dans le div de droite, on affiche la liste des Ã©lÃ¨ves de l'AID
 		$aff_aid_d .= "<p style=\"color: brown; border: 1px solid brown; padding: 2px;\">".$rep_aid["nom"]." :</p>\n";
 		// mais aussi le nom des profs de l'AID
 		$req_prof = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$id_aid."' ORDER BY id_utilisateur");
 		$nbre_prof = mysql_num_rows($req_prof);
 		for($p=0; $p<$nbre_prof; $p++) {
 			$prof[$p]["id_utilisateur"] = mysql_result($req_prof, $p, "id_utilisateur");
-			// On récupère le nom et la civilité de tous les profs
+			// On rÃ©cupÃ¨re le nom et la civilitÃ© de tous les profs
 			$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login = '".$prof[$p]["id_utilisateur"]."'"));
 			$aff_aid_d .= "".$rep_nom["civilite"].$rep_nom["nom"]." ";
 		}
@@ -238,7 +238,7 @@ if (isset($aff_liste_m)) {
 										jec.login = j.login AND
 										jec.id_classe = c.id
 										ORDER BY c.classe, e.nom, e.prenom")
-									OR trigger_error('Erreur sur la liste d\'élèves : '.mysql_error(), E_USER_ERROR);
+									OR trigger_error('Erreur sur la liste d\'Ã©lÃ¨ves : '.mysql_error(), E_USER_ERROR);
 	$nbre = mysql_num_rows($req_ele_aid);
 		$s = "";
 		if ($nbre >= 2) {
@@ -247,10 +247,10 @@ if (isset($aff_liste_m)) {
 		else {
 			$s = "";
 		}
-		$aff_aid_d .= "\n<br />".$nbre." élève".$s.".<br />";
+		$aff_aid_d .= "\n<br />".$nbre." Ã©lÃ¨ve".$s.".<br />";
 
 	for($d=0; $d<$nbre; $d++){
-		// On récupère ses noms et prénoms, puis la classe
+		// On rÃ©cupÃ¨re ses noms et prÃ©noms, puis la classe
 		$rep_ele_aid[$d]["login"] = mysql_result($req_ele_aid, $d, "login");
 		$rep_ele_aid[$d]["nom"] = mysql_result($req_ele_aid, $d, "nom");
 		$rep_ele_aid[$d]["prenom"] = mysql_result($req_ele_aid, $d, "prenom");
@@ -259,7 +259,7 @@ if (isset($aff_liste_m)) {
 
 		$aff_aid_d .= "<br />
 			<a href='./modify_aid_new.php?classe=".$rep_ele_aid[$d]["id_classe"]."&amp;eleve=".$rep_ele_aid[$d]["login"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."&amp;action=del_eleve_aid".add_token_in_url()."'>
-				<img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" />
+				<img src=\"../images/icons/delete.png\" title=\"Supprimer cet Ã©lÃ¨ve\" alt=\"Supprimer\" />
 			</a>".$rep_ele_aid[$d]["nom"]." ".$rep_ele_aid[$d]["prenom"]." ".$rep_ele_aid[$d]["classe"]."\n";
 	}
 
@@ -281,7 +281,7 @@ if (isset($aff_liste_m)) {
 ?>
 
 		<table class="aid_tableau" summary="Liste des classes">
-<?php // Afichage de la liste des classes à gauche
+<?php // Afichage de la liste des classes Ã  gauche
 	echo $aff_classes_g;
 ?>
 		</table>
@@ -289,7 +289,7 @@ if (isset($aff_liste_m)) {
 
 	<div id="aid_droite">
 
-<?php // Affichage à droite
+<?php // Affichage Ã  droite
 	echo $aff_aid_d;
 ?>
 

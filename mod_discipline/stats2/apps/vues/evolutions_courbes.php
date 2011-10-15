@@ -1,5 +1,5 @@
 <?php
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -14,14 +14,14 @@ $graph = new Graph(800, 500);
 $graph->setAntiAliasing(TRUE);
 
 
-// On définit les mois
+// On dÃ©finit les mois
 $months = array(
         'Septembre',
         'Octobre',
         'Novembre',
-        'Décembre',
+        'DÃ©cembre',
         'Janvier',
-        'Février',
+        'FÃ©vrier',
         'Mars',
         'Avril',
         'Mai',

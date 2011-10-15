@@ -42,15 +42,15 @@ if (!checkAccess()) {
 
 
 //**************** EN-TETE *****************
-$titre_page = "Outil de gestion | Effacement des photos élèves";
+$titre_page = "Outil de gestion | Effacement des photos Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?><p class=bold><a href='index.php#efface_photos'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<h2>Effacement des photos d'élèves</h2>
+<h2>Effacement des photos d'Ã©lÃ¨ves</h2>
 <?php
-// En multisite, on ajoute le répertoire RNE
+// En multisite, on ajoute le rÃ©pertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-	// On récupère le RNE de l'établissement
+	// On rÃ©cupÃ¨re le RNE de l'Ã©tablissement
 	$rep_photos='../photos/'.$_COOKIE['RNE'].'/eleves';
 }
 else {
@@ -94,15 +94,15 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 	}
 	closedir($handle);
 	if($chaine!=""){
-		echo "<p>Résultat du nettoyage: $nbsuppr suppression(s) réussie(s)";
-		if($nberreur>0){echo " et $nberreur échecs.<br />Contrôlez les droits sur ces fichiers et réessayez";}
+		echo "<p>RÃ©sultat du nettoyage: $nbsuppr suppression(s) rÃ©ussie(s)";
+		if($nberreur>0){echo " et $nberreur Ã©checs.<br />ContrÃ´lez les droits sur ces fichiers et rÃ©essayez";}
 		echo ":<br />\n";
 		echo "$chaine\n";
 		echo "</p>\n";
 	}
 }
 else {
-    echo "<p><b>ATTENTION:</b> Cette procédure efface toutes les photos non associées à des élèves.</p>\n";
+    echo "<p><b>ATTENTION:</b> Cette procÃ©dure efface toutes les photos non associÃ©es Ã  des Ã©lÃ¨ves.</p>\n";
 
 	$handle=opendir($rep_photos);
 	//$tab_file = array();
@@ -132,11 +132,11 @@ else {
 	}
 	closedir($handle);
 	if($chaine!=""){
-		echo "<p>Les photos suivantes seraient supprimées:\n";
+		echo "<p>Les photos suivantes seraient supprimÃ©es:\n";
 		echo "$chaine\n";
 		echo "<br />Soit un total de $n photo(s).</p>\n";
 
-		echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>\n";
+		echo "<p><b>Etes-vous sÃ»r de vouloir continuer ?</b></p>\n";
 		echo "<form action='".$_SERVER['PHP_SELF']."' method=\"post\" name=\"formulaire\">\n";
 		echo add_token_field();
 		echo "<input type='hidden' name=is_posted value = '1' />\n";
@@ -145,10 +145,10 @@ else {
 	}
 	else{
 		if($nbjpg>0){
-			echo "<p>Aucune photo ne répond à ce critère.</p>\n";
+			echo "<p>Aucune photo ne rÃ©pond Ã  ce critÃ¨re.</p>\n";
 		}
 		else{
-			echo "<p>Aucune photo JPEG n'a été trouvée.</p>\n";
+			echo "<p>Aucune photo JPEG n'a Ã©tÃ© trouvÃ©e.</p>\n";
 		}
 	}
 }

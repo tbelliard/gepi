@@ -3,39 +3,39 @@
 # Vous devez renommer ce fichier en config_ldap.inc.php dans le repertoire secure pour qu'il soit pris en compte !
 #
 
-# Les lignes suivantes sont à modifier selon votre configuration
+# Les lignes suivantes sont Ã  modifier selon votre configuration
 
 # adresse de l'annuaire LDAP.
-# Si c'est le même que celui qui heberge les scripts, mettre "localhost"
+# Si c'est le mÃªme que celui qui heberge les scripts, mettre "localhost"
 $ldap_host="localhost";     # Exemple : localhost, 192.168.1.1
 
-# port utilisé
+# port utilisÃ©
 $ldap_port="389";
 
-# identifiant et mot de passe dans le cas d'un accès non anonyme
+# identifiant et mot de passe dans le cas d'un accÃ¨s non anonyme
 $ldap_login="";
 $ldap_password="";
 
-# chemin d'accès dans l'annuaire (= BaseDN)
+# chemin d'accÃ¨s dans l'annuaire (= BaseDN)
 # Exemple pour Eole : "o=gouv,c=fr"
 $ldap_base_dn="o=gouv,c=fr";
 
-# Complément de chemin où sont listés les utilisateurs
-# Ce paramètre est placé devant le BaseDN lors des requêtes.
+# ComplÃ©ment de chemin oÃ¹ sont listÃ©s les utilisateurs
+# Ce paramÃ¨tre est placÃ© devant le BaseDN lors des requÃªtes.
 $ldap_people_ou = "ou=People";
 
-# Les classes de l'entrée LDAP d'un utilisateur. Elles doivent
-# être cohérentes avec les attributs utilisés.
+# Les classes de l'entrÃ©e LDAP d'un utilisateur. Elles doivent
+# Ãªtre cohÃ©rentes avec les attributs utilisÃ©s.
 $ldap_people_object_classes = array("top","person","inetOrgPerson");
 
-# Différents noms de champs contenant des informations indispensables
-# pour Gepi. Si certaines équivalences ne sont pas renseignées, l'information
-# ne sera pas importée.
+# DiffÃ©rents noms de champs contenant des informations indispensables
+# pour Gepi. Si certaines Ã©quivalences ne sont pas renseignÃ©es, l'information
+# ne sera pas importÃ©e.
 $ldap_champ_login = "uid";
 $ldap_champ_prenom = "";
 $ldap_champ_nom = "";
-$ldap_champ_nom_complet = ""; 	# Si ce champ est renseigné, il sera utilisé en combinaison avec le champ
-								# prénom ou nom pour déterminer l'attribut manquant.
+$ldap_champ_nom_complet = ""; 	# Si ce champ est renseignÃ©, il sera utilisÃ© en combinaison avec le champ
+								# prÃ©nom ou nom pour dÃ©terminer l'attribut manquant.
 $ldap_champ_email = "";
 $ldap_champ_civilite = "";
 $ldap_champ_statut = "";
@@ -44,19 +44,19 @@ $ldap_code_civilite_madame = "";
 $ldap_code_civilite_monsieur = "";
 $ldap_code_civilite_mademoiselle = "";
 
-# Options supplémentaires
-# Type de cryptage utilisé pour la génération du mot de passe (accès en écriture) :
+# Options supplÃ©mentaires
+# Type de cryptage utilisÃ© pour la gÃ©nÃ©ration du mot de passe (accÃ¨s en Ã©criture) :
 $ldap_password_encryption = "crypt"; # clear, crypt, md5, ssha
 
-# Les attributs ci-dessous permettent de déterminer quel
-# statut donner à des utilisateurs importés à la volée
+# Les attributs ci-dessous permettent de dÃ©terminer quel
+# statut donner Ã  des utilisateurs importÃ©s Ã  la volÃ©e
 # depuis le LDAP.
-# Le test est effectué sur la chaîne du DN. Ces attributs
-# ne sont donc utiles que dans l'hypothèse où le DN contient
+# Le test est effectuÃ© sur la chaÃ®ne du DN. Ces attributs
+# ne sont donc utiles que dans l'hypothÃ¨se oÃ¹ le DN contient
 # une information fiable quant au statut de l'utilisateur.
-# Remarque : ces paramètres ne sont utilisés que pour l'accès au LDAP
-# en lecture (importation). L'accès en écriture ne prend en compte
-# qu'un éventuel attribut statut (voir $ldap_champ_statut).
+# Remarque : ces paramÃ¨tres ne sont utilisÃ©s que pour l'accÃ¨s au LDAP
+# en lecture (importation). L'accÃ¨s en Ã©criture ne prend en compte
+# qu'un Ã©ventuel attribut statut (voir $ldap_champ_statut).
 $ldap_chaine_dn_statut_professeur = "";
 $ldap_chaine_dn_statut_eleve = "";
 $ldap_chaine_dn_statut_responsable = "";
@@ -65,7 +65,7 @@ $ldap_chaine_dn_statut_cpe = "";
 
 
 ##
-# Attributs spécifiques à Scribe NG
+# Attributs spÃ©cifiques Ã  Scribe NG
 $ldap_base_dn_extension = "";
 
 ?>

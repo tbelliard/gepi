@@ -40,7 +40,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE **************************************
-$titre_page = "Equipe pédagogique";
+$titre_page = "Equipe pÃ©dagogique";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
@@ -67,7 +67,7 @@ if(isset($id_classe)){
 	if (!is_numeric($id_classe)){
 		echo "</p>\n";
 
-		echo "<p><b>ERREUR</b>: Le numéro de classe choisi n'est pas valide.</p>\n";
+		echo "<p><b>ERREUR</b>: Le numÃ©ro de classe choisi n'est pas valide.</p>\n";
 		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour</a></p>\n";
 	}
 	else{
@@ -127,7 +127,7 @@ if(isset($id_classe)){
 		}
 		// =================================
 
-		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe prÃ©cÃ©dente</a>";}
 		if($chaine_options_classes!="") {
 			echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 			echo $chaine_options_classes;
@@ -153,24 +153,24 @@ if(isset($id_classe)){
 		if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf")!="yes")){
 			$test_prof_classe = sql_count(sql_query("SELECT login FROM j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe='$id_classe'"));
 			if($test_prof_classe==0){
-				echo "<p>ERREUR: Vous n'avez pas accès à cette classe.</p>\n";
+				echo "<p>ERREUR: Vous n'avez pas accÃ¨s Ã  cette classe.</p>\n";
 				echo "</body></html>\n";
 				die();
 			}
 		}
-		// On vérifie les droits donnés par l'administrateur
+		// On vÃ©rifie les droits donnÃ©s par l'administrateur
 		if((getSettingValue("GepiAccesVisuToutesEquipCpe") == "yes") AND $_SESSION['statut']=='cpe'){
-			echo '<p style="font-size: 0.7em; color: green;">L\'administrateur vous a donné l\'accès à toutes les classes.</p>';
+			echo '<p style="font-size: 0.7em; color: green;">L\'administrateur vous a donnÃ© l\'accÃ¨s Ã  toutes les classes.</p>';
 		}elseif($_SESSION['statut']=='cpe'){
 			$test_cpe_classe = sql_count(sql_query("SELECT e_login FROM j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe='$id_classe'"));
 			if($test_cpe_classe==0){
-				echo "<p>ERREUR: Vous n'avez pas accès à cette classe.</p>\n";
+				echo "<p>ERREUR: Vous n'avez pas accÃ¨s Ã  cette classe.</p>\n";
 				echo "</body></html>\n";
 				die();
 			}
 		}
 
-		echo "<h3>Equipe pédagogique de la classe de ".$classe["classe"]."</h3>\n";
+		echo "<h3>Equipe pÃ©dagogique de la classe de ".$classe["classe"]."</h3>\n";
 
 		echo "<script type='text/javascript' language='JavaScript'>
 	var fen;
@@ -228,19 +228,19 @@ if(isset($id_classe)){
 		$result_grp=mysql_query($sql);
 		while($lig_grp=mysql_fetch_object($result_grp)){
 
-			// Récupération des effectifs du groupe...
+			// RÃ©cupÃ©ration des effectifs du groupe...
 			// ... parmi les membres de la classe
 			$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$lig_grp->id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
 			$res_eleves=mysql_query($sql);
 			$nb_eleves=mysql_num_rows($res_eleves);
 
-			// Le groupe est-il composé uniquement d'élèves de la classe?
+			// Le groupe est-il composÃ© uniquement d'Ã©lÃ¨ves de la classe?
 			$sql="SELECT * FROM j_groupes_classes jgc WHERE jgc.id_groupe='$lig_grp->id_groupe'";
 			$res_nb_class_grp=mysql_query($sql);
 			$nb_class_grp=mysql_num_rows($res_nb_class_grp);
 
 
-			// Matière correspondant au groupe:
+			// MatiÃ¨re correspondant au groupe:
 			echo "<tr valign='top'><td>".htmlentities($lig_grp->nom_complet)."</td>\n";
 
 			echo "<td>";
@@ -276,7 +276,7 @@ if(isset($id_classe)){
 					echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
 				}
 
-				// Le prof est-il PP d'au moins un élève de la classe?
+				// Le prof est-il PP d'au moins un Ã©lÃ¨ve de la classe?
 				$sql="SELECT * FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$lig_prof->login'";
 				//echo " (<i>$sql</i>)\n";
 				$res_pp=mysql_query($sql);
@@ -304,7 +304,7 @@ if(isset($id_classe)){
 					$tabmail2[]=$tabmail[$i];
 				}
 			}
-			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>\n";
+			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI] classe ".$classe['classe'])."'>mail Ã  tous les membres de l'Ã©quipe</a>.</p>\n";
 		}
 	}
 }
@@ -314,7 +314,7 @@ else{
 	echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo "</p>\n";
 
-	echo "<h3>Equipe pédagogique d'une classe</h3>\n";
+	echo "<h3>Equipe pÃ©dagogique d'une classe</h3>\n";
 	//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<p>Choix de la classe:</p>\n";
 
@@ -346,7 +346,7 @@ else{
 	$result_classes=mysql_query($sql);
 	$nb_classes = mysql_num_rows($result_classes);
 	//echo "<select name='id_classe' size='1'>\n";
-	//echo "<option value='null'>-- Sélectionner la classe --</option>\n";
+	//echo "<option value='null'>-- SÃ©lectionner la classe --</option>\n";
 	/*
 	for ($i=0;$i<$nb_classes;$i++) {
 		$classe=mysql_result($query, $i, "classe");
@@ -355,7 +355,7 @@ else{
 	}
 	*/
 	if(mysql_num_rows($result_classes)==0){
-		echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Il semble qu'aucune classe n'ait encore Ã©tÃ© crÃ©Ã©e...<br />... ou alors aucune classe ne vous a Ã©tÃ© attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
 	}
 	else{
 		$nb_classes=mysql_num_rows($result_classes);

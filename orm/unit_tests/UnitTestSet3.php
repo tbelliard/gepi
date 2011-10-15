@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) || isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 $niveau_arbo = "2";
@@ -37,7 +37,7 @@ include('UnitTestGroupe.php');
 include('UnitTestClasse.php');
 
 
-// On met le header en petit par défaut
+// On met le header en petit par dÃ©faut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 
@@ -50,30 +50,30 @@ $time = mktime(0, 0, 0);
 $creneau = EdtCreneauPeer::retrieveEdtCreneauActuel($time);
 echo ($logger->getDisplay());
 if ($creneau != null) {
-	echo('test recuperation d\'un creneau à minuit a <font color="red">echoue</font> <br><br/> : ');
-	echo('creneau retourné : '.$creneau->getNomDefiniePeriode());
+	echo('test recuperation d\'un creneau Ã  minuit a <font color="red">echoue</font> <br><br/> : ');
+	echo('creneau retournÃ© : '.$creneau->getNomDefiniePeriode());
 	echo(' alors qu\'on ne devrait pas avoir de retour en toute logique');
 } else {
-	echo('test recuperation d\'un creneau à minuit a reussi : pas de retour <br><br/>');
+	echo('test recuperation d\'un creneau Ã  minuit a reussi : pas de retour <br><br/>');
 }
 
 $time = mktime(8, 40, 0);
 $creneau = EdtCreneauPeer::retrieveEdtCreneauActuel($time);
 echo ($logger->getDisplay());
 if ($creneau == null) {
-	echo('test recuperation d\'un creneau à 8h40 a <font color="red">echoue</font> : ');
+	echo('test recuperation d\'un creneau Ã  8h40 a <font color="red">echoue</font> : ');
 	echo('pas de retour <br><br/>');
 } else {
-	echo('test recuperation d\'un creneau à 8h40 a reussi : '.$creneau->getNomDefiniePeriode().'<br><br/>');
+	echo('test recuperation d\'un creneau Ã  8h40 a reussi : '.$creneau->getNomDefiniePeriode().'<br><br/>');
 }
 
 $creneau = EdtCreneauPeer::retrieveEdtCreneauActuel('8:40');
 echo ($logger->getDisplay());
 if ($creneau == null) {
-	echo('test recuperation d\'un creneau à 8h40 a <font color="red">echoue</font> : ');
+	echo('test recuperation d\'un creneau Ã  8h40 a <font color="red">echoue</font> : ');
 	echo('pas de retour <br><br/>');
 } else {
-	echo('test recuperation d\'un creneau à 8h40 a reussi : '.$creneau->getNomDefiniePeriode().'<br><br/>');
+	echo('test recuperation d\'un creneau Ã  8h40 a reussi : '.$creneau->getNomDefiniePeriode().'<br><br/>');
 }
 
 
@@ -122,7 +122,7 @@ $edtCours->setJourSemaine('lundi');
 $edtCours->setTypeSemaine('');
 $edtCours->save();
 echo ($logger->getDisplay());
-echo('emplacement de cours ajouté.<br>');
+echo('emplacement de cours ajoutÃ©.<br>');
 echo('Debut du cours : '.$edtCours->getHeureDebut('H:i').'<br>');
 echo('Fin du cours : '.$edtCours->getHeureFin('H:i').'<br><br/>');
 
@@ -152,13 +152,13 @@ $edtCours2->setDuree(5);
 //$edtCours2->setTypeSemaine('');
 $edtCours2->save();
 echo ($logger->getDisplay());
-echo('emplacement de cours ajouté.<br>');
+echo('emplacement de cours ajoutÃ©.<br>');
 echo('Debut du cours : '.$edtCours2->getHeureDebut('H:i').'<br>');
 echo('Fin du cours : '.$edtCours2->getHeureFin('H:i').'<br><br/>');
 echo ($logger->getDisplay());
 echo ("<br>");
 
-//on prend une date le lundi matin à 9h40
+//on prend une date le lundi matin Ã  9h40
 $now = date('Y-m-d H:i',strtotime("next Monday 9:40"));
 $edtCoursTest = $groupe->getEdtEmplacementCours($now);
 echo ($logger->getDisplay());
@@ -183,13 +183,13 @@ if ($colEdtCours->count() != 2) {
 	echo('test recuperation emplacement de cours du professeur a <font color="red">echoue</font> <br><br/>');
 } else {
     if ($colEdtCours->getFirst()->getIdDefiniePeriode() == $edtCours2->getIdDefiniePeriode()) {
-	    echo('test recuperation emplacement de cours ordonné chronologiquement a <font color="red">echoue</font> <br><br/>');
+	    echo('test recuperation emplacement de cours ordonnÃ© chronologiquement a <font color="red">echoue</font> <br><br/>');
     } else {
 	    echo('test recuperation emplacement de cours du professeur a reussi<br/><br/>');
     }
 }
 
-//on prend une date le lundi matin à 8h40
+//on prend une date le lundi matin Ã  8h40
 $now = date('Y-m-d H:i',strtotime("next Monday 8:40"));
 $edtCoursTest = $newUtilisateurProfessionnel->getEdtEmplacementCours($now);
 echo ($logger->getDisplay());
@@ -199,7 +199,7 @@ if ($edtCoursTest != null && $edtCoursTest->getIdDefiniePeriode() == $edtCours->
     echo('test recuperation emplacement de cours actuel a <font color="red">echoue</font> <br><br/>');
 }
 
-//on prend une date le lundi matin à 9h40
+//on prend une date le lundi matin Ã  9h40
 $now = date('Y-m-d H:i',strtotime("next Monday 9:40"));
 $edtCoursTest = $newUtilisateurProfessionnel->getEdtEmplacementCours($now);
 echo ($logger->getDisplay());
@@ -232,7 +232,7 @@ if ($newClasse == null) {
 	echo('test creation classe a reussi avec comme retour l\'id : ' . $classe->getId() . '<br/><br/>');
 }
 
-//ajout d'une periode ouverte et d'un periode fermée à une classe
+//ajout d'une periode ouverte et d'un periode fermÃ©e Ã  une classe
 $periode_fermee = new PeriodeNote();
 $periode_fermee->setNumPeriode(1);
 $periode_fermee->setVerouiller('O');
@@ -305,7 +305,7 @@ if ($edtEmplacementCol->count() == 2) {
     echo('test 2 recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
 }
 
-//on prend une date le lundi matin à 9h40
+//on prend une date le lundi matin Ã  9h40
 $now = date('Y-m-d H:i',strtotime("next Monday 9:40"));
 $edtCoursTest = $eleve->getEdtEmplacementCours($now);
 echo ($logger->getDisplay());
@@ -321,7 +321,7 @@ purgeDonneesTest($logger);
 Propel::setLogger(null);
 
 function purgeDonneesTest($logger) {
-	echo "Purge des données<br/><br/>";
+	echo "Purge des donnÃ©es<br/><br/>";
 	//purge de l'utilisateur
 	echo "<br/>Purge de l'utilisateur : <br/>";
 	$utilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK(UnitTestUtilisateurProfessionnel::getUtilisateurProfessionnel()->getLogin());
@@ -360,7 +360,7 @@ function purgeDonneesTest($logger) {
 	}
 	echo ($logger->getDisplay());
 
-echo "<br/>Fin Purge des données<br/><br/>";
+echo "<br/>Fin Purge des donnÃ©es<br/><br/>";
 }
 
 ?>

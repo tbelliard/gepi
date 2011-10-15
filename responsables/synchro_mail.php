@@ -68,7 +68,7 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 	$sql="SELECT u.*, rp.mel, rp.pers_id FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND u.statut='responsable' AND u.email!=rp.mel ORDER BY rp.nom, rp.prenom;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="Toutes les adresses mail responsables sont déjà synchronisées entre les tables 'resp_pers' et 'utilisateurs'.<br />\n";
+		$msg="Toutes les adresses mail responsables sont dÃ©jÃ  synchronisÃ©es entre les tables 'resp_pers' et 'utilisateurs'.<br />\n";
 	}
 	else {
 		$cpt=0;
@@ -99,14 +99,14 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 		}
 
 		if($cpt==0) {
-			$msg="Aucune adresse n'a été mise à jour.<br />";
+			$msg="Aucune adresse n'a Ã©tÃ© mise Ã  jour.<br />";
 		}
 		elseif($cpt==1) {
-			$msg="Une adresse a été mise à jour.<br />";
+			$msg="Une adresse a Ã©tÃ© mise Ã  jour.<br />";
 			$suppr_infos_actions_diff_mail="y";
 		}
 		else {
-			$msg="$cpt adresses ont été mises à jour.<br />";
+			$msg="$cpt adresses ont Ã©tÃ© mises Ã  jour.<br />";
 			$suppr_infos_actions_diff_mail="y";
 		}
 
@@ -123,16 +123,16 @@ if((isset($_GET['synchroniser']))&&($_GET['synchroniser']=='y')) {
 if($suppr_infos_actions_diff_mail=='y') {
 	check_token();
 
-	$sql="select * from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par la personne via%';";
+	$sql="select * from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignÃ©e par la personne via%';";
 	$test_infos_actions=mysql_query($sql);
 	if(mysql_num_rows($test_infos_actions)>0) {
-		$sql="delete from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par la personne via%';";
+		$sql="delete from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignÃ©e par la personne via%';";
 		$del=mysql_query($sql);
 		if(!$del) {
-			$msg.="ERREUR lors de la suppression des signalements de différence de mail en page d'accueil.<br />\n";
+			$msg.="ERREUR lors de la suppression des signalements de diffÃ©rence de mail en page d'accueil.<br />\n";
 		}
 		else {
-			$msg.="Suppression des signalements de différence de mail en page d'accueil effectuée.<br />\n";
+			$msg.="Suppression des signalements de diffÃ©rence de mail en page d'accueil effectuÃ©e.<br />\n";
 		}
 	}
 	else {
@@ -151,7 +151,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0){
-		echo "<p>Une conversion des données responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -160,7 +160,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -169,7 +169,7 @@ if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
-			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -181,29 +181,29 @@ if(!getSettingValue('conv_new_resp_table')){
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 
 <?php
-	$sql="select * from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignée par la personne via%';";
+	$sql="select * from infos_actions where titre like 'Adresse mail non synchro pour%' and description like '%adresse email renseignÃ©e par la personne via%';";
 	$test_infos_actions=mysql_query($sql);
 	if(mysql_num_rows($test_infos_actions)>0) {
-		echo " | <a href='".$_SERVER['PHP_SELF']."?suppr_infos_actions_diff_mail=y".add_token_in_url()."'>Supprimer les signalements de différences en page d'accueil</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?suppr_infos_actions_diff_mail=y".add_token_in_url()."'>Supprimer les signalements de diffÃ©rences en page d'accueil</a>";
 	}
 	echo "</p>\n";
 
 	$sql="SELECT u.*, rp.mel, rp.pers_id FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND u.statut='responsable' AND u.email!=rp.mel ORDER BY rp.nom, rp.prenom;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Toutes les adresses mail responsables sont synchronisées entre les tables 'resp_pers' et 'utilisateurs'.</p>\n";
+		echo "<p>Toutes les adresses mail responsables sont synchronisÃ©es entre les tables 'resp_pers' et 'utilisateurs'.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	echo "<p>".mysql_num_rows($res)." adresses mail responsables diffèrent entre les tables 'resp_pers' et 'utilisateurs'.</p>\n";
+	echo "<p>".mysql_num_rows($res)." adresses mail responsables diffÃ¨rent entre les tables 'resp_pers' et 'utilisateurs'.</p>\n";
 
-	echo "<table class='boireaus' summary='Tableau des différences'>\n";
+	echo "<table class='boireaus' summary='Tableau des diffÃ©rences'>\n";
 	echo "<tr>\n";
 	echo "<th>Nom</th>\n";
 	echo "<th>Prenom</th>\n";
-	echo "<th>Email utilisateur<br />(<i>Gérer mon compte</i>)</th>\n";
+	echo "<th>Email utilisateur<br />(<i>GÃ©rer mon compte</i>)</th>\n";
 	echo "<th>Email resp_pers<br />(<i>Sconet,...</i>)</th>\n";
 	echo "</tr>\n";
 	$alt=1;
@@ -218,20 +218,20 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	echo "</table>\n";
 
-	echo "<p>Le paramétrage de la synchronisation est actuellement&nbsp;:".getSettingValue('mode_email_resp')."</p>\n";
+	echo "<p>Le paramÃ©trage de la synchronisation est actuellement&nbsp;:".getSettingValue('mode_email_resp')."</p>\n";
 
 	if(getSettingValue('mode_email_resp')=='sconet') {
-		echo "<p>Pour mettre à jour les email des comptes d'utilisateurs d'après les valeurs Sconet, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
+		echo "<p>Pour mettre Ã  jour les email des comptes d'utilisateurs d'aprÃ¨s les valeurs Sconet, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
 	}
 	elseif(getSettingValue('mode_email_resp')=='mon_compte') {
-		echo "<p>Pour mettre à jour les email des responsables d'après les valeurs des comptes d'utilisateurs, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
+		echo "<p>Pour mettre Ã  jour les email des responsables d'aprÃ¨s les valeurs des comptes d'utilisateurs, <a href='".$_SERVER['PHP_SELF']."?synchroniser=y".add_token_in_url()."'>cliquez ici</a>.</p>\n";
 	}
 	elseif(getSettingValue('mode_email_resp')=='sso') {
-		echo "<p style='color:red'>Situation non encore gérée.</p>\n";
+		echo "<p style='color:red'>Situation non encore gÃ©rÃ©e.</p>\n";
 	}
 
 	if($_SESSION['statut']=='administrateur') {
-		echo "<p>Ce paramétrage peut être modifié dans <a href='../gestion/param_gen.php#mode_email_resp'>Configuration générale</a></p>\n";
+		echo "<p>Ce paramÃ©trage peut Ãªtre modifiÃ© dans <a href='../gestion/param_gen.php#mode_email_resp'>Configuration gÃ©nÃ©rale</a></p>\n";
 	}
 
 	echo "<p><br /></p>\n";

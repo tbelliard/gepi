@@ -4,13 +4,13 @@
  *
  * @copyright 2008
  *
- * Fichier qui renvoie un select des classes de l'établissement
- * pour l'intégrer dans un fomulaire
+ * Fichier qui renvoie un select des classes de l'Ã©tablissement
+ * pour l'intÃ©grer dans un fomulaire
  */
-// On récupère les infos utiles pour le fonctionnement des requêtes sql
+// On rÃ©cupÃ¨re les infos utiles pour le fonctionnement des requÃªtes sql
 $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
-// Sécurité : éviter que quelqu'un appelle ce fichier seul
+// SÃ©curitÃ© : Ã©viter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
 $analyse = explode("/", $serveur_script);
 $analyse[4] = isset($analyse[4]) ? $analyse[4] : null;
@@ -22,7 +22,7 @@ $increment = isset($nom_select) ? $nom_select : "liste_matieres";
 $matiere_selected = isset($nom_matiere) ? strtoupper($nom_matiere) : (isset($nom_selected) ? strtoupper($nom_selected) : null);
 $options = NULL;
 
-// on recherche la liste des matières
+// on recherche la liste des matiÃ¨res
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet");
 $nbre = mysql_num_rows($query);
 
@@ -33,7 +33,7 @@ for($i = 0; $i < $nbre; $i++) {
     $nom[$i] = mysql_result($query, $i, "nom_complet");
     if (strtoupper(trim(remplace_accents($nom[$i], 'all_nospace'))) == $matiere_selected OR strtoupper(trim(remplace_accents($matiere[$i], 'all_nospace'))) == $matiere_selected) {
         $selected = ' selected="selected"';
-        $warning = ''; // il a trouvé une correspondance, donc on enlève le fond.
+        $warning = ''; // il a trouvÃ© une correspondance, donc on enlÃ¨ve le fond.
     } else {
         $selected = '';
     }
@@ -43,7 +43,7 @@ for($i = 0; $i < $nbre; $i++) {
 }
 echo '
 	<select name ="' . $increment . '"'.$warning .'>
-		<option value="aucun">Liste des matières</option>';
+		<option value="aucun">Liste des matiÃ¨res</option>';
 
 echo $options;
 

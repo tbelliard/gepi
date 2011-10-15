@@ -29,7 +29,7 @@ class AbsencesParametresHelper {
 
   /**
    * Afficher un tag HTML pour la liste des types d'absence (select)
-   * Les options possibles : id pour l'identifiant du select, name pour son name et selected pour vérifier le quel doit apparaitre en selected
+   * Les options possibles : id pour l'identifiant du select, name pour son name et selected pour vÃ©rifier le quel doit apparaitre en selected
    *
    * @param array $options id, name, selected
    * @return string Liste deroulante des types d'absences
@@ -60,7 +60,7 @@ class AbsencesParametresHelper {
 
   /**
    * Afficher un tag HTML pour la liste des motifs d'absence (select)
-   * Les options possibles : id pour l'identifiant du select, name pour son name et selected pour vérifier le quel doit apparaitre en selected
+   * Les options possibles : id pour l'identifiant du select, name pour son name et selected pour vÃ©rifier le quel doit apparaitre en selected
    *
    * @param array $options id, name, selected
    * @return string Liste deroulante des motifs d'absences
@@ -91,7 +91,7 @@ class AbsencesParametresHelper {
 
   /**
    * Afficher un tag HTML pour la liste des justifications des absences (select)
-   * Les options possibles : id pour l'identifiant du select, name pour son name et selected pour vérifier le quel doit apparaitre en selected
+   * Les options possibles : id pour l'identifiant du select, name pour son name et selected pour vÃ©rifier le quel doit apparaitre en selected
    *
    * @param array $options id, name, selected
    * @return string Liste deroulante des justifications d'absences
@@ -122,7 +122,7 @@ class AbsencesParametresHelper {
 
   /**
    * Afficher un tag HTML pour la liste des actions des absences (select)
-   * Les options possibles : id pour l'identifiant du select, name pour son name et selected pour vérifier le quel doit apparaitre en selected
+   * Les options possibles : id pour l'identifiant du select, name pour son name et selected pour vÃ©rifier le quel doit apparaitre en selected
    *
    * @param array $options id, name, selected
    * @return string Liste deroulante des justifications d'absences

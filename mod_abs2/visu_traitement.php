@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -52,16 +52,16 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 if (isset($id_traitement) && $id_traitement != null) $_SESSION['id_traitement'] = $id_traitement;
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
@@ -93,7 +93,7 @@ if ($traitement == null) {
     $criteria->setLimit(1);
     $traitement = $utilisateur->getAbsenceEleveTraitements($criteria)->getFirst();
     if ($traitement == null) {
-	echo "Traitement non trouvé";
+	echo "Traitement non trouvÃ©";
 	die();
     }
 }
@@ -105,13 +105,13 @@ if (isset($message_enregistrement)) {
 echo '<table class="normal">';
 echo '<tbody>';
 echo '<tr><td>';
-echo 'N° de traitement';
+echo 'NÂ° de traitement';
 echo '</td><td>';
 echo $traitement->getPrimaryKey();
 echo '</td></tr>';
 
 echo '<tr><TD>';
-echo 'Créé par : ';
+echo 'CrÃ©Ã© par : ';
 echo '</TD><TD>';
 if ($traitement->getUtilisateurProfessionnel() != null) {
 	echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom().' '.substr($traitement->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
@@ -120,7 +120,7 @@ echo '</TD></tr>';
 
 if ($traitement->getModifieParUtilisateurId() != null && $traitement->getUtilisateurId() != $traitement->getModifieParUtilisateurId()) {
     echo '<tr><TD>';
-    echo 'Modifié par : ';
+    echo 'ModifiÃ© par : ';
     echo '</TD><TD>';
     echo $traitement->getModifieParUtilisateur()->getCivilite().' '.$traitement->getModifieParUtilisateur()->getNom().' '.substr($traitement->getModifieParUtilisateur()->getPrenom(), 0, 1).'.';
     echo '</TD></tr>';
@@ -230,7 +230,7 @@ if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
     echo '<p>';
     echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="filter_recherche_saisie_a_rattacher" value="oui"/>';
-    echo '<button type="submit">Chercher des saisies à rattacher</button>';
+    echo '<button type="submit">Chercher des saisies Ã  rattacher</button>';
     echo '</p>';
     echo '</form>';
 }
@@ -382,7 +382,7 @@ echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 echo '<input type="hidden" name="creation_notification" value="oui"/>';
-echo '<button type="submit">Nouvelle notification à la famille</button>';
+echo '<button type="submit">Nouvelle notification Ã  la famille</button>';
 	echo '</p>';
 echo '</form>';
 echo '</td></tr>';
@@ -391,7 +391,7 @@ echo '</table>';
 echo '</td></tr>';
 
 echo '<tr><td>';
-echo 'Créé par : ';
+echo 'CrÃ©Ã© par : ';
 echo '</td><td>';
 if ($traitement->getUtilisateurProfessionnel() != null) {
     echo $traitement->getUtilisateurProfessionnel()->getCivilite();
@@ -401,14 +401,14 @@ if ($traitement->getUtilisateurProfessionnel() != null) {
 echo '</td></tr>';
 
 echo '<tr><td>';
-echo 'Créé le : ';
+echo 'CrÃ©Ã© le : ';
 echo '</td><td>';
 echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getCreatedAt('U')));
 echo '</td></tr>';
 
 if ($traitement->getCreatedAt() != $traitement->getUpdatedAt()) {
     echo '<tr><td>';
-    echo 'Modifiée le : ';
+    echo 'ModifiÃ©e le : ';
     echo '</td><td>';
     echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getUpdatedAt('U')));
     echo '</td></tr>';
@@ -444,7 +444,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 35;
              $taille_max_hauteur = 35;
 
@@ -453,7 +453,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 

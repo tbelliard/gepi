@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Pour le multisite, on doit récupérer le RNE de l'établissement
+// Pour le multisite, on doit rÃ©cupÃ©rer le RNE de l'Ã©tablissement
 $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
 $aff_get_rne = $aff_get_rne_bis = NULL;
 if ($rne != 'aucun') {
@@ -48,10 +48,10 @@ if (isset($id_groupe)) echo "- $matiere_nom ";
 <?php
 echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
 if(isset($style_screen_ajout)){
-	// Styles paramétrables depuis l'interface:
+	// Styles paramÃ©trables depuis l'interface:
 	if($style_screen_ajout=='y'){
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+		// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 	}
 }
@@ -88,7 +88,7 @@ if(isset($style_screen_ajout)){
 		echo "<!-- Page title, access rights -->\n";
 		echo "<td id='td_headerLeft' rowspan='2'>\n";
 
-		// Pour empêcher de trop réduire la taille de la cellule de gauche
+		// Pour empÃªcher de trop rÃ©duire la taille de la cellule de gauche
 		echo "<div style='width:380px;'></div>\n";
 		echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
 
@@ -96,7 +96,7 @@ if(isset($style_screen_ajout)){
 
 		echo "<td id='td_headerTopRight'>\n";
 
-		// Pour empêcher de trop réduire la taille de la cellule de droite
+		// Pour empÃªcher de trop rÃ©duire la taille de la cellule de droite
 		echo "<div style='width:400px;'></div>\n";
 
     	echo getSettingValue("gepiSchoolName"). " - ".$titre_page." : module public de consultation";
@@ -107,7 +107,7 @@ if(isset($style_screen_ajout)){
 
 
 		echo "<tr>\n";
-		// Les TD précédents sont dans des rowspan
+		// Les TD prÃ©cÃ©dents sont dans des rowspan
 
 		echo "<td id='td_headerBottomRight' style='padding-bottom: 5px;'>\n";
 		echo "<span class='grey'>";

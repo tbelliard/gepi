@@ -96,16 +96,16 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $req[0] = "DELETE FROM j_aid_utilisateurs_gest WHERE id_utilisateur='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     break;
 
-    // Suppression d'un élève d'une aid
+    // Suppression d'un Ã©lÃ¨ve d'une aid
     case "del_eleve_aid":
     $nombre_req = 3;
-    $mess[0] = AfficheNiveauGraviteRequete("Supression de l'élève de la table de correspondance aid<->eleves",1);
+    $mess[0] = AfficheNiveauGraviteRequete("Supression de l'Ã©lÃ¨ve de la table de correspondance aid<->eleves",1);
     $test_nb[0] = "SELECT * FROM j_aid_eleves WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     $req[0] = "DELETE FROM j_aid_eleves WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $mess[1] = AfficheNiveauGraviteRequete("Supression de l'élève de la table de correspondance aid<->eleves responsable",1);
+    $mess[1] = AfficheNiveauGraviteRequete("Supression de l'Ã©lÃ¨ve de la table de correspondance aid<->eleves responsable",1);
     $test_nb[1] = "SELECT * FROM j_aid_eleves_resp WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     $req[1] = "DELETE FROM j_aid_eleves_resp WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $mess[2] = AfficheNiveauGraviteRequete("Suppression d'enregistrements de la table des appréciations aid",2);
+    $mess[2] = AfficheNiveauGraviteRequete("Suppression d'enregistrements de la table des apprÃ©ciations aid",2);
     $test_nb[2] = "SELECT * FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     $req[2] = "DELETE FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     break;
@@ -119,14 +119,14 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     break;
 
 
-    // Suppression d'un établissement
+    // Suppression d'un Ã©tablissement
     case "del_etab":
     $nombre_req = 2;
-    $mess[0] = "Table des établissements";
+    $mess[0] = "Table des Ã©tablissements";
     $test_nb[0] = "SELECT * from etablissements WHERE id='$cible1'";
     $req[0] = "DELETE from etablissements WHERE id='$cible1'";
 
-    $mess[1] = "Table de jointure élève/établissements";
+    $mess[1] = "Table de jointure Ã©lÃ¨ve/Ã©tablissements";
     $test_nb[1] = "SELECT * FROM j_eleves_etablissements WHERE id_etablissement='$cible1'";
     $req[1] = "DELETE from j_eleves_etablissements WHERE id_etablissement='$cible1'";
     break;
@@ -137,7 +137,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[0] = "SELECT * from responsables WHERE ereno='$cible1'";
     $req[0] = "DELETE from responsables WHERE ereno='$cible1'";
 
-    $mess[1] = "Mise à jour de la table eleves";
+    $mess[1] = "Mise Ã  jour de la table eleves";
     $test_nb[1] = "SELECT * FROM eleves WHERE ereno='$cible1'";
     $req[1] = "UPDATE eleves SET ereno='' WHERE ereno='$cible1'";
 
@@ -146,16 +146,16 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     case "del_utilisateur":
     // Suppression d'un utilisateur
-    $message = "<font color=red>Attention : la suppression d'un utilisateur est irréversible !!!
-    <br />Dans la plupart des cas, il est préférable de rendre un utilisateur inactif, plutôt que de le supprimer de la base.
-    <br />Une telle suppression ne devrait pas avoir lieu en cours d'année. Si c'est le cas, cela peut entraîner la présence de données orphelines dans la base (moyennes et appréciations d'élèves, ...). Etes-vous sûr de vouloir continuer ?
+    $message = "<font color=red>Attention : la suppression d'un utilisateur est irrÃ©versible !!!
+    <br />Dans la plupart des cas, il est prÃ©fÃ©rable de rendre un utilisateur inactif, plutÃ´t que de le supprimer de la base.
+    <br />Une telle suppression ne devrait pas avoir lieu en cours d'annÃ©e. Si c'est le cas, cela peut entraÃ®ner la prÃ©sence de donnÃ©es orphelines dans la base (moyennes et apprÃ©ciations d'Ã©lÃ¨ves, ...). Etes-vous sÃ»r de vouloir continuer ?
     </font>";
 
     $mess[0] = "Table des utilisateurs :";
     $test_nb[0] = "SELECT * FROM utilisateurs WHERE login='$cible1'";
     $req[0] = "DELETE FROM utilisateurs WHERE login='$cible1'";
 
-    $mess[1] = "Table de jointure élèves/".getSettingValue("gepi_prof_suivi")." :";
+    $mess[1] = "Table de jointure Ã©lÃ¨ves/".getSettingValue("gepi_prof_suivi")." :";
     $test_nb[1] = "SELECT * FROM j_eleves_professeurs WHERE professeur='$cible1'";
     $req[1] = "DELETE FROM j_eleves_professeurs WHERE professeur='$cible1'";
 
@@ -163,18 +163,18 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[2] = "SELECT * FROM j_aid_utilisateurs WHERE id_utilisateur='$cible1'";
     $req[2] = "DELETE FROM j_aid_utilisateurs WHERE id_utilisateur='$cible1';";
 
-    $mess[3] = "Table de définition groupe/professeur :";
+    $mess[3] = "Table de dÃ©finition groupe/professeur :";
     $test_nb[3] = "SELECT * FROM j_groupes_professeurs WHERE login='$cible1'";
     $req[3] = "DELETE FROM j_groupes_professeurs WHERE login='$cible1';";
 
     $nombre_req = 4;
 
-    $mess[] = "Table de définition cpe/élève :";
+    $mess[] = "Table de dÃ©finition cpe/Ã©lÃ¨ve :";
     $test_nb[] = "SELECT * FROM j_eleves_cpe WHERE cpe_login='$cible1'";
     $req[] = "DELETE FROM j_eleves_cpe WHERE cpe_login='$cible1';";
   	$nombre_req++;
 
-    $mess[] = "Table de définition scolarité/classe :";
+    $mess[] = "Table de dÃ©finition scolaritÃ©/classe :";
     $test_nb[] = "SELECT * FROM j_scol_classes WHERE login='$cible1'";
     $req[] = "DELETE FROM j_scol_classes WHERE login='$cible1';";
 	  $nombre_req++;
@@ -194,12 +194,12 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $req[] = "DELETE FROM j_aid_utilisateurs_gest WHERE id_utilisateur='$cible1';";
     $nombre_req++;
 
-    $mess[] = "Table des modèles de grilles PDF :";
+    $mess[] = "Table des modÃ¨les de grilles PDF :";
     $test_nb[] = "select * from modeles_grilles_pdf_valeurs mv, modeles_grilles_pdf m where m.id_modele=mv.id_modele and m.login='$cible1'";
     $req[] = "delete from modeles_grilles_pdf_valeurs where id_modele in (select id_modele from modeles_grilles_pdf where login='$cible1');";
     $nombre_req++;
 
-    $mess[] = "Table des valeurs des modèles de grilles PDF :";
+    $mess[] = "Table des valeurs des modÃ¨les de grilles PDF :";
     $test_nb[] = "select * from modeles_grilles_pdf where login='$cible1'";
     $req[] = "delete from modeles_grilles_pdf WHERE login='$cible1';";
     $nombre_req++;
@@ -225,18 +225,18 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     break;
 
-    // Suppression d'une matière
+    // Suppression d'une matiÃ¨re
     case "del_matiere":
 
-    $mess[0] = "Table des matières :";
+    $mess[0] = "Table des matiÃ¨res :";
     $test_nb[0] = "SELECT * from matieres WHERE matiere='$cible1'";
     $req[0] = "DELETE from matieres WHERE matiere='$cible1'";
 
-    $mess[] = "Table de définition matière/groupe, groupes associés, notes et évaluations " .
-    		"<br/><br/>><- ATTENTION! -><<br/> Beaucoup de données importantes risquent d'être affectées par cette suppression " .
-    		"si vous validez la procédure. Le nombre d'enregistrements mentionné correspond au nombre de " .
-    		"groupes qui vont être supprimés par héritage de la suppression de la matière, et pas au nombre " .
-    		"réel de données qui seront supprimées.' :";
+    $mess[] = "Table de dÃ©finition matiÃ¨re/groupe, groupes associÃ©s, notes et Ã©valuations " .
+    		"<br/><br/>><- ATTENTION! -><<br/> Beaucoup de donnÃ©es importantes risquent d'Ãªtre affectÃ©es par cette suppression " .
+    		"si vous validez la procÃ©dure. Le nombre d'enregistrements mentionnÃ© correspond au nombre de " .
+    		"groupes qui vont Ãªtre supprimÃ©s par hÃ©ritage de la suppression de la matiÃ¨re, et pas au nombre " .
+    		"rÃ©el de donnÃ©es qui seront supprimÃ©es.' :";
     $test_nb[] = "SELECT * FROM j_groupes_matieres WHERE id_matiere='$cible1'";
     $req[] = "DELETE FROM j_groupes_matieres jgm, " .
     		"groupes g, " .
@@ -256,15 +256,15 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     		"ma.id_groupe = jgm.id_groupe and " .
     		"mn.id_groupe = jgm.id_groupe)";
 
-    $mess[] = "Table de jointure professeurs/matières :";
+    $mess[] = "Table de jointure professeurs/matiÃ¨res :";
     $test_nb[] = "SELECT * FROM j_professeurs_matieres WHERE id_matiere='$cible1'";
     $req[] = "DELETE FROM j_professeurs_matieres WHERE id_matiere='$cible1'";
 
-    $mess[] = "Matière principale des fiches projets :";
+    $mess[] = "MatiÃ¨re principale des fiches projets :";
     $test_nb[] = "SELECT * FROM aid WHERE matiere1='$cible1'";
     $req[] = "UPDATE aid SET matiere1 = '' WHERE matiere1='$cible1'";
 
-    $mess[] = "Matière secondaire des fiches projets :";
+    $mess[] = "MatiÃ¨re secondaire des fiches projets :";
     $test_nb[] = "SELECT * FROM aid WHERE matiere2='$cible1'";
     $req[] = "UPDATE aid SET matiere2 = '' WHERE matiere2='$cible1'";
 
@@ -291,8 +291,8 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     break;
 
     case "del_eleve":
-    //Suppression d'un élève
-    $mess[0] = "Table des élèves";
+    //Suppression d'un Ã©lÃ¨ve
+    $mess[0] = "Table des Ã©lÃ¨ves";
     $test_nb[0] = "SELECT * FROM eleves WHERE login='$cible1'";
     $req[0] = "DELETE FROM eleves WHERE login='$cible1'";
 
@@ -304,23 +304,23 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[2] = "SELECT * FROM j_eleves_groupes WHERE login='$cible1'";
     $req[2] = "DELETE FROM j_eleves_groupes WHERE login='$cible1'";
 
-    $mess[3] = "Table de jointure classe/élève";
+    $mess[3] = "Table de jointure classe/Ã©lÃ¨ve";
     $test_nb[3] = "SELECT * FROM j_eleves_classes WHERE login='$cible1'";
     $req[3] = "DELETE FROM j_eleves_classes WHERE login='$cible1'";
 
-    $mess[4] = "Table des appréciations AID";
+    $mess[4] = "Table des apprÃ©ciations AID";
     $test_nb[4] = "SELECT * FROM aid_appreciations WHERE login='$cible1'";
     $req[4] = "DELETE FROM aid_appreciations WHERE login='$cible1'";
 
-    $mess[5] = "Table de jointure élève\Aid suivie";
+    $mess[5] = "Table de jointure Ã©lÃ¨ve\Aid suivie";
     $test_nb[5] = "SELECT * FROM j_aid_eleves WHERE login='$cible1'";
     $req[5] = "DELETE FROM j_aid_eleves WHERE login='$cible1'";
 
-    $mess[6] = "Table des appréciations";
+    $mess[6] = "Table des apprÃ©ciations";
     $test_nb[6] = "SELECT * FROM matieres_appreciations WHERE login='$cible1'";
     $req[6] = "DELETE FROM matieres_appreciations WHERE login='$cible1'";
 
-    $mess[7] = "Table de jointure élève/".getSettingValue("gepi_prof_suivi")."";
+    $mess[7] = "Table de jointure Ã©lÃ¨ve/".getSettingValue("gepi_prof_suivi")."";
     $test_nb[7] = "SELECT * FROM j_eleves_professeurs WHERE login='$cible1'";
     $req[7] = "DELETE FROM j_eleves_professeurs WHERE login='$cible1'";
 
@@ -328,7 +328,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[8] = "SELECT * FROM avis_conseil_classe WHERE login='$cible1'";
     $req[8] = "DELETE FROM avis_conseil_classe WHERE login='$cible1'";
 
-    $mess[9] = "Table de jointure élève/établissement";
+    $mess[9] = "Table de jointure Ã©lÃ¨ve/Ã©tablissement";
     //$test_nb[9] = "SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$cible1'";
     //$req[9] = "DELETE FROM j_eleves_etablissements WHERE id_eleve ='$cible1'";
     $test_nb[9] = "SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$cible2'";
@@ -385,7 +385,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
 	$nombre_req++;
 
-    $mess[] = "Table de jointure élève/régime";
+    $mess[] = "Table de jointure Ã©lÃ¨ve/rÃ©gime";
     $test_nb[] = "SELECT * FROM j_eleves_regime WHERE login ='$cible1'";
     $req[] = "DELETE FROM j_eleves_regime WHERE login ='$cible1'";
 
@@ -407,19 +407,19 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[0] = "SELECT * FROM classes WHERE id='$cible1'";
     $req[0] = "DELETE FROM classes WHERE id='$cible1'";
 
-    $mess[1] = "Table de définition classe/groupe :";
+    $mess[1] = "Table de dÃ©finition classe/groupe :";
     $test_nb[1] = "SELECT * FROM j_groupes_classes WHERE id_classe='$cible1'";
     $req[1] = "DELETE FROM j_groupes_classes WHERE id_classe='$cible1'";
 
-    $mess[2] = "Table de gestion des périodes de la classe :";
+    $mess[2] = "Table de gestion des pÃ©riodes de la classe :";
     $test_nb[2] = "SELECT * FROM periodes WHERE id_classe='$cible1'";
     $req[2] = "DELETE FROM periodes WHERE id_classe='$cible1'";
 
-    $mess[3] = "Table de jointure classe/élève :";
+    $mess[3] = "Table de jointure classe/Ã©lÃ¨ve :";
     $test_nb[3] = "SELECT * FROM j_eleves_classes WHERE id_classe ='$cible1'";
     $req[3] = "DELETE FROM j_eleves_classes WHERE id_classe ='$cible1'";
 
-    $mess[4] = "Table de jointure élève/".getSettingValue("gepi_prof_suivi")."/classe :";
+    $mess[4] = "Table de jointure Ã©lÃ¨ve/".getSettingValue("gepi_prof_suivi")."/classe :";
     $test_nb[4] = "SELECT * FROM j_eleves_professeurs WHERE id_classe ='$cible1'";
     $req[4] = "DELETE FROM j_eleves_professeurs WHERE id_classe ='$cible1'";
 
@@ -427,7 +427,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
 	$test_existence=mysql_query("SHOW TABLES LIKE 'periodes_observatoire';");
 	if(mysql_num_rows($test_existence)>0){
-		$mess[] = "Table des périodes de l'observatoire :";
+		$mess[] = "Table des pÃ©riodes de l'observatoire :";
 		$test_nb[] = "SELECT * FROM periodes_observatoire WHERE id_classe ='$cible1'";
 		$req[] = "DELETE FROM periodes_observatoire WHERE id_classe ='$cible1'";
 
@@ -440,7 +440,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[0] = "SELECT * FROM aid WHERE (id='$cible1' and indice_aid='$cible3')";
     $req[0] = "DELETE FROM aid WHERE (id='$cible1' and indice_aid='$cible3')";
 
-    $mess[1] = "Table de jointure elèves/Aid :";
+    $mess[1] = "Table de jointure elÃ¨ves/Aid :";
     $test_nb[1] = "SELECT * FROM j_aid_eleves WHERE (id_aid='$cible1' and indice_aid='$cible3')";
     $req[1] = "DELETE FROM j_aid_eleves WHERE (id_aid='$cible1' and indice_aid='$cible3')";
 
@@ -448,7 +448,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[2] = "SELECT * FROM j_aid_utilisateurs WHERE (id_aid='$cible1' and indice_aid='$cible3')";
     $req[2] = "DELETE FROM j_aid_utilisateurs WHERE (id_aid='$cible1' and indice_aid='$cible3')";
 
-    $mess[3] = "Table des appréciations des AID : ";
+    $mess[3] = "Table des apprÃ©ciations des AID : ";
     $test_nb[3] = "SELECT * FROM aid_appreciations WHERE (id_aid='$cible1' and indice_aid='$cible3')";
     $req[3] = "DELETE FROM aid_appreciations WHERE (id_aid='$cible1' and indice_aid='$cible3')";
 
@@ -468,30 +468,30 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     break;
     case "retire_eleve":
-    // Retrait d'un élève d'une classe
+    // Retrait d'un Ã©lÃ¨ve d'une classe
 
-    $mess[0] = "Table de jointure classe/élève :";
+    $mess[0] = "Table de jointure classe/Ã©lÃ¨ve :";
     $test_nb[0] = "SELECT * FROM j_eleves_classes WHERE (login='$cible1' and periode = '$cible2')";
     $req[0] = "DELETE FROM j_eleves_classes WHERE (login='$cible1' and periode = '$cible2')";
 
     $nombre_req = 1;
-    // Suppression de l'association élève-prof de suivi (seulement si l'élève est totalement dissocié d'une classe)
+    // Suppression de l'association Ã©lÃ¨ve-prof de suivi (seulement si l'Ã©lÃ¨ve est totalement dissociÃ© d'une classe)
     if (mysql_num_rows(mysql_query("SELECT * FROM j_eleves_classes WHERE (login='$cible1' and id_classe = '$cible3')"))=='1') {
-        $mess[] = "Table de jointure élève/".getSettingValue("gepi_prof_suivi")." : ";
+        $mess[] = "Table de jointure Ã©lÃ¨ve/".getSettingValue("gepi_prof_suivi")." : ";
         $test_nb[] = "SELECT * FROM j_eleves_professeurs WHERE (login='$cible1' and id_classe='$cible3')";
         $req[] = "DELETE FROM j_eleves_professeurs WHERE (login='$cible1' and id_classe='$cible3')";
         $nombre_req++;
     }
-    // Suppression de l'association élève-cpe (seulement si l'élève est totalement dissocié d'une classe)
+    // Suppression de l'association Ã©lÃ¨ve-cpe (seulement si l'Ã©lÃ¨ve est totalement dissociÃ© d'une classe)
     if (mysql_num_rows(mysql_query("SELECT * FROM j_eleves_classes WHERE (login='$cible1' and id_classe = '$cible3')"))=='1') {
-        $mess[] = "Table de jointure élève/cpe : ";
+        $mess[] = "Table de jointure Ã©lÃ¨ve/cpe : ";
         $test_nb[] = "SELECT * FROM j_eleves_cpe WHERE (e_login='$cible1')";
         $req[] = "DELETE FROM j_eleves_cpe WHERE (e_login='$cible1')";
         $nombre_req++;
     }
-    // Suppression des associations élève-groupe
+    // Suppression des associations Ã©lÃ¨ve-groupe
     if (mysql_num_rows(mysql_query("SELECT * FROM j_eleves_groupes WHERE (login='$cible1' and periode = '$cible2')"))>='1') {
-        $mess[] = "Table de jointure élève/groupes (l'élève sera supprimé de tous les enseignements pour la période considérée) : ";
+        $mess[] = "Table de jointure Ã©lÃ¨ve/groupes (l'Ã©lÃ¨ve sera supprimÃ© de tous les enseignements pour la pÃ©riode considÃ©rÃ©e) : ";
         $test_nb[] = "SELECT * FROM j_eleves_groupes WHERE (login='$cible1' and periode='$cible2')";
         $req[] = "DELETE FROM j_eleves_groupes WHERE (login='$cible1' and periode='$cible2')";
         $nombre_req++;
@@ -510,7 +510,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
         ?><form action="confirm_query.php" method="post" enctype="application/x-www-form-urlencoded"><?php
 
 		//=====================
-		// Sécurité: 20101118
+		// SÃ©curitÃ©: 20101118
 		//echo "<input type='hidden' name='csrf_alea' value='".$csrf_alea."' />\n";
 		echo add_token_field();
 		//=====================
@@ -519,7 +519,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
         echo "<input type='submit' name='confirm' value='Oui' /> ";
         echo "<input type='submit' name='confirm' value='Non' /></p>";
         if (isset($message)) echo "<p>$message</p>";
-        echo "<p>Requête(s) à effectuer : <br /><br />";
+        echo "<p>RequÃªte(s) Ã  effectuer : <br /><br />";
         for ($c=0; $c<$nombre_req; $c++) {
             $call = @mysql_query($test_nb[$c]);
 			//echo "\$test_nb[$c]=".$test_nb[$c]."<br />";
@@ -568,7 +568,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 					}
 				}
             }
-            //Vérification
+            //VÃ©rification
             for ($c=0; $c<$nombre_req; $c++) {
                 //$call = mysql_query($test_nb[$c]);
                 $call = @mysql_query($test_nb[$c]);
@@ -582,9 +582,9 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 						//**************** FIN EN-TETE *****************
 
 						echo "<p><span class='bold'>$mess[$c] : </span><br />";
-						echo "Il y a eu un problème lors de l'exécution de la requête :<br />";
+						echo "Il y a eu un problÃ¨me lors de l'exÃ©cution de la requÃªte :<br />";
 						echo "$req[$c]<br />";
-						echo "Il reste $nb_lignes "; if ($nb_lignes == 1) { echo "enregistrement"; } else { echo "enregistrements";} echo " à supprimer !<br /></p>";
+						echo "Il reste $nb_lignes "; if ($nb_lignes == 1) { echo "enregistrement"; } else { echo "enregistrements";} echo " Ã  supprimer !<br /></p>";
 					}
 				}
             }
@@ -598,7 +598,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
             if (isset($liste_cible2)) echo "&amp;liste_cible2=$liste_cible2";
             if (isset($liste_cible3)) echo "&amp;liste_cible3=$liste_cible3";
 			//===========================
-			// Sécurité: 20101118
+			// SÃ©curitÃ©: 20101118
 			//echo "&amp;csrf_alea=".$csrf_alea;
 			echo add_token_in_url();
 			//===========================
@@ -609,7 +609,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
             if (isset($liste_cible2)) $page .= "&liste_cible2=$liste_cible2";
             if (isset($liste_cible3)) $page .= "&liste_cible3=$liste_cible3";
 			//===========================
-			// Sécurité: 20101118
+			// SÃ©curitÃ©: 20101118
 			//$page.="&csrf_alea=".$csrf_alea;
 			$page.=add_token_in_url(false);
 			//===========================

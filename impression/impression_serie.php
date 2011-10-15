@@ -49,15 +49,15 @@ require_once("../lib/header.inc");
 //debug_var();
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo " | <a href='./impression.php'>Impression rapide à l'unité</a>";
-echo " | <a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>";
+echo " | <a href='./impression.php'>Impression rapide Ã  l'unitÃ©</a>";
+echo " | <a href='./parametres_impression_pdf.php'>RÃ©gler les paramÃ¨tres du PDF</a>";
 if(check_droit_acces('/groupes/mes_listes.php',$_SESSION['statut'])) {
 	echo " | <a href='../groupes/mes_listes.php'>Listes CSV</a>";
 }
 echo "</p>\n";
 
 if ($id_choix_periode != 0) {
-	$periode = "Période N°".$id_choix_periode;
+	$periode = "PÃ©riode NÂ°".$id_choix_periode;
 	echo "<h3 align='center'>".$periode."</h3>\n";
 	echo "<h3>Liste des classes : ";
 	echo "</h3>\n";
@@ -67,20 +67,20 @@ if ($id_choix_periode != 0) {
 	echo "</h3>\n";
 }
 
-// sélection multiple avec choix de la période
+// sÃ©lection multiple avec choix de la pÃ©riode
 
 if ($id_choix_periode == 0) {
 	echo "<div style=\"text-align: center;\">\n";
 	echo "<fieldset>\n";
-	echo "<legend>Sélectionnez la période pour laquelle vous souhaitez imprimer les listes.</legend>\n";
+	echo "<legend>SÃ©lectionnez la pÃ©riode pour laquelle vous souhaitez imprimer les listes.</legend>\n";
 	echo "<form method=\"post\" action=\"impression_serie.php\" name=\"imprime_serie\">\n";
 	$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
 	$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
 	echo "<br />\n";
 	While ( $data_periode = mysql_fetch_array ($resultat_periode)) {
-		echo "<label for='id_choix_periode".$data_periode['num_periode']."' style='cursor: pointer;'>Période ".$data_periode['num_periode']." : </label><input type='radio' name='id_choix_periode' id='id_choix_periode".$data_periode['num_periode']."' value='".$data_periode['num_periode']."' /> <br />\n";
+		echo "<label for='id_choix_periode".$data_periode['num_periode']."' style='cursor: pointer;'>PÃ©riode ".$data_periode['num_periode']." : </label><input type='radio' name='id_choix_periode' id='id_choix_periode".$data_periode['num_periode']."' value='".$data_periode['num_periode']."' /> <br />\n";
 	}
-	echo "<br /><br /> <input value=\"Valider la période\" name=\"Valider\" type=\"submit\" />\n
+	echo "<br /><br /> <input value=\"Valider la pÃ©riode\" name=\"Valider\" type=\"submit\" />\n
 			<br />\n";
 
 	echo "</form>\n";
@@ -92,7 +92,7 @@ if ($id_choix_periode == 0) {
 }
 else {
 	$id_modele_defaut="";
-	// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+	// Rechercher les modÃ¨les existants... proposer le modÃ¨le par dÃ©faut de l'utilisateur mais aussi le modÃ¨le par dÃ©faut de gepi
 	$sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
 	//echo "$sql<br />";
 	$res_modeles=mysql_query($sql);
@@ -118,14 +118,14 @@ else {
 	if(!isset($_POST['passer_au_choix_des_groupes'])) {
 		echo "<div style=\"text-align: center;\">\n";
 		echo "<fieldset>\n";
-		echo "<legend>Sélectionnez la (ou les) classe(s) pour lesquelles vous souhaitez imprimer les listes.</legend>\n";
+		echo "<legend>SÃ©lectionnez la (ou les) classe(s) pour lesquelles vous souhaitez imprimer les listes.</legend>\n";
 
 		echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf\">\n";
 		if ($id_choix_periode != 0) {
 			echo "<br />\n";
 
 			echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='5'>\n";
-			if($_SESSION['statut']=='scolarite') { //n'affiche que les classes du profil scolarité
+			if($_SESSION['statut']=='scolarite') { //n'affiche que les classes du profil scolaritÃ©
 				$login_scolarite = $_SESSION['login'];
 				$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` , jsc.login, jsc.id_classe
 								FROM `periodes`, `classes` , `j_scol_classes` jsc
@@ -151,7 +151,7 @@ else {
 			echo "	</select>\n";
 			echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
 
-			// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+			// Rechercher les modÃ¨les existants... proposer le modÃ¨le par dÃ©faut de l'utilisateur mais aussi le modÃ¨le par dÃ©faut de gepi
 			/*
 			$sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
 			echo "$sql<br />";
@@ -169,8 +169,8 @@ else {
 				*/
 
 				echo "<br />\n";
-				echo "Modèle de réglages&nbsp;: <br /><select name='id_modele'>\n";
-				echo "<option value=''>Réglages par défaut de Gepi</option>\n";
+				echo "ModÃ¨le de rÃ©glages&nbsp;: <br /><select name='id_modele'>\n";
+				echo "<option value=''>RÃ©glages par dÃ©faut de Gepi</option>\n";
 				for($loop=0;$loop<count($tab_modele);$loop++) {
 					echo "<option value='".$tab_modele[$loop]['id_modele']."'";
 					if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
@@ -179,7 +179,7 @@ else {
 				echo "</select>\n";
 			}
 			else {
-				// On utilisera les paramètres par défaut
+				// On utilisera les paramÃ¨tres par dÃ©faut
 			}
 
 			echo "<br /><br /> <input value=\"Valider les classes\" name=\"Valider\" type=\"submit\" />\n";
@@ -195,14 +195,14 @@ else {
 			echo "<h3 align='left'>Liste des enseignements : </h3>\n";
 
 			echo "<fieldset>\n";
-			echo "<legend>Sélectionnez la (ou les) classe(s) dans laquelle/lesquelles rechercher des listes de groupes.</legend>\n";
+			echo "<legend>SÃ©lectionnez la (ou les) classe(s) dans laquelle/lesquelles rechercher des listes de groupes.</legend>\n";
 			//echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf\">\n";
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"choix_clas_grp\">\n";
 			if ($id_choix_periode != 0) {
 				echo "<br />\n";
 	
 				echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='5'>\n";
-				if($_SESSION['statut']=='scolarite') { //n'affiche que les classes du profil scolarité
+				if($_SESSION['statut']=='scolarite') { //n'affiche que les classes du profil scolaritÃ©
 					$login_scolarite = $_SESSION['login'];
 					$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` , jsc.login, jsc.id_classe
 									FROM `periodes`, `classes` , `j_scol_classes` jsc
@@ -229,8 +229,8 @@ else {
 
 				if($nb_modeles>0) {
 					echo "<br />\n";
-					echo "Modèle de réglages&nbsp;: <br /><select name='id_modele'>\n";
-					echo "<option value=''>Réglages par défaut de Gepi</option>\n";
+					echo "ModÃ¨le de rÃ©glages&nbsp;: <br /><select name='id_modele'>\n";
+					echo "<option value=''>RÃ©glages par dÃ©faut de Gepi</option>\n";
 					for($loop=0;$loop<count($tab_modele);$loop++) {
 						echo "<option value='".$tab_modele[$loop]['id_modele']."'";
 						if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
@@ -239,7 +239,7 @@ else {
 					echo "</select>\n";
 				}
 				else {
-					// On utilisera les paramètres par défaut
+					// On utilisera les paramÃ¨tres par dÃ©faut
 				}
 
 				//echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
@@ -296,14 +296,14 @@ else {
 
 			echo "<br />\n";
 			echo "Option de tri&nbsp;:<br />\n";
-			echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe''> Par classe puis alphabétique</label><br />\n";
-			echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha''> Alphabétique</label><br />\n";
+			echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe''> Par classe puis alphabÃ©tique</label><br />\n";
+			echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha''> AlphabÃ©tique</label><br />\n";
 
-			// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+			// Rechercher les modÃ¨les existants... proposer le modÃ¨le par dÃ©faut de l'utilisateur mais aussi le modÃ¨le par dÃ©faut de gepi
 			if($nb_modeles>0) {
 				echo "<br />\n";
-				echo "Modèle de réglages&nbsp;: <br /><select name='id_modele'>\n";
-				echo "<option value=''>Réglages par défaut de Gepi</option>\n";
+				echo "ModÃ¨le de rÃ©glages&nbsp;: <br /><select name='id_modele'>\n";
+				echo "<option value=''>RÃ©glages par dÃ©faut de Gepi</option>\n";
 				for($loop=0;$loop<count($tab_modele);$loop++) {
 					echo "<option value='".$tab_modele[$loop]['id_modele']."'";
 					if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
@@ -312,7 +312,7 @@ else {
 				echo "</select>\n";
 			}
 			else {
-				// On utilisera les paramètres par défaut
+				// On utilisera les paramÃ¨tres par dÃ©faut
 			}
 
 			echo "<input value=\"".$id_choix_periode."\" name=\"id_choix_periode\" type=\"hidden\" />\n";
@@ -349,10 +349,10 @@ if ($id_choix_periode != 0) {
 		echo "</pre>";
 		*/
 		
-		// sélection multiple avec choix de la période
+		// sÃ©lection multiple avec choix de la pÃ©riode
 		echo "<div style=\"text-align: center;\">\n";
 		echo "   <fieldset>\n
-		<legend>Sélectionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
+		<legend>SÃ©lectionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
 		
 		//echo "<form method=\"post\" action=\"liste_pdf.php\" name=\"imprime_pdf\">\n";
 		echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf2\">\n";
@@ -370,18 +370,18 @@ if ($id_choix_periode != 0) {
 		}	
 		echo "		</optgroup>\n";
 		echo "	</select>\n";
-		//echo "<br />Option de tri :<input type=\"radio\" name=\"tri\" value=\"classes\" />Par classe puis alphabétique<input type=\"radio\" name=\"tri\" value=\"alpha\" checked /> Alphabétique<br />\n";
+		//echo "<br />Option de tri :<input type=\"radio\" name=\"tri\" value=\"classes\" />Par classe puis alphabÃ©tique<input type=\"radio\" name=\"tri\" value=\"alpha\" checked /> AlphabÃ©tique<br />\n";
 
 		echo "<br />\n";
 		echo "Option de tri&nbsp;:<br />\n";
-		echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe''> Par classe puis alphabétique</label><br />\n";
-		echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha''> Alphabétique</label><br />\n";
+		echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe''> Par classe puis alphabÃ©tique</label><br />\n";
+		echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha''> AlphabÃ©tique</label><br />\n";
 
-		// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+		// Rechercher les modÃ¨les existants... proposer le modÃ¨le par dÃ©faut de l'utilisateur mais aussi le modÃ¨le par dÃ©faut de gepi
 		if($nb_modeles>0) {
 			echo "<br />\n";
-			echo "Modèle de réglages&nbsp;: <br /><select name='id_modele'>\n";
-			echo "<option value=''>Réglages par défaut de Gepi</option>\n";
+			echo "ModÃ¨le de rÃ©glages&nbsp;: <br /><select name='id_modele'>\n";
+			echo "<option value=''>RÃ©glages par dÃ©faut de Gepi</option>\n";
 			for($loop=0;$loop<count($tab_modele);$loop++) {
 				echo "<option value='".$tab_modele[$loop]['id_modele']."'";
 				if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
@@ -390,7 +390,7 @@ if ($id_choix_periode != 0) {
 			echo "</select>\n";
 		}
 		else {
-			// On utilisera les paramètres par défaut
+			// On utilisera les paramÃ¨tres par dÃ©faut
 		}
 
 
@@ -402,6 +402,6 @@ if ($id_choix_periode != 0) {
 	</fieldset>\n
 	</div>";
 }
-// Fin de sélection multiple avec choix de la période.
+// Fin de sÃ©lection multiple avec choix de la pÃ©riode.
 require("../lib/footer.inc.php");
 ?>

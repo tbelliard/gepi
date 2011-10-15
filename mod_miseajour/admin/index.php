@@ -45,29 +45,29 @@ if (isset($_POST['is_posted'])) {
 	check_token();
 
 	if (isset($_POST['activer'])) {
-		if (!saveSetting("active_module_msj", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		if (!saveSetting("active_module_msj", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 	}
 	if (isset($_POST['site_msj_gepi'])) {
-		if (!saveSetting("site_msj_gepi", $_POST['site_msj_gepi'])) $msg = "Erreur lors de l'enregistrement de l'adresse du site de mise à jour !";
+		if (!saveSetting("site_msj_gepi", $_POST['site_msj_gepi'])) $msg = "Erreur lors de l'enregistrement de l'adresse du site de mise Ã  jour !";
 	}
 	if (isset($_POST['dossier_ftp_gepi'])) {
 		if (!saveSetting("dossier_ftp_gepi", $_POST['dossier_ftp_gepi'])) $msg = "Erreur lors de l'enregistrement du nom du dossier d'installation de gepi sur FTP !";
 	}
 	if (isset($_POST['activer_rc'])) {
-		if (!saveSetting("rc_module_msj", $_POST['activer_rc'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation des RCs!";
+		if (!saveSetting("rc_module_msj", $_POST['activer_rc'])) $msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation des RCs!";
 	}
 	if (isset($_POST['activer_beta'])) {
-		if (!saveSetting("beta_module_msj", $_POST['activer_beta'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation des BETAs!";
+		if (!saveSetting("beta_module_msj", $_POST['activer_beta'])) $msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation des BETAs!";
 	}
 }
 
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 
 // ============= header ==============
-	// Inclusion du style spécifique
+	// Inclusion du style spÃ©cifique
 $style_specifique = "/mod_miseajour/lib/style_maj";
 
-$titre_page = "Gestion du module de mise à jour";
+$titre_page = "Gestion du module de mise Ã  jour";
 require_once("../../lib/header.inc");
 // ============= fin header ==========
 ?>
@@ -75,9 +75,9 @@ require_once("../../lib/header.inc");
 |<a href="../../accueil.php">Accueil</a>|
 <a href="../../accueil_modules.php">Retour administration des modules</a>|
 </p>
-<h2>Gestion des mise à jour de GEPI</h2>
-<p><i>La désactivation du module de la gestion des mises à jour n'entraîne aucune suppression des données. Lorsque le module est désactivé, les administrateurs n'ont pas accès au module.</i></p>
-<p>Note : l'option 'allow_url_fopen' dans php.ini doit être à 'On' sur le serveur pour que ce module puisse fonctionner.</p>
+<h2>Gestion des mise Ã  jour de GEPI</h2>
+<p><i>La dÃ©sactivation du module de la gestion des mises Ã  jour n'entraÃ®ne aucune suppression des donnÃ©es. Lorsque le module est dÃ©sactivÃ©, les administrateurs n'ont pas accÃ¨s au module.</i></p>
+<p>Note : l'option 'allow_url_fopen' dans php.ini doit Ãªtre Ã  'On' sur le serveur pour que ce module puisse fonctionner.</p>
 <br />
 <form action="index.php" name="form1" method="post">
 <fieldset>
@@ -86,40 +86,40 @@ echo add_token_field();
 ?>
 	<p>
 	<input type="radio" id="activMaj" name="activer" value="y" <?php if (getSettingValue("active_module_msj")=='y') echo ' checked="checked"'; ?> />
-	<label for="activMaj">&nbsp;Activer le module de mise à jour de GEPI</label>
+	<label for="activMaj">&nbsp;Activer le module de mise Ã  jour de GEPI</label>
 	</p>
 	<p>
 	<input type="radio" id="desactiMaj" name="activer" value="n" <?php if (getSettingValue("active_module_msj")=='n') echo ' checked="checked"'; ?> />
-	<label for="desactiMaj">&nbsp;Désactiver le module de mise à jour de GEPI</label>
+	<label for="desactiMaj">&nbsp;DÃ©sactiver le module de mise Ã  jour de GEPI</label>
 	</p>
 <br />
 	<p>Par d&eacute;faut, seules les versions stables sont v&eacute;rifi&eacute;es, mais vous pouvez inclure les autres versions.</p>
 	<p class="decale">
 	Afficher les versions RC&nbsp;<a class="info" style="font-weight: bold;">?
-		<span style="width: 400px;">Attention les version RC sont des versions de test donc à ne jamais utiliser en production.</span></a>
+		<span style="width: 400px;">Attention les version RC sont des versions de test donc Ã  ne jamais utiliser en production.</span></a>
 		<input type="radio" id="activRc" name="activer_rc" value="y" <?php if (getSettingValue("rc_module_msj")=='y') echo ' checked="checked"'; ?> />
 		<label for="actiRc">Activer</label>
 		<input type="radio" id="desactivRc" name="activer_rc" value="n" <?php if (getSettingValue("rc_module_msj")=='n') echo ' checked="checked"'; ?> />
-		<label for="desactivRc">Désactiver</label>
+		<label for="desactivRc">DÃ©sactiver</label>
 	</p>
 	<p class="decale">
 	Afficher les versions BETA&nbsp;<a class="info" style="font-weight: bold;">?
-		<span style="width: 400px;">Attention les version BETA sont des versions de développement donc à ne jamais utiliser en production.</span></a>
+		<span style="width: 400px;">Attention les version BETA sont des versions de dÃ©veloppement donc Ã  ne jamais utiliser en production.</span></a>
 		<input type="radio" id="activBeta" name="activer_beta" value="y" <?php if (getSettingValue("beta_module_msj")=='y') echo ' checked="checked"'; ?> />
 		<label for="activBeta">Activer</label>
 		<input type="radio" id="desactivBeta" name="activer_beta" value="n" <?php if (getSettingValue("beta_module_msj")=='n') echo ' checked="checked"'; ?> />
-		<label for="desactivBeta">Désactiver</label>
+		<label for="desactivBeta">DÃ©sactiver</label>
 	</p>
 
-<h2>Information site de mise à jour de GEPI</h2>
+<h2>Information site de mise Ã  jour de GEPI</h2>
 	<p class="decale">
-	<label for="siteMaj">Adresse du site internet de mise à jour de GEPI</label>
+	<label for="siteMaj">Adresse du site internet de mise Ã  jour de GEPI</label>
 	<input type="text" id="siteMaj" name="site_msj_gepi" value="<?php echo getSettingValue("site_msj_gepi"); ?>" size="40" />
 	</p>
 
 <h2>Information serveur FTP</h2>
 	<p class="decale">
-	<label for="dossierFtp">Nom du dossier d'installation de GEPI sur le FTP utilisé</label>
+	<label for="dossierFtp">Nom du dossier d'installation de GEPI sur le FTP utilisÃ©</label>
 	<input type="text" id="dossierFtp" name="dossier_ftp_gepi" value="<?php echo getSettingValue("dossier_ftp_gepi"); ?>" size="20" />&nbsp; ex: gepi
 	</p>
 	<p class="decale">

@@ -47,13 +47,13 @@ $titre_page = "Outil de gestion | Importation";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
+// $long_max : doit Ãªtre plus grand que la plus grande ligne trouvÃ©e dans le fichier CSV
 $long_max = 8000;
 if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
     ?><p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <a href='javascript:centrerpopup("help_import.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a></p>
-    <p><b>Remarque importante</b> : vous allez importer dans la base GEPI des données "élève" à partir d'un fichier au format csv (séparateur point-virgule).<br />
-    Il peut s'agir de nouveaux élèves ou bien d'élèves déjà présents dans la base. Dans ce dernier cas,  les données existantes seront écrasées par les données présentes dans le fichier à importer.
-    <br /><b>Attention </b> : certaines modifications en cours d'année sur des élèves déjà présents dans la base peuvent entraîner des incohérences dans les bases et par suite un mauvais fonctionnement de l'application.
+    <p><b>Remarque importante</b> : vous allez importer dans la base GEPI des donnÃ©es "Ã©lÃ¨ve" Ã  partir d'un fichier au format csv (sÃ©parateur point-virgule).<br />
+    Il peut s'agir de nouveaux Ã©lÃ¨ves ou bien d'Ã©lÃ¨ves dÃ©jÃ  prÃ©sents dans la base. Dans ce dernier cas,  les donnÃ©es existantes seront Ã©crasÃ©es par les donnÃ©es prÃ©sentes dans le fichier Ã  importer.
+    <br /><b>Attention </b> : certaines modifications en cours d'annÃ©e sur des Ã©lÃ¨ves dÃ©jÃ  prÃ©sents dans la base peuvent entraÃ®ner des incohÃ©rences dans les bases et par suite un mauvais fonctionnement de l'application.
 
     </p>
 
@@ -62,25 +62,25 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
 		$csv_file="";
 		echo add_token_field();
 	?>
-    <p>Fichier CSV à importer : <input TYPE=FILE NAME="csv_file"></p>
+    <p>Fichier CSV Ã  importer : <input TYPE=FILE NAME="csv_file"></p>
     <input TYPE=HIDDEN name=is_posted value = 1>
-    <p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
+    <p>Le fichier Ã  importer comporte une premiÃ¨re ligne d'en-tÃªte, Ã  ignorer&nbsp;
     <input TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED></p>
     <input TYPE=SUBMIT value = "Valider"><br />
     </form>
     <?php
-    echo "<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)<br />";
-    echo "Le fichier doit contenir les différents champs suivants, tous obligatoires :<br />";
-    echo "--> <B>IDENTIFIANT</B> : l'identifiant de l'élève (".$longmax_login." caractères maximum)<br />";
+    echo "<p>Le fichier d'importation doit Ãªtre au format csv (sÃ©parateur : point-virgule)<br />";
+    echo "Le fichier doit contenir les diffÃ©rents champs suivants, tous obligatoires :<br />";
+    echo "--> <B>IDENTIFIANT</B> : l'identifiant de l'Ã©lÃ¨ve (".$longmax_login." caractÃ¨res maximum)<br />";
     echo "--> <B>Nom</B><br />";
-    echo "--> <B>Prénom</B><br />";
+    echo "--> <B>PrÃ©nom</B><br />";
     echo "--> <B>Sexe</B>  : F ou M<br />";
     echo "--> <B>Date de naissance</B> : jj/mm/aaaa<br />";
-    echo "--> <B>Classe (fac.)</B> : le nom court d'une classe déjà définie dans la base GEPI ou bien le caractère - si l'élève n'est pas affecté à une classe.<br />";
-    echo "--> <B>Régime</B> : d/p (demi-pensionnaire) ext. (externe) int. (interne) ou i-e (interne externé(e))<br />";
+    echo "--> <B>Classe (fac.)</B> : le nom court d'une classe dÃ©jÃ  dÃ©finie dans la base GEPI ou bien le caractÃ¨re - si l'Ã©lÃ¨ve n'est pas affectÃ© Ã  une classe.<br />";
+    echo "--> <B>RÃ©gime</B> : d/p (demi-pensionnaire) ext. (externe) int. (interne) ou i-e (interne externÃ©(e))<br />";
     echo "--> <B>Doublant</B> : R (pour un doublant)  - (pour un non-doublant)<br />";
-    echo "--> <B>".ucfirst(getSettingValue("gepi_prof_suivi"))."</B> : l'identifiant d'un ".getSettingValue("gepi_prof_suivi")." déjà défini dans la base GEPI ou bien le caractère - si l'élève n'a pas de ".getSettingValue("gepi_prof_suivi").".<br />";
-    echo "--> <B>Identifiant de l'établissement d'origine </B> : le code RNE identifiant chaque établissement scolaire et déjà défini dans la base GEPI, ou bien le caractère - si l'établissement n'est pas connu.<br /></p>";
+    echo "--> <B>".ucfirst(getSettingValue("gepi_prof_suivi"))."</B> : l'identifiant d'un ".getSettingValue("gepi_prof_suivi")." dÃ©jÃ  dÃ©fini dans la base GEPI ou bien le caractÃ¨re - si l'Ã©lÃ¨ve n'a pas de ".getSettingValue("gepi_prof_suivi").".<br />";
+    echo "--> <B>Identifiant de l'Ã©tablissement d'origine </B> : le code RNE identifiant chaque Ã©tablissement scolaire et dÃ©jÃ  dÃ©fini dans la base GEPI, ou bien le caractÃ¨re - si l'Ã©tablissement n'est pas connu.<br /></p>";
 } else {
     ?><p class=bold><a href="import_csv.php?is_posted=R"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <a href='javascript:centrerpopup("help_import.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a></p>
     <?php
@@ -98,7 +98,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
             echo "Impossible d'ouvrir le fichier CSV.";
         } else {
             $row = 0;
-            echo "<table border=1><tr><td><p>Identifiant</p></td><td><p>Nom</p></td><td><p>Prénom</p></td><td><p>Sexe</p></td><td><p>Date de naissance</p></td><td><p>Classe</p></td><td><p>Régime</p></td><td><p>Doublant</p></td><td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td><td><p>Id. étab.</p></td></tr>";
+            echo "<table border=1><tr><td><p>Identifiant</p></td><td><p>Nom</p></td><td><p>PrÃ©nom</p></td><td><p>Sexe</p></td><td><p>Date de naissance</p></td><td><p>Classe</p></td><td><p>RÃ©gime</p></td><td><p>Doublant</p></td><td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td><td><p>Id. Ã©tab.</p></td></tr>";
             $valid = 1;
             while(!feof($fp)) {
                 if (isset($en_tete) and ($en_tete=='yes')) {
@@ -245,7 +245,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         }
                         break;
                     case 6:
-                        //Régime
+                        //RÃ©gime
                         $data[$c] =    strtolower($data[$c]);
                         if (preg_match ("#^(d/p|ext.|int.|i-e)$#", $data[$c])) {
                             echo "<td><p>$data[$c]</p></td>";
@@ -272,7 +272,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                     case 8:
                         //Prof de suivi
                         if (($valeur_classe == '????') or ($valeur_classe == '-')) {
-                            // si la classe n'est pas définie, le professeur de suivi ne peut pas l'être non plus !
+                            // si la classe n'est pas dÃ©finie, le professeur de suivi ne peut pas l'Ãªtre non plus !
                             if ($data[$c] != '-') {
                                 $valeur_prof = '????';
                             } else {
@@ -302,7 +302,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         }
                         break;
                         case 9:
-                        //établissement d'origine
+                        //Ã©tablissement d'origine
                         $call_etab = mysql_query("SELECT * FROM etablissements WHERE id = '$data[$c]'");
                         $test = mysql_num_rows($call_etab);
                         if (($test != 0) or ($data[$c] == '-')) {
@@ -323,29 +323,29 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
             }
             fclose($fp);
             echo "</table>";
-            echo "<p>Première phase de l'importation : $row entrées importées !</p>";
+            echo "<p>PremiÃ¨re phase de l'importation : $row entrÃ©es importÃ©es !</p>";
             if ($row > 0) {
                 if ($test_login_existant == "oui") {
-                    echo "<p>--> Les identifiants qui apparaissent en rouge correspondent à des identifiants déjà existant dans la base GEPI. Les données existantes seront donc écrasées par les données présentes dans le fichier à importer !</p>";
+                    echo "<p>--> Les identifiants qui apparaissent en rouge correspondent Ã  des identifiants dÃ©jÃ  existant dans la base GEPI. Les donnÃ©es existantes seront donc Ã©crasÃ©es par les donnÃ©es prÃ©sentes dans le fichier Ã  importer !</p>";
                 }
                 if ($test_nom_prenom_existant == 'yes') {
-                    echo "<p>--> Les noms et prénoms qui apparaissent en bleu correspondent à des élèves déjà présents dans la base GEPI et portant les mêmes noms et prénoms.
-                    <br />Si le nouvel identifiant est différent, un nouvel élève sera crée. Sinon, les données de GEPI seront modifiées. </p>";
+                    echo "<p>--> Les noms et prÃ©noms qui apparaissent en bleu correspondent Ã  des Ã©lÃ¨ves dÃ©jÃ  prÃ©sents dans la base GEPI et portant les mÃªmes noms et prÃ©noms.
+                    <br />Si le nouvel identifiant est diffÃ©rent, un nouvel Ã©lÃ¨ve sera crÃ©e. Sinon, les donnÃ©es de GEPI seront modifiÃ©es. </p>";
                 }
                 if ($valid == '1') {
-                    echo "<input type=submit value='Enregistrer les données'>";
+                    echo "<input type=submit value='Enregistrer les donnÃ©es'>";
                     echo "<INPUT TYPE=HIDDEN name=nb_row value = $row>";
                     echo "</FORM>";
                 } else {
-                    echo "<p>AVERTISSEMENT : Les symboles ??? signifient que le champ en question n'est pas valide. L'opération d'importation des données ne peut continuer normalement. Veuillez corriger le fichier à importer ou bien effectuer les opérations nécessaires dans la base GEPI !<br /></p>";
+                    echo "<p>AVERTISSEMENT : Les symboles ??? signifient que le champ en question n'est pas valide. L'opÃ©ration d'importation des donnÃ©es ne peut continuer normalement. Veuillez corriger le fichier Ã  importer ou bien effectuer les opÃ©rations nÃ©cessaires dans la base GEPI !<br /></p>";
                     echo "</FORM>";
                 }
             } else {
-                echo "<p>L'importation a échoué !</p>";
+                echo "<p>L'importation a Ã©chouÃ© !</p>";
             }
         }
     } else {
-        echo "<p>Aucun fichier n'a été sélectionné !</p>";
+        echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !</p>";
     }
 }
 

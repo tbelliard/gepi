@@ -72,7 +72,7 @@ class Groupe extends BaseGroupe {
 	}
 
 	/**
-	 * Renvoi la description du groupe avec la liste des classes associées
+	 * Renvoi la description du groupe avec la liste des classes associÃ©es
 	 * @return     String
 	 */
 	public function getDescriptionAvecClasses() {
@@ -92,7 +92,7 @@ class Groupe extends BaseGroupe {
 	}
 
 	/**
-	 * Renvoi le nom du groupe avec la liste des classes associées
+	 * Renvoi le nom du groupe avec la liste des classes associÃ©es
 	 * @return     string
 	 */
 	public function getNameAvecClasses() {
@@ -148,17 +148,17 @@ class Groupe extends BaseGroupe {
 	/**
 	 * Manually added
 	 *
-	 * La méthode renvoi true si le Groupe est affecté à l'utilisateur.
+	 * La mÃ©thode renvoi true si le Groupe est affectÃ© Ã  l'utilisateur.
 	 *
-	 * @param      Utilisateur $utilisateur l'utilisateur à qui appartient le groupe
-	 * @return     boolean true si le groupe appartient à l'utilisateur
+	 * @param      Utilisateur $utilisateur l'utilisateur Ã  qui appartient le groupe
+	 * @return     boolean true si le groupe appartient Ã  l'utilisateur
 	 * @throws     PropelException  - Any caught Exception will be rewrapped as a PropelException.
 	 */
 	public function belongsTo($utilisateur) {
 		if (!isset($utilisateur) || $utilisateur == null) {
 			return false;
 		} elseif (!($utilisateur instanceof UtilisateurProfessionnel)) {
-			throw new PropelException("L'objet pass� n'est pas de la classe Utilisateur");
+			throw new PropelException("L'objet passé n'est pas de la classe Utilisateur");
 		} else {
 			$group_appartient_utilisateur = false;
 			foreach ($utilisateur->getGroupes() as $group_iter) {
@@ -219,10 +219,10 @@ class Groupe extends BaseGroupe {
 
 	/**
 	 *
-	 * Renvoi sous forme la valeur ECTS par d�faut.
-	 * Cette valeur se trouve � la jointure d'un groupe et d'une classe, elle n'est pas sp�cifique � un groupe
-	 * En effet, il peut y avoir plusieurs eleves d'une meme classe qui sont regroup�s dans un groupe, et pour ces eleves il est possible
-	 * que la valeur par defaut soit diff�rente.
+	 * Renvoi sous forme la valeur ECTS par défaut.
+	 * Cette valeur se trouve à la jointure d'un groupe et d'une classe, elle n'est pas spécifique à un groupe
+	 * En effet, il peut y avoir plusieurs eleves d'une meme classe qui sont regroupés dans un groupe, et pour ces eleves il est possible
+	 * que la valeur par defaut soit différente.
 	 * @periode integer numero de la periode
 	 * @return     array Eleves[]
 	 *
@@ -290,10 +290,10 @@ class Groupe extends BaseGroupe {
 
 	/**
 	 *
-	 * Retourne tous les emplacements de cours pour la periode pr�cis�e du calendrier.
+	 * Retourne tous les emplacements de cours pour la periode précisée du calendrier.
 	 * On recupere aussi les emplacements dont la periode n'est pas definie ou vaut 0.
 	 *
-	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonn�e chronologiquement
+	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
 	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
 		if ( getSettingValue("autorise_edt_tous") != 'y') {
@@ -357,7 +357,7 @@ class Groupe extends BaseGroupe {
 
 	/**
 	 *
-	 * Renvoi une collection des mefs des eleves de ce groupe. Un seul mef de chaque type sera retourn�.
+	 * Renvoi une collection des mefs des eleves de ce groupe. Un seul mef de chaque type sera retourné.
 	 *
 	 * @periode integer numero de la periode
 	 * @return     PropelObjectCollection Eleves[]

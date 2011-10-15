@@ -19,14 +19,14 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 ?>
 <div id="result">
   <div id="wrap" >
-    <h3><font class="red">Bilans des incidents pour la période du: <?php echo $_SESSION['stats_periodes']['du'];?> au <?php echo $_SESSION['stats_periodes']['au'];?> </font> </h3>
+    <h3><font class="red">Bilans des incidents pour la pÃ©riode du: <?php echo $_SESSION['stats_periodes']['du'];?> au <?php echo $_SESSION['stats_periodes']['au'];?> </font> </h3>
     <?php ClassVue::afficheVue('parametres.php',$vars) ?>
   </div>
   <div id="tableaux">   
@@ -37,12 +37,12 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
           <?php if($titre=='L\'Etablissement') {
             if($affichage_etab) : ?>
         <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents" name="<?php echo $titre;?>-onglet-01"><?php echo $titre;?></a></li>
-        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="Synthèse individuelle" title="Synthèse individuelle"/></a>&nbsp;&nbsp;</li>
+        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="SynthÃ¨se individuelle" title="SynthÃ¨se individuelle"/></a>&nbsp;&nbsp;</li>
               <?php $i=$i+2;
             endif;
-          } else if ($titre=='Tous les élèves' ||$titre=='Tous les personnels' ) { ?>
+          } else if ($titre=='Tous les Ã©lÃ¨ves' ||$titre=='Tous les personnels' ) { ?>
         <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents" name="<?php echo $titre;?>-onglet-01"><?php echo $titre;?></a></li>
-        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="Synthèse individuelle" title="Synthèse individuelle"/></a>&nbsp;&nbsp;</li>
+        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="SynthÃ¨se individuelle" title="SynthÃ¨se individuelle"/></a>&nbsp;&nbsp;</li>
             <?php  $i=$i+2;
           } else { ?>
         <li><a href="#tab<?php echo $i;?>" name="<?php echo $titre;?>-onglet-01" title="Bilan des incidents">
@@ -53,7 +53,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                 else echo $titre;?></a>
         </li>
             <?php if (isset($infos_individus[$titre]['classe'])|| !isset($infos_individus[$titre])) { ?>
-        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="Synthèse par élève" title="Synthèse par élève"/></a>&nbsp;&nbsp;</li>
+        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="SynthÃ¨se par Ã©lÃ¨ve" title="SynthÃ¨se par Ã©lÃ¨ve"/></a>&nbsp;&nbsp;</li>
               <?php
               $i=$i+2;
             }
@@ -80,15 +80,15 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     }
                     else echo $titre;?>
             </td></tr>
-          <tr><td class='nouveau'>Pas d'incidents avec les critères sélectionnés...</td></tr>
+          <tr><td class='nouveau'>Pas d'incidents avec les critÃ¨res sÃ©lectionnÃ©s...</td></tr>
         </table><br /><br />
 
               <?php echo'</div>';?>
-              <?php if ($titre!=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels') {?>
+              <?php if ($titre!=='L\'Etablissement' || $titre=='Tous les Ã©lÃ¨ves' ||$titre=='Tous les personnels') {?>
         <div class="panel" id="tab<?php echo $i+1;?>">
           <table class="boireaus">
             <tr><td class="nouveau"><strong>Bilan individuel</strong> </td></tr>
-            <tr><td class="nouveau">Pas d'incidents avec les critères sélectionnés...</td></tr>
+            <tr><td class="nouveau">Pas d'incidents avec les critÃ¨res sÃ©lectionnÃ©s...</td></tr>
           </table>
         </div>
                 <?php
@@ -105,27 +105,27 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                       }
                       else echo $titre;?>
               </p>
-                    <?php if($filtres_categories||$filtres_mesures||$filtres_roles||$filtres_sanctions) { ?><p>avec les filtres selectionnés</p><?php }?>
+                    <?php if($filtres_categories||$filtres_mesures||$filtres_roles||$filtres_sanctions) { ?><p>avec les filtres selectionnÃ©s</p><?php }?>
             </td>
-            <td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="3" <?php }?> class='nouveau'><font class='titre'>Nombres d'incidents sur la période:</font> <?php echo $totaux[$titre]['incidents']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la période/Etab: </font> <?php echo round((100*($totaux[$titre]['incidents']/$totaux['L\'Etablissement']['incidents'])),2);?></td><?php } ?></tr>
-          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de mesures prises pour ces incidents :</font> <?php echo $totaux[$titre]['mesures_prises']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la période/Etab: </font> <?php if($totaux['L\'Etablissement']['mesures_prises']) echo round((100*($totaux[$titre]['mesures_prises']/$totaux['L\'Etablissement']['mesures_prises'])),2); else echo'0';?></td><?php } ?></tr>
-          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de mesures demandées pour ces incidents :</font> <?php echo $totaux[$titre]['mesures_demandees']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la période/Etab: </font> <?php if($totaux['L\'Etablissement']['mesures_demandees']) echo round((100*($totaux[$titre]['mesures_demandees']/$totaux['L\'Etablissement']['mesures_demandees'])),2); else echo'0';?></td><?php } ?></tr>
-          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de sanctions prises pour ces incidents:</font> <?php echo $totaux[$titre]['sanctions']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la période/Etab: </font> <?php if($totaux['L\'Etablissement']['sanctions']) echo round((100*($totaux[$titre]['sanctions']/$totaux['L\'Etablissement']['sanctions'])),2); else echo'0';?></td><?php } ?></tr>
-          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total d'heures de retenues pour ces incidents:</font> <?php echo $totaux[$titre]['heures_retenues']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la période/Etab: </font> <?php if($totaux['L\'Etablissement']['heures_retenues']) echo round((100*($totaux[$titre]['heures_retenues']/$totaux['L\'Etablissement']['heures_retenues'])),2); else echo '0'; ?></td><?php } ?></tr>
-          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de jours d'exclusions pour ces incidents:</font> <?php echo $totaux[$titre]['jours_exclusions']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la période/Etab: </font> <?php if($totaux['L\'Etablissement']['jours_exclusions']) echo round((100*($totaux[$titre]['jours_exclusions']/$totaux['L\'Etablissement']['jours_exclusions'])),2); else echo '0'; ?></td><?php } ?></tr>
+            <td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="3" <?php }?> class='nouveau'><font class='titre'>Nombres d'incidents sur la pÃ©riode:</font> <?php echo $totaux[$titre]['incidents']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la pÃ©riode/Etab: </font> <?php echo round((100*($totaux[$titre]['incidents']/$totaux['L\'Etablissement']['incidents'])),2);?></td><?php } ?></tr>
+          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de mesures prises pour ces incidents :</font> <?php echo $totaux[$titre]['mesures_prises']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la pÃ©riode/Etab: </font> <?php if($totaux['L\'Etablissement']['mesures_prises']) echo round((100*($totaux[$titre]['mesures_prises']/$totaux['L\'Etablissement']['mesures_prises'])),2); else echo'0';?></td><?php } ?></tr>
+          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de mesures demandÃ©es pour ces incidents :</font> <?php echo $totaux[$titre]['mesures_demandees']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la pÃ©riode/Etab: </font> <?php if($totaux['L\'Etablissement']['mesures_demandees']) echo round((100*($totaux[$titre]['mesures_demandees']/$totaux['L\'Etablissement']['mesures_demandees'])),2); else echo'0';?></td><?php } ?></tr>
+          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de sanctions prises pour ces incidents:</font> <?php echo $totaux[$titre]['sanctions']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la pÃ©riode/Etab: </font> <?php if($totaux['L\'Etablissement']['sanctions']) echo round((100*($totaux[$titre]['sanctions']/$totaux['L\'Etablissement']['sanctions'])),2); else echo'0';?></td><?php } ?></tr>
+          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total d'heures de retenues pour ces incidents:</font> <?php echo $totaux[$titre]['heures_retenues']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la pÃ©riode/Etab: </font> <?php if($totaux['L\'Etablissement']['heures_retenues']) echo round((100*($totaux[$titre]['heures_retenues']/$totaux['L\'Etablissement']['heures_retenues'])),2); else echo '0'; ?></td><?php } ?></tr>
+          <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de jours d'exclusions pour ces incidents:</font> <?php echo $totaux[$titre]['jours_exclusions']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la pÃ©riode/Etab: </font> <?php if($totaux['L\'Etablissement']['jours_exclusions']) echo round((100*($totaux[$titre]['jours_exclusions']/$totaux['L\'Etablissement']['jours_exclusions'])),2); else echo '0'; ?></td><?php } ?></tr>
         </table>
               <?php if($mode_detaille) { ?>
         <table class="sortable resizable " id="table<?php echo $i;?>">
           <thead>
-            <tr><th><font class='titre'>Date</font></th><th class="text"><font class='titre'>Déclarant</font></th><th><font class='titre'>Heure</font></th><th class="text"><font class='titre'>Nature</font></th>
-              <th><font class='titre' title="Catégories">Cat.</font></th><th class="text" ><font class='titre'>Description</font></th><th  width="50%" class="nosort"><font class='titre'>Suivi</font></th></tr>
+            <tr><th><font class='titre'>Date</font></th><th class="text"><font class='titre'>DÃ©clarant</font></th><th><font class='titre'>Heure</font></th><th class="text"><font class='titre'>Nature</font></th>
+              <th><font class='titre' title="CatÃ©gories">Cat.</font></th><th class="text" ><font class='titre'>Description</font></th><th  width="50%" class="nosort"><font class='titre'>Suivi</font></th></tr>
           </thead>
                   <?php $alt_b=1;
                   foreach($incidents_titre as  $incident) {
                     $alt_b=$alt_b*(-1);?>
           <tr class='lig<?php echo $alt_b;?>'><td><?php echo $incident->date; ?></td><td><?php echo $incident->declarant; ?></td><td><?php echo $incident->heure; ?></td>
             <td><?php echo $incident->nature; ?></td><td><?php if(!is_null($incident->id_categorie))echo $incident->sigle_categorie;else echo'-'; ?></td><td><?php echo $incident->description; ?></td>
-            <td class="nouveau"><?php if(!isset($protagonistes[$incident->id_incident]))echo'<h3 class="red">Aucun protagoniste défini pour cet incident</h3>';
+            <td class="nouveau"><?php if(!isset($protagonistes[$incident->id_incident]))echo'<h3 class="red">Aucun protagoniste dÃ©fini pour cet incident</h3>';
                         else { ?>
               <table class="boireaus" width="100%" >
                             <?php foreach($protagonistes[$incident->id_incident] as $protagoniste) {?>
@@ -133,7 +133,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                                   <?php echo $protagoniste->prenom.' '.$protagoniste->nom.' <br/>  ';
                                   echo $protagoniste->statut.' ';
                                   if($protagoniste->classe) echo $protagoniste->classe .' - '; else echo ' - ' ;
-                                  if($protagoniste->qualite=="") echo'<font class="red">Aucun rôle affecté.</font><br />';
+                                  if($protagoniste->qualite=="") echo'<font class="red">Aucun rÃ´le affectÃ©.</font><br />';
                                   else echo $protagoniste->qualite.'<br />';
                                   ?></td><td ><?php
                                   if (isset($mesures[$incident->id_incident][$protagoniste->login])) { ?>
@@ -151,8 +151,8 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                                   if (isset($sanctions[$incident->id_incident][$protagoniste->login])) { ?>
                     <p><strong>Sanctions :</strong></p>
                     <table class="boireaus" width="100%">
-                      <tr><th><font class='titre'>Nature</font></th><th><font class='titre'>Effectuée</font></th><th><font class='titre'>Date</font></th>
-                          <th><font class='titre'>Durée</font></th>
+                      <tr><th><font class='titre'>Nature</font></th><th><font class='titre'>EffectuÃ©e</font></th><th><font class='titre'>Date</font></th>
+                          <th><font class='titre'>DurÃ©e</font></th>
                       </tr>
                                       <?php
                                       $alt_b=1;
@@ -185,7 +185,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     <?php }
                 }?>
         </table>
-        <br /><br /><a href="#wrap"><img src="apps/img/retour_haut.png" alt="simple" title="simplifié"/>Retour aux selections </a>
+        <br /><br /><a href="#wrap"><img src="apps/img/retour_haut.png" alt="simple" title="simplifiÃ©"/>Retour aux selections </a>
       </div>
             <?php if (isset($liste_eleves[$titre])): ?>
       <div class="panel" id="tab<?php echo $i+1;?>">
@@ -193,7 +193,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
         <table  class="sortable resizable ">
           <thead>
             <tr>
-              <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
+              <?php if($titre=='L\'Etablissement' || $titre=='Tous les Ã©lÃ¨ves' ||$titre=='Tous les personnels' ){?>
               <th colspan="3"
               <?php } else { ?>
               <th colspan="2"
@@ -205,8 +205,8 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
               <th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Jours d'exclusion</th>
             </tr>
             <tr>
-              <th>Nom</th><th>Prénom</th>
-              <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
+              <th>Nom</th><th>PrÃ©nom</th>
+              <?php if($titre=='L\'Etablissement' || $titre=='Tous les Ã©lÃ¨ves' ||$titre=='Tous les personnels' ){?>
               <th class="text">Classe</th>
               <?php }  ?>
               <th>Nombre</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th>
@@ -218,7 +218,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     foreach ($liste_eleves[$titre] as $eleve) {
                       $alt_b=$alt_b*(-1);?>
             <tr <?php if ($alt_b==1) echo"class='alt'";?>><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve?>"><?php echo $totaux_indiv[$eleve]['nom']; ?></a></td><td><?php echo $totaux_indiv[$eleve]['prenom']; ?></td>
-               <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
+               <?php if($titre=='L\'Etablissement' || $titre=='Tous les Ã©lÃ¨ves' ||$titre=='Tous les personnels' ){?>
               <td><?php echo $totaux_indiv[$eleve]['classe']; ?></td>
               <?php }  ?>
               <td><?php echo $totaux_indiv[$eleve]['incidents']; ?></td><td><?php if(isset($totaux_indiv[$eleve]['mesures'])) echo $totaux_indiv[$eleve]['mesures'];else echo'0'; ?></td><td><?php if($totaux['L\'Etablissement']['mesures_prises'])echo round(100*($totaux_indiv[$eleve]['mesures']/$totaux['L\'Etablissement']['mesures_prises']),2); else echo'0';?></td>
@@ -230,7 +230,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                   <?php if (!isset($totaux_indiv[$titre])) { ?>
           <tfoot>
             <tr>
-              <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
+              <?php if($titre=='L\'Etablissement' || $titre=='Tous les Ã©lÃ¨ves' ||$titre=='Tous les personnels' ){?>
               <td colspan="3">
               <?php } else{ ?>
               <td colspan="2">

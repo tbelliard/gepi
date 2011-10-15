@@ -50,8 +50,8 @@
 */
 //==============================
 // PREPARATIFS boireaus 20080422
-// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// Pour passer Ã  no_anti_inject comme pour les autres saisies d'apprÃ©ciations
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $mode_commentaire_20080422="";
 //$mode_commentaire_20080422="no_anti_inject";
 
@@ -81,9 +81,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 unset($id_devoir);
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id_devoir"]) ? $_GET["id_devoir"] : NULL);
@@ -156,8 +156,8 @@ if ($id_devoir)  {
 
 //Initialisation pour le pdf
 $w_pdf=array();
-$w1 = "i"; //largeur de la première colonne
-$w1b = "d"; //largeur de la colonne "classe" si présente
+$w1 = "i"; //largeur de la premiÃ¨re colonne
+$w1b = "d"; //largeur de la colonne "classe" si prÃ©sente
 $w2 = "n"; // largeur des colonnes "notes"
 $w3 = "c"; // largeur des colonnes "commentaires"
 $header_pdf=array();
@@ -173,9 +173,9 @@ $arrondir = mysql_result($appel_conteneur, 0, 'arrondir');
 $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
 $display_bulletin = mysql_result($appel_conteneur, 0, 'display_bulletin');
 
-// On teste si le carnet de notes appartient bien à la personne connectée
+// On teste si le carnet de notes appartient bien Ã  la personne connectÃ©e
 if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
-	$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+	$mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes qui ne vous appartient pas !");
 	header("Location: index.php?msg=$mess");
 	die();
 }
@@ -198,13 +198,13 @@ if (count($current_group["classes"]["list"]) > 1) {
 	$order_by = "nom";
 }
 /**
- * Gestion des périodes
+ * Gestion des pÃ©riodes
  */
 include "../lib/periodes.inc.php";
 
-// On teste si la periode est vérouillée !
+// On teste si la periode est vÃ©rouillÃ©e !
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) and (isset($id_devoir)) and ($id_devoir!='') ) {
-	$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes dont la période est bloquée !");
+	$mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes dont la pÃ©riode est bloquÃ©e !");
 	header("Location: index.php?msg=$mess");
 	die();
 }
@@ -219,7 +219,7 @@ $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_clas
 $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 //
-// Détermination des sous-conteneurs
+// DÃ©termination des sous-conteneurs
 //
 $nom_sous_cont = array();
 $id_sous_cont  = array();
@@ -227,10 +227,10 @@ $coef_sous_cont = array();
 $display_bulletin_sous_cont = array();
 $nb_sous_cont = 0;
 if ($mode==1) {
-	// on s'intéresse à tous les conteneurs fils, petit-fils, ...
+	// on s'intÃ©resse Ã  tous les conteneurs fils, petit-fils, ...
 	sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
 } else {
-	// On s'intéresse uniquement au conteneurs fils
+	// On s'intÃ©resse uniquement au conteneurs fils
 	sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'');
 }
 
@@ -331,7 +331,7 @@ if (isset($_POST['is_posted'])) {
 
 	for($i=0;$i<$indice_max_log_eleve;$i++){
 		if(isset($log_eleve[$i])) {
-			// La période est-elle ouverte?
+			// La pÃ©riode est-elle ouverte?
 			$reg_eleve_login=$log_eleve[$i];
 			if(isset($current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"])){
 				$id_classe = $current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"];
@@ -340,9 +340,9 @@ if (isset($_POST['is_posted'])) {
 					$elev_statut='';
 
 					// PREPARATIFS boireaus 20080422
-					// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
+					// Pour passer Ã  no_anti_inject comme pour les autres saisies d'apprÃ©ciations
 					if($mode_commentaire_20080422!="no_anti_inject") {
-						// Problème: les accents sont codés en HTML...
+						// ProblÃ¨me: les accents sont codÃ©s en HTML...
 						$comment=$comment_eleve[$i];
 						$comment=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($comment))));
 					}
@@ -353,7 +353,7 @@ if (isset($_POST['is_posted'])) {
 						else{
 							$comment = "";
 						}
-						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+						// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 						$comment=my_ereg_replace('(\\\r\\\n)+',"\r\n",$comment);
 					}
 					
@@ -399,18 +399,18 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
-	// Mise à jour des moyennes du conteneur et des conteneurs parent, grand-parent, etc...
+	// Mise Ã  jour des moyennes du conteneur et des conteneurs parent, grand-parent, etc...
 	
 	$arret = 'no';
 	mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur,$arret);
 
     //==========================================================
     // Ajout d'un test:
-    // Si on modifie un devoir alors que des notes ont été reportées sur le bulletin, il faut penser à mettre à jour la recopie vers le bulletin.
+    // Si on modifie un devoir alors que des notes ont Ã©tÃ© reportÃ©es sur le bulletin, il faut penser Ã  mettre Ã  jour la recopie vers le bulletin.
     $sql="SELECT 1=1 FROM matieres_notes WHERE periode='".$periode_num."' AND id_groupe='".$id_groupe."';";
     $test_bulletin=mysql_query($sql);
     if(mysql_num_rows($test_bulletin)>0) {
-        $msg=" ATTENTION: Des notes sont présentes sur le bulletin.<br />Si vous avez modifié ou ajouté des notes, pensez à mettre à jour la recopie vers le bulletin.";
+        $msg=" ATTENTION: Des notes sont prÃ©sentes sur le bulletin.<br />Si vous avez modifiÃ© ou ajoutÃ© des notes, pensez Ã  mettre Ã  jour la recopie vers le bulletin.";
     }
     //==========================================================
 
@@ -426,15 +426,15 @@ if((isset($_GET['recalculer']))&&(isset($id_conteneur))&&(isset($periode_num))&&
 	}
 }
 if (isset($_POST['import_sacoche'])) {
-	$message_enregistrement = "Vos notes ne sont pas encore enregistrées, veuillez les vérifier et cliquer sur le bouton d'enregistrement";
+	$message_enregistrement = "Vos notes ne sont pas encore enregistrÃ©es, veuillez les vÃ©rifier et cliquer sur le bouton d'enregistrement";
 } else {
-	$message_enregistrement = "Les modifications ont été enregistrées !";
+	$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 }
-$themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des notes ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes";
     /**
-     * Entête de la page
+     * EntÃªte de la page
      */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
@@ -473,11 +473,11 @@ if (isset($_POST['debut_import'])) {
 echo "</script>";
 
 
-// Détermination du nombre de devoirs à afficher
+// DÃ©termination du nombre de devoirs Ã  afficher
 $appel_dev = mysql_query("select * from cn_devoirs where (id_conteneur='$id_conteneur' and id_racine='$id_racine') order by date");
 $nb_dev  = mysql_num_rows($appel_dev);
 
-// Détermination des noms et identificateurs des devoirs
+// DÃ©termination des noms et identificateurs des devoirs
 $j = 0;
 while ($j < $nb_dev) {
 	$nom_dev[$j] = mysql_result($appel_dev, $j, 'nom_court');
@@ -513,7 +513,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
 	}
 
-	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matiÃ¨re");
 
 	if(!empty($tab_groups)) {
 
@@ -526,7 +526,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$temoin_tmp=0;
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
-				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+				// On ne retient que les groupes qui ont un nombre de pÃ©riodes au moins Ã©gal Ã  la pÃ©riode sÃ©lectionnÃ©e
 				if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
 					if($tab_groups[$loop]['id']==$id_groupe){
 						$num_groupe=$loop;
@@ -578,7 +578,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 </script>\n";
 
 			echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
-			echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo "PÃ©riode $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
 			echo "</select> | \n";
 		}
@@ -624,15 +624,15 @@ if(mysql_num_rows($res_cn)>1) {
 	}
 </script>\n";
 
-	echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période </span><select name='tmp_id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+	echo "<span title='AccÃ©der au cahier de notes de la pÃ©riode (ne sont proposÃ©es que les pÃ©riodes pour lesquelles le cahier de notes a Ã©tÃ© initialisÃ©)'>PÃ©riode </span><select name='tmp_id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 	echo $chaine_options_periodes;
 	echo "</select> | \n";
 
 }
 
-echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes évaluations</a> |";
+echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes Ã©valuations</a> |";
 
-// On dé-cache le champ si javascript est actif
+// On dÃ©-cache le champ si javascript est actif
 echo "<span id='span_chgt_dev' style='display: none;'>\n";
 $sql="select * from cn_devoirs where id_conteneur='$id_conteneur' order by date;";
 $res_devoirs=mysql_query($sql);
@@ -647,7 +647,7 @@ if(mysql_num_rows($res_devoirs)>1) {
 		$chaine_options_devoirs.=">$lig_dev->nom_court (".formate_date($lig_dev->date).")</option>\n";
 		$cpt_dev++;
 	}
-	// Seulement avec javascript... parce qu'on a plusieurs submit dans ce formulaire là...
+	// Seulement avec javascript... parce qu'on a plusieurs submit dans ce formulaire lÃ ...
 	echo "<select name='select_id_devoir' id='select_id_devoir' onchange=\"confirm_changement_devoir(change, '$themessage');\">\n";
 	echo $chaine_options_devoirs;
 	echo "</select>";
@@ -658,14 +658,14 @@ echo "</span>\n";
 if((isset($id_devoir))&&($id_devoir!=0)) {echo "<a href=\"saisie_notes.php?id_conteneur=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Visualisation du CN </a>|";}
 
 if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
-	//echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">Créer une boîte</a>|";
-	echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer un";
+	//echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">CrÃ©er une boÃ®te</a>|";
+	echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> CrÃ©er un";
 
 	if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
 
 	echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." </a>|";
 
-	echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer une évaluation </a>|";
+	echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> CrÃ©er une Ã©valuation </a>|";
 }
 echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\"> Imprimer au format PDF </a>|";
 
@@ -715,17 +715,17 @@ if (!isset($_SESSION['affiche_comment'])) {$_SESSION['affiche_comment'] = 'yes';
 if (!isset($_SESSION['affiche_tous'])) {$_SESSION['affiche_tous'] = 'no';}
 $nb_dev_sous_cont = 0;
 
-// Premier formulaire pour masquer ou non les colonnes "commentaires" non vides des évaluations verrouillées
+// Premier formulaire pour masquer ou non les colonnes "commentaires" non vides des Ã©valuations verrouillÃ©es
 if ($id_devoir == 0) {
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post name=\"form1b\">\n";
 	echo "<fieldset style=\"padding-top: 0px; padding-bottom: 0px;  margin-left: 0px; margin-right: 100px;\">\n";
-	echo "<table summary='Paramètres'><tr><td>Masquer les colonnes \"commentaires\" non vides (mode visualisation uniquement) :
+	echo "<table summary='ParamÃ¨tres'><tr><td>Masquer les colonnes \"commentaires\" non vides (mode visualisation uniquement) :
 	</td><td><input type=\"checkbox\" name=\"affiche_comment\"  ";
 	if ($_SESSION['affiche_comment'] != 'yes') echo "checked";
 	echo " /></td><td><input type=\"submit\" name=\"ok\" value=\"OK\" /></td></tr>\n";
 	$nb_dev_sous_cont = mysql_num_rows(mysql_query("select d.id from cn_devoirs d, cn_conteneurs c where (d.id_conteneur = c.id and c.parent='$id_conteneur')"));
 	if ($nb_dev_sous_cont != 0) {
-		echo "<tr><td>Afficher les évaluations des \"sous-".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))."s\" : </td><td><input type=\"checkbox\" name=\"affiche_tous\"  ";
+		echo "<tr><td>Afficher les Ã©valuations des \"sous-".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))."s\" : </td><td><input type=\"checkbox\" name=\"affiche_tous\"  ";
 		if ($_SESSION['affiche_tous'] == 'yes') {echo "checked";}
 		echo " /></td><td></td></tr>\n";
 	}
@@ -735,7 +735,7 @@ if ($id_devoir == 0) {
 	echo "</form>\n";
 }
 else {
-	// Formulaire destiné à permettre via javascript de passer à une autre période... on accède alors au mode Visualisation parce que le $id_devoir n'existe pas dans une autre période.
+	// Formulaire destinÃ© Ã  permettre via javascript de passer Ã  une autre pÃ©riode... on accÃ¨de alors au mode Visualisation parce que le $id_devoir n'existe pas dans une autre pÃ©riode.
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post name=\"form1b\">\n";
 	echo "<input type='hidden' name='id_conteneur' id='form1b_id_conteneur' value=\"".$id_conteneur."\" />\n";
 	//echo "<input type='hidden' name='id_devoir' value=\"".$id_devoir."\" />\n";
@@ -745,16 +745,16 @@ else {
 
 // Construction de la variable $detail qui affiche dans un pop-up le mode de calcul de la moyenne
 $detail = "Mode de calcul de la moyenne :\\n";
-$detail = $detail."La moyenne s\\'effectue sur les colonnes repérées par les cellules de couleur violette.\\n";
+$detail = $detail."La moyenne s\\'effectue sur les colonnes repÃ©rÃ©es par les cellules de couleur violette.\\n";
 if (($nb_dev_sous_cont != 0) and ($_SESSION['affiche_tous'] == 'no'))
-	$detail = $detail."ATTENTION : cliquez sur \'Afficher les évaluations des sous-".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))."s\' pour faire apparaître toutes les évaluations qui interviennent dans la moyenne.\\n";
-if ($arrondir == 's1') $detail = $detail."La moyenne est arrondie au dixième de point supérieur.\\n";
-if ($arrondir == 's5') $detail = $detail."La moyenne est arrondie au demi-point supérieur.\\n";
-if ($arrondir == 'se') $detail = $detail."La moyenne est arrondie au point entier supérieur.\\n";
-if ($arrondir == 'p1') $detail = $detail."La moyenne est arrondie au dixième de point le plus proche.\\n";
+	$detail = $detail."ATTENTION : cliquez sur \'Afficher les Ã©valuations des sous-".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))."s\' pour faire apparaÃ®tre toutes les Ã©valuations qui interviennent dans la moyenne.\\n";
+if ($arrondir == 's1') $detail = $detail."La moyenne est arrondie au dixiÃ¨me de point supÃ©rieur.\\n";
+if ($arrondir == 's5') $detail = $detail."La moyenne est arrondie au demi-point supÃ©rieur.\\n";
+if ($arrondir == 'se') $detail = $detail."La moyenne est arrondie au point entier supÃ©rieur.\\n";
+if ($arrondir == 'p1') $detail = $detail."La moyenne est arrondie au dixiÃ¨me de point le plus proche.\\n";
 if ($arrondir == 'p5') $detail = $detail."La moyenne est arrondie au demi-point le plus proche.\\n";
 if ($arrondir == 'pe') $detail = $detail."La moyenne est arrondie au point entier le plus proche.\\n";
-if ($ponderation != 0) $detail = $detail."Pondération : ".$ponderation." (s\\'ajoute au coefficient de la meilleur note de chaque élève).\\n";
+if ($ponderation != 0) $detail = $detail."PondÃ©ration : ".$ponderation." (s\\'ajoute au coefficient de la meilleur note de chaque Ã©lÃ¨ve).\\n";
 
 // Titre
 echo "<h2 class='gepi'>".$titre."</h2>\n";
@@ -762,7 +762,7 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 
 	echo "<p class=cn>";
 	if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "La ";}else{echo "Le ";}
-	echo htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." $nom_conteneur ne contient aucune évaluation. </p>\n";
+	echo htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." $nom_conteneur ne contient aucune Ã©valuation. </p>\n";
 
 /**
  * Pied de page
@@ -771,14 +771,14 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 	die();
 }
 
-// Début du deuxième formulaire
+// DÃ©but du deuxiÃ¨me formulaire
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post  name=\"form2\">\n";
 if ($id_devoir != 0) {
 	echo add_token_field();
 	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 }
 
-// Couleurs utilisées
+// Couleurs utilisÃ©es
 $couleur_devoirs = '#AAE6AA';
 $couleur_moy_cont = '#96C8F0';
 $couleur_moy_sous_cont = '#FAFABE';
@@ -787,8 +787,8 @@ $note_sur_verif = 20;
 if ($id_devoir != 0) {
         $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
         $note_sur_verif = mysql_result($appel_note_sur,'0' ,'note_sur');
-	echo "<p class='cn'>Taper une note de 0 à ".$note_sur_verif." pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code '-' ou 'n' pour absence de note.</p>\n";
-	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir tout en bas de cette page.</p>\n";
+	echo "<p class='cn'>Taper une note de 0 Ã  ".$note_sur_verif." pour chaque Ã©lÃ¨ve, ou Ã  dÃ©faut le code 'a' pour 'absent', le code 'd' pour 'dispensÃ©', le code '-' ou 'n' pour absence de note.</p>\n";
+	echo "<p class='cn'>Vous pouvez Ã©galement <b>importer directement vos notes par \"copier/coller\"</b> Ã  partir d'un tableur ou d'une autre application : voir tout en bas de cette page.</p>\n";
 
 }
 echo "<p class=cn><b>Enseignement : ".$current_group['description']." (" . $current_group["classlist_string"] . ")";
@@ -838,29 +838,29 @@ while ($i < $nb_dev) {
 	$i++;
 }
 
-// Tableau destiner à stocker l'id du champ de saisie de note (n$num_id) correspondant à l'élève $i
+// Tableau destiner Ã  stocker l'id du champ de saisie de note (n$num_id) correspondant Ã  l'Ã©lÃ¨ve $i
 $indice_ele_saisie=array();
 
 $i = 0;
 $num_id=10;
 $current_displayed_line = 0;
 
-// On commence par mettre la liste dans l'ordre souhaité
+// On commence par mettre la liste dans l'ordre souhaitÃ©
 if ($order_by != "classe") {
 	$liste_eleves = $current_group["eleves"][$periode_num]["users"];
 } else {
 	// Ici, on tri par classe
-	// On va juste créer une liste des élèves pour chaque classe
+	// On va juste crÃ©er une liste des Ã©lÃ¨ves pour chaque classe
 	$tab_classes = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
 		$tab_classes[$classe_id] = array();
 	}
-	// On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
+	// On passe maintenant Ã©lÃ¨ve par Ã©lÃ¨ve et on les met dans la bonne liste selon leur classe
 	foreach($current_group["eleves"][$periode_num]["list"] as $e_login) {
 		$classe = $current_group["eleves"][$periode_num]["users"][$e_login]["classe"];
 		$tab_classes[$classe][$e_login] = $current_group["eleves"][$periode_num]["users"][$e_login];
 	}
-	// On met tout ça à la suite
+	// On met tout Ã§a Ã  la suite
 	$liste_eleves = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
 		$liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
@@ -962,7 +962,7 @@ foreach ($liste_eleves as $eleve) {
 					$mess_note[$i][$k] = $mess_note[$i][$k].$eleve_note;
 
 					if($eleve_note=="") {
-						// Ca ne devrait pas arriver... si: quand le devoir est créé, mais qu'aucune note n'est saisie, ni enregistrement encore effectué.
+						// Ca ne devrait pas arriver... si: quand le devoir est crÃ©Ã©, mais qu'aucune note n'est saisie, ni enregistrement encore effectuÃ©.
 						// Le simple fait de cliquer sur Enregistrer remplit la table cn_notes_devoirs avec eleve_note='0.0' et eleve_statut='v' et on n'a plus l'erreur
 						$mess_note_pdf[$i][$k] = $eleve_note;
 					}
@@ -1031,9 +1031,9 @@ foreach ($liste_eleves as $eleve) {
 
 echo "<table class='boireaus' cellspacing='2' cellpadding='1' summary=\"Tableau de notes\">\n";
 
-// Première ligne
+// PremiÃ¨re ligne
 
-// on calcule le nombre de colonnes à scinder
+// on calcule le nombre de colonnes Ã  scinder
 if ($id_devoir==0) {
 	// Mode consultation
 	$nb_colspan = $nb_dev;
@@ -1043,11 +1043,11 @@ if ($id_devoir==0) {
 		$i++;
 	}
 } else {
-	// En mode saisie, on n'affiche que le devoir à saisir
+	// En mode saisie, on n'affiche que le devoir Ã  saisir
 	$nb_colspan = 2;
 }
 
-// Affichage première ligne
+// Affichage premiÃ¨re ligne
 
 echo "<tr><th class='cn'>&nbsp;</th>\n";
 if ($multiclasses) {echo "<th class='cn'>&nbsp;</th>\n";}
@@ -1113,7 +1113,7 @@ if ($id_devoir==0) {
 		$i++;
 	}
 }
-// En mode saisie, on n'affiche que le devoir à saisir
+// En mode saisie, on n'affiche que le devoir Ã  saisir
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) and ($id_devoir==0)){
 	if($nom_conteneur!=""){
 		echo "<td class=cn  valign='top'><center><b>$nom_conteneur</b><br />";
@@ -1126,7 +1126,7 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) and ($id
 
 echo "</tr>\n";
 
-// Deuxième ligne
+// DeuxiÃ¨me ligne
 echo "<tr>\n";
 echo "<td class=cn valign='top'>&nbsp;</td>\n";
 $header_pdf[] = "Evaluation :";
@@ -1136,7 +1136,7 @@ if ($multiclasses) {echo "<td class='cn'>&nbsp;</td>\n";}
 if ($multiclasses) {$w_pdf[] = $w2;}
 $i = 0;
 while ($i < $nb_dev) {
-	// En mode saisie, on n'affiche que le devoir à saisir
+	// En mode saisie, on n'affiche que le devoir Ã  saisir
 	if (($id_devoir==0) or ($id_dev[$i] == $id_devoir)) {
 		if ($coef[$i] != 0) {$tmp = " bgcolor = $couleur_calcul_moy ";} else {$tmp = '';}
 		$header_pdf[] = traite_accents_utf8($nom_dev[$i]." (".$display_date[$i].")");
@@ -1144,20 +1144,20 @@ while ($i < $nb_dev) {
 		if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">$nom_dev[$i]</a></b><br /><font size=-2>($display_date[$i])</font>\n";
 			if($display_parents[$i]!=0) {
-				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />\n";
+				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevÃ© de notes' alt='Evaluation visible sur le relevÃ© de notes' />\n";
 			}
 			else {
-				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";
+				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevÃ© de notes' alt='Evaluation non visible sur le relevÃ© de notes' />\n";
 			}
 			echo "</center></td>\n";
 		}
 		else {
 			echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_dev[$i]."</b><br /><font size=-2>($display_date[$i])</font>\n";
 			if($display_parents[$i]!=0) {
-				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />\n";
+				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevÃ© de notes' alt='Evaluation visible sur le relevÃ© de notes' />\n";
 			}
 			else {
-				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";
+				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevÃ© de notes' alt='Evaluation non visible sur le relevÃ© de notes' />\n";
 			}
 			echo "</center></td>\n";
 		}
@@ -1196,7 +1196,7 @@ if ($id_devoir==0) {
 		$i++;
 	}
 }
-// En mode saisie, on n'affiche que le devoir à saisir
+// En mode saisie, on n'affiche que le devoir Ã  saisir
 if ($id_devoir==0) {
 	echo "<td class=cn valign='top'><center><b>Moyenne</b>\n";
 	if((isset($id_conteneur))&&($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
@@ -1209,14 +1209,14 @@ if ($id_devoir==0) {
 echo "</tr>";
 
 //
-// Troisième ligne
+// TroisiÃ¨me ligne
 //
 echo "<tr><td class=cn valign='top'>&nbsp;</td>";
 if ($multiclasses) {echo "<td class='cn'>&nbsp;</td>";}
 echo "\n";
 $i = 0;
 while ($i < $nb_dev) {
-	// En mode saisie, on n'affiche que le devoir à saisir
+	// En mode saisie, on n'affiche que le devoir Ã  saisir
 	if (($id_devoir==0) or ($id_dev[$i] == $id_devoir)) {
 		if ($id_dev[$i] == $id_devoir) {
 			echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=$id_conteneur&amp;id_devoir=0\" onclick=\"return confirm_abandon (this, change,'$themessage')\">Visualiser</a></center></td>\n";
@@ -1248,27 +1248,27 @@ if ($id_devoir==0) {
 		$i++;
 	}
 }
-// En mode saisie, on n'affiche que le devoir à saisir
+// En mode saisie, on n'affiche que le devoir Ã  saisir
 if ($id_devoir==0) {echo "<td class='cn' valign='top'>&nbsp;</td>\n";}
 echo "</tr>";
 
-// quatrième ligne
+// quatriÃ¨me ligne
 
 echo "<tr><td class='cn' valign='top'><b>" .
-		"<a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=nom' onclick=\"return confirm_abandon (this, change,'$themessage')\">Nom Prénom</a></b></td>";
+		"<a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=nom' onclick=\"return confirm_abandon (this, change,'$themessage')\">Nom PrÃ©nom</a></b></td>";
 if ($multiclasses) {echo "<td><a href='saisie_notes.php?id_conteneur=".$id_conteneur."&amp;id_devoir=".$id_devoir."&amp;order_by=classe' onclick=\"return confirm_abandon (this, change,'$themessage')\">Classe</a></td>";}
 echo "\n";
 
 if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-	$data_pdf[0][] = traite_accents_utf8("Nom Prénom /Note sur (coef)");
+	$data_pdf[0][] = traite_accents_utf8("Nom PrÃ©nom /Note sur (coef)");
 } else {
-	$data_pdf[0][] = traite_accents_utf8("Nom Prénom \ (coef)");
+	$data_pdf[0][] = traite_accents_utf8("Nom PrÃ©nom \ (coef)");
 }
 
 if ($multiclasses) {$data_pdf[0][] = "";}
 $i = 0;
 while ($i < $nb_dev) {
-	// En mode saisie, on n'affiche que le devoir à saisir
+	// En mode saisie, on n'affiche que le devoir Ã  saisir
 	if (($id_devoir==0) or ($id_dev[$i] == $id_devoir)) {
 		echo "<td class='cn' valign='top'>";
 		if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur[$i]!=getSettingValue("referentiel_note")) {
@@ -1276,7 +1276,7 @@ while ($i < $nb_dev) {
 			if ($ramener_sur_referentiel[$i] != 'V') {
 				echo "<font size=-2>Note sur ".$note_sur[$i]."<br />";
 			} else {
-				$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'n','n','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"","","La note est ramenÃ©e sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'n','n','n','n');
 				echo "<a href='#' onmouseover=\"delais_afficher_div('ramenersurReferentiel_$i','y',-150,20,1500,10,10);\"";
 				echo " onmouseout=\"cacher_div('ramenersurReferentiel_".$i."');\"";
 				echo ">";
@@ -1316,7 +1316,7 @@ if ($id_devoir==0) {
 					if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
 						echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
 					} else {
-						$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'n','n','n','n');
+						$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"","","La note est ramenÃ©e sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'n','n','n','n');
 						echo "<a href='#' onmouseover=\"delais_afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20,1500,10,10);\"";
 						echo " onmouseout=\"cacher_div('ramenersurReferentiel_s_dev_".$i."_".$m."');\"";
 						echo ">";
@@ -1345,7 +1345,7 @@ if ($id_devoir==0) {
 	}
 }
 
-// En mode saisie, on n'affiche que le devoir à saisir
+// En mode saisie, on n'affiche que le devoir Ã  saisir
 if ($id_devoir==0)  {
 	echo "<td class='cn' valign='top'><center><a href=\"javascript:alert('".$detail."')\">Informations</a></center></td>\n";
 	$data_pdf[0][] = "";
@@ -1355,7 +1355,7 @@ echo "</tr>\n";
 
 $graphe_largeurTotale=200;
 $graphe_hauteurTotale=150;
-$graphe_titre="Répartition des notes";
+$graphe_titre="RÃ©partition des notes";
 $graphe_taille_police=3;
 $graphe_epaisseur_traits=2;
 $graphe_nb_tranches=5;
@@ -1371,13 +1371,13 @@ if($id_devoir>0) {
 		}
 	}
 	echo "<tr>\n";
-	echo "<td>Répartition des notes";
+	echo "<td>RÃ©partition des notes";
 	echo "</td>\n";
 	if ($multiclasses) {echo "<td>&nbsp;</td>\n";}
 }
 elseif($nb_sous_cont==0) {
 	echo "<tr>\n";
-	echo "<td>Répartition des notes";
+	echo "<td>RÃ©partition des notes";
 	echo "</td>\n";
 	if ($multiclasses) {echo "<td>&nbsp;</td>\n";}
 }
@@ -1413,7 +1413,7 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 
 			echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_$k','y',-100,20,1500,10,10);\"";
 			echo ">";
-			echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
+			echo "<img src='../images/icons/histogramme.png' alt='RÃ©partition des notes' />";
 			echo "</a>";
 		}
 		else {
@@ -1425,11 +1425,11 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 		}
 	}
 	if($id_devoir==0) {
-		// Colonne Moyenne de l'élève
+		// Colonne Moyenne de l'Ã©lÃ¨ve
 		echo "<td>";
 		echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_moyenne','y',-100,20,1500,10,10);\"";
 		echo ">";
-		echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
+		echo "<img src='../images/icons/histogramme.png' alt='RÃ©partition des notes' />";
 		echo "</a>";
 		echo "</td>\n";
 	}
@@ -1437,11 +1437,11 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 }
 //========================
 
-// Pour permettre d'afficher moyenne, médiane, quartiles,... en mode Visualisation du carnet de notes
+// Pour permettre d'afficher moyenne, mÃ©diane, quartiles,... en mode Visualisation du carnet de notes
 $chaine_input_moy="";
 
 //
-// Affichage des lignes "elèves"
+// Affichage des lignes "elÃ¨ves"
 //
 $alt=1;
 $i = 0;
@@ -1477,7 +1477,7 @@ while($i < $nombre_lignes) {
 			else {
 				echo "affiche_div_photo();";
 			}
-			echo "\"><img src='../images/icons/buddy.png' width='16' height='16' alt='Afficher la photo élève' title='Afficher la photo élève' /></a></div>\n";
+			echo "\"><img src='../images/icons/buddy.png' width='16' height='16' alt='Afficher la photo Ã©lÃ¨ve' title='Afficher la photo Ã©lÃ¨ve' /></a></div>\n";
 		}
 
 		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
@@ -1492,7 +1492,7 @@ while($i < $nombre_lignes) {
 	$prev_classe = $eleve_classe[$i];
 	$k=0;
 	while ($k < $nb_dev) {
-		// En mode saisie, on n'affiche que le devoir à saisir
+		// En mode saisie, on n'affiche que le devoir Ã  saisir
 		if (($id_devoir==0) or ($id_dev[$k] == $id_devoir)) {
 			echo $mess_note[$i][$k];
 			$tab_ele_notes[$i][]=$mess_note_pdf[$i][$k];
@@ -1577,9 +1577,9 @@ while($i < $nombre_lignes) {
 		}
 	}
 
-	// affichage des moyennes du conteneur (moyennes des élèves sur le conteneur choisi (éventuellement le conteneur racine))
+	// affichage des moyennes du conteneur (moyennes des Ã©lÃ¨ves sur le conteneur choisi (Ã©ventuellement le conteneur racine))
 
-	// En mode saisie, on n'affiche que le devoir à saisir
+	// En mode saisie, on n'affiche que le devoir Ã  saisir
 	if ($id_devoir==0)  {
 		$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_conteneur')");
 		
@@ -1621,7 +1621,7 @@ while($i < $nombre_lignes) {
 $nombre_lignes=$i;
 
 // AJOUT: boireaus 20080607
-// Génération de l'infobulle pour $tab_graph_moy[]
+// GÃ©nÃ©ration de l'infobulle pour $tab_graph_moy[]
 if($id_devoir==0) {
 	$graphe_serie="";
 	if(isset($tab_graph_moy)) {
@@ -1651,7 +1651,7 @@ if($id_devoir==0) {
 	$tabdiv_infobulle[]=creer_div_infobulle('repartition_notes_moyenne',$titre,"",$texte,"",14,0,'y','y','n','n');
 }
 
-// Dernière ligne
+// DerniÃ¨re ligne
 
 echo "<tr>";
 if ($multiclasses) {
@@ -1668,7 +1668,7 @@ $data_pdf[$tot_data_pdf][] = "Moyennes";
 if ($multiclasses) {$data_pdf[$tot_data_pdf][] = "";}
 $k='0';
 while ($k < $nb_dev) {
-	// En mode saisie, on n'affiche que le devoir à saisir
+	// En mode saisie, on n'affiche que le devoir Ã  saisir
 	if (($id_devoir==0) or ($id_dev[$k] == $id_devoir)) {
 		$call_moyenne[$k] = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
 		j.id_groupe='$id_groupe' AND
@@ -1810,9 +1810,9 @@ if(getPref($_SESSION['login'], 'cn_avec_min_max', 'y')=='y') {
 
 if(getPref($_SESSION['login'], 'cn_avec_mediane_q1_q3', 'y')=='y') {
 	$tot_data_pdf++;
-	$data_pdf[$tot_data_pdf][]='Médianes :';
+	$data_pdf[$tot_data_pdf][]='MÃ©dianes :';
 	echo "<tr>\n";
-	echo "<td class='cn bold'><b>Médianes&nbsp;:</b></td>\n";
+	echo "<td class='cn bold'><b>MÃ©dianes&nbsp;:</b></td>\n";
 	if ($multiclasses) {
 		echo "<td class='cn bold'>&nbsp;</td>\n";
 		$data_pdf[$tot_data_pdf][]='';
@@ -1838,9 +1838,9 @@ if(getPref($_SESSION['login'], 'cn_avec_mediane_q1_q3', 'y')=='y') {
 	echo "</tr>\n";
 	
 	$tot_data_pdf++;
-	$data_pdf[$tot_data_pdf][]='3è quartile :';
+	$data_pdf[$tot_data_pdf][]='3Ã¨ quartile :';
 	echo "<tr>\n";
-	echo "<td class='cn bold'><b>3è quartile&nbsp;:</b></td>\n";
+	echo "<td class='cn bold'><b>3Ã¨ quartile&nbsp;:</b></td>\n";
 	if ($multiclasses) {
 		echo "<td class='cn bold'>&nbsp;</td>\n";
 		$data_pdf[$tot_data_pdf][]='';
@@ -1881,7 +1881,7 @@ if((isset($id_devoir))&&($id_devoir!=0)) {
 }
 //===================================
 
-// Préparation du pdf
+// PrÃ©paration du pdf
 $header_pdf=serialize($header_pdf);
 $_SESSION['header_pdf']=$header_pdf;
 
@@ -1946,7 +1946,7 @@ if ($id_devoir) {
 		}
 		//alert(chaine1);
 		//alert(chaine2);
-		document.getElementById('p_tri').innerHTML='<a href=\'affiche_tri.php?titre=Notes&chaine1='+chaine1+'&chaine2='+chaine2+'\' onclick=\"effectuer_tri(); afficher_div(\'div_tri\',\'y\',-150,20); return false;\" target=\'_blank\'>Afficher les notes triées</a>';
+		document.getElementById('p_tri').innerHTML='<a href=\'affiche_tri.php?titre=Notes&chaine1='+chaine1+'&chaine2='+chaine2+'\' onclick=\"effectuer_tri(); afficher_div(\'div_tri\',\'y\',-150,20); return false;\" target=\'_blank\'>Afficher les notes triÃ©es</a>';
 	}
 
 	function effectuer_tri() {
@@ -1972,7 +1972,7 @@ if ($id_devoir) {
 
 	affiche_lien_tri();
 </script>\n";
-	$titre_infobulle="Notes triées";
+	$titre_infobulle="Notes triÃ©es";
 	$texte_infobulle="<div id='notes_triees'></div>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_tri',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
 
@@ -1980,7 +1980,7 @@ if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
 	echo add_token_field();
-	echo "<h3 class='gepi'>Importation directe des notes par copier/coller à partir d'un tableur</h3>\n";
+	echo "<h3 class='gepi'>Importation directe des notes par copier/coller Ã  partir d'un tableur</h3>\n";
 	echo "<table summary=\"Tableau d'import\"><tr>\n";
 	echo "<td>De la ligne : ";
 		echo "<SELECT name='debut_import' size='1'>\n";
@@ -1991,7 +1991,7 @@ if ($id_devoir) {
 	}
 	echo "</select>\n";
 
-	echo "<br /> à la ligne : \n";
+	echo "<br /> Ã  la ligne : \n";
 	echo "<SELECT name='fin_import' size='1'>\n";
 	$k = 1;
 	while ($k < $current_displayed_line+1) {
@@ -2002,7 +2002,7 @@ if ($id_devoir) {
 	}
 	echo "</select>\n";
 	echo "</td><td>\n";
-	echo "Coller ci-dessous les données à importer : <br />\n";
+	echo "Coller ci-dessous les donnÃ©es Ã  importer : <br />\n";
 	if (isset($_POST['notes'])) {$notes=preg_replace("/\\\\n/","\n",preg_replace("/\\\\r/","\r",$_POST['notes']));} else {$notes='';}
 	//echo "<textarea name='notes' rows='3' cols='40' wrap='virtual'>$notes</textarea>\n";
 	echo "<textarea name='notes' rows='3' cols='40' class='wrap'>$notes</textarea>\n";
@@ -2014,13 +2014,13 @@ if ($id_devoir) {
 	echo "<input type='hidden' name='order_by' value='$order_by' />\n";
 
 	echo "<center><input type='submit' value='Importer'  onclick=\"return confirm_abandon (this, change, '$themessage')\" /></center>\n";
-	echo "<p><b>Remarque importante :</b> l'importation ne prend en compte que les élèves dont le nom est affiché ci-dessus !<br />Soyez donc vigilant à ne coller que les notes de ces élèves, dans le bon ordre.</p>\n";
+	echo "<p><b>Remarque importante :</b> l'importation ne prend en compte que les Ã©lÃ¨ves dont le nom est affichÃ© ci-dessus !<br />Soyez donc vigilant Ã  ne coller que les notes de ces Ã©lÃ¨ves, dans le bon ordre.</p>\n";
 	echo "</form></fieldset>\n";
 
 	if (isset($_POST['notes'])) {
 		echo "<script type=\"text/javascript\" language=\"javascript\">
 		<!--
-		alert(\"Attention, les notes importées ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton 'Enregistrer') !\");
+		alert(\"Attention, les notes importÃ©es ne sont pas encore enregistrÃ©es dans la base GEPI. Vous devez confirmer l'importation (bouton 'Enregistrer') !\");
 		changement();
 		//-->
 		</script>\n";
@@ -2029,7 +2029,7 @@ if ($id_devoir) {
   if (isset($_POST['appreciations'])) {
   	echo "<script type=\"text/javascript\" language=\"javascript\">
   	<!--
-  	alert(\"Attention, les appréciations importées ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton 'Enregistrer') !\");
+  	alert(\"Attention, les apprÃ©ciations importÃ©es ne sont pas encore enregistrÃ©es dans la base GEPI. Vous devez confirmer l'importation (bouton 'Enregistrer') !\");
   	//-->
   	</script>\n";
   }
@@ -2039,7 +2039,7 @@ if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
 	echo add_token_field();
-	echo "<h3 class='gepi'>Importation directe des appréciations par copier/coller à partir d'un tableur</h3>\n";
+	echo "<h3 class='gepi'>Importation directe des apprÃ©ciations par copier/coller Ã  partir d'un tableur</h3>\n";
 	echo "<table summary=\"Tableau d'import\"><tr>\n";
 	echo "<td>De la ligne : ";
 		echo "<SELECT name='debut_import' size='1'>\n";
@@ -2050,7 +2050,7 @@ if ($id_devoir) {
 	}
 	echo "</select>\n";
 
-	echo "<br /> à la ligne : \n";
+	echo "<br /> Ã  la ligne : \n";
 	echo "<SELECT name='fin_import' size='1'>\n";
 	$k = 1;
 	while ($k < $current_displayed_line+1) {
@@ -2061,7 +2061,7 @@ if ($id_devoir) {
 	}
 	echo "</select>\n";
 	echo "</td><td>\n";
-	echo "Coller ci-dessous les données à importer&nbsp;: <br />\n";
+	echo "Coller ci-dessous les donnÃ©es Ã  importer&nbsp;: <br />\n";
 	if (isset($_POST['appreciations'])) {$appreciations = preg_replace("/\\\\n/","\n",preg_replace("/\\\\r/","\r",$_POST['appreciations']));} else {$appreciations='';}
 	echo "<textarea name='appreciations' rows='3' cols='40' class='wrap'>$appreciations</textarea>\n";
 	echo "</td></tr></table>\n";
@@ -2069,27 +2069,27 @@ if ($id_devoir) {
 	echo "<input type='hidden' name='id_devoir' value='$id_devoir' />\n";
 	echo "<input type='hidden' name='order_by' value='$order_by' />\n";
 	echo "<center><input type='submit' value='Importer'  onclick=\"return confirm_abandon (this, change, '$themessage')\" /></center>\n";
-	echo "<p><b>Remarque importante :</b> l'importation ne prend en compte que les élèves dont le nom est affiché ci-dessus !<br />Soyez donc vigilant à ne coller que les appréciations de ces élèves, dans le bon ordre.</p>\n";
+	echo "<p><b>Remarque importante :</b> l'importation ne prend en compte que les Ã©lÃ¨ves dont le nom est affichÃ© ci-dessus !<br />Soyez donc vigilant Ã  ne coller que les apprÃ©ciations de ces Ã©lÃ¨ves, dans le bon ordre.</p>\n";
 	echo "</form></fieldset>\n";
 }
 
-// Pour qu'un professeur puisse avoir une préférence d'affichage par défaut ou non des quartiles:
+// Pour qu'un professeur puisse avoir une prÃ©fÃ©rence d'affichage par dÃ©faut ou non des quartiles:
 $aff_quartiles_par_defaut=getPref($_SESSION['login'],'aff_quartiles_cn',"n");
 $aff_photo_cn_par_defaut=getPref($_SESSION['login'],'aff_photo_cn',"n");
 
 ?>
 <br />
-* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).
+* En conformitÃ© avec la CNIL, le professeur s'engage Ã  ne faire figurer dans le carnet de notes que des notes et commentaires portÃ©s Ã  la connaissance de l'Ã©lÃ¨ve (note et commentaire portÃ©s sur la copie, ...).
 <script type="text/javascript" language="javascript">
 chargement = true;
 
-// La vérification ci-dessous est effectuée après le remplacement des notes supérieures à 20 par des zéros.
-// Ces éventuelles erreurs de frappe ne sauteront pas aux yeux.
+// La vÃ©rification ci-dessous est effectuÃ©e aprÃ¨s le remplacement des notes supÃ©rieures Ã  20 par des zÃ©ros.
+// Ces Ã©ventuelles erreurs de frappe ne sauteront pas aux yeux.
 for(i=10;i<<?php echo $num_id; ?>;i++){
 	eval("verifcol("+i+")");
 }
 
-// On donne le focus à la première cellule lors du chargement de la page:
+// On donne le focus Ã  la premiÃ¨re cellule lors du chargement de la page:
 if(document.getElementById('n10')){
 	document.getElementById('n10').focus();
 }

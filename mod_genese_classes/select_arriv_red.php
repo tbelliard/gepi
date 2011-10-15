@@ -48,13 +48,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Sélection des arrivants/redoublants',
+description='GÃ©nÃ¨se des classes: SÃ©lection des arrivants/redoublants',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -87,7 +87,7 @@ if((isset($projet))&&(isset($choix))&&(($choix=='Red')||($choix=='Arriv'))&&(iss
 	}
 
 	if($nb_err==0) {
-		$msg="$nb_reg $choix enregistrés.";
+		$msg="$nb_reg $choix enregistrÃ©s.";
 	}
 	else {
 		$msg="ERREUR: $nb_err lors de l'enregistrement des $choix.";
@@ -95,7 +95,7 @@ if((isset($projet))&&(isset($choix))&&(($choix=='Red')||($choix=='Arriv'))&&(iss
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Sélection redoublants et arrivants";
+$titre_page = "GÃ©nÃ¨se classe: SÃ©lection redoublants et arrivants";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -126,32 +126,32 @@ if(!isset($choix)) {
 
 	echo "<h2>Projet $projet</h2>\n";
 
-	echo "<p>Les élèves, redoublants ou arrivants, doivent être inscrits dans la table 'eleves' pour pouvoir être pris en compte dans un projet.</p>\n";
+	echo "<p>Les Ã©lÃ¨ves, redoublants ou arrivants, doivent Ãªtre inscrits dans la table 'eleves' pour pouvoir Ãªtre pris en compte dans un projet.</p>\n";
 	echo "<ul>\n";
 	echo "<li>\n";
 	echo "<p><a href='../eleves/add_eleve.php?projet=$projet&amp;mode=multiple' target='_blank'>Saisir des arrivants</a>.</p>\n";
 	echo "</li>\n";
 
 	echo "<li>\n";
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix=Arriv'>Sélectionner des arrivants</a> parmi ceux que vous venez de saisir.</p>\n";
+	echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix=Arriv'>SÃ©lectionner des arrivants</a> parmi ceux que vous venez de saisir.</p>\n";
 	echo "</li>\n";
 
 	echo "<li>\n";
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix=Red'>Sélectionner des redoublants</a> parmi les élèves inscrits dans des classes cette année.</p>\n";
+	echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix=Red'>SÃ©lectionner des redoublants</a> parmi les Ã©lÃ¨ves inscrits dans des classes cette annÃ©e.</p>\n";
 	echo "</li>\n";
 
 	echo "</ul>\n";
 
-	//echo "<p style='color:red'>Mettre la liste des red/arriv déjà saisi et pouvoir en supprimer.</p>\n";
+	//echo "<p style='color:red'>Mettre la liste des red/arriv dÃ©jÃ  saisi et pouvoir en supprimer.</p>\n";
 
 	$sql="SELECT * FROM gc_ele_arriv_red WHERE projet='$projet' ORDER BY statut, login;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
-		echo "<p>Liste des red/arriv déjà saisis&nbsp;:</p>\n";
+		echo "<p>Liste des red/arriv dÃ©jÃ  saisis&nbsp;:</p>\n";
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 		echo "<table class='boireaus' border='1' summary='Redoublants et arrivants'>\n";
 		echo "<tr>\n";
-		echo "<th>Elève</th>\n";
+		echo "<th>ElÃ¨ve</th>\n";
 		echo "<th>Statut</th>\n";
 		echo "<th>\n";
 		//echo "Supprimer\n";
@@ -188,7 +188,7 @@ elseif($choix=='Red') {
 
 	echo "<h2>Projet $projet</h2>\n";
 
-	echo "<h3>Sélection des redoublants</h3>\n";
+	echo "<h3>SÃ©lection des redoublants</h3>\n";
 
 	if(!isset($id_classe)) {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
@@ -197,7 +197,7 @@ elseif($choix=='Red') {
 		$res_classes=mysql_query($sql);
 		$nb_classes=mysql_num_rows($res_classes);
 		// Ajouter des classes
-		echo "<p>Dans quelles classes sont les redoublants à inscrire dans le projet '$projet'&nbsp;:\n";
+		echo "<p>Dans quelles classes sont les redoublants Ã  inscrire dans le projet '$projet'&nbsp;:\n";
 		echo "</p>\n";
 		
 		// Affichage sur 4/5 colonnes
@@ -242,11 +242,11 @@ elseif($choix=='Red') {
 		for($i=0;$i<count($id_classe);$i++) {
 			echo "<p class='bold'>Classe de ".get_class_from_id($id_classe[$i])."</p>\n";
 	
-			echo "<table class='boireaus' summary='Choix des élèves'>\n";
+			echo "<table class='boireaus' summary='Choix des Ã©lÃ¨ves'>\n";
 			echo "<tr>\n";
-			echo "<th>Elèves</th>\n";
+			echo "<th>ElÃ¨ves</th>\n";
 			echo "<th>\n";
-			echo "<a href=\"javascript:CocheClasse($i);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheClasse($i);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "<a href=\"javascript:CocheClasse($i);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheClasse($i);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 			echo "</th>\n";
 			echo "</tr>\n";
 	
@@ -314,15 +314,15 @@ elseif($choix=='Arriv') {
 
 	echo "<h2>Projet $projet</h2>\n";
 
-	echo "<h3>Sélection des nouveaux arrivants</h3>\n";
+	echo "<h3>SÃ©lection des nouveaux arrivants</h3>\n";
 
-	echo "<p class='bold'>Elèves non affectés dans des classes:</p>\n";
+	echo "<p class='bold'>ElÃ¨ves non affectÃ©s dans des classes:</p>\n";
 
-	echo "<table class='boireaus' summary='Choix des élèves'>\n";
+	echo "<table class='boireaus' summary='Choix des Ã©lÃ¨ves'>\n";
 	echo "<tr>\n";
-	echo "<th>Elèves</th>\n";
+	echo "<th>ElÃ¨ves</th>\n";
 	echo "<th>\n";
-	echo "<a href=\"javascript:CocheEleves();changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheEleves();changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+	echo "<a href=\"javascript:CocheEleves();changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheEleves();changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 	echo "</th>\n";
 	echo "</tr>\n";
 

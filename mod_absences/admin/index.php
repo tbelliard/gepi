@@ -54,37 +54,37 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 	check_token();
 	// $msg = '';
 	if (isset($_POST['activer'])) {
-	// on n'enregistre pas la désactivation du module si mod_abs2 est actif
+	// on n'enregistre pas la dÃ©sactivation du module si mod_abs2 est actif
 	if (!((getSettingValue("active_module_absence")!='y')&& $_POST['activer']=="n")) {
 		if (!saveSetting("active_module_absence", $_POST['activer'])) {
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+			$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 		}
 	}
 	}
 	if (isset($_POST['activer_prof'])) {
 		if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+			$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 		}
 	}
 	if (isset($_POST['activer_resp'])) {
 		if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+			$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 		}
 	}
 	
 	if (isset($_POST['classement'])) {
 		if (!saveSetting("absence_classement_top", $_POST['classement'])) {
-			$msg = "Erreur lors de l'enregistrement du paramètre de classementdes absences (TOP 10) !";
+			$msg = "Erreur lors de l'enregistrement du paramÃ¨tre de classementdes absences (TOP 10) !";
 		}
 	}
 	
 	if (isset($_POST['is_posted']) and ($msg=='')) {
-	$msg = "Les modifications ont été enregistrées !";
+	$msg = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 		$post_reussi=TRUE;
 	}
 }
 
-// A propos du TOP 10 : récupération du setting pour le select en bas de page
+// A propos du TOP 10 : rÃ©cupÃ©ration du setting pour le select en bas de page
 $selected10 = $selected20 = $selected30 = $selected40 = $selected50 = NULL;
 
 if (getSettingValue("absence_classement_top") == '10'){
@@ -108,24 +108,24 @@ if (getSettingValue("absence_classement_top") == '10'){
 include_once("../../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Absences"))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
 
 $lien_sup=array();
 $a=0;
-$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_admin'")) OR DIE ('Erreur requête req_setting () : '.mysql_error());
-$req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requête req_setting2 () : '.mysql_error());
+$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_admin'")) OR DIE ('Erreur requÃªte req_setting () : '.mysql_error());
+$req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requÃªte req_setting2 () : '.mysql_error());
 if ($req_setting["value"] == 'y' OR $req_setting2["value"] == 'y') {
  // On initialise le $_SESSION["retour"] pour pouvoir revenir proprement
   $_SESSION["retour"] = "../mod_absences/admin/index";
   $lien_sup[$a]['adresse'] = "../../edt_organisation/edt_calendrier.php";
-  $lien_sup[$a]['texte'] = "Définir périodes de vacances et jours fériés";
+  $lien_sup[$a]['texte'] = "DÃ©finir pÃ©riodes de vacances et jours fÃ©riÃ©s";
   $a++;
 } else {
   $lien_sup[$a]['adresse'] = "admin_config_calendrier.php?action=visualiser";
-  $lien_sup[$a]['texte'] = "Définir périodes de vacances et jours fériés";
+  $lien_sup[$a]['texte'] = "DÃ©finir pÃ©riodes de vacances et jours fÃ©riÃ©s";
 }
 
 
@@ -137,20 +137,20 @@ $tbs_pmv="";
 require_once ("../../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../../templates/'.$_SESSION['rep_gabarits'].'/mod_absences/admin/index_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -161,8 +161,8 @@ echo "<p class=bold><a href=\"../../accueil_modules.php\"><img src='../../images
 echo "</p>";
 ?>
 <h2>Gestion des absences par les CPE</h2>
-<p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
-suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>
+<p style="font-style: italic;">La dÃ©sactivation du module de la gestion des absences n'entraÃ®ne aucune
+suppression des donnÃ©es. Lorsque le module est dÃ©sactivÃ©, les CPE n'ont pas accÃ¨s au module.</p>
 
 <form action="index.php" name="form1" method="post">
 <p>
@@ -173,13 +173,13 @@ suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accè
 <p>
 	<input type="radio" id="activerN" name="activer" value="n"
 	<?php if (getSettingValue("active_module_absence")=='n') echo ' checked="checked"'; ?> />
-	<label for="activerN">&nbsp;Désactiver le module de la gestion des absences</label>
+	<label for="activerN">&nbsp;DÃ©sactiver le module de la gestion des absences</label>
 	<input type="hidden" name="is_posted" value="1" />
 </p>
 
 <h2>Saisie des absences par les professeurs</h2>
-<p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
-Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.</p>
+<p style="font-style: italic;">La dÃ©sactivation du module de la gestion des absences n'entraÃ®ne aucune suppression des donnÃ©es saisies par les professeurs. Lorsque le module est dÃ©sactivÃ©, les professeurs n'ont pas accÃ¨s au module.
+Normalement, ce module ne devrait Ãªtre activÃ© que si le module ci-dessus est lui-mÃªme activÃ©.</p>
 <p>
 	<input type="radio" id="activerProfY" name="activer_prof" value="y"
 	<?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked='checked'"; ?> />
@@ -189,7 +189,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <p>
 	<input type="radio" id="activerProfN" name="activer_prof" value="n"
 	<?php if (getSettingValue("active_module_absence_professeur")=='n') echo " checked='checked'"; ?> />
-	<label for="activerProfN">&nbsp;Désactiver le module de la saisie des absences par les professeurs</label>
+	<label for="activerProfN">&nbsp;DÃ©sactiver le module de la saisie des absences par les professeurs</label>
 	<input type="hidden" name="is_posted" value="1" />
 </p>
 
@@ -222,13 +222,13 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 <div class="centre"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></div>
 </form>
 
-<h2>Configuration avancée</h2>
+<h2>Configuration avancÃ©e</h2>
 <blockquote>
-  <a href="../../edt_organisation/admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
-  <a href="../../edt_organisation/admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />
-<?php // On vérifie si le module calendrier / edt est ouvert ou non pour savoir quel lien on lance
-$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_admin'")) OR DIE ('Erreur requête req_setting () : '.mysql_error());
-$req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requête req_setting2 () : '.mysql_error());
+  <a href="../../edt_organisation/admin_horaire_ouverture.php?action=visualiser">DÃ©finir les horaires d'ouverture de l'Ã©tablissement</a><br />
+  <a href="../../edt_organisation/admin_periodes_absences.php?action=visualiser">DÃ©finir les crÃ©neaux horaires</a><br />
+<?php // On vÃ©rifie si le module calendrier / edt est ouvert ou non pour savoir quel lien on lance
+$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_admin'")) OR DIE ('Erreur requÃªte req_setting () : '.mysql_error());
+$req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requÃªte req_setting2 () : '.mysql_error());
 	if ($req_setting["value"] == 'y' OR $req_setting2["value"] == 'y') {
 		// On initialise le $_SESSION["retour"] pour pouvoir revenir proprement
 		$_SESSION["retour"] = "../mod_absences/admin/index";
@@ -237,9 +237,9 @@ $req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE n
 		echo '<a href="admin_config_calendrier.php?action=visualiser">D&eacute;finir p&eacute;riodes de vacances et jours f&eacute;ri&eacute;s</a><br />';
 	}
 ?>
-	<a href="../../edt_organisation/admin_config_semaines.php?action=visualiser">Définir les types de semaine</a><br />
-	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
-	<a href="admin_actions_absences.php?action=visualiser">Définir les actions sur le suivi des élèves</a>
+	<a href="../../edt_organisation/admin_config_semaines.php?action=visualiser">DÃ©finir les types de semaine</a><br />
+	<a href="admin_motifs_absences.php?action=visualiser">DÃ©finir les motifs des absences</a><br />
+	<a href="admin_actions_absences.php?action=visualiser">DÃ©finir les actions sur le suivi des Ã©lÃ¨ves</a>
 </blockquote>
 <?PHP
 require("../../lib/footer.inc.php");

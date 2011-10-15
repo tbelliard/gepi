@@ -35,7 +35,7 @@ require_once("../lib/initialisations.inc.php");
 
 // fonctions edt
 require_once('./choix_langue.php');
-require_once("./fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
+require_once("./fonctions_edt.php");            // --- fonctions de base communes Ã  tous les emplois du temps
 require_once("./fonctions_edt_prof.php");       // --- edt prof
 require_once("./fonctions_edt_classe.php");     // --- edt classe
 require_once("./fonctions_edt_salle.php");      // --- edt salle
@@ -53,17 +53,17 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
 
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $ua = getenv("HTTP_USER_AGENT");
 if (strstr($ua, "MSIE 6.0")) {
@@ -78,7 +78,7 @@ else {
 $visioedt=isset($_GET['visioedt']) ? $_GET['visioedt'] : (isset($_POST['visioedt']) ? $_POST['visioedt'] : NULL);
 $salleslibres=isset($_GET['salleslibres']) ? $_GET['salleslibres'] : (isset($_POST['salleslibres']) ? $_POST['salleslibres'] : NULL);
 
-// Pour revenir proprement, on crée le $_SESSION["retour"]
+// Pour revenir proprement, on crÃ©e le $_SESSION["retour"]
 $_SESSION["retour"] = "index_edt";
 
 VerifierTablesDelestage();

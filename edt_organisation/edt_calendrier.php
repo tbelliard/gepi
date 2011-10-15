@@ -21,7 +21,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Fichier destiné à paramétrer le calendrier de Gepi pour l'Emploi du temps
+ * Fichier destinÃ© Ã  paramÃ©trer le calendrier de Gepi pour l'Emploi du temps
  */
 
 $titre_page = "Emploi du temps - Calendrier";
@@ -44,12 +44,12 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
@@ -84,10 +84,10 @@ $data['modif_ok'] = isset($_POST["modif_ok"]) ? $_POST["modif_ok"] : NULL;
 $data['message'] = NULL;
 
 	// Quelques variables utiles
-$data['annee_actu'] = date("Y"); // année
-$data['mois_actu'] = date("m"); // mois sous la forme 01 à 12
-$data['jour_actu'] = date("d"); // jour sous la forme 01 à 31
-$data['date_jour'] = date("d/m/Y"); //jour/mois/année
+$data['annee_actu'] = date("Y"); // annÃ©e
+$data['mois_actu'] = date("m"); // mois sous la forme 01 Ã  12
+$data['jour_actu'] = date("d"); // jour sous la forme 01 Ã  31
+$data['date_jour'] = date("d/m/Y"); //jour/mois/annÃ©e
 
 
 // =======================================================================
@@ -96,7 +96,7 @@ $data['date_jour'] = date("d/m/Y"); //jour/mois/année
 //
 // =======================================================================
 
-/* ============================================ On efface quand c'est demandé ====================================== */
+/* ============================================ On efface quand c'est demandÃ© ====================================== */
 
 if (isset($data['calendrier']) AND isset($data['supprimer'])) {
 
@@ -112,10 +112,10 @@ if (isset($data['calendrier']) AND isset($data['copier_edt'])) {
     $_SESSION['copier_periode_edt'] = $data['copier_edt'];
     $req_edt_periode = mysql_query("SELECT nom_calendrier FROM edt_calendrier WHERE id_calendrier ='".$data['copier_edt']."'");
     $rep_edt_periode = mysql_fetch_array($req_edt_periode);
-    $data['message'] = "Le contenu de la période \"".$rep_edt_periode['nom_calendrier']."\" est prêt à être dupliqué"; 
+    $data['message'] = "Le contenu de la pÃ©riode \"".$rep_edt_periode['nom_calendrier']."\" est prÃªt Ã  Ãªtre dupliquÃ©"; 
 }
 
-/* ============================================ On colle le contenu de l'edt dans la nouvelle période ====================================== */
+/* ============================================ On colle le contenu de l'edt dans la nouvelle pÃ©riode ====================================== */
 
 if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSION['copier_periode_edt'])) {
     if (PeriodExistsInDB($_SESSION['copier_periode_edt'])) {
@@ -137,7 +137,7 @@ if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSIO
 					         id_calendrier = '".$data['coller_edt']."' AND
 					         login_prof = '".$rep_edt_periode['login_prof']."'
                             ";
-                    $verif_existence = mysql_query($sql) OR DIE('Erreur dans la vérification du cours : '.mysql_error());
+                    $verif_existence = mysql_query($sql) OR DIE('Erreur dans la vÃ©rification du cours : '.mysql_error());
                     if (mysql_num_rows($verif_existence) == 0) {
 				        $nouveau_cours = mysql_query("INSERT INTO edt_cours SET 
                              id_groupe = '".$rep_edt_periode['id_groupe']."',
@@ -149,38 +149,38 @@ if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSIO
 					         id_semaine = '".$rep_edt_periode['id_semaine']."',
 					         id_calendrier = '".$data['coller_edt']."',
 					         login_prof = '".$rep_edt_periode['login_prof']."'")
-				        OR DIE('Erreur dans la création du cours : '.mysql_error());
+				        OR DIE('Erreur dans la crÃ©ation du cours : '.mysql_error());
                         $i++;
                     }
                 }
                 if ($i == 0) {
-                    $data['message'] = "la duplication a déjà été réalisée";
+                    $data['message'] = "la duplication a dÃ©jÃ  Ã©tÃ© rÃ©alisÃ©e";
                 }
                 else {
-                    $data['message'] = "duplication réalisée. ".$i." cours ont été copiés avec succès";
+                    $data['message'] = "duplication rÃ©alisÃ©e. ".$i." cours ont Ã©tÃ© copiÃ©s avec succÃ¨s";
                 }
             }
             else {
-                $data['message'] = "vous ne pouvez pas dupliquer une période sur elle-même"; 
+                $data['message'] = "vous ne pouvez pas dupliquer une pÃ©riode sur elle-mÃªme"; 
             } 
         }
         else {
-            $data['message'] = "la période cible n'existe pas";
+            $data['message'] = "la pÃ©riode cible n'existe pas";
         }
     }
     else {
-        $data['message'] = "la période à dupliquer n'existe pas";
+        $data['message'] = "la pÃ©riode Ã  dupliquer n'existe pas";
     }
 }
 
 
 
-/* ==================== On traite les nouvelles entrées dans la table ================ */
+/* ==================== On traite les nouvelles entrÃ©es dans la table ================ */
 if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 	$detail_jourdeb = explode("/", $data['jour_debut']);
 	$detail_jourfin = explode("/", $data['jour_fin']);
 
-	// ================== vérifier le format des dates saisies
+	// ================== vÃ©rifier le format des dates saisies
 
 	if (isset($detail_jourdeb[0]) AND isset($detail_jourdeb[1]) AND isset($detail_jourdeb[2])) {
 		if (isset($detail_jourfin[0]) AND isset($detail_jourfin[1]) AND isset($detail_jourfin[2])) {
@@ -207,7 +207,7 @@ if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 	if ($formatdatevalid) {
 		$jourdebut = $detail_jourdeb[2]."-".$detail_jourdeb[1]."-".$detail_jourdeb[0];
 		$jourfin = $detail_jourfin[2]."-".$detail_jourfin[1]."-".$detail_jourfin[0];
-			// On insère les classes qui sont concernées (0 = toutes)
+			// On insÃ¨re les classes qui sont concernÃ©es (0 = toutes)
 			if ($data['classes_concernees'][0] == "0") {
 				$classes_concernees_insert = "0";
 			}
@@ -217,20 +217,20 @@ if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 					$classes_concernees_insert .= $data['classes_concernees'][$c].";";
 				}
 			} // else
-		// On vérifie que ce nom de période n'existe pas encore
+		// On vÃ©rifie que ce nom de pÃ©riode n'existe pas encore
 		$req_verif_periode = mysql_fetch_array(mysql_query("SELECT nom_calendrier FROM edt_calendrier WHERE nom_calendrier = '".$data['nom_periode']."'"));
 		if ($req_verif_periode[0] == NULL) {
 			$data['heure_debut'] = $data['heure_debut'].":00";
 				$expdeb = explode(":", $data['heure_debut']);
 			$data['heure_fin'] = $data['heure_fin'].":00";
 				$expfin = explode(":", $data['heure_fin']);
-				// On insére ces dates en timestamp Unix GMT
+				// On insÃ©re ces dates en timestamp Unix GMT
 			$heuredeb_ts = gmmktime($expdeb[0], $expdeb[1], 0, $detail_jourdeb[1], $detail_jourdeb[0], $detail_jourdeb[2])
-								OR trigger_error('La date de début n\'est pas valide. ', E_USER_WARNING);
+								OR trigger_error('La date de dÃ©but n\'est pas valide. ', E_USER_WARNING);
 			$heurefin_ts = gmmktime($expfin[0], $expfin[1], 0, $detail_jourfin[1], $detail_jourfin[0], $detail_jourfin[2])
 								OR trigger_error('La date de fin n\'est pas valide. ', E_USER_WARNING);
 
-			// On vérifie que tout soit bien rempli et on sauvegarde
+			// On vÃ©rifie que tout soit bien rempli et on sauvegarde
 			if ($data['nom_periode'] != '' AND $heuredeb_ts != '' AND $heurefin_ts != '') {
 				$req_insert = mysql_query("INSERT INTO edt_calendrier (`nom_calendrier`, `classe_concerne_calendrier`, `debut_calendrier_ts`, `fin_calendrier_ts`, `jourdebut_calendrier`, `heuredebut_calendrier`, `jourfin_calendrier`, `heurefin_calendrier`, `numero_periode`, `etabferme_calendrier`, `etabvacances_calendrier`)
 								VALUES ('".$data["nom_periode"]."',
@@ -244,12 +244,12 @@ if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 										'".$data["choix_periode"]."',
 										'".$data["etabferme"]."',
 										'".$data["vacances"]."')")
-								OR trigger_error('Echec dans la requête de création d\'une nouvelle entrée !', E_USER_WARNING);
+								OR trigger_error('Echec dans la requÃªte de crÃ©ation d\'une nouvelle entrÃ©e !', E_USER_WARNING);
 			}
 
 		}else{
 
-			$data['message'] = "Ce nom de période existe déjà";
+			$data['message'] = "Ce nom de pÃ©riode existe dÃ©jÃ ";
 		}
 	}
 	else {
@@ -257,7 +257,7 @@ if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 	}
 }
 
-	// =========== TRAITEMENT de la modification de la période =============
+	// =========== TRAITEMENT de la modification de la pÃ©riode =============
 if (isset($data['modif_ok']) AND isset($data['nom_periode'])) {
 	$jourdebut = $data['jour_dperiode'];
 	$jourfin = $data['jour_fperiode'];
@@ -304,13 +304,13 @@ for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
 	$data['rep_affcalendar'][$i]["etabferme_calendrier"] = mysql_result($data['req_affcalendar'], $i, "etabferme_calendrier");
 	$data['rep_affcalendar'][$i]["etabvacances_calendrier"] = mysql_result($data['req_affcalendar'], $i, "etabvacances_calendrier");
 
-	// établissement ouvert ou fermé ?
+	// Ã©tablissement ouvert ou fermÃ© ?
 	if ($data['rep_affcalendar'][$i]["etabferme_calendrier"] == "1") {
 		$data['ouvert_ferme'][$i] = "ouvert";
 	}
-	else $data['ouvert_ferme'][$i] = "fermé";
+	else $data['ouvert_ferme'][$i] = "fermÃ©";
 
-	// Quelles classes sont concernées
+	// Quelles classes sont concernÃ©es
 	$data['expl_aff'][$i] = explode(";", ($data['rep_affcalendar'][$i]["classe_concerne_calendrier"]));
 
 	// Attention, si on compte l'explode, on a une ligne de trop
@@ -324,30 +324,30 @@ for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
 			$req_nomclasse = mysql_fetch_array(mysql_query("SELECT nom_complet FROM classes WHERE id = '".$data["expl_aff"][$i][$t]."'"));
 			$contenu_infobulle .= $req_nomclasse["nom_complet"].'<br />';
 		}
-		//$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernées", $contenu_infobulle);
+		//$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernÃ©es", $contenu_infobulle);
 		$id_div = "periode".$data['rep_affcalendar'][$i]["id_calendrier"];
 		$data['aff_classe_concerne'][$i] = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\" onmouseout=\"cacher_div('".$id_div."');\">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n", 1);
 	} 
 
-	// On détermine si c'est une période pédagogique ou une période de vacances
+	// On dÃ©termine si c'est une pÃ©riode pÃ©dagogique ou une pÃ©riode de vacances
 	if ($data['rep_affcalendar'][$i]["etabvacances_calendrier"] == 0) {
 		$data['aff_cours'][$i] = "Cours";
 	} else {
 		$data['aff_cours'][$i] = "Vac.";
 	}
 
-	// On enlève les secondes à l'affichage
+	// On enlÃ¨ve les secondes Ã  l'affichage
 	$explode_deb = explode(":", $data['rep_affcalendar'][$i]["heuredebut_calendrier"]);
 	$data['rep_affcalendar'][$i]["heuredebut_calendrier"] = $explode_deb[0].":".$explode_deb[1];
 	$explode_fin = explode(":", $data['rep_affcalendar'][$i]["heurefin_calendrier"]);
 	$data['rep_affcalendar'][$i]["heurefin_calendrier"] = $explode_fin[0].":".$explode_fin[1];
-	// On affiche les dates au format français
+	// On affiche les dates au format franÃ§ais
 	$exp_jourdeb = explode("-", $data['rep_affcalendar'][$i]["jourdebut_calendrier"]);
 	$data['aff_jourdeb'][$i] = $exp_jourdeb[2]."/".$exp_jourdeb[1]."/".$exp_jourdeb[0];
 	$exp_jourfin = explode("-", $data['rep_affcalendar'][$i]["jourfin_calendrier"]);
 	$data['aff_jourfin'][$i] = $exp_jourfin[2]."/".$exp_jourfin[1]."/".$exp_jourfin[0];
 
-	// Afficher de deux couleurs différentes
+	// Afficher de deux couleurs diffÃ©rentes
 
 	if ($a == 1) {
 		$data['class_tr'][$i] = "ligneimpaire";
@@ -359,11 +359,11 @@ for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
 	}
 }
 if (isset($data['calendrier']) AND isset($data['modifier'])) {
-	// On affiche la période demandée dans un formulaire
+	// On affiche la pÃ©riode demandÃ©e dans un formulaire
 	$rep_modif = mysql_fetch_array(mysql_query("SELECT * FROM edt_calendrier WHERE id_calendrier = '".$data['modifier']."'"));
 	// On affiche la liste des classes
 	$tab_select = renvoie_liste("classe");
-	// On récupère les classes de la période ("zone de temps") à afficher
+	// On rÃ©cupÃ¨re les classes de la pÃ©riode ("zone de temps") Ã  afficher
 	$toutes_classes = explode(";", $rep_modif["classe_concerne_calendrier"]);
 		// Fonction checked_calendar
 		function checked_calendar($tester_classe, $classes_cochees){
@@ -380,7 +380,7 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 		$aff_jourdeb = $exp_jourdeb[2]."/".$exp_jourdeb[1]."/".$exp_jourdeb[0];
 		$exp_jourfin = explode("-", $rep_modif["jourfin_calendrier"]);
 		$aff_jourfin = $exp_jourfin[2]."/".$exp_jourfin[1]."/".$exp_jourfin[0];
-			// On enlève les secondes à l'affichage des heures
+			// On enlÃ¨ve les secondes Ã  l'affichage des heures
 		$aff_heuredeb = substr($rep_modif["heuredebut_calendrier"], 0, -3);
 		$aff_heurefin = substr($rep_modif["heurefin_calendrier"], 0, -3);
 		
@@ -390,7 +390,7 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 	
 		// Choix des classes sur 3 (ou 4) colonnes
 		$modulo = count($tab_select) % 3;
-			// Calcul du nombre d'entrée par colonne ($ligne)
+			// Calcul du nombre d'entrÃ©e par colonne ($ligne)
 		if ($modulo !== 0) {
 			$calcul = count($tab_select) / 3;
 			$expl = explode(".", $calcul);
@@ -398,12 +398,12 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 		}else {
 			$ligne = count($tab_select) / 3;
 		}
-		$aff_checked = ""; // par défaut, le checkbox n'est pas coché		
+		$aff_checked = ""; // par dÃ©faut, le checkbox n'est pas cochÃ©		
 }
 
 
 
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 $utilisation_jsdivdrag = "";

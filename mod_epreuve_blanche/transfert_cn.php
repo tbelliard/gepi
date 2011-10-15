@@ -60,7 +60,7 @@ $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -68,7 +68,7 @@ if (!checkAccess()) {
 //======================================================================================
 
 
-// La boite courante est mise à jour...
+// La boite courante est mise Ã  jour...
 // ... mais pas la boite destination.
 
 $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['id_epreuve']) ? $_GET['id_epreuve'] : NULL);
@@ -79,7 +79,7 @@ if(isset($_GET['creer_cn'])) {
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
+		$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
 	else {
 
@@ -87,31 +87,31 @@ if(isset($_GET['creer_cn'])) {
 		$periode=isset($_GET['periode']) ? $_GET['periode'] : NULL;
 
 		if(!isset($id_groupe)) {
-			$msg="Aucun groupe n'a été choisi.\n";
+			$msg="Aucun groupe n'a Ã©tÃ© choisi.\n";
 		}
 		elseif(!isset($periode)) {
-			$msg="Aucun période n'a été choisie.\n";
+			$msg="Aucun pÃ©riode n'a Ã©tÃ© choisie.\n";
 		}
 		else {
 			$sql="SELECT 1=1 FROM groupes WHERE id='$id_groupe';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
-				$msg="Le groupe n°$id_groupe choisi n'existe pas.\n";
+				$msg="Le groupe nÂ°$id_groupe choisi n'existe pas.\n";
 			}
 			else {
 				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode';";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0) {
-					$msg="Aucun élève n'est affecté dans le groupe n°$id_groupe sur la période $periode.\n";
+					$msg="Aucun Ã©lÃ¨ve n'est affectÃ© dans le groupe nÂ°$id_groupe sur la pÃ©riode $periode.\n";
 				}
 				else {
 					$sql="SELECT 1=1 FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode';";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)>0) {
-						$msg="Le cahier de notes existe déjà pour le groupe n°$id_groupe sur la période $periode.\n";
+						$msg="Le cahier de notes existe dÃ©jÃ  pour le groupe nÂ°$id_groupe sur la pÃ©riode $periode.\n";
 					}
 					else {
-						// On va créer le cahier de notes
+						// On va crÃ©er le cahier de notes
 
 						$tab_champs=array('matieres');
 						$tmp_group=get_group($id_groupe,$tab_champs);
@@ -124,14 +124,14 @@ if(isset($_GET['creer_cn'])) {
 							$reg = mysql_query("UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine'");
 							$reg = mysql_query("INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode', id_cahier_notes='$id_racine'");
 							if(!$reg) {
-								$msg="Erreur lors de la création du cahier de notes.\n";
+								$msg="Erreur lors de la crÃ©ation du cahier de notes.\n";
 							}
 							else {
-								$msg="Cahier de notes n°$id_racine créé pour le groupe n°$id_groupe sur la période $periode.\n";
+								$msg="Cahier de notes nÂ°$id_racine crÃ©Ã© pour le groupe nÂ°$id_groupe sur la pÃ©riode $periode.\n";
 							}
 						}
 						else {
-							$msg="Erreur lors de la création d'un conteneur racine pour le cahier de notes.\n";
+							$msg="Erreur lors de la crÃ©ation d'un conteneur racine pour le cahier de notes.\n";
 						}
 					}
 				}
@@ -146,7 +146,7 @@ if(isset($_POST['transfert_cn'])) {
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
+		$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 	}
 	else {
 		$lig_epreuve=mysql_fetch_object($res);
@@ -184,18 +184,18 @@ if(isset($_POST['transfert_cn'])) {
 				}
 
 				if($transfert=="n") {
-					$msg.="La période est (partiellement) close pour au moins une des classes de l'enseignement associé au cahier de notes $current_id_cn.<br />";
+					$msg.="La pÃ©riode est (partiellement) close pour au moins une des classes de l'enseignement associÃ© au cahier de notes $current_id_cn.<br />";
 				}
 				else {
 					$id_racine=$current_id_cn;
 					$id_conteneur=$current_id_cn;
 
-					// Créer le devoir
+					// CrÃ©er le devoir
 					$sql="INSERT INTO cn_devoirs SET id_racine='$id_racine', id_conteneur='$id_conteneur', nom_court='nouveau', ramener_sur_referentiel='F', note_sur='$note_sur';";
 					//echo "$sql<br />";
 					$reg=mysql_query($sql);
 					if(!$reg) {
-						$msg.="Erreur lors de la création du devoir pour l'enseignement associé au cahier de notes $current_id_cn.<br />";
+						$msg.="Erreur lors de la crÃ©ation du devoir pour l'enseignement associÃ© au cahier de notes $current_id_cn.<br />";
 					}
 					else {
 						$id_devoir=mysql_insert_id();
@@ -238,7 +238,7 @@ if(isset($_POST['transfert_cn'])) {
 
 	
 	
-						// Transférer les notes
+						// TransfÃ©rer les notes
 						$sql="SELECT DISTINCT ec.login_ele, ec.note, ec.statut FROM eb_copies ec, j_eleves_groupes jeg, cn_cahier_notes ccn WHERE ccn.id_groupe=jeg.id_groupe AND ccn.id_cahier_notes='$current_id_cn' AND ec.id_epreuve='$id_epreuve' AND jeg.periode='$current_periode' AND jeg.login=ec.login_ele;";
 						//echo "$sql<br />";
 						$res_ele=mysql_query($sql);
@@ -259,8 +259,8 @@ if(isset($_POST['transfert_cn'])) {
 							//echo "$sql<br />";
 							$insert=mysql_query($sql);
 							if(!$insert) {
-								$msg.="Erreur lors de l'insertion de la note ($lig_ele->note|$lig_ele->statut) pour $lig_ele->login_ele sur le devoir n°$id_devoir<br />";
-								//echo "Erreur lors de l'insertion de la note ($lig_ele->note|$lig_ele->statut) pour $lig_ele->login_ele sur le devoir n°$id_devoir<br />";
+								$msg.="Erreur lors de l'insertion de la note ($lig_ele->note|$lig_ele->statut) pour $lig_ele->login_ele sur le devoir nÂ°$id_devoir<br />";
+								//echo "Erreur lors de l'insertion de la note ($lig_ele->note|$lig_ele->statut) pour $lig_ele->login_ele sur le devoir nÂ°$id_devoir<br />";
 							}
 							else {
 								$cpt_notes++;
@@ -268,18 +268,18 @@ if(isset($_POST['transfert_cn'])) {
 						}
 
 
-						// Préparatifs de la mise à jour des moyennes de conteneurs
+						// PrÃ©paratifs de la mise Ã  jour des moyennes de conteneurs
 						$sql="SELECT id_groupe FROM cn_cahier_notes WHERE id_cahier_notes='$current_id_cn';";
 						$res=mysql_query($sql);
 						$lig=mysql_fetch_object($res);
 						$current_group=get_group($lig->id_groupe);
 						$periode_num=$current_periode;
 
-						// Renseignement d'un témoin comme quoi le transfert a déjà été effectué pour le groupe
+						// Renseignement d'un tÃ©moin comme quoi le transfert a dÃ©jÃ  Ã©tÃ© effectuÃ© pour le groupe
 						$sql="UPDATE eb_groupes SET transfert='y' WHERE id_epreuve='$id_epreuve' AND id_groupe='$lig->id_groupe';";
 						$update=mysql_query($sql);
 
-						// Mise à jour des moyennes de conteneurs
+						// Mise Ã  jour des moyennes de conteneurs
 						recherche_enfant($id_racine);
 
 					}
@@ -288,11 +288,11 @@ if(isset($_POST['transfert_cn'])) {
 			}
 		
 			if(($msg=='')&&($cpt_notes>0)) {
-				$msg="Enregistrement de $cpt_notes notes effectué.";
+				$msg="Enregistrement de $cpt_notes notes effectuÃ©.";
 			}
 		}
 		else {
-			$msg="L'épreuve choisie (<i>$id_epreuve</i>) est close.\n";
+			$msg="L'Ã©preuve choisie (<i>$id_epreuve</i>) est close.\n";
 		}
 	}
 }
@@ -300,7 +300,7 @@ if(isset($_POST['transfert_cn'])) {
 include('lib_eb.php');
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Transfert vers carnet de notes";
 //echo "<div class='noprint'>\n";
@@ -317,7 +317,7 @@ echo ">Retour</a>";
 if(!isset($id_epreuve)) {
 	echo "</p>\n";
 
-	echo "<p>Aucune épreuve n'a été choisie.</p>\n";
+	echo "<p>Aucune Ã©preuve n'a Ã©tÃ© choisie.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -326,12 +326,12 @@ if(!isset($id_epreuve)) {
 
 echo "</p>\n";
 
-echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
+echo "<p class='bold'>Epreuve nÂ°$id_epreuve</p>\n";
 
 $sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
+	echo "<p>L'Ã©preuve choisie (<i>$id_epreuve</i>) n'existe pas.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -353,12 +353,12 @@ echo "</blockquote>\n";
 $sql="SELECT g.*,eg.transfert FROM eb_groupes eg, groupes g WHERE eg.id_epreuve='$id_epreuve' AND g.id=eg.id_groupe ORDER BY g.name,g.description;";
 $res_grp=mysql_query($sql);
 if(mysql_num_rows($res_grp)==0) {
-	echo "<p>Aucun groupe n'est associé à l'épreuve choisie (<i>$id_epreuve</i>).</p>\n";
+	echo "<p>Aucun groupe n'est associÃ© Ã  l'Ã©preuve choisie (<i>$id_epreuve</i>).</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
 
-// On remplit un tableau avec toutes les extractions avant de l'afficher pour récupérer le nombre max de périodes
+// On remplit un tableau avec toutes les extractions avant de l'afficher pour rÃ©cupÃ©rer le nombre max de pÃ©riodes
 $tab_grp=array();
 $cpt=0;
 $max_num_per_tt_grp=0;
@@ -370,7 +370,7 @@ while($lig=mysql_fetch_object($res_grp)) {
 	$tab_grp[$cpt]['description']=$lig->description;
 	$tab_grp[$cpt]['transfert']=$lig->transfert;
 
-	// Récupérer la liste des classes associées
+	// RÃ©cupÃ©rer la liste des classes associÃ©es
 	$sql="SELECT DISTINCT c.classe FROM classes c, j_groupes_classes jgc WHERE c.id=jgc.id_classe AND jgc.id_groupe='$lig->id' ORDER BY c.classe;";
 	//echo "$sql<br />";
 	$res_clas=mysql_query($sql);
@@ -383,7 +383,7 @@ while($lig=mysql_fetch_object($res_grp)) {
 	}
 	$tab_grp[$cpt]['class_list']=$clas_list;
 
-	// Récupérer la liste des profs associés
+	// RÃ©cupÃ©rer la liste des profs associÃ©s
 	$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.login=jgp.login AND jgp.id_groupe='$lig->id' ORDER BY u.nom,u.prenom;";
 	//echo "$sql<br />";
 	$res_prof=mysql_query($sql);
@@ -396,7 +396,7 @@ while($lig=mysql_fetch_object($res_grp)) {
 	}
 	$tab_grp[$cpt]['profs_list']=$prof_list;
 
-	// Récupérer la liste des périodes
+	// RÃ©cupÃ©rer la liste des pÃ©riodes
 	$sql="SELECT MAX(p.num_periode) AS max_num_per FROM periodes p, j_groupes_classes jgc WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='$lig->id' ORDER BY p.num_periode;";
 	//echo "$sql<br />";
 	$res_per=mysql_query($sql);
@@ -435,15 +435,15 @@ while($lig=mysql_fetch_object($res_grp)) {
 echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 echo add_token_field();
 
-echo "<p>Sélectionnez les carnets de notes sur lesquels créer un devoir correspondant à l'épreuve.</p>\n";
+echo "<p>SÃ©lectionnez les carnets de notes sur lesquels crÃ©er un devoir correspondant Ã  l'Ã©preuve.</p>\n";
 
-// Choisir la période parmi celles ouvertes (pb avec les périodes closes sur certaines classes seulement)
-echo "<table class='boireaus' summary='Choix des périodes'>\n";
+// Choisir la pÃ©riode parmi celles ouvertes (pb avec les pÃ©riodes closes sur certaines classes seulement)
+echo "<table class='boireaus' summary='Choix des pÃ©riodes'>\n";
 echo "<tr>\n";
 echo "<th rowspan='2'>Enseignement</th>\n";
 echo "<th rowspan='2'>Classe(s)</th>\n";
 echo "<th rowspan='2'>Prof(s)</th>\n";
-echo "<th colspan='$max_num_per_tt_grp'>Périodes</th>\n";
+echo "<th colspan='$max_num_per_tt_grp'>PÃ©riodes</th>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
@@ -457,7 +457,7 @@ for($j=0;$j<$cpt;$j++) {
 	$alt=$alt*(-1);
 
 	if($tab_grp[$j]['transfert']=='y') {
-		echo "<tr style='background-color:gray;' title='Transfert vers le carnet de notes déjà effectué'>\n";
+		echo "<tr style='background-color:gray;' title='Transfert vers le carnet de notes dÃ©jÃ  effectuÃ©'>\n";
 	}
 	else {
 		echo "<tr class='lig$alt'>\n";
@@ -484,7 +484,7 @@ for($j=0;$j<$cpt;$j++) {
 			echo "</td>\n";
 		}
 		elseif(isset($tab_grp[$j]['ver_periode'][$i])) {
-			echo "<td><img src='../images/icons/flag.png' width='17' height='18' title='Cahier de note non initialisé pour cette période' alt='Cahier de note non initialisé pour cette période' /> <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=".$tab_grp[$j]['id']."&amp;periode=$i&amp;creer_cn=y".add_token_in_url()."'><img src='../images/icons/wizard.png' width='16' height='16' title='Créer le cahier de note' alt='Créer le cahier de note' /></a></td>\n";
+			echo "<td><img src='../images/icons/flag.png' width='17' height='18' title='Cahier de note non initialisÃ© pour cette pÃ©riode' alt='Cahier de note non initialisÃ© pour cette pÃ©riode' /> <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=".$tab_grp[$j]['id']."&amp;periode=$i&amp;creer_cn=y".add_token_in_url()."'><img src='../images/icons/wizard.png' width='16' height='16' title='CrÃ©er le cahier de note' alt='CrÃ©er le cahier de note' /></a></td>\n";
 		}
 		else {
 			echo "<td>-</td>\n";
@@ -496,14 +496,14 @@ for($j=0;$j<$cpt;$j++) {
 echo "</table>\n";
 
 if(getSettingValue("note_autre_que_sur_referentiel")=="F") {
-	echo "<p><span style='font-weight:bold; color:red;'>ATTENTION</span>&nbsp;: Les notes dans les carnets de notes ne sont autorisées que sur 20.<br />Si vous n'autorisez pas les professeurs à saisir des notes sur un autre référentiel que 20, les notes seront ramenées sur 20 lors du transfert dans le carnet de notes.<br />En revanche, si vous souhaitez autoriser les notes sur d'autres référentiels, <a href='../cahier_notes_admin/index.php'>suivez ce lien</a>.</p>\n";
+	echo "<p><span style='font-weight:bold; color:red;'>ATTENTION</span>&nbsp;: Les notes dans les carnets de notes ne sont autorisÃ©es que sur 20.<br />Si vous n'autorisez pas les professeurs Ã  saisir des notes sur un autre rÃ©fÃ©rentiel que 20, les notes seront ramenÃ©es sur 20 lors du transfert dans le carnet de notes.<br />En revanche, si vous souhaitez autoriser les notes sur d'autres rÃ©fÃ©rentiels, <a href='../cahier_notes_admin/index.php'>suivez ce lien</a>.</p>\n";
 }
 
 
 echo "<script type='text/javascript'>
 function alert_transfert(id) {
 	if(document.getElementById(id).checked) {
-		alert('Etes-vous sur de vouloir transférer à nouveau les résultats?')
+		alert('Etes-vous sur de vouloir transfÃ©rer Ã  nouveau les rÃ©sultats?')
 	}
 }
 </script>\n";
@@ -515,9 +515,9 @@ echo "</form>\n";
 echo "<p><br /></p>\n";
 echo "<p style='color:red;'>A FAIRE:</p>\n";
 echo "<ul>\n";
-echo "<li><p style='color:red;'>Basculer l'état dans un état clos ou interdisant au moins de modifier les notes.</p></li>\n";
-echo "<li><p style='color:red;'>Pouvoir exporter ces résultats au format CSV.</p></li>\n";
-//echo "<li><p style='color:red;'>Ajouter un témoin comme quoi le transfert a déjà été effectué.</p></li>\n";
+echo "<li><p style='color:red;'>Basculer l'Ã©tat dans un Ã©tat clos ou interdisant au moins de modifier les notes.</p></li>\n";
+echo "<li><p style='color:red;'>Pouvoir exporter ces rÃ©sultats au format CSV.</p></li>\n";
+//echo "<li><p style='color:red;'>Ajouter un tÃ©moin comme quoi le transfert a dÃ©jÃ  Ã©tÃ© effectuÃ©.</p></li>\n";
 echo "</ul>\n";
 
 require("../lib/footer.inc.php");

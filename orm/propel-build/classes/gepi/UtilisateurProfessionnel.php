@@ -198,7 +198,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 			return $this->collAccesFicheEleves['statut_autre'];
 		    }
 
-		    // On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
+		    // On rÃ©cupÃ¨re les droits de ce statuts pour savoir ce qu'on peut afficher
 		    $sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
 		    $query_d = mysql_query($sql_d);
 
@@ -390,7 +390,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * Renvoi une preference d'un utilisateur
 	 * Ajout manuel
 	 *
-	 * @param      String $name le nom de la preference à obtenir
+	 * @param      String $name le nom de la preference Ã  obtenir
 	 * @return     String the associated value
 	 */
 	public function getPreferenceValeur($name){
@@ -409,7 +409,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * Enregistre une preference d'un utilisateur
 	 * Ajout manuel
 	 *
-	 * @param      String $name le nom de la preference à obtenir
+	 * @param      String $name le nom de la preference Ã  obtenir
 	 */
 	public function setPreferenceValeur($name, $value){
 	    $criteria = new Criteria();
@@ -451,12 +451,12 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
-	 * Retourne tous les emplacements de cours pour la periode précisée du calendrier.
+	 * Retourne tous les emplacements de cours pour la periode prÃ©cisÃ©e du calendrier.
 	 * On recupere aussi les emplacements dont la periode n'est pas definie ou vaut 0.
 	 *
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  EdtCalendrierPeriode est aussi accepté
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  EdtCalendrierPeriode est aussi acceptÃ©
 	 * 
-	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
+	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnÃ©e chronologiquement
 	 */
 	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
 	    if (!($v instanceof EdtCalendrierPeriode)) {
@@ -568,7 +568,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
-	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonné par les noms des classes.
+	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonnÃ© par les noms des classes.
 	 * Manually added for N:M relationship
 	 * It seems that the groupes are passed by values and not by references.
 	 *
@@ -593,7 +593,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
-	 * Ajoute une classe à l'utilisateur scolarité
+	 * Ajoute une classe Ã  l'utilisateur scolaritÃ©
 	 *
 	 * @param      Classe $c Classe
 	 * @return     void
@@ -601,7 +601,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 */
 	public function addClasse($c) {
 		if ($this->getStatut() != 'scolarite') {
-			throw new PropelException('addClasse() ne peut être appelé que pour un utilisateur scolarité');
+			throw new PropelException('addClasse() ne peut Ãªtre appelÃ© que pour un utilisateur scolaritÃ©');
 		}
 		if ($this->collClasses === null) {
 			$this->initClasses();
@@ -632,7 +632,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
-	 * Renvoi sous forme d'un tableau la liste des aid d'un utilisateur. Pour le statut cpe ou scolarité, renvoi la liste des aid des élèves sous la responsabilité de l'utilisateur
+	 * Renvoi sous forme d'un tableau la liste des aid d'un utilisateur. Pour le statut cpe ou scolaritÃ©, renvoi la liste des aid des Ã©lÃ¨ves sous la responsabilitÃ© de l'utilisateur
 	 *
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
 	 * @return     PropelObjectCollection AidDetails[]

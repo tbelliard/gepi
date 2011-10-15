@@ -11,9 +11,9 @@
 */
 
 
-/** GÈnÈration d'une variable alÈatoire 
+/** G√©n√©ration d'une variable al√©atoire 
  * 
- * GÈnËre un nombre alÈatoire et le stocke en $_SESSION
+ * G√©n√®re un nombre al√©atoire et le stocke en $_SESSION
  * 
  * @see getSettingValue()
  */
@@ -40,16 +40,16 @@ function generate_token() {
 /**
  * Renvoie une balise <input type='hidden'... /> avec la variable $_SESSION['gepi_alea']
  * 
- * Dans une page, il ne devrait y avoir qu'un seul appel ‡ add_token_field(TRUE), les autres... 
- * dans les autres formulaires Ètant avec add_token_field()
+ * Dans une page, il ne devrait y avoir qu'un seul appel √† add_token_field(TRUE), les autres... 
+ * dans les autres formulaires √©tant avec add_token_field()
  * 
- * Appels pour insÈrer le champ 'csrf_alea' dans des formulaires inclus dans le code
+ * Appels pour ins√©rer le champ 'csrf_alea' dans des formulaires inclus dans le code
  * de messages du panneau d'affichage (table 'messages') : 
  * add_token_field(TRUE,FALSE) ou add_token_field(FALSE,FALSE)
  * 
- * @todo On pourrait utiliser une variable globale pour... si l'id csrf_alea est dÈj‡ dÈfini ne plus l'ajouter...
- * @param bool $avec_id ajoute un argument id='csrf_alea' ‡ la balise si TRUE
- * @param bool $avec_gepi_alea remplace le nombre alÈatoire par "_CRSF_ALEA_" si FALSE
+ * @todo On pourrait utiliser une variable globale pour... si l'id csrf_alea est d√©j√† d√©fini ne plus l'ajouter...
+ * @param bool $avec_id ajoute un argument id='csrf_alea' √† la balise si TRUE
+ * @param bool $avec_gepi_alea remplace le nombre al√©atoire par "_CRSF_ALEA_" si FALSE
  * @return text la balise <input...>
  */
 function add_token_field($avec_id=FALSE,$avec_gepi_alea=TRUE) {
@@ -65,15 +65,15 @@ function add_token_field($avec_id=FALSE,$avec_gepi_alea=TRUE) {
 }
 
 /**
- * InsËre le champ 'csrf_alea' dans une adresse de page
+ * Ins√®re le champ 'csrf_alea' dans une adresse de page
  * 
- * appels pour insÈrer le champ 'csrf_alea' dans des liens inclus dans le code
+ * appels pour ins√©rer le champ 'csrf_alea' dans des liens inclus dans le code
  * de messages du panneau d'affichage (table 'messages') :
  * add_token_in_url(TRUE,FALSE) ou add_token_in_url(FALSE,FALSE)
  * 
  * @param bool $html_chars echappe le & si TRUE
- * @param bool $avec_gepi_alea remplace le nombre alÈatoire par "_CRSF_ALEA_" si FALSE
- * @return text le texte ‡ ajouter ‡ l'URL
+ * @param bool $avec_gepi_alea remplace le nombre al√©atoire par "_CRSF_ALEA_" si FALSE
+ * @return text le texte √† ajouter √† l'URL
  */
 function add_token_in_url($html_chars = TRUE, $avec_gepi_alea=TRUE) {
 	
@@ -88,7 +88,7 @@ function add_token_in_url($html_chars = TRUE, $avec_gepi_alea=TRUE) {
 }
 
 /**
- * InsËre $_SESSION['gepi_alea'] dans une fonction javascript
+ * Ins√®re $_SESSION['gepi_alea'] dans une fonction javascript
  *
  * @return text $_SESSION['gepi_alea']
  */
@@ -97,11 +97,11 @@ function add_token_in_js_func() {
 }
 
 /**
- * VÈrifie que le csrf_alea est bon
+ * V√©rifie que le csrf_alea est bon
  * 
  * Avant le Header, on appelle check_token()
  * 
- * AprËs le Header, on appelle check_token(FALSE)
+ * Apr√®s le Header, on appelle check_token(FALSE)
  *
  * @global int
  * @param bool $redirection 
@@ -127,7 +127,7 @@ function check_token($redirection=TRUE) {
 		}
 		elseif ($niveau_arbo == "public") {
 			$pref_arbo="..";
-			// A REVOIR... SI C'EST PUBLIC, ON N'EST PAS LOGUÈ
+			// A REVOIR... SI C'EST PUBLIC, ON N'EST PAS LOGU√©
 			// NORMALEMENT, EN PUBLIC on ne devrait pas avoir de page sensible
 		}
 	}
@@ -139,10 +139,10 @@ function check_token($redirection=TRUE) {
 		if($csrf_alea!=$_SESSION['gepi_alea']) {
 			action_alea_invalide();
 			if($redirection) {
-				header("Location: $pref_arbo/accueil.php?msg=OpÈration non autorisÈe");
+				header("Location: $pref_arbo/accueil.php?msg=Op√©ration non autoris√©e");
 			}
 			else {
-				echo "<p style='color:red'>OpÈration non autorisÈe</p>\n";
+				echo "<p style='color:red'>Op√©ration non autoris√©e</p>\n";
 				require("$pref_arbo/lib/footer.inc.php");
 			}
 			die();
@@ -164,18 +164,18 @@ function check_token($redirection=TRUE) {
 /**
  * Actions en cas d'attaque CSRF
  *
- * Construit un message ‡ envoyÈ ‡ l'administrateur et ‡ enregistrer dans les logs
+ * Construit un message √† envoy√© √† l'administrateur et √† enregistrer dans les logs
  *
- * @param bool $envoyer_mail Un courriel est envoyÈ ‡ l'administrateur si TRUE
+ * @param bool $envoyer_mail Un courriel est envoy√© √† l'administrateur si TRUE
  * @see getSettingValue()
  * @see envoi_mail()
  */
 function action_alea_invalide($envoyer_mail=TRUE) {
 	
-	// NE pas donner dans le mail les valeurs du token pour Èviter des problËmes lors d'une Èventuelle capture du mail.
+	// NE pas donner dans le mail les valeurs du token pour √©viter des probl√®mes lors d'une √©ventuelle capture du mail.
 
-	$details="La personne victime de l'attaque Ètait ".$_SESSION['login'].".\n";
-	$details.="La page cible Ètait ".$_SERVER['PHP_SELF']." avec les variables suivantes:\n";
+	$details="La personne victime de l'attaque √©tait ".$_SESSION['login'].".\n";
+	$details.="La page cible √©tait ".$_SERVER['PHP_SELF']." avec les variables suivantes:\n";
 	$details.="Variables en \$_POST:\n";
 	foreach($_POST as $key => $value) {
       $details.="   \$_POST[$key]=$value\n";
@@ -187,7 +187,7 @@ function action_alea_invalide($envoyer_mail=TRUE) {
 	}
 
 	if($envoyer_mail) {
-		// Envoyer un mail ‡ l'admin
+		// Envoyer un mail √† l'admin
 		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 		if($envoi_mail_actif!="n") {
 			$destinataire=getSettingValue('gepiAdminAdress');

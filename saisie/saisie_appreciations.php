@@ -20,7 +20,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -49,8 +49,8 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 } else {
 	$current_group = false;
 
-	// Pourquoi poursuivre si le groupe n'est pas trouvé?
-	$mess=rawurlencode("Anomalie: Vous arrivez sur cette page sans que l'enseignement soit sélectionné ! Si vous aviez bien sélectionné un enseignement, il se peut que vous ayez un module php du type 'suhosin' qui limite le nombre de variables pouvant être postées dans un formulaire.");
+	// Pourquoi poursuivre si le groupe n'est pas trouvÃ©?
+	$mess=rawurlencode("Anomalie: Vous arrivez sur cette page sans que l'enseignement soit sÃ©lectionnÃ© ! Si vous aviez bien sÃ©lectionnÃ© un enseignement, il se peut que vous ayez un module php du type 'suhosin' qui limite le nombre de variables pouvant Ãªtre postÃ©es dans un formulaire.");
 	header("Location: index.php?msg=$mess");
 	die();
 }
@@ -69,7 +69,7 @@ include "../lib/periodes.inc.php";
 
 if ($_SESSION['statut'] != "secours") {
 	if (!(check_prof_groupe($_SESSION['login'],$current_group["id"]))) {
-		$mess=rawurlencode("Vous n'êtes pas professeur de cet enseignement !");
+		$mess=rawurlencode("Vous n'Ãªtes pas professeur de cet enseignement !");
 		header("Location: index.php?msg=$mess");
 		die();
 	}
@@ -107,7 +107,7 @@ if (isset($_POST['is_posted'])) {
 					$app = "";
 				}
 				//echo "<pre>$k: $app</pre>";
-				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+				// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 				$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
 				$app=preg_replace('/(\\\r)+/',"\r",$app);
 				$app=preg_replace('/(\\\n)+/',"\n",$app);
@@ -120,17 +120,17 @@ if (isset($_POST['is_posted'])) {
 					} else {
 						$register = mysql_query("DELETE FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
 					}
-					if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";}
+					if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des donnÃ©es de la pÃ©riode $k pour le groupe/classe<br />";}
 
 				} else {
 					if ($app != "") {
 						$register = mysql_query("INSERT INTO matieres_appreciations_grp SET id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
-						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";}
+						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des donnÃ©es de la pÃ©riode $k pour le groupe/classe<br />";}
 					}
 				}
 			}
 			else {
-				$msg.="Anomalie: Tentative de saisie d'une appréciation de classe alors que la période n'est pas ouverte en saisie.<br />";
+				$msg.="Anomalie: Tentative de saisie d'une apprÃ©ciation de classe alors que la pÃ©riode n'est pas ouverte en saisie.<br />";
 			}
 		}
 		//=================================================
@@ -141,13 +141,13 @@ if (isset($_POST['is_posted'])) {
 
 				//echo "\$log_eleve[$i]=$log_eleve[$i]<br />\n";
 				if(isset($log_eleve[$i])) {
-					// On supprime le suffixe indiquant la période:
+					// On supprime le suffixe indiquant la pÃ©riode:
 					$reg_eleve_login=preg_replace("/_t".$k."$/","",$log_eleve[$i]);
 
 					//echo "\$i=$i<br />";
 					//echo "\$reg_eleve_login=$reg_eleve_login<br />";
 
-					// La période est-elle ouverte?
+					// La pÃ©riode est-elle ouverte?
 					if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
 						$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
 						//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
@@ -168,7 +168,7 @@ if (isset($_POST['is_posted'])) {
 							//echo "\$app=$app<br />";
 							//echo "<pre style='color: red'>$reg_eleve_login: $app</pre>\n";
 
-							// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+							// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 							$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
 							$app=preg_replace('/(\\\r)+/',"\r",$app);
 							$app=preg_replace('/(\\\n)+/',"\n",$app);
@@ -177,7 +177,7 @@ if (isset($_POST['is_posted'])) {
 
 							//=========================
 							// 20100604
-							// Ménage: pour ne pas laisser une demande de validation de correction alors qu'on a rouvert la période en saisie... on risquerait d'écraser par la suite l'enregistrement fait après la rouverture de période.
+							// MÃ©nage: pour ne pas laisser une demande de validation de correction alors qu'on a rouvert la pÃ©riode en saisie... on risquerait d'Ã©craser par la suite l'enregistrement fait aprÃ¨s la rouverture de pÃ©riode.
 							$sql="DELETE FROM matieres_app_corrections WHERE (login='$reg_eleve_login' AND id_groupe='".$current_group["id"]."' AND periode='$k');";
 							$del=mysql_query($sql);
 							//=========================
@@ -191,12 +191,12 @@ if (isset($_POST['is_posted'])) {
 								} else {
 									$register = mysql_query("DELETE FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
 								}
-								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour l'élève $reg_eleve_login<br />";}
+								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des donnÃ©es de la pÃ©riode $k pour l'Ã©lÃ¨ve $reg_eleve_login<br />";}
 
 							} else {
 								if ($app != "") {
 									$register = mysql_query("INSERT INTO matieres_appreciations SET login='$reg_eleve_login',id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
-									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour l'élève $reg_eleve_login<br />";}
+									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des donnÃ©es de la pÃ©riode $k pour l'Ã©lÃ¨ve $reg_eleve_login<br />";}
 								}
 							}
 						}
@@ -208,9 +208,9 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if($msg=='') {
-		// On ne vide que si l'enregistrement s'est bien passé
+		// On ne vide que si l'enregistrement s'est bien passÃ©
 
-		// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
+		// A partir de lÃ , toutes les apprÃ©ciations ont Ã©tÃ© sauvegardÃ©es proprement, on vide la table tempo
 		$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
 		OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
 	}
@@ -228,7 +228,7 @@ if (isset($_POST['is_posted'])) {
 						else
 						$app = "";
 
-						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraire.
+						// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raire.
 						$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
 
 
@@ -240,12 +240,12 @@ if (isset($_POST['is_posted'])) {
 							} else {
 								$register = mysql_query("DELETE FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
 							}
-							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour l'élève $reg_eleve_login<br />";}
+							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des donnÃ©es de la pÃ©riode $k pour l'Ã©lÃ¨ve $reg_eleve_login<br />";}
 
 						} else {
 							if ($app != "") {
 								$register = mysql_query("INSERT INTO matieres_appreciations SET login='$reg_eleve_login',id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
-								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour l'élève $reg_eleve_login<br />";}
+								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des donnÃ©es de la pÃ©riode $k pour l'Ã©lÃ¨ve $reg_eleve_login<br />";}
 							}
 						}
 					}
@@ -266,13 +266,13 @@ if (isset($_POST['is_posted'])) {
 elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))) {
 	check_token();
 
-	// Dispositif pour proposer des corrections une fois la période close.
+	// Dispositif pour proposer des corrections une fois la pÃ©riode close.
 	$correction_login_eleve=$_POST['correction_login_eleve'];
 	$correction_periode=$_POST['correction_periode'];
 	//$correction_app_eleve=$_POST['correction_app_eleve'];
 	//$correction_id_groupe=$_POST['correction_id_groupe'];
 
-	// On n'utilise le dispositif que pour des périodes partiellement closes
+	// On n'utilise le dispositif que pour des pÃ©riodes partiellement closes
 	if($ver_periode[$correction_periode]=='P') {
 
 		$autorisation_exceptionnelle_de_saisie='n';
@@ -294,9 +294,9 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
-			// Il y avait une appréciation saisie
-			// Si l'autorisation de proposition de correction est donnée, c'est OK
-			// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
+			// Il y avait une apprÃ©ciation saisie
+			// Si l'autorisation de proposition de correction est donnÃ©e, c'est OK
+			// Sinon, on contrÃ´le quand mÃªme s'il y a une autorisation exceptionnelle
 			if(substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
 				$saisie_valide='y';
 			}
@@ -311,17 +311,17 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 	
 	
 		if($saisie_valide!='y') {
-			$msg.="ERREUR: La saisie n'est pas autorisée.<br />";
+			$msg.="ERREUR: La saisie n'est pas autorisÃ©e.<br />";
 		}
 		else {
 		
 			//echo "BLABLA";
 		
-			// Un test check_prof_groupe($_SESSION['login'],$current_group["id"]) est fait plus haut pour contrôler que le prof est bien associé à ce groupe
+			// Un test check_prof_groupe($_SESSION['login'],$current_group["id"]) est fait plus haut pour contrÃ´ler que le prof est bien associÃ© Ã  ce groupe
 		
 			if (isset($NON_PROTECT["correction_app_eleve"])) {
 				$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["correction_app_eleve"]));
-				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+				// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 				$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
 				$app=preg_replace('/(\\\r)+/',"\r",$app);
 				$app=preg_replace('/(\\\n)+/',"\n",$app);
@@ -332,14 +332,14 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		
 				if((strlen(preg_replace('/[A-Za-z0-9._-]/','',$correction_login_eleve))!=0)||
 				(strlen(preg_replace('/[0-9]/','',$correction_periode))!=0)) {
-					$msg.="Des caractères invalides sont proposés pour le login élève $correction_nom_prenom_eleve ou pour la période $correction_periode.<br />";
+					$msg.="Des caractÃ¨res invalides sont proposÃ©s pour le login Ã©lÃ¨ve $correction_nom_prenom_eleve ou pour la pÃ©riode $correction_periode.<br />";
 				}
 				else {
 		
 					$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$correction_login_eleve' AND periode='$correction_periode' AND id_groupe='$id_groupe';";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)==0) {
-						$msg.="L'élève $correction_nom_prenom_eleve n'est pas associé au groupe n°$id_groupe pour la période $correction_periode.<br />";
+						$msg.="L'Ã©lÃ¨ve $correction_nom_prenom_eleve n'est pas associÃ© au groupe nÂ°$id_groupe pour la pÃ©riode $correction_periode.<br />";
 					}
 					else {
 		
@@ -350,18 +350,18 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 							if ($app!="") {
 								$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
 								$register=mysql_query($sql);
-								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
+								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la pÃ©riode $correction_periode.<br />";} 
 								else {
-									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
-									$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
+									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la pÃ©riode $correction_periode effectuÃ©.<br />";
+									$texte_mail.="Une correction proposÃ©e a Ã©tÃ© mise Ã  jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'Ã©lÃ¨ve ".$correction_nom_prenom_eleve." sur la pÃ©riode $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
 								}
 							} else {
 								$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
 								$register=mysql_query($sql);
-								if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
+								if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la pÃ©riode $correction_periode.<br />";} 
 								else {
-									$msg.="Suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectuée.<br />";
-									$texte_mail.="Suppression de la proposition de correction pour l'élève $correction_nom_prenom_eleve\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
+									$msg.="Suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la pÃ©riode $correction_periode effectuÃ©e.<br />";
+									$texte_mail.="Suppression de la proposition de correction pour l'Ã©lÃ¨ve $correction_nom_prenom_eleve\r\nsur la pÃ©riode $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
 								}
 							}
 				
@@ -370,10 +370,10 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 							if ($app != "") {
 								$sql="INSERT INTO matieres_app_corrections SET login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
 								$register=mysql_query($sql);
-								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";}
+								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la pÃ©riode $correction_periode.<br />";}
 								else {
-									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
-									$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
+									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la pÃ©riode $correction_periode effectuÃ©.<br />";
+									$texte_mail.="Une correction a Ã©tÃ© proposÃ©e par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'Ã©lÃ¨ve $correction_nom_prenom_eleve sur la pÃ©riode $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
 								}
 							}
 						}
@@ -382,7 +382,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 				
 							$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 							if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-								$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+								$envoi_mail_actif='y'; // Passer Ã  'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 							}
 				
 							if($envoi_mail_actif=='y') {
@@ -417,7 +417,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 										while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
 									}
 				
-									$sujet_mail="[GEPI] Demande de validation de correction d'appréciation";
+									$sujet_mail="[GEPI] Demande de validation de correction d'apprÃ©ciation";
 					
 									$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 									if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
@@ -452,12 +452,12 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 
 if (!isset($periode_cn)) $periode_cn = 0;
 
-$themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_enregistrement = "Les modifications ont été enregistrées !";
+$themessage = 'Des apprÃ©ciations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 $utilisation_prototype = "ok";
 $javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
-$titre_page = "Saisie des appréciations";
+$titre_page = "Saisie des apprÃ©ciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -499,13 +499,13 @@ echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>
 
 //=========================
 // AJOUT: boireaus 20071108
-echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a>";
+echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et apprÃ©ciations</a>";
 //=========================
 
 /*
 // =================================
 // AJOUT: boireaus
-// Pour proposer de passer à la classe suivante ou à la précédente
+// Pour proposer de passer Ã  la classe suivante ou Ã  la prÃ©cÃ©dente
 //$sql="SELECT id, classe FROM classes ORDER BY classe";
 if($_SESSION['statut']=='secours'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
@@ -530,14 +530,14 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	}
 
 	if($login_prof_groupe_courant!='') {
-		//$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
-		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+		//$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matiÃ¨re");
+		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matiÃ¨re");
 		//$tab_groups = get_groups_for_prof($_SESSION["login"]);
 	}
 
 	if(!empty($tab_groups)) {
 
-		// Pour s'assurer de ne pas avoir deux fois le même groupe...
+		// Pour s'assurer de ne pas avoir deux fois le mÃªme groupe...
 		$tmp_group=array();
 
 		$chaine_options_classes="";
@@ -558,7 +558,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 				echo "\$tab_groups[$loop]['name']=".$tab_groups[$loop]['name']."<br />";
 				echo "\$tab_groups[$loop]['classlist_string']=".$tab_groups[$loop]['classlist_string']."<br />";
 				*/
-				// Pour s'assurer de ne pas avoir deux fois le même groupe...
+				// Pour s'assurer de ne pas avoir deux fois le mÃªme groupe...
 				if(!in_array($tab_groups[$loop]['id'],$tmp_group)) {
 					$tmp_group[]=$tab_groups[$loop]['id'];
 	
@@ -596,7 +596,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		if(isset($id_grp_prec)){
 			if($id_grp_prec!=0){
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement prÃ©cÃ©dent</a>";
 			}
 		}
 
@@ -676,7 +676,7 @@ if ($insert_mass_appreciation_type=="y") {
 
 	if($droit_insert_mass_appreciation_type=="y") {
 		echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
-		echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
+		echo "InsÃ©rer l'apprÃ©ciation-type suivante pour toutes les apprÃ©ciations vides: ";
 		echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
 		echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
 		echo "</div>\n";
@@ -710,36 +710,36 @@ echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px
 echo "</div>\n";
 //===========================================================
 
-echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
+echo "<h2 class='gepi'>Bulletin scolaire - Saisie des apprÃ©ciations</h2>\n";
 
-echo "<p>Vous pouvez faire apparaître dans votre appréciation la liste des notes de l'élève pour la période en insérant la chaine de caractères <b>@@Notes</b><br />(<i>les notes apparaîtront alors lors de la visualisation/impression du bulletin</i>)</p>\n";
+echo "<p>Vous pouvez faire apparaÃ®tre dans votre apprÃ©ciation la liste des notes de l'Ã©lÃ¨ve pour la pÃ©riode en insÃ©rant la chaine de caractÃ¨res <b>@@Notes</b><br />(<i>les notes apparaÃ®tront alors lors de la visualisation/impression du bulletin</i>)</p>\n";
 
-//echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
+//echo "<p><b>Groupe : " . $current_group["description"] ." | MatiÃ¨re : $matiere_nom</b></p>\n";
 echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
 
 if ($multiclasses) {
 	echo "<p>Affichage :";
-	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=classe'>Regrouper les élèves par classe</a>";
-	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom'>Afficher la liste par ordre alphabétique</a>";
+	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=classe'>Regrouper les Ã©lÃ¨ves par classe</a>";
+	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom'>Afficher la liste par ordre alphabÃ©tique</a>";
 	echo "</p>\n";
 }
 
-// On commence par mettre la liste dans l'ordre souhaité
+// On commence par mettre la liste dans l'ordre souhaitÃ©
 if ($order_by != "classe") {
 	$liste_eleves = $current_group["eleves"]["all"]["list"];
 } else {
 	// Ici, on tri par classe
-	// On va juste créer une liste des élèves pour chaque classe
+	// On va juste crÃ©er une liste des Ã©lÃ¨ves pour chaque classe
 	$tab_classes = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
 		$tab_classes[$classe_id] = array();
 	}
-	// On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
+	// On passe maintenant Ã©lÃ¨ve par Ã©lÃ¨ve et on les met dans la bonne liste selon leur classe
 	foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
 		$classe = $current_group["eleves"]["all"]["users"][$eleve_login]["classe"];
 		$tab_classes[$classe][] = $eleve_login;
 	}
-	// On met tout ça à la suite
+	// On met tout Ã§a Ã  la suite
 	$liste_eleves = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
 		$liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
@@ -747,16 +747,16 @@ if ($order_by != "classe") {
 }
 
 
-// Fonction de renseignement du champ qui doit obtenir le focus après validation
+// Fonction de renseignement du champ qui doit obtenir le focus aprÃ¨s validation
 echo "<script type='text/javascript'>
 
 function focus_suivant(num){
 	temoin='';
-	// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+	// La variable 'dernier' peut dÃ©passer de l'effectif de la classe... mais cela n'est pas dramatique
 	dernier=num+".count($liste_eleves)."
-	// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
-	// (pour réussir à passer un élève qui ne serait plus dans la période)
-	// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+	// On parcourt les champs Ã  partir de celui de l'Ã©lÃ¨ve en cours jusqu'Ã  rencontrer un champ existant
+	// (pour rÃ©ussir Ã  passer un Ã©lÃ¨ve qui ne serait plus dans la pÃ©riode)
+	// AprÃ¨s validation, c'est ce champ qui obtiendra le focus si on n'Ã©tait pas Ã  la fin de la liste.
 	for(i=num;i<dernier;i++){
 		suivant=i+1;
 		if(temoin==''){
@@ -777,7 +777,7 @@ function focus_suivant(num){
 
 
 	if ($restauration == NULL) {
-		// On supprime les appreciation_tempo qui sont identiques aux appreciations enregistrées dans matieres_appreciations
+		// On supprime les appreciation_tempo qui sont identiques aux appreciations enregistrÃ©es dans matieres_appreciations
 		$sql="SELECT mat.* FROM matieres_appreciations_tempo mat, matieres_appreciations ma WHERE
 			(mat.id_groupe='".$current_group["id"]."' AND mat.id_groupe=ma.id_groupe AND mat.periode=ma.periode AND mat.login=ma.login AND mat.appreciation=ma.appreciation);";
 		$res_app_identiques=mysql_query($sql);
@@ -790,26 +790,26 @@ function focus_suivant(num){
 		}
 	}
 
-	// On teste s'il existe des données dans la table matieres_appreciations_tempo
+	// On teste s'il existe des donnÃ©es dans la table matieres_appreciations_tempo
 	$sql_test = mysql_query("SELECT login FROM matieres_appreciations_tempo WHERE id_groupe = '" . $current_group["id"] . "'");
 	$test = mysql_num_rows($sql_test);
 	if ($test !== 0 AND $restauration == NULL) {
-		// On envoie un message à l'utilisateur
+		// On envoie un message Ã  l'utilisateur
 		echo "
-		<p class=\"red\">Certaines appréciations n'ont pas été enregistrées lors de votre dernière saisie.<br />
-			Elles sont indiquées ci-dessous en rouge. Voulez-vous les restaurer ?
+		<p class=\"red\">Certaines apprÃ©ciations n'ont pas Ã©tÃ© enregistrÃ©es lors de votre derniÃ¨re saisie.<br />
+			Elles sont indiquÃ©es ci-dessous en rouge. Voulez-vous les restaurer ?
 		</p>
 		<p class=\"red\">
 		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui".add_token_in_url()."\">OUI</a>
-		(elles remplaceront alors la saisie précédente)
+		(elles remplaceront alors la saisie prÃ©cÃ©dente)
 			-
 		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non".add_token_in_url()."\">NON</a>
-		(elles seront alors définitivement perdues)
+		(elles seront alors dÃ©finitivement perdues)
 		</p>
 		";
 	}
 
-	// Dans tous les cas, si $restauration n'est pas NULL, il faut vider la table tempo des appréciations de ce groupe
+	// Dans tous les cas, si $restauration n'est pas NULL, il faut vider la table tempo des apprÃ©ciations de ce groupe
 
 //=================================
 // AJOUT: boireaus 20080201
@@ -862,20 +862,20 @@ while ($k < $nb_periode) {
 		$mess[$k].=">".$app_grp[$k]."</textarea>\n";
 	}
 
-	// on affiche si besoin l'appréciation temporaire (en sauvegarde)
+	// on affiche si besoin l'apprÃ©ciation temporaire (en sauvegarde)
 	//$mess[$k].=$eleve_app_t;
 	$mess[$k].= "</td>\n";
 	$k++;
 }
 
 
-echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\" summary=\"Appréciation sur le groupe/classe\">\n";
+echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\" summary=\"ApprÃ©ciation sur le groupe/classe\">\n";
 echo "<tr>\n";
 echo "<th width=\"200\"><div align=\"center\">&nbsp;</div></th>\n";
 echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
 echo "<th>\n";
-echo "<div style='float:right; width:16;'><a href='javascript:affichage_div_photo();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles et éventuellement la photo élève' title='Afficher la photo élève pendant la saisie' /></a></div>\n";
-echo "<div align=\"center\"><b>Appréciation sur le groupe/classe</b>\n";
+echo "<div style='float:right; width:16;'><a href='javascript:affichage_div_photo();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles et Ã©ventuellement la photo Ã©lÃ¨ve' title='Afficher la photo Ã©lÃ¨ve pendant la saisie' /></a></div>\n";
+echo "<div align=\"center\"><b>ApprÃ©ciation sur le groupe/classe</b>\n";
 echo "</div></th>\n";
 echo "</tr>\n";
 //=================================================
@@ -927,7 +927,7 @@ $cpt_correction=0;
 
 //=================================
 // Tableau pour les autorisations exceptionnelles de saisie
-// Il n'est pris en compte comme le getSettingValue('autoriser_correction_bulletin' que pour une période partiellement close
+// Il n'est pris en compte comme le getSettingValue('autoriser_correction_bulletin' que pour une pÃ©riode partiellement close
 $une_autorisation_exceptionnelle_de_saisie_au_moins='n';
 $tab_autorisation_exceptionnelle_de_saisie=array();
 $date_courante=time();
@@ -941,7 +941,7 @@ while ($k < $nb_periode) {
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
 		$date_limite=$lig->date_limite;
-		//echo "\$date_limite=$date_limite en période $k.<br />";
+		//echo "\$date_limite=$date_limite en pÃ©riode $k.<br />";
 
 		if($date_courante<$date_limite) {
 			$tab_autorisation_exceptionnelle_de_saisie[$k]='y';
@@ -954,15 +954,15 @@ while ($k < $nb_periode) {
 
 $prev_classe = null;
 //=================================================
-// COMMENTé: boireaus 20080201
+// COMMENTÃ©: boireaus 20080201
 //$num_id = 10;
 //=================================================
 //=========================
 // AJOUT: boireaus 20071010
-// Compteur pour les élèves
+// Compteur pour les Ã©lÃ¨ves
 $i=0;
 //=========================
-// Pour permettre le remplacement de la chaine _PRENOM_ par le prénom de l'élève dans les commentaires types (ctp.php)
+// Pour permettre le remplacement de la chaine _PRENOM_ par le prÃ©nom de l'Ã©lÃ¨ve dans les commentaires types (ctp.php)
 $chaine_champs_input_prenom="";
 $chaine_champs_input_login="";
 //=========================
@@ -978,7 +978,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 		if (in_array($eleve_login, $current_group["eleves"][$k]["list"])) {
 			//
-			// si l'élève appartient au groupe pour cette période
+			// si l'Ã©lÃ¨ve appartient au groupe pour cette pÃ©riode
 			//
 			$eleve_nom = $current_group["eleves"][$k]["users"][$eleve_login]["nom"];
 			$eleve_prenom = $current_group["eleves"][$k]["users"][$eleve_login]["prenom"];
@@ -1014,11 +1014,11 @@ foreach ($liste_eleves as $eleve_login) {
 
 			$suit_option[$k] = 'yes';
 			//
-			// si l'élève suit la matière
+			// si l'Ã©lÃ¨ve suit la matiÃ¨re
 			//
 
 			$notes_conteneurs="";
-			// On contrôle s'il y a des boites avec moyennes à afficher
+			// On contrÃ´le s'il y a des boites avec moyennes Ã  afficher
 			$sql="SELECT DISTINCT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='" . $current_group["id"] . "' AND periode='$k';";
 			//if($current_group["id"]==637) {echo "$sql<br />";}
 			$test_cn=mysql_query($sql);
@@ -1062,12 +1062,12 @@ foreach ($liste_eleves as $eleve_login) {
 
 
 			if ($restauration != "oui" AND $restauration != "non") {
-				// On récupère l'appréciation tempo pour la rajouter à $eleve_app
+				// On rÃ©cupÃ¨re l'apprÃ©ciation tempo pour la rajouter Ã  $eleve_app
 				$app_t_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE
 					(login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 				$verif_t = mysql_num_rows($app_t_query);
 				if ($verif_t != 0) {
-					$eleve_app_t = "\n".'<p>Appréciation non enregistrée : <span style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</span></p>';
+					$eleve_app_t = "\n".'<p>ApprÃ©ciation non enregistrÃ©e : <span style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</span></p>';
 				} else {
 					$eleve_app_t = '';
 				}
@@ -1075,11 +1075,11 @@ foreach ($liste_eleves as $eleve_login) {
 				$eleve_app_t = '';
 			}
 
-			// Appel des appréciations (en vérifiant si une restauration est demandée ou non)
+			// Appel des apprÃ©ciations (en vÃ©rifiant si une restauration est demandÃ©e ou non)
 			if ($restauration == "oui") {
 				$app_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-				// Si la sauvegarde ne donne rien pour cet élève, on va quand même voir dans la table définitive
-				// (il se peut qu'il n'y ait pas d'enregistrement tempo pour cet élève)
+				// Si la sauvegarde ne donne rien pour cet Ã©lÃ¨ve, on va quand mÃªme voir dans la table dÃ©finitive
+				// (il se peut qu'il n'y ait pas d'enregistrement tempo pour cet Ã©lÃ¨ve)
 				$verif = mysql_num_rows($app_query);
 				if ($verif == 0){
 					$app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
@@ -1111,7 +1111,7 @@ foreach ($liste_eleves as $eleve_login) {
 				(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="O")&&($_SESSION['statut']=='secours'))) {
 
 				//
-				// si la période est verrouillée
+				// si la pÃ©riode est verrouillÃ©e
 				//
 				$mess[$k] = '';
 				//$mess[$k] =$mess[$k]."<td>".$note."</td>\n<td>";
@@ -1167,9 +1167,9 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k] =$mess[$k]."</td>\n";
 			} else {
 
-				// Ajout Eric affichage des notes au dessus de la saisie des appréciations
+				// Ajout Eric affichage des notes au dessus de la saisie des apprÃ©ciations
 				$liste_notes ='';
-				// Nombre de contrôles
+				// Nombre de contrÃ´les
 				//$sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
 
 				$sql="SELECT cnd.note, cd.*, cc.nom_court AS nom_court_conteneur FROM 
@@ -1219,7 +1219,7 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 
 				if ($current_eleve_nbct ==0) {
-					$liste_notes='Pas de note dans le carnet pour cette période.';
+					$liste_notes='Pas de note dans le carnet pour cette pÃ©riode.';
 				}
 
 				$mess[$k]="<td>".$note."</td>\n";
@@ -1228,7 +1228,7 @@ foreach ($liste_eleves as $eleve_login) {
 				//$mess[$k].="<a href='#' onmouseover=\"delais_afficher_div('notes_".$eleve_login."_".$k."','y',-100,20,1000,10,10);\" onclick=\"return false;\">";
 				if($liste_notes_detaillees!='') {
 
-					$titre="Notes de $eleve_nom $eleve_prenom sur la période $k";
+					$titre="Notes de $eleve_nom $eleve_prenom sur la pÃ©riode $k";
 					$texte="";
 					//$texte.="<div align='center'>\n";
 					$texte.=$liste_notes_detaillees;
@@ -1251,7 +1251,7 @@ foreach ($liste_eleves as $eleve_login) {
 				//$mess[$k].="<br />\n";
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				//Supprimé le 07/11/2009 pour reduire le nombre de variables transmises (pb suhosin):
+				//SupprimÃ© le 07/11/2009 pour reduire le nombre de variables transmises (pb suhosin):
 				//$mess[$k].="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 				$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 
@@ -1265,8 +1265,8 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k].="\"";
 
 				//==================================
-				// Rétablissement: boireaus 20080219
-				// Pour revenir au champ suivant après validation/enregistrement:
+				// RÃ©tablissement: boireaus 20080219
+				// Pour revenir au champ suivant aprÃ¨s validation/enregistrement:
 				// MODIF: boireaus 20080520
 				//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
 				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
@@ -1298,10 +1298,10 @@ foreach ($liste_eleves as $eleve_login) {
 				//==================================
 
 				$mess[$k].=">".$eleve_app."</textarea>\n";
-				// on affiche si besoin l'appréciation temporaire (en sauvegarde)
+				// on affiche si besoin l'apprÃ©ciation temporaire (en sauvegarde)
 				$mess[$k].=$eleve_app_t;
 
-				// Espace pour afficher les éventuelles fautes de frappe
+				// Espace pour afficher les Ã©ventuelles fautes de frappe
 				$mess[$k].="<div id='div_verif_n".$k.$num_id."' style='color:red;'></div>\n";
 
 				$mess[$k].= "</td>\n";
@@ -1313,7 +1313,7 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		else {
 			//
-			// si l'élève n'appartient pas au groupe pour cette période.
+			// si l'Ã©lÃ¨ve n'appartient pas au groupe pour cette pÃ©riode.
 			//
 			$suit_option[$k] = 'no';
 			$mess[$k] = "<td>&nbsp;</td><td><p class='small'>non suivie</p></td>\n";
@@ -1375,7 +1375,7 @@ foreach ($liste_eleves as $eleve_login) {
 		if(($id_premiere_classe!='')&&($acces_bull_simp=='y')) {
 			//echo "<div style='float:right; width: 17px; margin-right: 1px;'>\n";
 			echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$id_premiere_classe','$num_per1','$num_per2');return false;\">";
-			echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
+			echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes pÃ©riodes en infobulle' title='Bulletin simple toutes pÃ©riodes en infobulle' />";
 			echo "</a>";
 			//echo "</div>\n";
 		}
@@ -1416,8 +1416,8 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "</div></th>\n";
 		echo "</tr>\n";
 
-		// Pour permettre de sauter dans la liste un élève qui est parti en cours d'année
-		// Si plusieurs périodes sont ouvertes en saisie, cela peut ne pas fonctionner
+		// Pour permettre de sauter dans la liste un Ã©lÃ¨ve qui est parti en cours d'annÃ©e
+		// Si plusieurs pÃ©riodes sont ouvertes en saisie, cela peut ne pas fonctionner
 		if($enseignement_suivi_sur_une_des_periodes_ouvertes=='y') {
 			$num_id++;
 		}
@@ -1447,7 +1447,7 @@ foreach ($liste_eleves as $eleve_login) {
 					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
 					echo " <a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
 					//echo $nom_periode[$k];
-					echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
+					echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la pÃ©riode en infobulle' title='Bulletin simple de la pÃ©riode en infobulle' />";
 					echo "</a>";
 				}
 				//else {
@@ -1467,7 +1467,7 @@ foreach ($liste_eleves as $eleve_login) {
 					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve_login."&id_classe=$current_id_classe&periode1=$k&periode2=$k\" onclick=\"affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\" target=\"_blank\">";
 					//echo $nom_periode[$k];
-					echo " <img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
+					echo " <img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la pÃ©riode en infobulle' title='Bulletin simple de la pÃ©riode en infobulle' />";
 					echo "</a>";
 				}
 				//else {
@@ -1497,24 +1497,24 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 <input type="hidden" name="periode_cn" value="<?php echo "$periode_cn";?>" />
 <center><div id="fixe"><input type="submit" value="Enregistrer" /><br />
 
-<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+<!-- DIV destinÃ© Ã  afficher un dÃ©compte du temps restant pour ne pas se faire piÃ©ger par la fin de session -->
 <div id='decompte'></div>
 
 <?php
 	//============================================
 	// AJOUT: boireaus 20080520
-	// Dispositif spécifique: décommenter la ligne pour l'activer
+	// Dispositif spÃ©cifique: dÃ©commenter la ligne pour l'activer
 	if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
 	//============================================
 
 
 	echo "<a href='#' onClick=\"insere_notes();return false;\">";
-	echo "<img src='../images/icons/wizard.png' width='16' height='16' alt='Insérer les notes des devoirs' title='Insérer les notes des devoirs' />";
+	echo "<img src='../images/icons/wizard.png' width='16' height='16' alt='InsÃ©rer les notes des devoirs' title='InsÃ©rer les notes des devoirs' />";
 	echo "</a>\n";
 
 ?>
 
-<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+<!-- Champ destinÃ© Ã  recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus Ã  ce champ aprÃ¨s une validation -->
 <input type='hidden' id='info_focus' name='champ_info_focus' value='' />
 <input type='hidden' id='focus_courant' name='focus_courant' value='' />
 </div></center>
@@ -1542,7 +1542,7 @@ echo "
 
 	// <![CDATA[
 	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
-		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifiÃ© de '+login_eleve+' pÃ©riode '+num_per1+' Ã  '+num_per2;
 		new Ajax.Updater($('corps_bull_simp'),'ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
 	}
 	//]]>
@@ -1591,10 +1591,10 @@ echo "</script>\n";
 // 20100604
 if(($_SESSION['statut']=='professeur')&&
 ((substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')||($une_autorisation_exceptionnelle_de_saisie_au_moins=='y'))) {
-	$titre="Correction d'une appréciation";
+	$titre="Correction d'une apprÃ©ciation";
 	$texte="<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form_correction' method=\"post\">\n";
 	$texte.=add_token_field();
-	$texte.="Vous pouvez proposer une correction pour <span id='span_correction_login_eleve' class='bold'>...</span> sur la période <span id='span_correction_periode' class='bold'>...</span>&nbsp;: ";
+	$texte.="Vous pouvez proposer une correction pour <span id='span_correction_login_eleve' class='bold'>...</span> sur la pÃ©riode <span id='span_correction_periode' class='bold'>...</span>&nbsp;: ";
 	$texte.="<input type='hidden' name='correction_login_eleve' id='correction_login_eleve' value='' />\n";
 	$texte.="<input type='hidden' name='correction_periode' id='correction_periode' value='' />\n";
 	$texte.="<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
@@ -1613,7 +1613,7 @@ function affiche_div_correction(eleve_login,num_periode,num_eleve) {
 	afficher_div('div_correction','y',-100,20)
 
 	if(change!='no') {
-		alert(\"Des modifications n'ont pas été enregistrées. Si vous validez la proposition de correction sans d'abord enregistrer, les modifications seront perdues.\")
+		alert(\"Des modifications n'ont pas Ã©tÃ© enregistrÃ©es. Si vous validez la proposition de correction sans d'abord enregistrer, les modifications seront perdues.\")
 	}
 }
 
@@ -1629,7 +1629,7 @@ function addslashes (str) {
     // +   improved by: Nate
     // +   improved by: Onno Marsman    // +   input by: Denny Wardhana
     // +   improved by: Brett Zamir (http://brett-zamir.me)
-    // +   improved by: Oskar Larsson Högfeldt (http://oskar-lh.name/)
+    // +   improved by: Oskar Larsson HÃ¶gfeldt (http://oskar-lh.name/)
     // *     example 1: addslashes(\"kevin's birthday\");
     // *     returns 1: 'kevin\'s birthday' 
     return (str+'').replace(/[\\\\\"']/g, '\\\\$&').replace(/\\u0000/g, '\\\\0');
@@ -1637,7 +1637,7 @@ function addslashes (str) {
 */
 </script>\n";
 
-	// Formulaire caché destiné à faire des copies vers no_anti_inject_correction_app_eleve
+	// Formulaire cachÃ© destinÃ© Ã  faire des copies vers no_anti_inject_correction_app_eleve
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form_correction_reserve' method=\"post\" style='display:none'>\n";
 	echo $chaine_champs_textarea_correction;
 	echo $chaine_champs_input_correction;
@@ -1646,8 +1646,8 @@ function addslashes (str) {
 // =======================
 
 // ====================== DISPOSITIF CTP ========================
-// Pour permettre le remplacement de la chaine _PRENOM_ par le prénom de l'élève dans les commentaires types (ctp.php)
-// Les champs INPUT des prénoms sont insérés hors du formulaire principal pour éviter d'envoyer trop de champs lors du submit (problèmes avec suhosin qui limite le nombre de champs pouvant être POSTés)
+// Pour permettre le remplacement de la chaine _PRENOM_ par le prÃ©nom de l'Ã©lÃ¨ve dans les commentaires types (ctp.php)
+// Les champs INPUT des prÃ©noms sont insÃ©rÃ©s hors du formulaire principal pour Ã©viter d'envoyer trop de champs lors du submit (problÃ¨mes avec suhosin qui limite le nombre de champs pouvant Ãªtre POSTÃ©s)
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form2' method=\"post\">\n";
 echo $chaine_champs_input_prenom;
 echo $chaine_champs_input_login;
@@ -1655,12 +1655,12 @@ echo "</form>\n";
 // ==============================================================
 
 // ====================== SYSTEME  DE SAUVEGARDE ========================
-// Dans tous les cas, suite à une demande de restauration, et quelle que soit la réponse, les sauvegardes doivent être effacées
+// Dans tous les cas, suite Ã  une demande de restauration, et quelle que soit la rÃ©ponse, les sauvegardes doivent Ãªtre effacÃ©es
 if ($restauration == "oui" OR $restauration == "non") {
 	$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
 	OR DIE('Erreur dans l\'effacement de la table temporaire (2) : '.mysql_error());
 }
-// Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
+// Il faudra permettre de n'afficher ce dÃ©compte que si l'administrateur le souhaite.
 
 echo "<script type='text/javascript'>
 cpt=".$tmp_timeout.";
@@ -1686,7 +1686,7 @@ decompte(cpt);
 
 ";
 
-// Après validation, on donne le focus au champ qui suivait celui qui vient d'être rempli
+// AprÃ¨s validation, on donne le focus au champ qui suivait celui qui vient d'Ãªtre rempli
 if(isset($_POST['champ_info_focus'])){
 	if($_POST['champ_info_focus']!=""){
 		echo "// On positionne le focus...

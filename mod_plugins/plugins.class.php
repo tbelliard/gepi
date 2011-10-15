@@ -24,7 +24,7 @@ if (!isset ($_SESSION["login"]) || !$_SESSION["login"]){header("Location: ../../
 
 if (!$_SESSION["login"]){Die();}
 /**
- * Classe qui vérifie les droits et les autorisations des pages des plugins de Gepi
+ * Classe qui vÃ©rifie les droits et les autorisations des pages des plugins de Gepi
  *
  * @author Julien Jocal
  */
@@ -55,7 +55,7 @@ class gepiPlugIn {
   }
 
   /**
-   * Méthode qui vérifie les droits de chaque fichier en fonction du statut de l'utilisateur
+   * MÃ©thode qui vÃ©rifie les droits de chaque fichier en fonction du statut de l'utilisateur
    */
   public function verifDroits(){
     $user_statut = $_SESSION["statut"];
@@ -65,7 +65,7 @@ class gepiPlugIn {
     if (is_null($this->_plugin)){
       $this->affErreur(2);
     }else{
-      // On s'attache à vérifier les droits de ce statut
+      // On s'attache Ã  vÃ©rifier les droits de ce statut
       $this->_droits = $this->_plugin->getPlugInAutorisations();
       $fichier = substr($url['path'], (strlen($gepiPath) + 1));
 
@@ -91,7 +91,7 @@ class gepiPlugIn {
   }
 
   private function _logout(){
-    Die("Rien à afficher");
+    Die("Rien Ã  afficher");
   }
 
   private function affErreur($number){
@@ -113,19 +113,19 @@ class gepiPlugIn {
         break;
   }
     }else{
-      Die("L'information pass&eacute;e à la m&eacute;thode " . __METHOD__ . " n'est pas valide !");
+      Die("L'information pass&eacute;e Ã  la m&eacute;thode " . __METHOD__ . " n'est pas valide !");
     }
   }
 
   /**
-   * On propose dans l'API des méthodes statiques pour les requêtes SQL
-   * Il faut ajouter $utiliser_pdo = 'on'; au début de votre fichier pour utiliser PDO
+   * On propose dans l'API des mÃ©thodes statiques pour les requÃªtes SQL
+   * Il faut ajouter $utiliser_pdo = 'on'; au dÃ©but de votre fichier pour utiliser PDO
    */
     /**
-     * Méthode qui permet de lancer une requête à la base
+     * MÃ©thode qui permet de lancer une requÃªte Ã  la base
      *
-     * @param string $sql requête SQL
-     * @param boolean $use_PDO par défaut false. Passé à true, il permet d'utiliser PDO (ajouter $utiliser_pdo = 'on'; au début de votre fichier)
+     * @param string $sql requÃªte SQL
+     * @param boolean $use_PDO par dÃ©faut false. PassÃ© Ã  true, il permet d'utiliser PDO (ajouter $utiliser_pdo = 'on'; au dÃ©but de votre fichier)
      * @return ressourceMySql
      */
     public static function _sqlQuery($sql, $use_PDO = false){
@@ -167,10 +167,10 @@ class gepiPlugIn {
     }
 
     /**
-     * Méthode qui renvoie le numéro du champ autoincrémenté du dernier enregistrement en INSERT
+     * MÃ©thode qui renvoie le numÃ©ro du champ autoincrÃ©mentÃ© du dernier enregistrement en INSERT
      *
      * @todo Terminer de coder ce cas avec PDO
-     * @param boolean $use_PDO par défaut false. Passé à true, il permet d'utiliser PDO (ajouter $utiliser_pdo = 'on'; au début de votre fichier)
+     * @param boolean $use_PDO par dÃ©faut false. PassÃ© Ã  true, il permet d'utiliser PDO (ajouter $utiliser_pdo = 'on'; au dÃ©but de votre fichier)
      * @return integer
      */
     public static function _sqlInsertId($use_PDO = false){

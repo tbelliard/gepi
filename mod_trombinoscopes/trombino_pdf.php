@@ -81,12 +81,12 @@ else { if (isset($_GET['affdiscipline'])) { $affdiscipline = $_GET['affdisciplin
 
 
 if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
-	// on regarde ce qui a été choisi
+	// on regarde ce qui a Ã©tÃ© choisi
 	// c'est une classe
 	if ( $classe != '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'classe'; }
 	// c'est un groupe
 	if ( $classe === '' and $groupe != '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'groupe'; }
-	// c'est une équipe pédagogique
+	// c'est une Ã©quipe pÃ©dagogique
 	if ( $classe === '' and $groupe === '' and $equipepeda != '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'equipepeda'; }
 	// c'est une discipline
 	if ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline != '' and $statusgepi === '' ) { $action_affiche = 'discipline'; }
@@ -111,20 +111,20 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		$current_group=get_group($groupe);
 		$entete = "Groupe : ".$donnees_qui['name']." (".$current_group['classlist_string'].")";
 	}
-	if ( $action_affiche === 'equipepeda' ) { $entete = "Equipe pédagogique : ".$donnees_qui['nom_complet']." (".$donnees_qui['classe'].")"; }
+	if ( $action_affiche === 'equipepeda' ) { $entete = "Equipe pÃ©dagogique : ".$donnees_qui['nom_complet']." (".$donnees_qui['classe'].")"; }
 	if ( $action_affiche === 'discipline' ) { $entete = "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
-	if ( $action_affiche === 'statusgepi' ) { $entete = "Statut : ".my_ereg_replace("scolarite","scolarité",$statusgepi); }
+	if ( $action_affiche === 'statusgepi' ) { $entete = "Statut : ".my_ereg_replace("scolarite","scolaritÃ©",$statusgepi); }
 
 
-	// choix du répertoire ou chercher les photos entre professeur ou élève
+	// choix du rÃ©pertoire ou chercher les photos entre professeur ou Ã©lÃ¨ve
 	if ( $action_affiche === 'classe' ) { $repertoire = 'eleves'; }
 	if ( $action_affiche === 'groupe' ) { $repertoire = 'eleves'; }
 	if ( $action_affiche === 'equipepeda' ) { $repertoire = 'personnels'; }
 	if ( $action_affiche === 'discipline' ) { $repertoire = 'personnels'; }
 	if ( $action_affiche === 'statusgepi' ) { $repertoire = 'personnels'; }
 
-	//je recherche les personnes concernées pour la sélection effectuée
-	// élève d'une classe
+	//je recherche les personnes concernÃ©es pour la sÃ©lection effectuÃ©e
+	// Ã©lÃ¨ve d'une classe
 	if ( $action_affiche === 'classe' ) { 
 		$requete_trombi = "SELECT e.login, e.nom, e.prenom, e.elenoet, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet
 									FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c
@@ -134,7 +134,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									GROUP BY nom, prenom"; 
 	}
 
-	// élève d'un groupe
+	// Ã©lÃ¨ve d'un groupe
 	if ( $action_affiche === 'groupe' ) { 
 		/*
 		$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
@@ -170,7 +170,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		}
 	}
 
-	// professeurs d'une équipe pédagogique
+	// professeurs d'une Ã©quipe pÃ©dagogique
 	if ( $action_affiche === 'equipepeda' ) { $requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
 										WHERE jgp.id_groupe = jgc.id_groupe
 									AND jgc.id_classe = c.id
@@ -224,7 +224,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	$cpt_photo = 0;
 	while ($donnee_trombi = mysql_fetch_array($execution_trombi))
 	{
-		//insertion de l'élève dans la varibale $eleve_absent
+		//insertion de l'Ã©lÃ¨ve dans la varibale $eleve_absent
 		$login_trombinoscope[$cpt_photo] = $donnee_trombi['login'];
 		$nom_trombinoscope[$cpt_photo] = $donnee_trombi['nom'];
 		$prenom_trombinoscope[$cpt_photo] = $donnee_trombi['prenom'];
@@ -254,7 +254,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	//==========================================================================
 
-	// Paramètres de dimensions
+	// ParamÃ¨tres de dimensions
 	include('trombino.inc.php');
 	
 	$gepiYear=getSettingValue('gepiYear');
@@ -346,9 +346,9 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 		$pdf->SetFont($fonte,'',$fonte_size);
 
-		// Paramètres pour cell_ajustee()
-		// On n'arrive pas à centrer avec cell_ajustee()
-		// Difficulté avec le mode de remplissage avec myWriteHTML()
+		// ParamÃ¨tres pour cell_ajustee()
+		// On n'arrive pas Ã  centrer avec cell_ajustee()
+		// DifficultÃ© avec le mode de remplissage avec myWriteHTML()
 		$largeur_dispo=$larg_cadre;
 		/*
 		$h_cell=$hauteur_info_eleve;
@@ -368,7 +368,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 				$texte="";
 				$pdf->Cell($larg_cadre,$haut_cadre,$texte,'LRBT',1,'L');
 
-				//photo de l'élève ou du prof
+				//photo de l'Ã©lÃ¨ve ou du prof
 				//if(isset($tab_ele[$cpt]['elenoet'])) {
 				if(isset($id_photo_trombinoscope[$cpt])) {
 					//$photo=nom_photo($tab_ele[$cpt]['elenoet'],"eleves");
@@ -386,7 +386,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 						$ratio_h = $hauteur / $taille_max_hauteur;
 						$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 					
-						// définit largeur et hauteur pour la nouvelle image
+						// dÃ©finit largeur et hauteur pour la nouvelle image
 						$nouvelle_largeur = $largeur / $ratio;
 						$nouvelle_hauteur = $hauteur / $ratio;
 					
@@ -413,7 +413,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 						$texte.=" (".$classe_trombinoscope[$cpt].")";
 					}
 
-					//Elève:
+					//ElÃ¨ve:
 					if($repertoire=="eleves") {
 						$largeur_texte=$pdf->GetStringWidth($texte);
 						$hauteur_temp=$fonte_size;
@@ -457,7 +457,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 							$pdf->Cell($largeur_dispo,$hauteur_info_eleve,$texte,'',1,'C');
 						}
 						else {
-							// Affichage du nom/prénom
+							// Affichage du nom/prÃ©nom
 							$hauteur_temp=$fonte_size;
 							$pdf->SetFont($fonte,'',$hauteur_temp);
 							$largeur_texte=$pdf->GetStringWidth($texte);
@@ -479,7 +479,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 							$h_temp=floor($hauteur_info_eleve/2.5);
 							$pdf->Cell($largeur_dispo,$h_temp,$texte,'',1,'C');
 
-							// Affichage de la matière
+							// Affichage de la matiÃ¨re
 							$y=round($y0+$m*($haut_cadre+$dy)+($haut_cadre-$hauteur_info_eleve)+$hauteur_classe+$ecart_sous_classe+$h_temp+0.2*$hauteur_temp);
 							$pdf->SetXY($x,$y);
 

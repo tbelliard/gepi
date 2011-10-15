@@ -45,7 +45,7 @@ $msg="";
 //GepiAccesRestrAccesAppProfP
 if($_SESSION['statut']=="professeur") {
 	if(getSettingValue('GepiAccesRestrAccesAppProfP')!="yes") {
-		$msg="Accès interdit au paramétrage des accès aux appréciatons/avis pour les parents et élèves.";
+		$msg="AccÃ¨s interdit au paramÃ©trage des accÃ¨s aux apprÃ©ciatons/avis pour les parents et Ã©lÃ¨ves.";
 		header("Location: ../accueil.php?msg=".rawurlencode($msg));
 	    die();
 	}
@@ -54,7 +54,7 @@ if($_SESSION['statut']=="professeur") {
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
 		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
-		$msg="Vous n'êtes pas ".$gepi_prof_suivi.".<br />Vous ne devriez donc pas accéder à cette page.";
+		$msg="Vous n'Ãªtes pas ".$gepi_prof_suivi.".<br />Vous ne devriez donc pas accÃ©der Ã  cette page.";
 		header("Location: ../accueil.php?msg=".rawurlencode($msg));
 	    die();
 	}
@@ -107,12 +107,12 @@ if(isset($_POST['submit'])) {
 											periode='$i',
 											acces='$accessible';";
 							$insert=mysql_query($sql);
-							if(!$insert) {$msg.="Erreur sur l'accès aux appréciations de la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";}else{$cpt++;}
+							if(!$insert) {$msg.="Erreur sur l'accÃ¨s aux apprÃ©ciations de la classe ".get_class_from_id($id_classe[$j])." en $statut pour la pÃ©riode $i.<br />\n";}else{$cpt++;}
 						}
 						else {
 							if(isset($_POST[$pref.'_display_date_'.$j.'_'.$i])) {
 								$tmp_date=$_POST[$pref.'_display_date_'.$j.'_'.$i];
-								// Contrôler le format de la date et sa validité.
+								// ContrÃ´ler le format de la date et sa validitÃ©.
 
 								$tabdate=explode("/",$tmp_date);
 
@@ -132,10 +132,10 @@ if(isset($_POST['submit'])) {
 													date='$date',
 													acces='date';";
 									$insert=mysql_query($sql);
-									if(!$insert) {$msg.="Erreur sur l'accès aux appréciations de la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";}else{$cpt++;}
+									if(!$insert) {$msg.="Erreur sur l'accÃ¨s aux apprÃ©ciations de la classe ".get_class_from_id($id_classe[$j])." en $statut pour la pÃ©riode $i.<br />\n";}else{$cpt++;}
 								}
 								else {
-									$msg.="La date $tmp_date n'est pas valide pour la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";
+									$msg.="La date $tmp_date n'est pas valide pour la classe ".get_class_from_id($id_classe[$j])." en $statut pour la pÃ©riode $i.<br />\n";
 								}
 							}
 						}
@@ -146,10 +146,10 @@ if(isset($_POST['submit'])) {
 	}
 	if(($msg=="")&&($cpt>0)) {
 		if($cpt==1) {
-			$msg="Enregistrement effectué.<br />\n";
+			$msg="Enregistrement effectuÃ©.<br />\n";
 		}
 		else{
-			$msg="Enregistrements effectués ($cpt).<br />\n";
+			$msg="Enregistrements effectuÃ©s ($cpt).<br />\n";
 		}
 	}
 }
@@ -158,9 +158,9 @@ if(isset($_POST['submit'])) {
 $javascript_specifique="classes/acces_appreciations";
 
 //include "../lib/periodes.inc.php";
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Accès aux appréciations";
+$titre_page = "AccÃ¨s aux apprÃ©ciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -178,7 +178,7 @@ if($_SESSION['statut']=="professeur") {
 	$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
-		echo "<p>Vous n'êtes pas ".$gepi_prof_suivi.".<br />Vous ne devriez donc pas accéder à cette page.</p>\n";
+		echo "<p>Vous n'Ãªtes pas ".$gepi_prof_suivi.".<br />Vous ne devriez donc pas accÃ©der Ã  cette page.</p>\n";
 		echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
 		exit();
@@ -202,7 +202,7 @@ elseif($_SESSION['statut']=="administrateur") {
 $res_classe=mysql_query($sql);
 
 if(mysql_num_rows($res_classe)==0) {
-	echo "<p>Vous n'avez accès à aucune classe.</p>\n";
+	echo "<p>Vous n'avez accÃ¨s Ã  aucune classe.</p>\n";
 	echo "<p><br /></p>\n";
 	require("../lib/footer.inc.php");
 	exit();
@@ -249,7 +249,7 @@ if(isset($_POST['choix_date_valider2'])) {
 		}
 	}
 
-	// On refait la requête de liste des classes
+	// On refait la requÃªte de liste des classes
 	$res_classe=mysql_query($sql);
 }
 elseif(isset($_POST['modif_manuelle_periode'])) {
@@ -270,7 +270,7 @@ elseif(isset($_POST['modif_manuelle_periode'])) {
 		}
 	}
 
-	// On refait la requête de liste des classes
+	// On refait la requÃªte de liste des classes
 	$res_classe=mysql_query($sql);
 }
 
@@ -298,32 +298,32 @@ $acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';saveSetting('acces_app_ele_resp','manuel');}
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 
-echo "<p>Vous pouvez définir ici quand les comptes utilisateurs pour des responsables et des élèves peuvent accéder aux appréciations des professeurs et avis du conseil de classe.<br />
-Il est souvent apprécié de pouvoir interdire l'accès aux élèves et responsables avant que le conseil de classe se soit déroulé.<br />
-Cet accès est conditionné par l'existence des comptes responsables et élèves.</p>\n";
+echo "<p>Vous pouvez dÃ©finir ici quand les comptes utilisateurs pour des responsables et des Ã©lÃ¨ves peuvent accÃ©der aux apprÃ©ciations des professeurs et avis du conseil de classe.<br />
+Il est souvent apprÃ©ciÃ© de pouvoir interdire l'accÃ¨s aux Ã©lÃ¨ves et responsables avant que le conseil de classe se soit dÃ©roulÃ©.<br />
+Cet accÃ¨s est conditionnÃ© par l'existence des comptes responsables et Ã©lÃ¨ves.</p>\n";
 echo "<br />\n";
 
 if($acces_app_ele_resp=='manuel') {
-	echo "<p>Cliquez sur la clef <img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /> pour donner ou supprimer l'accès aux appréciations.</p>\n";
+	echo "<p>Cliquez sur la clef <img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /> pour donner ou supprimer l'accÃ¨s aux apprÃ©ciations.</p>\n";
 }
 elseif($acces_app_ele_resp=='date') {
-	echo "<p>Cliquez sur le calendrier <img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /> pour donner ou supprimer l'accès aux appréciations.</p>\n";
+	echo "<p>Cliquez sur le calendrier <img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de dÃ©verrouillage\" /> pour donner ou supprimer l'accÃ¨s aux apprÃ©ciations.</p>\n";
 }
 else {
 	if($_SESSION['statut']=='scolarite') {
-		echo "<p>L'accès est automatiquement ouvert <b>$delais_apres_cloture</b> jours après la <a href='../bulletin/verrouillage.php'>clôture de la période</a>.</p>\n";
+		echo "<p>L'accÃ¨s est automatiquement ouvert <b>$delais_apres_cloture</b> jours aprÃ¨s la <a href='../bulletin/verrouillage.php'>clÃ´ture de la pÃ©riode</a>.</p>\n";
 	}
 	else {
-		echo "<p>L'accès est automatiquement ouvert <b>$delais_apres_cloture</b> jours après la clôture de la période.</p>\n";
+		echo "<p>L'accÃ¨s est automatiquement ouvert <b>$delais_apres_cloture</b> jours aprÃ¨s la clÃ´ture de la pÃ©riode.</p>\n";
 	}
 }
 
 /*
-echo "<p>L'ouverture/fermeture de l'accès aux appréciations peut se faire selon trois critères&nbsp;:</p>\n";
+echo "<p>L'ouverture/fermeture de l'accÃ¨s aux apprÃ©ciations peut se faire selon trois critÃ¨res&nbsp;:</p>\n";
 echo "<ul>\n";
-echo "<li><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /> Bascule manuelle de l'accès ou de l'interdiction d'accès.</li>\n";
-echo "<li><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /> Ouverture automatique de l'accès à la date choisie.</li>\n";
-echo "<li><img src='../images/icons/securite.png' width='16' height='16' alt=\"Période close\" /> Ouverture automatique de l'accès une fois la période complètement close.<br />\n";
+echo "<li><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /> Bascule manuelle de l'accÃ¨s ou de l'interdiction d'accÃ¨s.</li>\n";
+echo "<li><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de dÃ©verrouillage\" /> Ouverture automatique de l'accÃ¨s Ã  la date choisie.</li>\n";
+echo "<li><img src='../images/icons/securite.png' width='16' height='16' alt=\"PÃ©riode close\" /> Ouverture automatique de l'accÃ¨s une fois la pÃ©riode complÃ¨tement close.<br />\n";
 */
 
 //echo "<form method='post' action='".$_SERVER['PHP_SELF']."' name='form2'>\n";
@@ -387,8 +387,8 @@ $tabdiv_infobulle[]=creer_div_infobulle('infobulle_choix_date2',$titre,"",$texte
 
 
 if($acces_app_ele_resp=='manuel') {
-	// Le mode global paramétré est 'manuel'
-	// Si des paramétrages particuliers sont à autre chose que 'manuel', on bascule/modifie vers 'manuel'.
+	// Le mode global paramÃ©trÃ© est 'manuel'
+	// Si des paramÃ©trages particuliers sont Ã  autre chose que 'manuel', on bascule/modifie vers 'manuel'.
 
 	echo "<form method='post' action='".$_SERVER['PHP_SELF']."' name='form_manuel'>\n";
 	//echo "<p align='center'><input type='submit' name='submit' value='Valider' /></p>\n";
@@ -400,7 +400,7 @@ if($acces_app_ele_resp=='manuel') {
 	echo "<tr>\n";
 	echo "<th rowspan='3'>Classe</th>\n";
 	//echo "<th rowspan='2'>Statut</th>\n";
-	echo "<th colspan='$max_per'>Périodes</th>\n";
+	echo "<th colspan='$max_per'>PÃ©riodes</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -412,7 +412,7 @@ if($acces_app_ele_resp=='manuel') {
 			echo "<th>$lig_per->nom_periode</th>\n";
 		}
 		else{
-			echo "<th>Période $i</th>\n";
+			echo "<th>PÃ©riode $i</th>\n";
 		}
 	}
 	echo "</tr>\n";
@@ -439,7 +439,7 @@ if($acces_app_ele_resp=='manuel') {
 	//include("../lib/calendrier/calendrier.class.php");
 	
 	$tab_statut=array('eleve', 'responsable');
-	$tab_statut2=array('Elève', 'Responsable');
+	$tab_statut2=array('ElÃ¨ve', 'Responsable');
 
 	$alt=1;
 	for($j=0;$j<count($tab_classe);$j++) {
@@ -459,7 +459,7 @@ if($acces_app_ele_resp=='manuel') {
 
 					echo "<td>\n";
 
-					// Avec le nouveau dispositif, on ne distingue pas élève et responsable
+					// Avec le nouveau dispositif, on ne distingue pas Ã©lÃ¨ve et responsable
 					//$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='$tab_statut[$k]';";
 					$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='eleve';";
 					//echo "$sql<br />\n";
@@ -635,8 +635,8 @@ if($acces_app_ele_resp=='manuel') {
 
 }
 elseif($acces_app_ele_resp=='date') {
-	// Le mode global paramétré est 'date'
-	// Si des paramétrages particuliers sont à autre chose que 'date', on bascule/modifie vers 'date'.
+	// Le mode global paramÃ©trÃ© est 'date'
+	// Si des paramÃ©trages particuliers sont Ã  autre chose que 'date', on bascule/modifie vers 'date'.
 
 
 	$annee = strftime("%Y");
@@ -651,7 +651,7 @@ elseif($acces_app_ele_resp=='date') {
 	echo "<tr>\n";
 	echo "<th rowspan='3'>Classe</th>\n";
 	//echo "<th rowspan='2'>Statut</th>\n";
-	echo "<th colspan='$max_per'>Périodes</th>\n";
+	echo "<th colspan='$max_per'>PÃ©riodes</th>\n";
 	echo "</tr>\n";
 	
 	echo "<tr>\n";
@@ -663,7 +663,7 @@ elseif($acces_app_ele_resp=='date') {
 			echo "<th>$lig_per->nom_periode</th>\n";
 		}
 		else{
-			echo "<th>Période $i</th>\n";
+			echo "<th>PÃ©riode $i</th>\n";
 		}
 	}
 	echo "</tr>\n";
@@ -672,7 +672,7 @@ elseif($acces_app_ele_resp=='date') {
 	for($i=1;$i<=$max_per;$i++) {
 		echo "<th>\n";
 
-		echo "<a href='#' onclick=\"$('choix_date_periode2').value=$i;afficher_div('infobulle_choix_date2','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /></a>\n";
+		echo "<a href='#' onclick=\"$('choix_date_periode2').value=$i;afficher_div('infobulle_choix_date2','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de dÃ©verrouillage\" /></a>\n";
 
 		echo "</th>\n";
 	}
@@ -681,7 +681,7 @@ elseif($acces_app_ele_resp=='date') {
 	//include("../lib/calendrier/calendrier.class.php");
 	
 	$tab_statut=array('eleve', 'responsable');
-	$tab_statut2=array('Elève', 'Responsable');
+	$tab_statut2=array('ElÃ¨ve', 'Responsable');
 
 	$alt=1;
 	for($j=0;$j<count($tab_classe);$j++) {
@@ -700,7 +700,7 @@ elseif($acces_app_ele_resp=='date') {
 				for($i=1;$i<=count($nom_periode);$i++) {
 					$chaine_debug="";
 
-					// Avec le nouveau dispositif, on ne distingue pas élève et responsable
+					// Avec le nouveau dispositif, on ne distingue pas Ã©lÃ¨ve et responsable
 					//$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='$tab_statut[$k]';";
 					$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='eleve';";
 					$res=mysql_query($sql);
@@ -784,7 +784,7 @@ elseif($acces_app_ele_resp=='date') {
 								if($timestamp_courant>=$timestamp_limite) {
 									$accessible="y";
 
-									// Mettre une date passée: hier
+									// Mettre une date passÃ©e: hier
 									$tmp_date=getdate(time()-24*3600);
 									$tmp_jour=sprintf("%02d",$tmp_date['mday']);
 									$tmp_mois=sprintf("%02d",$tmp_date['mon']);
@@ -825,7 +825,7 @@ elseif($acces_app_ele_resp=='date') {
 							$accessible=$lig->acces;
 
 							if($accessible=='y') {
-								// Mettre une date passée: hier
+								// Mettre une date passÃ©e: hier
 								$tmp_date=getdate(time()-24*3600);
 								$tmp_jour=sprintf("%02d",$tmp_date['mday']);
 								$tmp_mois=sprintf("%02d",$tmp_date['mon']);
@@ -869,8 +869,8 @@ elseif($acces_app_ele_resp=='date') {
 						$id_div=$current_statut."_".$j."_".$i;
 
 						echo "<div style='float:left; width:20px; padding-left: 10px;'>\n";
-						//echo "<a href='#' onclick=\"$('choix_date_id_div').value='$id_div';$('choix_date_id_classe').value=$id_classe;$('choix_date_statut').value='$tab_statut[$k]';$('choix_date_periode').value=$i;afficher_div('infobulle_choix_date','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /></a>\n";
-						echo "<a href='#' onclick=\"$('choix_date_id_div').value='$id_div';$('choix_date_id_classe').value=$id_classe;$('choix_date_statut').value='$current_statut';$('choix_date_periode').value=$i;afficher_div('infobulle_choix_date','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /></a>\n";
+						//echo "<a href='#' onclick=\"$('choix_date_id_div').value='$id_div';$('choix_date_id_classe').value=$id_classe;$('choix_date_statut').value='$tab_statut[$k]';$('choix_date_periode').value=$i;afficher_div('infobulle_choix_date','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de dÃ©verrouillage\" /></a>\n";
+						echo "<a href='#' onclick=\"$('choix_date_id_div').value='$id_div';$('choix_date_id_classe').value=$id_classe;$('choix_date_statut').value='$current_statut';$('choix_date_periode').value=$i;afficher_div('infobulle_choix_date','y',-100,20);return false;\"><img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de dÃ©verrouillage\" /></a>\n";
 						echo "</div>\n";
 
 						echo "<div id='$id_div' style='width:100%; height:100%;";
@@ -898,14 +898,14 @@ elseif($acces_app_ele_resp=='date') {
 
 }
 elseif($acces_app_ele_resp=='periode_close') {
-	// Le mode global paramétré est 'periode_close'
-	// Si des paramétrages particuliers sont à autre chose que 'periode_close', on bascule/modifie vers 'periode_close'.
+	// Le mode global paramÃ©trÃ© est 'periode_close'
+	// Si des paramÃ©trages particuliers sont Ã  autre chose que 'periode_close', on bascule/modifie vers 'periode_close'.
 	echo "<table class='boireaus' width='100%'>\n";
 	echo "<tr>\n";
 	//echo "<th rowspan='3'>Classe</th>\n";
 	echo "<th rowspan='2'>Classe</th>\n";
 	//echo "<th rowspan='2'>Statut</th>\n";
-	echo "<th colspan='$max_per'>Périodes</th>\n";
+	echo "<th colspan='$max_per'>PÃ©riodes</th>\n";
 	echo "</tr>\n";
 	
 	echo "<tr>\n";
@@ -917,7 +917,7 @@ elseif($acces_app_ele_resp=='periode_close') {
 			echo "<th>$lig_per->nom_periode</th>\n";
 		}
 		else{
-			echo "<th>Période $i</th>\n";
+			echo "<th>PÃ©riode $i</th>\n";
 		}
 	}
 	echo "</tr>\n";
@@ -941,7 +941,7 @@ elseif($acces_app_ele_resp=='periode_close') {
 	//include("../lib/calendrier/calendrier.class.php");
 	
 	$tab_statut=array('eleve', 'responsable');
-	$tab_statut2=array('Elève', 'Responsable');
+	$tab_statut2=array('ElÃ¨ve', 'Responsable');
 
 	$alt=1;
 	for($j=0;$j<count($tab_classe);$j++) {
@@ -960,7 +960,7 @@ elseif($acces_app_ele_resp=='periode_close') {
 				for($i=1;$i<=count($nom_periode);$i++) {
 					$chaine_debug="";
 
-					// Avec le nouveau dispositif, on ne distingue pas élève et responsable
+					// Avec le nouveau dispositif, on ne distingue pas Ã©lÃ¨ve et responsable
 					//$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='$tab_statut[$k]';";
 					$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND periode='$i' AND statut='eleve';";
 					$chaine_debug.="$sql<br />";
@@ -1138,8 +1138,8 @@ elseif($acces_app_ele_resp=='periode_close') {
 						$id_div=$current_statut."_".$j."_".$i;
 
 						echo "<div style='float:left; width:20px; padding-left: 10px;'>\n";
-						//echo "<a href='#' onclick=\"g_periode_close('$id_div', $id_classe, $i,'$tab_statut[$k]');return false;\"><img src='../images/icons/securite.png' width='16' height='16' alt=\"Période close\" /></a>\n";
-						echo "<a href='#' onclick=\"g_periode_close('$id_div', $id_classe, $i,'$current_statut');return false;\"><img src='../images/icons/securite.png' width='16' height='16' alt=\"Période close\" /></a>\n";
+						//echo "<a href='#' onclick=\"g_periode_close('$id_div', $id_classe, $i,'$tab_statut[$k]');return false;\"><img src='../images/icons/securite.png' width='16' height='16' alt=\"PÃ©riode close\" /></a>\n";
+						echo "<a href='#' onclick=\"g_periode_close('$id_div', $id_classe, $i,'$current_statut');return false;\"><img src='../images/icons/securite.png' width='16' height='16' alt=\"PÃ©riode close\" /></a>\n";
 						echo "</div>\n";
 
 						echo "<div id='$id_div' style='width:100%; height:100%;";
@@ -1155,7 +1155,7 @@ elseif($acces_app_ele_resp=='periode_close') {
 								if($delais_apres_cloture>0) {echo " + ".$delais_apres_cloture."j";}
 							}
 							else {
-								echo " <span style='font-size:x-small;'>depuis la clôture de la période</span>";
+								echo " <span style='font-size:x-small;'>depuis la clÃ´ture de la pÃ©riode</span>";
 							}
 
 						}
@@ -1165,13 +1165,13 @@ elseif($acces_app_ele_resp=='periode_close') {
 							echo "Inaccessible";
 
 							if($ver_periode[$i]=='N') {
-								echo " <span style='font-size:x-small;'>période ouverte</span>";
+								echo " <span style='font-size:x-small;'>pÃ©riode ouverte</span>";
 							}
 							elseif($ver_periode[$i]=='P') {
-								echo " <span style='font-size:x-small;'>période partiellement close</span>";
+								echo " <span style='font-size:x-small;'>pÃ©riode partiellement close</span>";
 							}
 							else {
-								// On est dans le cas du délais après cloture
+								// On est dans le cas du dÃ©lais aprÃ¨s cloture
 
 								echo " <span style='font-size:x-small;'>$display_date + $delais_apres_cloture jour(s)</span>";
 
@@ -1191,7 +1191,7 @@ elseif($acces_app_ele_resp=='periode_close') {
 }
 
 if($_SESSION['statut']=="administrateur") {
-	echo "Le mode d'accès aux appréciatons (<i>manuel/date/période close</i>) ainsi que le délais après clôture de période se paramètrent en administrateur dans <a href='../gestion/param_gen.php#delais_apres_cloture'>Gestion générale/Configuration générale</a>";
+	echo "Le mode d'accÃ¨s aux apprÃ©ciatons (<i>manuel/date/pÃ©riode close</i>) ainsi que le dÃ©lais aprÃ¨s clÃ´ture de pÃ©riode se paramÃ¨trent en administrateur dans <a href='../gestion/param_gen.php#delais_apres_cloture'>Gestion gÃ©nÃ©rale/Configuration gÃ©nÃ©rale</a>";
 }
 
 echo "<p><br /></p>\n";

@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for representing a row from the 'a_saisies' table.
  *
- * Chaque saisie d'absence doit faire l'objet d'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l'emploi du temps, le jours du cours etant precisé dans debut_abs.
+ * Chaque saisie d'absence doit faire l'objet d'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durÃ©e (plusieurs jours), dÃ©fini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisÃ© dans debut_abs. Un cours de l'emploi du temps, le jours du cours etant precisÃ© dans debut_abs.
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -74,7 +74,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$desc .= "; aid : ".$this->getAidDetails()->getNom();
 	    }
 //	    if ($this->getNotifiee() != null) { //desactive pour ameliorer les performances
-//		$desc .= "; notifiée";
+//		$desc .= "; notifiÃ©e";
 //	    }
 	    if ($this->getCommentaire() != null && $this->getCommentaire() != '') {
 		$desc .= "; ".$this->getCommentaire();
@@ -143,7 +143,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
     
     /**
 	 *
-	 * Renvoi une liste des types associes ou non traitée sinon
+	 * Renvoi une liste des types associes ou non traitÃ©e sinon
 	 *
 	 * @return     String description
 	 *
@@ -162,12 +162,12 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
                 $besoin_echo_virgule = true;
             }
         }
-        if ($result == '') $result = 'Non traitée';
+        if ($result == '') $result = 'Non traitÃ©e';
         return $result;
     }
 	/**
 	 *
-	 * Renvoi true ou false en fonction des types associé
+	 * Renvoi true ou false en fonction des types associÃ©
 	 *
 	 * @return     boolean
 	 *
@@ -200,8 +200,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	}
     /**
 	 *
-	 * Renvoi true ou false si le lieu est rattaché a cette saisie ou non
-	 * @param      $id_lieu id du lieu à tester
+	 * Renvoi true ou false si le lieu est rattachÃ© a cette saisie ou non
+	 * @param      $id_lieu id du lieu Ã  tester
 	 * @return     boolean
 	 *
 	 */
@@ -241,7 +241,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
     }
 	/**
 	 *
-	 * Renvoi une chaine de caractere compréhensible concernant les dates de debut et de fin
+	 * Renvoi une chaine de caractere comprÃ©hensible concernant les dates de debut et de fin
 	 *
 	 * @return     string
 	 *
@@ -267,7 +267,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
-	 * Renvoi true ou false en fonction de la saisie. Ceci concerne le décompte des bulletins
+	 * Renvoi true ou false en fonction de la saisie. Ceci concerne le dÃ©compte des bulletins
 	 *
 	 * @return     boolean
 	 *
@@ -348,7 +348,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * Renvoi true ou false si l'eleve est en manque de ses obligation de presence
 	 * une saisie qui n'est pas un manquement ne sera pas comptee dans le bulletin
 	 * une saisie qui est un manquement sera comptee dans le bulletin
-	 * Cette propriété est calculé par l'intermediaire des types de traitement
+	 * Cette propriÃ©tÃ© est calculÃ© par l'intermediaire des types de traitement
 	 *
 	 * @return     boolean
 	 *
@@ -393,8 +393,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	/**
 	 *
 	 *
-	 * Renvoi true ou false si la saisie a un type de manquement spécifié a 'non précisé'
-	 * Cette propriété est calculé par l'intermediaire des types de traitement
+	 * Renvoi true ou false si la saisie a un type de manquement spÃ©cifiÃ© a 'non prÃ©cisÃ©'
+	 * Cette propriÃ©tÃ© est calculÃ© par l'intermediaire des types de traitement
 	 *
 	 * @return     boolean
 	 *
@@ -593,7 +593,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	}
     /**
 	 *
-	 * Renvoi true si une notification est prête à envoyée ou envoyée à la famille
+	 * Renvoi true si une notification est prÃªte Ã  envoyÃ©e ou envoyÃ©e Ã  la famille
 	 *
 	 * @return     boolean
 	 *
@@ -854,7 +854,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			}
 			$saisie_col = $temp_saisie_col;
 
-			//on regarde si un groupe, classe ou aid auquel appartient cet eleve a été saisi et pour lequel l'eleve en question n'a pas ete saisi (c'est donc que l'eleve est present)
+			//on regarde si un groupe, classe ou aid auquel appartient cet eleve a Ã©tÃ© saisi et pour lequel l'eleve en question n'a pas ete saisi (c'est donc que l'eleve est present)
 			//on va utiliser comme periode pour determiner les classes et groupes la periode correspondant au debut de l'absence
 			$periode = $eleve->getPeriodeNote($this->getDebutAbs(null));
 
@@ -866,7 +866,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			    $keys = array_keys($saisie_col_classe_id_array, $classe->getId());
 			    if (!empty($keys)) {
 				//on a des saisies pour cette classe
-				//est-ce que l'eleve a bien été saisi absent ?
+				//est-ce que l'eleve a bien Ã©tÃ© saisi absent ?
 				$temp_col = new PropelObjectCollection();
 				$bool_eleve_saisi = false;
 				foreach ($keys as $key) {
@@ -896,7 +896,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			    $keys = array_keys($saisie_col_groupe_id_array, $groupe->getId());
 			    if (!empty($keys)) {
 				//on a des saisies pour cette groupe
-				//est-ce que l'eleve a bien été saisi absent ?
+				//est-ce que l'eleve a bien Ã©tÃ© saisi absent ?
 				$temp_col = new PropelObjectCollection();
 				$bool_eleve_saisi = false;
 				foreach ($keys as $key) {
@@ -926,7 +926,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			    $keys = array_keys($saisie_col_aid_id_array, $aid->getId());
 			    if (!empty($keys)) {
 				//on a des saisies pour cette aid
-				//est-ce que l'eleve a bien été saisi absent ?
+				//est-ce que l'eleve a bien Ã©tÃ© saisi absent ?
 				$temp_col = new PropelObjectCollection();
 				$bool_eleve_saisi = false;
 				foreach ($keys as $key) {
@@ -969,7 +969,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	}
 
 	/**
-	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie, fait une validation avant la sauvegarde
+	 * Ajout manuel : renseignement automatique de l'utilisateur qui a crÃ©Ã© ou modifiÃ© la saisie, fait une validation avant la sauvegarde
 	 * Persists this object to the database.
 	 *
 	 * If the object is new, it inserts it; otherwise an update is performed.
@@ -1015,7 +1015,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	
 	/**
 	 *
-	 * Vérifie et met à jour la table d'agrégation pour cette saisie
+	 * VÃ©rifie et met Ã  jour la table d'agrÃ©gation pour cette saisie
 	 *
 	 * @return     AbsenceEleveLieu
 	 *
@@ -1028,7 +1028,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
-	 * Mets à jour la table d'agrégation pour cette saisie
+	 * Mets Ã  jour la table d'agrÃ©gation pour cette saisie
 	 *
 	 * @return     AbsenceEleveLieu
 	 *
@@ -1041,7 +1041,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	
 	/**
 	 *
-	 * Renvoi le lieu de l'absence ou le lieu de plus petit rang des types d'absence associé.
+	 * Renvoi le lieu de l'absence ou le lieu de plus petit rang des types d'absence associÃ©.
 	 *
 	 * @return     AbsenceEleveLieu
 	 *
@@ -1051,14 +1051,14 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
             if ($lieu != null) {
                 return $lieu;
             } else {
-                //parcourir les types associés et retourner le lieu de plus petit rang
-                throw new PropelException("non implémenté");
+                //parcourir les types associÃ©s et retourner le lieu de plus petit rang
+                throw new PropelException("non implÃ©mentÃ©");
             }
         }
 
      /**
 	 *
-	 * Renvoi true/false selon que l'élève est sorti ou non de l'établissement
+	 * Renvoi true/false selon que l'Ã©lÃ¨ve est sorti ou non de l'Ã©tablissement
 	 *
 	 * @return Boolean
 	 *

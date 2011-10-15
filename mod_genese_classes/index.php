@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Accueil',
+description='GÃ©nÃ¨se des classes: Accueil',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -57,7 +57,7 @@ $insert=mysql_query($sql);
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -67,7 +67,7 @@ if (!checkAccess()) {
 
 //=========================================================
 
-// Création des tables
+// CrÃ©ation des tables
 
 $sql="CREATE TABLE IF NOT EXISTS gc_projets (
 id smallint(6) unsigned NOT NULL auto_increment,
@@ -157,10 +157,10 @@ if ($res_test<2){
   if ($query) {
     $query=mysql_query("ALTER TABLE gc_ele_arriv_red ADD PRIMARY KEY ( login , projet );");
     if (!$query) {
-      $msg="Echec de la définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !<br />";
+      $msg="Echec de la dÃ©finition de la clÃ© primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !<br />";
     }
   } else {
-      $msg="Echec de la définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !<br />Cela peut perturber la conservation des redoublants/arrivants lors de la copie de projet.<br />";
+      $msg="Echec de la dÃ©finition de la clÃ© primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !<br />Cela peut perturber la conservation des redoublants/arrivants lors de la copie de projet.<br />";
   }
 }
 
@@ -184,14 +184,14 @@ if(isset($projet)) {
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
 				$sql="INSERT INTO gc_projets SET projet='$projet', commentaire='';";
-				if($insert=mysql_query($sql)) {$msg="Le projet $projet a été créé.";}
+				if($insert=mysql_query($sql)) {$msg="Le projet $projet a Ã©tÃ© crÃ©Ã©.";}
 			}
 			else {
-				$msg="Un projet du même nom '$projet' existe déjà.\n";
+				$msg="Un projet du mÃªme nom '$projet' existe dÃ©jÃ .\n";
 			}
 		}
 		else {
-			$msg="Les caractères du nom de projet '$projet' ne sont pas valides.\n";
+			$msg="Les caractÃ¨res du nom de projet '$projet' ne sont pas valides.\n";
 		}
 	}
 	elseif(isset($suppr_projet)) {
@@ -199,7 +199,7 @@ if(isset($projet)) {
 		if($projet!="") {
 			$sql="DELETE FROM gc_projets WHERE projet='$projet';";
 			$del=mysql_query($sql);
-			// Il y aura d'autres tables à nettoyer
+			// Il y aura d'autres tables Ã  nettoyer
 			$sql="DELETE FROM gc_divisions WHERE projet='$projet';";
 			$del=mysql_query($sql);
 			$sql="DELETE FROM gc_options WHERE projet='$projet';";
@@ -212,10 +212,10 @@ if(isset($projet)) {
 			$del=mysql_query($sql);
 			$sql="DELETE FROM gc_options_classes WHERE projet='$projet';";
 			$del=mysql_query($sql);
-			$msg="Suppression du projet '$projet' effectuée.\n";
+			$msg="Suppression du projet '$projet' effectuÃ©e.\n";
 		}
 		else {
-			$msg="Les caractères du nom de projet '$projet' ne sont pas valides.\n";
+			$msg="Les caractÃ¨res du nom de projet '$projet' ne sont pas valides.\n";
 		}
 
 		unset($projet);
@@ -231,7 +231,7 @@ if(isset($projet)) {
 				if(mysql_num_rows($test)==0) {
 					$sql="INSERT INTO gc_projets SET projet='$projet', commentaire='';";
 					if($insert=mysql_query($sql)) {
-						$msg="Le projet $projet a été créé.";
+						$msg="Le projet $projet a Ã©tÃ© crÃ©Ã©.";
 
 						//,'gc_projets'
 						//$tab_table=array('gc_affichages','gc_divisions','gc_ele_arriv_red','gc_eleve_fut_classe','gc_eleves_options','gc_options');
@@ -257,15 +257,15 @@ if(isset($projet)) {
 					}
 				}
 				else {
-					$msg="Un projet du même nom '$projet' existe déjà.\n";
+					$msg="Un projet du mÃªme nom '$projet' existe dÃ©jÃ .\n";
 				}
 			}
 			else {
-				$msg="Les caractères du nom de projet '$projet' ne sont pas valides.\n";
+				$msg="Les caractÃ¨res du nom de projet '$projet' ne sont pas valides.\n";
 			}
 		}
 		else {
-			$msg="Les caractères du nom de projet original '$projet_original' ne sont pas valides.\n";
+			$msg="Les caractÃ¨res du nom de projet original '$projet_original' ne sont pas valides.\n";
 		}
 		unset($projet);
 	}
@@ -273,14 +273,14 @@ if(isset($projet)) {
 
 $truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 if($truncate_tables=='y') {
-	$msg="<p>Nettoyage des tables Génèse des classes... <font color='red'>A FAIRE</font></p>\n";
+	$msg="<p>Nettoyage des tables GÃ©nÃ¨se des classes... <font color='red'>A FAIRE</font></p>\n";
 	$sql="TRUNCATE TABLE ...;";
 	//$del=mysql_query($sql);
 }
 
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Accueil";
+$titre_page = "GÃ©nÃ¨se classe: Accueil";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -305,7 +305,7 @@ if(!isset($projet)) {
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_creer_projet'>\n";
 	echo "<tr class='lig1'>\n";
 	echo "<td style='text-align:left;'>\n";
-	echo "Créer un nouveau projet&nbsp;: </td><td style='text-align:left;'><input type='text' name='projet' value='' /> <input type='submit' name='creer_projet' value='Créer' />\n";
+	echo "CrÃ©er un nouveau projet&nbsp;: </td><td style='text-align:left;'><input type='text' name='projet' value='' /> <input type='submit' name='creer_projet' value='CrÃ©er' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</form>\n";
@@ -316,7 +316,7 @@ if(!isset($projet)) {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_select_projet'>\n";
 		echo "<tr class='lig-1'>\n";
 		echo "<td style='text-align:left;'>\n";
-		echo "Sélectionner un projet existant&nbsp;: </td><td style='text-align:left;'>";
+		echo "SÃ©lectionner un projet existant&nbsp;: </td><td style='text-align:left;'>";
 		$lignes_select_projet="<select name='projet'>\n";
 		while($lig=mysql_fetch_object($res)) {
 			$lignes_select_projet.="<option value='$lig->projet'>$lig->projet</option>\n";
@@ -331,13 +331,13 @@ if(!isset($projet)) {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_suppr'>\n";
 		echo "<tr class='lig1'>\n";
 		echo "<td style='text-align:left;'>\n";
-		echo "<p>Supprimer un projet existant&nbsp;: <!--font color='red'>METTRE UN CONFIRM... ET ENSUITE VIRER LES ENREGISTREMENTS ASSOCIéS AU PROJET DANS TOUTES LES TABLES</font--></td><td style='text-align:left;'>";
+		echo "<p>Supprimer un projet existant&nbsp;: <!--font color='red'>METTRE UN CONFIRM... ET ENSUITE VIRER LES ENREGISTREMENTS ASSOCIÃ©S AU PROJET DANS TOUTES LES TABLES</font--></td><td style='text-align:left;'>";
 		echo $lignes_select_projet;
 		//echo " <input type='submit' name='suppr_projet' value='Supprimer' /></p>\n";
 		echo " <input type='hidden' name='suppr_projet' value='Supprimer' />\n";
 
 		echo " <input type='button' name='btn_suppr_projet' value='Supprimer' ";
-		$themessage="Etes-vous sûr de vouloir supprimer le projet?";
+		$themessage="Etes-vous sÃ»r de vouloir supprimer le projet?";
 		echo "onclick=\"confirm_submit('$themessage');\" />\n";
 
 		echo "<script type='text/javascript'>
@@ -397,13 +397,13 @@ else {
 	echo "<ol>\n";
 	echo "<li><a href='select_classes.php?projet=$projet'>Choisir les classes (<i>actuelles et futures</i>)</a></li>\n";
 	echo "<li><a href='select_options.php?projet=$projet'>Choisir les options</a></li>\n";
-	echo "<li><a href='liste_options.php?projet=$projet'>Lister les options actuelles des élèves</a></li>\n";
-	echo "<li><a href='import_options.php?projet=$projet'>Importer les options futures des élèves d'après un CSV</a></li>\n";
-	echo "<li><a href='select_arriv_red.php?projet=$projet'>Sélection des élèves redoublants et/ou arrivants</a></li>\n";
-	echo "<li><a href='saisie_contraintes_opt_classe.php?projet=$projet'>Saisir les contraintes sur les classes et options</a><br />(<i>pour exclure la présence de certaines options sur certaines classes</i>)</li>\n";
-	echo "<li><a href='select_eleves_options.php?projet=$projet'>Saisir les options des élèves</a></li>\n";
+	echo "<li><a href='liste_options.php?projet=$projet'>Lister les options actuelles des Ã©lÃ¨ves</a></li>\n";
+	echo "<li><a href='import_options.php?projet=$projet'>Importer les options futures des Ã©lÃ¨ves d'aprÃ¨s un CSV</a></li>\n";
+	echo "<li><a href='select_arriv_red.php?projet=$projet'>SÃ©lection des Ã©lÃ¨ves redoublants et/ou arrivants</a></li>\n";
+	echo "<li><a href='saisie_contraintes_opt_classe.php?projet=$projet'>Saisir les contraintes sur les classes et options</a><br />(<i>pour exclure la prÃ©sence de certaines options sur certaines classes</i>)</li>\n";
+	echo "<li><a href='select_eleves_options.php?projet=$projet'>Saisir les options des Ã©lÃ¨ves</a></li>\n";
 	echo "<li>";
-	echo "<a href='affect_eleves_classes.php?projet=$projet'>Affecter les élèves dans les classes</a>\n";
+	echo "<a href='affect_eleves_classes.php?projet=$projet'>Affecter les Ã©lÃ¨ves dans les classes</a>\n";
 	echo "</li>\n";
 	echo "<li>";
 	echo "<a href='affiche_listes.php?projet=$projet'>Affichage de listes</a>";
@@ -415,18 +415,18 @@ else {
 
 echo "<p><i>NOTES</i>&nbsp;:</p>\n";
 echo "<ul>\n";
-echo "<li><p>Ce module est destiné à permettre de préparer en fin d'année les classes de l'année scolaire suivante.</p></li>\n";
-echo "<li><p>Le principal indique les contraintes (<i>telles options sur telles classes uniquement,...</i>) et un ensemble de professeurs, cpe,... tente de fabriquer les classes en respectant les contraintes, en séparant certains élèves, en maintenant ensemble d'autres élèves,...<br />
+echo "<li><p>Ce module est destinÃ© Ã  permettre de prÃ©parer en fin d'annÃ©e les classes de l'annÃ©e scolaire suivante.</p></li>\n";
+echo "<li><p>Le principal indique les contraintes (<i>telles options sur telles classes uniquement,...</i>) et un ensemble de professeurs, cpe,... tente de fabriquer les classes en respectant les contraintes, en sÃ©parant certains Ã©lÃ¨ves, en maintenant ensemble d'autres Ã©lÃ¨ves,...<br />
 Faire participer les professeurs et cpe permet d'avoir les points de vue en classe et hors des classes.</p></li>\n";
-echo "<li><p>Quelques éléments sur l'utilisation du dispositif&nbsp;:<br />
-Les points 1 à 7 doivent être suivis dans l'ordre.<br />
-Ensuite, on peut générer des listes d'élèves groupés par options afin de préparer sur papier les destinations possibles des élèves des différents groupes.<br />
-Certains élèves doivent être affectés dans certaines classes de façon impérative du fait de leur jeu d'options.<br />
-On affecte ensuite des élèves en tentant de créer des têtes de classes.<br />
-On complète.<br />
-On répartit les cas restants.<br />
-Et enfin, on génère un affichage des listes de classes futures... ainsi que les regroupements de langues,...</p>
-<p>On procède éventuellement à quelques échanges, puis on présente des listes au principal qui accepte ou non la répartition proposée.</p>
+echo "<li><p>Quelques Ã©lÃ©ments sur l'utilisation du dispositif&nbsp;:<br />
+Les points 1 Ã  7 doivent Ãªtre suivis dans l'ordre.<br />
+Ensuite, on peut gÃ©nÃ©rer des listes d'Ã©lÃ¨ves groupÃ©s par options afin de prÃ©parer sur papier les destinations possibles des Ã©lÃ¨ves des diffÃ©rents groupes.<br />
+Certains Ã©lÃ¨ves doivent Ãªtre affectÃ©s dans certaines classes de faÃ§on impÃ©rative du fait de leur jeu d'options.<br />
+On affecte ensuite des Ã©lÃ¨ves en tentant de crÃ©er des tÃªtes de classes.<br />
+On complÃ¨te.<br />
+On rÃ©partit les cas restants.<br />
+Et enfin, on gÃ©nÃ¨re un affichage des listes de classes futures... ainsi que les regroupements de langues,...</p>
+<p>On procÃ¨de Ã©ventuellement Ã  quelques Ã©changes, puis on prÃ©sente des listes au principal qui accepte ou non la rÃ©partition proposÃ©e.</p>
 </li>\n";
 echo "</ul>\n";
 

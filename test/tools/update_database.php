@@ -11,8 +11,8 @@ require dirname(__FILE__) . '/../../utilitaires/updates/155_to_current.inc.php';
 $result=preg_replace("#<br>#","\n",$result);
 $result=preg_replace("#<br/>#","\n",$result);
      
-// Supprime les éventuelles balises html et php
+// Supprime les Ã©ventuelles balises html et php
 $result=strip_tags($result);
 
-// Retourne le texte traité
+// Retourne le texte traitÃ©
 echo $result; 
