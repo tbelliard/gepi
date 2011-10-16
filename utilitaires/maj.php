@@ -233,14 +233,6 @@ if (isset ($_POST['maj'])) {
             require 'updates/154_to_155.inc.php';
 	}
 	
-	// forcer la mise à jour des tables même si la base est déjà en utf8 dans le cas d'une restauration de vieille sauvegarde
-	/**  il faudrait créer un drapeau */
-	$forceUtf8 = TRUE; 
-	if (($force_maj == 'yes') or (quelle_maj("to_UTF8"))) {
-            require 'updates/ISO_to_UTF8.inc.php';
-	}
-
-
 	if (($force_maj == 'yes') or (quelle_maj("dev"))) {
             require 'updates/155_to_dev.inc.php';
 	}

@@ -22,14 +22,9 @@ define('SET_ORIGINE', 'latin1');
 define('SET_DEST', 'utf8');
  /* */
 
-/* Passage de la base en UTF8 */
-
 $result.="<br /><strong>Passage de la base en ".SET_DEST."</strong><br />";
 
-/* VÃ©rifier si la base est en ISO-8559 */
-
-$result.="Test de l'encodage de la base<br />";
-$query = mysql_query("SHOW VARIABLES LIKE 'character\_set\_%'");
+$query = mysql_query("SHOW VARIABLES LIKE 'character_set_%'");
 if ($query) {
   while ($row = mysql_fetch_object($query)) {
     $donneesBase[] = $row;
@@ -38,7 +33,6 @@ if ($query) {
   die ('Erreur de lecture de la base');
 }
 
-$continue=FALSE;
 foreach ($donneesBase as $donnees) {
 /*
  * non modifier
@@ -59,54 +53,52 @@ foreach ($donneesBase as $donnees) {
   }
 */
   if (($donnees->Variable_name == 'character_set_database')&&($donnees->Value != SET_DEST)) {
+      $result.=$donnees->Variable_name." est réglé à ".$donnees->Value."<br />";
+      $result.="passage de ".$donnees->Variable_name." à  ".SET_DEST."<br />";
     $queryBase = mysql_query("ALTER DATABASE  CHARACTER SET ".SET_DEST.";");
-    $result.="passage de ".$donnees->Variable_name." Ã  ".SET_DEST."<br />";
-    $continue=TRUE;
   }
 }
 unset ($donnees, $donneesBase);
 
-$query = mysql_query("SHOW VARIABLES LIKE 'character\_set\_%'");
+//debug sur les variables
+//$query = mysql_query("SHOW VARIABLES LIKE 'character\_set\_%'");
+//if ($query) {
+//  while ($row = mysql_fetch_object($query)) {
+//    $donneesBase[] = $row;
+//  }
+//} else {
+//  die ('Erreur de lecture de la base');
+//}
+//foreach ($donneesBase as $donnees) {
+//    $result.=msj_present($donnees->Variable_name.' => '.$donnees->Value);
+//}
+//unset ($donnees);
+
+/* on s'occupe des tables */
+$result.="<br />Passage des tables en ".SET_DEST."<br />";
+
+$query = mysql_query("SHOW table status");
 if ($query) {
-  while ($row = mysql_fetch_object($query)) {
-    $donneesBase[] = $row;
-  }
+	while ($row = mysql_fetch_array($query, MYSQL_ASSOC)) {
+        if (substr($row['Collation'],0,6) == 'latin1' ) {
+            $donneesTable[] = $row['Name'];
+        }
+	}
 } else {
-  die ('Erreur de lecture de la base');
+	die ('Erreur de lecture de la base');
 }
-foreach ($donneesBase as $donnees) {
-    $result.=msj_present($donnees->Variable_name.' => '.$donnees->Value);
+if (empty($donneesTable) ){
+    $result .= msj_ok("Tables déjà encodées en ".SET_DEST);
+} else {
+    foreach ($donneesTable as $table) {
+        $result.="Passage de $table en ".SET_DEST."";
+        $querytable = mysql_query('ALTER TABLE '.$table.' CHARACTER SET '.SET_DEST);
+    	$querytable = mysql_query('ALTER TABLE '.$table.' CONVERT TO CHARACTER SET '.SET_DEST);
+        $result.=" : fait<br />";
+    }
+    unset ( $table);
+    $result .= msj_ok("Tables encodées en ".SET_DEST);
 }
-unset ($donnees);
-
-/**
- * @todo revoir le test, si on récupère une ancienne base il faudrait initialisé $forceUtf8 plutôt que de le forcer dans maj.php
- */
-if ($continue || $forceUtf8) {
-/* On vient de passer la base en UTF-8, on s'occupe des tables */
-
-	/* Passage des tables en UTF8 */
-	$result.="<br />Passage des tables en ".SET_DEST."<br />";
-
-	$query = mysql_query("SHOW tables");
-	if ($query) {
-		while ($row = mysql_fetch_array($query)) {
-		  $donneesTable[] = $row;
-		}
-	} else {
-		die ('Erreur de lecture de la base');
-	}
-
-	foreach ($donneesTable as $table) {
-		$querytable = mysql_query('ALTER TABLE '.$table[0].' CHARACTER SET '.SET_DEST);
-		$querytable = mysql_query('ALTER TABLE '.$table[0].' CONVERT TO CHARACTER SET '.SET_DEST);
-
-	}
-	unset ( $table);
-	$result .= msj_ok("Tables encodées en ".SET_DEST);
-
-}
-
 
 
 ?>

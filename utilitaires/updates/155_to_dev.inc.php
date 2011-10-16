@@ -25,6 +25,8 @@
 
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version courante :</h3>";
 
+require 'updates/ISO_to_UTF8.inc.php';
+
 $result.="<br/>";
 
 $result.="ok<br/>";
