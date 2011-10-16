@@ -121,6 +121,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							if (!($reg_data))  {$reg_ok = 'no';}
 						}
 
+		
 						// UPDATE: Ajouter l'élève à tous les groupes pour la période:
 						$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe'";
 						$res_liste_grp_classe=mysql_query($sql);

@@ -473,6 +473,8 @@ $titre_page = "Ajouter ou modifier un responsable";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 
+//debug_var();
+
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
@@ -582,7 +584,7 @@ if(isset($associer_eleve)) {
 
 	$lig_pers=mysql_fetch_object($res_resp);
 
-	$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom FROM eleves e ORDER BY e.nom,e.prenom";
+	$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom,e.login FROM eleves e ORDER BY e.nom,e.prenom";
 	$res_ele=mysql_query($sql);
 
 	if(mysql_num_rows($res_ele)==0){
@@ -592,6 +594,7 @@ if(isset($associer_eleve)) {
 		die();
 	}
 
+	$tab_anomalie_ele_id=array();
 	$compteur=0;
 	while($lig_ele=mysql_fetch_object($res_ele)){
 		// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
@@ -618,7 +621,12 @@ if(isset($associer_eleve)) {
 				echo "<option value=''>--- Ajouter un élève ---</option>\n";
 			}
 
-			echo "<option value='$lig_ele->ele_id'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
+			if($lig_ele->ele_id!='') {
+				echo "<option value='$lig_ele->ele_id'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
+			}
+			else {
+				$tab_anomalie_ele_id[]=$lig_ele->login;
+			}
 			$compteur++;
 		}
 	}
@@ -634,6 +642,15 @@ if(isset($associer_eleve)) {
 	}
 	else{
 		echo "<p>Tous les élèves ont leur deux responsables légaux.</p>\n";
+	}
+
+	if(count($tab_anomalie_ele_id)>0) {
+		echo "<p><span style='color:red'>ANOMALIE&nbsp;:</span> Un ou des élèves n'ont pas d'ELE_ID.<br />Comment avez-vous initialisé/importé/créé ces élèves&nbsp;?<br />En voici la liste&nbsp;:</p>";
+		echo "<ul>\n";
+		for($i=0;$i<count($tab_anomalie_ele_id);$i++) {
+			echo "<li><a href='../eleves/modify_eleve.php?eleve_login=".$tab_anomalie_ele_id[$i]."'>".get_nom_prenom_eleve($tab_anomalie_ele_id[$i],'avec_classe')."</li>\n";
+		}
+		echo "</ul>\n";
 	}
 
 	require("../lib/footer.inc.php");
@@ -777,13 +794,16 @@ echo "<td valign='top'>\n";
 	if(isset($pers_id)){
 		echo " (<i>n°$pers_id</i>)";
 
-		$sql="SELECT u.login FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
+		$sql="SELECT u.login, u.email FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
 		$test_compte=mysql_query($sql);
 		if(mysql_num_rows($test_compte)>0) {
 			$compte_resp_existe="y";
 			$lig_resp_login=mysql_fetch_object($test_compte);
 
 			$resp_login=$lig_resp_login->login;
+			$resp_u_email=$lig_resp_login->email;
+
+			echo " (<em title=\"Compte d'utilisateur\">$resp_login</em>)";
 		}
 		else {
 			$compte_resp_existe="n";
@@ -863,6 +883,7 @@ echo "<td valign='top'>\n";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
 		echo "</a>";
 	}
+
 	echo "</td></tr>\n";
 	echo "</table>\n";
 

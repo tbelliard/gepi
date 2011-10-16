@@ -421,12 +421,11 @@ if (($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_
     echo '<tr><td>';
     echo 'Adresse : ';
     echo '</td><td>';
+    if ($notification->getResponsableEleveAdresse() != null) {
 	//pour information : Nom du ou des responsables sélectionnés
 	echo 'De : <i> ';
 	echo $notification->getResponsableEleveAdresse()->getDescriptionHabitant();
 	echo '</i><br/><br/>';
-    if ($notification->getResponsableEleveAdresse() != null) {
-	//on ne modifie le statut si le type est courrier ou communication téléphonique
 	if ($notification->getResponsableEleveAdresse()->getAdr1() != null && $notification->getResponsableEleveAdresse()->getAdr1() != '') {
 	    echo $notification->getResponsableEleveAdresse()->getAdr1();
 	    echo '<br/>';

@@ -174,7 +174,7 @@ class Session {
 
 		if ($_login != null && strtoupper($_login) != strtoupper($this->login)) {
 			//on a une connexion sous un nouveau login, on purge la session
-			$this->reset("4");
+			$this->reset("10");
 		}
 
 		if($debug_test_mdp=="y") {
@@ -426,7 +426,6 @@ class Session {
 			}
 
 			// On retourne le code d'erreur générique
-
 			return "9";
 		}
 
@@ -621,7 +620,7 @@ class Session {
 		# 0 : logout normal
 		# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
 		# 3 : logout lié à un timeout
-		# 4 : logout lié à une nouvelle connexion sous un nouveau profil
+		# 10 : logout lié à une nouvelle connexion sous un nouveau profil
 
 	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
 	    if ($this->start) {
@@ -760,7 +759,6 @@ class Session {
                             }
                             
                             //l'authentification est réussie sinon on serait déjà sorti de la fonction
-
                             $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK'."\n");
                             if (mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"))>0) {
                                 //on va passer le hash en hmac scha256
@@ -909,7 +907,6 @@ if (getSettingValue("sso_cas_table") == 'yes') {
       	if (isset($tab[$code_attribut])) {
         	$valeur = $tab[$code_attribut];
 					if (!empty($valeur)){						// L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
-
 						// On s'assure que la chaîne est bien enregistrée en iso-8859-1.
 						// Il est en effet probable que la chaîne d'origine soit en UTF-8.
 						$valeur = ensure_iso8859_1($valeur);
@@ -1084,8 +1081,8 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		*/
 
 		# On interroge la base de données
-
 		$query = mysql_query("SELECT login, nom, prenom, email, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");
+
 		# Est-ce qu'on a bien une entrée ?
 		if (mysql_num_rows($query) != "1") {
 			return false;

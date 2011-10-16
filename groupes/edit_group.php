@@ -89,9 +89,9 @@ if (isset($_POST['is_posted'])) {
 	$reg_nom_complet = $_POST['groupe_nom_complet'];
 	*/
 	//$reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court']);
-	$reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court'],ENT_QUOTES,UTF-8);
+	$reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court'],ENT_QUOTES,"UTF-8");
 	//$reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet']);
-	$reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet'],ENT_QUOTES,UTF-8);
+	$reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet'],ENT_QUOTES,"UTF-8");
 	//=======================================
 	$reg_matiere = $_POST['matiere'];
 
@@ -619,14 +619,14 @@ if (count($prof_list["list"]) == "0") {
 					echo "</td>\n";
 					echo "<td style='text-align:left;'>\n";
 					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
-						$current_group["profs"]["users"][$prof_login]["prenom"] . " " .
+						casse_mot($current_group["profs"]["users"][$prof_login]["prenom"],'majf2') . " " .
 						$current_group["profs"]["users"][$prof_login]["nom"] . "</label>\n";
 				} else {
 					echo " checked />\n";
 					echo "</td>\n";
 					echo "<td style='text-align:left;'>\n";
 					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-						$prof_list["users"][$prof_login]["prenom"] . " " .
+						casse_mot($prof_list["users"][$prof_login]["prenom"],'majf2') . " " .
 						$prof_list["users"][$prof_login]["nom"] . "</label>\n";
 				}
 			} else {
@@ -634,7 +634,7 @@ if (count($prof_list["list"]) == "0") {
 				echo "</td>\n";
 				echo "<td style='text-align:left;'>\n";
 				echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-						$prof_list["users"][$prof_login]["prenom"] . " " .
+						casse_mot($prof_list["users"][$prof_login]["prenom"],'majf2') . " " .
 						$prof_list["users"][$prof_login]["nom"] . "</label>";
 			}
 

@@ -120,6 +120,34 @@ if ($ctTravailAFaire->getVise() == 'y') {
 	die();
 }
 
+if(isset($_GET['change_visibilite'])) {
+	check_token();
+
+	//$ctDocument->setVisibleEleveParent(false);
+	//$id_ct_devoir=$_GET['id_ct_devoir'];
+	$id_ct_devoir=$id_devoir;
+	$id_document=$_GET['id_document'];
+	if(($id_ct_devoir!='')&&(preg_match("/^[0-9]*$/", $id_ct_devoir))&&($id_document!='')&&(preg_match("/^[0-9]*$/", $id_document))) {
+		$sql="SELECT visible_eleve_parent FROM ct_devoirs_documents WHERE id='$id_document' AND id_ct_devoir='$id_ct_devoir';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			if($lig->visible_eleve_parent=='0') {$visible_eleve_parent='1';} else {$visible_eleve_parent='0';}
+			$sql="UPDATE ct_devoirs_documents SET visible_eleve_parent='$visible_eleve_parent' WHERE id='$id_document' AND id_ct_devoir='$id_ct_devoir';";
+			$res=mysql_query($sql);
+			if($res) {
+				if($visible_eleve_parent=='1') {
+					echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
+				}
+				else {
+					echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+				}
+			}
+		}
+	}
+	die();
+}
+
 //on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $ctTravailAFaire->getIdGroupe();
 
@@ -343,6 +371,9 @@ echo "<script type='text/javascript'>
 		if (!isset($info)) {
 			$hier = $today - 3600*24;
 			$demain = $today + 3600*24;
+
+			$semaine_precedente= $today - 3600*24*7;
+			$semaine_suivante= $today + 3600*24*7;
 			echo "</td>\n";
 
 			echo "<td>\n";
@@ -351,9 +382,20 @@ echo "<script type='text/javascript'>
 				\"><img src=\"../images/icons/date.png\" width='16' height='16' alt='Calendrier' /></a>\n";
 			echo "</td>\n";
 
-			echo "<td><a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'>&lt;&lt;</a></td>
-			<td align=center>Aujourd'hui</td>
-			<td align=right><a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'>&gt;&gt;</a></td></tr>\n";
+			echo "<td style='text-align:center; width: 16px;'>\n";
+			echo "<a title=\"Aller à la semaine précédente\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($semaine_precedente);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left-double.png' width='16' height='16' title='Aller à la semaine précédente' alt='Aller à la semaine précédente' /></a> ";
+			echo "</td>\n";
+			echo "<td style='text-align:center; width: 16px;'>\n";
+			echo "<a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left.png' width='16' height='16' title='Aller au jour précédent' alt='Aller au jour précédent' /></a>\n";
+			echo "</td>\n";
+			echo "<td align='center'>Aujourd'hui</td>\n";
+			echo "<td style='text-align:center; width: 16px;'>\n";
+			echo "<a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right.png' width='16' height='16' title='Aller au jour suivant' alt='Aller au jour suivant' /></a>\n";
+			echo "</td>\n";
+			echo "<td style='text-align:center; width: 16px;'>\n";
+			echo " <a title=\"Aller à la semaine suivante\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($semaine_suivante);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right-double.png' width='16' height='16' title='Aller à la semaine suivante' alt='Aller à la semaine suivante' /></a>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
 			echo "\n";
 		}
 		?>
@@ -373,6 +415,7 @@ echo "<script type='text/javascript'>
 		echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: #000000; width: 100%\" cellspacing=\"1\" summary=\"Tableau des documents joints\">\n";
 		"<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_entete_fond[$type_couleur];\"><td style=\"text-align: center;\"><b>Titre</b></td><td style=\"text-align: center; width: 100px\"><b>Taille en Ko</b></td><td style=\"text-align: center; width: 100px\"></td></tr>\n";
 		if (!empty($documents)) {
+			$nb_documents_joints=0;
 			foreach ($documents as $document) {
 				//if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
 				//			$id_document[$i] = $document->getId();
@@ -384,27 +427,38 @@ echo "<script type='text/javascript'>
 						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>\n";
 						if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
 							echo "<td style=\"text-align: center;\">";
+							echo "<a href='javascript:modif_visibilite_doc_joint(\"devoir\", ".$ctTravailAFaire->getIdCt().", ".$document->getId().")'>";
+							echo "<span id='span_document_joint_".$document->getId()."'>";
 							if($document->getVisibleEleveParent()) {
 								echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
 							}
 							else {
 								echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
 							}
+							echo "</span>";
+							echo "</a>";
 							echo "</td>\n";
 						}
 						echo "<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."','".add_token_in_js_func()."')\">Supprimer</a></td></tr>\n";
+				$nb_documents_joints++;
 			}
 			echo "</table>\n";
 			//gestion de modification du nom d'un document
 
-			echo "Nouveau nom <input type=\"text\" name=\"doc_name_modif\" size=\"25\" /> pour\n";
-			echo "<select name=\"id_document\">\n";
-			echo "<option value='-1'>(choisissez)</option>\n";
-			foreach ($documents as $document) {
-				echo "<option value='".$document->getId()."'>".$document->getTitre()."</option>\n";
+			if($nb_documents_joints>0) {
+				echo "Nouveau nom <input type=\"text\" name=\"doc_name_modif\" size=\"25\" /> pour\n";
+				echo "<select name=\"id_document\">\n";
+				echo "<option value='-1'>(choisissez)</option>\n";
+				foreach ($documents as $document) {
+					echo "<option value='".$document->getId()."'>".$document->getTitre()."</option>\n";
+				}
+				echo "</select>\n";
+				echo "<br /><br />\n";
 			}
-			echo "</select>\n<br /><br />\n";
 		}
+
+		echo add_token_field(true);
+
 		?>
 		<table style="border-style:solid; border-width:0px; border-color: <?php echo $couleur_bord_tableau_notice;?> ; background-color: #000000; width: 100%" cellspacing="1" summary="Tableau de...">
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
@@ -463,7 +517,10 @@ echo "<script type='text/javascript'>
 <?php echo "</form>\n";
 echo "</fieldset>\n";
 
-echo "<script type='text/javascript'>
+$ouverture_auto_WinDevoirsDeLaClasse=getPref($_SESSION['login'], 'ouverture_auto_WinDevoirsDeLaClasse', 'y');
+if($ouverture_auto_WinDevoirsDeLaClasse=='y') {
+	echo "<script type='text/javascript'>
 	getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+getCalendarUnixDate());
 </script>\n";
+}
 ?>

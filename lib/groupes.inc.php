@@ -165,12 +165,14 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 	$get_eleves='n';
 	$get_periodes='n';
 	$get_profs='n';
+	$get_visibilite='n';
 	if(in_array('all',$tab_champs)) {
 		$get_matieres='y';
 		$get_classes='y';
 		$get_eleves='y';
 		$get_profs='y';
 		$get_periodes='y';
+		$get_visibilite='y';
 	}
 	else {
 		if(in_array('matieres',$tab_champs)) {$get_matieres='y';}
@@ -178,6 +180,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		if(in_array('eleves',$tab_champs)) {$get_eleves='y';$get_classes='y';$get_periodes='y';}
 		if(in_array('periodes',$tab_champs)) {$get_periodes='y';$get_classes='y';}
 		if(in_array('profs',$tab_champs)) {$get_profs='y';}
+		if(in_array('visibilite',$tab_champs)) {$get_visibilite='y';}
 	}
 
     if (!is_numeric($_id_groupe)) {$_id_groupe = "0";}
@@ -196,7 +199,18 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		$temp["name"] = mysql_result($query, 0, "name");
 		$temp["description"] = mysql_result($query, 0, "description");
 		$temp["id"] = mysql_result($query, 0, "id");
-	
+
+		if($get_visibilite=='y') {
+			$temp["visibilite"]=array();
+			$sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='" . $_id_groupe . "';";
+			$res_vis=mysql_query($sql);
+			if(mysql_num_rows($res_vis)>0) {
+				while($lig_vis=mysql_fetch_object($res_vis)) {
+					$temp["visibilite"][$lig_vis->domaine]=$lig_vis->visible;
+				}
+			}
+		}
+
 		if($get_matieres=='y') {
 			// Matières
 			$matiere = mysql_query("SELECT m.matiere, m.nom_complet, m.categorie_id FROM matieres m, j_groupes_matieres j " .

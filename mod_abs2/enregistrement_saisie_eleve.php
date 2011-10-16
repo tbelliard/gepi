@@ -255,14 +255,14 @@ for($i=0; $i<$total_eleves; $i++) {
 	    $message_enregistrement .= "<br/>";
 	} else {
 	    $message_erreur_eleve[$eleve->getIdEleve()] = '';
-	    foreach ($saisie->getValidationFailures() as $erreurs) {
-		$message_erreur_eleve[$eleve->getIdEleve()] .= $erreurs;
-		$no_br = true;
-		if ($no_br) {
-		    $no_br = false;
-		} else {
-		    $message_erreur_eleve[$eleve->getIdEleve()] .= '<br/>';
-		}
+        foreach ($saisie->getValidationFailures() as $failure) {
+    		$message_erreur_eleve[$eleve->getIdEleve()] .= $failure->getMessage();
+    		$no_br = true;
+    		if ($no_br) {
+    		    $no_br = false;
+    		} else {
+    		    $message_erreur_eleve[$eleve->getIdEleve()] .= '<br/>';
+    		}
 	    }
 	}
     }

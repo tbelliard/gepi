@@ -7,15 +7,17 @@
      <![CDATA[
        var text = attributes.get("text");
        var pos = text.lastIndexOf("/");
-       if (pos == -1) {
-        project.setProperty(attributes.get("property"), text);
-       } else {
-        project.setProperty(attributes.get("property"), text.substring(pos+1));
-       }
+	   text = text.substring(pos+1);
+  	   if (text == "HEAD") {
+	     text = "production";
+  	   }
+       project.setProperty(attributes.get("property"), text);
      ]]>
   </scriptdef>
   <property environment="env" />
-  <branch_end_string text="origin/developpement" property="branch_name" />
+  <branch_end_string text="${env.GIT_BRANCH}" property="branch_name" />
+  <property name="artifact_name" value="gepi-${branch_name}-${env.BUILD_ID}" />
+  <echo message="artifact_name = ${artifact_name}" />
   <echo message="branch_name = ${branch_name}" />
 
 
@@ -46,6 +48,14 @@
   <exec executable="phpunit" failonerror="true">
     <arg value="-c" />
     <arg path="${basedir}/test/phpunit.xml" />
+  </exec>
+ </target>
+
+ <target name="phpunit_no_code_coverage"
+         description="Run unit tests using PHPUnit and generates junit.xml">
+  <exec executable="phpunit" failonerror="true">
+    <arg value="-c" />
+    <arg path="${basedir}/test/phpunit-nocc.xml" />
   </exec>
  </target>
 
@@ -86,7 +96,7 @@
  <target name="phpcpd"
          description="Generate pmd-cpd.xml using PHPCPD">
   <exec dir="${basedir}" executable="phpcpd" failonerror="false">
-      <arg line="--log-pmd build/logs/phpcpd.xml
+      <arg line="--log-pmd build/logs/pmd-cpd.xml
             --exclude build
             --exclude lib/simplesaml
             --exclude orm/propel
@@ -160,7 +170,7 @@
  <target name="version_replace">
   <exec executable="sed">
    <arg value="-i" />
-   <arg value='s/$gepiVersion = "".*/$gepiVersion = "${branch_name} ${env.BUILD_ID} build ${env.BUILD_TAG}";/g' />
+   <arg value='s/$gepiGitBranch = "".*/$gepiGitBranch = "${branch_name} ${env.BUILD_ID} build ${env.BUILD_TAG}";/g' />
    <arg value="${source}/lib/global.inc.php" />
   </exec>
 
@@ -175,15 +185,17 @@
  <target name="tarball" description="Make a tarball from src files" depends="version_replace">
   <echo message="taring ${source}"/>
 
-  <tar destfile="${basedir}/build/gepi-${branch_name}-${env.BUILD_ID}.tar.gz" compression="gzip">
-     <tarfileset dir="${source}"
-                preserveLeadingSlashes="true" prefix="gepi">
+  <tar destfile="${basedir}/build/gepi.tar.gz" compression="gzip">
+     <tarfileset dir="${source}" preserveLeadingSlashes="true" prefix="gepi">
+      <exclude name="build.xml"/>
+      <exclude name="build.gradle"/>
       <exclude name="build/**"/>
       <exclude name="test/**"/>
       <exclude name=".git/**"/>
       <exclude name="**/.gitignore"/>
     </tarfileset>
   </tar>
+  <copy file="${basedir}/build/gepi.tar.gz" tofile="${basedir}/build/${artifact_name}.tar.gz"/>
  </target>
 
  <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->

@@ -2,7 +2,7 @@
 <?php
 
 // on reconstitue $gepiPath 
-$gepiPath=$this->data['baseurlpath'].'/../../..'; // par précaution
+$gepiPath=$this->data['baseurlpath'].'/../../..'; // par prÃ©caution
 if (!strpos($this->data['baseurlpath'],"lib/simplesaml/www/ "))
 	$gepiPath=substr($this->data['baseurlpath'],0,strpos($this->data['baseurlpath'],"lib/simplesaml/www/")-1);
 // pour afficher les infos dans le header

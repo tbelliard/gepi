@@ -276,7 +276,6 @@ foreach($liste_plugins as $plugin){
     echo '
     <tr>
       <td>'.str_replace("_", " ", $plugin->getNom()).'</td>
-
       <td>'.$xml->description.'</td>
       <td>'.$xml->auteur.'</td>
       <td>'.$xml->version.'</td>

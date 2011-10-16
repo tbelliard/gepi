@@ -221,11 +221,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	protected $collJEleveClasses;
 
 	/**
-	 * @var        array JEleveProfesseurPrincipal[] Collection to store aggregation of JEleveProfesseurPrincipal objects.
-	 */
-	protected $collJEleveProfesseurPrincipals;
-
-	/**
 	 * @var        array AbsenceEleveSaisie[] Collection to store aggregation of AbsenceEleveSaisie objects.
 	 */
 	protected $collAbsenceEleveSaisies;
@@ -234,6 +229,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * @var        array JCategoriesMatieresClasses[] Collection to store aggregation of JCategoriesMatieresClasses objects.
 	 */
 	protected $collJCategoriesMatieresClassess;
+
+	/**
+	 * @var        array Groupe[] Collection to store aggregation of Groupe objects.
+	 */
+	protected $collGroupes;
 
 	/**
 	 * @var        array CategorieMatiere[] Collection to store aggregation of CategorieMatiere objects.
@@ -1291,12 +1291,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 			$this->collJEleveClasses = null;
 
-			$this->collJEleveProfesseurPrincipals = null;
-
 			$this->collAbsenceEleveSaisies = null;
 
 			$this->collJCategoriesMatieresClassess = null;
 
+			$this->collGroupes = null;
 			$this->collCategorieMatieres = null;
 		} // if (deep)
 	}
@@ -1463,14 +1462,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->collJEleveProfesseurPrincipals !== null) {
-				foreach ($this->collJEleveProfesseurPrincipals as $referrerFK) {
-					if (!$referrerFK->isDeleted()) {
-						$affectedRows += $referrerFK->save($con);
-					}
-				}
-			}
-
 			if ($this->collAbsenceEleveSaisies !== null) {
 				foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1584,14 +1575,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 				if ($this->collJEleveClasses !== null) {
 					foreach ($this->collJEleveClasses as $referrerFK) {
-						if (!$referrerFK->validate($columns)) {
-							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-						}
-					}
-				}
-
-				if ($this->collJEleveProfesseurPrincipals !== null) {
-					foreach ($this->collJEleveProfesseurPrincipals as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1797,9 +1780,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			}
 			if (null !== $this->collJEleveClasses) {
 				$result['JEleveClasses'] = $this->collJEleveClasses->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-			}
-			if (null !== $this->collJEleveProfesseurPrincipals) {
-				$result['JEleveProfesseurPrincipals'] = $this->collJEleveProfesseurPrincipals->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 			if (null !== $this->collAbsenceEleveSaisies) {
 				$result['AbsenceEleveSaisies'] = $this->collAbsenceEleveSaisies->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -2126,12 +2106,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				}
 			}
 
-			foreach ($this->getJEleveProfesseurPrincipals() as $relObj) {
-				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addJEleveProfesseurPrincipal($relObj->copy($deepCopy));
-				}
-			}
-
 			foreach ($this->getAbsenceEleveSaisies() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addAbsenceEleveSaisie($relObj->copy($deepCopy));
@@ -2212,9 +2186,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		}
 		if ('JEleveClasse' == $relationName) {
 			return $this->initJEleveClasses();
-		}
-		if ('JEleveProfesseurPrincipal' == $relationName) {
-			return $this->initJEleveProfesseurPrincipals();
 		}
 		if ('AbsenceEleveSaisie' == $relationName) {
 			return $this->initAbsenceEleveSaisies();
@@ -2619,31 +2590,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		return $this->getJGroupesClassess($query, $con);
 	}
 
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Classe is new, it will return
-	 * an empty collection; or if this Classe has previously
-	 * been saved, it will retrieve related JGroupesClassess from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Classe.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array JGroupesClasses[] List of JGroupesClasses objects
-	 */
-	public function getJGroupesClassessJoinCategorieMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JGroupesClassesQuery::create(null, $criteria);
-		$query->joinWith('CategorieMatiere', $join_behavior);
-
-		return $this->getJGroupesClassess($query, $con);
-	}
-
 	/**
 	 * Clears out the collJEleveClasses collection
 	 *
@@ -2782,171 +2728,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		$query->joinWith('Eleve', $join_behavior);
 
 		return $this->getJEleveClasses($query, $con);
-	}
-
-	/**
-	 * Clears out the collJEleveProfesseurPrincipals collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addJEleveProfesseurPrincipals()
-	 */
-	public function clearJEleveProfesseurPrincipals()
-	{
-		$this->collJEleveProfesseurPrincipals = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collJEleveProfesseurPrincipals collection.
-	 *
-	 * By default this just sets the collJEleveProfesseurPrincipals collection to an empty array (like clearcollJEleveProfesseurPrincipals());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @param      boolean $overrideExisting If set to true, the method call initializes
-	 *                                        the collection even if it is not empty
-	 *
-	 * @return     void
-	 */
-	public function initJEleveProfesseurPrincipals($overrideExisting = true)
-	{
-		if (null !== $this->collJEleveProfesseurPrincipals && !$overrideExisting) {
-			return;
-		}
-		$this->collJEleveProfesseurPrincipals = new PropelObjectCollection();
-		$this->collJEleveProfesseurPrincipals->setModel('JEleveProfesseurPrincipal');
-	}
-
-	/**
-	 * Gets an array of JEleveProfesseurPrincipal objects which contain a foreign key that references this object.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this Classe is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
-	 * @throws     PropelException
-	 */
-	public function getJEleveProfesseurPrincipals($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collJEleveProfesseurPrincipals || null !== $criteria) {
-			if ($this->isNew() && null === $this->collJEleveProfesseurPrincipals) {
-				// return empty collection
-				$this->initJEleveProfesseurPrincipals();
-			} else {
-				$collJEleveProfesseurPrincipals = JEleveProfesseurPrincipalQuery::create(null, $criteria)
-					->filterByClasse($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collJEleveProfesseurPrincipals;
-				}
-				$this->collJEleveProfesseurPrincipals = $collJEleveProfesseurPrincipals;
-			}
-		}
-		return $this->collJEleveProfesseurPrincipals;
-	}
-
-	/**
-	 * Returns the number of related JEleveProfesseurPrincipal objects.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct
-	 * @param      PropelPDO $con
-	 * @return     int Count of related JEleveProfesseurPrincipal objects.
-	 * @throws     PropelException
-	 */
-	public function countJEleveProfesseurPrincipals(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collJEleveProfesseurPrincipals || null !== $criteria) {
-			if ($this->isNew() && null === $this->collJEleveProfesseurPrincipals) {
-				return 0;
-			} else {
-				$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByClasse($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collJEleveProfesseurPrincipals);
-		}
-	}
-
-	/**
-	 * Method called to associate a JEleveProfesseurPrincipal object to this object
-	 * through the JEleveProfesseurPrincipal foreign key attribute.
-	 *
-	 * @param      JEleveProfesseurPrincipal $l JEleveProfesseurPrincipal
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function addJEleveProfesseurPrincipal(JEleveProfesseurPrincipal $l)
-	{
-		if ($this->collJEleveProfesseurPrincipals === null) {
-			$this->initJEleveProfesseurPrincipals();
-		}
-		if (!$this->collJEleveProfesseurPrincipals->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJEleveProfesseurPrincipals[]= $l;
-			$l->setClasse($this);
-		}
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Classe is new, it will return
-	 * an empty collection; or if this Classe has previously
-	 * been saved, it will retrieve related JEleveProfesseurPrincipals from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Classe.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
-	 */
-	public function getJEleveProfesseurPrincipalsJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('Eleve', $join_behavior);
-
-		return $this->getJEleveProfesseurPrincipals($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Classe is new, it will return
-	 * an empty collection; or if this Classe has previously
-	 * been saved, it will retrieve related JEleveProfesseurPrincipals from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Classe.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
-	 */
-	public function getJEleveProfesseurPrincipalsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}
 
 	/**
@@ -3380,6 +3161,119 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collGroupes collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addGroupes()
+	 */
+	public function clearGroupes()
+	{
+		$this->collGroupes = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collGroupes collection.
+	 *
+	 * By default this just sets the collGroupes collection to an empty collection (like clearGroupes());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initGroupes()
+	{
+		$this->collGroupes = new PropelObjectCollection();
+		$this->collGroupes->setModel('Groupe');
+	}
+
+	/**
+	 * Gets a collection of Groupe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_classes cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Classe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Groupe[] List of Groupe objects
+	 */
+	public function getGroupes($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupes) {
+				// return empty collection
+				$this->initGroupes();
+			} else {
+				$collGroupes = GroupeQuery::create(null, $criteria)
+					->filterByClasse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collGroupes;
+				}
+				$this->collGroupes = $collGroupes;
+			}
+		}
+		return $this->collGroupes;
+	}
+
+	/**
+	 * Gets the number of Groupe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_classes cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related Groupe objects
+	 */
+	public function countGroupes($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupes) {
+				return 0;
+			} else {
+				$query = GroupeQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByClasse($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collGroupes);
+		}
+	}
+
+	/**
+	 * Associate a Groupe object to this object
+	 * through the j_groupes_classes cross reference table.
+	 *
+	 * @param      Groupe $groupe The JGroupesClasses object to relate
+	 * @return     void
+	 */
+	public function addGroupe($groupe)
+	{
+		if ($this->collGroupes === null) {
+			$this->initGroupes();
+		}
+		if (!$this->collGroupes->contains($groupe)) { // only add it if the **same** object is not already associated
+			$jGroupesClasses = new JGroupesClasses();
+			$jGroupesClasses->setGroupe($groupe);
+			$this->addJGroupesClasses($jGroupesClasses);
+
+			$this->collGroupes[]= $groupe;
+		}
+	}
+
+	/**
 	 * Clears out the collCategorieMatieres collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -3565,11 +3459,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collJEleveProfesseurPrincipals) {
-				foreach ($this->collJEleveProfesseurPrincipals as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
 			if ($this->collAbsenceEleveSaisies) {
 				foreach ($this->collAbsenceEleveSaisies as $o) {
 					$o->clearAllReferences($deep);
@@ -3577,6 +3466,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			}
 			if ($this->collJCategoriesMatieresClassess) {
 				foreach ($this->collJCategoriesMatieresClassess as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupes) {
+				foreach ($this->collGroupes as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -3603,10 +3497,6 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			$this->collJEleveClasses->clearIterator();
 		}
 		$this->collJEleveClasses = null;
-		if ($this->collJEleveProfesseurPrincipals instanceof PropelCollection) {
-			$this->collJEleveProfesseurPrincipals->clearIterator();
-		}
-		$this->collJEleveProfesseurPrincipals = null;
 		if ($this->collAbsenceEleveSaisies instanceof PropelCollection) {
 			$this->collAbsenceEleveSaisies->clearIterator();
 		}
@@ -3615,6 +3505,10 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			$this->collJCategoriesMatieresClassess->clearIterator();
 		}
 		$this->collJCategoriesMatieresClassess = null;
+		if ($this->collGroupes instanceof PropelCollection) {
+			$this->collGroupes->clearIterator();
+		}
+		$this->collGroupes = null;
 		if ($this->collCategorieMatieres instanceof PropelCollection) {
 			$this->collCategorieMatieres->clearIterator();
 		}

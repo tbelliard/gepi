@@ -372,7 +372,6 @@ if(!isset($step)) {
 
 	echo "<p>Cette page est destinée à effectuer l'import des élèves et responsables d'après les modifications et ajouts effectués sur Sconet.</p>\n";
 
-
 	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 	if($suhosin_post_max_totalname_length!='') {
 		echo "<p class='color:red'>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire.<br />Cela peut empêcher le bon fonctionnement de la Mise à jour d'après Sconet.</p>\n";
@@ -431,7 +430,6 @@ if(!isset($step)) {
 	echo "/>\n";
 	echo "<label for='alert_diff_etab_origine_y' style='cursor: pointer;'> signaler";
 	echo " les modifications d'établissement d'origine.</label><br />\n";
-
 	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_n' value='n' ";
 	if($alert_diff_etab_origine!='y') {
 		echo "checked ";
@@ -3100,7 +3098,6 @@ else{
 // RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
 
 									$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
-
 									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>changement de classe</a> de $lig_clas1->classe vers $affiche[9]";
 									$info_action_destinataire="administrateur";
 									$info_action_mode="statut";
@@ -5071,7 +5068,6 @@ else{
 						if ($nb_err != 0) {
 							echo "<p>Lors de l'enregistrement des données PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 						} else {
-
 							echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 
 							echo "<script type='text/javascript'>
@@ -5242,7 +5238,6 @@ else{
 					echo "<p>Lors de l'enregistrement des données de RESPONSABLES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 				}
 				else {
-
 					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 
 					echo "<script type='text/javascript'>
@@ -5434,7 +5429,6 @@ else{
 				if ($nb_err != 0) {
 					echo "<p>Lors de l'enregistrement des données ADRESSES des responsables, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 				} else {
-
 					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 
 					echo "<script type='text/javascript'>
@@ -6385,7 +6379,6 @@ else{
 			//echo "$sql<br />";
 			$test=mysql_query($sql);
 			$nb_tmp_modif=mysql_num_rows($test);
-
 			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min(20,$nb_tmp_modif)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_tmp_modif.<br />\n";
 
 			echo "<input type='submit' value='Afficher les différences' /></p>\n";

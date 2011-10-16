@@ -82,10 +82,6 @@
  * @method     ClasseQuery rightJoinJEleveClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveClasse relation
  * @method     ClasseQuery innerJoinJEleveClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveClasse relation
  *
- * @method     ClasseQuery leftJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveProfesseurPrincipal relation
- * @method     ClasseQuery rightJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveProfesseurPrincipal relation
- * @method     ClasseQuery innerJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveProfesseurPrincipal relation
- *
  * @method     ClasseQuery leftJoinAbsenceEleveSaisie($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
  * @method     ClasseQuery rightJoinAbsenceEleveSaisie($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
  * @method     ClasseQuery innerJoinAbsenceEleveSaisie($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
@@ -1320,79 +1316,6 @@ abstract class BaseClasseQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related JEleveProfesseurPrincipal object
-	 *
-	 * @param     JEleveProfesseurPrincipal $jEleveProfesseurPrincipal  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    ClasseQuery The current query, for fluid interface
-	 */
-	public function filterByJEleveProfesseurPrincipal($jEleveProfesseurPrincipal, $comparison = null)
-	{
-		if ($jEleveProfesseurPrincipal instanceof JEleveProfesseurPrincipal) {
-			return $this
-				->addUsingAlias(ClassePeer::ID, $jEleveProfesseurPrincipal->getIdClasse(), $comparison);
-		} elseif ($jEleveProfesseurPrincipal instanceof PropelCollection) {
-			return $this
-				->useJEleveProfesseurPrincipalQuery()
-					->filterByPrimaryKeys($jEleveProfesseurPrincipal->getPrimaryKeys())
-				->endUse();
-		} else {
-			throw new PropelException('filterByJEleveProfesseurPrincipal() only accepts arguments of type JEleveProfesseurPrincipal or PropelCollection');
-		}
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the JEleveProfesseurPrincipal relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    ClasseQuery The current query, for fluid interface
-	 */
-	public function joinJEleveProfesseurPrincipal($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('JEleveProfesseurPrincipal');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		if ($previousJoin = $this->getPreviousJoin()) {
-			$join->setPreviousJoin($previousJoin);
-		}
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'JEleveProfesseurPrincipal');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the JEleveProfesseurPrincipal relation JEleveProfesseurPrincipal object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    JEleveProfesseurPrincipalQuery A secondary query class using the current class as primary query
-	 */
-	public function useJEleveProfesseurPrincipalQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
-		return $this
-			->joinJEleveProfesseurPrincipal($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipalQuery');
-	}
-
-	/**
 	 * Filter the query by a related AbsenceEleveSaisie object
 	 *
 	 * @param     AbsenceEleveSaisie $absenceEleveSaisie  the related object to use as filter
@@ -1538,6 +1461,23 @@ abstract class BaseClasseQuery extends ModelCriteria
 			->useQuery($relationAlias ? $relationAlias : 'JCategoriesMatieresClasses', 'JCategoriesMatieresClassesQuery');
 	}
 
+	/**
+	 * Filter the query by a related Groupe object
+	 * using the j_groupes_classes table as cross reference
+	 *
+	 * @param     Groupe $groupe the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ClasseQuery The current query, for fluid interface
+	 */
+	public function filterByGroupe($groupe, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJGroupesClassesQuery()
+				->filterByGroupe($groupe, $comparison)
+			->endUse();
+	}
+	
 	/**
 	 * Filter the query by a related CategorieMatiere object
 	 * using the j_matieres_categories_classes table as cross reference

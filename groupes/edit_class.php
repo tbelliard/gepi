@@ -512,6 +512,8 @@ echo "</a>";
 
 echo " | <a href='menage_eleves_groupes.php?id_classe=$id_classe'>Désinscriptions par lots</a>";
 
+echo " | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>";
+
 echo "</p>\n";
 echo "</form>\n";
 
@@ -542,7 +544,7 @@ for ($i=0;$i<$nb_mat;$i++) {
     //echo "<option value='" . $matiere . "'";
     echo "<option value='" . $matiere . "'";
     //echo ">" . htmlentities($nom_matiere) . "</option>\n";
-    echo ">" . htmlentities($nom_matiere,ENT_QUOTES,UTF-8) . "</option>\n";
+    echo ">" . htmlentities($nom_matiere,ENT_QUOTES,"UTF-8") . "</option>\n";
 }
 echo "</select>\n";
 echo "</td>\n";
@@ -705,7 +707,7 @@ for($i=0;$i<10;$i++){
         //===============================
         // AJOUT: boireaus
         //echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"])."\" /
-        echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"],ENT_QUOTES,UTF-8)."\" />\n";
+        echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"],ENT_QUOTES,"UTF-8")."\" />\n";
         //===============================
         echo "</span>";
 
@@ -815,7 +817,7 @@ for($i=0;$i<10;$i++){
                echo " SELECTED";
             }
             //echo ">".html_entity_decode_all_version($cat->nom_court))."</option>\n";
-            echo ">".html_entity_decode_all_version($cat->nom_court,ENT_QUOTES,UTF-8))."</option>\n";
+            echo ">".html_entity_decode_all_version($cat->nom_court,ENT_QUOTES,"UTF-8")."</option>\n";
         }
         echo "</select>\n";
 
@@ -902,7 +904,8 @@ for($i=0;$i<10;$i++){
         $first = true;
         foreach($current_group["profs"]["list"] as $prof) {
             if (!$first) {echo ", ";}
-            echo $current_group["profs"]["users"][$prof]["prenom"];
+            //echo $current_group["profs"]["users"][$prof]["prenom"];
+            echo casse_mot($current_group["profs"]["users"][$prof]["prenom"],'majf2');
             echo " ";
             echo $current_group["profs"]["users"][$prof]["nom"];
 

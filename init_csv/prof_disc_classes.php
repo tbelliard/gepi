@@ -320,7 +320,6 @@ if (!isset($_POST["action"])) {
 				// Fin de l'analyse du fichier.
 				// Maintenant on va afficher tout ça.
 
-
 				$nb_error=0;
 
 				$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '');";

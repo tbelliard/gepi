@@ -48,31 +48,31 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		$id_relation = $id_relation + 1;
 	    }
 	    if ($id_relation > 1) {
-		$failureMap[AbsenceEleveSaisiePeer::ID] = "Il ne peut y avoir un groupe, une classe et une aid simultanéments pécisé.<br/>";
+		$failureMap[AbsenceEleveSaisiePeer::ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ID,"Il ne peut y avoir un groupe, une classe et une aid simultanéments pécisé.<br/>");
 	    }
 
 	    if ($obj->getEleveId() !== null) {
 		if ($obj->getEleve() == null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = "L'id de l'eleve est incorrect.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'id de l'eleve est incorrect.");
 		}
 	    }
 
 	    if ($obj->getEdtEmplacementCours() !== null) {
 		//si on saisie un cours, alors le creneau et la classe doive etre
 		if ($obj->getIdClasse() !== null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne la classe doit etre nul.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ID,"Si un cours est renseigne la classe doit etre nul.");
 		}
 		if ($obj->getIdEdtCreneau() !== null && $obj->getEdtEmplacementCours()->getIdDefiniePeriode() != $obj->getIdEdtCreneau()) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne le creneau doit lui correspondre.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ID,"Si un cours est renseigne le creneau doit lui correspondre.");
 		}
 		if ($obj->getIdGroupe() === null && $obj->getIdAid() === null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne alors le groupe ou l'aid doivent etre saisies.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ID,"Si un cours est renseigne alors le groupe ou l'aid doivent etre saisies.");
 		}
 		if ($obj->getIdGroupe() != null && $obj->getEdtEmplacementCours()->getIdGroupe() != $obj->getIdGroupe()) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne alors le groupe doit etre celui du cours.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ID,"Si un cours est renseigne alors le groupe doit etre celui du cours.");
 		}
 		if ($obj->getIdAid() != null && $obj->getEdtEmplacementCours()->getIdAid() != $obj->getIdAid()) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne alors l'aid doit etre celle du cours.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ID,"Si un cours est renseigne alors l'aid doit etre celle du cours.");
 		}
 	    }
 
@@ -81,7 +81,7 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		$criteria = new Criteria();
 		$criteria->add(JAidElevesPeer::LOGIN, $obj->getEleve()->getLogin());
 		if ($obj->getAidDetails()->countJAidElevess($criteria) == 0) {
-		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = "L'eleve n'appartient pas à l'aid selectionné : ".$obj->getAidDetails()->getNom()."<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas à l'aid selectionné : ".$obj->getAidDetails()->getNom());
 		}
 	    }
 
@@ -90,7 +90,7 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		$criteria = new Criteria();
 		$criteria->add(JEleveGroupePeer::LOGIN, $obj->getEleve()->getLogin());
 		if ($obj->getGroupe()->countJEleveGroupes($criteria) == 0) {
-		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = "L'eleve n'appartient pas au groupe selectionné.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas au groupe selectionné.");
 		}
 	    }
 
@@ -99,36 +99,25 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		$criteria = new Criteria();
 		$criteria->add(JEleveClassePeer::LOGIN, $obj->getEleve()->getLogin());
 		if ($obj->getClasse()->countJEleveClasses($criteria) == 0) {
-		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = "L'eleve n'appartient pas à la classe selectionnée.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::ELEVE_ID,"L'eleve n'appartient pas à la classe selectionnée.");
 		}
 	    }
 
 	    if ($obj->getUtilisateurId() === null) {
-		$failureMap[AbsenceEleveSaisiePeer::UTILISATEUR_ID] .= "Il faut preciser l'utilisateur qui rentre la saisie.<br/>";
+		$failureMap[AbsenceEleveSaisiePeer::UTILISATEUR_ID] = new ValidationFailed(AbsenceEleveSaisiePeer::UTILISATEUR_ID,"Il faut preciser l'utilisateur qui rentre la saisie.");
 	    }
 
 	    if ($obj->getDebutAbs() == null) {
-		$failureMap[AbsenceEleveSaisiePeer::DEBUT_ABS] .= "La date de debut d'absence ne doit pas etre nulle.<br/>";
+		$failureMap[AbsenceEleveSaisiePeer::DEBUT_ABS] = new ValidationFailed(AbsenceEleveSaisiePeer::DEBUT_ABS,"La date de debut d'absence ne doit pas etre nulle.");
 	    }
 
 	    if ($obj->getFinAbs() == null) {
-		 $failureMap[AbsenceEleveSaisiePeer::FIN_ABS] .= "La date de fin d'absence ne doit pas etre nulle.<br/>";
+		 $failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = new ValidationFailed(AbsenceEleveSaisiePeer::FIN_ABS,"La date de fin d'absence ne doit pas etre nulle.");
 	    }
 
 	    if ($obj->getDebutAbs('U') >= $obj->getFinAbs('U')) {
-		$failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = "La date de debut d'absence doit etre strictement anterieure à la date de fin.<br/>";
+		$failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = new ValidationFailed(AbsenceEleveSaisiePeer::FIN_ABS,"La date de debut d'absence doit etre strictement anterieure à la date de fin.");
 	    }
-
-//	    if ($obj->getEdtEmplacementCours() != null) {
-//		//un emplacement de cours est saisie, il faut verifier que les heure de debut et de fin d'absences sont coherent avec l'emplacement de cours.
-//		if ($obj->getDebutAbs("Hi") < $obj->getEdtEmplacementCours()->getHeureDebut("Hi")) {
-//		    $failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = "L'heure de debut d'absence ne peut pas etre anterieure au cours.<br/>";
-//		} elseif ($obj->getFinAbs("Hi") > $obj->getEdtEmplacementCours()->getHeureFin("Hi")) {
-//		    $failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = "L'heure de fin d'absence ne peut pas etre posterieure au cours.<br/>";
-//		} elseif (($obj->getFinAbs("U") - $obj->getDebutAbs("U")) > ($obj->getEdtEmplacementCours()->getHeureFin("U") - $obj->getEdtEmplacementCours()->getHeureDebut("U"))) {
-//		    $failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = "La durée de l'absence ne peut pas etre superieure à la durée du cours (verifier les date).<br/>";
-//		}
-//	    }
 
 	    return (!empty($failureMap) ? $failureMap : true);
 

@@ -79,6 +79,8 @@
 	$tab_rn_retour_ligne=isset($_POST['rn_retour_ligne']) ? $_POST['rn_retour_ligne'] : array();
 	$tab_rn_rapport_standard_min_font=isset($_POST['rn_rapport_standard_min_font']) ? $_POST['rn_rapport_standard_min_font'] : array();
 
+	$chaine_coef=isset($_POST['chaine_coef']) ? $_POST['chaine_coef'] : "";
+
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
 	// Contrôler les paramètres reçus en fonction de

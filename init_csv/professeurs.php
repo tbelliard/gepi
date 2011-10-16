@@ -184,7 +184,6 @@ if (!isset($_POST["action"])) {
 			if ($test == 0) {
 				// Test négatif : aucun professeur avec ce login. On enregistre.
 
-
 				$reg_password = "";
 				switch($reg_sso){
 					case "ldap":
@@ -434,7 +433,6 @@ if (!isset($_POST["action"])) {
 
 				// Fin de l'analyse du fichier.
 				// Maintenant on va afficher tout ça.
-
 
 				$sql="CREATE TABLE IF NOT EXISTS temp_profs (
 				id int(11) NOT NULL auto_increment,

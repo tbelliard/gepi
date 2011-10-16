@@ -95,7 +95,7 @@ class EdtHelper {
     }
     
    /**
-   * Renvoi le premier jour de l'année scolaire sous forme d'objet DateTime
+   * Renvoi le premier jour de l'année scolaire sous forme d'objet DateTime (31/08 à 00h00)
    * @return     DateTime      $DateDebutAnneeScolaire premier septembre de l'année scolaire en cours à 00:00:00 (bascule d'annee semaine 33)
    *
    */

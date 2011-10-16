@@ -786,13 +786,24 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			$aff_matiere = $rep_matiere['nom_complet'];
             $aff_matiere = my_ereg_replace('[&]','&amp;',$aff_matiere);
 
-		}else {
+		}
+		elseif (GetSettingEdt("edt_aff_matiere") == "nom_court_groupe") {
+			$req_2_matiere = mysql_query("SELECT name FROM groupes WHERE id='".$enseignement."'");
+			$rep_2_matiere = mysql_fetch_array($req_2_matiere);
+			$aff_matiere = $rep_2_matiere['name'];
+		}
+		elseif (GetSettingEdt("edt_aff_matiere") == "description_groupe") {
+			$req_2_matiere = mysql_query("SELECT description FROM groupes WHERE id='".$enseignement."'");
+			$rep_2_matiere = mysql_fetch_array($req_2_matiere);
+			$aff_matiere = $rep_2_matiere['description'];
+		}
+		else {
+			// GetSettingEdt("edt_aff_matiere") == "court"
 			$req_2_matiere = mysql_query("SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe ='".$enseignement."'");
 			$rep_2_matiere = mysql_fetch_array($req_2_matiere);
 			$aff_matiere = $rep_2_matiere['id_matiere'];
 		}
-
-	} 
+	}
 
     else
     {
@@ -847,10 +858,11 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
         {
             //$ChaineComplete = $ChaineComplete.",".$aff_nbre_eleve." él.\n";
         }
+		//echo "$ChaineComplete<br />";
         return $ChaineComplete;
-	}elseif (($type_edt == "classe") OR ($type_edt == "eleve")){
+	} elseif (($type_edt == "classe") OR ($type_edt == "eleve")) {
 		return ($aff_matiere."<br />".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."");
-	}elseif ($type_edt == "salle"){
+	} elseif ($type_edt == "salle"){
 	    if ($id_aid == "") 
         {
 		    $ChaineComplete =$aff_matiere."<br/>".$rep_nom_prof['nom']." ".$classe_js."<br />\n";
@@ -862,7 +874,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
         $ChaineComplete = $ChaineComplete.$aff_sem;
         return $ChaineComplete;
 		//return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']." ".$aff_sem."<br />\n".$classe_js."\n");
-	}else{
+	} else{
 		return '';
 	}
 }

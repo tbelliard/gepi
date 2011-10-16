@@ -1061,6 +1061,8 @@ if (isset($eleve_login)) {
     //$eleve_no_resp = mysql_result($call_eleve_info, "0", "ereno");
     $reg_no_nat = mysql_result($call_eleve_info, "0", "no_gep");
     $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
+	$reg_ele_id = mysql_result($call_eleve_info, "0", "ele_id");
+
     //$call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
     $id_etab=0;
 	if($reg_no_gep!="") {
@@ -1775,6 +1777,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
     echo " onchange='changement();' /></td>\n";
 	echo "</tr>\n";
 	
+    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<i>ele_id</i>) : </th><td>";
+    if (isset($reg_ele_id)) {echo $reg_ele_id;}
+    echo "</td>\n";
+	echo "</tr>\n";
+	
 	//Date de sortie de l'établissement
     echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(respecter format JJ/MM/AAAA)</th>";
 	echo "<td><div class='norme'>";	
@@ -1943,7 +1950,7 @@ if(isset($eleve_login)){
 	else{
 		//=========================
 		// AJOUT: boireaus 20071107
-		echo "<table style='border-collaspe: collapse; border: 1px solid black;' align='center'  summary='Régime'>\n";
+		echo "<table style='border-collapse: collapse; border: 1px solid black;' align='center'  summary='Régime'>\n";
 		echo "<tr>\n";
 		echo "<th>Régime: </th>\n";
 		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='reg_regime' value='i-e' ";
@@ -1963,7 +1970,7 @@ if(isset($eleve_login)){
 		echo "<br />\n";
 		//echo "<tr><td>&nbsp;</td></tr>\n";
 
-		echo "<table style='border-collaspe: collapse; border: 1px solid black;' align='center' summary='Redoublement'>\n";
+		echo "<table style='border-collapse: collapse; border: 1px solid black;' align='center' summary='Redoublement'>\n";
 		echo "<tr>\n";
 		echo "<th>Redoublant: </th>\n";
 		echo "<td style='text-align: center; border: 0px;'>O<br /><input type='radio' name='reg_doublant' value='R' ";
