@@ -1644,11 +1644,19 @@ function get_nom_classe($id_classe){
  * @param string $date
  * @return string La date formatée
  */
-function formate_date($date){
+function formate_date($date) {
 	$tmp_date=explode(" ",$date);
 	$tab_date=explode("-",$tmp_date[0]);
 
-	return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
+	if(isset($tab_date[2])) {
+		return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
+	}
+	elseif(isset($tab_date[0])) {
+		return $tab_date[0];
+	}
+	else {
+		return $date;
+	}
 }
 
 /**
