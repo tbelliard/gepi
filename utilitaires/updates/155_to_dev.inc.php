@@ -27,7 +27,26 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version courante :</h3>";
 
 require 'updates/ISO_to_UTF8.inc.php';
 
-$result.="<br/>";
+$result.="<br />";
+$result.="<strong>Module relevé de notes :</strong>";
+$result.="<br />";
 
-$result.="ok<br/>";
+$result .= "&nbsp;-> Ajout d'un champ rn_abs_2 à la table 'classes'<br />";
+// Ajout d'une colonne rn_abs_2 dans classes pour stocker l'affichage ou non des absences sur les relevés de notes
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_abs_2';"));
+
+	// $result .= "&nbsp;-> Place du champ rn_abs_2 dans la table 'classes' : ".$test_champ."<br />";
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE classes ADD rn_abs_2 char(1) default 'n';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+	
+
+$result.="<br />Fin mise à jour<br/>";
 ?>
