@@ -84,7 +84,7 @@ if(isset($_GET['export_csv'])) {
 	
 		$csv="Classe;Nom;Prenom;Sexe;Naissance;Responsable;Tel_pers;Tel_port;Tel_prof;Email;Adresse;\r\n";
 		for($i=0;$i<count($tab_classe);$i++) {
-			$csv.=$tab_classe[$i]['classe'].";";
+			//$csv.=$tab_classe[$i]['classe'].";";
 	
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$tab_classe[$i]['id']."' ORDER BY e.nom, e.prenom;";
 			$res_ele=mysql_query($sql);
