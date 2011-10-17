@@ -22,6 +22,7 @@
 */
 
 // Initialisations files
+require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
 // Resume session

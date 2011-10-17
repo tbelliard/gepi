@@ -251,8 +251,28 @@
 		echo "<a href=\"javascript:CocheLigne('rn_bloc_obs')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne('rn_bloc_obs')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 		echo "</td>\n";
 		echo "</tr>\n";
+		
+		// Afficher les absences (ABS2)
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt white_hover'>\n";
+		echo "<td style='text-align:left;'>Afficher les absences (ABS2 et relevé HTML)</td>\n";
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			echo "<td>\n";
+			echo "<input type='checkbox' name='rn_abs_2[$i]' id='rn_abs_2_".$i."' size='2' value='y' />\n";
+			echo "</td>\n";
+		}
+		echo "<td>\n";
+		echo "<a href=\"javascript:CocheLigne('rn_abs_2')\">
+				<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
+			</a>
+			/
+			<a href=\"javascript:DecocheLigne('rn_abs_2')\">
+			  <img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
+			</a>";
+		echo "</td>\n";
+		echo "</tr>\n";
 
-
+		// Nombre de lignes pour la signature
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td style='text-align:left;'>Nombre de lignes pour la signature\n";

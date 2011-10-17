@@ -119,6 +119,31 @@ function texte_html_ou_pas($texte){
 }
 */
 
+
+function decompteAbsences ($loginEleve,$choix_periode,$tab_rel) {
+  $tabAbsencesretard['nbAbsences'] = 0;
+  $tabAbsencesretard['nbAbsencesNonJustifiees'] = 0;
+  $tabAbsencesretard['nbRetards'] = 0;
+  
+    $eleve_query = EleveQuery::create()->orderByNom()->orderByPrenom()->distinct();
+	$eleve_query->filterByLogin($loginEleve);
+	$eleve = $eleve_query->findOne();
+	
+	if ($choix_periode=='intervalle') {
+	  $dt_date_absence_eleve_debut = new DateTime(date("Y/m/d",strtotime(str_replace("/","-",$tab_rel['intervalle']['debut']))));
+	  $dt_date_absence_eleve_fin = new DateTime(date("Y/m/d",strtotime(str_replace("/","-",$tab_rel['intervalle']['fin']))));	    
+	} else {	  
+	  $dt_date_absence_eleve_debut = $eleve->getPeriodeNote($tab_rel['num_periode'])->getDateDebut(NULL);
+	  $dt_date_absence_eleve_fin =  $eleve->getPeriodeNote($tab_rel['num_periode'])->getDateFin(NULL);
+	}
+	
+	$tabAbsencesretard['nbAbsences'] = $eleve->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+	$tabAbsencesretard['nbAbsencesNonJustifiees'] = $eleve->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+	$tabAbsencesretard['nbRetards'] = $eleve->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+	return $tabAbsencesretard;
+	
+}
+
 // Pour ne récupérer que les devoirs situés dans les conteneurs listés dans $tab_id_conteneur
 function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 	global $retour_a_la_ligne, $chaine_coef;
@@ -1690,6 +1715,29 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		*/
 		//================================
 
+        //=============================================
+		// BLOC Absence
+		// TODO : ajouter un test sur le choix
+if ($tab_rel['rn_abs_2'] == 'y') {
+    $eleve_query = EleveQuery::create()->orderByNom()->orderByPrenom()->distinct();
+	$eleve_query->filterByLogin($tab_rel['eleve'][$i]['login']);
+	$eleve = $eleve_query->findOne();
+
+	$nbAbsencesRetard = decompteAbsences($tab_rel['eleve'][$i]['login'], $choix_periode, $tab_rel)
+?>
+<div style="width: <?php echo $releve_largeurtableau; ?>px; 
+	 margin: .5em auto;
+	 padding: .2em .5em;
+	 border: 5px ridge black; ">
+  <?php echo $nbAbsencesRetard['nbAbsences'] ; ?> absence(s)
+   dont <?php echo $nbAbsencesRetard['nbAbsencesNonJustifiees'] ; ?> non justifiée(s)
+   <?php echo $nbAbsencesRetard['nbRetards']; ?> retard(s)
+  
+</div>
+<?php
+}		
+		
+		//================================
 
 		//================================
 		if(($tab_rel['rn_sign_chefetab']=='y')||($tab_rel['rn_sign_pp']=='y')||($tab_rel['rn_sign_resp']=='y')){
