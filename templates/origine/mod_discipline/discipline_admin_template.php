@@ -133,7 +133,7 @@ echo add_token_field();
 			 onchange='changement();'
 			   <?php if (getSettingValue("autorise_commentaires_mod_disc") == "yes") echo " checked='checked'";?> />
 		<label for='autorise_commentaires_mod_disc_y' style='cursor: pointer;'>
-		  Activer une zone de dialogue relavive à chaque incident. <br/>Cette zone permet de commenter l'évolution du traitement de l'incident, de formuler une demande au CPE, ... 
+		  Activer une zone de dialogue relative à chaque incident. <br/>Cette zone permet de commenter l'évolution du traitement de l'incident, de formuler une demande au CPE, ... 
 		</label>
 	  <br />
 		  <input type='radio'
