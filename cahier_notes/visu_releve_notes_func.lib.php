@@ -1728,7 +1728,7 @@ if ($tab_rel['rn_abs_2'] == 'y') {
 <div style="width: <?php echo $releve_largeurtableau; ?>px; 
 	 margin: .5em auto;
 	 padding: .2em .5em;
-	 border: 5px ridge black; ">
+	 border: 5px double black; ">
   <?php echo $nbAbsencesRetard['nbAbsences'] ; ?> absence(s)
    dont <?php echo $nbAbsencesRetard['nbAbsencesNonJustifiees'] ; ?> non justifiée(s)
    <?php echo $nbAbsencesRetard['nbRetards']; ?> retard(s)
