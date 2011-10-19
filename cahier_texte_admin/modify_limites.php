@@ -86,4 +86,9 @@ echo add_token_field();
 <input type="hidden" name="is_posted" value="1">
 <center><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></center>
 </form>
+
+<p><em>NOTE&nbsp;:</em></p>
+<p style='margin-left:3em;'>La taille maximale choisie ci-dessus pour un fichier peut aussi être restreinte par les paramétrages PHP de votre serveur&nbsp;:<br />
+<b>upload_max_filesize&nbsp;:</b> <?php echo ini_get('upload_max_filesize');?><br />
+<b>post_max_size&nbsp;:</b> <?php echo ini_get('post_max_size');?></p>
 <?php require("../lib/footer.inc.php");?>
