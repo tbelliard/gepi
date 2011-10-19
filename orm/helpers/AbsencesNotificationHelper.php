@@ -169,7 +169,7 @@ class AbsencesNotificationHelper {
 	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
 	$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
     }
-    $TBS->LoadTemplate($modele);
+    $TBS->LoadTemplate($modele, OPENTBS_ALREADY_UTF8);
     //merge des champs commun
     $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
     $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));

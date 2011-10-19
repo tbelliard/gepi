@@ -446,7 +446,7 @@ if ($affichage != 'ods') {
             $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
             // Load the template
             $extraction_taux_absenteisme = repertoire_modeles('absence_taux_absenteisme.ods');
-            $TBS->LoadTemplate($extraction_taux_absenteisme);
+            $TBS->LoadTemplate($extraction_taux_absenteisme, OPENTBS_ALREADY_UTF8);
 
             $titre = 'Extrait du Taux d\'absentéisme d\'absences du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
             $classe = null;

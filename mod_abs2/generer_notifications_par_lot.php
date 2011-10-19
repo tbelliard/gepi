@@ -143,7 +143,7 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
     include_once 'lib/function.php';
     $courrier_lot_modele=repertoire_modeles('absence_modele_impression_par_lot.odt');
-    $TBS->LoadTemplate($courrier_lot_modele);
+    $TBS->LoadTemplate($courrier_lot_modele, OPENTBS_ALREADY_UTF8);
 
     $TBS->MergeBlock('courrier_source_col',$courrier_source_col);
 
