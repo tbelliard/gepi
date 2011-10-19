@@ -445,8 +445,12 @@ if ($mode == "groupe") {
 				echo " checked";
 			}
 			//echo " />$classe</option>\n";
-			echo " onchange='changement();'";
-			echo " /><label for='classe_".$id_classe_temp."' style='cursor: pointer;'>$classe</label>\n";
+			echo " onchange=\"checkbox_change_classe('classe_".$id_classe_temp."'); changement();\"";
+			echo " /><label for='classe_".$id_classe_temp."' id='texte_classe_".$id_classe_temp."' style='cursor: pointer;";
+			if (in_array($id_classe_temp, $reg_clazz)){
+				echo " font-weight:bold;";
+			}
+			echo "'>$classe</label>\n";
 			if (in_array($id_classe_temp, $reg_clazz)){
 				// Pour contrôler les suppressions de classes.
 				// On conserve la liste des classes précédemment cochées:
@@ -684,7 +688,11 @@ function checkbox_change(cpt) {
 		}
 	}
 }
+";
 
+echo js_checkbox_change_style('checkbox_change_classe');
+
+echo "
 for(i=0;i<$p;i++) {
 	checkbox_change(i);
 }
