@@ -166,13 +166,17 @@ $couleur_cellule_gen = "#F6F7EF";
 ##################################################################################
 
 // Version de GEPI
-//les trois variables suivantes vont être remplies par un script de build avec les donnée svn ou git
-//dans le cas ou les variables ne sont pas remplies (donc pas de script de build), on regarde dans header.inc et header_template.inc
-//si on peut obtenir des informations sur la version dans le répertoire .git
-$gepiVersion = "1.5.5";
-$gepiSvnRev = "";
-$gepiGitCommit = "";
-$gepiGitBranch = "";
+$gepiVersion = "1.5.5"; // Attention : cette ligne doit conserver une valeur respectant ce schéma : trunk/1.5.1/1.5.2, etc. avec des guillemets doubles.
+$gepiVersionMaintenance = ""; // 1, 2, 3, etc. N'est plus utilisé actuellement, remplacé plutôt par le numéro de révision SVN.
+$gepiRcVersion = "";
+$gepiBetaVersion = "";
+
+// Cette variable est utilisée par le système de packaging
+// automatique du site web de Gepi. Elle n'est vraiment utile que pour les
+// branches stables, pas pour le trunk, qui correspond de toute façon à la
+// version la plus récente.
+$gepiSvnRev="8492";
+
 
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI
 //
