@@ -75,7 +75,7 @@ unset ($donnees, $donneesBase);
 //unset ($donnees);
 
 /* on s'occupe des tables */
-$result.="<br />Passage des tables en ".SET_DEST."<br />";
+$result.="<br />Passage des tables en ".SET_DEST." en cours<br />";
 
 $query = mysql_query("SHOW table status");
 if ($query) {
@@ -91,13 +91,13 @@ if (empty($donneesTable) ){
     $result .= msj_ok("Tables déjà encodées en ".SET_DEST);
 } else {
     foreach ($donneesTable as $table) {
-        $result.="Passage de $table en ".SET_DEST."";
-        $querytable = mysql_query('ALTER TABLE '.$table.' CHARACTER SET '.SET_DEST);
+        $result.="Passage de $table en ".SET_DEST." en cours. ";
     	$querytable = mysql_query('ALTER TABLE '.$table.' CONVERT TO CHARACTER SET '.SET_DEST);
-        $result.=" : fait<br />";
+        $querytable = mysql_query('ALTER TABLE '.$table.' CHARACTER SET '.SET_DEST);
+        $result.=" Terminé<br />";
     }
     unset ( $table);
-    $result .= msj_ok("Tables encodées en ".SET_DEST);
+    $result .= msj_ok("Migration terminée : Tables encodées en ".SET_DEST);
 }
 
 
