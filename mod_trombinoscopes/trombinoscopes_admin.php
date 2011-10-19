@@ -203,7 +203,7 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 		// copie du fichier vers /temp
 		$dirname ="../temp";
 		//$reponse=telecharge_fichier($sav_file,$dirname,'application/zip',"zip" );
-		$reponse=telecharge_fichier($sav_file,$dirname,'application/zip application/octet-stream application/x-zip-compressed',"zip" );
+		$reponse=telecharge_fichier($sav_file,$dirname,"zip",'application/zip application/octet-stream application/x-zip-compressed');
 		if ($reponse!="ok") {
 			$msg = $reponse;
 		} else {
