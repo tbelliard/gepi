@@ -238,7 +238,7 @@ if ($affichage == 'html') {
 
     // Load the template
 	$extraction_saisies=repertoire_modeles('absence_extraction_saisies.ods');
-    $TBS->LoadTemplate($extraction_saisies);
+    $TBS->LoadTemplate($extraction_saisies, OPENTBS_ALREADY_UTF8);
 
     $titre = 'Extrait des absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
     $classe = null;
