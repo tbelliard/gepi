@@ -1043,10 +1043,6 @@ function myWriteHTML($html)
 		{
 			// Il se passe un truc bizarre avec un saut de 10cm quasiment sur l'abscisse de retour après écriture d'une cellule vide.
 			if($e!="") {
-				//Texte
-				if (getSettingValue('decode_pdf_utf8') == 'y') {
-					$e=utf8_decode($e);
-				}
 				if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Avant écriture de \"$e\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");
 				if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Largeur de \"$e\": ".$this->GetStringWidth($e)."\n");
 				$this->Cell($this->GetStringWidth($e),5, $e, 0, 0,'');
