@@ -635,7 +635,7 @@ elseif(!isset($choix_periode)) {
 			if(!in_array($j,$tab_periode_exclue)) {
 				echo "<td style='background-color:lightgreen;'>";
 				//echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"radio\" name=\"periode\" value='$j' /></label>\n";
-				echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"checkbox\" name=\"tab_periode_num[]\" value='$j' ";
+				echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"checkbox\" name=\"tab_periode_num[]\" id=\"tab_periode_num_$j\" value='$j' ";
 				// Dans le cas d'un retour en arrière, le champ peut avoir été préalablement coché
 				if((isset($tab_periode_num))&&(in_array($j,$tab_periode_num))) {
 					echo "checked ";
@@ -679,7 +679,12 @@ elseif(!isset($choix_periode)) {
 	}
 	*/
 
+	echo "<p><input type='button' name='valide_choix_periode' value='Valider' onclick='check_et_submit_choix_periode()' /></p>\n";
+
+	echo "<noscript>\n";
 	echo "<p><input type='submit' name='valide_choix_periode' value='Valider' /></p>\n";
+	echo "</noscript>\n";
+
 	echo "</form>\n";
 
 	echo "<p><br /></p>\n";
@@ -690,6 +695,29 @@ elseif(!isset($choix_periode)) {
 	echo "Les relevés pour une période complète en revanche font apparaître toutes les matières, même si aucune note n'est saisie.</p>\n";
 	echo "On choisit en général la période complète lorsqu'on veut imprimer un relevé en même temps que le bulletin (<i>au verso par exemple</i>) et en fin de période, il est bon d'avoir toutes les matières.</p>\n";
 	echo "</blockquote>\n";
+
+	echo "<script type='text/javascript'>
+	function check_et_submit_choix_periode() {
+		if(document.getElementById('choix_periode').checked==true) {
+			var une_periode_cochee='n';
+			for(j=1;j<=$max_per;j++) {
+				if((document.getElementById('tab_periode_num_'+j))&&(document.getElementById('tab_periode_num_'+j).checked==true)) {
+					une_periode_cochee='y';
+				}
+			}
+
+			if(une_periode_cochee=='n') {
+				alert('Vous n\'avez coché aucune période.');
+			}
+			else {
+				document.formulaire.submit();
+			}
+		}
+		else {
+			document.formulaire.submit();
+		}
+	}
+</script>\n";
 
 }
 //======================================================
@@ -747,6 +775,14 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	}
 	echo "</form>\n";
 	//===========================
+
+	//debug_var();
+
+	if((isset($_POST['choix_periode']))&&($_POST['choix_periode']=='periode')&&(!isset($_POST['tab_periode_num']))) {
+		echo "<p style='color:red'>Vous avez choisi un relevé de période, mais omis de choisir la période.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
 
 	echo "<p class='bold'>Sélection des élèves parmi les élèves de ";
 	for($i=0;$i<count($tab_id_classe);$i++) {

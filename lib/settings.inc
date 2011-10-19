@@ -116,13 +116,14 @@ function getSettingAOui($_name)
 function saveSetting($_name, $_value)
 {
     global $gepiSettings;
-   if (isset($gepiSettings[$_name])) {
+    $R=mysql_query("SELECT * FROM setting WHERE NAME='".$_name."' LIMIT 1");
+   if (mysql_num_rows($R)>0) {
     $sql = "update setting set VALUE = \"" . $_value . "\" where NAME = \"" . $_name . "\"";
     $res = sql_query($sql);
-         if ( ! $res) return (FALSE);
+    if ( ! $res) return (FALSE);
     } else {
         $sql = "insert into setting set NAME = \"" . $_name . "\", VALUE = \"" . $_value . "\"";
-    $res = sql_query($sql);
+        $res = sql_query($sql);
         if ( ! $res) return (FALSE);
     }
     $gepiSettings[$_name] = $_value;
