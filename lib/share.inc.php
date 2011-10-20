@@ -2843,13 +2843,7 @@ $GLOBALS['mode_utf8_pdf'] = '';
  * @return type 
  */
 function traite_accents_utf8($chaine) {
-	global $mode_utf8_pdf;
-	if($mode_utf8_pdf=="y") {
-		return utf8_encode($chaine);
-	}
-	else {
-		return utf8_decode($chaine);
-	}
+    return $chaine; //normalement tout gepi est en utf8, il n'y a plus de traitement à faire
 }
 
 /**
