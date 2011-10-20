@@ -334,10 +334,10 @@
 							foreach($objet_matiere->children() as $key => $value) {
 								if(in_array(strtoupper($key),$tab_champs_matiere)) {
 									if(strtoupper($key)=='CODE_GESTION') {
-										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
+										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
 									}
 									elseif(strtoupper($key)=='LIBELLE_COURT') {
-										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
+										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
 									}
 									else {
 										$matiere[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim(preg_replace('/"/','',traite_utf8($value)))));
@@ -479,7 +479,7 @@
 								// Champs MEF
 								foreach($objet_mef->children() as $key => $value) {
 									if(in_array(strtoupper($key),$tab_champs_mef)) {
-										$mefs[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
+										$mefs[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
 									}
 								}
 								$i++;

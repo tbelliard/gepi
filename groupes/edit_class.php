@@ -816,8 +816,8 @@ for($i=0;$i<10;$i++){
             if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) {
                echo " SELECTED";
             }
-            //echo ">".html_entity_decode_all_version($cat->nom_court))."</option>\n";
-            echo ">".html_entity_decode_all_version($cat->nom_court,ENT_QUOTES,"UTF-8")."</option>\n";
+            //echo ">".html_entity_decode($cat->nom_court))."</option>\n";
+            echo ">".html_entity_decode($cat->nom_court,ENT_QUOTES,"UTF-8")."</option>\n";
         }
         echo "</select>\n";
 

@@ -88,10 +88,10 @@ if (isset($_POST['is_posted'])) {
 	$reg_nom_groupe = $_POST['groupe_nom_court'];
 	$reg_nom_complet = $_POST['groupe_nom_complet'];
 	*/
-	//$reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court']);
-	$reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court'],ENT_QUOTES,"UTF-8");
-	//$reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet']);
-	$reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet'],ENT_QUOTES,"UTF-8");
+	//$reg_nom_groupe = html_entity_decode($_POST['groupe_nom_court']);
+	$reg_nom_groupe = html_entity_decode($_POST['groupe_nom_court'],ENT_QUOTES,"UTF-8");
+	//$reg_nom_complet = html_entity_decode($_POST['groupe_nom_complet']);
+	$reg_nom_complet = html_entity_decode($_POST['groupe_nom_complet'],ENT_QUOTES,"UTF-8");
 	//=======================================
 	$reg_matiere = $_POST['matiere'];
 
@@ -288,7 +288,7 @@ if (isset($_POST['is_posted'])) {
 echo "<pre>\n";
 print_r($_POST);
 echo "</pre>\n";
-echo html_entity_decode_all_version("prof_ERIC_ALARY");
+echo html_entity_decode("prof_ERIC_ALARY");
 
 echo "<pre>\n";
 print_r($current_group);

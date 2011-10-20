@@ -311,7 +311,7 @@ if (!$id_classe) {
                     $prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
                     // On est dans une nouvelle catégorie
                     // On récupère les infos nécessaires, et on affiche une ligne
-                    $cat_name = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+                    $cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
                     // On détermine le nombre de colonnes pour le colspan
                     $nb_total_cols = 1;
                     $k="1";

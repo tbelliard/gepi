@@ -899,7 +899,7 @@ else {
 	$fich=fopen("../temp/$tempdir/f_div.csv","w+");
 	$chaine="DIVCOD;NUMIND";
 	if($fich){
-		fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+		fwrite($fich,html_entity_decode($chaine)."\n");
 	}
 	affiche_debug($chaine."<br />\n");
 
@@ -910,7 +910,7 @@ else {
 				$tabchaine[]=$prof[$m]["prof_princ"][$n]["code_structure"].";"."P".$prof[$m]["id"];
 				//$chaine=$prof[$m]["prof_princ"][$n]["code_structure"].";"."P".$prof[$m]["id"];
 				//if($fich){
-				//	fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+				//	fwrite($fich,html_entity_decode($chaine)."\n");
 				//}
 				affiche_debug($chaine."<br />\n");
 			}
@@ -919,7 +919,7 @@ else {
 	sort($tabchaine);
 	for($i=0;$i<count($tabchaine);$i++){
 		if($fich){
-			fwrite($fich,html_entity_decode_all_version($tabchaine[$i])."\n");
+			fwrite($fich,html_entity_decode($tabchaine[$i])."\n");
 		}
 	}
 	fclose($fich);

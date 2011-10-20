@@ -916,31 +916,6 @@ function get_periode_active($_id_classe){
 }
 
 /**
- *  Equivalent à html_entity_decode()
- * 
- * Pour les utilisateurs ayant des versions antérieures à PHP 4.3.0 :
- * la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
- * 
- * @deprecated GEPI ne fonctionne plus sans php 5.2 et plus
- * @param string $string
- * @return type 
- */
-function html_entity_decode_all_version ($string)
-{
-   global $use_function_html_entity_decode;
-   if (isset($use_function_html_entity_decode) and ($use_function_html_entity_decode == 0)) {
-       // Remplace les entités numériques
-       $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-       $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
-       // Remplace les entités litérales
-       $trans_tbl = get_html_translation_table (HTML_ENTITIES);
-       $trans_tbl = array_flip ($trans_tbl);
-       return strtr ($string, $trans_tbl);
-   } else
-       return html_entity_decode($string);
-}
-
-/**
  * Cette fonction est à appeler dans tous les cas où une tentative
  * d'utilisation illégale de Gepi est manifestement avérée.
  * Elle est à appeler notamment dans tous les tests de sécurité lorsqu'un test est négatif.

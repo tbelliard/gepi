@@ -70,8 +70,8 @@ if (isset($_POST['is_posted'])) {
 	check_token();
 
     $error = false;
-    $reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court']);
-    $reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet']);
+    $reg_nom_groupe = html_entity_decode($_POST['groupe_nom_court']);
+    $reg_nom_complet = html_entity_decode($_POST['groupe_nom_complet']);
     $reg_matiere = $_POST['matiere'];
     $reg_categorie = $_POST['categorie'];
 	//echo "\$reg_categorie=$reg_categorie<br />";
@@ -334,7 +334,7 @@ echo ">Aucune</option>\n";
 while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
     echo "<option value='".$row["id"]."'";
     if ($matiere_categorie == $row["id"]) {echo " SELECTED";}
-    echo ">".html_entity_decode_all_version($row["nom_court"])."</option>\n";
+    echo ">".html_entity_decode($row["nom_court"])."</option>\n";
 }
 echo "</select>\n";
 

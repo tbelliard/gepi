@@ -635,13 +635,13 @@ function dragStop(event) {
                                         unset($tabtmp);
                                         $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$matiere[$i]["code_gestion"]=$tabtmp[2];
-                                        $matiere[$i]["code_gestion"]=trim(my_ereg_replace("[^a-zA-Z0-9&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+                                        $matiere[$i]["code_gestion"]=trim(my_ereg_replace("[^a-zA-Z0-9&_. -]","",html_entity_decode($tabtmp[2])));
                                     }
                                     if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
                                         unset($tabtmp);
                                         $tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
                                         //$matiere[$i]["libelle_court"]=$tabtmp[2];
-                                        $matiere[$i]["libelle_court"]=trim(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+                                        $matiere[$i]["libelle_court"]=trim(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü&_. -]","",html_entity_decode($tabtmp[2])));
                                     }
                                     if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
                                         unset($tabtmp);
@@ -1487,7 +1487,7 @@ function dragStop(event) {
                         $chaine="AINOMU;AIPREN;AICIVI;NUMIND;FONCCO;INDNNI";
                         if($fich){
                             //fwrite($fich,$chaine."\n");
-                            fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                            fwrite($fich,html_entity_decode($chaine)."\n");
                         }
                         echo $chaine."<br />\n";
 
@@ -1565,7 +1565,7 @@ die();
                                 //echo $prof[$cpt]["nom_usage"].";".$prof[$cpt]["prenom"].";".$civi.";"."P".$prof[$cpt]["id"].";"."ENS".";".$date."<br />\n";
                                 $chaine=$prof[$cpt]["nom_usage"].";".$prof[$cpt]["prenom"].";".$civi.";"."P".$prof[$cpt]["id"].";"."ENS".";".$mdp;
                                 if($fich){
-                                    fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                    fwrite($fich,html_entity_decode($chaine)."\n");
                                 }
                                 if($_POST['mdp']=="alea"){
                                     fwrite($fich2,"<tr>
@@ -1600,7 +1600,7 @@ die();
                             $fich=fopen("../backup/$dirname/csv/f_men.csv","w+");
                             $chaine="MATIMN;NUMIND;ELSTCO";
                             if($fich){
-                                fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                fwrite($fich,html_entity_decode($chaine)."\n");
                             }
                             echo $chaine."<br />\n";
                             for($i=0;$i<count($divisions);$i++){
@@ -1619,7 +1619,7 @@ die();
                                             //echo $mat.";P".$divisions[$i]["services"][$j]["enseignants"][$k]["id"].";".$classe."<br />\n";
                                             $chaine=$mat.";P".$divisions[$i]["services"][$j]["enseignants"][$k]["id"].";".$classe;
                                             if($fich){
-                                                fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                                fwrite($fich,html_entity_decode($chaine)."\n");
                                             }
                                             echo $chaine."<br />\n";
                                         }
@@ -1648,7 +1648,7 @@ die();
                                         if(count($groupes[$i]["enseignant"])==0){
                                             $chaine="$matimn;;$elstco";
                                             if($fich){
-                                                fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                                fwrite($fich,html_entity_decode($chaine)."\n");
                                             }
                                             echo $chaine."<br />\n";
                                         }
@@ -1658,7 +1658,7 @@ die();
                                                 //echo "$matimn;P$numind;$elstco<br />\n";
                                                 $chaine="$matimn;P$numind;$elstco";
                                                 if($fich){
-                                                    fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                                    fwrite($fich,html_entity_decode($chaine)."\n");
                                                 }
                                                 echo $chaine."<br />\n";
                                             }
@@ -1730,7 +1730,7 @@ die();
                             $fich=fopen("../backup/$dirname/csv/f_gpd.csv","w+");
                             $chaine="GROCOD;DIVCOD";
                             if($fich){
-                                fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                fwrite($fich,html_entity_decode($chaine)."\n");
                             }
                             echo $chaine."<br />\n";
 
@@ -1741,7 +1741,7 @@ die();
                                     //echo $grocod.";".$groupes[$i]["divisions"][$j]["code"]."<br />\n";
                                     $chaine=$grocod.";".$groupes[$i]["divisions"][$j]["code"];
                                     if($fich){
-                                        fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                        fwrite($fich,html_entity_decode($chaine)."\n");
                                     }
                                     echo $chaine."<br />\n";
                                 }
@@ -1758,14 +1758,14 @@ die();
                         $fich=fopen("../backup/$dirname/csv/f_tmt.csv","w+");
                         $chaine="MATIMN;MATILC";
                         if($fich){
-                            fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                            fwrite($fich,html_entity_decode($chaine)."\n");
                         }
                         echo $chaine."<br />\n";
                         for($i=0;$i<count($matiere);$i++){
                             //echo $matiere[$i]["code_gestion"].";".$matiere[$i]["libelle_court"]."<br />\n";
                             $chaine=$matiere[$i]["code_gestion"].";".$matiere[$i]["libelle_court"];
                             if($fich){
-                                fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                fwrite($fich,html_entity_decode($chaine)."\n");
                             }
                             echo $chaine."<br />\n";
                         }
@@ -1779,7 +1779,7 @@ die();
                         $fich=fopen("../backup/$dirname/csv/f_div.csv","w+");
                         $chaine="DIVCOD;NUMIND";
                         if($fich){
-                            fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                            fwrite($fich,html_entity_decode($chaine)."\n");
                         }
                         echo $chaine."<br />\n";
                         for($i=0;$i<count($divisions);$i++){
@@ -1794,7 +1794,7 @@ die();
                             //echo $divisions[$i]["code"].";".$divisions[$i]["code"].";".$numind_pp."<br />\n";
                             $chaine=$divisions[$i]["code"].";".$numind_pp;
                             if($fich){
-                                fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+                                fwrite($fich,html_entity_decode($chaine)."\n");
                             }
                             echo $chaine."<br />\n";
                         }

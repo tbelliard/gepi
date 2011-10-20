@@ -45,7 +45,7 @@ if (isset($_POST['ok'])) {
 	$error = false;
 
 	if	(isset($_POST['impression_personnelFCK'])) {
-		$imp = html_entity_decode_all_version($_POST['impression_personnelFCK']);
+		$imp = html_entity_decode($_POST['impression_personnelFCK']);
 		if (!saveSetting("Impression", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour le personnel !";
 			$erreur = true;
@@ -53,7 +53,7 @@ if (isset($_POST['ok'])) {
     }
 
     if	(isset($_POST['impression_parentFCK'])) {
-		$imp = html_entity_decode_all_version($_POST['impression_parentFCK']);
+		$imp = html_entity_decode($_POST['impression_parentFCK']);
 		if (!saveSetting("ImpressionFicheParent", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les ".$gepiSettings['denomination_responsables']." !";
 			$erreur = true;
@@ -61,7 +61,7 @@ if (isset($_POST['ok'])) {
     }
 
     if (isset($_POST['impression_eleveFCK'])) {
-		$imp = html_entity_decode_all_version($_POST['impression_eleveFCK']);
+		$imp = html_entity_decode($_POST['impression_eleveFCK']);
 		if (!saveSetting("ImpressionFicheEleve", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les ".$gepiSettings['denomination_eleves']." !";
 			$erreur = true;

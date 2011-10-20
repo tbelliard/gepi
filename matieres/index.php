@@ -196,7 +196,7 @@ while ($i < $nombre_lignes){
     foreach ($categories as $row) {
         echo "<option value='".$row["id"]."'";
         if ($current_matiere_categorie_id == $row["id"]) {echo " SELECTED";}
-        echo ">".html_entity_decode_all_version($row["nom_court"])."</option>\n";
+        echo ">".html_entity_decode($row["nom_court"])."</option>\n";
     }
     echo "</select>\n";
     echo "</td>\n";

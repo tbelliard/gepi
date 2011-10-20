@@ -278,7 +278,7 @@ while ($i < $nb_matieres){
 
         echo "<option value=''>-----</option>";
         while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-            echo "<option value='".$row["id"]."'>".html_entity_decode_all_version($row["nom_court"])."</option>";
+            echo "<option value='".$row["id"]."'>".html_entity_decode($row["nom_court"])."</option>";
         }
         echo "</select>";
         echo "</td>";
