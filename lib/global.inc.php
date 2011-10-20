@@ -44,13 +44,6 @@ $block_sso = false ; // false|true
 
 $style_screen_ajout = "n";
 
-# Après installation de GEPI, si vous avez le message "Fatal error: Call to undefined function: mysql_real_escape_string() ...",
-# votre version de PHP est inf?rieure ? 4.3.0.
-# En effet, la fonction mysql_real_escape_string() est disponible ? partir de la version 4.3.0 de php.
-# Vous devriez mettre ? jour votre version de php.
-# Sinon, positionnez la variable suivante ? "0"; (valeur par d?faut = 1)
-$use_function_mysql_real_escape_string = 1;
-
 # Apres installation de GEPI, si vous avez le message "Fatal error: Call to undefined function: html_entity_decode() ...",
 # votre version de PHP est inferieure a 4.3.0.
 # En effet, la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.

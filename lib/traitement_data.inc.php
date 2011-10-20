@@ -19,13 +19,9 @@ function corriger_caracteres($texte) {
 }
 
 function traitement_magic_quotes($_value) {
-    global $use_function_mysql_real_escape_string;
    if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
    if (!is_numeric($_value)) {
-        if (isset($use_function_mysql_real_escape_string) and ($use_function_mysql_real_escape_string==0))
-             $_value = mysql_escape_string($_value);
-        else
-             $_value = mysql_real_escape_string($_value);
+        $_value = mysql_real_escape_string($_value);
    }
    return $_value;
 }
@@ -39,26 +35,19 @@ function unslashes($s)
 # Nettoyage des variables dans $_POST et $_GET pour prévenir tout problème
 # d'injection SQL
 function anti_inject(&$_value, $_key) {
-   global $use_function_mysql_real_escape_string;
    if (is_array($_value)) {
        foreach ($_value as $key2 => $value2) {
            $value2 = corriger_caracteres($value2);
            if (get_magic_quotes_gpc()) $_value[$key2] = stripslashes($value2);
            if (!is_numeric($_value[$key2])) {
-               if (isset($use_function_mysql_real_escape_string) and ($use_function_mysql_real_escape_string==0))
-                  $_value[$key2] = mysql_escape_string($_value[$key2]);
-               else
-                  $_value[$key2] = mysql_real_escape_string($_value[$key2]);
+               $_value[$key2] = mysql_real_escape_string($_value[$key2]);
            }
        }
    } else {
        $_value = corriger_caracteres($_value);
        if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
        if (!is_numeric($_value)) {
-           if (isset($use_function_mysql_real_escape_string) and ($use_function_mysql_real_escape_string==0))
-               $_value = mysql_escape_string($_value);
-           else
-               $_value = mysql_real_escape_string($_value);
+           $_value = mysql_real_escape_string($_value);
        }
    }
 }
