@@ -739,7 +739,7 @@ class Session {
                             //on va tester avec le md5
                             if ($db_password == md5($_password)) {
                             } else {
-                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
+                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {//utilse pour les ancienne base (2011-05-14)
                                             $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
                                             $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
                                             if ($db_password == md5($_password_unhtmlentities)) {
