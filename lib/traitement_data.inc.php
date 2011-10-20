@@ -45,27 +45,21 @@ function anti_inject(&$_value, $_key) {
            $value2 = corriger_caracteres($value2);
            if (get_magic_quotes_gpc()) $_value[$key2] = stripslashes($value2);
            if (!is_numeric($_value[$key2])) {
-//               $_value[$key2] = htmlspecialchars($value2, ENT_QUOTES);
-               $_value[$key2] = htmlentities($_value[$key2], ENT_QUOTES);
                if (isset($use_function_mysql_real_escape_string) and ($use_function_mysql_real_escape_string==0))
                   $_value[$key2] = mysql_escape_string($_value[$key2]);
                else
                   $_value[$key2] = mysql_real_escape_string($_value[$key2]);
            }
-//           echo "valeur : ".$_value[$key2]."<br>";
        }
    } else {
        $_value = corriger_caracteres($_value);
        if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
        if (!is_numeric($_value)) {
-           $_value = htmlspecialchars($_value, ENT_NOQUOTES);
-//           $_value = htmlentities($_value, ENT_QUOTES);
            if (isset($use_function_mysql_real_escape_string) and ($use_function_mysql_real_escape_string==0))
                $_value = mysql_escape_string($_value);
            else
                $_value = mysql_real_escape_string($_value);
        }
-//       echo "valeur : ".$_value."<br>";
    }
 }
 
