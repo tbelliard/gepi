@@ -2803,19 +2803,12 @@ function casse_prenom($prenom) {
 }
 
 /**
- * Drapeau pour encoder un texte en utf8 si à "y"
- *
- * @global string  $GLOBALS['mode_utf8_pdf']
- * @name $mode_utf8_pdf
- */
-$GLOBALS['mode_utf8_pdf'] = '';
-
-/**
  * Encode une chaine en utf8 si $mode_utf8_pdf="y"
  *
  * @global type 
  * @param type $chaine Chaine à encoder
  * @return type 
+ * @deprecated
  */
 function traite_accents_utf8($chaine) {
     return $chaine; //normalement tout gepi est en utf8, il n'y a plus de traitement à faire

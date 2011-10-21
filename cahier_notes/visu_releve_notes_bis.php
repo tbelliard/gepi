@@ -76,9 +76,6 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 //====================================================
 //============== ENTETE BULLETIN PDF ================
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
-	$mode_utf8_pdf=getSettingValue("mode_utf8_bulletins_pdf");
-	if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
-
 	if($releve_pdf_debug=='y') {
 		echo "<p style='color:red'>DEBUG:<br />
 La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />

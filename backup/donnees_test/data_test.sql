@@ -2262,8 +2262,6 @@ INSERT INTO setting  values ('contact_admin_mailto', 'n');
 INSERT INTO setting  values ('gepiAdminAdressFormHidden', 'n');
 INSERT INTO setting  values ('mode_generation_pwd_majmin', 'y');
 INSERT INTO setting  values ('mode_generation_pwd_excl', 'n');
-INSERT INTO setting  values ('mode_utf8_bulletins_pdf', 'n');
-INSERT INTO setting  values ('mode_utf8_visu_notes_pdf', 'n');
 INSERT INTO setting  values ('type_bulletin_par_defaut', 'html');
 INSERT INTO setting  values ('exp_imp_chgt_etab', 'no');
 INSERT INTO setting  values ('ele_lieu_naissance', 'no');

@@ -96,9 +96,6 @@ function redimensionne_logo($photo, $L_max, $H_max)
     if (empty($_GET['a_imprimer']) AND empty($_POST['a_imprimer'])) {$a_imprimer="";}
     else { if (isset($_GET['a_imprimer'])) {$a_imprimer=$_GET['a_imprimer'];} if (isset($_POST['a_imprimer'])) {$a_imprimer=$_POST['a_imprimer'];} }
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 define('FPDF_FONTPATH','../../fpdf/font/');
 require('../../fpdf/fpdf.php');
 $p = 1;

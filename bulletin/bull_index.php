@@ -129,9 +129,6 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 //============== ENTETE BULLETIN HTML ================
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
 
-	$mode_utf8_pdf=getSettingValue("mode_utf8_bulletins_pdf");
-	if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
-
 	// DEBUG Décommenter la ligne ci-dessous pour débugger
 	//echo "<p style='color:red;'>Insertion d'une ligne avant le Header pour provoquer l'affichage dans le navigateur et ainsi repérer des erreurs.</p>";
 	//echo "\$bull_pdf_debug=$bull_pdf_debug<br />";

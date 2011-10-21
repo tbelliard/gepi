@@ -74,9 +74,6 @@ else
 }
 //================================
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 require('../../fpdf/fpdf.php');
 
 include("../../edt_organisation/fonctions_edt.php");

@@ -182,9 +182,6 @@ $etiquette_agencement = '3';
 	 }
 }
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 define('PARAGRAPH_STRING', '~~~');
 define('FPDF_FONTPATH','../../fpdf/font/');
 require_once("../../fpdf/class.multicelltag.php");

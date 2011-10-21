@@ -163,9 +163,6 @@ $w3 = "c"; // largeur des colonnes "commentaires"
 $header_pdf=array();
 $data_pdf=array();
 
-$mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
-if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
-
 $appel_conteneur = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
 $nom_conteneur = mysql_result($appel_conteneur, 0, 'nom_court');
 $mode = mysql_result($appel_conteneur, 0, 'mode');

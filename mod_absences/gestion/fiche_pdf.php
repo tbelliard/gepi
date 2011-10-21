@@ -57,9 +57,6 @@ if (!checkAccess()) {
 die();
 }
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 require('../../fpdf/fpdf.php');
 require('../../fpdf/ex_fpdf.php');
 

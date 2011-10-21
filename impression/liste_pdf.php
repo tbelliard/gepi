@@ -44,8 +44,6 @@ define('HauteurPage','297');
 
 //debug_var();
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_listes_pdf');
-
 /*
 // Initialisations files
 require_once("../lib/initialisations.inc.php");

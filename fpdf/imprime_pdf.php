@@ -38,9 +38,6 @@ if (!defined('FPDF_VERSION')) {
 }
 //require('../fpdf/fpdf15.php');
 
-// Il faut récupérer l'info sur le mode avant l'appel à ex_fpdf.php pour que les accents de l'entête soient corrects
-$mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
-if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
 require_once('../fpdf/ex_fpdf.php');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF

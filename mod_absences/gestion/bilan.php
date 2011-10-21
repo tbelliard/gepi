@@ -89,9 +89,6 @@ $a_imprimer	= isset($_GET['a_imprimer']) ? $_GET['a_imprimer'] : (isset($_POST['
 
 if ($au == "" OR $au == "JJ/MM/AAAA") { $au = $du; }
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 define('FPDF_FONTPATH','../../fpdf/font/');
 require('../../fpdf/fpdf.php');
 
