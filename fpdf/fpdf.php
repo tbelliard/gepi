@@ -618,7 +618,7 @@ function Link($x, $y, $w, $h, $link)
 function Text($x, $y, $txt)
 {
 	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    $txt = utf8_decode($txt);
+    $txt = ensure_iso8859_1($txt);
     
 	//Output a string
 	$s=sprintf('BT %.2F %.2F Td (%s) Tj ET',$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
@@ -638,7 +638,7 @@ function AcceptPageBreak()
 function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
 {
 	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    $txt = utf8_decode($txt);
+    $txt = ensure_iso8859_1($txt);
     
 	//Output a cell
 	$k=$this->k;
@@ -720,7 +720,7 @@ function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link
 function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 {
 	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    $txt = utf8_decode($txt);
+    $txt = ensure_iso8859_1($txt);
     
 	//Output text with automatic or explicit line breaks
 	$cw=&$this->CurrentFont['cw'];
@@ -836,7 +836,7 @@ function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 function Write($h, $txt, $link='')
 {
 	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    $txt = utf8_decode($txt);
+    $txt = ensure_iso8859_1($txt);
     
 	//Output text in flowing mode
 	$cw=&$this->CurrentFont['cw'];
@@ -1422,6 +1422,7 @@ function _UTF8toUTF16($s)
 
 function _dounderline($x, $y, $txt)
 {
+    $txt = ensure_iso8859_1($txt);
 	//Underline text
 	$up=$this->CurrentFont['up'];
 	$ut=$this->CurrentFont['ut'];
