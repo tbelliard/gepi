@@ -215,9 +215,8 @@ function Circle($x,$y,$r,$style='')
 function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
 {
 	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    if (getSettingValue('decode_pdf_utf8') == 'y') {
-    	$strText = utf8_decode($strText);
-    }$strText = 'àà';
+    $strText = utf8_decode($strText);
+    
     $xi=$this->GetX();
     $yi=$this->GetY();
     

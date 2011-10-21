@@ -245,9 +245,8 @@ function Header()
     function MultiCellBlt($w,$h,$blt,$txt,$border=0,$align='J',$fill=0)
     {
     	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-	    if (getSettingValue('decode_pdf_utf8') == 'y') {
-    		$txt = utf8_decode($txt);
-    	}
+	    $txt = utf8_decode($txt);
+	    
         //Get bullet width including margins
         $blt_width = $this->GetStringWidth($blt)+$this->cMargin*2;
 
@@ -286,9 +285,8 @@ function Header()
     function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
 {
 	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    if (getSettingValue('decode_pdf_utf8') == 'y') {
-    	$txt = utf8_decode($txt);
-    }
+    $txt = utf8_decode($txt);
+    
     //Output a cell
     $k=$this->k;
     if($this->y+$h>$this->PageBreakTrigger and !$this->InFooter and $this->AcceptPageBreak())
@@ -427,9 +425,8 @@ function Header()
 function VCell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0)
 {
 	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    if (getSettingValue('decode_pdf_utf8') == 'y') {
-    	$txt = utf8_decode($txt);
-    }
+    $txt = utf8_decode($txt);
+    
     //Output a cell
     $k=$this->k;
     if($this->y+$h>$this->PageBreakTrigger and !$this->InFooter and $this->AcceptPageBreak())
