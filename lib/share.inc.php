@@ -64,11 +64,11 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
   $subject = $gepiPrefixeSujetMail."GEPI : $sujet";
-  $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+  $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
   
   $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+  $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
   $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
   $headers .= $ajout_headers;
 
@@ -1034,12 +1034,12 @@ function tentative_intrusion($_niveau, $_description) {
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
     $subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
-    $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+    $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
 
     
     $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
     $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 
 		// On envoie le mail
@@ -4037,7 +4037,7 @@ function get_tab_prof_suivi($id_classe) {
  * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844
  * 
  * @param type $login_destinataire login du destinataire (obligatoire)
- * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
+ * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en UTF-8 (obligatoire)
  * @param type $date_debut date à partir de laquelle est affiché le message (timestamp, optionnel)
  * @param type $date_fin date à laquelle le message n'est plus affiché (timestamp, optionnel)
  * @param type $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (timestamp, optionnel)

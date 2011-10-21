@@ -193,22 +193,7 @@ $gepiAuthors = array(
 );
 
 // Affichage des dates en français
-// Valable pour version php >= 4.3.0
-if (!@setlocale(LC_TIME,'fr_FR.ISO8859-1','French','france','fra','french','FR','fr_FR','fr_FR@euro','fr-utf-8','fr_FR.utf-8', 'French_France.1252'))
-{
-// Valable pour version php < 4.3.0
-   setlocale(LC_TIME,'fr_FR.ISO8859-1');
-   setlocale(LC_TIME,'French');
-   setlocale(LC_TIME,'france');
-   setlocale(LC_TIME,'fra');
-   setlocale(LC_TIME,'french');
-   setlocale(LC_TIME,'FR');
-   setlocale(LC_TIME,'fr_FR');
-   setlocale(LC_TIME,'fr_FR@euro');
-   setlocale(LC_TIME,'fr-utf-8');
-   setlocale(LC_TIME,'fr_FR.utf-8');
-   setlocale(LC_TIME,'French_France.1252');
-}
+@setlocale(LC_TIME,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','fr_FR.ISO8859-1','French','france','fra','french','FR','fr_FR','fr_FR@euro', 'French_France.1252');
 
 $gepiShowGenTime = "no"; // Pour afficher le temps de génération de certaines pages.
 $pageload_starttime = microtime(true);

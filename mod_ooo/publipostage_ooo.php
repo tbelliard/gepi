@@ -194,7 +194,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 				'name'      => 'eleves',
 				'type'      => 'block',
 				'data_type' => 'array',
-				'charset'   => 'ISO 8859-15'
+				'charset'   => 'UTF-8'
 			),$tab_eleves_OOo);
 		
 		$OOo->SaveXml(); //traitement du fichier extrait
