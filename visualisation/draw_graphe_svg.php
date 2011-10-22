@@ -730,7 +730,8 @@
 			//$largeur_texte = strlen($moyenne[$k][$i]) * $l_txt_px;
 
 			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-			writinfo('/tmp/infos_graphe.txt','a+',"\nimagestring (\$img, $taille_police, ".$tmp.", $ytmp, ".$moyenne[$k][$i].", ".$couleureleve[$k].")\n");
+			$image_func_str = "imagettftext(\$img, ".($taille_police*5).", 0, $tmp, $ytmp5, .$couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, $moyenne[$k][$i])\n";
+			writinfo('/tmp/infos_graphe.txt','a+',$image_func_str);
 
 			//$largeur_texte=30;	// A REVOIR... COMMENT LE CALCULER EN SVG?
 			//$largeur_texte=0;	// A REVOIR... COMMENT LE CALCULER EN SVG?
