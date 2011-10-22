@@ -316,13 +316,13 @@ unlink($tmp_fich);
 
 
 //$titre=htmlspecialchars($current_group['description'])." (".$nom_periode.")";
-$titre=htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
+$titre=htmlspecialchars($current_group['name']." ".$current_group["classlist_string"]." (".$nom_periode.")");
 $titre.=" - EXPORT";
 
 // Mettre la ligne de liens de retour,...
 echo "<div class='norme'><p class='bold'>\n";
 echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
-echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlspecialchars($current_group['name']." ".$current_group["classlist_string"]." (".$nom_periode.")")." </a>|\n";
 echo "</div>\n";
 
 
