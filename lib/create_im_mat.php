@@ -76,10 +76,9 @@ imagecolortransparent ($im,$color_back);
 $y = ($haut_im+$long_chaine*8)/2;
 if ($y > $haut_im) $y=$haut_im;
 //$x = ($larg_im)/2;
-$x = ($larg_im)/2-5;
+$x = ($larg_im)*0.65;
 
-//imagettftext($im, 10, 90, $x, $y, $color_text, "../jpgraph1_5_2/fonts/verdanai.ttf", $texte);
-imagestringup($im,3,$x,$y,utf8_decode($texte),$color_text);
+imagettftext($im, 9, 90, $x, $y, $color_text, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte);
 imagepng($im);
 imagedestroy($im);
 ?>
