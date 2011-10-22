@@ -431,12 +431,11 @@ class awPHPFontDriver extends awFontDriver {
 		}
 
 		if($angle === 90) {
-			$function = 'imagestringup';
 			$addAngle = $this->getGDTextHeight($text);
 		} else {
-			$function = 'imagestring';
 			$addAngle = 0;
 		}
+		
 
 		$color = $text->getColor();
 		$rgb = $driver->getColor($color);
@@ -470,14 +469,16 @@ class awPHPFontDriver extends awFontDriver {
 				$addX = 0;
 				$addY = $i * $textHeight;
 			}
-
-			$function(
+			
+			imagettftext(
 				$driver->resource,
 				$font->font,
+				$angle,
 				$driver->x + $point->x + $addX,
 				$driver->y + $point->y + $addY + $addAngle,
-				$line,
-				$rgb
+				$rgb,
+                dirname(__FILE__)."/../../font/DejaVuSansCondensed.ttf",
+                $line
 			);
 
 		}
