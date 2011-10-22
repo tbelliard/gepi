@@ -338,6 +338,8 @@ else{
 	echo "'>Interface simplifiée</a>\n";
 }
 
+echo " | <a href='../gestion/config_prefs.php'>Paramétrer l'interface simplifiée</a>";
+
 echo "</p>\n";
 echo "</div>\n";
 echo "<p class='bold'> Classe(s) : $nom_classe | Matière : $matiere_nom ($matiere_nom_court)| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
