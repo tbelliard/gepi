@@ -1,7 +1,6 @@
 <?PHP
-require_once(dirname(__FILE__).'/../fpdf/ex_fpdf.php');
 // Class PHP pour le module impression de gepi
-class rel_PDF extends Ex_FPDF
+class rel_PDF extends FPDF
 {
 
 function Footer()

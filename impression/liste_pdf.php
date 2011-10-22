@@ -33,12 +33,11 @@
 require_once("../lib/initialisations.inc.php");
 //=============================
 if (!defined('FPDF_VERSION')) {
-	require_once(dirname(__FILE__).'/fpdf.php');
+	require_once(dirname(__FILE__).'/../fpdf/fpdf.php');
 }
 
-require_once('../fpdf/ex_fpdf.php');
+require_once(dirname(__FILE__).'/../fpdf/ex_fpdf.php');
 
-define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
 define('HauteurPage','297');
 
