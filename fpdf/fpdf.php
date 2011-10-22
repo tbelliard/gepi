@@ -1,4 +1,6 @@
 <?php
+//ce fichier n'est pas fpdf, c'est un fichier spécifique gepi qui étend tfpdf (une version utf8 de fpdf).
+//Le nom fpdf a été gardé pour des commodités d'include dans le fichiers gepi
 /**
  * Version de FPDF
  */
