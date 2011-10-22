@@ -3105,10 +3105,6 @@ function eleve_suivant() {
 					}
 
 
-					//imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
-					//imagestring ($img, $tmp_taille_police, $x, $y, strtr($angle." ".$texte,"_"," "), $axes);
-					//imagestring ($img, $tmp_taille_police, $x, $y, strtr($texte,"_"," "), $axes);
-
 					$x2=$x+strlen($texte)*ImageFontWidth($tmp_taille_police);
 					$y2=$y+20;
 
@@ -3892,10 +3888,6 @@ function eleve_suivant() {
 					$y=round($tab20[2*$i+1]-(90-($angle-270))*(ImageFontHeight($taille_police)-2)/90);
 				}
 
-
-				//imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
-				//imagestring ($img, $tmp_taille_police, $x, $y, strtr($angle." ".$texte,"_"," "), $axes);
-				//imagestring ($img, $tmp_taille_police, $x, $y, strtr($texte,"_"," "), $axes);
 
 				$x2=$x+strlen($texte)*ImageFontWidth($tmp_taille_police);
 				$y2=$y+20;

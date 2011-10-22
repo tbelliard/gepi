@@ -748,8 +748,6 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$x=$x\n");
 		writinfo('/tmp/infos_graphe.txt','a+',"\$y=$y\n");
 
-		//imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
-		//imagestring ($img, $tmp_taille_police, $x, $y, strtr($angle." ".$texte,"_"," "), $axes);
 		imagestring ($img, $tmp_taille_police, $x, $y, strtr($texte,"_"," "), $axes);
 
 
@@ -762,9 +760,7 @@
 		if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
 		//**************
 		for($k=1;$k<=$nb_series_bis;$k++){
-			//imagestring ($img, $taille_police, $xtmp, $ytmp, $moyenne[$k][$i+1], $couleureleve[$k]);
 			imagestring ($img, $taille_police, $xtmp, $ytmp, nf($moyenne[$k][$i+1]), $couleureleve[$k]);
-			//imagestring ($img, $taille_police, $xtmp, $ytmp, "A", $couleureleve[$k]);
 			//$xtmp=$xtmp+strlen($moyenne[$k][$i+1]." - ")*ImageFontWidth($taille_police);
 			$xtmp=$xtmp+strlen(nf($moyenne[$k][$i+1])." ")*ImageFontWidth($taille_police_inf);
 		}
@@ -824,10 +820,6 @@
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
 			$xtmp=$xtmp+$espace;
-			//imagestring ($img, $taille_police, $xtmp, 5, $eleve[$k], $couleureleve[$k]);
-			//$xtmp=$xtmp+$largeur_eleve[$k];
-			//imagestring ($img, $taille_police, $xtmp, ImageFontHeight($taille_police)+5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
-			//imagestring ($img, $taille_police, $xtmp, ImageFontHeight($taille_police)+5, strtr($chaine[$k],"_"," ")." (".nf($mgen[$k]).")", $couleureleve[$k]);
 			if($mgen[$k]!="") {
 				$chaine_mgen=" (".nf($mgen[$k]).")";
 			}
@@ -850,10 +842,6 @@
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
 			$xtmp=$xtmp+$espace;
-			//imagestring ($img, $taille_police, $xtmp, 5, $eleve[$k], $couleureleve[$k]);
-			//$xtmp=$xtmp+$largeur_eleve[$k];
-			//imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
-			//imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," ")." (".nf($mgen[$k]).")", $couleureleve[$k]);
 			if($mgen[$k]!="") {
 				$chaine_mgen=" (".nf($mgen[$k]).")";
 			}

@@ -534,7 +534,6 @@
 
 			//Textes dans la bande du bas:
 			//$largeur_texte = strlen($matiere[$i]) * $l_txt_px;
-			//imagestring ($img, $taille_police, $x1+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+10, $matiere[$i], $noir);
 
 		}
 
@@ -587,8 +586,6 @@
 		$x2=$largeurGrad+5;
 		//$yg=round($hauteurMoy+$hauteur-$i*($hauteur/(20/$pas)));
 		$yg=round($hauteurMoy+$hauteur-$i*($hauteur/20));
-		//imageLine($img,$x1,$yg,$x2,$yg,$axes);
-		//imagestring ($img, $taille_police, $x1-20, $yg-10, "$i", $axes);
 
 		//echo "<line x1='$x1' y1='$yg' x2='$x2' y2='$yg' style='stroke:$axes; stroke-width:$epaisseur_grad'/>\n";
 		echo "<line x1=\"$x1\" y1=\"$yg\" x2=\"$x2\" y2=\"$yg\" style=\"stroke:$axes; stroke-width:$epaisseur_grad\"/>\n";
@@ -715,21 +712,12 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=$matiere[$i]\n");
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere_tronquee=$matiere_tronquee\n");
 
-		//$largeur_texte = strlen($matiere[$i]) * $l_txt_px;
-		//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $matiere[$i], $axes);
-
-
-
-		//$largeur_texte = strlen($matiere_tronquee) * $l_txt_px;
-		//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $matiere_tronquee, $axes);
-
 		//$largeur_texte=30;	// A REVOIR... COMMENT LE CALCULER EN SVG?
 		//$largeur_texte=0;	// A REVOIR... COMMENT LE CALCULER EN SVG?
 		$largeur_texte = strlen($matiere_tronquee) * $l_txt_px;
 		$xtext=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
 		//$ytext=$ytmp;
 		$ytext=$ytmp+$fontsizetext;
-		//$fontsizetext=Floor($taille_police*3.5);
 		echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:$axes; font-size:$fontsizetext;\">$matiere_tronquee</text>\n";
 
 		//$epaisseur_traits
@@ -737,15 +725,12 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$taille_police=$taille_police\n");
 		writinfo('/tmp/infos_graphe.txt','a+',"\$largeur_texte=$largeur_texte\n");
 
-		//for($k=1;$k<$nb_data;$k++){
-		//for($k=1;$k<=$nb_series;$k++){
 		for($k=1;$k<=$nb_series_bis;$k++){
 			$ytmp=$ytmp+15;
 			//$largeur_texte = strlen($moyenne[$k][$i]) * $l_txt_px;
 
 			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
 			writinfo('/tmp/infos_graphe.txt','a+',"\nimagestring (\$img, $taille_police, ".$tmp.", $ytmp, ".$moyenne[$k][$i].", ".$couleureleve[$k].")\n");
-			//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $moyenne[$k][$i], $couleureleve[$k]);
 
 			//$largeur_texte=30;	// A REVOIR... COMMENT LE CALCULER EN SVG?
 			//$largeur_texte=0;	// A REVOIR... COMMENT LE CALCULER EN SVG?
@@ -762,28 +747,9 @@
 
 		//===========================================================================
 		if($temoin_image_escalier=="oui"){
-			//$dx=10;
-			/*
-			$dx=$l_txt_px+1;
-			$dy=3;
-			for($k=0;$k<strlen($matiere_nom_long[$i]);$k++){
-				//$lettre_tmp=substr($matiere_nom_long[$i],$k,1);
-				$lettre_tmp=substr(strtr($matiere_nom_long[$i],"_"," "),$k,1);
-
-				//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)+$k*$dx, $hauteur+$hauteurMoy+5+$k*$dy, $lettre_tmp, $axes);
-				imagestring ($img, $taille_police, $x1+$k*$dx, $hauteur+$hauteurMoy+5+$k*$dy, $lettre_tmp, $axes);
-			}
-			*/
-			//echo "<path id=\"path_esc_$i\" d=\"M $xtmp $ytmp L \"/>\n";
 
 			$xtmp=$x1;
-			//$ytmp=$hauteur+$hauteurMoy+5;
-			//$ytmp=$hauteur+$hauteurMoy+10;
 			$ytmp=$hauteur+$hauteurMoy+10+$fontsizetext;
-			//$fontsizetext=Floor($taille_police*3.5);
-
-			//font-family=\"Verdana\"
-
 			// Les & posent problème...
 			// ... peut-être d'autres caractères aussi?
 			echo "<g transform=\"translate($xtmp,$ytmp)\">
@@ -812,12 +778,6 @@ BLA
 		}
 		else{
 			//Affichage des matières dans la partie basse du graphique:
-			//$largeur_texte = strlen($matiere[$i]) * $l_txt_px;
-			//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+5, $matiere[$i], $axes);
-
-			//$largeur_texte = strlen($matiere_tronquee) * $l_txt_px;
-			//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+5, $matiere_tronquee, $axes);
-
 			$largeur_texte = strlen($matiere_tronquee) * $l_txt_px;
 			$xtext=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
 			//$ytext=$hauteur+$hauteurMoy+5;
@@ -828,35 +788,6 @@ BLA
 		}
 		echo "\n";
 		//===========================================================================
-
-
-		//===========================================================================
-		// Pour afficher les noms longs de matières à la verticale en bas d'image:
-
-
-
-		//$largeur_texte_long=strlen($matiere_nom_long[$i]) * $l_txt_px;
-		//$hauteur_texte_long=ImageFontHeight($taille_police);
-		//imagestringup($img, 3, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+5+$largeur_texte_long, $matiere_nom_long[$i], $axes);
-
-
-		// Essais imagerotate... PB sous Debian Sarge
-		//$imgtmp=ImageCreate($largeur_texte_long,$hauteur_texte_long);
-		//$couleur_fond_tmp=imageColorAllocate($imgtmp,255,255,255);
-		//imagecolortransparent($imgtmp,$couleur_fond_tmp);
-		//$couleur_txt_tmp=imageColorAllocate($imgtmp,0,0,0);
-		//imagestring($imgtmp, $taille_police, 2, 2, $matiere_nom_long[$i], $couleur_txt_tmp);
-		//$imgrotate=imagerotate($imgtmp,30,$couleur_fond_tmp);
-
-		//$largeur_tmp=imagesx($imgrotate);
-		//$hauteur_tmp=imagesy($imgrotate);
-		//ImageCopy ($img, $imgtmp, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+5+$largeur_texte_long, 0, 0, $largeur_tmp, $hauteur_tmp);
-
-
-
-
-		//===========================================================================
-
 	}
 
 
@@ -868,7 +799,6 @@ BLA
 		$ytmp=20;
 
 		$largeur_texte = strlen("M.GEN") * $l_txt_px;
-		//imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, "M.GEN", $axes);
 
 		$xtext=$x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
 		//$ytext=$ytmp;
@@ -883,7 +813,6 @@ BLA
 			$ytmp=$ytmp+15;
 			//$largeur_texte = strlen($mgen[$k]) * $l_txt_px;
 			$largeur_texte = strlen(nf($mgen[$k])) * $l_txt_px;
-			//imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $mgen[$k], $couleureleve[$k]);
 
 			$xtext=$x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
 			//$ytext=$ytmp;
@@ -910,7 +839,6 @@ BLA
 			$ytmp=$ytmp+15;
 			//$largeur_texte = strlen($mgen_annuelle) * $l_txt_px;
 			$largeur_texte = strlen(nf($mgen_annuelle)) * $l_txt_px;
-			//imagestring ($img, $taille_police, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp, $mgen_annuelle, $couleureleve[$nb_series_bis]);
 
 
 			$xtext=$x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
@@ -970,11 +898,6 @@ BLA
 	//for($k=1;$k<$nb_data;$k++){
 	for($k=1;$k<=$nb_series;$k++){
 		$xtmp=$xtmp+$espace;
-		//imagestring ($img, $taille_police, $xtmp, 5, $eleve[$k], $couleureleve[$k]);
-		//$xtmp=$xtmp+$largeur_eleve[$k];
-		//imagestring ($img, $taille_police, $xtmp, 5, $chaine[$k], $couleureleve[$k]);
-		//imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
-
 		$xtext=$xtmp;
 		//$ytext=5;
 		//$ytext=10;
@@ -985,17 +908,9 @@ BLA
 
 		$xtmp=$xtmp+$largeur_chaine[$k];
 	}
-	//=======================================================================
 
-
-
-	//imagestring ($img, $taille_police, 50, 100, "-".$moyenne[3][1]."-", $couleureleve[3]);
-	//imagestring ($img, $taille_police, 50, 100, "-".$eleves[1]."-", $couleureleve[1]);
-	//imagestring ($img, $taille_police, 50, 120, "-".$eleves[2]."-", $couleureleve[2]);
-
-	//=====================================================================
+	
 	//Tracé des courbes:
-
 	echo "\n<!-- Tracé des courbes -->\n";
 
 	//for($k=1;$k<=$nb_series;$k++){
