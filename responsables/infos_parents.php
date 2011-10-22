@@ -82,7 +82,7 @@ if(isset($_GET['export_csv'])) {
 	if((!isset($mode))||($mode==1)) {
 		$nom_fic = "export_infos_parents_1_".date("Ymd_His").".csv";
 	
-		$csv="Classe;Nom;Prenom;Sexe;Naissance;Responsable;Tel_pers;Tel_port;Tel_prof;Email;Adresse;\r\n";
+		$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Responsable;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
 		for($i=0;$i<count($tab_classe);$i++) {
 			//$csv.=$tab_classe[$i]['classe'].";";
 	
@@ -100,6 +100,8 @@ if(isset($_GET['export_csv'])) {
 					$csv.=casse_mot($lig_ele->prenom,'majf2').";";
 					$csv.=$lig_ele->sexe.";";
 					$csv.=formate_date($lig_ele->naissance).";";
+					$csv.=$lig_ele->login.";";
+					$csv.=$lig_ele->ele_id.";";
 	
 					$csv.=$lig_resp->civilite." ".strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2').";";
 					$csv.=$lig_resp->tel_pers.";";
@@ -110,7 +112,7 @@ if(isset($_GET['export_csv'])) {
 					$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
 					//echo "$sql<br />";
 					$res_adr=mysql_query($sql);
-					if(mysql_num_rows($res_resp)>1) {
+					if(mysql_num_rows($res_adr)>1) {
 						$adresse="";
 						$lig_adr=mysql_fetch_object($res_adr);
 						$adresse.=$lig_adr->adr1;
@@ -137,6 +139,12 @@ if(isset($_GET['export_csv'])) {
 
 						$csv.=$adresse.";";
 					}
+					else {
+						$csv.=";";
+					}
+					$csv.=$lig_resp->login.";";
+					$csv.=$lig_resp->pers_id.";";
+
 					$csv.="\r\n";
 				}
 			}
@@ -164,7 +172,8 @@ if(isset($_GET['export_csv'])) {
 				if(mysql_num_rows($res_rp)>0) {
 					// On recherche alors aussi les élèves.
 					while($lig_rp=mysql_fetch_object($res_rp)) {
-						$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
+						//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
+						$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
 						for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {
 							if(!in_array($tab_ele_tmp[$loop], $tab_ele)) {
 								$tab_ele[]=$tab_ele_tmp[$loop];
@@ -185,7 +194,8 @@ if(isset($_GET['export_csv'])) {
 				if(mysql_num_rows($res_rp)>0) {
 					// On recherche alors aussi les élèves.
 					while($lig_rp=mysql_fetch_object($res_rp)) {
-						$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
+						//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
+						$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
 						for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {
 							if(!in_array($tab_ele_tmp[$loop], $tab_ele)) {
 								$tab_ele[]=$tab_ele_tmp[$loop];
@@ -228,6 +238,24 @@ if(isset($_GET['export_csv'])) {
 							}
 							else {
 								$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+							}
+						}
+					}
+					else {
+						if(isset($resp[1]['nom'])) {
+							if($resp[1]['civilite']!="") {
+								$designation=$resp[1]['civilite']." ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
+							}
+							else {
+								$designation="M ou Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
+							}
+						}
+						elseif(isset($resp[2]['nom'])) {
+							if($resp[2]['civilite']!="") {
+								$designation=$resp[2]['civilite']." ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+							}
+							else {
+								$designation="M ou Mme ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 							}
 						}
 					}
@@ -323,8 +351,8 @@ if((!isset($mode))||($mode==1)) {
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Classe</th>\n";
-	echo "<th colspan='4'>Elève</th>\n";
-	echo "<th colspan='6'>Responsable</th>\n";
+	echo "<th colspan='6'>Elève</th>\n";
+	echo "<th colspan='8'>Responsable</th>\n";
 	echo "</tr>\n";
 	
 	echo "<tr>\n";
@@ -333,12 +361,16 @@ if((!isset($mode))||($mode==1)) {
 	echo "<th>Prénom</th>\n";
 	echo "<th>Sexe</th>\n";
 	echo "<th>Naissance</th>\n";
+	echo "<th>Login</th>\n";
+	echo "<th>Ele_id</th>\n";
 	echo "<th>Responsable</th>\n";
 	echo "<th>Tel.pers</th>\n";
 	echo "<th>Tel.port</th>\n";
 	echo "<th>Tel.prof</th>\n";
 	echo "<th>Email</th>\n";
 	echo "<th>Adresse</th>\n";
+	echo "<th>Login</th>\n";
+	echo "<th>Pers_id</th>\n";
 	echo "</tr>\n";
 	$alt=1;
 	for($i=0;$i<count($tab_classe);$i++) {
@@ -360,6 +392,8 @@ if((!isset($mode))||($mode==1)) {
 			echo "<td$rowspan>".casse_mot($lig_ele->prenom,'majf2')."</td>\n";
 			echo "<td$rowspan>".$lig_ele->sexe."</td>\n";
 			echo "<td$rowspan>".formate_date($lig_ele->naissance)."</td>\n";
+			echo "<td$rowspan>".$lig_ele->login."</td>\n";
+			echo "<td$rowspan>".$lig_ele->ele_id."</td>\n";
 			$cpt=0;
 			while($lig_resp=mysql_fetch_object($res_resp)) {
 				if($cpt>0) {
@@ -400,6 +434,8 @@ if((!isset($mode))||($mode==1)) {
 					echo $adresse;
 				}
 				echo "</td>\n";
+				echo "<td>$lig_resp->login</td>\n";
+				echo "<td>$lig_resp->pers_id</td>\n";
 				$cpt++;
 			}
 			echo "</tr>\n";
@@ -463,12 +499,14 @@ else {
 		if(mysql_num_rows($res_rp)>0) {
 			// On recherche alors aussi les élèves.
 			while($lig_rp=mysql_fetch_object($res_rp)) {
-				$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
+				//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
+				$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
 				for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {
 					if(!in_array($tab_ele_tmp[$loop], $tab_ele)) {
 						$tab_ele[]=$tab_ele_tmp[$loop];
 					}
 				}
+
 				$resp[1]['civilite']=$lig_rp->civilite;
 				$resp[1]['nom']=$lig_rp->nom;
 				$resp[1]['prenom']=$lig_rp->prenom;
@@ -484,12 +522,14 @@ else {
 		if(mysql_num_rows($res_rp)>0) {
 			// On recherche alors aussi les élèves.
 			while($lig_rp=mysql_fetch_object($res_rp)) {
-				$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
+				//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
+				$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
 				for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {
 					if(!in_array($tab_ele_tmp[$loop], $tab_ele)) {
 						$tab_ele[]=$tab_ele_tmp[$loop];
 					}
 				}
+
 				$resp[2]['civilite']=$lig_rp->civilite;
 				$resp[2]['nom']=$lig_rp->nom;
 				$resp[2]['prenom']=$lig_rp->prenom;
