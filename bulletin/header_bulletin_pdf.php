@@ -1,6 +1,8 @@
 <?php
-  // Envoi des en-têtes HTTP
-  send_file_download_headers('application/pdf','bulletin.pdf');
+if((!isset($bull_pdf_debug))||($bull_pdf_debug!='y')) {
+	// Envoi des en-têtes HTTP
+	send_file_download_headers('application/pdf','bulletin.pdf');
+}
 
 if (!defined('FPDF_VERSION')) {
 	require_once('../fpdf/fpdf.php');
