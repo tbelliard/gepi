@@ -79,7 +79,7 @@ if ($y > $haut_im) $y=$haut_im;
 $x = ($larg_im)/2-5;
 
 //imagettftext($im, 10, 90, $x, $y, $color_text, "../jpgraph1_5_2/fonts/verdanai.ttf", $texte);
-imagestringup($im,3,$x,$y,$texte,$color_text);
+imagestringup($im,3,$x,$y,utf8_decode($texte),$color_text);
 imagepng($im);
 imagedestroy($im);
 ?>
