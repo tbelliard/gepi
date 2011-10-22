@@ -506,7 +506,7 @@ $pdf->SetAutoPageBreak(true, $marge_bas);
 
 $pdf->AddPage("P"); //ajout d'une page au document
 $pdf->SetDrawColor(0,0,0);
-$pdf->SetFont('Arial');
+$pdf->SetFont('DejaVu');
 $pdf->SetXY(20,20);
 $pdf->SetFontSize(14);
 $pdf->Cell(90,7, "TEST",0,2,'');

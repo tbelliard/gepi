@@ -32,11 +32,11 @@
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
-
 if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
+	require_once(dirname(__FILE__).'/fpdf.php');
 }
-require('../fpdf/ex_fpdf.php');
+
+require_once('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
@@ -266,7 +266,7 @@ if ($id_liste_groupes!=NULL) {
 		if(count($donnees_eleves)==0) {
 			$pdf->AddPage("P"); //ajout d'une page au document
 			$pdf->SetDrawColor(0,0,0);
-			$pdf->SetFont('Arial');
+			$pdf->SetFont('DejaVu');
 			$pdf->SetXY(20,20);
 			$pdf->SetFontSize(14);
 			$pdf->Cell(90,7, "ERREUR",0,2,'');
@@ -324,14 +324,14 @@ if ($id_liste_groupes!=NULL) {
 		$pdf->SetDrawColor(0,0,0);
 
 		// caractère utilisé dans le document
-		$caractere_utilise = 'arial';
+		$caractere_utilise = 'DejaVu';
 
 		// on appelle une nouvelle page pdf
 		$nb_eleves_i = 0;
 
 		//Entête du PDF
 			$pdf->SetLineWidth(0.7);
-			$pdf->SetFont($caractere_utilise,'B',14);
+			$pdf->SetFont('DejaVu','',14);
 			$pdf->Setxy($X_entete_classe,$Y_entete_classe);
 
 			if ($id_classe != NULL) {
@@ -346,7 +346,7 @@ if ($id_liste_groupes!=NULL) {
 			if (($affiche_pp==1)) {
 			   if ($id_groupe == NULL) {
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,'Classe de '.$current_classe,'LTR',2,'C');
-				   $pdf->SetFont($caractere_utilise,'I',8.5);
+				   $pdf->SetFont('DejaVu','I',8.5);
                }
 			  //PP de la classe
 			  if ($id_groupe != NULL) {
@@ -391,7 +391,7 @@ if ($id_liste_groupes!=NULL) {
 
 
 			$pdf->Setxy($X_entete_matiere,$Y_entete_matiere);
-			$pdf->SetFont($caractere_utilise,'B',14);
+			$pdf->SetFont('DejaVu','',14);
 
 
 			//Si on peut connaître le nom de la matière (id_groupe existe !)
@@ -400,11 +400,11 @@ if ($id_liste_groupes!=NULL) {
 				$matiere = $current_group["description"];
                  //echo $matiere."<br/>";
 				$pdf->CellFitScale($L_entete_discipline,$H_entete_discipline /2 ,$matiere,'LTR',2,'C');
-				$pdf->SetFont($caractere_utilise,'I',11);
+				$pdf->SetFont('DejaVu','I',11);
 				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'LRB',2,'C');
 			} else {
 			// On demande une classe ==> on ajoute la période.
-				$pdf->SetFont($caractere_utilise,'I',11);
+			        $pdf->SetFont('DejaVu','I',11);
 
 				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
 				$res_per=mysql_query($sql);
@@ -431,7 +431,7 @@ if ($id_liste_groupes!=NULL) {
 
 		//debut tableau;
 			$pdf->SetLineWidth(0.3);
-			$pdf->SetFont($caractere_utilise,'',9);
+			$pdf->SetFont('DejaVu','',9);
 			$y_tmp = $Y_courant;
 			//Nb de ligne AVANT dans le tableau
 			if ($nb_ligne_avant > 0) {
@@ -524,11 +524,11 @@ if ($id_liste_groupes!=NULL) {
 			while($nb_eleves_i < $nb_eleves) {
 				$y_tmp = $pdf->GetY();
 				$pdf->Setxy($X_tableau,$y_tmp);
-				$pdf->SetFont($caractere_utilise,'B',9);
+				$pdf->SetFont('DejaVu','',9);
 				if ($flag_groupe==true) {
-					$texte = traite_accents_utf8(strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']." (".$donnees_eleves[$nb_eleves_i]['nom_court'].")"));
+					$texte = traite_accents_utf8(($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']." (".$donnees_eleves[$nb_eleves_i]['nom_court'].")"));
 				} else {
-					$texte = traite_accents_utf8(strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']));
+					$texte = traite_accents_utf8(($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']));
 				}
 				$pdf->CellFitScale($l_nomprenom,$h_ligne,$texte,1,0,'L',0); //$l_nomprenom.' - '.$h_ligne.' / '.$X_tableau.' - '.$y_tmp
 				for($i=0; $i < $nb_colonne ; $i++) {

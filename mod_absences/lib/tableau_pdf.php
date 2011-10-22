@@ -237,7 +237,7 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 /* information sur la présentation du document */
 /* *********************************************/
 
-	$caractere_utilse = 'arial'; // caractère utilisé
+	$caractere_utilse = 'DejaVu'; // caractère utilisé
 	$affiche_logo_etab = '1';
 	$nom_etab_gras = '0';
 	$entente_mel = '1'; // afficher l'adresse mel dans l'entête
@@ -365,7 +365,7 @@ while ($nb_page_traite < $nb_page_total)
 	$pdf->AddPage();
 
 	// police de caractère utilisé
-	$pdf->SetFont('Arial');
+	$pdf->SetFont('DejaVu');
 
 /* ENTETE - DEBUT */
 
@@ -413,19 +413,19 @@ while ($nb_page_traite < $nb_page_total)
 
 	}
 	$pdf->SetXY($X_etab,$Y_etab);
-	$pdf->SetFont($caractere_utilse,'',14);
+	$pdf->SetFont('DejaVu','',14);
 	$gepiSchoolName = getSettingValue('gepiSchoolName');
 
 	// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
 	if ( $nom_etab_gras === '1' )
 	{
 
-		$pdf->SetFont($caractere_utilse,'B',14);
+		$pdf->SetFont('DejaVu','B',14);
 
 	}
 	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 
-	$pdf->SetFont($caractere_utilse,'',10);
+	$pdf->SetFont('DejaVu','',10);
 	$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 
 	if ( $gepiSchoolAdress1 != '' )
@@ -550,13 +550,13 @@ while ($nb_page_traite < $nb_page_total)
 
 /* ENTETE TITRE - DEBUT */
 
-		$pdf->SetFont('Arial','B',18);
+		$pdf->SetFont('DejaVu','B',18);
 
 		$pdf->SetXY(85, 10);
 
 		$pdf->Cell(120, 6, 'Impression du Tableau '.$typetableau, 0, 1, 'C');
 
-		$pdf->SetFont('Arial','',12);
+		$pdf->SetFont('DejaVu','',12);
 
 		$pdf->SetX(85);
 		$pdf->Cell(80, 6, 'du '.$du, 0, 1, 'C');
@@ -577,7 +577,7 @@ while ($nb_page_traite < $nb_page_total)
 /* ENTETE TABLEAU - DEBUT */
 if ($type=='A') {
 	//Sélection de la police
-	$pdf->SetFont($caractere_utilse, 'B', 10);
+	$pdf->SetFont('DejaVu', 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
@@ -608,7 +608,7 @@ if ($type=='A') {
 
 	if ($type=='R') {
 	//Sélection de la police
-	$pdf->SetFont($caractere_utilse, 'B', 10);
+	$pdf->SetFont('DejaVu', 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
@@ -634,7 +634,7 @@ if ($type=='A') {
 
 	if ($type=='D') {
 	//Sélection de la police
-	$pdf->SetFont($caractere_utilse, 'B', 10);
+	$pdf->SetFont('DejaVu', 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
@@ -660,7 +660,7 @@ if ($type=='A') {
 
 	if ($type=='I') {
 	//Sélection de la police
-	$pdf->SetFont($caractere_utilse, 'B', 10);
+	$pdf->SetFont('DejaVu', 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
@@ -853,8 +853,8 @@ if ($type=='R') {
 	//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
 	$pdf->SetXY(5,-10);
 
-	//Police Arial Gras 6
-	$pdf->SetFont('Arial','B',8);
+	//Police DejaVu Gras 6
+	$pdf->SetFont('DejaVu','B',8);
 
 	// formule du pied de page
 	$nb_page_affiche=$nb_page_traite +1;

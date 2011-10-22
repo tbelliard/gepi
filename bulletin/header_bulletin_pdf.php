@@ -3,7 +3,7 @@
   send_file_download_headers('application/pdf','bulletin.pdf');
 
 if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
+	require_once(dirname(__FILE__).'/../fpdf/fpdf.php');
 }
 	require_once("../fpdf/class.multicelltag.php");
 	require_once('../fpdf/ex_fpdf.php');
@@ -51,14 +51,14 @@ if (!defined('FPDF_VERSION')) {
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 	$pdf->AddPage(); //ajout d'une page au document
-	$pdf->SetFont('Arial');
+	$pdf->SetFont('DejaVu');
 
 	if ( !isset($X_etab) or empty($X_etab) ) {
 		$X_etab = '5';
 		$Y_etab = '5';
 	}
 	$pdf->SetXY($X_etab,$Y_etab);
-	$pdf->SetFont('Arial','',14);
+	$pdf->SetFont('DejaVu','',14);
 	$gepiSchoolName=getSettingValue("gepiSchoolName") ? getSettingValue("gepiSchoolName") : "gepiSchoolName";
 	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 

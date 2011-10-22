@@ -285,7 +285,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	$this->_out($s);
 }
 
-}
+
 // fin de la class
 
 //============================================================
@@ -294,7 +294,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 	// entête
 	$X_entete_etab='5';
-	$caractere_utilse='arial'; // caractère utilisé dans le document
+	$caractere_utilse='DejaVu'; // caractère utilisé dans le document
 	$affiche_logo_etab='1'; // affiché le logo de l'établissement
 	$entente_mel='0'; // afficher dans l'entête le mel de l'établissement
 	$entente_tel='0'; // afficher dans l'entête le téléphone de l'établissement
@@ -335,6 +335,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 
 	// Définition de la page
+	require_once(dirname(__FILE__).'/../impression/class_pdf.php');
 	$pdf=new rel_PDF("P","mm","A4");
 	$pdf->SetTopMargin(TopMargin);
 	$pdf->SetRightMargin(RightMargin);
@@ -345,7 +346,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	$pdf->SetDrawColor(0,0,0);
 
 	// Caractéres utilisée
-	$caractere_utilse = 'arial';
+	$caractere_utilse = 'DejaVu';
 
 
 	$releve_affiche_formule=getSettingValue("releve_affiche_formule") ? getSettingValue("releve_affiche_formule") : "y";

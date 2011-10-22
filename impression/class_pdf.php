@@ -1,6 +1,7 @@
 <?PHP
+require_once(dirname(__FILE__).'/../fpdf/ex_fpdf.php');
 // Class PHP pour le module impression de gepi
-class rel_PDF extends FPDF
+class rel_PDF extends Ex_FPDF
 {
 
 function Footer()
@@ -21,7 +22,7 @@ global $avec_emplacement_trous;
     // on trace un trait horizontal
 	$this->SetRightMargin(5);    $this->SetXY(5,287);
     $this->cell(0,2,"","T",0);
-		$this->SetFont('arial','',7.5);	
+		$this->SetFont('DejaVu','',7.5);	
 	$this->SetXY(5,287); 
 	$this->Cell(0,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,''); 
 	

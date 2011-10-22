@@ -193,7 +193,7 @@ $pdf=new FPDF_MULTICELLTAG('P','mm','A4');
 //$pdf->Open();
 $pdf->SetAutoPageBreak(false);
 
-	$caractere_utilse = 'Arial';
+	$caractere_utilse = 'DejaVu';
 
 //calcul du nombre d'étiquette
 $nombre_eleve = count($id_eleve);
@@ -210,7 +210,7 @@ while ( $cpt_page < $nombre_de_page )
 {
 	// Ajout d'une page
 	$pdf->AddPage();
-	$pdf->SetFont('arial','',11);
+	$pdf->SetFont('DejaVu','',11);
 	$pdf->SetTextColor(0,0,0);
 	$pdf->SetFillColor(255,255,255);
 
@@ -238,7 +238,7 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 			while($cpt_i_l<=$nbl)
 			{
 
-				$pdf->SetFont($caractere_utilse,'',11);
+				$pdf->SetFont('DejaVu','',11);
 //echo $nombre_etiquette_par_page.' '.$cpt_etiquette.' '.$cpt_eleve.' '.$cpt_page.' '.$i.'<br/>';
 
 
@@ -267,7 +267,7 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 			 			$hauteur_caractere = '11';
 						if($etiquette_type === '5' and $cpt_ligne_aff == '2') { $hauteur_caractere = '6'; }
 	
-					 	$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+					 	$pdf->SetFont('DejaVu','',$hauteur_caractere);
 						$val = $pdf->GetStringWidth($ligne[$cpt_eleve][$cpt_ligne_aff]);
 					 	$taille_texte = $largeur-2;
 					 	$grandeur_texte='test';
@@ -275,7 +275,7 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 						 if($taille_texte<$val) 
 						  {
 						     $hauteur_caractere = $hauteur_caractere-0.3;
-						     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+						     $pdf->SetFont('DejaVu','',$hauteur_caractere);
 						     $val = $pdf->GetStringWidth($ligne[$cpt_eleve][$cpt_ligne_aff]);
 						  } else { $grandeur_texte='ok'; }
 		                		}

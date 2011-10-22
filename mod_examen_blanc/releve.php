@@ -461,7 +461,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$pdf->SetCompression(TRUE);
 						$pdf->SetAutoPageBreak(TRUE, 5);
 
-						$fonte='Arial';
+						$fonte='DejaVu';
 
 						for($i=0;$i<$nb_classes;$i++) {
 							$pdf->AddPage();

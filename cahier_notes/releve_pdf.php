@@ -387,7 +387,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 	// entête
 	$X_entete_etab='5';
-	$caractere_utilse='arial'; // caractère utilisé dans le document
+	$caractere_utilse='DejaVu'; // caractère utilisé dans le document
 	$affiche_logo_etab='1'; // affiché le logo de l'établissement
 	$entente_mel='0'; // afficher dans l'entête le mel de l'établissement
 	$entente_tel='0'; // afficher dans l'entête le téléphone de l'établissement
@@ -1016,7 +1016,7 @@ $pdf->SetAutoPageBreak(true, BottomMargin);
 $pdf->SetDrawColor(0,0,0);
 
 // Caractères utilisés
-$caractere_utilse = 'arial';
+$caractere_utilse = 'DejaVu';
 
 // on appelle une nouvelle page pdf
 // modif eric 16022008
@@ -1124,9 +1124,9 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 
 		//BLOC IDENTITE ELEVE
 			$pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
-			$pdf->SetFont($caractere_utilse,'B',14);
+			$pdf->SetFont('DejaVu','B',14);
 			$pdf->Cell(90,7,strtoupper($nom[$nb_eleves_i])." ".ucfirst($prenom[$nb_eleves_i]),0,2,'');
-			$pdf->SetFont($caractere_utilse,'',10);
+			$pdf->SetFont('DejaVu','',10);
 			//$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
 			if($sexe[$nb_eleves_i]=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
 			$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.affiche_date_naissance($naissance[$nb_eleves_i]).', '.$regime[$nb_eleves_i],0,2,'');
@@ -1144,7 +1144,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 
 			$pdf->Cell(90,5,$classe_aff,0,2,'');
 			$pdf->SetX($X_cadre_eleve);
-			$pdf->SetFont($caractere_utilse,'',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');
 
 		// BLOC IDENTITE DE L'ETABLISSEMENT
@@ -1164,10 +1164,10 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 
 		// BLOC ADRESSE ETABLISSEMENT
 			$pdf->SetXY($X_etab,$Y_etab);
-			$pdf->SetFont($caractere_utilse,'',14);
+			$pdf->SetFont('DejaVu','',14);
 			$gepiSchoolName = getSettingValue('gepiSchoolName');
 			$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
-			$pdf->SetFont($caractere_utilse,'',10);
+			$pdf->SetFont('DejaVu','',10);
 			$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 			$pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
 			$gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
@@ -1201,7 +1201,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
             if(isset($prenom_parents[$ident_eleve_aff][$responsable_place])) {$texte_1_responsable.=$prenom_parents[$ident_eleve_aff][$responsable_place]." ";}
             //==========================================
 				$hauteur_caractere=12;
-				$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
+				$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 				$val = $pdf->GetStringWidth($texte_1_responsable);
 				$taille_texte = 90;
 				$grandeur_texte='test';
@@ -1209,15 +1209,15 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 				if($taille_texte<$val)
 				{
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else { $grandeur_texte='ok'; }
 					}
 			$pdf->Cell(90,7, $texte_1_responsable,0,2,'');
-			$pdf->SetFont($caractere_utilse,'',10);
+			$pdf->SetFont('DejaVu','',10);
 			$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
 				$hauteur_caractere=10;
-				$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+				$pdf->SetFont('DejaVu','',$hauteur_caractere);
 				$val = $pdf->GetStringWidth($texte_1_responsable);
 				$taille_texte = 90;
 				$grandeur_texte='test';
@@ -1225,14 +1225,14 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 				if($taille_texte<$val)
 				{
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else { $grandeur_texte='ok'; }
 					}
 			$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 			$texte_1_responsable = $adresse2_parents[$ident_eleve_aff][$responsable_place];
 				$hauteur_caractere=10;
-				$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+				$pdf->SetFont('DejaVu','',$hauteur_caractere);
 				$val = $pdf->GetStringWidth($texte_1_responsable);
 				$taille_texte = 90;
 				$grandeur_texte='test';
@@ -1240,7 +1240,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 				if($taille_texte<$val)
 				{
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else { $grandeur_texte='ok'; }
 					}
@@ -1248,7 +1248,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 			$pdf->Cell(90,5, '',0,2,'');
 			$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
 				$hauteur_caractere=10;
-				$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+				$pdf->SetFont('DejaVu','',$hauteur_caractere);
 				$val = $pdf->GetStringWidth($texte_1_responsable);
 				$taille_texte = 90;
 				$grandeur_texte='test';
@@ -1256,7 +1256,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 				if($taille_texte<$val)
 				{
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else { $grandeur_texte='ok'; }
 					}
@@ -1266,7 +1266,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 		// BLOC NOTATION ET OBSERVATION
 			//Titre du tableau
 			$pdf->SetXY($X_cadre_note,$Y_cadre_note);
-			$pdf->SetFont($caractere_utilse,'B',12);
+			$pdf->SetFont('DejaVu','B',12);
 			if($cadre_titre==='1') { $var_encadrement_titre='LTR'; } else { $var_encadrement_titre=''; }
 			$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.' '.date_frc($_SESSION['date_debut_aff']).' au '.date_frc($_SESSION['date_fin_aff']), $var_encadrement_titre,0,'C');
 			$hauteur_utilise = $hauteur_du_titre;
@@ -1289,16 +1289,16 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 					// on affiche les nom des regroupement
 					if($nom_regroupement[$eleve_select][$cpt_i]!=$nom_regroupement_passer and $active_entete_regroupement === '1')
 					{
-						$pdf->SetFont($caractere_utilse,'',8);
+						$pdf->SetFont('DejaVu','',8);
 						$pdf->Cell($largeur_cadre_matiere, $hauteur_dun_regroupement, unhtmlentities($nom_regroupement[$eleve_select][$cpt_i]), 'LTB', 2, '');
 						$hauteur_utilise=$hauteur_utilise+$hauteur_dun_regroupement;
 						$nom_regroupement_passer=$nom_regroupement[$eleve_select][$cpt_i];
 						$pdf->SetXY($X_cadre_note,$Y_cadre_note+$hauteur_utilise);
 					}
-				$pdf->SetFont($caractere_utilse,'B','9');
+				$pdf->SetFont('DejaVu','B','9');
 				$nom_matiere = $name[$eleve_select][$cpt_i];
 					$hauteur_caractere = 9;
-					$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($nom_matiere);
 					$taille_texte = $largeur_cadre_matiere;
 					$grandeur_texte='test';
@@ -1306,7 +1306,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 					if($taille_texte<$val)
 					{
 						$hauteur_caractere = $hauteur_caractere-0.3;
-						$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
+						$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 						$val = $pdf->GetStringWidth($nom_matiere);
 					} else { $grandeur_texte='ok'; }
 						}
@@ -1336,7 +1336,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 					if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 9; }
 					elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 7; }
 					elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 					$val = $pdf->GetStringWidth($text_prof);
 					$taille_texte = ($largeur_cadre_matiere-0.6);
 					$grandeur_texte='test';
@@ -1344,7 +1344,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 					if($taille_texte<$val)
 					{
 						$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-						$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 						$val = $pdf->GetStringWidth($text_prof);
 					} else { $grandeur_texte='ok'; }
 							}
@@ -1364,7 +1364,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 	//			if(isset($prof_groupe[$id_groupe_selectionne][2]) and $prof_groupe[$id_groupe_selectionne][2] != '') { $prof_3 = $prof_groupe[$id_groupe_selectionne][2]; } else { $prof_3 = ''; }
 	/*			 $nom_prof = $prof_1;
 					$hauteur_caractere = 8;
-					$pdf->SetFont($caractere_utilse,'I',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','I',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($nom_prof);
 					$taille_texte = $largeur_cadre_matiere;
 					$grandeur_texte='test';
@@ -1372,7 +1372,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 					if($taille_texte<$val)
 					{
 						$hauteur_caractere = $hauteur_caractere-0.3;
-						$pdf->SetFont($caractere_utilse,'I',$hauteur_caractere);
+						$pdf->SetFont('DejaVu','I',$hauteur_caractere);
 						$val = $pdf->GetStringWidth($nom_prof);
 					} else { $grandeur_texte='ok'; }
 						}
@@ -1401,7 +1401,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 					// on affiche les nom des regroupement
 					if($nom_regroupement[$eleve_select][$cpt_i]!=$nom_regroupement_passer and $active_entete_regroupement === '1')
 					{
-						$pdf->SetFont($caractere_utilse,'',8);
+						$pdf->SetFont('DejaVu','',8);
 						$pdf->Cell($largeur_cadre_note, $hauteur_dun_regroupement, '', 'RTB', 2, '');
 						$hauteur_utilise=$hauteur_utilise+$hauteur_dun_regroupement;
 						$nom_regroupement_passer=$nom_regroupement[$eleve_select][$cpt_i];
@@ -1410,7 +1410,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 				// détermine la taille de la police de caractère
 				// on peut allez jusqu'a 275mm de caractère dans trois cases de notes
 					$hauteur_caractere_notes=9;
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_notes);
 					$val = $pdf->GetStringWidth($notes[$eleve_select][$cpt_i]);
 					$taille_texte = (($hauteur_cadre_matiere/4)*$largeur_cadre_note);
 					$grandeur_texte='test';
@@ -1418,7 +1418,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 					if($taille_texte<$val)
 					{
 						$hauteur_caractere_notes = $hauteur_caractere_notes-0.3;
-						$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_notes);
 						$val = $pdf->GetStringWidth($notes[$eleve_select][$cpt_i]);
 					} else { $grandeur_texte='ok'; }
 							}
@@ -1442,7 +1442,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 				} else { $hauteur_cadre_observation=$hauteur_cadre_note_global; }
 				$pdf->Rect($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise, $largeur_restant, $hauteur_cadre_observation, 'D');
 				$pdf->SetXY($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise);
-				$pdf->SetFont($caractere_utilse,'',11);
+				$pdf->SetFont('DejaVu','',11);
 				$pdf->Cell($largeur_restant,7, $texte_observation,0,1,'C');
 			}
 			//=======================
@@ -1460,7 +1460,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 			$hauteur_cadre_signature=$hauteur_cadre_note_global-$hauteur_cadre_observation;
 			$largeur_cadre_signature=$largeur_cadre_note_global-$largeur_utilise;
 
-			$pdf->SetFont($caractere_utilse,'',8);
+			$pdf->SetFont('DejaVu','',8);
 			$pdf->Rect($X_signature, $Y_signature, $largeur_cadre_signature, $hauteur_cadre_signature, 'D');
 
 			if($affiche_cachet_pp==='1')
@@ -1483,7 +1483,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 
 		//PUB ;)
 			$pdf->SetXY($X_cadre_note, $Y_cadre_note+$hauteur_cadre_note_global+$hauteur_du_titre);
-			$pdf->SetFont('arial','',8);
+			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell(200,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,'');
 
 		$passage_i=$passage_i+1;

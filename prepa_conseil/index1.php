@@ -244,9 +244,9 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 	$pdf->AddPage();
-	$fonte='Arial';
+	$fonte='DejaVu';
 
-	$pdf->SetFont($fonte,'B',8);
+	$pdf->SetFont('DejaVu','B',8);
 
 	$texte_titre=$current_group['profs']['proflist_string']." - ".$current_group['description']." en ".$current_group['classlist_string'];
 

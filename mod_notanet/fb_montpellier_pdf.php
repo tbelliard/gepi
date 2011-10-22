@@ -294,19 +294,19 @@
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 	// gestion des styles
-	$pdf->SetStyle2("b","arial","B",8,"0,0,0");
-	$pdf->SetStyle2("i","arial","I",8,"0,0,0");
-	$pdf->SetStyle2("u","arial","U",8,"0,0,0");
+	$pdf->SetStyle2("b","DejaVu","B",8,"0,0,0");
+	$pdf->SetStyle2("i","DejaVu","I",8,"0,0,0");
+	$pdf->SetStyle2("u","DejaVu","U",8,"0,0,0");
 
 	$taille=10;
-	$pdf->SetStyle2("bppc","arial","B",$taille,"0,0,0");
-	$pdf->SetStyle2("ippc","arial","I",$taille,"0,0,0");
+	$pdf->SetStyle2("bppc","DejaVu","B",$taille,"0,0,0");
+	$pdf->SetStyle2("ippc","DejaVu","I",$taille,"0,0,0");
 
 
 	/*
 	$pdf->AddPage(); //ajout d'une page au document
 
-	$pdf->SetFont('Arial');
+	$pdf->SetFont('DejaVu');
 	$pdf->SetXY(10,20);
 	$pdf->SetFontSize(100);
 	$pdf->Cell(90,25, "ACADEMIE DE Rouen",'',2,'');
@@ -355,7 +355,7 @@
 
 	// Socles B2i et A2
 	//$h_bloc_socles=3*$fs_txt_mm*$sc_interligne;
-	$pdf->SetFont('Arial','',$fs_txt);
+	$pdf->SetFont('DejaVu','',$fs_txt);
 	$h_bloc_socles=3*$pdf->FontSize*$sc_interligne+1;
 
 	// Bloc nom/adresse etab
@@ -397,27 +397,27 @@
 				//================================================
 				// ENTETE DE PAGE
 				// Cadre avec alignement à droite
-				$pdf->SetFont('Arial','B',$fs_txt);
+				$pdf->SetFont('DejaVu','B',$fs_txt);
 				$pdf->SetXY(210-$marge-$larg_session,$marge);
 				$pdf->Cell($larg_session,$pdf->FontSize*$sc_interligne, "SESSION $fb_session",'',1,'R');
 
-				$pdf->SetFont('Arial','B',$fs_titre);
+				$pdf->SetFont('DejaVu','B',$fs_titre);
 				$pdf->SetXY($marge,$y_fsb);
 				$pdf->Cell(210-2*$marge,10, "FICHE SCOLAIRE DU BREVET",$bord_debug,1,'C');
 				//$pdf->SetXY($marge,$pdf->GetY()+$pdf->FontSize*$sc_interligne);
 				//$pdf->SetXY($marge,$pdf->GetY());
 				$pdf->Cell(210-2*$marge,10, "Série ".$tab_type_brevet[$type_brevet],$bord_debug,1,'C');
 
-				//$pdf->SetFont('Arial');
-				$pdf->SetFont('Arial','B',$fs_txt);
+				//$pdf->SetFont('DejaVu');
+				$pdf->SetFont('DejaVu','B',$fs_txt);
 				$pdf->SetXY($marge,$pdf->GetY());
 				//$pdf->SetFontSize($fs_txt);
 				$pdf->Cell($pdf->GetStringWidth("ACADÉMIE : "),fs_pt2mm($pdf->FontSize)*$sc_interligne, "ACADÉMIE : ",0,0,'L');
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				//$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, strtoupper($fb_academie),0,1,'L');
 				$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, casse_mot($fb_academie),0,1,'L');
 
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				//$pdf->SetXY($marge,15);
 				$pdf->SetXY($marge,$pdf->GetY()+$pdf->FontSize*$r_interligne);
 				//$pdf->Cell($larg_acad,fs_pt2mm($pdf->FontSize)*$sc_interligne, "Département: $fb_departement   ".$pdf->GetY(),0,2,'');
@@ -427,7 +427,7 @@
 
 				//================================================
 				// INFOS ELEVE
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				//$pdf->SetXY($marge,$y_nom_ele);
 				$pdf->SetXY($marge,$pdf->GetY());
 				$pdf->Cell($larg_col_nom,$pdf->FontSize*$sc_interligne, "Nom : ".$lig1->nom,$bord_debug,1,'');
@@ -451,7 +451,7 @@
 				//================================================
 				// TABLEAU ADRESSE ETAB
 				//$pdf->SetXY($marge,65);
-				$pdf->SetFont('Arial','B',$fs_txt);
+				$pdf->SetFont('DejaVu','B',$fs_txt);
 				$y_etab=$pdf->GetY();
 
 				//$pdf->SetXY($marge+$larg_col_disc+$larg_col_note,$y_etab);
@@ -463,7 +463,7 @@
 				$x=$pdf->GetX();
 				//$pdf->SetXY($x,65);
 				$font_size=adjust_size_font($gepiSchoolName,$larg_col_val_etab,$fs_txt,0.1);
-				$pdf->SetFont('Arial','',$font_size);
+				$pdf->SetFont('DejaVu','',$font_size);
 				//$pdf->Cell($larg_col_val_etab,$pdf->FontSize*$sc_interligne, $gepiSchoolName,'RT',1,'');
 				$pdf->Cell($larg_col_val_etab,$pdf->FontSize*$sc_interligne, $gepiSchoolName,'',1,'');
 				$y=$pdf->GetY();
@@ -471,7 +471,7 @@
 				$pdf->SetXY($marge+$larg_col_disc+$larg_col_note,$y);
 				// A MODIFIER: Si l'adresse est très longue, cela peut déborder...
 				$font_size=adjust_size_font($adresse_etab,$larg_col_etab+$larg_col_val_etab,$fs_txt,0.1);
-				$pdf->SetFont('Arial','',$font_size);
+				$pdf->SetFont('DejaVu','',$font_size);
 				//$pdf->Cell($larg_col_etab+$larg_col_val_etab,$pdf->FontSize*$sc_interligne, $adresse_etab,'RB',1,'');
 				$pdf->Cell($larg_col_etab+$larg_col_val_etab,$pdf->FontSize*$sc_interligne, $adresse_etab,'',1,'');
 
@@ -483,7 +483,7 @@
 				//================================================
 				// TABLEAU DES DISCIPLINES
 				// LIGNES DE TITRE DU TABLEAU DES DISCIPLINES
-				$pdf->SetFont('Arial','B',$fs_txt);
+				$pdf->SetFont('DejaVu','B',$fs_txt);
 
 				//$pdf->SetXY($marge,80);
 				//$x=$pdf->GetX();
@@ -587,7 +587,7 @@
 	
 							if(($temoin_notnonca==0)&&($tabmatieres[$j][-1]=='NOTNONCA')) {
 								// Insertion de la ligne 'A titre indicatif'
-								$pdf->SetFont('Arial','B',$fs_txt);
+								$pdf->SetFont('DejaVu','B',$fs_txt);
 								$pdf->Cell(210-2*$marge-$larg_col_note_glob,$h_ligne_a_titre_indicatif, 'A titre indicatif','LRBT',2,'L');
 
 								$y0_notnonca=$pdf->GetY();
@@ -601,7 +601,7 @@
 								//$pdf->Cell($larg_col_note_glob,$h_ligne_a_titre_indicatif+$nb_mat_notnonca*$h_par_matiere, $texte,'LRBT',2,'C',true);
 
 								$texte="Total\ndes\npoints";
-								$pdf->SetFont('Arial','B',$fs_txt);
+								$pdf->SetFont('DejaVu','B',$fs_txt);
 								$pdf->drawTextBox($texte, $larg_col_note_glob, $h_ligne_a_titre_indicatif+$nb_mat_notnonca*$h_par_matiere, 'C', 'M', 1);
 
 								//$temoin_notnonca++;
@@ -617,7 +617,7 @@
 							}
 							$pdf->SetXY($marge,$y);
 				
-							$pdf->SetFont('Arial','B',$fs_txt);
+							$pdf->SetFont('DejaVu','B',$fs_txt);
 
 							// Colonne Disciplines
 							$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
@@ -637,7 +637,7 @@
 							$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',2,'L');
 							// A REVOIR: Si la taille de police descend en dessous d'une valeur à choisir, mettre sur deux lignes
 
-							$pdf->SetFont('Arial','',$fs_txt);
+							$pdf->SetFont('DejaVu','',$fs_txt);
 							//$pdf->SetFontSize($fs_txt);
 							$x=$x_col_note_mc;
 							$largeur_colonnes_moy=0;
@@ -812,7 +812,7 @@
 									}
 								}
 								else {
-									$pdf->SetFont('Arial','',$fs_txt);
+									$pdf->SetFont('DejaVu','',$fs_txt);
 									$pdf->SetXY($x_col_note_glob,$y);
 									$pdf->Cell($larg_col_note_glob,$h_par_matiere, $valeur_notanet_tmp,'LRBT',2,'C');
 
@@ -822,7 +822,7 @@
 							/*
 							elseif($temoin_notnonca==1) {
 								// LIGNES TOTAUX
-								$pdf->SetFont('Arial','',$fs_txt);
+								$pdf->SetFont('DejaVu','',$fs_txt);
 								//$pdf->SetFontSize($fs_txt);
 
 								$pdf->SetXY($x_col_note_glob,$y);
@@ -882,7 +882,7 @@
 					$y_socles=$y+$h_par_matiere;
 					//$pdf->SetXY(210-$marge-$larg_col_note_glob,$y);
 					// LIGNE TOTAUX
-					$pdf->SetFont('Arial','',$fs_txt);
+					$pdf->SetFont('DejaVu','',$fs_txt);
 					//$pdf->SetFontSize($fs_txt);
 
 					$pdf->SetXY($x_col_note_glob,$y+$h_par_matiere); // Je n'ai pas saisi pourquoi j'ai dû décaler verticalement de $h_par_matiere... à revoir
@@ -1027,14 +1027,14 @@
 				$pdf->Cell(210-2*$marge, $h_cadre_bas, "",'LRBT',2,'C');
 
 				$pdf->SetXY($marge,$y_cadre_bas);
-				$pdf->SetFont('Arial','B',$fs_txt);
+				$pdf->SetFont('DejaVu','B',$fs_txt);
 				$texte="RÉSULTATS DE L'EXAMEN";
 				$pdf->Cell(210-$larg_col_note_glob-2*$marge, $pdf->FontSize*$sc_interligne, $texte,'',1,'C');
 
 				// Tableau des résultats du brevet
 				// Ligne 1
 				$pdf->SetXY($marge+15,$pdf->GetY());
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				$texte="Français";
 				$larg_col_bb1=$pdf->GetStringWidth($texte)*$sc_interligne; // On prend le même rapport pour mettre une marge en largeur que pour l'interligne
 				$pdf->Cell($larg_col_bb1, $pdf->FontSize*$sc_interligne, $texte,'LRBT',0,'L');
@@ -1048,7 +1048,7 @@
 
 				// Ligne 2
 				$pdf->SetXY($marge+15,$pdf->GetY());
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				$texte="Maths";
 				$pdf->Cell($larg_col_bb1, $pdf->FontSize*$sc_interligne, $texte,'LRBT',0,'L');
 
@@ -1059,7 +1059,7 @@
 
 				// Ligne 3
 				$pdf->SetXY($marge+15,$pdf->GetY());
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				$texte="H.G.";
 				$pdf->Cell($larg_col_bb1, $pdf->FontSize*$sc_interligne, $texte,'LRBT',0,'L');
 
@@ -1095,12 +1095,12 @@
 				$pdf->SetXY($marge,$y_cadre_bas);
 				$pdf->Cell(210-2*$marge, $h_cadre_bas, "",'LRBT',2,'C');
 				$pdf->SetXY($marge,$y_cadre_bas);
-				$pdf->SetFont('Arial','B',$fs_txt);
+				$pdf->SetFont('DejaVu','B',$fs_txt);
 				$texte="Avis et signature du chef d'établissement";
 				$font_size=adjust_size_font($texte,$larg_intitule_avis,$fs_txt,0.3);
 				$pdf->SetFontSize($font_size);
 				$pdf->Cell($larg_intitule_avis, $pdf->FontSize*$sc_interligne, $texte,'',0,'L');
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				$x=$pdf->GetX();
 				$avis="";
 				$sql="SELECT * FROM notanet_avis WHERE login='$lig1->login';";
@@ -1132,10 +1132,10 @@
 				$pdf->Cell($larg_col_note_glob,$h_cadre_bas, "",'LRBT',0,'C');
 
 				$pdf->SetXY($x,$y_cadre_bas);
-				$pdf->SetFont('Arial','B',$fs_txt);
+				$pdf->SetFont('DejaVu','B',$fs_txt);
 				$pdf->Cell($larg_col_note_glob, $pdf->FontSize*$sc_interligne, "DÉCISION",'',1,'C');
 				$pdf->SetXY($x,$pdf->GetY());
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				$texte="Le candidat";
 				$font_size=adjust_size_font($texte,$larg_col_note,$fs_txt,0.3);
 				$pdf->SetFontSize($font_size);
@@ -1145,7 +1145,7 @@
 
 				$pdf->SetXY($x+5,$pdf->GetY());
 				$pdf->Cell(4,4, "",'LRBT',0,'C');
-				$pdf->SetFont('Arial','',$fs_txt);
+				$pdf->SetFont('DejaVu','',$fs_txt);
 				$pdf->Cell($larg_col_note_glob-9, $pdf->FontSize*$sc_interligne, " ADMIS",'',1,'C');
 
 				$pdf->SetXY($x+5,$pdf->GetY());
@@ -1155,7 +1155,7 @@
 				$pdf->SetXY($x,$pdf->GetY());
 				$texte="Le président du jury";
 				$font_size=adjust_size_font($texte,$larg_col_note_glob,$fs_txt,0.3);
-				$pdf->SetFont('Arial','I',$fs_txt);
+				$pdf->SetFont('DejaVu','I',$fs_txt);
 				$pdf->SetFontSize($font_size);
 				$pdf->Cell($larg_col_note_glob, $pdf->FontSize*$sc_interligne, $texte,'',1,'C');
 
