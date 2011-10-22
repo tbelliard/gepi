@@ -451,7 +451,7 @@ function dragStop(event) {
 
 								// PARTIE <ELEVES>
 								while($cpt<count($ligne)){
-									//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
+									//echo "<p>".htmlspecialchars($ligne[$cpt])."<br />\n";
 									if(strstr($ligne[$cpt],"<ELEVES>")){
 										echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 										$temoin_eleves++;
@@ -467,7 +467,7 @@ function dragStop(event) {
 											$eleves[$i]=array();
 											$eleves[$i]["scolarite_an_dernier"]=array();
 
-											//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 											unset($tabtmp);
 											$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
 											$eleves[$i]["eleve_id"]=trim($tabtmp[1]);
@@ -582,7 +582,7 @@ function dragStop(event) {
 									if($temoin_options==1){
 										if(strstr($ligne[$cpt],"<OPTION ")){
 
-											//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 											unset($tabtmp);
 											$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
 											$tmp_eleve_id=trim($tabtmp[1]);
@@ -661,7 +661,7 @@ function dragStop(event) {
 									if($temoin_structures==1){
 										if(strstr($ligne[$cpt],"<STRUCTURES_ELEVE ")){
 
-											//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 											unset($tabtmp);
 											$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
 											$tmp_eleve_id=trim($tabtmp[1]);
@@ -830,7 +830,7 @@ function dragStop(event) {
 								// Compteur de lignes du fichier:
 								$cpt=0;
 								while($cpt<count($ligne)){
-									//echo htmlentities($ligne[$cpt])."<br />\n";
+									//echo htmlspecialchars($ligne[$cpt])."<br />\n";
 
 									if(strstr($ligne[$cpt],"<MATIERES>")){
 										echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
@@ -846,7 +846,7 @@ function dragStop(event) {
 											$i++;
 											$matieres[$i]=array();
 
-											//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 											unset($tabtmp);
 											$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
 											$matieres[$i]["code_matiere"]=trim($tabtmp[1]);
@@ -1519,7 +1519,7 @@ function dragStop(event) {
 								// Compteur de lignes du fichier:
 								$cpt=0;
 								while($cpt<count($ligne)){
-									//echo htmlentities($ligne[$cpt])."<br />\n";
+									//echo htmlspecialchars($ligne[$cpt])."<br />\n";
 
 									if(strstr($ligne[$cpt],"<PERSONNES>")){
 										echo "Début de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
@@ -1535,7 +1535,7 @@ function dragStop(event) {
 											$i++;
 											$personnes[$i]=array();
 
-											//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 											unset($tabtmp);
 											$tabtmp=explode('"',strstr($ligne[$cpt]," PERSONNE_ID="));
 											$personnes[$i]["personne_id"]=trim($tabtmp[1]);
@@ -1568,7 +1568,7 @@ function dragStop(event) {
 								// Compteur de lignes du fichier:
 								$cpt=0;
 								while($cpt<count($ligne)){
-									//echo htmlentities($ligne[$cpt])."<br />\n";
+									//echo htmlspecialchars($ligne[$cpt])."<br />\n";
 
 									if(strstr($ligne[$cpt],"<RESPONSABLES>")){
 										echo "Début de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
@@ -1613,7 +1613,7 @@ function dragStop(event) {
 								// Compteur de lignes du fichier:
 								$cpt=0;
 								while($cpt<count($ligne)){
-									//echo htmlentities($ligne[$cpt])."<br />\n";
+									//echo htmlspecialchars($ligne[$cpt])."<br />\n";
 
 									if(strstr($ligne[$cpt],"<ADRESSES>")){
 										echo "Début de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
@@ -1629,7 +1629,7 @@ function dragStop(event) {
 											$i++;
 											$adresses[$i]=array();
 
-											//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 											unset($tabtmp);
 											$tabtmp=explode('"',strstr($ligne[$cpt]," ADRESSE_ID="));
 											$adresses[$i]["adresse_id"]=trim($tabtmp[1]);

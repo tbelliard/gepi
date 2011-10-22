@@ -121,7 +121,7 @@ echo "</p>\n";
 
 echo "<p><span class = 'grand'>Première phase d'importation des moyennes et appréciations </span>";
 //echo "<p class = 'bold'>Groupe : " . $current_group["description"] ." (" . $current_group["classlist_string"] . ")| Matière : " . $current_group["matiere"]["nom_complet"] . " | Période : $nom_periode[$periode_num]</p>";
-echo "<p class = 'bold'>Groupe : " . htmlentities($current_group["description"]) ." (" . $current_group["classlist_string"] . ")| Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . " | Période : $nom_periode[$periode_num]";
+echo "<p class = 'bold'>Groupe : " . htmlspecialchars($current_group["description"]) ." (" . $current_group["classlist_string"] . ")| Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . " | Période : $nom_periode[$periode_num]";
 echo "</p>\n";
 
 

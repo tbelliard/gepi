@@ -101,7 +101,7 @@
 				}
 				echo ">\n";
 
-				echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
+				echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
 
 				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])){
 					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
@@ -115,11 +115,11 @@
 						<p>Blabla<br>
 						Blibli</p>
 					*/
-					echo htmlentities(stripslashes(trim($ligne_commentaire->commentaire)));
+					echo htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)));
 				}
 				else{
 					//Si le commentaire ne contient pas de code HTML, on remplace les retours à la ligne par des <br>:
-					echo htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
+					echo htmlspecialchars(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
 				}
 
 				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])){

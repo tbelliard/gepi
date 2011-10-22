@@ -222,7 +222,7 @@ if(!isset($choix_edit)){
 			$rn_sign_pp=$lig_class_tmp->rn_sign_pp;
 			$rn_sign_resp=$lig_class_tmp->rn_sign_resp;
 			$rn_sign_nblig=$lig_class_tmp->rn_sign_nblig;
-			$rn_formule=htmlentities($lig_class_tmp->rn_formule);
+			$rn_formule=htmlspecialchars($lig_class_tmp->rn_formule);
 			*/
 			$avec_nom_devoir=$lig_class_tmp->rn_nomdev;
 			$avec_appreciation_devoir="";
@@ -234,7 +234,7 @@ if(!isset($choix_edit)){
 			$rn_sign_pp=$lig_class_tmp->rn_sign_pp;
 			$rn_sign_resp=$lig_class_tmp->rn_sign_resp;
 			$rn_sign_nblig=$lig_class_tmp->rn_sign_nblig;
-			$rn_formule=htmlentities($lig_class_tmp->rn_formule);
+			$rn_formule=htmlspecialchars($lig_class_tmp->rn_formule);
 
 			$chaine_coef="coef.: ";
 		}
@@ -594,7 +594,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 			$current_matiere_nom_complet_query = mysql_query("SELECT nom_complet FROM matieres WHERE matiere='$current_matiere'");
 			$current_matiere_nom_complet = mysql_result($current_matiere_nom_complet_query, 0, "nom_complet");
 
-			echo "<tr><td class='bull_simpl'><strong>".htmlentities($current_matiere_nom_complet)."</strong>";
+			echo "<tr><td class='bull_simpl'><strong>".htmlspecialchars($current_matiere_nom_complet)."</strong>";
 			$k = 0;
 			While ($k < $nombre_profs) {
 				echo "<br /><em>".affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe)."</em>";
@@ -836,7 +836,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	}
 
 	if($rn_formule!=""){
-		echo "<p>".htmlentities($rn_formule)."</p>\n";
+		echo "<p>".htmlspecialchars($rn_formule)."</p>\n";
 	}
 }
 

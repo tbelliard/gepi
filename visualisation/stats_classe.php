@@ -267,7 +267,7 @@ if (!isset($id_classe)) {
 
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-        echo "<td>" . htmlentities($current_group["description"]) . "</td>\n";
+        echo "<td>" . htmlspecialchars($current_group["description"]) . "</td>\n";
         $k = '1';
         while ($k < $nb_periode) {
             $moyenne_classe_query = mysql_query("SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$k' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");

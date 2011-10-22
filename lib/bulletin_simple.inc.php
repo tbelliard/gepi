@@ -643,7 +643,7 @@ if ($on_continue == 'yes') {
 			echo "<td ";
 			if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 			//echo" width=\"$larg_col1\" class='bull_simpl'><b>$current_matiere_nom_complet</b>";
-			echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlentities($current_matiere_nom_complet)."</b>";
+			echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlspecialchars($current_matiere_nom_complet)."</b>";
 			$k = 0;
 			//echo "(".$current_group['id'].")";
 			$liste_email_profs_du_groupe="";

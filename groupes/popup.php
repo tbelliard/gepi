@@ -137,12 +137,12 @@ if($gepi_prof_suivi==""){
 	//$enseignement=rawurldecode($_GET['enseignement']);
 
 	if(isset($id_classe)) {
-		//echo "<title>Elèves de l'enseignement ".htmlentities($enseignement)." en ".htmlentities($classe)."</title>\n";
-		echo "<title>".htmlentities($enseignement)." en ".htmlentities($classe)."</title>\n";
+		//echo "<title>Elèves de l'enseignement ".htmlspecialchars($enseignement)." en ".htmlspecialchars($classe)."</title>\n";
+		echo "<title>".htmlspecialchars($enseignement)." en ".htmlspecialchars($classe)."</title>\n";
 	}
 	else {
-		//echo "<title>Elèves de l'enseignement ".htmlentities($enseignement)."</title>\n";
-		echo "<title>".htmlentities($enseignement)."</title>\n";
+		//echo "<title>Elèves de l'enseignement ".htmlspecialchars($enseignement)."</title>\n";
+		echo "<title>".htmlspecialchars($enseignement)."</title>\n";
 	}
 ?>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -189,12 +189,12 @@ if($gepi_prof_suivi==""){
 
 	//echo "<h2>Elèves de l'enseignement $enseignement</h2>\n";
 	if(isset($id_classe)){
-		//echo "<h2>Elèves de l'enseignement ".htmlentities($enseignement)." en ".htmlentities($classe)."</h2>\n";
-		echo "<h2>".htmlentities($enseignement)." en ".htmlentities($classe)."</h2>\n";
+		//echo "<h2>Elèves de l'enseignement ".htmlspecialchars($enseignement)." en ".htmlspecialchars($classe)."</h2>\n";
+		echo "<h2>".htmlspecialchars($enseignement)." en ".htmlspecialchars($classe)."</h2>\n";
 	}
 	else{
-		//echo "<h2>Elèves de l'enseignement ".htmlentities($enseignement)."</h2>\n";
-		echo "<h2>".htmlentities($enseignement)."</h2>\n";
+		//echo "<h2>Elèves de l'enseignement ".htmlspecialchars($enseignement)."</h2>\n";
+		echo "<h2>".htmlspecialchars($enseignement)."</h2>\n";
 	}
 
 	echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='";

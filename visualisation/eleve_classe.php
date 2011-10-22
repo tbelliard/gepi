@@ -392,7 +392,7 @@ if (!isset($id_classe)) {
                 if (($note_eleve == "-") or ($moyenne_classe == "-")) {$difference = '-';} else {$difference = $note_eleve-$moyenne_classe;}
                 //echo "<tr><td><p>" . $current_group["description"] . "</p></td><td><p>$note_eleve";
 				$alt=$alt*(-1);
-                echo "<tr class='lig$alt'><td><p>" . htmlentities($current_group["description"]) . "</p></td><td><p>$note_eleve";
+                echo "<tr class='lig$alt'><td><p>" . htmlspecialchars($current_group["description"]) . "</p></td><td><p>$note_eleve";
                 echo "</p></td><td><p>$moyenne_classe</p></td><td><p>$difference</p></td></tr>";
                 (preg_match("/^[0-9\.\,]{1,}$/", $note_eleve)) ? array_push($datay1,"$note_eleve") : array_push($datay1,"0");
                 (preg_match("/^[0-9\.\,]{1,}$/", $moyenne_classe)) ? array_push($datay2,"$moyenne_classe") : array_push($datay2,"0");

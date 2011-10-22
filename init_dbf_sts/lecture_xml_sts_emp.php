@@ -142,7 +142,7 @@ function createRandomPassword() {
                         $cpt=0;
                         while($cpt<count($ligne)){
                             echo "<tr>\n";
-                            echo "<td style='color: blue;'>$cpt</td><td>".htmlentities($ligne[$cpt])."</td>\n";
+                            echo "<td style='color: blue;'>$cpt</td><td>".htmlspecialchars($ligne[$cpt])."</td>\n";
                             echo "</tr>\n";
                             $cpt++;
                         }
@@ -163,7 +163,7 @@ function createRandomPassword() {
                         $temoin_academie=0;
                         $temoin_annee=0;
                         while($cpt<count($ligne)){
-                            //echo htmlentities($ligne[$cpt])."<br />\n";
+                            //echo htmlspecialchars($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<PARAMETRES>")){
                                 echo "Début de la section PARAMETRES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_param++;
@@ -393,7 +393,7 @@ function createRandomPassword() {
                         $i=0;
                         $temoin_mat=0;
                         while($cpt<count($ligne)){
-                            //echo htmlentities($ligne[$cpt])."<br />\n";
+                            //echo htmlspecialchars($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<MATIERES>")){
                                 echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_matieres++;
@@ -506,7 +506,7 @@ function createRandomPassword() {
                         $civilites=array();
                         $i=0;
                         while($cpt<count($ligne)){
-                            //echo htmlentities($ligne[$cpt])."<br />\n";
+                            //echo htmlspecialchars($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<CIVILITES>")){
                                 echo "Début de la section CIVILITES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_civilites++;
@@ -596,7 +596,7 @@ function createRandomPassword() {
                         $i=0;
                         $temoin_prof=0;
                         while($cpt<count($ligne)){
-                            //echo htmlentities($ligne[$cpt])."<br />\n";
+                            //echo htmlspecialchars($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<INDIVIDUS>")){
                                 echo "Début de la section INDIVIDUS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_professeurs++;
@@ -1033,7 +1033,7 @@ function createRandomPassword() {
                         $i=0;
                         $temoin_mat=0;
                         while($cpt<count($ligne)){
-                            //echo htmlentities($ligne[$cpt])."<br />\n";
+                            //echo htmlspecialchars($ligne[$cpt])."<br />\n";
                             if(strstr($ligne[$cpt],"<PROGRAMMES>")){
                                 echo "Début de la section PROGRAMMES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
                                 $temoin_programmes++;

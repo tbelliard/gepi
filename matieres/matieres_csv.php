@@ -132,11 +132,11 @@ else {
 								//echo mysql_error();
 								echo "<tr class='lig$alt white_hover'><td colspan='2'><font color='red'>".mysql_error()."</font></td></tr>\n";
 							} else {
-								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".htmlentities($affiche[0])."</font></p></td><td><p>".htmlentities($affiche[1])."</p></td></tr>\n";
+								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>\n";
 							}
 						} else {
 							$nom_complet = mysql_result($verif,0,'nom_complet');
-							echo "<tr class='lig$alt white_hover'><td><p><font color='green'>".htmlentities($affiche[0])."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
+							echo "<tr class='lig$alt white_hover'><td><p><font color='green'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>\n";
 						}
 					}
 				}

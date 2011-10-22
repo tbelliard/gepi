@@ -649,7 +649,7 @@ else {
 			$tab_cpt_eleve[]=$cpt;
 	
 			$current_group=get_group($lig->id);
-			echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)"."</p>\n";
+			echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlspecialchars($lig->name)." (<i>".htmlspecialchars($lig->description)."</i>)"."</p>\n";
 			echo "<blockquote>\n";
 	
 			//$sql="SELECT * FROM eb_copies ec, eb_groupes eg WHERE id_epreuve='$id_epreuve' AND...;";

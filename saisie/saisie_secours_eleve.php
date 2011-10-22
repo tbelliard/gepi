@@ -492,8 +492,8 @@ else {
 			echo "<tr class='lig$alt'>\n";
 
 			echo "<td>\n";
-			echo htmlentities($matiere_nom_complet);
-			if($matiere_nom_complet!=$description_groupe) {echo "<br /><span style='font-size:x-small;'>".htmlentities($description_groupe)."</span>\n";}
+			echo htmlspecialchars($matiere_nom_complet);
+			if($matiere_nom_complet!=$description_groupe) {echo "<br /><span style='font-size:x-small;'>".htmlspecialchars($description_groupe)."</span>\n";}
 			echo "<input type='hidden' name='id_groupe[$cpt]' value='$id_groupe' />\n";
 			echo "</td>\n";
 

@@ -1249,7 +1249,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 					// Il peut y avoir une matière sans prof, avec une note saisie en compte secours
 					if(isset($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'])) {
 						While ($k < count($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'])) {
-							echo "<br /><i>".affiche_utilisateur(htmlentities($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'][$k]),$id_classe)."</i>";
+							echo "<br /><i>".affiche_utilisateur(htmlspecialchars($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'][$k]),$id_classe)."</i>";
 							$k++;
 						}
 					}
@@ -1742,7 +1742,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		}
 
 		if($tab_rel['rn_formule']!=""){
-			//echo "<p>".htmlentities($tab_rel['rn_formule'])."</p>\n";
+			//echo "<p>".htmlspecialchars($tab_rel['rn_formule'])."</p>\n";
 			//echo "<p>".$tab_rel['rn_formule']."</p>\n";
 
 			echo "<table width='$releve_largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."' summary='Formule du bas de relevé de notes'>\n";

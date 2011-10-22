@@ -693,9 +693,9 @@ $tab_liste_infobulles=array();
 for($i=0;$i<count($groups);$i++){
 
 	echo "<tr valign='top'>\n";
-	echo "<td>".htmlentities($groups[$i]['description'])."</td>\n";
+	echo "<td>".htmlspecialchars($groups[$i]['description'])."</td>\n";
 
-	//echo "<td>".htmlentities($groups[$i]['classlist_string'])."</td>\n";
+	//echo "<td>".htmlspecialchars($groups[$i]['classlist_string'])."</td>\n";
 	echo "<td>\n";
 	$cpt=0;
 	$liste_classes_du_groupe="";
@@ -717,8 +717,8 @@ for($i=0;$i<count($groups);$i++){
 		$liste_classes_du_groupe.=" ".$classe['classe'];
 
 		if($pref_accueil_infobulles=="y"){
-			//echo "<div id='info_popup_".$i."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\">Cet outil vous permet de visualiser la composition du groupe ".htmlentities($groups[$i]['description'])."(<i>".$classe['classe']."</i>).</div>\n";
-			echo "<div id='info_popup_".$i."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\">Liste des élèves de ".htmlentities($groups[$i]['description'])." (<i>".preg_replace("/ /","&nbsp;",$classe['classe'])."</i>).</div>\n";
+			//echo "<div id='info_popup_".$i."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\">Cet outil vous permet de visualiser la composition du groupe ".htmlspecialchars($groups[$i]['description'])."(<i>".$classe['classe']."</i>).</div>\n";
+			echo "<div id='info_popup_".$i."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\">Liste des élèves de ".htmlspecialchars($groups[$i]['description'])." (<i>".preg_replace("/ /","&nbsp;",$classe['classe'])."</i>).</div>\n";
 
 			$tab_liste_infobulles[]='info_popup_'.$i.'_'.$cpt;
 		}
@@ -763,8 +763,8 @@ for($i=0;$i<count($groups);$i++){
 		echo "</a>";
 
 		if($pref_accueil_infobulles=="y"){
-			//echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_ct_$i');\">Cet outil vous permet de constituer un cahier de textes pour le groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>).</div>\n";
-			echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_ct_$i');\">Cahier de textes de ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
+			//echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_ct_$i');\">Cet outil vous permet de constituer un cahier de textes pour le groupe ".htmlspecialchars($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>).</div>\n";
+			echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_ct_$i');\">Cahier de textes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
 
 			$tab_liste_infobulles[]='info_ct_'.$i;
 		}
@@ -804,8 +804,8 @@ for($i=0;$i<count($groups);$i++){
 
 
 		if($pref_accueil_infobulles=="y"){
-			//echo "<div id='info_trombino_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_trombino_$i');\">Cet outil vous permet de visualiser le trombinoscope du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>).</div>\n";
-			echo "<div id='info_trombino_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_trombino_$i');\">Trombinoscope de ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
+			//echo "<div id='info_trombino_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_trombino_$i');\">Cet outil vous permet de visualiser le trombinoscope du groupe ".htmlspecialchars($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>).</div>\n";
+			echo "<div id='info_trombino_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_trombino_$i');\">Trombinoscope de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
 
 			$tab_liste_infobulles[]='info_trombino_'.$i;
 		}
@@ -867,8 +867,8 @@ for($i=0;$i<count($groups);$i++){
 							echo "</a>";
 		
 							if($pref_accueil_infobulles=="y"){
-								//echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Cet outil vous permet de constituer un carnet de notes pour saisir les notes de toutes vos évaluations du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-								echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Carnet de notes de ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+								//echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Cet outil vous permet de constituer un carnet de notes pour saisir les notes de toutes vos évaluations du groupe ".htmlspecialchars($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+								echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Carnet de notes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
 		
 								$tab_liste_infobulles[]='info_cn_'.$i.'_'.$j;
 							}
@@ -936,8 +936,8 @@ for($i=0;$i<count($groups);$i++){
 							echo "</span>";
 		
 							if($pref_accueil_infobulles=="y"){
-								//echo "<div id='info_bn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\">Cet outil permet de saisir les moyennes du bulletin du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-								echo "<div id='info_bn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 15em;' onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\">Saisie des moyennes ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+								//echo "<div id='info_bn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\">Cet outil permet de saisir les moyennes du bulletin du groupe ".htmlspecialchars($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+								echo "<div id='info_bn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 15em;' onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\">Saisie des moyennes ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
 		
 								$tab_liste_infobulles[]='info_bn_'.$i.'_'.$j;
 							}
@@ -991,8 +991,8 @@ for($i=0;$i<count($groups);$i++){
 		
 		
 							if($pref_accueil_infobulles=="y"){
-								//echo "<div id='info_ba_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\">Cet outil permet de saisir les appréciations du bulletin du groupe ".htmlentities($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-								echo "<div id='info_ba_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 15em;' onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\">Saisie des appréciations ".htmlentities($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+								//echo "<div id='info_ba_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\">Cet outil permet de saisir les appréciations du bulletin du groupe ".htmlspecialchars($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>) pour la période ".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+								echo "<div id='info_ba_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 15em;' onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\">Saisie des appréciations ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
 		
 								$tab_liste_infobulles[]='info_ba_'.$i.'_'.$j;
 							}

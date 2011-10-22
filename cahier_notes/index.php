@@ -586,7 +586,7 @@ var tab_per_cn=new Array();\n";
 
         echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
         if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
-        echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
+        echo " ".htmlspecialchars(strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
 
         echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a> | \n";
         if ($periode_num!='1')  {
@@ -606,8 +606,8 @@ var tab_per_cn=new Array();\n";
 	echo "</form>\n";
 	echo "</div>\n";
 
-    echo "<h2 class='gepi'>Carnet de notes : ". htmlentities($current_group["description"]) . " ($nom_periode[$periode_num])</h2>\n";
-    echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . "(" . htmlentities($current_group["matiere"]["matiere"]) . ")";
+    echo "<h2 class='gepi'>Carnet de notes : ". htmlspecialchars($current_group["description"]) . " ($nom_periode[$periode_num])</h2>\n";
+    echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "(" . htmlspecialchars($current_group["matiere"]["matiere"]) . ")";
     // On teste si le carnet de notes est partagé ou non avec d'autres utilisateurs
     $login_prof = $_SESSION['login'];
     if (count($current_group["profs"]["list"]) > 1) {
@@ -735,7 +735,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
     echo "<p class=bold>";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
     echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a>|</p>\n";
-    echo "<p class='bold'>Enseignement : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
+    echo "<p class='bold'>Enseignement : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
     echo "<H3>Visualisation/modification - Choisissez la période : </H3>\n";
     $i="1";
@@ -772,7 +772,7 @@ if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset(
     foreach($groups as $group) {
 		if((!isset($group["visibilite"]["cahier_notes"]))||($group["visibilite"]["cahier_notes"]=='y')) {
 			echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-			echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
+			echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlspecialchars($group["description"]) . "</a>";
 			echo "</span></p>\n";
 		}
     }

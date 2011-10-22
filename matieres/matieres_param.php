@@ -253,7 +253,7 @@ while ($i < $nb_matieres){
 		$alt=$alt*(-1);
         echo "<tr class='lig$alt white_hover'><td>$current_matiere</td>\n";
         //echo "<td>$current_matiere_nom</td>\n";
-        echo "<td>".htmlentities($current_matiere_nom)."</td>\n";
+        echo "<td>".htmlspecialchars($current_matiere_nom)."</td>\n";
         echo "<td>\n";
         echo "<select size=1 name=".$current_matiere."_priorite>\n";
         $k = '0';

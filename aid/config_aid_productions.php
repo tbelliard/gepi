@@ -116,7 +116,7 @@ while ($i < $nb_lignes) {
     $nom = mysql_result($res,$i,"nom");
     echo "<tr class='lig$alt'>";
     echo "<td>".$id."</td>\n";
-    echo "<td><input type=\"text\" name=\"".$id."\" value =\"".htmlentities($nom)."\" size=\"40\" /></td>\n";
+    echo "<td><input type=\"text\" name=\"".$id."\" value =\"".htmlspecialchars($nom)."\" size=\"40\" /></td>\n";
     echo "</tr>\n";
     $alt=$alt*(-1);
     $i++;

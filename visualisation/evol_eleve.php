@@ -329,7 +329,7 @@ if (!$id_classe) {
             }
 
 			$alt=$alt*(-1);
-            echo "<tr class='lig$alt'><td><p>" . htmlentities($current_group["description"]) . "</p></td>\n";
+            echo "<tr class='lig$alt'><td><p>" . htmlspecialchars($current_group["description"]) . "</p></td>\n";
             $k="1";
             while ($k < $nb_periode) {
                 $note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$v_eleve' AND periode='$k' AND id_groupe='" . $current_group["id"] . "')");

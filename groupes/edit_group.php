@@ -526,7 +526,7 @@ for ($i=0;$i<$nb_mat;$i++) {
 	echo "<option value='" . $matiere . "'";
 	if ($reg_matiere == $matiere) echo " SELECTED";
 	//echo ">" . $nom_matiere . "</option>\n";
-	echo ">" . htmlentities($nom_matiere) . "</option>\n";
+	echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
 }
 echo "</select>\n";
 //echo "</p>\n";
@@ -552,7 +552,7 @@ for ($i=0;$i<$nb_mat;$i++) {
 	if ($reg_matiere == $matiere) echo " SELECTED";
 	echo ">" . $nom_matiere . "</option>\n";
 	//echo ">" . html_entity_decode($nom_matiere) . "</option>\n";
-	//echo ">" . htmlentities($nom_matiere) . "</option>\n";
+	//echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
 }
 echo "</select>\n";
 echo "</p>\n";

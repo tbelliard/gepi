@@ -917,7 +917,7 @@ if (empty($groups)) {
 	echo "<ul>\n";
 	foreach($groups as $group) {
 		echo "<li><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-		echo "" . htmlentities($group["description"]);
+		echo "" . htmlspecialchars($group["description"]);
 		echo "</span>";
 		echo "</li>\n";
 	}
@@ -978,7 +978,7 @@ if ($editable_user) {
 	echo "<hr /><a name=\"changemdp\"></a><H2>Changement du mot de passe</H2>\n";
 	echo "<p><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd") ." caractères minimum. ";
 	if ($flag == 1)
-		echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".htmlentities($char_spec);
+		echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".htmlspecialchars($char_spec);
 	else
 		echo "Il doit comporter au moins une lettre et au moins un chiffre.";
 

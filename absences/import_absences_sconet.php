@@ -383,7 +383,7 @@ function get_nom_class_from_id($id){
 									$temoin_parametres=0;
 									$tab_parametres=array();
 									while($cpt<count($ligne)){
-										//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
+										//echo "<p>".htmlspecialchars($ligne[$cpt])."<br />\n";
 										if(strstr($ligne[$cpt],"<PARAMETRES>")){
 											//echo "Début de la section PARAMETRES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 											$temoin_parametres++;
@@ -423,7 +423,7 @@ function get_nom_class_from_id($id){
 									$temoin_periode=0;
 									$tab_periode=array();
 									while($cpt<count($ligne)){
-										//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
+										//echo "<p>".htmlspecialchars($ligne[$cpt])."<br />\n";
 										if(strstr($ligne[$cpt],"<PERIODE>")){
 											//echo "Début de la section PERIODE à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 											$temoin_periode++;

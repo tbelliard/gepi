@@ -141,7 +141,7 @@ require_once("../lib/header.inc");
 <p class='bold'><a href="index.php?id_racine=<?php echo $id_racine;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a></p>
 <?php
 
-$titre=htmlentities($current_group['description'])." (".$nom_periode.")";
+$titre=htmlspecialchars($current_group['description'])." (".$nom_periode.")";
 $titre .= " - IMPORT";
 
 echo "<center><h3 class='gepi'>Import de devoirs dans le cahier de notes</h3></center>\n";

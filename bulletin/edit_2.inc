@@ -263,7 +263,7 @@
                     echo "<tr>\n";
                     if ($cn == 0) {
                         //echo "<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".$col_matiere_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><b>".$current_matiere_nom_complet[$j]."</b>";
-                        echo "<td style=\"height: ".$col_hauteur."px; width: ".$col_matiere_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><b>".htmlentities($current_matiere_nom_complet[$j])."</b>";
+                        echo "<td style=\"height: ".$col_hauteur."px; width: ".$col_matiere_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><b>".htmlspecialchars($current_matiere_nom_complet[$j])."</b>";
                         $k = 0;
                         foreach($current_group[$j]["profs"]["list"] as $current_prof_login) {
                             echo "<br /><i>".affiche_utilisateur($current_prof_login,$id_classe)."</i>";
@@ -352,7 +352,7 @@
                         if ($nb_ligne_cn == 0){
                             echo "<td colspan=\"2\" >";
                         } else {
-                            // Il faudrait peut-être ci-dessous un htmlentities() sur $cn_nom[$cn]
+                            // Il faudrait peut-être ci-dessous un htmlspecialchars() sur $cn_nom[$cn]
                             echo "<td style=\"width: ".$col_boite_largeur."px;\">
                             <span class='bulletin'>".$cn_nom[$cn]."&nbsp;:&nbsp;".$cn_note[$cn]."</span></td>\n";
                             if ($cn == 0){echo "<td rowspan=\"".$nb_ligne_cn."\">";}

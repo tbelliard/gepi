@@ -406,7 +406,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 		echo "<td ";
 		if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 		//echo" width=\"$larg_col1\" class='bull_simpl'><b>$current_matiere_nom_complet</b>";
-		echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlentities($current_matiere_nom_complet)."</b>";
+		echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlspecialchars($current_matiere_nom_complet)."</b>";
 		$k = 0;
 		while ($k < count($current_matiere_professeur_login)) {
 			echo "<br /><i>".affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe)."</i>";

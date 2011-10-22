@@ -803,8 +803,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
 
 	if ( $action_affiche === 'classe' ) {
-		//echo "Classe : ".htmlentities($donnees_qui['nom_complet']);
-		//echo ' ('.htmlentities(ucwords($donnees_qui['classe'])).')';
+		//echo "Classe : ".htmlspecialchars($donnees_qui['nom_complet']);
+		//echo ' ('.htmlspecialchars(ucwords($donnees_qui['classe'])).')';
 		echo "Classe : ".$donnees_qui['nom_complet'];
 		echo ' ('.ucwords($donnees_qui['classe']).')';
 
@@ -820,7 +820,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 
 	if ( $action_affiche === 'groupe' ) {
 		$current_group=get_group($groupe);
-		echo "Groupe : ".htmlentities($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
+		echo "Groupe : ".htmlspecialchars($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
 
 		$repertoire = 'eleves';
 
@@ -848,8 +848,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 		}
 		//echo "$requete_trombi<br />";
 	}
-	//if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlentities($donnees_qui['nom_complet']); }
-	//if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlentities($donnees_qui['nom_complet'])." (".htmlentities($donnees_qui['matiere']).")"; }
+	//if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlspecialchars($donnees_qui['nom_complet']); }
+	//if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlspecialchars($donnees_qui['nom_complet'])." (".htmlspecialchars($donnees_qui['matiere']).")"; }
 
 	if ( $action_affiche === 'equipepeda' ) {
 		echo "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)";
@@ -931,7 +931,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					AND jgp.login = "'.$prof.'"';
 			$execution_matiere = mysql_query($requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.mysql_error());
 			while ($donnee_matiere = mysql_fetch_array($execution_matiere)) {
-				$prof_de = $prof_de.'<br />'.htmlentities($donnee_matiere['nom_complet']).' ';
+				$prof_de = $prof_de.'<br />'.htmlspecialchars($donnee_matiere['nom_complet']).' ';
 			}
 		}
 		return ($prof_de);

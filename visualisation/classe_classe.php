@@ -234,7 +234,7 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
             }
 
 
-            echo "<tr><td>" . htmlentities($current_group["matiere"]["nom_complet"]) . "</td>\n";
+            echo "<tr><td>" . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "</td>\n";
             $k = '1';
             while ($k < $nb_periode) {
                 $moyenne_classe_query = mysql_query("SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$k' AND id_groupe='" . $current_group["id"] . "' AND statut = '')");

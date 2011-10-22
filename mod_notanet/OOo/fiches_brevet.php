@@ -797,7 +797,7 @@ for($i=0;$i<count($id_classe);$i++){
 				$lig_avis=mysql_fetch_object($res_avis);
 				if($lig_avis->favorable=="O") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis favorable";}
 				elseif($lig_avis->favorable=="N") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis défavorable";}
-				//$tab_eleves_OOo[$nb_eleve]['appreciation']= htmlentities($lig_avis->avis);
+				//$tab_eleves_OOo[$nb_eleve]['appreciation']= htmlspecialchars($lig_avis->avis);
 				$tab_eleves_OOo[$nb_eleve]['appreciation']= $lig_avis->avis;
 				$tab_eleves_OOo[$nb_eleve]['avis']=$lig_avis->favorable;
 			}

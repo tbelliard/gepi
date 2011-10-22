@@ -407,13 +407,13 @@
 								else {
 									$alt=$alt*(-1);
 									echo "<tr class='lig$alt'>\n";
-									echo "<td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($matiere[$i]['libelle_court'])."</p></td></tr>\n";
+									echo "<td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlspecialchars($matiere[$i]['libelle_court'])."</p></td></tr>\n";
 								}
 							} else {
 								$nom_complet = mysql_result($verif,0,'nom_complet');
 								$alt=$alt*(-1);
 								echo "<tr class='lig$alt'>\n";
-								echo "<td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
+								echo "<td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>\n";
 							}
 
 							$i++;

@@ -301,7 +301,7 @@ $query=mysql_query($sql);
 while($lig_group=mysql_fetch_object($query)) {
 	$current_group=get_group($lig_group->id);
 
-	echo "<p>Liste des élèves en ".htmlentities($current_group["name"])." - ".htmlentities($current_group["description"])." (<i>".$current_group["classlist_string"]."</i>)<br />\n";
+	echo "<p>Liste des élèves en ".htmlspecialchars($current_group["name"])." - ".htmlspecialchars($current_group["description"])." (<i>".$current_group["classlist_string"]."</i>)<br />\n";
 	/*
 	echo "<pre>";
 	print_r($current_group);

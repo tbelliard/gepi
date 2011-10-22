@@ -454,7 +454,7 @@ else{
 				echo "<tr class='lig$alt'>\n";
 				//echo "<td>".$current_group["classlist_string"]."</td>\n";
 				echo "<td>".$tmp_classe[0]."</td>\n";
-				echo "<td>".htmlentities($current_group['description'])."</td>\n";
+				echo "<td>".htmlspecialchars($current_group['description'])."</td>\n";
 
 				/*
 				$sql="SELECT login FROM j_groupes_classes jgc,j_eleves_classes jec WHERE

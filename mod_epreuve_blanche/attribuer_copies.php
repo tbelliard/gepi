@@ -227,7 +227,7 @@ if($tri=='groupe') {
 	
 		$current_group=get_group($lig->id);
 
-		echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>) (<i>";
+		echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlspecialchars($lig->name)." (<i>".htmlspecialchars($lig->description)."</i>) (<i>";
 		for($k=0;$k<count($current_group["profs"]["list"]);$k++) {
 			if($k>0) {echo ", ";}
 			echo get_denomination_prof($current_group["profs"]["list"][$k]);

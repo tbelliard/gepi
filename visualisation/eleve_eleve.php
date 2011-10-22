@@ -329,7 +329,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 					}
 
 					//echo "<tr><td><p>" . $current_group["matiere"]["nom_complet"] . "</p></td><td><p>";
-					echo "<tr><td><p>" . htmlentities($current_group["matiere"]["nom_complet"]) . "</p></td><td><p>";
+					echo "<tr><td><p>" . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "</p></td><td><p>";
 					echo "$note_eleve1";
 					echo "</p></td><td><p>";
 					echo "$note_eleve2";

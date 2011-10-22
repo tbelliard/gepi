@@ -219,7 +219,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		// On est dans la boucle 'groupes'. On traite les groupes un par un.
 
         // Matière correspondant au groupe:
-        echo "<tr valign='top'><td>".htmlentities($groupe->nom_complet)."</td>\n";
+        echo "<tr valign='top'><td>".htmlspecialchars($groupe->nom_complet)."</td>\n";
 
         // Professeurs
         echo "<td>";
