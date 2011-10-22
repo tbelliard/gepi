@@ -75,7 +75,7 @@ if (isset($_POST['action'])) {
         }
 
         if (!$error) {
-            $res = mysql_query("INSERT INTO matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . htmlentities($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "'");
+            $res = mysql_query("INSERT INTO matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "'");
         }
         if (!$res) {
             $msg .= "Erreur lors de l'enregistrement de la nouvelle catégorie.</br>";
@@ -108,7 +108,7 @@ if (isset($_POST['action'])) {
 
         if (!$error) {
             // On enregistre
-            $res = mysql_query("UPDATE matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . htmlentities($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "' WHERE id = '".$_POST['categorie_id']."'");
+            $res = mysql_query("UPDATE matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "' WHERE id = '".$_POST['categorie_id']."'");
         }
 
         if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";

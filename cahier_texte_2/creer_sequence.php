@@ -73,7 +73,7 @@ if ($enregistrer == "Enregistrer"){
 
   // On pense à vérifier quelques trucs comme les entités html
   $sequence = new CahierTexteSequence();
-  $sequence->setTitre(htmlentities($titresequence));
+  $sequence->setTitre($titresequence);
   $sequence->setDescription($descsequence);
   $sequence->save();
 
