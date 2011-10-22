@@ -737,7 +737,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro2">');
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>GEPI_LOGIN_ELEVE</text:p></table:table-cell>');
 
-		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_nom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_prenom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_classe[$i]).'</text:p></table:table-cell>');
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_nom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_prenom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_classe[$i].'</text:p></table:table-cell>');
 
 		// OpenOffice recalcule les valeurs lors de l'ouverture du document...
 		$valeur_defaut=0;

@@ -1373,46 +1373,6 @@ function ensure_utf_8($str) {
 }
 
 /**
- * Encode une chaine en utf8
- * 
- * @param string $chaine La chaine à tester
- * @return string La chaine traitée
- * @todo supprimer cette méthode
- */
-function caract_ooo($chaine){
-		$retour=utf8_encode($chaine);
-	if(function_exists('utf8_encode')){
-	}
-	else{
-		$caract_accent=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
-		$caract_utf8=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
-
-		$retour=$chaine;
-		for($i=0;$i<count($caract_accent);$i++){
-			$retour=str_replace($caract_accent[$i],$caract_utf8[$i],$retour);
-		}
-	}
-
-	$caract_special=array("&",
-							'"',
-							"'",
-							"<",
-							">");
-
-	$caract_sp_encode=array("&amp;",
-							"&quot;",
-							"&apos;",
-							"&lt;",
-							"&gt;");
-
-	for($i=0;$i<count($caract_special);$i++){
-		$retour=str_replace($caract_special[$i],$caract_sp_encode[$i],$retour);
-	}
-
-	return $retour;
-}
-
-/**
  * Correspondances de caractères accentués/désaccentués
  * 
  * @global string $GLOBALS['liste_caracteres_accentues']
