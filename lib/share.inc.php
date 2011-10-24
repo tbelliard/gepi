@@ -1641,6 +1641,47 @@ function get_enfants_from_resp_login($resp_login,$mode='simple'){
 }
 
 /**
+ * Renvoie les élèves liés à un responsable
+ *
+ * @param string $pers_id identifiant sconet du responsable
+ * @param string $mode Si avec_classe renvoie aussi la classe
+ * @return array 
+ * @see get_class_from_ele_login()
+ */
+function get_enfants_from_pers_id($pers_id,$mode='simple'){
+	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.pers_id='$pers_id' AND
+											(r.resp_legal='1' OR r.resp_legal='2')
+										ORDER BY e.nom,e.prenom;";
+	$res_ele=mysql_query($sql);
+
+	$tab_ele=array();
+	if(mysql_num_rows($res_ele)>0){
+		while($lig_tmp=mysql_fetch_object($res_ele)){
+			$tab_ele[]=$lig_tmp->login;
+			if($mode=='avec_classe') {
+				$tmp_chaine_classes="";
+
+				$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+				if(isset($tmp_tab_clas['liste'])) {
+					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+				}
+
+				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+			}
+			else {
+				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+			}
+		}
+	}
+	return $tab_ele;
+}
+
+/**
  * Renvoie le statut avec des accents
  *
  * @param string $user_statut Statut à corriger

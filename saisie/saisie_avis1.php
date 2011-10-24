@@ -45,6 +45,8 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 
 include "../lib/periodes.inc.php";
 
+$msg="";
+
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
 if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
@@ -52,6 +54,21 @@ if($gepi_denom_mention=="") {
 
 if (isset($_POST['is_posted'])) {
 	check_token();
+
+
+	if(isset($_POST['enregistrer_ajout_a_textarea_vide'])) {
+		if (isset($NON_PROTECT["ajout_a_textarea_vide"])) {
+			$ajout_a_textarea_vide=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["ajout_a_textarea_vide"]));
+			$ajout_a_textarea_vide=preg_replace('/(\\\r\\\n){3,}+/',"\r\n",$ajout_a_textarea_vide);
+			$ajout_a_textarea_vide=preg_replace('/(\\\r)+/',"\r",$ajout_a_textarea_vide);
+			$ajout_a_textarea_vide=preg_replace('/(\\\n)+/',"\n",$ajout_a_textarea_vide);
+
+			if(!saveSetting('default_mass_appreciation', $ajout_a_textarea_vide)) {
+				$msg.="Erreur lors de l'enregistrement de 'default_mass_appreciation'<br />\n";
+			}
+		}
+	}
+
 
 	// Synthèse
 	$i = '1';
@@ -402,9 +419,14 @@ if ($insert_mass_appreciation_type=="y") {
 		}
 
 		echo "<div style='margin:1em; padding:0.2em; width:40em; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
-		echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
-		echo "<textarea name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' cols='50'>$default_mass_appreciation</textarea><br />\n";
-		echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
+		echo "Insérer l'avis-type suivante pour tous les avis vides&nbsp;: ";
+		echo "<textarea name='no_anti_inject_ajout_a_textarea_vide' id='ajout_a_textarea_vide' cols='50'>$default_mass_appreciation</textarea><br />\n";
+
+		echo "<input type='checkbox' name='enregistrer_ajout_a_textarea_vide' id='enregistrer_ajout_a_textarea_vide' value='y' /><label for='enregistrer_ajout_a_textarea_vide'>Enregistrer cet avis-type comme avis-type par défaut</label><br />\n";
+
+		echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide(); changement()' /><br />\n";
+
+		echo "<input type='button' name='button_vider_tous_les_avis' value='Vider tous les avis' onclick='vider_tous_les_avis(); changement()' /><br />\n";
 		echo "</div>\n";
 
 		echo "<script type='text/javascript'>
@@ -412,9 +434,21 @@ if ($insert_mass_appreciation_type=="y") {
 		champs_textarea=document.getElementsByTagName('textarea');
 		//alert('champs_textarea.length='+champs_textarea.length);
 		for(i=0;i<champs_textarea.length;i++){
-			if(champs_textarea[i].name!='ajouter_a_textarea_vide') {
+			if(champs_textarea[i].name!='no_anti_inject_ajout_a_textarea_vide') {
 				if(champs_textarea[i].value=='') {
 					champs_textarea[i].value=document.getElementById('ajout_a_textarea_vide').value;
+				}
+			}
+		}
+	}
+
+	function vider_tous_les_avis() {
+		var is_confirmed = confirm('ATTENTION : Vous avez demandé à vider tous les avis saisis pour cette classe ! Etes-vous sûr de vouloir vider ces avis ?');
+		if(is_confirmed){
+			champs_textarea=document.getElementsByTagName('textarea');
+			for(i=0;i<champs_textarea.length;i++){
+				if(champs_textarea[i].name!='no_anti_inject_ajout_a_textarea_vide') {
+					champs_textarea[i].value='';
 				}
 			}
 		}
