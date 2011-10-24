@@ -784,7 +784,14 @@ if(count($total_eleves)>0) {
 			echo "</th>\n";
 		}
 	}
-	echo "<th>&nbsp;</th>\n";
+	echo "<th>";
+	if((isset($tab_sig))&&(count($tab_sig)>0)) {
+		echo "<span id='prise_en_compte_signalement_toutes_periodes'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement('prise_en_compte_signalement_toutes_periodes');changement();\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
+	}
+	else {
+		echo "&nbsp;";
+	}
+	echo "</th>\n";
 	echo "<th>&nbsp;</th>\n";
 	echo "</tr>\n";
 
@@ -871,19 +878,41 @@ if(count($total_eleves)>0) {
 	if((isset($tab_sig))&&(count($tab_sig)>0)) {
 		echo "
 	function prise_en_compte_signalement(num_periode) {
-		for(j=0;j<$nb_eleves;j++) {
-			if(document.getElementById('img_erreur_affect_'+num_periode+'_'+j)) {
-				if(document.getElementById('case_'+num_periode+'_'+j)) {
-					if(document.getElementById('case_'+num_periode+'_'+j).checked) {
-						document.getElementById('case_'+num_periode+'_'+j).checked=false;
+		if(num_periode=='prise_en_compte_signalement_toutes_periodes') {
+			for(num_periode=0;num_periode<=".count($current_group["periodes"]).";num_periode++) {
+				for(j=0;j<$nb_eleves;j++) {
+					if(document.getElementById('img_erreur_affect_'+num_periode+'_'+j)) {
+						if(document.getElementById('case_'+num_periode+'_'+j)) {
+							if(document.getElementById('case_'+num_periode+'_'+j).checked) {
+								document.getElementById('case_'+num_periode+'_'+j).checked=false;
+							}
+							else {
+								document.getElementById('case_'+num_periode+'_'+j).checked=true;
+							}
+						}
 					}
-					else {
-						document.getElementById('case_'+num_periode+'_'+j).checked=true;
+				}
+				if(document.getElementById('prise_en_compte_signalement_'+num_periode)) {
+					document.getElementById('prise_en_compte_signalement_'+num_periode).style.display='none';
+				}
+				document.getElementById('prise_en_compte_signalement_toutes_periodes').style.display='none';
+			}
+		}
+		else {
+			for(j=0;j<$nb_eleves;j++) {
+				if(document.getElementById('img_erreur_affect_'+num_periode+'_'+j)) {
+					if(document.getElementById('case_'+num_periode+'_'+j)) {
+						if(document.getElementById('case_'+num_periode+'_'+j).checked) {
+							document.getElementById('case_'+num_periode+'_'+j).checked=false;
+						}
+						else {
+							document.getElementById('case_'+num_periode+'_'+j).checked=true;
+						}
 					}
 				}
 			}
+			document.getElementById('prise_en_compte_signalement_'+num_periode).style.display='none';
 		}
-		document.getElementById('prise_en_compte_signalement_'+num_periode).style.display='none';
 	}
 ";
 	}

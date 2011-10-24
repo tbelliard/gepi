@@ -52,6 +52,14 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 			$html_balise .=("\">");
 			$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 			$html_balise .=(" ");
+
+			$html_balise .=("<a href=\"#\" onclick=\"javascript:
+									if(document.getElementById('id_ct_a_importer')) {document.getElementById('id_ct_a_importer').value='devoir_".$devoir->getIdCt()."'};
+									if(document.getElementById('affichage_import_notice')) {document.getElementById('affichage_import_notice').style.display=''}
+									return false;
+								\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16.png\" alt=\"Copier vers la notice courante\" title=\"Copier vers la notice courante\" /></a>\n");
+			$html_balise .=(" ");
+
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 									suppressionDevoir('".strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$devoir->getIdGroupe()."','".add_token_in_js_func()."');
 									new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
@@ -101,6 +109,14 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 				$html_balise .=("\">");
 				$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 				$html_balise .=(" ");
+
+				$html_balise .=("<a href=\"#\" onclick=\"javascript:
+										if(document.getElementById('id_ct_a_importer')) {document.getElementById('id_ct_a_importer').value='notice_privee_".$notice_privee->getIdCt()."'};
+										if(document.getElementById('affichage_import_notice')) {document.getElementById('affichage_import_notice').style.display=''}
+										return false;
+									\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16.png\" alt=\"Copier vers la notice courante\" title=\"Copier vers la notice courante\" /></a>\n");
+				$html_balise .=(" ");
+
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
 										suppressionNoticePrivee('".strftime("%A %d %B %Y", $notice_privee->getDateCt())."','".$notice_privee->getIdCt()."', '".$notice_privee->getIdGroupe()."','".add_token_in_js_func()."');
 										new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
@@ -142,8 +158,15 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 								");
 				$html_balise .=("\">");
 				$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
-	
 				$html_balise .=(" ");
+
+				$html_balise .=("<a href=\"#\" onclick=\"javascript:
+										if(document.getElementById('id_ct_a_importer')) {document.getElementById('id_ct_a_importer').value='compte_rendu_".$compte_rendu->getIdCt()."'};
+										if(document.getElementById('affichage_import_notice')) {document.getElementById('affichage_import_notice').style.display=''}
+										return false;
+									\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16.png\" alt=\"Copier vers la notice courante\" title=\"Copier vers la notice courante\" /></a>\n");
+				$html_balise .=(" ");
+
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								suppressionCompteRendu('".strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().",'".add_token_in_js_func()."');
 								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});

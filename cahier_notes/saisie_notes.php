@@ -317,6 +317,15 @@ if (isset($_POST['appreciations'])) {
 if (isset($_POST['is_posted'])) {
 	check_token();
 
+	$tab_precision=array('s1', 's5', 'se', 'p1', 'p5', 'pe');
+	$cn_precision=isset($_POST['cn_precision']) ? $_POST['cn_precision'] : "";
+	if(in_array($cn_precision, $tab_precision)) {
+		savePref($_SESSION['login'],'cn_precision',$cn_precision);
+	}
+	else {
+		unset($cn_precision);
+	}
+
 	$log_eleve=$_POST['log_eleve'];
 	$note_eleve=$_POST['note_eleve'];
 	if($mode_commentaire_20080422!="no_anti_inject") {
@@ -1009,7 +1018,6 @@ foreach ($liste_eleves as $eleve) {
 				else {
 					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 class='wrap' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
 				}
-				
 			}
 			else{
 				$mess_comment[$i][$k] .= $eleve_comment."</td>\n";
@@ -1124,7 +1132,11 @@ echo "</tr>\n";
 
 // Deuxième ligne
 echo "<tr>\n";
-echo "<td class=cn valign='top'>&nbsp;</td>\n";
+echo "<td class=cn valign='top'>";
+//echo "&nbsp;";
+echo "<p id='p_ramener_sur_N' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a></p>";
+echo "<input type='hidden' name='cn_precision' id='cn_precision' value='' />\n";
+echo "</td>\n";
 $header_pdf[] = "Evaluation :";
 if ($multiclasses) {$header_pdf[] = "";}
 $w_pdf[] = $w1;
@@ -1971,6 +1983,178 @@ if ($id_devoir) {
 	$titre_infobulle="Notes triées";
 	$texte_infobulle="<div id='notes_triees'></div>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_tri',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+
+	//=====================================================
+	// Ramener une note sur 20 (ou autre)
+	$cn_precision=getPref($_SESSION['login'], 'cn_precision', 's5');
+
+	$titre_infobulle="Ramener sur N";
+	$texte_infobulle="<p>Vous avez des notes sur 37 ou un autre nombre pas très parlant pour les élèves et les parents et vous souhaitez le ramener sur 20 (<em>ou autre</em>) pour plus d'accessibilité dans le carnet de notes.</p>
+<div align='center'>
+<table class='boireaus'>
+<tr class='lig1'><td>Total du barême&nbsp;</td><td><input type='text' name='total_bareme' id='total_bareme' value='30' size='3' onkeydown='clavier_2(this.id,event,1,100);' autocomplete='off' /></td><td></td></tr>
+<tr class='lig-1'><td>Ramener sur&nbsp;</td><td><input type='text' name='ramener_sur_N' id='ramener_sur_N' value='20' size='3' onkeydown='clavier_2(this.id,event,1,100);' autocomplete='off' /></td><td></td></tr>
+<tr class='lig1'><td rowspan='6'>Arrondir&nbsp;</td><td><input type='radio' name='precision' id='precision_s1' value='s1' ";
+	if($cn_precision=='s1') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_s1' style='cursor: pointer;'>au dixième de point supérieur</label></td></tr>
+<tr class='lig-1'><td><input type='radio' name='precision' id='precision_s5' value='s5' ";
+	if($cn_precision=='s5') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_s5' style='cursor: pointer;'>au demi-point supérieur</label></td></tr>
+<tr class='lig1'><td><input type='radio' name='precision' id='precision_se' value='se' ";
+	if($cn_precision=='se') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_se' style='cursor: pointer;'>au point entier supérieur</label></td></tr>
+<tr class='lig-1'><td><input type='radio' name='precision' id='precision_p1' value='p1' ";
+	if($cn_precision=='p1') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_p1' style='cursor: pointer;'>au dixième de point le plus proche</label></td></tr>
+<tr class='lig1'><td><input type='radio' name='precision' id='precision_p5' value='p5' ";
+	if($cn_precision=='p5') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_p5' style='cursor: pointer;'>au demi-point le plus proche</label></td></tr>
+<tr class='lig-1'><td><input type='radio' name='precision' id='precision_pe' value='pe' ";
+	if($cn_precision=='pe') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_pe' style='cursor: pointer;'>au point entier le plus proche</label></td></tr>
+</table>
+<p><input type='button' name='valider_ramener_sur_N' value='Valider' onclick='effectuer_ramener_sur_N()' /></p>
+</div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_ramener_sur_N',$titre_infobulle,"",$texte_infobulle,"",32,0,'y','y','n','n');
+	echo "<p id='p_ramener_sur_N2' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a></p>";
+
+	echo "<script type='text/javascript'>
+	function effectuer_ramener_sur_N() {
+		if((document.getElementById('ramener_sur_N'))&&(document.getElementById('ramener_sur_N').value!='')&&(document.getElementById('total_bareme'))&&(document.getElementById('total_bareme').value!='')) {
+
+			ramener_sur_N=document.getElementById('ramener_sur_N').value;
+			total_bareme=document.getElementById('total_bareme').value;
+
+			ramener_sur_N=ramener_sur_N.replace(',', '.');
+			total_bareme=total_bareme.replace(',', '.');
+
+			//precision=document.getElementById('precision').value;
+			if(document.getElementById('precision_s1').checked==true) {
+				precision='s1'
+			}
+			else {
+				if(document.getElementById('precision_s5').checked==true) {
+					precision='s5'
+				}
+				else {
+					if(document.getElementById('precision_se').checked==true) {
+						precision='se'
+					}
+					else {
+						if(document.getElementById('precision_p1').checked==true) {
+							precision='p1'
+						}
+						else {
+							if(document.getElementById('precision_p5').checked==true) {
+								precision='p5'
+							}
+							else {
+								if(document.getElementById('precision_pe').checked==true) {
+									precision='pe'
+								}
+								else {
+									precision='p5'
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if(document.getElementById('cn_precision')) {
+				document.getElementById('cn_precision').value=precision;
+			}
+
+			if((((total_bareme.search(/^[0-9.]+$/)!=-1)&&(total_bareme.lastIndexOf('.')==total_bareme.indexOf('.',0)))||
+			((total_bareme.search(/^[0-9,]+$/)!=-1)&&(total_bareme.lastIndexOf(',')==total_bareme.indexOf(',',0))))&&
+			(((ramener_sur_N.search(/^[0-9.]+$/)!=-1)&&(ramener_sur_N.lastIndexOf('.')==ramener_sur_N.indexOf('.',0)))||
+			((ramener_sur_N.search(/^[0-9,]+$/)!=-1)&&(ramener_sur_N.lastIndexOf(',')==ramener_sur_N.indexOf(',',0))))) {
+				var tab_indices=new Array($chaine_indices);
+				for(i=0;i<$nombre_lignes;i++) {
+					num=tab_indices[i];
+					if(document.getElementById('n'+num)) {
+						if(document.getElementById('n'+num).value!='') {
+							note=document.getElementById('n'+num).value;
+
+							note=note.replace(',', '.');
+
+							if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
+							((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
+								note_modifiee=note*ramener_sur_N/total_bareme;
+								//document.getElementById('n'+num).value=note_modifiee;
+
+								if(precision=='p5') {
+									document.getElementById('n'+num).value=Math.round(2*note_modifiee)/2;
+								}
+								else {
+									if(precision=='p1') {
+										document.getElementById('n'+num).value=Math.round(10*note_modifiee)/10;
+									}
+									else {
+										if(precision=='pe') {
+											document.getElementById('n'+num).value=Math.round(note_modifiee);
+										}
+										else {
+											if(precision=='s5') {
+												document.getElementById('n'+num).value=Math.ceil(2*note_modifiee)/2;
+											}
+											else {
+												if(precision=='s1') {
+													document.getElementById('n'+num).value=Math.ceil(10*note_modifiee)/10;
+												}
+												else {
+													if(precision=='se') {
+														document.getElementById('n'+num).value=Math.ceil(note_modifiee);
+													}
+													else {
+														document.getElementById('n'+num).value=note_modifiee;
+													}
+												}
+											}
+										}
+									}
+								}
+
+								if(document.getElementById('n1'+num)) {
+									if(document.getElementById('n1'+num).value!='') {
+										document.getElementById('n1'+num).value=document.getElementById('n1'+num).value+' ('+note+'/'+total_bareme+')';
+									}
+									else {
+										document.getElementById('n1'+num).value='('+note+'/'+total_bareme+')';
+									}
+								}
+							}
+						}
+					}
+				}
+				alert('Opération terminée.');
+				cacher_div('div_ramener_sur_N');
+			}
+			else {
+				alert('Valeur proposée invalide.');
+			}
+		}
+		else {
+			alert('Valeur proposée invalide.');
+		}
+	}
+
+	document.getElementById('p_ramener_sur_N').style.display='';
+	document.getElementById('p_ramener_sur_N2').style.display='';
+</script>\n";
+	//=====================================================
 
 
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";

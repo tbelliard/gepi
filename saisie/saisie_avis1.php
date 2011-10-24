@@ -69,7 +69,6 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
-
 	// Synthèse
 	$i = '1';
 	while ($i < $nb_periode) {
@@ -88,14 +87,14 @@ if (isset($_POST['is_posted'])) {
 				if(mysql_num_rows($test)==0) {
 					$sql="INSERT INTO synthese_app_classe SET id_classe='$id_classe', periode='$i', synthese='$synthese';";
 					$insert=mysql_query($sql);
-					if(!$insert) {$msg="Erreur lors de l'enregistrement de la synthèse.";}
-					//else {$msg="La synthèse a été enregistrée.";}
+					if(!$insert) {$msg.="Erreur lors de l'enregistrement de la synthèse.";}
+					//else {$msg.="La synthèse a été enregistrée.";}
 				}
 				else {
 					$sql="UPDATE synthese_app_classe SET synthese='$synthese' WHERE id_classe='$id_classe' AND periode='$i';";
 					$update=mysql_query($sql);
-					if(!$update) {$msg="Erreur lors de la mise à jour de la synthèse.";}
-					//else {$msg="La synthèse a été mise à jour.";}
+					if(!$update) {$msg.="Erreur lors de la mise à jour de la synthèse.";}
+					//else {$msg.="La synthèse a été mise à jour.";}
 				}
 			}
 		}
@@ -168,7 +167,7 @@ if (isset($_POST['is_posted'])) {
 						}
 
 						if (!$register) {
-							$msg = "Erreur lors de l'enregistrement des données de la période $i";
+							$msg.="Erreur lors de l'enregistrement des données de la période $i pour $reg_eleve_login<br />\n";
 							$pb_record = 'yes';
 						}
 					}

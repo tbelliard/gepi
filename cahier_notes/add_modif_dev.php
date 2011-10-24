@@ -569,7 +569,10 @@ else{
 
 echo "\n";
 
+echo " | <a href='../gestion/config_prefs.php'>Paramétrer l'interface simplifiée</a>";
 
+echo "</p>\n";
+echo "</div>\n";
 
 echo "<p class='bold'> Classe : $nom_classe | Matière : ".htmlspecialchars("$matiere_nom ($matiere_nom_court)")."| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "</div>";

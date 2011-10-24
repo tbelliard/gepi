@@ -3482,7 +3482,7 @@ function deplacer_upload($source, $dest) {
  * @return string ok ou message d'erreur
  * @see deplacer_upload()
  */
-function telecharge_fichier($sav_file,$dirname,$type,$ext){
+function telecharge_fichier($sav_file,$dirname,$ext="",$type=""){
   if (!isset($sav_file['tmp_name']) or ($sav_file['tmp_name'] =='')) {
 	return ("Erreur de téléchargement.");
   } else if (!file_exists($sav_file['tmp_name'])) {

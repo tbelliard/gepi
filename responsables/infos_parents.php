@@ -351,7 +351,7 @@ if((!isset($mode))||($mode==1)) {
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Classe</th>\n";
-	echo "<th colspan='4'>Elève</th>\n";
+	echo "<th colspan='6'>Elève</th>\n";
 	echo "<th colspan='8'>Responsable</th>\n";
 	echo "</tr>\n";
 	
