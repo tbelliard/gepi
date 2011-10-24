@@ -30,7 +30,6 @@ header('Content-type: application/pdf');
 if (!defined('FPDF_VERSION')) {
 	require('../fpdf/fpdf.php');
 }
-require('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('TopMargin','5');

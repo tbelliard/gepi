@@ -263,7 +263,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	header('Content-Type: application/pdf');
 	Header('Pragma: public');
 	require('../fpdf/fpdf.php');
-	require('../fpdf/ex_fpdf.php');
 	
 	// Pour drawTextBox()
 	//require_once("../fpdf/class.multicelltag.php");
@@ -431,7 +430,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 								$test_taille_texte='ok';
 							}
 						}
-						//$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $hauteur_info_eleve, 'C', 'M', 1);
 						$pdf->Cell($largeur_dispo,$hauteur_info_eleve,$texte,'',1,'C');
 					}
 					else {
@@ -453,7 +451,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									$test_taille_texte='ok';
 								}
 							}
-							//$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $hauteur_info_eleve, 'C', 'M', 1);
 							$pdf->Cell($largeur_dispo,$hauteur_info_eleve,$texte,'',1,'C');
 						}
 						else {
@@ -475,7 +472,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									$test_taille_texte='ok';
 								}
 							}
-							//$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $hauteur_info_eleve, 'C', 'M', 1);
 							$h_temp=floor($hauteur_info_eleve/2.5);
 							$pdf->Cell($largeur_dispo,$h_temp,$texte,'',1,'C');
 

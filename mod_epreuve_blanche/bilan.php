@@ -117,10 +117,9 @@ if(isset($imprime)) {
 		if($mode=='pdf') {
 
 
-if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
-}
-			require('../fpdf/ex_fpdf.php');
+            if (!defined('FPDF_VERSION')) {
+            	require_once('../fpdf/fpdf.php');
+            }
 			
 			define('FPDF_FONTPATH','../fpdf/font/');
 			define('LargeurPage','210');
