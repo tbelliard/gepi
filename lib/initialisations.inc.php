@@ -6,6 +6,7 @@
  * @package Initialisation
  * @subpackage initialisation
  */
+header('Content-Type: text/html; charset=ISO-8859-1');
 
 /**
  * Niveau de la page dans l'arborescence de GEPI
