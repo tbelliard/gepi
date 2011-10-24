@@ -876,43 +876,6 @@ class Eleve extends BaseEleve {
 			return NULL;
 			die();
 		}
-	  /*
-		// Cas des élèves
-		// En multisite, le login est préférable à l'ELENOET
-		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		    //$_elenoet_ou_login = $this->getElenoet();
-		    $_elenoet_ou_login = $this->getLogin();
-		} else {
-		    //$_elenoet_ou_login = $this->getLogin();
-			$_elenoet_ou_login = $this->getElenoet();
-		}
-
-		$photo= null;
-		if($_elenoet_ou_login!='') {
-			if(file_exists($chemin."../photos/eleves/".$_elenoet_ou_login.".jpg")) {
-				$photo="$_elenoet_ou_login.jpg";
-			}
-			else {
-				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=sprintf("%05d",$this->getLogin()).".jpg";
-				} else {
-					for($i=0;$i<5;$i++){
-						if(substr($this->getLogin(),$i,1)=="0"){
-							$test_photo=substr($this->getLogin(),$i+1);
-							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
-							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
-								$photo=$test_photo.".jpg";
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return $photo;
-		*/
-
 
 		$_elenoet_ou_login = $this->getElenoet();
 	  	if($_elenoet_ou_login!='') {
@@ -940,19 +903,19 @@ class Eleve extends BaseEleve {
 			$_elenoet_ou_login = mysql_result($query, 0,'login');
 		  }
 
-		  if(file_exists($chemin."../photos/eleves/$_elenoet_ou_login.jpg")) {
-				$photo=$chemin."../photos/eleves/$_elenoet_ou_login.jpg";
+		  if(file_exists($chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg")) {
+				$photo=$chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg";
 			}
 			else {
-				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=$chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
+				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
+					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
 						if(substr($_elenoet_ou_login,$i,1)=="0"){
 							$test_photo=substr($_elenoet_ou_login,$i+1);
 							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
-							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
-								$photo=$chemin."../photos/eleves/".$test_photo.".jpg";
+							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
+								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;
 							}
 						}
