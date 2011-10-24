@@ -36,7 +36,6 @@ if (!defined('FPDF_VERSION')) {
 	require_once(dirname(__FILE__).'/../fpdf/fpdf.php');
 }
 
-require_once(dirname(__FILE__).'/../fpdf/ex_fpdf.php');
 
 define('LargeurPage','210');
 define('HauteurPage','297');
@@ -525,9 +524,9 @@ if ($id_liste_groupes!=NULL) {
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont('DejaVu','',9);
 				if ($flag_groupe==true) {
-					$texte = traite_accents_utf8(($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']." (".$donnees_eleves[$nb_eleves_i]['nom_court'].")"));
+					$texte = (($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']." (".$donnees_eleves[$nb_eleves_i]['nom_court'].")"));
 				} else {
-					$texte = traite_accents_utf8(($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']));
+					$texte = (($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']));
 				}
 				$pdf->CellFitScale($l_nomprenom,$h_ligne,$texte,1,0,'L',0); //$l_nomprenom.' - '.$h_ligne.' / '.$X_tableau.' - '.$y_tmp
 				for($i=0; $i < $nb_colonne ; $i++) {

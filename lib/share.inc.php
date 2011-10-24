@@ -1479,7 +1479,7 @@ $GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaac
 /**
  * Remplace les accents et retourne une chaine encodée en ASCII.
  * 
- * $mode = 'all' On remplace espaces, apostrophes et guillemets par des '_' et les caractères accentués par leurs équivalents non accentués.
+ * $mode = 'all' On remplace espaces, apostrophes, points et guillemets par des '_' et les caractères accentués par leurs équivalents non accentués (pour un nom de fichier par exemple).
  * 
  * $mode = 'all_nospace' On remplace apostrophes et guillemets par des '_' et les caractères accentués par leurs équivalents non accentués.
  * 
@@ -2865,18 +2865,6 @@ function casse_prenom($prenom) {
 	}
 
 	return $retour;
-}
-
-/**
- * Encode une chaine en utf8 si $mode_utf8_pdf="y"
- *
- * @global type 
- * @param type $chaine Chaine à encoder
- * @return type 
- * @deprecated
- */
-function traite_accents_utf8($chaine) {
-    return $chaine; //normalement tout gepi est en utf8, il n'y a plus de traitement à faire
 }
 
 /**

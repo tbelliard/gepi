@@ -58,7 +58,6 @@ die();
 }
 
 require('../../fpdf/fpdf.php');
-require('../../fpdf/ex_fpdf.php');
 
 function redimensionne_logo($photo, $L_max, $H_max)
  {
@@ -543,15 +542,15 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
  	 $this->SetXY($X_etab,$Y_etab);
  	 $this->SetFont('DejaVu','',14);
 	  //$gepiSchoolName = getSettingValue('gepiSchoolName');
-	$gepiSchoolName = traite_accents_utf8(getSettingValue('gepiSchoolName'));
+	$gepiSchoolName = (getSettingValue('gepiSchoolName'));
 	 $this->Cell(90,7, $gepiSchoolName,0,2,'');
 	 $this->SetFont('DejaVu','',10);
-	  $gepiSchoolAdress1 = traite_accents_utf8(getSettingValue('gepiSchoolAdress1'));
+	  $gepiSchoolAdress1 = (getSettingValue('gepiSchoolAdress1'));
 	 $this->Cell(90,5, $gepiSchoolAdress1,0,2,'');
-	  $gepiSchoolAdress2 = traite_accents_utf8(getSettingValue('gepiSchoolAdress2'));
+	  $gepiSchoolAdress2 = (getSettingValue('gepiSchoolAdress2'));
 	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,'');
-	  $gepiSchoolZipCode = traite_accents_utf8(getSettingValue('gepiSchoolZipCode'));
-	  $gepiSchoolCity = traite_accents_utf8(getSettingValue('gepiSchoolCity'));
+	  $gepiSchoolZipCode = (getSettingValue('gepiSchoolZipCode'));
+	  $gepiSchoolCity = (getSettingValue('gepiSchoolCity'));
 	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
@@ -574,7 +573,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
    	$this->SetXY(5,-10);
         //Police DejaVu Gras 6
         $this->SetFont('DejaVu','B',8);
-        $this->Cell(0,4.5, traite_accents_utf8("Fiche récapitulative des absences - GEPI : solution libre de gestion et de suivi des résultats scolaires."),0,0,'C');
+        $this->Cell(0,4.5, ("Fiche récapitulative des absences - GEPI : solution libre de gestion et de suivi des résultats scolaires."),0,0,'C');
     }
 }
 
@@ -622,23 +621,23 @@ $pdf->SetFillColor(255,255,255);
 		}
 
  	 $pdf->SetXY($X_eleve_2,$Y_eleve_2);
-	 $pdf->Cell(90,7, traite_accents_utf8($nom_eleve[$cpt_eleve]." ".$prenom_eleve[$cpt_eleve]),0,2,'');
+	 $pdf->Cell(90,7, ($nom_eleve[$cpt_eleve]." ".$prenom_eleve[$cpt_eleve]),0,2,'');
 	 $pdf->SetFont('DejaVu','',10);
 	 if ( $affiche_date_naissance === '1' ) {
-	  if($date_naissance[$cpt_eleve]!="") { $pdf->Cell(90,5, traite_accents_utf8($date_naissance[$cpt_eleve]),0,2,''); }
+	  if($date_naissance[$cpt_eleve]!="") { $pdf->Cell(90,5, ($date_naissance[$cpt_eleve]),0,2,''); }
 	 }
 	 if( $affiche_dp === '1' ) {
-	  if( $dp_eleve[$cpt_eleve] != '' ) { $pdf->Cell(90,4, traite_accents_utf8($dp_eleve[$cpt_eleve]),0,2,''); }
+	  if( $dp_eleve[$cpt_eleve] != '' ) { $pdf->Cell(90,4, ($dp_eleve[$cpt_eleve]),0,2,''); }
 	 }
 	 if ( $affiche_doublement === '1' ) {
 	  if($doublement_eleve[$cpt_eleve]!="") { $pdf->Cell(90,4.5, $doublement_eleve[$cpt_eleve],0,2,''); }
 	 }
 	 if( $affiche_nom_court === '1' ) {
-	  if($classe_nomcour_eleve[$cpt_eleve]!="") { $pdf->Cell(90,4.5, traite_accents_utf8(unhtmlentities($classe_nomcour_eleve[$cpt_eleve])),0,2,''); }
+	  if($classe_nomcour_eleve[$cpt_eleve]!="") { $pdf->Cell(90,4.5, (unhtmlentities($classe_nomcour_eleve[$cpt_eleve])),0,2,''); }
 	 }
 	 if ( $affiche_effectif_classe === '1' ) {
 	  if ( $info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") {
-		$pdf->Cell(45,4.5, traite_accents_utf8('Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves'),0,0,''); }
+		$pdf->Cell(45,4.5, ('Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves'),0,0,''); }
 	 }
 	 if ( $affiche_numero_impression === '1' ) {
 	  $num_ordre = $cpt_eleve;
@@ -654,11 +653,11 @@ $pdf->SetFillColor(255,255,255);
 	 $nb_ligne_datation_bul = 3; $hauteur_ligne_datation_bul = 6;
 	 $hauteur_cadre_datation_bul = $nb_ligne_datation_bul*$hauteur_ligne_datation_bul;
 	 if($cadre_datation_bul!=0) { $pdf->Rect($X_datation_bul, $Y_datation_bul, $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D'); }
-	 $pdf->Cell(90,7, "Classe de ".traite_accents_utf8(unhtmlentities($classe_nomlong_eleve[$cpt_eleve])),0,2,'C');
+	 $pdf->Cell(90,7, "Classe de ".(unhtmlentities($classe_nomlong_eleve[$cpt_eleve])),0,2,'C');
 	 $pdf->SetFont('DejaVu','',12);
-	 $pdf->Cell(90,5, traite_accents_utf8("Année scolaire ".$annee_scolaire),0,2,'C');
+	 $pdf->Cell(90,5, ("Année scolaire ".$annee_scolaire),0,2,'C');
 	 $pdf->SetFont('DejaVu','',10);
-	 $pdf->Cell(90,5, traite_accents_utf8("Fiche récapitulative des absences"),0,2,'C');
+	 $pdf->Cell(90,5, ("Fiche récapitulative des absences"),0,2,'C');
 	 $pdf->SetFont('DejaVu','',8);
 	 $pdf->Cell(95,7, $date_bulletin,0,2,'R');
 	 $pdf->SetFont('DejaVu','',10);
@@ -686,10 +685,10 @@ $pdf->SetFillColor(255,255,255);
  	$pdf->SetXY($x_divers,$y_divers);
 	// nombre de lettre expédié à la famille
         $cpt_lettre_envoye = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."'"),0);
-	$pdf->Cell($l_divers, $h_divers, traite_accents_utf8('Nombre de lettres expédiées : ').$cpt_lettre_envoye, 0, 2, 'L', 0);
+	$pdf->Cell($l_divers, $h_divers, ('Nombre de lettres expédiées : ').$cpt_lettre_envoye, 0, 2, 'L', 0);
 	// nombre de lettre resté sans réponse
         $cpt_lettre_envoye_sans_reponse = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND quireception_lettre_suivi = ''"),0);
-	$pdf->Cell($l_divers, $h_divers, traite_accents_utf8('Lettres restées sans réponse : ').$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
+	$pdf->Cell($l_divers, $h_divers, ('Lettres restées sans réponse : ').$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
 	// nombre d'avertissement
         $cpt_lettre_avertissement = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%avertissement%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre d\'avertissements : '.$cpt_lettre_avertissement, 0, 2, 'L', 0);
@@ -897,7 +896,7 @@ $annuel = $mois;
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetFont('DejaVu','',9);
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_intituler, traite_accents_utf8('Absence non justifiée'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_intituler, ('Absence non justifiée'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -937,7 +936,7 @@ $annuel = $mois;
 	// ligne des absences justifé
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_intituler, traite_accents_utf8('Absence justifiée'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_intituler, ('Absence justifiée'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -978,7 +977,7 @@ $annuel = $mois;
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetFont('DejaVu','',9);
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_annuel, traite_accents_utf8('Retard non justifié'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_annuel, ('Retard non justifié'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -998,7 +997,7 @@ $annuel = $mois;
 	// ligne des retards justifié
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_annuel, traite_accents_utf8('Retard justifié'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_annuel, ('Retard justifié'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';

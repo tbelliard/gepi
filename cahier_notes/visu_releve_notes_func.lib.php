@@ -2269,7 +2269,7 @@ function releve_pdf($tab_rel,$i) {
 			//$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.affiche_date_naissance($tab_rel['eleve'][$i]['naissance']).', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
 			//$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
 			if(getSettingValue('releve_bazar_utf8')=='y') {
-				$pdf->Cell(90,5,traite_accents_utf8('Né').$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
+				$pdf->Cell(90,5,('Né').$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
 			}
 			else {
 				$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
@@ -2310,7 +2310,7 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->SetX($X_cadre_eleve);
 			$pdf->SetFont('DejaVu','',10);
 			if(getSettingValue('releve_bazar_utf8')=='y') {
-				$pdf->Cell(90,5,traite_accents_utf8('Année scolaire ').$annee_scolaire,0,2,'');
+				$pdf->Cell(90,5,('Année scolaire ').$annee_scolaire,0,2,'');
 			}
 			else {
 				$pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');
@@ -2512,10 +2512,10 @@ function releve_pdf($tab_rel,$i) {
 			//$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.' Période '.$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
 			if(getSettingValue('releve_bazar_utf8')=='y') {
 				if(isset($tab_rel['nom_periode'])) {
-					$pdf->Cell(0, $hauteur_du_titre, traite_accents_utf8($titre_du_cadre).$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
+					$pdf->Cell(0, $hauteur_du_titre, ($titre_du_cadre).$tab_rel['nom_periode'], $var_encadrement_titre,0,'C');
 				}
 				else {
-					$pdf->Cell(0, $hauteur_du_titre, traite_accents_utf8($titre_du_cadre).$tab_rel['intervalle']['debut'].' au '.$tab_rel['intervalle']['fin'], $var_encadrement_titre,0,'C');
+					$pdf->Cell(0, $hauteur_du_titre, ($titre_du_cadre).$tab_rel['intervalle']['debut'].' au '.$tab_rel['intervalle']['fin'], $var_encadrement_titre,0,'C');
 				}
 			}
 			else {
@@ -3149,7 +3149,7 @@ function releve_pdf($tab_rel,$i) {
 							$largeur_dispo=$largeur_cadre_note;
 							$h_cell=$hauteur_cadre_matiere;
 		
-							cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 						}
 		
 						$hauteur_utilise=$hauteur_utilise+$hauteur_cadre_matiere;
