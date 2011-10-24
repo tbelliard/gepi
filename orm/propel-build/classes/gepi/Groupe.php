@@ -250,14 +250,14 @@ class Groupe extends BaseGroupe {
     }
 
 	public function getCategorieMatiere($id_classe) {
-		$profs = array();
 		$criteria = new Criteria();
 		$criteria->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
 		$g = $this->getJGroupesClassess($criteria);
 		if ($g->isEmpty()) {
 		    return false;
 		} else {
-		    return $g->getFirst()->getCategorieMatiere();
+		    $jGroupeClasse = $g->getFirst();
+	        return CategorieMatiereQuery::create()->findOneById($jGroupeClasse->getCategorieId());
 		}
 	}
 
