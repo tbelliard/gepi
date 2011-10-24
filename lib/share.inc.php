@@ -2964,7 +2964,7 @@ function my_echo_debug($texte) {
 }
 
 /**
- * Retourne une chaine avec la bonne casse
+ * Retourne une chaine utf-8 avec la bonne casse
  * 
  * $mode
  * - 'maj'   -> tout en majuscules
@@ -2978,36 +2978,16 @@ function my_echo_debug($texte) {
  */
 function casse_mot($mot,$mode='maj') {
 	if($mode=='maj') {
-		return strtoupper($mot);
+		return mb_convert_case(ensure_utf8($mot), MB_CASE_UPPER);
 	}
 	elseif($mode=='min') {
-		return strtolower($mot);
+		return mb_convert_case(ensure_utf8($mot), MB_CASE_LOWER);
 	}
 	elseif($mode=='majf') {
-		if(strlen($mot)>1) {
-			return strtoupper(substr($mot,0,1));
-		}
-		else {
-			return strtoupper($mot);
-		}
+		return mb_convert_case(mb_substr($mot,0,1), MB_CASE_UPPER);
 	}
 	elseif($mode=='majf2') {
-		$chaine="";
-		$tab=explode(" ",$mot);
-		for($i=0;$i<count($tab);$i++) {
-			if($i>0) {$chaine.=" ";}
-			$tab2=explode("-",$tab[$i]);
-			for($j=0;$j<count($tab2);$j++) {
-				if($j>0) {$chaine.="-";}
-				if(strlen($tab2[$j])>1) {
-					$chaine.=strtoupper(substr($tab2[$j],0,1));
-				}
-				else {
-					$chaine.=strtoupper($tab2[$j]);
-				}
-			}
-		}
-		return $chaine;
+		return mb_convert_case(ensure_utf8($mot), MB_CASE_TITLE);
 	}
 }
 

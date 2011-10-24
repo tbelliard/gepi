@@ -165,7 +165,7 @@ if ($test->versionGd()) {
 	if (!test_detect_encoding()) {
 	    echo ' : échec de test_detect_encoding()</p>';
 	} else {
-	    echo "</p>réussite de test_detect_encoding()<br />\n";
+        echo "</p>réussite de test_detect_encoding()<br />\n";
 	}
 	echo "<p style=\"color:red;\">";
 	if (!test_ensure_utf8()) {
@@ -173,8 +173,14 @@ if ($test->versionGd()) {
 	} else {
 	    echo "</p>réussite de test_ensure_utf8()<br />\n";
 	}
-		echo "<p style=\"color:red;\">";
+	echo "<p style=\"color:red;\">";
 	if (!test_remplace_accents()) {
+	    echo ' : échec de test_remplace_accents()</p>';
+	} else {
+	    echo "</p>réussite de test_remplace_accents()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_casse_mot()) {
 	    echo ' : échec de test_remplace_accents()</p>';
 	} else {
 	    echo "</p>réussite de test_remplace_accents()<br />\n";

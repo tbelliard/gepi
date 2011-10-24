@@ -12,6 +12,7 @@ class ShareIncTest extends PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 	    parent::setUp();
+	    mb_internal_encoding("UTF-8");
 	}
 
 	//les tests sont effectuées dans le fichier mod_serveur/test_incoding_functions.php
@@ -33,6 +34,11 @@ class ShareIncTest extends PHPUnit_Framework_TestCase
 	public function test_remplace_accents()
 	{
 	    $this->assertTrue(test_remplace_accents());
+	}
+	
+	public function test_casse_mot()
+	{
+	    $this->assertTrue(test_casse_mot());
 	}
 	
 }
