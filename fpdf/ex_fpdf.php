@@ -24,10 +24,10 @@ var $I;
 var $U;
 var $HREF;
 
-function PDF($orientation='P',$unit='mm',$format='A4')
+function __construct($orientation='P',$unit='mm',$format='A4')
 {
     //Appel au constructeur parent
-    $this->FPDF($orientation,$unit,$format);
+    parent::__construct($orientation,$unit,$format);
 }
 
 function Footer()
