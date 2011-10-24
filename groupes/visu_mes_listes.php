@@ -122,12 +122,12 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 				}
 
 				echo "<td>\n";
-				echo "<b>$chaine_class</b>: ".htmlentities($lig_grp->description);
+				echo "<b>$chaine_class</b>: ".htmlspecialchars($lig_grp->description);
 				echo "</td>\n";
 				for($i=0;$i<count($tabnumper);$i++) {
 					if($i>0) {echo "<td> - </td>\n";}
 					echo "<td>\n";
-					echo "<a href='popup.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' onclick=\"ouvre_popup_visu_groupe('$lig_grp->id','','$tabnumper[$i]');return false;\" target='_blank'>".htmlentities($tabnomper[$i])."</a>\n";
+					echo "<a href='popup.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' onclick=\"ouvre_popup_visu_groupe('$lig_grp->id','','$tabnumper[$i]');return false;\" target='_blank'>".htmlspecialchars($tabnomper[$i])."</a>\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";

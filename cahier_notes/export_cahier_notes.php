@@ -193,7 +193,7 @@ if(!isset($type_export)) {
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
-	$titre=htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
+	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
 	$titre.=" - EXPORT";
 
 	// Mettre la ligne de liens de retour,...
@@ -201,7 +201,7 @@ if(!isset($type_export)) {
 	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
     echo "<p class='bold'>\n";
 
-    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
 
 	if($_SESSION['statut']=='professeur') {
 		$login_prof_groupe_courant=$_SESSION["login"];
@@ -737,7 +737,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro2">');
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>GEPI_LOGIN_ELEVE</text:p></table:table-cell>');
 
-		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_nom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_prenom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_classe[$i]).'</text:p></table:table-cell>');
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_nom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_prenom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_classe[$i].'</text:p></table:table-cell>');
 
 		// OpenOffice recalcule les valeurs lors de l'ouverture du document...
 		$valeur_defaut=0;
@@ -848,13 +848,13 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
-	$titre=htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
+	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
 	$titre.=" - EXPORT";
 
 	// Mettre la ligne de liens de retour,...
     echo "<div class='norme'><p class='bold'>\n";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
-    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
 	echo "</div>\n";
 
 

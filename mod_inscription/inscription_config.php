@@ -119,9 +119,9 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
 
     if (isset($id_inter)) {
         $req = mysql_query("select * from inscription_items where id='".$id_inter."'");
-        $date = htmlentities(@mysql_result($req, 0, "date"));
-        $heure = htmlentities(@mysql_result($req, 0, "heure"));
-        $description = htmlentities(@mysql_result($req, 0, "description"));
+        $date = htmlspecialchars(@mysql_result($req, 0, "date"));
+        $heure = htmlspecialchars(@mysql_result($req, 0, "heure"));
+        $description = htmlspecialchars(@mysql_result($req, 0, "description"));
         echo "<input type=\"hidden\" name=\"is_posted\" value=\"modif\" />\n";
         echo "<input type=\"hidden\" name=\"id_inter\" value=\"".$id_inter."\" />\n";
     } else {

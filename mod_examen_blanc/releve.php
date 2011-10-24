@@ -211,13 +211,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												$lig_per=mysql_fetch_object($res_per);
 
 												$titre="Devoir n°$lig_groupe->id_dev (<i>$lig_per->nom_periode</i>)";
-												$texte="<p><b>".htmlentities($lig_info_dev->nom_court)."</b>";
+												$texte="<p><b>".htmlspecialchars($lig_info_dev->nom_court)."</b>";
 												if($lig_info_dev->nom_court!=$lig_info_dev->nom_complet) {
-													$texte.=" (<i>".htmlentities($lig_info_dev->nom_complet)."</i>)";
+													$texte.=" (<i>".htmlspecialchars($lig_info_dev->nom_complet)."</i>)";
 												}
 												$texte.="<br />";
 												if($lig_info_dev->description!='') {
-													$texte.=htmlentities($lig_info_dev->description);
+													$texte.=htmlspecialchars($lig_info_dev->description);
 												}
 												//$tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
 												$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
@@ -461,7 +461,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$pdf->SetCompression(TRUE);
 						$pdf->SetAutoPageBreak(TRUE, 5);
 
-						$fonte='Arial';
+						$fonte='DejaVu';
 
 						for($i=0;$i<$nb_classes;$i++) {
 							$pdf->AddPage();

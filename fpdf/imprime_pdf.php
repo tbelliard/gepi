@@ -33,14 +33,6 @@ define('LargeurPage','210');
 require_once("../lib/initialisations.inc.php");
 //=============================
 
-if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
-}
-//require('../fpdf/fpdf15.php');
-
-// Il faut récupérer l'info sur le mode avant l'appel à ex_fpdf.php pour que les accents de l'entête soient corrects
-$mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
-if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
 require_once('../fpdf/ex_fpdf.php');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
@@ -64,14 +56,14 @@ if (!checkAccess()) {
     die();
 }
 
-$pdf=new PDF("P","mm","A4");
+$pdf=new Ex_FPDF("P","mm","A4");
 $pdf->SetTopMargin(TopMargin);
 $pdf->SetRightMargin(RightMargin);
 $pdf->SetLeftMargin(LeftMargin);
 $pdf->SetAutoPageBreak(true, BottomMargin);
 // Couleur des traits
 $pdf->SetDrawColor(0,0,0);
-$pdf->AddFont('Alakob','','Alakob.php');
+
 
 // Pour les tests : permet de voir les bords des cadres
 $bord = 0;
@@ -134,7 +126,7 @@ foreach($data1 as $key => $value) {
 }
 */
 
-$pdf->SetFont('Arial','',8);
+$pdf->SetFont('DejaVu','',8);
 $pdf->FancyTable($w1,$header1,$data1,"v");
 
 //debug_var();

@@ -115,19 +115,7 @@ $OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les 
 // Traitement des tableaux
 // On insère ici les lignes concernant la gestion des tableaux
 
-// $OOo->mergeXmlBlock('eleves',$tab_eleves_OOo);
-// $OOo->MergeBlock('blk1',$donnee_tab_protagonistes) ;
 $OOo->MergeBlock('eleves',$tab_eleves_OOo);
-/*
-$OOo->mergeXml(
-	array(
-		'name'      => 'eleves',
-		'type'      => 'block',
-		'data_type' => 'array',
-		'charset'   => 'ISO 8859-15'
-	 ),$tab_eleves_OOo);
-*/
-//$OOo->SaveXml(); //traitement du fichier extrait
 $OOo->SaveXmlToDoc(); //traitement du fichier extrait
 
 //Génération du nom du fichier

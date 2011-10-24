@@ -536,18 +536,6 @@ if (isset($titre_page)) {
 						echo "</a>";
 				}
 
-				if(getSettingValue('afficher_temoin_filtrage_html')=='y') {
-					if($filtrage_html=='htmlpurifier') {
-						echo " <img src='$gepiPath/images/bulle_verte.png' width='9' height='9' alt='Filtrage HTML avec HTMLPurifier' title='Filtrage HTML avec HTMLPurifier' />\n";
-					}
-					elseif($filtrage_html=='inputfilter') {
-						echo " <img src='$gepiPath/images/bulle_bleue.png' width='9' height='9' alt='Filtrage HTML avec InputFilter' title='Filtrage HTML avec InputFilter' />\n";
-					}
-					else {
-						echo " <img src='$gepiPath/images/bulle_rouge.png' width='9' height='9' alt='Pas de filtrage HTML' title='Pas de filtrage HTML' />\n";
-					}
-				}
-
 				//=== Titre de la page ===
 				echo "<h1>".$titre_page."</h1>\n";
 				echo "<!-- Dernière connexion -->\n";
@@ -587,7 +575,7 @@ if (isset($titre_page)) {
 						$nom_complet_matiere = sql_query1("select nom_complet from matieres
 						where matiere = '".$_SESSION['matiere']."'");
 						if ($nom_complet_matiere != '-1') {
-							echo("Professeur de : " . htmlentities($nom_complet_matiere));
+							echo("Professeur de : " . htmlspecialchars($nom_complet_matiere));
 						} else {
 							echo "Invité";
 						}

@@ -869,7 +869,7 @@ while ($k < $nb_mat+1) {
 		$matiere_list = mysql_result($calldata, $i, "matiere");
 		$matiere_complet_list = mysql_result($calldata, $i, "nom_complet");
 		//echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | $matiere_complet_list</option>\n";
-		echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | ".htmlentities($matiere_complet_list)."</option>\n";
+		echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | ".htmlspecialchars($matiere_complet_list)."</option>\n";
 		$i++;
 	}
 	echo "</select><br />\n";

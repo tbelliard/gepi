@@ -72,11 +72,11 @@
 						<p>Blabla<br>
 						Blibli</p>
 					*/
-					echo "<option>".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."</option>\n";
+					echo "<option>".htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)))."</option>\n";
 				}
 				else{
 					//Si le commentaire ne contient pas de code HTML, on remplace les retours à la ligne par des <br>:
-					echo "<option>".htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))))."</option>\n";
+					echo "<option>".htmlspecialchars(stripslashes(nl2br(trim($ligne_commentaire->commentaire))))."</option>\n";
 				}
 			}
 			echo "</select>\n";

@@ -469,7 +469,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	if($groupe_existant!="trop" and $display_current) {
 		echo "<td style='text-align:left;'>\n";
 		echo "<label for='checkmat_".$cpt."' style='cursor:pointer;'>";
-		echo htmlentities($ligne_matiere->nom_complet);
+		echo htmlspecialchars($ligne_matiere->nom_complet);
 		echo "</label>\n";
 		echo "</td>\n";
 		//$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur ORDER BY jpm.id_professeur";

@@ -137,7 +137,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		$cpt=0;
 
 		// On prévoit deux... trois espaces de marge en gras pour s'assurer que la ligne ne débordera pas
-		$pdf->SetFont('','B');
+		$pdf->SetFont('DejaVu','B');
 		$un_espace_gras=$pdf->GetStringWidth(' ');
 		if($my_echo_debug==1) my_echo_debug("Un espace en gras mesure $un_espace_gras\n");
 		$marge_espaces=3*$un_espace_gras;
@@ -153,7 +153,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		}
 
 		$style_courant='';
-		$pdf->SetFont('',$style_courant);
+		$pdf->SetFont('DejaVu',$style_courant);
 
 		// (Ré-)initialisation du témoin
 		$temoin_reduire_police="n";
@@ -303,17 +303,17 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 					// On referme une balise
 					if(strtoupper($valeur)=='/B') {
 						$style_courant=preg_replace("/B/i","",$style_courant);
-						$pdf->SetFont('',$style_courant);
+						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="</B>";
 					}
 					elseif(strtoupper($valeur)=='/I') {
 						$style_courant=preg_replace("/I/i","",$style_courant);
-						$pdf->SetFont('',$style_courant);
+						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="</I>";
 					}
 					elseif(strtoupper($valeur)=='/U') {
 						$style_courant=preg_replace("/U/i","",$style_courant);
-						$pdf->SetFont('',$style_courant);
+						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="</U>";
 					}
 				}
@@ -321,17 +321,17 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 					// On ouvre une balise
 					if(strtoupper($valeur)=='B') {
 						$style_courant=$style_courant.'B';
-						$pdf->SetFont('',$style_courant);
+						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="<B>";
 					}
 					elseif(strtoupper($valeur)=='I') {
 						$style_courant=$style_courant.'I';
-						$pdf->SetFont('',$style_courant);
+						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="<I>";
 					}
 					elseif(strtoupper($valeur)=='U') {
 						$style_courant=$style_courant.'U';
-						$pdf->SetFont('',$style_courant);
+						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="<U>";
 					}
 				}
@@ -422,14 +422,14 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		$longueur_max_atteinte="n";
 
 		// On prévoit deux... trois espaces de marge en gras pour s'assurer que la ligne ne débordera pas
-		$pdf->SetFont('','B');
+		$pdf->SetFont('DejaVu','B');
 		$marge_espaces=3*$pdf->GetStringWidth(' ');
 		$largeur_utile=$largeur_dispo-$marge_espaces;
 
 		// CONTROLER QUE \$largeur_utile>0
 		if($largeur_utile>0) {
 			$style_courant='';
-			$pdf->SetFont('',$style_courant);
+			$pdf->SetFont('DejaVu',$style_courant);
 
 			// On va supprimer les retours à la ligne
 			$texte=trim(preg_replace("/\n/"," ",$texte));
@@ -860,13 +860,13 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 function cell_ajustee_une_ligne($texte,$x,$y,$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure) {
 	global $pdf;
 
-	$pdf->SetFont($fonte,$graisse,$hauteur_caractere);
+	$pdf->SetFont('DejaVu',$graisse,$hauteur_caractere);
 	$val = $pdf->GetStringWidth($texte);
 	$temoin='';
 	while($temoin != 'ok') {
 		if($largeur_dispo < $val){
 			$hauteur_caractere = $hauteur_caractere-0.3;
-			$pdf->SetFont($fonte,$graisse,$hauteur_caractere);
+			$pdf->SetFont('DejaVu',$graisse,$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte);
 		} else {
 			$temoin = 'ok';

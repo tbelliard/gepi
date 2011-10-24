@@ -25,7 +25,7 @@
  */
 
 header('Content-Type: text/html; charset=utf-8');
-$compteur = isset($_GET['compteur']) ? (int) htmlentities($_GET['compteur']) : Null;
+$compteur = isset($_GET['compteur']) ? (int) htmlspecialchars($_GET['compteur']) : Null;
 if (!is_int($compteur)) {
     die();
 }

@@ -739,7 +739,7 @@ class Session {
                             //on va tester avec le md5
                             if ($db_password == md5($_password)) {
                             } else {
-                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
+                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {//utilse pour les ancienne base (2011-05-14)
                                             $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
                                             $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
                                             if ($db_password == md5($_password_unhtmlentities)) {
@@ -906,10 +906,10 @@ if (getSettingValue("sso_cas_table") == 'yes') {
       if (!empty($code_attribut)) {
       	if (isset($tab[$code_attribut])) {
         	$valeur = $tab[$code_attribut];
-					if (!empty($valeur)){						// L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
-						// On s'assure que la chaîne est bien enregistrée en iso-8859-1.
-						// Il est en effet probable que la chaîne d'origine soit en UTF-8.
-						$valeur = ensure_iso8859_1($valeur);
+					if (!empty($valeur)){
+					    // L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
+						// On s'assure que la chaîne est bien enregistrée en UTF-8.
+						$valeur = ensure_utf_8($valeur);
 						$this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
 					}
         }

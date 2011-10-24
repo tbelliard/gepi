@@ -32,7 +32,7 @@
 	$val_defaut_champ_bull_pdf["affiche_nom_court"]=0;
 	$val_defaut_champ_bull_pdf["affiche_effectif_classe"]=0;
 	$val_defaut_champ_bull_pdf["affiche_numero_impression"]=0;
-	$val_defaut_champ_bull_pdf["caractere_utilse"]="Arial";
+	$val_defaut_champ_bull_pdf["caractere_utilse"]="DejaVu";
 	$val_defaut_champ_bull_pdf["X_parent"]=110;
 	$val_defaut_champ_bull_pdf["Y_parent"]=40;
 	$val_defaut_champ_bull_pdf["X_eleve"]=5;

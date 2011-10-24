@@ -193,22 +193,7 @@ $gepiAuthors = array(
 );
 
 // Affichage des dates en français
-// Valable pour version php >= 4.3.0
-if (!@setlocale(LC_TIME,'fr_FR.ISO8859-1','French','france','fra','french','FR','fr_FR','fr_FR@euro','fr-utf-8','fr_FR.utf-8', 'French_France.1252'))
-{
-// Valable pour version php < 4.3.0
-   setlocale(LC_TIME,'fr_FR.ISO8859-1');
-   setlocale(LC_TIME,'French');
-   setlocale(LC_TIME,'france');
-   setlocale(LC_TIME,'fra');
-   setlocale(LC_TIME,'french');
-   setlocale(LC_TIME,'FR');
-   setlocale(LC_TIME,'fr_FR');
-   setlocale(LC_TIME,'fr_FR@euro');
-   setlocale(LC_TIME,'fr-utf-8');
-   setlocale(LC_TIME,'fr_FR.utf-8');
-   setlocale(LC_TIME,'French_France.1252');
-}
+@setlocale(LC_TIME,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','fr_FR.ISO8859-1','French','france','fra','french','FR','fr_FR','fr_FR@euro', 'French_France.1252');
 
 $gepiShowGenTime = "no"; // Pour afficher le temps de génération de certaines pages.
 $pageload_starttime = microtime(true);
@@ -262,18 +247,6 @@ $type_etablissement2["prive"]["aucun"] = "";
 // ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 // Une sécurité... il suffit de passer la variable $style_screen_ajout à 'n' pour désactiver le fichier CSS style_screen_ajout.css et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
 $style_screen_ajout='y';
-
-//=============================
-// Un dispositif de filtrage des balises HTML soumises a été mis en place.
-// Sans ce dispositif, il est possible de déposer un code sournois pour provoquer des dégats lors de la visite par l'utilisateur auquel le piège est destiné.
-// Il est très fortement recommandé de ne pas passer la variable ci-dessous à 'n'
-//$filtrage_html="y";
-//$classe_filtrage='HTMLPurifier'; // HTMLPurifier fonctionne à partir de php5.0.5 et est plus complet que InputFilter
-// Ou:
-//$classe_filtrage='InputFilter'; // InputFilter fonctionne avec php4/php5
-
-// $filtrage_html est maintenant paramétré dans gestion/security_policy.php
-// Et prend les valeurs inputfilter, htmlpurifier ou pas_de_filtrage_html
 
 // Liste des balises autorisées pour InputFilter:
 $aAllowedTags = array("a", "b", "blink", "blockquote", "br", "caption", "center", "col", "colgroup", "comment", "em", "font", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "i", "img", "li", "marquee", "ol", "p", "pre", "s", "small", "span", "strike", "strong", "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "tt", "u", "ul", "color");

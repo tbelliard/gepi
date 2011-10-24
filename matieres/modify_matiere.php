@@ -62,7 +62,7 @@ if (isset($_POST['isposted'])) {
                 // Quand on poste un &, c'est un &amp; qui est reçu.
                 //$matiere_nom_complet = $_POST['matiere_nom_complet'];
 				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
-                $matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
+                $matiere_nom_complet = html_entity_decode($_POST['matiere_nom_complet']);
 				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
                 //========================
                 $matiere_priorite = $_POST['matiere_priorite'];
@@ -86,7 +86,7 @@ if (isset($_POST['isposted'])) {
     } else {
 
         $matiere_nom_complet = $_POST['matiere_nom_complet'];
-		$matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
+		$matiere_nom_complet = html_entity_decode($_POST['matiere_nom_complet']);
         $matiere_priorite = $_POST['matiere_priorite'];
         $matiere_name = $_POST['matiere_name'];
         if (!is_numeric($_POST['matiere_categorie'])) {
@@ -343,7 +343,7 @@ if ($test == 0) {
     while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
         echo "<option value='".$row["id"]."'";
         if ($matiere_cat_id == $row["id"]) echo " SELECTED";
-        echo ">".html_entity_decode_all_version($row["nom_court"])."</option>";
+        echo ">".html_entity_decode($row["nom_court"])."</option>";
     }
 }
 echo "</select>";

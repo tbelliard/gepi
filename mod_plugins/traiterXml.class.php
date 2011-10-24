@@ -106,7 +106,7 @@ class traiterXml {
       $noeud = $this->_noeuds[$a];
 
       if (!isset($this->_xml->$noeud) OR $this->_xml->$noeud == ''){
-        $this->retourneErreur(1, htmlentities('<'.$noeud.'>'));
+        $this->retourneErreur(1, htmlspecialchars('<'.$noeud.'>'));
         return false;
       }
     }

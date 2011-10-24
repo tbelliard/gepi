@@ -263,7 +263,7 @@ function show_message_deconnexion(){
          where matiere = '".$_SESSION['matiere']."'");
          if ($nom_complet_matiere != '-1') {
             //echo("Professeur de : " . $nom_complet_matiere);
-            echo("Professeur de : " . htmlentities($nom_complet_matiere));
+            echo("Professeur de : " . htmlspecialchars($nom_complet_matiere));
          } else {
             echo "Invité";
          }

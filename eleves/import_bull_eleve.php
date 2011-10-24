@@ -336,7 +336,7 @@ else {
 			$ligne=fgets($fich, 4096);
 			if(trim($ligne)!="") {
 				//echo $ligne."<br />\n";
-				echo htmlentities($ligne)."<br />\n";
+				echo htmlspecialchars($ligne)."<br />\n";
 			}
 		}
 		echo "</div>\n";
@@ -782,7 +782,7 @@ else {
 						$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de la matière '".htmlentities($matiere)."' dans la table 'matieres': ";
+							echo "<p>Inscription de la matière '".htmlspecialchars($matiere)."' dans la table 'matieres': ";
 							$sql="INSERT INTO matieres SET matiere='$matiere', nom_complet='$matiere_nom_complet';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -801,7 +801,7 @@ else {
 						$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$matiere' AND id_professeur='$login_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association professeur '$login_etab' / matière '".htmlentities($matiere)."' dans la table 'j_professeurs_matieres': ";
+							echo "<p>Inscription de l'association professeur '$login_etab' / matière '".htmlspecialchars($matiere)."' dans la table 'j_professeurs_matieres': ";
 							$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$matiere', id_professeur='$login_etab';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -866,7 +866,7 @@ else {
 						$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$current_id_groupe' AND login='$login_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association professeur '$login_etab' / groupe '".htmlentities($current_id_groupe)."' dans la table 'j_groupes_professeurs': ";
+							echo "<p>Inscription de l'association professeur '$login_etab' / groupe '".htmlspecialchars($current_id_groupe)."' dans la table 'j_groupes_professeurs': ";
 							$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$current_id_groupe', login='$login_etab';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -924,7 +924,7 @@ else {
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
 						*/
-							echo "<p>Inscription de l'appréciation pour la matière '".htmlentities($matiere)."' sur la période '$periode': ";
+							echo "<p>Inscription de l'appréciation pour la matière '".htmlspecialchars($matiere)."' sur la période '$periode': ";
 							//$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='$app';";
 							$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='".my_ereg_replace("_POINT_VIRGULE_",";",$app)."';";
 							$res=mysql_query($sql);

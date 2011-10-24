@@ -75,7 +75,7 @@ if (isset($_POST['action'])) {
         }
 
         if (!$error) {
-            $res = mysql_query("INSERT INTO matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . htmlentities($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "'");
+            $res = mysql_query("INSERT INTO matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "'");
         }
         if (!$res) {
             $msg .= "Erreur lors de l'enregistrement de la nouvelle catégorie.</br>";
@@ -108,7 +108,7 @@ if (isset($_POST['action'])) {
 
         if (!$error) {
             // On enregistre
-            $res = mysql_query("UPDATE matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . htmlentities($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "' WHERE id = '".$_POST['categorie_id']."'");
+            $res = mysql_query("UPDATE matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "' WHERE id = '".$_POST['categorie_id']."'");
         }
 
         if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";
@@ -205,8 +205,8 @@ if (isset($_GET['action'])) {
 			echo add_token_field();
             echo "<input type='hidden' name='action' value='edit'>";
             echo "<input type='hidden' name='categorie_id' value='".$current_cat["id"] . "'>";
-            echo "<p>Nom court (utilisé dans les outils de configuration) : <input type='text' name='nom_court' value='".html_entity_decode_all_version($current_cat["nom_court"]) ."' /></p>";
-            echo "<p>Intitulé complet (utilisé sur les documents officiels) : <input type='text' name='nom_complet' value='".html_entity_decode_all_version($current_cat["nom_complet"]) ."' /></p>";
+            echo "<p>Nom court (utilisé dans les outils de configuration) : <input type='text' name='nom_court' value='".html_entity_decode($current_cat["nom_court"]) ."' /></p>";
+            echo "<p>Intitulé complet (utilisé sur les documents officiels) : <input type='text' name='nom_complet' value='".html_entity_decode($current_cat["nom_complet"]) ."' /></p>";
             echo "<p>Priorité d'affichage par défaut : ";
             echo "<select name='priority' size='1'>";
             for ($i=0;$i<11;$i++) {
@@ -246,8 +246,8 @@ if (isset($_GET['action'])) {
     while ($current_cat = mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$alt=$alt*(-1);
         echo "<tr class='lig$alt white_hover'>\n";
-        echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".html_entity_decode_all_version($current_cat["nom_court"])."</a></td>\n";
-        echo "<td>".html_entity_decode_all_version($current_cat["nom_complet"])."</td>\n";
+        echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".html_entity_decode($current_cat["nom_court"])."</a></td>\n";
+        echo "<td>".html_entity_decode($current_cat["nom_complet"])."</td>\n";
         echo "<td>".$current_cat["priority"]."</td>\n";
         echo "<td>";
         if ($current_cat["id"] != "1") {

@@ -190,28 +190,6 @@ function gzip($src, $level = 5, $dst = false){
     }
 }
 
-function charset_to_iso($string, $method = "mbstring") {
-	// Cette fonction a pour objet de convertir, si nécessaire,
-	// la chaîne de caractères $string avec l'encodage iso-8859-1
-	// Il s'agit surtout de prendre en compte les backup réalisés
-	// avec mysqldump, qui encodent en utf8...
-
-	if (preg_match('%(?:[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})+%xs', $string)) {
-    	// Ce preg_match détecte la présence d'un caractère codé en utf-8
-    	// Donc si elle retourne true, il faut convertir :
-    	if ($method == "mbstring") {
-    		return mb_convert_encoding($string, "ISO-8859-1", "UTF-8");
-    		unset($string);
-    	} else {
-    		return iconv("UTF-8", "ISO-8859-1", $string);
-    		unset($string);
-    	}
-    } else {
-    	return $string;
-    	unset($string);
-    }
-}
-
 function deplacer_fichier_upload($source, $dest) {
     $ok = @copy($source, $dest);
     if (!$ok) $ok = @move_uploaded_file($source, $dest);
@@ -421,17 +399,7 @@ function restoreMySqlDump($duree) {
 				$formattedQuery .= $buffer;
 				//echo $formattedQuery."<hr />";
 				if ($formattedQuery) {
-					// Iconv désactivé pour l'instant... Il semble qu'il y ait une fuite mémoire...
-					//if (function_exists("iconv")) {
-					//	$sql = charset_to_iso($formattedQuery, "iconv");
-					//} elseif (function_exists("mbstring_convert_encoding")) {
-					// on est en utf-8
-					if (function_exists("mb_convert_encoding")) {
-						//$sql = charset_to_iso($formattedQuery, "mbstring");
-						$sql = $formattedQuery;
-					} else {
-						$sql = $formattedQuery;
-					}
+					$sql = $formattedQuery;
 					if (mysql_query($sql)) {//réussie sinon continue à concaténer
 						if(my_ereg("^DROP TABLE ",$sql)) {
 							echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
@@ -556,17 +524,7 @@ function restoreMySqlDump($duree) {
 							$formattedQuery .= $buffer;
 							//echo $formattedQuery."<hr />";
 							if ($formattedQuery) {
-								// Iconv désactivé pour l'instant... Il semble qu'il y ait une fuite mémoire...
-								//if (function_exists("iconv")) {
-								//	$sql = charset_to_iso($formattedQuery, "iconv");
-								//} elseif (function_exists("mbstring_convert_encoding")) {
-								// inutile on est en utf-8
-								if (function_exists("mb_convert_encoding")) {
-									//$sql = charset_to_iso($formattedQuery, "mbstring");
-									$sql = $formattedQuery;
-								} else {
-									$sql = $formattedQuery;
-								}
+								$sql = $formattedQuery;
 								if (mysql_query($sql)) {//réussie sinon continue à concaténer
 									if(my_ereg("^DROP TABLE ",$sql)) {
 										echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
@@ -801,17 +759,7 @@ function restoreMySqlDump_old($dumpFile,$duree) {
             $formattedQuery .= $buffer;
               //echo $formattedQuery."<hr />";
             if ($formattedQuery) {
-                // Iconv désactivé pour l'instant... Il semble qu'il y ait une fuite mémoire...
-                //if (function_exists("iconv")) {
-                //	$sql = charset_to_iso($formattedQuery, "iconv");
-                //} elseif (function_exists("mbstring_convert_encoding")) {
-                // on est en utf-8
-                if (function_exists("mb_convert_encoding")) {
-                  	//$sql = charset_to_iso($formattedQuery, "mbstring");
-                	$sql = $formattedQuery;
-                } else {
-                	$sql = $formattedQuery;
-                }
+                $sql = $formattedQuery;
                 if (mysql_query($sql)) {//réussie sinon continue à concaténer
                     $offset=gztell($fileHandle);
                     //echo $offset;

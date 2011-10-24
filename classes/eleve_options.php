@@ -383,7 +383,7 @@ while ($i < $nombre_ligne) {
 	$id_groupe = mysql_result($call_group, $i, "id");
 	$nom_groupe = mysql_result($call_group, $i, "name");
 	//$description_groupe = mysql_result($call_group, $i, "description");
-	$description_groupe = htmlentities(mysql_result($call_group, $i, "description"));
+	$description_groupe = htmlspecialchars(mysql_result($call_group, $i, "description"));
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>";

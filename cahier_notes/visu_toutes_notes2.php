@@ -296,7 +296,7 @@ if ($affiche_categories) {
 
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
 	}
 }
 // Calcul du nombre de matières à afficher
@@ -445,7 +445,7 @@ $ligne1_csv[1] = "Nom ";
 //if ($aff_doub) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"doublant\">";
 //if ($aff_abs) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=1/2 journées d'absence&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"1/2 journées d'absence\">";
 //if (($aff_rang) and ($referent=="une_periode")) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Rang de l'élève&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"Rang de l'élève\">";
-//if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".htmlentities("Régime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
+//if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".htmlspecialchars("Régime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
 //=========================
 if ($aff_date_naiss){
 	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Date de naissance")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";

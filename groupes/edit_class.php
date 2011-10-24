@@ -543,8 +543,8 @@ for ($i=0;$i<$nb_mat;$i++) {
     $nom_matiere = mysql_result($query, $i, "nom_complet");
     //echo "<option value='" . $matiere . "'";
     echo "<option value='" . $matiere . "'";
-    //echo ">" . htmlentities($nom_matiere) . "</option>\n";
-    echo ">" . htmlentities($nom_matiere,ENT_QUOTES,"UTF-8") . "</option>\n";
+    //echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
+    echo ">" . htmlspecialchars($nom_matiere,ENT_QUOTES,"UTF-8") . "</option>\n";
 }
 echo "</select>\n";
 echo "</td>\n";
@@ -703,11 +703,11 @@ for($i=0;$i<10;$i++){
             echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
         }
         echo $group["description"] . "</a></b>";
-        //echo htmlentities($group["description"]) . "</a></b>";
+        //echo htmlspecialchars($group["description"]) . "</a></b>";
         //===============================
         // AJOUT: boireaus
-        //echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"])."\" /
-        echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"],ENT_QUOTES,"UTF-8")."\" />\n";
+        //echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlspecialchars($group["description"])."\" /
+        echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlspecialchars($group["description"],ENT_QUOTES,"UTF-8")."\" />\n";
         //===============================
         echo "</span>";
 
@@ -816,8 +816,8 @@ for($i=0;$i<10;$i++){
             if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) {
                echo " SELECTED";
             }
-            //echo ">".html_entity_decode_all_version($cat->nom_court))."</option>\n";
-            echo ">".html_entity_decode_all_version($cat->nom_court,ENT_QUOTES,"UTF-8")."</option>\n";
+            //echo ">".html_entity_decode($cat->nom_court))."</option>\n";
+            echo ">".html_entity_decode($cat->nom_court,ENT_QUOTES,"UTF-8")."</option>\n";
         }
         echo "</select>\n";
 

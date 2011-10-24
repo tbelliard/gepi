@@ -271,7 +271,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
  */
 	function DiagBarre($X_placement, $Y_placement, $L_diagramme, $H_diagramme, $data, $place)
 	{
-		$this->SetFont('Courier', '', 10);
+		$this->SetFont('DejaVu', '', 10);
 		//encadrement général
 		$this->Rect($X_placement, $Y_placement, $L_diagramme, $H_diagramme, 'D');
 		//encadrement du diagramme

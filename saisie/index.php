@@ -69,7 +69,7 @@ if ($current_group) {
 
     echo " | <a href='index.php'>Mes enseignements</a></p>\n";
     //echo "<p class='grand'> Groupe : " . $current_group["description"] . " ($classes) | Matière : $matiere_nom</p>";
-    echo "<p class='grand'> Groupe : " . htmlentities($current_group["description"]) . " ($classes) | Matière : ".htmlentities($matiere_nom)."</p>\n";
+    echo "<p class='grand'> Groupe : " . htmlspecialchars($current_group["description"]) . " ($classes) | Matière : ".htmlspecialchars($matiere_nom)."</p>\n";
     //echo "<p class='bold'>Saisie manuelle (tous trimestres) :</p>\n<ul>\n";
 
 	/*
@@ -390,10 +390,10 @@ if ($current_group) {
 			$test_jgv=mysql_query($sql);
 			if(mysql_num_rows($test_jgv)==0) {
 				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> (" . $group["classlist_string"] . ")</p>\n";
-				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
-				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
+				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
+				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
 				echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-				echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
+				echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlspecialchars($group["description"]) . "</a>";
 				echo "</span></p>\n";
 			}
         }
@@ -425,7 +425,7 @@ if ($current_group) {
 		}
 
 		//echo "<a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - \n";
-		echo "<a href='index.php?id_groupe=" . $group["id"] . "' title='$texte_alternatif'>" . htmlentities($group["description"]) . "</a> - \n";
+		echo "<a href='index.php?id_groupe=" . $group["id"] . "' title='$texte_alternatif'>" . htmlspecialchars($group["description"]) . "</a> - \n";
             }
             $i++;
             echo "</span>\n";

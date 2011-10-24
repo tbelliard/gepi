@@ -571,7 +571,7 @@ echo "\n";
 
 
 
-echo "<p class='bold'> Classe : $nom_classe | Matière : ".htmlentities("$matiere_nom ($matiere_nom_court)")."| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
+echo "<p class='bold'> Classe : $nom_classe | Matière : ".htmlspecialchars("$matiere_nom ($matiere_nom_court)")."| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "</div>";
 
 
@@ -926,16 +926,16 @@ if ($new_devoir=='yes') {
 					if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
 						echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' />\n";
 						echo "</td>\n";
-						echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['name'])."</label></td>\n";
-						echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['description'])."</label></td>\n";
+						echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['name'])."</label></td>\n";
+						echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['description'])."</label></td>\n";
 						echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
 						$cpt++;
 					}
 					else {
 						echo "<span style='color:red;'>Clos</span>";
 						echo "</td>\n";
-						echo "<td>".htmlentities($tab_group[$i]['name'])."</td>\n";
-						echo "<td>".htmlentities($tab_group[$i]['description'])."</td>\n";
+						echo "<td>".htmlspecialchars($tab_group[$i]['name'])."</td>\n";
+						echo "<td>".htmlspecialchars($tab_group[$i]['description'])."</td>\n";
 						echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
 					}
 					//echo "<td>...</td>\n";

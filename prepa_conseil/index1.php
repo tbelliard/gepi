@@ -244,9 +244,9 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 	$pdf->AddPage();
-	$fonte='Arial';
+	$fonte='DejaVu';
 
-	$pdf->SetFont($fonte,'B',8);
+	$pdf->SetFont('DejaVu','B',8);
 
 	$texte_titre=$current_group['profs']['proflist_string']." - ".$current_group['description']." en ".$current_group['classlist_string'];
 
@@ -489,7 +489,7 @@ if (!$current_group) {
 					//if ($aff_class == 'no') {echo "<span class='norme'><b>$display_class</b> : ";$aff_class = 'yes';}
 					//if ($aff_class == 'no') {echo "<b>$display_class</b> : ";$aff_class = 'yes';}
 					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - ";
-					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a></span> - \n";
+					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . "</a></span> - \n";
 
 
 					if ($aff_class == 'no') {
@@ -505,7 +505,7 @@ if (!$current_group) {
 					}
 
 					echo "<span class='norme'>";
-					echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . " </a>\n";
+					echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . " </a>\n";
 
 					// pas de nom si c'est un prof qui demande la page.
 					//if ($_SESSION['statut']!='professeur') {
@@ -676,7 +676,7 @@ if (!$current_group) {
     }
 
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire\">";
-    echo "<p class='bold'>Groupe : " . htmlentities($current_group["description"]) ." " . htmlentities($current_group["classlist_string"]) . " | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /></p>\n";
+    echo "<p class='bold'>Groupe : " . htmlspecialchars($current_group["description"]) ." " . htmlspecialchars($current_group["classlist_string"]) . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /></p>\n";
     echo "<p>Choisissez les données à imprimer (<i>vous pouvez cocher plusieurs cases</i>) : </p>\n";
     $i="1";
 	$cpt=0;
@@ -2026,7 +2026,7 @@ function checkbox_change(champ, cpt) {
         parametres_tableau($larg_tab, $bord);
 	}
 //    else echo "<p class=small><a href=\"index1.php?id_classe=$id_classe&choix_matiere=$choix_matiere\">Retour</a>";
-    echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Groupe : " . htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ") | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]);
+    echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Groupe : " . htmlspecialchars($current_group["description"]) . " (" . $current_group["classlist_string"] . ") | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]);
     echo "</p>\n";
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";

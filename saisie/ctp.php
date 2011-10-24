@@ -26,10 +26,10 @@
 		while($lig_cmt=mysql_fetch_object($res_cmt)) {
 			$alt=$alt*(-1);
 			$texte_bulle.="<div class='lig$alt' style='border:1px solid black; margin: 1px; ' onClick=\"insere_cmt($cpt)\">\n";
-			$texte_bulle.=htmlentities($lig_cmt->app)."\n";
+			$texte_bulle.=htmlspecialchars($lig_cmt->app)."\n";
 			$texte_bulle.="</div>\n";
 
-			echo "<div id='cmt_".$cpt."' style='display:none;'>".htmlentities($lig_cmt->app)."</div>\n";
+			echo "<div id='cmt_".$cpt."' style='display:none;'>".htmlspecialchars($lig_cmt->app)."</div>\n";
 			$cpt++;
 		}
 		$texte_bulle.="</div>\n";

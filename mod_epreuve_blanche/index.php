@@ -1257,9 +1257,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$cpt++;
 					}
 
-					//echo "<b>".$current_group['classlist_string']."</b> <a href='#'>".htmlentities($lig->name)."</a> (<i>".htmlentities($lig->description)."</i>)";
-					//echo "<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
-					echo "<b>".$classlist_string."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
+					//echo "<b>".$current_group['classlist_string']."</b> <a href='#'>".htmlspecialchars($lig->name)."</a> (<i>".htmlspecialchars($lig->description)."</i>)";
+					//echo "<b>".$current_group['classlist_string']."</b> ".htmlspecialchars($lig->name)." (<i>".htmlspecialchars($lig->description)."</i>)";
+					echo "<b>".$classlist_string."</b> ".htmlspecialchars($lig->name)." (<i>".htmlspecialchars($lig->description)."</i>)";
 					if($etat!='clos') {
 						echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=$lig->id&amp;mode=suppr_groupe".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer le groupe de l épreuve?')\">Supprimer</a>\n";
 					}
@@ -1570,7 +1570,7 @@ function checkbox_change(cpt) {
 						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
 						echo "onchange=\"checkbox_change($cpt)\" ";
 						if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-						echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlentities($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlentities($lig->description)."</span>)</span></label><br />\n";
+						echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
 						$cpt++;
 					}
 				}

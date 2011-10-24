@@ -186,7 +186,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						$devoir_array = mysql_fetch_array($appel_dev);
 						$devoir_array = array_map_deep('check_utf8_and_convert', $devoir_array);
 						echo '<input type="hidden" name="period_num" value=\''.$periode_num.'\'/>';
-						echo '<input type="hidden" name="gepi_cn_devoirs_array" value=\''.json_encode($devoir_array).'\'/>';
+						echo '<input type="hidden" name="gepi_cn_devoirs_array" value="'.htmlspecialchars(json_encode($devoir_array),ENT_COMPAT,'UTF-8').'"/>';
 						$group_array = get_group($id_groupe);
 						//on va purger un peut notre array
 						unset($group_array['classes']);
@@ -198,7 +198,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							}
 						}
 						$current_group = array_map_deep('check_utf8_and_convert', $group_array);
-						echo '<input type="hidden" name="gepi_current_group" value=\''.json_encode($current_group).'\'/>';
+						echo '<input type="hidden" name="gepi_current_group" value="'.htmlspecialchars(json_encode($current_group),ENT_COMPAT,'UTF-8').'"/>';
 						echo '</form>';
 					}
 					

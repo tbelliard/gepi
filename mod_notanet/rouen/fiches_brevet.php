@@ -4440,7 +4440,7 @@ else {
 					$lig_avis=mysql_fetch_object($res_avis);
 					if($lig_avis->favorable=="O") {echo "Avis favorable.<br />";}
 					elseif($lig_avis->favorable=="N") {echo "Avis défavorable.<br />";}
-					echo htmlentities($lig_avis->avis);
+					echo htmlspecialchars($lig_avis->avis);
 				}
 				//for($k=0;$k<=$fb_nblig_avis_chef;$k++){
 				//	echo "<br />\n";

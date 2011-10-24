@@ -168,7 +168,7 @@ while ($i < $nombre_lignes){
     echo "<tr class='lig$alt white_hover'><td><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
     //echo "<td>$current_matiere_nom</td>";
     //echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
-    echo "<td>".htmlentities($current_matiere_nom)."</td>\n";
+    echo "<td>".htmlspecialchars($current_matiere_nom)."</td>\n";
     // La priorité par défaut
     echo "<td>\n";
     echo "<select size=1 name='" . strtolower($current_matiere)."_priorite' onchange='changement()'>\n";
@@ -196,7 +196,7 @@ while ($i < $nombre_lignes){
     foreach ($categories as $row) {
         echo "<option value='".$row["id"]."'";
         if ($current_matiere_categorie_id == $row["id"]) {echo " SELECTED";}
-        echo ">".html_entity_decode_all_version($row["nom_court"])."</option>\n";
+        echo ">".html_entity_decode($row["nom_court"])."</option>\n";
     }
     echo "</select>\n";
     echo "</td>\n";

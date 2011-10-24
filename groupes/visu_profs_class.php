@@ -241,7 +241,7 @@ if(isset($id_classe)){
 
 
 			// Matière correspondant au groupe:
-			echo "<tr valign='top'><td>".htmlentities($lig_grp->nom_complet)."</td>\n";
+			echo "<tr valign='top'><td>".htmlspecialchars($lig_grp->nom_complet)."</td>\n";
 
 			echo "<td>";
 			echo "<a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"$id_classe\");'>".$nb_eleves." ";
@@ -351,7 +351,7 @@ else{
 	for ($i=0;$i<$nb_classes;$i++) {
 		$classe=mysql_result($query, $i, "classe");
 		$id_classe=mysql_result($query, $i, "id");
-		echo "<option value='$id_classe'>" . htmlentities($classe) . "</option>\n";
+		echo "<option value='$id_classe'>" . htmlspecialchars($classe) . "</option>\n";
 	}
 	*/
 	if(mysql_num_rows($result_classes)==0){
@@ -371,8 +371,8 @@ else{
 				//echo "<td style='padding: 0 10px 0 10px'>\n";
 				echo "<td>\n";
 			}
-			//echo "<option value='$lig_class->id'>" . htmlentities("$lig_class->classe") . "</option>\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id'>".htmlentities("$lig_class->classe") . "</a><br />\n";
+			//echo "<option value='$lig_class->id'>" . htmlspecialchars("$lig_class->classe") . "</option>\n";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id'>".htmlspecialchars("$lig_class->classe") . "</a><br />\n";
 			$cpt++;
 		}
 		echo "</td>\n";

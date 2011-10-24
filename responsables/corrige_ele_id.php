@@ -426,7 +426,7 @@ else{
 									$i++;
 									$eleves[$i]=array();
 
-									//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+									//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 									unset($tabtmp);
 									//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
 									$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
@@ -627,7 +627,7 @@ else{
 				//while($cpt<count($ligne)){
 				while(!feof($fp)){
 					$ligne=fgets($fp,4096);
-					//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
+					//echo "<p>".htmlspecialchars($ligne[$cpt])."<br />\n";
 					//if(strstr($ligne[$cpt],"<ELEVES>")){
 					if(strstr($ligne,"<ELEVES>")){
 						echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
@@ -648,7 +648,7 @@ else{
 							$eleves[$i]=array();
 							$eleves[$i]["scolarite_an_dernier"]=array();
 
-							//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+							//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 							unset($tabtmp);
 							//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
 							$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));

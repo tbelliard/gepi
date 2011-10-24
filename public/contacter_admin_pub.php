@@ -105,11 +105,11 @@ case "envoi":
         $from = $email_reponse != "" ? "$nama <$email_reponse>" : getSettingValue("gepiAdminAdress");
 
         $subject = $gepiPrefixeSujetMail."Demande d'aide dans GEPI";
-        $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+        $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
 
         $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+        $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
         $headers .= "From: $from\r\n";
         if ($email_reponse != "") {
           $headers .= "Reply-To: $from\r\n";

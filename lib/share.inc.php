@@ -64,11 +64,11 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
   $subject = $gepiPrefixeSujetMail."GEPI : $sujet";
-  $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+  $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
   
   $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+  $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
   $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
   $headers .= $ajout_headers;
 
@@ -916,31 +916,6 @@ function get_periode_active($_id_classe){
 }
 
 /**
- *  Equivalent à html_entity_decode()
- * 
- * Pour les utilisateurs ayant des versions antérieures à PHP 4.3.0 :
- * la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
- * 
- * @deprecated GEPI ne fonctionne plus sans php 5.2 et plus
- * @param string $string
- * @return type 
- */
-function html_entity_decode_all_version ($string)
-{
-   global $use_function_html_entity_decode;
-   if (isset($use_function_html_entity_decode) and ($use_function_html_entity_decode == 0)) {
-       // Remplace les entités numériques
-       $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-       $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
-       // Remplace les entités litérales
-       $trans_tbl = get_html_translation_table (HTML_ENTITIES);
-       $trans_tbl = array_flip ($trans_tbl);
-       return strtr ($string, $trans_tbl);
-   } else
-       return html_entity_decode($string);
-}
-
-/**
  * Cette fonction est à appeler dans tous les cas où une tentative
  * d'utilisation illégale de Gepi est manifestement avérée.
  * Elle est à appeler notamment dans tous les tests de sécurité lorsqu'un test est négatif.
@@ -1059,12 +1034,12 @@ function tentative_intrusion($_niveau, $_description) {
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
     $subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
-    $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+    $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
 
     
     $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
     $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 
 		// On envoie le mail
@@ -1364,77 +1339,113 @@ function vider_dir($dir){
 
 /**
  * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien
- * retournée en ISO-8859-1.
+ * retournée en UTF-8
+ * Attention, certain encodages sont très similaire et ne peuve pas être théoriquement distingué sur une chaine de caractere. Si vous connaissez déjà l'encodage de votre chaine de départ, il est préférable de la préciser
  * 
- * @param string La chaine à tester
- * @return string La chaine traitée
- * @todo supprimer cette méthode
+ * @param string $str La chaine à encoder
+ * @param string $encoding L'encodage de départ
+ * @return string La chaine en utf8
+ * @throws Exception si la chaine n'a pas pu être encodée correctement
  */
-function ensure_iso8859_1($str) {
-	$encoding = mb_detect_encoding($str);
-	if ($encoding == 'ISO-8859-1') {
-		return $str;
-	} else {
-		return mb_convert_encoding($str, 'ISO-8859-1');
+function ensure_utf8($str, $from_encoding = null) {
+    if ($str === null || $str === '') {
+        return $str;
+    } else if ($from_encoding == null && check_utf8($str)) {
+	    return $str;
 	}
+	
+    if ($from_encoding != null) {
+        $encoding =  $from_encoding;
+    } else {
+	    $encoding = detect_encoding($str);
+    }
+	$result = null;
+    if ($encoding !== false && $encoding != null) {
+    	//test : est-ce que iconv est bien implémenté sur ce système ?
+        $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel été');
+        if ($test) {
+            //on utilise iconv pour la conversion
+            try {
+                $result = iconv("UTF-8", $encoding."//TRANSLIT//IGNORE", $str);
+            } catch (Exception $e) {
+                //ça n'a pas marché avec iconv, on essaie avec mb
+                if (function_exists('mb_convert_encoding')) {
+                    $result = mb_convert_encoding($str, 'UTF-8', $encoding);
+                }
+            }
+        } else {
+            if (function_exists('mb_convert_encoding')) {
+                $result = mb_convert_encoding($str, 'UTF-8', $encoding);
+            }
+        }
+    }
+	if ($result === null || !check_utf8($result)) {
+	    throw new Exception('Impossible de convertir la chaine vers l\'utf8');
+	}
+	return $result;
+}
+
+
+/**
+ * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien encodée en UTF-8
+ * 
+ * @param string $str La chaine à tester
+ * @return boolear
+ * @throws Exception si aucune fonction php n'est disponible pour détecter l'encodage
+ */
+function check_utf8 ($str) {
+    $result = true;
+    $test_done = false;
+    if (function_exists('mb_check_encoding')) {
+        $test_done = true;
+        $result = $result && mb_check_encoding($str, 'UTF-8');
+    }
+    if (function_exists('mb_detect_encoding')) {
+        $test_done = true;
+        $result = $result && mb_detect_encoding($str, 'UTF-8', true);
+    }
+    if (function_exists('iconv')) {
+        $test_done = true;
+        $result = $result && ($str === (iconv('UTF-8', 'UTF-8//IGNORE', $str)));
+    }
+    if (function_exists('mb_convert_encoding')) {
+        $test_done = true;
+        $result && ($str === mb_convert_encoding ( mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
+    }
+    if (!$test_done) {
+        throw new Exception ('Aucune fonction disponible pour tester l\'encodage de caractère (mb_check_encoding, mb_detect_encoding, mb_convert_encoding ou iconv)'); 
+    }
+    return $result;
 }
 
 /**
- * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien
- * retournée en ISO-8859-1.
+ * Cette méthode prend une chaîne de caractères et détecte son encodage
  * 
- * @param string La chaine à tester
- * @return string La chaine traitée
- * @todo supprimer cette méthode
+ * @param string $str La chaine à tester
+ * @return l'encodage ou false si indétectable
  */
-function ensure_utf_8($str) {
-		return $str;
-	$encoding = mb_detect_encoding($str);
-	if ($encoding == 'UTF-8') {
-		return $str;
-	} else {
-		return mb_convert_encoding($str, 'UTF-8');
-	}
-}
-
-/**
- * Encode une chaine en utf8
- * 
- * @param string $chaine La chaine à tester
- * @return string La chaine traitée
- * @todo supprimer cette méthode
- */
-function caract_ooo($chaine){
-		$retour=utf8_encode($chaine);
-	if(function_exists('utf8_encode')){
-	}
-	else{
-		$caract_accent=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
-		$caract_utf8=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
-
-		$retour=$chaine;
-		for($i=0;$i<count($caract_accent);$i++){
-			$retour=str_replace($caract_accent[$i],$caract_utf8[$i],$retour);
-		}
-	}
-
-	$caract_special=array("&",
-							'"',
-							"'",
-							"<",
-							">");
-
-	$caract_sp_encode=array("&amp;",
-							"&quot;",
-							"&apos;",
-							"&lt;",
-							"&gt;");
-
-	for($i=0;$i<count($caract_special);$i++){
-		$retour=str_replace($caract_special[$i],$caract_sp_encode[$i],$retour);
-	}
-
-	return $retour;
+function detect_encoding($str) {
+    //on va commencer par tester ces encodages
+    static $encoding_list = array('UTF-8', 'ISO-8859-15','windows-1251');
+    foreach ($encoding_list as $item) {
+        if (function_exists('iconv')) {
+            $sample = @iconv($item, $item, $str);
+            if (md5($sample) == md5($str)) {
+                return $item;
+            }
+        } else if (function_exists('mb_detect_encoding')) {
+            if (mb_detect_encoding($str, $item, true)) {
+                return $item;
+            }
+        }
+    }
+    echo'on est la';
+    //la méthode précédente n'a rien donnée
+    if (function_exists('mb_detect_encoding')) {
+        return mb_detect_encoding($str);
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -1454,13 +1465,14 @@ $GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓ
 $GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
 
 /**
- * Remplace les accents dans une chaine
+ * Remplace les accents dans une chaine UTF-8.
+ * iconv malheureusement est déployé de manière trop inconstante pour être utilisée
  * 
  * $mode = 'all' On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
  * 
  * $mode = 'all_nospace' On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
  * 
- *  Sinon, on remplace les caractères accentués par leurs équivalents non accentués.
+ * Sinon, on remplace les caractères accentués par leurs équivalents non accentués.
  *
  * @global string 
  * @global string 
@@ -1471,23 +1483,28 @@ $GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaac
  */
 function remplace_accents($chaine,$mode=''){
 	global $liste_caracteres_accentues, $liste_caracteres_desaccentues;
-
+	
+	ensure_utf8($chaine);
+	
+	//test : est-ce que iconv est bien implémenté sur ce système ?
+    $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel été');
+    if ($test) {
+        //on utilise iconv pour la conversion
+        $str = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $chaine);
+    } else {
+        //on utilise pas iconv pour la conversion
+    	$translit = array('Á'=>'A','À'=>'A','Â'=>'A','Ä'=>'A','Ã'=>'A','Å'=>'A','Ç'=>'C','É'=>'E','È'=>'E','Ê'=>'E','Ë'=>'E','Í'=>'I','Ï'=>'I','Î'=>'I','Ì'=>'I','Ñ'=>'N','Ó'=>'O','Ò'=>'O','Ô'=>'O','Ö'=>'O','Õ'=>'O','Ú'=>'U','Ù'=>'U','Û'=>'U','Ü'=>'U','Ý'=>'Y','á'=>'a','à'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','ç'=>'c','é'=>'e','è'=>'e','ê'=>'e','ë'=>'e','í'=>'i','ì'=>'i','î'=>'i','ï'=>'i','ñ'=>'n','ó'=>'o','ò'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u','ý'=>'y','ÿ'=>'y');
+    	$str = strtr($chaine, $translit);
+    }
+	
 	if($mode == 'all'){
-		// On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine"))))," '$liste_caracteres_accentues","__$liste_caracteres_desaccentues");
+		return preg_replace('#[^a-zA-Z0-9\-\._]#', '_', $str); // Pour des noms de fichiers par exemple
 	}
 	elseif($mode == 'all_nospace'){
-		// On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour1=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine")))),"'$liste_caracteres_accentues","_$liste_caracteres_desaccentues");
-		// On enlève aussi les guillemets
-		$retour = preg_replace('/"/', '', $retour1);
+		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
+	} else {
+	    return $str;
 	}
-	else {
-		// On remplace les caractères accentués par leurs équivalents non accentués.
-		$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine")))),"$liste_caracteres_accentues","$liste_caracteres_desaccentues");
-	}
-	return $chaine;
-	return $retour;
 }
 
 /**
@@ -2828,19 +2845,12 @@ function casse_prenom($prenom) {
 }
 
 /**
- * Drapeau pour encoder un texte en utf8 si à "y"
- *
- * @global string  $GLOBALS['mode_utf8_pdf']
- * @name $mode_utf8_pdf
- */
-$GLOBALS['mode_utf8_pdf'] = '';
-
-/**
  * Encode une chaine en utf8 si $mode_utf8_pdf="y"
  *
  * @global type 
  * @param type $chaine Chaine à encoder
  * @return type 
+ * @deprecated
  */
 function traite_accents_utf8($chaine) {
     return $chaine; //normalement tout gepi est en utf8, il n'y a plus de traitement à faire
@@ -4069,7 +4079,7 @@ function get_tab_prof_suivi($id_classe) {
  * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844
  * 
  * @param type $login_destinataire login du destinataire (obligatoire)
- * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
+ * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en UTF-8 (obligatoire)
  * @param type $date_debut date à partir de laquelle est affiché le message (timestamp, optionnel)
  * @param type $date_fin date à laquelle le message n'est plus affiché (timestamp, optionnel)
  * @param type $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (timestamp, optionnel)

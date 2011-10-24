@@ -6,6 +6,8 @@
  * @package Initialisation
  * @subpackage initialisation
  */
+/* Utilise l'encodage interne UTF-8 */
+mb_internal_encoding("UTF-8");
 
 /**
  * Niveau de la page dans l'arborescence de GEPI
@@ -213,24 +215,7 @@ if (isset($_REQUEST["source"])) {
   */
    require_once($chemin_relatif_gepi."/lib/global.inc.php");
  /**
-  * Filtrage html
-  */
-   require_once($chemin_relatif_gepi."/lib/filtrage_html.inc.php");
-	if($filtrage_html=="htmlpurifier") {
- /**
-  * Utilisation de HTMLPurifier.standalone pour filtrer les saisies
-  */
-		require_once($chemin_relatif_gepi."/lib/HTMLPurifier.standalone.php");
-	}
-	elseif($filtrage_html=="inputfilter") {
- /**
-  * Utilisation de class.inputfilter_clean.php pour filtrer les saisies
-  */
-		require_once($chemin_relatif_gepi."/lib/class.inputfilter_clean.php");
-	}
-
- /**
-  * Traitement des données
+  * Traitement des données (filtrage de sécurité)
   */
    require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
  /**

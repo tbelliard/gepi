@@ -652,7 +652,7 @@ if (!(isset($id_classe))) {
 						// MODIF: boireaus
 						// Pour les matières comme Histoire & Géo,...
 						//echo "<br />--> " . $current_group["description"] . " (" . $current_group["classlist_string"] . ")  --  (";
-						echo "<br />--> " . htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ")  --  (";
+						echo "<br />--> " . htmlspecialchars($current_group["description"]) . " (" . $current_group["classlist_string"] . ")  --  (";
 						//============================================
 						$m=0;
 						$virgule = 1;
@@ -735,7 +735,7 @@ if (!(isset($id_classe))) {
 						// MODIF: boireaus
 						// Pour les matières comme Histoire & Géo,...
 						//echo "<br />--> " . $current_group["description"] . " (" . $current_group["classlist_string"] . ")  --  (";
-						echo "<br />--> ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")  --   (";
+						echo "<br />--> ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] . ")  --   (";
 						//============================================
 						$m=0;
 						$virgule = 1;

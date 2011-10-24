@@ -379,7 +379,7 @@ echo "</form>\n";
 
 <?php
 	echo "<h3>Gérer les élèves de l'enseignement : ";
-	echo htmlentities($current_group["description"]) . " (<i>" . $current_group["classlist_string"] . "</i>)";
+	echo htmlspecialchars($current_group["description"]) . " (<i>" . $current_group["classlist_string"] . "</i>)";
 	echo "</h3>\n";
 	//$temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
 	if(count($current_group["profs"]["users"])>0){

@@ -627,7 +627,7 @@ echo add_token_field();
 		echo "<p><i>Taper une note de 0 à 20 pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code 'n' ou '-' pour absence de note.</i></p>\n";
 	}
 
-	echo "<p><b>Moyennes (sur 20) de : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")</b></p>\n";
+	echo "<p><b>Moyennes (sur 20) de : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] . ")</b></p>\n";
 
 	echo "<div id='info_recopie' class='infobulle_corps' style='float:right; width:20em; border: 1px solid black; display:none;'></div>\n";
 	//echo "<div style='clear:both;'></div>\n";

@@ -71,7 +71,7 @@ $verif_couleur = GetSettingEdt($M_couleur);
 
 if ($nouvelle_couleur == "non") {
 	echo '
-<td>'.htmlentities($aff_matiere_long).'</td>
+<td>'.htmlspecialchars($aff_matiere_long).'</td>
 <td>'.$matiere.'</td>
 <td class="cadreCouleur'.$couleur.'">
 	<form id="choixCouleur" method="get" action="">
@@ -120,7 +120,7 @@ if ($nouvelle_couleur == "non") {
 	}
 
 	echo '
-<td>'.htmlentities($aff_matiere_long).'</td>
+<td>'.htmlspecialchars($aff_matiere_long).'</td>
 <td>'.$matiere.'</td>
 <td class="cadreCouleur'.$nouvelle_couleur.'">
 	<p onclick="couleursEdtAjax(\''.$M_couleur.'\', \'non\');">'.MODIFY.'</p>
