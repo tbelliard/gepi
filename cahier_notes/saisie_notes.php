@@ -26,7 +26,6 @@
  * @see recherche_enfant()
  * @see Session::security_check()
  * @see sous_conteneurs()
- * @see traite_accents_utf8()
  * @see traitement_magic_quotes()
  * @see Verif_prof_cahier_notes()
  */
@@ -447,17 +446,17 @@ chargement = false;
 <?php
 if($id_conteneur==$id_racine){
 	if($nom_conteneur==""){
-		$titre=htmlspecialchars($current_group['description'])." (".$nom_periode.")";
+		$titre=$current_group['description']." (".$nom_periode.")";
 	}
 	else{
 		$titre=$nom_conteneur." (".$nom_periode.")";
 	}
 }
 else{
-	$titre=htmlspecialchars(ucfirst(strtolower(getSettingValue("gepi_denom_boite"))))." : ".$nom_conteneur." (".$nom_periode.")";
+	$titre=casse_mot(getSettingValue("gepi_denom_boite"),'majf3')." : ".$nom_conteneur." (".$nom_periode.")";
 }
 
-$titre_pdf = urlencode(traite_accents_utf8(html_entity_decode($titre)));
+$titre_pdf = urlencode(utf8_decode($titre));
 if ($id_devoir != 0) {$titre .= " - SAISIE";} else {$titre .= " - VISUALISATION";}
 
 echo "<script type=\"text/javascript\" language=\"javascript\">";
@@ -754,7 +753,7 @@ if ($arrondir == 'pe') $detail = $detail."La moyenne est arrondie au point entie
 if ($ponderation != 0) $detail = $detail."Pondération : ".$ponderation." (s\\'ajoute au coefficient de la meilleur note de chaque élève).\\n";
 
 // Titre
-echo "<h2 class='gepi'>".$titre."</h2>\n";
+echo "<h2 class='gepi'>".htmlspecialchars($titre)."</h2>\n";
 if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 
 	echo "<p class=cn>";
@@ -923,7 +922,7 @@ foreach ($liste_eleves as $eleve) {
 			$mess_note[$i][$k] =$mess_note[$i][$k]."</b></center></td>\n";
 			if ($eleve_comment != '') {
 				$mess_comment[$i][$k] = "<td class=cn>".$eleve_comment."</td>\n";
-				$mess_comment_pdf[$i][$k] = traite_accents_utf8($eleve_comment);
+				$mess_comment_pdf[$i][$k] = ($eleve_comment);
 
 			} else {
 				$mess_comment[$i][$k] = "<td class=cn>&nbsp;</td>\n";
@@ -1015,7 +1014,7 @@ foreach ($liste_eleves as $eleve) {
 			else{
 				$mess_comment[$i][$k] .= $eleve_comment."</td>\n";
 			}
-			$mess_comment_pdf[$i][$k] = traite_accents_utf8($eleve_comment);
+			$mess_comment_pdf[$i][$k] = ($eleve_comment);
 			$num_id++;
 		}
 		$k++;
@@ -1136,7 +1135,7 @@ while ($i < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if (($id_devoir==0) or ($id_dev[$i] == $id_devoir)) {
 		if ($coef[$i] != 0) {$tmp = " bgcolor = $couleur_calcul_moy ";} else {$tmp = '';}
-		$header_pdf[] = traite_accents_utf8($nom_dev[$i]." (".$display_date[$i].")");
+		$header_pdf[] = ($nom_dev[$i]." (".$display_date[$i].")");
 		$w_pdf[] = $w2;
 		if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">$nom_dev[$i]</a></b><br /><font size=-2>($display_date[$i])</font>\n";
@@ -1179,7 +1178,7 @@ if ($id_devoir==0) {
 			while ($m < $nb_dev_s_cont[$i]) {
 				$tmp = '';
 				if (($mode == 1) and ($coef_s_dev[$i][$m] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
-				$header_pdf[] = traite_accents_utf8($nom_sous_dev[$i][$m]." (".$display_date_s_dev[$i][$m].")");
+				$header_pdf[] = ($nom_sous_dev[$i][$m]." (".$display_date_s_dev[$i][$m].")");
 				$w_pdf[] = $w2;
 				echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=".$id_s_dev[$i][$m]."\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">".$nom_sous_dev[$i][$m]."</a></b><br /><font size=-2>(".$display_date_s_dev[$i][$m].")</font></center></td>\n";
 				$m++;
@@ -1188,7 +1187,7 @@ if ($id_devoir==0) {
 			if (($mode == 2) and ($coef_sous_cont[$i] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
 		}
 		echo "<td class=cn".$tmp." valign='top'><center>Moyenne</center></td>\n";
-		$header_pdf[] = traite_accents_utf8("Moyenne : ".$nom_sous_cont[$i]);
+		$header_pdf[] = ("Moyenne : ".$nom_sous_cont[$i]);
 		$w_pdf[] = $w2;
 		$i++;
 	}
@@ -1257,9 +1256,9 @@ if ($multiclasses) {echo "<td><a href='saisie_notes.php?id_conteneur=".$id_conte
 echo "\n";
 
 if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-	$data_pdf[0][] = traite_accents_utf8("Nom Prénom /Note sur (coef)");
+	$data_pdf[0][] = ("Nom Prénom /Note sur (coef)");
 } else {
-	$data_pdf[0][] = traite_accents_utf8("Nom Prénom \ (coef)");
+	$data_pdf[0][] = ("Nom Prénom \ (coef)");
 }
 
 if ($multiclasses) {$data_pdf[0][] = "";}
@@ -1449,9 +1448,9 @@ $nombre_lignes = count($current_group["eleves"][$periode_num]["list"]);
 while($i < $nombre_lignes) {
 	$pointer++;
 	$tot_data_pdf++;
-	$data_pdf[$pointer][] = traite_accents_utf8($eleve_nom[$i]." ".$eleve_prenom[$i]);
+	$data_pdf[$pointer][] = ($eleve_nom[$i]." ".$eleve_prenom[$i]);
 	if ($multiclasses) {
-		$data_pdf[$pointer][] = traite_accents_utf8($eleve_classe[$i]);
+		$data_pdf[$pointer][] = ($eleve_classe[$i]);
 	}
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
@@ -1496,7 +1495,7 @@ while($i < $nombre_lignes) {
 			$data_pdf[$pointer][] = $mess_note_pdf[$i][$k];
 			if ((($nocomment[$k]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$k] == $id_devoir)) {
 				echo $mess_comment[$i][$k];
-				$data_pdf[$pointer][] = traite_accents_utf8($mess_comment_pdf[$i][$k]);
+				$data_pdf[$pointer][] = ($mess_comment_pdf[$i][$k]);
 				$tab_ele_notes[$i][]="";
 			}
 		}

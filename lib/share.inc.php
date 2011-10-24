@@ -1514,7 +1514,7 @@ function remplace_accents($chaine,$mode=''){
     }
 	
 	if($mode == 'all'){
-		return preg_replace('#[^a-zA-Z0-9\-\._]#', '_', $str); // Pour des noms de fichiers par exemple
+		return preg_replace('#[^a-zA-Z0-9\-\_]#', '_', $str); // Pour des noms de fichiers par exemple
 	} elseif($mode == 'all_nospace'){
 		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
 	} else {
@@ -1522,6 +1522,14 @@ function remplace_accents($chaine,$mode=''){
 	}
 }
 
+function enleve_accents($chaine,$mode=''){
+    return remplace_accents();
+}
+
+function accents_enleve($chaine,$mode=''){
+    return remplace_accents();
+}
+    
 /**
  * Fonction qui renvoie le login d'un élève en échange de son ele_id
  *
@@ -2988,6 +2996,10 @@ function casse_mot($mot,$mode='maj') {
 	}
 	elseif($mode=='majf2') {
 		return mb_convert_case(ensure_utf8($mot), MB_CASE_TITLE);
+	}
+	elseif($mode=='majf3') {
+	    $temp = mb_convert_case(ensure_utf8($mot), MB_CASE_LOWER);
+		return mb_convert_case($temp, MB_CASE_TITLE);
 	}
 }
 
