@@ -310,6 +310,10 @@ else {
 			onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et
 		passer aux comptes rendus</button>
 
+		<input type='hidden' name='importer_notice' id='importer_notice' value='' />
+		<input type='hidden' name='id_ct_a_importer' id='id_ct_a_importer' value='' />
+		<button type='submit' id='affichage_import_notice' style='font-variant: small-caps; display:none; background-color:red;' onClick="javascript:$('importer_notice').value='y';">Importer la notice</button>
+
 		<?php
 /*
 echo "<script type='text/javascript'>
