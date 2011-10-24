@@ -33,7 +33,9 @@ define('LargeurPage','210');
 require_once("../lib/initialisations.inc.php");
 //=============================
 
-require_once('../fpdf/ex_fpdf.php');
+require_once(dirname(__FILE__).'/fpdf.php');
+
+require_once(dirname(__FILE__).'/ex_fpdf.php');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.
@@ -88,12 +90,12 @@ if (isset($_GET['id_groupe'])) {
 
 
 //if ($text_classe_matiere != '') $pdf->Cell(100, 8, $text_classe_matiere,$bord,0,"L",0);
-if ($text_classe_matiere != '') $pdf->Cell(100, 8, traite_accents_utf8($text_classe_matiere),$bord,0,"L",0);
+if ($text_classe_matiere != '') $pdf->Cell(100, 8, $text_classe_matiere,$bord,0,"L",0);
 $pdf->ln();
 
 
 //isset($_GET['titre']) ? $titre = unslashes($_GET['titre']) : $titre='' ;
-isset($_GET['titre']) ? $titre = traite_accents_utf8(unslashes($_GET['titre'])) : $titre='' ;
+isset($_GET['titre']) ? $titre = (unslashes($_GET['titre'])) : $titre='' ;
 if ($titre!='') {
     //Positionnement du titre
     $w=$pdf->GetStringWidth($titre)+6;
@@ -122,7 +124,7 @@ $data1 = unserialize($_SESSION['data_pdf']);
 
 /*
 foreach($data1 as $key => $value) {
-	$data1[$key]=traite_accents_utf8($data1[$value]);
+	$data1[$key]=($data1[$value]);
 }
 */
 
@@ -137,11 +139,7 @@ if(!isset($_GET['id_groupe'])) {
 	$pdf->Output();
 }
 elseif(!isset($_GET['nom_pdf_en_detail'])) {
-	$ident_plus="";
-
-	$ident_plus .= date("Ymd");
-	$ident_plus = preg_replace("/[^A-Za-z0-9]/","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
-	$ident_plus=str_replace(" ", "_", $ident_plus);
+	$ident_plus = remplace_accents($current_group["classlist_string"].'_'.$current_group["description"].'_'.date("Ymd"),'all');
 
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
@@ -155,8 +153,8 @@ else{
 		$ident_plus .= "Periode_".$_GET['periode_num']."_";
 	}
 	$ident_plus .= date("Ymd");
-	$ident_plus = preg_replace("/[^A-Za-z0-9]/","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
-	$ident_plus=str_replace(" ", "_", $ident_plus);
+	$ident_plus = $current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus;
+	$ident_plus=remplace_accents($ident_plus,'all');
 
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
