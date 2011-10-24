@@ -27,7 +27,7 @@ CREATE TABLE `cn_notes_devoirs` ( `login` varchar(50) NOT NULL default '', `id_d
 DROP TABLE IF EXISTS `ct_devoirs_entry`;
 CREATE TABLE `ct_devoirs_entry` ( `id_ct` int(11) NOT NULL auto_increment, `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '',id_sequence INT ( 11 ) NOT NULL DEFAULT '0', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', PRIMARY KEY (`id_ct`), KEY `id_groupe` (`id_groupe`), date_visibilite_eleve TIMESTAMP NOT NULL default now() COMMENT 'Timestamp précisant quand les devoirs sont portés à la connaissance des élèves', INDEX groupe_date (`id_groupe`, `date_ct`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `ct_documents`;
-CREATE TABLE `ct_documents` ( `id` int(11) NOT NULL auto_increment, `id_ct` int(11) NOT NULL default '0', `titre` varchar(255) NOT NULL default '', `taille` int(11) NOT NULL default '0', `emplacement` varchar(255) NOT NULL default '', visible_eleve_parent BOOLEAN default true, PRIMARY KEY  (`id`));
+CREATE TABLE `ct_documents` ( `id` int(11) NOT NULL auto_increment, `id_ct` int(11) NOT NULL default '0', `titre` varchar(255) NOT NULL default '', `taille` int(11) NOT NULL default '0', `emplacement` varchar(255) NOT NULL default '', visible_eleve_parent BOOLEAN default true, PRIMARY KEY  (`id`)) ENGINE=MyISAM;
 DROP TABLE IF EXISTS `ct_devoirs_documents`;
 CREATE TABLE `ct_devoirs_documents` ( `id` int(11) NOT NULL auto_increment, `id_ct_devoir` int(11) NOT NULL default '0', `titre` varchar(255) NOT NULL default '', `taille` int(11) NOT NULL default '0', `emplacement` varchar(255) NOT NULL default '', visible_eleve_parent BOOLEAN default true, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `ct_entry`;
@@ -154,6 +154,7 @@ DROP TABLE IF EXISTS j_eleves_groupes;
 CREATE TABLE `j_eleves_groupes` (`login` varchar(50) NOT NULL default '', `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', PRIMARY KEY  (`id_groupe`,`login`,`periode`), INDEX login (`login`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS eleves_groupes_settings;
 CREATE TABLE `eleves_groupes_settings` (login varchar(50) NOT NULL, id_groupe int(11) NOT NULL, `name` varchar(50) NOT NULL, `value` varchar(50) NOT NULL, PRIMARY KEY  (`id_groupe`,`login`,`name`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+DROP TABLE IF EXISTS preferences;
 CREATE TABLE IF NOT EXISTS `preferences` (`login` VARCHAR( 50 ) NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`value` TEXT NOT NULL, INDEX login_name (`login`,`name`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS j_scol_classes;
 CREATE TABLE `j_scol_classes` (`login` VARCHAR( 50 ) NOT NULL ,`id_classe` INT( 11 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -325,11 +326,10 @@ DROP TABLE IF EXISTS plugins_autorisations;
 CREATE TABLE IF NOT EXISTS plugins_autorisations (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,plugin_id INT( 11 ) NOT NULL,fichier VARCHAR( 100 ) NOT NULL,user_statut VARCHAR( 50 ) NOT NULL,auth CHAR( 1 ) default 'n') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS plugins_menus;
 CREATE TABLE IF NOT EXISTS plugins_menus (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,plugin_id INT( 11 ) NOT NULL,user_statut VARCHAR( 50 ) NOT NULL,titre_item VARCHAR ( 255 ) NOT NULL,lien_item VARCHAR( 255 ) NOT NULL,description_item VARCHAR( 255 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+DROP TABLE IF EXISTS gc_eleves_options;
 CREATE TABLE IF NOT EXISTS gc_eleves_options (id int(11) unsigned NOT NULL auto_increment,login VARCHAR( 50 ) NOT NULL ,profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS',moy VARCHAR( 255 ) NOT NULL ,nb_absences VARCHAR( 255 ) NOT NULL ,non_justifie VARCHAR( 255 ) NOT NULL ,nb_retards VARCHAR( 255 ) NOT NULL ,projet VARCHAR( 255 ) NOT NULL ,id_classe_actuelle VARCHAR(255) NOT NULL ,classe_future VARCHAR(255) NOT NULL ,liste_opt VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS ects_credits;
 CREATE TABLE IF NOT EXISTS ects_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT, id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve', num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode', id_groupe INTEGER(11)  NOT NULL COMMENT 'Identifiant du groupe', valeur DECIMAL(3,1) COMMENT 'Nombre de credits obtenus par l\'eleve', mention VARCHAR(255) COMMENT 'Mention obtenue', `mention_prof` VARCHAR(255) COMMENT 'Mention presaisie par le prof', PRIMARY KEY (id,id_eleve,num_periode,id_groupe), INDEX ects_credits_FI_1 (id_eleve), CONSTRAINT ects_credits_FK_1 FOREIGN KEY (id_eleve) REFERENCES eleves (id_eleve), INDEX ects_credits_FI_2 (id_groupe), CONSTRAINT ects_credits_FK_2 FOREIGN KEY (id_groupe) REFERENCES groupes (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
-DROP TABLE IF EXISTS ects_global_credits;
-CREATE TABLE IF NOT EXISTS ects_global_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT, id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,id_eleve), INDEX ects_global_credits_FI_1 (id_eleve), CONSTRAINT ects_global_credits_FK_1 FOREIGN KEY (id_eleve) REFERENCES eleves (id_eleve)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS archivage_ects;
 CREATE TABLE IF NOT EXISTS archivage_ects (id INTEGER(11)  NOT NULL AUTO_INCREMENT, annee VARCHAR(255)  NOT NULL COMMENT 'Annee scolaire', ine VARCHAR(55)  NOT NULL COMMENT 'Identifiant de l\'eleve', classe VARCHAR(255)  NOT NULL COMMENT 'Classe de l\'eleve', num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode', nom_periode VARCHAR(255)  NOT NULL COMMENT 'Nom complet de la periode', special VARCHAR(255)  NOT NULL COMMENT 'Cle utilisee pour isoler certaines lignes (par exemple un credit ECTS pour une periode et non une matiere)', matiere VARCHAR(255) COMMENT 'Nom de l\'enseignement', profs VARCHAR(255) COMMENT 'Liste des profs de l\'enseignement', valeur DECIMAL  NOT NULL COMMENT 'Nombre de crédits obtenus par l\'eleve', mention VARCHAR(255)  NOT NULL COMMENT 'Mention obtenue', PRIMARY KEY (id,ine,num_periode,special), INDEX archivage_ects_FI_1 (ine), CONSTRAINT archivage_ects_FK_1 FOREIGN KEY (ine) REFERENCES eleves (no_gep)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS ects_global_credits;
@@ -733,4 +733,4 @@ ELEOPT11 varchar(40) NOT NULL default '',
 ELEOPT12 varchar(40) NOT NULL default '',
 LIEU_NAISSANCE varchar(50) NOT NULL default '',
 MEL varchar(255) NOT NULL default ''
-);
+) ENGINE=MyISAM;
