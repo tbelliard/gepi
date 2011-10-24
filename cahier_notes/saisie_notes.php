@@ -321,6 +321,15 @@ if (isset($_POST['appreciations'])) {
 if (isset($_POST['is_posted'])) {
 	check_token();
 
+	$tab_precision=array('s1', 's5', 'se', 'p1', 'p5', 'pe');
+	$cn_precision=isset($_POST['cn_precision']) ? $_POST['cn_precision'] : "";
+	if(in_array($cn_precision, $tab_precision)) {
+		savePref($_SESSION['login'],'cn_precision',$cn_precision);
+	}
+	else {
+		unset($cn_precision);
+	}
+
 	$log_eleve=$_POST['log_eleve'];
 	$note_eleve=$_POST['note_eleve'];
 	if($mode_commentaire_20080422!="no_anti_inject") {
@@ -1130,6 +1139,7 @@ echo "<tr>\n";
 echo "<td class=cn valign='top'>";
 //echo "&nbsp;";
 echo "<p id='p_ramener_sur_N' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a></p>";
+echo "<input type='hidden' name='cn_precision' id='cn_precision' value='' />\n";
 echo "</td>\n";
 $header_pdf[] = "Evaluation :";
 if ($multiclasses) {$header_pdf[] = "";}
@@ -1980,18 +1990,44 @@ if ($id_devoir) {
 
 	//=====================================================
 	// Ramener une note sur 20 (ou autre)
+	$cn_precision=getPref($_SESSION['login'], 'cn_precision', 's5');
+
 	$titre_infobulle="Ramener sur N";
 	$texte_infobulle="<p>Vous avez des notes sur 37 ou un autre nombre pas très parlant pour les élèves et les parents et vous souhaitez le ramener sur 20 (<em>ou autre</em>) pour plus d'accessibilité dans le carnet de notes.</p>
 <div align='center'>
 <table class='boireaus'>
-<tr class='lig1'><td>Total du barême&nbsp;</td><td><input type='text' name='total_bareme' id='total_bareme' value='30' size='3' /></td><td></td></tr>
-<tr class='lig-1'><td>Ramener sur&nbsp;</td><td><input type='text' name='ramener_sur_N' id='ramener_sur_N' value='20' size='3' /></td><td></td></tr>
-<tr class='lig1'><td rowspan='6'>Arrondir&nbsp;</td><td><input type='radio' name='precision' id='precision_s1' value='s1' /></td><td><label for='precision_s1' style='cursor: pointer;'>au dixième de point supérieur</label></td></tr>
-<tr class='lig-1'><td><input type='radio' name='precision' id='precision_s5' value='s5' checked /></td><td><label for='precision_s5' style='cursor: pointer;'>au demi-point supérieur</label></td></tr>
-<tr class='lig1'><td><input type='radio' name='precision' id='precision_se' value='se' /></td><td><label for='precision_se' style='cursor: pointer;'>au point entier supérieur</label></td></tr>
-<tr class='lig-1'><td><input type='radio' name='precision' id='precision_p1' value='p1' /></td><td><label for='precision_p1' style='cursor: pointer;'>au dixième de point le plus proche</label></td></tr>
-<tr class='lig1'><td><input type='radio' name='precision' id='precision_p5' value='p5' /></td><td><label for='precision_p5' style='cursor: pointer;'>au demi-point le plus proche</label></td></tr>
-<tr class='lig-1'><td><input type='radio' name='precision' id='precision_pe' value='pe' /></td><td><label for='precision_pe' style='cursor: pointer;'>au point entier le plus proche</label></td></tr>
+<tr class='lig1'><td>Total du barême&nbsp;</td><td><input type='text' name='total_bareme' id='total_bareme' value='30' size='3' onkeydown='clavier_2(this.id,event,1,100);' autocomplete='off' /></td><td></td></tr>
+<tr class='lig-1'><td>Ramener sur&nbsp;</td><td><input type='text' name='ramener_sur_N' id='ramener_sur_N' value='20' size='3' onkeydown='clavier_2(this.id,event,1,100);' autocomplete='off' /></td><td></td></tr>
+<tr class='lig1'><td rowspan='6'>Arrondir&nbsp;</td><td><input type='radio' name='precision' id='precision_s1' value='s1' ";
+	if($cn_precision=='s1') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_s1' style='cursor: pointer;'>au dixième de point supérieur</label></td></tr>
+<tr class='lig-1'><td><input type='radio' name='precision' id='precision_s5' value='s5' ";
+	if($cn_precision=='s5') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_s5' style='cursor: pointer;'>au demi-point supérieur</label></td></tr>
+<tr class='lig1'><td><input type='radio' name='precision' id='precision_se' value='se' ";
+	if($cn_precision=='se') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_se' style='cursor: pointer;'>au point entier supérieur</label></td></tr>
+<tr class='lig-1'><td><input type='radio' name='precision' id='precision_p1' value='p1' ";
+	if($cn_precision=='p1') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_p1' style='cursor: pointer;'>au dixième de point le plus proche</label></td></tr>
+<tr class='lig1'><td><input type='radio' name='precision' id='precision_p5' value='p5' ";
+	if($cn_precision=='p5') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_p5' style='cursor: pointer;'>au demi-point le plus proche</label></td></tr>
+<tr class='lig-1'><td><input type='radio' name='precision' id='precision_pe' value='pe' ";
+	if($cn_precision=='pe') {
+		$texte_infobulle.="checked ";
+	}
+	$texte_infobulle.="/></td><td><label for='precision_pe' style='cursor: pointer;'>au point entier le plus proche</label></td></tr>
 </table>
 <p><input type='button' name='valider_ramener_sur_N' value='Valider' onclick='effectuer_ramener_sur_N()' /></p>
 </div>";
@@ -2033,12 +2069,16 @@ if ($id_devoir) {
 									precision='pe'
 								}
 								else {
-									precision=''
+									precision='p5'
 								}
 							}
 						}
 					}
 				}
+			}
+
+			if(document.getElementById('cn_precision')) {
+				document.getElementById('cn_precision').value=precision;
 			}
 
 			if((((total_bareme.search(/^[0-9.]+$/)!=-1)&&(total_bareme.lastIndexOf('.')==total_bareme.indexOf('.',0)))||
