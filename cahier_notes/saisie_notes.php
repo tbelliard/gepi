@@ -2004,6 +2004,10 @@ if ($id_devoir) {
 
 			ramener_sur_N=document.getElementById('ramener_sur_N').value;
 			total_bareme=document.getElementById('total_bareme').value;
+
+			ramener_sur_N=ramener_sur_N.replace(',', '.');
+			total_bareme=total_bareme.replace(',', '.');
+
 			//precision=document.getElementById('precision').value;
 			if(document.getElementById('precision_s1').checked==true) {
 				precision='s1'
@@ -2047,6 +2051,9 @@ if ($id_devoir) {
 					if(document.getElementById('n'+num)) {
 						if(document.getElementById('n'+num).value!='') {
 							note=document.getElementById('n'+num).value;
+
+							note=note.replace(',', '.');
+
 							if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
 							((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
 								note_modifiee=note*ramener_sur_N/total_bareme;
