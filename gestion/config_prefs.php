@@ -1149,7 +1149,8 @@ if ($_SESSION["statut"] == "administrateur") {
 // On affiche si c'est autorisé
 if ($aff == "oui") {
 	echo '
-		<form name="change_menu" method="post" action="./config_prefs.php">
+		<a name="afficherBarreMenu"></a>
+		<form name="change_menu" method="post" action="./config_prefs.php#afficherBarreMenu">
 ';
 
 	echo add_token_field();
@@ -1158,10 +1159,25 @@ if ($aff == "oui") {
 	<fieldset id="afficherBarreMenu" style="border: 1px solid grey;">
 		<legend style="border: 1px solid grey;">Gérer la barre horizontale du menu</legend>
 			<input type="hidden" name="modifier_le_menu" value="ok" />
+';
+	echo '
 		<p>
-			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale sous l\'en-tête.</label>
+			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale';
+	if($_SESSION['statut']=='professeur') {echo " (<em>complete</em>)";}
+	echo ' sous l\'en-tête.</label>
 			<input type="radio" id="visibleMenu" name="afficher_menu" value="yes"'.eval_checked("utiliserMenuBarre", "yes", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
 		</p>
+';
+
+	if($_SESSION['statut']=='professeur') {
+		echo '
+		<p>
+			<label for="visibleMenu_light" id="texte_visibleMenu_light">Rendre visible la barre de menu horizontale (<em>allégée</em>) sous l\'en-tête.</label>
+			<input type="radio" id="visibleMenu_light" name="afficher_menu" value="light"'.eval_checked("utiliserMenuBarre", "light", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
+		</p>
+';
+	}
+	echo '
 		<p>
 			<label for="invisibleMenu" id="texte_invisibleMenu">Ne pas utiliser la barre de menu horizontale.</label>
 			<input type="radio" id="invisibleMenu" name="afficher_menu" value="no"'.eval_checked("utiliserMenuBarre", "no", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
@@ -1272,7 +1288,7 @@ function test_play_footer_sound() {
 	}
 }
 
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n');
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'visibleMenu_light', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n');
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);

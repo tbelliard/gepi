@@ -743,7 +743,8 @@ if (!isset($nobar)) { $nobar = "non"; }
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	//if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	if ((getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes")||(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light")) {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
           /**
