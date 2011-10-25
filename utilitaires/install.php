@@ -358,6 +358,9 @@ else if ($etape == 1) {
 	echo "<fieldset><label><B>Adresse de la base de donnée</B><br /></label>\n";
 	echo "(Souvent cette adresse correspond à celle de votre site, parfois elle correspond à la mention &laquo;localhost&raquo;, parfois elle est laissée totalement vide.)<br />\n";
 	echo "<INPUT  TYPE='text' NAME='adresse_db' CLASS='formo' VALUE=\"$adresse_db\" SIZE='40' /></fieldset><br />\n";
+        
+        echo "<fieldset><label><B>L'identifiant de connexion</B><br /></label>\n";
+        echo "<INPUT TYPE='text' NAME='login_db' CLASS='formo' VALUE=\"$login_db\" SIZE='40' /></fieldset><br />\n";
 
 	echo "<fieldset style='margin:.5em'><label><strong>Le mot de passe de connexion</strong><br /></label>\n";
 	echo "<input type='password' name='pass_db' class='formo' value=\"$pass_db\" size='40' /></fieldset>\n";
