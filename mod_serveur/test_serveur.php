@@ -194,13 +194,18 @@ if ($test->versionGd()) {
 
 	echo "<br />\n";
 	echo "<p>Test d'écriture dans le fichier de personnalisation des couleurs (<i>voir <a href='../gestion/param_couleurs.php'>Gestion générale/Paramétrage des couleurs</a></i>)&nbsp;:<br />";
-	$test=test_ecriture_style_screen_ajout();
-	if($test) {
-		echo "Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est accessible en écriture.\n";
-	}
-	else {
-		echo "<sapn style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi n'a pas pu être créé ou n'est pas accessible en écriture.</span>\n";
-	}
+	if(file_exists('../style_screen_ajout.css')){
+            $test=test_ecriture_style_screen_ajout();
+            if($test) {
+                echo "Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est accessible en écriture.\n";
+            } else {
+                echo "<span style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi n'a pas pu être créé ou n'est pas accessible en écriture.</span>\n";
+            }
+        }elseif(file_exists('../style_screen_ajout.css.ori')) {
+            echo "<span style='color:red'> Le fichier style_screen_ajout.css.ori à la racine de l'arborescence Gepi doit être renommé en style_screen_ajout.css et être accessible en écriture.</span>\n";
+        }else{
+            echo "<span style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est manquant. Il faut en créer un vide qui doit être accessible en écriture.</span>\n";
+        } 
 	echo "</p>\n";
 
 echo '<br /><br /><br />';

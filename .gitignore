@@ -29,3 +29,6 @@ nbproject
 /build/logs
 /build/api
 
+# Ignore others files
+style_screen_ajout.css
+
