@@ -460,7 +460,34 @@
 								</a>
 							</td>
 							<td>
-								<?php echo $newentree['statut']; ?>
+								<?php
+									if(isset($newentree['login'])) {
+										if($newentree['statut']=='responsable') {
+											if(isset($newentree['pers_id'])) {
+												echo "<a href='$gepiPath/responsables/modify_resp.php?pers_id=".$newentree['pers_id']."'>";
+												echo $newentree['statut'];
+												echo "</a>";
+											}
+											else {
+												echo $newentree['statut'];
+											}
+										}
+										elseif($newentree['statut']=='eleve') {
+											echo "<a href='$gepiPath/eleves/modify_eleve.php?eleve_login=".$newentree['login']."'>";
+											echo $newentree['statut'];
+											echo "</a>";
+										}
+										else {
+											echo "<a href='$gepiPath/utilisateurs/modify_user.php?user_login=".$newentree['login']."'>";
+											echo $newentree['statut'];
+											echo "</a>";
+										}
+									}
+									else {
+										echo $newentree['statut'];
+									}
+									//foreach($newentree as $key => $value) {echo "\$newentree[$key]=$value<br />";}
+								?>
 							</td>
 						</tr>
 

@@ -89,7 +89,7 @@ $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id
 unset($affiche_message);
 $affiche_message = isset($_POST["affiche_message"]) ? $_POST["affiche_message"] : (isset($_GET["affiche_message"]) ? $_GET["affiche_message"] : NULL);
 
-$order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : "classe");
+$order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : getPref($_SESSION['login'], 'cn_order_by', 'classe'));
 
 if ($id_devoir)  {
 	$sql="SELECT * FROM cn_devoirs WHERE id ='$id_devoir';";
@@ -1037,7 +1037,7 @@ foreach ($liste_eleves as $eleve) {
 					$mess_comment[$i][$k] .= "\"";
 				}
 				$mess_comment[$i][$k] .= ">".$eleve_comment."</textarea></td>\n";
-				
+
 			}
 			else{
 				$mess_comment[$i][$k] .= $eleve_comment."</td>\n";

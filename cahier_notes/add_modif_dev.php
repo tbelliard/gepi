@@ -508,11 +508,11 @@ if ($id_devoir)  {
     $date_ele_resp = $jour."/".$mois."/".$annee;
 
 } else {
-    $nom_court = "Nouvelle évaluation";
-    $nom_complet = "";
+    $nom_court = getPref($_SESSION['login'], 'cn_default_nom_court', 'Nouvelle évaluation');
+    $nom_complet = getPref($_SESSION['login'], 'cn_default_nom_complet', 'Nouvelle évaluation');
     $description = "";
     $new_devoir = 'yes';
-    $coef = "1";
+    $coef = getPref($_SESSION['login'], 'cn_default_coef', '1.0');
     $note_sur = getSettingValue("referentiel_note");
     $ramener_sur_referentiel = "F";
     $display_parents = "1";
