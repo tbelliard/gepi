@@ -3261,7 +3261,7 @@ function recherche_personnel_sans_photo($statut='professeur') {
 function efface_photos($photos) {
 // on liste les fichier du dossier photos/personnels ou photos/eleves
   if (!($photos=="eleves" || $photos=="personnels"))
-	return ("Le dossier <strong>".$photos."</strong> n'ai pas valide.");
+	return ("Le dossier <strong>".$photos."</strong> n'est pas valide.");
   if (cree_zip_archive("photos")==TRUE){
 	$fichier_sup=array();
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -3274,7 +3274,7 @@ function efface_photos($photos) {
 	$folder = "../photos/".$repertoire.$photos."/";
 	$dossier = opendir($folder);
 	while ($Fichier = readdir($dossier)) {
-	  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
+	  if (strtolower(pathinfo($Fichier,PATHINFO_EXTENSION))=="jpg") {
 		$nomFichier = $folder."".$Fichier;
 		$fichier_sup[] = $nomFichier;
 	  }
@@ -3283,16 +3283,22 @@ function efface_photos($photos) {
 	if(count($fichier_sup)==0) {
 	  return ("Le dossier <strong>".$folder."</strong> ne contient pas de photo.") ;
 	} else {
+	  $nb_erreurs=0; $erreurs="";
 	  foreach ($fichier_sup as $fic_efface) {
 		if(file_exists($fic_efface)) {
 		  @unlink($fic_efface);
 		  if(file_exists($fic_efface)) {
-			return ("Le fichier  <strong>".$fic_efface."</strong> n'a pas pu être effacé.");
+			$nb_erreurs++;
+			$erreurs.="Le fichier  <strong>".$fic_efface."</strong> n'a pas pu être effacé.<br />";
 		  }
 		}
 	  }
 	  unset ($fic_efface);
-	  return ("Le dossier <strong>".$folder."</strong> a été vidé.") ;
+	  if ($nb_erreurs>0) {
+		if ($nb_erreurs>10) return $nb_erreurs." fichiers n'ont pu être effacés.";
+			else return $erreurs;
+	  }
+		else return ("Le dossier <strong>".$folder."</strong> a été vidé.") ;
 	}
   }else{
 	return ("Erreur lors de la création de l'archive.") ;

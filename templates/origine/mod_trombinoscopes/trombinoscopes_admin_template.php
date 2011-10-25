@@ -475,7 +475,7 @@ if (!isset($aid_trouve)) {
 echo add_token_field();
 ?>
 		<legend class="bold">
-			Uploader et restaurer les photos à partir d'un fichier ZIP
+			Restaurer les photos à partir d'une sauvegarde (ou d'un fichier ZIP)
 		</legend>
 		<input type="hidden" name="action" value="upload" />
 		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
