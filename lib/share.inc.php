@@ -1512,13 +1512,16 @@ function remplace_accents($chaine,$mode=''){
     	$translit = array('Á'=>'A','À'=>'A','Â'=>'A','Ä'=>'A','Ã'=>'A','Å'=>'A','Ç'=>'C','É'=>'E','È'=>'E','Ê'=>'E','Ë'=>'E','Í'=>'I','Ï'=>'I','Î'=>'I','Ì'=>'I','Ñ'=>'N','Ó'=>'O','Ò'=>'O','Ô'=>'O','Ö'=>'O','Õ'=>'O','Ú'=>'U','Ù'=>'U','Û'=>'U','Ü'=>'U','Ý'=>'Y','á'=>'a','à'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','ç'=>'c','é'=>'e','è'=>'e','ê'=>'e','ë'=>'e','í'=>'i','ì'=>'i','î'=>'i','ï'=>'i','ñ'=>'n','ó'=>'o','ò'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u','ý'=>'y','ÿ'=>'y');
     	$str = strtr($chaine, $translit);
     }
+    if (function_exists('mb_convert_encoding')) {
+        $str = @mb_convert_encoding($str,'ASCII','UTF-8');
+    }   
 	
 	if($mode == 'all'){
 		return preg_replace('#[^a-zA-Z0-9\-\_]#', '_', $str); // Pour des noms de fichiers par exemple
 	} elseif($mode == 'all_nospace'){
 		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
 	} else {
-	    return $str;
+		return preg_replace('#[^a-zA-Z0-9\-\._"\' ]#', '_', $str);
 	}
 }
 
