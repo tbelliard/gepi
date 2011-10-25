@@ -323,9 +323,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 						$filephoto_name=$_FILES['filephoto']['name'];
 						$filephoto_size=$_FILES['filephoto']['size'];
 						$filephoto_type=$_FILES['filephoto']['type'];
-						if (!preg_match('/jpg$/',strtolower($filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ) {
+						if (!(preg_match('/jpg$/',strtolower($filephoto_name)) || preg_match('/jpeg$/',strtolower($filephoto_name))) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ) {
 							if($msg!="") {$msg.="<br />";}
-							$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
+							$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés.\n";
 						} else {
 							// Tester la taille max de la photo?
 							if(is_uploaded_file($filephoto_tmp)) {
@@ -434,7 +434,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 									$filephoto_name=$_FILES['filephoto']['name'];
 									$filephoto_size=$_FILES['filephoto']['size'];
 									$filephoto_type=$_FILES['filephoto']['type'];
-									if ((!preg_match('/jpg$/',strtolower($filephoto_name))) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ) {
+									if (!(preg_match('/jpg$/',strtolower($filephoto_name)) ||  preg_match('/jpg$/',strtolower($filephoto_name))) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ) {
 										//$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
 										if($msg!="") {$msg.="<br />";}
 										$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
