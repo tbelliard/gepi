@@ -137,7 +137,9 @@ echo '<!--[if lt IE 7]>
 								$barre_note.='</a>';
 								$barre_note.='</li>'."\n";
 							}
-						$barre_note.= '		</li>'."\n";
+                           $barre_note.= '                 </ul>'."\n";
+                        }
+                        $barre_note.= '		</li>'."\n";
 					}
 				}
 
@@ -192,6 +194,7 @@ echo '<!--[if lt IE 7]>
 								$barre_note.='</li>'."\n";
 							}
 							$barre_note.= '			</ul>'."\n";
+						}
 						$barre_note.= '		</li>'."\n";
 					}
 				}
@@ -224,6 +227,7 @@ echo '<!--[if lt IE 7]>
 								$barre_note.='</li>'."\n";
 							}
 							$barre_note.= '			</ul>'."\n";
+						}
 						$barre_note.= '		</li>'."\n";
 					}
 				}
