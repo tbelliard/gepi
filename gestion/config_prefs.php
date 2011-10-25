@@ -434,6 +434,10 @@ if(isset($enregistrer)) {
 				$msg.="Erreur lors de l'enregistrement de 'cn_avec_mediane_q1_q3'<br />\n";
 			}
 
+			$cn_order_by=isset($_POST['cn_order_by']) ? $_POST['cn_order_by'] : "classe";
+			if(!savePref($_SESSION['login'],'cn_order_by',$cn_order_by)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_order_by'<br />\n";
+			}
 
 			$cn_default_nom_court=isset($_POST['cn_default_nom_court']) ? $_POST['cn_default_nom_court'] : "Nouvelle évaluation";
 			if(!savePref($_SESSION['login'],'cn_default_nom_court',$cn_default_nom_court)) {
@@ -810,6 +814,18 @@ else{
 		echo "onchange=\"checkbox_change('cn_avec_mediane_q1_q3');changement()\" ";
 		if($cn_avec_mediane_q1_q3=='y') {echo 'checked';}
 		echo "/><label for='cn_avec_mediane_q1_q3' id='texte_cn_avec_mediane_q1_q3'> Afficher pour chaque colonne de notes les valeur médiane, 1er et 3è quartiles.</label>\n";
+		echo "</p>\n";
+
+		echo "<p>Dans la page de saisie des notes de devoirs, trier par défaut <br />\n";
+		$cn_order_by=getPref($_SESSION['login'], 'cn_order_by', 'classe');
+		echo "<input type='radio' name='cn_order_by' id='cn_order_by_classe' value='classe' ";
+		echo "onchange=\"checkbox_change('cn_order_by');changement()\" ";
+		if($cn_order_by=='classe') {echo 'checked';}
+		echo "/><label for='cn_order_by_classe' id='texte_cn_order_by_classe'>par classe puis ordre alphabétique des noms des élèves.</label><br />\n";
+		echo "<input type='radio' name='cn_order_by' id='cn_order_by_nom' value='nom' ";
+		echo "onchange=\"checkbox_change('cn_order_by');changement()\" ";
+		if($cn_order_by=='nom') {echo 'checked';}
+		echo "/><label for='cn_order_by_nom' id='texte_cn_order_by_nom'>par ordre alphabétique des noms des élèves.</label><br />\n";
 		echo "</p>\n";
 
 		echo "<table>";
@@ -1340,7 +1356,7 @@ function test_play_footer_sound() {
 	}
 }
 
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'visibleMenu_light', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n');
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenu_light', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n');
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);
