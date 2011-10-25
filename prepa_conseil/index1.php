@@ -125,7 +125,6 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	//require("../bulletin/header_bulletin_pdf.php");
 
 	require_once('../fpdf/fpdf.php');
-	require_once('../fpdf/ex_fpdf.php');
 	require_once("../fpdf/class.multicelltag.php");
 
 	// Fichier d'extension de fpdf pour le bulletin
@@ -259,7 +258,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$graisse='B';
 	$alignement='C';
 	$bordure='';
-	cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
+	cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
 	$y2=$y0+$h_ligne_titre_tableau;
 
 
@@ -274,7 +273,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	//$alignement='L';
 	$alignement='C';
 	$bordure='LRBT';
-	cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+	cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 
 	$alignement='C';
 	$largeur_dispo=$largeur_col_nom_ele;
@@ -284,8 +283,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		$largeur_dispo=$largeur_col[$i];
 
 		$texte=" ".$ligne1_csv[$i]." ";
-		//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
-		cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+		//cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+		cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 
 		$x2+=$largeur_dispo;
 	}
@@ -318,12 +317,12 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 			$largeur_dispo=$largeur_col_nom_ele;
 			$texte=$ligne1_csv[1];
 
-			//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+			//cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
 			$graisse='B';
 			//$alignement='L';
 			$alignement='C';
 			$bordure='LRBT';
-			cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+			cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 		
 			$alignement='C';
 			$largeur_dispo=$largeur_col_nom_ele;
@@ -335,8 +334,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		
 				$texte=" ".$ligne1_csv[$i]." ";
 				//$texte=$ligne1_csv[$i];
-				//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
-				cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+				//cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+				cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 		
 				$x2+=$largeur_dispo;
 			}
@@ -358,10 +357,10 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 			$largeur_dispo=$largeur_col[$i];
 			$texte=$tab[$i-1];
 			if(preg_match("/^App/", $ligne1_csv[$i])) {
-				cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
+				cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
 			}
 			else {
-				cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+				cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 			}
 			$x2+=$largeur_dispo;
 		}

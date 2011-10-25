@@ -12,6 +12,7 @@ temp
 !/documents/index.html
 *.log
 lib/standalone/HTMLPurifier/DefinitionCache/Serializer/HTML
+mod_ooo/mes_modeles/*
 
 # Ignore dev files
 .settings

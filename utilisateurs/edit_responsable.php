@@ -469,7 +469,8 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 											WHERE e.login=jec.login AND
 												jec.id_classe=c.id AND
 												r.ele_id=e.ele_id AND
-												r.pers_id='$current_parent->pers_id'
+												r.pers_id='$current_parent->pers_id' AND
+												(r.resp_legal='1' OR r.resp_legal='2')
 											ORDER BY e.nom,e.prenom";
 		$res_enfants=mysql_query($sql);
 		//echo "$sql<br />";

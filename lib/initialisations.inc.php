@@ -8,6 +8,7 @@
  */
 /* Utilise l'encodage interne UTF-8 */
 mb_internal_encoding("UTF-8");
+header('Content-Type: text/html; charset=UTF-8');
 
 /**
  * Niveau de la page dans l'arborescence de GEPI

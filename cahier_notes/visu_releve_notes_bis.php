@@ -323,6 +323,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 				WHERE (e.ele_id=r.ele_id AND
 						r.pers_id=rp.pers_id AND
 						rp.login='".$_SESSION['login']."' AND
+						(r.resp_legal='1' OR r.resp_legal='2') AND
 						c.id=jec.id_classe AND
 						jec.login=e.login);";
 	}

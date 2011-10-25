@@ -293,7 +293,6 @@ if(isset($_GET['export_pdf'])) {
 		$professeur_courant=casse_mot($_SESSION['nom'])." ".casse_mot($_SESSION['prenom'],'majf2');
 
 		require_once('../fpdf/fpdf.php');
-		require_once('../fpdf/ex_fpdf.php');
 		
 		define('FPDF_FONTPATH','../fpdf/font/');
 		define('LargeurPage','210');

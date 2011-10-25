@@ -25,6 +25,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
+
 // On initialise
 $titre_page = "Administration - Paramètres du serveur";
 $affiche_connexion = 'yes';
@@ -35,6 +37,9 @@ require_once("../lib/initialisations.inc.php");
 
 // Définition de la classe php
 require_once("../class_php/serveur_infos.class.php");
+
+//fonction de tests d'encodage
+require_once(dirname(__FILE__)."/test_encoding_functions.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -147,6 +152,39 @@ if ($test->versionGd()) {
 		echo "Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
 	}
 
+	echo "<br />\n";
+	echo "<hr />\n";
+	echo "<h4>Encodage des caractères : </h4>\n";
+	echo "<p style=\"color:red;\">";
+	if (!test_check_utf8()) {
+	    echo ' : échec de test_check_utf8()</p>';
+	} else {
+	    echo "</p>réussite de test_check_utf8()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_detect_encoding()) {
+	    echo ' : échec de test_detect_encoding()</p>';
+	} else {
+        echo "</p>réussite de test_detect_encoding()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_ensure_utf8()) {
+	    echo ' : échec de test_ensure_utf8()</p>';
+	} else {
+	    echo "</p>réussite de test_ensure_utf8()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_remplace_accents()) {
+	    echo ' : échec de test_remplace_accents()</p>';
+	} else {
+	    echo "</p>réussite de test_remplace_accents()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_casse_mot()) {
+	    echo ' : échec de test_remplace_accents()</p>';
+	} else {
+	    echo "</p>réussite de test_remplace_accents()<br />\n";
+	}
 	echo "<br />\n";
 	echo "<hr />\n";
 	echo "<h4>Droits sur les dossiers : </h4>\n";

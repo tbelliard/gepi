@@ -59,7 +59,6 @@
 	}
 	else {
 		require('../fpdf/fpdf.php');
-		require('../fpdf/ex_fpdf.php');
 		require_once("../fpdf/class.multicelltag.php");
 	
 		// Fichier d'extension de fpdf pour le bulletin
@@ -531,7 +530,7 @@
 				$taille_max_police=$fs_txt;
 				$taille_min_police=ceil($fs_txt/3);
 				$texte='Note Globale affectée du coefficient';
-				cell_ajustee(traite_accents_utf8($texte),$x,$y,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT','C','C');
+				cell_ajustee(($texte),$x,$y,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT','C','C');
 				//$pdf->drawTextBox('Note Globale affectée du coefficient', $larg_col_note_glob, 15, 'C', 'M', 1);
 
 				//====================================================
@@ -711,12 +710,12 @@
 							if($use_cell_ajustee=="n") {
 								$font_size=adjust_size_font($texte,100-$largeur_colonnes_moy,$fs_txt,0.1);
 								$pdf->SetFontSize($font_size);
-								$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $h_cell, 'J', 'M', 1);
+								$pdf->drawTextBox(($texte), $largeur_dispo, $h_cell, 'J', 'M', 1);
 							}
 							else {
 								$taille_max_police=$fs_txt;
 								$taille_min_police=ceil($fs_txt/3);
-								cell_ajustee(traite_accents_utf8($texte),$x,$y,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+								cell_ajustee(($texte),$x,$y,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 							}
 	
 							//=========================================================
@@ -1115,12 +1114,12 @@
 				$largeur_dispo=210-2*$marge-$larg_intitule_avis-2*$larg_col_note;
 				$h_cell=$h_cadre_bas;
 				if($use_cell_ajustee=='n') {
-					$pdf->drawTextBox(traite_accents_utf8($avis), $largeur_dispo, $h_cell, 'L', 'T', 0);
+					$pdf->drawTextBox(($avis), $largeur_dispo, $h_cell, 'L', 'T', 0);
 				}
 				else {
 					$taille_max_police=$fs_txt;
 					$taille_min_police=ceil($fs_txt/3);
-					cell_ajustee(traite_accents_utf8($avis),$x,$y_cadre_bas,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'','T');
+					cell_ajustee(($avis),$x,$y_cadre_bas,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'','T');
 				}
 */
 

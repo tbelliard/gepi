@@ -373,7 +373,6 @@ if(isset($generer_pdf)) {
 		header('Content-Type: application/pdf');
 		Header('Pragma: public');
 		require('../fpdf/fpdf.php');
-		require('../fpdf/ex_fpdf.php');
 		
 		// Pour drawTextBox()
 		//require_once("../fpdf/class.multicelltag.php");
@@ -546,7 +545,6 @@ if(isset($generer_pdf)) {
 									$test_taille_texte='ok';
 								}
 							}
-							//$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $hauteur_info_eleve, 'C', 'M', 1);
 							$pdf->Cell($largeur_dispo,$hauteur_info_eleve,$texte,'',1,'C');
 							$cpt++;
 						}

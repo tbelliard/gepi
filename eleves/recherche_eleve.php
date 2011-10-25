@@ -114,7 +114,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				while($lig_clas=mysql_fetch_object($res_clas)) {
 					if($cpt>0) {echo ", ";}
 					//echo $lig_clas->classe;
-					echo htmlentities($lig_clas->classe);
+					echo htmlspecialchars($lig_clas->classe);
 					$cpt++;
 				}
 				//echo "</i>)";
