@@ -159,15 +159,15 @@ $couleur_cellule_gen = "#F6F7EF";
 ##################################################################################
 
 // Version de GEPI
-//les trois variables suivantes vont �tre remplies par un script de build avec les donn�e svn ou git
+//les trois variables suivantes vont être remplies par un script de build avec les données svn ou git
 //dans le cas ou les variables ne sont pas remplies (donc pas de script de build), on regarde dans header.inc et header_template.inc
-//si on peut obtenir des informations sur la version dans le r�pertoire .git
+//si on peut obtenir des informations sur la version dans le répertoire .git
 $gepiVersion = "dev";
 $gepiSvnRev = "";
 $gepiGitCommit = "";
 $gepiGitBranch = "";
 
-// Forcer l'utilisation du module de gestion des mise � jour de GEPI
+// Forcer l'utilisation du module de gestion des mise à jour de GEPI
 //
 // Ce paramètre sert à forcer l'utilisation du module de gestion des
 // des mise à jour de GEPI, qui n'est pas encore considéré comme stable
@@ -192,10 +192,10 @@ $gepiAuthors = array(
     "Julien Jocal" => "collegerb@free.fr"
 );
 
-// Affichage des dates en fran�ais
+// Affichage des dates en français
 @setlocale(LC_TIME,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','fr_FR.ISO8859-1','French','france','fra','french','FR','fr_FR','fr_FR@euro', 'French_France.1252');
 
-$gepiShowGenTime = "no"; // Pour afficher le temps de g�n�ration de certaines pages.
+$gepiShowGenTime = "no"; // Pour afficher le temps de génération de certaines pages.
 $pageload_starttime = microtime(true);
 
 // Global settings array
