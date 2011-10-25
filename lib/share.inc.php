@@ -4694,22 +4694,4 @@ function array_map_deep($callback, $array) {
     return $new;
 } 
 
-/**
- * Vérifie si une variable est en UTF8 et la réencode au besoin
- * @param string $var La variable à vérifier
- * @return string La variable décodée 
- */
-function check_utf8_and_convert($var) {
-	if(function_exists("mb_check_encoding")) {
-		if (!mb_check_encoding($var, 'UTF-8')) {
-    		return utf8_encode($var);
-    	} else {
-    		return $var;
-    	}
-	} else {
-  	return $var;
-	} 
-} 
-
-
 ?>
