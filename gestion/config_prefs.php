@@ -434,6 +434,22 @@ if(isset($enregistrer)) {
 				$msg.="Erreur lors de l'enregistrement de 'cn_avec_mediane_q1_q3'<br />\n";
 			}
 
+
+			$cn_default_nom_court=isset($_POST['cn_default_nom_court']) ? $_POST['cn_default_nom_court'] : "Nouvelle évaluation";
+			if(!savePref($_SESSION['login'],'cn_default_nom_court',$cn_default_nom_court)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_default_nom_court'<br />\n";
+			}
+
+			$cn_default_nom_complet=isset($_POST['cn_default_nom_complet']) ? $_POST['cn_default_nom_complet'] : "n";
+			if(!savePref($_SESSION['login'],'cn_default_nom_complet',$cn_default_nom_complet)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_default_nom_complet'<br />\n";
+			}
+
+			$cn_default_coef=isset($_POST['cn_default_coef']) ? $_POST['cn_default_coef'] : "n";
+			if(!savePref($_SESSION['login'],'cn_default_coef',$cn_default_coef)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_default_coef'<br />\n";
+			}
+
 		}
 	}
 
@@ -795,6 +811,42 @@ else{
 		if($cn_avec_mediane_q1_q3=='y') {echo 'checked';}
 		echo "/><label for='cn_avec_mediane_q1_q3' id='texte_cn_avec_mediane_q1_q3'> Afficher pour chaque colonne de notes les valeur médiane, 1er et 3è quartiles.</label>\n";
 		echo "</p>\n";
+
+		echo "<table>";
+		echo "<tr>";
+		echo "<td>";
+		echo "Nom court par défaut des évaluations&nbsp;: \n";
+		echo "</td>";
+		echo "<td>";
+		$cn_default_nom_court=getPref($_SESSION['login'], 'cn_default_nom_court', 'Nouvelle évaluation');
+		echo "<input type='text' name='cn_default_nom_court' id='cn_default_nom_court' value='$cn_default_nom_court' />\n";
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr>";
+		echo "<td>";
+		echo "Nom complet par défaut des évaluations&nbsp;: \n";
+		echo "</td>";
+		echo "<td>";
+		$cn_default_nom_complet=getPref($_SESSION['login'], 'cn_default_nom_complet', 'Nouvelle évaluation');
+		echo "<input type='text' name='cn_default_nom_complet' id='cn_default_nom_complet' value='$cn_default_nom_complet' />\n";
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr>";
+		echo "<td>";
+		echo "Coefficient par défaut des évaluations&nbsp;: \n";
+		$cn_default_coef=getPref($_SESSION['login'], 'cn_default_coef', '1.0');
+		echo "</td>";
+		echo "<td>";
+		echo "<input type='text' name='cn_default_coef' id='cn_default_coef' value='$cn_default_coef' size='3' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete='off' />\n";
+		echo "</td>";
+		echo "</tr>";
+
+		echo "</table>";
+
+
+
 	}
 
 
