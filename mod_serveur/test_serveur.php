@@ -181,9 +181,9 @@ if ($test->versionGd()) {
 	}
 	echo "<p style=\"color:red;\">";
 	if (!test_casse_mot()) {
-	    echo ' : échec de test_remplace_accents()</p>';
+	    echo ' : échec de test_casse_mot()</p>';
 	} else {
-	    echo "</p>réussite de test_remplace_accents()<br />\n";
+	    echo "</p>réussite de test_casse_mot()<br />\n";
 	}
 	echo "<br />\n";
 	echo "<hr />\n";
