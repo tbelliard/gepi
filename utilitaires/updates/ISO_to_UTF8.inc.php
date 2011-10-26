@@ -75,7 +75,7 @@ unset ($donnees, $donneesBase);
 //unset ($donnees);
 
 /* on s'occupe des tables */
-$result.="<br />Passage des tables en ".SET_DEST." en cours<br />";
+$result.="&nbsp;-> Passage des tables en ".SET_DEST."<br />";
 
 $query = mysql_query("SHOW table status");
 if ($query) {
@@ -88,7 +88,7 @@ if ($query) {
 	die ('Erreur de lecture de la base');
 }
 if (empty($donneesTable) ){
-    $result .= msj_ok("Tables déjà encodées en ".SET_DEST);
+    $result .= msj_present("Tables déjà encodées en ".SET_DEST);
 } else {
     foreach ($donneesTable as $table) {
         $result.="Passage de $table en ".SET_DEST." en cours. ";

@@ -70,6 +70,8 @@
 
 	// Bloc observation sur la droite pour le relevé PDF:
 	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : array();
+	
+	$tab_rn_bloc_abs2=isset($_POST['rn_abs_2']) ? $_POST['rn_abs_2'] : array();
 
 	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : array();
 
@@ -231,6 +233,9 @@
 				$tab_releve[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
 				$tab_releve[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
 			}
+			
+			// Bloc absence sur le relevé HTML
+			$tab_releve[$id_classe][$periode_num]['rn_abs_2']=isset($tab_rn_bloc_abs2[$loop_classe]) ? $tab_rn_bloc_abs2[$loop_classe] : "n";
 
 			// Liste des élèves à éditer/afficher/imprimer (sélection):
 			if($choix_periode=="intervalle") {
