@@ -74,6 +74,7 @@ echo "</p>\n";
 echo "<ul>\n";
 echo "<li><a href='classes_effectifs.php'>Classes, effectifs,...</a></li>\n";
 echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
+echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
 echo "</ul>\n";
 
 
