@@ -4,23 +4,23 @@
 /**
  * Base class that represents a row from the 'resp_adr' table.
  *
- * Table de jointure entre les responsables legaux et leur adresse
+ * Adresse
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persistent
+abstract class BaseAdresse extends BaseObject  implements Persistent
 {
 
 	/**
 	 * Peer class name
 	 */
-	const PEER = 'ResponsableEleveAdressePeer';
+	const PEER = 'AdressePeer';
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        ResponsableEleveAdressePeer
+	 * @var        AdressePeer
 	 */
 	protected static $peer;
 
@@ -101,7 +101,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * cle primaire, genere par sconet
 	 * @return     string
 	 */
-	public function getAdrId()
+	public function getId()
 	{
 		return $this->adr_id;
 	}
@@ -180,9 +180,9 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * Set the value of [adr_id] column.
 	 * cle primaire, genere par sconet
 	 * @param      string $v new value
-	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
+	 * @return     Adresse The current object (for fluent API support)
 	 */
-	public function setAdrId($v)
+	public function setId($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
@@ -190,17 +190,17 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		if ($this->adr_id !== $v) {
 			$this->adr_id = $v;
-			$this->modifiedColumns[] = ResponsableEleveAdressePeer::ADR_ID;
+			$this->modifiedColumns[] = AdressePeer::ADR_ID;
 		}
 
 		return $this;
-	} // setAdrId()
+	} // setId()
 
 	/**
 	 * Set the value of [adr1] column.
 	 * 1ere ligne adresse
 	 * @param      string $v new value
-	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function setAdr1($v)
 	{
@@ -210,7 +210,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		if ($this->adr1 !== $v) {
 			$this->adr1 = $v;
-			$this->modifiedColumns[] = ResponsableEleveAdressePeer::ADR1;
+			$this->modifiedColumns[] = AdressePeer::ADR1;
 		}
 
 		return $this;
@@ -220,7 +220,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * Set the value of [adr2] column.
 	 * 2eme ligne adresse
 	 * @param      string $v new value
-	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function setAdr2($v)
 	{
@@ -230,7 +230,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		if ($this->adr2 !== $v) {
 			$this->adr2 = $v;
-			$this->modifiedColumns[] = ResponsableEleveAdressePeer::ADR2;
+			$this->modifiedColumns[] = AdressePeer::ADR2;
 		}
 
 		return $this;
@@ -240,7 +240,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * Set the value of [adr3] column.
 	 * 3eme ligne adresse
 	 * @param      string $v new value
-	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function setAdr3($v)
 	{
@@ -250,7 +250,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		if ($this->adr3 !== $v) {
 			$this->adr3 = $v;
-			$this->modifiedColumns[] = ResponsableEleveAdressePeer::ADR3;
+			$this->modifiedColumns[] = AdressePeer::ADR3;
 		}
 
 		return $this;
@@ -260,7 +260,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * Set the value of [adr4] column.
 	 * 4eme ligne adresse
 	 * @param      string $v new value
-	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function setAdr4($v)
 	{
@@ -270,7 +270,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		if ($this->adr4 !== $v) {
 			$this->adr4 = $v;
-			$this->modifiedColumns[] = ResponsableEleveAdressePeer::ADR4;
+			$this->modifiedColumns[] = AdressePeer::ADR4;
 		}
 
 		return $this;
@@ -280,7 +280,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * Set the value of [cp] column.
 	 * Code postal
 	 * @param      string $v new value
-	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function setCp($v)
 	{
@@ -290,7 +290,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		if ($this->cp !== $v) {
 			$this->cp = $v;
-			$this->modifiedColumns[] = ResponsableEleveAdressePeer::CP;
+			$this->modifiedColumns[] = AdressePeer::CP;
 		}
 
 		return $this;
@@ -300,7 +300,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * Set the value of [pays] column.
 	 * Pays (quand il est autre que France)
 	 * @param      string $v new value
-	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function setPays($v)
 	{
@@ -310,7 +310,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		if ($this->pays !== $v) {
 			$this->pays = $v;
-			$this->modifiedColumns[] = ResponsableEleveAdressePeer::PAYS;
+			$this->modifiedColumns[] = AdressePeer::PAYS;
 		}
 
 		return $this;
@@ -320,7 +320,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * Set the value of [commune] column.
 	 * Commune de residence
 	 * @param      string $v new value
-	 * @return     ResponsableEleveAdresse The current object (for fluent API support)
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function setCommune($v)
 	{
@@ -330,7 +330,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		if ($this->commune !== $v) {
 			$this->commune = $v;
-			$this->modifiedColumns[] = ResponsableEleveAdressePeer::COMMUNE;
+			$this->modifiedColumns[] = AdressePeer::COMMUNE;
 		}
 
 		return $this;
@@ -384,10 +384,10 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 8; // 8 = ResponsableEleveAdressePeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 8; // 8 = AdressePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating ResponsableEleveAdresse object", $e);
+			throw new PropelException("Error populating Adresse object", $e);
 		}
 	}
 
@@ -430,13 +430,13 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = ResponsableEleveAdressePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = AdressePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -469,14 +469,14 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				ResponsableEleveAdresseQuery::create()
+				AdresseQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
@@ -511,7 +511,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$con->beginTransaction();
@@ -531,7 +531,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 					$this->postUpdate($con);
 				}
 				$this->postSave($con);
-				ResponsableEleveAdressePeer::addInstanceToPool($this);
+				AdressePeer::addInstanceToPool($this);
 			} else {
 				$affectedRows = 0;
 			}
@@ -569,7 +569,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 					$affectedRows = 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows = ResponsableEleveAdressePeer::doUpdate($this, $con);
+					$affectedRows = AdressePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -657,7 +657,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 			$failureMap = array();
 
 
-			if (($retval = ResponsableEleveAdressePeer::doValidate($this, $columns)) !== true) {
+			if (($retval = AdressePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
@@ -696,7 +696,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = ResponsableEleveAdressePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = AdressePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -712,7 +712,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	{
 		switch($pos) {
 			case 0:
-				return $this->getAdrId();
+				return $this->getId();
 				break;
 			case 1:
 				return $this->getAdr1();
@@ -758,13 +758,13 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
-		if (isset($alreadyDumpedObjects['ResponsableEleveAdresse'][$this->getPrimaryKey()])) {
+		if (isset($alreadyDumpedObjects['Adresse'][$this->getPrimaryKey()])) {
 			return '*RECURSION*';
 		}
-		$alreadyDumpedObjects['ResponsableEleveAdresse'][$this->getPrimaryKey()] = true;
-		$keys = ResponsableEleveAdressePeer::getFieldNames($keyType);
+		$alreadyDumpedObjects['Adresse'][$this->getPrimaryKey()] = true;
+		$keys = AdressePeer::getFieldNames($keyType);
 		$result = array(
-			$keys[0] => $this->getAdrId(),
+			$keys[0] => $this->getId(),
 			$keys[1] => $this->getAdr1(),
 			$keys[2] => $this->getAdr2(),
 			$keys[3] => $this->getAdr3(),
@@ -796,7 +796,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = ResponsableEleveAdressePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = AdressePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -812,7 +812,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	{
 		switch($pos) {
 			case 0:
-				$this->setAdrId($value);
+				$this->setId($value);
 				break;
 			case 1:
 				$this->setAdr1($value);
@@ -857,9 +857,9 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = ResponsableEleveAdressePeer::getFieldNames($keyType);
+		$keys = AdressePeer::getFieldNames($keyType);
 
-		if (array_key_exists($keys[0], $arr)) $this->setAdrId($arr[$keys[0]]);
+		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setAdr1($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setAdr2($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setAdr3($arr[$keys[3]]);
@@ -876,16 +876,16 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
+		$criteria = new Criteria(AdressePeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(ResponsableEleveAdressePeer::ADR_ID)) $criteria->add(ResponsableEleveAdressePeer::ADR_ID, $this->adr_id);
-		if ($this->isColumnModified(ResponsableEleveAdressePeer::ADR1)) $criteria->add(ResponsableEleveAdressePeer::ADR1, $this->adr1);
-		if ($this->isColumnModified(ResponsableEleveAdressePeer::ADR2)) $criteria->add(ResponsableEleveAdressePeer::ADR2, $this->adr2);
-		if ($this->isColumnModified(ResponsableEleveAdressePeer::ADR3)) $criteria->add(ResponsableEleveAdressePeer::ADR3, $this->adr3);
-		if ($this->isColumnModified(ResponsableEleveAdressePeer::ADR4)) $criteria->add(ResponsableEleveAdressePeer::ADR4, $this->adr4);
-		if ($this->isColumnModified(ResponsableEleveAdressePeer::CP)) $criteria->add(ResponsableEleveAdressePeer::CP, $this->cp);
-		if ($this->isColumnModified(ResponsableEleveAdressePeer::PAYS)) $criteria->add(ResponsableEleveAdressePeer::PAYS, $this->pays);
-		if ($this->isColumnModified(ResponsableEleveAdressePeer::COMMUNE)) $criteria->add(ResponsableEleveAdressePeer::COMMUNE, $this->commune);
+		if ($this->isColumnModified(AdressePeer::ADR_ID)) $criteria->add(AdressePeer::ADR_ID, $this->adr_id);
+		if ($this->isColumnModified(AdressePeer::ADR1)) $criteria->add(AdressePeer::ADR1, $this->adr1);
+		if ($this->isColumnModified(AdressePeer::ADR2)) $criteria->add(AdressePeer::ADR2, $this->adr2);
+		if ($this->isColumnModified(AdressePeer::ADR3)) $criteria->add(AdressePeer::ADR3, $this->adr3);
+		if ($this->isColumnModified(AdressePeer::ADR4)) $criteria->add(AdressePeer::ADR4, $this->adr4);
+		if ($this->isColumnModified(AdressePeer::CP)) $criteria->add(AdressePeer::CP, $this->cp);
+		if ($this->isColumnModified(AdressePeer::PAYS)) $criteria->add(AdressePeer::PAYS, $this->pays);
+		if ($this->isColumnModified(AdressePeer::COMMUNE)) $criteria->add(AdressePeer::COMMUNE, $this->commune);
 
 		return $criteria;
 	}
@@ -900,8 +900,8 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-		$criteria->add(ResponsableEleveAdressePeer::ADR_ID, $this->adr_id);
+		$criteria = new Criteria(AdressePeer::DATABASE_NAME);
+		$criteria->add(AdressePeer::ADR_ID, $this->adr_id);
 
 		return $criteria;
 	}
@@ -912,7 +912,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function getPrimaryKey()
 	{
-		return $this->getAdrId();
+		return $this->getId();
 	}
 
 	/**
@@ -923,7 +923,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function setPrimaryKey($key)
 	{
-		$this->setAdrId($key);
+		$this->setId($key);
 	}
 
 	/**
@@ -932,7 +932,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return null === $this->getAdrId();
+		return null === $this->getId();
 	}
 
 	/**
@@ -941,14 +941,14 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of ResponsableEleveAdresse (or compatible) type.
+	 * @param      object $copyObj An object of Adresse (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setAdrId($this->getAdrId());
+		$copyObj->setId($this->getId());
 		$copyObj->setAdr1($this->getAdr1());
 		$copyObj->setAdr2($this->getAdr2());
 		$copyObj->setAdr3($this->getAdr3());
@@ -990,7 +990,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     ResponsableEleveAdresse Clone of current object.
+	 * @return     Adresse Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -1009,12 +1009,12 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     ResponsableEleveAdressePeer
+	 * @return     AdressePeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new ResponsableEleveAdressePeer();
+			self::$peer = new AdressePeer();
 		}
 		return self::$peer;
 	}
@@ -1079,7 +1079,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * If the $criteria is not null, it is used to always fetch the results from the database.
 	 * Otherwise the results are fetched from the database the first time, then cached.
 	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this ResponsableEleveAdresse is new, it will return
+	 * If this Adresse is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -1095,7 +1095,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 				$this->initResponsableEleves();
 			} else {
 				$collResponsableEleves = ResponsableEleveQuery::create(null, $criteria)
-					->filterByResponsableEleveAdresse($this)
+					->filterByAdresse($this)
 					->find($con);
 				if (null !== $criteria) {
 					return $collResponsableEleves;
@@ -1126,7 +1126,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 					$query->distinct();
 				}
 				return $query
-					->filterByResponsableEleveAdresse($this)
+					->filterByAdresse($this)
 					->count($con);
 			}
 		} else {
@@ -1149,7 +1149,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		}
 		if (!$this->collResponsableEleves->contains($l)) { // only add it if the **same** object is not already associated
 			$this->collResponsableEleves[]= $l;
-			$l->setResponsableEleveAdresse($this);
+			$l->setAdresse($this);
 		}
 	}
 
@@ -1194,7 +1194,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * If the $criteria is not null, it is used to always fetch the results from the database.
 	 * Otherwise the results are fetched from the database the first time, then cached.
 	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this ResponsableEleveAdresse is new, it will return
+	 * If this Adresse is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -1210,7 +1210,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 				$this->initAbsenceEleveNotifications();
 			} else {
 				$collAbsenceEleveNotifications = AbsenceEleveNotificationQuery::create(null, $criteria)
-					->filterByResponsableEleveAdresse($this)
+					->filterByAdresse($this)
 					->find($con);
 				if (null !== $criteria) {
 					return $collAbsenceEleveNotifications;
@@ -1241,7 +1241,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 					$query->distinct();
 				}
 				return $query
-					->filterByResponsableEleveAdresse($this)
+					->filterByAdresse($this)
 					->count($con);
 			}
 		} else {
@@ -1264,7 +1264,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		}
 		if (!$this->collAbsenceEleveNotifications->contains($l)) { // only add it if the **same** object is not already associated
 			$this->collAbsenceEleveNotifications[]= $l;
-			$l->setResponsableEleveAdresse($this);
+			$l->setAdresse($this);
 		}
 	}
 
@@ -1272,13 +1272,13 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	/**
 	 * If this collection has already been initialized with
 	 * an identical criteria, it returns the collection.
-	 * Otherwise if this ResponsableEleveAdresse is new, it will return
-	 * an empty collection; or if this ResponsableEleveAdresse has previously
+	 * Otherwise if this Adresse is new, it will return
+	 * an empty collection; or if this Adresse has previously
 	 * been saved, it will retrieve related AbsenceEleveNotifications from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
-	 * actually need in ResponsableEleveAdresse.
+	 * actually need in Adresse.
 	 *
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
@@ -1297,13 +1297,13 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	/**
 	 * If this collection has already been initialized with
 	 * an identical criteria, it returns the collection.
-	 * Otherwise if this ResponsableEleveAdresse is new, it will return
-	 * an empty collection; or if this ResponsableEleveAdresse has previously
+	 * Otherwise if this Adresse is new, it will return
+	 * an empty collection; or if this Adresse has previously
 	 * been saved, it will retrieve related AbsenceEleveNotifications from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
-	 * actually need in ResponsableEleveAdresse.
+	 * actually need in Adresse.
 	 *
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
@@ -1380,7 +1380,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 */
 	public function __toString()
 	{
-		return (string) $this->exportTo(ResponsableEleveAdressePeer::DEFAULT_STRING_FORMAT);
+		return (string) $this->exportTo(AdressePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**
@@ -1402,4 +1402,4 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		return parent::__call($name, $params);
 	}
 
-} // BaseResponsableEleveAdresse
+} // BaseAdresse

@@ -4,11 +4,11 @@
 /**
  * Base static class for performing query and update operations on the 'resp_adr' table.
  *
- * Table de jointure entre les responsables legaux et leur adresse
+ * Adresse
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseResponsableEleveAdressePeer {
+abstract class BaseAdressePeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
@@ -17,13 +17,13 @@ abstract class BaseResponsableEleveAdressePeer {
 	const TABLE_NAME = 'resp_adr';
 
 	/** the related Propel class for this table */
-	const OM_CLASS = 'ResponsableEleveAdresse';
+	const OM_CLASS = 'Adresse';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.ResponsableEleveAdresse';
+	const CLASS_DEFAULT = 'gepi.Adresse';
 
 	/** the related TableMap class for this table */
-	const TM_CLASS = 'ResponsableEleveAdresseTableMap';
+	const TM_CLASS = 'AdresseTableMap';
 	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 8;
@@ -62,10 +62,10 @@ abstract class BaseResponsableEleveAdressePeer {
 	const DEFAULT_STRING_FORMAT = 'YAML';
 	
 	/**
-	 * An identiy map to hold any loaded instances of ResponsableEleveAdresse objects.
+	 * An identiy map to hold any loaded instances of Adresse objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array ResponsableEleveAdresse[]
+	 * @var        array Adresse[]
 	 */
 	public static $instances = array();
 
@@ -77,8 +77,8 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('AdrId', 'Adr1', 'Adr2', 'Adr3', 'Adr4', 'Cp', 'Pays', 'Commune', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('adrId', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Adr1', 'Adr2', 'Adr3', 'Adr4', 'Cp', 'Pays', 'Commune', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
 		BasePeer::TYPE_COLNAME => array (self::ADR_ID, self::ADR1, self::ADR2, self::ADR3, self::ADR4, self::CP, self::PAYS, self::COMMUNE, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ADR_ID', 'ADR1', 'ADR2', 'ADR3', 'ADR4', 'CP', 'PAYS', 'COMMUNE', ),
 		BasePeer::TYPE_FIELDNAME => array ('adr_id', 'adr1', 'adr2', 'adr3', 'adr4', 'cp', 'pays', 'commune', ),
@@ -92,8 +92,8 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('AdrId' => 0, 'Adr1' => 1, 'Adr2' => 2, 'Adr3' => 3, 'Adr4' => 4, 'Cp' => 5, 'Pays' => 6, 'Commune' => 7, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('adrId' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Adr1' => 1, 'Adr2' => 2, 'Adr3' => 3, 'Adr4' => 4, 'Cp' => 5, 'Pays' => 6, 'Commune' => 7, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
 		BasePeer::TYPE_COLNAME => array (self::ADR_ID => 0, self::ADR1 => 1, self::ADR2 => 2, self::ADR3 => 3, self::ADR4 => 4, self::CP => 5, self::PAYS => 6, self::COMMUNE => 7, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('ADR_ID' => 0, 'ADR1' => 1, 'ADR2' => 2, 'ADR3' => 3, 'ADR4' => 4, 'CP' => 5, 'PAYS' => 6, 'COMMUNE' => 7, ),
 		BasePeer::TYPE_FIELDNAME => array ('adr_id' => 0, 'adr1' => 1, 'adr2' => 2, 'adr3' => 3, 'adr4' => 4, 'cp' => 5, 'pays' => 6, 'commune' => 7, ),
@@ -146,12 +146,12 @@ abstract class BaseResponsableEleveAdressePeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. ResponsableEleveAdressePeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. AdressePeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(ResponsableEleveAdressePeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(AdressePeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -169,14 +169,14 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
 		if (null === $alias) {
-			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR_ID);
-			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR1);
-			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR2);
-			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR3);
-			$criteria->addSelectColumn(ResponsableEleveAdressePeer::ADR4);
-			$criteria->addSelectColumn(ResponsableEleveAdressePeer::CP);
-			$criteria->addSelectColumn(ResponsableEleveAdressePeer::PAYS);
-			$criteria->addSelectColumn(ResponsableEleveAdressePeer::COMMUNE);
+			$criteria->addSelectColumn(AdressePeer::ADR_ID);
+			$criteria->addSelectColumn(AdressePeer::ADR1);
+			$criteria->addSelectColumn(AdressePeer::ADR2);
+			$criteria->addSelectColumn(AdressePeer::ADR3);
+			$criteria->addSelectColumn(AdressePeer::ADR4);
+			$criteria->addSelectColumn(AdressePeer::CP);
+			$criteria->addSelectColumn(AdressePeer::PAYS);
+			$criteria->addSelectColumn(AdressePeer::COMMUNE);
 		} else {
 			$criteria->addSelectColumn($alias . '.ADR_ID');
 			$criteria->addSelectColumn($alias . '.ADR1');
@@ -205,21 +205,21 @@ abstract class BaseResponsableEleveAdressePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(ResponsableEleveAdressePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(AdressePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			ResponsableEleveAdressePeer::addSelectColumns($criteria);
+			AdressePeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -237,7 +237,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     ResponsableEleveAdresse
+	 * @return     Adresse
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -245,7 +245,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = ResponsableEleveAdressePeer::doSelect($critcopy, $con);
+		$objects = AdressePeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -262,7 +262,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return ResponsableEleveAdressePeer::populateObjects(ResponsableEleveAdressePeer::doSelectStmt($criteria, $con));
+		return AdressePeer::populateObjects(AdressePeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -280,12 +280,12 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			ResponsableEleveAdressePeer::addSelectColumns($criteria);
+			AdressePeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -303,14 +303,14 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      ResponsableEleveAdresse $value A ResponsableEleveAdresse object.
+	 * @param      Adresse $value A Adresse object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
 	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getAdrId();
+				$key = (string) $obj->getId();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -324,18 +324,18 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A ResponsableEleveAdresse object or a primary key value.
+	 * @param      mixed $value A Adresse object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof ResponsableEleveAdresse) {
-				$key = (string) $value->getAdrId();
+			if (is_object($value) && $value instanceof Adresse) {
+				$key = (string) $value->getId();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or ResponsableEleveAdresse object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or Adresse object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -350,7 +350,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     ResponsableEleveAdresse Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     Adresse Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -432,11 +432,11 @@ abstract class BaseResponsableEleveAdressePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = ResponsableEleveAdressePeer::getOMClass(false);
+		$cls = AdressePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = ResponsableEleveAdressePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = ResponsableEleveAdressePeer::getInstanceFromPool($key))) {
+			$key = AdressePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = AdressePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -445,7 +445,7 @@ abstract class BaseResponsableEleveAdressePeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				ResponsableEleveAdressePeer::addInstanceToPool($obj, $key);
+				AdressePeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -458,21 +458,21 @@ abstract class BaseResponsableEleveAdressePeer {
 	 * @param      int $startcol The 0-based offset for reading from the resultset row.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     array (ResponsableEleveAdresse object, last column rank)
+	 * @return     array (Adresse object, last column rank)
 	 */
 	public static function populateObject($row, $startcol = 0)
 	{
-		$key = ResponsableEleveAdressePeer::getPrimaryKeyHashFromRow($row, $startcol);
-		if (null !== ($obj = ResponsableEleveAdressePeer::getInstanceFromPool($key))) {
+		$key = AdressePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = AdressePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + ResponsableEleveAdressePeer::NUM_HYDRATE_COLUMNS;
+			$col = $startcol + AdressePeer::NUM_HYDRATE_COLUMNS;
 		} else {
-			$cls = ResponsableEleveAdressePeer::OM_CLASS;
+			$cls = AdressePeer::OM_CLASS;
 			$obj = new $cls();
 			$col = $obj->hydrate($row, $startcol);
-			ResponsableEleveAdressePeer::addInstanceToPool($obj, $key);
+			AdressePeer::addInstanceToPool($obj, $key);
 		}
 		return array($obj, $col);
 	}
@@ -494,10 +494,10 @@ abstract class BaseResponsableEleveAdressePeer {
 	 */
 	public static function buildTableMap()
 	{
-	  $dbMap = Propel::getDatabaseMap(BaseResponsableEleveAdressePeer::DATABASE_NAME);
-	  if (!$dbMap->hasTable(BaseResponsableEleveAdressePeer::TABLE_NAME))
+	  $dbMap = Propel::getDatabaseMap(BaseAdressePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseAdressePeer::TABLE_NAME))
 	  {
-	    $dbMap->addTableObject(new ResponsableEleveAdresseTableMap());
+	    $dbMap->addTableObject(new AdresseTableMap());
 	  }
 	}
 
@@ -514,13 +514,13 @@ abstract class BaseResponsableEleveAdressePeer {
 	 */
 	public static function getOMClass($withPrefix = true)
 	{
-		return $withPrefix ? ResponsableEleveAdressePeer::CLASS_DEFAULT : ResponsableEleveAdressePeer::OM_CLASS;
+		return $withPrefix ? AdressePeer::CLASS_DEFAULT : AdressePeer::OM_CLASS;
 	}
 
 	/**
-	 * Performs an INSERT on the database, given a ResponsableEleveAdresse or Criteria object.
+	 * Performs an INSERT on the database, given a Adresse or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or ResponsableEleveAdresse object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or Adresse object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -529,13 +529,13 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from ResponsableEleveAdresse object
+			$criteria = $values->buildCriteria(); // build Criteria from Adresse object
 		}
 
 
@@ -557,9 +557,9 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 
 	/**
-	 * Performs an UPDATE on the database, given a ResponsableEleveAdresse or Criteria object.
+	 * Performs an UPDATE on the database, given a Adresse or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or ResponsableEleveAdresse object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or Adresse object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -568,7 +568,7 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -576,15 +576,15 @@ abstract class BaseResponsableEleveAdressePeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(ResponsableEleveAdressePeer::ADR_ID);
-			$value = $criteria->remove(ResponsableEleveAdressePeer::ADR_ID);
+			$comparison = $criteria->getComparison(AdressePeer::ADR_ID);
+			$value = $criteria->remove(AdressePeer::ADR_ID);
 			if ($value) {
-				$selectCriteria->add(ResponsableEleveAdressePeer::ADR_ID, $value, $comparison);
+				$selectCriteria->add(AdressePeer::ADR_ID, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(ResponsableEleveAdressePeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(AdressePeer::TABLE_NAME);
 			}
 
-		} else { // $values is ResponsableEleveAdresse object
+		} else { // $values is Adresse object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -604,20 +604,20 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			ResponsableEleveAdressePeer::doOnDeleteSetNull(new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(ResponsableEleveAdressePeer::TABLE_NAME, $con, ResponsableEleveAdressePeer::DATABASE_NAME);
+			AdressePeer::doOnDeleteSetNull(new Criteria(AdressePeer::DATABASE_NAME), $con);
+			$affectedRows += BasePeer::doDeleteAll(AdressePeer::TABLE_NAME, $con, AdressePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
-			ResponsableEleveAdressePeer::clearInstancePool();
-			ResponsableEleveAdressePeer::clearRelatedInstancePool();
+			AdressePeer::clearInstancePool();
+			AdressePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -627,9 +627,9 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 
 	/**
-	 * Performs a DELETE on the database, given a ResponsableEleveAdresse or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Adresse or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or ResponsableEleveAdresse object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or Adresse object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -640,18 +640,18 @@ abstract class BaseResponsableEleveAdressePeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof ResponsableEleveAdresse) { // it's a model object
+		} elseif ($values instanceof Adresse) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
-			$criteria->add(ResponsableEleveAdressePeer::ADR_ID, (array) $values, Criteria::IN);
+			$criteria->add(AdressePeer::ADR_ID, (array) $values, Criteria::IN);
 		}
 
 		// Set the correct dbName
@@ -666,23 +666,23 @@ abstract class BaseResponsableEleveAdressePeer {
 			
 			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
 			$c = clone $criteria;
-			ResponsableEleveAdressePeer::doOnDeleteSetNull($c, $con);
+			AdressePeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
 			if ($values instanceof Criteria) {
-				ResponsableEleveAdressePeer::clearInstancePool();
-			} elseif ($values instanceof ResponsableEleveAdresse) { // it's a model object
-				ResponsableEleveAdressePeer::removeInstanceFromPool($values);
+				AdressePeer::clearInstancePool();
+			} elseif ($values instanceof Adresse) { // it's a model object
+				AdressePeer::removeInstanceFromPool($values);
 			} else { // it's a primary key, or an array of pks
 				foreach ((array) $values as $singleval) {
-					ResponsableEleveAdressePeer::removeInstanceFromPool($singleval);
+					AdressePeer::removeInstanceFromPool($singleval);
 				}
 			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-			ResponsableEleveAdressePeer::clearRelatedInstancePool();
+			AdressePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -708,21 +708,21 @@ abstract class BaseResponsableEleveAdressePeer {
 	{
 
 		// first find the objects that are implicated by the $criteria
-		$objects = ResponsableEleveAdressePeer::doSelect($criteria, $con);
+		$objects = AdressePeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
 			// set fkey col in related ResponsableEleve rows to NULL
-			$selectCriteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$updateValues = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$selectCriteria->add(ResponsableElevePeer::ADR_ID, $obj->getAdrId());
+			$selectCriteria = new Criteria(AdressePeer::DATABASE_NAME);
+			$updateValues = new Criteria(AdressePeer::DATABASE_NAME);
+			$selectCriteria->add(ResponsableElevePeer::ADR_ID, $obj->getId());
 			$updateValues->add(ResponsableElevePeer::ADR_ID, null);
 
 			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related AbsenceEleveNotification rows to NULL
-			$selectCriteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$updateValues = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveNotificationPeer::ADR_ID, $obj->getAdrId());
+			$selectCriteria = new Criteria(AdressePeer::DATABASE_NAME);
+			$updateValues = new Criteria(AdressePeer::DATABASE_NAME);
+			$selectCriteria->add(AbsenceEleveNotificationPeer::ADR_ID, $obj->getId());
 			$updateValues->add(AbsenceEleveNotificationPeer::ADR_ID, null);
 
 			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
@@ -731,13 +731,13 @@ abstract class BaseResponsableEleveAdressePeer {
 	}
 
 	/**
-	 * Validates all modified columns of given ResponsableEleveAdresse object.
+	 * Validates all modified columns of given Adresse object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      ResponsableEleveAdresse $obj The object to validate.
+	 * @param      Adresse $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -747,8 +747,8 @@ abstract class BaseResponsableEleveAdressePeer {
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(ResponsableEleveAdressePeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(AdressePeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(AdressePeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -764,7 +764,7 @@ abstract class BaseResponsableEleveAdressePeer {
 
 		}
 
-		return BasePeer::doValidate(ResponsableEleveAdressePeer::DATABASE_NAME, ResponsableEleveAdressePeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(AdressePeer::DATABASE_NAME, AdressePeer::TABLE_NAME, $columns);
 	}
 
 	/**
@@ -772,23 +772,23 @@ abstract class BaseResponsableEleveAdressePeer {
 	 *
 	 * @param      string $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
-	 * @return     ResponsableEleveAdresse
+	 * @return     Adresse
 	 */
 	public static function retrieveByPK($pk, PropelPDO $con = null)
 	{
 
-		if (null !== ($obj = ResponsableEleveAdressePeer::getInstanceFromPool((string) $pk))) {
+		if (null !== ($obj = AdressePeer::getInstanceFromPool((string) $pk))) {
 			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-		$criteria->add(ResponsableEleveAdressePeer::ADR_ID, $pk);
+		$criteria = new Criteria(AdressePeer::DATABASE_NAME);
+		$criteria->add(AdressePeer::ADR_ID, $pk);
 
-		$v = ResponsableEleveAdressePeer::doSelect($criteria, $con);
+		$v = AdressePeer::doSelect($criteria, $con);
 
 		return !empty($v) > 0 ? $v[0] : null;
 	}
@@ -804,23 +804,23 @@ abstract class BaseResponsableEleveAdressePeer {
 	public static function retrieveByPKs($pks, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(ResponsableEleveAdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		$objs = null;
 		if (empty($pks)) {
 			$objs = array();
 		} else {
-			$criteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
-			$criteria->add(ResponsableEleveAdressePeer::ADR_ID, $pks, Criteria::IN);
-			$objs = ResponsableEleveAdressePeer::doSelect($criteria, $con);
+			$criteria = new Criteria(AdressePeer::DATABASE_NAME);
+			$criteria->add(AdressePeer::ADR_ID, $pks, Criteria::IN);
+			$objs = AdressePeer::doSelect($criteria, $con);
 		}
 		return $objs;
 	}
 
-} // BaseResponsableEleveAdressePeer
+} // BaseAdressePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseResponsableEleveAdressePeer::buildTableMap();
+BaseAdressePeer::buildTableMap();
 

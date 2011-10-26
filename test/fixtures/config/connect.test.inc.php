@@ -1,7 +1,8 @@
 <?php
 $multisite = "n";
-$GLOBALS['dbHost']="localhost";
-$GLOBALS['dbDb']="test";
-$GLOBALS['dbUser']="test";
-$GLOBALS['dbPass']="";
+global $dbHost,$dbDb,$dbUser,$dbPass;
+$dbHost="localhost";
+$dbDb="test";
+$dbUser="test";
+$dbPass="";
 ?>
