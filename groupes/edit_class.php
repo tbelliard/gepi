@@ -45,6 +45,8 @@ $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_
 if (!is_numeric($id_classe)) {$id_classe = 0;}
 $classe = get_classe($id_classe);
 
+include("../lib/periodes.inc.php");
+
 if(isset($_GET['forcer_recalcul_rang'])) {
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
 	$res_per=mysql_query($sql);
@@ -574,7 +576,13 @@ echo "</form>\n";
 echo "</td>\n</tr>\n</table>\n";
 
 //$groups = get_groups_for_class($id_classe);
-$groups = get_groups_for_class($id_classe,"","n");
+$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
+if($affiche_categories=='y') {
+	$groups = get_groups_for_class($id_classe,"","y");
+}
+else {
+	$groups = get_groups_for_class($id_classe,"","n");
+}
 if(count($groups)==0){
 
 	if($ouvrir_infobulle_nav=='y') {
@@ -680,271 +688,315 @@ for($i=0;$i<10;$i++){
 		}
 	}
 
-    $cpt_grp=0;
-    $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories");
-    $mat_categories = array();
-    while ($row = mysql_fetch_object($res)) {
-        $mat_categories[] = $row;
-    }
-    foreach ($groups as $group) {
+	$cpt_grp=0;
+	$res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories");
+	$mat_categories = array();
+	$nom_categories = array();
+	while ($row = mysql_fetch_object($res)) {
+		$mat_categories[] = $row;
+		$nom_categories[$row->id]=$row->nom_complet;
+	}
 
-        $current_group = get_group($group["id"]);
-        $total = count($group["classes"]);
-        echo "<br/>\n";
-        echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
-        echo "<table border = '0' width='100%' summary='Suppression'><tr><td width='25%'>\n";
-        //echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
-        echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."'><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
-        echo " -- <span class=\"norme\">";
-        echo "<b>";
-        if ($total == "1") {
-            echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe'>";
-        } else {
-            echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
-        }
-        echo $group["description"] . "</a></b>";
-        //echo htmlspecialchars($group["description"]) . "</a></b>";
-        //===============================
-        // AJOUT: boireaus
-        //echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlspecialchars($group["description"])."\" /
-        echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlspecialchars($group["description"],ENT_QUOTES,"UTF-8")."\" />\n";
-        //===============================
-        echo "</span>";
+	echo "<table class='boireaus' summary='Tableau des enseignements'>\n";
+	echo "<tr>\n";
+	echo "<th rowspan='2'>Supprimer</th>\n";
+	echo "<th rowspan='2'>Enseignement</th>\n";
+	echo "<th colspan='".($nb_periode-1)."'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits</th>\n";
+	echo "<th rowspan='2'>Priorité<br />d'affichage</th>\n";
+	echo "<th rowspan='2'>Catégorie</th>\n";
+	echo "<th colspan='".count($tab_domaines)."'>Visibilité</th>\n";
+	echo "<th rowspan='2'>Coefficient</th>\n";
+	echo "<th colspan='3'>Mode moy</th>\n";
+	$nb_total_col=8+$nb_periode-1+count($tab_domaines);
 
-        //===============================
-        // AJOUT: boireaus
-        unset($result_matiere);
-        // On récupère l'ordre par défaut des matières dans matieres pour permettre de fixer les priorités d'après les priorités par défaut de matières.
-        // Sinon, pour l'affichage, c'est la priorité dans j_groupes_classes qui est utilisée à l'affichage dans les champs select.
-        $sql="SELECT m.priority, m.categorie_id FROM matieres m, j_groupes_matieres jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgc.id_matiere";
-        //$sql="SELECT jgc.priorite, m.categorie_id FROM matieres m, j_groupes_matieres jgm, j_groupes_classes jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe;";
-        //$sql="SELECT priorite FROM j_groupes_classes jgc WHERE jgc.id_groupe='".$group["id"]."' AND id_classe='$id_classe'";
-        //echo "$sql<br />\n";
-        $result_matiere=mysql_query($sql);
-        $ligmat=mysql_fetch_object($result_matiere);
-        $mat_priorite[$cpt_grp]=$ligmat->priority;
-        //$mat_priorite[$cpt_grp]=$ligmat->priorite;
-        $mat_cat_id[$cpt_grp]=$ligmat->categorie_id;
-        //$mat_priorite[$cpt_grp]=$ligmat->priorite;
-        //echo "\$mat_priorite[$cpt_grp]=".$mat_priorite[$cpt_grp]."<br />\n";
-        //===============================
+	if ($gepiSettings['active_mod_ects'] == "y") {
+		echo "<th rowspan='2'>Activer la saisie ECTS</th>\n";
+		echo "<th rowspan='2'>\n";
+		echo "Nombre d'ECTS par défaut pour une période";
+		echo "</th>\n";
+		$nb_total_col+=2;
+	}
+	echo "</tr>\n";
 
-        $j= 1;
-        if ($total > 1) {
-            echo "&nbsp;&nbsp;(avec : ";
-            //==========================================
-            // AJOUT: boireaus
-            unset($tabclasse);
-            //==========================================
-            foreach ($group["classes"] as $classe) {
-                //==========================================
-                // MODIF: boireaus
-                /*
-                if ($classe["id"] != $id_classe) {
-                    echo $classe["classe"];
-                    if ($j < $total) echo ", ";
-                }
-                */
-                if ($classe["id"] != $id_classe) {
-                    $tabclasse[]=$classe["classe"];
-                }
-                //==========================================
-                $j++;
-            }
-            //==============================
-            // AJOUT: boireaus
-            echo $tabclasse[0];
-            for($i=1;$i<count($tabclasse);$i++){
-                echo ", $tabclasse[$i]";
-            }
-            //==============================
-            echo ")";
-        }
+	echo "<tr>\n";
+	//echo "<th>Supprimer</th>\n";
+	//echo "<th>Enseignement</th>\n";
+	for($i=1;$i<$nb_periode;$i++) {
+		echo "<th>P$i</th>\n";
+	}
+	//echo "<th>Priorité d'affichage</th>\n";
+	//echo "<th>Catégorie</th>\n";
+	for($i=0;$i<count($tab_domaines);$i++) {
+		echo "<th>".$tab_domaines_sigle[$i]."</th>\n";
+	}
+	//echo "<th>Coefficient</th>\n";
+	echo "<th title='La note compte normalement dans la moyenne.'>La note<br />compte</th>\n";
+	echo "<th title='Les points au-dessus de 10 coefficientés sont ajoutés sans augmenter le total des coefficients.'>Bonus</th>\n";
+	echo "<th title='La note ne compte que si elle est supérieure ou égale à 10'>Sup10</th>\n";
+	echo "</tr>\n";
 
-        echo "</td>\n";
+	$prec_cat="";
 
-        $inscrits = null;
-    //echo "=======================================<br />\n";
-        foreach($current_group["periodes"] as $period) {
-        //echo "\$period[\"num_periode\"]=".$period["num_periode"]."<br />\n";
-        if($period["num_periode"]!=""){
-            $inscrits .= count($current_group["eleves"][$period["num_periode"]]["list"]) . "-";
-        }
-        }
+	$tab_visib_dom=array();
 
-        $inscrits = substr($inscrits, 0, -1);
+	$alt=1;
+	foreach ($groups as $group) {
 
-        echo "<td><b><a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits (" . $inscrits . ")</a>";
-        echo "</b></td>\n";
-        echo "<td width='20%'>Priorité d'affichage";
-        //=================================
-        // MODIF: boireaus
-        //echo "<select size=1 name='" . "priorite_" . $current_group["id"] . "'>";
-        // Attention à ne pas confondre l'Id et le Name qui ne coïncident pas.
-        echo "<select onchange=\"changement()\" size=1 id='priorite_".$cpt_grp."' name='priorite_" . $current_group["id"] . "'>\n";
-        //=================================
-        echo "<option value=0";
-        if  ($current_group["classes"]["classes"][$id_classe]["priorite"] == '0') echo " SELECTED";
-        echo ">0";
-        if ($priority_defaut == 0) echo " (valeur par défaut)";
-        echo "</option>\n";
-        $k = 0;
+		$current_group = get_group($group["id"]);
+		$total = count($group["classes"]);
 
-        $k=11;
-        $j = 1;
-        while ($k < 61) {
-            echo "<option value=$k";
-			if ($current_group["classes"]["classes"][$id_classe]["priorite"] == $k) {echo " SELECTED";}
+		//===============================
+		unset($result_matiere);
+		// On récupère l'ordre par défaut des matières dans matieres pour permettre de fixer les priorités d'après les priorités par défaut de matières.
+		// Sinon, pour l'affichage, c'est la priorité dans j_groupes_classes qui est utilisée à l'affichage dans les champs select.
+		$sql="SELECT m.priority, m.categorie_id FROM matieres m, j_groupes_matieres jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgc.id_matiere";
+		//echo "$sql<br />\n";
+		$result_matiere=mysql_query($sql);
+		$ligmat=mysql_fetch_object($result_matiere);
+		$mat_priorite[$cpt_grp]=$ligmat->priority;
+		$mat_cat_id[$cpt_grp]=$ligmat->categorie_id;
+		//===============================
+
+
+		if ($affiche_categories == "y") {
+			if($current_group["classes"]["classes"][$id_classe]["categorie_id"]!=$prec_cat) {
+				echo "<tr><td colspan='$nb_total_col' style='background-color:silver;'>";
+				if(isset($nom_categories[$current_group["classes"]["classes"][$id_classe]["categorie_id"]])) {
+					echo $nom_categories[$current_group["classes"]["classes"][$id_classe]["categorie_id"]];
+				}
+				else {
+					echo "&nbsp;";
+				}
+				echo "</td></tr>\n";
+			}
+		}
+		$prec_cat=$current_group["classes"]["classes"][$id_classe]["categorie_id"];
+
+		$alt=$alt*(-1);
+		echo "<tr id='tr_enseignement_$cpt_grp' class='lig$alt white_hover'>\n";
+		// Suppression
+		echo "<td>";
+		echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."'><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+		echo "</td>\n";
+
+		// Enseignement
+		echo "<td class='norme' style='text-align:left;'>";
+		echo "<b>";
+		if ($total == "1") {
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe'>";
+		} else {
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
+		}
+		echo htmlentities($group["description"]) . "</a></b>";
+		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"])."\" />\n";
+
+		$j= 1;
+		if ($total > 1) {
+			echo "&nbsp;&nbsp;(<em>avec&nbsp;: ";
+			unset($tabclasse);
+			foreach ($group["classes"] as $classe) {
+				if ($classe["id"] != $id_classe) {
+					$tabclasse[]=$classe["classe"];
+				}
+				$j++;
+			}
+			echo $tabclasse[0];
+			for($i=1;$i<count($tabclasse);$i++){
+				echo ", $tabclasse[$i]";
+			}
+			echo "</em>)";
+		}
+
+		$first = true;
+		foreach($current_group["profs"]["list"] as $prof) {
+			if ($first) {echo "<br />";}
+			if (!$first) {echo ", ";}
+			echo casse_mot($current_group["profs"]["users"][$prof]["prenom"],'majf2');
+			echo " ";
+			echo $current_group["profs"]["users"][$prof]["nom"];
+	
+			if(in_array($current_group["profs"]["users"][$prof]["login"],$tab_prof_suivi)) {
+				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
+				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
+				echo "\" />\n";
+			}
+			$first = false;
+		}
+
+		echo "</td>\n";
+
+		// Inscription des élèves sur les différentes périodes
+		foreach($current_group["periodes"] as $period) {
+			if($period["num_periode"]!=""){
+				$inscrits = count($current_group["eleves"][$period["num_periode"]]["list"]);
+
+				echo "<td>";
+				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">" . $inscrits . "</a>";
+				echo "</td>\n";
+			}
+		}
+
+		// Priorité d'affichage
+		echo "<td>";
+		echo "<select onchange=\"changement()\" size=1 id='priorite_".$cpt_grp."' name='priorite_" . $current_group["id"] . "'>\n";
+		echo "<option value='0'";
+		if  ($current_group["classes"]["classes"][$id_classe]["priorite"] == '0') echo " selected";
+		echo ">0";
+		if ($priority_defaut == 0) echo " (valeur par défaut)";
+		echo "</option>\n";
+		$k = 0;
+	
+		$k=11;
+		$j = 1;
+		while ($k < 61) {
+			echo "<option value=$k";
+			if ($current_group["classes"]["classes"][$id_classe]["priorite"] == $k) {echo " selected";}
 			echo ">".$j;
-            if ($priority_defaut == $k) {echo " (valeur par défaut)";}
-            echo "</option>\n";
-            $k++;
-            $j = $k - 10;
-        }
-        echo "</select>\n";
-        echo "</td>\n";
-        // Catégories de matières
-        echo "<td>Catégorie : ";
-        echo "<select onchange=\"changement()\" size=1 id='categorie_".$cpt_grp."' name='categorie_" .$current_group["id"]. "'>\n";
-        echo "<option value='0'";
-        if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == "0") {echo " SELECTED";}
-        echo ">Aucune</option>\n";
+			if ($priority_defaut == $k) {echo " (valeur par défaut)";}
+			echo "</option>\n";
+			$k++;
+			$j = $k - 10;
+		}
+		echo "</select>\n";
+		echo "</td>\n";
+
+		// Catégorie
+		echo "<td>";
+		echo "<select onchange=\"changement()\" size=1 id='categorie_".$cpt_grp."' name='categorie_" .$current_group["id"]. "'>\n";
+		echo "<option value='0'";
+		if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == "0") {echo " SELECTED";}
+		echo ">Aucune</option>\n";
 		$tab_categorie_id=array();
-        foreach ($mat_categories as $cat) {
+		foreach ($mat_categories as $cat) {
 			$tab_categorie_id[]=$cat->id;
-            echo "<option value='".$cat->id . "'";
-            if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) {
-               echo " SELECTED";
-            }
-            //echo ">".html_entity_decode($cat->nom_court))."</option>\n";
-            echo ">".html_entity_decode($cat->nom_court,ENT_QUOTES,"UTF-8")."</option>\n";
-        }
-        echo "</select>\n";
+			echo "<option value='".$cat->id . "'";
+			if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) {
+			echo " selected";
+			}
+			echo ">".html_entity_decode_all_version($cat->nom_court)."</option>\n";
+		}
+		echo "</select>\n";
 
 		if(($current_group["classes"]["classes"][$id_classe]["categorie_id"]!=0)&&(!in_array($current_group["classes"]["classes"][$id_classe]["categorie_id"],$tab_categorie_id))) {
 			$temoin_anomalie_categorie="y";
 			echo "<a href='#' onclick=\"afficher_div('association_anormale_enseignement_categorie','y',-100,20);return false;\"'><img src='../images/icons/flag2.gif' width='17' height='18' /></a>";
 		}
 
-        if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
-            //echo "<br />\n";
-            $message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
-            //echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
+		if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
+			//echo "<br />\n";
+			$message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
+			//echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
 
-            echo "<a href='#' onclick=\"afficher_div('enseignement_invisible','y',-100,20);return false;\"";
-            echo ">";
-            echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
-            echo "</a>";
-        }
+			echo "<a href='#' onclick=\"afficher_div('enseignement_invisible','y',-100,20);return false;\"";
+			echo ">";
+			echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
+			echo "</a>";
+		}
+		echo "</td>\n";
 
-		//=========================================================
-		echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
-
-		// Visibilité sur les bulletins, CN,...
+		// Visibilité
 		for($loop=0;$loop<count($tab_domaines);$loop++) {
-			echo "<div style='float: left; width: ".max(2,strlen($tab_domaines_sigle[$loop]))."em; border: 1px solid black; margin: 2px; text-align:center; background-color: white; font-weight: bold;'>\n";
 			if(!in_array($current_group["id"],$invisibilite_groupe[$tab_domaines[$loop]])) {
-				echo "<span style='color: blue;' title='Enseignement visible sur les ".$tab_domaines_texte[$loop]."'>".$tab_domaines_sigle[$loop]."</span><br />\n";
-				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."'";
-				echo " checked";
-				echo " />\n";
+				echo "<td>";
+				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' checked />\n";
+				echo "</td>\n";
 			}
 			else {
-				echo "<span style='color: lightgray;' title='Enseignement invisible sur les ".$tab_domaines_texte[$loop]."'>".$tab_domaines_sigle[$loop]."</span><br />\n";
-				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."'";
-				echo " />\n";
+				echo "<td style='background-color: grey;'>";
+				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' />\n";
+
+				$tab_visib_dom[$tab_domaines_sigle[$loop]][]=$cpt_grp;
+
+				echo "</td>\n";
 			}
-			echo "</div>\n";
 		}
-		//=========================================================
 
-        echo "</td>\n";
+		// Coefficient
+		echo "<td>";
+		echo "<input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"3\" />\n";
+		echo "</td>\n";
 
-        // Coefficient
-        //echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" /></td></tr>";
-        echo "<td align='center'>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" />\n";
-        echo "<br />\n";
-
-		/*
-        echo "<input type='checkbox' name='note_sup_10_".$current_group["id"]."' id='note_sup_10_".$current_group["id"]."' value='y' onchange=\"changement()\" ";
-        if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="sup10") {echo "checked ";}
-        echo "/><label for='note_sup_10_".$current_group["id"]."'> Note&gt;10</label>\n";
-		*/
-
-		echo "<table class='boireaus' summary='Mode de prise en compte dans la moyenne'>\n";
-		echo "<tr>\n";
-		echo "<th class='small'><label for='note_standard_".$current_group["id"]."' title='La note compte normalement dans la moyenne.'>La note<br />compte</label></th>\n";
-		echo "<th class='small'><label for='note_bonus_".$current_group["id"]."' title='Les points au-dessus de 10 coefficientés sont ajoutés sans augmenter le total des coefficients.'>Bonus</label></th>\n";
-		echo "<th class='small'><label for='note_sup_10_".$current_group["id"]."' title='La note ne compte que si elle est supérieure ou égale à 10'>Sup10</label></th>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>\n";
+		// Mode moy
+		echo "<td>";
         echo "<input type='radio' name='mode_moy_".$current_group["id"]."' id='note_standard_".$current_group["id"]."' value='-' onchange=\"changement()\" ";
         if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="-") {echo "checked ";}
         echo "/>\n";
 		echo "</td>\n";
-		echo "<td>\n";
+
+		echo "<td>";
         echo "<input type='radio' name='mode_moy_".$current_group["id"]."' id='note_bonus_".$current_group["id"]."' value='bonus' onchange=\"changement()\" ";
         if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="bonus") {echo "checked ";}
         echo "/>\n";
 		echo "</td>\n";
-		echo "<td>\n";
+
+		echo "<td>";
         echo "<input type='radio' name='mode_moy_".$current_group["id"]."' id='note_sup_10_".$current_group["id"]."' value='sup10' onchange=\"changement()\" ";
         if($current_group["classes"]["classes"][$id_classe]["mode_moy"]=="sup10") {echo "checked ";}
         echo "/>\n";
 		echo "</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
 
-        echo "</td>\n";
-        echo "</tr>\n";
-
-        echo "<tr>\n";
-        echo "<td colspan='5'>\n";
-        $first = true;
-        foreach($current_group["profs"]["list"] as $prof) {
-            if (!$first) {echo ", ";}
-            //echo $current_group["profs"]["users"][$prof]["prenom"];
-            echo casse_mot($current_group["profs"]["users"][$prof]["prenom"],'majf2');
-            echo " ";
-            echo $current_group["profs"]["users"][$prof]["nom"];
-
-			if(in_array($current_group["profs"]["users"][$prof]["login"],$tab_prof_suivi)) {
-				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
-				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
-				echo "\" />\n";
+		// Ects
+		if ($gepiSettings['active_mod_ects'] == "y") {
+			echo "<td><input id='saisie_ects_".$cpt_grp."' type='checkbox' name='saisie_ects_".$current_group["id"]."' value='1'";
+			if($current_group["classes"]["classes"][$id_classe]["saisie_ects"]) {
+				echo " checked";
 			}
-            $first = false;
-        }
-        echo "</td>\n";
-        echo "</tr>\n";
-        if ($gepiSettings['active_mod_ects'] == "y") {
-            echo "<tr><td>&nbsp;</td>\n";
-            echo "<td><label for='saisie_ects_".$cpt_grp."'>Activer la saisie ECTS</label>&nbsp;<input id='saisie_ects_".$cpt_grp."' type='checkbox' name='saisie_ects_".$current_group["id"]."' value='1'";
-            if($current_group["classes"]["classes"][$id_classe]["saisie_ects"]) {
-                echo " checked";
-            }
-            echo "/>\n";
-            echo "<input id='no_saisie_ects_".$cpt_grp."' type='hidden' name='no_saisie_ects_".$current_group["id"]."' value='0' />\n";
-            echo "</td>\n";
-            echo "<td>\n";
-            echo "Nombre d'ECTS par défaut pour une période : ";
-            echo "<select onchange=\"changement()\" id='valeur_ects_".$cpt_grp."' name='". "valeur_ects_" . $current_group["id"] . "'>\n";
-            for($c=0;$c<31;$c++) {
-                echo "<option value='$c'";
-                if (intval($current_group["classes"]["classes"][$id_classe]["valeur_ects"]) == $c) echo " SELECTED ";
-                echo ">$c</option>\n";
-            }
-            echo "</select>\n";
-            echo "</td>\n";
-            echo "</tr>\n";
-        }
-        echo "</table>\n";
-        echo "</fieldset>\n";
+			echo "/>\n";
+			echo "<input id='no_saisie_ects_".$cpt_grp."' type='hidden' name='no_saisie_ects_".$current_group["id"]."' value='0' />\n";
+			echo "</td>\n";
 
-        $cpt_grp++;
-    }
+			echo "<td>\n";
+			echo "<select onchange=\"changement()\" id='valeur_ects_".$cpt_grp."' name='". "valeur_ects_" . $current_group["id"] . "'>\n";
+			for($c=0;$c<31;$c++) {
+				echo "<option value='$c'";
+				if (intval($current_group["classes"]["classes"][$id_classe]["valeur_ects"]) == $c) echo " SELECTED ";
+				echo ">$c</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+		}
 
+		echo "</tr>\n";
+
+		$cpt_grp++;
+	}
+	echo "</table>\n";
+
+	if(count($tab_visib_dom)>0) {
+		$chaine_visibilite_js="";
+		for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+			if(isset($tab_visib_dom[$tab_domaines_sigle[$loop]])) {
+				if($chaine_visibilite_js=='') {echo "<p>Griser les enseignements non visibles sur les ";}
+				$chaine_visibilite_js.="var tab_vis_$loop=new Array(";
+				for($loo=0;$loo<count($tab_visib_dom[$tab_domaines_sigle[$loop]]);$loo++) {
+					if($loo>0) {$chaine_visibilite_js.=", ";}
+					$chaine_visibilite_js.="'".$tab_visib_dom[$tab_domaines_sigle[$loop]][$loo]."'";
+				}
+				$chaine_visibilite_js.=");\n";
+				echo "<input type='checkbox' name='chk_visibilite_griser_degriser[]' id='chk_visibilite_griser_degriser_$loop' value='y' onchange=\"visibilite_griser_degriser('$loop')\" /><label for='chk_visibilite_griser_degriser_$loop' onclick=\"visibilite_griser_degriser('$loop')\">".$tab_domaines[$loop]."</label>&nbsp;&nbsp;&nbsp;\n";
+			}
+		}
+
+		echo "<script type='text/javascript'>
+	$chaine_visibilite_js
+	function visibilite_griser_degriser(num_domaine) {
+		tab_vis_num_domaine=eval('tab_vis_'+num_domaine)
+		for(i=0;i<tab_vis_num_domaine.length;i++) {
+			tr_courant='tr_enseignement_'+tab_vis_num_domaine[i];
+			if(document.getElementById(tr_courant)) {
+				if(document.getElementById('chk_visibilite_griser_degriser_'+num_domaine)) {
+					if(document.getElementById('chk_visibilite_griser_degriser_'+num_domaine).checked==true) {
+						document.getElementById(tr_courant).style.backgroundColor='grey';
+					}
+					else {
+						document.getElementById(tr_courant).style.backgroundColor='';
+					}
+				}
+			}
+		}
+	}
+</script>\n";
+	}
 
 if(isset($temoin_anomalie_categorie)&&($temoin_anomalie_categorie=='y')) {
 	$titre="Anomalie d'association enseignement/catégorie";

@@ -89,7 +89,7 @@ $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id
 unset($affiche_message);
 $affiche_message = isset($_POST["affiche_message"]) ? $_POST["affiche_message"] : (isset($_GET["affiche_message"]) ? $_GET["affiche_message"] : NULL);
 
-$order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : "classe");
+$order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : getPref($_SESSION['login'], 'cn_order_by', 'classe'));
 
 if ($id_devoir)  {
 	$sql="SELECT * FROM cn_devoirs WHERE id ='$id_devoir';";
@@ -1011,13 +1011,33 @@ foreach ($liste_eleves as $eleve) {
 			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N"){
 				if($mode_commentaire_20080422!="no_anti_inject") {
 					if ((isset($appreciations_import[$current_displayed_line])) and  ($appreciations_import[$current_displayed_line] != '')) {
-				     $eleve_comment = $appreciations_import[$current_displayed_line];
-				  }
-					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=60 class='wrap' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+						$eleve_comment = $appreciations_import[$current_displayed_line];
+					}
+					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=60 class='wrap' onchange=\"changement()\"";
 				}
 				else {
-					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 class='wrap' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 class='wrap' onchange=\"changement()\"";
 				}
+				if(getSettingValue("gepi_pmv")!="n"){
+					$mess_comment[$i][$k] .= " onfocus=\"";
+					$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login[$i]';";
+					$res_ele=mysql_query($sql);
+					if(mysql_num_rows($res_ele)>0) {
+						$lig_ele=mysql_fetch_object($res_ele);
+						if (nom_photo($lig_ele->elenoet)){
+							$mess_comment[$i][$k].=";affiche_photo('".nom_photo($lig_ele->elenoet)."','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";
+						}
+						else {
+							$mess_comment[$i][$k].=";document.getElementById('div_photo_eleve').innerHTML='';";
+						}
+					}
+					else {
+						$mess_comment[$i][$k].=";document.getElementById('div_photo_eleve').innerHTML='';";
+					}
+					$mess_comment[$i][$k] .= "\"";
+				}
+				$mess_comment[$i][$k] .= ">".$eleve_comment."</textarea></td>\n";
+
 			}
 			else{
 				$mess_comment[$i][$k] .= $eleve_comment."</td>\n";
