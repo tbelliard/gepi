@@ -96,4 +96,23 @@ class AbsenceEleveTraitementTest extends GepiEmptyTestBase
         
        saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
 	}
+
+	public function testSave()
+	{
+	    global $_SESSION;
+	    $_SESSION['login'] = 'Lebesgue';
+	    
+	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+	    
+	    $saisie_3 = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+	    $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_3);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Exclusion de cours')->findOne());
+        $traitement->save();   
+        $this->assertEquals('Lebesgue',$traitement->getUtilisateurId());
+        
+	    $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
+	    $traitement->save();
+        $this->assertEquals('Lebesgue',$traitement->getModifieParUtilisateurId());
+	}
 }
