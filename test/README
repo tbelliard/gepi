@@ -2,7 +2,7 @@
 
 == Background ==
 
-Propel uses [http://www.phpunit.de PHPUnit] to test the build and runtime frameworks.
+Gepi uses [http://www.phpunit.de PHPUnit] to test the build and runtime frameworks.
 
 You can find the unit test classes and support files in the test/testsuite directory.
 
@@ -17,18 +17,19 @@ In order to run the tests, you must install PHPUnit:
 == Configure the Database to be Used in the Tests ==
 
 You must configure test/fixtures/config/connect.test.inc.php file
-ou must also build the `fixtures/schemas` project.
 
 If you test on MySQL, the following SQL script will create all the necessary test databases and grant access to the anonymous user, so the unit tests should pass without any special configuration:
-
 #!sql
 CREATE DATABASE test;
 GRANT ALL ON test.* TO ''@'localhost';
 
+Run the tools/setup_new_database.php script with the command line
+Run the tools/update_database.php script with the command line
+
 == Run the Unit Tests ==
 
 Run all the unit tests at once using the `phpunit` command:
-> cd /path/to/propel/test
+> cd /path/to/gepi/test
 > phpunit testsuite
 
 == How the Tests Work ==
