@@ -178,6 +178,10 @@ function reactiver(mavar) {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href='trombinoscopes.php'>Effectuer une autre sélection</a>";
 
+	if($_SESSION['statut']=='professeur') {
+		echo " | <a href='plan_de_classe.php'>Plan de classe</a>";
+	}
+
 	if($_SESSION['statut']=='administrateur') {
 		echo " | <a href='trombino_decoupe.php'>Découpe trombinoscope</a>";
 	}
