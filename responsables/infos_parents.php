@@ -82,7 +82,9 @@ if(isset($_GET['export_csv'])) {
 	if((!isset($mode))||($mode==1)) {
 		$nom_fic = "export_infos_parents_1_".date("Ymd_His").".csv";
 	
-		$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Responsable;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
+		//$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Responsable;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
+		//$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Resp_civ;Resp_nom;Resp_prenom;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
+		$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Responsable;Resp_civ;Resp_nom;Resp_prenom;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
 		for($i=0;$i<count($tab_classe);$i++) {
 			//$csv.=$tab_classe[$i]['classe'].";";
 	
@@ -102,8 +104,9 @@ if(isset($_GET['export_csv'])) {
 					$csv.=formate_date($lig_ele->naissance).";";
 					$csv.=$lig_ele->login.";";
 					$csv.=$lig_ele->ele_id.";";
-	
+
 					$csv.=$lig_resp->civilite." ".strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2').";";
+					$csv.=$lig_resp->civilite.";".strtoupper($lig_resp->nom).";".casse_mot($lig_resp->prenom,'majf2').";";
 					$csv.=$lig_resp->tel_pers.";";
 					$csv.=$lig_resp->tel_port.";";
 					$csv.=$lig_resp->tel_prof.";";
