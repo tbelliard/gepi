@@ -734,3 +734,14 @@ ELEOPT12 varchar(40) NOT NULL default '',
 LIEU_NAISSANCE varchar(50) NOT NULL default '',
 MEL varchar(255) NOT NULL default ''
 );
+
+DROP TABLE IF EXISTS temp_abs_import;
+CREATE TABLE IF NOT EXISTS temp_abs_import (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+login varchar(50) NOT NULL default '',
+elenoet varchar(50) NOT NULL default '',
+libelle varchar(50) NOT NULL default '',
+nbAbs INT(11) NOT NULL default '0',
+nbNonJustif INT(11) NOT NULL default '0',
+nbRet INT(11) NOT NULL default '0',
+UNIQUE KEY elenoet (elenoet));

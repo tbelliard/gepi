@@ -958,3 +958,4 @@ INSERT INTO droits SET id='/mod_examen_blanc/copie_exam.php', administrateur='V'
 INSERT INTO `setting` VALUES ('sso_cas_table', 'no');
 INSERT INTO droits VALUES ('/mod_sso_table/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion de la table de correspondance sso', '');
 INSERT INTO droits SET id='/gestion/changement_d_annee.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Changement d\'année.',statut='';
+INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');
