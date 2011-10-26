@@ -3,6 +3,7 @@
 /**
  * Fichier qui permet de construire la barre de menu professeur
  * 
+ * $Id$
  * 
  * Variables envoyées au gabarit : liens de la barre de menu prof
  * - $tbs_menu_prof = array(lien , texte)
@@ -139,21 +140,23 @@ include("tbs_menu_plugins.inc.php");
 		foreach($mes_groupes as $tmp_group) {
 			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
 			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
-			$tmp_sous_menu2=array();
-			$cpt_sous_menu2=0;
-			for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group["periodes"][$loop]["nom_periode"];
-				if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-					$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+			if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "light") {
+				$tmp_sous_menu2=array();
+				$cpt_sous_menu2=0;
+				for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
+					$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop;
+					$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group["periodes"][$loop]["nom_periode"];
+					if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
+						$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+					}
+					else {
+						$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+					}
+					$cpt_sous_menu2++;
 				}
-				else {
-					$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
-				}
-				$cpt_sous_menu2++;
+				$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+				$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 			}
-			$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
-			$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 			$cpt_sous_menu++;
 		}
 
@@ -202,24 +205,25 @@ include("tbs_menu_plugins.inc.php");
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/index.php?id_groupe='.$tmp_group['id'];
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 	
-				$tmp_sous_menu3=array();
-				$cpt_sous_menu3=0;
-	
-				for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-					$tmp_sous_menu3[$cpt_sous_menu3]["lien"]='/saisie/saisie_notes.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop;
-					$tmp_sous_menu3[$cpt_sous_menu3]["texte"]=$tmp_group["periodes"][$loop]["nom_periode"];
-					$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' '.nb_saisies_bulletin("notes", $tmp_group["id"], $loop, "couleur");
-					if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+				if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "light") {
+					$tmp_sous_menu3=array();
+					$cpt_sous_menu3=0;
+		
+					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
+						$tmp_sous_menu3[$cpt_sous_menu3]["lien"]='/saisie/saisie_notes.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop;
+						$tmp_sous_menu3[$cpt_sous_menu3]["texte"]=$tmp_group["periodes"][$loop]["nom_periode"];
+						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' '.nb_saisies_bulletin("notes", $tmp_group["id"], $loop, "couleur");
+						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
+							$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+						}
+						else {
+							$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+						}
+						$cpt_sous_menu3++;
 					}
-					else {
-						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
-					}
-					$cpt_sous_menu3++;
-				}
-				$tmp_sous_menu2[$cpt_sous_menu2]['sous_menu']=$tmp_sous_menu3;
-				$tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;
-	
+					$tmp_sous_menu2[$cpt_sous_menu2]['sous_menu']=$tmp_sous_menu3;
+					$tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;
+				}	
 				$cpt_sous_menu2++;
 			}
 			$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
@@ -235,25 +239,26 @@ include("tbs_menu_plugins.inc.php");
 			foreach($mes_groupes as $tmp_group) {
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/index.php?id_groupe='.$tmp_group['id'];
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
-	
-				$tmp_sous_menu3=array();
-				$cpt_sous_menu3=0;
-	
-				for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-					$tmp_sous_menu3[$cpt_sous_menu3]["lien"]='/saisie/saisie_appreciations.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop;
-					$tmp_sous_menu3[$cpt_sous_menu3]["texte"]=$tmp_group["periodes"][$loop]["nom_periode"];
-					$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' '.nb_saisies_bulletin("appreciations", $tmp_group["id"], $loop, "couleur");
-					if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+
+				if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "light") {
+					$tmp_sous_menu3=array();
+					$cpt_sous_menu3=0;
+		
+					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
+						$tmp_sous_menu3[$cpt_sous_menu3]["lien"]='/saisie/saisie_appreciations.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop;
+						$tmp_sous_menu3[$cpt_sous_menu3]["texte"]=$tmp_group["periodes"][$loop]["nom_periode"];
+						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' '.nb_saisies_bulletin("appreciations", $tmp_group["id"], $loop, "couleur");
+						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
+							$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+						}
+						else {
+							$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+						}
+						$cpt_sous_menu3++;
 					}
-					else {
-						$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
-					}
-					$cpt_sous_menu3++;
+					$tmp_sous_menu2[$cpt_sous_menu2]['sous_menu']=$tmp_sous_menu3;
+					$tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;
 				}
-				$tmp_sous_menu2[$cpt_sous_menu2]['sous_menu']=$tmp_sous_menu3;
-				$tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;
-	
 				$cpt_sous_menu2++;
 			}
 			$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;

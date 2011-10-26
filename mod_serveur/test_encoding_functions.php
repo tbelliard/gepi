@@ -68,9 +68,9 @@ function test_ensure_utf8()
 function test_remplace_accents()
 {
     if ("auie" != remplace_accents("auie")) {echo 'échec ligne 70 mod_serveur/test_encoding_functions.php'; return false;} 
-    if ("bepowudlj" != remplace_accents("bépowǜdlj")) {echo 'échec ligne 71 mod_serveur/test_encoding_functions.php'; return false;} 
-    if (";oeEURau" != remplace_accents(";œ€âũ")) {echo 'échec ligne 72 mod_serveur/test_encoding_functions.php'; return false;} 
-    if ("e" != remplace_accents("é")) {echo 'échec ligne 73 mod_serveur/test_encoding_functions.php'; return false;} 
+    if ("auie'\"" != remplace_accents("auie'\"")) {echo 'échec ligne 71 mod_serveur/test_encoding_functions.php'; return false;} 
+    if ("bepowudlj" != remplace_accents("bépowûdlj")) {echo 'échec ligne 72 mod_serveur/test_encoding_functions.php'; return false;}
+    if ("u" != remplace_accents("ǜ") && "_" != remplace_accents("ǜ")) {echo 'échec ligne 73 mod_serveur/test_encoding_functions.php'; return false;}
     if ("e" != remplace_accents("\xe9")) {echo 'échec ligne 74 mod_serveur/test_encoding_functions.php'; return false;} 
     if ("'\" ." != remplace_accents("'\" .")) {echo 'échec ligne 75 mod_serveur/test_encoding_functions.php'; return false;} 
     if ("__ e" != remplace_accents("'\" é",'all_nospace')) {echo 'échec ligne 76 mod_serveur/test_encoding_functions.php'; return false;} 

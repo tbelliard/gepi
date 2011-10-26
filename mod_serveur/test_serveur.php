@@ -155,6 +155,20 @@ if ($test->versionGd()) {
 	echo "<br />\n";
 	echo "<hr />\n";
 	echo "<h4>Encodage des caractères : </h4>\n";
+	if (function_exists('iconv')) {
+	    echo "iconv est installé sur votre système<br />";
+	} else {
+	    echo "iconv n'est pas installé sur votre système<br />";
+	}
+	if (function_exists('mb_convert_encoding')) {
+	    echo "mbstring est installé sur votre système<br />";
+	} else {
+	    echo "mbstring n'est pas installé sur votre système<br />";
+	}
+	if (!function_exists('conv') && !function_exists('mb_convert_encoding')) {
+	    echo "<p style=\"color:red;\">au moins iconv ou mbstring doivent être installés sur votre système</p>";
+	}
+	
 	echo "<p style=\"color:red;\">";
 	if (!test_check_utf8()) {
 	    echo ' : échec de test_check_utf8()</p>';

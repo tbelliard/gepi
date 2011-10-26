@@ -626,12 +626,24 @@ calcul_moy_med();
 function calcule_moy_mediane_quartiles($tab) {
 	$tab2=array();
 
+	/*
+	echo "<p>";
+	foreach($tab as $key => $value) {
+		echo "\$tab[$key]=$value<br />";
+	}
+	*/
+
 	$total=0;
 	for($i=0;$i<count($tab);$i++) {
-		if(($tab[$i]!='')&&($tab[$i]!='-')&&($tab[$i]!='&nbsp;')&&($tab[$i]!='abs')&&($tab[$i]!='disp')) {
-			$tab2[]=preg_replace('/,/','.',$tab[$i]);
-			$total+=preg_replace('/,/','.',$tab[$i]);
+		if(isset($tab[$i])) {
+			if(($tab[$i]!='')&&($tab[$i]!='-')&&($tab[$i]!='&nbsp;')&&($tab[$i]!='abs')&&($tab[$i]!='disp')) {
+				$tab2[]=preg_replace('/,/','.',$tab[$i]);
+				$total+=preg_replace('/,/','.',$tab[$i]);
+			}
 		}
+		//else {
+		//	echo "\$tab[$i] not set.<br />";
+		//}
 	}
 
 	// Initialisation

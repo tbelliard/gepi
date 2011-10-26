@@ -258,14 +258,27 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 		$titre="Personnes connectées";
 		$alt=1;
 		while($lig_log=mysql_fetch_object($res)) {
-			$sql="SELECT nom,prenom,statut,email FROM utilisateurs WHERE login='$lig_log->login';";
+			$sql="SELECT nom,prenom,statut,email,login FROM utilisateurs WHERE login='$lig_log->login';";
 			$res_pers=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
 			  $afficheAccueil->nom_connecte[]=array("style"=>'rouge',"courriel"=>"","texte"=>$lig_log->LOGIN,"statut"=>"???");
 			}else{
 				$lig_pers=mysql_fetch_object($res_pers);
 				$alt=$alt*(-1);
-                $afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".ucfirst(strtolower($lig_pers->prenom)),"statut"=>$lig_pers->statut);
+				if($lig_pers->statut=='responsable') {
+					$sql="SELECT pers_id FROM resp_pers WHERE login='$lig_pers->login';";
+					$res_resp=mysql_query($sql);
+					if(mysql_num_rows($res_resp)!=0) {
+						$lig_resp=mysql_fetch_object($res_resp);
+						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"pers_id"=>$lig_resp->pers_id);
+					}
+					else {
+						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login);
+					}
+				}
+				else {
+					$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login);
+				}
 			}
 		}
 		$afficheAccueil->nb_connect_lien = "#";
