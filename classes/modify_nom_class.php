@@ -76,6 +76,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (isset($rn_sign_chefetab)){$rn_sign_chefetab='y';}else{$rn_sign_chefetab='n';}
 	if (isset($rn_sign_pp)){$rn_sign_pp='y';}else{$rn_sign_pp='n';}
 	if (isset($rn_sign_resp)){$rn_sign_resp='y';}else{$rn_sign_resp='n';}
+	if (isset($rn_abs_2)){$rn_abs_2='y';}else{$rn_abs_2='n';}
+	
 	// =========================
 
     // Mod ECTS
@@ -114,6 +116,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													rn_sign_resp='$rn_sign_resp',
 													rn_sign_nblig='$rn_sign_nblig',
 													rn_formule='$rn_formule',
+													rn_abs_2='$rn_abs_2',
                                                     ects_type_formation='".$ects_type_formation."',
                                                     ects_parcours='".$ects_parcours."',
                                                     ects_code_parcours='".$ects_code_parcours."',
@@ -173,7 +176,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													rn_nomdev='$rn_nomdev',
 													rn_toutcoefdev='$rn_toutcoefdev',
 													rn_coefdev_si_diff='$rn_coefdev_si_diff',
-													rn_datedev='$rn_datedev',
+													rn_datedev='$rn_datedev',				
+													rn_abs_2='$rn_abs_2',
 													rn_sign_chefetab='$rn_sign_chefetab',
 													rn_sign_pp='$rn_sign_pp',
 													rn_sign_resp='$rn_sign_resp',
@@ -384,7 +388,7 @@ if (isset($id_classe)) {
 	$rn_sign_resp=mysql_result($call_nom_class, 0, 'rn_sign_resp');
 	$rn_sign_nblig=mysql_result($call_nom_class, 0, 'rn_sign_nblig');
 	// =========================
-
+	$rn_abs_2=mysql_result($call_nom_class, 0, 'rn_abs_2');
     //=========================
     // Ajout : Module ECTS
     $ects_type_formation = mysql_result($call_nom_class, 0, 'ects_type_formation');
@@ -420,6 +424,8 @@ if (isset($id_classe)) {
 	$rn_sign_resp='n';
 	$rn_sign_nblig=3;
 	// =========================
+	$rn_abs_2='n';
+	// =========================
 
     // Mod ECTS
     $ects_type_formation = '';
@@ -448,28 +454,28 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 
 <p><b>Formatage de l'identité des professeurs pour les bulletins&nbsp;:</b>
 <br /><br />
-<input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked "; ?> onchange='changement()' />
+<input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (Durand Albert)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom=="pn") echo " checked "; ?> onchange='changement()' />
+<input type="radio" name="reg_format" id='reg_format_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom=="pn") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_pn' style='cursor: pointer;'>Prénom Nom (Albert Durand)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_in' value="<?php echo "in"; ?>" <?php   if ($format_nom=="in") echo " checked "; ?> onchange='changement()' />
+<input type="radio" name="reg_format" id='reg_format_in' value="<?php echo "in"; ?>" <?php   if ($format_nom=="in") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_in' style='cursor: pointer;'>Initiale-Prénom Nom (A. Durand)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_ni' value="<?php echo "ni"; ?>" <?php   if ($format_nom=="ni") echo " checked "; ?> onchange='changement()' />
+<input type="radio" name="reg_format" id='reg_format_ni' value="<?php echo "ni"; ?>" <?php   if ($format_nom=="ni") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_ni' style='cursor: pointer;'>Initiale-Prénom Nom (Durand A.)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_cnp' value="<?php echo "cnp"; ?>" <?php   if ($format_nom=="cnp") echo " checked "; ?> onchange='changement()' />
+<input type="radio" name="reg_format" id='reg_format_cnp' value="<?php echo "cnp"; ?>" <?php   if ($format_nom=="cnp") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_cnp' style='cursor: pointer;'>Civilité Nom Prénom (M. Durand Albert)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_cpn' value="<?php echo "cpn"; ?>" <?php   if ($format_nom=="cpn") echo " checked "; ?> onchange='changement()' />
+<input type="radio" name="reg_format" id='reg_format_cpn' value="<?php echo "cpn"; ?>" <?php   if ($format_nom=="cpn") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_cpn' style='cursor: pointer;'>Civilité Prénom Nom (M. Albert Durand)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_cin' value="<?php echo "cin"; ?>" <?php   if ($format_nom=="cin") echo " checked "; ?> onchange='changement()' />
+<input type="radio" name="reg_format" id='reg_format_cin' value="<?php echo "cin"; ?>" <?php   if ($format_nom=="cin") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_cin' style='cursor: pointer;'>Civ. initiale-Prénom Nom (M. A. Durand)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_cni' value="<?php echo "cni"; ?>" <?php   if ($format_nom=="cni") echo " checked "; ?> onchange='changement()' />
+<input type="radio" name="reg_format" id='reg_format_cni' value="<?php echo "cni"; ?>" <?php   if ($format_nom=="cni") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom  (M. Durand A.)</label>
 
 <input type=hidden name=is_posted value=1 />
@@ -488,7 +494,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td style="font-variant: small-caps;">
     <label for='display_mat_cat' style='cursor: pointer;'>Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation&nbsp;:</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_mat_cat" id="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> onchange='changement()' />
+    <td><input type="checkbox" value="y" name="display_mat_cat" id="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked='checked ' "; ?> onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -551,7 +557,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td style="font-variant: small-caps; width: 35%;">
     <label for='display_rang' style='cursor: pointer;'>Afficher sur le bulletin le rang de chaque élève&nbsp;:</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_rang" id="display_rang"  <?php   if ($display_rang=="y") echo " checked "; ?>  onchange='changement()' />
+    <td><input type="checkbox" value="y" name="display_rang" id="display_rang"  <?php   if ($display_rang=="y") echo " checked='checked ' "; ?>  onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -559,7 +565,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td style="font-variant: small-caps;">
     <label for='display_address' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'élève&nbsp;:</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_address" id="display_address"  <?php   if ($display_address=="y") echo " checked "; ?>  onchange='changement()' />
+    <td><input type="checkbox" value="y" name="display_address" id="display_address"  <?php   if ($display_address=="y") echo " checked='checked ' "; ?>  onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -567,7 +573,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td style="font-variant: small-caps;">
     <label for='display_coef' style='cursor: pointer;'>Afficher les coefficients des matières (uniquement si au moins un coef différent de 0)&nbsp;:</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_coef" id="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?>  onchange='changement()' />
+    <td><input type="checkbox" value="y" name="display_coef" id="display_coef"  <?php   if ($display_coef=="y") echo " checked='checked ' "; ?>  onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -575,7 +581,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td style="font-variant: small-caps;">
     <label for='display_moy_gen' style='cursor: pointer;'>Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0)&nbsp;:</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_moy_gen" id="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> onchange='changement()' />
+    <td><input type="checkbox" value="y" name="display_moy_gen" id="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked='checked ' "; ?> onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -583,7 +589,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
     <td style="font-variant: small-caps;">
     <label for='display_nbdev' style='cursor: pointer;'>Afficher le nombre de devoirs sur le bulletin&nbsp;:</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_nbdev" id="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> onchange='changement()' />
+    <td><input type="checkbox" value="y" name="display_nbdev" id="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked='checked ' "; ?> onchange='changement()' />
     </td>
 </tr>
 <!-- ========================================= -->
@@ -681,25 +687,34 @@ Afficher une case pour la signature du chef d'établissement
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_nomdev' style='cursor: pointer;'>Afficher le nom des devoirs&nbsp;:</label></td>
-    <td><input type="checkbox" value="y" name="rn_nomdev" id="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked "; ?> onchange='changement()' /></td>
+    <td><input type="checkbox" value="y" name="rn_nomdev" id="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked='checked ' "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_toutcoefdev' style='cursor: pointer;'>Afficher tous les coefficients des devoirs&nbsp;:</label></td>
-    <td><input type="checkbox" value="y" name="rn_toutcoefdev" id="rn_toutcoefdev"  <?php   if ($rn_toutcoefdev=="y") echo " checked "; ?> onchange='changement()' /></td>
+    <td><input type="checkbox" value="y" name="rn_toutcoefdev" id="rn_toutcoefdev"  <?php   if ($rn_toutcoefdev=="y") echo " checked='checked ' "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_coefdev_si_diff' style='cursor: pointer;'>Afficher les coefficients des devoirs si des coefficients différents sont présents&nbsp;:</label></td>
-    <td><input type="checkbox" value="y" name="rn_coefdev_si_diff" id="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked "; ?> onchange='changement()' /></td>
+    <td><input type="checkbox" value="y" name="rn_coefdev_si_diff" id="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked='checked ' "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_datedev' style='cursor: pointer;'>Afficher les dates des devoirs&nbsp;:</label></td>
-    <td><input type="checkbox" value="y" name="rn_datedev" id="rn_datedev"  <?php   if ($rn_datedev=="y") echo " checked "; ?> onchange='changement()' /></td>
+    <td><input type="checkbox" value="y" name="rn_datedev" id="rn_datedev"  <?php   if ($rn_datedev=="y") echo " checked='checked ' "; ?> onchange='changement()' /></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+	<label for='rn_abs_2' style='cursor: pointer;'>Afficher les absences (ABS2 et relevé HTML)&nbsp;:</label></td>
+	<td>
+		<input type="checkbox" value="y"  name="rn_abs_2" id="rn_abs_2"  <?php   if ($rn_abs_2=="y") echo " checked='checked ' "; ?> onchange='changement()' />
+	</td>
 </tr>
 
 <tr>
@@ -712,19 +727,19 @@ Afficher une case pour la signature du chef d'établissement
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_sign_chefetab' style='cursor: pointer;'>Afficher une case pour la signature du chef d'établissement&nbsp;:</label></td>
-    <td><input type="checkbox" value="y" name="rn_sign_chefetab" id="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked "; ?> onchange='changement()' /></td>
+    <td><input type="checkbox" value="y" name="rn_sign_chefetab" id="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked='checked ' "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_sign_pp' style='cursor: pointer;'>Afficher une case pour la signature du prof principal&nbsp;:</label></td>
-    <td><input type="checkbox" value="y" name="rn_sign_pp" id="rn_sign_pp"  <?php   if ($rn_sign_pp=="y") echo " checked "; ?> onchange='changement()' /></td>
+    <td><input type="checkbox" value="y" name="rn_sign_pp" id="rn_sign_pp"  <?php   if ($rn_sign_pp=="y") echo " checked='checked ' "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_sign_resp' style='cursor: pointer;'>Afficher une case pour la signature des parents/responsables&nbsp;:</label></td>
-    <td><input type="checkbox" value="y" name="rn_sign_resp" id="rn_sign_resp"  <?php   if ($rn_sign_resp=="y") echo " checked "; ?>  onchange='changement()' /></td>
+    <td><input type="checkbox" value="y" name="rn_sign_resp" id="rn_sign_resp"  <?php   if ($rn_sign_resp=="y") echo " checked='checked ' "; ?>  onchange='changement()' /></td>
 </tr>
 
 <tr>

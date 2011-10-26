@@ -148,6 +148,11 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
+					if (isset($_POST['rn_abs_2_'.$per])) {
+						$register = mysql_query("UPDATE classes SET rn_abs_2='".$_POST['rn_abs_2_'.$per]."' where id='".$id_classe."'");
+						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+					}
+
 					if (isset($_POST['rn_sign_chefetab_'.$per])) {
 						$register = mysql_query("UPDATE classes SET rn_sign_chefetab='".$_POST['rn_sign_chefetab_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
@@ -892,6 +897,14 @@ while ($per < $max_periode) {
 	<td>
 		<input type="radio" name="<?php echo "rn_datedev_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_datedev_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">Afficher les absences (ABS2 et relevé HTML)&nbsp;:</td>
+	<td>
+		<input type="radio" name="<?php echo "rn_abs_2_".$per; ?>" value="y" />Oui
+		<input type="radio" name="<?php echo "rn_abs_2_".$per; ?>" value="n" />Non
 	</td>
 </tr>
 
