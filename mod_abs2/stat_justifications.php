@@ -147,8 +147,8 @@ foreach ($eleve_col as $eleve) {
 	$propel_eleve = EleveQuery::create()->filterByIdEleve($eleve_id)->findOne();
 	$eleveNbAbs['demi_journees'] = $propel_eleve->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
 	$eleveNbAbs['retards'] = $propel_eleve->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count(); 
-
-	if ($eleveNbAbs['demi_journees'] > 0 || $eleveNbAbs['non_justifiees'] > 0 || $eleveNbAbs['retards']) {
+	//echo '1/2 journées '.$eleveNbAbs['demi_journees']." - ".$eleveNbAbs['retards']." : ";
+	if ($eleveNbAbs['demi_journees'] > 0 || $eleveNbAbs['retards'] > 0 ) {
 	  $eleveNbAbs['non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
 	  $eleveNbAbs['justifiees'] = $eleveNbAbs['demi_journees'] - $eleveNbAbs['non_justifiees']; 
 	
@@ -163,16 +163,27 @@ foreach ($eleve_col as $eleve) {
 	  $donnees[$eleve_id]['retards'] = $eleveNbAbs['retards'];
 	  
 	  //Récupérer le décompte des traitements pour chaque élève
-			
+	  
+// echo $eleve->getNom()." ".$eleve->getPrenom()." : ".$eleveNbAbs['retards']." - ";
+foreach ($justifie_col as $justifie) { 
+  $propel_traitEleve = AbsenceEleveTraitementQuery::create()->filterByAJustificationId($justifie->getid())
+	->useJTraitementSaisieEleveQuery()
+	  ->useAbsenceEleveSaisieQuery()
+		->filterByEleveId($eleve->getIdEleve())
+	  ->endUse()
+	->endUse() ;
+
+  $traiteEleve_col = $propel_traitEleve->distinct()->count();
+  // echo $traiteEleve_col." - ";
+  $donnees[$eleve_id]['traitement'][] = $traiteEleve_col;
+}
+// echo "<br />";
+
 	}
 	
 	$precedent_eleve_id = $eleve_id;
+	unset ($eleveNbAbs,$traiteEleve_col,$propel_eleve );
   }
-}
-foreach ($justifie_col as $justifie) { 
-  $propel_traitement = AbsenceEleveTraitementQuery::create()->filterByAJustificationId($justifie->getid());
-  $traitement_col = $propel_traitement->distinct()->count();
-  echo "Traitement ".$justifie->getNom()."(".$justifie->getid().") : ".$traitement_col."<br />";
 }
 
 
@@ -204,12 +215,7 @@ include('menu_bilans.inc.php');
 
 ?>
 <div id="contain_div" class="css-panes">
-  <p>
-	répertoire de GEPI : <?php echo GEPI; ?>
-  </p>
-  <p>
-	répertoire de ABS2 : <?php echo ABS2; ?>
-  </p>
+  
   <table>
 	
 	<tr>
@@ -255,14 +261,11 @@ include('menu_bilans.inc.php');
 	  <td style="text-align: center;">
 		<?php echo $donnee['justifiees']; ?>
 	  </td>
+<?php foreach ($donnee['traitement'] as $justifie) { ; ?>
 	  <td style="text-align: center;">
-		<?php echo $donnee['demi_journees']; ?>
+		<?php echo $justifie; ?>
 	  </td>
-	  <td style="text-align: center;">
-	  </td>
-	  <td style="text-align: center;">
-		<?php echo $donnee['carnet']; ?>
-	  </td>
+<?php } ; ?>
 	</tr>
 <?php } ?>
   </table>
