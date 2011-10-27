@@ -402,7 +402,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 			$this->modifiedColumns[] = AbsenceAgregationDecomptePeer::ELEVE_ID;
 		}
 
-		if ($this->aEleve !== null && $this->aEleve->getIdEleve() !== $v) {
+		if ($this->aEleve !== null && $this->aEleve->getId() !== $v) {
 			$this->aEleve = null;
 		}
 
@@ -801,7 +801,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	public function ensureConsistency()
 	{
 
-		if ($this->aEleve !== null && $this->eleve_id !== $this->aEleve->getIdEleve()) {
+		if ($this->aEleve !== null && $this->eleve_id !== $this->aEleve->getId()) {
 			$this->aEleve = null;
 		}
 	} // ensureConsistency
@@ -1442,7 +1442,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		if ($v === null) {
 			$this->setEleveId(NULL);
 		} else {
-			$this->setEleveId($v->getIdEleve());
+			$this->setEleveId($v->getId());
 		}
 
 		$this->aEleve = $v;

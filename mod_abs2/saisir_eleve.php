@@ -370,7 +370,7 @@ foreach($eleve_col as $eleve) {
 			echo "<tr style='background-color :$background_couleur'>\n";
 ?>
 			<td class='td_abs_eleves' style="width:580px;" >
-				<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
+				<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getId(); ?>" />
 <?php
 		  //echo '<a href="./saisir_eleve.php?type_selection=id_eleve&id_eleve='.$eleve->getPrimaryKey().'">';
 ?>
@@ -384,8 +384,8 @@ foreach($eleve_col as $eleve) {
 ?>
            </a>
 <?php
-			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
-			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
+			if (isset($message_erreur_eleve[$eleve->getId()]) && $message_erreur_eleve[$eleve->getId()] != '') {
+			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getId()];
 			}
 echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: static;"/>';
 			echo("</td>");

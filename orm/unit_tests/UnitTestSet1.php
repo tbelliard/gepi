@@ -62,12 +62,12 @@ if ($newUtilisateurProfessionnel == null) {
 //Creation d'un eleve
 $eleve = UnitTestEleve::getEleve();
 $eleve->save();
-$newEleve = ElevePeer::retrieveByPK($eleve->getIdEleve());
+$newEleve = ElevePeer::retrieveByPK($eleve->getId());
 echo ($logger->getDisplay());
 if ($newEleve == null) {
 	echo('test creation eleve a <font color="red">echoue</font> <br><br/>');
 } else {
-	echo('test creation eleve a reussi avec comme retour l\'id : ' . $eleve->getIdEleve() . '<br/><br/>');
+	echo('test creation eleve a reussi avec comme retour l\'id : ' . $eleve->getId() . '<br/><br/>');
 }
 
 //Creation d'un groupe
@@ -125,7 +125,7 @@ $utilisateurProfessionnel->setStatut('cpe');
 $utilisateurProfessionnel->addEleve($eleve);
 $newEleve1 = $utilisateurProfessionnel->getEleves();
 $newEleve11 = $newEleve1[0];
-if ($newEleve1 == null || $newEleve11->getIdEleve() != $eleve->getIdEleve()) {
+if ($newEleve1 == null || $newEleve11->getId() != $eleve->getId()) {
 	echo ($logger->getDisplay());
 	echo('test ajout de eleve au professeur en tant que cpe a <font color="red">echoue</font> <br><br/>');
 } else {

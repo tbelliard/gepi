@@ -1099,13 +1099,13 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	{
 		if ($eleve instanceof Eleve) {
 			return $this
-				->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleve->getIdEleve(), $comparison);
+				->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleve->getId(), $comparison);
 		} elseif ($eleve instanceof PropelCollection) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 			return $this
-				->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleve->toKeyValue('PrimaryKey', 'IdEleve'), $comparison);
+				->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleve->toKeyValue('PrimaryKey', 'Id'), $comparison);
 		} else {
 			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
 		}

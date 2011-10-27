@@ -278,7 +278,7 @@ $eleve_col = $query
                    case'ext.':
                        $nb_ext++; 
                 }
-                $eleves_absents[$eleve->getIdEleve()]=$eleve->getIdEleve();
+                $eleves_absents[$eleve->getId()]=$eleve->getId();
             }           
         }        
         echo'<tr align="center">

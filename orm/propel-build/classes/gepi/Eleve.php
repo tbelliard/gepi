@@ -1121,8 +1121,8 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection  AbsenceEleveSaisie[]
 	 */
-	private function getAbsColDecompteDemiJournee($date_debut= null, $date_fin= null) {
-	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
+	public function getAbsColDecompteDemiJournee($date_debut= null, $date_fin= null) {
+	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
 	    $request_query_hash .= '_fin_';
@@ -1616,7 +1616,7 @@ class Eleve extends BaseEleve {
             if(is_null($this->timestamp_start)){
                 $this->timestamp_start = microtime(true);
             }
-			print_r('<br/>Vérification pour l eleve '.$this->getIdEleve().'<br/>');
+			print_r('<br/>Vérification pour l eleve '.$this->getId().'<br/>');
 		}
 		$dateDebutClone = null;
 		$dateFinClone = null;
@@ -1662,22 +1662,22 @@ class Eleve extends BaseEleve {
 		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, now() as now
 		
 		FROM
-			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
+			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getId().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
 			) as a_agregation_decompte_null_select
 			
 		LEFT JOIN (
 			(SELECT count(a_agregation_decompte.eleve_id) as count_demi_jounee, max(updated_at) as updated_at
-			FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getIdEleve().' and '.$date_agregation_selection.'	
+			FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getId().' and '.$date_agregation_selection.'	
 			group by eleve_id) as updated_at_select
 		) ON 1=1
 		
 		LEFT JOIN (
 			(SELECT union_date from 
-				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
+				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
 				UNION ALL
-					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.' group by eleve_id
+					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getId().' and '.$date_saisies_version_selection.' group by eleve_id
 				UNION ALL
-					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
+					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
 
 				ORDER BY union_date DESC LIMIT 1
 				) AS union_date_union_all_select

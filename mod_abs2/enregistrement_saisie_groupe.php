@@ -257,7 +257,7 @@ for($i=0; $i<$total_eleves; $i++) {
     $message_erreur_eleve[$id_eleve] = "";
 
     $saisie = new AbsenceEleveSaisie();
-    $saisie->setEleveId($eleve->getIdEleve());
+    $saisie->setEleveId($eleve->getId());
     $saisie->setIdEdtCreneau($id_creneau);
     $saisie->setIdEdtEmplacementCours($id_cours);
     $saisie->setIdGroupe($id_groupe);

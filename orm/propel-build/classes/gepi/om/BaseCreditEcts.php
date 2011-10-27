@@ -197,7 +197,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 			$this->modifiedColumns[] = CreditEctsPeer::ID_ELEVE;
 		}
 
-		if ($this->aEleve !== null && $this->aEleve->getIdEleve() !== $v) {
+		if ($this->aEleve !== null && $this->aEleve->getId() !== $v) {
 			$this->aEleve = null;
 		}
 
@@ -378,7 +378,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
-		if ($this->aEleve !== null && $this->id_eleve !== $this->aEleve->getIdEleve()) {
+		if ($this->aEleve !== null && $this->id_eleve !== $this->aEleve->getId()) {
 			$this->aEleve = null;
 		}
 		if ($this->aGroupe !== null && $this->id_groupe !== $this->aGroupe->getId()) {
@@ -1002,7 +1002,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 		if ($v === null) {
 			$this->setIdEleve(NULL);
 		} else {
-			$this->setIdEleve($v->getIdEleve());
+			$this->setIdEleve($v->getId());
 		}
 
 		$this->aEleve = $v;

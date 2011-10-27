@@ -164,8 +164,8 @@ require_once("../lib/header.inc");
 
   // Boucle de remplissage des données
   foreach ($Eleves as $Eleve) {
-    if (!array_key_exists($Eleve->getIdEleve(), $ignore_annees)){
-      $ignore_annees[$Eleve->getIdEleve()] = array();
+    if (!array_key_exists($Eleve->getId(), $ignore_annees)){
+      $ignore_annees[$Eleve->getId()] = array();
     }
     // On commence par les archives
     $annees_precedentes = $Eleve->getEctsAnneesPrecedentes();
@@ -212,7 +212,7 @@ require_once("../lib/header.inc");
       // On regarde si l'élève est redoublant
       $redoublant = sql_count(sql_query("SELECT * FROM archivage_eleves2 WHERE ine = '".$Eleve->getNoGep()."' AND doublant = 'R'")) != "0" ? true : false;
       if ($redoublant && $derniere_annee_archivee) {
-        $ignore_annees[$Eleve->getIdEleve()][$derniere_annee_archivee] = true;
+        $ignore_annees[$Eleve->getId()][$derniere_annee_archivee] = true;
       }
       $derniere_annee_archivee = $a['annee'];      
     }
@@ -220,7 +220,7 @@ require_once("../lib/header.inc");
     // On continue avec l'année courante, même principe
     $redoublant = sql_count(sql_query("SELECT * FROM j_eleves_regime WHERE login = '".$Eleve->getLogin()."' AND doublant = 'R'")) != "0" ? true : false;
     if ($redoublant) {
-      $ignore_annees[$Eleve->getIdEleve()][$derniere_annee_archivee] = true;
+      $ignore_annees[$Eleve->getId()][$derniere_annee_archivee] = true;
     }
     if (!array_key_exists($gepiYear, $annees)) {
       $annees[$gepiYear] = array();
@@ -230,7 +230,7 @@ require_once("../lib/header.inc");
     }
     
     // On regarde quelle est la période maxi pour laquelle l'élève a des notes
-    $periode_num = mysql_result(mysql_query("SELECT MAX(num_periode) FROM ects_credits WHERE id_eleve = '".$Eleve->getIdEleve()."'"),0);
+    $periode_num = mysql_result(mysql_query("SELECT MAX(num_periode) FROM ects_credits WHERE id_eleve = '".$Eleve->getId()."'"),0);
     
     for($i=1;$i<=$periode_num;$i++) {
       if (!array_key_exists($i, $annees[$gepiYear])) {
@@ -494,7 +494,7 @@ require_once("../lib/header.inc");
           $cellstyle = 'central_cell';
         }
           
-          if (array_key_exists($annee, $ignore_annees[$Eleve->getIdEleve()])) {
+          if (array_key_exists($annee, $ignore_annees[$Eleve->getId()])) {
             $cellstyle = $cellstyle.' result_ignore';
             $ignore_ects = true;
           } else {

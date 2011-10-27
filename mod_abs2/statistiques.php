@@ -517,7 +517,7 @@ if ($affichage != 'ods') {
                         $$nom_variable = $$nom_variable + $eleve->$nom_colonne();
                     }
                 }
-                $donnees_indiv[$eleve->getIdEleve()] = $enregistrements;
+                $donnees_indiv[$eleve->getId()] = $enregistrements;
                 $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
                 $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
                 $nb_justifiees = $nb_justifiees + $eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli();

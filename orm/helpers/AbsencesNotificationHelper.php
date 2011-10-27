@@ -50,7 +50,7 @@ class AbsencesNotificationHelper {
 
     foreach ($eleve_col as $eleve) {
             $saisies_string_col = new PropelCollection();
-            $saisies_col = AbsenceEleveSaisieQuery::create()->filterByEleveId($eleve->getIdEleve())
+            $saisies_col = AbsenceEleveSaisieQuery::create()->filterByEleveId($eleve->getId())
                     ->useJTraitementSaisieEleveQuery()
                     ->filterByATraitementId($notification->getAbsenceEleveTraitement()->getId())->endUse()
                     ->orderBy("DebutAbs", Criteria::ASC)
@@ -64,7 +64,7 @@ class AbsencesNotificationHelper {
                 $saisies_string_col->append($str);
                 
             }
-            $TBS->MergeBlock('saisies_string_eleve_id_'.$eleve->getIdEleve(), $saisies_string_col);
+            $TBS->MergeBlock('saisies_string_eleve_id_'.$eleve->getId(), $saisies_string_col);
     }
 
     $heure_demi_journee = 11;
@@ -105,7 +105,7 @@ class AbsencesNotificationHelper {
 	}
 	//var_dump($demi_journee_string_col);die;
 	//if (count($demi_journee_string_col) == 0) die;
-	$TBS->MergeBlock('demi_j_string_eleve_id_'.$eleve->getIdEleve(), $demi_journee_string_col);
+	$TBS->MergeBlock('demi_j_string_eleve_id_'.$eleve->getId(), $demi_journee_string_col);
     }
 
     if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {

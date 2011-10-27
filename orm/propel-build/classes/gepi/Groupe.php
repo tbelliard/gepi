@@ -271,7 +271,7 @@ class Groupe extends BaseGroupe {
 	 * @return     array Eleves[]
 	 */
 	public function addEleve(Eleve $eleve, $num_periode_notes = null) {
-		if ($eleve->getIdEleve() == null) {
+		if ($eleve->getId() == null) {
 			throw new PropelException("Eleve id ne doit pas etre null");
 		}
 		if ($num_periode_notes == null) {
