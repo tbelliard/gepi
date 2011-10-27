@@ -1732,13 +1732,13 @@ class Eleve extends BaseEleve {
                 $this->affiche_duree();
 			}
 			return false;
-		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
-			if ($debug) {
+		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
 			}
 			return false;
-		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
-			if ($debug) {
+		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
 			}
 			return false;
