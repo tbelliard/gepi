@@ -24,7 +24,6 @@ CREATE DATABASE test;
 GRANT ALL ON test.* TO ''@'localhost';
 
 Run the tools/setup_new_database.php script with the command line
-Run the tools/update_database.php script with the command line
 
 == Run the Unit Tests ==
 
