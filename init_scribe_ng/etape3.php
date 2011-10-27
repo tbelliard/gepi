@@ -117,7 +117,7 @@ if ($_POST['step'] == "3") {
           $resp->setMel($respemail);
           
           
-          $resp->setPersId($pers_id);
+          $resp->setAdresseId($pers_id);
           
           
           // On créé l'adresse associée
@@ -130,8 +130,8 @@ if ($_POST['step'] == "3") {
           $test_adr = mysql_num_rows(mysql_query("SELECT * FROM resp_adr WHERE adr_id = '".$pers_id."'"));
           
           if ($resp_addr && $test_adr == 0) {
-            $adr = new ResponsableEleveAdresse();
-            $adr->setAdrId($pers_id);
+            $adr = new Adresse();
+            $adr->setAdresseId($pers_id);
             $adr->setAdr1($resp_addr);
             $adr->setAdr2('');
             $adr->setAdr3('');
@@ -140,7 +140,7 @@ if ($_POST['step'] == "3") {
             $adr->setCp($resp_cp);
             $adr->setPays($resp_pays);
           
-            $resp->setResponsableEleveAdresse($adr);
+            $resp->setAdresse($adr);
           }
           
           $resp->save();
@@ -194,7 +194,7 @@ if ($_POST['step'] == "3") {
               }
 
               // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
-              $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getPersId()."','$numero_responsable','')";
+              $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','')";
               mysql_query($req_ajout_lien_eleve_resp);
               if (mysql_errno() != 0) {
                   die("Une erreur s'est produite lors de l'affectation d'un &eacute;l&egrave;ve &agrave; son responsable l&eacute;gal.");

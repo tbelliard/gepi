@@ -1428,12 +1428,12 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           $resp->setTelProf($user['raw']['telephonenumber'][0]);
           $resp->setTelPort($user['raw']['mobile'][0]);
           $resp->setMel($user['email']);
-          $resp->setPersId($user['raw']['intid'][0]);
+          $resp->setAdresseId($user['raw']['intid'][0]);
                     
           // On créé l'adresse associée
           
-          $adr = new ResponsableEleveAdresse();
-          $adr->setAdrId($user['raw']['intid'][0]);
+          $adr = new Adresse();
+          $adr->setAdresseId($user['raw']['intid'][0]);
           $adr->setAdr1($user['raw']['entpersonadresse'][0]);
           $adr->setAdr2('');
           $adr->setAdr3('');
@@ -1442,7 +1442,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           $adr->setCp($user['raw']['entpersoncodepostal'][0]);
           $adr->setPays($user['raw']['entpersonpays'][0]);
           
-          $resp->setResponsableEleveAdresse($adr);
+          $resp->setAdresse($adr);
           
           $resp->save();
 
@@ -1472,7 +1472,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
                 }
 
                 // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
-                $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getPersId()."','$numero_responsable','')";
+                $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','')";
                 mysql_query($req_ajout_lien_eleve_resp);
               } // Fin test si élève existe
           }

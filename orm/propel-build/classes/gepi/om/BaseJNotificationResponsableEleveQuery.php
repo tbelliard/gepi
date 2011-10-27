@@ -7,10 +7,10 @@
  * Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.
  *
  * @method     JNotificationResponsableEleveQuery orderByANotificationId($order = Criteria::ASC) Order by the a_notification_id column
- * @method     JNotificationResponsableEleveQuery orderByPersId($order = Criteria::ASC) Order by the pers_id column
+ * @method     JNotificationResponsableEleveQuery orderByResponsableEleveId($order = Criteria::ASC) Order by the pers_id column
  *
  * @method     JNotificationResponsableEleveQuery groupByANotificationId() Group by the a_notification_id column
- * @method     JNotificationResponsableEleveQuery groupByPersId() Group by the pers_id column
+ * @method     JNotificationResponsableEleveQuery groupByResponsableEleveId() Group by the pers_id column
  *
  * @method     JNotificationResponsableEleveQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     JNotificationResponsableEleveQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -28,10 +28,10 @@
  * @method     JNotificationResponsableEleve findOneOrCreate(PropelPDO $con = null) Return the first JNotificationResponsableEleve matching the query, or a new JNotificationResponsableEleve object populated from the query conditions when no match is found
  *
  * @method     JNotificationResponsableEleve findOneByANotificationId(int $a_notification_id) Return the first JNotificationResponsableEleve filtered by the a_notification_id column
- * @method     JNotificationResponsableEleve findOneByPersId(string $pers_id) Return the first JNotificationResponsableEleve filtered by the pers_id column
+ * @method     JNotificationResponsableEleve findOneByResponsableEleveId(string $pers_id) Return the first JNotificationResponsableEleve filtered by the pers_id column
  *
  * @method     array findByANotificationId(int $a_notification_id) Return JNotificationResponsableEleve objects filtered by the a_notification_id column
- * @method     array findByPersId(string $pers_id) Return JNotificationResponsableEleve objects filtered by the pers_id column
+ * @method     array findByResponsableEleveId(string $pers_id) Return JNotificationResponsableEleve objects filtered by the pers_id column
  *
  * @package    propel.generator.gepi.om
  */
@@ -186,27 +186,27 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByPersId('fooValue');   // WHERE pers_id = 'fooValue'
-	 * $query->filterByPersId('%fooValue%'); // WHERE pers_id LIKE '%fooValue%'
+	 * $query->filterByResponsableEleveId('fooValue');   // WHERE pers_id = 'fooValue'
+	 * $query->filterByResponsableEleveId('%fooValue%'); // WHERE pers_id LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $persId The value to use as filter.
+	 * @param     string $responsableEleveId The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JNotificationResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function filterByPersId($persId = null, $comparison = null)
+	public function filterByResponsableEleveId($responsableEleveId = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($persId)) {
+			if (is_array($responsableEleveId)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $persId)) {
-				$persId = str_replace('*', '%', $persId);
+			} elseif (preg_match('/[\%\*]/', $responsableEleveId)) {
+				$responsableEleveId = str_replace('*', '%', $responsableEleveId);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $persId, $comparison);
+		return $this->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $responsableEleveId, $comparison);
 	}
 
 	/**
@@ -295,13 +295,13 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	{
 		if ($responsableEleve instanceof ResponsableEleve) {
 			return $this
-				->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $responsableEleve->getPersId(), $comparison);
+				->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $responsableEleve->getResponsableEleveId(), $comparison);
 		} elseif ($responsableEleve instanceof PropelCollection) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 			return $this
-				->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $responsableEleve->toKeyValue('PrimaryKey', 'PersId'), $comparison);
+				->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $responsableEleve->toKeyValue('PrimaryKey', 'ResponsableEleveId'), $comparison);
 		} else {
 			throw new PropelException('filterByResponsableEleve() only accepts arguments of type ResponsableEleve or PropelCollection');
 		}
@@ -368,7 +368,7 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	{
 		if ($jNotificationResponsableEleve) {
 			$this->addCond('pruneCond0', $this->getAliasedColName(JNotificationResponsableElevePeer::A_NOTIFICATION_ID), $jNotificationResponsableEleve->getANotificationId(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond1', $this->getAliasedColName(JNotificationResponsableElevePeer::PERS_ID), $jNotificationResponsableEleve->getPersId(), Criteria::NOT_EQUAL);
+			$this->addCond('pruneCond1', $this->getAliasedColName(JNotificationResponsableElevePeer::PERS_ID), $jNotificationResponsableEleve->getResponsableEleveId(), Criteria::NOT_EQUAL);
 			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
 	  }
 	  

@@ -169,7 +169,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 */
 	public function getSousResponsabiliteEtablissement() {
 	    if ($this->getAbsenceEleveType() == null) {
-		return (getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab")!='y');
+		return (getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab") == 'y');
 	    } else {
 		return (
 			$this->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE
