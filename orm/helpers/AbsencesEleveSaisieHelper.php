@@ -74,7 +74,7 @@ class AbsencesEleveSaisieHelper {
 	    $result = new PropelCollection();
 	    $date_compteur = clone $date_debut_iteration;
             $horaire_tab = EdtHorairesEtablissementPeer::retrieveAllEdtHorairesEtablissementArrayCopy();
-            require_once("helpers/EdtHelper.php");
+            require_once(dirname(__FILE__)."/EdtHelper.php");
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
 		    $date_compteur = clone $saisie->getDebutAbs(null);

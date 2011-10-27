@@ -52,7 +52,7 @@ class Eleve extends BaseEleve {
     /**
 	 * @var        mode de debuggage pour abs2
 	 */
-    private $debug=true;
+    private $debug=false;
      
 
     function __construct() {
@@ -60,6 +60,7 @@ class Eleve extends BaseEleve {
         $this->timestamp_start=microtime(true);
     }
     
+    // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
@@ -582,7 +583,7 @@ class Eleve extends BaseEleve {
 
 	    $edtCoursCol = $this->getEdtEmplacementCourssPeriodeCalendrierActuelle($v);
 
-	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/EdtEmplacementCoursHelper.php");
 	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
 	}
 
@@ -652,7 +653,7 @@ class Eleve extends BaseEleve {
 	    }
 	    $edtCoursCol->addCollection($query->find());
 
-	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/EdtEmplacementCoursHelper.php");
 	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
 
 	    return $edtCoursCol;
@@ -1106,7 +1107,7 @@ class Eleve extends BaseEleve {
                 $date_fin_iteration = $this->getDateSortie(null);
             }
 
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
@@ -1238,7 +1239,7 @@ class Eleve extends BaseEleve {
                 $date_fin_iteration = $this->getDateSortie(null);
             }
 
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
@@ -1597,6 +1598,7 @@ class Eleve extends BaseEleve {
         $timestamp = microtime(true);
         print_r('Temps d\'execution depuis le lancement : '.($timestamp - $this->timestamp_start).'<br />');        
     }
+
 	/**
 	 *
 	 * Mets à jour la table d'agrégation des absences pour cet élève
