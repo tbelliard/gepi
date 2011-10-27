@@ -65,14 +65,14 @@ class AbsenceEleveTraitementTest extends GepiEmptyTestBase
         $traitements = AbsenceEleveTraitementQuery::create()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
                                                     	    ->endUse()->endUse()->find();
-        $this->assertEquals(16,$traitements->count(),'le total des traitements de Florence est 16');
+        $this->assertEquals(17,$traitements->count(),'le total des traitements de Florence est 17');
                                     	    
         saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(true)
                                                     	    ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
                                                     	    ->endUse()->endUse()->find();
-        $this->assertEquals(9,$traitements->count());
+        $this->assertEquals(10,$traitements->count());
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(false)
                                                     	    ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
@@ -92,7 +92,7 @@ class AbsenceEleveTraitementTest extends GepiEmptyTestBase
                                                     	    ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
                                                     	    ->endUse()->endUse()->find();
-        $this->assertEquals(8,$traitements->count());
+        $this->assertEquals(9,$traitements->count());
         
        saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
 	}

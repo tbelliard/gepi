@@ -249,7 +249,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 		saveSetting('abs2_saisie_multi_type_non_justifiee','n');
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
-		$this->assertFalse($saisie->getJustifiee());
+		$this->assertTrue($saisie->getJustifiee());
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
 		$this->assertFalse($saisie->getJustifiee());
@@ -332,7 +332,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 		$this->assertEquals(3,$saisie->getAbsenceEleveTraitements()->count());
 				
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
-		$this->assertEquals(0,$saisie->getAbsenceEleveTraitements()->count());
+		$this->assertEquals(1,$saisie->getAbsenceEleveTraitements()->count());
 				
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
 		$this->assertEquals(3,$saisie->getAbsenceEleveTraitements()->count());
