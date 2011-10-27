@@ -134,7 +134,7 @@ if (isset($_POST['is_posted'])) {
                 $matiere = $info[$i]["cn"][0];
                 $matiere = traitement_magic_quotes(corriger_caracteres(trim($matiere)));
                 $nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",strtoupper($matiere));
-                $nom_long = htmlentities($matiere);
+                $nom_long = htmlspecialchars($matiere);
                 $test_exist = mysql_query("SELECT * FROM matieres WHERE matiere='$nom_court'");
                 $nb_test_matiere_exist = mysql_num_rows($test_exist);
 

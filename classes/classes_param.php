@@ -648,7 +648,7 @@ while ($per < $max_periode) {
 			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();\">\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_mat=mysql_fetch_object($res_mat)) {
-				echo "<option value='$lig_mat->matiere'>".htmlentities($lig_mat->nom_complet)."</option>\n";
+				echo "<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 			}
 			echo "</select>\n";
 			echo "</td>\n";

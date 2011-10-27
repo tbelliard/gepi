@@ -129,9 +129,6 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 //============== ENTETE BULLETIN HTML ================
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
 
-	$mode_utf8_pdf=getSettingValue("mode_utf8_bulletins_pdf");
-	if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
-
 	// DEBUG Décommenter la ligne ci-dessous pour débugger
 	//echo "<p style='color:red;'>Insertion d'une ligne avant le Header pour provoquer l'affichage dans le navigateur et ainsi repérer des erreurs.</p>";
 	//echo "\$bull_pdf_debug=$bull_pdf_debug<br />";
@@ -173,14 +170,14 @@ mais il se peut que vous ayez ainsi des précisions sur ce qui pose problème.<b
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 	$pdf->AddPage(); //ajout d'une page au document
-	$pdf->SetFont('Arial');
+	$pdf->SetFont('DejaVu');
 
 	if ( !isset($X_etab) or empty($X_etab) ) {
 		$X_etab = '5';
 		$Y_etab = '5';
 	}
 	$pdf->SetXY($X_etab,$Y_etab);
-	$pdf->SetFont('Arial','',14);
+	$pdf->SetFont('DejaVu','',14);
 	$gepiSchoolName=getSettingValue("gepiSchoolName") ? getSettingValue("gepiSchoolName") : "gepiSchoolName";
 	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 
@@ -1292,7 +1289,7 @@ else {
 			$tab_modele_pdf["ordre_entete_model_bulletin"][$tab_id_classe[$loop_classe]] = '1'; // ordre des entêtes tableau du bulletin
 
 			// information paramétrage
-			$tab_modele_pdf["caractere_utilse"][$tab_id_classe[$loop_classe]] = 'Arial';
+			$tab_modele_pdf["caractere_utilse"][$tab_id_classe[$loop_classe]] = 'DejaVu';
 			// cadre identitée parents
 			$tab_modele_pdf["X_parent"][$tab_id_classe[$loop_classe]]=110; $tab_modele_pdf["Y_parent"][$tab_id_classe[$loop_classe]]=40;
 			$tab_modele_pdf["imprime_pour"][$tab_id_classe[$loop_classe]] = 1;
@@ -1788,7 +1785,7 @@ else {
 							$pdf->SetAutoPageBreak(TRUE, 5);
 
 							$pdf->AddPage(); //ajout d'une page au document
-							$pdf->SetFont('Arial');
+							$pdf->SetFont('DejaVu');
 							$pdf->SetXY(20,20);
 							$pdf->SetFontSize(14);
 							$pdf->Cell(90,7, "ERREUR",0,2,'');

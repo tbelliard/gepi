@@ -56,7 +56,7 @@ if (isset($_POST['ok_enr_visa'])) {
 
 	$error = false;
 	if(isset($_POST['texte_visa_FCK'])) {
-			$txt = html_entity_decode_all_version($_POST['texte_visa_FCK']);
+			$txt = html_entity_decode($_POST['texte_visa_FCK']);
 			if (!saveSetting("texte_visa_cdt", $txt)) {
 				$msg .= "Erreur lors de l'enregistrement du texte du visa !";
 				$erreur = true;
@@ -88,7 +88,7 @@ if (isset($_POST['visa_ct'])) {
 	$msg = '';
 
 	if(isset($_POST['texte_visa_FCK'])) {
-		$texte_visa_cdt = preg_replace('/\\\r\\\n/','',html_entity_decode_all_version($_POST['texte_visa_FCK']));
+		$texte_visa_cdt = preg_replace('/\\\r\\\n/','',html_entity_decode($_POST['texte_visa_FCK']));
 	}
 
 	// les entrées

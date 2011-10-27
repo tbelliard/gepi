@@ -33,15 +33,9 @@ define('LargeurPage','210');
 require_once("../lib/initialisations.inc.php");
 //=============================
 
-if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
-}
-//require('../fpdf/fpdf15.php');
+require_once(dirname(__FILE__).'/fpdf.php');
 
-// Il faut récupérer l'info sur le mode avant l'appel à ex_fpdf.php pour que les accents de l'entête soient corrects
-$mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
-if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
-require_once('../fpdf/ex_fpdf.php');
+require_once(dirname(__FILE__).'/ex_fpdf.php');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.
@@ -64,14 +58,14 @@ if (!checkAccess()) {
     die();
 }
 
-$pdf=new PDF("P","mm","A4");
+$pdf=new Ex_FPDF("P","mm","A4");
 $pdf->SetTopMargin(TopMargin);
 $pdf->SetRightMargin(RightMargin);
 $pdf->SetLeftMargin(LeftMargin);
 $pdf->SetAutoPageBreak(true, BottomMargin);
 // Couleur des traits
 $pdf->SetDrawColor(0,0,0);
-$pdf->AddFont('Alakob','','Alakob.php');
+
 
 // Pour les tests : permet de voir les bords des cadres
 $bord = 0;
@@ -96,12 +90,12 @@ if (isset($_GET['id_groupe'])) {
 
 
 //if ($text_classe_matiere != '') $pdf->Cell(100, 8, $text_classe_matiere,$bord,0,"L",0);
-if ($text_classe_matiere != '') $pdf->Cell(100, 8, traite_accents_utf8($text_classe_matiere),$bord,0,"L",0);
+if ($text_classe_matiere != '') $pdf->Cell(100, 8, $text_classe_matiere,$bord,0,"L",0);
 $pdf->ln();
 
 
 //isset($_GET['titre']) ? $titre = unslashes($_GET['titre']) : $titre='' ;
-isset($_GET['titre']) ? $titre = traite_accents_utf8(unslashes($_GET['titre'])) : $titre='' ;
+isset($_GET['titre']) ? $titre = (unslashes($_GET['titre'])) : $titre='' ;
 if ($titre!='') {
     //Positionnement du titre
     $w=$pdf->GetStringWidth($titre)+6;
@@ -130,11 +124,11 @@ $data1 = unserialize($_SESSION['data_pdf']);
 
 /*
 foreach($data1 as $key => $value) {
-	$data1[$key]=traite_accents_utf8($data1[$value]);
+	$data1[$key]=($data1[$value]);
 }
 */
 
-$pdf->SetFont('Arial','',8);
+$pdf->SetFont('DejaVu','',8);
 $pdf->FancyTable($w1,$header1,$data1,"v");
 
 //debug_var();
@@ -145,11 +139,7 @@ if(!isset($_GET['id_groupe'])) {
 	$pdf->Output();
 }
 elseif(!isset($_GET['nom_pdf_en_detail'])) {
-	$ident_plus="";
-
-	$ident_plus .= date("Ymd");
-	$ident_plus = preg_replace("/[^A-Za-z0-9]/","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
-	$ident_plus=str_replace(" ", "_", $ident_plus);
+	$ident_plus = remplace_accents($current_group["classlist_string"].'_'.$current_group["description"].'_'.date("Ymd"),'all');
 
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
@@ -163,8 +153,8 @@ else{
 		$ident_plus .= "Periode_".$_GET['periode_num']."_";
 	}
 	$ident_plus .= date("Ymd");
-	$ident_plus = preg_replace("/[^A-Za-z0-9]/","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
-	$ident_plus=str_replace(" ", "_", $ident_plus);
+	$ident_plus = $current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus;
+	$ident_plus=remplace_accents($ident_plus,'all');
 
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 

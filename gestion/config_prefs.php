@@ -433,6 +433,26 @@ if(isset($enregistrer)) {
 				$msg.="Erreur lors de l'enregistrement de 'cn_avec_mediane_q1_q3'<br />\n";
 			}
 
+			$cn_order_by=isset($_POST['cn_order_by']) ? $_POST['cn_order_by'] : "classe";
+			if(!savePref($_SESSION['login'],'cn_order_by',$cn_order_by)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_order_by'<br />\n";
+			}
+
+			$cn_default_nom_court=isset($_POST['cn_default_nom_court']) ? $_POST['cn_default_nom_court'] : "Nouvelle évaluation";
+			if(!savePref($_SESSION['login'],'cn_default_nom_court',$cn_default_nom_court)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_default_nom_court'<br />\n";
+			}
+
+			$cn_default_nom_complet=isset($_POST['cn_default_nom_complet']) ? $_POST['cn_default_nom_complet'] : "n";
+			if(!savePref($_SESSION['login'],'cn_default_nom_complet',$cn_default_nom_complet)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_default_nom_complet'<br />\n";
+			}
+
+			$cn_default_coef=isset($_POST['cn_default_coef']) ? $_POST['cn_default_coef'] : "n";
+			if(!savePref($_SESSION['login'],'cn_default_coef',$cn_default_coef)) {
+				$msg.="Erreur lors de l'enregistrement de 'cn_default_coef'<br />\n";
+			}
+
 		}
 	}
 
@@ -794,6 +814,54 @@ else{
 		if($cn_avec_mediane_q1_q3=='y') {echo 'checked';}
 		echo "/><label for='cn_avec_mediane_q1_q3' id='texte_cn_avec_mediane_q1_q3'> Afficher pour chaque colonne de notes les valeur médiane, 1er et 3è quartiles.</label>\n";
 		echo "</p>\n";
+
+		echo "<p>Dans la page de saisie des notes de devoirs, trier par défaut <br />\n";
+		$cn_order_by=getPref($_SESSION['login'], 'cn_order_by', 'classe');
+		echo "<input type='radio' name='cn_order_by' id='cn_order_by_classe' value='classe' ";
+		echo "onchange=\"checkbox_change('cn_order_by');changement()\" ";
+		if($cn_order_by=='classe') {echo 'checked';}
+		echo "/><label for='cn_order_by_classe' id='texte_cn_order_by_classe'>par classe puis ordre alphabétique des noms des élèves.</label><br />\n";
+		echo "<input type='radio' name='cn_order_by' id='cn_order_by_nom' value='nom' ";
+		echo "onchange=\"checkbox_change('cn_order_by');changement()\" ";
+		if($cn_order_by=='nom') {echo 'checked';}
+		echo "/><label for='cn_order_by_nom' id='texte_cn_order_by_nom'>par ordre alphabétique des noms des élèves.</label><br />\n";
+		echo "</p>\n";
+
+		echo "<table>";
+		echo "<tr>";
+		echo "<td>";
+		echo "Nom court par défaut des évaluations&nbsp;: \n";
+		echo "</td>";
+		echo "<td>";
+		$cn_default_nom_court=getPref($_SESSION['login'], 'cn_default_nom_court', 'Nouvelle évaluation');
+		echo "<input type='text' name='cn_default_nom_court' id='cn_default_nom_court' value='$cn_default_nom_court' />\n";
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr>";
+		echo "<td>";
+		echo "Nom complet par défaut des évaluations&nbsp;: \n";
+		echo "</td>";
+		echo "<td>";
+		$cn_default_nom_complet=getPref($_SESSION['login'], 'cn_default_nom_complet', 'Nouvelle évaluation');
+		echo "<input type='text' name='cn_default_nom_complet' id='cn_default_nom_complet' value='$cn_default_nom_complet' />\n";
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr>";
+		echo "<td>";
+		echo "Coefficient par défaut des évaluations&nbsp;: \n";
+		$cn_default_coef=getPref($_SESSION['login'], 'cn_default_coef', '1.0');
+		echo "</td>";
+		echo "<td>";
+		echo "<input type='text' name='cn_default_coef' id='cn_default_coef' value='$cn_default_coef' size='3' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete='off' />\n";
+		echo "</td>";
+		echo "</tr>";
+
+		echo "</table>";
+
+
+
 	}
 
 
@@ -1148,7 +1216,8 @@ if ($_SESSION["statut"] == "administrateur") {
 // On affiche si c'est autorisé
 if ($aff == "oui") {
 	echo '
-		<form name="change_menu" method="post" action="./config_prefs.php">
+		<a name="afficherBarreMenu"></a>
+		<form name="change_menu" method="post" action="./config_prefs.php#afficherBarreMenu">
 ';
 
 	echo add_token_field();
@@ -1157,10 +1226,25 @@ if ($aff == "oui") {
 	<fieldset id="afficherBarreMenu" style="border: 1px solid grey;">
 		<legend style="border: 1px solid grey;">Gérer la barre horizontale du menu</legend>
 			<input type="hidden" name="modifier_le_menu" value="ok" />
+';
+	echo '
 		<p>
-			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale sous l\'en-tête.</label>
+			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale';
+	if($_SESSION['statut']=='professeur') {echo " (<em>complete</em>)";}
+	echo ' sous l\'en-tête.</label>
 			<input type="radio" id="visibleMenu" name="afficher_menu" value="yes"'.eval_checked("utiliserMenuBarre", "yes", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
 		</p>
+';
+
+	if($_SESSION['statut']=='professeur') {
+		echo '
+		<p>
+			<label for="visibleMenu_light" id="texte_visibleMenu_light">Rendre visible la barre de menu horizontale (<em>allégée</em>) sous l\'en-tête.</label>
+			<input type="radio" id="visibleMenu_light" name="afficher_menu" value="light"'.eval_checked("utiliserMenuBarre", "light", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
+		</p>
+';
+	}
+	echo '
 		<p>
 			<label for="invisibleMenu" id="texte_invisibleMenu">Ne pas utiliser la barre de menu horizontale.</label>
 			<input type="radio" id="invisibleMenu" name="afficher_menu" value="no"'.eval_checked("utiliserMenuBarre", "no", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
@@ -1271,7 +1355,7 @@ function test_play_footer_sound() {
 	}
 }
 
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'visibleMenu', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n');
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenu_light', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n');
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);

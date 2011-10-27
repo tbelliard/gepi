@@ -95,7 +95,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			//echo "<a href='visu_eleve.php?ele_login=$ele_login'>$ele_nom $ele_prenom</a>";
-			echo "<a href='$page?ele_login=$ele_login'>".htmlentities("$ele_nom $ele_prenom")."</a>";
+			echo "<a href='$page?ele_login=$ele_login'>".htmlspecialchars("$ele_nom $ele_prenom")."</a>";
 
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
 			$res_clas=mysql_query($sql);
@@ -114,7 +114,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				while($lig_clas=mysql_fetch_object($res_clas)) {
 					if($cpt>0) {echo ", ";}
 					//echo $lig_clas->classe;
-					echo htmlentities($lig_clas->classe);
+					echo htmlspecialchars($lig_clas->classe);
 					$cpt++;
 				}
 				//echo "</i>)";

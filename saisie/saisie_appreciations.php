@@ -715,7 +715,7 @@ echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 echo "<p>Vous pouvez faire apparaître dans votre appréciation la liste des notes de l'élève pour la période en insérant la chaine de caractères <b>@@Notes</b><br />(<i>les notes apparaîtront alors lors de la visualisation/impression du bulletin</i>)</p>\n";
 
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
-echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
+echo "<p><b>Groupe : " . htmlspecialchars($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
 
 if ($multiclasses) {
 	echo "<p>Affichage :";
@@ -842,7 +842,7 @@ while ($k < $nb_periode) {
 	if(((($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1))&&($_SESSION['statut']!='secours'))||
 	(($current_group["classe"]["ver_periode"]['all'][$k]==0)&&($_SESSION['statut']=='secours'))) {
 
-		//$mess[$k].=htmlentities(nl2br($app_grp[$k]));
+		//$mess[$k].=htmlspecialchars(nl2br($app_grp[$k]));
 		$mess[$k].=nl2br($app_grp[$k]);
 
 	}
@@ -1044,15 +1044,15 @@ foreach ($liste_eleves as $eleve_login) {
 				if(mysql_num_rows($test_cn_moy)>0) {
 					$lig_cnc=mysql_fetch_object($test_cn_moy);
 					//$notes_conteneurs.="<center>\n";
-					//$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
-					$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_court))."&nbsp;:</b> ";
+					//$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_complet))."&nbsp;:</b> ";
+					$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_court))."&nbsp;:</b> ";
 					if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 
 					$cpt_cnc=1;
 					while($lig_cnc=mysql_fetch_object($test_cn_moy)) {
 						$notes_conteneurs.=", ";
-						//$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
-						$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_court))."&nbsp;:</b> ";
+						//$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_complet))."&nbsp;:</b> ";
+						$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_court))."&nbsp;:</b> ";
 						if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 					}
 					//$notes_conteneurs.="</center><br />\n";

@@ -171,7 +171,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 
 								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 
-								if($envoi) {$msg.="Email expédié à ".htmlentities($email_destinataires)."<br />";}
+								if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
 							}
 			
 						}

@@ -89,7 +89,7 @@ if ($action == 'ajouter') {
 	$stat_3 = remplace_accents($stat_2b, "all");
 
 	// On refait une ultime vérification
-	$insert_statut = htmlentities($stat_3, ENT_QUOTES);
+	$insert_statut = htmlspecialchars($stat_3, ENT_QUOTES);
 
 	// On ajoute le statut privé après avoir vérifié qu'il n'existe pas déjà
 	$query_v = mysql_query("SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");

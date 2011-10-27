@@ -256,7 +256,13 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		Ces notices ne sont visibles que de leur auteur.
 		<input type="hidden" name="date_ct" value="<?php echo $cahierTexteNoticePrivee->getDateCt(); ?>" />
 		<input type="hidden" id="id_ct" name="id_ct" value="<?php echo $cahierTexteNoticePrivee->getIdCt(); ?>" />
-		<input type="hidden" name="id_groupe" id="id_ct" value="<?php echo $groupe->getId(); ?>" /></td>
+		<input type="hidden" name="id_groupe" id="id_ct" value="<?php echo $groupe->getId(); ?>" />
+
+		<input type='hidden' name='importer_notice' id='importer_notice' value='' />
+		<input type='hidden' name='id_ct_a_importer' id='id_ct_a_importer' value='' />
+		<button type='submit' id='affichage_import_notice' style='font-variant: small-caps; display:none; background-color:red;' onClick="javascript:$('importer_notice').value='y';">Importer la notice</button>
+
+		</td>
 	<td><?php
 	if (!isset($info)) {
 		$hier = $today - 3600*24;

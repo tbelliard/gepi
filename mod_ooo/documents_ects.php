@@ -474,7 +474,7 @@ $OOo->mergeXml(
       'name'      => 'eleves',
       'type'      => 'block',
       'data_type' => 'array',
-      'charset'   => 'ISO 8859-15'
+      'charset'   => 'UTF-8'
     ),$eleves);
 
 
@@ -484,7 +484,7 @@ $OOo->mergeXml(
       'name'      => 'resultats',
       'type'      => 'block',
       'data_type' => 'array',
-      'charset'   => 'ISO 8859-15'
+      'charset'   => 'UTF-8'
     ),'resultats[%p1%]');
 
 // On insère le récapitulatif des années
@@ -493,7 +493,7 @@ $OOo->mergeXml(
       'name'      => 'recap_annees',
       'type'      => 'block',
       'data_type' => 'array',
-      'charset'   => 'ISO 8859-15'
+      'charset'   => 'UTF-8'
     ),'recap_annees[%p1%]');
 
 $nom_fic_logo = getSettingValue("logo_etab");

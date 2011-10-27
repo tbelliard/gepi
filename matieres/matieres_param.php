@@ -253,7 +253,7 @@ while ($i < $nb_matieres){
 		$alt=$alt*(-1);
         echo "<tr class='lig$alt white_hover'><td>$current_matiere</td>\n";
         //echo "<td>$current_matiere_nom</td>\n";
-        echo "<td>".htmlentities($current_matiere_nom)."</td>\n";
+        echo "<td>".htmlspecialchars($current_matiere_nom)."</td>\n";
         echo "<td>\n";
         echo "<select size=1 name=".$current_matiere."_priorite>\n";
         $k = '0';
@@ -278,7 +278,7 @@ while ($i < $nb_matieres){
 
         echo "<option value=''>-----</option>";
         while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-            echo "<option value='".$row["id"]."'>".html_entity_decode_all_version($row["nom_court"])."</option>";
+            echo "<option value='".$row["id"]."'>".html_entity_decode($row["nom_court"])."</option>";
         }
         echo "</select>";
         echo "</td>";

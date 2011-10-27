@@ -211,13 +211,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												$lig_per=mysql_fetch_object($res_per);
 
 												$titre="Devoir n°$lig_groupe->id_dev (<i>$lig_per->nom_periode</i>)";
-												$texte="<p><b>".htmlentities($lig_info_dev->nom_court)."</b>";
+												$texte="<p><b>".htmlspecialchars($lig_info_dev->nom_court)."</b>";
 												if($lig_info_dev->nom_court!=$lig_info_dev->nom_complet) {
-													$texte.=" (<i>".htmlentities($lig_info_dev->nom_complet)."</i>)";
+													$texte.=" (<i>".htmlspecialchars($lig_info_dev->nom_complet)."</i>)";
 												}
 												$texte.="<br />";
 												if($lig_info_dev->description!='') {
-													$texte.=htmlentities($lig_info_dev->description);
+													$texte.=htmlspecialchars($lig_info_dev->description);
 												}
 												//$tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
 												$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_dev_'.$lig_groupe->id_dev,$titre,"",$texte,"",30,0,'y','y','n','n');
@@ -358,7 +358,6 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						if (!defined('FPDF_VERSION')) {
 							require_once('../fpdf/fpdf.php');
 						}
-						require('../fpdf/ex_fpdf.php');
 						require_once("../fpdf/class.multicelltag.php");
 					
 						// Fichier d'extension de fpdf pour le bulletin
@@ -461,7 +460,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$pdf->SetCompression(TRUE);
 						$pdf->SetAutoPageBreak(TRUE, 5);
 
-						$fonte='Arial';
+						$fonte='DejaVu';
 
 						for($i=0;$i<$nb_classes;$i++) {
 							$pdf->AddPage();
@@ -475,7 +474,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							$graisse='B';
 							$alignement='C';
 							$bordure='';
-							cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
 							$y2=$y0+$h_ligne_titre;
 							//========================================
 	
@@ -488,7 +487,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							$graisse='B';
 							$alignement='C';
 							$bordure='LRBT';
-							cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 							$x2+=$largeur_dispo;
 	
 							$x2=$x0+$largeur_col_nom_ele;
@@ -496,13 +495,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							for($j=0;$j<$nb_matieres;$j++) {
 								$pdf->SetXY($x2, $y2);
 								$texte=$tab_matiere[$j];
-								cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+								cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 								$x2+=$largeur_dispo;
 							}
 	
 							$pdf->SetXY($x2, $y2);
 							$texte='Moyenne';
-							cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 							$x2+=$largeur_dispo;
 	
 							$y2=$y2+$h_ligne_titre_tableau;
@@ -538,7 +537,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										$graisse='B';
 										$alignement='C';
 										$bordure='LRBT';
-										cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+										cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 										$x2+=$largeur_dispo;
 				
 										$x2=$x0+$largeur_col_nom_ele;
@@ -546,13 +545,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										for($j=0;$j<$nb_matieres;$j++) {
 											$pdf->SetXY($x2, $y2);
 											$texte=$tab_matiere[$j];
-											cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+											cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 											$x2+=$largeur_dispo;
 										}
 				
 										$pdf->SetXY($x2, $y2);
 										$texte='Moyenne';
-										cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+										cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 										$x2+=$largeur_dispo;
 				
 										$y2+=$h_ligne_titre_tableau;
@@ -565,7 +564,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									$pdf->SetXY($x2, $y2);
 									$largeur_dispo=$largeur_col_nom_ele;
 									$texte=casse_mot($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2');
-									cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+									cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 									$x2+=$largeur_dispo;
 
 									// Colonnes matières
@@ -592,7 +591,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 											$texte="";
 										}
 
-										cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+										cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 
 										$x2+=$largeur_dispo;
 									}
@@ -608,7 +607,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									}
 
 									$pdf->SetXY($x2, $y2);
-									cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+									cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 
 									$x2+=$largeur_dispo;
 									$y2+=$h_cell;

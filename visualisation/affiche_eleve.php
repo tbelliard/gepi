@@ -2744,9 +2744,9 @@ function eleve_suivant() {
 						if(mysql_num_rows($app_eleve_query)>0) {
 							$ligtmp=mysql_fetch_object($app_eleve_query);
 							
-							$titre_bulle=htmlentities($matiere_nom[$cpt])." (<i>$periode</i>)";
+							$titre_bulle=htmlspecialchars($matiere_nom[$cpt])." (<i>".htmlspecialchars($periode)."</i>)";
 							$texte_bulle="<div align='center'>\n";
-							$texte_bulle.=htmlentities($ligtmp->appreciation)."\n";
+							$texte_bulle.=htmlspecialchars($ligtmp->appreciation)."\n";
 							$texte_bulle.="</div>\n";
 							//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 
@@ -2756,7 +2756,7 @@ function eleve_suivant() {
 							$app_tmp = str_replace("\r\n", "", $app_tmp);
 							$app_tmp = str_replace("\r", "", $app_tmp); 
 							
-							$txt_appreciations_deroulantes.="<li><b>".htmlentities($matiere_nom[$cpt])." : </b></br>".$app_tmp."</br></li>";
+							$txt_appreciations_deroulantes.="<li><b>".htmlspecialchars($matiere_nom[$cpt])." : </b></br>".$app_tmp."</br></li>";
 							
 							if($type_graphe=='etoile'){
 
@@ -2837,7 +2837,7 @@ function eleve_suivant() {
 						$titre_bulle="Avis du Conseil de classe";
 
 						$texte_bulle="<div align='center'>\n";
-						//$texte_bulle.=htmlentities($lig_avis->avis)."\n";
+						//$texte_bulle.=htmlspecialchars($lig_avis->avis)."\n";
 						$texte_bulle.=nl2br($lig_avis->avis)."\n";
 						// ***** AJOUT POUR LES MENTIONS *****
 						if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
@@ -2848,7 +2848,7 @@ function eleve_suivant() {
 						if(isset($tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention])) {
 							$texte_bulle.="<br />\n";
 							$texte_bulle.="<b>".ucfirst($gepi_denom_mention)."</b> : ";
-							//$texte_bulle.=htmlentities(traduction_mention($lig_avis->mention))."\n";
+							//$texte_bulle.=htmlspecialchars(traduction_mention($lig_avis->mention))."\n";
 							$texte_bulle.=$tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention]."\n";
 						}
 						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
@@ -3104,10 +3104,6 @@ function eleve_suivant() {
 						$y=round($tab20[2*$i+1]-(90-($angle-270))*(ImageFontHeight($taille_police)-2)/90);
 					}
 
-
-					//imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
-					//imagestring ($img, $tmp_taille_police, $x, $y, strtr($angle." ".$texte,"_"," "), $axes);
-					//imagestring ($img, $tmp_taille_police, $x, $y, strtr($texte,"_"," "), $axes);
 
 					$x2=$x+strlen($texte)*ImageFontWidth($tmp_taille_police);
 					$y2=$y+20;
@@ -3566,7 +3562,7 @@ function eleve_suivant() {
 								if((mysql_num_rows($app_eleve_query)>0)&&($tab_acces_app[$cpt]=="y")) {
 									$ligtmp=mysql_fetch_object($app_eleve_query);
 
-									$tab_imagemap[$cpt][$j]=htmlentities($ligtmp->appreciation);
+									$tab_imagemap[$cpt][$j]=htmlspecialchars($ligtmp->appreciation);
 									$info_imagemap[$j]="Au moins une appréciation";
 								}
 								else{
@@ -3591,7 +3587,7 @@ function eleve_suivant() {
 			for($i=0;$i<count($id_groupe);$i++) {
 
 				if(isset($info_imagemap[$i])) {
-					$titre_bulle=htmlentities($matiere_nom[$i]);
+					$titre_bulle=htmlspecialchars($matiere_nom[$i]);
 
 					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Imagemap'>\n";
 					$alt=1;
@@ -3634,7 +3630,7 @@ function eleve_suivant() {
 					//if($tab_acces_app[$lig_avis->periode]=="y") {
 					if(($tab_acces_app[$lig_avis->periode]=="y")&&($lig_avis->avis!="")) {
 					//==========================================================
-						$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlentities($lig_avis->avis)."</td></tr>\n";
+						$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlspecialchars($lig_avis->avis)."</td></tr>\n";
 					//==========================================================
 					// AJOUT: boireaus 20080218
 					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
@@ -3892,10 +3888,6 @@ function eleve_suivant() {
 					$y=round($tab20[2*$i+1]-(90-($angle-270))*(ImageFontHeight($taille_police)-2)/90);
 				}
 
-
-				//imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
-				//imagestring ($img, $tmp_taille_police, $x, $y, strtr($angle." ".$texte,"_"," "), $axes);
-				//imagestring ($img, $tmp_taille_police, $x, $y, strtr($texte,"_"," "), $axes);
 
 				$x2=$x+strlen($texte)*ImageFontWidth($tmp_taille_police);
 				$y2=$y+20;
@@ -4475,7 +4467,7 @@ function div_cmnt_type() {
 				}
 				$retour_lignes_cmnt_type.=">\n";
 
-				$retour_lignes_cmnt_type.="<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
+				$retour_lignes_cmnt_type.="<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
 
 				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])) {
 					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
@@ -4490,11 +4482,11 @@ function div_cmnt_type() {
 						<p>Blabla<br>
 						Blibli</p>
 					*/
-					$retour_lignes_cmnt_type.=htmlentities(stripslashes(trim($ligne_commentaire->commentaire)));
+					$retour_lignes_cmnt_type.=htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)));
 				}
 				else{
 					//Si le commentaire ne contient pas de code HTML, on remplace les retours à la ligne par des <br>:
-					$retour_lignes_cmnt_type.=htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
+					$retour_lignes_cmnt_type.=htmlspecialchars(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
 				}
 
 				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])) {

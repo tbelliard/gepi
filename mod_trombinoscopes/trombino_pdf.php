@@ -263,7 +263,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	header('Content-Type: application/pdf');
 	Header('Pragma: public');
 	require('../fpdf/fpdf.php');
-	require('../fpdf/ex_fpdf.php');
 	
 	// Pour drawTextBox()
 	//require_once("../fpdf/class.multicelltag.php");
@@ -281,7 +280,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 			global $MargeHaut, $MargeBas, $MargeGauche, $MargeDroite, $largeur_utile_page;
 	
 			$this->SetXY($MargeGauche,5);
-			$this->SetFont('arial','',7.5);
+			$this->SetFont('DejaVu','',7.5);
 			$texte=getSettingValue("gepiSchoolName")."  ";
 			$this->Cell($largeur_utile_page,5,$texte,0,0,'L');
 	
@@ -299,7 +298,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 			global $MargeHaut, $MargeBas, $MargeGauche, $MargeDroite, $largeur_utile_page;
 	
 			if($no_footer=='n') {
-				$this->SetFont('arial','',7.5);
+				$this->SetFont('DejaVu','',7.5);
 				$this->SetXY($MargeGauche, $hauteur_page-$MargeBas);
 				$this->Cell($largeur_utile_page, 5, 'Page '.$this->PageNo(), "0", 1, 'R');
 			}
@@ -318,7 +317,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	$pdf->SetDrawColor(0,0,0);
 	$pdf->SetLineWidth(0.2);
 	
-	$fonte='arial';
+	$fonte='DejaVu';
 	$fonte_size=10;
 	$fonte_size_classe=14;
 	$sc_interligne=1.3;
@@ -339,12 +338,12 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 		$bordure='LRBT';
 		//$bordure='';
-		$pdf->SetFont($fonte,'B',$fonte_size_classe);
+		$pdf->SetFont('DejaVu','B',$fonte_size_classe);
 		//$texte="Trombinoscope ".$gepiYear." - Classe : $classe";
 		$texte="Trombinoscope ".$gepiYear." - $entete";
 		$pdf->Cell($largeur_utile_page,$hauteur_classe,$texte,$bordure,1,'C');
 
-		$pdf->SetFont($fonte,'',$fonte_size);
+		$pdf->SetFont('DejaVu','',$fonte_size);
 
 		// Paramètres pour cell_ajustee()
 		// On n'arrive pas à centrer avec cell_ajustee()
@@ -424,20 +423,19 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 							{
 								$hauteur_temp=$hauteur_temp-0.3;
 								//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-								$pdf->SetFont($fonte,'',$hauteur_temp);
+								$pdf->SetFont('DejaVu','',$hauteur_temp);
 								$largeur_texte=$pdf->GetStringWidth($texte);
 							}
 							else {
 								$test_taille_texte='ok';
 							}
 						}
-						//$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $hauteur_info_eleve, 'C', 'M', 1);
 						$pdf->Cell($largeur_dispo,$hauteur_info_eleve,$texte,'',1,'C');
 					}
 					else {
 						if((!isset($matiere_prof[$cpt]))||($matiere_prof[$cpt]=="")) {
 							$hauteur_temp=$fonte_size;
-							$pdf->SetFont($fonte,'',$hauteur_temp);
+							$pdf->SetFont('DejaVu','',$hauteur_temp);
 							$largeur_texte=$pdf->GetStringWidth($texte);
 
 							$test_taille_texte='test';
@@ -446,20 +444,19 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 								{
 									$hauteur_temp=$hauteur_temp-0.3;
 									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-									$pdf->SetFont($fonte,'',$hauteur_temp);
+									$pdf->SetFont('DejaVu','',$hauteur_temp);
 									$largeur_texte=$pdf->GetStringWidth($texte);
 								}
 								else {
 									$test_taille_texte='ok';
 								}
 							}
-							//$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $hauteur_info_eleve, 'C', 'M', 1);
 							$pdf->Cell($largeur_dispo,$hauteur_info_eleve,$texte,'',1,'C');
 						}
 						else {
 							// Affichage du nom/prénom
 							$hauteur_temp=$fonte_size;
-							$pdf->SetFont($fonte,'',$hauteur_temp);
+							$pdf->SetFont('DejaVu','',$hauteur_temp);
 							$largeur_texte=$pdf->GetStringWidth($texte);
 
 							$test_taille_texte='test';
@@ -468,14 +465,13 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 								{
 									$hauteur_temp=$hauteur_temp-0.3;
 									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-									$pdf->SetFont($fonte,'',$hauteur_temp);
+									$pdf->SetFont('DejaVu','',$hauteur_temp);
 									$largeur_texte=$pdf->GetStringWidth($texte);
 								}
 								else {
 									$test_taille_texte='ok';
 								}
 							}
-							//$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $hauteur_info_eleve, 'C', 'M', 1);
 							$h_temp=floor($hauteur_info_eleve/2.5);
 							$pdf->Cell($largeur_dispo,$h_temp,$texte,'',1,'C');
 
@@ -487,7 +483,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 							$texte=$matiere_prof[$cpt];
 							$hauteur_temp=$fonte_size*0.7;
-							$pdf->SetFont($fonte,'',$hauteur_temp);
+							$pdf->SetFont('DejaVu','',$hauteur_temp);
 							$largeur_texte=$pdf->GetStringWidth($texte);
 
 							$test_taille_texte='test';
@@ -496,7 +492,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 								{
 									$hauteur_temp=$hauteur_temp-0.3;
 									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-									$pdf->SetFont($fonte,'',$hauteur_temp);
+									$pdf->SetFont('DejaVu','',$hauteur_temp);
 									$largeur_texte=$pdf->GetStringWidth($texte);
 								}
 								else {

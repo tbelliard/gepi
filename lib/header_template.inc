@@ -359,8 +359,6 @@ if (isset($titre_page)) {
 		$tbs_bouton_taille=$gepiPath;
 	}
 
-	$tbs_afficher_temoin_filtrage_html=getSettingValue('afficher_temoin_filtrage_html');
-	
 	//=== Nom Prénom utilisateur ===
 	if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
 		$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
@@ -528,7 +526,7 @@ if (!isset($nobar)) { $nobar = "non"; }
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
 	// On vérifie que l'utilisateur ne l'a pas enlevée
 
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	if ((getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes")||(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light")) {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
               /**

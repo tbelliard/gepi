@@ -307,7 +307,7 @@ else {
 				echo "<tr class='lig$alt'>\n";
 				echo "<td>\n";
 				echo "<input type='hidden' name='id_grp[$cpt]' value='".$group['id']."' />\n";
-				echo htmlentities($group['name'])." (<i>".htmlentities($group['matiere']['nom_complet'])."</i>)";
+				echo htmlspecialchars($group['name'])." (<i>".htmlspecialchars($group['matiere']['nom_complet'])."</i>)";
 				echo " (<i style='color:green;'>$lig_grp->id</i>)";
 				echo "</td>\n";
 
@@ -459,7 +459,7 @@ Evitez les 'fantaisies';o).</p>
 
 		for($i=0;$i<count($id_grp);$i++) {
 			$group=get_group($id_grp[$i]);
-			echo "<p><b>".htmlentities($group['name'])." (<i>".htmlentities($group['matiere']['nom_complet'])." en ".$group["classlist_string"]."</i>)"."</b><br />\n";
+			echo "<p><b>".htmlspecialchars($group['name'])." (<i>".htmlspecialchars($group['matiere']['nom_complet'])." en ".$group["classlist_string"]."</i>)"."</b><br />\n";
 
             affiche_debug("\$id_grp[$i]=$id_grp[$i]<br />");
             affiche_debug("\$id_grp_fut[$i]=$id_grp_fut[$i]<br />");
@@ -526,7 +526,7 @@ Evitez les 'fantaisies';o).</p>
 							}
 							else {
 								$group_fut=get_group($id_grp_fut[$i]);
-								echo "Transfert des notes/devoirs vers ".htmlentities($group_fut['name'])." (<i>".htmlentities($group_fut['matiere']['nom_complet'])." en ".$group_fut["classlist_string"]."</i>)"."<br />";
+								echo "Transfert des notes/devoirs vers ".htmlspecialchars($group_fut['name'])." (<i>".htmlspecialchars($group_fut['matiere']['nom_complet'])." en ".$group_fut["classlist_string"]."</i>)"."<br />";
 	
 								// Recherche du carnet de notes du nouveau groupe
 								$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_grp_fut[$i]."' AND periode='$current_periode_num'";

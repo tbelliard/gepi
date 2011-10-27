@@ -21,7 +21,7 @@ global $avec_emplacement_trous;
     // on trace un trait horizontal
 	$this->SetRightMargin(5);    $this->SetXY(5,287);
     $this->cell(0,2,"","T",0);
-		$this->SetFont('arial','',7.5);	
+		$this->SetFont('DejaVu','',7.5);	
 	$this->SetXY(5,287); 
 	$this->Cell(0,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,''); 
 	
@@ -213,11 +213,7 @@ function Circle($x,$y,$r,$style='')
 * This function is provided by TUFaT.com
 */
 function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
-{
-	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    if (getSettingValue('decode_pdf_utf8') == 'y') {
-    	$strText = utf8_decode($strText);
-    }$strText = 'àà';
+{   
     $xi=$this->GetX();
     $yi=$this->GetY();
     

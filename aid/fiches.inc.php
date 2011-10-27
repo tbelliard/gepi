@@ -169,7 +169,7 @@ while ($i < $nombreligne){
         echo "<span class='medium'><b>Résumé : </b>";
         //Résumé
         if ($resume == -1) $resume = $non_defini;
-        echo "<br />".htmlentities($resume);
+        echo "<br />".htmlspecialchars($resume);
         echo "</span>";
     }
     echo "</td>\n";
@@ -269,10 +269,10 @@ while ($i < $nombreligne){
             echo $non_defini."</span>\n";
         else   {
             if ($discipline1 != "-1") {
-                echo htmlentities($discipline1)." - ";
+                echo htmlspecialchars($discipline1)." - ";
             }
             if ($discipline2 != "-1") {
-                echo htmlentities($discipline2);
+                echo htmlspecialchars($discipline2);
             }
             echo "</span>\n";
         }
@@ -283,31 +283,31 @@ while ($i < $nombreligne){
     //Divers
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'divers','',$annee)) {
         if ($divers == "") $divers = "-";
-        echo "<b>Divers : </b>".htmlentities($divers)."<br />";
+        echo "<b>Divers : </b>".htmlspecialchars($divers)."<br />";
     }
 
     // perso1
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso1','',$annee)) and ($annee=='')) {
         if ($perso1 == "") $perso1 = "-";
-        echo "<b>".LibelleChampAid("perso1")." : </b>".htmlentities($perso1)."<br />";
+        echo "<b>".LibelleChampAid("perso1")." : </b>".htmlspecialchars($perso1)."<br />";
     }
 
     // perso2
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso2','',$annee)) and ($annee=='')) {
         if ($perso2 == "") $perso2 = "-";
-        echo "<b>".LibelleChampAid("perso2")." : </b>".htmlentities($perso2)."<br />";
+        echo "<b>".LibelleChampAid("perso2")." : </b>".htmlspecialchars($perso2)."<br />";
     }
 
     // perso3
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'perso3','',$annee)) and ($annee=='')) {
         if ($perso3 == "") $perso3 = "-";
-        echo "<b>".LibelleChampAid("perso3")." : </b>".htmlentities($perso3)."<br />";
+        echo "<b>".LibelleChampAid("perso3")." : </b>".htmlspecialchars($perso3)."<br />";
     }
 
     //Contacts
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'contacts','',$annee)) {
         if ($contacts == "") $contacts = "-";
-        echo "<b>Contacts extérieurs, ressources, ... : </b>".htmlentities($contacts)."<br />";
+        echo "<b>Contacts extérieurs, ressources, ... : </b>".htmlspecialchars($contacts)."<br />";
     }
 
     // Autres infos

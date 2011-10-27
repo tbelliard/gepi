@@ -105,12 +105,12 @@ else {
 				echo "<td style='font-size:x-small;'>$duree</td>\n";
 				echo "<td style='font-size:x-small;'>$lieu</td>\n";
 				echo "<td style='font-size:x-small;'>";
-				echo htmlentities(p_nom($current_eleve_login));
+				echo htmlspecialchars(p_nom($current_eleve_login));
 	
 				echo " (<em>";
 				$tmp_tab=get_class_from_ele_login($current_eleve_login);
-				//if(isset($tmp_tab['liste_nbsp'])) {echo htmlentities($tmp_tab['liste_nbsp']);}
-				if(isset($tmp_tab['liste'])) {echo preg_replace("/ /","&nbsp;",htmlentities($tmp_tab['liste']));}
+				//if(isset($tmp_tab['liste_nbsp'])) {echo htmlspecialchars($tmp_tab['liste_nbsp']);}
+				if(isset($tmp_tab['liste'])) {echo preg_replace("/ /","&nbsp;",htmlspecialchars($tmp_tab['liste']));}
 				echo "</em>)";
 	
 				echo "</td>\n";

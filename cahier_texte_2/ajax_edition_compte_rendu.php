@@ -63,6 +63,8 @@ $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_mod
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
 $ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] :NULL);
 
+$nouvelle_notice="n";
+
 $ctCompteRendu = CahierTexteCompteRenduPeer::retrieveByPK($id_ct);
 if ($ctCompteRendu != null) {
 	$groupe = $ctCompteRendu->getGroupe();
@@ -102,7 +104,9 @@ if ($ctCompteRendu != null) {
 		$ctCompteRendus = $groupe->getCahierTexteCompteRendus($criteria);
 		$ctCompteRendu = isset($ctCompteRendus[0]) ? $ctCompteRendus[0] : NULL;
 	}
+
 	if ($ctCompteRendu == null) {
+		$nouvelle_notice="y";
 		//pas de notices, on initialise un nouvel objet
 		$ctCompteRendu = new CahierTexteCompteRendu();
 		$ctCompteRendu->setIdGroupe($groupe->getId());
@@ -163,6 +167,8 @@ if ($ctCompteRendu->getDateCt() == null) {
 
 //on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $ctCompteRendu->getIdGroupe();
+
+//echo "\$nouvelle_notice=$nouvelle_notice<br />";
 
 // **********************************************
 // Affichage des différents groupes du professeur
@@ -325,7 +331,25 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			onClick="javascript:$('passer_a').value = 'passer_devoir';">Enr. et
 		passer aux devoirs du lendemain</button>
 		<?php } ?>
-	
+
+		<?php
+			//if($nouvelle_notice=="y") {
+			//}
+			$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='$id_groupe' AND date_ct='".$ctCompteRendu->getDateCt()."';";
+			//echo "$sql<br />";
+			$res_devoirs=mysql_query($sql);
+			if(mysql_num_rows($res_devoirs)==1) {
+				$lig_dev=mysql_fetch_object($res_devoirs);
+				echo "<button type='submit' style='font-variant: small-caps;'
+			onClick=\"javascript:$('get_devoirs_du_jour').value='y';\">Import trav.</button>";
+			}
+		?>
+		<input type='hidden' name='get_devoirs_du_jour' id='get_devoirs_du_jour' value='' />
+
+		<input type='hidden' name='importer_notice' id='importer_notice' value='' />
+		<input type='hidden' name='id_ct_a_importer' id='id_ct_a_importer' value='' />
+		<button type='submit' id='affichage_import_notice' style='font-variant: small-caps; display:none; background-color:red;' onClick="javascript:$('importer_notice').value='y';">Importer la notice</button>
+
 		<input type='hidden' id='passer_a' name='passer_a'
 			value='compte_rendu' /> <input type="hidden" name="date_ct"
 			value="<?php echo $ctCompteRendu->getDateCt(); ?>" /> <input

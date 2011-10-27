@@ -235,29 +235,7 @@ if($nb_ele>0){
 		$res_appreciation=mysql_query($sql);
 		if(mysql_num_rows($res_appreciation)){
 			$lig_appreciation=mysql_fetch_object($res_appreciation);
-			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.my_ereg_replace('\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
-			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.$lig_appreciation->appreciation.'</text:p></table:table-cell></table:table-row>');
-
-			// Il va falloir contrôler si certaines saisies ne font pas de blagues...
-			/*
-			// Les \n sont acceptés et correctement traités dans OOo, mais par contre, à l'export, cela donne:
-				IDENTIFIANT;NOTE;APPRECIATION
-				ANQUETIN_C;12;blabla blabli
-				BARRIER_B;13;blabla blabli blboblo
-				BELLENC_O;14;bla
-				bli
-				blo
-				CHABOT_F;15;
-
-			echo "$lig_ele->login<br />$lig_appreciation->appreciation=$lig_appreciation->appreciation<br />";
-			echo my_ereg_replace('\n',' ',$lig_appreciation->appreciation);
-			echo "=========================<br />";
-			*/
-
-			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.my_ereg_replace('\\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
-			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br($lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
-			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br(caract_ooo($lig_appreciation->appreciation)).'</text:p></table:table-cell></table:table-row>');
-			$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" office:value-type="string"><text:p>'.nl2br(caract_ooo($lig_appreciation->appreciation)).'</text:p></table:table-cell></table:table-row>');
+			$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" office:value-type="string"><text:p>'.nl2br($lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
 
 
 			// Il doit falloir remplacer les accents par leur valeur en UTF8
@@ -337,14 +315,14 @@ unlink($tmp_fich);
 
 
 
-//$titre=htmlentities($current_group['description'])." (".$nom_periode.")";
-$titre=htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
+//$titre=htmlspecialchars($current_group['description'])." (".$nom_periode.")";
+$titre=htmlspecialchars($current_group['name']." ".$current_group["classlist_string"]." (".$nom_periode.")");
 $titre.=" - EXPORT";
 
 // Mettre la ligne de liens de retour,...
 echo "<div class='norme'><p class='bold'>\n";
 echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
-echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlspecialchars($current_group['name']." ".$current_group["classlist_string"]." (".$nom_periode.")")." </a>|\n";
 echo "</div>\n";
 
 

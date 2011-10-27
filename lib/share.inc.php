@@ -64,11 +64,11 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
   $subject = $gepiPrefixeSujetMail."GEPI : $sujet";
-  $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+  $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
   
   $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+  $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
   $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
   $headers .= $ajout_headers;
 
@@ -98,7 +98,7 @@ function verif_mot_de_passe($password,$flag) {
 
 	if ($flag == 1) {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
-			$info_verif_mot_de_passe="Le mot de passe ne doit pas étre uniquement numérique ou uniquement alphabétique.";
+			$info_verif_mot_de_passe="Le mot de passe ne doit pas être uniquement numérique ou uniquement alphabétique.";
 			return FALSE;
 		}
 		elseif(preg_match("/^[[:alnum:]\W]{".getSettingValue("longmin_pwd").",}$/", $password) and preg_match("/[\W]+/", $password) and preg_match("/[0-9]+/", $password)) {
@@ -107,10 +107,10 @@ function verif_mot_de_passe($password,$flag) {
 		}
 		else {
 			if(preg_match("/^[A-Za-z0-9]*$/", $password)) {
-				$info_verif_mot_de_passe="Le mot de passe doit comporter au moins un caractére spécial (#, *,...).";
+				$info_verif_mot_de_passe="Le mot de passe doit comporter au moins un caractère spécial (#, *,...).";
 			}
 			elseif (strlen($password) < getSettingValue("longmin_pwd")) {
-				$info_verif_mot_de_passe="La longueur du mot de passe doit étre supérieure ou égale é ".getSettingValue("longmin_pwd").".";
+				$info_verif_mot_de_passe="La longueur du mot de passe doit être supérieure ou égale à ".getSettingValue("longmin_pwd").".";
 				return FALSE;
 			}
 			else {
@@ -122,11 +122,11 @@ function verif_mot_de_passe($password,$flag) {
 	}
 	else {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
-			$info_verif_mot_de_passe="Le mot de passe ne doit pas étre uniquement numérique ou uniquement alphabétique.";
+			$info_verif_mot_de_passe="Le mot de passe ne doit pas être uniquement numérique ou uniquement alphabétique.";
 			return FALSE;
 		}
 		elseif (strlen($password) < getSettingValue("longmin_pwd")) {
-			$info_verif_mot_de_passe="La longueur du mot de passe doit étre supérieure ou égale é ".getSettingValue("longmin_pwd").".";
+			$info_verif_mot_de_passe="La longueur du mot de passe doit être supérieure ou égale à ".getSettingValue("longmin_pwd").".";
 			return FALSE;
 		}
 		else {
@@ -916,31 +916,6 @@ function get_periode_active($_id_classe){
 }
 
 /**
- *  Equivalent à html_entity_decode()
- * 
- * Pour les utilisateurs ayant des versions antérieures à PHP 4.3.0 :
- * la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
- * 
- * @deprecated GEPI ne fonctionne plus sans php 5.2 et plus
- * @param string $string
- * @return type 
- */
-function html_entity_decode_all_version ($string)
-{
-   global $use_function_html_entity_decode;
-   if (isset($use_function_html_entity_decode) and ($use_function_html_entity_decode == 0)) {
-       // Remplace les entités numériques
-       $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-       $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
-       // Remplace les entités litérales
-       $trans_tbl = get_html_translation_table (HTML_ENTITIES);
-       $trans_tbl = array_flip ($trans_tbl);
-       return strtr ($string, $trans_tbl);
-   } else
-       return html_entity_decode($string);
-}
-
-/**
  * Cette fonction est à appeler dans tous les cas où une tentative
  * d'utilisation illégale de Gepi est manifestement avérée.
  * Elle est à appeler notamment dans tous les tests de sécurité lorsqu'un test est négatif.
@@ -1064,7 +1039,7 @@ function tentative_intrusion($_niveau, $_description) {
     
     $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
     $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 
 		// On envoie le mail
@@ -1363,78 +1338,126 @@ function vider_dir($dir){
 
 
 /**
- * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien
- * retournée en ISO-8859-1.
+ * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien retournée en UTF-8
+ * Attention, certain encodages sont très similaire et ne peuve pas être théoriquement distingué sur une chaine de caractere.
+ * Si vous connaissez déjà l'encodage de votre chaine de départ, il est préférable de le préciser
  * 
- * @param string La chaine à tester
- * @return string La chaine traitée
- * @todo supprimer cette méthode
+ * @param string $str La chaine à encoder
+ * @param string $encoding L'encodage de départ
+ * @return string La chaine en utf8
+ * @throws Exception si la chaine n'a pas pu être encodée correctement
  */
-function ensure_iso8859_1($str) {
-	$encoding = mb_detect_encoding($str);
-	if ($encoding == 'ISO-8859-1') {
-		return $str;
-	} else {
-		return mb_convert_encoding($str, 'ISO-8859-1');
+function ensure_utf8($str, $from_encoding = null) {
+    if ($str === null || $str === '') {
+        return $str;
+    } else if ($from_encoding == null && check_utf8($str)) {
+	    return $str;
 	}
+	
+    if ($from_encoding != null) {
+        $encoding =  $from_encoding;
+    } else {
+	    $encoding = detect_encoding($str);
+    }
+	$result = null;
+    if ($encoding !== false && $encoding != null) {
+    	//test : est-ce que iconv est bien implémenté sur ce système ?
+        $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel été');
+        if ($test) {
+            //on utilise iconv pour la conversion
+            $result = @iconv("UTF-8", $encoding."//TRANSLIT//IGNORE", $str);
+        }
+        if ($result == null && function_exists('mb_convert_encoding')) {
+            $result = mb_convert_encoding($str, 'UTF-8', $encoding);
+        }
+    }
+	if ($result === null || !check_utf8($result)) {
+	    throw new Exception('Impossible de convertir la chaine vers l\'utf8');
+	}
+	return $result;
 }
 
+
 /**
- * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien
- * retournée en ISO-8859-1.
+ * Cette méthode prend une chaîne de caractères et teste si elle est bien encodée en UTF-8
  * 
- * @param string La chaine à tester
- * @return string La chaine traitée
- * @todo supprimer cette méthode
+ * @param string $str La chaine à tester
+ * @return boolean
  */
-function ensure_utf_8($str) {
-		return $str;
-	$encoding = mb_detect_encoding($str);
-	if ($encoding == 'UTF-8') {
-		return $str;
-	} else {
-		return mb_convert_encoding($str, 'UTF-8');
-	}
+function check_utf8 ($str) {
+  
+    // From http://w3.org/International/questions/qa-forms-utf-8.html
+    $preg_match_result = 1 == preg_match('%^(?:
+          [\x09\x0A\x0D\x20-\x7E]            # ASCII
+        | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+        |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+        |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+        |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+        | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+        |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+    )*$%xs', $str);
+    
+    if ($preg_match_result) {
+        return true;
+    } else {
+        //le test preg renvoie faux, et on va vérifier avec d'autres fonctions
+        $result = true;
+        $test_done = false;
+        if (function_exists('mb_check_encoding')) {
+            $test_done = true;
+            $result = $result && @mb_check_encoding($str, 'UTF-8');
+        }
+        if (function_exists('mb_detect_encoding')) {
+            $test_done = true;
+            $result = $result && @mb_detect_encoding($str, 'UTF-8', true);
+        }
+        if (function_exists('iconv')) {
+            $test_done = true;
+            $result = $result && ($str === (@iconv('UTF-8', 'UTF-8//IGNORE', $str)));
+        }
+        if (function_exists('mb_convert_encoding')) {
+            $test_done = true;
+            $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
+        }
+        return $test_done && $result;
+    }
 }
-
+    
+    
 /**
- * Encode une chaine en utf8
+ * Cette méthode prend une chaîne de caractères et détecte son encodage
  * 
- * @param string $chaine La chaine à tester
- * @return string La chaine traitée
- * @todo supprimer cette méthode
+ * @param string $str La chaine à tester
+ * @return l'encodage ou false si indétectable
  */
-function caract_ooo($chaine){
-		$retour=utf8_encode($chaine);
-	if(function_exists('utf8_encode')){
-	}
-	else{
-		$caract_accent=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
-		$caract_utf8=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
-
-		$retour=$chaine;
-		for($i=0;$i<count($caract_accent);$i++){
-			$retour=str_replace($caract_accent[$i],$caract_utf8[$i],$retour);
-		}
-	}
-
-	$caract_special=array("&",
-							'"',
-							"'",
-							"<",
-							">");
-
-	$caract_sp_encode=array("&amp;",
-							"&quot;",
-							"&apos;",
-							"&lt;",
-							"&gt;");
-
-	for($i=0;$i<count($caract_special);$i++){
-		$retour=str_replace($caract_special[$i],$caract_sp_encode[$i],$retour);
-	}
-
-	return $retour;
+function detect_encoding($str) {
+    //on commence par vérifier si c'est de l'utf8
+    if (check_utf8($str)) {
+        return 'UTF-8';
+    }
+    
+    //on va commencer par tester ces encodages
+    static $encoding_list = array('UTF-8', 'ISO-8859-15','windows-1251');
+    foreach ($encoding_list as $item) {
+        if (function_exists('iconv')) {
+            $sample = @iconv($item, $item, $str);
+            if (md5($sample) == md5($str)) {
+                return $item;
+            }
+        } else if (function_exists('mb_detect_encoding')) {
+            if (@mb_detect_encoding($str, $item, true)) {
+                return $item;
+            }
+        }
+    }
+    
+    //la méthode précédente n'a rien donnée
+    if (function_exists('mb_detect_encoding')) {
+        return mb_detect_encoding($str);
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -1443,7 +1466,7 @@ function caract_ooo($chaine){
  * @global string $GLOBALS['liste_caracteres_accentues']
  * @name $liste_caracteres_accentues
  */
-$GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØŠÛÜÙÚÝŸŽáàâäãåçéèêëîïìíñôöðòóõøšûüùúýÿž";
+$GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõø¨ûüùúýÿ¸";
 
 /**
  * Correspondances de caractères accentués/désaccentués
@@ -1470,26 +1493,46 @@ $GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaac
  * @todo supprimer cette méthode
  */
 function remplace_accents($chaine,$mode=''){
-	global $liste_caracteres_accentues, $liste_caracteres_desaccentues;
-
+	if ($chaine == null || $chaine == '') {
+	    return $chaine;
+	}
+	
+	$chaine = ensure_utf8($chaine);
+	$str = null;
+	if (function_exists('iconv')) {
+	    //test : est-ce que iconv est bien implémenté sur ce système ?
+	    $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel été');
+        if ($test) {
+            //on utilise iconv pour la conversion
+            $str = @iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $chaine);
+        }
+	}
+	if ($str === null) {
+        //on utilise pas iconv pour la conversion
+    	$translit = array('Á'=>'A','À'=>'A','Â'=>'A','Ä'=>'A','Ã'=>'A','Å'=>'A','Ç'=>'C','É'=>'E','È'=>'E','Ê'=>'E','Ë'=>'E','Í'=>'I','Ï'=>'I','Î'=>'I','Ì'=>'I','Ñ'=>'N','Ó'=>'O','Ò'=>'O','Ô'=>'O','Ö'=>'O','Õ'=>'O','Ú'=>'U','Ù'=>'U','Û'=>'U','Ü'=>'U','Ý'=>'Y','á'=>'a','à'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','ç'=>'c','é'=>'e','è'=>'e','ê'=>'e','ë'=>'e','í'=>'i','ì'=>'i','î'=>'i','ï'=>'i','ñ'=>'n','ó'=>'o','ò'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u','ý'=>'y','ÿ'=>'y');
+    	$str = strtr($chaine, $translit);
+    }
+    if (function_exists('mb_convert_encoding')) {
+        $str = @mb_convert_encoding($str,'ASCII','UTF-8');
+    }   
+	
 	if($mode == 'all'){
-		// On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine"))))," '$liste_caracteres_accentues","__$liste_caracteres_desaccentues");
+		return preg_replace('#[^a-zA-Z0-9\-\_]#', '_', $str); // Pour des noms de fichiers par exemple
+	} elseif($mode == 'all_nospace'){
+		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
+	} else {
+		return preg_replace('#[^a-zA-Z0-9\-\._"\' ]#', '_', $str);
 	}
-	elseif($mode == 'all_nospace'){
-		// On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour1=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine")))),"'$liste_caracteres_accentues","_$liste_caracteres_desaccentues");
-		// On enlève aussi les guillemets
-		$retour = preg_replace('/"/', '', $retour1);
-	}
-	else {
-		// On remplace les caractères accentués par leurs équivalents non accentués.
-		$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe","$chaine")))),"$liste_caracteres_accentues","$liste_caracteres_desaccentues");
-	}
-	return $chaine;
-	return $retour;
 }
 
+function enleve_accents($chaine,$mode=''){
+    return remplace_accents();
+}
+
+function accents_enleve($chaine,$mode=''){
+    return remplace_accents();
+}
+    
 /**
  * Fonction qui renvoie le login d'un élève en échange de son ele_id
  *
@@ -1574,6 +1617,47 @@ function get_enfants_from_resp_login($resp_login,$mode='simple'){
 										WHERE e.ele_id=r.ele_id AND
 											rp.pers_id=r.pers_id AND
 											rp.login='$resp_login' AND
+											(r.resp_legal='1' OR r.resp_legal='2')
+										ORDER BY e.nom,e.prenom;";
+	$res_ele=mysql_query($sql);
+
+	$tab_ele=array();
+	if(mysql_num_rows($res_ele)>0){
+		while($lig_tmp=mysql_fetch_object($res_ele)){
+			$tab_ele[]=$lig_tmp->login;
+			if($mode=='avec_classe') {
+				$tmp_chaine_classes="";
+
+				$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+				if(isset($tmp_tab_clas['liste'])) {
+					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+				}
+
+				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+			}
+			else {
+				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+			}
+		}
+	}
+	return $tab_ele;
+}
+
+/**
+ * Renvoie les élèves liés à un responsable
+ *
+ * @param string $pers_id identifiant sconet du responsable
+ * @param string $mode Si avec_classe renvoie aussi la classe
+ * @return array 
+ * @see get_class_from_ele_login()
+ */
+function get_enfants_from_pers_id($pers_id,$mode='simple'){
+	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.pers_id='$pers_id' AND
 											(r.resp_legal='1' OR r.resp_legal='2')
 										ORDER BY e.nom,e.prenom;";
 	$res_ele=mysql_query($sql);
@@ -2828,25 +2912,6 @@ function casse_prenom($prenom) {
 }
 
 /**
- * Drapeau pour encoder un texte en utf8 si à "y"
- *
- * @global string  $GLOBALS['mode_utf8_pdf']
- * @name $mode_utf8_pdf
- */
-$GLOBALS['mode_utf8_pdf'] = '';
-
-/**
- * Encode une chaine en utf8 si $mode_utf8_pdf="y"
- *
- * @global type 
- * @param type $chaine Chaine à encoder
- * @return type 
- */
-function traite_accents_utf8($chaine) {
-    return $chaine; //normalement tout gepi est en utf8, il n'y a plus de traitement à faire
-}
-
-/**
  * Arrondi un nombre avec un certain nombre de chiffres après la virgule
  *
  * @param type $nombre Le nombre à convertir
@@ -2939,50 +3004,34 @@ function my_echo_debug($texte) {
 }
 
 /**
- * Retourne une chaine avec la bonne casse
+ * Retourne une chaine utf-8 avec la bonne casse
  * 
  * $mode
  * - 'maj'   -> tout en majuscules
  * - 'min'   -> tout en minuscules
- * - 'majf'  -> Première lettre en majuscule
- * - 'majf2' -> Première lettre de tous les mots en majuscule
+ * - 'majf'  -> PremiÃ¨re lettre en majuscule
+ * - 'majf2' -> PremiÃ¨re lettre de tous les mots en majuscule
  *
- * @param type $mot chaine à modifier
+ * @param type $mot chaine Ã  modifier
  * @param type $mode Mode de conversion
  * @return type chaine mise en forme
  */
 function casse_mot($mot,$mode='maj') {
 	if($mode=='maj') {
-		return strtoupper($mot);
+		return mb_convert_case(ensure_utf8($mot), MB_CASE_UPPER);
 	}
 	elseif($mode=='min') {
-		return strtolower($mot);
+		return mb_convert_case(ensure_utf8($mot), MB_CASE_LOWER);
 	}
 	elseif($mode=='majf') {
-		if(strlen($mot)>1) {
-			return strtoupper(substr($mot,0,1));
-		}
-		else {
-			return strtoupper($mot);
-		}
+		return mb_convert_case(mb_substr($mot,0,1), MB_CASE_UPPER);
 	}
 	elseif($mode=='majf2') {
-		$chaine="";
-		$tab=explode(" ",$mot);
-		for($i=0;$i<count($tab);$i++) {
-			if($i>0) {$chaine.=" ";}
-			$tab2=explode("-",$tab[$i]);
-			for($j=0;$j<count($tab2);$j++) {
-				if($j>0) {$chaine.="-";}
-				if(strlen($tab2[$j])>1) {
-					$chaine.=strtoupper(substr($tab2[$j],0,1));
-				}
-				else {
-					$chaine.=strtoupper($tab2[$j]);
-				}
-			}
-		}
-		return $chaine;
+		return mb_convert_case(ensure_utf8($mot), MB_CASE_TITLE);
+	}
+	elseif($mode=='majf3') {
+	    $temp = mb_convert_case(ensure_utf8($mot), MB_CASE_LOWER);
+		return mb_convert_case($temp, MB_CASE_TITLE);
 	}
 }
 
@@ -3234,7 +3283,7 @@ function recherche_personnel_sans_photo($statut='professeur') {
 function efface_photos($photos) {
 // on liste les fichier du dossier photos/personnels ou photos/eleves
   if (!($photos=="eleves" || $photos=="personnels"))
-	return ("Le dossier <strong>".$photos."</strong> n'ai pas valide.");
+	return ("Le dossier <strong>".$photos."</strong> n'est pas valide.");
   if (cree_zip_archive("photos")==TRUE){
 	$fichier_sup=array();
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -3247,7 +3296,7 @@ function efface_photos($photos) {
 	$folder = "../photos/".$repertoire.$photos."/";
 	$dossier = opendir($folder);
 	while ($Fichier = readdir($dossier)) {
-	  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
+	  if (strtolower(pathinfo($Fichier,PATHINFO_EXTENSION))=="jpg") {
 		$nomFichier = $folder."".$Fichier;
 		$fichier_sup[] = $nomFichier;
 	  }
@@ -3256,16 +3305,22 @@ function efface_photos($photos) {
 	if(count($fichier_sup)==0) {
 	  return ("Le dossier <strong>".$folder."</strong> ne contient pas de photo.") ;
 	} else {
+	  $nb_erreurs=0; $erreurs="";
 	  foreach ($fichier_sup as $fic_efface) {
 		if(file_exists($fic_efface)) {
 		  @unlink($fic_efface);
 		  if(file_exists($fic_efface)) {
-			return ("Le fichier  <strong>".$fic_efface."</strong> n'a pas pu être effacé.");
+			$nb_erreurs++;
+			$erreurs.="Le fichier  <strong>".$fic_efface."</strong> n'a pas pu être effacé.<br />";
 		  }
 		}
 	  }
 	  unset ($fic_efface);
-	  return ("Le dossier <strong>".$folder."</strong> a été vidé.") ;
+	  if ($nb_erreurs>0) {
+		if ($nb_erreurs>10) return $nb_erreurs." fichiers n'ont pu être effacés.";
+			else return $erreurs;
+	  }
+		else return ("Le dossier <strong>".$folder."</strong> a été vidé.") ;
 	}
   }else{
 	return ("Erreur lors de la création de l'archive.") ;
@@ -3436,15 +3491,15 @@ function deplacer_upload($source, $dest) {
  * @return string ok ou message d'erreur
  * @see deplacer_upload()
  */
-function telecharge_fichier($sav_file,$dirname,$type,$ext){
+function telecharge_fichier($sav_file,$dirname,$ext="",$type=""){
   if (!isset($sav_file['tmp_name']) or ($sav_file['tmp_name'] =='')) {
 	return ("Erreur de téléchargement.");
   } else if (!file_exists($sav_file['tmp_name'])) {
 	return ("Erreur de téléchargement 2.");
-  } else if (!preg_match('/'.$ext.'$/i',$sav_file['name'])){
+  } else if (($ext!="") && (!preg_match('/'.$ext.'$/i',$sav_file['name']))){
 	return ("Erreur : seuls les fichiers ayant l'extension .".$ext." sont autorisés.");
   //} else if ($sav_file['type']!=$type ){
-  } else if (strripos($type,$sav_file['type'])===false) {
+  } else if (($type!="") && (strripos($type,$sav_file['type'])===false)) {
 	return ("Erreur : seuls les fichiers de type '".$type."' sont autorisés<br />Votre fichier est de type ".$sav_file['type']);
   } else {
 	$nom_corrige = preg_replace("/[^.a-zA-Z0-9_=-]+/", "_", $sav_file['name']);
@@ -4641,23 +4696,5 @@ function array_map_deep($callback, $array) {
     else $new = call_user_func($callback, $array);
     return $new;
 } 
-
-/**
- * Vérifie si une variable est en UTF8 et la réencode au besoin
- * @param string $var La variable à vérifier
- * @return string La variable décodée 
- */
-function check_utf8_and_convert($var) {
-	if(function_exists("mb_check_encoding")) {
-		if (!mb_check_encoding($var, 'UTF-8')) {
-    		return utf8_encode($var);
-    	} else {
-    		return $var;
-    	}
-	} else {
-  	return $var;
-	} 
-} 
-
 
 ?>

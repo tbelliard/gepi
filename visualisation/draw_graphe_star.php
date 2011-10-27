@@ -748,9 +748,7 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$x=$x\n");
 		writinfo('/tmp/infos_graphe.txt','a+',"\$y=$y\n");
 
-		//imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
-		//imagestring ($img, $tmp_taille_police, $x, $y, strtr($angle." ".$texte,"_"," "), $axes);
-		imagestring ($img, $tmp_taille_police, $x, $y, strtr($texte,"_"," "), $axes);
+		imagettftext($img, $tmp_taille_police*4, 0, $x, $y, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($texte,"_"," "));
 
 
 
@@ -762,9 +760,7 @@
 		if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
 		//**************
 		for($k=1;$k<=$nb_series_bis;$k++){
-			//imagestring ($img, $taille_police, $xtmp, $ytmp, $moyenne[$k][$i+1], $couleureleve[$k]);
-			imagestring ($img, $taille_police, $xtmp, $ytmp, nf($moyenne[$k][$i+1]), $couleureleve[$k]);
-			//imagestring ($img, $taille_police, $xtmp, $ytmp, "A", $couleureleve[$k]);
+            imagettftext($img, $tmp_taille_police*4, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i+1]));
 			//$xtmp=$xtmp+strlen($moyenne[$k][$i+1]." - ")*ImageFontWidth($taille_police);
 			$xtmp=$xtmp+strlen(nf($moyenne[$k][$i+1])." ")*ImageFontWidth($taille_police_inf);
 		}
@@ -816,7 +812,7 @@
 	if($legendy[2]=='Toutes_les_périodes'){
 		$chaine=$nom_periode;
 
-		imagestring ($img, $taille_police, round(($largeurTotale-strlen($nom_eleve[1]) * ImageFontWidth($taille_police))/2), 5, $nom_eleve[1], $axes);
+		imagettftext($img, $tmp_taille_police*4, 0, round(($largeurTotale-strlen($nom_eleve[1]) * ImageFontWidth($taille_police))/2), 5, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $nom_eleve[1]);
 
 		// Positionnement des noms d'élèves:
 		//$xtmp=$largeurGrad;
@@ -824,17 +820,13 @@
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
 			$xtmp=$xtmp+$espace;
-			//imagestring ($img, $taille_police, $xtmp, 5, $eleve[$k], $couleureleve[$k]);
-			//$xtmp=$xtmp+$largeur_eleve[$k];
-			//imagestring ($img, $taille_police, $xtmp, ImageFontHeight($taille_police)+5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
-			//imagestring ($img, $taille_police, $xtmp, ImageFontHeight($taille_police)+5, strtr($chaine[$k],"_"," ")." (".nf($mgen[$k]).")", $couleureleve[$k]);
 			if($mgen[$k]!="") {
 				$chaine_mgen=" (".nf($mgen[$k]).")";
 			}
 			else {
 				$chaine_mgen="";
 			}
-			imagestring ($img, $taille_police, $xtmp, ImageFontHeight($taille_police)+5, strtr($chaine[$k],"_"," ").$chaine_mgen, $couleureleve[$k]);
+            imagettftext($img, $tmp_taille_police*4, 0, $xtmp, ImageFontHeight($taille_police)+5, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
 
 			$xtmp=$xtmp+$largeur_chaine[$k];
 		}
@@ -850,17 +842,13 @@
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
 			$xtmp=$xtmp+$espace;
-			//imagestring ($img, $taille_police, $xtmp, 5, $eleve[$k], $couleureleve[$k]);
-			//$xtmp=$xtmp+$largeur_eleve[$k];
-			//imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
-			//imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," ")." (".nf($mgen[$k]).")", $couleureleve[$k]);
 			if($mgen[$k]!="") {
 				$chaine_mgen=" (".nf($mgen[$k]).")";
 			}
 			else {
 				$chaine_mgen="";
 			}
-			imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," ").$chaine_mgen, $couleureleve[$k]);
+		    imagettftext($img, $tmp_taille_police*4, 0, $xtmp, 12, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
 			$xtmp=$xtmp+$largeur_chaine[$k];
 		}
 	}

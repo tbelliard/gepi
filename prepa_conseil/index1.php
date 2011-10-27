@@ -125,7 +125,6 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	//require("../bulletin/header_bulletin_pdf.php");
 
 	require_once('../fpdf/fpdf.php');
-	require_once('../fpdf/ex_fpdf.php');
 	require_once("../fpdf/class.multicelltag.php");
 
 	// Fichier d'extension de fpdf pour le bulletin
@@ -244,9 +243,9 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 	$pdf->AddPage();
-	$fonte='Arial';
+	$fonte='DejaVu';
 
-	$pdf->SetFont($fonte,'B',8);
+	$pdf->SetFont('DejaVu','B',8);
 
 	$texte_titre=$current_group['profs']['proflist_string']." - ".$current_group['description']." en ".$current_group['classlist_string'];
 
@@ -259,7 +258,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$graisse='B';
 	$alignement='C';
 	$bordure='';
-	cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
+	cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
 	$y2=$y0+$h_ligne_titre_tableau;
 
 
@@ -274,7 +273,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	//$alignement='L';
 	$alignement='C';
 	$bordure='LRBT';
-	cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+	cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 
 	$alignement='C';
 	$largeur_dispo=$largeur_col_nom_ele;
@@ -284,8 +283,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		$largeur_dispo=$largeur_col[$i];
 
 		$texte=" ".$ligne1_csv[$i]." ";
-		//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
-		cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+		//cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+		cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 
 		$x2+=$largeur_dispo;
 	}
@@ -318,12 +317,12 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 			$largeur_dispo=$largeur_col_nom_ele;
 			$texte=$ligne1_csv[1];
 
-			//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+			//cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
 			$graisse='B';
 			//$alignement='L';
 			$alignement='C';
 			$bordure='LRBT';
-			cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+			cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 		
 			$alignement='C';
 			$largeur_dispo=$largeur_col_nom_ele;
@@ -335,8 +334,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		
 				$texte=" ".$ligne1_csv[$i]." ";
 				//$texte=$ligne1_csv[$i];
-				//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
-				cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+				//cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
+				cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 		
 				$x2+=$largeur_dispo;
 			}
@@ -358,10 +357,10 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 			$largeur_dispo=$largeur_col[$i];
 			$texte=$tab[$i-1];
 			if(preg_match("/^App/", $ligne1_csv[$i])) {
-				cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
+				cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
 			}
 			else {
-				cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+				cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 			}
 			$x2+=$largeur_dispo;
 		}
@@ -489,7 +488,7 @@ if (!$current_group) {
 					//if ($aff_class == 'no') {echo "<span class='norme'><b>$display_class</b> : ";$aff_class = 'yes';}
 					//if ($aff_class == 'no') {echo "<b>$display_class</b> : ";$aff_class = 'yes';}
 					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - ";
-					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a></span> - \n";
+					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . "</a></span> - \n";
 
 
 					if ($aff_class == 'no') {
@@ -505,7 +504,7 @@ if (!$current_group) {
 					}
 
 					echo "<span class='norme'>";
-					echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . " </a>\n";
+					echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . " </a>\n";
 
 					// pas de nom si c'est un prof qui demande la page.
 					//if ($_SESSION['statut']!='professeur') {
@@ -676,7 +675,7 @@ if (!$current_group) {
     }
 
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire\">";
-    echo "<p class='bold'>Groupe : " . htmlentities($current_group["description"]) ." " . htmlentities($current_group["classlist_string"]) . " | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /></p>\n";
+    echo "<p class='bold'>Groupe : " . htmlspecialchars($current_group["description"]) ." " . htmlspecialchars($current_group["classlist_string"]) . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /></p>\n";
     echo "<p>Choisissez les données à imprimer (<i>vous pouvez cocher plusieurs cases</i>) : </p>\n";
     $i="1";
 	$cpt=0;
@@ -2026,7 +2025,7 @@ function checkbox_change(champ, cpt) {
         parametres_tableau($larg_tab, $bord);
 	}
 //    else echo "<p class=small><a href=\"index1.php?id_classe=$id_classe&choix_matiere=$choix_matiere\">Retour</a>";
-    echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Groupe : " . htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ") | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]);
+    echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Groupe : " . htmlspecialchars($current_group["description"]) . " (" . $current_group["classlist_string"] . ") | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]);
     echo "</p>\n";
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";

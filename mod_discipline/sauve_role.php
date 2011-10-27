@@ -66,11 +66,11 @@ if((isset($id_incident))&&(isset($login))&&(isset($qualite))) {
 	$update=mysql_query($sql);
 	if($update) {
 		//echo "Mise &agrave; jour de la qualit&eacute; \"$qualite\" effectu&eacute;e pour $login.";
-		echo "Mise &agrave; jour du r&ocirc;le \"".htmlentities($qualite)."\" effectu&eacute; pour $login.";
+		echo "Mise &agrave; jour du r&ocirc;le \"".htmlspecialchars($qualite)."\" effectu&eacute; pour $login.";
 	}
 	else {
 		//echo "Echec de la mise &agrave; jour de la qualit&eacute; \"$qualite\" pour $login.";
-		echo "Echec de la mise &agrave; jour du r&ocirc;le \"".htmlentities($qualite)."\" pour $login.";
+		echo "Echec de la mise &agrave; jour du r&ocirc;le \"".htmlspecialchars($qualite)."\" pour $login.";
 	}
 }
 ?>

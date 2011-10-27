@@ -1328,16 +1328,16 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 	for($num_resp_bull=0;$num_resp_bull<$nb_bulletins;$num_resp_bull++) {
 		$pdf->AddPage(); //ajout d'une page au document
-		$pdf->SetFont('Arial');
+		$pdf->SetFont('DejaVu');
 
 		//================================
 		// On insère le footer dès que la page est créée:
 		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
 		$pdf->SetXY(5,-10);
-		//Police Arial Gras 6
-		$pdf->SetFont('Arial','B',8);
+		//Police DejaVu Gras 6
+		$pdf->SetFont('DejaVu','B',8);
 		// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
-		$pdf->Cell(0,4.5, traite_accents_utf8($bull_formule_bas),0,0,'C');
+		$pdf->Cell(0,4.5, ($bull_formule_bas),0,0,'C');
 		//================================
 
 		// A VERIFIER: CETTE VARIABLE NE DOIT PAS ETRE UTILE
@@ -1363,7 +1363,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		//=========================================
 
 		if($tab_modele_pdf["affiche_filigrame"][$classe_id]==='1'){
-			$pdf->SetFont('Arial','B',50);
+			$pdf->SetFont('DejaVu','B',50);
 			$pdf->SetTextColor(255,192,203);
 			//$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
 			$pdf->TextWithRotation(40,190,$tab_modele_pdf["texte_filigrame"][$classe_id],45);
@@ -1404,10 +1404,6 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
 		}
 
-		//$pdf->SetXY(100,5);
-		//$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
-		//$pdf->Cell(90,7, "\$format_du_logo=$format_du_logo",0,2,'');
-
 		//=========================================
 
 		// Adresse établissement
@@ -1416,7 +1412,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$Y_etab = '5';
 		}
 		$pdf->SetXY($X_etab,$Y_etab);
-		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',14);
+		$pdf->SetFont('DejaVu','',14);
 
 		//=========================
 		// AJOUT: boireaus 20081224
@@ -1427,24 +1423,24 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			(!isset($tab_modele_pdf["affiche_nom_etab"][$classe_id]))) {
 			// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
 			if ( $tab_modele_pdf["nom_etab_gras"][$classe_id] === '1' ) {
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',14);
+				$pdf->SetFont('DejaVu','B',14);
 			}
-			$pdf->Cell(90,7, traite_accents_utf8($gepiSchoolName),0,2,'');
+			$pdf->Cell(90,7, ($gepiSchoolName),0,2,'');
 		}
 
 		//$tab_modele_pdf["affiche_adresse_etab"][$classe_id]=0;
 		if(((isset($tab_modele_pdf["affiche_adresse_etab"][$classe_id]))&&($tab_modele_pdf["affiche_adresse_etab"][$classe_id]!="0"))||
 			(!isset($tab_modele_pdf["affiche_adresse_etab"][$classe_id]))) {
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+			$pdf->SetFont('DejaVu','',10);
 
 			if ( $gepiSchoolAdress1 != '' ) {
-				$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress1),0,2,'');
+				$pdf->Cell(90,5, ($gepiSchoolAdress1),0,2,'');
 			}
 			if ( $gepiSchoolAdress2 != '' ) {
-				$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress2),0,2,'');
+				$pdf->Cell(90,5, ($gepiSchoolAdress2),0,2,'');
 			}
 
-			$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
+			$pdf->Cell(90,5, ($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 		}
 
 		$passealaligne = '0';
@@ -1567,12 +1563,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		// AJOUT ERIC
 		//$classe_id=$id_classe_selection;
 
-		$pdf->SetFont('Arial','B',12);
+		$pdf->SetFont('DejaVu','B',12);
 
 		// gestion des styles
-		$pdf->SetStyle2("b","arial","B",8,"0,0,0");
-		$pdf->SetStyle2("i","arial","I",8,"0,0,0");
-		$pdf->SetStyle2("u","arial","U",8,"0,0,0");
+		$pdf->SetStyle2("b","DejaVu","B",8,"0,0,0");
+		$pdf->SetStyle2("i","DejaVu","I",8,"0,0,0");
+		$pdf->SetStyle2("u","DejaVu","U",8,"0,0,0");
 
 		// style pour la case appréciation générale
 		// identité du professeur principal
@@ -1581,8 +1577,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		} else {
 			$taille = '10';
 		}
-		$pdf->SetStyle2("bppc","arial","B",$taille,"0,0,0");
-		$pdf->SetStyle2("ippc","arial","I",$taille,"0,0,0");
+		$pdf->SetStyle2("bppc","DejaVu","B",$taille,"0,0,0");
+		$pdf->SetStyle2("ippc","DejaVu","I",$taille,"0,0,0");
 
 		// ============= DEBUT BLOC ADRESSE PARENTS ==========================
 
@@ -1605,26 +1601,26 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			$texte_1_responsable = trim($tab_adr_ligne1[$num_resp_bull]);
 			$hauteur_caractere=12;
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte != 'ok') {
 				if($taille_texte < $val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte = 'ok';
 				}
 			}
-			$pdf->Cell(90,7, traite_accents_utf8($texte_1_responsable),0,2,'');
+			$pdf->Cell(90,7, ($texte_1_responsable),0,2,'');
 			
 			// ERIC
 			if ($tab_modele_pdf["affiche_numero_responsable"][$classe_id] == '1') {
 			    //Ajout Eric le 13-11-2010 Num du Resp légal sur le bulletin
 				$pdf->SetXY($tab_modele_pdf["X_parent"][$classe_id]+90-8,$tab_modele_pdf["Y_parent"][$classe_id]-3);
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',6); //6==> hauteur de caractère
+				$pdf->SetFont('DejaVu','',6); //6==> hauteur de caractère
 				$num=$num_resp_bull+1; // on se base sur le nombre de bulletin à imprimer
 				$num_legal= "(Resp ".$num.")";
 				$pdf->Cell(90,7,$num_legal,0,2,'');
@@ -1635,75 +1631,75 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				
 			$texte_1_responsable = $tab_adr_ligne2[$num_resp_bull];
 			$hauteur_caractere=10;
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte='ok';
 				}
 			}
-			$pdf->Cell(90,5, traite_accents_utf8($texte_1_responsable),0,2,'');
+			$pdf->Cell(90,5, ($texte_1_responsable),0,2,'');
 
 			$texte_1_responsable = $tab_adr_ligne3[$num_resp_bull];
 			$hauteur_caractere=10;
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte='ok';
 				}
 			}
-			$pdf->Cell(90,5, traite_accents_utf8($texte_1_responsable),0,2,'');
+			$pdf->Cell(90,5, ($texte_1_responsable),0,2,'');
 
 			// Suppression du saut de ligne pour mettre la ligne 3 de l'adresse
 			//$pdf->Cell(90,5, '',0,2,'');
 
 			$texte_1_responsable = $tab_adr_ligne4[$num_resp_bull];
 			$hauteur_caractere=10;
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte='ok';
 				}
 			}
-			$pdf->Cell(90,5, traite_accents_utf8($texte_1_responsable),0,2,'');
+			$pdf->Cell(90,5, ($texte_1_responsable),0,2,'');
 
 			//$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
 			$texte_1_responsable = $tab_adr_ligne5[$num_resp_bull];
 			$hauteur_caractere=10;
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte='ok';
 				}
 			}
-			$pdf->Cell(90,5, traite_accents_utf8($texte_1_responsable),0,2,'');
+			$pdf->Cell(90,5, ($texte_1_responsable),0,2,'');
 
 
 			//============================
@@ -1711,20 +1707,20 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			if(isset($tab_adr_ligne6[$num_resp_bull])) {
 				$texte_1_responsable = $tab_adr_ligne6[$num_resp_bull];
 				$hauteur_caractere=10;
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+				$pdf->SetFont('DejaVu','',$hauteur_caractere);
 				$val = $pdf->GetStringWidth($texte_1_responsable);
 				$taille_texte = $longeur_cadre_adresse;
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
 					if($taille_texte<$val){
 						$hauteur_caractere = $hauteur_caractere-0.3;
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere);
 						$val = $pdf->GetStringWidth($texte_1_responsable);
 					} else {
 						$grandeur_texte='ok';
 					}
 				}
-				$pdf->Cell(90,5, traite_accents_utf8($texte_1_responsable),0,2,'');
+				$pdf->Cell(90,5, ($texte_1_responsable),0,2,'');
 			}
 			//============================
 
@@ -1772,7 +1768,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$hauteur_cadre_eleve = $nb_ligne*$hauteur_ligne;
 			}
 
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',14);
+			$pdf->SetFont('DejaVu','B',14);
 
 			if($tab_modele_pdf["cadre_eleve"][$classe_id]!=0) {
 				$pdf->Rect($tab_modele_pdf["X_eleve"][$classe_id], $tab_modele_pdf["Y_eleve"][$classe_id], $longeur_cadre_eleve, $hauteur_cadre_eleve, 'D');
@@ -1819,11 +1815,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			$pdf->SetXY($X_eleve_2,$Y_eleve_2);
 
-			//$pdf->Cell(90,7, traite_accents_utf8($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']),0,2,'');
-			$nom_prenom=traite_accents_utf8($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']);
+			//$pdf->Cell(90,7, ($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']),0,2,'');
+			$nom_prenom=($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']);
 
 			$hauteur_caractere_nom_prenom=14;
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_nom_prenom);
+			$pdf->SetFont('DejaVu','B',$hauteur_caractere_nom_prenom);
 			$val = $pdf->GetStringWidth($nom_prenom);
 			if($tab_modele_pdf["active_photo"][$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
 				$taille_texte = 90-$L_photo; // Espace max
@@ -1836,7 +1832,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val) {
 					$hauteur_caractere_nom_prenom=$hauteur_caractere_nom_prenom-0.3;
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_nom_prenom);
+					$pdf->SetFont('DejaVu','B',$hauteur_caractere_nom_prenom);
 					$val = $pdf->GetStringWidth($nom_prenom);
 				} else {
 					$grandeur_texte='ok';
@@ -1846,7 +1842,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->Cell(90,7, $nom_prenom,0,2,'');
 
 
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+			$pdf->SetFont('DejaVu','',10);
 			if($tab_modele_pdf["affiche_date_naissance"][$classe_id]==='1') {
 				if($tab_bull['eleve'][$i]['naissance']!="") {
 					$info_naissance="Né";
@@ -1857,7 +1853,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						$info_naissance.=" à ".$tab_bull['eleve'][$i]['lieu_naissance'];
 					}
 
-					$pdf->Cell(90,5, traite_accents_utf8($info_naissance),0,2,'');
+					$pdf->Cell(90,5, ($info_naissance),0,2,'');
 				}
 			}
 
@@ -1877,13 +1873,13 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//if(isset($tab_bull['eleve'][$i]['regime'])) {
 					if((isset($tab_bull['eleve'][$i]['regime']))&&($tab_bull['eleve'][$i]['regime']!="")) {
 						if($rdbt=="") {
-							$pdf->Cell(90,4, traite_accents_utf8(regime($tab_bull['eleve'][$i]['regime'])),0,2,'');
+							$pdf->Cell(90,4, (regime($tab_bull['eleve'][$i]['regime'])),0,2,'');
 						}
 						else {
-							$pdf->Cell(90,4, traite_accents_utf8(regime($tab_bull['eleve'][$i]['regime'])."; ".$rdbt),0,2,'');
+							$pdf->Cell(90,4, (regime($tab_bull['eleve'][$i]['regime'])."; ".$rdbt),0,2,'');
 						}
 					} else {
-						$pdf->Cell(90,4,traite_accents_utf8($rdbt),0,2,'');
+						$pdf->Cell(90,4,($rdbt),0,2,'');
 					}
 				}
 			} else {
@@ -1896,7 +1892,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						if($tab_bull['eleve'][$i]['sexe']=="F") {
 							$rdbt.="e";
 						}
-						$pdf->Cell(90,4.5, traite_accents_utf8($rdbt),0,2,'');
+						$pdf->Cell(90,4.5, ($rdbt),0,2,'');
 					}
 				}
 			}
@@ -1913,7 +1909,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					{
 						$passe_a_la_ligne = 1;
 					}
-					$pdf->Cell(45,4.5, traite_accents_utf8(unhtmlentities($tab_bull['eleve'][$i]['classe'])),0, $passe_a_la_ligne,'');
+					$pdf->Cell(45,4.5, (unhtmlentities($tab_bull['eleve'][$i]['classe'])),0, $passe_a_la_ligne,'');
 				}
 			}
 
@@ -1936,7 +1932,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$pass_ligne = '2';
 				}
 				if($tab_bull['eff_classe']!="") {
-					$pdf->Cell(45,4.5, traite_accents_utf8('Effectif : '.$tab_bull['eff_classe'].' élèves'),0,$pass_ligne,'');
+					$pdf->Cell(45,4.5, ('Effectif : '.$tab_bull['eff_classe'].' élèves'),0,$pass_ligne,'');
 				}
 			}
 			if($tab_modele_pdf["affiche_numero_impression"][$classe_id]==='1') {
@@ -1958,22 +1954,22 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			if(($tab_modele_pdf["affiche_etab_origine"][$classe_id]==='1')&&(isset($tab_bull['eleve'][$i]['etab_id']))&&(!empty($tab_bull['eleve'][$i]['etab_id']))&&(strtolower($tab_bull['eleve'][$i]['etab_id'])!=strtolower($RneEtablissement))) {
 				$pdf->SetX($X_eleve_2);
 				$hauteur_caractere_etaborigine = '10';
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_etaborigine);
+				$pdf->SetFont('DejaVu','',$hauteur_caractere_etaborigine);
 				$val = $pdf->GetStringWidth('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")");
 				$taille_texte = $longeur_cadre_eleve-3;
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
 					if($taille_texte<$val) {
 						$hauteur_caractere_etaborigine = $hauteur_caractere_etaborigine-0.3;
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_etaborigine);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_etaborigine);
 						$val = $pdf->GetStringWidth('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")");
 					} else {
 						$grandeur_texte='ok';
 					}
 				}
 				$grandeur_texte='test';
-				$pdf->Cell(90,4, traite_accents_utf8('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")"),0,2);
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+				$pdf->Cell(90,4, ('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")"),0,2);
+				$pdf->SetFont('DejaVu','',10);
 			}
 		} // fin du bloc affichage information sur l'élèves
 
@@ -2020,8 +2016,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			} else {
 				$type_texte = 'B';
 			}
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id], $type_texte, $taille_texte);
-			$pdf->Cell(90,7, traite_accents_utf8("Classe de ".unhtmlentities($tab_bull['classe_nom_complet'])),0,2,'C');
+			$pdf->SetFont('DejaVu', $type_texte, $taille_texte);
+			$pdf->Cell(90,7, ("Classe de ".unhtmlentities($tab_bull['classe_nom_complet'])),0,2,'C');
 			$taille_texte = '12'; $type_texte = '';
 			if ( $tab_modele_pdf["taille_texte_annee"][$classe_id] != '' and $tab_modele_pdf["taille_texte_annee"][$classe_id] != '0') {
 				$taille_texte = $tab_modele_pdf["taille_texte_annee"][$classe_id];
@@ -2040,9 +2036,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			else {
 				$type_texte = '';
 			}
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id], $type_texte, $taille_texte);
+			$pdf->SetFont('DejaVu', $type_texte, $taille_texte);
 			$annee_scolaire = $gepiYear;
-			$pdf->Cell(90,5, traite_accents_utf8("Année scolaire ".$annee_scolaire),0,2,'C');
+			$pdf->Cell(90,5, ("Année scolaire ".$annee_scolaire),0,2,'C');
 			$taille_texte = '10'; $type_texte = '';
 			if ( $tab_modele_pdf["taille_texte_periode"][$classe_id] != '' and $tab_modele_pdf["taille_texte_periode"][$classe_id] != '0' ) {
 				$taille_texte = $tab_modele_pdf["taille_texte_periode"][$classe_id];
@@ -2061,8 +2057,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			else {
 				$type_texte = '';
 			}
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id], $type_texte, $taille_texte);
-			$pdf->Cell(90,5, traite_accents_utf8("Bulletin du ".unhtmlentities($tab_bull['nom_periode'])),0,2,'C');
+			$pdf->SetFont('DejaVu', $type_texte, $taille_texte);
+			$pdf->Cell(90,5, ("Bulletin du ".unhtmlentities($tab_bull['nom_periode'])),0,2,'C');
 			$taille_texte = '8';
 			$type_texte = '';
 
@@ -2084,11 +2080,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				else {
 					$type_texte = '';
 				}
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id], $type_texte, $taille_texte);
-				$pdf->Cell(95,7, traite_accents_utf8($date_bulletin),0,2,'R');
+				$pdf->SetFont('DejaVu', $type_texte, $taille_texte);
+				$pdf->Cell(95,7, ($date_bulletin),0,2,'R');
 			}
 
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+			$pdf->SetFont('DejaVu','',10);
 		}
 
 		// ============= FIN BLOC CLASSE/PERIODE/DATATION ==========================
@@ -2137,7 +2133,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		//++++++++++++++++
 		// Pour debug:
 		$pdf->SetXY(100, 25);
-		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+		$pdf->SetFont('DejaVu','',10);
 		$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], 8, "nb_matiere=$nb_matiere",1,0,'C');
 		//++++++++++++++++
 		*/
@@ -2149,15 +2145,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$hauteur_entete = 8;
 			$hauteur_entete_pardeux = $hauteur_entete/2;
 			$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id], $tab_modele_pdf["Y_note_app"][$classe_id]);
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
-			$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $hauteur_entete, traite_accents_utf8($tab_modele_pdf["titre_entete_matiere"][$classe_id]),1,0,'C');
+			$pdf->SetFont('DejaVu','',10);
+			$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $hauteur_entete, ($tab_modele_pdf["titre_entete_matiere"][$classe_id]),1,0,'C');
 			$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 
 			// coefficient matière
 			if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 				$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
-				$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $hauteur_entete, traite_accents_utf8($tab_modele_pdf["titre_entete_coef"][$classe_id]),'LRB',0,'C');
+				$pdf->SetFont('DejaVu','',8);
+				$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $hauteur_entete, ($tab_modele_pdf["titre_entete_coef"][$classe_id]),'LRB',0,'C');
 				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 			}
 
@@ -2166,8 +2162,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 			if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 				$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
-				$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $hauteur_entete, traite_accents_utf8($tab_modele_pdf["titre_entete_nbnote"][$classe_id]),'LRB',0,'C');
+				$pdf->SetFont('DejaVu','',8);
+				$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $hauteur_entete, ($tab_modele_pdf["titre_entete_nbnote"][$classe_id]),'LRB',0,'C');
 				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_nombre_note"][$classe_id];
 			}
 
@@ -2253,7 +2249,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$largeur_moyenne = $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id] * $nb_entete_moyenne;
 					$text_entete_moyenne = 'Moyenne';
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
-					$pdf->Cell($largeur_moyenne, $hauteur_entete_pardeux, traite_accents_utf8($text_entete_moyenne),1,0,'C');
+					$pdf->Cell($largeur_moyenne, $hauteur_entete_pardeux, ($text_entete_moyenne),1,0,'C');
 					$chapeau_moyenne = 'oui';
 				}
 
@@ -2265,7 +2261,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$text_entete_moyenne = 'Pour la classe';
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
 					$hauteur_caractere=10;
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($text_entete_moyenne);
 					$taille_texte = $largeur_moyenne;
 					$grandeur_texte='test';
@@ -2273,14 +2269,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						if($taille_texte<$val)
 						{
 							$hauteur_caractere = $hauteur_caractere-0.3;
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+							$pdf->SetFont('DejaVu','',$hauteur_caractere);
 							$val = $pdf->GetStringWidth($text_entete_moyenne);
 						}
 						else {
 							$grandeur_texte='ok';
 						}
 					}
-					$pdf->Cell($largeur_moyenne, $hauteur_entete_pardeux, traite_accents_utf8($text_entete_moyenne),1,0,'C');
+					$pdf->Cell($largeur_moyenne, $hauteur_entete_pardeux, ($text_entete_moyenne),1,0,'C');
 					$chapeau_moyenne = 'oui';
 				}
 
@@ -2295,7 +2291,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+$ajout_espace_au_dessus);
 					$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
-					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_de_la_cellule, traite_accents_utf8("Elève"),1,0,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_de_la_cellule, ("Elève"),1,0,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 					$pdf->SetFillColor(0, 0, 0);
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
@@ -2306,12 +2302,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+4);
 					$hauteur_caractere = '8.5';
 
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$text_moy_classe = 'Classe';
 					if ( $tab_modele_pdf["entete_model_bulletin"][$classe_id] === '2' ) {
 						$text_moy_classe = 'Moy.';
 					}
-					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_entete_pardeux, traite_accents_utf8($text_moy_classe),1,0,'C');
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_entete_pardeux, ($text_moy_classe),1,0,'C');
 					$X_moyenne_classe = $tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise;
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
@@ -2321,7 +2317,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+4);
 					$hauteur_caractere = '8.5';
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_entete_pardeux, "Min.",1,0,'C');
 					$X_min_classe = $tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise;
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
@@ -2331,18 +2327,18 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				if(($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]!=1)&&($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' )) {
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+4);
 					$hauteur_caractere = '8.5';
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_entete_pardeux, "Max.",1,0,'C');
 					$X_max_classe = $tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise;
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
 
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+				$pdf->SetFont('DejaVu','',10);
 
 				// rang de l'élève
 				if( $tab_modele_pdf["active_rang"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
-					$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $hauteur_entete, traite_accents_utf8($tab_modele_pdf["titre_entete_rang"][$classe_id]),'LRB',0,'C');
+					$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $hauteur_entete, ($tab_modele_pdf["titre_entete_rang"][$classe_id]),'LRB',0,'C');
 					//$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $hauteur_entete, $tab_modele_pdf["titre_entete_rang"][$classe_id],'LRB',0,'C');
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_rang"][$classe_id];
 				}
@@ -2351,17 +2347,17 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				if( $tab_modele_pdf["active_graphique_niveau"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
 					$hauteur_caractere = '10';
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$pdf->Cell($tab_modele_pdf["largeur_niveau"][$classe_id], $hauteur_entete_pardeux, "Niveau",'LR',0,'C');
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+4);
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+					$pdf->SetFont('DejaVu','',8);
 					$pdf->Cell($tab_modele_pdf["largeur_niveau"][$classe_id], $hauteur_entete_pardeux, "ABC+C-DE",'LRB',0,'C');
 					$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_niveau"][$classe_id];
 				}
 
 				//appreciation
 				$hauteur_caractere = '10';
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+				$pdf->SetFont('DejaVu','',$hauteur_caractere);
 				if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
 					$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
 					if ( !empty($ordre_moyenne[$cpt_ordre+1]) ) {
@@ -2380,12 +2376,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					} else {
 						$largeur_appreciation = $tab_modele_pdf["longeur_note_app"][$classe_id]-$largeur_utilise;
 					}
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+					$pdf->SetFont('DejaVu','',10);
 
 					//$titre_entete_appreciation=$bull_intitule_app;
 					$titre_entete_appreciation=$tab_modele_pdf['titre_entete_appreciation'][$classe_id];
 
-					$pdf->Cell($largeur_appreciation, $hauteur_entete, traite_accents_utf8($titre_entete_appreciation),'LRB',0,'C');
+					$pdf->Cell($largeur_appreciation, $hauteur_entete, ($titre_entete_appreciation),'LRB',0,'C');
 					$largeur_utilise = $largeur_utilise + $largeur_appreciation;
 				}
 				$cpt_ordre = $cpt_ordre + 1;
@@ -2464,7 +2460,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			//++++++++++++++++
 			// Pour debug:
 			$pdf->SetXY(100, 30);
-			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], 8, "espace_entre_matier=$espace_entre_matier",1,0,'C');
 			//++++++++++++++++
 			*/
@@ -2491,7 +2487,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						{
 							$hauteur_caractere_matiere = $tab_modele_pdf["taille_texte_matiere"][$classe_id];
 						}
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
+						$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
 
 						// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
 						if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
@@ -2508,7 +2504,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							if($taille_texte<$val)
 							{
 								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
 								$val = $pdf->GetStringWidth($info_nom_matiere);
 							}
 							else {
@@ -2516,10 +2512,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							}
 						}
 						$grandeur_texte='test';
-						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, traite_accents_utf8($info_nom_matiere),'LR',1,'L');
+						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
 						$Y_decal = $Y_decal+($espace_entre_matier/2);
 						$pdf->SetXY($X_bloc_matiere, $Y_decal);
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+						$pdf->SetFont('DejaVu','',8);
 
 						fich_debug_bull("\$info_nom_matiere=$info_nom_matiere\n");
 						fich_debug_bull("\$Y_decal=$Y_decal\n");
@@ -2544,7 +2540,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
 								elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
 								elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 								$val = $pdf->GetStringWidth($text_prof);
 								$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
 								$grandeur_texte='test';
@@ -2552,7 +2548,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									if($taille_texte<$val)
 									{
 										$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+										$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 										$val = $pdf->GetStringWidth($text_prof);
 									}
 									else {
@@ -2562,10 +2558,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$grandeur_texte='test';
 								$pdf->SetX($X_bloc_matiere);
 								if( empty($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][$nb_pass_count+1]) ) {
-									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LRB',1,'L');
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LRB',1,'L');
 								}
 								if( !empty($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][$nb_pass_count+1]) ) {
-									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LR',1,'L');
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LR',1,'L');
 								}
 								$nb_pass_count = $nb_pass_count + 1;
 							}
@@ -2575,7 +2571,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						// coefficient matière
 						if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							//$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $espace_entre_matier, $tab_bull['eleve'][$i]['coef_eleve'][$i][$m],1,0,'C');
 							$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $espace_entre_matier, '',1,0,'C');
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
@@ -2591,7 +2587,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 						if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							//$valeur = $tab_bull['eleve'][$i]['nbct'][$m][$i] . "/" . $tab_bull['eleve'][$i]['groupe'][$m]['nbct'];
 							$valeur = '';
 							$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $espace_entre_matier, $valeur,1,0,'C');
@@ -2604,7 +2600,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							//eleve
 							if($tab_modele_pdf["active_moyenne_eleve"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+								$pdf->SetFont('DejaVu','B',10);
 								$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
 
 								// calcul nombre de sous affichage
@@ -2638,14 +2634,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$valeur = "";
 
 								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$tab_bull['eleve'][$i]['coef_eleve'][$i][$m],'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, '','LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								}
 
 								if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') {
 									// On affiche toutes les moyennes dans la même colonne
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') {
 										//if ($tab_bull['eleve'][$i]['moy_classe_grp'][$m]=="-") {
 										if (($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="")) {
@@ -2678,7 +2674,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								}
 
 								if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									$espace_pour_nb_note = $espace_entre_matier/$nb_sousaffichage;
 									$espace_pour_nb_note = $espace_pour_nb_note / 2;
 									$valeur1 = ''; $valeur2 = '';
@@ -2693,7 +2689,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_pour_nb_note, $valeur2, 'LRB',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									$valeur1 = ''; $valeur2 = '';
 								}
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+								$pdf->SetFont('DejaVu','',10);
 								$pdf->SetFillColor(0, 0, 0);
 								$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 
@@ -2716,7 +2712,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							//if( $tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 							if(($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]!=1)&&( $tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' )) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+								$pdf->SetFont('DejaVu','',8);
 								//if ($tab_bull['eleve'][$i]['moy_min_classe_grp'][$m]=="-") {
 								if (($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_min']=="-")||($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_min']=="")) {
 									$valeur = "-";
@@ -2745,7 +2741,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							// rang de l'élève
 							if($tab_modele_pdf["active_rang"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+								$pdf->SetFont('DejaVu','',8);
 								// A REVOIR: J'AI l'EFFECTIF DU GROUPE, mais faut-il compter les élèves ABS, DISP,...?
 								//if((isset($tab_bull['eleve'][$i]['rang'][$i][$m]))&&(isset($tab_bull['eleve'][$i]['groupe'][$m]['effectif']))) {
 									//$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $espace_entre_matier, $tab_bull['eleve'][$i]['rang'][$i][$m].'/'.$tab_bull['eleve'][$i]['groupe'][$m]['effectif'],1,0,'C');
@@ -2762,7 +2758,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							// graphique de niveau
 							if($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+								$pdf->SetFont('DejaVu','',10);
 								//$id_groupe_graph = $tab_bull['eleve'][$i]['groupe'][$m]['id'];
 								// placement de l'élève dans le graphique de niveau
 
@@ -2815,7 +2811,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$largeur_texte_sousmatiere=0; $largeur_sous_matiere=0;
 									while( !empty($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n]) )
 									{
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+										$pdf->SetFont('DejaVu','',8);
 										$largeur_texte_sousmatiere = $pdf->GetStringWidth($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_note'][$n]);
 										if($largeur_sous_matiere<$largeur_texte_sousmatiere) { $largeur_sous_matiere=$largeur_texte_sousmatiere; }
 										$n = $n + 1;
@@ -2825,8 +2821,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									while( !empty($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n]) )
 									{
 										$pdf->SetXY($X_sous_matiere, $Y_sous_matiere);
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
-										$pdf->Cell($largeur_sous_matiere, $espace_entre_matier/count($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom']), traite_accents_utf8($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_note'][$n]),1,0,'L');
+										$pdf->SetFont('DejaVu','',8);
+										$pdf->Cell($largeur_sous_matiere, $espace_entre_matier/count($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom']), ($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_note'][$n]),1,0,'L');
 										$Y_sous_matiere = $Y_sous_matiere+$espace_entre_matier/count($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom']);
 										$n = $n + 1;
 									}
@@ -2836,7 +2832,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 								// calcul de la taille du texte des appréciation
 								$hauteur_caractere_appreciation = 9;
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
 
 								//suppression des espace en début et en fin
 								//$app_aff = trim($tab_bull['eleve'][$i]['aid_b'][$m]['aid_appreciation']);
@@ -2880,7 +2876,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										{
 											$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
 											//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-											$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+											$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
 											$taille_texte_total = $pdf->GetStringWidth($app_aff);
 										}
 										else {
@@ -2888,7 +2884,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										}
 									}
 									$grandeur_texte='test';
-									$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
+									$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
 								}
 								else {
 									//$texte="Bla bla\nbli ".$app_aff;
@@ -2900,10 +2896,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$h_cell=$espace_entre_matier;
 
 									if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
-									cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+									cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 								}
 
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+								$pdf->SetFont('DejaVu','',10);
 								$largeur_utilise = $largeur_utilise + $largeur_appreciation2;
 								//$largeur_utilise = 0;
 							}
@@ -2955,7 +2951,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						else {
 							$hauteur_caractere_catego = '10';
 						}
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_catego);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_catego);
 						$tt_catego = unhtmlentities($tab_bull['nom_cat_complet'][$m]);
 						$val = $pdf->GetStringWidth($tt_catego);
 						$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
@@ -2964,7 +2960,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							if($taille_texte<$val)
 							{
 								$hauteur_caractere_catego = $hauteur_caractere_catego-0.3;
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_catego);
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_catego);
 								$val = $pdf->GetStringWidth($tt_catego);
 							}
 							else {
@@ -2976,13 +2972,13 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 						fich_debug_bull("On écrit $tt_catego à \$Y_decal=$Y_decal\n");
 
-						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], traite_accents_utf8(unhtmlentities($tt_catego)),'TLB',0,'L',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
+						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], (unhtmlentities($tt_catego)),'TLB',0,'L',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
 						$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 
 						// coefficient matière
 						if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 						}
@@ -2992,7 +2988,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 						if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_nombre_note"][$classe_id];
 						}
@@ -3021,7 +3017,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 											$valeur = present_nombre(preg_replace("/,/",".",$tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]]), $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 											//$valeur =$tab_bull['moy_cat_eleve'][$i][$tab_bull['cat_id'][$m]];
 										}
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',8);
+										$pdf->SetFont('DejaVu','B',8);
 										$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
 										$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id],$valeur,1,0,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 										$pdf->SetFillColor(0, 0, 0);
@@ -3058,7 +3054,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
 										*/
 										//================================================
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+										$pdf->SetFont('DejaVu','',8);
 										//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], present_nombre($tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$m]], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]),'TLR',0,'C');
 										//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], $tab_bull['moy_cat_classe'][$i][$tab_bull['cat_id'][$m]], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id],'TLR',0,'C');
 
@@ -3079,7 +3075,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 							}
 
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							// Moyenne minimale de la classe dans la catégorie
 							//if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 							if(($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]!=1)&&($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' )) {
@@ -3106,7 +3102,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 										//$calcule_moyenne_classe_categorie[$categorie_passage]=preg_replace("/,/",".",$tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$m]]);
 
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+										$pdf->SetFont('DejaVu','',8);
 										if (($tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$m]]=="")||($tab_bull['moy_cat_min'][$i][$tab_bull['cat_id'][$m]]=="-")) {
 											$valeur = "-";
 										} else {
@@ -3147,10 +3143,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
 										*/
 
-										//$calcule_moyenne_classe_categorie[$categorie_passage]=preg_replace("/,/",".",$tab_bull['moy_cat_max'][$i][$tab_bull['cat_id'][$m]]);
-
-										//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+										$pdf->SetFont('DejaVu','',8);
 										//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
 										if (($tab_bull['moy_cat_max'][$i][$tab_bull['cat_id'][$m]]=="")||($tab_bull['moy_cat_max'][$i][$tab_bull['cat_id'][$m]]=="-")) {
 											$valeur = "-";
@@ -3176,7 +3169,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						// Rang de l'élève
 						if($tab_modele_pdf["active_rang"][$classe_id]==='1') {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_rang"][$classe_id];
 						}
@@ -3291,7 +3284,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						else {
 							$hauteur_caractere_vertical = '8';
 						}
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_vertical);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_vertical);
 						$text_s = unhtmlentities($tab_bull['nom_cat_complet'][$m]);
 						$longeur_test_s = $pdf->GetStringWidth($text_s);
 
@@ -3302,7 +3295,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							if($taille_texte < $longeur_test_s)
 							{
 								$hauteur_caractere_vertical = $hauteur_caractere_vertical-0.3;
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_vertical);
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_vertical);
 								$longeur_test_s = $pdf->GetStringWidth($text_s);
 							}
 							else {
@@ -3318,9 +3311,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 						//place le texte dans le cadre
 						$placement = $Y_decal+$espace_entre_matier-$deca;
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_vertical);
-						$pdf->TextWithDirection($X_bloc_matiere-1,$placement,traite_accents_utf8(unhtmlentities($text_s)),'U');
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_vertical);
+						$pdf->TextWithDirection($X_bloc_matiere-1,$placement,(unhtmlentities($text_s)),'U');
+						$pdf->SetFont('DejaVu','',10);
 						$pdf->SetFillColor(0, 0, 0);
 					}
 				}
@@ -3349,7 +3342,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					{
 						$hauteur_caractere_matiere = $tab_modele_pdf["taille_texte_matiere"][$classe_id];
 					}
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
+					$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
 
 
 
@@ -3378,7 +3371,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						if($taille_texte<$val)
 						{
 							$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
+							$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
 							$val = $pdf->GetStringWidth($info_nom_matiere);
 						}
 						else {
@@ -3386,10 +3379,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 					}
 					$grandeur_texte='test';
-					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, traite_accents_utf8($info_nom_matiere),'LR',1,'L');
+					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
 					$Y_decal = $Y_decal+($espace_entre_matier/2);
 					$pdf->SetXY($X_bloc_matiere, $Y_decal);
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+					$pdf->SetFont('DejaVu','',8);
 
 					fich_debug_bull("\$info_nom_matiere=$info_nom_matiere\n");
 					fich_debug_bull("\$Y_decal=$Y_decal\n");
@@ -3426,7 +3419,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
 								elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
 								elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 								$val = $pdf->GetStringWidth($text_prof);
 								$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
 								$grandeur_texte='test';
@@ -3434,7 +3427,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									if($taille_texte<$val)
 									{
 										$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+										$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 										$val = $pdf->GetStringWidth($text_prof);
 									}
 									else {
@@ -3444,10 +3437,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$grandeur_texte='test';
 								$pdf->SetX($X_bloc_matiere);
 								if( empty($tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count+1]) ) {
-									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LRB',1,'L');
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LRB',1,'L');
 								}
 								if( !empty($tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count+1]) ) {
-									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LR',1,'L');
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LR',1,'L');
 								}
 								$nb_pass_count = $nb_pass_count + 1;
 							}
@@ -3460,7 +3453,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$hauteur_caractere_prof = 8;
 
 								if($use_cell_ajustee=="n") {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 									$val = $pdf->GetStringWidth($text_prof);
 									$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
 									$grandeur_texte='test';
@@ -3468,7 +3461,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										if($taille_texte<$val)
 										{
 											$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-											$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+											$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 											$val = $pdf->GetStringWidth($text_prof);
 										}
 										else {
@@ -3477,7 +3470,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									}
 									$grandeur_texte='test';
 									$pdf->SetX($X_bloc_matiere);
-									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LR',1,'L');
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LR',1,'L');
 								}
 								else {
 									$texte=$text_prof;
@@ -3489,7 +3482,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 									$pdf->SetX($X_bloc_matiere);
 	
-									cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+									cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 								}
 							}
 						}
@@ -3499,7 +3492,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					// coefficient matière
 					if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						$pdf->SetFont('DejaVu','',10);
 						$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $espace_entre_matier, $tab_bull['coef_eleve'][$i][$m],1,0,'C');
 						$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 					}
@@ -3514,7 +3507,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 					if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						$pdf->SetFont('DejaVu','',10);
 						$valeur = $tab_bull['nbct'][$m][$i] . "/" . $tab_bull['groupe'][$m]['nbct'];
 						$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $espace_entre_matier, $valeur,1,0,'C');
 						$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_nombre_note"][$classe_id];
@@ -3559,10 +3552,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							if($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]!='y') {
 								//if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
 								if($tab_modele_pdf["evolution_moyenne_periode_precedente"][$classe_id]=='y') {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',8);
+									$pdf->SetFont('DejaVu','B',8);
 								}
 								else {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+									$pdf->SetFont('DejaVu','B',10);
 								}
 
 								$fleche_evolution="";
@@ -3633,13 +3626,13 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$valeur = "";
 
 								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$tab_bull['coef_eleve'][$i][$m],'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								}
 
 								if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') {
 									// On affiche toutes les moyennes dans la même colonne
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') {
 										//if ($tab_bull['moy_classe_grp'][$m]=="-") {
 										if (($tab_bull['moy_classe_grp'][$m]=="-")||($tab_bull['moy_classe_grp'][$m]=="")) {
@@ -3672,7 +3665,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								}
 
 								if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									$espace_pour_nb_note = $espace_entre_matier/$nb_sousaffichage;
 									$espace_pour_nb_note = $espace_pour_nb_note / 2;
 									$valeur1 = ''; $valeur2 = '';
@@ -3691,7 +3684,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								//20100615
 								// On affiche les moyennes de l'élève pour les autres périodes dans la même colonne
 								// Il faut récupérer l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',6);
+								$pdf->SetFont('DejaVu','I',6);
 
 								//for($loop_p=1;$loop_p<count($tab_bull['login_prec']);$loop_p++) {
 								foreach($tab_bull['login_prec'] as $key => $value) {
@@ -3732,7 +3725,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 								}
 
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+								$pdf->SetFont('DejaVu','B',10);
 
 								// On filtre si la moyenne est vide, on affiche seulement un tiret
 								if ($tab_bull['note'][$m][$i]=="-") {
@@ -3749,13 +3742,13 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 								// On affiche éventuellement le coef
 								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',6);
+									$pdf->SetFont('DejaVu','I',6);
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$tab_bull['coef_eleve'][$i][$m],'LRB',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								}
 
 							}
 
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							$pdf->SetFillColor(0, 0, 0);
 							$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 
@@ -3785,7 +3778,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//if( $tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 						if(($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]!=1)&&( $tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' )) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+							$pdf->SetFont('DejaVu','',8);
 							//if ($tab_bull['moy_min_classe_grp'][$m]=="-") {
 							if (($tab_bull['moy_min_classe_grp'][$m]=="-")||($tab_bull['moy_min_classe_grp'][$m]=="")) {
 								$valeur = "-";
@@ -3826,7 +3819,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						// rang de l'élève
 						if($tab_modele_pdf["active_rang"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+							$pdf->SetFont('DejaVu','',8);
 							// A REVOIR: J'AI l'EFFECTIF DU GROUPE, mais faut-il compter les élèves ABS, DISP,...?
 							//if((isset($tab_bull['rang'][$i][$m]))&&(isset($tab_bull['groupe'][$m]['effectif']))) {
 								//$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $espace_entre_matier, $tab_bull['rang'][$i][$m].'/'.$tab_bull['groupe'][$m]['effectif'],1,0,'C');
@@ -3842,7 +3835,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						// graphique de niveau
 						if($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							$id_groupe_graph = $tab_bull['groupe'][$m]['id'];
 							// placement de l'élève dans le graphique de niveau
 
@@ -3892,7 +3885,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$largeur_texte_sousmatiere=0; $largeur_sous_matiere=0;
 								while( !empty($tab_bull['groupe'][$m][$i]['cn_nom'][$n]) )
 								{
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+									$pdf->SetFont('DejaVu','',8);
 									$largeur_texte_sousmatiere = $pdf->GetStringWidth($tab_bull['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['groupe'][$m][$i]['cn_note'][$n]);
 									if($largeur_sous_matiere<$largeur_texte_sousmatiere) { $largeur_sous_matiere=$largeur_texte_sousmatiere; }
 									$n = $n + 1;
@@ -3902,8 +3895,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								while( !empty($tab_bull['groupe'][$m][$i]['cn_nom'][$n]) )
 								{
 									$pdf->SetXY($X_sous_matiere, $Y_sous_matiere);
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
-									$pdf->Cell($largeur_sous_matiere, $espace_entre_matier/count($tab_bull['groupe'][$m][$i]['cn_nom']), traite_accents_utf8($tab_bull['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['groupe'][$m][$i]['cn_note'][$n]),1,0,'L');
+									$pdf->SetFont('DejaVu','',8);
+									$pdf->Cell($largeur_sous_matiere, $espace_entre_matier/count($tab_bull['groupe'][$m][$i]['cn_nom']), ($tab_bull['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['groupe'][$m][$i]['cn_note'][$n]),1,0,'L');
 									$Y_sous_matiere = $Y_sous_matiere+$espace_entre_matier/count($tab_bull['groupe'][$m][$i]['cn_nom']);
 									$n = $n + 1;
 								}
@@ -3912,7 +3905,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 							// calcul de la taille du texte des appréciation
 							$hauteur_caractere_appreciation = 9;
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+							$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
 
 							//suppression des espace en début et en fin
 							$app_aff = trim($tab_bull['app'][$m][$i]);
@@ -3945,7 +3938,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									{
 										$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
 										//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+										$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
 										$taille_texte_total = $pdf->GetStringWidth($app_aff);
 									}
 									else {
@@ -3953,7 +3946,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									}
 								}
 								$grandeur_texte='test';
-								$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
+								$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
 							}
 							else {
 								$texte=$app_aff;
@@ -3965,10 +3958,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$h_cell=$espace_entre_matier;
 
 								if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
-								cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+								cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 							}
 
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							$largeur_utilise = $largeur_utilise + $largeur_appreciation2;
 							//$largeur_utilise = 0;
 						}
@@ -3998,7 +3991,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						{
 							$hauteur_caractere_matiere = $tab_modele_pdf["taille_texte_matiere"][$classe_id];
 						}
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
+						$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
 
 						// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
 						if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
@@ -4015,7 +4008,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							if($taille_texte<$val)
 							{
 								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
 								$val = $pdf->GetStringWidth($info_nom_matiere);
 							}
 							else {
@@ -4023,10 +4016,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							}
 						}
 						$grandeur_texte='test';
-						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, traite_accents_utf8($info_nom_matiere),'LR',1,'L');
+						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, ($info_nom_matiere),'LR',1,'L');
 						$Y_decal = $Y_decal+($espace_entre_matier/2);
 						$pdf->SetXY($X_bloc_matiere, $Y_decal);
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+						$pdf->SetFont('DejaVu','',8);
 
 						fich_debug_bull("\$info_nom_matiere=$info_nom_matiere\n");
 						fich_debug_bull("\$Y_decal=$Y_decal\n");
@@ -4051,7 +4044,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
 								elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
 								elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 								$val = $pdf->GetStringWidth($text_prof);
 								$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
 								$grandeur_texte='test';
@@ -4059,7 +4052,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									if($taille_texte<$val)
 									{
 										$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+										$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 										$val = $pdf->GetStringWidth($text_prof);
 									}
 									else {
@@ -4069,10 +4062,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$grandeur_texte='test';
 								$pdf->SetX($X_bloc_matiere);
 								if( empty($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][$nb_pass_count+1]) ) {
-									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LRB',1,'L');
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LRB',1,'L');
 								}
 								if( !empty($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][$nb_pass_count+1]) ) {
-									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LR',1,'L');
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LR',1,'L');
 								}
 								$nb_pass_count = $nb_pass_count + 1;
 							}
@@ -4082,7 +4075,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						// coefficient matière
 						if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							//$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $espace_entre_matier, $tab_bull['eleve'][$i]['coef_eleve'][$i][$m],1,0,'C');
 							$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $espace_entre_matier, '',1,0,'C');
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
@@ -4098,7 +4091,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 						if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							//$valeur = $tab_bull['eleve'][$i]['nbct'][$m][$i] . "/" . $tab_bull['eleve'][$i]['groupe'][$m]['nbct'];
 							$valeur = '';
 							$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $espace_entre_matier, $valeur,1,0,'C');
@@ -4111,7 +4104,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							//eleve
 							if($tab_modele_pdf["active_moyenne_eleve"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+								$pdf->SetFont('DejaVu','B',10);
 								$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
 
 								// calcul nombre de sous affichage
@@ -4144,14 +4137,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$valeur = "";
 
 								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$tab_bull['eleve'][$i]['coef_eleve'][$i][$m],'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, '','LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								}
 
 								if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') {
 									// On affiche toutes les moyennes dans la même colonne
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') {
 										//if ($tab_bull['eleve'][$i]['moy_classe_grp'][$m]=="-") {
 										if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="")) {
@@ -4184,7 +4177,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								}
 
 								if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') {
-									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+									$pdf->SetFont('DejaVu','I',7);
 									$espace_pour_nb_note = $espace_entre_matier/$nb_sousaffichage;
 									$espace_pour_nb_note = $espace_pour_nb_note / 2;
 									$valeur1 = ''; $valeur2 = '';
@@ -4199,7 +4192,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_pour_nb_note, $valeur2, 'LRB',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									$valeur1 = ''; $valeur2 = '';
 								}
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+								$pdf->SetFont('DejaVu','',10);
 								$pdf->SetFillColor(0, 0, 0);
 								$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 
@@ -4220,7 +4213,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							//min
 							if( $tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+								$pdf->SetFont('DejaVu','',8);
 								//if ($tab_bull['eleve'][$i]['moy_min_classe_grp'][$m]=="-") {
 								if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min']=="")) {
 									$valeur = "-";
@@ -4248,7 +4241,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							// rang de l'élève
 							if($tab_modele_pdf["active_rang"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+								$pdf->SetFont('DejaVu','',8);
 								// A REVOIR: J'AI l'EFFECTIF DU GROUPE, mais faut-il compter les élèves ABS, DISP,...?
 								//if((isset($tab_bull['eleve'][$i]['rang'][$i][$m]))&&(isset($tab_bull['eleve'][$i]['groupe'][$m]['effectif']))) {
 									//$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $espace_entre_matier, $tab_bull['eleve'][$i]['rang'][$i][$m].'/'.$tab_bull['eleve'][$i]['groupe'][$m]['effectif'],1,0,'C');
@@ -4265,7 +4258,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							// graphique de niveau
 							if($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+								$pdf->SetFont('DejaVu','',10);
 								//$id_groupe_graph = $tab_bull['eleve'][$i]['groupe'][$m]['id'];
 								// placement de l'élève dans le graphique de niveau
 
@@ -4318,7 +4311,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$largeur_texte_sousmatiere=0; $largeur_sous_matiere=0;
 									while( !empty($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n]) )
 									{
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+										$pdf->SetFont('DejaVu','',8);
 										$largeur_texte_sousmatiere = $pdf->GetStringWidth($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_note'][$n]);
 										if($largeur_sous_matiere<$largeur_texte_sousmatiere) { $largeur_sous_matiere=$largeur_texte_sousmatiere; }
 										$n = $n + 1;
@@ -4328,8 +4321,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									while( !empty($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n]) )
 									{
 										$pdf->SetXY($X_sous_matiere, $Y_sous_matiere);
-										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
-										$pdf->Cell($largeur_sous_matiere, $espace_entre_matier/count($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom']), traite_accents_utf8($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_note'][$n]),1,0,'L');
+										$pdf->SetFont('DejaVu','',8);
+										$pdf->Cell($largeur_sous_matiere, $espace_entre_matier/count($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom']), ($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_note'][$n]),1,0,'L');
 										$Y_sous_matiere = $Y_sous_matiere+$espace_entre_matier/count($tab_bull['eleve'][$i]['groupe'][$m][$i]['cn_nom']);
 										$n = $n + 1;
 									}
@@ -4339,7 +4332,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 								// calcul de la taille du texte des appréciation
 								$hauteur_caractere_appreciation = 9;
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
 
 								//suppression des espace en début et en fin
 								//$app_aff = trim($tab_bull['eleve'][$i]['aid_e'][$m]['aid_appreciation']);
@@ -4384,7 +4377,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										{
 											$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
 											//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-											$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
+											$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
 											$taille_texte_total = $pdf->GetStringWidth($app_aff);
 										}
 										else {
@@ -4392,7 +4385,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										}
 									}
 									$grandeur_texte='test';
-									$pdf->drawTextBox(traite_accents_utf8($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
+									$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
 								}
 								else {
 									$texte=$app_aff;
@@ -4404,10 +4397,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$h_cell=$espace_entre_matier;
 
 									if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
-									cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+									cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 								}
 
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+								$pdf->SetFont('DejaVu','',10);
 								$largeur_utilise = $largeur_utilise + $largeur_appreciation2;
 								//$largeur_utilise = 0;
 							}
@@ -4438,15 +4431,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				}
 
 				$pdf->SetXY($X_note_moy_app, $Y_note_moy_app);
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+				$pdf->SetFont('DejaVu','',10);
 				$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 				//================
 				// Ajout: J.Etheve
 				if ($affiche_deux_moy_gen==1) {
-					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], traite_accents_utf8("Moy.gén.coef."),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], ("Moy.gén.coef."),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 				}
 				else {
-					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], traite_accents_utf8("Moyenne générale"),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], ("Moyenne générale"),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 				}
 				//================
 				$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
@@ -4459,7 +4452,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 					//$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+					$pdf->SetFont('DejaVu','',10);
 					//echo "\$tab_modele_pdf['affiche_totalpoints_sur_totalcoefs'][$classe_id]=".$tab_modele_pdf["affiche_totalpoints_sur_totalcoefs"][$classe_id]."<br />\n";
 					if($tab_modele_pdf["affiche_totalpoints_sur_totalcoefs"][$classe_id]=='1') {
 						$info_tot_et_coef=$tab_bull['tot_points_eleve'][$i]."/".$tab_bull['total_coef_eleve'][$i];
@@ -4479,7 +4472,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						if($taille_texte<$val)
 						{
 							$hauteur_tmp=$hauteur_tmp-0.3;
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_tmp);
+							$pdf->SetFont('DejaVu','',$hauteur_tmp);
 							$val = $pdf->GetStringWidth($info_tot_et_coef);
 						}
 						else {
@@ -4490,7 +4483,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 					$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $info_tot_et_coef,1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+					$pdf->SetFont('DejaVu','',10);
 
 					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 				}
@@ -4512,7 +4505,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//eleve
 					if($tab_modele_pdf["active_moyenne_eleve"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+						$pdf->SetFont('DejaVu','B',10);
 						$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 
 						// On a deux paramètres de couleur qui se croisent. On utilise une variable tierce.
@@ -4544,7 +4537,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], present_nombre($tab_bull['moy_gen_eleve'][$i], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]),1,0,'C',$utilise_couleur);
 						$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $val_tmp,1,0,'C',$utilise_couleur);
 
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						$pdf->SetFont('DejaVu','',10);
 						$pdf->SetFillColor(0, 0, 0);
 						$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 					}
@@ -4552,7 +4545,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//classe
 					if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+						$pdf->SetFont('DejaVu','',8);
 						$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 
 						/*
@@ -4582,7 +4575,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//min
 					if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+						$pdf->SetFont('DejaVu','',8);
 						$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 
 						/*
@@ -4606,7 +4599,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//max
 					if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+						$pdf->SetFont('DejaVu','',8);
 						$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 
 						/*
@@ -4629,7 +4622,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					// rang de l'élève
 					if($tab_modele_pdf["active_rang"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang') {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+						$pdf->SetFont('DejaVu','',8);
 						$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 						if ($tab_bull['rang_classe'][$i]!= 0) {
 							$rang_a_afficher=$tab_bull['rang_classe'][$i].'/'.$tab_bull['eff_classe'];
@@ -4701,9 +4694,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$Y_note_moy_app-=$tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id];
 
 					$pdf->SetXY($X_note_moy_app, $Y_note_moy_app);
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+					$pdf->SetFont('DejaVu','',10);
 					$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
-					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], traite_accents_utf8("Moy.gén.non coef."),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], ("Moy.gén.non coef."),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 					$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 	
 					// coefficient matière
@@ -4713,7 +4706,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 						//$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						$pdf->SetFont('DejaVu','',10);
 						$info_tot_et_coef=$tab_bull['tot_points_eleve1'][$i]."/".$tab_bull['total_coef_eleve1'][$i];
 						$val = $pdf->GetStringWidth($info_tot_et_coef);
 						$taille_texte = $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
@@ -4723,7 +4716,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							if($taille_texte<$val)
 							{
 								$hauteur_tmp=$hauteur_tmp-0.3;
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_tmp);
+								$pdf->SetFont('DejaVu','',$hauteur_tmp);
 								$val = $pdf->GetStringWidth($info_tot_et_coef);
 							}
 							else {
@@ -4734,7 +4727,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 	
 						$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $info_tot_et_coef,1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 	
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						$pdf->SetFont('DejaVu','',10);
 
 
 						$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
@@ -4757,7 +4750,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//eleve
 						if($tab_modele_pdf["active_moyenne_eleve"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+							$pdf->SetFont('DejaVu','B',10);
 							$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 	
 							// On a deux paramètres de couleur qui se croisent. On utilise une variable tierce.
@@ -4789,7 +4782,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], present_nombre($tab_bull['moy_gen_eleve'][$i], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]),1,0,'C',$utilise_couleur);
 							$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $val_tmp,1,0,'C',$utilise_couleur);
 	
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+							$pdf->SetFont('DejaVu','',10);
 							$pdf->SetFillColor(0, 0, 0);
 							$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 						}
@@ -4797,7 +4790,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//classe
 						if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+							$pdf->SetFont('DejaVu','',8);
 							$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 	
 							/*
@@ -4827,7 +4820,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//min
 						if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+							$pdf->SetFont('DejaVu','',8);
 							$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 	
 							/*
@@ -4851,7 +4844,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//max
 						if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+							$pdf->SetFont('DejaVu','',8);
 							$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 	
 							/*
@@ -4874,7 +4867,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						// rang de l'élève
 						if($tab_modele_pdf["active_rang"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang') {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+							$pdf->SetFont('DejaVu','',8);
 							$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 							if ($tab_bull['rang_classe'][$i]!= 0) {
 								$rang_a_afficher=$tab_bull['rang_classe'][$i].'/'.$tab_bull['eff_classe'];
@@ -4945,7 +4938,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			if($tab_modele_pdf["active_bloc_absence"][$classe_id]==='1') {
 				$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]);
 				$origine_Y_absence = $tab_modele_pdf["Y_absence"][$classe_id];
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',8);
+				$pdf->SetFont('DejaVu','I',8);
 				$info_absence='';
 				if($tab_bull['eleve'][$i]['eleve_absences'] != '?') {
 					if($tab_bull['eleve'][$i]['eleve_absences'] == '0')
@@ -4971,7 +4964,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards']."</b>";
 				}
 
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+				$pdf->SetFont('DejaVu','',8);
 
 				$info_absence = $info_absence." (C.P.E. chargé";
 				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
@@ -4989,9 +4982,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				*/
 				$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
 				//$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
-				//$pdf->MultiCellTag(200, 5, traite_accents_utf8($info_absence), '', 'J', '');
-				//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, traite_accents_utf8($info_absence), '', 'J', '');
-				$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, traite_accents_utf8($info_absence), '', 'J', '');
+				//$pdf->MultiCellTag(200, 5, ($info_absence), '', 'J', '');
+				//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, ($info_absence), '', 'J', '');
+				$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, ($info_absence), '', 'J', '');
 
 				//=========================
 				// MODIF: boireaus 20081220
@@ -5025,10 +5018,10 @@ $hauteur_pris_app_abs=0;
 					$info_absence_appreciation = "<i>Avis CPE :</i> <b>".$text_absences_appreciation."</b>";
 					$text_absences_appreciation = '';
 					$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]+4);
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
-					//$pdf->MultiCellTag(200, 3, traite_accents_utf8($info_absence_appreciation), '', 'J', '');
-					//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 3, traite_accents_utf8($info_absence_appreciation), '', 'J', '');
-					$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 3, traite_accents_utf8($info_absence_appreciation), '', 'J', '');
+					$pdf->SetFont('DejaVu','',8);
+					//$pdf->MultiCellTag(200, 3, ($info_absence_appreciation), '', 'J', '');
+					//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 3, ($info_absence_appreciation), '', 'J', '');
+					$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 3, ($info_absence_appreciation), '', 'J', '');
 					$val = $pdf->GetStringWidth($info_absence_appreciation);
 					// nombre de lignes que prend la remarque cpe
 					//Arrondi à l'entier supérieur : ceil()
@@ -5072,7 +5065,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				}
 				$info_absence = '';
 				$info_absence_appreciation = '';
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+				$pdf->SetFont('DejaVu','',10);
 			}
 
 			// sinon, si le bloc absence n'est pas activé
@@ -5117,7 +5110,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				} else {
 					$taille = '10';
 				}
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',$taille);
+				$pdf->SetFont('DejaVu','I',$taille);
 				if ( $tab_modele_pdf["titre_bloc_avis_conseil"][$classe_id] != '' ) {
 					$tt_avis = $tab_modele_pdf["titre_bloc_avis_conseil"][$classe_id];
 				} else {
@@ -5128,7 +5121,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				//$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id]+2.5,$tab_modele_pdf["Y_avis_cons"][$classe_id]+5);
 				$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id]+2.5,$Y_avis_cons_init+5);
 
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+				$pdf->SetFont('DejaVu','',10);
 				$texteavis = $tab_bull['avis'][$i];
 				// ***** AJOUT POUR LES MENTIONS *****
 				//$textmention = $tab_bull['id_mention'][$i];
@@ -5143,7 +5136,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				else {$textmention="-";}
 				// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 
-				//$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
+				//$pdf->drawTextBox(($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
 
 				//$avec_coches_mentions="y";
 				//if($avec_coches_mentions=="y") {
@@ -5171,7 +5164,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				}
 
 				if($use_cell_ajustee=="n") {
-					$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-$marge_droite_avis_cons, $hauteur_avis_cons_init-10, 'J', 'M', 0);
+					$pdf->drawTextBox(($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-$marge_droite_avis_cons, $hauteur_avis_cons_init-10, 'J', 'M', 0);
 				}
 				else {
 					$texte=$texteavis;
@@ -5181,13 +5174,13 @@ $hauteur_pris_app_abs=$hauteur_pris;
 					$largeur_dispo=$tab_modele_pdf["longeur_avis_cons"][$classe_id]-$marge_droite_avis_cons;
 					$h_cell=$hauteur_avis_cons_init-10;
 
-					cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+					cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 				}
 
 				//=========================
 				// MODIF: boireaus 20081220
 				// DEBUG:
-				//$pdf->drawTextBox(traite_accents_utf8($texteavis." \$Y_avis_cons_init=".$Y_avis_cons_init." \$tab_modele_pdf[\"hauteur_avis_cons\"][$classe_id]=".$tab_modele_pdf["hauteur_avis_cons"][$classe_id]." \$hauteur_pris_app_abs=".$hauteur_pris_app_abs), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
+				//$pdf->drawTextBox(($texteavis." \$Y_avis_cons_init=".$Y_avis_cons_init." \$tab_modele_pdf[\"hauteur_avis_cons\"][$classe_id]=".$tab_modele_pdf["hauteur_avis_cons"][$classe_id]." \$hauteur_pris_app_abs=".$hauteur_pris_app_abs), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
 				//=========================
 				$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id];
 
@@ -5200,7 +5193,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				} else {
 					$taille = '10';
 				}
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',$taille);
+				$pdf->SetFont('DejaVu','I',$taille);
 				// Le nom du professeur principal
 				$pp_classe[$i]="";
 				//if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
@@ -5215,8 +5208,8 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				else {
 					$pp_classe[$i]="";
 				}
-				//$pdf->MultiCellTag(200, 5, traite_accents_utf8($pp_classe[$i]), '', 'J', '');
-				$pdf->ext_MultiCellTag(200, 5, traite_accents_utf8($pp_classe[$i]), '', 'J', '');
+				//$pdf->MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+				$pdf->ext_MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
 			}
 
 			//if($avec_coches_mentions=="y") {
@@ -5224,7 +5217,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				// ***** AJOUT POUR LES MENTIONS *****
 				// Essai pour ajouter un bloc renseignant les mentions du CC
 				// A COMPLETER...
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',9);
+				$pdf->SetFont('DejaVu','',9);
 				$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id]+$tab_modele_pdf["longeur_avis_cons"][$classe_id]-35;
 				$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+5;
 				$pdf->SetXY($X_pp_aff,$Y_pp_aff);
@@ -5295,7 +5288,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				//$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$tab_modele_pdf["Y_sign_chef"][$classe_id]);
 				$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$Y_sign_chef_init);
 
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+				$pdf->SetFont('DejaVu','',10);
 				if( $tab_modele_pdf["affichage_haut_responsable"][$classe_id] === '1' ) {
 					if ( $tab_modele_pdf["affiche_fonction_chef"][$classe_id] === '1' ){
 						if ( $tab_modele_pdf["taille_texte_fonction_chef"][$classe_id] != '' and $tab_modele_pdf["taille_texte_fonction_chef"][$classe_id] != '0' and $tab_modele_pdf["taille_texte_fonction_chef"][$classe_id] < '15' ) {
@@ -5303,21 +5296,21 @@ $hauteur_pris_app_abs=$hauteur_pris;
 						} else {
 							$taille = '10';
 						}
-						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$taille);
-						$pdf->Cell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, traite_accents_utf8($tab_bull['formule']),0,2,'');
+						$pdf->SetFont('DejaVu','B',$taille);
+						$pdf->Cell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ($tab_bull['formule']),0,2,'');
 					}
 					if ( $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '0' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] < '15' ) {
 						$taille = $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id];
 					} else {
 						$taille_avis = '8';
 					}
-					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',$taille);
-					$pdf->Cell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, traite_accents_utf8($tab_bull['suivi_par']),0,2,'');
+					$pdf->SetFont('DejaVu','I',$taille);
+					$pdf->Cell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ($tab_bull['suivi_par']),0,2,'');
 				} else {
 					//$pdf->MultiCell($longeur_sign_chef[$classe_id],5, "Visa du Chef d'établissement\nou de son délégué",0,2,'');
-					$pdf->MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, traite_accents_utf8("Visa du Chef d'établissement\nou de son délégué"),0,2,'');
+					$pdf->MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ("Visa du Chef d'établissement\nou de son délégué"),0,2,'');
 
-					//$pdf->ext_MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, traite_accents_utf8("Visa du Chef d'établissement\nou de son délégué"),0,2,'');
+					//$pdf->ext_MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ("Visa du Chef d'établissement\nou de son délégué"),0,2,'');
 				}
 			}
 
@@ -5356,7 +5349,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				$pdf->AddPage("P");
 				$pdf->SetFontSize(10);
 				$pdf->SetXY(20,20);
-				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',14);
+				$pdf->SetFont('DejaVu','B',14);
 				$pdf->Cell(90,7,"Relevé de notes non trouvé pour ".strtoupper($tab_bull['eleve'][$i]['nom'])." ".ucfirst($tab_bull['eleve'][$i]['prenom']),0,2,'');
 
 			}
@@ -5705,9 +5698,9 @@ function releve_pdf_20090429($tab_rel,$i) {
 
 		//BLOC IDENTITE ELEVE
 		$pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
-		$pdf->SetFont($caractere_utilse,'B',14);
+		$pdf->SetFont('DejaVu','B',14);
 		$pdf->Cell(90,7,strtoupper($tab_rel['eleve'][$i]['nom'])." ".ucfirst($tab_rel['eleve'][$i]['prenom']),0,2,'');
-		$pdf->SetFont($caractere_utilse,'',10);
+		$pdf->SetFont('DejaVu','',10);
 		//$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
 		if($tab_rel['eleve'][$i]['sexe']=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
 
@@ -5715,23 +5708,6 @@ function releve_pdf_20090429($tab_rel,$i) {
 		$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.$tab_rel['eleve'][$i]['naissance'].', '.regime($tab_rel['eleve'][$i]['regime']),0,2,'');
 
 		$pdf->Cell(90,5,'',0,2,'');
-
-		/*
-		if ( $aff_classe_nom === '1' or $aff_classe_nom === '3' ) {
-			$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($tab_rel['classe_nom_complet']).'<B>');
-		}
-		if ( $aff_classe_nom === '2' ) {
-			$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($tab_rel['classe']).'<B>');
-		}
-		if ( $aff_classe_nom === '3' ) {
-			$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($tab_rel['classe']).')');
-		}
-		*/
-		//$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($tab_rel['classe_nom_complet']).'<B>');
-		//$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($tab_rel['classe']).'<B>');
-		//$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($tab_rel['classe']).')');
-		// A REVOIR...
-		//$classe_aff=$pdf->WriteHTML(' '.unhtmlentities($tab_rel['classe_nom_complet']).' ('.unhtmlentities($tab_rel['classe']).')');
 
 		if($aff_classe_nom==1) {
 			$classe_aff=$pdf->WriteHTML('Classe de '.unhtmlentities($tab_rel['classe_nom_complet']));
@@ -5745,7 +5721,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 
 		$pdf->Cell(90,5,$classe_aff,0,2,'');
 		$pdf->SetX($X_cadre_eleve);
-		$pdf->SetFont($caractere_utilse,'',10);
+		$pdf->SetFont('DejaVu','',10);
 		$pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');
 
 		// BLOC IDENTITE DE L'ETABLISSEMENT
@@ -5771,10 +5747,10 @@ function releve_pdf_20090429($tab_rel,$i) {
 
 		// BLOC ADRESSE ETABLISSEMENT
 		$pdf->SetXY($X_etab,$Y_etab);
-		$pdf->SetFont($caractere_utilse,'',14);
+		$pdf->SetFont('DejaVu','',14);
 		//$gepiSchoolName = getSettingValue('gepiSchoolName');
 		$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
-		$pdf->SetFont($caractere_utilse,'',10);
+		$pdf->SetFont('DejaVu','',10);
 		//$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 		$pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
 		//$gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
@@ -5816,14 +5792,14 @@ function releve_pdf_20090429($tab_rel,$i) {
 			//$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
 			$texte_1_responsable=$tab_adr_ligne1[$num_resp];
 			$hauteur_caractere=12;
-			$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = 90;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val) {
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				}
 				else {
@@ -5832,18 +5808,18 @@ function releve_pdf_20090429($tab_rel,$i) {
 			}
 			$pdf->Cell(90,7, $texte_1_responsable,0,2,'');
 
-			$pdf->SetFont($caractere_utilse,'',10);
+			$pdf->SetFont('DejaVu','',10);
 			//$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
 			$texte_1_responsable=$tab_adr_ligne2[$num_resp];
 			$hauteur_caractere=10;
-			$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = 90;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val) {
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				}
 				else {
@@ -5855,14 +5831,14 @@ function releve_pdf_20090429($tab_rel,$i) {
 			//$texte_1_responsable = $adresse2_parents[$ident_eleve_aff][$responsable_place];
 			$texte_1_responsable=$tab_adr_ligne3[$num_resp];
 			$hauteur_caractere=10;
-			$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = 90;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val) {
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				}
 				else {
@@ -5875,14 +5851,14 @@ function releve_pdf_20090429($tab_rel,$i) {
 			//$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
 			$texte_1_responsable=$tab_adr_ligne5[$num_resp];
 			$hauteur_caractere=10;
-			$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+			$pdf->SetFont('DejaVu','',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = 90;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val) {
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				}
 				else {
@@ -5895,7 +5871,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 		// BLOC NOTATION ET OBSERVATION
 		//Titre du tableau
 		$pdf->SetXY($X_cadre_note,$Y_cadre_note);
-		$pdf->SetFont($caractere_utilse,'B',12);
+		$pdf->SetFont('DejaVu','B',12);
 		//if($cadre_titre==='1') { $var_encadrement_titre='LTR'; } else { $var_encadrement_titre=''; }
 		if($cadre_titre==1) { $var_encadrement_titre='LTR'; } else { $var_encadrement_titre=''; }
 
@@ -5950,24 +5926,24 @@ function releve_pdf_20090429($tab_rel,$i) {
 					/*
 					if($nom_regroupement[$eleve_select][$cpt_i]!=$nom_regroupement_passer and $active_entete_regroupement === '1')
 					{
-						$pdf->SetFont($caractere_utilse,'',8);
+						$pdf->SetFont('DejaVu','',8);
 						$pdf->Cell($largeur_cadre_matiere, $hauteur_dun_regroupement, unhtmlentities($nom_regroupement[$eleve_select][$cpt_i]), 'LTB', 2, '');
 						$hauteur_utilise=$hauteur_utilise+$hauteur_dun_regroupement;
 						$nom_regroupement_passer=$nom_regroupement[$eleve_select][$cpt_i];
 						$pdf->SetXY($X_cadre_note,$Y_cadre_note+$hauteur_utilise);
 					}
 					*/
-					$pdf->SetFont($caractere_utilse,'B','9');
+					$pdf->SetFont('DejaVu','B','9');
 					$nom_matiere = $tab_rel['eleve'][$i]['groupe'][$m]['matiere_nom_complet'];
 					$hauteur_caractere = 9;
-					$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($nom_matiere);
 					$taille_texte = $largeur_cadre_matiere;
 					$grandeur_texte='test';
 					while($grandeur_texte!='ok') {
 						if($taille_texte<$val) {
 							$hauteur_caractere = $hauteur_caractere-0.3;
-							$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
+							$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 							$val = $pdf->GetStringWidth($nom_matiere);
 						}
 						else {
@@ -6013,7 +5989,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 						if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 9; }
 						elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 7; }
 						elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-						$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 						$val = $pdf->GetStringWidth($text_prof);
 						$taille_texte = ($largeur_cadre_matiere-0.6);
 						$grandeur_texte='test';
@@ -6021,7 +5997,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 							if($taille_texte<$val)
 							{
 								$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-								$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_prof);
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
 								$val = $pdf->GetStringWidth($text_prof);
 							}
 							else {
@@ -6047,7 +6023,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 					//			if(isset($prof_groupe[$id_groupe_selectionne][2]) and $prof_groupe[$id_groupe_selectionne][2] != '') { $prof_3 = $prof_groupe[$id_groupe_selectionne][2]; } else { $prof_3 = ''; }
 					/*			 $nom_prof = $prof_1;
 					$hauteur_caractere = 8;
-					$pdf->SetFont($caractere_utilse,'I',$hauteur_caractere);
+					$pdf->SetFont('DejaVu','I',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($nom_prof);
 					$taille_texte = $largeur_cadre_matiere;
 					$grandeur_texte='test';
@@ -6055,7 +6031,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 					if($taille_texte<$val)
 					{
 						$hauteur_caractere = $hauteur_caractere-0.3;
-						$pdf->SetFont($caractere_utilse,'I',$hauteur_caractere);
+						$pdf->SetFont('DejaVu','I',$hauteur_caractere);
 						$val = $pdf->GetStringWidth($nom_prof);
 					} else { $grandeur_texte='ok'; }
 						}
@@ -6095,7 +6071,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 			/*
 			if($nom_regroupement[$eleve_select][$cpt_i]!=$nom_regroupement_passer and $active_entete_regroupement === '1')
 			{
-				$pdf->SetFont($caractere_utilse,'',8);
+				$pdf->SetFont('DejaVu','',8);
 				$pdf->Cell($largeur_cadre_note, $hauteur_dun_regroupement, '', 'RTB', 2, '');
 				$hauteur_utilise=$hauteur_utilise+$hauteur_dun_regroupement;
 				$nom_regroupement_passer=$nom_regroupement[$eleve_select][$cpt_i];
@@ -6144,14 +6120,14 @@ function releve_pdf_20090429($tab_rel,$i) {
 			// détermine la taille de la police de caractère
 			// on peut allez jusqu'a 275mm de caractère dans trois cases de notes
 			$hauteur_caractere_notes=9;
-			$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
+			$pdf->SetFont('DejaVu','',$hauteur_caractere_notes);
 			$val = $pdf->GetStringWidth($chaine_notes);
 			$taille_texte = (($hauteur_cadre_matiere/4)*$largeur_cadre_note);
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val) {
 					$hauteur_caractere_notes = $hauteur_caractere_notes-0.3;
-					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_notes);
 					$val = $pdf->GetStringWidth($chaine_notes);
 				}
 				else {
@@ -6184,7 +6160,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 			}
 			$pdf->Rect($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise, $largeur_restant, $hauteur_cadre_observation, 'D');
 			$pdf->SetXY($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise);
-			$pdf->SetFont($caractere_utilse,'',11);
+			$pdf->SetFont('DejaVu','',11);
 			$pdf->Cell($largeur_restant,7, $texte_observation,0,1,'C');
 		}
 		//=======================
@@ -6205,7 +6181,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 			$hauteur_cadre_signature=$hauteur_cadre_note_global-$hauteur_cadre_observation;
 			$largeur_cadre_signature=$largeur_cadre_note_global-$largeur_utilise;
 
-			$pdf->SetFont($caractere_utilse,'',8);
+			$pdf->SetFont('DejaVu','',8);
 			$pdf->Rect($X_signature, $Y_signature, $largeur_cadre_signature, $hauteur_cadre_signature, 'D');
 
 			//if($affiche_cachet_pp==='1')
@@ -6231,7 +6207,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 		/*
 		//PUB ;)
 		$pdf->SetXY($X_cadre_note, $Y_cadre_note+$hauteur_cadre_note_global+$hauteur_du_titre);
-		$pdf->SetFont('arial','',8);
+		$pdf->SetFont('DejaVu','',8);
 		$pdf->Cell(200,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,'');
 		// CA ENTRE EN COLLISION AVEC LA FORMULE DU BULLETIN (insérée via la fonction Footer() de class_php/gepi_pdf.class.php)
 		*/

@@ -373,7 +373,6 @@ if(isset($generer_pdf)) {
 		header('Content-Type: application/pdf');
 		Header('Pragma: public');
 		require('../fpdf/fpdf.php');
-		require('../fpdf/ex_fpdf.php');
 		
 		// Pour drawTextBox()
 		//require_once("../fpdf/class.multicelltag.php");
@@ -391,7 +390,7 @@ if(isset($generer_pdf)) {
 				global $MargeHaut, $MargeBas, $MargeGauche, $MargeDroite, $largeur_utile_page;
 		
 				$this->SetXY($MargeGauche,5);
-				$this->SetFont('arial','',7.5);
+				$this->SetFont('DejaVu','',7.5);
 				$texte=getSettingValue("gepiSchoolName")."  ";
 				$this->Cell($largeur_utile_page,5,$texte,0,0,'L');
 		
@@ -409,7 +408,7 @@ if(isset($generer_pdf)) {
 				global $MargeHaut, $MargeBas, $MargeGauche, $MargeDroite, $largeur_utile_page;
 		
 				if($no_footer=='n') {
-					$this->SetFont('arial','',7.5);
+					$this->SetFont('DejaVu','',7.5);
 					$this->SetXY($MargeGauche, $hauteur_page-$MargeBas);
 					$this->Cell($largeur_utile_page, 5, 'Page '.$this->PageNo(), "0", 1, 'R');
 				}
@@ -428,7 +427,7 @@ if(isset($generer_pdf)) {
 		$pdf->SetDrawColor(0,0,0);
 		$pdf->SetLineWidth(0.2);
 		
-		$fonte='arial';
+		$fonte='DejaVu';
 		$fonte_size=10;
 		$fonte_size_classe=14;
 		$sc_interligne=1.3;
@@ -486,11 +485,11 @@ if(isset($generer_pdf)) {
 		
 					$bordure='LRBT';
 					//$bordure='';
-					$pdf->SetFont($fonte,'B',$fonte_size_classe);
+					$pdf->SetFont('DejaVu','B',$fonte_size_classe);
 					$texte="Classe de $classe";
 					$pdf->Cell($largeur_utile_page,$hauteur_classe,$texte,$bordure,1,'C');
 		
-					$pdf->SetFont($fonte,'',$fonte_size);
+					$pdf->SetFont('DejaVu','',$fonte_size);
 		
 					// Paramètres pour cell_ajustee()
 					// On n'arrive pas à centrer avec cell_ajustee()
@@ -529,7 +528,7 @@ if(isset($generer_pdf)) {
 							//cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 
 							$hauteur_temp=$fonte_size;
-							$pdf->SetFont($fonte,'',$hauteur_temp);
+							$pdf->SetFont('DejaVu','',$hauteur_temp);
 							$largeur_texte=$pdf->GetStringWidth($texte);
 							//$hauteur_temp=$fonte_size;
 
@@ -539,14 +538,13 @@ if(isset($generer_pdf)) {
 								{
 									$hauteur_temp=$hauteur_temp-0.3;
 									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
-									$pdf->SetFont($fonte,'',$hauteur_temp);
+									$pdf->SetFont('DejaVu','',$hauteur_temp);
 									$largeur_texte=$pdf->GetStringWidth($texte);
 								}
 								else {
 									$test_taille_texte='ok';
 								}
 							}
-							//$pdf->drawTextBox(traite_accents_utf8($texte), $largeur_dispo, $hauteur_info_eleve, 'C', 'M', 1);
 							$pdf->Cell($largeur_dispo,$hauteur_info_eleve,$texte,'',1,'C');
 							$cpt++;
 						}

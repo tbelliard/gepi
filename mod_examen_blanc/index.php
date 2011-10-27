@@ -1156,7 +1156,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					$tab_matiere[]=$lig->matiere;
 					$tab_coef[]=$lig->coef;
 					$tab_bonus[]=$lig->bonus;
-					echo "<li>".htmlentities($lig->matiere)." (<i>".htmlentities($lig->nom_complet)."</i>)</li>\n";
+					echo "<li>".htmlspecialchars($lig->matiere)." (<i>".htmlspecialchars($lig->nom_complet)."</i>)</li>\n";
 				}
 				echo "</ul>\n";
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?id_exam=$id_exam&amp;mode=modif_exam&amp;aff=matieres'>Modifier la liste des matières</a></p>\n";
@@ -1201,7 +1201,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				for($j=0;$j<count($tab_matiere);$j++) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
-					echo "<th>".htmlentities($tab_matiere[$j])."\n";
+					echo "<th>".htmlspecialchars($tab_matiere[$j])."\n";
 					echo "<input type='hidden' name='tab_matiere[$j]' value='$tab_matiere[$j]' size='2' />\n";
 					echo "</th>\n";
 
@@ -1275,13 +1275,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 											$lig_per=mysql_fetch_object($res_per);
 	
 											$titre="Devoir n°$lig->id_dev (<i>$lig_per->nom_periode</i>)";
-											$texte="<p><b>".htmlentities($lig_dev->nom_court)."</b>";
+											$texte="<p><b>".htmlspecialchars($lig_dev->nom_court)."</b>";
 											if($lig_dev->nom_court!=$lig_dev->nom_complet) {
-												$texte.=" (<i>".htmlentities($lig_dev->nom_complet)."</i>)";
+												$texte.=" (<i>".htmlspecialchars($lig_dev->nom_complet)."</i>)";
 											}
 											$texte.="<br />";
 											if($lig_dev->description!='') {
-												$texte.=htmlentities($lig_dev->description);
+												$texte.=htmlspecialchars($lig_dev->description);
 											}
 	
 											// Nombre de notes saisies
@@ -1817,7 +1817,7 @@ function checkbox_change(cpt) {
 						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
 						echo "onchange=\"checkbox_change($cpt);changement();\" ";
 						if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-						echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlentities($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlentities($lig->description)."</span>)</span></label><br />\n";
+						echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
 						$cpt++;
 					}
 				}
@@ -1829,7 +1829,7 @@ function checkbox_change(cpt) {
 					echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
 					echo "onchange=\"checkbox_change($cpt)\" ";
 					if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-					echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlentities($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlentities($lig->description)."</span>)</span></label><br />\n";
+					echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
 					$cpt++;
 */
 				}
@@ -1998,7 +1998,7 @@ function cocher_decocher(mode) {
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
-						echo "<p><span class='bold'>".htmlentities($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlentities($lig->description)."</span>)</span><br />\n";
+						echo "<p><span class='bold'>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span><br />\n";
 
 						echo "<input type='hidden' name='id_groupe[$cpt_grp]' value='$lig->id' />\n";
 
@@ -2029,7 +2029,7 @@ function cocher_decocher(mode) {
 									$res3=mysql_query($sql);
 									if(mysql_num_rows($res3)>0) {
 										$lig3=mysql_fetch_object($res3);
-										echo "<span class='bold'>".htmlentities($lig3->nom_periode)."</span>\n";
+										echo "<span class='bold'>".htmlspecialchars($lig3->nom_periode)."</span>\n";
 
 										$tab_periodes[$cpt_grp][]=$lig2->periode;
 									}
@@ -2062,7 +2062,7 @@ function cocher_decocher(mode) {
 								echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='$lig2->id' ";
 								echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
 								if(in_array($lig2->id,$tab_dev_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-								echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>".htmlentities($lig2->nom_court)." (<span style='font-style:italic;font-size:x-small;'>".formate_date($lig2->date)."</span>)</span></label><br />\n";
+								echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style>".htmlspecialchars($lig2->nom_court)." (<span style='font-style:italic;font-size:x-small;'>".formate_date($lig2->date)."</span>)</span></label><br />\n";
 
 								$cpt++;
 							}
@@ -2080,7 +2080,7 @@ function cocher_decocher(mode) {
 							while($lig2=mysql_fetch_object($res2)) {
 								if((!isset($tab_periodes[$cpt_grp]))||(!in_array($lig2->periode, $tab_periodes[$cpt_grp]))) {
 									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la période' title='Moyenne du bulletin pour la période'>";
-									echo "<span class='bold'>".htmlentities($lig2->nom_periode)."</span>\n";
+									echo "<span class='bold'>".htmlspecialchars($lig2->nom_periode)."</span>\n";
 									$tab_periodes[$cpt_grp][]=$lig2->periode;
 									echo "</label>\n";
 									echo "&nbsp;<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='P$lig2->periode' ";
@@ -2107,7 +2107,7 @@ function cocher_decocher(mode) {
 							echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
 							echo "onchange=\"checkbox_change($cpt)\" ";
 							if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-							echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlentities($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlentities($lig->description)."</span>)</span></label><br />\n";
+							echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
 						*/
 
 

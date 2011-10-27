@@ -129,7 +129,7 @@ function recherche_ele($rech_nom,$page) {
 			echo "<input type='checkbox' name='ele_login[]' id='ele_login_$cpt1' value=\"$ele_login\" />\n";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<label for='ele_login_$cpt1' style='cursor:pointer;'>".htmlentities("$ele_nom $ele_prenom")."</label>";
+			echo "<label for='ele_login_$cpt1' style='cursor:pointer;'>".htmlspecialchars("$ele_nom $ele_prenom")."</label>";
 
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
 			$res_clas=mysql_query($sql);
@@ -144,7 +144,7 @@ function recherche_ele($rech_nom,$page) {
 				while($lig_clas=mysql_fetch_object($res_clas)) {
 					if($cpt>0) {echo ", ";}
 					//echo $lig_clas->classe;
-					echo htmlentities($lig_clas->classe);
+					echo htmlspecialchars($lig_clas->classe);
 					$cpt++;
 				}
 				echo "</td>\n";
@@ -190,7 +190,7 @@ function recherche_utilisateur($rech_nom,$page) {
 			echo "<input type='checkbox' name='u_login[]' id='u_login_$cpt1' value=\"$utilisateur_login\" />\n";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<label for='u_login_$cpt1' style='cursor:pointer;'>".htmlentities("$utilisateur_nom $utilisateur_prenom")."</label>";
+			echo "<label for='u_login_$cpt1' style='cursor:pointer;'>".htmlspecialchars("$utilisateur_nom $utilisateur_prenom")."</label>";
             echo "</td>\n";
 
             echo "</tr>\n";

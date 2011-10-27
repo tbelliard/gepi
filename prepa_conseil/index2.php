@@ -386,8 +386,8 @@ if (isset($id_classe)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>$lig_cg->id_groupe</td>\n";
-		echo "<td>".htmlentities($lig_cg->name)."</td>\n";
-		echo "<td>".htmlentities($lig_cg->description)."</td>\n";
+		echo "<td>".htmlspecialchars($lig_cg->name)."</td>\n";
+		echo "<td>".htmlspecialchars($lig_cg->description)."</td>\n";
 		echo "<td>\n";
 		$val_coef_perso=$lig_cg->coef;
 		$nom_matiere='';

@@ -36,7 +36,6 @@ require_once("../lib/initialisations.inc.php");
 //=============================
 
 require_once('../fpdf/fpdf.php');
-require_once('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
@@ -119,7 +118,7 @@ $pdf->AddPage("P");
 // Couleur des traits
 $pdf->SetDrawColor(0,0,0);
 // caractère utilisé dans le document
-$caractere_utilise = 'arial';
+$caractere_utilise = 'DejaVu';
 $y_tmp = $MargeHaut;
 $j=0;
 if (($donnees_personne_csv)) {
@@ -134,12 +133,12 @@ if (($donnees_personne_csv)) {
 		$email = $donnees_personne_csv['user_email'][$i];
 		
 		$pdf->SetLineWidth(0.2);
-		$pdf->SetFont($caractere_utilise,'',9);
+		$pdf->SetFont('DejaVu','',9);
 		$pdf->SetDash(4,4);
 
 
 		$pdf->Setxy($X_tableau,$y_tmp);
-		$pdf->SetFont($caractere_utilise,'B',8);
+		$pdf->SetFont('DejaVu','B',8);
 		$texte = "\nA l'attention de ".$prenom." ".$nom." , classe de ".$classe.
 				 " :                         Voici vos identifiant et mot de passe pour accéder à vos notes.\nIdentifiant : ".$login.
 				 "\nMot de passe : ".$password.

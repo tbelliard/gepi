@@ -1476,7 +1476,7 @@ Patientez pendant l'extraction des données... merci.
 				for($i=0;$i<count($tab_ele['groupes']);$i++) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
-					echo "<th>".htmlentities($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlentities($tab_ele['groupes'][$i]['description'])."</span></th>\n";
+					echo "<th>".htmlspecialchars($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlspecialchars($tab_ele['groupes'][$i]['description'])."</span></th>\n";
 					echo "<td>\n";
                                         $nbre_professeurs = isset($tab_ele['groupes'][$i]['prof']) ? count($tab_ele['groupes'][$i]['prof']) : 0;
 					for($j=0;$j<$nbre_professeurs;$j++) {

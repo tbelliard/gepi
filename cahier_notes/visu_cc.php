@@ -293,7 +293,6 @@ if(isset($_GET['export_pdf'])) {
 		$professeur_courant=casse_mot($_SESSION['nom'])." ".casse_mot($_SESSION['prenom'],'majf2');
 
 		require_once('../fpdf/fpdf.php');
-		require_once('../fpdf/ex_fpdf.php');
 		
 		define('FPDF_FONTPATH','../fpdf/font/');
 		define('LargeurPage','210');
@@ -318,7 +317,7 @@ if(isset($_GET['export_pdf'])) {
 				global $professeur_courant;
 
 				$this->SetXY(5,287);
-				$this->SetFont('arial','',7.5);
+				$this->SetFont('DejaVu','',7.5);
 
 				//$texte=getSettingValue("gepiSchoolName")."  ";
 				$texte=ucfirst($nom_cc)." n°$id_dev - ".$professeur_courant;
@@ -338,14 +337,14 @@ if(isset($_GET['export_pdf'])) {
 				//global $num_page;
 				//global $decompte_page;
 
-				$this->SetFont($fonte,'B',14);
+				$pdf->SetFont('DejaVu','B',14);
 				$this->SetXY(10,10);
 				$this->Cell($largeur_page-$MargeDroite-$MargeGauche,10,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
 				$x1=$this->GetX();
 				$y1=$this->GetY();
 
-				$this->SetFont($fonte,'B',12);
+				$pdf->SetFont('DejaVu','B',12);
 				$texte=ucfirst($nom_cc)." n°".$id_dev;
 				$largeur_tmp=$this->GetStringWidth($texte)+4;
 				$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'LRBT',0,'C');
@@ -353,7 +352,7 @@ if(isset($_GET['export_pdf'])) {
 				//$x2=$this->GetX();
 				$y2=$this->GetY();
 
-				$this->SetFont($fonte,'B',12);
+				$pdf->SetFont('DejaVu','B',12);
 				$texte=$professeur_courant;
 				$larg_tmp=$sc_interligne*($this->GetStringWidth($texte));
 				$this->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
@@ -375,7 +374,6 @@ if(isset($_GET['export_pdf'])) {
 		$pdf->SetDrawColor(0,0,0);
 		$pdf->SetLineWidth(0.2);
 
-		$fonte='arial';
 		$sc_interligne=1.3;
 
 		$h_cell=10;
@@ -431,7 +429,7 @@ if(isset($_GET['export_pdf'])) {
 				$x_courant=$x2;
 			}
 
-			$pdf->SetFont($fonte,'B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			//$pdf->SetXY($x1,$y2);
 
 			$texte=ucfirst($nom_cc).' : '.$nom_court_dev;
@@ -469,7 +467,7 @@ if(isset($_GET['export_pdf'])) {
 			$y=$pdf->GetY();
 			$pdf->SetXY($x_courant,$y+$h_cell);
 
-			$pdf->SetFont($fonte,'',10);
+			$pdf->SetFont('DejaVu','',10);
 			for($i=0;$i<count($tab_eval);$i++) {
 				$nom_ev_courant=$tab_eval[$i]['nom_court'];
 				$date_ev_courant=$tab_eval[$i]['date'];
@@ -503,7 +501,7 @@ if(isset($_GET['export_pdf'])) {
 				$pdf->SetXY($x_courant,$y+$h_cell);
 			}
 
-			$pdf->SetFont($fonte,'B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$texte='Total';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
 			$texte='-';

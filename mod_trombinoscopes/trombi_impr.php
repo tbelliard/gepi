@@ -151,7 +151,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		//$entete = "Groupe : ".$donnees_qui['name'];
 
 		$current_group=get_group($groupe);
-		$entete = "Groupe : ".htmlentities($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
+		$entete = "Groupe : ".htmlspecialchars($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
 
 	}
 	if ( $action_affiche === 'equipepeda' ) { $entete = "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)"; }

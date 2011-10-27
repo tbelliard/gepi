@@ -1149,11 +1149,11 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td class='releve'>\n";
-		echo "<b>".htmlentities($tab_rel['periodes'][$index_per]['groupes'][$j]['matiere_nom_complet'])."</b>";
+		echo "<b>".htmlspecialchars($tab_rel['periodes'][$index_per]['groupes'][$j]['matiere_nom_complet'])."</b>";
 		$k = 0;
                 $nbre_professeurs = isset($tab_rel['groupes'][$index_grp]['prof']) ? count($tab_rel['groupes'][$index_grp]['prof']) : NULL;
 		While ($k < $nbre_professeurs) {
-			echo "<br /><i>".affiche_utilisateur(htmlentities($tab_rel['groupes'][$index_grp]['prof'][$k]['prof_login']),$id_classe)."</i>";
+			echo "<br /><i>".affiche_utilisateur(htmlspecialchars($tab_rel['groupes'][$index_grp]['prof'][$k]['prof_login']),$id_classe)."</i>";
 			$k++;
 		}
 		echo "</td>\n";
@@ -1329,7 +1329,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 	}
 
 	if($tab_rel['rn_formule']!=""){
-		echo "<p>".htmlentities($tab_rel['rn_formule'])."</p>\n";
+		echo "<p>".htmlspecialchars($tab_rel['rn_formule'])."</p>\n";
 	}
 	//================================
 

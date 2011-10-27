@@ -74,9 +74,6 @@ else
 }
 //================================
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 require('../../fpdf/fpdf.php');
 
 include("../../edt_organisation/fonctions_edt.php");
@@ -148,7 +145,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 /* information sur la présentation du document */
 /* *********************************************/
 
-	$caractere_utilse = 'arial'; // caractère utilisé
+	$caractere_utilse = 'DejaVu'; // caractère utilisé
 	$affiche_logo_etab = '1';
 	$nom_etab_gras = '0';
 	$entente_mel = '1'; // afficher l'adresse mel dans l'entête
@@ -553,7 +550,7 @@ while ($nb_page_traite < $nb_page_total)
 	$pdf->AddPage();
 
 	// police de caractère utilisé
-	$pdf->SetFont('Arial');
+	$pdf->SetFont('DejaVu');
 
 /* ENTETE - DEBUT */
 
@@ -601,25 +598,25 @@ while ($nb_page_traite < $nb_page_total)
 
 	}
 	$pdf->SetXY($X_etab,$Y_etab);
-	$pdf->SetFont($caractere_utilse,'',14);
+	$pdf->SetFont('DejaVu','',14);
 	$gepiSchoolName = getSettingValue('gepiSchoolName');
 
 	// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
 	if ( $nom_etab_gras === '1' )
 	{
 
-		$pdf->SetFont($caractere_utilse,'B',14);
+		$pdf->SetFont('DejaVu','B',14);
 
 	}
-	$pdf->Cell(90,7, traite_accents_utf8($gepiSchoolName),0,2,'');
+	$pdf->Cell(90,7, ($gepiSchoolName),0,2,'');
 
-	$pdf->SetFont($caractere_utilse,'',10);
+	$pdf->SetFont('DejaVu','',10);
 	$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 
 	if ( $gepiSchoolAdress1 != '' )
 	{
 
-		$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress1),0,2,'');
+		$pdf->Cell(90,5, ($gepiSchoolAdress1),0,2,'');
 
 	}
 	$gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
@@ -627,13 +624,13 @@ while ($nb_page_traite < $nb_page_total)
 	if ( $gepiSchoolAdress2 != '' )
 	{
 
-		$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress2),0,2,'');
+		$pdf->Cell(90,5, ($gepiSchoolAdress2),0,2,'');
 
 	}
 
 	$gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 	$gepiSchoolCity = getSettingValue('gepiSchoolCity');
-	$pdf->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
+	$pdf->Cell(90,5, ($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 	$gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	$gepiSchoolFax = getSettingValue('gepiSchoolFax');
 
@@ -738,22 +735,22 @@ while ($nb_page_traite < $nb_page_total)
 
 /* ENTETE TITRE - DEBUT */
 
-		$pdf->SetFont('Arial','B',18);
+		$pdf->SetFont('DejaVu','B',18);
 
 		$pdf->SetXY(85, 10);
 
 		$pdf->Cell(120, 6, 'Bilan journalier des absences', 0, 1, 'C');
 
-		$pdf->SetFont('Arial','',12);
+		$pdf->SetFont('DejaVu','',12);
 
 		$pdf->SetX(85);
 		$pdf->Cell(120, 8, 'du '.$date_choisie, 0, 1, 'C');
 
 		$pdf->SetX(85);
-		$pdf->Cell(120, 5, traite_accents_utf8('année'), 0, 1, 'C');
+		$pdf->Cell(120, 5, ('année'), 0, 1, 'C');
 
 		$pdf->SetX(85);
-		$pdf->Cell(120, 5, traite_accents_utf8($annee_scolaire), 0, 1, 'C');
+		$pdf->Cell(120, 5, ($annee_scolaire), 0, 1, 'C');
 
 
 /* ENTETE TITRE - FIN */
@@ -762,7 +759,7 @@ while ($nb_page_traite < $nb_page_total)
 /* ENTETE TABLEAU - DEBUT */
 
 	//Sélection de la police
-	$pdf->SetFont($caractere_utilse, 'B', 10);
+	$pdf->SetFont('DejaVu', 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
@@ -771,7 +768,7 @@ while ($nb_page_traite < $nb_page_total)
 	$pdf->Cell($lar_col_classe, $hau_entete, 'Classe', 1, 0, 'C');
 
 	// Cellule identité
-	$pdf->Cell($lar_col_eleve, $hau_entete, traite_accents_utf8('Nom Prénom'), 1, 0, 'C');
+	$pdf->Cell($lar_col_eleve, $hau_entete, ('Nom Prénom'), 1, 0, 'C');
 
 	// Cellule créneaux
 	// un divisie l'espace réserver à la colonne des créneaux par le nombre de créneaux
@@ -824,7 +821,7 @@ while ($nb_page_traite < $nb_page_total)
 				// initialisation du point X et Y de la ligne du nom des classes
 				$pdf->SetXY($x_tab, $y_dernier);
 
-				$pdf->Cell($lar_total_tableau, $hau_donnee, traite_accents_utf8($tab_donnee[$nb_ligne_passe]['classe']), 0, 1, '');
+				$pdf->Cell($lar_total_tableau, $hau_donnee, ($tab_donnee[$nb_ligne_passe]['classe']), 0, 1, '');
 				$classe_pass = $tab_donnee[$nb_ligne_passe]['classe'];
 
 				// variable qui contient le point Y suivant pour la ligne suivante
@@ -844,7 +841,7 @@ while ($nb_page_traite < $nb_page_total)
 				$pdf->Cell($lar_col_classe, $hau_donnee, '', 0, 0, '');
 
 				// colonne du nom et prénom de l'élève
-				$pdf->Cell($lar_col_eleve, $hau_donnee, traite_accents_utf8($tab_donnee[$nb_ligne_passe]['ident_eleve']), 1, 0, '');
+				$pdf->Cell($lar_col_eleve, $hau_donnee, ($tab_donnee[$nb_ligne_passe]['ident_eleve']), 1, 0, '');
 
 				// variable qui contient le point Y suivant pour la ligne suivante
 				$y_dernier = $y_dernier + $hau_donnee;
@@ -977,8 +974,8 @@ while ($nb_page_traite < $nb_page_total)
 	//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
 	$pdf->SetXY(5,-10);
 
-	//Police Arial Gras 6
-	$pdf->SetFont('Arial','B',8);
+	//Police DejaVu Gras 6
+	$pdf->SetFont('DejaVu','B',8);
 
 	// formule du pied de page
 	$fomule = 'Bilan journalier du ' . date("d/m/Y H:i:s") . ' - page ' . $nb_page_traite . '/' . $nb_page_total;

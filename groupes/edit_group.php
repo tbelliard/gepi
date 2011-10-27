@@ -88,10 +88,10 @@ if (isset($_POST['is_posted'])) {
 	$reg_nom_groupe = $_POST['groupe_nom_court'];
 	$reg_nom_complet = $_POST['groupe_nom_complet'];
 	*/
-	//$reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court']);
-	$reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court'],ENT_QUOTES,"UTF-8");
-	//$reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet']);
-	$reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet'],ENT_QUOTES,"UTF-8");
+	//$reg_nom_groupe = html_entity_decode($_POST['groupe_nom_court']);
+	$reg_nom_groupe = html_entity_decode($_POST['groupe_nom_court'],ENT_QUOTES,"UTF-8");
+	//$reg_nom_complet = html_entity_decode($_POST['groupe_nom_complet']);
+	$reg_nom_complet = html_entity_decode($_POST['groupe_nom_complet'],ENT_QUOTES,"UTF-8");
 	//=======================================
 	$reg_matiere = $_POST['matiere'];
 
@@ -288,7 +288,7 @@ if (isset($_POST['is_posted'])) {
 echo "<pre>\n";
 print_r($_POST);
 echo "</pre>\n";
-echo html_entity_decode_all_version("prof_ERIC_ALARY");
+echo html_entity_decode("prof_ERIC_ALARY");
 
 echo "<pre>\n";
 print_r($current_group);
@@ -446,8 +446,12 @@ if ($mode == "groupe") {
 				echo " checked";
 			}
 			//echo " />$classe</option>\n";
-			echo " onchange='changement();'";
-			echo " /><label for='classe_".$id_classe_temp."' style='cursor: pointer;'>$classe</label>\n";
+			echo " onchange=\"checkbox_change_classe('classe_".$id_classe_temp."'); changement();\"";
+			echo " /><label for='classe_".$id_classe_temp."' id='texte_classe_".$id_classe_temp."' style='cursor: pointer;";
+			if (in_array($id_classe_temp, $reg_clazz)){
+				echo " font-weight:bold;";
+			}
+			echo "'>$classe</label>\n";
 			if (in_array($id_classe_temp, $reg_clazz)){
 				// Pour contrôler les suppressions de classes.
 				// On conserve la liste des classes précédemment cochées:
@@ -526,7 +530,7 @@ for ($i=0;$i<$nb_mat;$i++) {
 	echo "<option value='" . $matiere . "'";
 	if ($reg_matiere == $matiere) echo " SELECTED";
 	//echo ">" . $nom_matiere . "</option>\n";
-	echo ">" . htmlentities($nom_matiere) . "</option>\n";
+	echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
 }
 echo "</select>\n";
 //echo "</p>\n";
@@ -552,7 +556,7 @@ for ($i=0;$i<$nb_mat;$i++) {
 	if ($reg_matiere == $matiere) echo " SELECTED";
 	echo ">" . $nom_matiere . "</option>\n";
 	//echo ">" . html_entity_decode($nom_matiere) . "</option>\n";
-	//echo ">" . htmlentities($nom_matiere) . "</option>\n";
+	//echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
 }
 echo "</select>\n";
 echo "</p>\n";
@@ -685,7 +689,11 @@ function checkbox_change(cpt) {
 		}
 	}
 }
+";
 
+echo js_checkbox_change_style('checkbox_change_classe');
+
+echo "
 for(i=0;i<$p;i++) {
 	checkbox_change(i);
 }

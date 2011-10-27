@@ -112,7 +112,7 @@ if ($nombre_lignes != 0) {
 				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "'><img src='../images/group16.png' alt='Gérer les élèves' style='width:12px; heigth: 12px;' /></a>\n";
 				echo "&nbsp;";
 
-				echo "<b>" . htmlentities($group["description"]) . "</b>\n";
+				echo "<b>" . htmlspecialchars($group["description"]) . "</b>\n";
 
 				$j= 1;
 				if ($total > 1) {

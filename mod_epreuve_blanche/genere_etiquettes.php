@@ -176,7 +176,6 @@ if((isset($mode))&&($mode=='imprime')) {
 		if (!defined('FPDF_VERSION')) {
 		  require_once('../fpdf/fpdf.php');
 		}
-		require('../fpdf/ex_fpdf.php');
 		
 		define('FPDF_FONTPATH','../fpdf/font/');
 		//define('LargeurPage','210');
@@ -207,7 +206,7 @@ if((isset($mode))&&($mode=='imprime')) {
 				if($no_footer=='n') {
 
 					$this->SetXY(5,$hauteur_page-10);
-					$this->SetFont('arial','',7.5);
+					$this->SetFont('DejaVu','',7.5);
 	
 					//$texte=getSettingValue("gepiSchoolName")."  ";
 					$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante;
@@ -236,7 +235,7 @@ if((isset($mode))&&($mode=='imprime')) {
 		$pdf->SetDrawColor(0,0,0);
 		$pdf->SetLineWidth(0.2);
 
-		$fonte='arial';
+		$fonte='DejaVu';
 		$fs=10;
 		$sc_interligne=1.3;
 
@@ -259,7 +258,7 @@ if((isset($mode))&&($mode=='imprime')) {
 				//Entête du PDF
 				//$pdf->SetLineWidth(0.7);
 				/*
-				$pdf->SetFont($fonte,'B',14);
+				$pdf->SetFont('DejaVu','B',14);
 				$pdf->Setxy(10,10);
 				$pdf->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
@@ -267,7 +266,7 @@ if((isset($mode))&&($mode=='imprime')) {
 				$y1=$pdf->GetY();
 				*/
 
-				$pdf->SetFont($fonte,'',10);
+				$pdf->SetFont('DejaVu','',10);
 				$pdf->SetXY($x0,$y0);
 
 				// Paramètres pour cell_ajustee()

@@ -136,7 +136,6 @@ if(isset($imprime)) {
 			if (!defined('FPDF_VERSION')) {
 			  require_once('../fpdf/fpdf.php');
 			}
-			require('../fpdf/ex_fpdf.php');
 			
 			define('FPDF_FONTPATH','../fpdf/font/');
 			define('LargeurPage','210');
@@ -162,7 +161,7 @@ if(isset($imprime)) {
 					//global $decompte_page;
 
 					$this->SetXY(5,287);
-					$this->SetFont('arial','',7.5);
+					$this->SetFont('DejaVu','',7.5);
 
 					//$texte=getSettingValue("gepiSchoolName")."  ";
 					$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante;
@@ -188,32 +187,32 @@ if(isset($imprime)) {
 					//global $num_page;
 					//global $decompte_page;
 
-					$this->SetFont($fonte,'B',14);
+					$pdf->SetFont('DejaVu','B',14);
 					$this->Setxy(10,10);
 					$this->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
 					$x1=$this->GetX();
 					$y1=$this->GetY();
 
-					$this->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					$texte='Epreuve : ';
 					$largeur_tmp=$this->GetStringWidth($texte);
 					$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'',0,'L');
-					$this->SetFont($fonte,'',12);
+					$pdf->SetFont('DejaVu','',12);
 					$texte=$intitule_epreuve;
 					$this->Cell($this->GetStringWidth($texte),$this->FontSize*$sc_interligne,$texte,'',1,'L');
 
-					$this->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					$texte='Date : ';
 					$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'',0,'L');
-					$this->SetFont($fonte,'',12);
+					$pdf->SetFont('DejaVu','',12);
 					$texte=$date_epreuve;
 					$this->Cell($this->GetStringWidth($texte),$this->FontSize*$sc_interligne,$texte,'',1,'L');
 
 					//$x2=$this->GetX();
 					$y2=$this->GetY();
 
-					$this->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					$texte="Salle $salle[$i]";
 					$larg_tmp=$sc_interligne*($this->GetStringWidth($texte));
 					$this->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
@@ -236,7 +235,7 @@ if(isset($imprime)) {
 			// hauteur de chaque ligne d'information
 			$hauteur_ligne = 10;
 			
-			$fonte='arial';
+			$fonte='DejaVu';
 			$sc_interligne=1.3;
 
 			$num_page=0;
@@ -264,32 +263,32 @@ if(isset($imprime)) {
 /*
 					//Entête du PDF
 					//$pdf->SetLineWidth(0.7);
-					$pdf->SetFont($fonte,'B',14);
+					$pdf->SetFont('DejaVu','B',14);
 					$pdf->Setxy(10,10);
 					$pdf->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
 					$x1=$pdf->GetX();
 					$y1=$pdf->GetY();
 
-					$pdf->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					$texte='Epreuve : ';
 					$largeur_tmp=$pdf->GetStringWidth($texte);
 					$pdf->Cell($largeur_tmp,$pdf->FontSize*$sc_interligne,$texte,'',0,'L');
-					$pdf->SetFont($fonte,'',12);
+					$pdf->SetFont('DejaVu','',12);
 					$texte=$intitule_epreuve;
 					$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne,$texte,'',1,'L');
 
-					$pdf->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					$texte='Date : ';
 					$pdf->Cell($largeur_tmp,$pdf->FontSize*$sc_interligne,$texte,'',0,'L');
-					$pdf->SetFont($fonte,'',12);
+					$pdf->SetFont('DejaVu','',12);
 					$texte=$date_epreuve;
 					$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne,$texte,'',1,'L');
 
 					//$x2=$pdf->GetX();
 					$y2=$pdf->GetY();
 
-					$pdf->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					$texte="Salle $salle[$i]";
 					$larg_tmp=$sc_interligne*($pdf->GetStringWidth($texte));
 					$pdf->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
@@ -309,7 +308,7 @@ if(isset($imprime)) {
 					$pdf->SetXY($x,$y);
 					*/
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$tab_nom=array();
 					$tab_naissance=array();
 					$tab_classe=array();
@@ -335,7 +334,7 @@ if(isset($imprime)) {
 						$pdf->Cell($larg_col2,10,$texte,'LRBT',0,'C');
 					}
 
-					//$pdf->SetFont($fonte,'B',10);
+					//$pdf->SetFont('DejaVu','B',10);
 					$texte='Nom prénom';
 					//$larg_col1=$pdf->GetStringWidth($texte);
 					$larg_col1=$larg_max+4;
@@ -351,7 +350,7 @@ if(isset($imprime)) {
 					$texte='Salle';
 					$pdf->Cell($larg_col3,10,$texte,'LRBT',1,'C');
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					/*
 					while($lig=mysql_fetch_object($res)) {
 						$texte=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
@@ -387,7 +386,7 @@ if(isset($imprime)) {
 							$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',1,'C');
 						}
 
-						$pdf->SetFont($fonte,'B',10);
+						$pdf->SetFont('DejaVu','B',10);
 
 						$largeur_dispo=$larg_col1;
 						$h_cell=$hauteur_ligne;

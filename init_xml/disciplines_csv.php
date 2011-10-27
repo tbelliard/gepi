@@ -211,11 +211,11 @@ if (!isset($is_posted)) {
 							if(!$req) {
 								$nb_reg_no++; echo mysql_error();
 							} else {
-								echo "<tr><td><p><font color='red'>$affiche[0]</font></p></td><td><p>".htmlentities($affiche[1])."</p></td></tr>";
+								echo "<tr><td><p><font color='red'>$affiche[0]</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>";
 							}
 						} else {
 							$nom_complet = mysql_result($verif,0,'nom_complet');
-							echo "<tr><td><p><font color='green'>$affiche[0]</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>";
+							echo "<tr><td><p><font color='green'>$affiche[0]</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>";
 						}
 					}
 				}
