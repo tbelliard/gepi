@@ -284,14 +284,14 @@
 	<table name="responsables2" phpName="ResponsableInformation" description="Table de jointure entre les eleves et leurs responsables legaux avec mention du niveau de ces responsables">
 		<column name="ele_id" primaryKey="true" required="true" type="VARCHAR" size="10" description="cle etrangere, ele_id de l'eleve"/>
 		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="ele_id" foreign="ele_id"/></foreign-key>
-		<column name="pers_id" required="true" type="VARCHAR" size="10" description="cle etrangere vers le responsable"/>
+		<column name="pers_id" phpName="ResponsableEleveId" required="true" type="VARCHAR" size="10" description="cle etrangere vers le responsable"/>
 		<foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
-		<column name="resp_legal" primaryKey="true" required="true" type="VARCHAR" size="1" description="Niveau de responsabilite du responsable legal"/>
-		<column name="pers_contact" required="true" type="VARCHAR" size="1" description=""/>
+		<column name="resp_legal" phpName="NiveauResponsabilite" primaryKey="true" required="true" type="VARCHAR" size="1" description="Niveau de responsabilite"/>
+		<column name="pers_contact" description="Champ sconet non utilise" required="false" type="VARCHAR" size="1"/>
 	</table>
 	
 	<table name="resp_pers" phpName="ResponsableEleve" description="Liste des responsables legaux des eleves">
-		<column name="pers_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire genere par sconet"/>
+		<column name="pers_id" phpName="ResponsableEleveId" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire genere par sconet"/>
 		<column name="login" required="true" type="VARCHAR" size="50" description="cle primaire du responsable, login utilise comme utilisateur"/>
 		<column name="nom" required="true" type="VARCHAR" size="30" description="Nom du responsable legal"/>
 		<column name="prenom" required="true" type="VARCHAR" size="30" description="Prenom du responsable legal"/>
@@ -300,12 +300,12 @@
 		<column name="tel_port" required="true" type="VARCHAR" size="255" description="Telephone portable du responsable legal"/>
 		<column name="tel_prof" required="true" type="VARCHAR" size="255" description="Telephone professionnel du responsable lega"/>
 		<column name="mel" required="true" type="VARCHAR" size="100" description="Courriel du responsable legal"/>
-		<column name="adr_id" type="VARCHAR" size="10" description="cle etrangere vers l'adresse du responsable lega"/>
+		<column name="adr_id" phpName="AdresseId" type="VARCHAR" size="10" description="cle etrangere vers l'adresse du responsable lega"/>
 		<foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
 	</table>
 
-	<table name="resp_adr" phpName="ResponsableEleveAdresse" description="Table de jointure entre les responsables legaux et leur adresse">
-		<column name="adr_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire, genere par sconet"/>
+	<table name="resp_adr" phpName="Adresse" description="Adresse">
+		<column name="adr_id" phpName="Id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire, genere par sconet"/>
 		<column name="adr1" required="true" type="VARCHAR" size="100" description="1ere ligne adresse"/>
 		<column name="adr2" required="true" type="VARCHAR" size="100" description="2eme ligne adresse"/>
 		<column name="adr3" required="true" type="VARCHAR" size="100" description="3eme ligne adresse"/>
@@ -514,7 +514,7 @@
     <column name="type_notification" required="false" type="ENUM" valueSet="courrier, email, sms, communication telephonique" default="null" description="type de notification (0 : courrier, 1 : email, 2 : sms, 3 : telephone"/>
     <column name="email" required="false" type="VARCHAR" size="100" description="email de destination (pour le type email)"/>
     <column name="telephone" required="false" type="VARCHAR" size="100" description="numero du telephone de destination (pour le type sms)"/>
-    <column name="adr_id" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>
+    <column name="adr_id" phpName="AdresseId" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>
     <foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
     <!--foreign-key foreignTable="a_type_envois" onDelete="setnull"><reference local="id_type_envoi" foreign="id"/></foreign-key-->
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
@@ -527,7 +527,7 @@
   <table name="j_notifications_resp_pers" phpName="JNotificationResponsableEleve" description="Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message." isCrossRef="true">
     <column name="a_notification_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de la notification"/>
     <foreign-key foreignTable="a_notifications" onDelete="cascade"><reference local="a_notification_id" foreign="id"/></foreign-key>
-    <column name="pers_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle etrangere des personnes"/>
+    <column name="pers_id" phpName="ResponsableEleveId" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle etrangere des personnes"/>
     <foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
   </table>
 

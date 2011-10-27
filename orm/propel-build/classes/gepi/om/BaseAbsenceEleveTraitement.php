@@ -1955,10 +1955,10 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
 	 * @return     PropelCollection|array AbsenceEleveNotification[] List of AbsenceEleveNotification objects
 	 */
-	public function getAbsenceEleveNotificationsJoinResponsableEleveAdresse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveNotificationsJoinAdresse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = AbsenceEleveNotificationQuery::create(null, $criteria);
-		$query->joinWith('ResponsableEleveAdresse', $join_behavior);
+		$query->joinWith('Adresse', $join_behavior);
 
 		return $this->getAbsenceEleveNotifications($query, $con);
 	}

@@ -110,12 +110,12 @@ class AbsencesNotificationHelper {
 
     if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
 	//on va mettre les champs dans des variables simple
-	//echo $notification->getResponsableEleveAdresse()->getResponsableEleves()->count();
-	if ($notification->getResponsableEleveAdresse() != null && $notification->getResponsableEleves()->count() == 1) {
+	//echo $notification->getAdresse()->getResponsableEleves()->count();
+	if ($notification->getAdresse() != null && $notification->getResponsableEleves()->count() == 1) {
 	    //echo 'dest1';
 	    $responsable = $notification->getResponsableEleves()->getFirst();
 	    $destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
-	} elseif ($notification->getResponsableEleveAdresse() != null) {
+	} elseif ($notification->getAdresse() != null) {
 	    //echo 'dest2';
 	    $responsable1 = $notification->getResponsableEleves()->getFirst();
 	    $responsable2 = $notification->getResponsableEleves()->getNext();
@@ -130,9 +130,9 @@ class AbsencesNotificationHelper {
 	}
 	$TBS->MergeField('destinataire',$destinataire);
 
-	$adr = $notification->getResponsableEleveAdresse();
+	$adr = $notification->getAdresse();
 	if ($adr == null) {
-	    $adr = new ResponsableEleveAdresse();
+	    $adr = new Adresse();
 	}
 	$TBS->MergeField('adr',$adr);	
 
@@ -180,7 +180,7 @@ class AbsencesNotificationHelper {
     }
     $TBS->MergeField('mail_etab', $email_abs_etab);
     $TBS->MergeField('annee_scolaire', getSettingValue("gepiYear"));
-    $adr_etablissement = new ResponsableEleveAdresse();
+    $adr_etablissement = new Adresse();
 	$adr_etablissement->setAdr1(getSettingValue("gepiSchoolAdress1"));
 	$adr_etablissement->setAdr2(getSettingValue("gepiSchoolAdress2"));
 	$adr_etablissement->setCp(getSettingValue("gepiSchoolZipCode"));

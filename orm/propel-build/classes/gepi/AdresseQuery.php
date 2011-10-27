@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for performing query and update operations on the 'resp_adr' table.
  *
- * Table de jointure entre les responsables legaux et leur adresse
+ * Adresse
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class ResponsableEleveAdressePeer extends BaseResponsableEleveAdressePeer {
+class AdresseQuery extends BaseAdresseQuery {
 
-} // ResponsableEleveAdressePeer
+} // AdresseQuery

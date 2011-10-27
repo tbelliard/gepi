@@ -38,7 +38,7 @@ class ResponsableEleveTableMap extends TableMap
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
 		// columns
-		$this->addPrimaryKey('PERS_ID', 'PersId', 'VARCHAR', true, 10, null);
+		$this->addPrimaryKey('PERS_ID', 'ResponsableEleveId', 'VARCHAR', true, 10, null);
 		$this->addColumn('LOGIN', 'Login', 'VARCHAR', true, 50, null);
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 30, null);
 		$this->addColumn('PRENOM', 'Prenom', 'VARCHAR', true, 30, null);
@@ -47,7 +47,7 @@ class ResponsableEleveTableMap extends TableMap
 		$this->addColumn('TEL_PORT', 'TelPort', 'VARCHAR', true, 255, null);
 		$this->addColumn('TEL_PROF', 'TelProf', 'VARCHAR', true, 255, null);
 		$this->addColumn('MEL', 'Mel', 'VARCHAR', true, 100, null);
-		$this->addForeignKey('ADR_ID', 'AdrId', 'VARCHAR', 'resp_adr', 'ADR_ID', false, 10, null);
+		$this->addForeignKey('ADR_ID', 'AdresseId', 'VARCHAR', 'resp_adr', 'ADR_ID', false, 10, null);
 		// validators
 	} // initialize()
 
@@ -56,7 +56,7 @@ class ResponsableEleveTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('ResponsableEleveAdresse', 'ResponsableEleveAdresse', RelationMap::MANY_TO_ONE, array('adr_id' => 'adr_id', ), 'SET NULL', null);
+		$this->addRelation('Adresse', 'Adresse', RelationMap::MANY_TO_ONE, array('adr_id' => 'adr_id', ), 'SET NULL', null);
 		$this->addRelation('ResponsableInformation', 'ResponsableInformation', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null, 'ResponsableInformations');
 		$this->addRelation('JNotificationResponsableEleve', 'JNotificationResponsableEleve', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null, 'JNotificationResponsableEleves');
 		$this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'AbsenceEleveNotifications');

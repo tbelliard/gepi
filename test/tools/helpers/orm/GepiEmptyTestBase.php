@@ -22,7 +22,8 @@ abstract class GepiEmptyTestBase extends GepiTestBase
 	 */
 	protected function setUp()
 	{
-		parent::setUp();
+        loadSettings();
+	    parent::setUp();
 		GepiDataPopulator::depopulate($this->con);
 	}
 
