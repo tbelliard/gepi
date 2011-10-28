@@ -174,10 +174,11 @@ function test_unique_login($s) {
  */
 function test_unique_e_login($s, $indice) {
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
+    //$test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
+    //if ($test7 != "0") {
 
-    if ($test7 != "0") {
-
+    $test7 = test_unique_login($s);
+    if ($test7 == "no") {
         // Si le login figure déjà dans une des bases élève des années passées ou bien
         // dans la base utilisateurs, on retourne 'no' !
         return 'no';
@@ -205,6 +206,8 @@ function test_unique_e_login($s, $indice) {
  * 
  * name8            à partir du nom, réduit à 8 caractères
  * 
+ * name9_p          à partir du nom, réduit à 9 caractères + _ + première lettre du prénom (format historique du login élève dans Gepi)
+ * 
  * fname8           première lettre du prénom + nom, réduit à 8 caractères
  * 
  * fname19          première lettre du prénom + nom, réduit à 19 caractères
@@ -215,110 +218,144 @@ function test_unique_e_login($s, $indice) {
  * 
  * namef8           nom réduit à 7 caractères + première lettre du prénom
  * 
+ * lcs              première lettre du prénom + premier nom (+ _ + deuxième nom si le 1er nom fait moins de 4 caractères)
+ * 
  * si $_mode est NULL, fname8 est utilisé
  * 
  * @param string $_nom nom de l'utilisateur
  * @param string $_prenom prénom de l'utilisateur
  * @param string $_mode Le mode de génération ou NULL
+ * @param string $_casse La casse du login ('maj', 'min', '') par défaut la casse n'est pas modifiée
  * @return string|booleanLe login généré ou FALSE si on obtient un login vide
  * @see test_unique_login()
  */
-function generate_unique_login($_nom, $_prenom, $_mode) {
+function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 
 	if ($_mode == NULL) {
 		$_mode = "fname8";
 	}
-    // On génère le login
-	$_prenom = strtr($_prenom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
-    $_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
-	$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
-    $_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
+	// On génère le login
+	$_prenom = strtr($_prenom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀôöÔÖÇ", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
+	$_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
+	$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀôöÔÖÇ", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
+	$_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
 
 	if($_nom=='') {return FALSE;}
 
-    if ($_mode == "name") {
-            $temp1 = $_nom;
-            $temp1 = preg_replace("/ /","", $temp1);
-            $temp1 = preg_replace("/-/","_", $temp1);
-            $temp1 = preg_replace("/'/","", $temp1);
-        } elseif ($_mode == "name8") {
-            $temp1 = $_nom;
-            $temp1 = preg_replace("/ /","", $temp1);
-            $temp1 = preg_replace("/-/","_", $temp1);
-            $temp1 = preg_replace("/'/","", $temp1);
-            $temp1 = substr($temp1,0,8);
-        } elseif ($_mode == "fname8") {
-			if($_prenom=='') {return FALSE;}
-            $temp1 = $_prenom{0} . $_nom;
-            $temp1 = preg_replace("/ /","", $temp1);
-            $temp1 = preg_replace("/-/","_", $temp1);
-            $temp1 = preg_replace("/'/","", $temp1);
-            $temp1 = substr($temp1,0,8);
-        } elseif ($_mode == "fname19") {
-			if($_prenom=='') {return FALSE;}
-            $temp1 = $_prenom{0} . $_nom;
-            $temp1 = preg_replace("/ /","", $temp1);
-            $temp1 = preg_replace("/-/","_", $temp1);
-            $temp1 = preg_replace("/'/","", $temp1);
-            $temp1 = substr($temp1,0,19);
-        } elseif ($_mode == "firstdotname") {
-			if($_prenom=='') {return FALSE;}
-            $temp1 = $_prenom . "." . $_nom;
-
-            $temp1 = preg_replace("/ /","", $temp1);
-            $temp1 = preg_replace("/-/","_", $temp1);
-            $temp1 = preg_replace("/'/","", $temp1);
-        } elseif ($_mode == "firstdotname19") {
-			if($_prenom=='') {return FALSE;}
-            $temp1 = $_prenom . "." . $_nom;
-            $temp1 = preg_replace("/ /","", $temp1);
-            $temp1 = preg_replace("/'/","", $temp1);
-            $temp1 = substr($temp1,0,19);
-        } elseif ($_mode == "namef8") {
-			if($_prenom=='') {return FALSE;}
-            $temp1 =  substr($_nom,0,7) . $_prenom{0};
-            $temp1 = preg_replace("/ /","", $temp1);
-            $temp1 = preg_replace("/-/","_", $temp1);
-            $temp1 = preg_replace("/'/","", $temp1);
-        } else {
-        	return FALSE;
-        }
-
-        $login_user = $temp1;
-
-        // Nettoyage final
-        $login_user = substr($login_user, 0, 50);
-        $login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
-
-        $test1 = $login_user{0};
-		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-			$login_user = substr($login_user, 1);
-			$test1 = $login_user{0};
+	if ($_mode == "name") {
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+	} elseif ($_mode == "name8") {
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = substr($temp1,0,8);
+	} elseif ($_mode == "name9_p") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '_'.substr($temp2,0,1);
+			}
 		}
+	} elseif ($_mode == "fname8") {
+		if($_prenom=='') {return FALSE;}
+		$temp1 = $_prenom{0} . $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = substr($temp1,0,8);
+	} elseif ($_mode == "fname19") {
+		if($_prenom=='') {return FALSE;}
+		$temp1 = $_prenom{0} . $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = substr($temp1,0,19);
+	} elseif ($_mode == "firstdotname") {
+		if($_prenom=='') {return FALSE;}
+		$temp1 = $_prenom . "." . $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+	} elseif ($_mode == "firstdotname19") {
+		if($_prenom=='') {return FALSE;}
+		$temp1 = $_prenom . "." . $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = substr($temp1,0,19);
+	} elseif ($_mode == "namef8") {
+		if($_prenom=='') {return FALSE;}
+		$temp1 =  substr($_nom,0,7) . $_prenom{0};
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+	} elseif ($_mode == "lcs") {
+		$temp1 = strtolower($_nom);
+		if (preg_match("/\s/",$temp1)) {
+			$noms = preg_split("/\s/",$temp1);
+			$temp1 = $noms[0];
+			if (strlen($noms[0]) < 4) {
+				$temp1 .= "_". $noms[1];
+			}
+		}
+		$temp1 = strtolower(substr($_prenom,0,1)). $temp1;
+	} else {
+		return FALSE;
+	}
 
+	if($_casse=='maj') {
+		$temp1=strtoupper($temp1);
+	}
+	elseif($_casse=='min') {
+		$temp1=strtolower($temp1);
+	}
+
+	$login_user = $temp1;
+
+	// Nettoyage final
+	$login_user = substr($login_user, 0, 50);
+	$login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
+
+	$test1 = $login_user{0};
+	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
+		$login_user = substr($login_user, 1);
+		$test1 = $login_user{0};
+	}
+
+	$test1 = $login_user{strlen($login_user)-1};
+	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
+		$login_user = substr($login_user, 0, strlen($login_user)-1);
 		$test1 = $login_user{strlen($login_user)-1};
-		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-			$login_user = substr($login_user, 0, strlen($login_user)-1);
-			$test1 = $login_user{strlen($login_user)-1};
+	}
+
+	// On teste l'unicité du login que l'on vient de créer
+	$m = '';
+	$test_unicite = 'no';
+	while ($test_unicite != 'yes') {
+		$test_unicite = test_unique_login($login_user.$m);
+		if ($test_unicite != 'yes') {
+			if ($m == '') {
+				$m = 2;
+			} else {
+				$m++;
+			}
+		} else {
+			$login_user = $login_user.$m;
 		}
+	}
 
-        // On teste l'unicité du login que l'on vient de créer
-        $m = '';
-        $test_unicite = 'no';
-        while ($test_unicite != 'yes') {
-            $test_unicite = test_unique_login($login_user.$m);
-            if ($test_unicite != 'yes') {
-            	if ($m == '') {
-            		$m = 2;
-            	} else {
-                	$m++;
-            	}
-            } else {
-            	$login_user = $login_user.$m;
-            }
-        }
-
-		return $login_user;
+	return $login_user;
 }
 
 /**
@@ -3158,7 +3195,6 @@ function test_ecriture_style_screen_ajout() {
 		return FALSE;
 	}
 }
-
 
 /**********************************************************************************************
  *                                  Fonctions Trombinoscope
