@@ -1,6 +1,6 @@
 <?php
 /**
- * Statistiques module Abs2
+ * Statistiques des justifications - module Abs2
  *
  * Copyright 2010 Josselin Jacquard Regis Bouguin
  *
@@ -23,6 +23,15 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
+ */
+
+/**
+ * @todo Totaux par classes
+ * @todo Envoyer le tableau _Session
+ * @todo Recharger la page régulièrement
+ * @todo Export .csv
+ * @todo Export .ods
+ * @todo Gérer la taille du div
  */
 
 /* *******************************************************************************
@@ -78,6 +87,13 @@ define('GEPI', dirname(ABS2));
 include_once 'lib/function.php';
 
 /* *******************************************************************************
+ * Récupération des données passées en $_POST
+ ******************************************************************************* */
+$donneeBrut = isset ($_POST['donneeBrut']) ? $_POST['donneeBrut'] : (isset ($_SESSION[abs2StatJustifications]['donneeBrut']) ? $_SESSION[abs2StatJustifications]['donneeBrut'] : TRUE);
+$date_absence_eleve_debut = isset ($_POST['date_absence_eleve_debut']) ? $_POST['date_absence_eleve_debut'] : NULL;
+$date_absence_eleve_fin = isset ($_POST['date_absence_eleve_fin']) ? $_POST['date_absence_eleve_fin'] : NULL;
+
+/* *******************************************************************************
  * Recherche des justifications
  ******************************************************************************* */
 $justifie_query = AbsenceEleveJustificationQuery::create()->orderBy('SortableRank');
@@ -87,14 +103,12 @@ $justifie_col = $justifie_query->distinct()->find();
  * Initialisation des dates
  ******************************************************************************* */
 //TODO gérer les dates
-$date_absence_eleve_debut ='1/9/2011';
-if ($date_absence_eleve_debut != null) {
+if ($date_absence_eleve_debut != NULL) {
     $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
 } else {
     $dt_date_absence_eleve_debut = new DateTime('now');
-    $dt_date_absence_eleve_debut->setDate($dt_date_absence_eleve_debut->format('Y'), $dt_date_absence_eleve_debut->format('m') , $dt_date_absence_eleve_debut->format('d'));
 }
-if ($date_absence_eleve_fin != null) {
+if ($date_absence_eleve_fin != NULL) {
     $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", $date_absence_eleve_fin));
 } else {
     $dt_date_absence_eleve_fin = new DateTime('now');
@@ -163,14 +177,15 @@ foreach ($eleve_col as $eleve) {
 	  $donnees[$eleve_id]['retards'] = $eleveNbAbs['retards'];
 	  
 	  //Récupérer le décompte des traitements pour chaque élève
-	  $donneeBrut= FALSE;
-	  // Décompte en données brutes
-	foreach ($justifie_col as $justifie) { 
+	  
+	foreach ($justifie_col as $justifie) {
+	  // Décompte en données brutes 
 		if ($donneeBrut== TRUE) {
 		  $propel_traitEleve = AbsenceEleveTraitementQuery::create()->filterByAJustificationId($justifie->getid())
 			->useJTraitementSaisieEleveQuery()
 			  ->useAbsenceEleveSaisieQuery()
 				->filterByEleveId($eleve->getIdEleve())
+				->filterByPlageTemps($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin )
 			  ->endUse()
 			->endUse() ;
 
@@ -180,6 +195,7 @@ foreach ($eleve_col as $eleve) {
 		  // Décompte en 1/2 journées
 		  $propel_traitEleveDemi = AbsenceEleveSaisieQuery::create()
 			->filterByEleveId($eleve->getIdEleve())
+			->filterByPlageTemps($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin )
 			->orderByDebutAbs()
 			->useJTraitementSaisieEleveQuery()
 			  ->useAbsenceEleveTraitementQuery()
@@ -212,6 +228,9 @@ echo "Durée de calcul de la page : ".$duree."s";
  ******************************************************************************* */
 
 //==============================================
+$style_specifique[] = "edt_organisation/style_edt";
+$style_specifique[] = "templates/DefaultEDT/css/small_edt";
+
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Absences du jour";
@@ -232,10 +251,52 @@ include('menu_bilans.inc.php');
 
 ?>
 <div id="contain_div" class="css-panes">
+  <form dojoType="dijit.form.Form" action="stat_justifications.php" method="post" id="filtres" style="text-align: center;">
+	<fieldset>
+	  <legend>Paramétrage des statistiques sur les justifications</legend>
+	  <p>
+		<label for="bouton1">Données brutes</label>
+		<input type="radio" 
+			   name="donneeBrut" 
+			   value="<?php echo TRUE; ?>" 
+			   id="bouton1" 
+			   onchange="submit()"
+			   <?php if ($donneeBrut) echo "checked = 'checked'"; ?> />
+		<input type="radio" 
+			   name="donneeBrut" 
+			   value="<?php echo FALSE; ?>" 
+			   id="bouton2"
+			   onchange="submit()"
+			   <?php if (!$donneeBrut) echo "checked = 'checked'"; ?> />
+
+		<label for="bouton2">½ journées</label>
+	  </p>
+	  <p>Bilan du
+		<input style="width : 8em;font-size:14px;" 
+			   type="text" 
+			   dojoType="dijit.form.DateTextBox" 
+			   id="date_absence_eleve_debut" 
+			   name="date_absence_eleve_debut" 
+			   value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
+		au
+		<input style="width : 8em;font-size:14px;" 
+			   type="text" 
+			   dojoType="dijit.form.DateTextBox" 
+			   id="date_absence_eleve_fin" 
+			   name="date_absence_eleve_fin" 
+			   value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
+      </p>
+	  <p>      
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="Soumettre">
+		  Afficher les statistiques
+		</button>
+	  </p>
+	</fieldset>
+  </form>
   
-  <table>
+  <table  style ="border:3px groove #aaaaaa;">
 	
-	<tr>
+	<tr  style ="border:3px groove #aaaaaa;">
 	  <th>
 		Nom Prénom
 	  </th>
@@ -262,25 +323,25 @@ include('menu_bilans.inc.php');
 	
 <?php foreach ($donnees as $donnee) { ?>
 	<tr>
-	  <td>
+	  <td style ="border:1px groove #aaaaaa;">
 		<?php echo $donnee['nom']." ".$donnee['prenom']; ?>
 	  </td>
-	  <td style="text-align: center;">
+	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['classe']; ?>
 	  </td>
 	  
-	  <td style="text-align: center;">
+	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['retards']; ?>
 	  </td>
-	  <td style="text-align: center;">
+	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['non_justifiees']; ?>
 	  </td>
-	  <td style="text-align: center;">
+	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['justifiees']; ?>
 	  </td>
 <?php // foreach ($donnee['traitement'] as $justifie) { ; ?>
 <?php foreach ($donnee['traitement'] as $justifie) { ; ?>
-	  <td style="text-align: center;">
+	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $justifie; ?>
 	  </td>
 <?php } ; ?>
@@ -288,3 +349,17 @@ include('menu_bilans.inc.php');
 <?php } ?>
   </table>
 </div>
+ 
+<?php
+$javascript_footer_texte_specifique = '<script type="text/javascript">
+    dojo.require("dojo.parser");
+    dojo.require("dijit.form.Button");   
+    dojo.require("dijit.form.Form");
+    dojo.require("dijit.form.CheckBox");
+    dojo.require("dijit.form.DateTextBox");    
+    dojo.require("dijit.form.Select");
+    dojo.require("dijit.form.NumberTextBox");
+    dojo.require("dijit.form.TextBox");
+    </script>';
+require_once("../lib/footer.inc.php");
+?>
