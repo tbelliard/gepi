@@ -60,7 +60,7 @@ if (getSettingValue("active_module_absence")!='2') {
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
-
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 //récupération des id des notifications
 $nb = 100;
 if (isset($_POST["nb_checkbox"])) {
@@ -167,14 +167,18 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
-$titre_page = "Les absences";
+if(!$menu){
+    $titre_page = "Les absences";
+}
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-include('menu_abs2.inc.php');
+if(!$menu){
+    include('menu_abs2.inc.php');
+}
 
 echo "<div class='css-panes' style='background-color:#c7e3ec;' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
