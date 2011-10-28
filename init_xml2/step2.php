@@ -52,6 +52,10 @@ require_once("../lib/header.inc");
 // On vérifie si l'extension d_base est active
 //verif_active_dbase();
 
+//debug_var();
+// Passer à 'y' pour afficher les requêtes
+$debug_ele="n";
+
 ?>
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -138,18 +142,59 @@ if (!isset($step2)) {
 check_token(false);
 
 if (isset($is_posted)) {
-    $j=0;
-    while ($j < count($liste_tables_del)) {
-		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
-		if($test==1){
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+	// Sauvegarde temporaire:
+	$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
+	(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+	password VARCHAR(128) NOT NULL,
+	salt VARCHAR(128) NOT NULL,
+	email VARCHAR(50) NOT NULL,
+	pers_id VARCHAR( 10 ) NOT NULL ,
+	statut VARCHAR( 20 ) NOT NULL ,
+	auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+	temoin VARCHAR( 50 ) NOT NULL
+	);";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$creation_table=mysql_query($sql);
+
+	//$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
+	$sql="DELETE FROM tempo_utilisateurs_resp WHERE statut='eleve';";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$nettoyage=mysql_query($sql);
+
+	// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+	$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,e.ele_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$svg_insert=mysql_query($sql);
+
+
+	echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
+	$j=0;
+	$k=0;
+	while ($j < count($liste_tables_del)) {
+		$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+		//echo "$sql<br />";
+		$test = sql_query1($sql);
+		if ($test != -1) {
+			if($k>0) {echo ", ";}
+			$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+			$res_test_tab=mysql_query($sql);
+			if(mysql_num_rows($res_test_tab)>0) {
+				$sql="DELETE FROM $liste_tables_del[$j];";
+				$del = @mysql_query($sql);
+				echo "<b>".$liste_tables_del[$j]."</b>";
+				echo " (".mysql_num_rows($res_test_tab).")";
 			}
+			else {
+				echo $liste_tables_del[$j];
+			}
+			$k++;
 		}
-        $j++;
-    }
+		$j++;
+	}
 
 	// Suppression des comptes d'élèves:
+	echo "<br />\n";
+	echo "<p><em>On supprime les anciens comptes élèves...</em> ";
 	$sql="DELETE FROM utilisateurs WHERE statut='eleve';";
 	$del=mysql_query($sql);
 

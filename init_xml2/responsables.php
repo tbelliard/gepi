@@ -201,7 +201,8 @@
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$creation_table=mysql_query($sql);
 
-			$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
+			//$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
+			$sql="DELETE FROM tempo_utilisateurs_resp WHERE statut='responsable';";
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$nettoyage=mysql_query($sql);
 
@@ -315,13 +316,6 @@
 								require("../lib/footer.inc.php");
 								die();
 							}
-
-							/*
-							echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
-							echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
-							echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
-							*/
-							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
 								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";

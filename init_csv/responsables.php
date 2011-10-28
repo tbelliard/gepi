@@ -54,6 +54,9 @@ $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 //debug_var();
 
+// Passer à 'y' pour afficher les requêtes
+$debug_resp='n';
+
 ?>
 <p class="bold"><a href="index.php#responsables"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -98,29 +101,47 @@ if (!isset($_POST["action"])) {
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
 
+		// Sauvegarde temporaire:
+		$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
+		(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+		password VARCHAR(128) NOT NULL,
+		salt VARCHAR(128) NOT NULL,
+		email VARCHAR(50) NOT NULL,
+		pers_id VARCHAR( 10 ) NOT NULL ,
+		statut VARCHAR( 20 ) NOT NULL ,
+		auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+		temoin VARCHAR( 50 ) NOT NULL
+		);";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$creation_table=mysql_query($sql);
+
+		//$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
+		$sql="DELETE FROM tempo_utilisateurs_resp WHERE statut='responsable';";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$nettoyage=mysql_query($sql);
+
+		// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+		$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,rp.pers_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND rp.login!='' AND u.statut='responsable';";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$svg_insert=mysql_query($sql);
+
+
 		// Première étape : on vide les tables
 
 		echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 		$j=0;
 		$k=0;
 		while ($j < count($liste_tables_del)) {
-			//if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-			//	$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-			//}
 			$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
 			//echo "$sql<br />";
 			$test = sql_query1($sql);
 			if ($test != -1) {
 				if($k>0) {echo ", ";}
-				//echo $liste_tables_del[$j];
 				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
 				$res_test_tab=mysql_query($sql);
-				//if($res_test_tab) {
 				if(mysql_num_rows($res_test_tab)>0) {
-					//if (mysql_result($res_test_tab,0)!=0) {
-						$sql="DELETE FROM $liste_tables_del[$j];";
-						$del = @mysql_query($sql);
-					//}
+					$sql="DELETE FROM $liste_tables_del[$j];";
+					$del = @mysql_query($sql);
 					echo "<b>".$liste_tables_del[$j]."</b>";
 					echo " (".mysql_num_rows($res_test_tab).")";
 				}
@@ -158,16 +179,6 @@ if (!isset($_POST["action"])) {
 		$total = 0;
 		//while ($go) {
 		while ($lig=mysql_fetch_object($res_temp)) {
-			/*
-			$reg_id_eleve = $_POST["ligne".$i."_id_eleve"];
-			$reg_nom = $_POST["ligne".$i."_nom"];
-			$reg_prenom = $_POST["ligne".$i."_prenom"];
-			$reg_civilite = $_POST["ligne".$i."_civilite"];
-			$reg_adresse1 = $_POST["ligne".$i."_adresse1"];
-			$reg_adresse2 = $_POST["ligne".$i."_adresse2"];
-			$reg_code_postal = $_POST["ligne".$i."_code_postal"];
-			$reg_commune = $_POST["ligne".$i."_commune"];
-			*/
 			$reg_id_eleve = $lig->elenoet;
 			$reg_nom = $lig->nom;
 			$reg_prenom = $lig->prenom;
@@ -190,22 +201,18 @@ if (!isset($_POST["action"])) {
 
 			if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
 
-			//if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") $reg_civilite = "M.";
 			if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
 
-			//$reg_adresse1 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse1));
 			$reg_adresse1 = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse1,"'"," ")))))));
 
 			if (strlen($reg_adresse1) > 50) $reg_adresse1 = substr($reg_adresse1, 0, 50);
 
-			//$reg_adresse2 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse2));
 			$reg_adresse2 = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse2,"'"," ")))))));
 			if (strlen($reg_adresse2) > 50) $reg_adresse2 = substr($reg_adresse2, 0, 50);
 
 			$reg_code_postal = preg_replace("/[^0-9]/","",trim($reg_code_postal));
 			if (strlen($reg_code_postal) > 6) $reg_code_postal = substr($reg_code_postal, 0, 6);
 
-			//$reg_commune = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_commune));
 			$reg_commune = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_commune,"'"," ")))))));
 			if (strlen($reg_commune) > 50) $reg_commune = substr($reg_commune, 0, 50);
 
@@ -274,8 +281,6 @@ if (!isset($_POST["action"])) {
 								// Erreur ! Les deux responsables ont déjà été saisis...
 								echo "<p>Erreur pour " . $reg_prenom . " " . $reg_nom . " ! Les deux responsables ont déjà été saisis.</p>\n";
 							}
-
-
 						}
 
 						if ($insert == false) {
@@ -291,7 +296,6 @@ if (!isset($_POST["action"])) {
 			}
 
 			$i++;
-			//if (!isset($_POST['ligne'.$i.'_nom'])) $go = false;
 		}
 
 		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
@@ -357,36 +361,27 @@ if (!isset($_POST["action"])) {
 							// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
 
-						//$tabligne[1] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[1])));
 						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[1])))))));
 						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
-						//$tabligne[2] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[2]));
 						$tabligne[2] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[2]))))));
 						if (strlen($tabligne[2]) > 50) $tabligne[2] = substr($tabligne[2], 0, 50);
 
-						//if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") $tabligne[3] = "M.";
 						if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") { $tabligne[3] = "";}
 
-						//$tabligne[4] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[4]));
 						$tabligne[4] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[4],"'"," ")))))));
 						if (strlen($tabligne[4]) > 50) $tabligne[4] = substr($tabligne[4], 0, 50);
 
-						//$tabligne[5] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[5]));
 						$tabligne[5] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[5],"'"," ")))))));
 						if (strlen($tabligne[5]) > 50) $tabligne[5] = substr($tabligne[5], 0, 50);
 
 						$tabligne[6] = preg_replace("/[^0-9]/","",trim($tabligne[6]));
 						if (strlen($tabligne[6]) > 6) $tabligne[6] = substr($tabligne[6], 0, 6);
 
-						//$tabligne[7] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[7]));
 						$tabligne[7] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[7],"'"," ")))))));
 						if (strlen($tabligne[7]) > 50) $tabligne[7] = substr($tabligne[7], 0, 50);
 
-
 						$data_tab[$k] = array();
-
-
 						$data_tab[$k]["id_eleve"] = $tabligne[0];
 						$data_tab[$k]["nom"] = $tabligne[1];
 						$data_tab[$k]["prenom"] = $tabligne[2];
@@ -398,7 +393,6 @@ if (!isset($_POST["action"])) {
 
 						$k++;
 					}
-					//$k++;
 				}
 
 				fclose($fp);
@@ -422,6 +416,7 @@ if (!isset($_POST["action"])) {
 
 				$sql="TRUNCATE TABLE temp_responsables;";
 				$vide_table = mysql_query($sql);
+
 
 				$nb_error=0;
 

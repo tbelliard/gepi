@@ -30,7 +30,7 @@
 
 	function extr_valeur($lig){
 		unset($tabtmp);
-		$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
+		$tabtmp=explode(">",preg_replace("/</",">",$lig));
 		return trim($tabtmp[2]);
 	}
 
@@ -731,14 +731,14 @@
 										// NIVEAU
 										$chaine="";
 										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-											if(my_ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											if(preg_match("/ECOLE/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 												$chaine="ecole";
 											}
-											elseif(my_ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											elseif(preg_match("/COLLEGE/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 												$chaine="college";
 											}
-											elseif(my_ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												if(my_ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											elseif(preg_match("/LYCEE/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												if(preg_match("/PROF/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 													$chaine="lprof";
 												}
 												else{
@@ -780,7 +780,7 @@
 
 										// TYPE
 										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-											if(my_ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											if(preg_match("/PRIVE/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 												$chaine="prive";
 											}
 											else{

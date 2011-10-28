@@ -58,6 +58,8 @@ $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 //debug_var();
+// Passer à 'y' pour afficher les requêtes
+$debug_ele="n";
 
 ?>
 <p class="bold"><a href="index.php#eleves"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
@@ -76,19 +78,19 @@ if (!isset($_POST["action"])) {
 	echo "<ul><li>Nom</li>\n" .
 			"<li>Prénom</li>\n" .
 			"<li>Date de naissance au format JJ/MM/AAAA</li>\n" .
-			"<li>n° identifiant interne à l'établissement (indispensable : c'est ce numéro qui est utilisé pour faire la liaison lors des autres importations)</li>\n" .
+			"<li>n° identifiant interne à l'établissement<br />(<em>indispensable : c'est ce numéro qui est utilisé pour faire la liaison lors des autres importations</em>)</li>\n" .
 			"<li>n° identifiant national</li>\n" .
 			"<li>Code établissement précédent</li>\n" .
-			"<li>Doublement (OUI ou NON)</li>\n" .
-			"<li>Régime (INTERN ou EXTERN ou IN.EX. ou DP DAN)</li>\n" .
-			"<li>Sexe (F ou M)</li>\n" .
+			"<li>Doublement (<em>OUI ou NON</em>)</li>\n" .
+			"<li>Régime (<em>INTERN ou EXTERN ou IN.EX. ou DP DAN</em>)</li>\n" .
+			"<li>Sexe (<em>F ou M</em>)</li>\n" .
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
-	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' />\n";
 	echo "</form>\n";
 
@@ -103,28 +105,48 @@ if (!isset($_POST["action"])) {
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
 
+		// Sauvegarde temporaire:
+		$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
+		(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+		password VARCHAR(128) NOT NULL,
+		salt VARCHAR(128) NOT NULL,
+		email VARCHAR(50) NOT NULL,
+		pers_id VARCHAR( 10 ) NOT NULL ,
+		statut VARCHAR( 20 ) NOT NULL ,
+		auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+		temoin VARCHAR( 50 ) NOT NULL
+		);";
+		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$creation_table=mysql_query($sql);
+	
+		//$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
+		$sql="DELETE FROM tempo_utilisateurs_resp WHERE statut='eleve';";
+		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$nettoyage=mysql_query($sql);
+	
+		// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+		//$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,e.ele_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
+		// Avec ce mode d'initialisation, il faut utiliser l'elenoet comme clé
+		$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,e.elenoet,u.statut,u.auth_mode,u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
+		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$svg_insert=mysql_query($sql);
+
 		// Première étape : on vide les tables
 
 		echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 		$j=0;
 		$k=0;
 		while ($j < count($liste_tables_del)) {
-			//if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-			//$sql="SELECT count(*) FROM $liste_tables_del[$j];";
 			$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
 			//echo "$sql<br />";
 			$test = sql_query1($sql);
 			if ($test != -1) {
 				if($k>0) {echo ", ";}
-				//echo $liste_tables_del[$j];
 				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
 				$res_test_tab=mysql_query($sql);
-				//if($res_test_tab) {
 				if(mysql_num_rows($res_test_tab)>0) {
-					//if (mysql_result($res_test_tab,0)!=0) {
-						$sql="DELETE FROM $liste_tables_del[$j];";
-						$del = @mysql_query($sql);
-					//}
+					$sql="DELETE FROM $liste_tables_del[$j];";
+					$del = @mysql_query($sql);
 					echo "<b>".$liste_tables_del[$j]."</b>";
 					echo " (".mysql_num_rows($res_test_tab).")";
 				}
@@ -162,17 +184,6 @@ if (!isset($_POST["action"])) {
 
 		//while (true) {
 		while ($lig=mysql_fetch_object($res_temp)) {
-			/*
-			$reg_nom = $_POST["ligne".$i."_nom"];
-			$reg_prenom = $_POST["ligne".$i."_prenom"];
-			$reg_naissance = $_POST["ligne".$i."_naissance"];
-			$reg_id_int = $_POST["ligne".$i."_id_int"];
-			$reg_id_nat = $_POST["ligne".$i."_id_nat"];
-			$reg_etab_prec = $_POST["ligne".$i."_etab_prec"];
-			$reg_double = $_POST["ligne".$i."_doublement"];
-			$reg_regime = $_POST["ligne".$i."_regime"];
-			$reg_sexe = $_POST["ligne".$i."_sexe"];
-			*/
 			$reg_nom = $lig->ELENOM;
 			$reg_prenom = $lig->ELEPRE;
 			$reg_naissance = $lig->ELEDATNAIS;
@@ -191,13 +202,9 @@ if (!isset($_POST["action"])) {
 			//==========================
 
 			// On nettoie et on vérifie :
-			//$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
-			//$reg_nom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)));
 			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
 
 			if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
-			//$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
-			//$reg_prenom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom));
 			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
 
 			if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
@@ -232,6 +239,7 @@ if (!isset($_POST["action"])) {
 			// Ca permettra d'éviter d'enregistrer des élèves en double
 
 			$test = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_int . "'"), 0);
+			if($debug_ele=='y') {echo "<span style='color:coral;'>SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_int . "' -&gt; $test enregistrement.</span><br />";}
 
 			//==========================
 			// DEBUG
@@ -269,11 +277,25 @@ if (!isset($_POST["action"])) {
 					$reg_login = strtoupper($reg_login);
 				}
 */
-				
-				$login_ele_gen_type=getSettingValue('login_ele_gen_type');
-				if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
-				$reg_login=generate_unique_login($reg_nom, $reg_prenom, 'name9_p', 'maj');
-				
+				$reg_login="";
+
+				if($reg_id_int!='') {
+					$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$reg_id_int."' AND statut='eleve';";
+					if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+					$res_tmp_u=mysql_query($sql);
+					if(mysql_num_rows($res_tmp_u)>0) {
+						$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+						$reg_login=$lig_tmp_u->login;
+						if($debug_ele=='y') {echo "<span style='color:green;'>On récupère de tempo_utilisateurs_resp le login $reg_login</span><br />";}
+					}
+				}
+	
+				if($reg_login=="") {
+					$login_ele_gen_type=getSettingValue('login_ele_gen_type');
+					if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
+					$reg_login=generate_unique_login($reg_nom, $reg_prenom, 'name9_p', 'maj');
+					if($debug_ele=='y') {echo "<span style='color:orange;'>Le login $reg_login est nouvellement généré</span><br />";}
+				}
 
 				// Normalement on a maintenant un login dont on est sûr qu'il est unique...
 
@@ -284,7 +306,7 @@ if (!isset($_POST["action"])) {
 
 				// On insert les données
 
-				$insert = mysql_query("INSERT INTO eleves SET " .
+				$sql="INSERT INTO eleves SET " .
 						"no_gep = '" . $reg_id_nat . "', " .
 						"login = '" . $reg_login . "', " .
 						"nom = '" . $reg_nom . "', " .
@@ -292,8 +314,9 @@ if (!isset($_POST["action"])) {
 						"sexe = '" . $reg_sexe . "', " .
 						"naissance = '" . $reg_naissance . "', " .
 						"elenoet = '" . $reg_id_int . "', " .
-						"ereno = '" . $reg_id_int . "'");
-
+						"ereno = '" . $reg_id_int . "';";
+				if($debug_ele=='y') {echo "<span style='color:blue;'>$sql</span><br />";}
+				$insert = mysql_query($sql);
 				if (!$insert) {
 					$error++;
 					echo mysql_error();
@@ -303,15 +326,6 @@ if (!isset($_POST["action"])) {
 					// On enregistre l'établissement d'origine, le régime, et si l'élève est redoublant
 					//============================================
 					if (($reg_etab_prec != '')&&($reg_id_int != '')) {
-						/*
-							$insert2 = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve = '" . $reg_login . "', id_etablissement = '" . $reg_etab_prec . "'");
-
-							if (!$insert2) {
-								$error++;
-								echo mysql_error();
-							}
-						*/
-
 						if($gepiSchoolRne!="") {
 							if($gepiSchoolRne!=$reg_etab_prec) {
 								$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_id_int';";

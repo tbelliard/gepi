@@ -51,6 +51,10 @@ if (!checkAccess()) {
 $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+// Passer à 'y' pour afficher les requêtes
+$debug_resp="n";
+
 echo "<p class=bold>";
 echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
@@ -720,6 +724,19 @@ if($temoin==1){
 									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
 									//echo "A l'indice $i, on a \$tabligne[\$tabindice[$i]]=\$tabligne[$tabindice[$i]]=".$tabligne[$tabindice[$i]]."<br />";
 								}
+
+
+								$login_resp="";
+								$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='$affiche[0]';";
+								$res_tmp_u=mysql_query($sql);
+								if(mysql_num_rows($res_tmp_u)>0) {
+									$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+									$login_resp=$lig_tmp_u->login;
+									if(test_unique_login($login_resp)!='yes') {
+										$login_resp="";
+									}
+								}
+
 								$sql="insert into resp_pers set
 											pers_id = '$affiche[0]',
 											nom = '$affiche[1]',
@@ -740,6 +757,26 @@ if($temoin==1){
 								} else {
 									$nb_record3++;
 									echo "Insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numéro d'adresse $affiche[8].<br />\n";
+
+									if($login_resp!="") {
+										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$affiche[1]."', prenom='".$affiche[2]."', ";
+										$sql.="civilite='".ucfirst(strtolower($affiche[3]))."', ";
+										$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+										$insert_u=mysql_query($sql);
+										if(!$insert_u) {
+											echo "Erreur lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
+										}
+										else {
+											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+											$update_rp=mysql_query($sql);
+	
+											$sql="UPDATE tempo_utilisateurs_resp SET temoin='recree' WHERE pers_id='".$affiche[0]."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+											$update_tmp_u=mysql_query($sql);
+										}
+									}
 								}
 							}
 						}

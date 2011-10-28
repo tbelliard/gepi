@@ -55,6 +55,10 @@ require_once("../lib/header.inc");
 // On vérifie si l'extension d_base est active
 //verif_active_dbase();
 
+//debug_var();
+// Passer à 'y' pour afficher les requêtes
+$debug_ele="n";
+
 //==================================
 // RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
 $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
@@ -73,7 +77,6 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     while ($i < $nb) {
         $req = mysql_query("select col2 from tempo2 where col1 = '$i'");
         $reg_login = @mysql_result($req, 0, 'col2');
-
 
         $id_tempo = @mysql_result($call_data, $i, "ID_TEMPO");
         $no_gep = @mysql_result($call_data, $i, "ELENONAT");
@@ -95,27 +98,36 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
         if (($reg_sexe != "M") and ($reg_sexe != "F")) {$reg_sexe = "M";}
         if ($reg_naissance == '') {$reg_naissance = "19000101";}
-        //$maj_tempo = mysql_query("UPDATE temp_gep_import SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
         $maj_tempo = mysql_query("UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
-        //$reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ereno='$reg_ereno'");
 
-        //$reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id'");
         $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'");
 
-        if (!$reg_eleve) echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";
+        if (!$reg_eleve) {echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";}
+		else {
+			$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$reg_ele_id."' AND statut='eleve';";
+			if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+			$res_tmp_u=mysql_query($sql);
+			if(mysql_num_rows($res_tmp_u)>0) {
+				$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-		//=========================
-		// MODIF: boireaus 20071024
-		/*
-        if ($reg_regime == "0") {$regime = "ext.";}
-        if ($reg_regime == "2") {$regime = "d/p";}
-        if ($reg_regime == "3") {$regime = "int.";}
-        if ($reg_regime == "4") {$regime = "i-e";}
-        if (($reg_regime != "0") and ($reg_regime != "4") and ($reg_regime != "2") and ($reg_regime != "3")) {$regime = "d/p";}
-		*/
+				$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$reg_nom."', prenom='".$reg_prenom."', ";
+				if($reg_sexe=='M') {
+					$sql.="civilite='M', ";
+				}
+				else {
+					$sql.="civilite='MLLE', ";
+				}
+				$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+				$insert_u=mysql_query($sql);
+				if(!$insert_u) {
+					echo "Erreur lors de la re-création du compte utilisateur pour ".$reg_nom." ".$reg_prenom.".<br />\n";
+				}
+			}
+		}
+
 		$regime=traite_regime_sconet($reg_regime);
 		if("$regime"=="ERR"){$regime="d/p";}
-		//=========================
 
         if ($reg_doublant == "O") {$doublant = 'R';}
         if ($reg_doublant != "O") {$doublant = '-';}
@@ -260,49 +272,19 @@ else {
         // On teste pour savoir s'il faut créer un login
         $nouv_login='no';
         if ($no_gep != '') {
-/*            $test1 = mysql_num_rows(mysql_query("SELECT login FROM a1_eleves WHERE (no_gep='$no_gep')"));
-            $test2 = mysql_num_rows(mysql_query("SELECT login FROM a2_eleves WHERE (no_gep='$no_gep')"));
-            $test3 = mysql_num_rows(mysql_query("SELECT login FROM a3_eleves WHERE (no_gep='$no_gep')"));
-            $test4 = mysql_num_rows(mysql_query("SELECT login FROM a4_eleves WHERE (no_gep='$no_gep')"));
-            $test5 = mysql_num_rows(mysql_query("SELECT login FROM a5_eleves WHERE (no_gep='$no_gep')"));
-            $test6 = mysql_num_rows(mysql_query("SELECT login FROM a6_eleves WHERE (no_gep='$no_gep')"));
-            if (($test1 == "0") and ($test2 == "0") and ($test3 == "0") and ($test4 == "0") and ($test5 == "0") and ($test6 == "0")) {
-*/
                 $nouv_login = 'yes';
-/*
-            } else {
-                if ($test1 != "0") {
-                    $query_login = mysql_query("SELECT login FROM a1_eleves WHERE (no_gep='$no_gep')");
-                    $login_eleve = mysql_result($query_login, 0, 'login');
-                } else if ($test2 != "0") {
-                    $query_login = mysql_query("SELECT login FROM a2_eleves WHERE (no_gep='$no_gep')");
-                    $login_eleve = mysql_result($query_login, 0, 'login');
-                } else if ($test3 != "0") {
-                    $query_login = mysql_query("SELECT login FROM a3_eleves WHERE (no_gep='$no_gep')");
-                    $login_eleve = mysql_result($query_login, 0, 'login');
-                } else if ($test4 != "0") {
-                    $query_login = mysql_query("SELECT login FROM a4_eleves WHERE (no_gep='$no_gep')");
-                    $login_eleve = mysql_result($query_login, 0, 'login');
-                } else if ($test5 != "0") {
-                    $query_login = mysql_query("SELECT login FROM a5_eleves WHERE (no_gep='$no_gep')");
-                    $login_eleve = mysql_result($query_login, 0, 'login');
-                } else {
-                    $query_login = mysql_query("SELECT login FROM a6_eleves WHERE (no_gep='$no_gep')");
-                    $login_eleve = mysql_result($query_login, 0, 'login');
-                }
-                // Il s'agit d'un élève figurant déjà dans une des bases élève des années passées.
-                // Dans ce cas, on utilise le login existant
-            }
-*/
         }
         // S'il s'agit d'un élève ne figurant pas déjà dans une des bases élève des années passées,
         // on crée un login !
 		//echo "no_gep=$no_gep<br />\n";
 		//echo "nouv_login=$nouv_login<br />\n";
         if (($no_gep == '') or ($nouv_login=='yes')) {
+			$login_eleve="";
+
             $reg_nom = strtr($reg_nom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
             $reg_prenom = strtr($reg_prenom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-            $temp1 = strtoupper($reg_nom);
+            /*
+			$temp1 = strtoupper($reg_nom);
             $temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
             $temp1 = strtr($temp1, " '-", "___");
             $temp1 = substr($temp1,0,7);
@@ -311,6 +293,23 @@ else {
             $temp2 = strtr($temp2, " '-", "___");
             $temp2 = substr($temp2,0,1);
             $login_eleve = $temp1.'_'.$temp2;
+			*/
+
+			if($reg_ele_id!='') {
+				$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$reg_ele_id."' AND statut='eleve';";
+				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+				$res_tmp_u=mysql_query($sql);
+				if(mysql_num_rows($res_tmp_u)>0) {
+					$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+					$login_eleve=$lig_tmp_u->login;
+				}
+			}
+
+			if($login_eleve=="") {
+				$login_ele_gen_type=getSettingValue('login_ele_gen_type');
+				if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
+				$login_eleve=generate_unique_login($reg_nom, $reg_prenom, 'name9_p', 'maj');
+			}
 
 			// Dans le cas où Gepi est intégré à un ENT, il ne doit pas générer de login mais récupérer celui qui existe déjà
 			if (getSettingValue("use_ent") == 'y') {
@@ -354,7 +353,7 @@ else {
 				}
 			}
 			else {
-				// On teste l'unicité du login que l'on vient de créer
+				// On teste l'unicité du login que l'on vient de créer: Normalement, c'est déjà fait avec generate_unique_login()... NON: On n'a pas testé la table tempo2.
 				$k = 2;
 				$test_unicite = 'no';
 				$temp = $login_eleve;
@@ -368,7 +367,7 @@ else {
 				}
 			}
         }
-		//echo "plip<br />";
+
         if ($reg_nom != '') {
             $reg_nom_aff = $reg_nom;
         } else {
@@ -396,22 +395,6 @@ else {
             $naissance = 'non définie';
         }
 
-		//=========================
-		// MODIF: boireaus 20071024
-		/*
-        if ($reg_regime == "0") {
-            $reg_regime_aff = "ext.";
-        } else if ($reg_regime == "4") {
-            $reg_regime_aff = "i-e";
-        } else if ($reg_regime == "2") {
-            $reg_regime_aff = "d/p";
-        } else if ($reg_regime == "3") {
-            $reg_regime_aff = "int.";
-        } else {
-            $reg_regime_aff = "<font color = 'red'>ND</font>";
-            $ligne_pb = 'yes';
-        }
-		*/
 		$reg_regime_aff=traite_regime_sconet($reg_regime);
 		if($reg_regime_aff=="ERR"){
 			$reg_regime_aff="<font color = 'red'>ND</font>";
@@ -461,10 +444,8 @@ else {
             $ligne_pb = 'yes';
         }
 
-
 		//echo "</td>\n";
 		//echo "</tr>\n";
-
 
         if (!isset($affiche)) $affiche = 'tout';
         // On affiche la ligne du tableau
