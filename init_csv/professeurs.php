@@ -53,7 +53,7 @@ require_once("../lib/header.inc");
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class=bold><a href="index.php#professeurs"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>\n";
@@ -82,14 +82,71 @@ if (!isset($_POST["action"])) {
 
 
 	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?<br />\n";
-	echo "<input type='radio' name='login_mode' value='name' checked /> nom";
-	echo "<br />\n<input type='radio' name='login_mode' value='name8' /> nom (tronqué à 8 caractères)";
-	echo "<br />\n<input type='radio' name='login_mode' value='fname8' /> pnom (tronqué à 8 caractères)";
-	echo "<br />\n<input type='radio' name='login_mode' value='fname19' /> pnom (tronqué à 19 caractères)";
-	echo "<br />\n<input type='radio' name='login_mode' value='firstdotname' /> prenom.nom";
-	echo "<br />\n<input type='radio' name='login_mode' value='firstdotname19' /> prenom.nom (tronqué à 19 caractères)";
-	echo "<br />\n<input type='radio' name='login_mode' value='namef8' /> nomp (tronqué à 8 caractères)";
-	echo "<br />\n<input type='radio' name='login_mode' value='lcs' /> pnom (façon LCS)";
+
+	if(getSettingValue("use_ent")!='y') {
+		$default_login_gen_type=getSettingValue('login_gen_type');
+		if($default_login_gen_type=='') {$default_login_gen_type='name';}
+	}
+	else {
+		$default_login_gen_type="";
+	}
+
+	echo "<input type='radio' name='login_mode' id='login_gen_type_name' value='name' ";
+	if($default_login_gen_type=='name') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_name'  style='cursor: pointer;'>nom</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_mode' id='login_gen_type_name8' value='name8' ";
+	if($default_login_gen_type=='name8') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (tronqué à 8 caractères)</label>\n";
+	echo "<br />";
+
+	echo "<input type='radio' name='login_mode' id='login_gen_type_fname8' value='fname8' ";
+	if($default_login_gen_type=='fname8') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (tronqué à 8 caractères)</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_mode' id='login_gen_type_fname19' value='fname19' ";
+	if($default_login_gen_type=='fname19') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (tronqué à 19 caractères)</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_mode' id='login_gen_type_firstdotname' value='firstdotname' ";
+	if($default_login_gen_type=='firstdotname') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_firstdotname'  style='cursor: pointer;'>prenom.nom</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_mode' id='login_gen_type_firstdotname19' value='firstdotname19' ";
+	if($default_login_gen_type=='firstdotname19') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (tronqué à 19 caractères)</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_mode' id='login_gen_type_namef8' value='namef8' ";
+	if($default_login_gen_type=='namef8') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (tronqué à 8 caractères)</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_mode' id='login_gen_type_lcs' value='lcs' ";
+	if($default_login_gen_type=='lcs') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (façon LCS)</label>\n";
+	echo "<br />\n";
+
 	echo "<br />\n</p>\n<p>Quel mode d'authentification est utilisé ?  (laissez 'Gepi' si vous ne savez pas de quoi il s'agit)</p>\n";
 	echo "<p>\n<input type='radio' name='sso' value='gepi' checked /> Gepi";
 	echo "<br />\n<input type='radio' name='sso' value='sso' /> SSO (aucun mot de passe ne sera généré)";
@@ -174,6 +231,7 @@ if (!isset($_POST["action"])) {
 
 			if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $reg_email)) $reg_email = "-";
 
+			// Déjà fait avant:
 			$reg_login = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($reg_login)));
 			if (strlen($reg_login) > 50) $reg_login = substr($reg_login, 0, 50);
 
@@ -240,7 +298,7 @@ if (!isset($_POST["action"])) {
 		if ($total > 0) {echo "<p>" . $total . " professeurs ont été enregistrés.</p>\n";}
 		if($total_deja_presents>0) {echo "<p>" . $total_deja_presents . " professeurs déjà présents.</p>\n";}
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php#professeurs'>Revenir à la page précédente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {
@@ -304,7 +362,7 @@ if (!isset($_POST["action"])) {
 						if ($tabligne[2] != "M." AND $tabligne[2] != "MME" AND $tabligne[2] != "MLLE") { $tabligne[2] = "";}
 
 						$tabligne[3] = preg_replace("/\"/", "", trim($tabligne[3]));
-						if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $tabligne[3])) $tabligne[3] = "-";
+						if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $tabligne[3])) {$tabligne[3] = "-";}
 
 
 						// On regarde si le prof existe déjà dans la base
@@ -317,60 +375,59 @@ if (!isset($_POST["action"])) {
 							$reg_nom_login = preg_replace("/\040/","_", $tabligne[0]);
 							$reg_prenom_login = strtr($tabligne[1], "éèüëïäê", "eeueiae");
 							$reg_prenom_login = preg_replace("/[^a-zA-Z.\-]/", "", $reg_prenom_login);
+							/*
 							if ($_POST['login_mode'] == "name") {
-									$temp1 = $reg_nom_login;
-									$temp1 = strtoupper($temp1);
-									$temp1 = preg_replace("/ /","", $temp1);
-									$temp1 = preg_replace("/-/","_", $temp1);
-									$temp1 = preg_replace("/'/","", $temp1);
-									//$temp1 = substr($temp1,0,8);
-
-								} elseif ($_POST['login_mode'] == "name8") {
-									$temp1 = $reg_nom_login;
-									$temp1 = strtoupper($temp1);
-									$temp1 = preg_replace("/ /","", $temp1);
-									$temp1 = preg_replace("/-/","_", $temp1);
-									$temp1 = preg_replace("/'/","", $temp1);
-									$temp1 = substr($temp1,0,8);
-								} elseif ($_POST['login_mode'] == "fname8") {
-									$temp1 = $reg_prenom_login{0} . $reg_nom_login;
-									$temp1 = strtoupper($temp1);
-									$temp1 = preg_replace("/ /","", $temp1);
-									$temp1 = preg_replace("/-/","_", $temp1);
-									$temp1 = preg_replace("/'/","", $temp1);
-									$temp1 = substr($temp1,0,8);
-								} elseif ($_POST['login_mode'] == "fname19") {
-									$temp1 = $reg_prenom_login{0} . $reg_nom_login;
-									$temp1 = strtoupper($temp1);
-									$temp1 = preg_replace("/ /","", $temp1);
-									$temp1 = preg_replace("/-/","_", $temp1);
-									$temp1 = preg_replace("/'/","", $temp1);
-									$temp1 = substr($temp1,0,19);
-								} elseif ($_POST['login_mode'] == "firstdotname") {
-
-									$temp1 = $reg_prenom_login . "." . $reg_nom_login;
-									$temp1 = strtoupper($temp1);
-
+								$temp1 = $reg_nom_login;
+								$temp1 = strtoupper($temp1);
 								$temp1 = preg_replace("/ /","", $temp1);
-									$temp1 = preg_replace("/-/","_", $temp1);
-									$temp1 = preg_replace("/'/","", $temp1);
-									//$temp1 = substr($temp1,0,19);
-								} elseif ($_POST['login_mode'] == "firstdotname19") {
-									$temp1 = $reg_prenom_login . "." . $reg_nom_login;
-									$temp1 = strtoupper($temp1);
-									$temp1 = preg_replace("/ /","", $temp1);
-									$temp1 = preg_replace("/-/","_", $temp1);
-									$temp1 = preg_replace("/'/","", $temp1);
-									$temp1 = substr($temp1,0,19);
-								} elseif ($_POST['login_mode'] == "namef8") {
-									$temp1 =  substr($reg_nom_login,0,7) . $reg_prenom_login{0};
-									$temp1 = strtoupper($temp1);
-									$temp1 = preg_replace("/ /","", $temp1);
-									$temp1 = preg_replace("/-/","_", $temp1);
-									$temp1 = preg_replace("/'/","", $temp1);
-									//$temp1 = substr($temp1,0,8);
-								} elseif ($_POST['login_mode'] == "lcs") {
-									$nom = $reg_nom_login;
+								$temp1 = preg_replace("/-/","_", $temp1);
+								$temp1 = preg_replace("/'/","", $temp1);
+								//$temp1 = substr($temp1,0,8);
+
+							} elseif ($_POST['login_mode'] == "name8") {
+								$temp1 = $reg_nom_login;
+								$temp1 = strtoupper($temp1);
+								$temp1 = preg_replace("/ /","", $temp1);
+								$temp1 = preg_replace("/-/","_", $temp1);
+								$temp1 = preg_replace("/'/","", $temp1);
+								$temp1 = substr($temp1,0,8);
+							} elseif ($_POST['login_mode'] == "fname8") {
+								$temp1 = $reg_prenom_login{0} . $reg_nom_login;
+								$temp1 = strtoupper($temp1);
+								$temp1 = preg_replace("/ /","", $temp1);
+								$temp1 = preg_replace("/-/","_", $temp1);
+								$temp1 = preg_replace("/'/","", $temp1);
+								$temp1 = substr($temp1,0,8);
+							} elseif ($_POST['login_mode'] == "fname19") {
+								$temp1 = $reg_prenom_login{0} . $reg_nom_login;
+								$temp1 = strtoupper($temp1);
+								$temp1 = preg_replace("/ /","", $temp1);
+								$temp1 = preg_replace("/-/","_", $temp1);
+								$temp1 = preg_replace("/'/","", $temp1);
+								$temp1 = substr($temp1,0,19);
+							} elseif ($_POST['login_mode'] == "firstdotname") {
+								$temp1 = $reg_prenom_login . "." . $reg_nom_login;
+								$temp1 = strtoupper($temp1);
+								$temp1 = preg_replace("/ /","", $temp1);
+								$temp1 = preg_replace("/-/","_", $temp1);
+								$temp1 = preg_replace("/'/","", $temp1);
+								//$temp1 = substr($temp1,0,19);
+							} elseif ($_POST['login_mode'] == "firstdotname19") {
+								$temp1 = $reg_prenom_login . "." . $reg_nom_login;
+								$temp1 = strtoupper($temp1);
+								$temp1 = preg_replace("/ /","", $temp1);
+								$temp1 = preg_replace("/-/","_", $temp1);
+								$temp1 = preg_replace("/'/","", $temp1);
+								$temp1 = substr($temp1,0,19);
+							} elseif ($_POST['login_mode'] == "namef8") {
+								$temp1 =  substr($reg_nom_login,0,7) . $reg_prenom_login{0};
+								$temp1 = strtoupper($temp1);
+								$temp1 = preg_replace("/ /","", $temp1);
+								$temp1 = preg_replace("/-/","_", $temp1);
+								$temp1 = preg_replace("/'/","", $temp1);
+								//$temp1 = substr($temp1,0,8);
+							} elseif ($_POST['login_mode'] == "lcs") {
+								$nom = $reg_nom_login;
 								$nom = strtolower($nom);
 								if (preg_match("/\s/",$nom)) {
 									$noms = preg_split("/\s/",$nom);
@@ -378,34 +435,38 @@ if (!isset($_POST["action"])) {
 									if (strlen($noms[0]) < 4) {
 										$nom1 .= "_". $noms[1];
 										$separator = " ";
-										} else {
-										$separator = "-";
-										}
 									} else {
+										$separator = "-";
+									}
+								} else {
 									$nom1 = $nom;
-										$sn = ucfirst($nom);
-									}
-									$firstletter_nom = $nom1{0};
-									$firstletter_nom = strtoupper($firstletter_nom);
-									$prenom = $reg_prenom_login;
-									$prenom1 = $affiche[1]{0};
-									$temp1 = $prenom1 . $nom1;
+									$sn = ucfirst($nom);
 								}
+								$firstletter_nom = $nom1{0};
+								$firstletter_nom = strtoupper($firstletter_nom);
+								$prenom = $reg_prenom_login;
+								$prenom1 = $affiche[1]{0};
+								$temp1 = $prenom1 . $nom1;
+							}
 
-								$login_prof = $temp1;
-								// On teste l'unicité du login que l'on vient de créer
-								$m = 2;
-								$test_unicite = 'no';
-								$temp = $login_prof;
-								while ($test_unicite != 'yes') {
-									$test_unicite = test_unique_login($login_prof);
-									if ($test_unicite != 'yes') {
-										$login_prof = $temp.$m;
-										$m++;
-									}
+							$login_prof = $temp1;
+							// On teste l'unicité du login que l'on vient de créer
+							$m = 2;
+							$test_unicite = 'no';
+							$temp = $login_prof;
+							while ($test_unicite != 'yes') {
+								$test_unicite = test_unique_login($login_prof);
+								if ($test_unicite != 'yes') {
+									$login_prof = $temp.$m;
+									$m++;
 								}
-								$login_prof = substr($login_prof, 0, 50);
-								$login_prof = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($login_prof)));
+							}
+							$login_prof = substr($login_prof, 0, 50);
+							$login_prof = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($login_prof)));
+							*/
+
+							$login_prof=generate_unique_login($reg_nom_login, $reg_prenom_login, $_POST['login_mode'], 'maj');
+
 						} else {
 							// Le prof semble déjà exister. On récupère son login actuel
 							$login_prof = mysql_result($test, 0, "login");

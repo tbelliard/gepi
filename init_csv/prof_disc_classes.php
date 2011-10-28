@@ -53,7 +53,7 @@ require_once("../lib/header.inc");
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php#prof_disc_classes"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Sixième phase d'initialisation<br />Importation des associations profs-matières-classes (enseignements)</h3></center>\n";
@@ -239,7 +239,7 @@ if (!isset($_POST["action"])) {
 		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
 		if ($total > 0) echo "<p>" . $total . " groupes ont été enregistrés.</p>\n";
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php#prof_disc_classes'>Revenir à la page précédente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {

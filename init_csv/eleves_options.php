@@ -50,7 +50,7 @@ require_once("../lib/header.inc");
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class=bold><a href="index.php#eleves_options"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Septième phase d'initialisation<br />Importation des associations élèves-options</h3></center>\n";
@@ -200,7 +200,7 @@ if (!isset($_POST["action"])) {
 		if ($total > 0) {echo "<p>" . $total . " associations élèves-options ont été enregistrées.</p>\n";}
 		if(($error==0)&&($total==0)) {echo "<p>Aucune association élève-option n'a été enregistrée???</p>\n";}
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php#eleves_options'>Revenir à la page précédente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {

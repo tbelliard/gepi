@@ -60,7 +60,7 @@ $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 //debug_var();
 
 ?>
-<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php#eleves"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves</h3></center>\n";
@@ -105,21 +105,40 @@ if (!isset($_POST["action"])) {
 
 		// Première étape : on vide les tables
 
+		echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 		$j=0;
+		$k=0;
 		while ($j < count($liste_tables_del)) {
 			//if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-			$sql="SELECT count(*) FROM $liste_tables_del[$j];";
-			$res_test_tab=mysql_query($sql);
-			if($res_test_tab) {
-				if (mysql_result($res_test_tab,0)!=0) {
-					$sql="DELETE FROM $liste_tables_del[$j];";
-					$del = @mysql_query($sql);
+			//$sql="SELECT count(*) FROM $liste_tables_del[$j];";
+			$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+			//echo "$sql<br />";
+			$test = sql_query1($sql);
+			if ($test != -1) {
+				if($k>0) {echo ", ";}
+				//echo $liste_tables_del[$j];
+				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+				$res_test_tab=mysql_query($sql);
+				//if($res_test_tab) {
+				if(mysql_num_rows($res_test_tab)>0) {
+					//if (mysql_result($res_test_tab,0)!=0) {
+						$sql="DELETE FROM $liste_tables_del[$j];";
+						$del = @mysql_query($sql);
+					//}
+					echo "<b>".$liste_tables_del[$j]."</b>";
+					echo " (".mysql_num_rows($res_test_tab).")";
 				}
+				else {
+					echo $liste_tables_del[$j];
+				}
+				$k++;
 			}
 			$j++;
 		}
 
 		// Suppression des comptes d'élèves:
+		echo "<br />\n";
+		echo "<p><em>On supprime les anciens comptes élèves...</em> ";
 		$sql="DELETE FROM utilisateurs WHERE statut='eleves';";
 		$del=mysql_query($sql);
 
@@ -137,6 +156,9 @@ if (!isset($_POST["action"])) {
 			require("../lib/footer.inc.php");
 			die();
 		}
+
+		echo "<br />\n";
+		echo "<p><em>On remplit les tables 'eleves', 'j_eleves_regime', 'j_eleves_etablissements'&nbsp;:</em> ";
 
 		//while (true) {
 		while ($lig=mysql_fetch_object($res_temp)) {
@@ -219,7 +241,7 @@ if (!isset($_POST["action"])) {
 
 			if ($test == 0) {
 				// Test négatif : aucun élève avec cet ID... on enregistre !
-
+/*
 				// On génère un login
 				$reg_login = preg_replace("/\040/","_", $reg_nom);
 				//====================================
@@ -246,6 +268,12 @@ if (!isset($_POST["action"])) {
 					}
 					$reg_login = strtoupper($reg_login);
 				}
+*/
+				
+				$login_ele_gen_type=getSettingValue('login_ele_gen_type');
+				if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
+				$reg_login=generate_unique_login($reg_nom, $reg_prenom, 'name9_p', 'maj');
+				
 
 				// Normalement on a maintenant un login dont on est sûr qu'il est unique...
 
@@ -360,7 +388,7 @@ if (!isset($_POST["action"])) {
 		if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>\n";
 		if ($total > 0) echo "<p>" . $total . " élèves ont été enregistrés.</p>\n";
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php#eleves'>Revenir à la page précédente</a></p>\n";
 
 		// On sauvegarde le témoin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
 		saveSetting("conv_new_resp_table", 0);
