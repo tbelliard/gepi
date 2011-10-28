@@ -127,7 +127,7 @@ if ($id_eleve !== null && $id_eleve != '') {
 }
 
 
-
+$timeDebut=time();
 
 $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
 if ($eleve_col->isEmpty()) {
@@ -163,32 +163,49 @@ foreach ($eleve_col as $eleve) {
 	  $donnees[$eleve_id]['retards'] = $eleveNbAbs['retards'];
 	  
 	  //Récupérer le décompte des traitements pour chaque élève
+	  $donneeBrut= FALSE;
+	  // Décompte en données brutes
+	foreach ($justifie_col as $justifie) { 
+		if ($donneeBrut== TRUE) {
+		  $propel_traitEleve = AbsenceEleveTraitementQuery::create()->filterByAJustificationId($justifie->getid())
+			->useJTraitementSaisieEleveQuery()
+			  ->useAbsenceEleveSaisieQuery()
+				->filterByEleveId($eleve->getIdEleve())
+			  ->endUse()
+			->endUse() ;
+
+		  $traiteEleve_col = $propel_traitEleve;
+		  $donnees[$eleve_id]['traitement'][] = $traiteEleve_col->distinct()->count();
+		} else {
+		  // Décompte en 1/2 journées
+		  $propel_traitEleveDemi = AbsenceEleveSaisieQuery::create()
+			->filterByEleveId($eleve->getIdEleve())
+			->orderByDebutAbs()
+			->useJTraitementSaisieEleveQuery()
+			  ->useAbsenceEleveTraitementQuery()
+				->filterByAJustificationId($justifie->getid())
+			  ->endUse()
+			->endUse()
+			;
+
+		  $traiteEleveDemi_col = $propel_traitEleveDemi->find();
+		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsenceParCollection($traiteEleveDemi_col);
+		  $donnees[$eleve_id]['traitement'][] = $traiteEleveDemi->count();
+		}
 	  
-// echo $eleve->getNom()." ".$eleve->getPrenom()." : ".$eleveNbAbs['retards']." - ";
-foreach ($justifie_col as $justifie) { 
-  $propel_traitEleve = AbsenceEleveTraitementQuery::create()->filterByAJustificationId($justifie->getid())
-	->useJTraitementSaisieEleveQuery()
-	  ->useAbsenceEleveSaisieQuery()
-		->filterByEleveId($eleve->getIdEleve())
-	  ->endUse()
-	->endUse() ;
-
-  $traiteEleve_col = $propel_traitEleve->distinct()->count();
-  // echo $traiteEleve_col." - ";
-  $donnees[$eleve_id]['traitement'][] = $traiteEleve_col;
-}
-// echo "<br />";
-
+	  }
 	}
+		
 	
 	$precedent_eleve_id = $eleve_id;
-	unset ($eleveNbAbs,$traiteEleve_col,$propel_eleve );
+	unset ($eleveNbAbs,$traiteEleve_col );
   }
 }
 
-
-
-
+// temps de chargement de la page
+$timefin=time();
+$duree = $timefin - $timeDebut;
+echo "Durée de calcul de la page : ".$duree."s";
 
 /* *******************************************************************************
  * Affichage
@@ -229,10 +246,10 @@ include('menu_bilans.inc.php');
 		Retards
 	  </th>
 	  <th>
-		Non justifiées
+		1/2 journées non justifiées
 	  </th>
 	  <th>
-		Justifiées
+		1/2 journées justifiées
 	  </th>
 <?php foreach ($justifie_col as $justifie) {  ?>
 	  <th>
@@ -261,6 +278,7 @@ include('menu_bilans.inc.php');
 	  <td style="text-align: center;">
 		<?php echo $donnee['justifiees']; ?>
 	  </td>
+<?php // foreach ($donnee['traitement'] as $justifie) { ; ?>
 <?php foreach ($donnee['traitement'] as $justifie) { ; ?>
 	  <td style="text-align: center;">
 		<?php echo $justifie; ?>
