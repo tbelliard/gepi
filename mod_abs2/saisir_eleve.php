@@ -250,7 +250,7 @@ if ($type_selection == 'id_eleve') {
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
-    $eleve = $query->filterByIdEleve($id_eleve)
+    $eleve = $query->filterById($id_eleve)
             ->where('Eleve.DateSortie<?','0')
             ->orWhere('Eleve.DateSortie is NULL')
             ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))

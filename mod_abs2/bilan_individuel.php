@@ -223,7 +223,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
         </h3>
           <?php
             if ($id_eleve!==null && $id_eleve!=''){
-                $eleve=EleveQuery::create()->filterByIdEleve($id_eleve)->findOne();
+                $eleve=EleveQuery::create()->filterById($id_eleve)->findOne();
                 $nom_eleve=$eleve->getNom();
                 $id_classe=$eleve->getClasse()->getId();
             }
@@ -386,7 +386,7 @@ if ($nom_eleve !== null && $nom_eleve != '') {
     $eleve_query->filterByNom('%'.$nom_eleve.'%');
 }
 if ($id_eleve !== null && $id_eleve != '') {
-    $eleve_query->filterByIdEleve($id_eleve);
+    $eleve_query->filterById($id_eleve);
 }
 
 $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
@@ -399,7 +399,7 @@ if (isset($_SESSION['donnees_bilan'])){
     $donnees = unserialize($_SESSION['donnees_bilan']);
 }
 foreach ($eleve_col as $eleve) {    
-    $eleve_id = $eleve->getIdEleve();
+    $eleve_id = $eleve->getId();
     //on initialise les donnees pour le nouvel eleve
     if ($precedent_eleve_id != $eleve_id) {
         $donnees[$eleve_id]['nom'] = $eleve->getNom();
@@ -410,7 +410,7 @@ foreach ($eleve_col as $eleve) {
     // on récupère les saisies de l'élève
     $saisie_query = AbsenceEleveSaisieQuery::create()
                     ->filterByPlageTemps($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
-                    ->filterByEleveId($eleve->getIdEleve());
+                    ->filterByEleveId($eleve->getId());
 
     if ($type_extrait == '1') {
         $saisie_query->filterByManquementObligationPresence(true);
@@ -508,12 +508,12 @@ foreach ($eleve_col as $eleve) {
             $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type_css'] = $type_css;
         }        
     }    
-    $precedent_eleve_id = $eleve->getIdEleve();    
+    $precedent_eleve_id = $eleve->getId();    
 }
 //on récupère les demi-journées globales et par ligne
 foreach ($donnees as $id => &$eleve) {
     if(!isset($eleve['infos_saisies'])) continue;
-    $propel_eleve = EleveQuery::create()->filterByIdEleve($id)->findOne();
+    $propel_eleve = EleveQuery::create()->filterById($id)->findOne();
     $eleve['demi_journees'] = $propel_eleve->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
     $eleve['non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
     $eleve['retards'] = $propel_eleve->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();    
@@ -653,7 +653,7 @@ foreach ($donnees as $id => $eleve) {
                     echo '<td rowspan=' . $eleve['nbre_lignes_total'] . '>';
                     echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&texte_conditionnel='.$texte_conditionnel.'&filtrage='.$filtrage.'&ndj='.$ndj.'&ndjnj='.$ndjnj.'&nr='.$nr.'">';
                     echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')';
-                    $propel_eleve=EleveQuery::create()->filterByIdEleve($id)->findOne();
+                    $propel_eleve=EleveQuery::create()->filterById($id)->findOne();
                     if ($utilisateur->getAccesFicheEleve($propel_eleve)) {
                         echo "<a href='../eleves/visu_eleve.php?ele_login=".$propel_eleve->getLogin()."' target='_blank'>";
                         echo ' (voir fiche)';
@@ -922,7 +922,7 @@ if ($nom_eleve != null && $nom_eleve != '') {
     $titre .= ' pour les élèves dont le nom ou le prénom contient ' . $nom_eleve;
 }
 if ($id_eleve != null && $id_eleve != '') {
-    $eleve_current=  EleveQuery::create()->filterByIdEleve($id_eleve)->findOne();
+    $eleve_current=  EleveQuery::create()->filterById($id_eleve)->findOne();
     $titre .= ' pour ' . $eleve_current->getPrenom() . ' ' . $eleve_current->getNom();
 }
 $TBS->MergeField('titre', $titre);
