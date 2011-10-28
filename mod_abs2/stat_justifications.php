@@ -26,10 +26,10 @@
  */
 
 /**
- * @todo Totaux par classes
  * @todo Envoyer le tableau _Session
  * @todo Recharger la page régulièrement
  * @todo Export .csv
+ * @todo Totaux par classes
  * @todo Export .ods
  * @todo Gérer la taille du div
  */
@@ -178,6 +178,7 @@ foreach ($eleve_col as $eleve) {
 	  
 	  //Récupérer le décompte des traitements pour chaque élève
 	  
+	  $totalDemi=0;
 	foreach ($justifie_col as $justifie) {
 	  // Décompte en données brutes 
 		if ($donneeBrut== TRUE) {
@@ -207,9 +208,11 @@ foreach ($eleve_col as $eleve) {
 		  $traiteEleveDemi_col = $propel_traitEleveDemi->find();
 		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsenceParCollection($traiteEleveDemi_col);
 		  $donnees[$eleve_id]['traitement'][] = $traiteEleveDemi->count();
+		  $totalDemi += $traiteEleveDemi->count();
 		}
 	  
 	  }
+	  $donnees[$eleve_id]['totalDemi']=$totalDemi;
 	}
 		
 	
@@ -321,7 +324,8 @@ include('menu_bilans.inc.php');
 	
 	
 	
-<?php foreach ($donnees as $donnee) { ?>
+<?php if (count($donnees)) {
+foreach ($donnees as $donnee) { ?>
 	<tr>
 	  <td style ="border:1px groove #aaaaaa;">
 		<?php echo $donnee['nom']." ".$donnee['prenom']; ?>
@@ -336,7 +340,9 @@ include('menu_bilans.inc.php');
 	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['non_justifiees']; ?>
 	  </td>
-	  <td style="border:1px groove #aaaaaa;text-align: center;">
+	  <td style="border:1px groove #aaaaaa;text-align: center;
+<?php if (!$donneeBrut && ($donnee['totalDemi'] != $donnee['justifiees'])) echo 'background:#ff0000;'; ?>
+		  ">
 		<?php echo $donnee['justifiees']; ?>
 	  </td>
 <?php // foreach ($donnee['traitement'] as $justifie) { ; ?>
@@ -346,7 +352,8 @@ include('menu_bilans.inc.php');
 	  </td>
 <?php } ; ?>
 	</tr>
-<?php } ?>
+<?php } 
+} ?>
   </table>
 </div>
  
