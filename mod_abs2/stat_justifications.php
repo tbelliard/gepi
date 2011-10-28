@@ -26,7 +26,6 @@
  */
 
 /**
- * @todo Envoyer le tableau _Session
  * @todo Recharger la page régulièrement
  * @todo Export .csv
  * @todo Totaux par classes
@@ -37,6 +36,8 @@
 /* *******************************************************************************
  * Vérification des droits sur la page
  ******************************************************************************* */
+
+$timeDebut=time();
 
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
@@ -80,90 +81,44 @@ if ($utilisateur->getStatut() != "cpe" && $utilisateur->getStatut() != "scolarit
  ******************************************************************************* */
 define('ABS2', dirname(__FILE__));
 define('GEPI', dirname(ABS2));
-
+$dernierePosition = isset ($_SESSION['statJustifie']['dernierePosition']) ? $_SESSION['statJustifie']['dernierePosition'] : -1;
 /* *******************************************************************************
  * Appel des bibliothèques de fonctions
  ******************************************************************************* */
 include_once 'lib/function.php';
 
 /* *******************************************************************************
- * Récupération des données passées en $_POST
+ * Fonctions de la page
  ******************************************************************************* */
-$donneeBrut = isset ($_POST['donneeBrut']) ? $_POST['donneeBrut'] : (isset ($_SESSION[abs2StatJustifications]['donneeBrut']) ? $_SESSION[abs2StatJustifications]['donneeBrut'] : TRUE);
-$date_absence_eleve_debut = isset ($_POST['date_absence_eleve_debut']) ? $_POST['date_absence_eleve_debut'] : NULL;
-$date_absence_eleve_fin = isset ($_POST['date_absence_eleve_fin']) ? $_POST['date_absence_eleve_fin'] : NULL;
-
-/* *******************************************************************************
- * Recherche des justifications
- ******************************************************************************* */
-$justifie_query = AbsenceEleveJustificationQuery::create()->orderBy('SortableRank');
-$justifie_col = $justifie_query->distinct()->find();
-
-/* *******************************************************************************
- * Initialisation des dates
- ******************************************************************************* */
-//TODO gérer les dates
-if ($date_absence_eleve_debut != NULL) {
-    $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
-} else {
-    $dt_date_absence_eleve_debut = new DateTime('now');
-}
-if ($date_absence_eleve_fin != NULL) {
-    $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", $date_absence_eleve_fin));
-} else {
-    $dt_date_absence_eleve_fin = new DateTime('now');
-}
-$dt_date_absence_eleve_debut->setTime(0, 0, 0);
-$dt_date_absence_eleve_fin->setTime(23, 59, 59);
-$inverse_date=false;
-if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format("U")){
-    $date2=clone $dt_date_absence_eleve_fin;
-    $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
-    $dt_date_absence_eleve_debut= $date2;
-    $inverse_date=true;
-    $_SESSION['date_absence_eleve_debut'] = $dt_date_absence_eleve_debut->format('d/m/Y');
-    $_SESSION['date_absence_eleve_fin'] = $dt_date_absence_eleve_fin->format('d/m/Y');
+function getJustifications() {
+  $justifie_query = AbsenceEleveJustificationQuery::create()->orderBy('SortableRank');
+  return $justifie_query->distinct()->find();  
 }
 
-
-/* *******************************************************************************
- * recherche des élèves
- ******************************************************************************* */
-$eleve_query = EleveQuery::create();
-if ($id_classe !== null && $id_classe != -1 ) {
-  $eleve_query->useJEleveClasseQuery()->filterByIdClasse($id_classe)->endUse();
-}
-if ($nom_eleve !== null && $nom_eleve != '') {
-    $eleve_query->filterByNom('%'.$nom_eleve.'%');
-}
-if ($id_eleve !== null && $id_eleve != '') {
-    $eleve_query->filterByIdEleve($id_eleve);
-}
-
-
-$timeDebut=time();
-
-$eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
-if ($eleve_col->isEmpty()) {
-    echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
-    die();
+function getEleves() {  
+  $eleve_query = EleveQuery::create();
+  if ($id_classe !== null && $id_classe != -1 ) {
+	$eleve_query->useJEleveClasseQuery()->filterByIdClasse($id_classe)->endUse();
+  }
+  if ($nom_eleve !== null && $nom_eleve != '') {
+	  $eleve_query->filterByNom('%'.$nom_eleve.'%');
+  }
+  if ($id_eleve !== null && $id_eleve != '') {
+	  $eleve_query->filterByIdEleve($id_eleve);
+  }
+  return ($eleve_query->orderByNom()->orderByPrenom()->distinct()->find());
 }
 
-$precedent_eleve_id = null;
-
-foreach ($eleve_col as $eleve) {    
+function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut) {
+  $donnees = array();
   $eleve_id = $eleve->getIdEleve();
   
-
-  //on initialise les donnees pour le nouvel eleve
-  if ($precedent_eleve_id != $eleve_id) {
-  
-	$propel_eleve = EleveQuery::create()->filterByIdEleve($eleve_id)->findOne();
-	$eleveNbAbs['demi_journees'] = $propel_eleve->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
-	$eleveNbAbs['retards'] = $propel_eleve->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count(); 
-	//echo '1/2 journées '.$eleveNbAbs['demi_journees']." - ".$eleveNbAbs['retards']." : ";
+  $propel_eleve = EleveQuery::create()->filterByIdEleve($eleve_id)->findOne();
+  $eleveNbAbs['demi_journees'] = $propel_eleve->getDemiJourneesAbsence($date_debut, $date_fin)->count();
+  $eleveNbAbs['retards'] = $propel_eleve->getRetards($date_debut, $date_fin)->count();
+	
 	if ($eleveNbAbs['demi_journees'] > 0 || $eleveNbAbs['retards'] > 0 ) {
-	  $eleveNbAbs['non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+	  $eleveNbAbs['non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsence($date_debut, $date_fin)->count();
 	  $eleveNbAbs['justifiees'] = $eleveNbAbs['demi_journees'] - $eleveNbAbs['non_justifiees']; 
 	
 	  $donnees[$eleve_id]['nom'] = $eleve->getNom();
@@ -176,8 +131,7 @@ foreach ($eleve_col as $eleve) {
 	  $donnees[$eleve_id]['non_justifiees'] = $eleveNbAbs['non_justifiees'];
 	  $donnees[$eleve_id]['retards'] = $eleveNbAbs['retards'];
 	  
-	  //Récupérer le décompte des traitements pour chaque élève
-	  
+	  //Récupérer le décompte des traitements pour chaque élève	  
 	  $totalDemi=0;
 	foreach ($justifie_col as $justifie) {
 	  // Décompte en données brutes 
@@ -185,18 +139,17 @@ foreach ($eleve_col as $eleve) {
 		  $propel_traitEleve = AbsenceEleveTraitementQuery::create()->filterByAJustificationId($justifie->getid())
 			->useJTraitementSaisieEleveQuery()
 			  ->useAbsenceEleveSaisieQuery()
-				->filterByEleveId($eleve->getIdEleve())
-				->filterByPlageTemps($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin )
+				->filterByEleveId($eleve_id)
+				->filterByPlageTemps($date_debut,$date_fin )
 			  ->endUse()
 			->endUse() ;
-
 		  $traiteEleve_col = $propel_traitEleve;
 		  $donnees[$eleve_id]['traitement'][] = $traiteEleve_col->distinct()->count();
 		} else {
 		  // Décompte en 1/2 journées
 		  $propel_traitEleveDemi = AbsenceEleveSaisieQuery::create()
-			->filterByEleveId($eleve->getIdEleve())
-			->filterByPlageTemps($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin )
+			->filterByEleveId($eleve_id)
+			->filterByPlageTemps($date_debut,$date_fin )
 			->orderByDebutAbs()
 			->useJTraitementSaisieEleveQuery()
 			  ->useAbsenceEleveTraitementQuery()
@@ -204,27 +157,101 @@ foreach ($eleve_col as $eleve) {
 			  ->endUse()
 			->endUse()
 			;
-
 		  $traiteEleveDemi_col = $propel_traitEleveDemi->find();
 		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsenceParCollection($traiteEleveDemi_col);
 		  $donnees[$eleve_id]['traitement'][] = $traiteEleveDemi->count();
 		  $totalDemi += $traiteEleveDemi->count();
 		}
-	  
 	  }
 	  $donnees[$eleve_id]['totalDemi']=$totalDemi;
 	}
-		
+	unset ($eleveNbAbs, $traiteEleve_col, $propel_eleve, $propel_traitEleveDemi, $traiteEleveDemi, $traiteEleveDemi_col, $propel_traitEleve);
 	
-	$precedent_eleve_id = $eleve_id;
-	unset ($eleveNbAbs,$traiteEleve_col );
-  }
+	return $donnees[$eleve_id];
 }
+
+/* *******************************************************************************
+ * Récupération des données passées en $_POST
+ ******************************************************************************* */
+if (isset ($_POST)) unset ($_SESSION['statJustifie']['donnees']);
+$donneeBrut = isset ($_POST['donneeBrut']) ? $_POST['donneeBrut'] : (isset ($_SESSION[abs2StatJustifications]['donneeBrut']) ? $_SESSION[abs2StatJustifications]['donneeBrut'] : TRUE);
+$date_absence_eleve_debut = isset ($_POST['date_absence_eleve_debut']) ? $_POST['date_absence_eleve_debut'] : NULL;
+$date_absence_eleve_fin = isset ($_POST['date_absence_eleve_fin']) ? $_POST['date_absence_eleve_fin'] : NULL;
+
+/* *******************************************************************************
+ * Recherche des justifications
+ ******************************************************************************* */
+// $justifie_query = AbsenceEleveJustificationQuery::create()->orderBy('SortableRank');
+// $justifie_col = $justifie_query->distinct()->find();
+$justifie_col = getJustifications();
+$_SESSION['statJustifie']['justifications'] = serialize($justifie_col);
+
+/* *******************************************************************************
+ * Initialisation des dates
+ ******************************************************************************* */
+if ($date_absence_eleve_debut != NULL) {
+    $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
+} elseif (isset ($_SESSION[abs2StatJustifications]['date_absence_eleve_debut'])) {
+    $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_debut'])));
+} else {
+    $dt_date_absence_eleve_debut = new DateTime('now');
+}
+if ($date_absence_eleve_fin != NULL) {
+    $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", $date_absence_eleve_fin));
+} elseif (isset ($_SESSION[abs2StatJustifications]['date_absence_eleve_fin'])) {
+    $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_fin'])));
+} else {
+    $dt_date_absence_eleve_fin = new DateTime('now');
+}
+$dt_date_absence_eleve_debut->setTime(0, 0, 0);
+$dt_date_absence_eleve_fin->setTime(23, 59, 59);
+$inverse_date=false;
+if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format("U")){
+    $date2=clone $dt_date_absence_eleve_fin;
+    $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
+    $dt_date_absence_eleve_debut= $date2;
+    $inverse_date=true;
+}
+$_SESSION['statJustifie']['date_absence_eleve_debut'] = serialize($dt_date_absence_eleve_debut->format('d/m/Y'));
+$_SESSION['statJustifie']['date_absence_eleve_fin'] = serialize($dt_date_absence_eleve_fin->format('d/m/Y'));
+
+/* *******************************************************************************
+ * recherche des élèves
+ ******************************************************************************* */
+
+$eleve_col = getEleves();
+
+if ($eleve_col->isEmpty()) {
+    echo"<h2 class='no'>Aucun élève trouvé.</h2>";
+    die();
+}
+
+$_SESSION['statJustifie']['eleve_col'] = serialize($eleve_col);
+
+foreach ($eleve_col as $eleve) {    
+  if ($eleve_col->getPosition() <= $dernierePosition) {
+	continue;
+  }
+  //on initialise les donnees pour le nouvel eleve
+  $retour = traiteEleve($eleve, $dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin, $justifie_col, $donneeBrut);
+  if (!empty ($retour)) {
+	$_SESSION['statJustifie']['donnees'][] = $retour;
+  }
+  //on met à jour l'index  
+  $_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = $eleve_col->getPosition();
+  
+  // Si on est trop long, recharger la page
+  
+}
+
+//on a passé tous les élèves, on réinitialise l'index  
+$_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = -1;
+$donnees = $_SESSION['statJustifie']['donnees'];
 
 // temps de chargement de la page
 $timefin=time();
 $duree = $timefin - $timeDebut;
-echo "Durée de calcul de la page : ".$duree."s";
+echo " Durée de calcul de la page : ".$duree."s";
 
 /* *******************************************************************************
  * Affichage
@@ -298,6 +325,13 @@ include('menu_bilans.inc.php');
   </form>
   
   <table  style ="border:3px groove #aaaaaa;">
+	<caption>
+	  Justifications du
+	  <?php echo unserialize($_SESSION['statJustifie']['date_absence_eleve_debut']); ?>
+	  au
+	  <?php echo unserialize($_SESSION['statJustifie']['date_absence_eleve_fin']); ?>
+	  (<?php echo count($donnees); ?> élèves)
+	</caption>
 	
 	<tr  style ="border:3px groove #aaaaaa;">
 	  <th>
