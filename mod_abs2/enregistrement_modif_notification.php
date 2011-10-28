@@ -137,6 +137,9 @@ if ( $modif == 'type') {
     if ($responsable != null && !$notification->getResponsableEleves()->contains($responsable)) {
 	$notification->addResponsableEleve($responsable);
 	$notification->save();
+        $message_enregistrement .= 'Responsable ajouté';
+        include("visu_notification.php");
+        die;
     }
 } elseif ($modif == 'email') {
     $notification->setEmail($_POST["email"]);
@@ -158,6 +161,41 @@ if ( $modif == 'type') {
     $clone->save();
     $_POST["id_notification"] = $clone->getId();
     $message_enregistrement .= 'Nouvelle notification';
+    include("visu_notification.php");
+    die();
+} elseif ($modif == 'duplication_par_responsable') {    
+    $responsablesToAdd = new PropelCollection;
+    $responsables_informations = $notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies();
+    Foreach ($responsables_informations as $responsable_information) {
+        $responsable = $responsable_information->getResponsableEleve();
+        if ($responsable == null || $notification->getResponsableEleves()->contains($responsable) || $responsable_information->getNiveauResponsabilite() == '0') {
+            continue;
+        }
+        $responsablesToAdd->append($responsable);
+    }
+    foreach ($responsablesToAdd as $responsableToAdd) {
+        $clone = $notification->copy(); //no deep copy
+        $clone->save();
+        $id = $clone->getId();
+        //this is done to avoid a bug in deepcopy
+        $notification->copyInto($clone, true); // deep copy        
+        $clone->setId($id);
+        $clone->setNew(false);
+        $clone->setEmail($responsableToAdd->getMel());
+        $clone->setTelephone($responsableToAdd->getTelPort());
+        $clone->setAdresseId($responsableToAdd->getAdresseId());
+        $clone->save();
+        $responsables = JNotificationResponsableEleveQuery::create()->filterByAbsenceEleveNotification($clone)->find();
+        foreach ($responsables as $responsable) {
+            $responsable->delete();
+        }
+        $clone->addResponsableEleve($responsableToAdd);
+        $clone->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL);
+        $clone->setDateEnvoi(null);
+        $clone->setErreurMessageEnvoi(null);
+        $clone->save();
+        $message_enregistrement .= 'Nouvelle notification ' . $clone->getId() . ' créée. <br />';
+    }
     include("visu_notification.php");
     die();
 }

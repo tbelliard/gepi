@@ -265,13 +265,16 @@ if ($notification->getModifiable()) {
 	if ($notification->getResponsableEleves()->count() != $notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies()->count()) {
 	    echo '<div>';
 	    echo '<form method="post" action="enregistrement_modif_notification.php">';
-        echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
+            echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	    echo '<p>';
 	    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	    echo '<input type="hidden" name="modif" value="ajout_responsable"/>';
 	    echo ("<select name=\"pers_id\">");
 	    foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
-		$responsable = $responsable_information->getResponsableEleve();
+		if($responsable_information->getNiveauResponsabilite()=='0'){
+                    continue;
+                }
+                $responsable = $responsable_information->getResponsableEleve();
 		echo '<option value="'.$responsable->getResponsableEleveId().'"';
 		echo ">".$responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom()
 			.' (Resp '.$responsable_information->getNiveauResponsabilite().")</option>\n";
@@ -285,6 +288,23 @@ if ($notification->getModifiable()) {
     }
 }
 echo '</td></tr>';
+if ($notification->getModifiable()) {
+    if ($notification->getAbsenceEleveTraitement() != null) {
+        if ($notification->getResponsableEleves()->count() != $notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies()->count()) {
+            echo '<tr><td>';
+            echo 'Notifications multiples : ';
+            echo '</td><td>';
+            echo '<div>';
+            echo '<form method="post" action="enregistrement_modif_notification.php">';
+            echo '<input type="hidden" name="id_notification" value="' . $notification->getPrimaryKey() . '"/>';
+            echo '<input type="hidden" name="modif" value="duplication_par_responsable"/>';
+            echo '<button type="submit">Créer la même notification pour les autres responsables 1 ou 2 </button>';
+            echo '</form>';
+            echo '</div>';
+            echo '</td></tr>';
+        }
+    }
+}
 
 if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL) {
     echo '<tr><td>';
