@@ -94,6 +94,8 @@ if (!isset($_POST["action"])) {
 			die();
 		}
 
+		echo "<p><em>On remplit la table 'matieres'&nbsp;:</em> ";
+
 		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs

@@ -91,10 +91,27 @@ if (!isset($_POST["action"])) {
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
 
+		echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 		$j=0;
+		$k=0;
 		while ($j < count($liste_tables_del)) {
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+			//echo "$sql<br />";
+			$test = sql_query1($sql);
+			if ($test != -1) {
+				if($k>0) {echo ", ";}
+				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+				$res_test_tab=mysql_query($sql);
+				if(mysql_num_rows($res_test_tab)>0) {
+					$sql="DELETE FROM $liste_tables_del[$j];";
+					$del = @mysql_query($sql);
+					echo "<b>".$liste_tables_del[$j]."</b>";
+					echo " (".mysql_num_rows($res_test_tab).")";
+				}
+				else {
+					echo $liste_tables_del[$j];
+				}
+				$k++;
 			}
 			$j++;
 		}
@@ -107,6 +124,9 @@ if (!isset($_POST["action"])) {
 			require("../lib/footer.inc.php");
 			die();
 		}
+
+		echo "<br />\n";
+		echo "<p><em>On remplit les tables 'classes', 'periodes' et 'j_eleves_classes'&nbsp;:</em> ";
 
 		//$go = true;
 		$i = 0;

@@ -167,21 +167,34 @@ if (!isset($_POST["action"])) {
 
 		// Première étape : on vide les tables
 
+		echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 		$j=0;
+		$k=0;
 		while ($j < count($liste_tables_del)) {
-			//if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-			$sql="SELECT count(*) FROM $liste_tables_del[$j];";
-			$res_test_tab=mysql_query($sql);
-			if($res_test_tab) {
-				if (mysql_result($res_test_tab,0)!=0) {
+			$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+			//echo "$sql<br />";
+			$test = sql_query1($sql);
+			if ($test != -1) {
+				if($k>0) {echo ", ";}
+				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+				$res_test_tab=mysql_query($sql);
+				if(mysql_num_rows($res_test_tab)>0) {
 					$sql="DELETE FROM $liste_tables_del[$j];";
 					$del = @mysql_query($sql);
+					echo "<b>".$liste_tables_del[$j]."</b>";
+					echo " (".mysql_num_rows($res_test_tab).")";
 				}
+				else {
+					echo $liste_tables_del[$j];
+				}
+				$k++;
 			}
 			$j++;
 		}
 
 		// On passe tous les utilisateurs en etat "inactif"
+		echo "<br />\n";
+		echo "<p><em>On passe tous les utilisateurs en etat 'inactif' pour ne réactiver par la suite que les professeurs encore présents.</em> ";
 
 		$res = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE statut = 'professeur'");
 
@@ -194,6 +207,9 @@ if (!isset($_POST["action"])) {
 			die();
 		}
 
+		echo "<br />\n";
+		echo "<p><em>On remplit la table 'utilisateurs' pour créer les nouveaux comptes et on ré-active d'anciens comptes&nbsp;:</em> ";
+
 		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
@@ -203,14 +219,6 @@ if (!isset($_POST["action"])) {
 		$total_deja_presents = 0;
 		//while ($go) {
 		while ($lig=mysql_fetch_object($res_temp)) {
-			/*
-			$reg_nom = $_POST["ligne".$i."_nom"];
-			$reg_prenom = $_POST["ligne".$i."_prenom"];
-			$reg_civilite = $_POST["ligne".$i."_civilite"];
-			$reg_email = $_POST["ligne".$i."_email"];
-			$reg_login = $_POST["ligne".$i."_login"];
-			$reg_sso = $_POST["ligne".$i."_sso"];
-			*/
 			$reg_nom = $lig->nom;
 			$reg_prenom = $lig->prenom;
 			$reg_civilite = $lig->civilite;
@@ -219,14 +227,11 @@ if (!isset($_POST["action"])) {
 			$reg_sso = $lig->sso;
 
 			// On nettoie et on vérifie :
-			//$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
 			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
 			if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
-			//$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
 			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
 			if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
 
-			//if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") $reg_civilite = "M.";
 			if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
 
 			if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $reg_email)) $reg_email = "-";
@@ -350,15 +355,12 @@ if (!isset($_POST["action"])) {
 						// 3 : Adresse email
 
 						// On nettoie et on vérifie :
-						//$tabligne[0] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[0])));
 						$tabligne[0] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
 						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 
-						//$tabligne[1] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[1]));
 						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
 						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
-						//if ($tabligne[2] != "M." AND $tabligne[2] != "MME" AND $tabligne[2] != "MLLE") $tabligne[2] = "M.";
 						if ($tabligne[2] != "M." AND $tabligne[2] != "MME" AND $tabligne[2] != "MLLE") { $tabligne[2] = "";}
 
 						$tabligne[3] = preg_replace("/\"/", "", trim($tabligne[3]));
@@ -375,95 +377,6 @@ if (!isset($_POST["action"])) {
 							$reg_nom_login = preg_replace("/\040/","_", $tabligne[0]);
 							$reg_prenom_login = strtr($tabligne[1], "éèüëïäê", "eeueiae");
 							$reg_prenom_login = preg_replace("/[^a-zA-Z.\-]/", "", $reg_prenom_login);
-							/*
-							if ($_POST['login_mode'] == "name") {
-								$temp1 = $reg_nom_login;
-								$temp1 = strtoupper($temp1);
-								$temp1 = preg_replace("/ /","", $temp1);
-								$temp1 = preg_replace("/-/","_", $temp1);
-								$temp1 = preg_replace("/'/","", $temp1);
-								//$temp1 = substr($temp1,0,8);
-
-							} elseif ($_POST['login_mode'] == "name8") {
-								$temp1 = $reg_nom_login;
-								$temp1 = strtoupper($temp1);
-								$temp1 = preg_replace("/ /","", $temp1);
-								$temp1 = preg_replace("/-/","_", $temp1);
-								$temp1 = preg_replace("/'/","", $temp1);
-								$temp1 = substr($temp1,0,8);
-							} elseif ($_POST['login_mode'] == "fname8") {
-								$temp1 = $reg_prenom_login{0} . $reg_nom_login;
-								$temp1 = strtoupper($temp1);
-								$temp1 = preg_replace("/ /","", $temp1);
-								$temp1 = preg_replace("/-/","_", $temp1);
-								$temp1 = preg_replace("/'/","", $temp1);
-								$temp1 = substr($temp1,0,8);
-							} elseif ($_POST['login_mode'] == "fname19") {
-								$temp1 = $reg_prenom_login{0} . $reg_nom_login;
-								$temp1 = strtoupper($temp1);
-								$temp1 = preg_replace("/ /","", $temp1);
-								$temp1 = preg_replace("/-/","_", $temp1);
-								$temp1 = preg_replace("/'/","", $temp1);
-								$temp1 = substr($temp1,0,19);
-							} elseif ($_POST['login_mode'] == "firstdotname") {
-								$temp1 = $reg_prenom_login . "." . $reg_nom_login;
-								$temp1 = strtoupper($temp1);
-								$temp1 = preg_replace("/ /","", $temp1);
-								$temp1 = preg_replace("/-/","_", $temp1);
-								$temp1 = preg_replace("/'/","", $temp1);
-								//$temp1 = substr($temp1,0,19);
-							} elseif ($_POST['login_mode'] == "firstdotname19") {
-								$temp1 = $reg_prenom_login . "." . $reg_nom_login;
-								$temp1 = strtoupper($temp1);
-								$temp1 = preg_replace("/ /","", $temp1);
-								$temp1 = preg_replace("/-/","_", $temp1);
-								$temp1 = preg_replace("/'/","", $temp1);
-								$temp1 = substr($temp1,0,19);
-							} elseif ($_POST['login_mode'] == "namef8") {
-								$temp1 =  substr($reg_nom_login,0,7) . $reg_prenom_login{0};
-								$temp1 = strtoupper($temp1);
-								$temp1 = preg_replace("/ /","", $temp1);
-								$temp1 = preg_replace("/-/","_", $temp1);
-								$temp1 = preg_replace("/'/","", $temp1);
-								//$temp1 = substr($temp1,0,8);
-							} elseif ($_POST['login_mode'] == "lcs") {
-								$nom = $reg_nom_login;
-								$nom = strtolower($nom);
-								if (preg_match("/\s/",$nom)) {
-									$noms = preg_split("/\s/",$nom);
-									$nom1 = $noms[0];
-									if (strlen($noms[0]) < 4) {
-										$nom1 .= "_". $noms[1];
-										$separator = " ";
-									} else {
-										$separator = "-";
-									}
-								} else {
-									$nom1 = $nom;
-									$sn = ucfirst($nom);
-								}
-								$firstletter_nom = $nom1{0};
-								$firstletter_nom = strtoupper($firstletter_nom);
-								$prenom = $reg_prenom_login;
-								$prenom1 = $affiche[1]{0};
-								$temp1 = $prenom1 . $nom1;
-							}
-
-							$login_prof = $temp1;
-							// On teste l'unicité du login que l'on vient de créer
-							$m = 2;
-							$test_unicite = 'no';
-							$temp = $login_prof;
-							while ($test_unicite != 'yes') {
-								$test_unicite = test_unique_login($login_prof);
-								if ($test_unicite != 'yes') {
-									$login_prof = $temp.$m;
-									$m++;
-								}
-							}
-							$login_prof = substr($login_prof, 0, 50);
-							$login_prof = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($login_prof)));
-							*/
 
 							$login_prof=generate_unique_login($reg_nom_login, $reg_prenom_login, $_POST['login_mode'], 'maj');
 
