@@ -256,7 +256,8 @@ foreach($classe_col as $classe){
 	    if ($cours_col->isEmpty()) {
 		$appel_manquant = false;
 	    }
-	    foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();        if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
+	    foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
+        if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
                 continue;
         }
 		$affiche = false;
@@ -352,7 +353,8 @@ foreach($classe_col as $classe){
 	if (!$abs_col->isEmpty()) {
         $aid_deja_sorties = Array();
         $current_eleve = Null;
-        foreach ($abs_col as $absenceSaisie) {            if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
+        foreach ($abs_col as $absenceSaisie) {
+            if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
                 continue;
             }
             if ($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
