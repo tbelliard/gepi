@@ -16,22 +16,19 @@
 class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 
 	/**
-	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications et jointures associées et calcul de la table d'agrégation
-	 *
-	 * @param      PropelPDO $con
-	 * @return     void
-	 * @throws     PropelException
-	 * @see        BaseObject::setDeleted()
-	 * @see        BaseObject::isDeleted()
+	 * Code to be run after deleting the object in database
+	 * @param PropelPDO $con
 	 */
-	public function delete(PropelPDO $con = null)
-	{
+	public function postDelete(PropelPDO $con = null) {
 		$saisie = $this->getAbsenceEleveSaisie();
 		$traitement = $this->getAbsenceEleveTraitement();
-		parent::delete($con);
 		if ($traitement != null && !$traitement->getAlreadyInSave()) {
 			$traitement->setUpdatedAt('now'); //au lieu d'utiliser un champ supplémentaire pour la date de mise à jours des jointures entre saisies et traitement, on précise la date de mise à jour des jointure dans le traitement directement
 			$traitement->save();
+		}
+		if ($saisie != null && $saisie->getEleve() != null) {
+			//$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+			//$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
 		}
 	}
 	

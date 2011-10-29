@@ -49,6 +49,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @var        boolean to store if saisie is contradictoire
 	 */
 	protected $boolSaisiesContradictoiresManquementObligation;
+	
+	protected $oldVersion;
 
 	/**
 	 *
@@ -979,21 +981,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	}
 
 	/**
-	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie, fait une validation avant la sauvegarde
-	 * Persists this object to the database.
-	 *
-	 * If the object is new, it inserts it; otherwise an update is performed.
-	 * All modified related objects will also be persisted in the doSave()
-	 * method.  This method wraps all precipitate database operations in a
-	 * single transaction.
-	 *
-	 * @param      PropelPDO $con
-	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
-	 * @throws     PropelException
-	 * @see        doSave()
+	 * Code to be run after persisting the object
+	 * @param PropelPDO $con
 	 */
-	public function save(PropelPDO $con = null)
-	{
+	public function preSave(PropelPDO $con = null) {
+	    $this->oldVersion = $this->version;
 	    if ($this->isNew()) {
 			if ($this->getUtilisateurId() == null) {
 			    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -1017,10 +1009,43 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    
 		    throw new PropelException('AbsenceEleveSaisie ne passe pas la validation : '.$error_message);
 		}
-		
-		$result = parent::save($con);
-				
-		return $result;
+		return true;
+	} 
+
+	/**
+	 * Code to be run after persisting the object
+	 * @param PropelPDO $con
+	 */
+	public function postSave(PropelPDO $con = null) { 
+		if ($this->getEleve() != null) {
+			//on va mettre à jour la table d'agrégation pour cet élève. Il faut mettre à jour cette table
+			//sur les date de l'ancienne version et de la nouvelle version
+			$oldDebutAbs = null;
+			$oldFinAbs = null;
+			//si $oldVersionNumber = 0 c'est qu'il n'y avait pas d'ancienne version
+			if ($this->oldVersion != 0 && $this->oldVersion != $this->version) {
+				$oldVersionObject = $this->getOneVersion($this->oldVersion);
+				if ($oldVersionObject != null) {
+					$oldDebutAbs = $oldVersionObject->getDebutAbs(null);
+					$oldFinAbs = $oldVersionObject->getFinAbs(null);
+				}
+			}
+			
+			if ($oldDebutAbs != null && $oldDebutAbs->format('U') < $this->getDebutAbs('U')) {
+				$debut = $oldDebutAbs;
+			} else {
+				$debut = $this->getDebutAbs(null);
+			}
+			
+			if ($oldFinAbs != null && $oldFinAbs->format('U') > $this->getFinAbs('U')) {
+				$fin = $oldFinAbs;
+			} else {
+				$fin = $this->getFinAbs(null);
+			}
+			
+//			$this->getEleve()->updateAbsenceAgregationTable($debut,$fin);
+//			$this->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($debut,$fin);
+		}
 	}
 	
 	/**

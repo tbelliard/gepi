@@ -179,21 +179,10 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 
 
 	/**
-	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie
-	 * Persists this object to the database.
-	 *
-	 * If the object is new, it inserts it; otherwise an update is performed.
-	 * All modified related objects will also be persisted in the doSave()
-	 * method.  This method wraps all precipitate database operations in a
-	 * single transaction.
-	 *
-	 * @param      PropelPDO $con
-	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
-	 * @throws     PropelException
-	 * @see        doSave()
+	 * Code to be run after persisting the object
+	 * @param PropelPDO $con
 	 */
-	public function save(PropelPDO $con = null)
-	{
+	public function preSave(PropelPDO $con = null) {
 		if ($this->isNew()) {
 			if ($this->getUtilisateurId() == null) {
 				$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -207,29 +196,29 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 				$this->setModifieParUtilisateur($utilisateur);
 			}
 		}
-		
-		$result = parent::save($con);
-	    
-	    
-	    return $result;
+		return true;
 	}
 	
 	/**
-	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications et jointures associées et calcul de la table d'agrégation
-	 *
-	 * @param      PropelPDO $con
-	 * @return     void
-	 * @throws     PropelException
-	 * @see        BaseObject::setDeleted()
-	 * @see        BaseObject::isDeleted()
+	 * Code to be run after persisting the object
+	 * @param PropelPDO $con
 	 */
-	public function delete(PropelPDO $con = null)
-	{
-		$saisieColOld = $this->getAbsenceEleveSaisies();
-		
-		AbsenceEleveNotificationQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
-		//JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete(); //ne pas supprimer pour pourvoir faire la jointure entre le traitement supprimé et l'élève saisi
+	public function postSave(PropelPDO $con = null) { 
+		//$this->updateAgregationTable();
+	}
+	
+	/**
+	 * Code to be run after deleting the object in database
+	 * @param PropelPDO $con
+	 */
+	public function postDelete(PropelPDO $con = null) {
 		parent::delete();
+		foreach($this->getAbsenceEleveSaisies() as $saisie) {
+			if ($saisie->getEleve() != null) {
+				//$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+				//$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+			}
+		}
 	}
 	
 	/**
