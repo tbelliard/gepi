@@ -135,9 +135,9 @@ if (!isset($step1)) {
 		echo "<input type=hidden name='step1' value='y' />\n";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 		echo "</form>\n";
+        echo "<p><br /></p>\n";
 		echo "</div>\n";
-		echo "</body>\n";
-		echo "</html>\n";
+		require("../lib/footer.inc.php");
 		die();
 	}
 }

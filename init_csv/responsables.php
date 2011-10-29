@@ -55,7 +55,7 @@ $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 //debug_var();
 
 // Passer à 'y' pour afficher les requêtes
-$debug_resp='n';
+$debug_resp='y';
 
 ?>
 <p class="bold"><a href="index.php#responsables"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
@@ -89,6 +89,18 @@ if (!isset($_POST["action"])) {
 	echo "<p><input type='submit' value='Valider' />\n";
 	echo "</form>\n";
 
+	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
+	if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			echo "<p style='color:red'>Il existe un ou des comptes responsables de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes élèves (s'ils n'ont pas déjà été supprimés) et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+		}
+	}
+
 	echo "<p><i>NOTE:</i> Les champs marqués d'un <b>(*)</b> doivent être non vides.</p>\n";
 } else {
 	//
@@ -100,31 +112,6 @@ if (!isset($_POST["action"])) {
 		// On enregistre les données dans la base.
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
-
-		// Sauvegarde temporaire:
-		$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
-		(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
-		password VARCHAR(128) NOT NULL,
-		salt VARCHAR(128) NOT NULL,
-		email VARCHAR(50) NOT NULL,
-		pers_id VARCHAR( 10 ) NOT NULL ,
-		statut VARCHAR( 20 ) NOT NULL ,
-		auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-		temoin VARCHAR( 50 ) NOT NULL
-		);";
-		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-		$creation_table=mysql_query($sql);
-
-		//$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
-		$sql="DELETE FROM tempo_utilisateurs_resp WHERE statut='responsable';";
-		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-		$nettoyage=mysql_query($sql);
-
-		// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-		$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,rp.pers_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND rp.login!='' AND u.statut='responsable';";
-		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-		$svg_insert=mysql_query($sql);
-
 
 		// Première étape : on vide les tables
 
@@ -220,16 +207,16 @@ if (!isset($_POST["action"])) {
 			$test = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_eleve . "'"), 0);
 
 			if($reg_id_eleve==""){
-				echo "<p>Erreur : L'identifiant élève est vide pour $reg_prenom $reg_nom</p>\n";
+				echo "<p style='color:red'>Erreur : L'identifiant élève est vide pour $reg_prenom $reg_nom</p>\n";
 			}
 			else{
 				if($reg_nom==""){
-					echo "<p>Erreur : Le nom du responsable est vide pour l'élève $reg_id_eleve</p>\n";
+					echo "<p style='color:red'>Erreur : Le nom du responsable est vide pour l'élève $reg_id_eleve</p>\n";
 				}
 				else{
 					if ($test == 0 OR !$test) {
 						// Test négatif : aucun élève avec cet ID... On envoie un message d'erreur.
-						echo "<p>Erreur : l'élève avec l'identifiant interne " . $reg_id_eleve . " n'existe pas dans Gepi.</p>\n";
+						echo "<p style='color:red'>Erreur : l'élève avec l'identifiant interne " . $reg_id_eleve . " n'existe pas dans Gepi.</p>\n";
 					} else {
 						// Test positif : on peut donc enregistrer les données de responsable.
 
@@ -279,14 +266,14 @@ if (!isset($_POST["action"])) {
 
 							} else {
 								// Erreur ! Les deux responsables ont déjà été saisis...
-								echo "<p>Erreur pour " . $reg_prenom . " " . $reg_nom . " ! Les deux responsables ont déjà été saisis.</p>\n";
+								echo "<p style='color:red'>Erreur pour " . $reg_prenom . " " . $reg_nom . " ! Les deux responsables ont déjà été saisis.</p>\n";
 							}
 						}
 
 						if ($insert == false) {
 							$error++;
 							$erreur_mysql=mysql_error();
-							if($erreur_mysql!=""){echo "<p><font color='red'>".$erreur_mysql."</font></p>\n";}
+							if($erreur_mysql!=""){echo "<p style='color:red'>".$erreur_mysql."</p>\n";}
 							//echo "<p>$sql</p>\n";
 						} else {
 							$total++;
@@ -298,7 +285,7 @@ if (!isset($_POST["action"])) {
 			$i++;
 		}
 
-		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
+		if ($error > 0) echo "<p style='color:red'>Il y a eu " . $error . " erreurs.</p>\n";
 		if ($total > 0) echo "<p>" . $total . " responsables ont été enregistrés.</p>\n";
 
 		echo "<p><a href='index.php#responsables'>Revenir à la page précédente</a></p>\n";
@@ -494,10 +481,10 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<p><span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</span></p>\n";
 				}
 
-				echo "<input type='submit' value='Enregistrer' />\n";
+				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 				echo "</form>\n";
 			}

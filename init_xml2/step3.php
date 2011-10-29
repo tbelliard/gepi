@@ -104,7 +104,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
         if (!$reg_eleve) {echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";}
 		else {
-			$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$reg_ele_id."' AND statut='eleve';";
+			$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
 			if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$res_tmp_u=mysql_query($sql);
 			if(mysql_num_rows($res_tmp_u)>0) {
@@ -296,7 +296,7 @@ else {
 			*/
 
 			if($reg_ele_id!='') {
-				$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$reg_ele_id."' AND statut='eleve';";
+				$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
 				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 				$res_tmp_u=mysql_query($sql);
 				if(mysql_num_rows($res_tmp_u)>0) {

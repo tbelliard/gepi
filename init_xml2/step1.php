@@ -70,6 +70,7 @@
 	// Etape...
 	$step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
 
+	$debug_ele="n";
 
 	if(isset($_GET['ad_retour'])){
 		$_SESSION['ad_retour']=$_GET['ad_retour'];
@@ -165,6 +166,20 @@
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
+
+
+			$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+			if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
+				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==0) {
+					echo "<p style='color:red'>Il existe un ou des comptes élèves de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes parents et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+				}
+			}
+
 		}
 		else{
 			check_token(false);

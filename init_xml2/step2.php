@@ -134,6 +134,7 @@ if (!isset($step2)) {
         echo "<input type=hidden name='step2' value='y' />\n";
         echo "<input type='submit' value='Poursuivre la procédure' />\n";
         echo "</form>\n";
+        echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
         die();
     }
@@ -142,30 +143,6 @@ if (!isset($step2)) {
 check_token(false);
 
 if (isset($is_posted)) {
-	// Sauvegarde temporaire:
-	$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
-	(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
-	password VARCHAR(128) NOT NULL,
-	salt VARCHAR(128) NOT NULL,
-	email VARCHAR(50) NOT NULL,
-	pers_id VARCHAR( 10 ) NOT NULL ,
-	statut VARCHAR( 20 ) NOT NULL ,
-	auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-	temoin VARCHAR( 50 ) NOT NULL
-	);";
-	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-	$creation_table=mysql_query($sql);
-
-	//$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
-	$sql="DELETE FROM tempo_utilisateurs_resp WHERE statut='eleve';";
-	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-	$nettoyage=mysql_query($sql);
-
-	// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-	$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,e.ele_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
-	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-	$svg_insert=mysql_query($sql);
-
 
 	echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 	$j=0;

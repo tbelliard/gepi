@@ -80,6 +80,38 @@ if (isset($_POST['is_posted'])) {
 			if (!saveSetting("end_bookings", $end_bookings))
 					$msg .= "Erreur lors de l'enregistrement de end_bookings !";
 		}
+
+		if((isset($_POST['reserve_comptes_eleves']))&&($_POST['reserve_comptes_eleves']=='y')) {
+			$sql="DELETE FROM tempo_utilisateurs WHERE statut='eleve';";
+			//echo "<span style='color:green;'>$sql</span><br />";
+			$nettoyage=mysql_query($sql);
+
+			$sql="INSERT INTO tempo_utilisateurs SELECT u.login,u.password,u.salt,u.email,e.ele_id,e.elenoet,u.statut,u.auth_mode,NOW(),u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
+			//echo "<span style='color:green;'>$sql</span><br />";
+			$svg_insert=mysql_query($sql);
+			if($svg_insert) {
+				$msg.="Mise en réserve des comptes élèves effectuée.<br />";
+			}
+			else {
+				$msg.="Erreur lors de la mise en réserve des comptes élèves.<br />";
+			}
+		}
+
+		if((isset($_POST['reserve_comptes_responsables']))&&($_POST['reserve_comptes_responsables']=='y')) {
+			$sql="DELETE FROM tempo_utilisateurs WHERE statut='responsable';";
+			//echo "<span style='color:green;'>$sql</span><br />";
+			$nettoyage=mysql_query($sql);
+
+			$sql="INSERT INTO tempo_utilisateurs SELECT u.login,u.password,u.salt,u.email,rp.pers_id,rp.pers_id,u.statut,u.auth_mode,NOW(),u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.statut='responsable';";
+			//echo "<span style='color:green;'>$sql</span><br />";
+			$svg_insert=mysql_query($sql);
+			if($svg_insert) {
+				$msg.="Mise en réserve des comptes responsables effectuée.<br />";
+			}
+			else {
+				$msg.="Erreur lors de la mise en réserve des comptes responsables.<br />";
+			}
+		}
 	}
 	elseif ($_POST['is_posted']=='2') {
 		check_token();
@@ -118,7 +150,6 @@ if (isset($_POST['is_posted'])) {
 			//if (!)
 			//		$msg .= "Erreur lors de l'enregistrement de log_bookings !";
 		}
-
 	}
 }
 
@@ -141,6 +172,8 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
+$debug_ele="n";
+$debug_resp="n";
 
 echo "<p class='bold'><a href='index.php#chgt_annee' ".insert_confirm_abandon()."><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
@@ -171,14 +204,14 @@ echo "</ol>\n";
 
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";
 echo "<ol>\n";
-echo "<li><p>Modifier l'année scolaire&nbsp; (actuellement ".getSettingValue('gepiYear').") : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange='changement()' /></li>\n";
+echo "<li><p>Modifier l'année scolaire&nbsp; (<em>actuellement ".getSettingValue('gepiYear')."</em>) : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange='changement()' /></li>\n";
 echo "<li><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:<br />";
 ?>
 
 <table>
 	<tr>
 		<td>
-		Date de début des cahiers de textes (actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("begin_bookings")); ?>) :
+		Date de début des cahiers de textes (<em>actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("begin_bookings")); ?></em>) :
 		</td>
 		<td><?php
 		$bday = strftime("%d", getSettingValue("begin_bookings"));
@@ -190,7 +223,7 @@ echo "<li><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:<
 	</tr>
 	<tr>
 		<td>
-		Date de fin des cahiers de textes (actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("end_bookings")); ?>) :
+		Date de fin des cahiers de textes (<em>actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("end_bookings")); ?></em>) :
 		</td>
 		<td><?php
 		$eday = strftime("%d", getSettingValue("end_bookings"));
@@ -203,6 +236,99 @@ echo "<li><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:<
 </table>
 
 <?php
+echo "</li>\n";
+
+echo "<li>\n";
+
+// Sauvegarde temporaire:
+$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs
+(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+password VARCHAR(128) NOT NULL,
+salt VARCHAR(128) NOT NULL,
+email VARCHAR(50) NOT NULL,
+identifiant1 VARCHAR( 10 ) NOT NULL ,
+identifiant2 VARCHAR( 50 ) NOT NULL ,
+statut VARCHAR( 20 ) NOT NULL ,
+auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+date_reserve DATE DEFAULT '0000-00-00',
+temoin VARCHAR( 50 ) NOT NULL
+);";
+$creation_table=mysql_query($sql);
+
+echo "<p>Pour pouvoir imposer les mêmes comptes parents et/ou élèves d'une année sur l'autre (<em>pour se connecter dans Gepi, consulter les cahiers de textes, les notes,...</em>), il convient avant d'initialiser la nouvelle année (<em>opération qui vide/nettoye un certain nombre de tables</em>) de mettre en réserve dans une table temporaire les login, mot de passe, email et statut des parents/élèves de façon à leur redonner le même login et restaurer l'accès lors de l'initialisation.</p>\n";
+
+echo "<p>";
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	echo "Il existe actuellement ".mysql_num_rows($test)." comptes élèves.<br />";
+}
+else {
+	echo "Il n'existe actuellement aucun compte élève.<br />";
+}
+$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
+if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	echo mysql_num_rows($test)." comptes élèves sont actuellement mis en réserve";
+	$sql="SELECT DISTINCT date_reserve FROM tempo_utilisateurs WHERE statut='eleve' ORDER BY date_reserve;";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		echo " (<em>date de mise en réserve&nbsp;: ";
+		$cpt=0;
+		while($lig_res=mysql_fetch_object($test)) {
+			if($cpt>0) {echo ", ";}
+			echo formate_date($lig_res->date_reserve);
+			$cpt++;
+		}
+		echo "</em>)";
+	}
+}
+else {
+	echo "Aucun compte élève n'est actuellement mis en réserve.<br />";
+}
+echo "</p>\n";
+
+echo "<p>";
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
+if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	echo "Il existe actuellement ".mysql_num_rows($test)." comptes responsables.<br />";
+}
+else {
+	echo "Il n'existe actuellement aucun compte responsable.<br />";
+}
+$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
+if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+$test=mysql_query($sql);
+if(mysql_num_rows($test)>0) {
+	echo mysql_num_rows($test)." comptes responsables sont actuellement mis en réserve";
+	$sql="SELECT DISTINCT date_reserve FROM tempo_utilisateurs WHERE statut='responsable' ORDER BY date_reserve;";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		echo " (<em>date de mise en réserve&nbsp;: ";
+		$cpt=0;
+		while($lig_res=mysql_fetch_object($test)) {
+			if($cpt>0) {echo ", ";}
+			echo formate_date($lig_res->date_reserve);
+			$cpt++;
+		}
+		echo "</em>)";
+	}
+}
+else {
+	echo "Aucun compte responsable n'est actuellement mis en réserve.<br />";
+}
+echo "</p>\n";
+
+echo "<p><input type='checkbox' name='reserve_comptes_eleves' id='reserve_comptes_eleves' value='y' /><label for='reserve_comptes_eleves'>Mettre en réserve une copie des comptes élèves.<br />
+<input type='checkbox' name='reserve_comptes_responsables' id='reserve_comptes_responsables' value='y' /><label for='reserve_comptes_responsables'>Mettre en réserve une copie des comptes responsables.</label></label></p>\n";
+
+echo "<p><em>NOTE&nbsp;:</em> En cochant les cases ci-dessus, on commence par vider les comptes précédemment mis en réserve avant d'insérer les comptes actuellement présents dans la table 'utilisateurs'.</p>\n";
 echo "</li>\n";
 echo "</ol>\n";
 

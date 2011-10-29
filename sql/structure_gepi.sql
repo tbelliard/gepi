@@ -745,3 +745,16 @@ nbAbs INT(11) NOT NULL default '0',
 nbNonJustif INT(11) NOT NULL default '0',
 nbRet INT(11) NOT NULL default '0',
 UNIQUE KEY elenoet (elenoet));
+
+DROP TABLE IF EXISTS tempo_utilisateurs;
+CREATE TABLE IF NOT EXISTS tempo_utilisateurs
+(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+password VARCHAR(128) NOT NULL,
+salt VARCHAR(128) NOT NULL,
+email VARCHAR(50) NOT NULL,
+identifiant1 VARCHAR( 10 ) NOT NULL COMMENT 'eleves.ele_id ou resp_pers.pers_id',
+identifiant2 VARCHAR( 50 ) NOT NULL COMMENT 'eleves.elenoet',
+statut VARCHAR( 20 ) NOT NULL ,
+auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+date_reserve DATE DEFAULT '0000-00-00',
+temoin VARCHAR( 50 ) NOT NULL);

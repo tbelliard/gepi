@@ -176,41 +176,24 @@
 					echo "<input type=hidden name='verif_tables_non_vides' value='y' />\n";
 					echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 					echo "</form>\n";
+
+					$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
+					if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0) {
+						$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
+						if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)==0) {
+							echo "<p style='color:red'>Il existe un ou des comptes responsables de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes élèves (s'ils n'ont pas déjà été supprimés) et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+						}
+					}
+
+					echo "<p><br /></p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
 			}
-
-			//echo "<p>Cette page permet de remplir des tables temporaires avec les informations responsables.<br />\n";
-			//echo "</p>\n";
-
-			// Sauvegarde temporaire:
-			$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
-			(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
-			password VARCHAR(128) NOT NULL,
-			salt VARCHAR(128) NOT NULL,
-			email VARCHAR(50) NOT NULL,
-			pers_id VARCHAR( 10 ) NOT NULL ,
-			statut VARCHAR( 20 ) NOT NULL ,
-			auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-			temoin VARCHAR( 50 ) NOT NULL
-			);";
-			//auth_mode ENUM('gepi','ldap','sso') NOT NULL ,
-			//auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-			//auth_mode VARCHAR( 4 ) NOT NULL ,
-			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-			$creation_table=mysql_query($sql);
-
-			//$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
-			$sql="DELETE FROM tempo_utilisateurs_resp WHERE statut='responsable';";
-			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-			$nettoyage=mysql_query($sql);
-
-			// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-			$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,rp.pers_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND rp.login!='' AND u.statut='responsable';";
-			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-			$svg_insert=mysql_query($sql);
-
 	
 			if(isset($verif_tables_non_vides)) {
 				check_token(false);
@@ -489,7 +472,7 @@
 							}
 							else{
 
-								$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+								$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$personnes[$i]["personne_id"]."';";
 								if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 								$res_tmp_u=mysql_query($sql);
 								if(mysql_num_rows($res_tmp_u)>0) {
@@ -510,7 +493,7 @@
 										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 										$update_rp=mysql_query($sql);
 
-										$sql="UPDATE tempo_utilisateurs_resp SET temoin='recree' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+										$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$personnes[$i]["personne_id"]."';";
 										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 										$update_tmp_u=mysql_query($sql);
 									}
@@ -525,7 +508,7 @@
 						if ($nb_err != 0) {
 							echo "<p>Lors de l'enregistrement des données PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 						} else {
-							echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+							echo "<p>L'importation des personnes (<em>responsables</em>) dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 						}
 
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
@@ -707,7 +690,7 @@
 					echo "<p>Lors de l'enregistrement des données de RESPONSABLES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 				}
 				else {
-					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 				}
 
 				//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_responsables2_import'.</p>\n";
@@ -856,7 +839,7 @@
 				if ($nb_err != 0) {
 					echo "<p>Lors de l'enregistrement des données ADRESSES des responsables, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 				} else {
-					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 				}
 				//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
 

@@ -133,7 +133,7 @@ if (!isset($is_posted)) {
 		}
 
 		// Suppression des comptes de responsables:
-		$sql="DELETE FROM utilisateurs WHERE statut='responsables';";
+		$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
 		$del=mysql_query($sql);
 	}
 

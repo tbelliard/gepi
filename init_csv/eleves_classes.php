@@ -66,8 +66,8 @@ if (!isset($_POST["action"])) {
 	echo "<p>Vous allez effectuer la cinquième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
 	echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
-	echo "<ul><li>Identifiant (interne) de l'élève</li>\n" .
-			"<li>Identifiant court de la classe (ex: 1S2)</li>\n" .
+	echo "<ul><li>Identifiant (<em>interne</em>) de l'élève</li>\n" .
+			"<li>Identifiant court de la classe (<em>ex: 1S2</em>)</li>\n" .
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
@@ -341,10 +341,10 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<p><span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</span></p>\n";
 				}
 
-				echo "<input type='submit' value='Enregistrer' />\n";
+				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 				echo "</form>\n";
 			}

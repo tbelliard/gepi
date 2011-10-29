@@ -82,11 +82,11 @@ require_once("../lib/header.inc");
 ?>
 <!--/p-->
 <ul>
-<li><p>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes, qui seront seulement mises à jour si nécessaire :<br /><br />
+<li><p>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (<em>élèves, notes, appréciations, ...</em>) . Seules seront conservées les données suivantes, qui seront seulement mises à jour si nécessaire :<br /><br />
 - les données relatives aux établissements,<br />
 - les données relatives aux classes : intitulés courts, intitulés longs, nombre de périodes et noms des périodes,<br />
 - les données relatives aux matières : identifiants et intitulés complets,<br />
-- les données relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
+- les données relatives aux utilisateurs (<em>professeurs, administrateurs,...</em>). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
 - Les données relatives aux différents types d'AID.<br />&nbsp;</p></li>
 
 <li>
@@ -96,7 +96,7 @@ require_once("../lib/header.inc");
 	$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 	//==================================
 	if($gepiSchoolRne=="") {
-		echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+		echo "<p><b style='color:red;'>Attention&nbsp;:</b> Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
 	}
 	?>
 
@@ -121,17 +121,17 @@ require_once("../lib/header.inc");
     <li><p><a name="eleves_classes"></a><a href='eleves_classes.php'>Procéder à la cinquième phase</a> d'affectation des élèves aux classes  : le fichier <b>g_eleves_classes.csv</b> requis.
     	<br/>Il doit contenir, dans l'ordre, les champs suivants :
     	<br/>n° d'identifiant élève interne à l'établissement ; Identifiant court de la classe
-    	<br/>Remarque : cette opération créé automatiquement les classes dans Gepi, mais ne leur attribue qu'un nom court (identifiant). Vous devrez ajouter le nom long par l'interface de gestion des classes.<br />&nbsp;</p></li>
+    	<br/><em>Remarque&nbsp;:</em> cette opération créé automatiquement les classes dans Gepi, mais ne leur attribue qu'un nom court (identifiant). Vous devrez ajouter le nom long par l'interface de gestion des classes.<br />&nbsp;</p></li>
 
 
     <li><p><a name="prof_disc_classes"></a><a href='prof_disc_classes.php'>Procéder à la sixième phase</a> d'affectation des matières à chaque professeur et d'affectation des professeurs dans chaque classe : le fichier <b>g_prof_disc_classes.csv</b> requis. Cette importation va définir les compétences des professeurs et créer les groupes d'enseignement dans chaque classe.
     	<br />Il doit contenir, dans l'ordre, les champs suivants :
     	<br />Login du professeur ; Nom court de la matière ; Le ou les identifiants de classe (séparés par des !) ; Le type de cours (CG (= cours général) | OPT (= option))
-    	<br />Remarques :
+    	<br /><em>Remarques&nbsp;:</em>
     	<br />Si le dernier champ est vide et qu'une seule classe est présente dans le troisième champ, le type sera défini comme "général". S'il est vide et que plusieurs classes ont été définies, alors le type sera défini comme "option".
     	<br />Lorsque l'enseignement est général, tous les élèves de la classe sont automatiquement associés à cet enseignement.
     	<br />Lorsque l'enseignement est une option, aucun élève n'y est associé, l'association se faisant à la septième étape.
-    	<br />Attention ! Ne mettez plusieurs classes pour une même matière que s'il s'agit d'un seul enseignement ! Si un professeur enseigne la même matière dans deux classes différentes, il faut alors deux lignes distinctes dans le fichier CSV, avec une seule classe définie pour chaque ligne.<br />&nbsp;</p></li>
+    	<br /><b>Attention&nbsp;!</b> Ne mettez plusieurs classes pour une même matière que s'il s'agit d'un seul enseignement ! Si un professeur enseigne la même matière dans deux classes différentes, il faut alors deux lignes distinctes dans le fichier CSV, avec une seule classe définie pour chaque ligne.<br />&nbsp;</p></li>
 
     <li><p><a name="eleves_options"></a><a href='eleves_options.php'>Procéder à la septième phase</a> d'affectation des élèves à chaque groupe d'option : le fichier <b>g_eleves_options.csv</b> est requis.
     	<br/>Il doit contenir, dans l'ordre, les champs suivants :
@@ -140,11 +140,12 @@ require_once("../lib/header.inc");
     </ul>
 	<br />
 </li>
-<li><p>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</p></li>
+<li><p>Une fois toute la procédure d'initialisation des données terminée, il conviendra d'effectuer une opération de conversion des informations élèves et responsables en consultant la page <a href='../eleves/index.php'>Gestion des élèves</a>.</p>
+<p>Il vous sera par ailleurs possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</p></li>
 </ul>
 <p><br /></p>
 
-<p><b>ATTENTION:</b> Le <i>n° d'identifiant élève interne à l'établissement</i> ne doit être constitué que de chiffres.</p>
+<p><b>ATTENTION&nbsp;:</b> Le <em>n° d'identifiant élève interne à l'établissement</em> ne doit être constitué que de chiffres.</p>
 <p><br /></p>
 
 <?php require("../lib/footer.inc.php");?>

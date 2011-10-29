@@ -59,7 +59,7 @@ $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 //debug_var();
 // Passer à 'y' pour afficher les requêtes
-$debug_ele="n";
+$debug_ele="y";
 
 ?>
 <p class="bold"><a href="index.php#eleves"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
@@ -91,8 +91,20 @@ if (!isset($_POST["action"])) {
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
 	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
-	echo "<p><input type='submit' value='Valider' />\n";
+	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
+
+	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
+		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			echo "<p style='color:red'>Il existe un ou des comptes élèves de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes parents et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+		}
+	}
 
 } else {
 	//
@@ -104,32 +116,6 @@ if (!isset($_POST["action"])) {
 		// On enregistre les données dans la base.
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
-
-		// Sauvegarde temporaire:
-		$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
-		(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
-		password VARCHAR(128) NOT NULL,
-		salt VARCHAR(128) NOT NULL,
-		email VARCHAR(50) NOT NULL,
-		pers_id VARCHAR( 10 ) NOT NULL ,
-		statut VARCHAR( 20 ) NOT NULL ,
-		auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-		temoin VARCHAR( 50 ) NOT NULL
-		);";
-		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-		$creation_table=mysql_query($sql);
-	
-		//$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
-		$sql="DELETE FROM tempo_utilisateurs_resp WHERE statut='eleve';";
-		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-		$nettoyage=mysql_query($sql);
-	
-		// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-		//$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,e.ele_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
-		// Avec ce mode d'initialisation, il faut utiliser l'elenoet comme clé
-		$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,u.salt,u.email,e.elenoet,u.statut,u.auth_mode,u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
-		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-		$svg_insert=mysql_query($sql);
 
 		// Première étape : on vide les tables
 
@@ -161,7 +147,7 @@ if (!isset($_POST["action"])) {
 		// Suppression des comptes d'élèves:
 		echo "<br />\n";
 		echo "<p><em>On supprime les anciens comptes élèves...</em> ";
-		$sql="DELETE FROM utilisateurs WHERE statut='eleves';";
+		$sql="DELETE FROM utilisateurs WHERE statut='eleve';";
 		$del=mysql_query($sql);
 
 		$i = 0;
@@ -280,13 +266,13 @@ if (!isset($_POST["action"])) {
 				$reg_login="";
 
 				if($reg_id_int!='') {
-					$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$reg_id_int."' AND statut='eleve';";
+					$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant2='".$reg_id_int."' AND statut='eleve';";
 					if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 					$res_tmp_u=mysql_query($sql);
 					if(mysql_num_rows($res_tmp_u)>0) {
 						$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 						$reg_login=$lig_tmp_u->login;
-						if($debug_ele=='y') {echo "<span style='color:green;'>On récupère de tempo_utilisateurs_resp le login $reg_login</span><br />";}
+						if($debug_ele=='y') {echo "<span style='color:green;'>On récupère de tempo_utilisateurs le login $reg_login</span><br />";}
 					}
 				}
 	
@@ -319,7 +305,7 @@ if (!isset($_POST["action"])) {
 				$insert = mysql_query($sql);
 				if (!$insert) {
 					$error++;
-					echo mysql_error();
+					echo "<span style='color:red'><b>ERREUR&nbsp;: </b>".mysql_error()."</span><br />\n";
 				} else {
 					$total++;
 
@@ -399,8 +385,8 @@ if (!isset($_POST["action"])) {
 			//if (!isset($_POST['ligne'.$i.'_nom'])) break 1;
 		}
 
-		if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>\n";
-		if ($total > 0) echo "<p>" . $total . " élèves ont été enregistrés.</p>\n";
+		if ($error > 0) {echo "<p><span style='color:red'>Il y a eu " . $error . " erreur(s).</span></p>\n";}
+		if ($total > 0) {echo "<p>" . $total . " élèves ont été enregistrés.</p>\n";}
 
 		echo "<p><a href='index.php#eleves'>Revenir à la page précédente</a></p>\n";
 
@@ -649,13 +635,13 @@ if (!isset($_POST["action"])) {
 				}
 
 				echo "</table>\n";
-				echo "$k élèves ont été détectés dans le fichier.<br />\n";
+				echo "<p>$k élèves ont été détectés dans le fichier.</p>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<p><span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</span></p>\n";
 				}
 
-				echo "<input type='submit' value='Enregistrer' />\n";
+				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 				echo "</form>\n";
 			}
