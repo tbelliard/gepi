@@ -1638,8 +1638,6 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		throw new Exception('Not fully tested');
-	
         if ($this->debug) {
             if(is_null($this->timestamp_start)){
                 $this->timestamp_start = microtime(true);
@@ -1733,13 +1731,13 @@ class Eleve extends BaseEleve {
                 $this->affiche_duree();
 			}
 			return false;
-		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
-			if ($debug) {
+		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
 			}
 			return false;
-		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
-			if ($debug) {
+		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
 			}
 			return false;
@@ -1881,11 +1879,11 @@ class Eleve extends BaseEleve {
 				if (($DMabsencesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $DMabsencesCol->getCurrent()->format('d/m/Y H')) {
 					$DMabsencesCol_start_compute = true;
 					$newAgregation->setManquementObligationPresence(true);
-					$newAgregation->setJustifiee(true);
+					$newAgregation->setNonJustifiee(false);
 					$DMabsencesCol->getNext();
 					//on regarde si l'absence est non justifiée
 					if (($DMabsenceNonJustifiesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $DMabsenceNonJustifiesCol->getCurrent()->format('d/m/Y H')) {
-						$newAgregation->setJustifiee(false);
+						$newAgregation->setNonJustifiee(true);
 						$DMabsenceNonJustifiesCol->getNext();
 					}
 					
@@ -1929,8 +1927,8 @@ class Eleve extends BaseEleve {
 				while ($retards->getCurrent() != null && $retards->getCurrent()->getDebutAbs('U')<$date_fin_decompte_retard->format('U')) {
 					$retards_start_compute = true;
 					$newAgregation->setNbRetards($newAgregation->getNbRetards() + 1);
-					if ($retards->getCurrent()->getJustifiee()) {
-						$newAgregation->setNbRetardsJustifies($newAgregation->getNbRetardsJustifies() + 1);
+					if (!$retards->getCurrent()->getJustifiee()) {
+						$newAgregation->setNbRetardsNonJustifies($newAgregation->getNbRetardsNonJustifies() + 1);
 					}
 			    	if ($retards->getCurrent()->getMotif() != null) {
 			    		foreach ($retards->getCurrent()->getAbsenceEleveTraitements() as $traitement) {
@@ -1944,10 +1942,11 @@ class Eleve extends BaseEleve {
 				$newAgregation->save();
 				
 				$dateDemiJourneeIteration->modify("+12 hours");
+				
 			} while (//on s'arrete si on a dépassé la date de fin
-					($dateFinClone != null && $dateDemiJourneeIteration->format('U') <= $dateFinClone->format('U'))
+					($dateFinClone != null && $dateDemiJourneeIteration <= $dateFinClone)
 					//on s'arrete si la date de fin n'est pas précisé et qu'on a épuisé toutes les absences et retards
-					|| ($dateFinClone == null && (!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) || (!$retards->isFirst() || !$retards_start_compute) )
+					|| ($dateFinClone == null && ((!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) || (!$retards->isFirst() || !$retards_start_compute)) )
 					);			
 		}
 		
@@ -1977,7 +1976,6 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		throw new Exception('Not fully tested');
 		//on va vérifier que avant et après les dates précisées, la table est bien synchronisée sur l'année en cours
 		require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
 		assert('$dateDebut == null || $dateFin == null || $dateDebut <= $dateFin');

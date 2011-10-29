@@ -137,7 +137,7 @@ if (isset($message_enregistrement)) {
 $eleve_col = new PropelCollection();
 if ($type_selection == 'id_eleve') {
     $query = EleveQuery::create();
-    $eleve = $query->filterByIdEleve($id_eleve)->findOne();
+    $eleve = $query->filterById($id_eleve)->findOne();
     if ($eleve != null) {
 	$eleve_col->append($eleve);
     }

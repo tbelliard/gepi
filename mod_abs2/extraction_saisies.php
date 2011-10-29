@@ -176,7 +176,7 @@ if ($affichage != null && $affichage != '') {
 
     $saisie_query = AbsenceEleveSaisieQuery::create()
 	->filterByPlageTemps($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
-	->filterByEleveId($eleve_col->toKeyValue('IdEleve', 'IdEleve'));
+	->filterByEleveId($eleve_col->toKeyValue('Id', 'Id'));
 
     if ($type_extrait == '1') {
 		$saisie_query->filterByManquementObligationPresence(true);
