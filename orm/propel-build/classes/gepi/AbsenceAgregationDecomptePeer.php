@@ -227,6 +227,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		}
 		foreach ($eleveEtDate as $id => $array_eleve) {
 			if ($array_eleve['eleve'] != null) {
+			    $array_eleve['eleve']->clearAbsenceEleveSaisiesParJour();
 				$array_eleve['eleve']->updateAbsenceAgregationTable($array_eleve['dateDebut'],$array_eleve['dateFin']);
 			}
 		}

@@ -56,6 +56,9 @@ abstract class GepiEmptyTestBase extends GepiTestBase
         fclose($fd);
          
         loadSettings();
+        
+        AbsenceEleveSaisiePeer::disableAgregation();
+        
         parent::setUp();
     }
 

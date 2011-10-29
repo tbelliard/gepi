@@ -1017,7 +1017,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @param PropelPDO $con
 	 */
 	public function postSave(PropelPDO $con = null) { 
-		if ($this->getEleve() != null) {
+		if (AbsenceEleveSaisiePeer::isAgregationEnabled() && $this->getEleve() != null) {
 			//on va mettre à jour la table d'agrégation pour cet élève. Il faut mettre à jour cette table
 			//sur les date de l'ancienne version et de la nouvelle version
 			$oldDebutAbs = null;
@@ -1042,9 +1042,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			} else {
 				$fin = $this->getFinAbs(null);
 			}
-			
-//			$this->getEleve()->updateAbsenceAgregationTable($debut,$fin);
-//			$this->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($debut,$fin);
+			$this->getEleve()->clearAbsenceEleveSaisiesParJour();
+			$this->getEleve()->updateAbsenceAgregationTable($debut,$fin);
+			$this->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($debut,$fin);
 		}
 	}
 	

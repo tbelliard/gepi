@@ -394,7 +394,14 @@ class Eleve extends BaseEleve {
 	 */
 	public function clearAbsenceEleveSaisiesParJour()
 	{
-		$this->collAbsenceEleveSaisiesParJour = null; // important to set this to NULL since that means it is uninitialized
+	    $start_string = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
+	    $start_len = strlen($start_string);
+	    foreach($_REQUEST as $key => $value) {
+	        if (substr($key,0,$start_len) == $start_string) {
+	            unset($_REQUEST[$key]);
+	        }
+	    }
+	    $this->collAbsenceEleveSaisiesParJour = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	

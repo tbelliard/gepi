@@ -170,6 +170,8 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
         $this->assertEquals(0,$decompte->getNbRetards());
+        $saisie->getEleve()->clearAllReferences();
+        $saisie->clearAllReferences();
         $saisie->reload();
 	    $col = new PropelCollection();
 	    $col->append($saisie);
