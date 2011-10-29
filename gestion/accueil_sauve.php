@@ -89,7 +89,7 @@ if (isset($action) and ($action == 'upload'))  {
     } else {
         $dest = "../backup/".$dirname."/";
         $n = 0;
-        $nom_corrige = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name']);
+        $nom_corrige = preg_replace("/[^.a-zA-Z0-9_=-]+/", "_", $sav_file['name']);
         if (!deplacer_fichier_upload($sav_file['tmp_name'], "../backup/".$dirname."/".$nom_corrige)) {
             $msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire backup";
         } else {
@@ -105,6 +105,10 @@ if (isset($action) and ($action == 'sup'))  {
     if (isset($_GET['file']) && ($_GET['file']!='')) {
         if (@unlink("../backup/".$dirname."/".$_GET['file'])) {
             $msg = "Le fichier <b>".$_GET['file']."</b> a été supprimé.<br />\n";
+
+			if(file_exists("../backup/".$dirname."/".$_GET['file'].".txt")) {
+				@unlink("../backup/".$dirname."/".$_GET['file'].".txt");
+			}
         } else {
             $msg = "Un problème est survenu lors de la tentative de suppression du fichier <b>".$_GET['file']."</b>.<br />
             Il s'agit peut-être un problème de droits sur le répertoire backup.<br />\n";
@@ -368,7 +372,7 @@ function restoreMySqlDump($duree) {
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
 
-		$num_table=my_ereg_replace('^table_','',$lig->name);
+		$num_table=preg_replace('/^table_/','',$lig->name);
 		$nom_table=$lig->value;
 
 		$dumpFile="../backup/".$dirname."/base_extraite_table_".$num_table.".sql";
@@ -432,10 +436,10 @@ function restoreMySqlDump($duree) {
 						$sql = $formattedQuery;
 					}
 					if (mysql_query($sql)) {//réussie sinon continue à concaténer
-						if(my_ereg("^DROP TABLE ",$sql)) {
+						if(preg_match("/^DROP TABLE /",$sql)) {
 							echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
 						}
-						elseif(my_ereg("^CREATE TABLE ",$sql)) {
+						elseif(preg_match("/^CREATE TABLE /",$sql)) {
 							echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
 						}
 						else {
@@ -513,7 +517,7 @@ function restoreMySqlDump($duree) {
 				// On peut avoir plusieurs enregistrements pour une même table s'il y a plus de 1000 enregistrements dans la table
 				// Ou alors, il ne faut pas scinder ces tables
 				while($lig=mysql_fetch_object($res)) {
-					$num_table=my_ereg_replace('^table_','',$lig->name);
+					$num_table=preg_replace('/^table_/','',$lig->name);
 					$nom_table=$lig->value;
 	
 					$dumpFile="../backup/".$dirname."/base_extraite_table_".$num_table.".sql";
@@ -565,10 +569,10 @@ function restoreMySqlDump($duree) {
 									$sql = $formattedQuery;
 								}
 								if (mysql_query($sql)) {//réussie sinon continue à concaténer
-									if(my_ereg("^DROP TABLE ",$sql)) {
+									if(preg_match("/^DROP TABLE /",$sql)) {
 										echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
 									}
-									elseif(my_ereg("^CREATE TABLE ",$sql)) {
+									elseif(preg_match("/^CREATE TABLE /",$sql)) {
 										echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
 									}
 									else {
@@ -693,12 +697,12 @@ function extractMySqlDump($dumpFile,$duree) {
 
 		// On ne met pas les lignes de commentaire, ni les lignes vides
 		if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/" AND trim($buffer)!='') {
-			if(my_ereg("^DROP TABLE ",$buffer)) {
+			if(preg_match("/^DROP TABLE /",$buffer)) {
 				if(isset($fich)) {fclose($fich);}
 				//$fich=fopen("../backup/".$dirname."/base_extraite_table_".$num_table.".sql","w+");
 				$fich=fopen("../backup/".$dirname."/base_extraite_table_".sprintf("%03d",$num_table).".sql","w+");
 
-				$nom_table=trim(my_ereg_replace("[ `;]","",my_ereg_replace("^DROP TABLE ","",my_ereg_replace("^DROP TABLE IF EXISTS ","",$buffer))));
+				$nom_table=trim(preg_replace("/[ `;]/","",preg_replace("/^DROP TABLE /","",preg_replace("/^DROP TABLE IF EXISTS /","",$buffer))));
 
 				$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%03d",$num_table)."', value='$nom_table';";
 				$res=mysql_query($sql);
@@ -709,12 +713,12 @@ function extractMySqlDump($dumpFile,$duree) {
 			}
 			if(isset($fich)) {
 				if($nom_table=='log') {
-					if(($ne_pas_restaurer_log!='y')||(!my_eregi("^INSERT INTO ",$buffer))) {
+					if(($ne_pas_restaurer_log!='y')||(!preg_match("/^INSERT INTO /i",$buffer))) {
 						fwrite($fich,$buffer);
 					}
 				}
 				elseif($nom_table=='tentatives_intrusion') {
-					if(($ne_pas_restaurer_tentatives_intrusion!='y')||(!my_eregi("^INSERT INTO ",$buffer)))  {
+					if(($ne_pas_restaurer_tentatives_intrusion!='y')||(!preg_match("/^INSERT INTO /i",$buffer)))  {
 						fwrite($fich,$buffer);
 					}
 				}
@@ -1076,7 +1080,7 @@ if (isset($action) and ($action == 'restaure'))  {
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
-						$num_table=my_ereg_replace('^table_','',$lig->name);
+						$num_table=preg_replace('/^table_/','',$lig->name);
 						unlink("../backup/".$dirname."/base_extraite_table_".$num_table.".sql");
 					}
 				}
@@ -1213,6 +1217,16 @@ if (isset($action) and ($action == 'dump'))  {
     $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
     $cur_time=date("Y-m-d H:i");
     $filename=$path.$nomsql.".".$filetype;
+
+	if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {
+		$f_desc=fopen($filename.".txt", "a+");
+		$description_sauvegarde=preg_replace('/(\\\r\\\n)+/',"\r\n",$_POST['description_sauvegarde']);
+		$description_sauvegarde=preg_replace('/(\\\r)+/',"\r",$description_sauvegarde);
+		$description_sauvegarde=preg_replace('/(\\\n)+/',"\n",$description_sauvegarde);
+		fwrite($f_desc, $description_sauvegarde);
+		fclose($f_desc);
+	}
+
 	// Ce nom est modifié à chaque passage dans action=dump, mais pour les passages suivant le premier, on reçoit $fichier en $_GET donc on n'utilise pas $filename
 
     if (!isset($_GET["duree"])&&is_file($filename)){
@@ -1346,10 +1360,10 @@ if (isset($action) and ($action == 'system_dump'))  {
     // Juste pour être sûr :
 	$no_escapeshellarg=getSettingValue('no_escapeshellarg');
 	if($no_escapeshellarg=='y') {
-		$dbHost = my_ereg_replace("[^A-Za-z0-9_-.]","",$dbHost);
-		$dbUser = my_ereg_replace("[^A-Za-z0-9_-.]","",$dbUser);
-		$dbPass = my_ereg_replace("[^A-Za-z0-9_-.]","",$dbPass);
-		$dbDb = my_ereg_replace("[^A-Za-z0-9_-.]","",$dbDb);
+		$dbHost = preg_replace("/[^A-Za-z0-9_-.]/","",$dbHost);
+		$dbUser = preg_replace("/[^A-Za-z0-9_-.]/","",$dbUser);
+		$dbPass = preg_replace("/[^A-Za-z0-9_-.]/","",$dbPass);
+		$dbDb = preg_replace("/[^A-Za-z0-9_-.]/","",$dbDb);
 	}
 	else {
 		$dbHost = escapeshellarg($dbHost);
@@ -1380,6 +1394,14 @@ if (isset($action) and ($action == 'system_dump'))  {
 	$exec = exec($command);
 	if (filesize($filename) > 10000) {
 		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>\n";
+		if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {
+			$f_desc=fopen($filename.".txt", "a+");
+			$description_sauvegarde=preg_replace('/(\\\r\\\n)+/',"\r\n",$_POST['description_sauvegarde']);
+			$description_sauvegarde=preg_replace('/(\\\r)+/',"\r",$description_sauvegarde);
+			$description_sauvegarde=preg_replace('/(\\\n)+/',"\n",$description_sauvegarde);
+			fwrite($f_desc, $description_sauvegarde);
+			fclose($f_desc);
+		}
 	} else {
 		echo "<center><p style='color: red; font-weight: bold;'>Erreur lors de la sauvegarde.</p></center>\n";
 	}
@@ -1587,12 +1609,15 @@ La seconde méthode est lourde en ressources mais passera sur toutes les configur
 <?php
 	echo add_token_field();
 ?>
-<center><input type="submit" value="Sauvegarder" />
+<div align='center'>
+<input type="submit" value="Sauvegarder" />
 <select name='action' size='1'>
 <option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
 <option value='dump'<?php if (getSettingValue("mode_sauvegarde") == "gepi") echo " SELECTED";?>>sans mysqldump</option>
 </select>
-</center>
+<br />
+Description (<em>facultative</em>) de la sauvegarde&nbsp;:<br /><textarea name='description_sauvegarde' cols='30'></textarea>
+</div>
 
 <span class='small'><b>Remarques</b> :</span>
 <ul>
@@ -1648,10 +1673,31 @@ if ($n > 0) {
 	$alt=1;
     foreach($tab_file as $value) {
         $alt=$alt*(-1);
-		echo "<tr class='lig$alt'><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
+		echo "<tr class='lig$alt'>\n";
+        echo "<td>\n";
+        echo "<em>";
+		if(file_exists('../backup/'.$dirname.'/'.$value.'.txt')) {
+			$handle = fopen('../backup/'.$dirname.'/'.$value.'.txt', "r");
+			$contents = fread($handle, filesize('../backup/'.$dirname.'/'.$value.'.txt'));
+			fclose($handle);
+			$contents=preg_replace('/"/', "", $contents);
+
+			$titre_infobulle=$value;
+			$texte_infobulle=nl2br($contents);
+			$tabdiv_infobulle[]=creer_div_infobulle('div_description_svg_'.$m,$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+
+			echo "<a href='#' onmouseover=\"delais_afficher_div('div_description_svg_$m','y',-20,20,1000,20,20);\" onclick=\"afficher_div('div_description_svg_$m','y',-20,20); return false\" onmouseout=\"cacher_div('div_description_svg_$m')\">";
+			echo $value;
+			echo "</a>";
+		}
+		else {
+			echo $value;
+		}
+		echo "</em>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko)\n";
+        echo "</td>\n";
         echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a></td>\n";
 		//if (($value=='_photos.zip')||($value=='_cdt.zip')){
-		if ((my_ereg('^_photos',$value)&&my_ereg('.zip$',$value))||(my_ereg('^_cdt',$value)&&my_ereg('.zip$',$value))){
+		if ((preg_match('/^_photos/i',$value)&&preg_match('/.zip$/i',$value))||(preg_match('/^_cdt/i',$value)&&preg_match('/.zip$/i',$value))){
 		   echo "<td> </td>\n";
 		} else {
             echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
