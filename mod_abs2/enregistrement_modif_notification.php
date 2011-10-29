@@ -62,6 +62,7 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 }
 
 //récupération des paramètres de la requète
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 $id_notification = isset($_POST["id_notification"]) ? $_POST["id_notification"] :(isset($_GET["id_notification"]) ? $_GET["id_notification"] :NULL);
 $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GET["commentaire"]) ? $_GET["commentaire"] :NULL);
 $modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GET["modif"] :NULL);
@@ -185,6 +186,7 @@ if ( $modif == 'type') {
         $clone->setTelephone($responsableToAdd->getTelPort());
         $clone->setAdresseId($responsableToAdd->getAdresseId());
         $clone->save();
+        // On supprime les anciens responsables de la notification initiale
         $responsables = JNotificationResponsableEleveQuery::create()->filterByAbsenceEleveNotification($clone)->find();
         foreach ($responsables as $responsable) {
             $responsable->delete();
@@ -193,8 +195,12 @@ if ( $modif == 'type') {
         $clone->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL);
         $clone->setDateEnvoi(null);
         $clone->setErreurMessageEnvoi(null);
-        $clone->save();
-        $message_enregistrement .= 'Nouvelle notification ' . $clone->getId() . ' créée. <br />';
+        $clone->save();        
+        $message_enregistrement .= 'Nouvelle notification <a href="./visu_notification.php?id_notification='.$clone->getId();
+        if ($menu) {
+            $message_enregistrement .='&menu=false';
+        }
+        $message_enregistrement .= '">'.$clone->getId().'</a> créée pour '.$responsableToAdd->getCivilite().' '.$responsableToAdd->getPrenom().' '.$responsableToAdd->getNom().' <br />';
     }
     include("visu_notification.php");
     die();
