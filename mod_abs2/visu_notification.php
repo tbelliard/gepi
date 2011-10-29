@@ -679,7 +679,20 @@ if ($notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVO
     echo '</form>';
     echo '</td></tr>';
 }
-
+if ($notification->getModifiable()) {
+    if ($notification->getAbsenceEleveTraitement() != null) {
+        echo '<tr><td colspan="2" style="text-align : center;">';
+        echo '<form method="post" action="enregistrement_modif_notification.php">';
+        echo '<input type="hidden" name="menu" value="' . $menu . '"/>';
+        echo '<p>';
+        echo '<input type="hidden" name="id_notification" value="' . $notification->getPrimaryKey() . '"/>';
+        echo '<input type="hidden" name="modif" value="supprimer"/>';
+        echo '<button type="submit">Supprimer la notification</button>';
+        echo '</p>';
+        echo '</form>';
+        echo '</td></tr>';
+    }
+}
 echo '</tbody>';
 
 echo '</table>';

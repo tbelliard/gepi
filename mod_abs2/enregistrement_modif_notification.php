@@ -204,6 +204,14 @@ if ( $modif == 'type') {
     }
     include("visu_notification.php");
     die();
+} elseif ($modif == 'supprimer') {
+    $notification->delete();
+    if ($menu) {
+        include("visu_traitement.php");
+    } else {
+        include("liste_notifications.php");
+    }
+    die;
 }
 
 if (!$notification->isModified()) {
