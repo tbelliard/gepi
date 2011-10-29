@@ -488,14 +488,14 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         mysql_query("update a_saisies set fin_abs = '2010-10-01 08:10:00' where id = ".$saisie_id);//ça devient un retard
         $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
-        $this->assertEquals(0,$decompte->getNbRetards());
+        $this->assertEquals(0,$decompte->getRetards());
         $saisie->reload();
         $saisie->clearAllReferences();
         $saisie->getEleve()->clearAllReferences();
         $saisie->updateSynchroAbsenceAgregationTable();//c'est mis à jour
         $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
         $this->assertFalse($decompte->getManquementObligationPresence());
-        $this->assertEquals(1,$decompte->getNbRetards());
+        $this->assertEquals(1,$decompte->getRetards());
         $saisie->setFinAbs('2010-10-01 09:00:00');
         $saisie->save();
     }
@@ -513,14 +513,14 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         mysql_query("update a_saisies set fin_abs = '2010-10-01 08:10:00' where id = ".$saisie_id);//ça devient un retard
         $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
-        $this->assertEquals(0,$decompte->getNbRetards());
+        $this->assertEquals(0,$decompte->getRetards());
         $saisie->reload();
         $saisie->clearAllReferences();
         $saisie->getEleve()->clearAllReferences();
         $saisie->checkAndUpdateSynchroAbsenceAgregationTable();//ça n'est pas mis à jour car le test est true
         $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
-        $this->assertEquals(0,$decompte->getNbRetards());
+        $this->assertEquals(0,$decompte->getRetards());
         mysql_query("update a_saisies set updated_at = now() where id = ".$saisie_id);
         $saisie->reload();
         $saisie->clearAllReferences();
@@ -528,7 +528,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $saisie->checkAndUpdateSynchroAbsenceAgregationTable();//c'est mis à jour car le test est false
         $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
         $this->assertFalse($decompte->getManquementObligationPresence());
-        $this->assertEquals(1,$decompte->getNbRetards());
+        $this->assertEquals(1,$decompte->getRetards());
         $saisie->setFinAbs('2010-10-01 09:00:00');
         $saisie->save();
     }

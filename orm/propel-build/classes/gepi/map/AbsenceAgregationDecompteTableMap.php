@@ -43,8 +43,8 @@ class AbsenceAgregationDecompteTableMap extends TableMap
 		$this->addColumn('MANQUEMENT_OBLIGATION_PRESENCE', 'ManquementObligationPresence', 'BOOLEAN', false, null, false);
 		$this->addColumn('NON_JUSTIFIEE', 'NonJustifiee', 'BOOLEAN', false, null, false);
 		$this->addColumn('NOTIFIEE', 'Notifiee', 'BOOLEAN', false, null, false);
-		$this->addColumn('NB_RETARDS', 'NbRetards', 'INTEGER', false, null, 0);
-		$this->addColumn('NB_RETARDS_NON_JUSTIFIES', 'NbRetardsNonJustifies', 'INTEGER', false, null, 0);
+		$this->addColumn('RETARDS', 'Retards', 'INTEGER', false, null, 0);
+		$this->addColumn('RETARDS_NON_JUSTIFIES', 'RetardsNonJustifies', 'INTEGER', false, null, 0);
 		$this->addColumn('MOTIFS_ABSENCES', 'MotifsAbsences', 'ARRAY', false, null, null);
 		$this->addColumn('MOTIFS_RETARDS', 'MotifsRetards', 'ARRAY', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);

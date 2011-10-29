@@ -305,9 +305,9 @@ class EleveTest extends GepiEmptyTestBase
 	    $this->assertEquals(31,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    $this->assertEquals(4, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->count());
 	    $this->assertEquals(1, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->count());
-	    $this->assertEquals(4, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByNbRetards(1)->count());
-	    $this->assertEquals(1, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByNbRetards(2)->count());
-	    $this->assertEquals(4, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByNbRetardsNonJustifies(1)->count());
+	    $this->assertEquals(4, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByRetards(1)->count());
+	    $this->assertEquals(1, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByRetards(2)->count());
+	    $this->assertEquals(4, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByRetardsNonJustifies(1)->count());
 	    $demi_journee =  AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->filterByNonJustifiee(false)->findOne();
 	    $this->assertEquals('2010-10-14 00:00:00', $demi_journee->getDateDemiJounee('Y-m-d H:i:s'));
 
@@ -316,7 +316,7 @@ class EleveTest extends GepiEmptyTestBase
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime('2010-09-01 00:00:00'),new DateTime('2010-09-02 23:59:59'));
 	    $this->assertEquals(5,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    $this->assertEquals(0, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->count());
-	    $this->assertEquals(5, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByNbRetards(0)->count());
+	    $this->assertEquals(5, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByRetards(0)->count());
 	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->updateAbsenceAgregationTable();

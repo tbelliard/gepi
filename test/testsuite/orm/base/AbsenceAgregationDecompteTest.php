@@ -169,7 +169,7 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
         mysql_query("update a_saisies set fin_abs = '2010-10-01 08:10:00' where id = ".$saisie_id);//ça devient un retard
 	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
         $this->assertTrue($decompte->getManquementObligationPresence());
-        $this->assertEquals(0,$decompte->getNbRetards());
+        $this->assertEquals(0,$decompte->getRetards());
         $saisie->getEleve()->clearAllReferences();
         $saisie->clearAllReferences();
         $saisie->reload();
@@ -178,7 +178,7 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	    AbsenceAgregationDecomptePeer::updateAgregationTable($col);
 	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
 	    $this->assertFalse($decompte->getManquementObligationPresence());
-        $this->assertEquals(1,$decompte->getNbRetards());
+        $this->assertEquals(1,$decompte->getRetards());
         $saisie->setFinAbs('2010-10-01 09:00:00');
         $saisie->save();
         

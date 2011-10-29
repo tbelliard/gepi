@@ -59,18 +59,18 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	protected $notifiee;
 
 	/**
-	 * The value for the nb_retards field.
+	 * The value for the retards field.
 	 * Note: this column has a database default value of: 0
 	 * @var        int
 	 */
-	protected $nb_retards;
+	protected $retards;
 
 	/**
-	 * The value for the nb_retards_non_justifies field.
+	 * The value for the retards_non_justifies field.
 	 * Note: this column has a database default value of: 0
 	 * @var        int
 	 */
-	protected $nb_retards_non_justifies;
+	protected $retards_non_justifies;
 
 	/**
 	 * The value for the motifs_absences field.
@@ -141,8 +141,8 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		$this->manquement_obligation_presence = false;
 		$this->non_justifiee = false;
 		$this->notifiee = false;
-		$this->nb_retards = 0;
-		$this->nb_retards_non_justifies = 0;
+		$this->retards = 0;
+		$this->retards_non_justifies = 0;
 	}
 
 	/**
@@ -234,23 +234,23 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	}
 
 	/**
-	 * Get the [nb_retards] column value.
+	 * Get the [retards] column value.
 	 * Nombre de retards total décomptés dans la demi journée
 	 * @return     int
 	 */
-	public function getNbRetards()
+	public function getRetards()
 	{
-		return $this->nb_retards;
+		return $this->retards;
 	}
 
 	/**
-	 * Get the [nb_retards_non_justifies] column value.
+	 * Get the [retards_non_justifies] column value.
 	 * Nombre de retards non justifiés décomptés dans la demi journée
 	 * @return     int
 	 */
-	public function getNbRetardsNonJustifies()
+	public function getRetardsNonJustifies()
 	{
-		return $this->nb_retards_non_justifies;
+		return $this->retards_non_justifies;
 	}
 
 	/**
@@ -518,44 +518,44 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	} // setNotifiee()
 
 	/**
-	 * Set the value of [nb_retards] column.
+	 * Set the value of [retards] column.
 	 * Nombre de retards total décomptés dans la demi journée
 	 * @param      int $v new value
 	 * @return     AbsenceAgregationDecompte The current object (for fluent API support)
 	 */
-	public function setNbRetards($v)
+	public function setRetards($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->nb_retards !== $v || $this->isNew()) {
-			$this->nb_retards = $v;
-			$this->modifiedColumns[] = AbsenceAgregationDecomptePeer::NB_RETARDS;
+		if ($this->retards !== $v || $this->isNew()) {
+			$this->retards = $v;
+			$this->modifiedColumns[] = AbsenceAgregationDecomptePeer::RETARDS;
 		}
 
 		return $this;
-	} // setNbRetards()
+	} // setRetards()
 
 	/**
-	 * Set the value of [nb_retards_non_justifies] column.
+	 * Set the value of [retards_non_justifies] column.
 	 * Nombre de retards non justifiés décomptés dans la demi journée
 	 * @param      int $v new value
 	 * @return     AbsenceAgregationDecompte The current object (for fluent API support)
 	 */
-	public function setNbRetardsNonJustifies($v)
+	public function setRetardsNonJustifies($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->nb_retards_non_justifies !== $v || $this->isNew()) {
-			$this->nb_retards_non_justifies = $v;
-			$this->modifiedColumns[] = AbsenceAgregationDecomptePeer::NB_RETARDS_NON_JUSTIFIES;
+		if ($this->retards_non_justifies !== $v || $this->isNew()) {
+			$this->retards_non_justifies = $v;
+			$this->modifiedColumns[] = AbsenceAgregationDecomptePeer::RETARDS_NON_JUSTIFIES;
 		}
 
 		return $this;
-	} // setNbRetardsNonJustifies()
+	} // setRetardsNonJustifies()
 
 	/**
 	 * Set the value of [motifs_absences] column.
@@ -729,11 +729,11 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 				return false;
 			}
 
-			if ($this->nb_retards !== 0) {
+			if ($this->retards !== 0) {
 				return false;
 			}
 
-			if ($this->nb_retards_non_justifies !== 0) {
+			if ($this->retards_non_justifies !== 0) {
 				return false;
 			}
 
@@ -764,8 +764,8 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 			$this->manquement_obligation_presence = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
 			$this->non_justifiee = ($row[$startcol + 3] !== null) ? (boolean) $row[$startcol + 3] : null;
 			$this->notifiee = ($row[$startcol + 4] !== null) ? (boolean) $row[$startcol + 4] : null;
-			$this->nb_retards = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->nb_retards_non_justifies = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->retards = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+			$this->retards_non_justifies = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
 			$this->motifs_absences = $row[$startcol + 7];
 			$this->motifs_retards = $row[$startcol + 8];
 			$this->created_at = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
@@ -1124,10 +1124,10 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 				return $this->getNotifiee();
 				break;
 			case 5:
-				return $this->getNbRetards();
+				return $this->getRetards();
 				break;
 			case 6:
-				return $this->getNbRetardsNonJustifies();
+				return $this->getRetardsNonJustifies();
 				break;
 			case 7:
 				return $this->getMotifsAbsences();
@@ -1175,8 +1175,8 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 			$keys[2] => $this->getManquementObligationPresence(),
 			$keys[3] => $this->getNonJustifiee(),
 			$keys[4] => $this->getNotifiee(),
-			$keys[5] => $this->getNbRetards(),
-			$keys[6] => $this->getNbRetardsNonJustifies(),
+			$keys[5] => $this->getRetards(),
+			$keys[6] => $this->getRetardsNonJustifies(),
 			$keys[7] => $this->getMotifsAbsences(),
 			$keys[8] => $this->getMotifsRetards(),
 			$keys[9] => $this->getCreatedAt(),
@@ -1233,10 +1233,10 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 				$this->setNotifiee($value);
 				break;
 			case 5:
-				$this->setNbRetards($value);
+				$this->setRetards($value);
 				break;
 			case 6:
-				$this->setNbRetardsNonJustifies($value);
+				$this->setRetardsNonJustifies($value);
 				break;
 			case 7:
 				$this->setMotifsAbsences($value);
@@ -1279,8 +1279,8 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		if (array_key_exists($keys[2], $arr)) $this->setManquementObligationPresence($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setNonJustifiee($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setNotifiee($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setNbRetards($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setNbRetardsNonJustifies($arr[$keys[6]]);
+		if (array_key_exists($keys[5], $arr)) $this->setRetards($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setRetardsNonJustifies($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setMotifsAbsences($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setMotifsRetards($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setCreatedAt($arr[$keys[9]]);
@@ -1301,8 +1301,8 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::MANQUEMENT_OBLIGATION_PRESENCE)) $criteria->add(AbsenceAgregationDecomptePeer::MANQUEMENT_OBLIGATION_PRESENCE, $this->manquement_obligation_presence);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::NON_JUSTIFIEE)) $criteria->add(AbsenceAgregationDecomptePeer::NON_JUSTIFIEE, $this->non_justifiee);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::NOTIFIEE)) $criteria->add(AbsenceAgregationDecomptePeer::NOTIFIEE, $this->notifiee);
-		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::NB_RETARDS)) $criteria->add(AbsenceAgregationDecomptePeer::NB_RETARDS, $this->nb_retards);
-		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::NB_RETARDS_NON_JUSTIFIES)) $criteria->add(AbsenceAgregationDecomptePeer::NB_RETARDS_NON_JUSTIFIES, $this->nb_retards_non_justifies);
+		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::RETARDS)) $criteria->add(AbsenceAgregationDecomptePeer::RETARDS, $this->retards);
+		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::RETARDS_NON_JUSTIFIES)) $criteria->add(AbsenceAgregationDecomptePeer::RETARDS_NON_JUSTIFIES, $this->retards_non_justifies);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES)) $criteria->add(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES, $this->motifs_absences);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::MOTIFS_RETARDS)) $criteria->add(AbsenceAgregationDecomptePeer::MOTIFS_RETARDS, $this->motifs_retards);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::CREATED_AT)) $criteria->add(AbsenceAgregationDecomptePeer::CREATED_AT, $this->created_at);
@@ -1381,8 +1381,8 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		$copyObj->setManquementObligationPresence($this->getManquementObligationPresence());
 		$copyObj->setNonJustifiee($this->getNonJustifiee());
 		$copyObj->setNotifiee($this->getNotifiee());
-		$copyObj->setNbRetards($this->getNbRetards());
-		$copyObj->setNbRetardsNonJustifies($this->getNbRetardsNonJustifies());
+		$copyObj->setRetards($this->getRetards());
+		$copyObj->setRetardsNonJustifies($this->getRetardsNonJustifies());
 		$copyObj->setMotifsAbsences($this->getMotifsAbsences());
 		$copyObj->setMotifsRetards($this->getMotifsRetards());
 		$copyObj->setCreatedAt($this->getCreatedAt());
@@ -1489,8 +1489,8 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		$this->manquement_obligation_presence = null;
 		$this->non_justifiee = null;
 		$this->notifiee = null;
-		$this->nb_retards = null;
-		$this->nb_retards_non_justifies = null;
+		$this->retards = null;
+		$this->retards_non_justifies = null;
 		$this->motifs_absences = null;
 		$this->motifs_retards = null;
 		$this->created_at = null;

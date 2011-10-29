@@ -1970,9 +1970,9 @@ class Eleve extends BaseEleve {
 				}
 				while ($retards->getCurrent() != null && $retards->getCurrent()->getDebutAbs('U')<$date_fin_decompte_retard->format('U')) {
 					$retards_start_compute = true;
-					$newAgregation->setNbRetards($newAgregation->getNbRetards() + 1);
+					$newAgregation->setRetards($newAgregation->getRetards() + 1);
 					if (!$retards->getCurrent()->getJustifiee()) {
-						$newAgregation->setNbRetardsNonJustifies($newAgregation->getNbRetardsNonJustifies() + 1);
+						$newAgregation->setRetardsNonJustifies($newAgregation->getRetardsNonJustifies() + 1);
 					}
 			    	if ($retards->getCurrent()->getMotif() != null) {
 			    		foreach ($retards->getCurrent()->getAbsenceEleveTraitements() as $traitement) {
