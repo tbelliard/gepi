@@ -214,6 +214,34 @@ function afficheChargement($indice,$nbEleves) {
 <?php
   die ();
 }
+/* */
+function creeCSV($donnees, $justifications) {
+  $date = date("d-m-Y_H-i");
+  $nom_fic = "Justifications_".$date.".csv";
+  send_file_download_headers('text/x-csv',$nom_fic);
+  $fd = '"Nom Prénom";"Classe";"Retards";"1/2 journées non justifiées";"1/2 journées justifiées"';
+  foreach ($justifications as $justifie) {
+	$fd .= ';"'.$justifie->getNom().'"';
+  }
+  $fd .= "\n";
+  
+  if (count($donnees)) {
+  	foreach ($donnees as $donnee) {
+	  $fd .= '"'.$donnee['nom'].' '.$donnee['prenom'].'"';
+	  $fd .= ';"'.$donnee['classe'].'"';
+	  $fd .= ';"'.$donnee['retards'].'"';
+	  $fd .= ';"'.$donnee['non_justifiees'].'"';
+	  $fd .= ';"'.$donnee['justifiees'].'"';
+	  foreach ($donnee['traitement'] as $justifie) {
+		$fd .= ';"'.$justifie.'"';
+	  }
+	  $fd .= "\n";
+	}
+  }
+	
+  echo $fd;
+  die ();
+}
 
 /* *******************************************************************************
  * Logique de la page
@@ -320,11 +348,10 @@ if (!isset($_SESSION['statJustifie'])) {
 	afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
 
   } elseif ($_POST['valide'] == "csv") {
-	
-  // unset ($_SESSION['statJustifie']);
-	die ('On exporte le tableau dans un fichier .csv');	
+  /***** On crée et envoie un fichier .csv *****/
+	creeCSV($_SESSION['statJustifie']['donnees'], unserialize($_SESSION['statJustifie']['justifications']));
   } else {
-  /***** On a changer les dates ou le mode de calcul ou recharger la page*****/
+  /***** On a changer les dates ou le mode de calcul ou recharger la page *****/
 	// On initialise les données
 	unset ($_SESSION['statJustifie']['donnees']);
 	// on récupère les justifications
@@ -354,7 +381,6 @@ if (!isset($_SESSION['statJustifie'])) {
 	$_SESSION['statJustifie']['dernierePosition'] = -1;
 	// on affiche la page de chargement
 	afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
-  
   }
   
 } else {
@@ -501,7 +527,6 @@ foreach ($donnees as $donnee) { ?>
 		  ">
 		<?php echo $donnee['justifiees']; ?>
 	  </td>
-<?php // foreach ($donnee['traitement'] as $justifie) { ; ?>
 <?php foreach ($donnee['traitement'] as $justifie) { ; ?>
 	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $justifie; ?>
