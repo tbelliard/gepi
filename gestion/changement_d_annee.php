@@ -263,9 +263,11 @@ if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 $test=mysql_query($sql);
 if(mysql_num_rows($test)>0) {
 	echo "Il existe actuellement ".mysql_num_rows($test)." comptes élèves.<br />";
+	$temoin_compte_ele="y";
 }
 else {
 	echo "Il n'existe actuellement aucun compte élève.<br />";
+	$temoin_compte_ele="n";
 }
 $sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
 if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
@@ -285,9 +287,11 @@ if(mysql_num_rows($test)>0) {
 		}
 		echo "</em>)";
 	}
+	$temoin_reserve_compte_ele="faite";
 }
 else {
 	echo "Aucun compte élève n'est actuellement mis en réserve.<br />";
+	$temoin_reserve_compte_ele="non_faite";
 }
 echo "</p>\n";
 
@@ -297,9 +301,11 @@ if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 $test=mysql_query($sql);
 if(mysql_num_rows($test)>0) {
 	echo "Il existe actuellement ".mysql_num_rows($test)." comptes responsables.<br />";
+	$temoin_compte_resp="y";
 }
 else {
 	echo "Il n'existe actuellement aucun compte responsable.<br />";
+	$temoin_compte_resp="n";
 }
 $sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
 if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
@@ -319,14 +325,20 @@ if(mysql_num_rows($test)>0) {
 		}
 		echo "</em>)";
 	}
+	$temoin_reserve_compte_resp="faite";
 }
 else {
 	echo "Aucun compte responsable n'est actuellement mis en réserve.<br />";
+	$temoin_reserve_compte_resp="non_faite";
 }
 echo "</p>\n";
 
-echo "<p><input type='checkbox' name='reserve_comptes_eleves' id='reserve_comptes_eleves' value='y' /><label for='reserve_comptes_eleves'>Mettre en réserve une copie des comptes élèves.<br />
-<input type='checkbox' name='reserve_comptes_responsables' id='reserve_comptes_responsables' value='y' /><label for='reserve_comptes_responsables'>Mettre en réserve une copie des comptes responsables.</label></label></p>\n";
+echo "<p><input type='checkbox' name='reserve_comptes_eleves' id='reserve_comptes_eleves' value='y' ";
+if(($temoin_compte_ele=='y')&&($temoin_reserve_compte_ele=='non_faite')) {echo "checked ";}
+echo "/><label for='reserve_comptes_eleves'>Mettre en réserve une copie des comptes élèves.<br />
+<input type='checkbox' name='reserve_comptes_responsables' id='reserve_comptes_responsables' value='y' ";
+if(($temoin_compte_resp=='y')&&($temoin_reserve_compte_resp=='non_faite')) {echo "checked ";}
+echo "/><label for='reserve_comptes_responsables'>Mettre en réserve une copie des comptes responsables.</label></label></p>\n";
 
 echo "<p><em>NOTE&nbsp;:</em> En cochant les cases ci-dessus, on commence par vider les comptes précédemment mis en réserve avant d'insérer les comptes actuellement présents dans la table 'utilisateurs'.</p>\n";
 echo "</li>\n";

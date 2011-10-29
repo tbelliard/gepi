@@ -59,7 +59,7 @@ $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 //debug_var();
 // Passer à 'y' pour afficher les requêtes
-$debug_ele="y";
+$debug_ele="n";
 
 ?>
 <p class="bold"><a href="index.php#eleves"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
@@ -156,7 +156,9 @@ if (!isset($_POST["action"])) {
 		// Compteur d'enregistrement
 		$total = 0;
 
-		$sql="SELECT * FROM temp_gep_import2;";
+		// Il faut que les comptes disposant d'un compte élève l'an dernier passent en premier pour récupérer leur login sans qu'il se produise une collision si un nouveau passe avant.
+		//$sql="SELECT * FROM temp_gep_import2;";
+		$sql="(SELECT t.* FROM temp_gep_import2 t, tempo_utilisateurs tu WHERE t.ELENOET=tu.identifiant2) UNION (SELECT * FROM temp_gep_import2 WHERE ELENOET NOT IN (SELECT identifiant2 FROM tempo_utilisateurs));";
 		$res_temp=mysql_query($sql);
 		if(mysql_num_rows($res_temp)==0) {
 			echo "<p style='color:red'>ERREUR&nbsp;: Aucun élève n'a été trouvé&nbsp;???</p>\n";
@@ -224,8 +226,9 @@ if (!isset($_POST["action"])) {
 			// Maintenant que tout est propre, on fait un test sur la table eleves pour s'assurer que l'élève n'existe pas déjà.
 			// Ca permettra d'éviter d'enregistrer des élèves en double
 
-			$test = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_int . "'"), 0);
-			if($debug_ele=='y') {echo "<span style='color:coral;'>SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_int . "' -&gt; $test enregistrement.</span><br />";}
+			$sql="SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_int . "';";
+			if($debug_ele=='y') {echo "<br /><p><span style='color:coral;'>$sql -&gt; $test enregistrement.</span><br />";}
+			$test = mysql_result(mysql_query($sql), 0);
 
 			//==========================
 			// DEBUG
@@ -235,34 +238,6 @@ if (!isset($_POST["action"])) {
 
 			if ($test == 0) {
 				// Test négatif : aucun élève avec cet ID... on enregistre !
-/*
-				// On génère un login
-				$reg_login = preg_replace("/\040/","_", $reg_nom);
-				//====================================
-				// AJOUT: boireaus
-				$reg_login = strtr($reg_login,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-				//====================================
-				$reg_login = preg_replace("/[^a-zA-Z]/", "", $reg_login);
-				if (strlen($reg_login) > 9) $reg_login = substr($reg_login, 0, 9);
-				//====================================
-				// MODIF: boireaus
-				//$reg_login .= "_" . substr($reg_prenom, 0, 1);
-				$reg_login .= "_" . strtr(substr($reg_prenom, 0, 1),"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-				//====================================
-				$reg_login = strtoupper($reg_login);
-
-				$p = 1;
-				while (true) {
-					$test_login = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE login = '" . $reg_login . "'"), 0);
-					if ($test_login != 0) {
-						$reg_login .= strtr(substr($reg_prenom, $p, 1), "àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ", "aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-						$p++;
-					} else {
-						break 1;
-					}
-					$reg_login = strtoupper($reg_login);
-				}
-*/
 				$reg_login="";
 
 				if($reg_id_int!='') {
@@ -290,7 +265,7 @@ if (!isset($_POST["action"])) {
 				//echo "On va enregistrer l'élève avec le login \$reg_login=$reg_login</p>\n";
 				//==========================
 
-				// On insert les données
+				// On insere les données
 
 				$sql="INSERT INTO eleves SET " .
 						"no_gep = '" . $reg_id_nat . "', " .
@@ -308,6 +283,31 @@ if (!isset($_POST["action"])) {
 					echo "<span style='color:red'><b>ERREUR&nbsp;: </b>".mysql_error()."</span><br />\n";
 				} else {
 					$total++;
+
+					// On re-crée le compte utilisateur s'il existait l'année précédente (mais en déclarant le compte inactif)
+					if($reg_id_int!='') {
+						$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant2='".$reg_id_int."' AND statut='eleve';";
+						if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+						$res_tmp_u=mysql_query($sql);
+						if(mysql_num_rows($res_tmp_u)>0) {
+							$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+
+							$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$reg_nom."', prenom='".$reg_prenom."', ";
+							if($reg_sexe=='M') {
+								$sql.="civilite='M', ";
+							}
+							else {
+								$sql.="civilite='MLLE', ";
+							}
+							$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+							if($debug_ele=='y') {echo "<span style='color:blue;'>$sql</span><br />";}
+							$insert_u=mysql_query($sql);
+							if(!$insert_u) {
+								echo "<span style='color:red'><b>Erreur</b> lors de la re-création du compte utilisateur pour ".$reg_nom." ".$reg_prenom.".</span><br />\n";
+							}
+
+						}
+					}
 
 					// On enregistre l'établissement d'origine, le régime, et si l'élève est redoublant
 					//============================================
@@ -429,100 +429,100 @@ if (!isset($_POST["action"])) {
 				}
 				//=========================
 
-					$k = 0;
-					$nat_num = array();
-					while (!feof($fp)) {
-						$ligne = fgets($fp, 4096);
-						if(trim($ligne)!="") {
+				$k = 0;
+				$nat_num = array();
+				while (!feof($fp)) {
+					$ligne = fgets($fp, 4096);
+					if(trim($ligne)!="") {
 
-							$tabligne=explode(";",$ligne);
+						$tabligne=explode(";",$ligne);
 
-							// 0 : Nom
-							// 1 : Prénom
-							// 2 : Date de naissance
-							// 3 : identifiant interne
-							// 4 : identifiant national
-							// 5 : établissement précédent
-							// 6 : Doublement (OUI || NON)
-							// 7 : Régime : INTERN || EXTERN || IN.EX. || DP DAN
-							// 8 : Sexe : F || M
+						// 0 : Nom
+						// 1 : Prénom
+						// 2 : Date de naissance
+						// 3 : identifiant interne
+						// 4 : identifiant national
+						// 5 : établissement précédent
+						// 6 : Doublement (OUI || NON)
+						// 7 : Régime : INTERN || EXTERN || IN.EX. || DP DAN
+						// 8 : Sexe : F || M
 
-							// On nettoie et on vérifie :
-							//=====================================
-							// MODIF: boireaus
-							//$tabligne[0] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[0])));
-							//$tabligne[0] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])));
-							$tabligne[0] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
-							//=====================================
-							if (strlen($tabligne[0]) > 50) {$tabligne[0] = substr($tabligne[0], 0, 50);}
+						// On nettoie et on vérifie :
+						//=====================================
+						// MODIF: boireaus
+						//$tabligne[0] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[0])));
+						//$tabligne[0] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])));
+						$tabligne[0] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
+						//=====================================
+						if (strlen($tabligne[0]) > 50) {$tabligne[0] = substr($tabligne[0], 0, 50);}
 
-							//=====================================
-							// MODIF: boireaus
-							//$tabligne[1] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[1]));
-							//$tabligne[1] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]));
-							$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
-							//=====================================
-							if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
+						//=====================================
+						// MODIF: boireaus
+						//$tabligne[1] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[1]));
+						//$tabligne[1] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]));
+						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
+						//=====================================
+						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
-							$naissance = explode("/", $tabligne[2]);
-							if (!preg_match("/[0-9]/", $naissance[0]) OR strlen($naissance[0]) > 2 OR strlen($naissance[0]) == 0) $naissance[0] = "00";
-							if (strlen($naissance[0]) == 1) $naissance[0] = "0" . $naissance[0];
+						$naissance = explode("/", $tabligne[2]);
+						if (!preg_match("/[0-9]/", $naissance[0]) OR strlen($naissance[0]) > 2 OR strlen($naissance[0]) == 0) $naissance[0] = "00";
+						if (strlen($naissance[0]) == 1) $naissance[0] = "0" . $naissance[0];
 
-							// Au cas où la date de naissance serait vraiment mal fichue:
-							if(!isset($naissance[1])) {
-								$naissance[1]="00";
-							}
+						// Au cas où la date de naissance serait vraiment mal fichue:
+						if(!isset($naissance[1])) {
+							$naissance[1]="00";
+						}
 
-							if (!preg_match("/[0-9]/", $naissance[1]) OR strlen($naissance[1] OR strlen($naissance[1]) == 0) > 2) $naissance[1] = "00";
-							if (strlen($naissance[1]) == 1) $naissance[1] = "0" . $naissance[1];
+						if (!preg_match("/[0-9]/", $naissance[1]) OR strlen($naissance[1] OR strlen($naissance[1]) == 0) > 2) $naissance[1] = "00";
+						if (strlen($naissance[1]) == 1) $naissance[1] = "0" . $naissance[1];
 
-							// Au cas où la date de naissance serait vraiment mal fichue:
-							if(!isset($naissance[2])) {
-								$naissance[2]="0000";
-							}
+						// Au cas où la date de naissance serait vraiment mal fichue:
+						if(!isset($naissance[2])) {
+							$naissance[2]="0000";
+						}
 
-							if (!preg_match("/[0-9]/", $naissance[2]) OR strlen($naissance[2]) > 4 OR strlen($naissance[2]) == 3 OR strlen($naissance[2]) < 2) $naissance[2] = "0000";
+						if (!preg_match("/[0-9]/", $naissance[2]) OR strlen($naissance[2]) > 4 OR strlen($naissance[2]) == 3 OR strlen($naissance[2]) < 2) $naissance[2] = "0000";
 
-							$tabligne[2] = $naissance[0] . "/" . $naissance[1] . "/" . $naissance[2];
+						$tabligne[2] = $naissance[0] . "/" . $naissance[1] . "/" . $naissance[2];
 
-							$tabligne[3] = preg_replace("/[^0-9]/","",trim($tabligne[3]));
+						$tabligne[3] = preg_replace("/[^0-9]/","",trim($tabligne[3]));
 
-							$tabligne[4] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[4]));
-							$tabligne[4] = preg_replace("/\"/", "", $tabligne[4]);
+						$tabligne[4] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[4]));
+						$tabligne[4] = preg_replace("/\"/", "", $tabligne[4]);
 
-							$tabligne[5] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[5]));
-							$tabligne[5] = preg_replace("/\"/", "", $tabligne[5]);
+						$tabligne[5] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[5]));
+						$tabligne[5] = preg_replace("/\"/", "", $tabligne[5]);
 
-							$tabligne[6] = trim(strtoupper($tabligne[6]));
-							$tabligne[6] = preg_replace("/\"/", "", $tabligne[6]);
-							if ($tabligne[6] != "OUI" AND $tabligne[6] != "NON") $tabligne[6] = "NON";
+						$tabligne[6] = trim(strtoupper($tabligne[6]));
+						$tabligne[6] = preg_replace("/\"/", "", $tabligne[6]);
+						if ($tabligne[6] != "OUI" AND $tabligne[6] != "NON") $tabligne[6] = "NON";
 
 
-							$tabligne[7] = trim(strtoupper($tabligne[7]));
-							$tabligne[7] = preg_replace("/\"/", "", $tabligne[7]);
-							if ($tabligne[7] != "INTERN" AND $tabligne[7] != "EXTERN" AND $tabligne[7] != "IN.EX." AND $tabligne[7] != "DP DAN") $tabligne[7] = "DP DAN";
+						$tabligne[7] = trim(strtoupper($tabligne[7]));
+						$tabligne[7] = preg_replace("/\"/", "", $tabligne[7]);
+						if ($tabligne[7] != "INTERN" AND $tabligne[7] != "EXTERN" AND $tabligne[7] != "IN.EX." AND $tabligne[7] != "DP DAN") $tabligne[7] = "DP DAN";
 
-							$tabligne[8] = trim(strtoupper($tabligne[8]));
-							$tabligne[8] = preg_replace("/\"/", "", $tabligne[8]);
-							if ($tabligne[8] != "F" AND $tabligne[8] != "M") $tabligne[8] = "F";
+						$tabligne[8] = trim(strtoupper($tabligne[8]));
+						$tabligne[8] = preg_replace("/\"/", "", $tabligne[8]);
+						if ($tabligne[8] != "F" AND $tabligne[8] != "M") $tabligne[8] = "F";
 
-							if ($tabligne[4] != "" AND !in_array($tabligne[4], $nat_num)) {
-								$nat_num[] = $tabligne[4];
-								$data_tab[$k] = array();
-								$data_tab[$k]["nom"] = $tabligne[0];
-								$data_tab[$k]["prenom"] = $tabligne[1];
-								$data_tab[$k]["naissance"] = $tabligne[2];
-								$data_tab[$k]["id_int"] = $tabligne[3];
-								$data_tab[$k]["id_nat"] = $tabligne[4];
-								$data_tab[$k]["etab_prec"] = $tabligne[5];
-								$data_tab[$k]["doublement"] = $tabligne[6];
-								$data_tab[$k]["regime"] = $tabligne[7];
-								$data_tab[$k]["sexe"] = $tabligne[8];
-								// On incrémente pour le prochain enregistrement
-								$k++;
-							}
+						if ($tabligne[4] != "" AND !in_array($tabligne[4], $nat_num)) {
+							$nat_num[] = $tabligne[4];
+							$data_tab[$k] = array();
+							$data_tab[$k]["nom"] = $tabligne[0];
+							$data_tab[$k]["prenom"] = $tabligne[1];
+							$data_tab[$k]["naissance"] = $tabligne[2];
+							$data_tab[$k]["id_int"] = $tabligne[3];
+							$data_tab[$k]["id_nat"] = $tabligne[4];
+							$data_tab[$k]["etab_prec"] = $tabligne[5];
+							$data_tab[$k]["doublement"] = $tabligne[6];
+							$data_tab[$k]["regime"] = $tabligne[7];
+							$data_tab[$k]["sexe"] = $tabligne[8];
+							// On incrémente pour le prochain enregistrement
+							$k++;
 						}
 					}
+				}
 
 				fclose($fp);
 

@@ -460,7 +460,7 @@
 								//echo "$sql<br />\n";
 								$res_insert=mysql_query($sql);
 								if(!$res_insert){
-									echo "Erreur lors de la requête $sql<br />\n";
+									echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
 									$nb_err++;
 								}
 								$id_tempo++;

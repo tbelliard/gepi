@@ -870,22 +870,13 @@ else {
 	else {
 		echo "<p>L'importation des professeurs dans la base GEPI a été effectuée avec succès !</p>\n";
 
-		/*
-		echo "<p><b>* Précision sur les mots de passe (en non-SSO) :</b><br />
-		(il est conseillé d'imprimer cette page)</p>
-		<ul>
-		<li>Lorsqu'un nouveau professeur est inséré dans la base GEPI, son mot de passe lors de la première
-		connexion à GEPI est son NUMEN.</li>
-		<li>Si le NUMEM n'est pas disponible dans le fichier F_wind.csv, GEPI génère aléatoirement
-		un mot de passe.</li></ul>";
-		*/
-		echo "<p><b>* Précision sur les mots de passe (en non-SSO) :</b></p>\n";
+		echo "<p><b>* Précision sur les mots de passe (<em>en non-SSO</em>) :</b></p>\n";
 		echo "<ul>
 		<li>Lorsqu'un nouveau professeur est inséré dans la base GEPI, son mot de passe lors de la première
 		connexion à GEPI est celui choisi à l'étape précédente:<br />
 			<ul>
-			<li>Mot de passe daprès la date de naissance au format 'aaaammjj', ou</li>
-			<li>un mot de passe génèré aléatoirement par GEPI.<br />(il est alors conseillé d'imprimer cette page)</li>
+			<li>Mot de passe daprès la date de naissance au format '<em>aaaammjj</em>', ou</li>
+			<li>un mot de passe génèré aléatoirement par GEPI.<br />(<em>il est alors conseillé d'imprimer cette page</em>)</li>
 			</ul>
 		</ul>\n";
 		if ($_POST['sso'] != "yes") {
