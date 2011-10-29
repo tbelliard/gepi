@@ -201,9 +201,9 @@ function afficheChargement($indice,$nbEleves) {
   require_once("../lib/header.inc"); 
 //**************** FIN EN-TETE *****************
 ?>
-<p>
-  Calcul des statistiques : 
-  <?php echo (round($indice/$nbEleves)*100); ?>%
+<p style ="display: block; width: 50%; margin:1em auto; text-align: center; font-size: x-large; font-weight: bold">
+  Recherche des justifications : 
+  <?php echo round(($indice*100)/$nbEleves); ?>%
 </p>
 <script type="text/javascript">
 
@@ -243,6 +243,9 @@ if (!isset($_SESSION['statJustifie'])) {
   
 } elseif ($_SESSION['statJustifie']['dernierePosition'] !== NULL) {
 /***** On a commencé mais tous les élèves n'ont pas été traité *****/
+  //set_time_limit(8);  // à décommenter pour tester le rechargement de la page
+  // On récupère max_execution_time et on se garde 2 secondes
+  $max_time = ini_get('max_execution_time') - 2;
   // on récupère les justifications
   $justifie_col = unserialize($_SESSION['statJustifie']['justifications']);
   // on récupère les dates
@@ -260,7 +263,6 @@ if (!isset($_SESSION['statJustifie'])) {
 	  continue;
 	}
 	// on initialise les donnees pour le nouvel eleve
-	// $donneeBrut= TRUE;
 	$retour = traiteEleve($eleve, $dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin, $justifie_col, $donneeBrut);
 	if (!empty ($retour)) {
 	  $_SESSION['statJustifie']['donnees'][] = $retour;
@@ -268,7 +270,11 @@ if (!isset($_SESSION['statJustifie'])) {
 	// on met à jour l'index  
 	$_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = $eleve_col->getPosition();
 
-	// Si on est trop long, recharger la page
+	// Si on est trop long, recharger la page (on pourrait aussi utiliser set_time_limit())
+	$tempsScript = time() - $timeDebut;
+	if ($tempsScript >= $max_time) {
+	  afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
+	}
 
   }
   // on a passé tous les élèves, on réinitialise l'index
