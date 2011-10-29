@@ -40,10 +40,15 @@
 $timeDebut=time();
 
 // Initialisations files
+/**
+ * Initialisation Propel
+ */
 require_once("../lib/initialisationsPropel.inc.php");
+/**
+ * Initialisation GEPI
+ */
 require_once("../lib/initialisations.inc.php");
-//mes fonctions
-include("../edt_organisation/fonctions_calendrier.php");
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -58,7 +63,6 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-
 
 //recherche de l'utilisateur avec propel
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -79,22 +83,31 @@ if ($utilisateur->getStatut() != "cpe" && $utilisateur->getStatut() != "scolarit
 /* *******************************************************************************
  * Initialisation de globales
  ******************************************************************************* */
-define('ABS2', dirname(__FILE__));
-define('GEPI', dirname(ABS2));
-$dernierePosition = isset ($_SESSION['statJustifie']['dernierePosition']) ? $_SESSION['statJustifie']['dernierePosition'] : -1;
+$dernierePosition = isset ($_SESSION['statJustifie']['dernierePosition']) ? $_SESSION['statJustifie']['dernierePosition'] : NULL;
 /* *******************************************************************************
  * Appel des bibliothèques de fonctions
  ******************************************************************************* */
+/**
+ * Bibliothèque de fonctions du module ABS2
+ */
 include_once 'lib/function.php';
 
 /* *******************************************************************************
  * Fonctions de la page
  ******************************************************************************* */
+/**
+ *	Chargement des justifications
+ * 
+ * @return Object Collection Propel 
+ */
 function getJustifications() {
   $justifie_query = AbsenceEleveJustificationQuery::create()->orderBy('SortableRank');
   return $justifie_query->distinct()->find();  
 }
-
+/**
+ * Chargement des élèves
+ * @return Object Collection Propel
+ */
 function getEleves() {  
   $eleve_query = EleveQuery::create();
   if ($id_classe !== null && $id_classe != -1 ) {
@@ -108,7 +121,16 @@ function getEleves() {
   }
   return ($eleve_query->orderByNom()->orderByPrenom()->distinct()->find());
 }
-
+/**
+ * Récupère les données d'un élève à afficher
+ * @param objet $eleve Un élève issu de getEleves()
+ * @param date $date_debut
+ * @param date $date_fin
+ * @param objet $justifie_col Collection Propel avec les justifications
+ * @param bool $donneeBrut
+ * @return array Une ligne du tableau à afficher
+ * @see getEleves()
+ */
 function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut) {
   $donnees = array();
   $eleve_id = $eleve->getIdEleve();
@@ -120,7 +142,6 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut) 
 	if ($eleveNbAbs['demi_journees'] > 0 || $eleveNbAbs['retards'] > 0 ) {
 	  $eleveNbAbs['non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsence($date_debut, $date_fin)->count();
 	  $eleveNbAbs['justifiees'] = $eleveNbAbs['demi_journees'] - $eleveNbAbs['non_justifiees']; 
-	
 	  $donnees[$eleve_id]['nom'] = $eleve->getNom();
 	  $donnees[$eleve_id]['prenom'] = $eleve->getPrenom();
 	  $donnees[$eleve_id]['classe'] = $eleve->getClasse();
@@ -130,12 +151,11 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut) 
 	  $donnees[$eleve_id]['justifiees'] = $eleveNbAbs['justifiees'];
 	  $donnees[$eleve_id]['non_justifiees'] = $eleveNbAbs['non_justifiees'];
 	  $donnees[$eleve_id]['retards'] = $eleveNbAbs['retards'];
-	  
 	  //Récupérer le décompte des traitements pour chaque élève	  
 	  $totalDemi=0;
 	foreach ($justifie_col as $justifie) {
 	  // Décompte en données brutes 
-		if ($donneeBrut== TRUE) {
+		if ($donneeBrut == TRUE) {
 		  $propel_traitEleve = AbsenceEleveTraitementQuery::create()->filterByAJustificationId($justifie->getid())
 			->useJTraitementSaisieEleveQuery()
 			  ->useAbsenceEleveSaisieQuery()
@@ -169,89 +189,179 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut) 
 	
 	return $donnees[$eleve_id];
 }
+/**
+ * Affiche une page tant que le tableau n'ai pas entièrement calculé
+ * @param int $indice L'élève qu'on traite
+ * @param int $nbEleves Le nombre total d'élèves à traiter
+ */
+function afficheChargement($indice,$nbEleves) {
+  $gepiPath = "../";
+  $titre_page = "Répartition des justifications (chargement des données)";
+  $_SESSION['cacher_header'] = "y";
+  require_once("../lib/header.inc"); 
+//**************** FIN EN-TETE *****************
+?>
+<p>
+  Calcul des statistiques : 
+  <?php echo (round($indice/$nbEleves)*100); ?>%
+</p>
+<script type="text/javascript">
 
-/* *******************************************************************************
- * Récupération des données passées en $_POST
- ******************************************************************************* */
-if (isset ($_POST)) unset ($_SESSION['statJustifie']['donnees']);
-$donneeBrut = isset ($_POST['donneeBrut']) ? $_POST['donneeBrut'] : (isset ($_SESSION[abs2StatJustifications]['donneeBrut']) ? $_SESSION[abs2StatJustifications]['donneeBrut'] : TRUE);
-$date_absence_eleve_debut = isset ($_POST['date_absence_eleve_debut']) ? $_POST['date_absence_eleve_debut'] : NULL;
-$date_absence_eleve_fin = isset ($_POST['date_absence_eleve_fin']) ? $_POST['date_absence_eleve_fin'] : NULL;
+    document.location.replace("stat_justifications.php")
 
-/* *******************************************************************************
- * Recherche des justifications
- ******************************************************************************* */
-// $justifie_query = AbsenceEleveJustificationQuery::create()->orderBy('SortableRank');
-// $justifie_col = $justifie_query->distinct()->find();
-$justifie_col = getJustifications();
-$_SESSION['statJustifie']['justifications'] = serialize($justifie_col);
-
-/* *******************************************************************************
- * Initialisation des dates
- ******************************************************************************* */
-if ($date_absence_eleve_debut != NULL) {
-    $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
-} elseif (isset ($_SESSION[abs2StatJustifications]['date_absence_eleve_debut'])) {
-    $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_debut'])));
-} else {
-    $dt_date_absence_eleve_debut = new DateTime('now');
-}
-if ($date_absence_eleve_fin != NULL) {
-    $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", $date_absence_eleve_fin));
-} elseif (isset ($_SESSION[abs2StatJustifications]['date_absence_eleve_fin'])) {
-    $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_fin'])));
-} else {
-    $dt_date_absence_eleve_fin = new DateTime('now');
-}
-$dt_date_absence_eleve_debut->setTime(0, 0, 0);
-$dt_date_absence_eleve_fin->setTime(23, 59, 59);
-$inverse_date=false;
-if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format("U")){
-    $date2=clone $dt_date_absence_eleve_fin;
-    $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
-    $dt_date_absence_eleve_debut= $date2;
-    $inverse_date=true;
-}
-$_SESSION['statJustifie']['date_absence_eleve_debut'] = serialize($dt_date_absence_eleve_debut->format('d/m/Y'));
-$_SESSION['statJustifie']['date_absence_eleve_fin'] = serialize($dt_date_absence_eleve_fin->format('d/m/Y'));
-
-/* *******************************************************************************
- * recherche des élèves
- ******************************************************************************* */
-
-$eleve_col = getEleves();
-
-if ($eleve_col->isEmpty()) {
-    echo"<h2 class='no'>Aucun élève trouvé.</h2>";
-    die();
+</script>
+<a href="stat_justifications.php">Cliquez sur ce lien pour continuez</a>
+<?php
+  die ();
 }
 
-$_SESSION['statJustifie']['eleve_col'] = serialize($eleve_col);
+/* *******************************************************************************
+ * Logique de la page
+ ******************************************************************************* */
 
-foreach ($eleve_col as $eleve) {    
-  if ($eleve_col->getPosition() <= $dernierePosition) {
-	continue;
+if (!isset($_SESSION['statJustifie'])) {
+/***** On arrive pour la première fois sur la page *****/
+  // on recherche les justifications
+  $justifie_col = getJustifications();
+  $_SESSION['statJustifie']['justifications'] = serialize($justifie_col);
+  // on initialise les dates à maintenant
+  $dt_date_absence_eleve_debut = new DateTime('now');
+  $dt_date_absence_eleve_fin = new DateTime('now');
+  $_SESSION['statJustifie']['date_absence_eleve_debut'] = serialize($dt_date_absence_eleve_debut->format('d/m/Y'));
+  $_SESSION['statJustifie']['date_absence_eleve_fin'] = serialize($dt_date_absence_eleve_fin->format('d/m/Y'));
+  // on recherche les élèves
+  $eleve_col = getEleves();
+  if ($eleve_col->isEmpty()) {
+	unset ($_SESSION['statJustifie']);
+	die("Aucun élève trouvé.");
   }
-  //on initialise les donnees pour le nouvel eleve
-  $retour = traiteEleve($eleve, $dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin, $justifie_col, $donneeBrut);
-  if (!empty ($retour)) {
-	$_SESSION['statJustifie']['donnees'][] = $retour;
-  }
-  //on met à jour l'index  
-  $_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = $eleve_col->getPosition();
+  $_SESSION['statJustifie']['eleve_col'] = serialize($eleve_col);
+  // on initialise le parcours du tableau
+  $_SESSION['statJustifie']['dernierePosition'] = -1;
+  // on affiche la page de chargement
+  afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
   
-  // Si on est trop long, recharger la page
+} elseif ($_SESSION['statJustifie']['dernierePosition'] !== NULL) {
+/***** On a commencé mais tous les élèves n'ont pas été traité *****/
+  // on récupère les justifications
+  $justifie_col = unserialize($_SESSION['statJustifie']['justifications']);
+  // on récupère les dates
+  $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_debut'])));
+  $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_fin'])));
+  // on récupère les élèves
+  $eleve_col = unserialize($_SESSION['statJustifie']['eleve_col']);
+  // on récupère le type de statistique
+  $donneeBrut = $_SESSION['statJustifie']['donneeBrut'];
+  // on récupère la dernière position
+  $dernierePosition = $_SESSION['statJustifie']['dernierePosition'];
+  
+  foreach ($eleve_col as $eleve) {
+	if ($eleve_col->getPosition() <= $dernierePosition) {
+	  continue;
+	}
+	// on initialise les donnees pour le nouvel eleve
+	// $donneeBrut= TRUE;
+	$retour = traiteEleve($eleve, $dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin, $justifie_col, $donneeBrut);
+	if (!empty ($retour)) {
+	  $_SESSION['statJustifie']['donnees'][] = $retour;
+	}
+	// on met à jour l'index  
+	$_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = $eleve_col->getPosition();
+
+	// Si on est trop long, recharger la page
+
+  }
+  // on a passé tous les élèves, on réinitialise l'index
+  unset ($_SESSION['statJustifie']['dernierePosition'], $dernierePosition);
+  $donnees = $_SESSION['statJustifie']['donnees'];
+    
+} elseif (!empty ($_POST)) {
+/***** On a des données en $_POST, il faut initialiser et traiter *****/
+  if ($_POST['valide'] == "calcul") {
+	/***** On force le rechargement des données *****/
+	// on recherche les justifications
+	$justifie_col = getJustifications();
+	$_SESSION['statJustifie']['justifications'] = serialize($justifie_col);
+	// on récupère les dates
+	$date_absence_eleve_debut = isset ($_POST['date_absence_eleve_debut']) ? $_POST['date_absence_eleve_debut'] : NULL;
+	$date_absence_eleve_fin = isset ($_POST['date_absence_eleve_fin']) ? $_POST['date_absence_eleve_fin'] : NULL;
+	$dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
+	$dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", $date_absence_eleve_fin));
+	$dt_date_absence_eleve_debut->setTime(0, 0, 0);
+	$dt_date_absence_eleve_fin->setTime(23, 59, 59);
+	$inverse_date=false;
+	if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format("U")){
+	  $date2=clone $dt_date_absence_eleve_fin;
+	  $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
+	  $dt_date_absence_eleve_debut= $date2;
+	  $inverse_date=true;
+	}
+	$_SESSION['statJustifie']['date_absence_eleve_debut'] = serialize($dt_date_absence_eleve_debut->format('d/m/Y'));
+	$_SESSION['statJustifie']['date_absence_eleve_fin'] = serialize($dt_date_absence_eleve_fin->format('d/m/Y'));
+	// on recherche les élèves
+	$eleve_col = getEleves();
+	if ($eleve_col->isEmpty()) {
+	  unset ($_SESSION['statJustifie']);
+	  die("Aucun élève trouvé.");
+	}
+	$_SESSION['statJustifie']['eleve_col'] = serialize($eleve_col);
+	// on initialise le parcours du tableau
+	$_SESSION['statJustifie']['dernierePosition'] = -1;
+	// on récupère le type de statistique
+	$donneeBrut = $_POST['donneeBrut'];
+	$_SESSION['statJustifie']['donneeBrut'] = $donneeBrut;
+	// on affiche la page de chargement
+	afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
+
+  } elseif ($_POST['valide'] == "csv") {
+	
+  // unset ($_SESSION['statJustifie']);
+	die ('On exporte le tableau dans un fichier .csv');	
+  } else {
+  /***** On a changer les dates ou le mode de calcul ou recharger la page*****/
+	// On initialise les données
+	unset ($_SESSION['statJustifie']['donnees']);
+	// on récupère les justifications
+	$justifie_col = unserialize($_SESSION['statJustifie']['justifications']);
+	// on récupère les dates
+	$date_absence_eleve_debut = isset ($_POST['date_absence_eleve_debut']) ? $_POST['date_absence_eleve_debut'] : NULL;
+	$date_absence_eleve_fin = isset ($_POST['date_absence_eleve_fin']) ? $_POST['date_absence_eleve_fin'] : NULL;
+	$dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
+	$dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", $date_absence_eleve_fin));
+	$dt_date_absence_eleve_debut->setTime(0, 0, 0);
+	$dt_date_absence_eleve_fin->setTime(23, 59, 59);
+	$inverse_date=false;
+	if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format("U")){
+	  $date2=clone $dt_date_absence_eleve_fin;
+	  $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
+	  $dt_date_absence_eleve_debut= $date2;
+	  $inverse_date=true;
+	}
+	$_SESSION['statJustifie']['date_absence_eleve_debut'] = serialize($dt_date_absence_eleve_debut->format('d/m/Y'));
+	$_SESSION['statJustifie']['date_absence_eleve_fin'] = serialize($dt_date_absence_eleve_fin->format('d/m/Y'));
+	// on récupère les élèves
+	$eleve_col = unserialize($_SESSION['statJustifie']['eleve_col']);
+	// on récupère le type de statistique
+	$donneeBrut = $_POST['donneeBrut'];
+	$_SESSION['statJustifie']['donneeBrut'] = $donneeBrut;
+	// on efface la dernière position si besoin
+	$_SESSION['statJustifie']['dernierePosition'] = -1;
+	// on affiche la page de chargement
+	afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
+  
+  }
+  
+} else {
+/***** On revient depuis une autre page *****/
+  //On récupère le tableau
+  $donnees = $_SESSION['statJustifie']['donnees'];
+  // on récupère les justifications
+  $justifie_col = unserialize($_SESSION['statJustifie']['justifications']);
+  // on récupère les dates
+  $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_debut'])));
+  $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_fin'])));
   
 }
-
-//on a passé tous les élèves, on réinitialise l'index  
-$_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = -1;
-$donnees = $_SESSION['statJustifie']['donnees'];
-
-// temps de chargement de la page
-$timefin=time();
-$duree = $timefin - $timeDebut;
-echo " Durée de calcul de la page : ".$duree."s";
 
 /* *******************************************************************************
  * Affichage
@@ -263,7 +373,7 @@ $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $javascript_specifique[] = "mod_abs2/lib/include";
-$titre_page = "Absences du jour";
+$titre_page = "Répartition des justifications";
 $utilisation_jsdivdrag = "non";
 $utilisation_scriptaculous="ok";
 $utilisation_win = 'oui';
@@ -276,9 +386,6 @@ include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 //===========================
 
-
-
-
 ?>
 <div id="contain_div" class="css-panes">
   <form dojoType="dijit.form.Form" action="stat_justifications.php" method="post" id="filtres" style="text-align: center;">
@@ -290,13 +397,11 @@ include('menu_bilans.inc.php');
 			   name="donneeBrut" 
 			   value="<?php echo TRUE; ?>" 
 			   id="bouton1" 
-			   onchange="submit()"
 			   <?php if ($donneeBrut) echo "checked = 'checked'"; ?> />
 		<input type="radio" 
 			   name="donneeBrut" 
 			   value="<?php echo FALSE; ?>" 
 			   id="bouton2"
-			   onchange="submit()"
 			   <?php if (!$donneeBrut) echo "checked = 'checked'"; ?> />
 
 		<label for="bouton2">½ journées</label>
@@ -317,19 +422,30 @@ include('menu_bilans.inc.php');
 			   value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
       </p>
 	  <p>      
-		<button type="submit" dojoType="dijit.form.Button" name="valide" value="Soumettre">
-		  Afficher les statistiques
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="calcul">
+		  Forcer le recalcul des statistiques
+		</button> 
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="soumettre">
+		  Afficher les statistiques avec ces réglages
+		</button> 
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="csv">
+		  Exporter les statistiques au format .csv
 		</button>
 	  </p>
 	</fieldset>
   </form>
   
-  <table  style ="border:3px groove #aaaaaa;">
-	<caption>
+  <table style ="border:3px groove #aaaaaa;">
+	<caption style ="font-size:larger;" >
 	  Justifications du
 	  <?php echo unserialize($_SESSION['statJustifie']['date_absence_eleve_debut']); ?>
 	  au
-	  <?php echo unserialize($_SESSION['statJustifie']['date_absence_eleve_fin']); ?>
+	  <?php echo unserialize($_SESSION['statJustifie']['date_absence_eleve_fin']); ?> 
+	  <?php if ($donneeBrut) {
+		echo 'Données brutes';
+	  } else {
+		echo '½ journées';
+	  } ?>
 	  (<?php echo count($donnees); ?> élèves)
 	</caption>
 	
