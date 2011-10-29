@@ -251,12 +251,13 @@ class Eleve extends BaseEleve {
 	 */
 	public function reload($deep = false, PropelPDO $con = null)
 	{
-	    parent::reload($deep,$con);
 	    $this->collPeriodeNotes = null;
+	    $this->collCachePeriodeNotesResult = null;
 	    $this->collClasses = null;
 	    $this->collGroupes = null;
 	    $this->collAbsenceEleveSaisiesParJour = null;
 	    $this->periodeNoteOuverte = null;
+	    parent::reload($deep,$con);
 	}
 
 	/**
@@ -269,8 +270,44 @@ class Eleve extends BaseEleve {
 	 * @param      boolean $deep Whether to also clear the references on all associated objects.
 	 */
 	public function clearAllReferences($deep = false) {
+	    $start_string = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
+	    $start_len = strlen($start_string);
+	    foreach($_REQUEST as $key => $value) {
+	        if (substr($key,0,$start_len) == $start_string) {
+	            unset($_REQUEST[$key]);
+	        }
+	    }
 	    parent::clearAllReferences($deep);
+	    if ($deep) {
+			if ($this->collPeriodeNotes) {
+				foreach ($this->collPeriodeNotes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCachePeriodeNotesResult) {
+				foreach ($this->collCachePeriodeNotesResult as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collClasses) {
+				foreach ($this->collClasses as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupes) {
+				foreach ($this->collGroupes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collAbsenceEleveSaisiesParJour) {
+				foreach ($this->collAbsenceEleveSaisiesParJour as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			
+	    }
 	    $this->collPeriodeNotes = null;
+	    $this->collCachePeriodeNotesResult = null;
 	    $this->collClasses = null;
 	    $this->collGroupes = null;
 	    $this->collAbsenceEleveSaisiesParJour = null;

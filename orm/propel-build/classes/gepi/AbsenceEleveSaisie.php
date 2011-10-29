@@ -341,8 +341,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    $sousResponsabiliteEtablissement = true;
 		} else {//c'est le dernier cas : ($type_avec == false && $type_sans == false && $type_non_precise == true)
 		    //si on a un type de responsabilite specifie a non_precise (comme le type 'erreur de saisie'),
-		    //on renvoi une resp etab (sinon l'utilisateur aurait specifier un type MANQU_OBLIG_PRESE_VRAI)
-		    $sousResponsabiliteEtablissement = true;
+		    //on renvoi le réglage par défaut
+		    $sousResponsabiliteEtablissement = (getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab")=='y');
 		}
 		$this->sousResponsabiliteEtablissement = $sousResponsabiliteEtablissement;
 	    }
@@ -1145,13 +1145,40 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
 	 */
 	public function reload($deep = false, PropelPDO $con = null) {
+	    parent::reload($deep, $con);
+	    if ($deep) {
+    	    $this->sousResponsabiliteEtablissement = null;
+    	    $this->manquementObligationPresence = null;
+    	    $this->manquementObligationPresenceSpecifie_NON_PRECISE = null;
+    	    $this->justifiee = null;
+    	    $this->boolSaisiesContradictoiresManquementObligation = null;
+    	    $this->retard = null;
+    	    $this->collectionSaisiesContradictoiresManquementObligation = null;
+    	    $this->collAbsenceEleveTraitements = null;
+    	    $this->oldVersion = null;
+	    }
+	}
+	
+	/**
+	 * Resets all references to other model objects or collections of model objects.
+	 *
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
+	 *
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
+	 */
+	public function clearAllReferences($deep = false)
+	{
+	    parent::clearAllReferences($deep);
 	    $this->sousResponsabiliteEtablissement = null;
 	    $this->manquementObligationPresence = null;
 	    $this->manquementObligationPresenceSpecifie_NON_PRECISE = null;
 	    $this->justifiee = null;
+	    $this->boolSaisiesContradictoiresManquementObligation = null;
 	    $this->retard = null;
 	    $this->collectionSaisiesContradictoiresManquementObligation = null;
-	    $this->boolSaisiesContradictoiresManquementObligation = null;
-	    parent::reload($deep, $con);
+	    $this->oldVersion = null;
 	}
+	    
 } // AbsenceEleveSaisie
