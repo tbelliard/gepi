@@ -1837,6 +1837,19 @@ class Eleve extends BaseEleve {
 			throw new PropelException('Erreur: la date de debut ne peut être postérieure à la date de fin');
 		}
 		
+		if ($dateDebut != null) {
+		    $now = new DateTime();
+		    if (abs($dateDebut->format('U') - $now->format('U')) > 3600*24*265*3) {
+			    throw new PropelException('Erreur: la date de debut ne peut pas être éloignées de plus de 3 ans de la date courante');
+		    }
+		}
+		if ($dateFin != null) {
+		    $now = new DateTime();
+		    if (abs($dateFin->format('U') - $now->format('U')) > 3600*24*265*3) {
+			    throw new PropelException('Erreur: la date de fin ne peut pas être éloignées de plus de 3 ans de la date courante');
+		    }
+		}
+		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;

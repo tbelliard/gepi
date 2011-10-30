@@ -319,6 +319,33 @@ class EleveTest extends GepiEmptyTestBase
 	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
 	    $florence_eleve->updateAbsenceAgregationTable();
+	    
+        try {
+            $florence_eleve->updateAbsenceAgregationTable(new DateTime('1980-09-01 00:00:00'),null);
+            $this->fail('Une exception doit être soulevée lors de cette demande car les dates sont trop larges');
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+        }
+        try {
+            $florence_eleve->updateAbsenceAgregationTable(new DateTime('2100-09-01 00:00:00'),null);
+            $this->fail('Une exception doit être soulevée lors de cette demande car les dates sont trop larges');
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+        }
+        try {
+            $florence_eleve->updateAbsenceAgregationTable(null,new DateTime('2100-09-01 00:00:00'));
+            $this->fail('Une exception doit être soulevée lors de cette demande car les dates sont trop larges');
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+        }
+        try {
+            $florence_eleve->updateAbsenceAgregationTable(null,new DateTime('1980-09-01 00:00:00'));
+            $this->fail('Une exception doit être soulevée lors de cette demande car les dates sont trop larges');
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+        }
+        
+        
 	}
 	
 	public function testCheckSynchroAbsenceAgregationTable() {
