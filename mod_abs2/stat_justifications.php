@@ -132,8 +132,9 @@ function getEleves() {
  * @see getEleves()
  */
 function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, $erreur=FALSE) {
-  $donnees = array();
   $eleve_id = $eleve->getId();
+  $donnees= array();
+  $donnees[$eleve_id] = array();
   
   $propel_eleve = EleveQuery::create()->filterById($eleve_id)->findOne();
   $eleveNbAbs['demi_journees'] = $propel_eleve->getDemiJourneesAbsence($date_debut, $date_fin)->count();
@@ -187,10 +188,10 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 	}
 	unset ($eleveNbAbs, $traiteEleve_col, $propel_eleve, $propel_traitEleveDemi, $traiteEleveDemi, $traiteEleveDemi_col, $propel_traitEleve);
 	if ($erreur && ($donnees[$eleve_id]['justifiees']==$donnees[$eleve_id]['totalDemi'])) {
-	  $donnees = array();
+	  $donnees[$eleve_id] = array();
 	}
 	
-	return $donnees[$eleve_id];
+	return $donnees;
 }
 /**
  * Affiche une page tant que le tableau n'ai pas entièrement calculé
@@ -277,7 +278,7 @@ if (!isset($_SESSION['statJustifie'])) {
   // on affiche la page de chargement
   afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
   
-} elseif ($_SESSION['statJustifie']['dernierePosition'] !== NULL) {
+} elseif (isset($_SESSION['statJustifie']['dernierePosition']) && ($_SESSION['statJustifie']['dernierePosition'] !== NULL)) {
 /***** On a commencé mais tous les élèves n'ont pas été traité *****/
   // set_time_limit(8);  // à décommenter pour tester le rechargement de la page
   // On récupère max_execution_time et on se garde 2 secondes
@@ -307,8 +308,8 @@ if (!isset($_SESSION['statJustifie'])) {
 	}
 	// on initialise les donnees pour le nouvel eleve
 	$retour = traiteEleve($eleve, $dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin, $justifie_col, $donneeBrut,$_SESSION['statJustifie']['erreur']);
-	if (!empty ($retour)) {
-	  $_SESSION['statJustifie']['donnees'][] = $retour;
+	if (!empty ($retour[$eleve->getId()])) {
+	  $_SESSION['statJustifie']['donnees'][] = $retour[$eleve->getId()];
 	}
 	// on met à jour l'index  
 	$_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = $eleve_col->getPosition();
@@ -322,8 +323,11 @@ if (!isset($_SESSION['statJustifie'])) {
   }
   // on a passé tous les élèves, on réinitialise l'index
   unset ($_SESSION['statJustifie']['dernierePosition'], $dernierePosition);
-  $donnees = $_SESSION['statJustifie']['donnees'];
-    
+  if (isset ($_SESSION['statJustifie']['donnees'])) {
+	$donnees = $_SESSION['statJustifie']['donnees'];
+  } else {
+	$donnees = array();
+  }
 } elseif (!empty ($_POST)) {
 /***** On a des données en $_POST, il faut initialiser et traiter *****/
   if ($_POST['valide'] == "calcul") {
@@ -407,12 +411,18 @@ if (!isset($_SESSION['statJustifie'])) {
 } else {
 /***** On revient depuis une autre page *****/
   //On récupère le tableau
-  $donnees = $_SESSION['statJustifie']['donnees'];
+  if (isset($_SESSION['statJustifie']['donnees'])) {
+	$donnees = $_SESSION['statJustifie']['donnees'];
+  } else{
+	$donnees = array();
+  }
   // on récupère les justifications
   $justifie_col = unserialize($_SESSION['statJustifie']['justifications']);
   // on récupère les dates
   $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_debut'])));
   $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_fin'])));
+  // on récupère $donneeBrut
+  $donneeBrut = isset($_SESSION['statJustifie']['donneeBrut']) ? $_SESSION['statJustifie']['donneeBrut'] : FALSE;
   
 	$dt_date_absence_eleve_debut->setTime(0, 0, 0);
 	$dt_date_absence_eleve_fin->setTime(23, 59, 59);
