@@ -187,7 +187,7 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 	  $donnees[$eleve_id]['totalDemi']=$totalDemi;
 	}
 	unset ($eleveNbAbs, $traiteEleve_col, $propel_eleve, $propel_traitEleveDemi, $traiteEleveDemi, $traiteEleveDemi_col, $propel_traitEleve);
-	if (isset ($donnees[$eleve_id]['justifiees']) && ($erreur && ($donnees[$eleve_id]['justifiees']==$donnees[$eleve_id]['totalDemi']))) {
+	if ($erreur && isset ($donnees[$eleve_id]['justifiees']) && ($donnees[$eleve_id]['justifiees']==$donnees[$eleve_id]['totalDemi'])) {
 	  $donnees[$eleve_id] = array();
 	}
 	
@@ -201,8 +201,6 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 function afficheChargement($indice,$nbEleves) {
   $gepiPath = "../";
   $titre_page = "Répartition des justifications (chargement des données)";
-  $_SESSION['cacher_header'] = "y";
-  require_once("../lib/header.inc"); 
 //**************** FIN EN-TETE *****************
 ?>
 <p style ="display: block; width: 50%; margin:1em auto; text-align: center; font-size: large; font-weight: bold;">
@@ -221,7 +219,11 @@ function afficheChargement($indice,$nbEleves) {
 <?php
   die ();
 }
-/* */
+/**
+ * Crée et envoie un fichier .csv avec le tableau des justifications
+ * @param array $donnees
+ * @param objet $justifications 
+ */
 function creeCSV($donnees, $justifications) {
   $date = date("d-m-Y_H-i");
   $nom_fic = "Justifications_".$date.".csv";
