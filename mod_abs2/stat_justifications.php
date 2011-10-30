@@ -133,9 +133,9 @@ function getEleves() {
  */
 function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut) {
   $donnees = array();
-  $eleve_id = $eleve->getIdEleve();
+  $eleve_id = $eleve->getId();
   
-  $propel_eleve = EleveQuery::create()->filterByIdEleve($eleve_id)->findOne();
+  $propel_eleve = EleveQuery::create()->filterById($eleve_id)->findOne();
   $eleveNbAbs['demi_journees'] = $propel_eleve->getDemiJourneesAbsence($date_debut, $date_fin)->count();
   $eleveNbAbs['retards'] = $propel_eleve->getRetards($date_debut, $date_fin)->count();
 	
