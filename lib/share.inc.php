@@ -235,9 +235,18 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$_mode = "fname8";
 	}
 	// On génère le login
-	$_prenom = strtr($_prenom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀôöÔÖÇ", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
+	//$_prenom = strtr($_prenom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀôöÔÖÇ", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
+	$_prenom = remplace_accents($_prenom);
+
+	$prenoms = explode(" ",$_prenom);
+	$premier_prenom = $prenoms[0];
+	$prenom_compose = '';
+	if (isset($prenoms[1])) {$prenom_compose = $prenoms[0]."-".$prenoms[1];}
+
 	$_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
-	$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀôöÔÖÇ", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
+
+	//$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀôöÔÖÇ", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
+	$_nom = remplace_accents($_nom);
 	$_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
 
 	if($_nom=='') {return FALSE;}
@@ -284,13 +293,31 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = substr($temp1,0,19);
 	} elseif ($_mode == "firstdotname") {
 		if($_prenom=='') {return FALSE;}
-		$temp1 = $_prenom . "." . $_nom;
+
+		if ($prenom_compose != '') {
+			$firstname = $prenom_compose;
+		} else {
+			$firstname = $premier_prenom;
+		}
+
+		//$temp1 = $_prenom . "." . $_nom;
+		$temp1 = $firstname . "." . $_nom;
+
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
 	} elseif ($_mode == "firstdotname19") {
 		if($_prenom=='') {return FALSE;}
-		$temp1 = $_prenom . "." . $_nom;
+
+		if ($prenom_compose != '') {
+			$firstname = $prenom_compose;
+		} else {
+			$firstname = $premier_prenom;
+		}
+
+		//$temp1 = $_prenom . "." . $_nom;
+		$temp1 = $firstname . "." . $_nom;
+
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
 		$temp1 = substr($temp1,0,19);
