@@ -599,7 +599,7 @@ foreach($eleve_col as $eleve) {
 ?>
 				<td<?php echo $color_hier; ?>><?php echo $aff_compter_hier; ?></td>
 				<td class='td_abs_eleves'>
-					<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
+					<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getId(); ?>" />
 <?php
 
 			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
@@ -711,8 +711,8 @@ foreach($eleve_col as $eleve) {
 					if ($nb_creneau_a_saisir > 0) {
 					    $i = $i + $nb_creneau_a_saisir - 1;
 					    //le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies_groupe.php
-					    if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
-						echo "Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
+					    if (isset($message_erreur_eleve[$eleve->getId()]) && $message_erreur_eleve[$eleve->getId()] != '') {
+						echo "Erreur : ".$message_erreur_eleve[$eleve->getId()];
 					    }
 
 					    //la saisie sur ce creneau

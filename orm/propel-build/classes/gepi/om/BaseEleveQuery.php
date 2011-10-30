@@ -17,7 +17,7 @@
  * @method     EleveQuery orderByEreno($order = Criteria::ASC) Order by the ereno column
  * @method     EleveQuery orderByEleId($order = Criteria::ASC) Order by the ele_id column
  * @method     EleveQuery orderByEmail($order = Criteria::ASC) Order by the email column
- * @method     EleveQuery orderByIdEleve($order = Criteria::ASC) Order by the id_eleve column
+ * @method     EleveQuery orderById($order = Criteria::ASC) Order by the id_eleve column
  * @method     EleveQuery orderByDateSortie($order = Criteria::ASC) Order by the date_sortie column
  * @method     EleveQuery orderByMefCode($order = Criteria::ASC) Order by the mef_code column
  *
@@ -32,7 +32,7 @@
  * @method     EleveQuery groupByEreno() Group by the ereno column
  * @method     EleveQuery groupByEleId() Group by the ele_id column
  * @method     EleveQuery groupByEmail() Group by the email column
- * @method     EleveQuery groupByIdEleve() Group by the id_eleve column
+ * @method     EleveQuery groupById() Group by the id_eleve column
  * @method     EleveQuery groupByDateSortie() Group by the date_sortie column
  * @method     EleveQuery groupByMefCode() Group by the mef_code column
  *
@@ -110,7 +110,7 @@
  * @method     Eleve findOneByEreno(string $ereno) Return the first Eleve filtered by the ereno column
  * @method     Eleve findOneByEleId(string $ele_id) Return the first Eleve filtered by the ele_id column
  * @method     Eleve findOneByEmail(string $email) Return the first Eleve filtered by the email column
- * @method     Eleve findOneByIdEleve(int $id_eleve) Return the first Eleve filtered by the id_eleve column
+ * @method     Eleve findOneById(int $id_eleve) Return the first Eleve filtered by the id_eleve column
  * @method     Eleve findOneByDateSortie(string $date_sortie) Return the first Eleve filtered by the date_sortie column
  * @method     Eleve findOneByMefCode(int $mef_code) Return the first Eleve filtered by the mef_code column
  *
@@ -125,7 +125,7 @@
  * @method     array findByEreno(string $ereno) Return Eleve objects filtered by the ereno column
  * @method     array findByEleId(string $ele_id) Return Eleve objects filtered by the ele_id column
  * @method     array findByEmail(string $email) Return Eleve objects filtered by the email column
- * @method     array findByIdEleve(int $id_eleve) Return Eleve objects filtered by the id_eleve column
+ * @method     array findById(int $id_eleve) Return Eleve objects filtered by the id_eleve column
  * @method     array findByDateSortie(string $date_sortie) Return Eleve objects filtered by the date_sortie column
  * @method     array findByMefCode(int $mef_code) Return Eleve objects filtered by the mef_code column
  *
@@ -564,12 +564,12 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByIdEleve(1234); // WHERE id_eleve = 1234
-	 * $query->filterByIdEleve(array(12, 34)); // WHERE id_eleve IN (12, 34)
-	 * $query->filterByIdEleve(array('min' => 12)); // WHERE id_eleve > 12
+	 * $query->filterById(1234); // WHERE id_eleve = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id_eleve IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id_eleve > 12
 	 * </code>
 	 *
-	 * @param     mixed $idEleve The value to use as filter.
+	 * @param     mixed $id The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -577,12 +577,12 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function filterByIdEleve($idEleve = null, $comparison = null)
+	public function filterById($id = null, $comparison = null)
 	{
-		if (is_array($idEleve) && null === $comparison) {
+		if (is_array($id) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
-		return $this->addUsingAlias(ElevePeer::ID_ELEVE, $idEleve, $comparison);
+		return $this->addUsingAlias(ElevePeer::ID_ELEVE, $id, $comparison);
 	}
 
 	/**
@@ -1736,7 +1736,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	public function prune($eleve = null)
 	{
 		if ($eleve) {
-			$this->addUsingAlias(ElevePeer::ID_ELEVE, $eleve->getIdEleve(), Criteria::NOT_EQUAL);
+			$this->addUsingAlias(ElevePeer::ID_ELEVE, $eleve->getId(), Criteria::NOT_EQUAL);
 	  }
 	  
 		return $this;

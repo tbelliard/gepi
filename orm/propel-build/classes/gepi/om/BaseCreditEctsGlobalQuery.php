@@ -247,13 +247,13 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	{
 		if ($eleve instanceof Eleve) {
 			return $this
-				->addUsingAlias(CreditEctsGlobalPeer::ID_ELEVE, $eleve->getIdEleve(), $comparison);
+				->addUsingAlias(CreditEctsGlobalPeer::ID_ELEVE, $eleve->getId(), $comparison);
 		} elseif ($eleve instanceof PropelCollection) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 			return $this
-				->addUsingAlias(CreditEctsGlobalPeer::ID_ELEVE, $eleve->toKeyValue('PrimaryKey', 'IdEleve'), $comparison);
+				->addUsingAlias(CreditEctsGlobalPeer::ID_ELEVE, $eleve->toKeyValue('PrimaryKey', 'Id'), $comparison);
 		} else {
 			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
 		}

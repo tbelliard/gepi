@@ -102,7 +102,7 @@ class EdtHelper {
     public static function getPremierJourAnneeScolaire($v = 'now'){
     	
 	    if ($v === null || $v === '') {
-		    $dt = DateTime('now');
+		    $dt = new DateTime('now');
 	    } elseif ($v instanceof DateTime) {
 		    $dt = clone $v;
 	    } else {

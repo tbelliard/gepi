@@ -132,7 +132,7 @@ if ($affichage != 'ods') {
         $eleve_query->filterByNom('%' . $nom_eleve . '%');
     }
     if ($id_eleve !== null && $id_eleve != '') {
-        $eleve_query->filterByIdEleve($id_eleve);
+        $eleve_query->filterById($id_eleve);
     }
     $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
     if ($eleve_col->isEmpty()) {
@@ -239,7 +239,7 @@ if ($affichage != 'ods') {
                 </h2>
                 <?php
                 if ($id_eleve !== null && $id_eleve != '') {
-                    $eleve = EleveQuery::create()->filterByIdEleve($id_eleve)->findOne();
+                    $eleve = EleveQuery::create()->filterById($id_eleve)->findOne();
                     $nom_eleve = $eleve->getNom();
                     $id_classe = $eleve->getClasse()->getId();
                 }
@@ -517,7 +517,7 @@ if ($affichage != 'ods') {
                         $$nom_variable = $$nom_variable + $eleve->$nom_colonne();
                     }
                 }
-                $donnees_indiv[$eleve->getIdEleve()] = $enregistrements;
+                $donnees_indiv[$eleve->getId()] = $enregistrements;
                 $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
                 $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
                 $nb_justifiees = $nb_justifiees + $eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli();

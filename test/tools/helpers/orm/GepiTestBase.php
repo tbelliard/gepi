@@ -7,8 +7,8 @@
  *
  * @license    MIT License
  */
-
-require_once dirname(__FILE__) . '/../../../fixtures/config/connect.test.inc.php';
+global $dbHost,$dbDb,$dbUser,$dbPass;
+require dirname(__FILE__) . '/../../../fixtures/config/connect.test.inc.php';
 require_once(dirname(__FILE__). '/../../../../lib/mysql.inc');
 require_once(dirname(__FILE__). '/../../../../lib/settings.inc');
 

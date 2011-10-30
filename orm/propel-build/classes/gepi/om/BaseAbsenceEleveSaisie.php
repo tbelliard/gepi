@@ -664,7 +664,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::ELEVE_ID;
 		}
 
-		if ($this->aEleve !== null && $this->aEleve->getIdEleve() !== $v) {
+		if ($this->aEleve !== null && $this->aEleve->getId() !== $v) {
 			$this->aEleve = null;
 		}
 
@@ -1137,7 +1137,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aUtilisateurProfessionnel !== null && $this->utilisateur_id !== $this->aUtilisateurProfessionnel->getLogin()) {
 			$this->aUtilisateurProfessionnel = null;
 		}
-		if ($this->aEleve !== null && $this->eleve_id !== $this->aEleve->getIdEleve()) {
+		if ($this->aEleve !== null && $this->eleve_id !== $this->aEleve->getId()) {
 			$this->aEleve = null;
 		}
 		if ($this->aEdtCreneau !== null && $this->id_edt_creneau !== $this->aEdtCreneau->getIdDefiniePeriode()) {
@@ -2145,7 +2145,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($v === null) {
 			$this->setEleveId(NULL);
 		} else {
-			$this->setEleveId($v->getIdEleve());
+			$this->setEleveId($v->getId());
 		}
 
 		$this->aEleve = $v;

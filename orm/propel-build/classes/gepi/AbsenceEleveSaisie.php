@@ -650,7 +650,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 					//on utilise du sql directement pour optimiser la requete
 					//WARNING WARNING WARNING WARNING
 					//si le modele change ca va bugger, il faut utiliser la requete AbsenceEleveTraitementQuery en dessous
-					//le sql a ete generer en activant les logs propel et en recuperant le sql de la requete ci-dessous
+					//le sql a ete generer en activant les logs propel et en recuperant le sql de la requete plus bas
 					$sql = "SELECT /* comment_getAbsenceEleveTraitements */ 
 								a_traitements.ID, a_traitements.UTILISATEUR_ID, a_traitements.A_TYPE_ID, a_traitements.A_MOTIF_ID, a_traitements.A_JUSTIFICATION_ID, a_traitements.COMMENTAIRE, a_traitements.MODIFIE_PAR_UTILISATEUR_ID, a_traitements.CREATED_AT, a_traitements.UPDATED_AT, a_traitements.DELETED_AT,
 								a_types.ID, a_types.NOM, a_types.JUSTIFICATION_EXIGIBLE, a_types.SOUS_RESPONSABILITE_ETABLISSEMENT, a_types.MANQUEMENT_OBLIGATION_PRESENCE, a_types.RETARD_BULLETIN, a_types.TYPE_SAISIE, a_types.COMMENTAIRE, a_types.ID_LIEU, a_types.SORTABLE_RANK, a_types.CREATED_AT, a_types.UPDATED_AT,
@@ -663,7 +663,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 					$this->collAbsenceEleveTraitements = AbsenceEleveSaisie::getTraitementFormatter()->format($stmt);
 
-
+//                    Cette requete est celle faite avec l'objet query, utile si on veut récupérer le sql pour la requete manuelle ci-dessus
 //					$this->collAbsenceEleveTraitements = AbsenceEleveTraitementQuery::create()
 //						->setComment('comment_getAbsenceEleveTraitements')
 //						->useJTraitementSaisieEleveQuery()->filterByASaisieId($this->getId())->endUse()
@@ -672,6 +672,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 //						->leftJoinWith('AbsenceEleveJustification')
 //						->find();
 
+					// DEBUG
 //					foreach ($this->collAbsenceEleveTraitements as $traitement) {
 //					    echo $this->getId().'sql $traitement->isTypeHydrated() : '.$traitement->isTypeHydrated().'<br/>';
 //					    echo $this->getId().'sql $traitement->isNotificationHydrated() : '.$traitement->isNotificationHydrated().'<br/>';
@@ -686,6 +687,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 					    $this->collAbsenceEleveTraitements->append($jTraitementSaisieEleve->getAbsenceEleveTraitement());
 					}
 				    }
+					// DEBUG
 //				    foreach ($this->collAbsenceEleveTraitements as $traitement) {
 //					echo $this->getId().'collJ $traitement->isTypeHydrated() : '.$traitement->isTypeHydrated().'<br/>';
 //					echo $this->getId().'collJ $traitement->isNotificationHydrated() : '.$traitement->isNotificationHydrated().'<br/>';

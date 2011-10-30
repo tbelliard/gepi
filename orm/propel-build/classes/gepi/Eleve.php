@@ -52,7 +52,7 @@ class Eleve extends BaseEleve {
     /**
 	 * @var        mode de debuggage pour abs2
 	 */
-    private $debug=true;
+    private $debug=false;
      
 
     function __construct() {
@@ -60,6 +60,7 @@ class Eleve extends BaseEleve {
         $this->timestamp_start=microtime(true);
     }
     
+    // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
@@ -582,7 +583,7 @@ class Eleve extends BaseEleve {
 
 	    $edtCoursCol = $this->getEdtEmplacementCourssPeriodeCalendrierActuelle($v);
 
-	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/EdtEmplacementCoursHelper.php");
 	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
 	}
 
@@ -652,7 +653,7 @@ class Eleve extends BaseEleve {
 	    }
 	    $edtCoursCol->addCollection($query->find());
 
-	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/EdtEmplacementCoursHelper.php");
 	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
 
 	    return $edtCoursCol;
@@ -1059,7 +1060,7 @@ class Eleve extends BaseEleve {
 	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
 	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
 	 * Pour l'apres midi la date est 23/05/2010 à 12:30
-         * Il faut en entré une collection de saisies ordonnée par date de debut
+     * Il faut en entré une collection de saisies ordonnée par date de debut
 	 *
 	 * @param      PropelObjectCollection $abs_saisie_col collection de saisies d'absence ordonne par date de début
 	 *
@@ -1074,39 +1075,45 @@ class Eleve extends BaseEleve {
 	    $abs_saisie_col_filtre = new PropelCollection();
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
-		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-		    $contra = false;
-		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
-			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
-			foreach ($abs_saisie_col_2 as $saisie_contra) {
-			    if ($saisie_contra->getId() != $saisie->getId()
-				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
-				$contra = true;
-				break;
-			    }
-			}
-		    }
-		    if (!$contra) {
-			$abs_saisie_col_filtre->append($saisie);
-		    }
-		}
+	        if ($saisie->getEleveId() != $this->getId()) {
+	            continue;
+	        }
+    		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+    		    $contra = false;
+    		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
+    			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
+    			foreach ($abs_saisie_col_2 as $saisie_contra) {
+        	        if ($saisie_contra->getEleveId() != $this->getId()) {
+        	            continue;
+        	        }
+    			    if ($saisie_contra->getId() != $saisie->getId()
+    				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+    				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+    				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
+    				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
+    				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
+    				$contra = true;
+    				break;
+    			    }
+    			}
+    		    }
+    		    if (!$contra) {
+    			$abs_saisie_col_filtre->append($saisie);
+    		    }
+    		}
 	    }
 
 	    if ($date_fin != null) {
 		$date_fin_iteration = clone $date_fin;
 	    } else {
 		$date_fin_iteration = new DateTime('now');
-		$date_fin_iteration->setTime(23,59);
+		$date_fin_iteration->setTime(23,59,59);
 	    }
             if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
                 $date_fin_iteration = $this->getDateSortie(null);
             }
 
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
@@ -1120,8 +1127,8 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection  AbsenceEleveSaisie[]
 	 */
-	private function getAbsColDecompteDemiJournee($date_debut= null, $date_fin= null) {
-	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
+	public function getAbsColDecompteDemiJournee($date_debut= null, $date_fin= null) {
+	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
 	    $request_query_hash .= '_fin_';
@@ -1206,11 +1213,17 @@ class Eleve extends BaseEleve {
 	    $abs_saisie_col_filtre = new PropelCollection();
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
-		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
+	        if ($saisie->getEleveId() != $this->getId()) {
+	            continue;
+	        }
+	        if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
 		    $contra = false;
 		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
 			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
 			foreach ($abs_saisie_col_2 as $saisie_contra) {
+    	        if ($saisie_contra->getEleveId() != $this->getId()) {
+    	            continue;
+    	        }
 			    if ($saisie_contra->getId() != $saisie->getId()
 				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
@@ -1238,7 +1251,7 @@ class Eleve extends BaseEleve {
                 $date_fin_iteration = $this->getDateSortie(null);
             }
 
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
@@ -1283,10 +1296,16 @@ class Eleve extends BaseEleve {
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    //on va faire le décompte officiel des retard
 	    foreach ($abs_saisie_col as $saisie) {
-			if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+	        if ($saisie->getEleveId() != $this->getId()) {
+	            continue;
+	        }
+	        if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
 			    $contra = false;
 	    		//on va vérifier si il n'y a pas une saisie contradictoire simultanée
 				foreach ($abs_saisie_col_2 as $saisie_contra) {
+        	        if ($saisie_contra->getEleveId() != $this->getId()) {
+        	            continue;
+        	        }
 				    if ($saisie_contra->getId() != $saisie->getId()
 					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
@@ -1307,7 +1326,17 @@ class Eleve extends BaseEleve {
 			    }
 			}
 	    }
-	    return $result;
+	    
+	    //on va enlever les retards qui sont sur des périodes non ouvertes de l'établissement
+        require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
+        $result_final = new PropelCollection();
+        foreach ($result as $saisie) {
+            if (EdtHelper::isJourneeOuverte($saisie->getDebutAbs(null))
+                && EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
+                $result_final->append($saisie);
+            }
+        }
+	    return $result_final;
 	}
 
  	/**
@@ -1597,6 +1626,7 @@ class Eleve extends BaseEleve {
         $timestamp = microtime(true);
         print_r('Temps d\'execution depuis le lancement : '.($timestamp - $this->timestamp_start).'<br />');        
     }
+
 	/**
 	 *
 	 * Mets à jour la table d'agrégation des absences pour cet élève
@@ -1608,13 +1638,11 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		throw new Exception('Not fully tested');
-	
         if ($this->debug) {
             if(is_null($this->timestamp_start)){
                 $this->timestamp_start = microtime(true);
             }
-			print_r('<br/>Vérification pour l eleve '.$this->getIdEleve().'<br/>');
+			print_r('<br/>Vérification pour l eleve '.$this->getId().'<br/>');
 		}
 		$dateDebutClone = null;
 		$dateFinClone = null;
@@ -1660,22 +1688,22 @@ class Eleve extends BaseEleve {
 		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, now() as now
 		
 		FROM
-			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
+			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getId().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
 			) as a_agregation_decompte_null_select
 			
 		LEFT JOIN (
 			(SELECT count(a_agregation_decompte.eleve_id) as count_demi_jounee, max(updated_at) as updated_at
-			FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getIdEleve().' and '.$date_agregation_selection.'	
+			FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getId().' and '.$date_agregation_selection.'	
 			group by eleve_id) as updated_at_select
 		) ON 1=1
 		
 		LEFT JOIN (
 			(SELECT union_date from 
-				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
+				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
 				UNION ALL
-					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.' group by eleve_id
+					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getId().' and '.$date_saisies_version_selection.' group by eleve_id
 				UNION ALL
-					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
+					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
 
 				ORDER BY union_date DESC LIMIT 1
 				) AS union_date_union_all_select
@@ -1703,13 +1731,13 @@ class Eleve extends BaseEleve {
                 $this->affiche_duree();
 			}
 			return false;
-		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
-			if ($debug) {
+		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
 			}
 			return false;
-		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
-			if ($debug) {
+		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
 			}
 			return false;
@@ -1755,7 +1783,6 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function updateAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		throw new Exception('Not fully tested');
 		
 		$dateDebutClone = null;
 		$dateFinClone = null;
@@ -1844,7 +1871,7 @@ class Eleve extends BaseEleve {
 			$DMabsencesCol_start_compute = false;//obligatoire pour tester la fin de la collection car le pointeur retourne au début
 			$retards_start_compute = false;
 			//on va creer une collections d'entrées dans la table d'agrégation
-			//dans la boucle while on utilise les tests isFirst pour vérifier qu'on a pas fini les collections et qu'on est pas retourné au débxyut
+			//dans la boucle while on utilise les tests isFirst pour vérifier qu'on a pas fini les collections et qu'on est pas retourné au début
 			do {
 				$newAgregation = new AbsenceAgregationDecompte();
 				$newAgregation->setEleve($this);
@@ -1852,11 +1879,11 @@ class Eleve extends BaseEleve {
 				if (($DMabsencesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $DMabsencesCol->getCurrent()->format('d/m/Y H')) {
 					$DMabsencesCol_start_compute = true;
 					$newAgregation->setManquementObligationPresence(true);
-					$newAgregation->setJustifiee(true);
+					$newAgregation->setNonJustifiee(false);
 					$DMabsencesCol->getNext();
 					//on regarde si l'absence est non justifiée
 					if (($DMabsenceNonJustifiesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $DMabsenceNonJustifiesCol->getCurrent()->format('d/m/Y H')) {
-						$newAgregation->setJustifiee(false);
+						$newAgregation->setNonJustifiee(true);
 						$DMabsenceNonJustifiesCol->getNext();
 					}
 					
@@ -1900,8 +1927,8 @@ class Eleve extends BaseEleve {
 				while ($retards->getCurrent() != null && $retards->getCurrent()->getDebutAbs('U')<$date_fin_decompte_retard->format('U')) {
 					$retards_start_compute = true;
 					$newAgregation->setNbRetards($newAgregation->getNbRetards() + 1);
-					if ($retards->getCurrent()->getJustifiee()) {
-						$newAgregation->setNbRetardsJustifies($newAgregation->getNbRetardsJustifies() + 1);
+					if (!$retards->getCurrent()->getJustifiee()) {
+						$newAgregation->setNbRetardsNonJustifies($newAgregation->getNbRetardsNonJustifies() + 1);
 					}
 			    	if ($retards->getCurrent()->getMotif() != null) {
 			    		foreach ($retards->getCurrent()->getAbsenceEleveTraitements() as $traitement) {
@@ -1915,12 +1942,12 @@ class Eleve extends BaseEleve {
 				$newAgregation->save();
 				
 				$dateDemiJourneeIteration->modify("+12 hours");
+				
 			} while (//on s'arrete si on a dépassé la date de fin
-					($dateFinClone != null && $dateDemiJourneeIteration->format('U') <= $dateFinClone->format('U'))
-					//on s'arrete si la date de fin n'est pas précisé et qu'on a épuisé toutes les absences
-					|| ($dateFinClone == null && (!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) && (!$retards->isFirst() || !$retards_start_compute) )
-					);
-			
+					($dateFinClone != null && $dateDemiJourneeIteration <= $dateFinClone)
+					//on s'arrete si la date de fin n'est pas précisé et qu'on a épuisé toutes les absences et retards
+					|| ($dateFinClone == null && ((!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) || (!$retards->isFirst() || !$retards_start_compute)) )
+					);			
 		}
 		
 		
@@ -1949,7 +1976,6 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		throw new Exception('Not fully tested');
 		//on va vérifier que avant et après les dates précisées, la table est bien synchronisée sur l'année en cours
 		require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
 		assert('$dateDebut == null || $dateFin == null || $dateDebut <= $dateFin');
