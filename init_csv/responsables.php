@@ -109,7 +109,7 @@ if (!isset($_POST["action"])) {
 		}
 
 		// Suppression des comptes de responsables:
-		$sql="DELETE FROM utilisateurs WHERE statut='responsables';";
+		$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
 		$del=mysql_query($sql);
 
 		$sql="SELECT * FROM temp_responsables;";

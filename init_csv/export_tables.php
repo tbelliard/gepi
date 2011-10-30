@@ -229,7 +229,7 @@ else {
 
 //n° d'identifiant élève interne à l'établissement ; Identifiant court de la classe 
 $tab_ele_clas=array();
-$sql="SELECT e.elenoet, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND c.id=jec.id_classe ORDER BY c.classe,e.nom,e.prenom;";
+$sql="SELECT DISTINCT e.elenoet, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND c.id=jec.id_classe ORDER BY c.classe,e.nom,e.prenom;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
 	echo "<p>Aucune association élève/classe n'a été trouvée.</p>\n";
