@@ -226,21 +226,21 @@ if (!isset($is_posted)) {
 	if($default_login_gen_type=='name8') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (tronqué à 8 caractères)</label>\n";
+	echo "/> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (<em>tronqué à 8 caractères</em>)</label>\n";
 	echo "<br />";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname8' value='fname8' ";
 	if($default_login_gen_type=='fname8') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (tronqué à 8 caractères)</label>\n";
+	echo "/> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (<em>tronqué à 8 caractères</em>)</label>\n";
 	echo "<br />\n";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname19' value='fname19' ";
 	if($default_login_gen_type=='fname19') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (tronqué à 19 caractères)</label>\n";
+	echo "/> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (<em>tronqué à 19 caractères</em>)</label>\n";
 	echo "<br />\n";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_firstdotname' value='firstdotname' ";
@@ -254,21 +254,21 @@ if (!isset($is_posted)) {
 	if($default_login_gen_type=='firstdotname19') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (tronqué à 19 caractères)</label>\n";
+	echo "/> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (<em>tronqué à 19 caractères</em>)</label>\n";
 	echo "<br />\n";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' ";
 	if($default_login_gen_type=='namef8') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (tronqué à 8 caractères)</label>\n";
+	echo "/> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (<em>tronqué à 8 caractères</em>)</label>\n";
 	echo "<br />\n";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' ";
 	if($default_login_gen_type=='lcs') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (façon LCS)</label>\n";
+	echo "/> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (<em>façon LCS</em>)</label>\n";
 	echo "<br />\n";
 
 	if (getSettingValue("use_ent") == "y") {
@@ -290,7 +290,7 @@ if (!isset($is_posted)) {
 
 	echo "<p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (<i>laissez 'non' si vous ne savez pas de quoi il s'agit</i>)</p>\n";
 	echo "<input type='radio' name='sso' id='sso_n' value='no'".$checked0." /> <label for='sso_n' style='cursor: pointer;'>Non</label>\n";
-	echo "<br /><input type='radio' name='sso' id='sso_y' value='yes'".$checked1." /> <label for='sso_y' style='cursor: pointer;'>Oui (aucun mot de passe ne sera généré)</label>\n";
+	echo "<br /><input type='radio' name='sso' id='sso_y' value='yes'".$checked1." /> <label for='sso_y' style='cursor: pointer;'>Oui (<em>aucun mot de passe ne sera généré</em>)</label>\n";
 	echo "<br />\n";
 	echo "<br />\n";
 
@@ -627,7 +627,8 @@ else {
 						// Aucun professeur ne porte le même nom dans la base GEPI. On va donc rentrer ce professeur dans la base
 	
 						$prof[$k]["prenom"]=traitement_magic_quotes(corriger_caracteres($prof[$k]["prenom"]));
-	
+
+						/*
 						if ($_POST['login_gen_type'] == "name") {
 							$temp1 = $prof[$k]["nom_usage"];
 							$temp1 = strtoupper($temp1);
@@ -721,7 +722,9 @@ else {
 							$temp1 = $prenom1 . $nom1;
 							$temp1 = remplace_accents($temp1,"all");
 						}
-						elseif($_POST['login_gen_type'] == 'ent'){
+						else
+						*/
+						if($_POST['login_gen_type'] == 'ent'){
 	
 							if (getSettingValue("use_ent") == "y") {
 								// Charge à l'organisme utilisateur de pourvoir à cette fonctionnalité
@@ -747,8 +750,12 @@ else {
 								die('Vous n\'avez pas autorisé Gepi à utiliser un ENT');
 							}
 						}
+						else {
+							$temp1=generate_unique_login($prof[$k]["nom_usage"], $prof[$k]["prenom"], $_POST['login_gen_type']);
+						}
 
 						if(getSettingValue('auth_sso')=='lcs') {
+							// On ne devrait jamais arriver là.
 							$login_prof=$login_prof_gepi;
 						}
 						else {
@@ -806,8 +813,6 @@ else {
 	
 						// utilise le prénom composé s'il existe, plutôt que le premier prénom
 	
-						//$res = mysql_query("INSERT INTO utilisateurs VALUES ('".$login_prof."', '".$prof[$k]["nom_usage"]."', '".$premier_prenom."', '".$civilite."', '".$pwd."', '', 'professeur', 'actif', 'y', '')");
-						//$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y'";
 						$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
 						if(getSettingValue('auth_sso')=='lcs') {
 							$sql.=", auth_mode='sso'";
@@ -825,7 +830,6 @@ else {
 						echo "<tr class='lig$alt'>\n";
 						echo "<td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
 					} else {
-						//$res = mysql_query("UPDATE utilisateurs set etat='actif' where login = '".$login_prof_gepi."'");
 						// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
 						$sql="UPDATE utilisateurs set etat='actif', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', numind='P".$prof[$k]["id"]."'";
 						if(getSettingValue('auth_sso')=='lcs') {
