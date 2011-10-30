@@ -40,12 +40,6 @@ if (!checkAccess()) {
 	die();
 }
 
-/*
-if (!function_exists("dbase_open"))  {
-    $msg = "ATTENTION : PHP n'est pas configuré pour gérer les fichiers GEP (dbf). L'extension  d_base n'est pas active. Adressez-vous à l'administrateur du serveur pour corriger le problème.";
-}
-*/
-
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année";
 require_once("../lib/header.inc");
@@ -64,30 +58,13 @@ require_once("../lib/header.inc");
 	}
 
 	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
-	/*
-	$sql="SELECT 1=1 FROM matieres_notes LIMIT 1;";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {
-		echo "Avez-vous pensé à <a href='#' onmouseover=\"afficher_div('archivage','y',20,20);\" onclick=\"return false;\">archiver</a> l'année qui se termine ?</p>\n";
-		$texte="<p>L'archivage de l'année en cours vous permettra, une fois passé à l'année suivante, de consulter les bulletins antérieurs de chacun de vos élèves, pour peu qu'ils aient été scolarisés dans votre établissement.</p><p>Cela nécessite l'activation du <a href='../mod_annees_anterieures/admin.php'>module 'Années antérieures'</a>.</p>";
-		$tabdiv_infobulle[]=creer_div_infobulle('archivage',"Archivage d'une année","",$texte,"",30,0,'y','y','n','n');
-	}
 
-	// CDT
-	$sql="SELECT 1=1 FROM ct_entry LIMIT 1;";
-	$test1=mysql_query($sql);
-	$sql="SELECT 1=1 FROM ct_devoirs_entry LIMIT 1;";
-	$test2=mysql_query($sql);
-	if((mysql_num_rows($test1)>0)||(mysql_num_rows($test2)>0)) {
-		echo "<p>Les cahiers de textes ne sont pas vides.<br />Vous devriez <a href='cahier_texte_admin/admin_ct.php'>vider les cahiers de textes de l'an dernier</a> avant de procéder à l'initialisation.</p>\n";
-	}
-	*/
 ?>
 </p>
 <ul>
 <li>
-	<p>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...).<br />
-	Seules seront conservées les données suivantes :<br /></p>
+	<p>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (<em>élèves, notes, appréciations,...</em>).<br />
+	Seules seront conservées les données suivantes&nbsp;:<br /></p>
 	<ul>
 		<li><p>les données relatives aux établissements,</p></li>
 		<li><p>les données relatives aux classes : intitulés courts, intitulés longs, nombre de périodes et noms des périodes,</p></li>
@@ -97,24 +74,8 @@ require_once("../lib/header.inc");
 	</ul>
 </li>
 <li>
-	<!--p>L'initialisation s'effectue en quatre phases, chacune nécessitant un fichier GEP particulier <b>ou des CSV</b>:</p>
-	<ul>
-		<li><p>Vous devez disposer des fichiers F_ELE.DBF et F_ERE.DBF générés par l'AutoSco.<br />
-		Générer le F_ELE.CSV correspondant au F_ELE.DBF depuis Sconet est assez facile sauf pour l'ERENO qui n'est pas récupéré et du coup générer un F_ERE.CSV n'est pas commode.<br />Il faut en effet fixer arbitrairement un ERENO pour faire le lien entre parents et enfants et ne récupérer que les entrées souhaitées de Sconet pour les parents (<i>on récupère là plus de deux lignes par élève...</i>)...<br />Bref, j'ai laissé en plan.</p></li>
-		<li><p>Vous pouvez générer les fichiers F_TMT.CSV, F_MEN.CSV et F_GPD.CSV à l'aide de l'export XML de STS une fois l'emploi du temps remonté.</p>
-		<p>Vous pouvez également compléter partiellement le F_WIND.CSV de cette façon.<br />
-		Partiellement parce que certains champs ne sont pas récupérés:</p>
-		<ul>
-			<li>le NUMEN (INDNNI) utilisé comme mot de passe par défaut par GEPI n'est pas récupéré.<br />
-			Il est alors proposé de définir un mot de passe aléatoire ou d'utiliser la date de naissance à la place.</li>
-			<li>La civilité n'est pas récupérée non plus (<i>mais il est assez facile de la compléter</i>).</li>
-			<li>Enfin, le champ FONCCO n'est pas rempli non plus (<i>mais c'est en principe 'ENS' pour tous les enseignants</i>).</li>
-		</ul>
-		<p><a href='lecture_xml_sts_emp.php'>Générer les fichiers CSV à partir de l'export XML de STS</a>.</p>
-		<p><b>AJOUT:</b> <a href='lecture_xml_sconet.php'>Générer les fichiers CSV à partir des exports XML de Sconet</a>.</p></li>
-	</ul-->
-	<p>Professeurs, matières,...: <a href='lecture_xml_sts_emp.php'>Générer les fichiers CSV à partir de l'export XML de STS</a>.</p>
-	<p>Elèves: <a href='lecture_xml_sconet.php'>Générer les fichiers CSV à partir des exports XML de Sconet</a>.</p>
+	<p>Professeurs, matières,...&nbsp;: <a href='lecture_xml_sts_emp.php'>Générer les fichiers CSV à partir de l'export XML de STS</a>.</p>
+	<p>Elèves&nbsp;: <a href='lecture_xml_sconet.php'>Générer les fichiers CSV à partir des exports XML de Sconet</a>.</p>
 </li>
 <li>
 
@@ -138,7 +99,7 @@ require_once("../lib/header.inc");
 
 		<li><p><a href='init_pp.php'>Procéder à la sixième phase</a>: Initialisation des professeurs principaux.</p></li>
 
-		<li><p><a href='clean_tables.php?a=a<?php echo add_token_in_url();?>'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p></li>
+		<li><p><a href='clean_tables.php?a=a<?php echo add_token_in_url();?>'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées&nbsp;!</p></li>
 
 	</ul>
 </li>

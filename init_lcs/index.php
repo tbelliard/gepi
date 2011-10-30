@@ -49,11 +49,11 @@ require_once("../lib/header.inc");
 	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
 ?>
 <ul>
-<li>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes :<br /><br />
+<li>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (<em>élèves, notes, appréciations,...</em>). Seules seront conservées les données suivantes :<br /><br />
 - les données relatives aux établissements,<br />
 - les données relatives aux classes : intitulés courts, intitulés longs, nombre de périodes et noms des périodes,<br />
 - les données relatives aux matières : identifiants et intitulés complets,<br />
-- les données relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
+- les données relatives aux utilisateurs (<em>professeurs, administrateurs,...</em>). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
 - Les données relatives aux différents types d'AID.</li><br />
 
 <li>L'initialisation s'effectue en différentes phases :<br />

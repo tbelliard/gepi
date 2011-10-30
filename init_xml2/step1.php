@@ -157,10 +157,10 @@
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo add_token_field();
-			echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
+			echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<em>ou ElevesSansAdresses.xml</em>):<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"eleves_xml_file\" /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
-				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesSansAdresses.zip)</p>";
+				echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex : ElevesSansAdresses.zip</em>)</p>";
 			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -272,7 +272,7 @@
 							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>$unzipped_max_filesize octets</em>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
@@ -1012,11 +1012,11 @@
 
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 				echo add_token_field();
-				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<i>ex.: 030201 -&gt; AGL1</i>).</p>\n";
+				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<em>ex.: 030201 -&gt; AGL1</em>).</p>\n";
 				echo "<p>Veuillez fournir le fichier Nomenclature.xml:<br />\n";
 				echo "<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /></p>\n";
 				if ($gepiSettings['unzipped_max_filesize']>=0) {
-					echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : Nomenclature.zip)</p>";
+					echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex&nbsp;: Nomenclature.zip</em>)</p>";
 				}
 				//echo "<input type='hidden' name='etape' value='$etape' />\n";
 				echo "<input type='hidden' name='step' value='4' />\n";
@@ -1111,7 +1111,7 @@
 							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>$unzipped_max_filesize octets</em>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
@@ -1443,8 +1443,8 @@
 					echo "<p><input type='submit' value='Valider' /></p>\n";
 					echo "</form>\n";
 
-					echo "<p><i>NOTE:</i> Les fichiers de SCONET contiennent le code_commune_insee, mais pas le code_postal (<i>les valeurs diffèrent</i>).<br />\n";
-					echo "Les établissements ne sont donc pas importés (<i>pour éviter des insertions erronées</i>).<br />\n";
+					echo "<p><em>NOTE:</em> Les fichiers de SCONET contiennent le code_commune_insee, mais pas le code_postal (<em>les valeurs diffèrent</em>).<br />\n";
+					echo "Les établissements ne sont donc pas importés (<em>pour éviter des insertions erronées</em>).<br />\n";
 					echo "Seules les associations élève/RNE sont importées.</p>\n";
 
 

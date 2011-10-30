@@ -52,9 +52,6 @@ $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etap
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// On vérifie si l'extension d_base est active
-//verif_active_dbase();
-
 //debug_var();
 // Passer à 'y' pour afficher les requêtes
 $debug_ele="n";
@@ -69,8 +66,6 @@ echo "<center><h3 class='gepi'>Troisième étape : Enregistrement des élèves et af
 
 if (isset($is_posted) and ($is_posted == "yes")) {
 	check_token(false);
-    //$call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ERENO,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import ORDER BY DIVCOD,ELENOM,ELEPRE");
-    //$call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,LIEU_NAISSANCE FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $nb = mysql_num_rows($call_data);
     $i = "0";
@@ -157,10 +152,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
             $j++;
         }
 
-        //if ($reg_etab != '') {
         if (($reg_etab != '')&&($reg_elenoet != '')) {
-            //$register = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve='$reg_login',id_etablissement='$reg_etab'");
-            //if (!$register) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
 
 			if($gepiSchoolRne!="") {
 				if($gepiSchoolRne!=$reg_etab) {
@@ -294,6 +286,7 @@ else {
 			}
 			// S'il s'agit d'un élève ne figurant pas déjà dans une des bases élève des années passées,
 			// on crée un login !
+
 			//echo "no_gep=$no_gep<br />\n";
 			//echo "nouv_login=$nouv_login<br />\n";
 			if (($no_gep == '') or ($nouv_login=='yes')) {
@@ -312,7 +305,7 @@ else {
 				$temp2 = substr($temp2,0,1);
 				$login_eleve = $temp1.'_'.$temp2;
 				*/
-	
+
 				if($reg_ele_id!='') {
 					$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
 					if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
@@ -524,6 +517,7 @@ else {
             echo "</form>\n";
         }
     }
+
     if (getSettingValue("use_ent") == 'y') {
     	// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
     	echo '

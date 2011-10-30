@@ -218,10 +218,10 @@
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo add_token_field();
-			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
+			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml&nbsp;:<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"responsables_xml_file\" /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
-				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ResponsablesAvecAdresses.zip)</p>";
+				echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET (<em>Ex&nbsp;: ResponsablesAvecAdresses.zip</em>).</p>";
 			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -301,7 +301,7 @@
 							}
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>$unzipped_max_filesize octets</em>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
