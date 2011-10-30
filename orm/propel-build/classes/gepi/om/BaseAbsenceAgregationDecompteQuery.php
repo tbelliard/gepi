@@ -11,8 +11,8 @@
  * @method     AbsenceAgregationDecompteQuery orderByManquementObligationPresence($order = Criteria::ASC) Order by the manquement_obligation_presence column
  * @method     AbsenceAgregationDecompteQuery orderByNonJustifiee($order = Criteria::ASC) Order by the non_justifiee column
  * @method     AbsenceAgregationDecompteQuery orderByNotifiee($order = Criteria::ASC) Order by the notifiee column
- * @method     AbsenceAgregationDecompteQuery orderByNbRetards($order = Criteria::ASC) Order by the nb_retards column
- * @method     AbsenceAgregationDecompteQuery orderByNbRetardsNonJustifies($order = Criteria::ASC) Order by the nb_retards_non_justifies column
+ * @method     AbsenceAgregationDecompteQuery orderByRetards($order = Criteria::ASC) Order by the retards column
+ * @method     AbsenceAgregationDecompteQuery orderByRetardsNonJustifies($order = Criteria::ASC) Order by the retards_non_justifies column
  * @method     AbsenceAgregationDecompteQuery orderByMotifsAbsences($order = Criteria::ASC) Order by the motifs_absences column
  * @method     AbsenceAgregationDecompteQuery orderByMotifsRetards($order = Criteria::ASC) Order by the motifs_retards column
  * @method     AbsenceAgregationDecompteQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
@@ -23,8 +23,8 @@
  * @method     AbsenceAgregationDecompteQuery groupByManquementObligationPresence() Group by the manquement_obligation_presence column
  * @method     AbsenceAgregationDecompteQuery groupByNonJustifiee() Group by the non_justifiee column
  * @method     AbsenceAgregationDecompteQuery groupByNotifiee() Group by the notifiee column
- * @method     AbsenceAgregationDecompteQuery groupByNbRetards() Group by the nb_retards column
- * @method     AbsenceAgregationDecompteQuery groupByNbRetardsNonJustifies() Group by the nb_retards_non_justifies column
+ * @method     AbsenceAgregationDecompteQuery groupByRetards() Group by the retards column
+ * @method     AbsenceAgregationDecompteQuery groupByRetardsNonJustifies() Group by the retards_non_justifies column
  * @method     AbsenceAgregationDecompteQuery groupByMotifsAbsences() Group by the motifs_absences column
  * @method     AbsenceAgregationDecompteQuery groupByMotifsRetards() Group by the motifs_retards column
  * @method     AbsenceAgregationDecompteQuery groupByCreatedAt() Group by the created_at column
@@ -46,8 +46,8 @@
  * @method     AbsenceAgregationDecompte findOneByManquementObligationPresence(boolean $manquement_obligation_presence) Return the first AbsenceAgregationDecompte filtered by the manquement_obligation_presence column
  * @method     AbsenceAgregationDecompte findOneByNonJustifiee(boolean $non_justifiee) Return the first AbsenceAgregationDecompte filtered by the non_justifiee column
  * @method     AbsenceAgregationDecompte findOneByNotifiee(boolean $notifiee) Return the first AbsenceAgregationDecompte filtered by the notifiee column
- * @method     AbsenceAgregationDecompte findOneByNbRetards(int $nb_retards) Return the first AbsenceAgregationDecompte filtered by the nb_retards column
- * @method     AbsenceAgregationDecompte findOneByNbRetardsNonJustifies(int $nb_retards_non_justifies) Return the first AbsenceAgregationDecompte filtered by the nb_retards_non_justifies column
+ * @method     AbsenceAgregationDecompte findOneByRetards(int $retards) Return the first AbsenceAgregationDecompte filtered by the retards column
+ * @method     AbsenceAgregationDecompte findOneByRetardsNonJustifies(int $retards_non_justifies) Return the first AbsenceAgregationDecompte filtered by the retards_non_justifies column
  * @method     AbsenceAgregationDecompte findOneByMotifsAbsences(array $motifs_absences) Return the first AbsenceAgregationDecompte filtered by the motifs_absences column
  * @method     AbsenceAgregationDecompte findOneByMotifsRetards(array $motifs_retards) Return the first AbsenceAgregationDecompte filtered by the motifs_retards column
  * @method     AbsenceAgregationDecompte findOneByCreatedAt(string $created_at) Return the first AbsenceAgregationDecompte filtered by the created_at column
@@ -58,8 +58,8 @@
  * @method     array findByManquementObligationPresence(boolean $manquement_obligation_presence) Return AbsenceAgregationDecompte objects filtered by the manquement_obligation_presence column
  * @method     array findByNonJustifiee(boolean $non_justifiee) Return AbsenceAgregationDecompte objects filtered by the non_justifiee column
  * @method     array findByNotifiee(boolean $notifiee) Return AbsenceAgregationDecompte objects filtered by the notifiee column
- * @method     array findByNbRetards(int $nb_retards) Return AbsenceAgregationDecompte objects filtered by the nb_retards column
- * @method     array findByNbRetardsNonJustifies(int $nb_retards_non_justifies) Return AbsenceAgregationDecompte objects filtered by the nb_retards_non_justifies column
+ * @method     array findByRetards(int $retards) Return AbsenceAgregationDecompte objects filtered by the retards column
+ * @method     array findByRetardsNonJustifies(int $retards_non_justifies) Return AbsenceAgregationDecompte objects filtered by the retards_non_justifies column
  * @method     array findByMotifsAbsences(array $motifs_absences) Return AbsenceAgregationDecompte objects filtered by the motifs_absences column
  * @method     array findByMotifsRetards(array $motifs_retards) Return AbsenceAgregationDecompte objects filtered by the motifs_retards column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceAgregationDecompte objects filtered by the created_at column
@@ -334,16 +334,16 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the nb_retards column
+	 * Filter the query on the retards column
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByNbRetards(1234); // WHERE nb_retards = 1234
-	 * $query->filterByNbRetards(array(12, 34)); // WHERE nb_retards IN (12, 34)
-	 * $query->filterByNbRetards(array('min' => 12)); // WHERE nb_retards > 12
+	 * $query->filterByRetards(1234); // WHERE retards = 1234
+	 * $query->filterByRetards(array(12, 34)); // WHERE retards IN (12, 34)
+	 * $query->filterByRetards(array('min' => 12)); // WHERE retards > 12
 	 * </code>
 	 *
-	 * @param     mixed $nbRetards The value to use as filter.
+	 * @param     mixed $retards The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -351,16 +351,16 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceAgregationDecompteQuery The current query, for fluid interface
 	 */
-	public function filterByNbRetards($nbRetards = null, $comparison = null)
+	public function filterByRetards($retards = null, $comparison = null)
 	{
-		if (is_array($nbRetards)) {
+		if (is_array($retards)) {
 			$useMinMax = false;
-			if (isset($nbRetards['min'])) {
-				$this->addUsingAlias(AbsenceAgregationDecomptePeer::NB_RETARDS, $nbRetards['min'], Criteria::GREATER_EQUAL);
+			if (isset($retards['min'])) {
+				$this->addUsingAlias(AbsenceAgregationDecomptePeer::RETARDS, $retards['min'], Criteria::GREATER_EQUAL);
 				$useMinMax = true;
 			}
-			if (isset($nbRetards['max'])) {
-				$this->addUsingAlias(AbsenceAgregationDecomptePeer::NB_RETARDS, $nbRetards['max'], Criteria::LESS_EQUAL);
+			if (isset($retards['max'])) {
+				$this->addUsingAlias(AbsenceAgregationDecomptePeer::RETARDS, $retards['max'], Criteria::LESS_EQUAL);
 				$useMinMax = true;
 			}
 			if ($useMinMax) {
@@ -370,20 +370,20 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 				$comparison = Criteria::IN;
 			}
 		}
-		return $this->addUsingAlias(AbsenceAgregationDecomptePeer::NB_RETARDS, $nbRetards, $comparison);
+		return $this->addUsingAlias(AbsenceAgregationDecomptePeer::RETARDS, $retards, $comparison);
 	}
 
 	/**
-	 * Filter the query on the nb_retards_non_justifies column
+	 * Filter the query on the retards_non_justifies column
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByNbRetardsNonJustifies(1234); // WHERE nb_retards_non_justifies = 1234
-	 * $query->filterByNbRetardsNonJustifies(array(12, 34)); // WHERE nb_retards_non_justifies IN (12, 34)
-	 * $query->filterByNbRetardsNonJustifies(array('min' => 12)); // WHERE nb_retards_non_justifies > 12
+	 * $query->filterByRetardsNonJustifies(1234); // WHERE retards_non_justifies = 1234
+	 * $query->filterByRetardsNonJustifies(array(12, 34)); // WHERE retards_non_justifies IN (12, 34)
+	 * $query->filterByRetardsNonJustifies(array('min' => 12)); // WHERE retards_non_justifies > 12
 	 * </code>
 	 *
-	 * @param     mixed $nbRetardsNonJustifies The value to use as filter.
+	 * @param     mixed $retardsNonJustifies The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -391,16 +391,16 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceAgregationDecompteQuery The current query, for fluid interface
 	 */
-	public function filterByNbRetardsNonJustifies($nbRetardsNonJustifies = null, $comparison = null)
+	public function filterByRetardsNonJustifies($retardsNonJustifies = null, $comparison = null)
 	{
-		if (is_array($nbRetardsNonJustifies)) {
+		if (is_array($retardsNonJustifies)) {
 			$useMinMax = false;
-			if (isset($nbRetardsNonJustifies['min'])) {
-				$this->addUsingAlias(AbsenceAgregationDecomptePeer::NB_RETARDS_NON_JUSTIFIES, $nbRetardsNonJustifies['min'], Criteria::GREATER_EQUAL);
+			if (isset($retardsNonJustifies['min'])) {
+				$this->addUsingAlias(AbsenceAgregationDecomptePeer::RETARDS_NON_JUSTIFIES, $retardsNonJustifies['min'], Criteria::GREATER_EQUAL);
 				$useMinMax = true;
 			}
-			if (isset($nbRetardsNonJustifies['max'])) {
-				$this->addUsingAlias(AbsenceAgregationDecomptePeer::NB_RETARDS_NON_JUSTIFIES, $nbRetardsNonJustifies['max'], Criteria::LESS_EQUAL);
+			if (isset($retardsNonJustifies['max'])) {
+				$this->addUsingAlias(AbsenceAgregationDecomptePeer::RETARDS_NON_JUSTIFIES, $retardsNonJustifies['max'], Criteria::LESS_EQUAL);
 				$useMinMax = true;
 			}
 			if ($useMinMax) {
@@ -410,7 +410,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 				$comparison = Criteria::IN;
 			}
 		}
-		return $this->addUsingAlias(AbsenceAgregationDecomptePeer::NB_RETARDS_NON_JUSTIFIES, $nbRetardsNonJustifies, $comparison);
+		return $this->addUsingAlias(AbsenceAgregationDecomptePeer::RETARDS_NON_JUSTIFIES, $retardsNonJustifies, $comparison);
 	}
 
 	/**

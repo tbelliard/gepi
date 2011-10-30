@@ -251,12 +251,13 @@ class Eleve extends BaseEleve {
 	 */
 	public function reload($deep = false, PropelPDO $con = null)
 	{
-	    parent::reload($deep,$con);
 	    $this->collPeriodeNotes = null;
+	    $this->collCachePeriodeNotesResult = null;
 	    $this->collClasses = null;
 	    $this->collGroupes = null;
 	    $this->collAbsenceEleveSaisiesParJour = null;
 	    $this->periodeNoteOuverte = null;
+	    parent::reload($deep,$con);
 	}
 
 	/**
@@ -269,8 +270,33 @@ class Eleve extends BaseEleve {
 	 * @param      boolean $deep Whether to also clear the references on all associated objects.
 	 */
 	public function clearAllReferences($deep = false) {
+	    $this->clearAbsenceEleveSaisiesParJour($deep);
+	    
 	    parent::clearAllReferences($deep);
+	    if ($deep) {
+			if ($this->collPeriodeNotes) {
+				foreach ($this->collPeriodeNotes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCachePeriodeNotesResult) {
+				foreach ($this->collCachePeriodeNotesResult as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collClasses) {
+				foreach ($this->collClasses as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupes) {
+				foreach ($this->collGroupes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+	    }
 	    $this->collPeriodeNotes = null;
+	    $this->collCachePeriodeNotesResult = null;
 	    $this->collClasses = null;
 	    $this->collGroupes = null;
 	    $this->collAbsenceEleveSaisiesParJour = null;
@@ -355,9 +381,26 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return     void
 	 */
-	public function clearAbsenceEleveSaisiesParJour()
+	public function clearAbsenceEleveSaisiesParJour($deep = false)
 	{
-		$this->collAbsenceEleveSaisiesParJour = null; // important to set this to NULL since that means it is uninitialized
+	    $start_string = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
+	    $start_len = strlen($start_string);
+	    foreach($_REQUEST as $key => $value) {
+	        if (substr($key,0,$start_len) == $start_string) {
+	            unset($_REQUEST[$key]);
+	        }
+	    }
+	    if ($deep) {
+			if ($this->collAbsenceEleveSaisiesParJour) {
+				foreach ($this->collAbsenceEleveSaisiesParJour as $key => $o) {
+				    foreach ($o as $saisie) {
+					    $saisie->clearAllReferences($deep);
+				    }
+				    unset($this->collAbsenceEleveSaisiesParJour[$key]);
+				}
+			}
+	    }
+	    $this->collAbsenceEleveSaisiesParJour = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	
@@ -1280,7 +1323,7 @@ class Eleve extends BaseEleve {
 
   	/**
 	 *
-	 * Retourne une collection contenant des saisies comptée comme absence pour le décompte officiel
+	 * Retourne une collection contenant des saisies comptée comme retard pour le décompte officiel
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
@@ -1310,7 +1353,7 @@ class Eleve extends BaseEleve {
 					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
 					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-					    	if ($saisie_contra->getManquementObligationPresence()) {
+					    	if ($saisie_contra->getManquementObligationPresence() && !$saisie_contra->getRetard()) {
 					    		//on a une saisie plus large qui est aussi un manquement à l'obligation de présence, donc on ne compte pas celle qui est englobée
 								$contra = true;
 								break;
@@ -1783,7 +1826,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function updateAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		
+
 		$dateDebutClone = null;
 		$dateFinClone = null;
         if($this->debug){
@@ -1794,20 +1837,33 @@ class Eleve extends BaseEleve {
 			throw new PropelException('Erreur: la date de debut ne peut être postérieure à la date de fin');
 		}
 		
-		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
-	        if($this->debug){
-	            print_r('Date Début '.$dateDebut->format('Y-m-d H:i').' à ');
-	        }
-			$dateDebutClone = clone $dateDebut;
-			$dateDebutClone->setTime(0,0);
+		    $now = new DateTime();
+		    if (abs($dateDebut->format('U') - $now->format('U')) > 3600*24*265*3) {
+			    throw new PropelException('Erreur: la date de debut ne peut pas être éloignées de plus de 3 ans de la date courante');
+		    }
 		}
 		if ($dateFin != null) {
+		    $now = new DateTime();
+		    if (abs($dateFin->format('U') - $now->format('U')) > 3600*24*265*3) {
+			    throw new PropelException('Erreur: la date de fin ne peut pas être éloignées de plus de 3 ans de la date courante');
+		    }
+		}
+		
+		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
+		if ($dateDebut != null) {
+			$dateDebutClone = clone $dateDebut;
+			$dateDebutClone->setTime(0,0);
 	        if($this->debug){
-	            print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
+	            print_r('Date Début '.$dateDebutClone->format('Y-m-d H:i').' à ');
 	        }
+		}
+		if ($dateFin != null) {
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
+	        if($this->debug){
+	            print_r('Date fin '.$dateFinClone->format('Y-m-d H:i').'<br/>');
+	        }
 		}
 		
 		
@@ -1926,9 +1982,9 @@ class Eleve extends BaseEleve {
 				}
 				while ($retards->getCurrent() != null && $retards->getCurrent()->getDebutAbs('U')<$date_fin_decompte_retard->format('U')) {
 					$retards_start_compute = true;
-					$newAgregation->setNbRetards($newAgregation->getNbRetards() + 1);
+					$newAgregation->setRetards($newAgregation->getRetards() + 1);
 					if (!$retards->getCurrent()->getJustifiee()) {
-						$newAgregation->setNbRetardsNonJustifies($newAgregation->getNbRetardsNonJustifies() + 1);
+						$newAgregation->setRetardsNonJustifies($newAgregation->getRetardsNonJustifies() + 1);
 					}
 			    	if ($retards->getCurrent()->getMotif() != null) {
 			    		foreach ($retards->getCurrent()->getAbsenceEleveTraitements() as $traitement) {

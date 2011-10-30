@@ -77,13 +77,14 @@ function loadSettings()
  *
  * @global array 
  * @param text $_name Le nom du réglage que vous cherchez
- * @return text La valeur correspondant à $_name
+ * @return text La valeur correspondant à $_name ou null si le setting n'est pas présent
  * 
  */
 function getSettingValue($_name)
 {
     global $gepiSettings;
     if (isset($gepiSettings[$_name])) return ($gepiSettings[$_name]);
+    else return null;
 }
 
 /**
