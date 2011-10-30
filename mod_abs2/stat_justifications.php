@@ -110,13 +110,13 @@ function getJustifications() {
  */
 function getEleves() {  
   $eleve_query = EleveQuery::create();
-  if ($id_classe !== null && $id_classe != -1 ) {
+  if (isset($id_classe) && $id_classe !== null && $id_classe != -1 ) {
 	$eleve_query->useJEleveClasseQuery()->filterByIdClasse($id_classe)->endUse();
   }
-  if ($nom_eleve !== null && $nom_eleve != '') {
+  if (isset($nom_eleve) && $nom_eleve !== null && $nom_eleve != '') {
 	  $eleve_query->filterByNom('%'.$nom_eleve.'%');
   }
-  if ($id_eleve !== null && $id_eleve != '') {
+  if (isset($id_eleve) && $id_eleve !== null && $id_eleve != '') {
 	  $eleve_query->filterByIdEleve($id_eleve);
   }
   return ($eleve_query->orderByNom()->orderByPrenom()->distinct()->find());
@@ -187,7 +187,7 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 	  $donnees[$eleve_id]['totalDemi']=$totalDemi;
 	}
 	unset ($eleveNbAbs, $traiteEleve_col, $propel_eleve, $propel_traitEleveDemi, $traiteEleveDemi, $traiteEleveDemi_col, $propel_traitEleve);
-	if ($erreur && ($donnees[$eleve_id]['justifiees']==$donnees[$eleve_id]['totalDemi'])) {
+	if (isset ($donnees[$eleve_id]['justifiees']) && ($erreur && ($donnees[$eleve_id]['justifiees']==$donnees[$eleve_id]['totalDemi']))) {
 	  $donnees[$eleve_id] = array();
 	}
 	
@@ -298,7 +298,12 @@ if (!isset($_SESSION['statJustifie'])) {
   // on récupère les élèves
   $eleve_col = unserialize($_SESSION['statJustifie']['eleve_col']);
   // on récupère le type de statistique
-  $donneeBrut = $_SESSION['statJustifie']['donneeBrut'];
+  if (isset ($_SESSION['statJustifie']['donneeBrut'])) {
+	$donneeBrut = $_SESSION['statJustifie']['donneeBrut'];
+  } else {
+	$donneeBrut = FALSE;
+  }
+  
   // on récupère la dernière position
   $dernierePosition = $_SESSION['statJustifie']['dernierePosition'];
   
