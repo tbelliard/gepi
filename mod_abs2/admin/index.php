@@ -463,6 +463,7 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
     <a href="admin_lieux_absences.php?action=visualiser">Définir les lieux des absences</a><br />
 	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a><br />
 	<a href="../../mod_ooo/gerer_modeles_ooo.php">Gérer ses propres modèles de documents du module</a><br />
+    <a href="admin_table_agregation.php">Gérér la table d'agrégation des demi-journées d'absences</a>
 </blockquote>
 
 <?PHP
