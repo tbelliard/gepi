@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -44,6 +44,9 @@ if (!checkAccess()) {
 	die();
 }
 
+// Passer à 'y' pour afficher les requêtes
+$debug_resp='n';
+
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des responsables des élèves";
 require_once("../lib/header.inc");
@@ -52,9 +55,6 @@ require_once("../lib/header.inc");
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 
 <?php
-
-// On vérifie si l'extension d_base est active
-//verif_active_dbase();
 
 echo "<center><h3 class='gepi'>Deuxième phase d'initialisation<br />Importation des responsables</h3></center>\n";
 
@@ -78,6 +78,20 @@ if(!isset($step1)) {
 		echo "<input type=hidden name='step1' value='y' />\n";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 		echo "</form>\n";
+
+		$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
+			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)==0) {
+				echo "<p style='color:red'>Il existe un ou des comptes responsables de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes élèves (s'ils n'ont pas déjà été supprimés) et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+			}
+		}
+
+		echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -166,9 +180,7 @@ if (!isset($is_posted)) {
 		}
 		else{
 			// on constitue le tableau des champs à extraire
-			//$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
 			$tabchamps=array("pers_id","nom","prenom","civilite","tel_pers","tel_port","tel_prof","mel","adr_id");
-			//echo "\$tabchamps=array(\"pers_id\",\"nom\",\"prenom\",\"civilite\",\"tel_pers\",\"tel_port\",\"tel_prof\",\"mel\",\"adr_id\");<br />\n";
 
 			$nblignes=0;
 			while (!feof($fp)) {
@@ -190,16 +202,6 @@ if (!isset($is_posted)) {
 			}
 			fclose ($fp);
 
-			// On range dans tabindice les indices des champs retenus
-			/*
-			for ($k = 0; $k < count($tabchamps); $k++) {
-				for ($i = 0; $i < count($en_tete); $i++) {
-					if (trim($en_tete[$i]) == $tabchamps[$k]) {
-						$tabindice[] = $i;
-					}
-				}
-			}
-			*/
 			unset($tabindice);
 			$cpt_tmp=0;
 			for ($k = 0; $k < count($tabchamps); $k++) {
@@ -220,20 +222,15 @@ if (!isset($is_posted)) {
 			$nb_reg_no3=0;
 			$nb_record3=0;
 			for($k = 1; ($k < $nblignes+1); $k++){
-				//$ligne = dbase_get_record($fp,$k);
 				if(!feof($fp)){
-					//=========================
-					// MODIF: boireaus 20071024
-					//$ligne = fgets($fp, 4096);
-					$ligne = my_ereg_replace('"','',fgets($fp, 4096));
-					//=========================
+					$ligne = preg_replace('/"/','',fgets($fp, 4096));
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
 							//$ind = $tabindice[$i];
 							$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
 						}
-						$req = mysql_query("insert into resp_pers set
+						$sql="insert into resp_pers set
 									pers_id = '$affiche[0]',
 									nom = '$affiche[1]',
 									prenom = '$affiche[2]',
@@ -243,28 +240,52 @@ if (!isset($is_posted)) {
 									tel_prof = '$affiche[6]',
 									mel = '$affiche[7]',
 									adr_id = '$affiche[8]'
-									");
+									";
+						$req = mysql_query($sql);
 						if(!$req) {
+							echo "Erreur lors de la requête $sql<br />\n";
 							$nb_reg_no3++;
 							echo mysql_error();
 						} else {
 							$nb_record3++;
+
+							$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$affiche[0]."';";
+							if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+							$res_tmp_u=mysql_query($sql);
+							if(mysql_num_rows($res_tmp_u)>0) {
+								$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+
+								$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$affiche[1]."', prenom='".$affiche[2]."', ";
+								if(isset($affiche[3])){
+									$sql.="civilite='".ucfirst(strtolower($affiche[3]))."', ";
+								}
+								$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+								if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+								$insert_u=mysql_query($sql);
+								if(!$insert_u) {
+									echo "Erreur lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
+								}
+								else {
+									$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
+									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+									$update_rp=mysql_query($sql);
+
+									$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$affiche[0]."';";
+									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+									$update_tmp_u=mysql_query($sql);
+								}
+							}
+
 						}
 					}
 				}
 			}
-			//dbase_close($fp);
 			fclose($fp);
 
 			if ($nb_reg_no3 != 0) {
 				echo "<p>Lors de l'enregistrement des données de PERSONNES.CSV, il y a eu $nb_reg_no3 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 			} else {
-				echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$nb_record3." enregistrements au total).</p>\n";
-				/*
-				echo "<br />Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troixième phase d'importation des matières et de définition des options suivies par les élèves.</p>\n";
-				echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
-				echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>\n";
-				*/
+				echo "<p>L'importation des personnes (<em>responsables</em>) dans la base GEPI a été effectuée avec succès (<em>".$nb_record3." enregistrements au total</em>).</p>\n";
 			}
 
 		}
@@ -293,7 +314,6 @@ if (!isset($is_posted)) {
 		else{
 			// on constitue le tableau des champs à extraire
 			$tabchamps=array("ele_id","pers_id","resp_legal","pers_contact");
-			//echo "\$tabchamps=array(\"ele_id\",\"pers_id\",\"resp_legal\",\"pers_contact\");<br />\n";
 
 			$nblignes=0;
 			while (!feof($fp)) {
@@ -315,16 +335,6 @@ if (!isset($is_posted)) {
 			}
 			fclose ($fp);
 
-			// On range dans tabindice les indices des champs retenus
-			/*
-			for ($k = 0; $k < count($tabchamps); $k++) {
-				for ($i = 0; $i < count($en_tete); $i++) {
-					if (trim($en_tete[$i]) == $tabchamps[$k]) {
-						$tabindice[] = $i;
-					}
-				}
-			}
-			*/
 			unset($tabindice);
 			$cpt_tmp=0;
 			for ($k = 0; $k < count($tabchamps); $k++) {
@@ -345,13 +355,8 @@ if (!isset($is_posted)) {
 			$nb_reg_no1=0;
 			$nb_record1=0;
 			for($k = 1; ($k < $nblignes+1); $k++){
-				//$ligne = dbase_get_record($fp,$k);
 				if(!feof($fp)){
-					//=========================
-					// MODIF: boireaus 20071024
-					//$ligne = fgets($fp, 4096);
-					$ligne = my_ereg_replace('"','',fgets($fp, 4096));
-					//=========================
+					$ligne = preg_replace('/"/','',fgets($fp, 4096));
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
@@ -373,7 +378,6 @@ if (!isset($is_posted)) {
 					}
 				}
 			}
-			//dbase_close($fp);
 			fclose($fp);
 
 
@@ -402,23 +406,16 @@ if (!isset($is_posted)) {
 				echo "<p>Lors de l'enregistrement des données de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 			}
 			else {
-				echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$nb_record1." enregistrements au total).</p>\n";
-				/*
-				echo "<br />Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troixième phase d'importation des matières et de définition des options suivies par les élèves.</p>\n";
-				echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
-				echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>\n";
-				*/
+				echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (<em>".$nb_record1." enregistrements au total</em>).</p>\n";
 			}
 
 		}
 	} else if (trim($csv_file['name'])=='') {
 		echo "<p>Aucun fichier RESPONSABLES.CSV n'a été sélectionné !<br />\n";
-		//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 
 	} else {
 		echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
-		//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	}
 
@@ -435,7 +432,6 @@ if (!isset($is_posted)) {
 		else{
 			// on constitue le tableau des champs à extraire
 			$tabchamps=array("adr_id","adr1","adr2","adr3","adr4","cp","pays","commune");
-			//echo "\$tabchamps=array(\"adr_id\",\"adr1\",\"adr2\",\"adr3\",\"adr4\",\"cp\",\"pays\",\"commune\");<br />\n";
 
 			$nblignes=0;
 			while (!feof($fp)) {
@@ -457,16 +453,6 @@ if (!isset($is_posted)) {
 			}
 			fclose ($fp);
 
-			// On range dans tabindice les indices des champs retenus
-			/*
-			for ($k = 0; $k < count($tabchamps); $k++) {
-				for ($i = 0; $i < count($en_tete); $i++) {
-					if (trim($en_tete[$i]) == $tabchamps[$k]) {
-						$tabindice[] = $i;
-					}
-				}
-			}
-			*/
 			unset($tabindice);
 			$cpt_tmp=0;
 			for ($k = 0; $k < count($tabchamps); $k++) {
@@ -487,13 +473,8 @@ if (!isset($is_posted)) {
 			$nb_reg_no2=0;
 			$nb_record2=0;
 			for($k = 1; ($k < $nblignes+1); $k++){
-				//$ligne = dbase_get_record($fp,$k);
 				if(!feof($fp)){
-					//=========================
-					// MODIF: boireaus 20071024
-					//$ligne = fgets($fp, 4096);
-					$ligne = my_ereg_replace('"','',fgets($fp, 4096));
-					//=========================
+					$ligne = preg_replace('/"/','',fgets($fp, 4096));
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
@@ -519,18 +500,12 @@ if (!isset($is_posted)) {
 					}
 				}
 			}
-			//dbase_close($fp);
 			fclose($fp);
 
 			if ($nb_reg_no2 != 0) {
 				echo "<p>Lors de l'enregistrement des données de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 			} else {
-				echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$nb_record2." enregistrements au total).</p>\n";
-				/*
-				echo "<br />Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troixième phase d'importation des matières et de définition des options suivies par les élèves.</p>\n";
-				echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
-				echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>\n";
-				*/
+				echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (<em>".$nb_record2." enregistrements au total</em>).</p>\n";
 			}
 
 		}
