@@ -263,6 +263,8 @@ if (!isset($_SESSION['statJustifie'])) {
   $dt_date_absence_eleve_fin = new DateTime('now');
   $_SESSION['statJustifie']['date_absence_eleve_debut'] = serialize($dt_date_absence_eleve_debut->format('d/m/Y'));
   $_SESSION['statJustifie']['date_absence_eleve_fin'] = serialize($dt_date_absence_eleve_fin->format('d/m/Y'));
+	$dt_date_absence_eleve_debut->setTime(0, 0, 0);
+	$dt_date_absence_eleve_fin->setTime(23, 59, 59);
   // on recherche les élèves
   $eleve_col = getEleves();
   if ($eleve_col->isEmpty()) {
@@ -289,6 +291,9 @@ if (!isset($_SESSION['statJustifie'])) {
   // on récupère les dates
   $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_debut'])));
   $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_fin'])));
+  
+	$dt_date_absence_eleve_debut->setTime(0, 0, 0);
+	$dt_date_absence_eleve_fin->setTime(23, 59, 59);
   // on récupère les élèves
   $eleve_col = unserialize($_SESSION['statJustifie']['eleve_col']);
   // on récupère le type de statistique
@@ -408,6 +413,9 @@ if (!isset($_SESSION['statJustifie'])) {
   // on récupère les dates
   $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_debut'])));
   $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_fin'])));
+  
+	$dt_date_absence_eleve_debut->setTime(0, 0, 0);
+	$dt_date_absence_eleve_fin->setTime(23, 59, 59);
   
 }
 
