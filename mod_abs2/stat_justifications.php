@@ -277,7 +277,7 @@ if (!isset($_SESSION['statJustifie'])) {
   
 } elseif ($_SESSION['statJustifie']['dernierePosition'] !== NULL) {
 /***** On a commencé mais tous les élèves n'ont pas été traité *****/
-  set_time_limit(8);  // à décommenter pour tester le rechargement de la page
+  // set_time_limit(8);  // à décommenter pour tester le rechargement de la page
   // On récupère max_execution_time et on se garde 2 secondes
   $max_time = ini_get('max_execution_time') - 2;
   // On vérifie si on ne veut que les erreurs
