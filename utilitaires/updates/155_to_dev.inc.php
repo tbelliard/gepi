@@ -48,32 +48,40 @@ if ($test_champ==0) {
 }
 	
 $result .= "<br /><strong>Table abs2 agrégation</strong><br />";
-$result .= "&nbsp;->Changement du nom de la colonne justifiee en non_justifiee<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_agregation_decompte LIKE 'non_justifiee';"));
-if ($test_champ>0) {
-	$result .= msj_present("La colonne est déjà renommée");
+//correction d'une erreur de mise à jour précédente
+$result .= "&nbsp;->Recréation de la structure de la table d'agrégation<br />";
+$query = mysql_query("DROP TABLE IF EXISTS a_agregation_decompte;");
+if ($query) {
+		$result .= msj_ok();
 } else {
-	$query = mysql_query("ALTER TABLE a_agregation_decompte change justifiee non_justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification';");
-	if ($query) {
-			$result .= msj_ok();
-			mysql_query("DELETE * from a_agregation_decompte;");
-	} else {
-			$result .= msj_erreur(mysql_error());
-	}
+		$result .= msj_erreur(mysql_error());
 }
-$result .= "&nbsp;->Changement du nom de la colonne nb_retards en nb_retards_non_justifies<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_agregation_decompte LIKE 'nb_retards_non_justifies';"));
-if ($test_champ>0) {
-	$result .= msj_present("La colonne est déjà renommée");
+
+$query = mysql_query("CREATE TABLE a_agregation_decompte
+(
+	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
+	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi',
+	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journée est comptée comme absence',
+	non_justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification',
+	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une notification à la famille',
+	retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards total décomptés dans la demi journée',
+	retards_non_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards non justifiés décomptés dans la demi journée',
+	motifs_absences TEXT COMMENT 'Liste des motifs (table a_motifs) associés à cette demi-journée d\'absence',
+	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associés aux retard de cette demi-journée',
+	created_at DATETIME,
+	updated_at DATETIME,
+	PRIMARY KEY (eleve_id,date_demi_jounee),
+	CONSTRAINT a_agregation_decompte_FK_1
+		FOREIGN KEY (eleve_id)
+		REFERENCES eleves (id_eleve)
+		ON DELETE CASCADE
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Table d\'agregation des decomptes de demi journees d\'absence et de retard';");
+if ($query) {
+		$result .= msj_ok();
 } else {
-	$query = mysql_query("ALTER TABLE a_agregation_decompte change nb_retards nb_retards_non_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards non justifiés décomptés dans la demi journée';");
-	if ($query) {
-			$result .= msj_ok();
-			mysql_query("DELETE * from a_agregation_decompte;");
-	} else {
-			$result .= msj_erreur(mysql_error());
-	}
+		$result .= msj_erreur(mysql_error());
 }
+
 
 $result.="<br />Fin mise à jour<br/>";
 ?>

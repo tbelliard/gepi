@@ -48,41 +48,25 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
 	return $desc;
     }
 
-    /**
-	 * Ajout manuel : mise a jour de la table d'agrégation des saisies
-	 *
-	 * If the object is new, it inserts it; otherwise an update is performed.
-	 * All modified related objects will also be persisted in the doSave()
-	 * method.  This method wraps all precipitate database operations in a
-	 * single transaction.
-	 *
-	 * @param      PropelPDO $con
-	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
-	 * @throws     PropelException
-	 * @see        doSave()
+	/**
+	 * Code to be run after persisting the object
+	 * @param PropelPDO $con
 	 */
-	public function save(PropelPDO $con = null)
-	{
-		$result = parent::save($con);
+	public function postSave(PropelPDO $con = null) { 
 	    
-	    
-	    return $result;
+		if ($this->getAbsenceEleveTraitement() != null) {
+			//$this->getAbsenceEleveTraitement()->updateAgregationTable();
+		}
 	}
 	
 	/**
-	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications et jointures associées et calcul de la table d'agrégation
-	 *
-	 * @param      PropelPDO $con
-	 * @return     void
-	 * @throws     PropelException
-	 * @see        BaseObject::setDeleted()
-	 * @see        BaseObject::isDeleted()
+	 * Code to be run after deleting the object in database
+	 * @param PropelPDO $con
 	 */
-	public function delete(PropelPDO $con = null)
-	{
-		$oldTraitement = $this->getAbsenceEleveTraitement();
-		
-		parent::delete();
+	public function postDelete(PropelPDO $con = null) {
+		if ($this->getAbsenceEleveTraitement() != null) {
+			//$this->getAbsenceEleveTraitement()->updateAgregationTable();
+		}
 	}
     
 } // AbsenceEleveNotification

@@ -16,6 +16,37 @@
 class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 
 	/**
+	 * Est-ce qu'on met à jour la table d'agrégation
+	 */
+	static $isAgregationEnabled = true;
+	
+	/**
+	 * Checks whether versioning is enabled
+	 *
+	 * @return boolean
+	 */
+	public static function isAgregationEnabled()
+	{
+		return self::$isAgregationEnabled;
+	}
+	
+	/**
+	 * Enables versioning
+	 */
+	public static function enableAgregation()
+	{
+		self::$isAgregationEnabled = true;
+	}
+	
+	/**
+	 * Disables versioning
+	 */
+	public static function disableAgregation()
+	{
+		self::$isAgregationEnabled = false;
+	}
+	
+	/**
 	 * Validates all modified columns of given AbsenceEleveTraitement object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.

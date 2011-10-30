@@ -38,14 +38,14 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
      */
     public function countRetards() {
         $new_query = clone $this;
-        $new_query->withColumn('SUM(AbsenceAgregationDecompte.NbRetards)', 'NbRetards')
+        $new_query->withColumn('SUM(AbsenceAgregationDecompte.Retards)', 'Retards')
                 ->withColumn('1', 'dummy')
                 ->groupBy('dummy');
         $retard = $new_query->find();
         if ($retard->isEmpty()) {
             return 0;
         } else {
-            return $retard->getFirst()->getVirtualColumn('NbRetards');
+            return $retard->getFirst()->getVirtualColumn('Retards');
         }
     }
     
