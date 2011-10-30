@@ -1205,5 +1205,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    $this->collectionSaisiesContradictoiresManquementObligation = null;
 	    $this->oldVersion = null;
 	}
-	    
+	
+	public function getAlreadyInSave() {
+		return $this->alreadyInSave;
+	}
+	
 } // AbsenceEleveSaisie
