@@ -15,4 +15,34 @@
  */
 class AbsenceEleveTraitementPeer extends BaseAbsenceEleveTraitementPeer {
 
+	/**
+	 * Est-ce qu'on met à jour la table d'agrégation
+	 */
+	static $isAgregationEnabled = true;
+	
+	/**
+	 * Checks whether agrégation is enabled
+	 *
+	 * @return boolean
+	 */
+	public static function isAgregationEnabled()
+	{
+		return self::$isAgregationEnabled;
+	}
+	
+	/**
+	 * Enables agrégation
+	 */
+	public static function enableAgregation()
+	{
+		self::$isAgregationEnabled = true;
+	}
+	
+	/**
+	 * Disables agrégation
+	 */
+	public static function disableAgregation()
+	{
+		self::$isAgregationEnabled = false;
+	}
 } // AbsenceEleveTraitementPeer

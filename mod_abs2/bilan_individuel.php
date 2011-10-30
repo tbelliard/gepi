@@ -156,7 +156,7 @@ $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-//suppression des données en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
+//suppression des donnÃ©es en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
 if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html' && $click_filtrage!="ok" && $raz!=="ok"))){
     unset($_SESSION['donnees_bilan']);
 }
@@ -174,7 +174,7 @@ if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
 $limite_jours=7;
 
 if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2)){
-    //si limitation de temps et si la limite de temps est dépassée en mode toutes les classes on ne lance pas de calculs 
+    //si limitation de temps et si la limite de temps est dÃ©passÃ©e en mode toutes les classes on ne lance pas de calculs 
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
         $affichage='';
@@ -182,15 +182,19 @@ if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="o
         $ndjnj=Null;
         $nr=Null;
         $filtrage=Null;
-        }
-       }
+    }
+}
 
 // pas de header ou menu dans le cas de l'export odt 
-// début de l'affichage des options
+// dï¿½but de l'affichage des options
 if ($affichage != 'ods' && $affichage != 'odt' ) {
     require_once("../lib/header.inc");
     include('menu_abs2.inc.php');
     include('menu_bilans.inc.php');
+    if(ob_get_contents()){
+        ob_flush();        
+    }
+    flush();
 ?>
     <div id="contain_div" class="css-panes">
         <?php if (isset($message)){
@@ -242,7 +246,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             } else {
                 $classe_col = $utilisateur->getClasses();
             }
-            if (!$classe_col->isEmpty()) {
+            if (!$classe_col->isEmpty()) {                
                 echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" onChange='document.bilan_individuel.id_eleve.value=\"\";'>");
                 if($utilisateur->getStatut() != "autre" && $utilisateur->getStatut() != "professeur" ){
                     echo "<option value='-1'>Toutes les classes</option>\n";
@@ -253,7 +257,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
                         echo " selected='selected' ";
                     echo ">";
                     echo $classe->getNom();
-                    echo "</option>\n";
+                    echo "</option>\n";                    
                 }                
                 echo "</select> ";                
             } else {
@@ -365,13 +369,10 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
     <?php
 }
 // fin de l'affichage des options
-// début de la mise en session des données extraites (sauf si on est dans un filtrage des données affichées)
+// dï¿½but de la mise en session des donnï¿½es extraites (sauf si on est dans un filtrage des donnï¿½es affichï¿½es)
 
 if ($affichage =='html' && $click_filtrage!=="ok" && $raz!=="ok") {
-    if(ob_get_contents()){
-        ob_flush();        
-    }
-    flush();
+
 $eleve_query = EleveQuery::create();
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
     } else {
@@ -387,10 +388,27 @@ if ($nom_eleve !== null && $nom_eleve != '') {
 if ($id_eleve !== null && $id_eleve != '') {
     $eleve_query->filterById($id_eleve);
 }
-
-$eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
-if ($eleve_col->isEmpty()) {
-    echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
+$eleve_query->orderByNom()->orderByPrenom()->distinct();
+$table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
+    if (!$table_synchro_ok) {//la table n'est pas synchronisï¿½e. On va vï¿½rifier individuellement les ï¿½lï¿½ves qui se sont pas synchronisï¿½s
+		$eleve_col = $eleve_query->find();
+		if ($eleve_col->count()>150) {
+			echo 'Il semble que vous demander des statistiques sur trop d\'ï¿½lï¿½ves et votre table de statistiques n\'est pas synchronisï¿½e. Veuillez faire une demande pour moins d\'ï¿½lï¿½ves ou demander ï¿½ votre administreteur de remplir la table d\'agrï¿½gation.';
+			if (ob_get_contents()) {
+				ob_flush();
+			}
+			flush();
+		}
+		foreach ($eleve_col as $eleve) {
+			$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
+		}
+	}
+     //on recommence la requetes, maintenant que la table est synchronisï¿½, avec les donnï¿½es d'absence
+        
+    $eleve_col = $eleve_query->find();
+    
+if ($eleve_col->isEmpty()) {    
+    echo"<h2 class='no'>Aucun ï¿½lï¿½ve avec les paramï¿½tres sï¿½lectionnï¿½s n'a ï¿½tï¿½ trouvï¿½.</h2>";
     die();
 }
 $precedent_eleve_id = null;
@@ -398,6 +416,7 @@ if (isset($_SESSION['donnees_bilan'])){
     $donnees = unserialize($_SESSION['donnees_bilan']);
 }
 foreach ($eleve_col as $eleve) {    
+  //  $eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
     $eleve_id = $eleve->getId();
     //on initialise les donnees pour le nouvel eleve
     if ($precedent_eleve_id != $eleve_id) {
@@ -512,11 +531,24 @@ foreach ($eleve_col as $eleve) {
 //on récupère les demi-journées globales et par ligne
 foreach ($donnees as $id => &$eleve) {
     if(!isset($eleve['infos_saisies'])) continue;
-    $propel_eleve = EleveQuery::create()->filterById($id)->findOne();
-    $eleve['demi_journees'] = $propel_eleve->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
-    $eleve['non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
-    $eleve['retards'] = $propel_eleve->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();    
-    foreach ($eleve['infos_saisies'] as $type_tab => &$value2) {
+$propel_eleve = EleveQuery::create()->filterById($id)->findOne();
+       // $propel_eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
+        $eleve['demi_journees'] = AbsenceAgregationDecompteQuery::create()
+                ->filterByEleve($propel_eleve)
+                ->filterByDateIntervalle($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
+                ->filterByManquementObligationPresence(true)
+                ->count();
+        $eleve['non_justifiees'] = AbsenceAgregationDecompteQuery::create()
+                ->filterByEleve($propel_eleve)
+                ->filterByDateIntervalle($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
+                ->filterByManquementObligationPresence(true)
+                ->filterByNonJustifiee(true)
+                ->count();
+        $eleve['retards'] = AbsenceAgregationDecompteQuery::create()
+                ->filterByEleve($propel_eleve)
+                ->filterByDateIntervalle($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
+                ->countRetards();
+        foreach ($eleve['infos_saisies'] as $type_tab => &$value2) {
         foreach ($value2 as &$journee) {
             foreach ($journee as $key => &$value) {
             $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
@@ -537,8 +569,17 @@ foreach ($donnees as $id => &$eleve) {
                     }
                 }                
             } 
-            $value['demi_journees'] = $propel_eleve->getDemiJourneesAbsence($date_debut_col, $date_fin_col)->count();
-            $value['demi_journees_non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsence($date_debut_col, $date_fin_col)->count();
+            $value['demi_journees'] = AbsenceAgregationDecompteQuery::create()
+                ->filterByEleve($propel_eleve)
+                ->filterByDateIntervalle($date_debut_col, $date_fin_col)
+                ->filterByManquementObligationPresence(true)
+                ->count();            
+            $value['demi_journees_non_justifiees'] = AbsenceAgregationDecompteQuery::create()
+                ->filterByEleve($propel_eleve)
+                ->filterByDateIntervalle($date_debut_col, $date_fin_col)
+                ->filterByManquementObligationPresence(true)
+                ->filterByNonJustifiee(true)
+                ->count();
             $value['demi_journees_justifiees'] = $value['demi_journees'] - $value['demi_journees_non_justifiees'];            
             }
         }

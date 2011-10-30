@@ -201,7 +201,7 @@ if ($affichage != 'ods') {
                             ->filterByEleve($eleve)
                             ->filterByDateIntervalle($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
                             ->filterByManquementObligationPresence(true)
-                            ->filterByJustifiee(false)
+                            ->filterByNonJustifiee(true)
                             ->count());
             //$eleve->setVirtualColumn('RetardsPreRempli', AbsenceAgregationDecompteQuery::create()
             //             ->filterByEleve($eleve)
