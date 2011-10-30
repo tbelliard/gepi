@@ -201,9 +201,12 @@ function afficheChargement($indice,$nbEleves) {
   require_once("../lib/header.inc"); 
 //**************** FIN EN-TETE *****************
 ?>
-<p style ="display: block; width: 50%; margin:1em auto; text-align: center; font-size: x-large; font-weight: bold">
+<p style ="display: block; width: 50%; margin:1em auto; text-align: center; font-size: large; font-weight: bold;">
   Recherche des justifications : 
   <?php echo round(($indice*100)/$nbEleves); ?>%
+</p>
+<p style ="display: block; width: 50%; margin:1em auto; text-align: center; ">
+  Veuillez patienter...
 </p>
 <script type="text/javascript">
 
