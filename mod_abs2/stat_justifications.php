@@ -332,6 +332,7 @@ if (!isset($_SESSION['statJustifie'])) {
 /***** On a des données en $_POST, il faut initialiser et traiter *****/
   if ($_POST['valide'] == "calcul") {
 	/***** On force le rechargement des données *****/
+	unset ($_SESSION['statJustifie']);
 	// on recherche les justifications
 	$justifie_col = getJustifications();
 	$_SESSION['statJustifie']['justifications'] = serialize($justifie_col);
