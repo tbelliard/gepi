@@ -173,7 +173,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 			}
 			if (getSettingValue("GepiAccesGestElevesProf")=='yes') {
 			    //on cherche dans les groupes du professeur
-			    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
+			    $query = EleveQuery::create()->filterById($eleve->getId())
 				    ->useJEleveGroupeQuery()->useGroupeQuery()->useJGroupesProfesseursQuery()
 				    ->filterByUtilisateurProfessionnel($this)
 				    ->endUse()->endUse()->endUse();
@@ -182,7 +182,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				return true;
 			    }
 			    //on cherche dans les aid du professeur
-			    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
+			    $query = EleveQuery::create()->filterById($eleve->getId())
 				    ->useJAidElevesQuery()->useAidDetailsQuery()->useJAidUtilisateursProfessionnelsQuery()
 				    ->filterByUtilisateurProfessionnel($this)
 				    ->endUse()->endUse()->endUse();

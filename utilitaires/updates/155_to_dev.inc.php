@@ -47,6 +47,33 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 	
+$result .= "<br /><strong>Table abs2 agrégation</strong><br />";
+$result .= "&nbsp;->Changement du nom de la colonne justifiee en non_justifiee<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_agregation_decompte LIKE 'non_justifiee';"));
+if ($test_champ>0) {
+	$result .= msj_present("La colonne est déjà renommée");
+} else {
+	$query = mysql_query("ALTER TABLE a_agregation_decompte change justifiee non_justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification';");
+	if ($query) {
+			$result .= msj_ok();
+			mysql_query("DELETE * from a_agregation_decompte;");
+	} else {
+			$result .= msj_erreur(mysql_error());
+	}
+}
+$result .= "&nbsp;->Changement du nom de la colonne nb_retards en nb_retards_non_justifies<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_agregation_decompte LIKE 'nb_retards_non_justifies';"));
+if ($test_champ>0) {
+	$result .= msj_present("La colonne est déjà renommée");
+} else {
+	$query = mysql_query("ALTER TABLE a_agregation_decompte change nb_retards nb_retards_non_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards non justifiés décomptés dans la demi journée';");
+	if ($query) {
+			$result .= msj_ok();
+			mysql_query("DELETE * from a_agregation_decompte;");
+	} else {
+			$result .= msj_erreur(mysql_error());
+	}
+}
 
 $result.="<br />Fin mise à jour<br/>";
 ?>

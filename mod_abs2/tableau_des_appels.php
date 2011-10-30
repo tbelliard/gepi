@@ -308,7 +308,7 @@ foreach($classe_col as $classe){
         if($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
             continue;
         }
-        if ($absenceSaisie->getEleve()->getIdEleve() !== $current_eleve) {
+        if ($absenceSaisie->getEleve()->getId() !== $current_eleve) {
             if($current_eleve !=null) echo '<br/>';
             $num_saisie=1;
                 if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
@@ -324,7 +324,7 @@ foreach($classe_col as $classe){
             echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";            
 	    echo ($num_saisie);
 	    echo "</a>";	    
-	    $current_eleve=$absenceSaisie->getEleve()->getIdEleve();
+	    $current_eleve=$absenceSaisie->getEleve()->getId();
             $num_saisie++;
         if($abs_col->isLast()){
             echo '<br /><br />';
@@ -368,7 +368,7 @@ foreach($classe_col as $classe){
                 echo '<br/>';
             }
             if ($absenceSaisie->getEleve() != null) {
-                if ($absenceSaisie->getEleve()->getIdEleve() !== $current_eleve) {
+                if ($absenceSaisie->getEleve()->getId() !== $current_eleve) {
                     if($current_eleve !=null) echo '<br/>';
                     $num_saisie = 1;
                     if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
@@ -384,7 +384,7 @@ foreach($classe_col as $classe){
                 echo "<a style='color: " . $absenceSaisie->getColor() . ";'  href='visu_saisie.php?id_saisie=" . $absenceSaisie->getPrimaryKey() . "'>";
                 echo ($num_saisie);
                 echo "</a>";
-                $current_eleve = $absenceSaisie->getEleve()->getIdEleve();
+                $current_eleve = $absenceSaisie->getEleve()->getId();
                 $num_saisie++;
                 if($abs_col->isLast()){
                     echo '<br /><br />';

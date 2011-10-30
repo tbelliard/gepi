@@ -249,7 +249,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 		saveSetting('abs2_saisie_multi_type_non_justifiee','n');
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
-		$this->assertFalse($saisie->getJustifiee());
+		$this->assertTrue($saisie->getJustifiee());
 		
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
 		$this->assertFalse($saisie->getJustifiee());
@@ -332,7 +332,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 		$this->assertEquals(3,$saisie->getAbsenceEleveTraitements()->count());
 				
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-05')->getFirst();
-		$this->assertEquals(0,$saisie->getAbsenceEleveTraitements()->count());
+		$this->assertEquals(1,$saisie->getAbsenceEleveTraitements()->count());
 				
 		$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
 		$this->assertEquals(3,$saisie->getAbsenceEleveTraitements()->count());
@@ -341,6 +341,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 		$this->assertEquals(1,$saisie->getAbsenceEleveTraitements()->count());
 	}
 	
+	//@TODO test more this function
 	public function testGetSaisiesContradictoiresManquementObligation()
 	{
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
@@ -424,5 +425,57 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
 		sleep(1);
 		$saisie->toVersion(1);
 		$this->assertGreaterThan($old_updated_at, $saisie->getUpdatedAt('U'), 'le toVersion doit changer le update_ad');
+	}
+
+	public function testCheckAndUpdateSynchroAbsenceAgregationTable()
+	{
+	    AbsenceAgregationDecompteQuery::create()->deleteAll();
+	    foreach (EleveQuery::create()->find() as $eleve) {
+            $eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59'));
+	    }
+	    sleep(1);
+	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+	    $saisie_id = $saisie->getId();
+        mysql_query("update a_saisies set fin_abs = '2010-10-01 08:10:00' where id = ".$saisie_id);//ça devient un retard
+	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
+        $this->assertTrue($decompte->getManquementObligationPresence());
+        $this->assertEquals(0,$decompte->getNbRetards());
+        $saisie->reload();
+        $saisie->checkAndUpdateSynchroAbsenceAgregationTable();//ça n'est pas mis à jour car le test est true
+	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
+	    $this->assertTrue($decompte->getManquementObligationPresence());
+        $this->assertEquals(0,$decompte->getNbRetards());
+        mysql_query("update a_saisies set updated_at = now() where id = ".$saisie_id);
+        $saisie->reload();
+        $saisie->checkAndUpdateSynchroAbsenceAgregationTable();//c'est mis à jour car le test est false
+	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
+	    $this->assertFalse($decompte->getManquementObligationPresence());
+        $this->assertEquals(1,$decompte->getNbRetards());
+        $saisie->setFinAbs('2010-10-01 09:00:00');
+        $saisie->save();
+	}
+
+	public function testUpdateSynchroAbsenceAgregationTable()
+	{
+	    AbsenceAgregationDecompteQuery::create()->deleteAll();
+	    foreach (EleveQuery::create()->find() as $eleve) {
+            $eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59'));
+	    }
+	    sleep(1);
+	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
+	    $saisie_id = $saisie->getId();
+        mysql_query("update a_saisies set fin_abs = '2010-10-01 08:10:00' where id = ".$saisie_id);//ça devient un retard
+	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
+        $this->assertTrue($decompte->getManquementObligationPresence());
+        $this->assertEquals(0,$decompte->getNbRetards());
+        $saisie->reload();
+        $saisie->updateSynchroAbsenceAgregationTable();//c'est mis à jour
+	    $decompte = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateDemiJounee('2010-10-01')->findOne();
+	    $this->assertFalse($decompte->getManquementObligationPresence());
+        $this->assertEquals(1,$decompte->getNbRetards());
+        $saisie->setFinAbs('2010-10-01 09:00:00');
+        $saisie->save();
 	}
 }

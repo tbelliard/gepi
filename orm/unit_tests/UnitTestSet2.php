@@ -59,7 +59,7 @@ if ($newUtilisateurProfessionnel == null) {
 //Creation d'un eleve
 $eleve = UnitTestEleve::getEleve();
 $eleve->save();
-$newEleve = ElevePeer::retrieveByPK($eleve->getIdEleve());
+$newEleve = ElevePeer::retrieveByPK($eleve->getId());
 echo ($logger->getDisplay());
 if ($newEleve == null) {
 	echo('test creation eleve a <font color="red">echoue</font> <br><br/>');

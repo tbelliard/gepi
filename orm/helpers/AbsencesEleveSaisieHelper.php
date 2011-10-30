@@ -27,110 +27,129 @@
  */
 class AbsencesEleveSaisieHelper {
 
-  /**
-   * Compte les demi-journees saisies. Les saisies doivent ètre triées par ordre de début.
-   *
-   * @param PropelObjectCollection $abs_saisie_col collection d'objets AbsenceEleveSaisie
-   *
-   * @return PropelCollection une collection de date time par demi journee comptee (un datetime pour le matin et un datetime pour l'apres midi
-   */
-    
-  public static function compte_demi_journee($abs_saisie_col, $date_debut_iteration = null, $date_fin_iteration = null) {
-            if ($abs_saisie_col->isEmpty()) {
-                return new PropelCollection();
-            }
+    /**
+     * Compte les demi-journees saisies. Les saisies doivent ètre triées par ordre de début.
+     * Cette méthode ne travaille que sur les dates, et prend en compte les fermeture de l'établissement
+     *
+     * @param PropelObjectCollection $abs_saisie_col collection d'objets AbsenceEleveSaisie
+     *
+     * @return PropelCollection une collection de date time par demi journee comptee (un datetime pour le matin et un datetime pour l'apres midi
+     */
 
-            //on va tester si les saisies sont bien ordonnée.$compteur_test n'est pas utilisé dans le reste de la fonction
-            $compteur_test = $abs_saisie_col->getFirst()->getDebutAbs('U');
-            foreach($abs_saisie_col as $saisie) {
-                $ts = $saisie->getDebutAbs('U');
-                if ($compteur_test > $ts) {
-                    throw new PropelException('Les saisies doivent etre triees par ordre chronologique de debut d absence.');
+    public static function compte_demi_journee($abs_saisie_col, $date_debut_iteration = null, $date_fin_iteration = null) {
+        if ($abs_saisie_col->isEmpty()) {
+            return new PropelCollection();
+        }
+
+        //on va tester si les saisies sont bien ordonnée.$compteur_test n'est pas utilisé dans le reste de la fonction
+        $compteur_test = $abs_saisie_col->getFirst()->getDebutAbs('U');
+        foreach($abs_saisie_col as $saisie) {
+            $ts = $saisie->getDebutAbs('U');
+            if ($compteur_test > $ts) {
+                throw new PropelException('Les saisies doivent etre triees par ordre chronologique de debut d absence.');
+            }
+            $compteur_test = $ts;
+        }
+
+        //on récupère l'heure de demi-journée
+        $heure_demi_journee = 11;//11:50 par défaut si rien n'est précisé dans les settings
+        $minute_demi_journee = 50;
+        try {
+            $dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+            $heure_demi_journee = $dt_demi_journee->format('H');
+            $minute_demi_journee = $dt_demi_journee->format('i');
+        } catch (Exception $x) {
+        }
+         
+        //on va regarder la date du début pour notre algorithme
+        if ($date_debut_iteration == null) {
+            $date_debut_iteration = $abs_saisie_col->getFirst()->getDebutAbs(null);
+        }
+        if ($date_debut_iteration->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
+            $date_debut_iteration->setTime(0, 0, 0);
+        } else {
+            $date_debut_iteration->setTime(12, 0, 0);
+        }
+              
+        //on va regarder la date du fin pour notre algorithme
+        if ($date_fin_iteration == null) {
+            foreach ($abs_saisie_col as $saisie) {
+                if ($date_fin_iteration == null || $saisie->getFinAbs('U') > $date_fin_iteration->format('U')) {
+                    $date_fin_iteration = $saisie->getFinAbs(null);
                 }
-                $compteur_test = $ts;
+            }
+        }
+        if ($date_fin_iteration->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
+            $date_fin_iteration->setTime(12, 0, 0);
+        } else {
+            $date_fin_iteration->setTime(23, 59, 59);
+            $date_fin_iteration->modify("+1 second");
+        }
+        $date_fin_iteration->modify("+2 hours");//on ajout deux heures pour prendre en compte un décalage dans la date de compteur (+1h35) dans l'algorithme plus bas
+        
+
+        $result = new PropelCollection();
+        $date_compteur = clone $date_debut_iteration;
+        $horaire_tab = EdtHorairesEtablissementPeer::retrieveAllEdtHorairesEtablissementArrayCopy();
+        require_once(dirname(__FILE__)."/EdtHelper.php");
+        foreach($abs_saisie_col as $saisie) {
+            if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
+                $date_compteur = clone $saisie->getDebutAbs(null);
+            }
+            if ($date_compteur >= $date_fin_iteration) {
+                break;
             }
             
-	    if ($date_debut_iteration == null) {
-		$date_debut_iteration = $abs_saisie_col->getFirst()->getDebutAbs(null);
-	    }
-	    if ($date_fin_iteration == null) {
-		foreach ($abs_saisie_col as $saisie) {
-		    if ($date_fin_iteration == null || $saisie->getFinAbs('U') > $date_fin_iteration->format('U')) {
-			$date_fin_iteration = $saisie->getFinAbs(null);
-		    }
-		}
-	    }
-            $date_fin_iteration_timestamp = $date_fin_iteration->format('U');
-
-	    $heure_demi_journee = 11;
-	    $minute_demi_journee = 50;
-	    try {
-		$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-		$heure_demi_journee = $dt_demi_journee->format('H');
-		$minute_demi_journee = $dt_demi_journee->format('i');
-	    } catch (Exception $x) {
-	    }
-
-	    $result = new PropelCollection();
-	    $date_compteur = clone $date_debut_iteration;
-            $horaire_tab = EdtHorairesEtablissementPeer::retrieveAllEdtHorairesEtablissementArrayCopy();
-            require_once("helpers/EdtHelper.php");
-	    foreach($abs_saisie_col as $saisie) {
-		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
-		    $date_compteur = clone $saisie->getDebutAbs(null);
-		}
-		if ($date_compteur->format('U') > $date_fin_iteration_timestamp) {
-		    break;
-		}
-                
-		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration_timestamp) {
-		    //est-ce un jour de la semaine ouvert ?
-		    if (!EdtHelper::isJourneeOuverte($date_compteur)) {
-			//etab fermé on va passer au lendemain
-                        $date_compteur->setTime(23, 59);
+            while ($date_compteur <= $saisie->getFinAbs(null) && $date_compteur < $date_fin_iteration) {
+                //est-ce un jour de la semaine ouvert ?
+                if (!EdtHelper::isJourneeOuverte($date_compteur)) {
+                    //etab fermé on va passer au lendemain
+                    $date_compteur->setTime(23, 59, 59);
+                    $date_compteur->modify("+2 hours");
+                    continue;
+                } elseif (!EdtHelper::isHoraireOuvert($date_compteur)) {
+                    $horaire = $horaire_tab[EdtHelper::$semaine_declaration[$date_compteur->format("w")]];
+                    if ($date_compteur->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
+                        //c'est le matin, on règle sur l'heure d'ouverture
+                        $date_compteur->setTime($horaire->getOuvertureHoraireEtablissement('H'), $horaire->getOuvertureHoraireEtablissement('i'));
+                    } else {
+                        //on est apres la fermeture, on va passer au lendemain
+                        $date_compteur->setTime(23, 59, 59);
                         $date_compteur->modify("+2 hours");
-			continue;
-                    } elseif (!EdtHelper::isHoraireOuvert($date_compteur)) {
-                        $horaire = $horaire_tab[EdtHelper::$semaine_declaration[$date_compteur->format("w")]];
-                        if ($date_compteur->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
-                            //c'est le matin, on règle sur l'heure d'ouverture
-                            $date_compteur->setTime($horaire->getOuvertureHoraireEtablissement('H'), $horaire->getOuvertureHoraireEtablissement('i'));
-                        } else {
-                            //on est apres la fermeture, on va passer au lendemain
-                            $date_compteur->setTime(23, 59);
-                            $date_compteur->modify("+2 hours");
-                        }
-                        continue;
-                    } elseif ($date_compteur->format('U') < $saisie->getDebutAbs('U') && !EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
-                        $date_compteur->modify("+19 minutes");
-                        continue;
                     }
-                    
-		    if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
-			$date_compteur->setTime(0, 0);
-		    } else {
-			$date_compteur->setTime(12, 0);
-		    }
-		    $date_compteur_suivante = clone $date_compteur;
-		    $date_compteur_suivante->modify("+15 hours");//en ajoutant 15 heure on est sur de passer a la demi-journee suivante
-		    if ($date_compteur_suivante->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
-			$date_compteur_suivante->setTime(0, 0);
-		    } else {
-			$date_compteur_suivante->setTime($heure_demi_journee, $minute_demi_journee);
-		    }
-		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
-			$result->append(clone $date_compteur);
-			//on ajoute 1h35
-			//pour eviter le cas ou on a une saisie par exemple sur 11h45 -> 13h et de la compter comme deux demi-journees
-			$date_compteur_suivante->modify("+1 hour");
-			$date_compteur_suivante->modify("+35 minutes");
-		    }
-		    $date_compteur = $date_compteur_suivante;
-                    $saisie->clearAllReferences();
-		}
-	    }
-	    return $result;
-	}
+                    continue;
+                } elseif ($date_compteur < $saisie->getDebutAbs(null) && !EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
+                    $date_compteur->modify("+19 minutes");
+                    continue;
+                }
+
+                if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
+                    $date_compteur->setTime(0, 0, 0);
+                } else {
+                    $date_compteur->setTime(12, 0, 0);
+                }
+                $date_compteur_suivante = clone $date_compteur;
+                $date_compteur_suivante->modify("+15 hours");//en ajoutant 15 heure on est sur de passer a la demi-journee suivante
+                if ($date_compteur_suivante->format('H') < 12) {
+                    $date_compteur_suivante->setTime(0, 0, 0);
+                } else {
+                    $date_compteur_suivante->setTime($heure_demi_journee, $minute_demi_journee, 0);
+                }
+                
+                if ($saisie->getDebutAbs(null) < $date_compteur_suivante && $saisie->getFinAbs(null) > $date_compteur) {
+                    $result->append(clone $date_compteur);
+                    //on ajoute 1h35
+                    //pour eviter le cas ou on a une saisie par exemple sur 11h45 -> 13h et de la compter comme deux demi-journees
+                    $date_compteur_suivante->modify("+1 hour");
+                    $date_compteur_suivante->modify("+45 minutes");
+                }
+                
+                $date_compteur = $date_compteur_suivante;
+                $saisie->clearAllReferences();
+            }
+        }
+        return $result;
+    }
 }
 
 ?>

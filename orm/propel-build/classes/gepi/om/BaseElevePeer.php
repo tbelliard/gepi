@@ -95,8 +95,8 @@ abstract class BaseElevePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('NoGep', 'Login', 'Nom', 'Prenom', 'Sexe', 'Naissance', 'LieuNaissance', 'Elenoet', 'Ereno', 'EleId', 'Email', 'IdEleve', 'DateSortie', 'MefCode', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieuNaissance', 'elenoet', 'ereno', 'eleId', 'email', 'idEleve', 'dateSortie', 'mefCode', ),
+		BasePeer::TYPE_PHPNAME => array ('NoGep', 'Login', 'Nom', 'Prenom', 'Sexe', 'Naissance', 'LieuNaissance', 'Elenoet', 'Ereno', 'EleId', 'Email', 'Id', 'DateSortie', 'MefCode', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieuNaissance', 'elenoet', 'ereno', 'eleId', 'email', 'id', 'dateSortie', 'mefCode', ),
 		BasePeer::TYPE_COLNAME => array (self::NO_GEP, self::LOGIN, self::NOM, self::PRENOM, self::SEXE, self::NAISSANCE, self::LIEU_NAISSANCE, self::ELENOET, self::ERENO, self::ELE_ID, self::EMAIL, self::ID_ELEVE, self::DATE_SORTIE, self::MEF_CODE, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('NO_GEP', 'LOGIN', 'NOM', 'PRENOM', 'SEXE', 'NAISSANCE', 'LIEU_NAISSANCE', 'ELENOET', 'ERENO', 'ELE_ID', 'EMAIL', 'ID_ELEVE', 'DATE_SORTIE', 'MEF_CODE', ),
 		BasePeer::TYPE_FIELDNAME => array ('no_gep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieu_naissance', 'elenoet', 'ereno', 'ele_id', 'email', 'id_eleve', 'date_sortie', 'mef_code', ),
@@ -110,8 +110,8 @@ abstract class BaseElevePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('NoGep' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Sexe' => 4, 'Naissance' => 5, 'LieuNaissance' => 6, 'Elenoet' => 7, 'Ereno' => 8, 'EleId' => 9, 'Email' => 10, 'IdEleve' => 11, 'DateSortie' => 12, 'MefCode' => 13, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieuNaissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'eleId' => 9, 'email' => 10, 'idEleve' => 11, 'dateSortie' => 12, 'mefCode' => 13, ),
+		BasePeer::TYPE_PHPNAME => array ('NoGep' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Sexe' => 4, 'Naissance' => 5, 'LieuNaissance' => 6, 'Elenoet' => 7, 'Ereno' => 8, 'EleId' => 9, 'Email' => 10, 'Id' => 11, 'DateSortie' => 12, 'MefCode' => 13, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieuNaissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'eleId' => 9, 'email' => 10, 'id' => 11, 'dateSortie' => 12, 'mefCode' => 13, ),
 		BasePeer::TYPE_COLNAME => array (self::NO_GEP => 0, self::LOGIN => 1, self::NOM => 2, self::PRENOM => 3, self::SEXE => 4, self::NAISSANCE => 5, self::LIEU_NAISSANCE => 6, self::ELENOET => 7, self::ERENO => 8, self::ELE_ID => 9, self::EMAIL => 10, self::ID_ELEVE => 11, self::DATE_SORTIE => 12, self::MEF_CODE => 13, ),
 		BasePeer::TYPE_RAW_COLNAME => array ('NO_GEP' => 0, 'LOGIN' => 1, 'NOM' => 2, 'PRENOM' => 3, 'SEXE' => 4, 'NAISSANCE' => 5, 'LIEU_NAISSANCE' => 6, 'ELENOET' => 7, 'ERENO' => 8, 'ELE_ID' => 9, 'EMAIL' => 10, 'ID_ELEVE' => 11, 'DATE_SORTIE' => 12, 'MEF_CODE' => 13, ),
 		BasePeer::TYPE_FIELDNAME => array ('no_gep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieu_naissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'ele_id' => 9, 'email' => 10, 'id_eleve' => 11, 'date_sortie' => 12, 'mef_code' => 13, ),
@@ -340,7 +340,7 @@ abstract class BaseElevePeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getIdEleve();
+				$key = (string) $obj->getId();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -360,7 +360,7 @@ abstract class BaseElevePeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof Eleve) {
-				$key = (string) $value->getIdEleve();
+				$key = (string) $value->getId();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
@@ -1054,7 +1054,7 @@ abstract class BaseElevePeer {
 			// delete related JEleveAncienEtablissement objects
 			$criteria = new Criteria(JEleveAncienEtablissementPeer::DATABASE_NAME);
 			
-			$criteria->add(JEleveAncienEtablissementPeer::ID_ELEVE, $obj->getIdEleve());
+			$criteria->add(JEleveAncienEtablissementPeer::ID_ELEVE, $obj->getId());
 			$affectedRows += JEleveAncienEtablissementPeer::doDelete($criteria, $con);
 
 			// delete related JAidEleves objects
@@ -1066,25 +1066,25 @@ abstract class BaseElevePeer {
 			// delete related AbsenceEleveSaisie objects
 			$criteria = new Criteria(AbsenceEleveSaisiePeer::DATABASE_NAME);
 			
-			$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $obj->getIdEleve());
+			$criteria->add(AbsenceEleveSaisiePeer::ELEVE_ID, $obj->getId());
 			$affectedRows += AbsenceEleveSaisiePeer::doDelete($criteria, $con);
 
 			// delete related AbsenceAgregationDecompte objects
 			$criteria = new Criteria(AbsenceAgregationDecomptePeer::DATABASE_NAME);
 			
-			$criteria->add(AbsenceAgregationDecomptePeer::ELEVE_ID, $obj->getIdEleve());
+			$criteria->add(AbsenceAgregationDecomptePeer::ELEVE_ID, $obj->getId());
 			$affectedRows += AbsenceAgregationDecomptePeer::doDelete($criteria, $con);
 
 			// delete related CreditEcts objects
 			$criteria = new Criteria(CreditEctsPeer::DATABASE_NAME);
 			
-			$criteria->add(CreditEctsPeer::ID_ELEVE, $obj->getIdEleve());
+			$criteria->add(CreditEctsPeer::ID_ELEVE, $obj->getId());
 			$affectedRows += CreditEctsPeer::doDelete($criteria, $con);
 
 			// delete related CreditEctsGlobal objects
 			$criteria = new Criteria(CreditEctsGlobalPeer::DATABASE_NAME);
 			
-			$criteria->add(CreditEctsGlobalPeer::ID_ELEVE, $obj->getIdEleve());
+			$criteria->add(CreditEctsGlobalPeer::ID_ELEVE, $obj->getId());
 			$affectedRows += CreditEctsGlobalPeer::doDelete($criteria, $con);
 
 			// delete related ArchiveEcts objects

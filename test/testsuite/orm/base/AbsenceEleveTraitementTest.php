@@ -64,22 +64,19 @@ class AbsenceEleveTraitementTest extends GepiEmptyTestBase
         
         $traitements = AbsenceEleveTraitementQuery::create()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
-                                                    	    ->endUse()->endUse()->find();
-        $this->assertEquals(16,$traitements->count(),'le total des traitements de Florence est 16');
+                                                    	    ->endUse()->endUse()->distinct()->find();
+        $this->assertEquals(18,$traitements->count(),'le total des traitements de Florence est 18');
                                     	    
         saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(true)
                                                     	    ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
                                                     	    ->endUse()->endUse()->find();
-        $this->assertEquals(9,$traitements->count());
+        $this->assertEquals(12,$traitements->count());
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(false)
                                                     	    ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
                                                     	    ->endUse()->endUse()->find();
-//        foreach ($traitements as $traitement) {
-//            echo "\n".$traitement->getDescription();
-//        }
 	    $this->assertEquals(7,$traitements->count());
         
         saveSetting('abs2_saisie_par_defaut_sans_manquement','y');
@@ -87,13 +84,40 @@ class AbsenceEleveTraitementTest extends GepiEmptyTestBase
                                                     	    ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
                                                     	    ->endUse()->endUse()->find();
-        $this->assertEquals(8,$traitements->count());
+        $this->assertEquals(10,$traitements->count());
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(false)
                                                     	    ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
                                                     	    ->filterByEleve($florence_eleve)
                                                     	    ->endUse()->endUse()->find();
-        $this->assertEquals(8,$traitements->count());
+        $this->assertEquals(9,$traitements->count());
         
        saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
+	}
+
+	public function testSave()
+	{
+	    global $_SESSION;
+	    $_SESSION['login'] = 'Lebesgue';
+	    
+	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+	    
+	    $saisie_3 = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
+	    $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_3);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Exclusion de cours')->findOne());
+        $traitement->save();   
+        $this->assertEquals('Lebesgue',$traitement->getUtilisateurId());
+        
+	    $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
+	    $traitement->save();
+        $this->assertEquals('Lebesgue',$traitement->getModifieParUtilisateurId());
+	}
+	
+	public function testUpdateAgregationTable()
+	{
+	    AbsenceAgregationDecompteQuery::create()->deleteAll();
+	    $traitement = AbsenceEleveTraitementQuery::create()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->filterByDebutAbs('2010-10-17 14:00:00')->endUse()->endUse()->findOne();
+	    $traitement->updateAgregationTable();
+	    $this->assertEquals(3,AbsenceAgregationDecompteQuery::create()->count());
 	}
 }

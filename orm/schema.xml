@@ -229,7 +229,7 @@
 		<column name="ereno" required="true" type="VARCHAR" size="50" description="Plus utilise"/>
 		<column name="ele_id" required="true" type="VARCHAR" size="10" default="" description="cle utilise par Sconet dans ses fichiers xml"/>
 		<column name="email" required="true" type="VARCHAR" size="255" default="" description="Courriel de l'eleve"/>
-		<column name="id_eleve" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire autoincremente"/>
+		<column name="id_eleve" phpName="Id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire autoincremente"/>
                 <column name="date_sortie" required="false" type="TIMESTAMP" default="NULL" description="Timestamp de sortie de l'élève de l'établissement (fin d'inscription)"/>
 		<column name="mef_code" required="false" type="INTEGER" description="code mef de la formation de l'eleve"/>
 		<foreign-key foreignTable="mef" onDelete="setnull"><reference local="mef_code" foreign="mef_code"/></foreign-key>
@@ -536,10 +536,10 @@
     <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
     <column name="date_demi_jounee" type="TIMESTAMP" default="0000-00-00 00:00:00" required="true" primaryKey="true" description="Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi"/>
     <column name="manquement_obligation_presence" default="false" type="BOOLEAN" description="Cette demi journée est comptée comme absence"/>
-    <column name="justifiee" default="false" type="BOOLEAN" description="Si cette demi journée est compté comme absence, y a-t-il une justification"/>
+    <column name="non_justifiee" default="false" type="BOOLEAN" description="Si cette demi journée est compté comme absence, y a-t-il une justification"/>
     <column name="notifiee" default="false" type="BOOLEAN" description="Si cette demi journée est compté comme absence, y a-t-il une notification à la famille"/>
-    <column name="nb_retards" default="0" type="INTEGER" description="Nombre de retards décomptés dans la demi journée"/>
-    <column name="nb_retards_justifies" default="0" type="INTEGER" description="Nombre de retards justifiés décomptés dans la demi journée"/>
+    <column name="nb_retards" default="0" type="INTEGER" description="Nombre de retards total décomptés dans la demi journée"/>
+    <column name="nb_retards_non_justifies" default="0" type="INTEGER" description="Nombre de retards non justifiés décomptés dans la demi journée"/>
     <column name="motifs_absences" type="ARRAY" description="Liste des motifs (table a_motifs) associés à cette demi-journée d'absence"/>
     <column name="motifs_retards" type="ARRAY" description="Liste des motifs (table a_motifs) associés aux retard de cette demi-journée"/>
     <behavior name="timestampable"/>    

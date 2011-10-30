@@ -1,8 +1,8 @@
 [destinataire;onformat=tbs_str;]
 
 [el_col;block=begin][el_col.getPrenom] [el_col.getNom] élève en classe de [el_col.getClasseNomComplet;onformat=tbs_str;] n'a pas assisté au(x) cours :
-[demi_j_string_eleve_id_[el_col.getIdEleve];block=begin][demi_j_string_eleve_id_[el_col.getIdEleve];]
-[demi_j_string_eleve_id_[el_col.getIdEleve];block=end]
+[demi_j_string_eleve_id_[el_col.getId];block=begin][demi_j_string_eleve_id_[el_col.getId];]
+[demi_j_string_eleve_id_[el_col.getId];block=end]
 [el_col;block=end]
 Merci de justifier le plus rapidement possible cette absence
 

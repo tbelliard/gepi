@@ -229,7 +229,7 @@ for($i=0; $i<$total_eleves; $i++) {
     foreach ($saisie_col_modele as $saisie_modele) {
 
 	$saisie = clone $saisie_modele;
-	$saisie->setEleveId($eleve->getIdEleve());
+	$saisie->setEleveId($eleve->getId());
 
 	if ($type != null) {
 	    $traitement = new AbsenceEleveTraitement();
@@ -254,14 +254,14 @@ for($i=0; $i<$total_eleves; $i++) {
 	    }
 	    $message_enregistrement .= "<br/>";
 	} else {
-	    $message_erreur_eleve[$eleve->getIdEleve()] = '';
+	    $message_erreur_eleve[$eleve->getId()] = '';
         foreach ($saisie->getValidationFailures() as $failure) {
-    		$message_erreur_eleve[$eleve->getIdEleve()] .= $failure->getMessage();
+    		$message_erreur_eleve[$eleve->getId()] .= $failure->getMessage();
     		$no_br = true;
     		if ($no_br) {
     		    $no_br = false;
     		} else {
-    		    $message_erreur_eleve[$eleve->getIdEleve()] .= '<br/>';
+    		    $message_erreur_eleve[$eleve->getId()] .= '<br/>';
     		}
 	    }
 	}

@@ -44,13 +44,13 @@ class EleveHelper {
         if (!is_a($liste_eleves[0], 'Eleve')){
           $classe_fin     = ($aff_classe == 'fin') ? '  '.$liste_eleves[$a]->getClasse()->getNomComplet() : '';
           $classe_debut   = ($aff_classe == 'debut') ? $liste_eleves[$a]->getClasse()->getNomComplet().'&nbsp;&nbsp;' : '';
-          $_id_eleve      = $liste_eleves[$a]->getEleve()->getIdEleve();
+          $_id_eleve      = $liste_eleves[$a]->getEleve()->getId();
           $_nom_eleve     = $liste_eleves[$a]->getEleve()->getNom();
           $_prenom_eleve  = $liste_eleves[$a]->getEleve()->getPrenom();
 
         }else{
           $classe_debut = $classe_fin = NULL;
-          $_id_eleve      = $liste_eleves[$a]->getIdEleve();
+          $_id_eleve      = $liste_eleves[$a]->getId();
           $_nom_eleve     = $liste_eleves[$a]->getNom();
           $_prenom_eleve  = $liste_eleves[$a]->getPrenom();
         }
