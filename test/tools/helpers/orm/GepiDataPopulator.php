@@ -60,6 +60,7 @@ class GepiDataPopulator
         $responsable_info->setEleve($florence_eleve);
         $responsable_info->setNiveauResponsabilite(1);
         $responsable_info->setResponsableEleve($responsable);
+        $responsable_info->save();
         $dolto_cpe->addEleve($florence_eleve);
         $dolto_cpe->save();
         $newton_prof->addEleve($florence_eleve);
@@ -167,6 +168,7 @@ class GepiDataPopulator
         $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_EN_COURS);
         $notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
         $notification->setAbsenceEleveTraitement($traitement);
+        $notification->save();
 
         $saisie_3 = new AbsenceEleveSaisie();
         $saisie_3->setEleve($florence_eleve);
@@ -206,6 +208,7 @@ class GepiDataPopulator
         $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES);
         $notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
         $notification->setAbsenceEleveTraitement($traitement);
+        $notification->save();
 
         $saisie_5 = new AbsenceEleveSaisie();
         $saisie_5->setEleve($florence_eleve);
@@ -431,11 +434,36 @@ class GepiDataPopulator
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
-
+        
+        //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
+        GepiDataPopulator::clearAllReferences();
+        
+        
         $con->commit();
     }
 
 
+    public static function clearAllReferences($con = null)
+    {
+        $class_map = include(dirname(__FILE__).'/../../../../orm/propel-build/conf/classmap-gepi-conf.php');
+        $peerClasses = array();
+        foreach ($class_map as $classe => $file) {
+            if (substr($classe, -4) == 'Peer') {
+                $peerClasses[] = $classe;
+            }
+        }
+         
+        // free the memory from existing objects
+        foreach ($peerClasses as $peerClass) {
+            // $peerClass::$instances crashes on PHP 5.2, see http://www.propelorm.org/ticket/1388
+            $r = new ReflectionClass($peerClass);
+            $p = $r->getProperty('instances');
+            foreach ($p->getValue() as $o) {
+                $o->clearAllReferences();
+            }
+        }
+    }
+    
     public static function depopulate($con = null)
     {
         $class_map = include(dirname(__FILE__).'/../../../../orm/propel-build/conf/classmap-gepi-conf.php');

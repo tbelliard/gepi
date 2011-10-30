@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for representing a row from the 'a_traitements' table.
  *
- * Un traitement peut gerer plusieurs saisies et consiste Ã  definir les motifs/justifications... de ces absences saisies
+ * Un traitement peut gerer plusieurs saisies et consiste à  definir les motifs/justifications... de ces absences saisies
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -204,23 +204,11 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 * @param PropelPDO $con
 	 */
 	public function postSave(PropelPDO $con = null) { 
-		//$this->updateAgregationTable();
-	}
-	
-	/**
-	 * Code to be run after deleting the object in database
-	 * @param PropelPDO $con
-	 */
-	public function postDelete(PropelPDO $con = null) {
-		parent::delete();
-		foreach($this->getAbsenceEleveSaisies() as $saisie) {
-			if ($saisie->getEleve() != null) {
-				//$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-				//$saisie->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
-			}
+		if (AbsenceEleveTraitementPeer::isAgregationEnabled()) {
+		    $this->updateAgregationTable();
 		}
 	}
-	
+
 	/**
 	 * Met à jour la table d'agrégation pour toutes les saisies de ce traitement
 	 *

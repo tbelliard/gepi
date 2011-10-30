@@ -270,13 +270,8 @@ class Eleve extends BaseEleve {
 	 * @param      boolean $deep Whether to also clear the references on all associated objects.
 	 */
 	public function clearAllReferences($deep = false) {
-	    $start_string = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
-	    $start_len = strlen($start_string);
-	    foreach($_REQUEST as $key => $value) {
-	        if (substr($key,0,$start_len) == $start_string) {
-	            unset($_REQUEST[$key]);
-	        }
-	    }
+	    $this->clearAbsenceEleveSaisiesParJour($deep);
+	    
 	    parent::clearAllReferences($deep);
 	    if ($deep) {
 			if ($this->collPeriodeNotes) {
@@ -299,12 +294,6 @@ class Eleve extends BaseEleve {
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collAbsenceEleveSaisiesParJour) {
-				foreach ($this->collAbsenceEleveSaisiesParJour as $o) {
-					$o->clearAllReferences($deep);
-				}
-			}
-			
 	    }
 	    $this->collPeriodeNotes = null;
 	    $this->collCachePeriodeNotesResult = null;
@@ -392,7 +381,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return     void
 	 */
-	public function clearAbsenceEleveSaisiesParJour()
+	public function clearAbsenceEleveSaisiesParJour($deep = false)
 	{
 	    $start_string = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
 	    $start_len = strlen($start_string);
@@ -400,6 +389,16 @@ class Eleve extends BaseEleve {
 	        if (substr($key,0,$start_len) == $start_string) {
 	            unset($_REQUEST[$key]);
 	        }
+	    }
+	    if ($deep) {
+			if ($this->collAbsenceEleveSaisiesParJour) {
+				foreach ($this->collAbsenceEleveSaisiesParJour as $key => $o) {
+				    foreach ($o as $saisie) {
+					    $saisie->clearAllReferences($deep);
+				    }
+				    unset($this->collAbsenceEleveSaisiesParJour[$key]);
+				}
+			}
 	    }
 	    $this->collAbsenceEleveSaisiesParJour = null; // important to set this to NULL since that means it is uninitialized
 	}
@@ -1354,7 +1353,7 @@ class Eleve extends BaseEleve {
 					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
 					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-					    	if ($saisie_contra->getManquementObligationPresence()) {
+					    	if ($saisie_contra->getManquementObligationPresence() && !$saisie_contra->getRetard()) {
 					    		//on a une saisie plus large qui est aussi un manquement à l'obligation de présence, donc on ne compte pas celle qui est englobée
 								$contra = true;
 								break;
@@ -1827,7 +1826,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function updateAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		
+
 		$dateDebutClone = null;
 		$dateFinClone = null;
         if($this->debug){
@@ -1840,18 +1839,18 @@ class Eleve extends BaseEleve {
 		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
-	        if($this->debug){
-	            print_r('Date Début '.$dateDebut->format('Y-m-d H:i').' à ');
-	        }
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
+	        if($this->debug){
+	            print_r('Date Début '.$dateDebutClone->format('Y-m-d H:i').' à ');
+	        }
 		}
 		if ($dateFin != null) {
-	        if($this->debug){
-	            print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
-	        }
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
+	        if($this->debug){
+	            print_r('Date fin '.$dateFinClone->format('Y-m-d H:i').'<br/>');
+	        }
 		}
 		
 		

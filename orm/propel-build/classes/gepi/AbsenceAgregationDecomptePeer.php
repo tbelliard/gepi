@@ -212,6 +212,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	public static function updateAgregationTable(ArrayObject $saisie_col) {
 		$eleveEtDate = Array();
 		foreach($saisie_col as $saisie) {
+		    $saisie->clearAllReferences();
 			if (!isset($eleveEtDate[$saisie->getEleveId()])) {
 				$eleveArray = Array('dateDebut' => null,'dateFin' => null, 'eleve' => $saisie->getEleve());
 			} else {
