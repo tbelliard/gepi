@@ -476,7 +476,7 @@ include('menu_bilans.inc.php');
 		  Forcer le recalcul des statistiques
 		</button> 
 		<button type="submit" dojoType="dijit.form.Button" name="valide" value="erreur">
-		  N'afficher que les erreurs de total
+		  N'afficher que les différences de total
 		</button> 
 		<button type="submit" dojoType="dijit.form.Button" name="valide" value="soumettre">
 		  Afficher les statistiques avec ces réglages
