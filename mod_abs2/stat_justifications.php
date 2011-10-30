@@ -131,7 +131,7 @@ function getEleves() {
  * @return array Une ligne du tableau à afficher
  * @see getEleves()
  */
-function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut) {
+function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, $erreur=FALSE) {
   $donnees = array();
   $eleve_id = $eleve->getId();
   
@@ -186,6 +186,9 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut) 
 	  $donnees[$eleve_id]['totalDemi']=$totalDemi;
 	}
 	unset ($eleveNbAbs, $traiteEleve_col, $propel_eleve, $propel_traitEleveDemi, $traiteEleveDemi, $traiteEleveDemi_col, $propel_traitEleve);
+	if ($erreur && ($donnees[$eleve_id]['justifiees']==$donnees[$eleve_id]['totalDemi'])) {
+	  $donnees = array();
+	}
 	
 	return $donnees[$eleve_id];
 }
@@ -274,9 +277,13 @@ if (!isset($_SESSION['statJustifie'])) {
   
 } elseif ($_SESSION['statJustifie']['dernierePosition'] !== NULL) {
 /***** On a commencé mais tous les élèves n'ont pas été traité *****/
-  //set_time_limit(8);  // à décommenter pour tester le rechargement de la page
+  set_time_limit(8);  // à décommenter pour tester le rechargement de la page
   // On récupère max_execution_time et on se garde 2 secondes
   $max_time = ini_get('max_execution_time') - 2;
+  // On vérifie si on ne veut que les erreurs
+  if (!isset ($_SESSION['statJustifie']['erreur'])) {
+	$_SESSION['statJustifie']['erreur']=FALSE;
+  }
   // on récupère les justifications
   $justifie_col = unserialize($_SESSION['statJustifie']['justifications']);
   // on récupère les dates
@@ -294,7 +301,7 @@ if (!isset($_SESSION['statJustifie'])) {
 	  continue;
 	}
 	// on initialise les donnees pour le nouvel eleve
-	$retour = traiteEleve($eleve, $dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin, $justifie_col, $donneeBrut);
+	$retour = traiteEleve($eleve, $dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin, $justifie_col, $donneeBrut,$_SESSION['statJustifie']['erreur']);
 	if (!empty ($retour)) {
 	  $_SESSION['statJustifie']['donnees'][] = $retour;
 	}
@@ -354,7 +361,7 @@ if (!isset($_SESSION['statJustifie'])) {
   /***** On crée et envoie un fichier .csv *****/
 	creeCSV($_SESSION['statJustifie']['donnees'], unserialize($_SESSION['statJustifie']['justifications']));
   } else {
-  /***** On a changer les dates ou le mode de calcul ou recharger la page *****/
+  /***** On a changer les dates ou le mode de calcul ou on ne veut que les erreurs *****/
 	// On initialise les données
 	unset ($_SESSION['statJustifie']['donnees']);
 	// on récupère les justifications
@@ -382,8 +389,14 @@ if (!isset($_SESSION['statJustifie'])) {
 	$_SESSION['statJustifie']['donneeBrut'] = $donneeBrut;
 	// on efface la dernière position si besoin
 	$_SESSION['statJustifie']['dernierePosition'] = -1;
+	// on vérifie si on ne veut que les erreurs
+	if ($_POST['valide'] == "erreur") {
+	  $_SESSION['statJustifie']['erreur'] = TRUE;
+	} else {
+	  $_SESSION['statJustifie']['erreur'] = FALSE;
+	}
 	// on affiche la page de chargement
-	afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
+	afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col),$_SESSION['statJustifie']['erreur']);
   }
   
 } else {
@@ -397,6 +410,8 @@ if (!isset($_SESSION['statJustifie'])) {
   $dt_date_absence_eleve_fin = new DateTime(str_replace("/", ".", unserialize($_SESSION['statJustifie']['date_absence_eleve_fin'])));
   
 }
+
+unset ($_SESSION['statJustifie']['erreur']);
 
 /* *******************************************************************************
  * Affichage
@@ -459,6 +474,9 @@ include('menu_bilans.inc.php');
 	  <p>      
 		<button type="submit" dojoType="dijit.form.Button" name="valide" value="calcul">
 		  Forcer le recalcul des statistiques
+		</button> 
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="erreur">
+		  N'afficher que les erreurs de total
 		</button> 
 		<button type="submit" dojoType="dijit.form.Button" name="valide" value="soumettre">
 		  Afficher les statistiques avec ces réglages
