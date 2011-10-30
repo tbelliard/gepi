@@ -189,7 +189,7 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         $this->assertFalse($saisie->getRetard());
         saveSetting('abs2_retard_critere_duree',30);
 
-        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();
+        $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-06')->getFirst();//sur cette saisie on a plusieurs traitement, on privilégie le retard
         $this->assertTrue($saisie->getRetard());
 
     }

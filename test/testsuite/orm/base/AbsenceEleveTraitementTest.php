@@ -61,28 +61,23 @@ class AbsenceEleveTraitementTest extends GepiEmptyTestBase
     public function testQuery()
     {
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-
-        $traitements = AbsenceEleveTraitementQuery::create()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
-        ->filterByEleve($florence_eleve)
-        ->endUse()->endUse()->distinct()->find();
-        $this->assertEquals(18,$traitements->count(),'le total des traitements de Florence est 18');
          
         saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(true)
         ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
-        ->filterByEleve($florence_eleve)
+        ->filterByEleve($florence_eleve)->filterByPlageTemps(new DateTime('2010-10-01'),new DateTime('2010-10-17 23:59:59'))
         ->endUse()->endUse()->find();
         $this->assertEquals(12,$traitements->count());
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(false)
         ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
-        ->filterByEleve($florence_eleve)
+        ->filterByEleve($florence_eleve)->filterByPlageTemps(new DateTime('2010-10-01'),new DateTime('2010-10-17 23:59:59'))
         ->endUse()->endUse()->find();
         $this->assertEquals(7,$traitements->count());
 
         saveSetting('abs2_saisie_par_defaut_sans_manquement','y');
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(true)
         ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
-        ->filterByEleve($florence_eleve)
+        ->filterByEleve($florence_eleve)->filterByPlageTemps(new DateTime('2010-10-01'),new DateTime('2010-10-17 23:59:59'))
         ->endUse()->endUse()->find();
         $this->assertEquals(10,$traitements->count());
         $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(false)

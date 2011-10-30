@@ -149,8 +149,6 @@ class EleveTest extends GepiEmptyTestBase
 
 	public function testGetAbsColDecompteDemiJournee() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
-		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee();
-		$this->assertEquals(21,$saisie_col->count());
 		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-01 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-14 23:59:59'));
@@ -189,7 +187,7 @@ class EleveTest extends GepiEmptyTestBase
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
 		$this->assertEquals(0,$demi_j_col->count());
 				
-		$this->assertEquals(4,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
+		$this->assertEquals(5,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 	}
 	
 	public function testGetDemiJourneesNonJustifieesAbsenceParCollection() {
@@ -245,6 +243,9 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(1,$retard_col->count());
 		
 		$this->assertEquals(6,$florence_eleve->getRetardsParPeriode(1)->count());
+		
+		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'));
+		$this->assertEquals(0,$retard_col->count());
 	}
 
 	public function testGetAbsenceEleveSaisiesManquementObligationPresence() {
@@ -275,8 +276,6 @@ class EleveTest extends GepiEmptyTestBase
 	    //on purge les decompte pour florence
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
-	    $florence_eleve->updateAbsenceAgregationTable();
-	    $this->assertEquals(30,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();

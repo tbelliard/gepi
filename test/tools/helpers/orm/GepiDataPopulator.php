@@ -435,6 +435,24 @@ class GepiDataPopulator
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
         
+        $saisie_18 = new AbsenceEleveSaisie();
+        $saisie_18->setEleve($florence_eleve);
+        $saisie_18->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_18->setDebutAbs('2010-10-18 08:00:00');
+        $saisie_18->setFinAbs('2010-10-18 09:00:00');
+        $saisie_18->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_18);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Retard exterieur')->findOne());//c'est le retard extérieur qui va prendre le dessus : ne comptera pas comme demi journée d'absence
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+        $saisie_181 = new AbsenceEleveSaisie();//la saisie 181 est la même que 18 mais elle va être comptée comme une absence normale et non un retard
+        $saisie_181->setEleve($florence_eleve);
+        $saisie_181->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_181->setDebutAbs('2010-10-18 08:00:00');
+        $saisie_181->setFinAbs('2010-10-18 09:00:00');
+        $saisie_181->save();
+        
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();
         

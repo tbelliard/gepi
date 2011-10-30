@@ -1323,7 +1323,7 @@ class Eleve extends BaseEleve {
 
   	/**
 	 *
-	 * Retourne une collection contenant des saisies comptée comme absence pour le décompte officiel
+	 * Retourne une collection contenant des saisies comptée comme retard pour le décompte officiel
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
