@@ -199,8 +199,12 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
  * @param int $nbEleves Le nombre total d'élèves à traiter
  */
 function afficheChargement($indice,$nbEleves) {
+  global $session_gepi; 
+  require("../lib/global.inc.php");
   $gepiPath = "../";
   $titre_page = "Répartition des justifications (chargement des données)";
+  $_SESSION['cacher_header'] = "y";
+  require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p style ="display: block; width: 50%; margin:1em auto; text-align: center; font-size: large; font-weight: bold;">
