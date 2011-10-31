@@ -129,9 +129,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 	if (($continue == 'yes') and (isset($reg_login))) {
 		$msg = '';
 		$ok = 'yes';
-		//if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$", $reg_login)) {
-		//if (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,11}$", $reg_login)) {
-		if (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$", $reg_login)) {
+		if (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$/", $reg_login)) {
 			if ($reg_no_gep != '') {
 				$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
 				$count1 = mysql_num_rows($test1);
@@ -205,19 +203,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						$ele_id="e".sprintf("%09d",max($max_ele_id,$max_ele_id2));
 					}
 
-					/*
-					$reg_data1 = mysql_query("INSERT INTO eleves SET
-						no_gep = '".$reg_no_nat."',
-						nom='".$reg_nom."',
-						prenom='".$reg_prenom."',
-						login='".$reg_login."',
-						sexe='".$reg_sexe."',
-						naissance='".$reg_naissance."',
-						elenoet = '".$reg_no_gep."',
-						ereno = '".$reg_resp1."',
-						ele_id = '".$ele_id."'
-						");
-					*/
 					$reg_data1 = mysql_query("INSERT INTO eleves SET
 						no_gep = '".$reg_no_nat."',
 						nom='".$reg_nom."',
@@ -304,17 +289,14 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 					// Régime et établissement d'origine:
 					$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p';");
 					if ($reg_no_gep != '') {
-						//$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_login'");
 						$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_no_gep';");
 						$count2 = mysql_num_rows($call_test);
 						if ($count2 == "0") {
 							if ($reg_etab != "(vide)") {
-								//$reg_data2 = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_login','$reg_etab')");
 								$reg_data2 = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_no_gep','$reg_etab');");
 							}
 						} else {
 							if ($reg_etab != "(vide)") {
-								//$reg_data2 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
 								$reg_data2 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_no_gep';");
 							} else {
 								//$reg_data2 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
@@ -357,20 +339,16 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		}
 
 		if ($reg_no_gep != '') {
-			//$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$eleve_login'");
 			$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_no_gep';");
 			$count = mysql_num_rows($call_test);
 			if ($count == "0") {
 				if ($reg_etab != "(vide)") {
-					//$reg_data = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$eleve_login','$reg_etab')");
 					$reg_data = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_no_gep','$reg_etab');");
 				}
 			} else {
 				if ($reg_etab != "(vide)") {
-					//$reg_data = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$eleve_login'");
 					$reg_data = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_no_gep';");
 				} else {
-					//$reg_data = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'");
 					$reg_data = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_no_gep';");
 				}
 			}
@@ -379,8 +357,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		if (!$reg_data) {
 			$msg = "Erreur lors de l'enregistrement des données !";
 		} else {
-			//$msg = "Les modifications ont bien été enregistrées !";
-			// MODIF POUR AFFICHER MES TEMOINS...
 			$msg .= "Les modifications ont bien été enregistrées !";
 		}
 
@@ -434,7 +410,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				$temoin_maj_resp="";
 				$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
 				$test_resp1c=mysql_query($sql);
-				//if(mysql_num_rows($test_resp1c)==1){
 				if(mysql_num_rows($test_resp1c)>0){
 					$lig_autre_resp=mysql_fetch_object($test_resp1c);
 
@@ -465,42 +440,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				}
 			}
 		}
-
-/*
-		$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-		$test_resp1=mysql_query($sql);
-		if(mysql_num_rows($test_resp1)){
-			$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
-			$test_resp1b=mysql_query($sql);
-			if(mysql_num_rows($test_resp1b)==1){
-				$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-				$test_resp1c=mysql_query($sql);
-				if(mysql_num_rows($test_resp1c)==1){
-					$lig_autre_resp=mysql_fetch_object($test_resp1c);
-					$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-					$res_update=mysql_query($sql);
-				}
-
-				$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-				$res_update=mysql_query($sql);
-			}
-		}
-		else{
-			$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-			$test_resp1c=mysql_query($sql);
-			if(mysql_num_rows($test_resp1c)==1){
-				$lig_autre_resp=mysql_fetch_object($test_resp1c);
-				$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-				$res_update=mysql_query($sql);
-			}
-
-			$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
-			$reg_data2b=mysql_query($sql);
-		}
-
-		// AJOUTER DES TESTS DE SUCCES DE LA MàJ.
-*/
-
 	}
 }
 
@@ -598,43 +537,6 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
     echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 }
 
-
-/*
-// Désactivé pour permettre de renseigner un ELENOET manquant pour une conversion avec sconet
-// Cela a en revanche été conservé sur la page index.php
-// On ne devrait donc arriver ici lorsqu'une conversion est réclamée qu'en venant de conversion.php pour remplir un ELENOET
-if(!getSettingValue('conv_new_resp_table')){
-	$sql="SELECT 1=1 FROM responsables";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-
-	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-	else{
-		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
-			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
-			require("../lib/footer.inc.php");
-			die();
-		}
-	}
-}
-*/
-
-
 ?>
 <form enctype="multipart/form-data" action="add_eleve.php" method="post">
 <?php
@@ -731,7 +633,6 @@ echo "</tr>\n";
 echo "</table>\n";
 
 if (($reg_no_gep == '') and (isset($eleve_login))) {
-   //echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
    echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (elenoet). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.</font>\n";
 
 	$sql="select value from setting where name='import_maj_xml_sconet'";
@@ -749,11 +650,7 @@ if (($reg_no_gep == '') and (isset($eleve_login))) {
 <center><table border = '1' CELLPADDING = '5'>
 <tr><td><div class='norme'>Sexe : <br />
 <?php
-if (!(isset($eleve_sexe))) $eleve_sexe="M";
-/*
-<input type=radio name=reg_sexe value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> /> Masculin
-<input type=radio name=reg_sexe value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> Féminin
-*/
+if (!(isset($eleve_sexe))) {$eleve_sexe="M";}
 ?>
 <label for='reg_sexeM' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeM' value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> /> Masculin</label>
 <label for='reg_sexeF' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> Féminin</label>
@@ -777,8 +674,6 @@ echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 // PROBLEME: On ne récupère que les responsables déjà associés à un élève !
 
-//$sql="SELECT rp.nom,rp.prenom,rp.pers_id,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.resp_legal='1' AND r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
-//$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
 $sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
 
 $call_resp=mysql_query($sql);
@@ -814,16 +709,6 @@ if ($nombreligne != 0) {
 		echo ">";
 
 		echo "$lig_resp1->nom $lig_resp1->prenom | ";
-		/*
-		if($lig_resp1->adr1!=''){echo "$lig_resp1->adr1 ";}
-		if($lig_resp1->adr2!=''){echo "$lig_resp1->adr2 ";}
-		if($lig_resp1->adr3!=''){echo "$lig_resp1->adr3 ";}
-		if($lig_resp1->adr4!=''){echo "$lig_resp1->adr4 ";}
-		echo "- ";
-		if($lig_resp1->cp!=''){echo "$lig_resp1->cp, ";}
-		if($lig_resp1->commune!=''){echo "$lig_resp1->commune ";}
-		if($lig_resp1->pays!=''){echo "$lig_resp1->pays";}
-		*/
 
 		$chaine_adr1_tmp="";
 		if($lig_resp1->adr1!=''){$chaine_adr1_tmp.="$lig_resp1->adr1 ";}
@@ -843,62 +728,6 @@ if ($nombreligne != 0) {
 
 		echo "</option>\n";
 	}
-
-
-/*
-$call_resp = mysql_query("SELECT * FROM responsables ORDER BY nom1, prenom1");
-$nombreligne = mysql_num_rows($call_resp);
-// si la table des responsables est non vide :
-if ($nombreligne != 0) {
-    $chaine_adr1 = '';
-    $chaine_adr2 = '';
-    $chaine_resp2 = '';
-    echo "<br /><hr /><H3>Envoi des bulletins par voie postale</H3>";
-    echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
-    echo "<br /><br /><table><tr><td><b>Responsable légal principal : </b></td>";
-
-    echo "<td><select size = 1 name = 'reg_resp1'>";
-    echo "<option value='(vide)' "; if (!(isset($eleve_no_resp))) {echo " SELECTED";} echo ">(vide)</option>";
-    $i = 0;
-    while ($i < $nombreligne){
-        $ereno = mysql_result($call_resp , $i, "ereno");
-        $nom1 = mysql_result($call_resp , $i, "nom1");
-        $prenom1 = mysql_result($call_resp , $i, "prenom1");
-        $adr1 = mysql_result($call_resp , $i, "adr1");
-        $adr1_comp = mysql_result($call_resp , $i, "adr1_comp");
-        $commune1 = mysql_result($call_resp , $i, "commune1");
-        $cp1 = mysql_result($call_resp , $i, "cp1");
-        $nom2 = mysql_result($call_resp , $i, "nom2");
-        $prenom2 = mysql_result($call_resp , $i, "prenom2");
-        $adr2 = mysql_result($call_resp , $i, "adr2");
-        $commune2 = mysql_result($call_resp , $i, "commune2");
-        $cp2 = mysql_result($call_resp , $i, "cp2");
-        echo "<option value=".$ereno." ";
-        if ($ereno == $eleve_no_resp) {
-            echo " SELECTED";
-            $chaine_adr1 = $adr1." - ".$cp1.", ".$commune1;
-            if ($adr2 != '') {
-                $chaine_adr2 = $adr2." - ".$cp2.", ".$commune2;
-                $chaine_resp2 = $nom2." ".$prenom2;
-            }
-            if (substr($adr1, 0, strlen($adr1)-1) == substr($adr2, 0, strlen($adr1)-1) and ($cp1 == $cp2) and ($commune1 == $commune2)) {
-                $message = "<b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b>";
-            } else {
-                if ($chaine_adr2 != '') {
-                    $message =  "<b>Les adresses des deux responsables légaux ne sont pas identiques. Par conséquent, le bulletin sera envoyé aux deux responsables légaux.</b>";
-                } else {
-                    $message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
-                }
-            }
-
-
-        }
-        echo ">".$nom1." ".$prenom1." | ".$adr1." ".$adr1_comp." - ".$cp1.", ".$commune1."</option>";
-
-        $i++;
-    }
-*/
-
     echo "</select></td></tr>\n";
 
 
@@ -909,17 +738,6 @@ if ($nombreligne != 0) {
 			$lig_resp2=mysql_fetch_object($res_resp2);
 			echo "<tr><td><b>Deuxième responsable légal : </b></td>\n";
 			echo "<td>".$lig_resp2->nom." ".$lig_resp2->prenom." | ";
-
-			/*
-			if($lig_resp2->adr1!=''){echo "$lig_resp2->adr1 ";}
-			if($lig_resp2->adr2!=''){echo "$lig_resp2->adr2 ";}
-			if($lig_resp2->adr3!=''){echo "$lig_resp2->adr3 ";}
-			if($lig_resp2->adr4!=''){echo "$lig_resp2->adr4 ";}
-			echo "- ";
-			if($lig_resp2->cp!=''){echo "$lig_resp2->cp, ";}
-			if($lig_resp2->commune!=''){echo "$lig_resp2->commune ";}
-			if($lig_resp2->pays!=''){echo "$lig_resp2->pays";}
-			*/
 
 			if($lig_resp2->adr1!=''){$chaine_adr2.="$lig_resp2->adr1 ";}
 			if($lig_resp2->adr2!=''){$chaine_adr2.="$lig_resp2->adr2 ";}
@@ -953,17 +771,6 @@ if ($nombreligne != 0) {
 	elseif($eleve_no_resp1!=0){
 		$message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
 	}
-	/*
-	else{
-		$message="";
-	}
-	*/
-/*
-    if ($chaine_adr2 != '') {
-        echo "<tr><td><b>Deuxième responsable légal : </b></td>";
-        echo "<td>".$chaine_resp2." | ".$chaine_adr2."</td></tr>" ;
-    }
-*/
 
     echo "</table>\n";
     echo "<br />Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base
@@ -983,7 +790,9 @@ if ($nombreligne != 0) {
 
 
 ?>
-<br /><hr /><H3>Etablissement d'origine</h3>
+<br />
+<hr />
+<h3>Etablissement d'origine</h3>
 <p>Etablissement d'origine :
 <select size = 1 name = 'reg_etab'>
 <?php

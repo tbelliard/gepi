@@ -52,7 +52,7 @@ require_once("../lib/header.inc");
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php#prof_disc_classes"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Sixième phase d'initialisation<br />Importation des associations profs-matières-classes (enseignements)</h3></center>\n";
@@ -64,26 +64,26 @@ if (!isset($_POST["action"])) {
 	//
 
 	echo "<p>Vous allez effectuer la sixième étape : elle consiste à importer le fichier <b>g_prof_disc_classes.csv</b> contenant les données relatives aux enseignements.</p>\n";
-	echo "<p>ATTENTION ! Avec cette opération, vous effacez tous les groupes d'enseignement qui avaient été définis l'année dernière. Ils seront écrasés par ceux que vous allez importer avec la procédure courante.</p>\n";
+	echo "<p><b>ATTENTION !</b> Avec cette opération, vous effacez tous les groupes d'enseignement qui avaient été définis l'année dernière. Ils seront écrasés par ceux que vous allez importer avec la procédure courante.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
 	echo "<ul><li>Login du professeur</li>\n" .
 			"<li>Nom court de la matière</li>\n" .
-			"<li>Le ou les identifiant(s) de classe (séparés par un point d'exclamation ; ex : 1S1!1S2)</li>\n" .
-			"<li>Type d'enseignement (CG pour enseignement général suivi par toute la classe, OPT pour un enseignement optionnel)</li>\n" .
+			"<li>Le ou les identifiant(s) de classe (<em>séparés par un point d'exclamation ; ex : 1S1!1S2</em>)</li>\n" .
+			"<li>Type d'enseignement (<em>CG pour enseignement général suivi par toute la classe, OPT pour un enseignement optionnel</em>)</li>\n" .
 			"</ul>\n";
 	echo "<p>Exemple de ligne pour un enseignement général :<br />\n" .
-			"DUPONT.JEAN;MATHS;1S1;CG<br />\n" .
+			"&nbsp;&nbsp;&nbsp;DUPONT.JEAN;MATHS;1S1;CG<br />\n" .
 			"Exemple de ligne pour un enseignement optionnel avec des élèves de plusieurs classes :<br />\n" .
-			"DURANT.PATRICE;ANGL2;1S1!1S2!1S3;OPT</p>\n";
+			"&nbsp;&nbsp;&nbsp;DURANT.PATRICE;ANGL2;1S1!1S2!1S3;OPT</p>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_prof_disc_classes.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
 
-	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
 
-	echo "<p><input type='submit' value='Valider' />\n";
+	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 } else {
@@ -97,10 +97,27 @@ if (!isset($_POST["action"])) {
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
 
+		echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 		$j=0;
+		$k=0;
 		while ($j < count($liste_tables_del)) {
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+			//echo "$sql<br />";
+			$test = sql_query1($sql);
+			if ($test != -1) {
+				if($k>0) {echo ", ";}
+				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+				$res_test_tab=mysql_query($sql);
+				if(mysql_num_rows($res_test_tab)>0) {
+					$sql="DELETE FROM $liste_tables_del[$j];";
+					$del = @mysql_query($sql);
+					echo "<b>".$liste_tables_del[$j]."</b>";
+					echo " (".mysql_num_rows($res_test_tab).")";
+				}
+				else {
+					echo $liste_tables_del[$j];
+				}
+				$k++;
 			}
 			$j++;
 		}
@@ -113,6 +130,9 @@ if (!isset($_POST["action"])) {
 			require("../lib/footer.inc.php");
 			die();
 		}
+
+		echo "<br />\n";
+		echo "<p><em>On remplit les tables 'matieres', 'groupes', 'j_groupes_matieres', 'j_groupes_professeurs', 'j_groupes_classes' et 'j_eleves_groupes'&nbsp;:</em> ";
 
 		//$go = true;
 		$i = 0;
@@ -238,7 +258,7 @@ if (!isset($_POST["action"])) {
 		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
 		if ($total > 0) echo "<p>" . $total . " groupes ont été enregistrés.</p>\n";
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php#prof_disc_classes'>Revenir à la page précédente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {
@@ -373,10 +393,10 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<p><span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</span></p>\n";
 				}
 
-				echo "<input type='submit' value='Enregistrer' />\n";
+				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 				echo "</form>\n";
 			}
