@@ -418,7 +418,7 @@ if ($insert_mass_appreciation_type=="y") {
 		}
 
 		echo "<div style='margin:1em; padding:0.2em; width:40em; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
-		echo "Insérer l'avis-type suivante pour tous les avis vides&nbsp;: ";
+		echo "Insérer l'avis-type suivant pour tous les avis vides&nbsp;: ";
 		echo "<textarea name='no_anti_inject_ajout_a_textarea_vide' id='ajout_a_textarea_vide' cols='50'>$default_mass_appreciation</textarea><br />\n";
 
 		echo "<input type='checkbox' name='enregistrer_ajout_a_textarea_vide' id='enregistrer_ajout_a_textarea_vide' value='y' /><label for='enregistrer_ajout_a_textarea_vide'>Enregistrer cet avis-type comme avis-type par défaut</label><br />\n";
