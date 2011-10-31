@@ -273,7 +273,7 @@ require_once("../lib/header.inc");
 <?php
 
 if(getSettingValue('auth_sso')=='lcs') {
-	echo "<p style='color:red'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login diffï¿½rent de celui des comptes des utilisateurs ï¿½lï¿½ves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivï¿½e de nouveaux ï¿½lï¿½ves en cours d'annï¿½e, il peut arriver qu'un ï¿½lï¿½ve obtienne un login dï¿½jï¿½ attribuï¿½ ï¿½ un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration gï¿½nï¿½rale</a>.</p>\n";
+	echo "<p style='color:red'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login différent de celui des comptes des utilisateurs élèves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivée de nouveaux élèves en cours d'année, il peut arriver qu'un élève obtienne un login déjà attribué à un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a>.</p>\n";
 }
 
 $afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
@@ -515,10 +515,12 @@ else{
 				//echo "<td valign='top'>\n";
 				echo "<td>\n";
 				echo "<input type='submit' value='Créer' onclick=\"$('create_pers_id').value='".$current_parent->pers_id."'; $('form_create_one_resp').submit();\" />\n";
-				echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
+				//echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
+				echo "<td>".casse_mot($current_parent->nom,'maj')." ".casse_mot($current_parent->prenom,'majf2')."</td>\n";
 				echo "<td>\n";
 				while($lig_ele=mysql_fetch_object($test)){
-					echo "Responsable légal $lig_ele->resp_legal de ".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)." (<i>$lig_ele->classe</i>)<br />\n";
+					//echo "Responsable légal $lig_ele->resp_legal de ".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)." (<i>$lig_ele->classe</i>)<br />\n";
+					echo "Responsable légal $lig_ele->resp_legal de ".casse_mot($lig_ele->prenom,'majf2')." ".casse_mot($lig_ele->nom,'maj')." (<i>$lig_ele->classe</i>)<br />\n";
 				}
 				echo "</td>\n";
 			echo "</tr>\n";

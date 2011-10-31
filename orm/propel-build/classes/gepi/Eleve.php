@@ -1145,16 +1145,14 @@ class Eleve extends BaseEleve {
     		    }
     		}
 	    }
-
-	    if ($date_fin != null) {
-		$date_fin_iteration = clone $date_fin;
-	    } else {
-		$date_fin_iteration = new DateTime('now');
-		$date_fin_iteration->setTime(23,59,59);
-	    }
-            if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
-                $date_fin_iteration = $this->getDateSortie(null);
-            }
+        if ($date_fin != null) {
+            $date_fin_iteration = clone $date_fin;
+        } else {
+            $date_fin_iteration = null;
+        }
+        if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
+            $date_fin_iteration = $this->getDateSortie(null);
+        }
 
 	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
@@ -1214,7 +1212,6 @@ class Eleve extends BaseEleve {
 	    if ($date_debut  == null)  {
 		return new PropelObjectCollection();
 	    }
-
 	    return $this->getDemiJourneesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 

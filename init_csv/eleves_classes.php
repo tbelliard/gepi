@@ -62,10 +62,10 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
-	echo "<p>Vous allez effectuer la cinquiï¿½me ï¿½tape : elle consiste ï¿½ importer le fichier <b>g_eleves_classes.csv</b> contenant les donnï¿½es relatives aux disciplines.</p>\n";
-	echo "<p>Remarque : cette opï¿½ration n'efface par les classes. Elle ne fait qu'une mise ï¿½ jour, le cas ï¿½chï¿½ant, de la liste des matiï¿½res.</p>\n";
-	echo "<p>Les champs suivants doivent ï¿½tre prï¿½sents, dans l'ordre, et <b>sï¿½parï¿½s par un point-virgule</b> : </p>\n";
-	echo "<ul><li>Identifiant (<em>interne</em>) de l'ï¿½lï¿½ve</li>\n" .
+	echo "<p>Vous allez effectuer la cinquième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
+	echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
+	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
+	echo "<ul><li>Identifiant (<em>interne</em>) de l'élève</li>\n" .
 			"<li>Identifiant court de la classe (<em>ex: 1S2</em>)</li>\n" .
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
@@ -223,9 +223,9 @@ if (!isset($_POST["action"])) {
 		}
 
 		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
-		if ($total > 0) echo "<p>" . $total . " associations eleves-classes ont ï¿½tï¿½ enregistrï¿½s.</p>\n";
+		if ($total > 0) echo "<p>" . $total . " associations eleves-classes ont été enregistrées.</p>\n";
 
-		echo "<p><a href='index.php#eleves_classes'>Revenir ï¿½ la page prï¿½cï¿½dente</a></p>\n";
+		echo "<p><a href='index.php#eleves_classes'>Revenir à la page précédente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {
@@ -340,7 +340,7 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<p><span style='color:red'>$nb_error erreur(s) dï¿½tectï¿½e(s) lors de la prï¿½paration.</span></p>\n";
+					echo "<p><span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</span></p>\n";
 				}
 
 				echo "<p><input type='submit' value='Enregistrer' /></p>\n";

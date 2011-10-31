@@ -106,6 +106,18 @@ class AbsenceEleveSaisieHelperTest extends GepiEmptyTestBase
         $saisie->setFinAbs('2010-11-04 16:00:00');
         $saisie_col->append($saisie);
         $this->assertEquals(7,AbsencesEleveSaisieHelper::compte_demi_journee($saisie_col)->count());
+
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		$lebesgue_prof = UtilisateurProfessionnelQuery::create()->findOneByLogin('Lebesgue');
+        $saisie = new AbsenceEleveSaisie();
+        $saisie->setDebutAbs('2010-10-19 08:00:00');
+        $saisie->setFinAbs('2010-10-19 16:30:00');
+        $saisie->setEleve($florence_eleve);
+        $saisie->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie->save();
+        $saisie_col = new PropelCollection();
+        $saisie_col->append($saisie);
+        $this->assertEquals(2,AbsencesEleveSaisieHelper::compte_demi_journee($saisie_col)->count());
 	}
 	
 }

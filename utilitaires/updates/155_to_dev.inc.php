@@ -101,7 +101,7 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe dï¿½jï¿½");
+		$result .= msj_present("La table existe déjà");
 }
 
 $result.="<br />Fin mise à jour<br/>";

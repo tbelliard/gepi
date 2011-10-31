@@ -479,7 +479,8 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		}
 		else{
 			while($current_enfant=mysql_fetch_object($res_enfants)){
-				echo ucfirst(strtolower($current_enfant->prenom))." ".strtoupper($current_enfant->nom)." (<i>".$current_enfant->classe."</i>)<br />\n";
+				//echo ucfirst(strtolower($current_enfant->prenom))." ".strtoupper($current_enfant->nom)." (<i>".$current_enfant->classe."</i>)<br />\n";
+				echo casse_mot($current_enfant->prenom,'majf2')." ".casse_mot($current_enfant->nom,'maj')." (<i>".$current_enfant->classe."</i>)<br />\n";
 			}
 		}
 		echo "</td>\n";
