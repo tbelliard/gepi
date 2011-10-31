@@ -377,7 +377,7 @@ class EleveTest extends GepiEmptyTestBase
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
 	    
 	    //on va modifier une saisie à la main
-	    $tomorow = new DateTime();
+	    $tomorow = new DateTime('now');
 	    $tomorow->modify("+1 day");
         mysql_query("update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst()->getId());
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-15 23:59:59')));
