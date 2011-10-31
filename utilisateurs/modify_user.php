@@ -460,21 +460,26 @@ check_token();
 						if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
 							$filephoto_name=$_FILES['filephoto']['name'];
 							$filephoto_size=$_FILES['filephoto']['size'];
+							$filephoto_type=$_FILES['filephoto']['type']; 
 							// Tester la taille max de la photo?
-
-							if(is_uploaded_file($filephoto_tmp)){
-								$dest_file = $repertoire.$code_photo.".jpg";
-								$source_file = stripslashes("$filephoto_tmp");
-								$res_copy=copy("$source_file" , "$dest_file");
-								if($res_copy){
-									$msg = "Mise en place de la photo effectuée.";
+							if ((preg_match('/jpg$/',strtolower($filephoto_name)) || preg_match('/jpeg$/',strtolower($filephoto_name))) && ($filephoto_type == "image/jpeg" || $filephoto_type == "image/pjpeg")) {
+								if(is_uploaded_file($filephoto_tmp)){
+									$dest_file = $repertoire.$code_photo.".jpg";
+									$source_file = $filephoto_tmp;
+									$res_copy=copy("$source_file" , "$dest_file");
+									if($res_copy){
+										$msg = "Mise en place de la photo effectuée.";
+									}
+									else{
+										$msg = "Erreur lors de la mise en place de la photo.";
+									}
 								}
 								else{
-									$msg = "Erreur lors de la mise en place de la photo.";
+									$msg = "Erreur lors de l'upload de la photo.";
 								}
 							}
-							else{
-								$msg = "Erreur lors de l'upload de la photo.";
+							else {
+								$msg = "Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés.";
 							}
 						}
 					}
