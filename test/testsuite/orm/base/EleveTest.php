@@ -186,7 +186,13 @@ class EleveTest extends GepiEmptyTestBase
 		$saisie_col->getFirst()->clearAllReferences();
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
 		$this->assertEquals(0,$demi_j_col->count());
-				
+		
+		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee(new DateTime('2010-10-19 00:00:00'),new DateTime('2010-10-19 23:59:59'));
+		$this->assertEquals(1,$saisie_col->count());
+		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
+		$this->assertEquals(2,$demi_j_col->count());
+		
 		$this->assertEquals(7,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 	}
 	

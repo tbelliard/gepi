@@ -59,8 +59,8 @@ echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation
 
 
 if (!isset($is_posted)) {
-	echo "<p>Vous allez effectuer la premiï¿½re ï¿½tape&nbsp;: elle consiste ï¿½ importer le fichier <b>ELEVES.CSV</b> (<em>gï¿½nï¿½rï¿½ ï¿½ partir des exports XML de Sconet</em>) contenant toutes les donnï¿½es dans une table temporaire de la base de donnï¿½es de <b>GEPI</b>.";
-	echo "<p>Veuillez prï¿½ciser le nom complet du fichier <b>ELEVES.CSV</b>.";
+	echo "<p>Vous allez effectuer la première étape&nbsp;: elle consiste à importer le fichier <b>ELEVES.CSV</b> (<em>généré à partir des exports XML de Sconet</em>) contenant toutes les données dans une table temporaire de la base de données de <b>GEPI</b>.";
+	echo "<p>Veuillez préciser le nom complet du fichier <b>ELEVES.CSV</b>.";
 	echo "<form enctype='multipart/form-data' action='step1.php' method=post>\n";
 	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
@@ -76,7 +76,7 @@ if (!isset($is_posted)) {
 		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			echo "<p style='color:red'>Il existe un ou des comptes ï¿½lï¿½ves de l'annï¿½e passï¿½e, et vous n'avez pas mis ces comptes en rï¿½serve pour imposer le mï¿½me login/mot de passe cette annï¿½e.<br />Est-ce bien un choix dï¿½libï¿½rï¿½ ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de faï¿½on ï¿½ ne pas devoir re-distribuer ces informations (<em>et ï¿½viter de perturber ces utilisateurs</em>), vous pouvez procï¿½der ï¿½ la mise en rï¿½serve avant d'initialiser l'annï¿½e dans la page <a href='../gestion/changement_d_annee.php'>Changement d'annï¿½e</a> (<em>vous y trouverez aussi la possibilitï¿½ de conserver les comptes parents et bien d'autres actions ï¿½ ne pas oublier avant l'initialisation</em>).</p>\n";
+			echo "<p style='color:red'>Il existe un ou des comptes élèves de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes parents et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
 		}
 	}
 

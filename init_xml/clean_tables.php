@@ -92,7 +92,8 @@ echo "</form>";
 	}
 	if ($flag != 0){
 		echo "<p><b>ATTENTION ...</b><br />";
-		echo "L'initialisation des données de l'année n'est pas terminée, certaines données concernant les élèves, les classes, les groupes, les professeurs ou les matières sont manquantes. La procédure ne peut continuer !</p></body></html>";
+		echo "L'initialisation des données de l'année n'est pas terminée, certaines données concernant les élèves, les classes, les groupes, les professeurs ou les matières sont manquantes. La procédure ne peut continuer !</p>";
+		require("../lib/footer.inc.php");
 		die();
 	}
 	//Suppression des données inutiles dans la tables utilisateurs

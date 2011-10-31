@@ -54,11 +54,13 @@ class AbsencesEleveSaisieHelper {
         //on récupère l'heure de demi-journée
         $heure_demi_journee = 11;//11:50 par défaut si rien n'est précisé dans les settings
         $minute_demi_journee = 50;
-        try {
-            $dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-            $heure_demi_journee = $dt_demi_journee->format('H');
-            $minute_demi_journee = $dt_demi_journee->format('i');
-        } catch (Exception $x) {
+        if (getSettingValue("abs2_heure_demi_journee") != null) {
+            try {
+                $dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+                $heure_demi_journee = $dt_demi_journee->format('H');
+                $minute_demi_journee = $dt_demi_journee->format('i');
+            } catch (Exception $x) {
+            }
         }
          
         //on va regarder la date du début pour notre algorithme
