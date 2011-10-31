@@ -338,9 +338,9 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 			} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
 				$msg.="Erreur de téléchargement niveau 2 (<i>photo n°$cpt_photo</i>).<br />";
 			} else if (strtolower($sav_photo['type'][$cpt_photo])!="image/jpeg") {
-				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
-			} else if (!(preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo]) || preg_match('/jpeg$/i',$sav_photo['name'][$cpt_photo])) {
-				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
+				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisï¿½s (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
+			} else if (!(preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo]) || preg_match('/jpeg$/i',$sav_photo['name'][$cpt_photo]))) {
+				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisï¿½s (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
 			} else {
 				$dest = $rep_photos;
 				$n = 0;
@@ -685,7 +685,7 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_dse' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les élève dont la date de sortie de l'établissement est renseignée (<i>".mysql_num_rows($test_dse)."</i>)</span><br />\n";
+			echo "<span class='norme'>Les ï¿½lï¿½ves dont la date de sortie de l'ï¿½tablissement est renseignï¿½e (<i>".mysql_num_rows($test_dse)."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";

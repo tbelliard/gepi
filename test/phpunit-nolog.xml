@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="tools/setup_new_database.php" colors="true">
+
+    <testsuite name="AllTests">
+     <directory>testsuite</directory>
+    </testsuite>
+
+    
+  <blacklist>
+    <directory>.</directory>
+  </blacklist>
+</phpunit>

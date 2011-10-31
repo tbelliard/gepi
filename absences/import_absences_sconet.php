@@ -29,23 +29,9 @@ require_once("../lib/header.inc");
 
 function extr_valeur($lig){
 	unset($tabtmp);
-	$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
+	$tabtmp=explode(">",preg_replace("/</",">",$lig));
 	return trim($tabtmp[2]);
 }
-
-function get_nom_class_from_id($id){
-	$classe=NULL;
-
-	$sql="SELECT classe FROM classes WHERE id='$id';";
-	$res_class=mysql_query($sql);
-
-	if(mysql_num_rows($res_class)>0){
-		$lig_tmp=mysql_fetch_object($res_class);
-		$classe=$lig_tmp->classe;
-	}
-	return $classe;
-}
-
 
 ?>
 	<div class="content">
@@ -329,7 +315,7 @@ function get_nom_class_from_id($id){
 							echo "<p><input type='submit' value='Valider' /></p>\n";
 							echo "</form>\n";
 
-							echo "<p><b>ATTENTION</b>:</p>\n";
+							echo "<p><b>ATTENTION</b>&nbsp;:</p>\n";
 							echo "<ul>\n";
 							echo "<li><p>Fournir un export d'une seule période.<br />Si plusieurs périodes sont cochées lors de votre export, les informations importées risquent d'être erronées.</p></li>\n";
 							echo "<li><p>Pour récupérer l'export de Sconet:<br />\n";
@@ -351,18 +337,11 @@ function get_nom_class_from_id($id){
 								$xml_file = isset($_FILES["absences_xml_file"]) ? $_FILES["absences_xml_file"] : NULL;
 								$fp=fopen($xml_file['tmp_name'],"r");
 								if($fp){
-									//echo "<h3>Lecture du fichier absences...</h3>\n";
-									//echo "<blockquote>\n";
 									while(!feof($fp)){
 										$ligne[]=fgets($fp,4096);
 									}
 									fclose($fp);
-									//echo "<p>Terminé.</p>\n";
 									flush();
-
-
-									//echo "<h3>Analyse du fichier pour extraire les informations...</h3>\n";
-									//echo "<blockquote>\n";
 
 									$cpt=0;
 									$eleves=array();
@@ -466,7 +445,7 @@ function get_nom_class_from_id($id){
 											$eleves[$i]=array();
 
 											$ligne_courante=$ligne[$cpt];
-											while(!my_ereg("/>",$ligne[$cpt])){
+											while(!preg_match("#/>#",$ligne[$cpt])){
 												$cpt++;
 												$ligne_courante.=" ".trim($ligne[$cpt]);
 											}
@@ -478,48 +457,40 @@ function get_nom_class_from_id($id){
 											$tab_tmp=explode(" ",$ligne_courante);
 											for($j=0;$j<count($tab_tmp);$j++){
 												//echo "\$tab_tmp[$j]=".$tab_tmp[$j]."<br />";
-												if(my_ereg("=",$tab_tmp[$j])) {
+												if(preg_match("/=/",$tab_tmp[$j])) {
 													unset($tab_tmp2);
-													$tab_tmp2=explode("=",my_ereg_replace('"','',$tab_tmp[$j]));
+													$tab_tmp2=explode("=",preg_replace('/"/','',$tab_tmp[$j]));
 													//echo "\$tab_tmp2[0]=".$tab_tmp[0]."<br />";
 													//echo "\$tab_tmp2[1]=".$tab_tmp[1]."<br />";
 													//$eleves[$i][trim($tab_tmp2[0])]=trim($tab_tmp2[1]);
-													$eleves[$i][trim($tab_tmp2[0])]=trim(my_ereg_replace("/>$","",$tab_tmp2[1]));
+													$eleves[$i][trim($tab_tmp2[0])]=trim(preg_replace("#/>$#","",$tab_tmp2[1]));
 												}
 											}
 										}
 										$cpt++;
 									}
 
-									/*
-									echo "<table border='1'>";
-									for($i=0;$i<count($eleves);$i++){
-										echo "<tr>";
-										echo "<td>$i</td>";
-										foreach($eleves[$i] as $cle => $valeur){
-											echo "<td>\$eleves[$i][\"$cle\"]=".$eleves[$i][$cle]."</td>\n";
-										}
-										echo "</tr>";
-									}
-									echo "</table>";
-									*/
 
-
-
-									/*
-									$num_periode="NaN";
-									if(isset($tab_periode['libelle'])) {
-										$num_periode=trim(my_ereg_replace("^T","",$tab_periode['libelle']));
-									}
-									*/
-
-
+									$sql="CREATE TABLE IF NOT EXISTS temp_abs_import (
+									id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+									login varchar(50) NOT NULL default '',
+									elenoet varchar(50) NOT NULL default '',
+									libelle varchar(50) NOT NULL default '',
+									nbAbs INT(11) NOT NULL default '0',
+									nbNonJustif INT(11) NOT NULL default '0',
+									nbRet INT(11) NOT NULL default '0',
+									UNIQUE KEY elenoet (elenoet));";
+									$create_table=mysql_query($sql);
+					
+									$sql="TRUNCATE TABLE temp_abs_import;";
+									$menage=mysql_query($sql);
+					
 									echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 									// On a fait en sorte à l'étape précédente, qu'il n'y ait qu'une classe ou plusieurs, que l'on transmette un tableau id_classe[]
 									for($i=0;$i<count($id_classe);$i++){
 										echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 									}
-
+					
 									echo "<table class='boireaus'>\n";
 									echo "<tr>\n";
 									echo "<th>&nbsp;</th>\n";
@@ -531,35 +502,35 @@ function get_nom_class_from_id($id){
 									echo "<th>Non justifiées</th>\n";
 									echo "<th>Nombre de retards</th>\n";
 									echo "</tr>\n";
-
+					
 									$chaine_liste_classes="(";
 									for($i=0;$i<count($id_classe);$i++){
 										if($i>0){$chaine_liste_classes.=" OR ";}
 										$chaine_liste_classes.="id_classe='$id_classe[$i]'";
 									}
 									$chaine_liste_classes.=")";
-
+					
 									$nb_err=0;
 									$alt=-1;
 									for($i=0;$i<count($eleves);$i++){
-
+					
 										$ligne_tableau="";
 										$affiche_ligne="n";
-
+					
 										if(isset($eleves[$i]['elenoet'])){
 											// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
-											//$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND e.no_gep='".$eleves[$i]['elenoet']."' AND periode='$num_periode' AND $chaine_liste_classes;";
 											$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
 											//echo "<!--\n$sql\n-->\n";
+											//echo "$sql<br />\n";
 											$test=mysql_query($sql);
-
+					
 											if(mysql_num_rows($test)>0){
-
+					
 												$alt=$alt*(-1);
-												$ligne_tableau.="<tr class='lig$alt'>\n";
+												$ligne_tableau.="<tr class='lig$alt white_hover'>\n";
 												$ligne_tableau.="<td>$i</td>\n";
 												$ligne_tableau.="<td>".$eleves[$i]['elenoet']."</td>\n";
-
+					
 												// Récupération des infos sur l'élève (on a au moins besoin du login pour tester si le CPE a cet élève.
 												$sql="SELECT e.login,e.nom,e.prenom,e.elenoet
 															FROM eleves e
@@ -575,29 +546,22 @@ function get_nom_class_from_id($id){
 													$nb_err++;
 												}
 												else{
-
+					
 													$lig1=mysql_fetch_object($res1);
-
+					
 													// Le CPE a-t-il bien cet élève:
-													//$sql="SELECT 1=1 FROM j_eleves_cpe jec, eleves e WHERE jec.e_login=e.login AND jec.cpe_login='".$_SESSION['login']."'";
 													$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
 													//echo "<!--\n$sql\n-->\n";
 													$test=mysql_query($sql);
-
-													//if(mysql_num_rows($test)>0){
+					
 													if((mysql_num_rows($test)>0)||($_SESSION['statut']=='secours')) {
 														$affiche_ligne="y";
-
-														//$lig1=mysql_fetch_object($res1);
-														//$ligne_tableau.="<td>$lig1->elenoet\n";
-
-														//$ligne_tableau.="<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
-														//$ligne_tableau.="</td>\n";
+					
 														$ligne_tableau.="<td>";
-														$ligne_tableau.="<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
+														//$ligne_tableau.="<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
 														$ligne_tableau.="$lig1->nom</td>\n";
 														$ligne_tableau.="<td>$lig1->prenom</td>\n";
-
+					
 														$ligne_tableau.="<td>\n";
 														$sql="SELECT c.classe FROM j_eleves_classes jec, classes c
 																WHERE jec.login='$lig1->login' AND
@@ -617,14 +581,27 @@ function get_nom_class_from_id($id){
 														}
 														$ligne_tableau.="</td>\n";
 													}
-
-
+					
+					
 													if("$affiche_ligne"=="y"){
 														echo $ligne_tableau;
 														echo "<td>\n";
+					
+														if((isset($eleves[$i]['elenoet']))&&(isset($eleves[$i]['nbAbs']))&&(isset($eleves[$i]['nbNonJustif']))&&(isset($eleves[$i]['nbRet']))) {
+															$sql="INSERT INTO temp_abs_import SET login='$lig1->login',
+																								elenoet='".$eleves[$i]['elenoet']."',
+																								nbAbs='".$eleves[$i]['nbAbs']."',
+																								nbNonJustif='".$eleves[$i]['nbNonJustif']."',
+																								nbRet='".$eleves[$i]['nbRet']."';";
+															$insert=mysql_query($sql);
+															if(!$insert) {
+																echo "<span style='color:red;'>Erreur&nbsp;: $sql</span><br />\n";
+															}
+														}
+					
 														if(isset($eleves[$i]['nbAbs'])){
 															echo $eleves[$i]['nbAbs'];
-															echo "<input type='hidden' name='nbabs_eleve[$i]' value='".$eleves[$i]['nbAbs']."' />\n";
+															//echo "<input type='hidden' name='nbabs_eleve[$i]' value='".$eleves[$i]['nbAbs']."' />\n";
 														}
 														else{
 															//echo "&nbsp;";
@@ -633,11 +610,11 @@ function get_nom_class_from_id($id){
 															$nb_err++;
 														}
 														echo "</td>\n";
-
+					
 														echo "<td>\n";
 														if(isset($eleves[$i]['nbNonJustif'])){
 															echo $eleves[$i]['nbNonJustif'];
-															echo "<input type='hidden' name='nbnj_eleve[$i]' value='".$eleves[$i]['nbNonJustif']."' />\n";
+															//echo "<input type='hidden' name='nbnj_eleve[$i]' value='".$eleves[$i]['nbNonJustif']."' />\n";
 														}
 														else{
 															//echo "&nbsp;";
@@ -646,12 +623,11 @@ function get_nom_class_from_id($id){
 															$nb_err++;
 														}
 														echo "</td>\n";
-
+					
 														echo "<td>\n";
 														if(isset($eleves[$i]['nbRet'])){
 															echo $eleves[$i]['nbRet'];
-															//echo " -&gt; <input type='text' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
-															echo "<input type='hidden' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
+															//echo "<input type='hidden' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
 														}
 														else{
 															//echo "&nbsp;";
@@ -660,17 +636,17 @@ function get_nom_class_from_id($id){
 															$nb_err++;
 														}
 														echo "</td>\n";
-
+					
 														echo "</tr>\n";
 													}
-
+					
 												}
 											}
 										}
 									}
 									echo "</table>\n";
 									echo add_token_field();
-									echo "<input type='hidden' name='nb_eleves' value='$i' />\n";
+									//echo "<input type='hidden' name='nb_eleves' value='$i' />\n";
 									echo "<input type='hidden' name='is_posted' value='y' />\n";
 									echo "<input type='hidden' name='etape' value='2' />\n";
 
@@ -684,18 +660,34 @@ function get_nom_class_from_id($id){
 
 								}
 								else{
-									// PB $fp
+									echo "<p style='color:red'>Le fichier n'a pas pu être ouvert&nbsp;???</p>\n";
+									echo "<p><a href='".$_SERVER['PHP_SELF']."'>Recommencer</a></p>\n";
+									require("../lib/footer.inc.php");
+									die();
 								}
 							}
 							if($etape==2) {
-								$log_eleve=isset($_POST['log_eleve']) ? $_POST['log_eleve'] : NULL;
-								$nbabs_eleve=isset($_POST['nbabs_eleve']) ? $_POST['nbabs_eleve'] : NULL;
-								$nbnj_eleve=isset($_POST['nbnj_eleve']) ? $_POST['nbnj_eleve'] : NULL;
-								$nbret_eleve=isset($_POST['nbret_eleve']) ? $_POST['nbret_eleve'] : NULL;
-								$num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : NULL;
 
-								$nb_eleves=isset($_POST['nb_eleves']) ? $_POST['nb_eleves'] : NULL;
-
+								$sql="SELECT * FROM temp_abs_import;";
+								$res_t_a_i=mysql_query($sql);
+								if(mysql_num_rows($res_t_a_i)==0) {
+									echo "<p style='color:red'>Aucune absence, retard,... n'ont été trouvés&nbsp;???</p>\n";
+									echo "<p><a href='".$_SERVER['PHP_SELF']."'>Recommencer</a></p>\n";
+									require("../lib/footer.inc.php");
+									die();
+								}
+					
+								$log_eleve=array();
+								$nbabs_eleve=array();
+								$nbnj_eleve=array();
+								$nbret_eleve=array();
+								while($lig_abs=mysql_fetch_object($res_t_a_i)) {
+									$log_eleve[]=$lig_abs->login;
+									$nbabs_eleve[]=$lig_abs->nbAbs;
+									$nbnj_eleve[]=$lig_abs->nbNonJustif;
+									$nbret_eleve[]=$lig_abs->nbRet;
+								}
+								$nb_eleves=count($log_eleve);
 
 								// On initialise à zéro les absences, retards,... pour tous les élèves des classes importées et les valeurs extraites du XML de Sconet écraseront ces initialisations.
 								// Si on ne fait pas cette initialisation, les élèves qui n'ont aucune absence ni retard apparaissent avec un '?' au lieu d'un Zéro/Aucune.
@@ -735,7 +727,7 @@ function get_nom_class_from_id($id){
 
 								$nb_err=0;
 								$nb_ok=0;
-								echo "<p>Importation: ";
+								echo "<p>Importation&nbsp;: ";
 								//for($i=0;$i<count($log_eleve);$i++){
 								for($i=0;$i<$nb_eleves;$i++){
 									if((isset($log_eleve[$i]))&&
@@ -836,13 +828,6 @@ function get_nom_class_from_id($id){
 								}
 
 								echo "<p>Contrôler les saisies pour la classe de:</p>\n";
-								/*
-								echo "<ul>\n";
-								for($i=0;$i<count($id_classe);$i++){
-									echo "<li><a href='saisie_absences.php?id_classe=$id_classe[$i]&amp;periode_num=$num_periode' target='_blank'>".get_nom_class_from_id($id_classe[$i])."</a></li>\n";
-								}
-								echo "</ul>\n";
-								*/
 
 								$nb_classes=count($id_classe);
 								$nb_class_par_colonne=round($nb_classes/3);
@@ -861,7 +846,7 @@ function get_nom_class_from_id($id){
 										echo "<td align='left'>\n";
 									}
 
-									echo "<a href='saisie_absences.php?id_classe=$id_classe[$i]&amp;periode_num=$num_periode' target='_blank'>".get_nom_class_from_id($id_classe[$i])."</a><br />\n";
+									echo "<a href='saisie_absences.php?id_classe=$id_classe[$i]&amp;periode_num=$num_periode' target='_blank'>".get_class_from_id($id_classe[$i])."</a><br />\n";
 								}
 								echo "</td>\n";
 								echo "</tr>\n";

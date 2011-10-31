@@ -453,6 +453,13 @@ class GepiDataPopulator
         $saisie_181->setFinAbs('2010-10-18 09:00:00');
         $saisie_181->save();
         
+        $saisie_19 = new AbsenceEleveSaisie(); //saisie sur une journée ouvrée un mardi
+        $saisie_19->setEleve($florence_eleve);
+        $saisie_19->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_19->setDebutAbs('2010-10-19 08:00:00');
+        $saisie_19->setFinAbs('2010-10-19 16:30:00');
+        $saisie_19->save();
+        
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();
         

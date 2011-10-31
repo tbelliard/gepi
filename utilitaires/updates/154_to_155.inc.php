@@ -932,6 +932,10 @@ if ($result_inter == '') {
 $result.="<br />";
 
 
+$result.="<br />";
+$result.="<br />";
+$result.="<strong>Tables temporaires :</strong>";
+$result.="<br />";
 
 $test = sql_query1("SHOW TABLES LIKE 'temp_gep_import2'");
 if ($test == -1) {
@@ -996,4 +1000,119 @@ else {
 	}
 }
 
+
+$test = sql_query1("SHOW TABLES LIKE 'tempo_utilisateurs_resp';");
+if ($test != -1) {
+	$query = mysql_query("ALTER TABLE tempo_utilisateurs_resp CHANGE password password VARCHAR( 128 ) NOT NULL DEFAULT '';");
+	if ($query) {
+		$result .= msj_present("Extension à 128 caractères du champ 'password' de la table 'tempo_utilisateurs_resp'");
+	} else {
+		$result .= msj_erreur("Echec de l'extension à 128 caractères du champ 'password' de la table 'tempo_utilisateurs_resp'");
+	}
+
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM tempo_utilisateurs_resp LIKE 'salt';"));
+	if ($test_champ==0) {
+		$result .= "<br />&nbsp;->Ajout d'un champ 'salt' à la table 'tempo_utilisateurs_resp'<br />";
+		$query = mysql_query("ALTER TABLE tempo_utilisateurs_resp ADD salt VARCHAR( 128 ) NOT NULL AFTER password;");
+		if ($query) {
+			$result .= msj_present("Le champ 'salt' de la table 'tempo_utilisateurs_resp' a été ajouté");
+		} else {
+			$result .= msj_erreur(": Le champ 'salt' de la table 'tempo_utilisateurs_resp' n'a pas été ajouté");
+		}
+	}
+
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM tempo_utilisateurs_resp LIKE 'email';"));
+	if ($test_champ==0) {
+		$result .= "<br />&nbsp;->Ajout d'un champ 'email' à la table 'tempo_utilisateurs_resp'<br />";
+		$query = mysql_query("ALTER TABLE tempo_utilisateurs_resp ADD email VARCHAR( 50 ) NOT NULL AFTER salt;");
+		if ($query) {
+			$result .= msj_present("Le champ 'email' de la table 'tempo_utilisateurs_resp' a été ajouté");
+		} else {
+			$result .= msj_erreur(": Le champ 'email' de la table 'tempo_utilisateurs_resp' n'a pas été ajouté");
+		}
+	}
+}
+
+$test_tempo_utilisateurs = sql_query1("SHOW TABLES LIKE 'tempo_utilisateurs';");
+if ($test_tempo_utilisateurs == -1) {
+	$result .= "<strong>Ajout d'une table 'tempo_utilisateurs' :</strong><br />";
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS tempo_utilisateurs
+			(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+			password VARCHAR(128) NOT NULL,
+			salt VARCHAR(128) NOT NULL,
+			email VARCHAR(50) NOT NULL,
+			identifiant1 VARCHAR( 10 ) NOT NULL ,
+			identifiant2 VARCHAR( 50 ) NOT NULL ,
+			statut VARCHAR( 20 ) NOT NULL ,
+			auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+			date_reserve DATE DEFAULT '0000-00-00',
+			temoin VARCHAR( 50 ) NOT NULL
+			);");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
+$test_tempo_utilisateurs = sql_query1("SHOW TABLES LIKE 'tempo_utilisateurs';");
+if ($test_tempo_utilisateurs!=-1) {
+
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM tempo_utilisateurs LIKE 'pers_id';"));
+	if ($test_champ!=0) {
+		$result .= "<br />&nbsp;->Changement du champ 'pers_id' de la table 'tempo_utilisateurs' en 'identifiant1'<br />";
+		$query = mysql_query("ALTER TABLE tempo_utilisateurs CHANGE pers_id identifiant1 VARCHAR( 10 ) NOT NULL;");
+		if ($query) {
+			$result .= msj_present("Le champ 'pers_id' de la table 'tempo_utilisateurs' a été changé en 'identifiant1'");
+		} else {
+			$result .= msj_erreur(": Erreur lors du changement du champ 'pers_id' de la table 'tempo_utilisateurs' en 'identifiant1'");
+		}
+	}
+
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM tempo_utilisateurs LIKE 'identifiant2';"));
+	if ($test_champ==0) {
+		$result .= "<br />&nbsp;->Ajout d'un champ 'identifiant2' à la table 'tempo_utilisateurs'<br />";
+		$query = mysql_query("ALTER TABLE tempo_utilisateurs ADD identifiant2 VARCHAR( 50 ) NOT NULL AFTER identifiant1;");
+		if ($query) {
+			$result .= msj_present("Le champ 'identifiant2' de la table 'tempo_utilisateurs' a été ajouté");
+		} else {
+			$result .= msj_erreur(": Le champ 'identifiant2' de la table 'tempo_utilisateurs' n'a pas été ajouté");
+		}
+	}
+
+	$test = sql_query1("SHOW TABLES LIKE 'tempo_utilisateurs_resp';");
+	if ($test != -1) {
+
+		$temoin_erreur_migration="n";
+		$test = mysql_query("SELECT 1=1 FROM tempo_utilisateurs_resp;");
+		if (mysql_num_rows($test)!=0) {
+		//$test = sql_query1("SELECT 1=1 FROM tempo_utilisateurs_resp;");
+		//if ($test != -1) {
+			$result .= "<strong>Migration des données de la table 'tempo_utilisateurs_resp' à la table 'tempo_utilisateurs' :</strong><br />";
+			$sql="INSERT INTO tempo_utilisateurs SELECT login, password, salt, email, pers_id, pers_id, statut, auth_mode, '0000-00-00', statut FROM tempo_utilisateurs_resp;";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+				$temoin_erreur_migration="y";
+			}
+		}
+
+		if($temoin_erreur_migration=="n") {
+			$result .= "<strong>Suppression de l'ancienne table 'tempo_utilisateurs_resp' :</strong><br />";
+			$sql="DROP TABLE tempo_utilisateurs_resp;";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+				$temoin_erreur_migration="y";
+			}
+		}
+	}
+}
 ?>
