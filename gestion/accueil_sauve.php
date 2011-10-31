@@ -1610,7 +1610,8 @@ while ($file = readdir($handle)) {
     and ($file != 'csv')
 	and ($file != 'notanet') //ne pas afficher le dossier notanet
     //=================================
-    and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
+    and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')
+    and(!preg_match('/sql.gz.txt$/i', $file))) {
         $tab_file[] = $file;
         $n++;
     }
