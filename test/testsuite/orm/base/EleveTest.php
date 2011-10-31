@@ -187,7 +187,7 @@ class EleveTest extends GepiEmptyTestBase
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
 		$this->assertEquals(0,$demi_j_col->count());
 				
-		$this->assertEquals(5,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
+		$this->assertEquals(7,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 	}
 	
 	public function testGetDemiJourneesNonJustifieesAbsenceParCollection() {
@@ -217,7 +217,7 @@ class EleveTest extends GepiEmptyTestBase
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
 		$this->assertEquals(0,$demi_j_col->count());
 				
-		$this->assertEquals(3,$florence_eleve->getDemiJourneesNonJustifieesAbsenceParPeriode(1)->count());
+		$this->assertEquals(5,$florence_eleve->getDemiJourneesNonJustifieesAbsenceParPeriode(1)->count());
 	}
 
 	public function testGetRetards() {
