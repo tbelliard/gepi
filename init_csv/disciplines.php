@@ -46,7 +46,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 ?>
-<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php#disciplines"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Troisième phase d'initialisation<br />Importation des matières</h3></center>\n";
@@ -71,6 +71,7 @@ if (!isset($_POST["action"])) {
 	//echo "<p><input type=\"checkbox\" name=\"ligne_entete\" value='y' /> Cocher si le fichier comporte une ligne d'entête.</p>\n";
     echo "<p><label for='ligne_entete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='ligne_entete' id='ligne_entete' value='yes' checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
+	echo "<p><br /></p>\n";
 	echo "</form>\n";
 
 } else {
@@ -92,6 +93,8 @@ if (!isset($_POST["action"])) {
 			require("../lib/footer.inc.php");
 			die();
 		}
+
+		echo "<p><em>On remplit la table 'matieres'&nbsp;:</em> ";
 
 		//$go = true;
 		$i = 0;
@@ -165,7 +168,6 @@ if (!isset($_POST["action"])) {
 			}
 		}
 
-
 		if($nb_matieres_existantes>0) {
 			if ($nb_matieres_existantes == 1){
 				echo "<p>" . $nb_matieres_existantes . " matière existait déjà.</p>\n";
@@ -175,7 +177,7 @@ if (!isset($_POST["action"])) {
 			}
 		}
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php#disciplines'>Revenir à la page précédente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {
@@ -290,10 +292,11 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<p><span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</span></p>\n";
 				}
 
-				echo "<input type='submit' value='Enregistrer' />\n";
+				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
+				echo "<p><br /></p>\n";
 
 				echo "</form>\n";
 			}

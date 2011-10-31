@@ -49,7 +49,7 @@ require_once("../lib/header.inc");
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class=bold><a href="index.php#eleves_options"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Septième phase d'initialisation<br />Importation des associations élèves-options</h3></center>\n";
@@ -61,19 +61,20 @@ if (!isset($_POST["action"])) {
 	//
 
 	echo "<p>Vous allez effectuer la septième et dernière étape : elle consiste à importer le fichier <b>g_eleves_options.csv</b> contenant les associations des élèves et des enseignements de type 'groupe', c'est-à-dire qui ne corerespondent pas à un enseignement de classe entière.\n";
-	echo "<p>Remarque : cette opération n'efface pas les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.\n";
+	echo "<p style='margin-left:6em; text-indent:-6em;'><em>Remarque&nbsp;:</em> cette opération n'efface pas les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : \n";
-	echo "<ul><li>Identifiant (interne) de l'élève</li>\n" .
-			"<li>Identifiant(s) de matière (séparés par un point d'exclamation)</li>\n" .
+	echo "<ul><li>Identifiant (<em>interne</em>) de l'élève</li>\n" .
+			"<li>Identifiant(s) de matière (<em>séparés par un point d'exclamation</em>)</li>\n" .
 			"</ul>\n";
-	echo "<p>Remarque : vous pouvez ne spécifier qu'une seule ligne par élève, en indiquant toutes les matières suivies dans le deuxième champ en séparant les identifiants de matières avec un point d'exclamation, mais vous pouvez également avoir une ligne pour une association simple, et avoir autant de lignes que d'enseignements suivis par l'élève.</p>\n";
+	echo "<p style='margin-left:6em; text-indent:-6em;'><em>Remarque&nbsp;:</em> vous pouvez ne spécifier qu'une seule ligne par élève, en indiquant toutes les matières suivies dans le deuxième champ en séparant les identifiants de matières avec un point d'exclamation, mais vous pouvez également avoir une ligne pour une association simple, et avoir autant de lignes que d'enseignements suivis par l'élève.</p>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_options.csv</b>.\n";
+>>>>>>> .merge_file_nh0EVh
 	echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
-    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -97,6 +98,8 @@ if (!isset($_POST["action"])) {
 			require("../lib/footer.inc.php");
 			die();
 		}
+
+		echo "<p><em>On remplit/complète la table 'j_eleves_groupes'&nbsp;:</em> ";
 
 		//$go = true;
 		$i = 0;
@@ -199,7 +202,7 @@ if (!isset($_POST["action"])) {
 		if ($total > 0) {echo "<p>" . $total . " associations élèves-options ont été enregistrées.</p>\n";}
 		if(($error==0)&&($total==0)) {echo "<p>Aucune association élève-option n'a été enregistrée???</p>\n";}
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php#eleves_options'>Revenir à la page précédente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {
@@ -315,7 +318,7 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<p><span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</span></p>\n";
 				}
 
 				echo "<p><input type='submit' value='Enregistrer' /></p>\n";

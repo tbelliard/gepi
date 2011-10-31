@@ -129,23 +129,47 @@ if (!isset($step2)) {
 
 
 if (isset($is_posted)) {
-    $j=0;
-    while ($j < count($liste_tables_del)) {
-		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
-		if($test==1){
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+
+	echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
+	$j=0;
+	$k=0;
+	while ($j < count($liste_tables_del)) {
+		$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+		//echo "$sql<br />";
+		$test = sql_query1($sql);
+		if ($test != -1) {
+			if($k>0) {echo ", ";}
+			$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+			$res_test_tab=mysql_query($sql);
+			if(mysql_num_rows($res_test_tab)>0) {
+				$sql="DELETE FROM $liste_tables_del[$j];";
+				$del = @mysql_query($sql);
+				echo "<b>".$liste_tables_del[$j]."</b>";
+				echo " (".mysql_num_rows($res_test_tab).")";
 			}
+			else {
+				echo $liste_tables_del[$j];
+			}
+			$k++;
 		}
-        $j++;
-    }
+		$j++;
+	}
 
 	// Suppression des comptes d'élèves:
-	$sql="DELETE FROM utilisateurs WHERE statut='eleves';";
+	echo "<br />\n";
+	echo "<p><em>On supprime les anciens comptes élèves...</em> ";
+	$sql="DELETE FROM utilisateurs WHERE statut='eleve';";
 	$del=mysql_query($sql);
 
+	// Liste des comptes scolarité pour associer aux nouvelles classes
+	$sql="SELECT login FROM utilisateurs WHERE statut='scolarite';";
+	$res_scol=mysql_query($sql);
+	$tab_user_scol=array();
+	if(mysql_num_rows($res_scol)>0) {
+		while($lig_scol=mysql_fetch_object($res_scol)) {$tab_user_scol[]=$lig_scol->login;}
+	}
+
     // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
-    //$call_data = mysql_query("SELECT distinct(DIVCOD) classe FROM temp_gep_import WHERE DIVCOD!='' ORDER BY DIVCOD");
     $call_data = mysql_query("SELECT distinct(DIVCOD) classe FROM temp_gep_import2 WHERE DIVCOD!='' ORDER BY DIVCOD");
     $nb = mysql_num_rows($call_data);
     $i = "0";
@@ -156,15 +180,23 @@ if (isset($is_posted)) {
         // On teste d'abord :
         $test = mysql_result(mysql_query("SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
         if ($test == "0") {
-            //$reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".traitement_magic_quotes(corriger_caracteres($reg_formule[$classe]))."', format_nom='np'");
-            //$reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='np'");
             $reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='cni'");
+
+			$id_classe=mysql_insert_id();
+			for($loop=0;$loop<count($tab_user_scol);$loop++) {
+				// TEST déjà assoc... cela peut arriver si des scories subsistent...
+				$sql="SELECT 1=1 FROM j_scol_classes WHERE login='$tab_user_scol[$loop]' AND id_classe='$id_classe';";
+				$test_j_scol_class=mysql_query($sql);
+				if(mysql_num_rows($test_j_scol_class)==0) {
+					//$tab_user_scol
+					$sql="INSERT INTO j_scol_classes SET login='$tab_user_scol[$loop]', id_classe='$id_classe';";
+					$insert_j_scol_class=mysql_query($sql);
+				}
+			}
         } else {
-            //$reg_classe = mysql_query("UPDATE classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".traitement_magic_quotes(corriger_caracteres($reg_formule[$classe]))."', format_nom='np' WHERE classe='$classe'");
-            //$reg_classe = mysql_query("UPDATE classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='np' WHERE classe='$classe'");
             $reg_classe = mysql_query("UPDATE classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='cni' WHERE classe='$classe'");
         }
-        if (!$reg_classe) echo "<p>Erreur lors de l'enregistrement de la classe $classe.";
+        if (!$reg_classe) {echo "<p style='color:red'>Erreur lors de l'enregistrement de la classe $classe.";}
 
         // On enregistre les périodes pour cette classe
         // On teste d'abord :
@@ -308,14 +340,15 @@ onclick="javascript:MetVal('pour')" />
 <br />
 <?php
 
-    echo "<table border=1 cellpadding=2 cellspacing=2>";
+    echo "<table class='boireaus' border=1 cellpadding=2 cellspacing=2>";
     echo "<tr>
-<td><p class=\"small\" align=\"center\">Aide<br />Remplissage</p></td>
-<td><p class=\"small\">Identifiant de la classe</p></td>
-<td><p class=\"small\">Nom complet</p></td>
-<td><p class=\"small\">Nom apparaissant au bas du bulletin</p></td>
-<td><p class=\"small\">formule au bas du bulletin</p></td>
-<td><p class=\"small\">Nombres de périodes</p></td></tr>\n";
+<th><p class=\"small\" align=\"center\">Aide<br />Remplissage</p></th>
+<th><p class=\"small\">Identifiant de la classe</p></th>
+<th><p class=\"small\">Nom complet</p></th>
+<th><p class=\"small\">Nom apparaissant au bas du bulletin</p></th>
+<th><p class=\"small\">formule au bas du bulletin</p></th>
+<th><p class=\"small\">Nombres de périodes</p></th></tr>\n";
+	$alt=1;
     while ($i < $nb) {
         $classe_id = mysql_result($call_data, $i, "classe");
         $test_classe_exist = mysql_query("SELECT * FROM classes WHERE classe='$classe_id'");
@@ -335,7 +368,8 @@ onclick="javascript:MetVal('pour')" />
             $suivi_par = mysql_result($test_classe_exist, 0, 'suivi_par');
             $formule = mysql_result($test_classe_exist, 0, 'formule');
         }
-        echo "<tr>\n";
+		$alt=$alt*(-1);
+        echo "<tr class='lig$alt white_hover'>\n";
         echo "<td><center><input type=\"checkbox\" /></center></td>\n";
         echo "<td>\n";
         echo "<p align='center'><b>$nom_court</b></p>\n";
@@ -363,11 +397,19 @@ onclick="javascript:MetVal('pour')" />
     }
     echo "</table>\n";
     echo "<input type=hidden name='step2' value='y' />\n";
-    echo "<center><input type='submit' value='Enregistrer les données' /></center>\n";
+    echo "<p align='center'><input type='submit' value='Enregistrer les données' /></p>\n";
     echo "</form>\n";
 }
 
 ?>
+<p><em>Remarque sur les périodes&nbsp;:</em></p>
+<blockquote>
+	<p>Le nombre de périodes doit correspondre au nombre de bulletins qui sera édité pour chaque élève sur l'année.<br />
+	En collège par exemple, on saisira trois périodes (<em>trimestres</em>).<br />
+	Cela n'empêchera pas d'éditer six relevés de notes par élève au cours de l'année si vous souhaitez des relevés de notes de demi-période.<br />
+	Il ne serait en revanche pas possible d'éditer un bulletin fusion de deux périodes.</p>
+</blockquote>
+<p><br /></p>
 </div>
 </body>
 </html>

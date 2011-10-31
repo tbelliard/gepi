@@ -449,7 +449,7 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 		echo "<td>\n";
-			echo "<a href='../eleves/modify_eleve.php?eleve_login=".$current_eleve->login."&amp;journal_connexions=y'>".$current_eleve->login."</a>";
+			echo "<a href='../eleves/modify_eleve.php?eleve_login=".$current_eleve->login."&amp;journal_connexions=y' alt=\"Fiche de l'élève\" title=\"Fiche de l'élève\">".$current_eleve->login."</a>";
 		echo "</td>\n";
 		echo "<td>\n";
 			echo $current_eleve->nom . " " . $current_eleve->prenom;

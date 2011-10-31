@@ -27,7 +27,6 @@
 require_once("../lib/initialisations.inc.php");
 extract($_POST, EXTR_OVERWRITE);
 
-
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -38,11 +37,13 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+$debug_ele="n";
+
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 1";
 require_once("../lib/header.inc");
@@ -58,14 +59,27 @@ echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation
 
 
 if (!isset($is_posted)) {
-	echo "<p>Vous allez effectuer la première étape : elle consiste à importer le fichier <b>ELEVES.CSV</b> (<i>généré à partir des exports XML de Sconet</i>) contenant toutes les données dans une table temporaire de la base de données de <b>GEPI</b>.";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>ELEVES.CSV</b>.";
+	echo "<p>Vous allez effectuer la premiï¿½re ï¿½tape&nbsp;: elle consiste ï¿½ importer le fichier <b>ELEVES.CSV</b> (<em>gï¿½nï¿½rï¿½ ï¿½ partir des exports XML de Sconet</em>) contenant toutes les donnï¿½es dans une table temporaire de la base de donnï¿½es de <b>GEPI</b>.";
+	echo "<p>Veuillez prï¿½ciser le nom complet du fichier <b>ELEVES.CSV</b>.";
 	echo "<form enctype='multipart/form-data' action='step1.php' method=post>\n";
 	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	echo "<p><input type=submit value='Valider' /></p>\n";
 	echo "</form>\n";
+
+	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
+		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			echo "<p style='color:red'>Il existe un ou des comptes ï¿½lï¿½ves de l'annï¿½e passï¿½e, et vous n'avez pas mis ces comptes en rï¿½serve pour imposer le mï¿½me login/mot de passe cette annï¿½e.<br />Est-ce bien un choix dï¿½libï¿½rï¿½ ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de faï¿½on ï¿½ ne pas devoir re-distribuer ces informations (<em>et ï¿½viter de perturber ces utilisateurs</em>), vous pouvez procï¿½der ï¿½ la mise en rï¿½serve avant d'initialiser l'annï¿½e dans la page <a href='../gestion/changement_d_annee.php'>Changement d'annï¿½e</a> (<em>vous y trouverez aussi la possibilitï¿½ de conserver les comptes parents et bien d'autres actions ï¿½ ne pas oublier avant l'initialisation</em>).</p>\n";
+		}
+	}
+
 } else {
 	check_token(false);
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
@@ -139,35 +153,6 @@ if (!isset($is_posted)) {
 			}
 			fclose ($fp);
 
-
-			/*
-			// On range dans un tableau les en-têtes des champs
-			if (@dbase_get_record_with_names($fp,1)) {
-				$temp = @dbase_get_record_with_names($fp,1);
-			} else {
-				echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-				echo "<a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
-				die();
-			}
-
-			$nb = 0;
-			foreach($temp as $key => $val){
-				$en_tete[$nb] = "$key";
-				$nb++;
-			}
-			*/
-
-
-			// On range dans tabindice les indices des champs retenus
-			/*
-			for ($k = 0; $k < count($tabchamps); $k++) {
-				for ($i = 0; $i < count($en_tete); $i++) {
-					if (trim($en_tete[$i]) == $tabchamps[$k]) {
-						$tabindice[] = $i;
-					}
-				}
-			}
-			*/
 			$cpt_tmp=0;
 			for ($k = 0; $k < count($tabchamps); $k++) {
 				for ($i = 0; $i < count($en_tete); $i++) {
@@ -187,13 +172,8 @@ if (!isset($is_posted)) {
 			$nb_reg_no = 0;
 			for($k = 1; ($k < $nblignes+1); $k++){
 				$enregistre = "yes";
-				//$ligne = dbase_get_record($fp,$k);
 				if(!feof($fp)){
-					//=========================
-					// MODIF: boireaus 20071024
-					//$ligne = fgets($fp, 4096);
-					$ligne = my_ereg_replace('"','',fgets($fp, 4096));
-					//=========================
+					$ligne = preg_replace('/"/','',fgets($fp, 4096));
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						//$query = "INSERT INTO temp_gep_import2 VALUES ('$k',''";
@@ -202,19 +182,14 @@ if (!isset($is_posted)) {
 							//$query = $query.",";
 
 							$ind = $tabindice[$i];
-							//$affiche = dbase_filter(trim($ligne[$ind]));
-							//$affiche = dbase_filter(trim($tabligne[$ind]));
 							// On vire en plus les apostrophes dans les noms,...
-							$affiche = my_ereg_replace("'"," ",dbase_filter(trim($tabligne[$ind])));
-							//$query = $query."\"".$affiche."\"";
+							$affiche = preg_replace("/'/"," ",dbase_filter(trim($tabligne[$ind])));
 							if($tabchamps[$ind]!=''){
 								$query = $query.",";
 								$query = $query."$tabchamps[$ind]='".$affiche."'";
 							}
 							if (($en_tete[$ind] == 'DIVCOD') and ($affiche == '')) {$enregistre = "no";}
 						}
-						//$query = $query.")";
-						//echo "$query<br />";
 						if ($enregistre == "yes") {
 							$register = mysql_query($query);
 							if (!$register) {
@@ -222,16 +197,14 @@ if (!isset($is_posted)) {
 								$nb_reg_no++;
 							} else {
 								$nb_reg_ok++;
-					//                        echo ".";
 							}
 						} else {
-				//                    echo ".";
+							//echo ".";
 						}
 					}
 				}
 			}
 
-			//dbase_close($fp);
 			fclose($fp);
 			if ($nb_reg_no != 0) {
 				echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs, vous ne pouvez pas procéder à la suite de l'initialisation. Trouvez la cause de l'erreur et recommencez la procédure, après avoir vidé la table temporaire.";

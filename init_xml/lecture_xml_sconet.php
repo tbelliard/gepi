@@ -28,14 +28,24 @@ require_once("../lib/header.inc");
 
 function extr_valeur($lig){
 	unset($tabtmp);
-	$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
+	$tabtmp=explode(">",preg_replace("/</",">",$lig));
 	return trim($tabtmp[2]);
 }
 
 ?>
 	<div class="content">
 		<?php
+
+			// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
+			$tempdir=get_user_temp_directory();
+			if(!$tempdir){
+				echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+				// Il ne faut pas aller plus loin...
+				// SITUATION A GERER
+			}
+
 			// Pour importer séparemment les ElevesAvecAdresses.xml, Nomenclature.xml et d'autre part le Responsables.xml,
+>>>>>>> .merge_file_bzHajt
 			// une variable:
 			$etape=isset($_POST['etape']) ? $_POST['etape'] : (isset($_GET['etape']) ? $_GET['etape'] : NULL);
 			// Il y a un problème de volume des données transférées si on envoye tout d'un coup.
@@ -138,30 +148,7 @@ function extr_valeur($lig){
 						//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
 						echo "<p>Cette page permet de remplir des tables temporaires avec les informations élèves, responsables,...<br />\n";
 						echo "</p>\n";
-						/*
-						echo "<p>Cette page génère des fichiers CSV:</p>\n";
-						echo "<ul>\n";
-							echo "<li>\n";
-								echo "<p><b>Pour SambaEdu3:</b></p>\n";
-								echo "<ul>\n";
-								echo "<li>f_wind.txt</li>\n";
-								echo "<li>f_div.txt</li>\n";
-								echo "<li>f_men.txt</li>\n";
-								echo "</ul>\n";
-							echo "</li>\n";
-							echo "<li>\n";
-								echo "<p><b>Pour Gepi:</b></p>\n";
-								echo "<ul>\n";
-								echo "<li>f_wind.csv</li>\n";
-								echo "<li>f_div.csv</li>\n";
-								echo "<li>f_men.csv</li>\n";
-								echo "<li>f_gpd.csv</li>\n";
-								echo "<li>f_tmt.csv</li>\n";
-								echo "</ul>\n";
-							echo "</li>\n";
-						echo "</ul>\n";
-						echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
-						*/
+
 						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 						echo add_token_field();
 
@@ -178,13 +165,7 @@ function extr_valeur($lig){
 						echo "<input type='hidden' name='etape' value='$etape' />\n";
 						echo "<input type='hidden' name='is_posted' value='yes' />\n";
 						echo "</p>\n";
-						/*
-						echo "<p> Pour GEPI:<br />\n";
-						echo "<input type=\"radio\" name=\"mdp\" value=\"alea\" checked> Générer un mot de passe aléatoire pour chaque professeur.<br />\n";
-						echo "<input type=\"radio\" name=\"mdp\" value=\"date\"> Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>).</p>\n";
-						echo "<input type='hidden' name='is_posted' value='yes'>\n";
-						//echo "</p>\n";
-						*/
+
 						echo "<p><input type='submit' value='Valider' /></p>\n";
 						echo "</form>\n";
 					}
@@ -361,542 +342,777 @@ function dragStop(event) {
 
 						if($etape==1){
 							$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
-							$fp=fopen($xml_file['tmp_name'],"r");
-							if($fp){
-								echo "<h3>Lecture du fichier Elèves...</h3>\n";
-								echo "<blockquote>\n";
-								while(!feof($fp)){
-									$ligne[]=fgets($fp,4096);
-								}
-								fclose($fp);
-								echo "<p>Terminé.</p>\n";
 
-								echo "<p>Aller à la section <a href='#csv'>CSV</a>.<br />\n";
-
-								echo "Si vous patientez, des liens directs seront proposés (<i>dans un cadre jaune</i>) pour télécharger les fichiers.<br />Si la page finit son chargement sans générer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
-								if($max_execution_time!=0){
-									echo " (<i>".$max_execution_time."s sur votre serveur</i>)";
-								}
-								else{
-									echo " (<i>consultez la valeur de la variable 'max_execution_time' dans votre 'php.ini'</i>)";
-								}
-								echo " ou une charge maximale trop réduite";
-								if("$memory_limit"!="0"){
-									echo " (<i>".$memory_limit." sur votre serveur</i>)\n";
-								}
-								else{
-									echo " (<i>consultez la valeur de la variable 'memory_limit' dans votre 'php.ini'</i>)";
-								}
-								echo ".</p>\n";
-								echo "</blockquote>\n";
-
-
-								echo "<h3>Analyse du fichier pour extraire les informations élèves...</h3>\n";
-								echo "<blockquote>\n";
-
-								$cpt=0;
-								$eleves=array();
-								$temoin_eleves=0;
-								$temoin_ele=0;
-								$temoin_options=0;
-								$temoin_scol=0;
-								//Compteur élève:
-								$i=-1;
-
-								$tab_champs_eleve=array("ID_NATIONAL",
-								"ELENOET",
-								"NOM",
-								"PRENOM",
-								"DATE_NAISS",
-								"DOUBLEMENT",
-								"DATE_SORTIE",
-								"CODE_REGIME",
-								"DATE_ENTREE",
-								"CODE_MOTIF_SORTIE",
-								"CODE_SEXE",
-								);
-
-								/*
-								$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
-								"CODE_RNE",
-								"SIGLE",
-								"DENOM_PRINC",
-								"DENOM_COMPL",
-								"LIGNE1_ADRESSE",
-								"LIGNE2_ADRESSE",
-								"LIGNE3_ADRESSE",
-								"LIGNE4_ADRESSE",
-								"BOITE_POSTALE",
-								"MEL",
-								"TELEPHONE",
-								"LL_COMMUNE_INSEE"
-								);
-								*/
-
-								$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
-								"CODE_RNE",
-								"SIGLE",
-								"DENOM_PRINC",
-								"DENOM_COMPL",
-								"LIGNE1_ADRESSE",
-								"LIGNE2_ADRESSE",
-								"LIGNE3_ADRESSE",
-								"LIGNE4_ADRESSE",
-								"BOITE_POSTALE",
-								"MEL",
-								"TELEPHONE",
-								"CODE_COMMUNE_INSEE",
-								"LL_COMMUNE_INSEE"
-								);
-
-								// PARTIE <ELEVES>
-								while($cpt<count($ligne)){
-									//echo "<p>".htmlspecialchars($ligne[$cpt])."<br />\n";
-									if(strstr($ligne[$cpt],"<ELEVES>")){
-										echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_eleves++;
-									}
-									if(strstr($ligne[$cpt],"</ELEVES>")){
-										echo "Fin de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_eleves++;
-										break;
-									}
-									if($temoin_eleves==1){
-										if(strstr($ligne[$cpt],"<ELEVE ")){
-											$i++;
-											$eleves[$i]=array();
-											$eleves[$i]["scolarite_an_dernier"]=array();
-
-											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
-											unset($tabtmp);
-											$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
-											$eleves[$i]["eleve_id"]=trim($tabtmp[1]);
-											//echo "\$eleves[$i][\"eleve_id\"]=".$eleves[$i]["eleve_id"]."<br />\n";
-
-											unset($tabtmp);
-											$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
-											$eleves[$i]["elenoet"]=trim($tabtmp[1]);
-											//echo "\$eleves[$i][\"elenoet\"]=".$eleves[$i]["elenoet"]."<br />\n";
-											$temoin_ele=1;
-										}
-										if(strstr($ligne[$cpt],"</ELEVE>")){
-											$temoin_ele=0;
-										}
-										if($temoin_ele==1){
-											if(strstr($ligne[$cpt],"<SCOLARITE_AN_DERNIER>")){
-												$temoin_scol=1;
-											}
-											if(strstr($ligne[$cpt],"</SCOLARITE_AN_DERNIER>")){
-												$temoin_scol=0;
-											}
-
-											if($temoin_scol==0){
-												for($loop=0;$loop<count($tab_champs_eleve);$loop++){
-													if(strstr($ligne[$cpt],"<".$tab_champs_eleve[$loop].">")){
-														$tmpmin=strtolower($tab_champs_eleve[$loop]);
-														$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-														//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
-														break;
-													}
-												}
-												if(isset($eleves[$i]["date_naiss"])){
-													// A AMELIORER:
-													// On passe plusieurs fois dans la boucle (autant de fois qu'il y a de lignes pour l'élève en cours après le repérage de la date...)
-													//echo $eleves[$i]["date_naiss"]."<br />\n";
-													unset($naissance);
-													$naissance=explode("/",$eleves[$i]["date_naiss"]);
-													//$eleve_naissance_annee=$naissance[2];
-													//$eleve_naissance_mois=$naissance[1];
-													//$eleve_naissance_jour=$naissance[0];
-													if(isset($naissance[2])){
-														$eleve_naissance_annee=$naissance[2];
-													}
-													else{
-														$eleve_naissance_annee="";
-													}
-													if(isset($naissance[1])){
-														$eleve_naissance_mois=$naissance[1];
-													}
-													else{
-														$eleve_naissance_mois="";
-													}
-													if(isset($naissance[0])){
-														$eleve_naissance_jour=$naissance[0];
-													}
-													else{
-														$eleve_naissance_jour="";
-													}
-
-													$eleves[$i]["date_naiss"]=$eleve_naissance_annee.$eleve_naissance_mois.$eleve_naissance_jour;
-												}
-											}
-											else{
-												//echo "$i - ";
-												//$eleves[$i]["scolarite_an_dernier"]=array();
-												for($loop=0;$loop<count($tab_champs_scol_an_dernier);$loop++){
-													if(strstr($ligne[$cpt],"<".$tab_champs_scol_an_dernier[$loop].">")){
-														//echo "$i - ";
-														$tmpmin=strtolower($tab_champs_scol_an_dernier[$loop]);
-														$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-														//echo "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n";
-														break;
-													}
-												}
-											}
-											/*
-											if(strstr($ligne[$cpt],"<ID_NATIONAL>")){
-												$eleves[$i]["id_national"]=extr_valeur($ligne[$cpt]);
-											}
-											if(strstr($ligne[$cpt],"<ELENOET>")){
-												$eleves[$i]["elenoet"]=extr_valeur($ligne[$cpt]);
-											}
-											*/
-										}
-									}
-									$cpt++;
-								}
-
-
-								/*
-
-								for($i=0;$i<count($eleves);$i++){
-									echo "\$eleves[$i][\"nom\"]=".$eleves[$i]["nom"]."<br />\n";
-									echo "\$eleves[$i][\"scolarite_an_dernier\"][\"code_rne\"]=".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."<br />\n";
-								}
-								*/
-
-
-								// PARTIE <OPTIONS>
-								$temoin_opt="";
-								$temoin_opt_ele="";
-								while($cpt<count($ligne)){
-									if(strstr($ligne[$cpt],"<OPTIONS>")){
-										echo "Début de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_options++;
-									}
-									if(strstr($ligne[$cpt],"</OPTIONS>")){
-										echo "Fin de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_options++;
-										break;
-									}
-									if($temoin_options==1){
-										if(strstr($ligne[$cpt],"<OPTION ")){
-
-											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
-											unset($tabtmp);
-											$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
-											$tmp_eleve_id=trim($tabtmp[1]);
-
-											// Recherche du $i de $eleves[$i] correspondant:
-											$temoin_ident="non";
-											for($i=0;$i<count($eleves);$i++){
-												if($eleves[$i]["eleve_id"]==$tmp_eleve_id){
-													$temoin_ident="oui";
-													break;
-												}
-											}
-											if($temoin_ident!="oui"){
-												unset($tabtmp);
-												$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
-												$tmp_elenoet=trim($tabtmp[1]);
-
-												for($i=0;$i<count($eleves);$i++){
-													if($eleves[$i]["elenoet"]==$tmp_elenoet){
-														$temoin_ident="oui";
-														break;
-													}
-												}
-											}
-											if($temoin_ident=="oui"){
-												$eleves[$i]["options"]=array();
-												$j=0;
-												$temoin_opt=1;
-											}
-										}
-										if(strstr($ligne[$cpt],"</OPTION>")){
-											$temoin_opt=0;
-										}
-										if($temoin_opt==1){
-										//if(($temoin_opt==1)&&($temoin_ident=="oui")){
-											if(strstr($ligne[$cpt],"<OPTIONS_ELEVE>")){
-												$eleves[$i]["options"][$j]=array();
-												$temoin_opt_ele=1;
-											}
-											if(strstr($ligne[$cpt],"</OPTIONS_ELEVE>")){
-												$j++;
-												$temoin_opt_ele=0;
-											}
-
-											$tab_champs_opt=array("NUM_OPTION","CODE_MODALITE_ELECT","CODE_MATIERE");
-											if($temoin_opt_ele==1){
-												for($loop=0;$loop<count($tab_champs_opt);$loop++){
-													if(strstr($ligne[$cpt],"<".$tab_champs_opt[$loop].">")){
-														$tmpmin=strtolower($tab_champs_opt[$loop]);
-														$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-														//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
-														break;
-													}
-												}
-											}
-										}
-									}
-									$cpt++;
-								}
-
-
-								// PARTIE <STRUCTURES>
-								$temoin_structures=0;
-								$temoin_struct_ele=-1;
-								$temoin_struct=-1;
-								while($cpt<count($ligne)){
-									if(strstr($ligne[$cpt],"<STRUCTURES>")){
-										echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_structures++;
-									}
-									if(strstr($ligne[$cpt],"</STRUCTURES>")){
-										echo "Fin de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_structures++;
-										break;
-									}
-									if($temoin_structures==1){
-										if(strstr($ligne[$cpt],"<STRUCTURES_ELEVE ")){
-
-											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
-											unset($tabtmp);
-											$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
-											$tmp_eleve_id=trim($tabtmp[1]);
-
-											// Recherche du $i de $eleves[$i] correspondant:
-											$temoin_ident="non";
-											for($i=0;$i<count($eleves);$i++){
-												if($eleves[$i]["eleve_id"]==$tmp_eleve_id){
-													$temoin_ident="oui";
-													break;
-												}
-											}
-											if($temoin_ident!="oui"){
-												unset($tabtmp);
-												$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
-												$tmp_elenoet=trim($tabtmp[1]);
-
-												for($i=0;$i<count($eleves);$i++){
-													if($eleves[$i]["elenoet"]==$tmp_elenoet){
-														$temoin_ident="oui";
-														break;
-													}
-												}
-											}
-											if($temoin_ident=="oui"){
-												$eleves[$i]["structures"]=array();
-												$j=0;
-												$temoin_struct_ele=1;
-											}
-										}
-										if(strstr($ligne[$cpt],"</STRUCTURES_ELEVE>")){
-											$temoin_struct_ele=0;
-										}
-										if($temoin_struct_ele==1){
-											if(strstr($ligne[$cpt],"<STRUCTURE>")){
-												$eleves[$i]["structures"][$j]=array();
-												$temoin_struct=1;
-											}
-											if(strstr($ligne[$cpt],"</STRUCTURE>")){
-												$j++;
-												$temoin_struct=0;
-											}
-
-											$tab_champs_struct=array("CODE_STRUCTURE","TYPE_STRUCTURE");
-											if($temoin_struct==1){
-												for($loop=0;$loop<count($tab_champs_struct);$loop++){
-													if(strstr($ligne[$cpt],"<".$tab_champs_struct[$loop].">")){
-														$tmpmin=strtolower($tab_champs_struct[$loop]);
-														$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-														//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
-														break;
-													}
-												}
-											}
-										}
-									}
-									$cpt++;
-								}
-
-								echo "<p>Terminé.</p>\n";
-								echo "</blockquote>\n";
-
-								echo "<h3>Affichage (d'une partie) des données ELEVES extraites:</h3>\n";
-								echo "<blockquote>\n";
-								echo "<table border='1'>\n";
-								echo "<tr>\n";
-								//echo "<th style='color: blue;'>&nbsp;</th>\n";
-								echo "<th>Elenoet</th>\n";
-								echo "<th>Nom</th>\n";
-								echo "<th>Prénom</th>\n";
-								echo "<th>Sexe</th>\n";
-								echo "<th>Date de naissance</th>\n";
-								echo "<th>Division</th>\n";
-								echo "</tr>\n";
-								$i=0;
-								while($i<count($eleves)){
-									echo "<tr>\n";
-									//echo "<td style='color: blue;'>$cpt</td>\n";
-									//echo "<td style='color: blue;'>&nbsp;</td>\n";
-									echo "<td>".$eleves[$i]["elenoet"]."</td>\n";
-									echo "<td>".$eleves[$i]["nom"]."</td>\n";
-									echo "<td>".$eleves[$i]["prenom"]."</td>\n";
-									if(isset($eleves[$i]["code_sexe"])){
-										echo "<td>".$eleves[$i]["code_sexe"]."</td>\n";
-									}
-									else{
-										echo "<td style='background-color:red'>1<a name='sexe_manquant_".$i."'></a></td>\n";
-										//$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
-									}
-									echo "<td>".$eleves[$i]["date_naiss"]."</td>\n";
-									echo "<td>";
-									//if(isset($eleves[$i]["structures"][0]["code_structure"])){echo $eleves[$i]["structures"][0]["code_structure"];}else{echo "&nbsp;";}
-									$temoin_div_trouvee="";
-									if(isset($eleves[$i]["structures"])){
-										if(count($eleves[$i]["structures"])>0){
-											for($j=0;$j<count($eleves[$i]["structures"]);$j++){
-												if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
-													$temoin_div_trouvee="oui";
-													break;
-												}
-											}
-											if($temoin_div_trouvee==""){
-												echo "&nbsp;";
-											}
-											else{
-												echo $eleves[$i]["structures"][$j]["code_structure"];
-												$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
-
-												if(!isset($eleves[$i]["code_sexe"])){
-													$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
-												}
-											}
-										}
-										else{
-											echo "&nbsp;";
-										}
-									}
-									else{
-										echo "&nbsp;";
-									}
-									echo "</td>\n";
-									echo "</tr>\n";
-									$i++;
-								}
-								echo "</table>\n";
-								echo "</blockquote>\n";
-
+							if(!is_uploaded_file($xml_file['tmp_name'])) {
+								echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+			
+								echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+								echo "post_max_size=$post_max_size<br />\n";
+								echo "upload_max_filesize=$upload_max_filesize<br />\n";
+								echo "</p>\n";
+			
+								// Il ne faut pas aller plus loin...
+								// SITUATION A GERER
+								require("../lib/footer.inc.php");
+								die();
 							}
 							else{
-								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Elèves n'a pas pu être ouvert.<br />\n";
-								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
-								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
+								if(!file_exists($xml_file['tmp_name'])){
+									echo "<p style='color:red;'>Le fichier Eleves aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+			
+									echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+									echo "post_max_size=$post_max_size<br />\n";
+									echo "upload_max_filesize=$upload_max_filesize<br />\n";
+									echo "et le volume de ".$xml_file['name']." serait<br />\n";
+									echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
+									echo "</p>\n";
+									// Il ne faut pas aller plus loin...
+									// SITUATION A GERER
+									require("../lib/footer.inc.php");
+									die();
+								}
+			
+								echo "<p>Le fichier Eleves a été uploadé.</p>\n";
+			
+								/*
+								echo "\$xml_file['tmp_name']=".$xml_file['tmp_name']."<br />\n";
+								echo "\$tempdir=".$tempdir."<br />\n";
+			
+								echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+								echo "post_max_size=$post_max_size<br />\n";
+								echo "upload_max_filesize=$upload_max_filesize<br />\n";
+								echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
+								echo "</p>\n";
+								*/
+			
+								//$source_file=stripslashes($xml_file['tmp_name']);
+								$source_file=$xml_file['tmp_name'];
+								$dest_file="../temp/".$tempdir."/eleves.xml";
+								$res_copy=copy("$source_file" , "$dest_file");
+			
+								//===============================================================
+								// ajout prise en compte des fichiers ZIP: Marc Leygnac
+			
+								$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+								// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
+								// $unzipped_max_filesize < 0    extraction zip désactivée
+								if($unzipped_max_filesize>=0) {
+									$fichier_emis=$xml_file['name'];
+									$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+									if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
+										{
+										require_once('../lib/pclzip.lib.php');
+										$archive = new PclZip($dest_file);
+			
+										if (($list_file_zip = $archive->listContent()) == 0) {
+											echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										if(sizeof($list_file_zip)!=1) {
+											echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										/*
+										echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
+										echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
+										echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
+										*/
+										//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
+			
+										if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
+											echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										//unlink("$dest_file"); // Pour Wamp...
+										$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
+										if ($res_extract != 0) {
+											echo "<p>Le fichier Eleves uploadé a été dézippé.</p>\n";
+											$fichier_extrait=$res_extract[0]['filename'];
+											unlink("$dest_file"); // Pour Wamp...
+											$res_copy=rename("$fichier_extrait" , "$dest_file");
+										}
+										else {
+											echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+									}
+								}
+								//fin  ajout prise en compte des fichiers ZIP
+								//===============================================================
+			
+								if(!$res_copy){
+									echo "<p style='color:red;'>La copie du fichier Eleves vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+									// Il ne faut pas aller plus loin...
+									// SITUATION A GERER
+									require("../lib/footer.inc.php");
+									die();
+								}
+								else{
+									echo "<p>La copie du fichier Eleves vers le dossier temporaire a réussi.</p>\n";
+
+									//$fp=fopen($xml_file['tmp_name'],"r");
+									$fp=fopen($dest_file,"r");
+									if($fp){
+										echo "<h3>Lecture du fichier Elèves...</h3>\n";
+										echo "<blockquote>\n";
+										while(!feof($fp)){
+											$ligne[]=fgets($fp,4096);
+										}
+										fclose($fp);
+										echo "<p>Terminé.</p>\n";
+		
+										echo "<p>Aller à la section <a href='#csv'>CSV</a>.<br />\n";
+		
+										echo "Si vous patientez, des liens directs seront proposés (<i>dans un cadre jaune</i>) pour télécharger les fichiers.<br />Si la page finit son chargement sans générer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
+										if($max_execution_time!=0){
+											echo " (<i>".$max_execution_time."s sur votre serveur</i>)";
+										}
+										else{
+											echo " (<i>consultez la valeur de la variable 'max_execution_time' dans votre 'php.ini'</i>)";
+										}
+										echo " ou une charge maximale trop réduite";
+										if("$memory_limit"!="0"){
+											echo " (<i>".$memory_limit." sur votre serveur</i>)\n";
+										}
+										else{
+											echo " (<i>consultez la valeur de la variable 'memory_limit' dans votre 'php.ini'</i>)";
+										}
+										echo ".</p>\n";
+										echo "</blockquote>\n";
+		
+		
+										echo "<h3>Analyse du fichier pour extraire les informations élèves...</h3>\n";
+										echo "<blockquote>\n";
+		
+										$cpt=0;
+										$eleves=array();
+										$temoin_eleves=0;
+										$temoin_ele=0;
+										$temoin_options=0;
+										$temoin_scol=0;
+										//Compteur élève:
+										$i=-1;
+		
+										$tab_champs_eleve=array("ID_NATIONAL",
+										"ELENOET",
+										"NOM",
+										"PRENOM",
+										"DATE_NAISS",
+										"DOUBLEMENT",
+										"DATE_SORTIE",
+										"CODE_REGIME",
+										"DATE_ENTREE",
+										"CODE_MOTIF_SORTIE",
+										"CODE_SEXE",
+										);
+		
+										/*
+										$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
+										"CODE_RNE",
+										"SIGLE",
+										"DENOM_PRINC",
+										"DENOM_COMPL",
+										"LIGNE1_ADRESSE",
+										"LIGNE2_ADRESSE",
+										"LIGNE3_ADRESSE",
+										"LIGNE4_ADRESSE",
+										"BOITE_POSTALE",
+										"MEL",
+										"TELEPHONE",
+										"LL_COMMUNE_INSEE"
+										);
+										*/
+		
+										$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
+										"CODE_RNE",
+										"SIGLE",
+										"DENOM_PRINC",
+										"DENOM_COMPL",
+										"LIGNE1_ADRESSE",
+										"LIGNE2_ADRESSE",
+										"LIGNE3_ADRESSE",
+										"LIGNE4_ADRESSE",
+										"BOITE_POSTALE",
+										"MEL",
+										"TELEPHONE",
+										"CODE_COMMUNE_INSEE",
+										"LL_COMMUNE_INSEE"
+										);
+		
+										// PARTIE <ELEVES>
+										while($cpt<count($ligne)){
+											//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
+											if(strstr($ligne[$cpt],"<ELEVES>")){
+												echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_eleves++;
+											}
+											if(strstr($ligne[$cpt],"</ELEVES>")){
+												echo "Fin de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_eleves++;
+												break;
+											}
+											if($temoin_eleves==1){
+												if(strstr($ligne[$cpt],"<ELEVE ")){
+													$i++;
+													$eleves[$i]=array();
+													$eleves[$i]["scolarite_an_dernier"]=array();
+		
+													//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+													unset($tabtmp);
+													$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
+													$eleves[$i]["eleve_id"]=trim($tabtmp[1]);
+													//echo "\$eleves[$i][\"eleve_id\"]=".$eleves[$i]["eleve_id"]."<br />\n";
+		
+													unset($tabtmp);
+													$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
+													$eleves[$i]["elenoet"]=trim($tabtmp[1]);
+													//echo "\$eleves[$i][\"elenoet\"]=".$eleves[$i]["elenoet"]."<br />\n";
+													$temoin_ele=1;
+												}
+												if(strstr($ligne[$cpt],"</ELEVE>")){
+													$temoin_ele=0;
+												}
+												if($temoin_ele==1){
+													if(strstr($ligne[$cpt],"<SCOLARITE_AN_DERNIER>")){
+														$temoin_scol=1;
+													}
+													if(strstr($ligne[$cpt],"</SCOLARITE_AN_DERNIER>")){
+														$temoin_scol=0;
+													}
+		
+													if($temoin_scol==0){
+														for($loop=0;$loop<count($tab_champs_eleve);$loop++){
+															if(strstr($ligne[$cpt],"<".$tab_champs_eleve[$loop].">")){
+																$tmpmin=strtolower($tab_champs_eleve[$loop]);
+																$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+																//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
+																break;
+															}
+														}
+														if(isset($eleves[$i]["date_naiss"])){
+															// A AMELIORER:
+															// On passe plusieurs fois dans la boucle (autant de fois qu'il y a de lignes pour l'élève en cours après le repérage de la date...)
+															//echo $eleves[$i]["date_naiss"]."<br />\n";
+															unset($naissance);
+															$naissance=explode("/",$eleves[$i]["date_naiss"]);
+															//$eleve_naissance_annee=$naissance[2];
+															//$eleve_naissance_mois=$naissance[1];
+															//$eleve_naissance_jour=$naissance[0];
+															if(isset($naissance[2])){
+																$eleve_naissance_annee=$naissance[2];
+															}
+															else{
+																$eleve_naissance_annee="";
+															}
+															if(isset($naissance[1])){
+																$eleve_naissance_mois=$naissance[1];
+															}
+															else{
+																$eleve_naissance_mois="";
+															}
+															if(isset($naissance[0])){
+																$eleve_naissance_jour=$naissance[0];
+															}
+															else{
+																$eleve_naissance_jour="";
+															}
+		
+															$eleves[$i]["date_naiss"]=$eleve_naissance_annee.$eleve_naissance_mois.$eleve_naissance_jour;
+														}
+													}
+													else{
+														//echo "$i - ";
+														//$eleves[$i]["scolarite_an_dernier"]=array();
+														for($loop=0;$loop<count($tab_champs_scol_an_dernier);$loop++){
+															if(strstr($ligne[$cpt],"<".$tab_champs_scol_an_dernier[$loop].">")){
+																//echo "$i - ";
+																$tmpmin=strtolower($tab_champs_scol_an_dernier[$loop]);
+																$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+																//echo "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n";
+																break;
+															}
+														}
+													}
+													/*
+													if(strstr($ligne[$cpt],"<ID_NATIONAL>")){
+														$eleves[$i]["id_national"]=extr_valeur($ligne[$cpt]);
+													}
+													if(strstr($ligne[$cpt],"<ELENOET>")){
+														$eleves[$i]["elenoet"]=extr_valeur($ligne[$cpt]);
+													}
+													*/
+												}
+											}
+											$cpt++;
+										}
+		
+		
+										/*
+		
+										for($i=0;$i<count($eleves);$i++){
+											echo "\$eleves[$i][\"nom\"]=".$eleves[$i]["nom"]."<br />\n";
+											echo "\$eleves[$i][\"scolarite_an_dernier\"][\"code_rne\"]=".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."<br />\n";
+										}
+										*/
+		
+		
+										// PARTIE <OPTIONS>
+										$temoin_opt="";
+										$temoin_opt_ele="";
+										while($cpt<count($ligne)){
+											if(strstr($ligne[$cpt],"<OPTIONS>")){
+												echo "Début de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_options++;
+											}
+											if(strstr($ligne[$cpt],"</OPTIONS>")){
+												echo "Fin de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_options++;
+												break;
+											}
+											if($temoin_options==1){
+												if(strstr($ligne[$cpt],"<OPTION ")){
+		
+													//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+													unset($tabtmp);
+													$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
+													$tmp_eleve_id=trim($tabtmp[1]);
+		
+													// Recherche du $i de $eleves[$i] correspondant:
+													$temoin_ident="non";
+													for($i=0;$i<count($eleves);$i++){
+														if($eleves[$i]["eleve_id"]==$tmp_eleve_id){
+															$temoin_ident="oui";
+															break;
+														}
+													}
+													if($temoin_ident!="oui"){
+														unset($tabtmp);
+														$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
+														$tmp_elenoet=trim($tabtmp[1]);
+		
+														for($i=0;$i<count($eleves);$i++){
+															if($eleves[$i]["elenoet"]==$tmp_elenoet){
+																$temoin_ident="oui";
+																break;
+															}
+														}
+													}
+													if($temoin_ident=="oui"){
+														$eleves[$i]["options"]=array();
+														$j=0;
+														$temoin_opt=1;
+													}
+												}
+												if(strstr($ligne[$cpt],"</OPTION>")){
+													$temoin_opt=0;
+												}
+												if($temoin_opt==1){
+												//if(($temoin_opt==1)&&($temoin_ident=="oui")){
+													if(strstr($ligne[$cpt],"<OPTIONS_ELEVE>")){
+														$eleves[$i]["options"][$j]=array();
+														$temoin_opt_ele=1;
+													}
+													if(strstr($ligne[$cpt],"</OPTIONS_ELEVE>")){
+														$j++;
+														$temoin_opt_ele=0;
+													}
+		
+													$tab_champs_opt=array("NUM_OPTION","CODE_MODALITE_ELECT","CODE_MATIERE");
+													if($temoin_opt_ele==1){
+														for($loop=0;$loop<count($tab_champs_opt);$loop++){
+															if(strstr($ligne[$cpt],"<".$tab_champs_opt[$loop].">")){
+																$tmpmin=strtolower($tab_champs_opt[$loop]);
+																$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+																//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
+																break;
+															}
+														}
+													}
+												}
+											}
+											$cpt++;
+										}
+		
+		
+										// PARTIE <STRUCTURES>
+										$temoin_structures=0;
+										$temoin_struct_ele=-1;
+										$temoin_struct=-1;
+										while($cpt<count($ligne)){
+											if(strstr($ligne[$cpt],"<STRUCTURES>")){
+												echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_structures++;
+											}
+											if(strstr($ligne[$cpt],"</STRUCTURES>")){
+												echo "Fin de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_structures++;
+												break;
+											}
+											if($temoin_structures==1){
+												if(strstr($ligne[$cpt],"<STRUCTURES_ELEVE ")){
+		
+													//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+													unset($tabtmp);
+													$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
+													$tmp_eleve_id=trim($tabtmp[1]);
+		
+													// Recherche du $i de $eleves[$i] correspondant:
+													$temoin_ident="non";
+													for($i=0;$i<count($eleves);$i++){
+														if($eleves[$i]["eleve_id"]==$tmp_eleve_id){
+															$temoin_ident="oui";
+															break;
+														}
+													}
+													if($temoin_ident!="oui"){
+														unset($tabtmp);
+														$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
+														$tmp_elenoet=trim($tabtmp[1]);
+		
+														for($i=0;$i<count($eleves);$i++){
+															if($eleves[$i]["elenoet"]==$tmp_elenoet){
+																$temoin_ident="oui";
+																break;
+															}
+														}
+													}
+													if($temoin_ident=="oui"){
+														$eleves[$i]["structures"]=array();
+														$j=0;
+														$temoin_struct_ele=1;
+													}
+												}
+												if(strstr($ligne[$cpt],"</STRUCTURES_ELEVE>")){
+													$temoin_struct_ele=0;
+												}
+												if($temoin_struct_ele==1){
+													if(strstr($ligne[$cpt],"<STRUCTURE>")){
+														$eleves[$i]["structures"][$j]=array();
+														$temoin_struct=1;
+													}
+													if(strstr($ligne[$cpt],"</STRUCTURE>")){
+														$j++;
+														$temoin_struct=0;
+													}
+		
+													$tab_champs_struct=array("CODE_STRUCTURE","TYPE_STRUCTURE");
+													if($temoin_struct==1){
+														for($loop=0;$loop<count($tab_champs_struct);$loop++){
+															if(strstr($ligne[$cpt],"<".$tab_champs_struct[$loop].">")){
+																$tmpmin=strtolower($tab_champs_struct[$loop]);
+																$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+																//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
+																break;
+															}
+														}
+													}
+												}
+											}
+											$cpt++;
+										}
+		
+										echo "<p>Terminé.</p>\n";
+										echo "</blockquote>\n";
+		
+										echo "<h3>Affichage (d'une partie) des données ELEVES extraites:</h3>\n";
+										echo "<blockquote>\n";
+										echo "<table border='1'>\n";
+										echo "<tr>\n";
+										//echo "<th style='color: blue;'>&nbsp;</th>\n";
+										echo "<th>Elenoet</th>\n";
+										echo "<th>Nom</th>\n";
+										echo "<th>Prénom</th>\n";
+										echo "<th>Sexe</th>\n";
+										echo "<th>Date de naissance</th>\n";
+										echo "<th>Division</th>\n";
+										echo "</tr>\n";
+										$i=0;
+										while($i<count($eleves)){
+											echo "<tr>\n";
+											//echo "<td style='color: blue;'>$cpt</td>\n";
+											//echo "<td style='color: blue;'>&nbsp;</td>\n";
+											echo "<td>".$eleves[$i]["elenoet"]."</td>\n";
+											echo "<td>".$eleves[$i]["nom"]."</td>\n";
+											echo "<td>".$eleves[$i]["prenom"]."</td>\n";
+											if(isset($eleves[$i]["code_sexe"])){
+												echo "<td>".$eleves[$i]["code_sexe"]."</td>\n";
+											}
+											else{
+												echo "<td style='background-color:red'>1<a name='sexe_manquant_".$i."'></a></td>\n";
+												//$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
+											}
+											echo "<td>".$eleves[$i]["date_naiss"]."</td>\n";
+											echo "<td>";
+											//if(isset($eleves[$i]["structures"][0]["code_structure"])){echo $eleves[$i]["structures"][0]["code_structure"];}else{echo "&nbsp;";}
+											$temoin_div_trouvee="";
+											if(isset($eleves[$i]["structures"])){
+												if(count($eleves[$i]["structures"])>0){
+													for($j=0;$j<count($eleves[$i]["structures"]);$j++){
+														if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
+															$temoin_div_trouvee="oui";
+															break;
+														}
+													}
+													if($temoin_div_trouvee==""){
+														echo "&nbsp;";
+													}
+													else{
+														echo $eleves[$i]["structures"][$j]["code_structure"];
+														$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
+		
+														if(!isset($eleves[$i]["code_sexe"])){
+															$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
+														}
+													}
+												}
+												else{
+													echo "&nbsp;";
+												}
+											}
+											else{
+												echo "&nbsp;";
+											}
+											echo "</td>\n";
+											echo "</tr>\n";
+											$i++;
+										}
+										echo "</table>\n";
+										echo "</blockquote>\n";
+		
+									}
+									else{
+										echo "<p><span style='color:red'>ERREUR!</span> Le fichier Elèves n'a pas pu être ouvert.<br />\n";
+										echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+										echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
+									}
+								}
 							}
 
 
 
 							$xml_file = isset($_FILES["nomenclature_xml_file"]) ? $_FILES["nomenclature_xml_file"] : NULL;
-							$fp=fopen($xml_file['tmp_name'],"r");
-							if($fp){
-								echo "<h3>Lecture du fichier Nomenclature...</h3>\n";
-								echo "<blockquote>\n";
-								while(!feof($fp)){
-									$ligne[]=fgets($fp,4096);
-								}
-								fclose($fp);
-								echo "<p>Terminé.</p>\n";
-								echo "</blockquote>\n";
-
-								echo "<h3>Analyse du fichier pour extraire les informations de Nomenclature...</h3>\n";
-								echo "<blockquote>\n";
-
-								$matieres=array();
-								$temoin_matieres=0;
-								$temoin_mat=-1;
-
-								$tab_champs_matiere=array("CODE_GESTION",
-								"LIBELLE_COURT",
-								"LIBELLE_LONG",
-								"LIBELLE_EDITION",
-								"MATIERE_ETP"
-								);
-
-								// PARTIE <MATIERES>
-								// Compteur matières:
-								$i=-1;
-								// Compteur de lignes du fichier:
-								$cpt=0;
-								while($cpt<count($ligne)){
-									//echo htmlspecialchars($ligne[$cpt])."<br />\n";
-
-									if(strstr($ligne[$cpt],"<MATIERES>")){
-										echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_matieres++;
-									}
-									if(strstr($ligne[$cpt],"</MATIERES>")){
-										echo "Fin de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_matieres++;
-										break;
-									}
-									if($temoin_matieres==1){
-										if(strstr($ligne[$cpt],"<MATIERE ")){
-											$i++;
-											$matieres[$i]=array();
-
-											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
-											unset($tabtmp);
-											$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
-											$matieres[$i]["code_matiere"]=trim($tabtmp[1]);
-											//echo "\$matieres[$i][\"matiere_id\"]=".$matieres[$i]["matiere_id"]."<br />\n";
-											$temoin_mat=1;
-										}
-										if(strstr($ligne[$cpt],"</MATIERE>")){
-											$temoin_mat=0;
-										}
-										if($temoin_mat==1){
-											for($loop=0;$loop<count($tab_champs_matiere);$loop++){
-												if(strstr($ligne[$cpt],"<".$tab_champs_matiere[$loop].">")){
-													$tmpmin=strtolower($tab_champs_matiere[$loop]);
-													$matieres[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-													//echo "\$matieres[$i][\"$tmpmin\"]=".$matieres[$i]["$tmpmin"]."<br />\n";
-													break;
-												}
-											}
-										}
-									}
-									$cpt++;
-								}
-								echo "<p>Terminé.</p>\n";
-								echo "</blockquote>\n";
-
-								echo "<h3>Affichage des données MATIERES extraites:</h3>\n";
-								echo "<blockquote>\n";
-								echo "<table border='1'>\n";
-								echo "<tr>\n";
-								for($i=0;$i<count($tab_champs_matiere);$i++){
-									echo "<th>$tab_champs_matiere[$i]</th>\n";
-								}
-								echo "</tr>\n";
-								$i=0;
-								while($i<count($matieres)){
-									echo "<tr>\n";
-									for($j=0;$j<count($tab_champs_matiere);$j++){
-										$tmpmin=strtolower($tab_champs_matiere[$j]);
-										echo "<td>".$matieres[$i]["$tmpmin"]."</td>\n";
-									}
-									echo "</tr>\n";
-									$i++;
-								}
-								echo "</table>\n";
-								echo "</blockquote>\n";
+							if(!is_uploaded_file($xml_file['tmp_name'])) {
+								echo "<p style='color:red;'>L'upload du fichier Nomenclature a échoué.</p>\n";
+			
+								echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+								echo "post_max_size=$post_max_size<br />\n";
+								echo "upload_max_filesize=$upload_max_filesize<br />\n";
+								echo "</p>\n";
+			
+								// Il ne faut pas aller plus loin...
+								// SITUATION A GERER
+								require("../lib/footer.inc.php");
+								die();
 							}
 							else{
-								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Nomenclature.xml n'a pas pu être ouvert.<br />\n";
-								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
-								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
+								if(!file_exists($xml_file['tmp_name'])){
+									echo "<p style='color:red;'>Le fichier Nomenclature aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+			
+									echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+									echo "post_max_size=$post_max_size<br />\n";
+									echo "upload_max_filesize=$upload_max_filesize<br />\n";
+									echo "et le volume de ".$xml_file['name']." serait<br />\n";
+									echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
+									echo "</p>\n";
+									// Il ne faut pas aller plus loin...
+									// SITUATION A GERER
+									require("../lib/footer.inc.php");
+									die();
+								}
+			
+								echo "<p>Le fichier Nomenclature a été uploadé.</p>\n";
+			
+								/*
+								echo "\$xml_file['tmp_name']=".$xml_file['tmp_name']."<br />\n";
+								echo "\$tempdir=".$tempdir."<br />\n";
+			
+								echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+								echo "post_max_size=$post_max_size<br />\n";
+								echo "upload_max_filesize=$upload_max_filesize<br />\n";
+								echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
+								echo "</p>\n";
+								*/
+			
+								//$source_file=stripslashes($xml_file['tmp_name']);
+								$source_file=$xml_file['tmp_name'];
+								$dest_file="../temp/".$tempdir."/eleves.xml";
+								$res_copy=copy("$source_file" , "$dest_file");
+			
+								//===============================================================
+								// ajout prise en compte des fichiers ZIP: Marc Leygnac
+			
+								$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+								// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
+								// $unzipped_max_filesize < 0    extraction zip désactivée
+								if($unzipped_max_filesize>=0) {
+									$fichier_emis=$xml_file['name'];
+									$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+									if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
+										{
+										require_once('../lib/pclzip.lib.php');
+										$archive = new PclZip($dest_file);
+			
+										if (($list_file_zip = $archive->listContent()) == 0) {
+											echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										if(sizeof($list_file_zip)!=1) {
+											echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										/*
+										echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
+										echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
+										echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
+										*/
+										//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
+			
+										if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
+											echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										//unlink("$dest_file"); // Pour Wamp...
+										$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
+										if ($res_extract != 0) {
+											echo "<p>Le fichier Nomenclature uploadé a été dézippé.</p>\n";
+											$fichier_extrait=$res_extract[0]['filename'];
+											unlink("$dest_file"); // Pour Wamp...
+											$res_copy=rename("$fichier_extrait" , "$dest_file");
+										}
+										else {
+											echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+									}
+								}
+								//fin  ajout prise en compte des fichiers ZIP
+								//===============================================================
+			
+								if(!$res_copy){
+									echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+									// Il ne faut pas aller plus loin...
+									// SITUATION A GERER
+									require("../lib/footer.inc.php");
+									die();
+								}
+								else{
+									echo "<p>La copie du fichier Nomenclature vers le dossier temporaire a réussi.</p>\n";
+
+									//$fp=fopen($xml_file['tmp_name'],"r");
+									$fp=fopen($dest_file,"r");
+									if($fp){
+										echo "<h3>Lecture du fichier Nomenclature...</h3>\n";
+										echo "<blockquote>\n";
+										while(!feof($fp)){
+											$ligne[]=fgets($fp,4096);
+										}
+										fclose($fp);
+										echo "<p>Terminé.</p>\n";
+										echo "</blockquote>\n";
+		
+										echo "<h3>Analyse du fichier pour extraire les informations de Nomenclature...</h3>\n";
+										echo "<blockquote>\n";
+		
+										$matieres=array();
+										$temoin_matieres=0;
+										$temoin_mat=-1;
+		
+										$tab_champs_matiere=array("CODE_GESTION",
+										"LIBELLE_COURT",
+										"LIBELLE_LONG",
+										"LIBELLE_EDITION",
+										"MATIERE_ETP"
+										);
+		
+										// PARTIE <MATIERES>
+										// Compteur matières:
+										$i=-1;
+										// Compteur de lignes du fichier:
+										$cpt=0;
+										while($cpt<count($ligne)){
+											//echo htmlentities($ligne[$cpt])."<br />\n";
+		
+											if(strstr($ligne[$cpt],"<MATIERES>")){
+												echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_matieres++;
+											}
+											if(strstr($ligne[$cpt],"</MATIERES>")){
+												echo "Fin de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_matieres++;
+												break;
+											}
+											if($temoin_matieres==1){
+												if(strstr($ligne[$cpt],"<MATIERE ")){
+													$i++;
+													$matieres[$i]=array();
+		
+													//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+													unset($tabtmp);
+													$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
+													$matieres[$i]["code_matiere"]=trim($tabtmp[1]);
+													//echo "\$matieres[$i][\"matiere_id\"]=".$matieres[$i]["matiere_id"]."<br />\n";
+													$temoin_mat=1;
+												}
+												if(strstr($ligne[$cpt],"</MATIERE>")){
+													$temoin_mat=0;
+												}
+												if($temoin_mat==1){
+													for($loop=0;$loop<count($tab_champs_matiere);$loop++){
+														if(strstr($ligne[$cpt],"<".$tab_champs_matiere[$loop].">")){
+															$tmpmin=strtolower($tab_champs_matiere[$loop]);
+															$matieres[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+															//echo "\$matieres[$i][\"$tmpmin\"]=".$matieres[$i]["$tmpmin"]."<br />\n";
+															break;
+														}
+													}
+												}
+											}
+											$cpt++;
+										}
+										echo "<p>Terminé.</p>\n";
+										echo "</blockquote>\n";
+		
+										echo "<h3>Affichage des données MATIERES extraites:</h3>\n";
+										echo "<blockquote>\n";
+										echo "<table border='1'>\n";
+										echo "<tr>\n";
+										for($i=0;$i<count($tab_champs_matiere);$i++){
+											echo "<th>$tab_champs_matiere[$i]</th>\n";
+										}
+										echo "</tr>\n";
+										$i=0;
+										while($i<count($matieres)){
+											echo "<tr>\n";
+											for($j=0;$j<count($tab_champs_matiere);$j++){
+												$tmpmin=strtolower($tab_champs_matiere[$j]);
+												echo "<td>".$matieres[$i]["$tmpmin"]."</td>\n";
+											}
+											echo "</tr>\n";
+											$i++;
+										}
+										echo "</table>\n";
+										echo "</blockquote>\n";
+									}
+									else{
+										echo "<p><span style='color:red'>ERREUR!</span> Le fichier Nomenclature.xml n'a pas pu être ouvert.<br />\n";
+										echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+										echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
+									}
+								}
 							}
 
 							function ouinon($nombre){
@@ -1422,329 +1638,447 @@ function dragStop(event) {
 						}
 						else{
 							$xml_file = isset($_FILES["responsables_xml_file"]) ? $_FILES["responsables_xml_file"] : NULL;
-							$fp=fopen($xml_file['tmp_name'],"r");
-							if($fp){
-								echo "<h3>Lecture du fichier Responsables...</h3>\n";
-								echo "<blockquote>\n";
-								while(!feof($fp)){
-									$ligne[]=fgets($fp,4096);
-								}
-								fclose($fp);
-								echo "<p>Terminé.</p>\n";
 
-								echo "<p>Aller à la section <a href='#csv'>CSV</a>.<br />\n";
-
-								echo "Si vous patientez, des liens directs seront proposés (<i>dans un cadre jaune</i>) pour télécharger les fichiers.<br />Si la page finit son chargement sans générer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
-								if($max_execution_time!=0){
-									echo " (<i>".$max_execution_time."s sur votre serveur</i>)";
-								}
-								else{
-									echo " (<i>consultez la valeur de la variable 'max_execution_time' dans votre 'php.ini'</i>)";
-								}
-								echo " ou une charge maximale trop réduite";
-								if("$memory_limit"!="0"){
-									echo " (<i>".$memory_limit." sur votre serveur</i>)\n";
-								}
-								else{
-									echo " (<i>consultez la valeur de la variable 'memory_limit' dans votre 'php.ini'</i>)";
-								}
-								echo ".</p>\n";
-								echo "</blockquote>\n";
-
-
-
-								echo "<h3>Analyse du fichier pour extraire les informations Responsables...</h3>\n";
-								echo "<blockquote>\n";
-
-								$personnes=array();
-								$responsables=array();
-								$adresses=array();
-
-								$temoin_personnes=0;
-								$temoin_responsables=0;
-								$temoin_adresses=0;
-								$temoin_pers=0;
-								$temoin_resp=0;
-								$temoin_addr=-1;
-
-								/*
-								$tab_champs_personne=array("NOM",
-								"PRENOM",
-								"TEL_PERSONNEL",
-								"TEL_PORTABLE",
-								"TEL_PROFESSIONNEL",
-								"MEL",
-								"ACCEPTE_SMS",
-								"ADRESSE_ID",
-								"CODE_PROFESSION",
-								"COMMUNICATION_ADRESSE"
-								);
-								*/
-
-								$tab_champs_personne=array("NOM",
-								"PRENOM",
-								"LC_CIVILITE",
-								"TEL_PERSONNEL",
-								"TEL_PORTABLE",
-								"TEL_PROFESSIONNEL",
-								"MEL",
-								"ACCEPTE_SMS",
-								"ADRESSE_ID",
-								"CODE_PROFESSION",
-								"COMMUNICATION_ADRESSE"
-								);
-
-								$tab_champs_responsable=array("ELEVE_ID",
-								"PERSONNE_ID",
-								"RESP_LEGAL",
-								"CODE_PARENTE",
-								"RESP_FINANCIER",
-								"PERS_PAIMENT",
-								"PERS_CONTACT"
-								);
-
-								$tab_champs_adresse=array("LIGNE1_ADRESSE",
-								"LIGNE2_ADRESSE",
-								"LIGNE3_ADRESSE",
-								"LIGNE4_ADRESSE",
-								"CODE_POSTAL",
-								"LL_PAYS",
-								"CODE_DEPARTEMENT",
-								"LIBELLE_POSTAL"
-								);
-
-								// PARTIE <PERSONNES>
-								// Compteur personnes:
-								$i=-1;
-								// Compteur de lignes du fichier:
-								$cpt=0;
-								while($cpt<count($ligne)){
-									//echo htmlspecialchars($ligne[$cpt])."<br />\n";
-
-									if(strstr($ligne[$cpt],"<PERSONNES>")){
-										echo "Début de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_personnes++;
-									}
-									if(strstr($ligne[$cpt],"</PERSONNES>")){
-										echo "Fin de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_personnes++;
-										break;
-									}
-									if($temoin_personnes==1){
-										if(strstr($ligne[$cpt],"<PERSONNE ")){
-											$i++;
-											$personnes[$i]=array();
-
-											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
-											unset($tabtmp);
-											$tabtmp=explode('"',strstr($ligne[$cpt]," PERSONNE_ID="));
-											$personnes[$i]["personne_id"]=trim($tabtmp[1]);
-											//echo "\$personnes[$i][\"personne_id\"]=".$personnes[$i]["personne_id"]."<br />\n";
-											$temoin_pers=1;
-										}
-										if(strstr($ligne[$cpt],"</PERSONNE>")){
-											$temoin_pers=0;
-										}
-										if($temoin_pers==1){
-											for($loop=0;$loop<count($tab_champs_personne);$loop++){
-												if(strstr($ligne[$cpt],"<".$tab_champs_personne[$loop].">")){
-													$tmpmin=strtolower($tab_champs_personne[$loop]);
-													$personnes[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-													//echo "\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n";
-													break;
-												}
-											}
-										}
-									}
-									$cpt++;
-								}
-
-
-
-
-								// PARTIE <RESPONSABLES>
-								// Compteur responsables:
-								$i=-1;
-								// Compteur de lignes du fichier:
-								$cpt=0;
-								while($cpt<count($ligne)){
-									//echo htmlspecialchars($ligne[$cpt])."<br />\n";
-
-									if(strstr($ligne[$cpt],"<RESPONSABLES>")){
-										echo "Début de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_responsables++;
-									}
-									if(strstr($ligne[$cpt],"</RESPONSABLES>")){
-										echo "Fin de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_responsables++;
-										break;
-									}
-									if($temoin_responsables==1){
-										if(strstr($ligne[$cpt],"<RESPONSABLE_ELEVE>")){
-											$i++;
-											$responsables[$i]=array();
-											$temoin_resp=1;
-										}
-										if(strstr($ligne[$cpt],"</RESPONSABLE_ELEVE>")){
-											$temoin_resp=0;
-										}
-										if($temoin_resp==1){
-											for($loop=0;$loop<count($tab_champs_responsable);$loop++){
-												if(strstr($ligne[$cpt],"<".$tab_champs_responsable[$loop].">")){
-													$tmpmin=strtolower($tab_champs_responsable[$loop]);
-													$responsables[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-													//echo "\$responsables[$i][\"$tmpmin\"]=".$responsables[$i]["$tmpmin"]."<br />\n";
-													break;
-												}
-											}
-										}
-									}
-									$cpt++;
-								}
-
-
-
-
-
-								// PARTIE <ADRESSES>
-								// Compteur adresses:
-								$i=-1;
-								$temoin_adr=-1;
-								// Compteur de lignes du fichier:
-								$cpt=0;
-								while($cpt<count($ligne)){
-									//echo htmlspecialchars($ligne[$cpt])."<br />\n";
-
-									if(strstr($ligne[$cpt],"<ADRESSES>")){
-										echo "Début de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_adresses++;
-									}
-									if(strstr($ligne[$cpt],"</ADRESSES>")){
-										echo "Fin de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-										$temoin_adresses++;
-										break;
-									}
-									if($temoin_adresses==1){
-										if(strstr($ligne[$cpt],"<ADRESSE ")){
-											$i++;
-											$adresses[$i]=array();
-
-											//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
-											unset($tabtmp);
-											$tabtmp=explode('"',strstr($ligne[$cpt]," ADRESSE_ID="));
-											$adresses[$i]["adresse_id"]=trim($tabtmp[1]);
-											$temoin_adr=1;
-										}
-										if(strstr($ligne[$cpt],"</ADRESSE>")){
-											$temoin_adr=0;
-										}
-
-										if($temoin_adr==1){
-											for($loop=0;$loop<count($tab_champs_adresse);$loop++){
-												if(strstr($ligne[$cpt],"<".$tab_champs_adresse[$loop].">")){
-													$tmpmin=strtolower($tab_champs_adresse[$loop]);
-													$adresses[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-													//echo "\$adresses[$i][\"$tmpmin\"]=".$adresses[$i]["$tmpmin"]."<br />\n";
-													break;
-												}
-											}
-										}
-									}
-									$cpt++;
-								}
-
-
-
-								echo "<p>Terminé.</p>\n";
-								echo "</blockquote>\n";
-
-								echo "<h3>Affichage des données Personnes extraites:</h3>\n";
-								echo "<blockquote>\n";
-								echo "<table border='1'>\n";
-								echo "<tr>\n";
-								for($i=0;$i<count($tab_champs_personne);$i++){
-									echo "<th>$tab_champs_personne[$i]</th>\n";
-								}
-								echo "</tr>\n";
-								$i=0;
-								while($i<count($personnes)){
-									echo "<tr>\n";
-									for($j=0;$j<count($tab_champs_personne);$j++){
-										$tmpmin=strtolower($tab_champs_personne[$j]);
-										echo "<td>";
-										if(isset($personnes[$i]["$tmpmin"])){
-											echo $personnes[$i]["$tmpmin"];
-										}
-										else{echo "&nbsp;";}
-										echo "</td>\n";
-									}
-									echo "</tr>\n";
-									$i++;
-								}
-								echo "</table>\n";
-								echo "</blockquote>\n";
-
-
-								echo "<h3>Affichage des données Responsables extraites:</h3>\n";
-								echo "<blockquote>\n";
-								echo "<table border='1'>\n";
-								echo "<tr>\n";
-								for($i=0;$i<count($tab_champs_responsable);$i++){
-									echo "<th>$tab_champs_responsable[$i]</th>\n";
-								}
-								echo "</tr>\n";
-								$i=0;
-								while($i<count($responsables)){
-									echo "<tr>\n";
-									for($j=0;$j<count($tab_champs_responsable);$j++){
-										$tmpmin=strtolower($tab_champs_responsable[$j]);
-										echo "<td>";
-										if(isset($responsables[$i]["$tmpmin"])){
-											echo $responsables[$i]["$tmpmin"];
-										}
-										else{echo "&nbsp;";}
-										echo "</td>\n";
-									}
-									echo "</tr>\n";
-									$i++;
-								}
-								echo "</table>\n";
-								echo "</blockquote>\n";
-
-
-
-								echo "<h3>Affichage des données Adresses extraites:</h3>\n";
-								echo "<blockquote>\n";
-								echo "<table border='1'>\n";
-								echo "<tr>\n";
-								for($i=0;$i<count($tab_champs_adresse);$i++){
-									echo "<th>$tab_champs_adresse[$i]</th>\n";
-								}
-								echo "</tr>\n";
-								$i=0;
-								while($i<count($adresses)){
-									echo "<tr>\n";
-									for($j=0;$j<count($tab_champs_adresse);$j++){
-										$tmpmin=strtolower($tab_champs_adresse[$j]);
-										echo "<td>";
-										if(isset($adresses[$i]["$tmpmin"])){
-											echo $adresses[$i]["$tmpmin"];
-										}
-										else{echo "&nbsp;";}
-										echo "</td>\n";
-									}
-									echo "</tr>\n";
-									$i++;
-								}
-								echo "</table>\n";
-								echo "</blockquote>\n";
+							if(!is_uploaded_file($xml_file['tmp_name'])) {
+								echo "<p style='color:red;'>L'upload du fichier Responsables a échoué.</p>\n";
+			
+								echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+								echo "post_max_size=$post_max_size<br />\n";
+								echo "upload_max_filesize=$upload_max_filesize<br />\n";
+								echo "</p>\n";
+			
+								// Il ne faut pas aller plus loin...
+								// SITUATION A GERER
+								require("../lib/footer.inc.php");
+								die();
 							}
 							else{
-								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Responsables n'a pas pu être ouvert.<br />\n";
-								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
-								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
-							}
+								if(!file_exists($xml_file['tmp_name'])){
+									echo "<p style='color:red;'>Le fichier Responsables aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+			
+									echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+									echo "post_max_size=$post_max_size<br />\n";
+									echo "upload_max_filesize=$upload_max_filesize<br />\n";
+									echo "et le volume de ".$xml_file['name']." serait<br />\n";
+									echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
+									echo "</p>\n";
+									// Il ne faut pas aller plus loin...
+									// SITUATION A GERER
+									require("../lib/footer.inc.php");
+									die();
+								}
+			
+								echo "<p>Le fichier Responsables a été uploadé.</p>\n";
+			
+								/*
+								echo "\$xml_file['tmp_name']=".$xml_file['tmp_name']."<br />\n";
+								echo "\$tempdir=".$tempdir."<br />\n";
+			
+								echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+								echo "post_max_size=$post_max_size<br />\n";
+								echo "upload_max_filesize=$upload_max_filesize<br />\n";
+								echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
+								echo "</p>\n";
+								*/
+			
+								//$source_file=stripslashes($xml_file['tmp_name']);
+								$source_file=$xml_file['tmp_name'];
+								$dest_file="../temp/".$tempdir."/eleves.xml";
+								$res_copy=copy("$source_file" , "$dest_file");
+			
+								//===============================================================
+								// ajout prise en compte des fichiers ZIP: Marc Leygnac
+			
+								$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+								// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
+								// $unzipped_max_filesize < 0    extraction zip désactivée
+								if($unzipped_max_filesize>=0) {
+									$fichier_emis=$xml_file['name'];
+									$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+									if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
+										{
+										require_once('../lib/pclzip.lib.php');
+										$archive = new PclZip($dest_file);
+			
+										if (($list_file_zip = $archive->listContent()) == 0) {
+											echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										if(sizeof($list_file_zip)!=1) {
+											echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										/*
+										echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
+										echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
+										echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
+										*/
+										//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
+			
+										if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
+											echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+			
+										//unlink("$dest_file"); // Pour Wamp...
+										$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
+										if ($res_extract != 0) {
+											echo "<p>Le fichier Responsables uploadé a été dézippé.</p>\n";
+											$fichier_extrait=$res_extract[0]['filename'];
+											unlink("$dest_file"); // Pour Wamp...
+											$res_copy=rename("$fichier_extrait" , "$dest_file");
+										}
+										else {
+											echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+											require("../lib/footer.inc.php");
+											die();
+										}
+									}
+								}
+								//fin  ajout prise en compte des fichiers ZIP
+								//===============================================================
+			
+								if(!$res_copy){
+									echo "<p style='color:red;'>La copie du fichier Responsables vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+									// Il ne faut pas aller plus loin...
+									// SITUATION A GERER
+									require("../lib/footer.inc.php");
+									die();
+								}
+								else{
+									echo "<p>La copie du fichier Responsables vers le dossier temporaire a réussi.</p>\n";
 
+									//$fp=fopen($xml_file['tmp_name'],"r");
+									$fp=fopen($dest_file,"r");
+
+									if($fp){
+										echo "<h3>Lecture du fichier Responsables...</h3>\n";
+										echo "<blockquote>\n";
+										while(!feof($fp)){
+											$ligne[]=fgets($fp,4096);
+										}
+										fclose($fp);
+										echo "<p>Terminé.</p>\n";
+		
+										echo "<p>Aller à la section <a href='#csv'>CSV</a>.<br />\n";
+		
+										echo "Si vous patientez, des liens directs seront proposés (<i>dans un cadre jaune</i>) pour télécharger les fichiers.<br />Si la page finit son chargement sans générer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
+										if($max_execution_time!=0){
+											echo " (<i>".$max_execution_time."s sur votre serveur</i>)";
+										}
+										else{
+											echo " (<i>consultez la valeur de la variable 'max_execution_time' dans votre 'php.ini'</i>)";
+										}
+										echo " ou une charge maximale trop réduite";
+										if("$memory_limit"!="0"){
+											echo " (<i>".$memory_limit." sur votre serveur</i>)\n";
+										}
+										else{
+											echo " (<i>consultez la valeur de la variable 'memory_limit' dans votre 'php.ini'</i>)";
+										}
+										echo ".</p>\n";
+										echo "</blockquote>\n";
+		
+		
+		
+										echo "<h3>Analyse du fichier pour extraire les informations Responsables...</h3>\n";
+										echo "<blockquote>\n";
+		
+										$personnes=array();
+										$responsables=array();
+										$adresses=array();
+		
+										$temoin_personnes=0;
+										$temoin_responsables=0;
+										$temoin_adresses=0;
+										$temoin_pers=0;
+										$temoin_resp=0;
+										$temoin_addr=-1;
+		
+										/*
+										$tab_champs_personne=array("NOM",
+										"PRENOM",
+										"TEL_PERSONNEL",
+										"TEL_PORTABLE",
+										"TEL_PROFESSIONNEL",
+										"MEL",
+										"ACCEPTE_SMS",
+										"ADRESSE_ID",
+										"CODE_PROFESSION",
+										"COMMUNICATION_ADRESSE"
+										);
+										*/
+		
+										$tab_champs_personne=array("NOM",
+										"PRENOM",
+										"LC_CIVILITE",
+										"TEL_PERSONNEL",
+										"TEL_PORTABLE",
+										"TEL_PROFESSIONNEL",
+										"MEL",
+										"ACCEPTE_SMS",
+										"ADRESSE_ID",
+										"CODE_PROFESSION",
+										"COMMUNICATION_ADRESSE"
+										);
+		
+										$tab_champs_responsable=array("ELEVE_ID",
+										"PERSONNE_ID",
+										"RESP_LEGAL",
+										"CODE_PARENTE",
+										"RESP_FINANCIER",
+										"PERS_PAIMENT",
+										"PERS_CONTACT"
+										);
+		
+										$tab_champs_adresse=array("LIGNE1_ADRESSE",
+										"LIGNE2_ADRESSE",
+										"LIGNE3_ADRESSE",
+										"LIGNE4_ADRESSE",
+										"CODE_POSTAL",
+										"LL_PAYS",
+										"CODE_DEPARTEMENT",
+										"LIBELLE_POSTAL"
+										);
+		
+										// PARTIE <PERSONNES>
+										// Compteur personnes:
+										$i=-1;
+										// Compteur de lignes du fichier:
+										$cpt=0;
+										while($cpt<count($ligne)){
+											//echo htmlentities($ligne[$cpt])."<br />\n";
+		
+											if(strstr($ligne[$cpt],"<PERSONNES>")){
+												echo "Début de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_personnes++;
+											}
+											if(strstr($ligne[$cpt],"</PERSONNES>")){
+												echo "Fin de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_personnes++;
+												break;
+											}
+											if($temoin_personnes==1){
+												if(strstr($ligne[$cpt],"<PERSONNE ")){
+													$i++;
+													$personnes[$i]=array();
+		
+													//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+													unset($tabtmp);
+													$tabtmp=explode('"',strstr($ligne[$cpt]," PERSONNE_ID="));
+													$personnes[$i]["personne_id"]=trim($tabtmp[1]);
+													//echo "\$personnes[$i][\"personne_id\"]=".$personnes[$i]["personne_id"]."<br />\n";
+													$temoin_pers=1;
+												}
+												if(strstr($ligne[$cpt],"</PERSONNE>")){
+													$temoin_pers=0;
+												}
+												if($temoin_pers==1){
+													for($loop=0;$loop<count($tab_champs_personne);$loop++){
+														if(strstr($ligne[$cpt],"<".$tab_champs_personne[$loop].">")){
+															$tmpmin=strtolower($tab_champs_personne[$loop]);
+															$personnes[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+															//echo "\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n";
+															break;
+														}
+													}
+												}
+											}
+											$cpt++;
+										}
+		
+		
+		
+		
+										// PARTIE <RESPONSABLES>
+										// Compteur responsables:
+										$i=-1;
+										// Compteur de lignes du fichier:
+										$cpt=0;
+										while($cpt<count($ligne)){
+											//echo htmlentities($ligne[$cpt])."<br />\n";
+		
+											if(strstr($ligne[$cpt],"<RESPONSABLES>")){
+												echo "Début de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_responsables++;
+											}
+											if(strstr($ligne[$cpt],"</RESPONSABLES>")){
+												echo "Fin de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_responsables++;
+												break;
+											}
+											if($temoin_responsables==1){
+												if(strstr($ligne[$cpt],"<RESPONSABLE_ELEVE>")){
+													$i++;
+													$responsables[$i]=array();
+													$temoin_resp=1;
+												}
+												if(strstr($ligne[$cpt],"</RESPONSABLE_ELEVE>")){
+													$temoin_resp=0;
+												}
+												if($temoin_resp==1){
+													for($loop=0;$loop<count($tab_champs_responsable);$loop++){
+														if(strstr($ligne[$cpt],"<".$tab_champs_responsable[$loop].">")){
+															$tmpmin=strtolower($tab_champs_responsable[$loop]);
+															$responsables[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+															//echo "\$responsables[$i][\"$tmpmin\"]=".$responsables[$i]["$tmpmin"]."<br />\n";
+															break;
+														}
+													}
+												}
+											}
+											$cpt++;
+										}
+		
+		
+		
+		
+		
+										// PARTIE <ADRESSES>
+										// Compteur adresses:
+										$i=-1;
+										$temoin_adr=-1;
+										// Compteur de lignes du fichier:
+										$cpt=0;
+										while($cpt<count($ligne)){
+											//echo htmlentities($ligne[$cpt])."<br />\n";
+		
+											if(strstr($ligne[$cpt],"<ADRESSES>")){
+												echo "Début de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_adresses++;
+											}
+											if(strstr($ligne[$cpt],"</ADRESSES>")){
+												echo "Fin de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+												$temoin_adresses++;
+												break;
+											}
+											if($temoin_adresses==1){
+												if(strstr($ligne[$cpt],"<ADRESSE ")){
+													$i++;
+													$adresses[$i]=array();
+		
+													//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+													unset($tabtmp);
+													$tabtmp=explode('"',strstr($ligne[$cpt]," ADRESSE_ID="));
+													$adresses[$i]["adresse_id"]=trim($tabtmp[1]);
+													$temoin_adr=1;
+												}
+												if(strstr($ligne[$cpt],"</ADRESSE>")){
+													$temoin_adr=0;
+												}
+		
+												if($temoin_adr==1){
+													for($loop=0;$loop<count($tab_champs_adresse);$loop++){
+														if(strstr($ligne[$cpt],"<".$tab_champs_adresse[$loop].">")){
+															$tmpmin=strtolower($tab_champs_adresse[$loop]);
+															$adresses[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+															//echo "\$adresses[$i][\"$tmpmin\"]=".$adresses[$i]["$tmpmin"]."<br />\n";
+															break;
+														}
+													}
+												}
+											}
+											$cpt++;
+										}
+		
+		
+		
+										echo "<p>Terminé.</p>\n";
+										echo "</blockquote>\n";
+		
+										echo "<h3>Affichage des données Personnes extraites:</h3>\n";
+										echo "<blockquote>\n";
+										echo "<table border='1'>\n";
+										echo "<tr>\n";
+										for($i=0;$i<count($tab_champs_personne);$i++){
+											echo "<th>$tab_champs_personne[$i]</th>\n";
+										}
+										echo "</tr>\n";
+										$i=0;
+										while($i<count($personnes)){
+											echo "<tr>\n";
+											for($j=0;$j<count($tab_champs_personne);$j++){
+												$tmpmin=strtolower($tab_champs_personne[$j]);
+												echo "<td>";
+												if(isset($personnes[$i]["$tmpmin"])){
+													echo $personnes[$i]["$tmpmin"];
+												}
+												else{echo "&nbsp;";}
+												echo "</td>\n";
+											}
+											echo "</tr>\n";
+											$i++;
+										}
+										echo "</table>\n";
+										echo "</blockquote>\n";
+		
+		
+										echo "<h3>Affichage des données Responsables extraites:</h3>\n";
+										echo "<blockquote>\n";
+										echo "<table border='1'>\n";
+										echo "<tr>\n";
+										for($i=0;$i<count($tab_champs_responsable);$i++){
+											echo "<th>$tab_champs_responsable[$i]</th>\n";
+										}
+										echo "</tr>\n";
+										$i=0;
+										while($i<count($responsables)){
+											echo "<tr>\n";
+											for($j=0;$j<count($tab_champs_responsable);$j++){
+												$tmpmin=strtolower($tab_champs_responsable[$j]);
+												echo "<td>";
+												if(isset($responsables[$i]["$tmpmin"])){
+													echo $responsables[$i]["$tmpmin"];
+												}
+												else{echo "&nbsp;";}
+												echo "</td>\n";
+											}
+											echo "</tr>\n";
+											$i++;
+										}
+										echo "</table>\n";
+										echo "</blockquote>\n";
+		
+		
+		
+										echo "<h3>Affichage des données Adresses extraites:</h3>\n";
+										echo "<blockquote>\n";
+										echo "<table border='1'>\n";
+										echo "<tr>\n";
+										for($i=0;$i<count($tab_champs_adresse);$i++){
+											echo "<th>$tab_champs_adresse[$i]</th>\n";
+										}
+										echo "</tr>\n";
+										$i=0;
+										while($i<count($adresses)){
+											echo "<tr>\n";
+											for($j=0;$j<count($tab_champs_adresse);$j++){
+												$tmpmin=strtolower($tab_champs_adresse[$j]);
+												echo "<td>";
+												if(isset($adresses[$i]["$tmpmin"])){
+													echo $adresses[$i]["$tmpmin"];
+												}
+												else{echo "&nbsp;";}
+												echo "</td>\n";
+											}
+											echo "</tr>\n";
+											$i++;
+										}
+										echo "</table>\n";
+										echo "</blockquote>\n";
+									}
+									else{
+										echo "<p><span style='color:red'>ERREUR!</span> Le fichier Responsables n'a pas pu être ouvert.<br />\n";
+										echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+										echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
+									}
+								}
+							}
 
 
 
