@@ -42,14 +42,14 @@ if (!checkAccess()) {
     die();
 }
 
-// A FAIRE:
-// ALTER TABLE `eleves` ADD `ele_id` VARCHAR( 10 ) NOT NULL ;
-
-
 //**************** EN-TETE *****************
 $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+// Passer ï¿½ 'y' pour afficher les requï¿½tes
+$debug_resp="n";
+
 echo "<p class=bold>";
 echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
@@ -146,14 +146,14 @@ if($temoin==1){
 	if(!isset($mode)){
 		echo "<p>Vous pouvez effectuer la mise à jour des tables:</p>\n";
 		echo "<ul>";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>avec SCONET</a>: Dans ce cas, il faut fournir des fichiers CSV générés <a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>ici</a> depuis des fichiers XML extraits de SCONET.<br />\nSi vous effectuez ce choix, vous pourrez par la suite effectuer de nouveaux imports pour insérer les élèves/responsables arrivés en cours d'année.<br />\nCe choix implique que le champ ELENOET de la table 'eleves' soit correctement rempli avec des valeurs correspondant à celles de l'ancien F_ELE.DBF<br />\nLe contenu de la table 'responsables' est ignoré et les nouvelles tables responsables sont remplies d'après les CSV fournis.</li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>sans SCONET</a>: Dans ce cas, on ne fait que la conversion des tables.<br />\nVous devrez dans ce cas gérer les futures nouvelles inscriptions à la main (<i>ou par des imports CSV</i>).<br />\nIci, c'est la liaison ERENO de vos tables 'eleves' et 'responsables' qui est utilisée pour assurer la migration vers les nouvelles tables.<br />\nCe mode ne permet pas de mises à jour en cours d'année.</li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>avec SCONET</a>: Dans ce cas, il faut fournir des fichiers CSV gï¿½nï¿½rï¿½s <a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>ici</a> depuis des fichiers XML extraits de SCONET.<br />\nSi vous effectuez ce choix, vous pourrez par la suite effectuer de nouveaux imports pour insï¿½rer les ï¿½lï¿½ves/responsables arrivï¿½s en cours d'annï¿½e.<br />\nCe choix implique que le champ ELENOET de la table 'eleves' soit correctement rempli avec des valeurs correspondant ï¿½ celles de l'ancien F_ELE.DBF<br />\nLe contenu de la table 'responsables' est ignorï¿½ et les nouvelles tables responsables sont remplies d'aprï¿½s les CSV fournis.</li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>sans SCONET</a>: Dans ce cas, on ne fait que la conversion des tables.<br />\nVous devrez dans ce cas gï¿½rer les futures nouvelles inscriptions ï¿½ la main (<em>ou par des imports CSV</em>).<br />\nIci, c'est la liaison ERENO de vos tables 'eleves' et 'responsables' qui est utilisï¿½e pour assurer la migration vers les nouvelles tables.<br />\nCe mode ne permet pas de mises ï¿½ jour en cours d'annï¿½e.</li>\n";
 		echo "</ul>";
 
 		$sql="SELECT * FROM eleves WHERE elenoet=''";
 		$res1=mysql_query($sql);
 		if(mysql_num_rows($res1)>0){
-			echo "<p>Les élèves suivants n'ont pas leur ELENOET renseigné.<br />Ils ne seront donc pas identifiés/associés par la suite avec les élèves inscrits dans Sconet.<br />Si vous envisagez le mode avec Sconet (<i>recommandé quand c'est possible</i>), vous devriez commencer par rechercher les ELENOET manquants et les renseigner dans la Gestion des élèves.</p>\n";
+			echo "<p>Les ï¿½lï¿½ves suivants n'ont pas leur ELENOET renseignï¿½.<br />Ils ne seront donc pas identifiï¿½s/associï¿½s par la suite avec les ï¿½lï¿½ves inscrits dans Sconet.<br />Si vous envisagez le mode avec Sconet (<em>recommandï¿½ quand c'est possible</em>), vous devriez commencer par rechercher les ELENOET manquants et les renseigner dans la Gestion des ï¿½lï¿½ves.</p>\n";
 			echo "<table border='1'>\n";
 			echo "<tr>\n";
 			echo "<td style='font-weight:bold; text-align:center;'>Login</td>\n";
@@ -176,8 +176,8 @@ if($temoin==1){
 	elseif($mode==2){
 
 		if(!isset($confirmer)){
-			echo "<p><b>ATTENTION:</b> Le mode sans SCONET ne permet pas de mises à jour en cours d'année.<br />\nCela signifie que les corrections effectuées sur votre logiciel de gestion des élèves et responsables (<i>changements d'adresses, corrections,...</i>) ne pourront pas être automatiquement importées dans GEPI.<br />Vous aurez donc une double-saisie à effectuer pour gérer ces mises à jour.<br />\nLe mode avec SCONET, lui, permettrait d'importer les corrections en cours d'année.</p>\n";
-			echo "<p>Ce choix est irréversible.<br />\nEtes-vous sûr que vous ne souhaitez pas utiliser l'import avec SCONET?</p>\n";
+			echo "<p><b>ATTENTION:</b> Le mode sans SCONET ne permet pas de mises ï¿½ jour en cours d'annï¿½e.<br />\nCela signifie que les corrections effectuï¿½es sur votre logiciel de gestion des ï¿½lï¿½ves et responsables (<em>changements d'adresses, corrections,...</em>) ne pourront pas ï¿½tre automatiquement importï¿½es dans GEPI.<br />Vous aurez donc une double-saisie ï¿½ effectuer pour gï¿½rer ces mises ï¿½ jour.<br />\nLe mode avec SCONET, lui, permettrait d'importer les corrections en cours d'annï¿½e.</p>\n";
+			echo "<p>Ce choix est irrï¿½versible.<br />\nEtes-vous sï¿½r que vous ne souhaitez pas utiliser l'import avec SCONET?</p>\n";
 			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=2&amp;confirmer=oui".add_token_in_url()."'>OUI</a> ou <a href='".$_SERVER['PHP_SELF']."'>NON</a></p>\n";
 		}
 		else{
@@ -244,8 +244,8 @@ if($temoin==1){
 						//echo "$sql<br />\n";
 						$res_update=mysql_query($sql);
 						if(!$res_update){
-							//echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
-							echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
+							//echo "<span style='color:red'>Erreur</span> lors de la dï¿½finition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
+							echo "<span style='color:red'>Erreur</span> lors de la dï¿½finition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
 							$erreur++;
 						}
 						else{
@@ -291,7 +291,7 @@ if($temoin==1){
 											//echo "$sql<br />\n";
 											$res_insert=mysql_query($sql);
 											if(!$res_insert){
-												echo "<font color='red'>Erreur</font> lors de l'insertion de l'association avec le responsable ($ligtmp->resp_legal) $ligtmp->pers_id<br />\n";
+												echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'association avec le responsable ($ligtmp->resp_legal) $ligtmp->pers_id<br />\n";
 												$erreur++;
 											}
 											else{
@@ -339,7 +339,7 @@ if($temoin==1){
 										//echo "$sql<br />\n";
 										$res_insert1=mysql_query($sql);
 										if(!$res_insert1){
-											echo "<font color='red'>Erreur</font> lors de l'insertion de l'association de l'élève $ele_id avec le responsable (1) $pers_id<br />\n";
+											echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'association de l'ï¿½lï¿½ve $ele_id avec le responsable (1) $pers_id<br />\n";
 											$erreur++;
 										}
 										else{
@@ -351,7 +351,7 @@ if($temoin==1){
 										//echo "$sql<br />\n";
 										$res_insert2=mysql_query($sql);
 										if(!$res_insert2){
-											echo "<font color='red'>Erreur</font> lors de l'insertion du responsable ($pers_id): $lig2->nom1 $lig2->prenom1 (avec le n° adresse $adr_id).<br />\n";
+											echo "<span style='color:red'>Erreur</span> lors de l'insertion du responsable ($pers_id): $lig2->nom1 $lig2->prenom1 (avec le nï¿½ adresse $adr_id).<br />\n";
 											$erreur++;
 										}
 										else{
@@ -363,7 +363,7 @@ if($temoin==1){
 										//echo "$sql<br />\n";
 										$res_insert3=mysql_query($sql);
 										if(!$res_insert3){
-											echo "<font color='red'>Erreur</font> lors de l'insertion de l'adresse $lig2->adr1, $lig2->adr1_comp, $lig2->cp1, $lig2->commune1 avec le n° adresse $adr_id.<br />\n";
+											echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'adresse $lig2->adr1, $lig2->adr1_comp, $lig2->cp1, $lig2->commune1 avec le nï¿½ adresse $adr_id.<br />\n";
 											$erreur++;
 										}
 										else{
@@ -389,7 +389,7 @@ if($temoin==1){
 												//echo "$sql<br />\n";
 												$res_insert3=mysql_query($sql);
 												if(!$res_insert3){
-													echo "<font color='red'>Erreur</font> lors de l'insertion de l'adresse $lig2->adr2, $lig2->adr2_comp, $lig2->cp2, $lig2->commune2 avec le n° adresse $adr_id.<br />\n";
+													echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'adresse $lig2->adr2, $lig2->adr2_comp, $lig2->cp2, $lig2->commune2 avec le nï¿½ adresse $adr_id.<br />\n";
 													$erreur++;
 												}
 												else{
@@ -402,7 +402,7 @@ if($temoin==1){
 										//echo "$sql<br />\n";
 										$res_insert1=mysql_query($sql);
 										if(!$res_insert1){
-											echo "<font color='red'>Erreur</font> de l'insertion de l'association de l'élève $ele_id avec le responsable (2) $pers_id<br />\n";
+											echo "<span style='color:red'>Erreur</span> de l'insertion de l'association de l'ï¿½lï¿½ve $ele_id avec le responsable (2) $pers_id<br />\n";
 											$erreur++;
 										}
 										else{
@@ -414,7 +414,7 @@ if($temoin==1){
 										//echo "$sql<br />\n";
 										$res_insert2=mysql_query($sql);
 										if(!$res_insert2){
-											echo "<font color='red'>Erreur</font> de l'insertion du responsable ($pers_id): $lig2->nom2 $lig2->prenom2 (avec le n° adresse $adr_id).<br />\n";
+											echo "<span style='color:red'>Erreur</span> de l'insertion du responsable ($pers_id): $lig2->nom2 $lig2->prenom2 (avec le nï¿½ adresse $adr_id).<br />\n";
 											$erreur++;
 										}
 										else{
@@ -442,12 +442,13 @@ if($temoin==1){
 			else{
 				echo "<p>Il semble que la table 'eleves' soit vide.</p>\n";
 			}
+			echo "<p><br /></p>\n";
 		}
 	}
 	elseif($mode==1) {
 		// On fournit les fichiers CSV générés depuis les XML de SCONET...
 		if (!isset($is_posted)) {
-			echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>générés</a> à partir des exports XML de Sconet</i>).</p>\n";
+			echo "<p>Vous allez importer les fichiers <b>CSV</b> (<em><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>gï¿½nï¿½rï¿½s</a> ï¿½ partir des exports XML de Sconet</em>).</p>\n";
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>\n";
 			echo add_token_field();
 			echo "<input type=hidden name='is_posted' value='yes' />\n";
@@ -459,6 +460,7 @@ if($temoin==1){
 			echo "<p>Sélectionnez le fichier <b>ADRESSES.CSV</b>:<br /><input type='file' size='80' name='adr_file' />\n";
 			echo "<p><input type=submit value='Valider' /></p>\n";
 			echo "</form>\n";
+			echo "<p><br /></p>\n";
 		}
 		else {
 			check_token();
@@ -566,7 +568,7 @@ if($temoin==1){
 									$res_update=mysql_query($sql);
 									if(!$res_update){
 										$erreur++;
-										echo "<font color='red'>Erreur</font> lors du renseignement de l'ele_id avec la valeur $affiche[1] pour l'élève d'ELENOET $affiche[0]<br />\n";
+										echo "<span style='color:red'>Erreur</span> lors du renseignement de l'ele_id avec la valeur $affiche[1] pour l'ï¿½lï¿½ve d'ELENOET $affiche[0]<br />\n";
 									}
 									else{
 										echo "Renseignement de l'ele_id avec la valeur $affiche[1] pour l'élève d'ELENOET $affiche[0]<br />\n";
@@ -578,13 +580,13 @@ if($temoin==1){
 										$eleve_login = sql_query1("select login from eleves where elenoet='$affiche[0]' OR elenoet='".sprintf("%05d",$affiche[0])."'");
 										// Mise à jour de l'identifiant national
 										if ($affiche[2]=='') {
-       										echo "<font color='red'>Erreur</font> L'identifiant national pour l'élève d'ELENOET $affiche[0] ($eleve_login) n'a pas été enregistré car il est absent du fichier eleves.csv.<br />\n";
+       										echo "<span style='color:red'>Erreur</span> L'identifiant national pour l'ï¿½lï¿½ve d'ELENOET $affiche[0] ($eleve_login) n'a pas ï¿½tï¿½ enregistrï¿½ car il est absent du fichier eleves.csv.<br />\n";
 										}
 										else {
 											$sql="UPDATE eleves SET no_gep='$affiche[2]' WHERE elenoet='$affiche[0]' OR elenoet='".sprintf("%05d",$affiche[0])."'";
 											$res_update=mysql_query($sql);
 											if(!$res_update){
-													echo "<font color='red'>Erreur</font> lors du renseignement de l'identifiant national la valeur $affiche[2] pour l'élève d'ELENOET $affiche[0] ($eleve_login)<br />\n";
+													echo "<span style='color:red'>Erreur</span> lors du renseignement de l'identifiant national la valeur $affiche[2] pour l'ï¿½lï¿½ve d'ELENOET $affiche[0] ($eleve_login)<br />\n";
 											}
 											else {
 												echo "Renseignement de l'identifiant national avec la valeur $affiche[2] pour l'élève d'ELENOET $affiche[0] ($eleve_login)<br />\n";
@@ -618,7 +620,7 @@ if($temoin==1){
 									}
 								}
 								else {
-									echo "<font color='red'>Aucun élève avec l'ELENOET $affiche[0] n'a été trouvé dans votre table 'eleves'; il pourra être créé lors d'un import ultérieur.</font><br />\n";
+									echo "<span style='color:red'>Aucun ï¿½lï¿½ve avec l'ELENOET $affiche[0] n'a ï¿½tï¿½ trouvï¿½ dans votre table 'eleves'; il pourra ï¿½tre crï¿½ï¿½ lors d'un import ultï¿½rieur.</span><br />\n";
 									$tab_elenoet_non_trouves[]=$affiche[0];
 								}
 							}
@@ -719,6 +721,19 @@ if($temoin==1){
 									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
 									//echo "A l'indice $i, on a \$tabligne[\$tabindice[$i]]=\$tabligne[$tabindice[$i]]=".$tabligne[$tabindice[$i]]."<br />";
 								}
+
+
+								$login_resp="";
+								$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='$affiche[0]';";
+								$res_tmp_u=mysql_query($sql);
+								if(mysql_num_rows($res_tmp_u)>0) {
+									$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+									$login_resp=$lig_tmp_u->login;
+									if(test_unique_login($login_resp)!='yes') {
+										$login_resp="";
+									}
+								}
+
 								$sql="insert into resp_pers set
 											pers_id = '$affiche[0]',
 											nom = '$affiche[1]',
@@ -735,10 +750,30 @@ if($temoin==1){
 								if(!$req) {
 									$nb_reg_no3++;
 									echo mysql_error();
-									echo "<font color='red'>Erreur</font> lors de l'insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numéro d'adresse $affiche[8].<br />\n";
+									echo "<span style='color:red'>Erreur</span> lors de l'insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numï¿½ros de tï¿½lï¿½phone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numï¿½ro d'adresse $affiche[8].<br />\n";
 								} else {
 									$nb_record3++;
-									echo "Insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numéro d'adresse $affiche[8].<br />\n";
+									echo "Insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numï¿½ros de tï¿½lï¿½phone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numï¿½ro d'adresse $affiche[8].<br />\n";
+
+									if($login_resp!="") {
+										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$affiche[1]."', prenom='".$affiche[2]."', ";
+										$sql.="civilite='".ucfirst(strtolower($affiche[3]))."', ";
+										$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+										$insert_u=mysql_query($sql);
+										if(!$insert_u) {
+											echo "Erreur lors de la crï¿½ation du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
+										}
+										else {
+											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+											$update_rp=mysql_query($sql);
+	
+											$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$affiche[0]."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+											$update_tmp_u=mysql_query($sql);
+										}
+									}
 								}
 							}
 						}
@@ -751,10 +786,10 @@ if($temoin==1){
 					if ($nb_reg_no3 != 0) {
 						echo "<p>Lors de l'enregistrement des données de PERSONNES.CSV, il y a eu $nb_reg_no3 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
 					} else {
-						echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$nb_record3." enregistrements au total).</p>\n";
+						echo "<p>L'importation des personnes (<em>responsables</em>) dans la base GEPI a ï¿½tï¿½ effectuï¿½e avec succï¿½s (<em>".$nb_record3." enregistrements au total</em>).</p>\n";
 					}
 
-					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_personnes').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_personnes').style.display='none';return false;\">Masquer</a> les détails.</p>\n";
+					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_personnes').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_personnes').style.display='none';return false;\">Masquer</a> les dï¿½tails.</p>\n";
 					echo "<p><br /></p>\n";
 
 				}
@@ -860,7 +895,7 @@ if($temoin==1){
 								if(!$req) {
 									$nb_reg_no1++;
 									echo mysql_error();
-									echo "<font color='red'>Erreur</font> lors de l'insertion de l'association élève $affiche[0] et responsable ($affiche[2]) $affiche[1].<br />\n";
+									echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'association ï¿½lï¿½ve $affiche[0] et responsable ($affiche[2]) $affiche[1].<br />\n";
 								} else {
 									$nb_record1++;
 									echo "Insertion de l'association élève $affiche[0] et responsable ($affiche[2]) $affiche[1].<br />\n";
@@ -874,13 +909,13 @@ if($temoin==1){
 					echo "</div>\n";
 
 					if ($nb_reg_no1 != 0) {
-						echo "<p>Lors de l'enregistrement des données de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
+						echo "<p>Lors de l'enregistrement des donnï¿½es de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreur(s). Essayez de trouvez la cause de l'erreur.</p>\n";
 					}
 					else {
-						echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$nb_record1." enregistrements au total).</p>\n";
+						echo "<p>L'importation des relations eleves/responsables dans la base GEPI a ï¿½tï¿½ effectuï¿½e avec succï¿½s (<em>".$nb_record1." enregistrements au total</em>).</p>\n";
 					}
 
-					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_responsables').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_responsables').style.display='none';return false;\">Masquer</a> les détails.</p>\n";
+					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_responsables').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_responsables').style.display='none';return false;\">Masquer</a> les dï¿½tails.</p>\n";
 					echo "<p><br /></p>\n";
 
 				}
@@ -989,7 +1024,7 @@ if($temoin==1){
 								if(!$req) {
 									$nb_reg_no2++;
 									echo mysql_error();
-									echo "<font color='red'>Erreur</font> lors de l'insertion de l'adresse $affiche[1], $affiche[2], $affiche[3], $affiche[4], $affiche[5], $affiche[7], ($affiche[6]), avec le numéro $affiche[0].<br />\n";
+									echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'adresse $affiche[1], $affiche[2], $affiche[3], $affiche[4], $affiche[5], $affiche[7], ($affiche[6]), avec le numï¿½ro $affiche[0].<br />\n";
 								} else {
 									$nb_record2++;
 									echo "Insertion de l'adresse $affiche[1], $affiche[2], $affiche[3], $affiche[4], $affiche[5], $affiche[7], ($affiche[6]), avec le numéro $affiche[0].<br />\n";
@@ -1003,12 +1038,12 @@ if($temoin==1){
 					echo "</div>\n";
 
 					if ($nb_reg_no2 != 0) {
-						echo "<p>Lors de l'enregistrement des données de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
+						echo "<p>Lors de l'enregistrement des donnï¿½es de ADRESSES.CSV, il y a eu $nb_reg_no2 erreur(s). Essayez de trouvez la cause de l'erreur.</p>\n";
 					} else {
-						echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$nb_record2." enregistrements au total).</p>\n";
+						echo "<p>L'importation des adresses de responsables dans la base GEPI a ï¿½tï¿½ effectuï¿½e avec succï¿½s (<em>".$nb_record2." enregistrements au total</em>).</p>\n";
 					}
 
-					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_adresses').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_adresses').style.display='none';return false;\">Masquer</a> les détails.</p>\n";
+					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_adresses').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_adresses').style.display='none';return false;\">Masquer</a> les dï¿½tails.</p>\n";
 					echo "<p><br /></p>\n";
 
 					if(count($tab_elenoet_non_trouves)>0){
@@ -1047,6 +1082,7 @@ if($temoin==1){
 			else{
 				echo "<p>Des erreurs se sont produites.</p>\n";
 			}
+			echo "<p><br /></p>\n";
 		}
 	}
 }

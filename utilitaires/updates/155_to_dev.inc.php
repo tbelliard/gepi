@@ -82,6 +82,27 @@ if ($query) {
 		$result .= msj_erreur(mysql_error());
 }
 
+$result .= "<strong>Ajout d'une table 'temp_abs_import' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'temp_abs_import'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS temp_abs_import (
+		id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		login varchar(50) NOT NULL default '',
+		elenoet varchar(50) NOT NULL default '',
+		libelle varchar(50) NOT NULL default '',
+		nbAbs INT(11) NOT NULL default '0',
+		nbNonJustif INT(11) NOT NULL default '0',
+		nbRet INT(11) NOT NULL default '0',
+		UNIQUE KEY elenoet (elenoet));");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+		$result .= msj_present("La table existe dï¿½jï¿½");
+}
 
 $result.="<br />Fin mise à jour<br/>";
 ?>

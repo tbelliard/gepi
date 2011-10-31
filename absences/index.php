@@ -52,6 +52,7 @@ require_once("../lib/header.inc");
 if (!isset($id_classe)) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href='import_absences_sconet.php'>Importer les absences de Sconet par lots</a>\n";
+	echo " | <a href='import_absences_csv.php'>Importer les absences depuis un CSV par lots</a>\n";
 	echo "</p>\n";
 
 	if ($_SESSION['statut']=="cpe") {
@@ -100,6 +101,8 @@ if (!isset($id_classe)) {
 
 	echo " | <a href='import_absences_sconet.php'>Importer les absences de Sconet par lots</a>\n";
 
+	echo " | <a href='import_absences_csv.php'>Importer les absences depuis un CSV par lots</a>\n";
+
 	echo "</p>\n";
 
 	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
@@ -111,9 +114,9 @@ if (!isset($id_classe)) {
 	echo "<table class='boireaus' cellpadding='3'>\n";
 
 	// si le module de gestion des absences est activé alors on ajout un colspan de 2 pour l'entêt d'importation
-	$colspan = '2';
+	$colspan = '3';
 	if ( getSettingValue("active_module_absence") === 'y' || getSettingValue("abs2_import_manuel_bulletin")==='y') {
-		$colspan = '3';
+		$colspan = '4';
 	}
 
 	echo "<tr><th>Période</th><th style='width:6em;'>Saisir</th><th style='width:6em;'>Consulter</th><th colspan='$colspan'>Importer les absences</th></tr>\n";
@@ -154,6 +157,8 @@ if (!isset($id_classe)) {
 		if(($ver_periode[$i] == "N")||
 		 (($ver_periode[$i]!="O")&&($_SESSION['statut']=='secours'))) {
 			echo "<td style='width:5em;'><a href='import_absences_sconet.php?id_classe=$id_classe&amp;num_periode=$i'>de Sconet</a></td>\n";
+
+			echo "<td style='width:5em;'><a href='import_absences_csv.php?id_classe=$id_classe&amp;num_periode=$i'>depuis un CSV</a></td>\n";
 		}
 		/*
 		else {

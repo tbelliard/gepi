@@ -51,7 +51,7 @@ require_once("../lib/header.inc");
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php#eleves_classes"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Cinquième phase d'initialisation<br />Importation des associations élèves-classes</h3></center>";
@@ -62,11 +62,11 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
-	echo "<p>Vous allez effectuer la cinquième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
-	echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
-	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
-	echo "<ul><li>Identifiant (interne) de l'élève</li>\n" .
-			"<li>Identifiant court de la classe (ex: 1S2)</li>\n" .
+	echo "<p>Vous allez effectuer la cinquiï¿½me ï¿½tape : elle consiste ï¿½ importer le fichier <b>g_eleves_classes.csv</b> contenant les donnï¿½es relatives aux disciplines.</p>\n";
+	echo "<p>Remarque : cette opï¿½ration n'efface par les classes. Elle ne fait qu'une mise ï¿½ jour, le cas ï¿½chï¿½ant, de la liste des matiï¿½res.</p>\n";
+	echo "<p>Les champs suivants doivent ï¿½tre prï¿½sents, dans l'ordre, et <b>sï¿½parï¿½s par un point-virgule</b> : </p>\n";
+	echo "<ul><li>Identifiant (<em>interne</em>) de l'ï¿½lï¿½ve</li>\n" .
+			"<li>Identifiant court de la classe (<em>ex: 1S2</em>)</li>\n" .
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
@@ -90,10 +90,27 @@ if (!isset($_POST["action"])) {
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
 
+		echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 		$j=0;
+		$k=0;
 		while ($j < count($liste_tables_del)) {
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+			//echo "$sql<br />";
+			$test = sql_query1($sql);
+			if ($test != -1) {
+				if($k>0) {echo ", ";}
+				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+				$res_test_tab=mysql_query($sql);
+				if(mysql_num_rows($res_test_tab)>0) {
+					$sql="DELETE FROM $liste_tables_del[$j];";
+					$del = @mysql_query($sql);
+					echo "<b>".$liste_tables_del[$j]."</b>";
+					echo " (".mysql_num_rows($res_test_tab).")";
+				}
+				else {
+					echo $liste_tables_del[$j];
+				}
+				$k++;
 			}
 			$j++;
 		}
@@ -106,6 +123,9 @@ if (!isset($_POST["action"])) {
 			require("../lib/footer.inc.php");
 			die();
 		}
+
+		echo "<br />\n";
+		echo "<p><em>On remplit les tables 'classes', 'periodes' et 'j_eleves_classes'&nbsp;:</em> ";
 
 		//$go = true;
 		$i = 0;
@@ -203,9 +223,9 @@ if (!isset($_POST["action"])) {
 		}
 
 		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
-		if ($total > 0) echo "<p>" . $total . " associations eleves-classes ont été enregistrés.</p>\n";
+		if ($total > 0) echo "<p>" . $total . " associations eleves-classes ont ï¿½tï¿½ enregistrï¿½s.</p>\n";
 
-		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+		echo "<p><a href='index.php#eleves_classes'>Revenir ï¿½ la page prï¿½cï¿½dente</a></p>\n";
 
 
 	} else if ($_POST['action'] == "upload_file") {
@@ -320,10 +340,10 @@ if (!isset($_POST["action"])) {
 				echo "</table>\n";
 
 				if($nb_error>0) {
-					echo "<span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</style><br />\n";
+					echo "<p><span style='color:red'>$nb_error erreur(s) dï¿½tectï¿½e(s) lors de la prï¿½paration.</span></p>\n";
 				}
 
-				echo "<input type='submit' value='Enregistrer' />\n";
+				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 				echo "</form>\n";
 			}

@@ -272,8 +272,8 @@ require_once("../lib/header.inc");
 </p>
 <?php
 
-if($auth_sso=='lcs') {
-	echo "<p style='color:red'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login différent de celui des comptes des utilisateurs élèves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivée de nouveaux élèves en cours d'année, il peut arriver qu'un élève obtienne un login déjà attribué à un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a>.</p>\n";
+if(getSettingValue('auth_sso')=='lcs') {
+	echo "<p style='color:red'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login diffï¿½rent de celui des comptes des utilisateurs ï¿½lï¿½ves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivï¿½e de nouveaux ï¿½lï¿½ves en cours d'annï¿½e, il peut arriver qu'un ï¿½lï¿½ve obtienne un login dï¿½jï¿½ attribuï¿½ ï¿½ un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration gï¿½nï¿½rale</a>.</p>\n";
 }
 
 $afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
