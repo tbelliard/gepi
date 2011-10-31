@@ -29,7 +29,7 @@
 
 	function extr_valeur($lig){
 		unset($tabtmp);
-		$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
+		$tabtmp=explode(">",preg_replace("/</",">",$lig));
 		return trim($tabtmp[2]);
 	}
 
@@ -69,6 +69,7 @@
 	// Etape...
 	$step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
 
+	$debug_ele="n";
 
 	if(isset($_GET['ad_retour'])){
 		$_SESSION['ad_retour']=$_GET['ad_retour'];
@@ -155,15 +156,29 @@
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo add_token_field();
-			echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
+			echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<em>ou ElevesSansAdresses.xml</em>):<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"eleves_xml_file\" /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
-				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesSansAdresses.zip)</p>";
+				echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex : ElevesSansAdresses.zip</em>)</p>";
 			}
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
+
+
+			$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+			if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
+				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==0) {
+					echo "<p style='color:red'>Il existe un ou des comptes élèves de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes parents et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+				}
+			}
+
 		}
 		else{
 			check_token(false);
@@ -256,7 +271,7 @@
 							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>$unzipped_max_filesize octets</em>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
@@ -444,7 +459,7 @@
 								//echo "$sql<br />\n";
 								$res_insert=mysql_query($sql);
 								if(!$res_insert){
-									echo "Erreur lors de la requête $sql<br />\n";
+									echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
 									$nb_err++;
 								}
 								$id_tempo++;
@@ -730,14 +745,14 @@
 										// NIVEAU
 										$chaine="";
 										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-											if(my_ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											if(preg_match("/ECOLE/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 												$chaine="ecole";
 											}
-											elseif(my_ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											elseif(preg_match("/COLLEGE/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 												$chaine="college";
 											}
-											elseif(my_ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												if(my_ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											elseif(preg_match("/LYCEE/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												if(preg_match("/PROF/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 													$chaine="lprof";
 												}
 												else{
@@ -779,7 +794,7 @@
 
 										// TYPE
 										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-											if(my_ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											if(preg_match("/PRIVE/",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
 												$chaine="prive";
 											}
 											else{
@@ -996,11 +1011,11 @@
 
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 				echo add_token_field();
-				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<i>ex.: 030201 -&gt; AGL1</i>).</p>\n";
+				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<em>ex.: 030201 -&gt; AGL1</em>).</p>\n";
 				echo "<p>Veuillez fournir le fichier Nomenclature.xml:<br />\n";
 				echo "<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /></p>\n";
 				if ($gepiSettings['unzipped_max_filesize']>=0) {
-					echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : Nomenclature.zip)</p>";
+					echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex&nbsp;: Nomenclature.zip</em>)</p>";
 				}
 				//echo "<input type='hidden' name='etape' value='$etape' />\n";
 				echo "<input type='hidden' name='step' value='4' />\n";
@@ -1095,7 +1110,7 @@
 							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>$unzipped_max_filesize octets</em>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
@@ -1427,8 +1442,8 @@
 					echo "<p><input type='submit' value='Valider' /></p>\n";
 					echo "</form>\n";
 
-					echo "<p><i>NOTE:</i> Les fichiers de SCONET contiennent le code_commune_insee, mais pas le code_postal (<i>les valeurs diffèrent</i>).<br />\n";
-					echo "Les établissements ne sont donc pas importés (<i>pour éviter des insertions erronées</i>).<br />\n";
+					echo "<p><em>NOTE:</em> Les fichiers de SCONET contiennent le code_commune_insee, mais pas le code_postal (<em>les valeurs diffèrent</em>).<br />\n";
+					echo "Les établissements ne sont donc pas importés (<em>pour éviter des insertions erronées</em>).<br />\n";
 					echo "Seules les associations élève/RNE sont importées.</p>\n";
 
 
