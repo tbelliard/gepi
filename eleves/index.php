@@ -685,7 +685,7 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_dse' style='cursor: pointer;'>\n";
-			echo "<span class='norme'>Les ï¿½lï¿½ves dont la date de sortie de l'ï¿½tablissement est renseignï¿½e (<i>".mysql_num_rows($test_dse)."</i>).</span><br />\n";
+			echo "<span class='norme'>Les élèves dont la date de sortie de l'établissement est renseignée (<i>".mysql_num_rows($test_dse)."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
