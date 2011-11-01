@@ -1885,11 +1885,13 @@ class Eleve extends BaseEleve {
 		// préférence admin pour la demi journée
 	    $heure_demi_journee = 11;
 	    $minute_demi_journee = 50;
-	    try {
-			$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-			$heure_demi_journee = $dt_demi_journee->format('H');
-			$minute_demi_journee = $dt_demi_journee->format('i');
-	    } catch (Exception $x) {
+	    if (getSettingValue("abs2_heure_demi_journee") != null) {
+    	    try {
+    			$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+    			$heure_demi_journee = $dt_demi_journee->format('H');
+    			$minute_demi_journee = $dt_demi_journee->format('i');
+    	    } catch (Exception $x) {
+    	    }
 	    }
 	    
 	    //on initialise le début de l'itération pour creer les entrées si aucune date n'est précisée
