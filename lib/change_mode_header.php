@@ -20,7 +20,7 @@
 */
 	// La SESSION est valide, on teste juste les bricolages d'URL
 	$url = parse_url($_SERVER['REQUEST_URI']);
-	if (substr($url['path'], 0, strlen($gepiPath)) != $gepiPath) {
+	if (substr($url['path'], 0, mb_strlen($gepiPath)) != $gepiPath) {
 		tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
 		header("Location: ../logout.php?auto=2");
 		die();

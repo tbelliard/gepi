@@ -143,7 +143,7 @@ while ($j < $nombre_groupes) {
 		$update_rang_non_notes=mysql_query($sql);
 
         // On indique que le recalcul du rang n'est plus nécessaire
-        $long = strlen($recalcul_rang);
+        $long = mb_strlen($recalcul_rang);
         if ($long >= $periode_num) {
             $recalcul_rang = substr_replace( $recalcul_rang, "n", $periode_num-1, $periode_num);
         } else {

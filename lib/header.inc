@@ -178,14 +178,14 @@ if(isset($javascript_specifique)) {
 
 	if(is_array($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
 				echo "<script type='text/javascript' src='$gepiPath/$current_javascript_specifique.js'></script>\n";
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
 			// Javascript spécifique à une page:
 			echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
 		}
@@ -363,14 +363,14 @@ if(isset($style_specifique)) {
 
 	if(is_array($style_specifique)) {
 		foreach($style_specifique as $current_style_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 				// Styles spécifiques à une page:
 				echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$current_style_specifique.css' />\n";
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 			// Styles spécifiques à une page:
 			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
 		}

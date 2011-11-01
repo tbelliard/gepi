@@ -438,7 +438,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			// On supprime les balises
 			$texte=preg_replace('/<(.*)>/U','',$texte);
 			if($my_echo_debug==1) my_echo_debug("\$texte=$texte\n");
-			for($j=0;$j<strlen($texte);$j++) {
+			for($j=0;$j<mb_strlen($texte);$j++) {
 
 				if(!isset($ligne[$cpt])) {
 					$ligne[$cpt]='';
@@ -783,10 +783,10 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 					if(($cpt+2)*$hauteur_texte*(1+$r_interligne)*26/100>$h_cell) {
 						$d=1;
-						while(($pdf->GetStringWidth(substr($ligne[$cpt],0,strlen($ligne[$cpt])-$d)."...")>=$largeur_dispo)&&($d<strlen($ligne[$cpt]))) {
+						while(($pdf->GetStringWidth(substr($ligne[$cpt],0,mb_strlen($ligne[$cpt])-$d)."...")>=$largeur_dispo)&&($d<mb_strlen($ligne[$cpt]))) {
 							$d++;
 						}
-						$ligne[$cpt]=substr($ligne[$cpt],0,strlen($ligne[$cpt])-$d)."...";
+						$ligne[$cpt]=substr($ligne[$cpt],0,mb_strlen($ligne[$cpt])-$d)."...";
 						break;
 					}
 

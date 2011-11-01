@@ -21,7 +21,7 @@ for ($index = 0; $index < $numlines; $index++) {
   $replacements = array();
   $tmpline = $tab_content[$index];
 
-  if (!strlen($tmpline) || $tmpline == "\r") {
+  if (!mb_strlen($tmpline) || $tmpline == "\r") {
     // this is a blank line, send <p>
     $html .= SetHTMLOutputMode('', "0", 0);
     continue; //passage à l'itération suivante
@@ -89,14 +89,14 @@ for ($index = 0; $index < $numlines; $index++) {
   $tmpline = preg_replace("|(_g_)(.*?)(_g_)|", "<font color='grey'>\\2</font>", $tmpline);
   $tmpline = preg_replace("|('')(.*?)('')|",  "<em>\\2</em>", $tmpline);
   if (preg_match("/(^\t+)(.*?)(:\t)(.*$)/", $tmpline, $matches)) {
-    $numtabs = strlen($matches[1]);
+    $numtabs = mb_strlen($matches[1]);
     $html .= SetHTMLOutputMode('dl', "1", $numtabs);
     $tmpline = '';
     if(trim($matches[2]))
         $tmpline = '<dt>' . $matches[2];
     $tmpline .= '<dd>' . $matches[4];
   } elseif (preg_match("/(^\t+)(\*|\d+|#)/", $tmpline, $matches)) {
-      $numtabs = strlen($matches[1]);
+      $numtabs = mb_strlen($matches[1]);
       if ($matches[2] == '*') {
          $listtag = 'ul';
       } else {
@@ -106,17 +106,17 @@ for ($index = 0; $index < $numlines; $index++) {
       $html .= SetHTMLOutputMode($listtag, "1", $numtabs);
       $html .= '<li>';
   } elseif (preg_match("/^([#*]*\*)[^#]/", $tmpline, $matches)) {
-      $numtabs = strlen($matches[1]);
+      $numtabs = mb_strlen($matches[1]);
       $tmpline = preg_replace("/^([#*]*\*)/", '', $tmpline);
       $html .= SetHTMLOutputMode('ul', "1", $numtabs);
       $html .= '<li>';
   } elseif (preg_match("/^([#*]*\#)/", $tmpline, $matches)) {
-     $numtabs = strlen($matches[1]);
+     $numtabs = mb_strlen($matches[1]);
      $tmpline = preg_replace("/^([#*]*\#)/", "", $tmpline);
      $html .= SetHTMLOutputMode('ol', "1", $numtabs);
      $html .= '<li>';
   } elseif (preg_match("/(^;+)(.*?):(.*$)/", $tmpline, $matches)) {
-     $numtabs = strlen($matches[1]);
+     $numtabs = mb_strlen($matches[1]);
      $html .= SetHTMLOutputMode('dl', "1", $numtabs);
      $tmpline = '';
      if(trim($matches[2]))

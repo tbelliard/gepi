@@ -621,7 +621,7 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 				echo "<td class='small' ";
 				if(!preg_match("/Rang de l/",$ligne1[$j])) {
 					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+						if(mb_strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 							for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
 								if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 									echo " style='";
@@ -640,7 +640,7 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 				echo "<td align=\"center\" class='small' ";
 				if(!preg_match("/Rang de l/",$ligne1[$j])) {
 					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+						if(mb_strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 							for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
 								if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 									echo " style='";
@@ -1039,7 +1039,7 @@ function liens_class_from_ele_login($ele_login){
 	if(isset($tab_classe)){
 		if(count($tab_classe)>0){
 			foreach ($tab_classe as $key => $value){
-				if(strlen(preg_replace("/[0-9]/","",$key))==0) {
+				if(mb_strlen(preg_replace("/[0-9]/","",$key))==0) {
 					if($_SESSION['statut']=='administrateur') {
 						$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
 					}

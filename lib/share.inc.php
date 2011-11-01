@@ -109,7 +109,7 @@ function verif_mot_de_passe($password,$flag) {
 			if(preg_match("/^[A-Za-z0-9]*$/", $password)) {
 				$info_verif_mot_de_passe="Le mot de passe doit comporter au moins un caractère spécial (#, *,...).";
 			}
-			elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+			elseif (mb_strlen($password) < getSettingValue("longmin_pwd")) {
 				$info_verif_mot_de_passe="La longueur du mot de passe doit être supérieure ou égale à ".getSettingValue("longmin_pwd").".";
 				return FALSE;
 			}
@@ -125,7 +125,7 @@ function verif_mot_de_passe($password,$flag) {
 			$info_verif_mot_de_passe="Le mot de passe ne doit pas être uniquement numérique ou uniquement alphabétique.";
 			return FALSE;
 		}
-		elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+		elseif (mb_strlen($password) < getSettingValue("longmin_pwd")) {
 			$info_verif_mot_de_passe="La longueur du mot de passe doit être supérieure ou égale à ".getSettingValue("longmin_pwd").".";
 			return FALSE;
 		}
@@ -331,7 +331,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		if (preg_match("/\s/",$temp1)) {
 			$noms = preg_split("/\s/",$temp1);
 			$temp1 = $noms[0];
-			if (strlen($noms[0]) < 4) {
+			if (mb_strlen($noms[0]) < 4) {
 				$temp1 .= "_". $noms[1];
 			}
 		}
@@ -359,10 +359,10 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$test1 = $login_user{0};
 	}
 
-	$test1 = $login_user{strlen($login_user)-1};
+	$test1 = $login_user{mb_strlen($login_user)-1};
 	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-		$login_user = substr($login_user, 0, strlen($login_user)-1);
-		$test1 = $login_user{strlen($login_user)-1};
+		$login_user = substr($login_user, 0, mb_strlen($login_user)-1);
+		$test1 = $login_user{mb_strlen($login_user)-1};
 	}
 
 	// On teste l'unicité du login que l'on vient de créer
@@ -540,20 +540,20 @@ function checkAccess() {
 
     	$sql = "SELECT autorisation
 	    from droits_speciaux
-    	where nom_fichier = '" . substr($url['path'], strlen($gepiPath)) . "'
+    	where nom_fichier = '" . substr($url['path'], mb_strlen($gepiPath)) . "'
 		AND id_statut = '" . $_SESSION['statut_special_id'] . "'";
 
     }else{
 
 		$sql = "select " . $_SESSION['statut'] . "
 	    from droits
-    	where id = '" . substr($url['path'], strlen($gepiPath)) . "'
+    	where id = '" . substr($url['path'], mb_strlen($gepiPath)) . "'
     	;";
 
 	}
 
     $dbCheckAccess = sql_query1($sql);
-    if (substr($url['path'], 0, strlen($gepiPath)) != $gepiPath) {
+    if (substr($url['path'], 0, mb_strlen($gepiPath)) != $gepiPath) {
         tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
         return (FALSE);
     } else {
@@ -614,7 +614,7 @@ return $email;
  * @return string le texte avec les lettres accentuées
  */
 function dbase_filter($s){
-  for($i = 0; $i < strlen($s); $i++){
+  for($i = 0; $i < mb_strlen($s); $i++){
     $code = ord($s[$i]);
     switch($code){
     case 129:    $s[$i] = "ü"; break;
@@ -760,19 +760,19 @@ function detect_browser($HTTP_USER_AGENT) {
  * @return string la date formatée
  */
 function affiche_date_naissance($date) {
-    if (strlen($date) == 10) {
+    if (mb_strlen($date) == 10) {
         // YYYY-MM-DD
         $annee = substr($date, 0, 4);
         $mois = substr($date, 5, 2);
         $jour = substr($date, 8, 2);
     }
-    elseif (strlen($date) == 8 ) {
+    elseif (mb_strlen($date) == 8 ) {
         // YYYYMMDD
         $annee = substr($date, 0, 4);
         $mois = substr($date, 4, 2);
         $jour = substr($date, 6, 2);
     }
-    elseif (strlen($date) == 19 ) {
+    elseif (mb_strlen($date) == 19 ) {
         // YYYY-MM-DD xx:xx:xx
         $annee = substr($date, 0, 4);
         $mois = substr($date, 5, 2);
@@ -885,7 +885,7 @@ function check_backup_directory() {
         	$handle=opendir('./backup');
 
         	while ($file = readdir($handle)) {
-            	if (strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
+            	if (mb_strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
         	}
 
         	closedir($handle);
@@ -898,7 +898,7 @@ function check_backup_directory() {
             // Il n'existe pas
             // On crée le répertoire de backup
             $length = rand(35, 45);
-            for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+            for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
             $dirname = $pref_multi.$r;
             $create = mkdir("./backup/" . $dirname, 0700);
             copy("./backup/index.html","./backup/".$dirname."/index.html");
@@ -938,7 +938,7 @@ function check_backup_directory() {
     if ($current_time-$lastchange > 172800) {
         $dirname = getSettingValue("backup_directory");
         $length = rand(35, 45);
-        for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
+        for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
         $newdirname = $pref_multi.$r;
         if (rename("./backup/".$dirname, "./backup/".$newdirname)) {
             saveSetting("backup_directory",$newdirname);
@@ -1006,7 +1006,7 @@ function tentative_intrusion($_niveau, $_description) {
 	$adresse_ip = $_SERVER['REMOTE_ADDR'];
 	$date = strftime("%Y-%m-%d %H:%M:%S");
 	$url = parse_url($_SERVER['REQUEST_URI']);
-    $fichier = substr($url['path'], strlen($gepiPath));
+    $fichier = substr($url['path'], mb_strlen($gepiPath));
 	$res = mysql_query("INSERT INTO tentatives_intrusion SET " .
 			"login = '".$user_login."', " .
 			"adresse_ip = '".$adresse_ip."', " .
@@ -1130,7 +1130,7 @@ function check_temp_directory(){
 		// Il n'existe pas
 		// On créé le répertoire temp
 		$length = rand(35, 45);
-		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+		for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 		$dirname = $r;
 		$create = mkdir("./temp/".$dirname, 0700);
 
@@ -1184,7 +1184,7 @@ function check_user_temp_directory(){
 			// Le dossier n'existe pas
 			// On créé le répertoire temp
 			$length = rand(35, 45);
-			for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+			for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 			$dirname = $pref_multi.$_SESSION['login']."_".$r;
 			$create = mkdir("./temp/".$dirname, 0700);
 
@@ -1277,7 +1277,7 @@ function get_user_temp_directory(){
 		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
 		$dirname=$lig_temp_dir->temp_dir;
 
-		if(($dirname!="")&&(strlen(preg_replace("/[A-Za-z0-9_.]/","",$dirname))==0)) {
+		if(($dirname!="")&&(mb_strlen(preg_replace("/[A-Za-z0-9_.]/","",$dirname))==0)) {
 			if(file_exists("temp/".$dirname)){
 				return $dirname;
 			}
@@ -3115,7 +3115,7 @@ function casse_mot($mot,$mode='maj') {
     		return strtolower($str);
     	}
     	elseif($mode=='majf') {
-    		if(strlen($str)>1) {
+    		if(mb_strlen($str)>1) {
     			return strtoupper(substr($str,0,1)).strtolower(substr($str,1));
     		}
     		else {
@@ -3130,7 +3130,7 @@ function casse_mot($mot,$mode='maj') {
     			$tab2=explode("-",$tab[$i]);
     			for($j=0;$j<count($tab2);$j++) {
     				if($j>0) {$chaine.="-";}
-    				if(strlen($tab2[$j])>1) {
+    				if(mb_strlen($tab2[$j])>1) {
     					$chaine.=strtoupper(substr($tab2[$j],0,1)).strtolower(substr($tab2[$j],1));
     				}
     				else {
