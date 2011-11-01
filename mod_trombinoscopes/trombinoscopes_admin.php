@@ -368,7 +368,7 @@ if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
 	check_token();
 	header("Content-Description: File Transfer");
 	header("Content-Disposition: attachment; filename=eleves_".getSettingValue("gepiYear").".csv");
-	header("Content-Type: text/csv; charset=ISO-8859-1");
+	header("Content-Type: text/csv; charset=utf-8");
 	header("Content-Transfer-Encoding: base64");
 	// pb de download avec IE
 	if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))
