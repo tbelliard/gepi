@@ -226,7 +226,6 @@ function test_unique_e_login($s, $indice) {
  * @param string $_mode Le mode de génération ou NULL
  * @param string $_casse La casse du login ('maj', 'min', '') par défaut la casse n'est pas modifiée
  * @return string|booleanLe login généré ou FALSE si on obtient un login vide
->>>>>>> .merge_file_NwcuRB
  * @see test_unique_login()
  */
 function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
