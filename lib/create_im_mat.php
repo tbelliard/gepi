@@ -40,7 +40,7 @@ $texte = isset($_GET["texte"]) ? unslashes($_GET["texte"]) : NULL;
 unset($colortxt);
 $colortxt = isset($_GET["colortxt"]) ? $_GET["colortxt"] : NULL;
 
-$long_chaine = strlen($texte);
+$long_chaine = mb_strlen($texte);
 if ($height != '') {
     $haut_im = $height;
 } else {

@@ -163,14 +163,14 @@ if(isset($javascript_specifique)) {
 
 	if(is_array($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
               $tbs_librairies[]=$gepiPath."/".$current_javascript_specifique.'.js';
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
 			// Javascript spécifique à une page:
 			$tbs_librairies[]=$gepiPath."/".$javascript_specifique.'.js';
 		}
@@ -224,7 +224,7 @@ if(isset($style_specifique)) {
 
   if(is_array($style_specifique)) {
 	foreach($style_specifique as $current_style_specifique) {
-	  if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+	  if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 		//// Styles spécifiques à une page:
 		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 
@@ -232,7 +232,7 @@ if(isset($style_specifique)) {
 
 	}
   } else {
-	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
+	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 	  // Styles spécifiques à une page:
 	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 	}

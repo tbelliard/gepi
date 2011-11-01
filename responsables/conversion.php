@@ -553,11 +553,7 @@ if($temoin==1){
 									//echo "A l'indice $i, on a \$tabligne[\$tabindice[$i]]=\$tabligne[$tabindice[$i]]=".$tabligne[$tabindice[$i]]."<br />";
 								}
 
-								//$affiche[0]=sprintf("%05d",$affiche[0]);
-								//if(strlen($affiche[0])){
-								//}
-
-								//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[0]'";
+								
 								$sql="SELECT * FROM eleves WHERE elenoet='$affiche[0]' OR elenoet='".sprintf("%05d",$affiche[0])."'";
 								//echo "$sql<br />\n";
 								$res1=mysql_query($sql);

@@ -206,7 +206,7 @@ function tokenize($str, $pattern, &$orig, &$ntokens) {
       $linktoken = $FieldSeparator . $FieldSeparator . ($ntokens++) . $FieldSeparator;
       $new .= $matches[1] . $linktoken;
       $orig[] = $matches[2];
-      $str = substr($str, strlen($matches[0]));
+      $str = substr($str, mb_strlen($matches[0]));
    }
    $new .= $str;
    return $new;
