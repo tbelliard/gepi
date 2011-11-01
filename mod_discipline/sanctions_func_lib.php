@@ -44,7 +44,7 @@ function u_p_nom($u_login) {
 	if(mysql_num_rows($res3)>0) {
 		$lig3=mysql_fetch_object($res3);
 		//echo ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
-		return $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(substr($lig3->prenom,0,1)).".";
+		return $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 	}
 	else {
 		return "LOGIN INCONNU";

@@ -24,25 +24,25 @@
  */
 
 function jour_en_fr($en){
-	if(substr(strtolower($en),0,3)=='mon') {
+	if(mb_substr(strtolower($en),0,3)=='mon') {
 		return 'lundi';
 	}
-	elseif(substr(strtolower($en),0,3)=='tue') {
+	elseif(mb_substr(strtolower($en),0,3)=='tue') {
 		return 'mardi';
 	}
-	elseif(substr(strtolower($en),0,3)=='wed') {
+	elseif(mb_substr(strtolower($en),0,3)=='wed') {
 		return 'mercredi';
 	}
-	elseif(substr(strtolower($en),0,3)=='thu') {
+	elseif(mb_substr(strtolower($en),0,3)=='thu') {
 		return 'jeudi';
 	}
-	elseif(substr(strtolower($en),0,3)=='fri') {
+	elseif(mb_substr(strtolower($en),0,3)=='fri') {
 		return 'vendredi';
 	}
-	elseif(substr(strtolower($en),0,3)=='sat') {
+	elseif(mb_substr(strtolower($en),0,3)=='sat') {
 		return 'samedi';
 	}
-	elseif(substr(strtolower($en),0,3)=='sun') {
+	elseif(mb_substr(strtolower($en),0,3)=='sun') {
 		return 'dimanche';
 	}
 	else {return "";}
@@ -212,7 +212,7 @@ function info_eleve($ele_login) {
 				$tab_ele['classe'][$cpt]['pp']['civilite']=$lig_pp->civilite;
 				$tab_ele['classe'][$cpt]['pp']['email']=$lig_pp->email;
 
-				$tab_ele['classe'][$cpt]['pp']['civ_nom_prenom']=$lig_pp->civilite." ".$lig_pp->nom." ".substr($lig_pp->prenom,0,1).".";
+				$tab_ele['classe'][$cpt]['pp']['civ_nom_prenom']=$lig_pp->civilite." ".$lig_pp->nom." ".mb_substr($lig_pp->prenom,0,1).".";
 
 			}
 
@@ -409,7 +409,7 @@ function info_eleve($ele_login) {
 
 						if(($lig_prof->email!='')&&(!in_array($lig_prof->email,$tab_ele['tab_prof_liste_email']))) {$tab_ele['tab_prof_liste_email'][]=$lig_prof->email;}
 
-						$tab_ele['groupes'][$cpt]['prof_liste'].=$lig_prof->civilite." ".$lig_prof->nom." ".substr($lig_prof->prenom,0,1).".";
+						$tab_ele['groupes'][$cpt]['prof_liste'].=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1).".";
 
 						$cpt2++;
 					}
@@ -504,7 +504,7 @@ function info_eleve($ele_login) {
 		$tab_ele['cpe']['civilite']=$lig_cpe->civilite;
 		$tab_ele['cpe']['email']=$lig_cpe->email;
 
-		$tab_ele['cpe']['civ_nom_prenom']=$lig_cpe->civilite." ".$lig_cpe->nom." ".substr($lig_cpe->prenom,0,1).".";
+		$tab_ele['cpe']['civ_nom_prenom']=$lig_cpe->civilite." ".$lig_cpe->nom." ".mb_substr($lig_cpe->prenom,0,1).".";
 	}
 
 	$tab_ele['equipe_liste_email']=$tab_ele['prof_liste_email'];

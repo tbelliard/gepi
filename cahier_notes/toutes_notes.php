@@ -239,9 +239,9 @@ while ($num_per < $nb_cahier_note) {
         $ramener_sur_referentiel[$j] = mysql_result($appel_dev, $k, 'ramener_sur_referentiel');
         $facultatif[$j] = mysql_result($appel_dev, $k, 'facultatif');
         $date = mysql_result($appel_dev, $k, 'date');
-        $annee = substr($date,0,4);
-        $mois =  substr($date,5,2);
-        $jour =  substr($date,8,2);
+        $annee = mb_substr($date,0,4);
+        $mois =  mb_substr($date,5,2);
+        $jour =  mb_substr($date,8,2);
         $display_date[$j] = $jour."/".$mois."/".$annee;
         $k++;
     }
@@ -338,9 +338,9 @@ while ($num_per < $nb_cahier_note) {
             $ramener_sur_referentiel_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'ramener_sur_referentiel');
             $fac_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'facultatif');
             $date = mysql_result($query_nb_dev, $m, 'date');
-            $annee = substr($date,0,4);
-            $mois =  substr($date,5,2);
-            $jour =  substr($date,8,2);
+            $annee = mb_substr($date,0,4);
+            $mois =  mb_substr($date,5,2);
+            $jour =  mb_substr($date,8,2);
             $display_date_s_dev[$i][$m] = $jour."/".$mois."/".$annee;
             $m++;
         }

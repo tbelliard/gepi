@@ -47,7 +47,7 @@ for ($index = 0; $index < $numlines; $index++) {
   $oldn = $ntokens;
   $tmpline = tokenize($tmpline, '\[\s*\d+\s*\]', $replacements, $ntokens);
   while ($oldn < $ntokens) {
-    $num = (int) substr($replacements[$oldn], 1);
+    $num = (int) mb_substr($replacements[$oldn], 1);
     if (! empty($embedded[$num]))
       $replacements[$oldn] = $embedded[$num];
     $oldn++;
@@ -63,7 +63,7 @@ for ($index = 0; $index < $numlines; $index++) {
   $tmpline = tokenize($tmpline, "!?\b($AllowedProtocols):[^\s<>\[\]\"'()]*[^\s<>\[\]\"'(),.?]", $replacements, $ntokens);
   while ($oldn < $ntokens) {
     if($replacements[$oldn][0] == '!')
-      $replacements[$oldn] = substr($replacements[$oldn], 1);
+      $replacements[$oldn] = mb_substr($replacements[$oldn], 1);
     else
       $replacements[$oldn] = LinkURL($replacements[$oldn]);
     $oldn++;

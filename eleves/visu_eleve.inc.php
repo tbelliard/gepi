@@ -655,8 +655,8 @@ Patientez pendant l'extraction des données... merci.
 				$acces_absences="y";
 			}
 
-			if((($eleve_classe_prof=="y")&&(substr(getSettingValue('visuDiscProfClasses'),0,1)=='y'))||
-				(($eleve_groupe_prof=="y")&&(substr(getSettingValue('visuDiscProfGroupes'),0,1)=='y'))) {
+			if((($eleve_classe_prof=="y")&&(mb_substr(getSettingValue('visuDiscProfClasses'),0,1)=='y'))||
+				(($eleve_groupe_prof=="y")&&(mb_substr(getSettingValue('visuDiscProfGroupes'),0,1)=='y'))) {
 				$acces_discipline="y";
 			}
 
@@ -1728,7 +1728,7 @@ Patientez pendant l'extraction des données... merci.
 
 						echo "<div id='bulletin_$periode1' class='onglet' style='";
 						echo " background-color: ".$tab_couleur['bulletin'].";";
-						if((isset($onglet2))&&(substr($onglet2,0,9)=='bulletin_')) {
+						if((isset($onglet2))&&(mb_substr($onglet2,0,9)=='bulletin_')) {
 							if('bulletin_'.$n_per!=$onglet2) {
 								echo " display:none;";
 							}
@@ -1868,7 +1868,7 @@ Patientez pendant l'extraction des données... merci.
 
 						echo "<div id='releve_$periode1' class='onglet' style='";
 						echo " background-color: ".$tab_couleur['releve'].";";
-						if((isset($onglet2))&&(substr($onglet2,0,7)=='releve_')) {
+						if((isset($onglet2))&&(mb_substr($onglet2,0,7)=='releve_')) {
 							if('releve_'.$n_per!=$onglet2) {
 								echo " display:none;";
 							}

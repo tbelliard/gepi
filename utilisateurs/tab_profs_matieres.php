@@ -136,8 +136,8 @@ if($msg!=""){
 	function aff_vertical($texte){
 		$chaine="";
 		for($i=0;$i<strlen($texte);$i++){
-			//echo substr($texte,$i,1)."<br />";
-			$chaine=$chaine.substr($texte,$i,1)."<br />";
+			//echo mb_substr($texte,$i,1)."<br />";
+			$chaine=$chaine.mb_substr($texte,$i,1)."<br />";
 		}
 		//echo "\n";
 		$chaine=$chaine."\n";
@@ -321,7 +321,7 @@ if($msg!=""){
 			}
 
 			//echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt);' onMouseOut='retablit_couleurs($cpt);'>\n";
-			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j);survol_infobulle(\"<p align=center>".preg_replace("/'/"," ",$user_nom)." ".substr($user_prenom,0,1).".<br />".$tab_matiere[$j]."</p>\")' onMouseOut='retablit_couleurs($cpt);cacher_div(\"div_infobulle\")'>\n";
+			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j);survol_infobulle(\"<p align=center>".preg_replace("/'/"," ",$user_nom)." ".mb_substr($user_prenom,0,1).".<br />".$tab_matiere[$j]."</p>\")' onMouseOut='retablit_couleurs($cpt);cacher_div(\"div_infobulle\")'>\n";
 			echo "<div id='d_".$cpt."_".$j."'>\n";
 			echo "<input type='checkbox' id='c_".$cpt."_".$j."' name='c_".$cpt."_[".$j."]' value='oui' onchange='colore(\"td_".$cpt."_".$j."\",\"c_".$cpt."_".$j."\")' $checked_ou_pas />\n";
 			echo "</div>\n";

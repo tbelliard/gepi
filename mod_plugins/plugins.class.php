@@ -67,7 +67,7 @@ class gepiPlugIn {
     }else{
       // On s'attache à vérifier les droits de ce statut
       $this->_droits = $this->_plugin->getPlugInAutorisations();
-      $fichier = substr($url['path'], (strlen($gepiPath) + 1));
+      $fichier = mb_substr($url['path'], (strlen($gepiPath) + 1));
 
       $autorisation = false;
       foreach($this->_droits as $_droit){

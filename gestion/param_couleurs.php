@@ -73,9 +73,9 @@ function hex2nb($carac) {
 }
 
 function tab_rvb($couleur) {
-	$compR=substr($couleur,0,2);
-	$compV=substr($couleur,2,2);
-	$compB=substr($couleur,4,2);
+	$compR=mb_substr($couleur,0,2);
+	$compV=mb_substr($couleur,2,2);
+	$compB=mb_substr($couleur,4,2);
 
 	//echo "\$compR=$compR<br />";
 	//echo "\$compV=$compV<br />";
@@ -83,9 +83,9 @@ function tab_rvb($couleur) {
 
 	$tabcomp=array();
 
-	$tabcomp['R']=hex2nb(substr($compR,0,1))*16+hex2nb(substr($compR,1,1));
-	$tabcomp['V']=hex2nb(substr($compV,0,1))*16+hex2nb(substr($compV,1,1));
-	$tabcomp['B']=hex2nb(substr($compB,0,1))*16+hex2nb(substr($compB,1,1));
+	$tabcomp['R']=hex2nb(mb_substr($compR,0,1))*16+hex2nb(mb_substr($compR,1,1));
+	$tabcomp['V']=hex2nb(mb_substr($compV,0,1))*16+hex2nb(mb_substr($compV,1,1));
+	$tabcomp['B']=hex2nb(mb_substr($compB,0,1))*16+hex2nb(mb_substr($compB,1,1));
 
 	return $tabcomp;
 }
@@ -1379,17 +1379,17 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	//echo "\$style_body_backgroundcolor=$style_body_backgroundcolor<br />";
 	if($style_body_backgroundcolor!="") {
 /*
-		$compR=substr($style_body_backgroundcolor,0,2);
-		$compV=substr($style_body_backgroundcolor,2,2);
-		$compB=substr($style_body_backgroundcolor,4,2);
+		$compR=mb_substr($style_body_backgroundcolor,0,2);
+		$compV=mb_substr($style_body_backgroundcolor,2,2);
+		$compB=mb_substr($style_body_backgroundcolor,4,2);
 
 		//echo "\$compR=$compR<br />";
 		//echo "\$compV=$compV<br />";
 		//echo "\$compB=$compB<br />";
 
-		$nb_compR=hex2nb(substr($compR,0,1))*16+hex2nb(substr($compR,1,1));
-		$nb_compV=hex2nb(substr($compV,0,1))*16+hex2nb(substr($compV,1,1));
-		$nb_compB=hex2nb(substr($compB,0,1))*16+hex2nb(substr($compB,1,1));
+		$nb_compR=hex2nb(mb_substr($compR,0,1))*16+hex2nb(mb_substr($compR,1,1));
+		$nb_compV=hex2nb(mb_substr($compV,0,1))*16+hex2nb(mb_substr($compV,1,1));
+		$nb_compB=hex2nb(mb_substr($compB,0,1))*16+hex2nb(mb_substr($compB,1,1));
 
 		//echo "\$nb_compR=$nb_compR<br />";
 		//echo "\$nb_compV=$nb_compV<br />";

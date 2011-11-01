@@ -820,7 +820,7 @@
 					} elseif(isset($adresses[$i]["commune_etrangere"])) {
 						$sql.="commune='".$adresses[$i]["commune_etrangere"]."', ";
 					}
-					$sql=substr($sql,0,strlen($sql)-2);
+					$sql=mb_substr($sql,0,strlen($sql)-2);
 					$sql.=";";
 					affiche_debug("$sql<br />\n");
 					$res_insert=mysql_query($sql);
