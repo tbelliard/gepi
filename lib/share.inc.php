@@ -3873,7 +3873,7 @@ function ajout_index_sous_dossiers($dossier) {
  */
 function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment') {
 
-  //header('Content-Encoding: utf-8');
+  header('Content-Encoding: utf-8');
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
   header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');
