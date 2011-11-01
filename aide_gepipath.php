@@ -116,7 +116,7 @@ $url = parse_url($_SERVER['REQUEST_URI']);
 
 $temp = $url['path'];
 
-$d = strlen($temp) - strlen("aide_gepipath.php") - 1;
+$d = mb_strlen($temp) - mb_strlen("aide_gepipath.php") - 1;
 
 $gepi_path = substr($temp, 0, $d);
 

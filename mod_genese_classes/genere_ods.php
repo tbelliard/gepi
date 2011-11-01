@@ -124,7 +124,7 @@ if (!checkAccess()) {
 		$fich_source_csv=fopen("../temp/".$user_temp_directory."/$fichier_csv","r");
 		while(!feof($fich_source_csv)) {
 			$ligne=fgets($fich_source_csv,4096);
-			$n=strlen(preg_replace("/[^;]/","",$ligne));
+			$n=mb_strlen(preg_replace("/[^;]/","",$ligne));
 			if($n>$nb_ptvirg) {$nb_ptvirg=$n;}
 		}
 		$nb_ptvirg=$nb_ptvirg-1; // On supprime le point virgule en fin de ligne

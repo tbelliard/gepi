@@ -1657,7 +1657,7 @@ $_POST['projet']=	4eme_vers_3eme
 
 					//===================================
 					echo "<td>\n";
-					if(($moy!="")&&(strlen(my_ereg_replace("[0-9.,]","",$moy))==0)) {
+					if(($moy!="")&&(mb_strlen(my_ereg_replace("[0-9.,]","",$moy))==0)) {
 						if($num_per2>0) {
 							echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
 						}

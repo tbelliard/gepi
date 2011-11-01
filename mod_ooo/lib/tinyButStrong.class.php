@@ -199,7 +199,7 @@ function DataOpen(&$Query) {
 			$x = str_replace('][',$z,$x);
 			$x = str_replace('->',$z,$x);
 			$x = str_replace('[',$z,$x);
-			if (substr($x,strlen($x)-1,1)===']') $x = substr($x,0,strlen($x)-1);
+			if (substr($x,mb_strlen($x)-1,1)===']') $x = substr($x,0,mb_strlen($x)-1);
 			$ItemLst = explode($z,$x);
 			$ItemNbr = count($ItemLst);
 			$Item0 =& $ItemLst[0];
@@ -497,7 +497,7 @@ public $_piOnFrm_Ok = false;
 function clsTinyButStrong($Chrs='',$VarPrefix='') {
 	if ($Chrs!=='') {
 		$Ok = false;
-		$Len = strlen($Chrs);
+		$Len = mb_strlen($Chrs);
 		if ($Len===2) { // For compatibility
 			$this->_ChrOpen = $Chrs[0];
 			$this->_ChrClose = $Chrs[1];
@@ -728,7 +728,7 @@ function meth_Locator_FindTbs(&$Txt,$Name,$Pos,$ChrSub) {
 // Find a TBS Locator
 
 	$PosEnd = false;
-	$PosMax = strlen($Txt) -1;
+	$PosMax = mb_strlen($Txt) -1;
 	$Start = $this->_ChrOpen.$Name;
 
 	do {
@@ -742,7 +742,7 @@ function meth_Locator_FindTbs(&$Txt,$Name,$Pos,$ChrSub) {
 		} else {
 			$Loc = new clsTbsLocator;
 			$ReadPrm = false;
-			$PosX = $Pos + strlen($Start);
+			$PosX = $Pos + mb_strlen($Start);
 			$x = $Txt[$PosX];
 
 			if ($x===$this->_ChrClose) {
@@ -1028,8 +1028,8 @@ function meth_Locator_Replace(&$Txt,&$Loc,&$Value,$SubStart) {
 				if (!$this->meth_PlugIn_RunAll($this->_piOnOperation,$OpeArg)) return $Loc->PosBeg;
 				break;
 			case 1: if (is_array($CurrVal)) $CurrVal = implode($Loc->OpePrm[$i],$CurrVal); break;
-			case 2: if (strlen(''.$CurrVal)>$Loc->OpePrm[$i]) $this->f_Xml_Max($CurrVal,$Loc->OpePrm[$i],$Loc->OpeEnd); break;
-			case 3: if (strlen(''.$CurrVal)>$Loc->OpePrm[$i]) $CurrVal = substr(''.$CurrVal,0,$Loc->OpePrm[$i]).$Loc->OpeEnd; break;
+			case 2: if (mb_strlen(''.$CurrVal)>$Loc->OpePrm[$i]) $this->f_Xml_Max($CurrVal,$Loc->OpePrm[$i],$Loc->OpeEnd); break;
+			case 3: if (mb_strlen(''.$CurrVal)>$Loc->OpePrm[$i]) $CurrVal = substr(''.$CurrVal,0,$Loc->OpePrm[$i]).$Loc->OpeEnd; break;
 			case 4: $CurrVal = ('0'+$CurrVal) % $Loc->OpePrm[$i]; break;
 			case 5: $CurrVal = ('0'+$CurrVal) + $Loc->OpePrm[$i]; break;
 			case 6: $CurrVal = ('0'+$CurrVal) * $Loc->OpePrm[$i]; break;
@@ -1194,7 +1194,7 @@ function meth_Locator_Replace(&$Txt,&$Loc,&$Value,$SubStart) {
 	} else {
 
 		if ($ConvProtect) $CurrVal = str_replace($this->_ChrOpen,$this->_ChrProtect,$CurrVal); // TBS protection
-		$NewEnd = $Loc->PosBeg + strlen($CurrVal);
+		$NewEnd = $Loc->PosBeg + mb_strlen($CurrVal);
 
 	}
 
@@ -1827,7 +1827,7 @@ function meth_Merge_AutoVar(&$Txt,$HtmlConv,$Id='var') {
 // Merge [var.*] fields with global variables
 
 	$Pref =& $this->VarPrefix;
-	$PrefL = strlen($Pref);
+	$PrefL = mb_strlen($Pref);
 	$PrefOk = ($PrefL>0);
 
 	if ($HtmlConv===false) {
@@ -1969,7 +1969,7 @@ function meth_Merge_SectionNormal(&$BDef,&$Src) {
 	$Txt = $BDef->Src;
 	$LocLst =& $BDef->LocLst;
 	$iMax = $BDef->LocNbr;
-	$PosMax = strlen($Txt);
+	$PosMax = mb_strlen($Txt);
 
 	if ($Src===false) { // Erase all fields
 
@@ -2307,7 +2307,7 @@ function meth_Misc_UserFctCheck(&$FctInfo,$FctCat,&$FctObj,&$ErrMsg) {
 				$x = str_replace('-','_',$x);
 				$Key = '';
 				$i = 0;
-				$iMax = strlen($x);
+				$iMax = mb_strlen($x);
 				while ($i<$iMax) {
 					if (($x[$i]==='_') or (($x[$i]>='a') and ($x[$i]<='z')) or (($x[$i]>='0') and ($x[$i]<='9'))) {
 						$Key .= $x[$i];
@@ -2625,7 +2625,7 @@ function meth_Misc_FormatSave(&$FrmStr,$Alias='') {
 		$Locale = ($i!==false);
 		if ($Locale) $x = substr_replace($x,'',$i,8);
 
-		$iEnd = strlen($x);
+		$iEnd = mb_strlen($x);
 		for ($i=0;$i<$iEnd;$i++) {
 
 			if ($StrIn) {
@@ -2707,7 +2707,7 @@ function f_Misc_CheckArgLst(&$Str) {
 	if (substr($Str,-1,1)===')') {
 		$pos = strpos($Str,'(');
 		if ($pos!==false) {
-			$ArgLst = explode(',',substr($Str,$pos+1,strlen($Str)-$pos-2));
+			$ArgLst = explode(',',substr($Str,$pos+1,mb_strlen($Str)-$pos-2));
 			$Str = substr($Str,0,$pos);
 		}
 	}
@@ -2718,7 +2718,7 @@ function f_Misc_CheckCondition($Str) {
 // Check if an expression like "exrp1=expr2" is true or false.
 
 	$StrZ = $Str; // same string but without protected data
-	$Max = strlen($Str)-1;
+	$Max = mb_strlen($Str)-1;
 	$p = strpos($Str,'\'');
 	if ($Esc=($p!==false)) {
 		$In = true;
@@ -2802,7 +2802,7 @@ function f_Misc_CheckCondition($Str) {
 
 function f_Misc_DelDelimiter(&$Txt,$Delim) {
 // Delete the string delimiters
-	$len = strlen($Txt);
+	$len = mb_strlen($Txt);
 	if (($len>1) and ($Txt[0]===$Delim)) {
 		if ($Txt[$len-1]===$Delim) $Txt = substr($Txt,1,$len-2);
 		return false;
@@ -2835,7 +2835,7 @@ function f_Misc_GetFile(&$Txt,&$File,$LastFile='') {
 
 function f_Loc_PrmRead(&$Txt,$Pos,$HtmlTag,$DelimChrs,$BegStr,$EndStr,&$Loc,&$PosEnd) {
 
-	$BegLen = strlen($BegStr);
+	$BegLen = mb_strlen($BegStr);
 	$BegChr = $BegStr[0];
 	$BegIs1 = ($BegLen===1);
 
@@ -2972,7 +2972,7 @@ function f_Loc_PrmRead(&$Txt,$Pos,$HtmlTag,$DelimChrs,$BegStr,$EndStr,&$Loc,&$Po
 
 	}
 
-	$PosEnd = $PosEnd + (strlen($EndStr)-1);
+	$PosEnd = $PosEnd + (mb_strlen($EndStr)-1);
 
 }
 
@@ -2995,7 +2995,7 @@ function f_Loc_PrmCompute(&$Txt,&$Loc,&$SubName,$Status,$HtmlTag,$DelimChr,$Deli
 				$v = trim(substr($Txt,$PosVal,$Pos-$PosVal));
 				if ($DelimCnt===1) { // Delete quotes inside the value
 					if ($v[0]===$DelimChr) {
-						$len = strlen($v);
+						$len = mb_strlen($v);
 						if ($v[$len-1]===$DelimChr) {
 							$v = substr($v,1,$len-2);
 							$v = str_replace($DelimChr.$DelimChr,$DelimChr,$v);
@@ -3052,7 +3052,7 @@ This is because of the calling function.
 	do {
 		$Pos = strrpos(substr($Txt,0,$Pos),$StrBeg[0]);
 		if ($Pos!==false) {
-			if (substr($Txt,$Pos,strlen($StrBeg))===$StrBeg) $Ok = true;
+			if (substr($Txt,$Pos,mb_strlen($StrBeg))===$StrBeg) $Ok = true;
 		}
 	} while ( (!$Ok) and ($Pos!==false) );
 
@@ -3062,7 +3062,7 @@ This is because of the calling function.
 			$Ok = false;
 		} else {
 			$Loc->PosBeg = $Pos;
-			$Loc->PosEnd = $PosEnd + strlen($StrEnd) - 1;
+			$Loc->PosEnd = $PosEnd + mb_strlen($StrEnd) - 1;
 		}
 	}
 
@@ -3083,7 +3083,7 @@ function f_Loc_EnlargeToTag(&$Txt,&$Loc,$TagLst,$RetInnerSrc) {
  		do { // Check parentheses, relative position and single tag
  			$tag =& $TagLst[$i];
 	  	$tag = trim($tag);
-	 		$x = strlen($tag) - 1; // pos of last char
+	 		$x = mb_strlen($tag) - 1; // pos of last char
 	 		if (($x>1) and ($tag[0]==='(') and ($tag[$x]===')')) {
 	 			if ($Ref===0) $Ref = $i;
 	 			if ($Ref===$i) $LevelStop++;
@@ -3153,7 +3153,7 @@ function f_Loc_EnlargeToTag(&$Txt,&$Loc,$TagLst,$RetInnerSrc) {
 function f_Xml_Max(&$Txt,&$Nbr,$MaxEnd) {
 // Limit the number of HTML chars
 
-	$pMax =  strlen($Txt)-1;
+	$pMax =  mb_strlen($Txt)-1;
 	$p=0;
 	$n=0;
 	$in = false;
@@ -3243,12 +3243,12 @@ To ignore encapsulation and opengin/closing just set $LevelStop=false.
 		if ($Pos!==false) {
 
 			// Check the name of the tag
-			if (strcasecmp(substr($Txt,$Pos+1,strlen($Tag)),$Tag)==0) {
-				$PosX = $Pos + 1 + strlen($Tag); // The next char
+			if (strcasecmp(substr($Txt,$Pos+1,mb_strlen($Tag)),$Tag)==0) {
+				$PosX = $Pos + 1 + mb_strlen($Tag); // The next char
 				$TagOk = true;
 				$TagIsOpening = true;
-			} elseif (strcasecmp(substr($Txt,$Pos+1,strlen($TagClosing)),$TagClosing)==0) {
-				$PosX = $Pos + 1 + strlen($TagClosing); // The next char
+			} elseif (strcasecmp(substr($Txt,$Pos+1,mb_strlen($TagClosing)),$TagClosing)==0) {
+				$PosX = $Pos + 1 + mb_strlen($TagClosing); // The next char
 				$TagOk = true;
 				$TagIsOpening = false;
 			}
@@ -3308,7 +3308,7 @@ function f_Xml_FindNewLine(&$Txt,$PosBeg,$Forward,$IsRef) {
 	if ($Forward) {
 		$Inc = 1;
 		$Inf =& $p;
-		$Sup = strlen($Txt)-1;
+		$Sup = mb_strlen($Txt)-1;
 	} else {
 		$Inc = -1;
 		$Inf = 0;
