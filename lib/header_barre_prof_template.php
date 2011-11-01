@@ -411,6 +411,11 @@ include("tbs_menu_plugins.inc.php");
 			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 			$cpt_sous_menu2++;
 		}
+
+		$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/mod_trombinoscopes/plan_de_classe.php';
+		$tmp_sous_menu2[$cpt_sous_menu2]['texte']='Plan de classe';
+		$cpt_sous_menu2++;
+
 		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 
