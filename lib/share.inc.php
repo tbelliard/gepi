@@ -226,7 +226,6 @@ function test_unique_e_login($s, $indice) {
  * @param string $_mode Le mode de génération ou NULL
  * @param string $_casse La casse du login ('maj', 'min', '') par défaut la casse n'est pas modifiée
  * @return string|booleanLe login généré ou FALSE si on obtient un login vide
->>>>>>> .merge_file_NwcuRB
  * @see test_unique_login()
  */
 function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
@@ -1585,18 +1584,28 @@ function remplace_accents($chaine,$mode=''){
 	} elseif($mode == 'all_nospace'){
 		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
 	} else {
-		return preg_replace('#[^a-zA-Z0-9\-\._"\' ]#', '_', $str);
+		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]#', '_', $str);
 	}
 }
-
+/**
+ * @see remplace_accent($chaine,$mode='')
+**/
 function enleve_accents($chaine,$mode=''){
-    return remplace_accents();
+    return remplace_accents($chaine,$mode='');
+}
+/**
+ * @see remplace_accent($chaine,$mode='')
+**/
+function accents_enleve($chaine,$mode=''){
+    return remplace_accents($chaine,$mode='');
+}
+/**
+ * @see remplace_accent($chaine,$mode='')
+**/
+function ensure_ascii($chaine){
+    return remplace_accents($chaine);
 }
 
-function accents_enleve($chaine,$mode=''){
-    return remplace_accents();
-}
-    
 /**
  * Fonction qui renvoie le login d'un élève en échange de son ele_id
  *
@@ -3073,30 +3082,66 @@ function my_echo_debug($texte) {
  * $mode
  * - 'maj'   -> tout en majuscules
  * - 'min'   -> tout en minuscules
- * - 'majf'  -> PremiÃ¨re lettre en majuscule
- * - 'majf2' -> PremiÃ¨re lettre de tous les mots en majuscule
+ * - 'majf'  -> Première lettre en majuscule, le reste en minuscule
+ * - 'majf2' -> Première lettre de tous les mots en majuscule, le reste en minuscule
  *
  * @param type $mot chaine Ã  modifier
  * @param type $mode Mode de conversion
  * @return type chaine mise en forme
  */
 function casse_mot($mot,$mode='maj') {
-	if($mode=='maj') {
-		return mb_convert_case(ensure_utf8($mot), MB_CASE_UPPER);
-	}
-	elseif($mode=='min') {
-		return mb_convert_case(ensure_utf8($mot), MB_CASE_LOWER);
-	}
-	elseif($mode=='majf') {
-		return mb_convert_case(mb_substr($mot,0,1), MB_CASE_UPPER);
-	}
-	elseif($mode=='majf2') {
-		return mb_convert_case(ensure_utf8($mot), MB_CASE_TITLE);
-	}
-	elseif($mode=='majf3') {
-	    $temp = mb_convert_case(ensure_utf8($mot), MB_CASE_LOWER);
-		return mb_convert_case($temp, MB_CASE_TITLE);
-	}
+    
+    if (function_exists('mb_convert_case')) {
+    	if($mode=='maj') {
+    		return mb_convert_case(($mot), MB_CASE_UPPER);
+    	}
+    	elseif($mode=='min') {
+    		return mb_convert_case(($mot), MB_CASE_LOWER);
+    	}
+    	elseif($mode=='majf') {
+    	    $temp = mb_convert_case(($mot), MB_CASE_LOWER);
+    		return mb_convert_case(mb_substr($temp,0,1), MB_CASE_UPPER).mb_substr($temp,1);
+    	}
+    	elseif($mode=='majf2') {
+    	    $temp = mb_convert_case(($mot), MB_CASE_LOWER);
+    		return mb_convert_case(($temp), MB_CASE_TITLE);
+    	}
+    } else {
+        $str = ensure_ascii($mot);
+    	if($mode=='maj') {
+    		return strtoupper($str);
+    	}
+    	elseif($mode=='min') {
+    		return strtolower($str);
+    	}
+    	elseif($mode=='majf') {
+    		if(strlen($str)>1) {
+    			return strtoupper(substr($str,0,1)).strtolower(substr($str,1));
+    		}
+    		else {
+    			return strtoupper($str);
+    		}
+    	}
+    	elseif($mode=='majf2') {
+    		$chaine="";
+    		$tab=explode(" ",$str);
+    		for($i=0;$i<count($tab);$i++) {
+    			if($i>0) {$chaine.=" ";}
+    			$tab2=explode("-",$tab[$i]);
+    			for($j=0;$j<count($tab2);$j++) {
+    				if($j>0) {$chaine.="-";}
+    				if(strlen($tab2[$j])>1) {
+    					$chaine.=strtoupper(substr($tab2[$j],0,1)).strtolower(substr($tab2[$j],1));
+    				}
+    				else {
+    					$chaine.=strtoupper($tab2[$j]);
+    				}
+    			}
+    		}
+    		return $chaine;
+    	}
+    }
+    throw new Exception('Parametre '.$mode.' non reconnu');
 }
 
 /**

@@ -194,14 +194,14 @@ class AbsenceAgregationDecompteTest extends GepiEmptyTestBase
 	{
 	    AbsenceAgregationDecompteQuery::create()->deleteAll();
 	    foreach (EleveQuery::create()->find() as $eleve) {
-            $eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-10 23:59:59'));
+            $eleve->updateAbsenceAgregationTable(new DateTime('2010-10-01 00:00:00'),new DateTime('2010-10-20 23:59:59'));
 	    }
 	    $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
 	    $this->assertEquals(4,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateIntervalle(new DateTime('2010-10-01'),new DateTime('2010-10-03'))->count());
 	    $this->assertEquals(5,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateIntervalle(new DateTime('2010-10-01'),new DateTime('2010-10-03 12:00:00'))->count());
-            //$this->assertEquals(1,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateIntervalle(new DateTime('2010-10-19 08:00:00'),new DateTime('2010-10-19 10:00:00'))->count());
-            //$this->assertEquals(1,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateIntervalle(new DateTime('2010-10-19 14:00:00'),new DateTime('2010-10-19 15:00:00'))->count());
-            //$this->assertEquals(2,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateIntervalle(new DateTime('2010-10-19 08:00:00'),new DateTime('2010-10-19 16:00:00'))->count());
+            $this->assertEquals(1,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateIntervalle(new DateTime('2010-10-19 08:00:00'),new DateTime('2010-10-19 10:00:00'))->count());
+            $this->assertEquals(1,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateIntervalle(new DateTime('2010-10-19 14:00:00'),new DateTime('2010-10-19 15:00:00'))->count());
+            $this->assertEquals(2,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByDateIntervalle(new DateTime('2010-10-19 08:00:00'),new DateTime('2010-10-19 16:00:00'))->count());
 	}
 
 	public function testQueryCountRetards()
