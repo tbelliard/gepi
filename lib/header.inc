@@ -740,11 +740,10 @@ if (isset($titre_page)) {
 // ==========> On ajoute la barre de menu <========================= //
 if (!isset($nobar)) { $nobar = "non"; }
 
-if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
+if (getSettingValue("utiliserMenuBarre") != "no" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	//if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
-	if ((getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes")||(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light")) {
+	if ((getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no")) {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
           /**
@@ -766,7 +765,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 elseif ($_SESSION["statut"] == "administrateur") {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
           /**
@@ -788,7 +787,7 @@ elseif ($_SESSION["statut"] == "administrateur") {
 elseif ($_SESSION["statut"] == "scolarite") {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
           /**
@@ -829,7 +828,7 @@ elseif ($_SESSION["statut"] == "scolarite") {
 elseif ($_SESSION["statut"] == "cpe") {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
 			require_once($prefix."edt_organisation/fonctions_calendrier.php");

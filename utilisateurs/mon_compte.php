@@ -606,20 +606,14 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 $tab_statuts_barre=array('professeur', 'cpe', 'scolarite', 'administrateur');
 $modifier_barre=isset($_POST['modifier_barre']) ? $_POST['modifier_barre'] : NULL;
-if((isset($modifier_barre))&&(strtolower(substr(getSettingValue('utiliserMenuBarre'),0,1))=='y')&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
+if((isset($modifier_barre))&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
 	$afficher_menu=isset($_POST['afficher_menu']) ? $_POST['afficher_menu'] : NULL;
-	if((strtolower(substr($afficher_menu,0,1))!='y')&&(strtolower(substr($afficher_menu,0,1))!='n')) {
-		if($msg!="") {$msg.="<br />";}
-		$msg.="Le choix '$afficher_menu' pour l'affichage ou non de la barre de menu est invalide.<br />\n";
+	if(!savePref($_SESSION['login'], 'utiliserMenuBarre', $afficher_menu)) {
+		$msg.="Erreur lors de la sauvegarde de la préférence d'affichage de la barre de menu.<br />\n";
 	}
 	else {
-		if(!savePref($_SESSION['login'], 'utiliserMenuBarre', $afficher_menu)) {
-			$msg.="Erreur lors de la sauvegarde de la préférence d'affichage ou non de la barre de menu.<br />\n";
+		$msg.="Sauvegarde de la préférence d'affichage de la barre de menu effectuée.<br />\n";
 		}
-		else {
-			$msg.="Sauvegarde de la préférence d'affichage ou non de la barre de menu effectué.<br />\n";
-		}
-	}
 }
 
 
@@ -1012,17 +1006,10 @@ if ($affiche_bouton_submit=='yes')
 echo "</form>\n";
 echo "  <hr />\n";
 
-if((strtolower(substr(getSettingValue('utiliserMenuBarre'),0,1))=='y')&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
-	$aff_barre="n";
-	$sql="SELECT value FROM preferences WHERE login='".$_SESSION['login']."' AND name='utiliserMenuBarre';";
-	$res_barre=mysql_query($sql);
-	if(mysql_num_rows($res_barre)==0) {
-		$aff_barre="y";
-	}
-	else {
-		$lig_barre=mysql_fetch_object($res_barre);
-		$aff_barre=strtolower(substr($lig_barre->value,0,1));
-	}
+
+// On affiche si c'est autorisé
+if (getSettingValue("utiliserMenuBarre") != "no") {
+	$aff_checked=getPref($_SESSION['login'],"utiliserMenuBarre","");
 
 	echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
 	echo add_token_field();
@@ -1031,22 +1018,32 @@ if((strtolower(substr(getSettingValue('utiliserMenuBarre'),0,1))=='y')&&(in_arra
 	echo "<legend style='border: 1px solid grey;'>Gérer la barre horizontale du menu</legend>\n";
 	echo "<input type='hidden' name='modifier_barre' value='ok' />\n";
 
-	echo "<p>\n";
-	echo "<label for='visibleMenu' id='texte_visibleMenu'>Rendre visible la barre de menu horizontale sous l'en-tête.</label>\n";
-	echo "<input type='radio' id='visibleMenu' name='afficher_menu' value='yes'";
-	if($aff_barre=="y") {
-		echo " checked";
+	if (getSettingValue("utiliserMenuBarre") == "yes") {
+		echo "<p>\n";
+		echo "<label for='visibleMenu' id='texte_visibleMenu'>Rendre visible la barre de menu horizontale complète sous l'en-tête.</label>\n";
+		echo "<input type='radio' id='visibleMenu' name='afficher_menu' value='yes'";
+		if($aff_checked=="yes") echo " checked";
+		echo " />\n";
+		echo "</p>\n";
 	}
+
+	echo "<p>\n";
+	echo "<label for='visibleMenu' id='texte_visibleMenu'>Rendre visible la barre de menu horizontale allégée sous l'en-tête.</label>\n";
+	echo "<input type='radio' id='visibleMenu' name='afficher_menu' value='light'";
+	if($aff_checked=="light") echo " checked";
 	echo " />\n";
 	echo "</p>\n";
+
 	echo "<p>\n";
 	echo "<label for='invisibleMenu' id='texte_invisibleMenu'>Ne pas utiliser la barre de menu horizontale.</label>\n";
 	echo "<input type='radio' id='invisibleMenu' name='afficher_menu' value='no'";
-	if($aff_barre!="y") {
-		echo " checked";
-	}
+	if($aff_checked=="no") echo " checked";
 	echo " />\n";
 	echo "</p>\n";
+
+	echo "<p>
+			<em>La barre de menu horizontale allégée a une arborescence moins profonde pour que les menus \'professeurs\' s\'affichent plus rapidement au cas où le serveur serait saturé.</em>
+		</p>\n";
 
 	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
 	echo "</fieldset>\n";

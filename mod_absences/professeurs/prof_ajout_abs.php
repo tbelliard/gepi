@@ -543,7 +543,7 @@ if (isset($echo)) {
 		$jour_aujourdhui = jour_semaine($datej);
 
     	// On vérifie si la menuBarre n'a pas renvoyé une classe (nouvelle version)
-    	if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $menuBar == 'ok'){
+    	if (getSettingValue("utiliserMenuBarre") != "no") AND $_SESSION["statut"] == "professeur" AND $menuBar == 'ok'){
 			$d_heure_absence_eleve = $horaire["debut"];
 			$a_heure_absence_eleve = $horaire["fin"];
 			$classe = isset($_GET["groupe"]) ? $_GET["groupe"] : NULL;
