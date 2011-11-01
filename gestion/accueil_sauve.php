@@ -137,7 +137,7 @@ if (isset($action) and ($action == 'protect'))  {
         $msg = "Problème : l'identifiant est vide.";
         $error = 1;
     } else {
-        $_login = strtolower(unslashes($_POST['login_backup']));
+        $_login = my_strtolower(unslashes($_POST['login_backup']));
         if(is_array($user)) {
             foreach($user as $key => $value) {
                 if($_login == $key) {

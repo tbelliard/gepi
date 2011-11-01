@@ -4,7 +4,7 @@
  *
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -24,25 +24,25 @@
  */
 
 function jour_en_fr($en){
-	if(substr(strtolower($en),0,3)=='mon') {
+	if(substr(my_strtolower($en),0,3)=='mon') {
 		return 'lundi';
 	}
-	elseif(substr(strtolower($en),0,3)=='tue') {
+	elseif(substr(my_strtolower($en),0,3)=='tue') {
 		return 'mardi';
 	}
-	elseif(substr(strtolower($en),0,3)=='wed') {
+	elseif(substr(my_strtolower($en),0,3)=='wed') {
 		return 'mercredi';
 	}
-	elseif(substr(strtolower($en),0,3)=='thu') {
+	elseif(substr(my_strtolower($en),0,3)=='thu') {
 		return 'jeudi';
 	}
-	elseif(substr(strtolower($en),0,3)=='fri') {
+	elseif(substr(my_strtolower($en),0,3)=='fri') {
 		return 'vendredi';
 	}
-	elseif(substr(strtolower($en),0,3)=='sat') {
+	elseif(substr(my_strtolower($en),0,3)=='sat') {
 		return 'samedi';
 	}
-	elseif(substr(strtolower($en),0,3)=='sun') {
+	elseif(substr(my_strtolower($en),0,3)=='sun') {
 		return 'dimanche';
 	}
 	else {return "";}
@@ -969,7 +969,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 		echo "<p class='bulletin'>\n";
 		echo "<b><span class=\"releve_grand\">".$tab_rel['nom']." ".$tab_rel['prenom']."</span></b><br />";
 		echo "Né";
-		if (strtoupper($tab_rel['sexe'])== "F") {echo "e";}
+		if (my_strtoupper($tab_rel['sexe'])== "F") {echo "e";}
 		echo "&nbsp;le&nbsp;".$tab_rel['naissance'];
 		//Eric Ajout
 		echo "<br />";
@@ -978,14 +978,14 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 		if ($tab_rel['regime'] == "int.") {echo "Interne";}
 		if ($tab_rel['regime'] == "i-e"){
 			echo "Interne&nbsp;externé";
-			if (strtoupper($tab_rel['sexe'])!= "F") {echo "e";}
+			if (my_strtoupper($tab_rel['sexe'])!= "F") {echo "e";}
 		}
 		//Eric Ajout
 		if ($releve_mention_doublant == 'yes'){
 			if ($tab_rel['doublant'] == 'R'){
 			echo "<br />";
 			echo "Redoublant";
-			if (strtoupper($tab_rel['sexe'])!= "F") {echo "e";}
+			if (my_strtoupper($tab_rel['sexe'])!= "F") {echo "e";}
 			}
 		}
 
@@ -1003,7 +1003,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 		echo "<p class='bulletin'>\n";
 		echo "<b><span class=\"releve_grand\">".$tab_rel['nom']." ".$tab_rel['prenom']."</span></b><br />";
 		echo "Né";
-		if (strtoupper($tab_rel['sexe'])== "F") {echo "e";}
+		if (my_strtoupper($tab_rel['sexe'])== "F") {echo "e";}
 		echo "&nbsp;le&nbsp;".$tab_rel['naissance'];
 
 		if ($tab_rel['regime'] == "d/p") {echo ", Demi-pensionnaire";}
@@ -1011,13 +1011,13 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 		if ($tab_rel['regime'] == "int.") {echo ", Interne";}
 		if ($tab_rel['regime'] == "i-e"){
 			echo ", Interne&nbsp;externé";
-			if (strtoupper($tab_rel['sexe'])!= "F") {echo "e";}
+			if (my_strtoupper($tab_rel['sexe'])!= "F") {echo "e";}
 		}
 		//Eric Ajout
 		if ($releve_mention_doublant == 'yes'){
 			if ($tab_rel['doublant'] == 'R'){
 			echo ", Redoublant";
-			if (strtoupper($tab_rel['sexe'])!= "F") {echo "e";}
+			if (my_strtoupper($tab_rel['sexe'])!= "F") {echo "e";}
 			}
 		}
 		if ($releve_mention_nom_court == 'yes') {

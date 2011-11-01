@@ -468,7 +468,7 @@ echo "</form>\n";
 		$cpt_prof=0;
 		foreach($current_group["profs"]["users"] as $tab_prof){
 			if($cpt_prof>0){echo ", ";}
-			echo ucfirst(strtolower($tab_prof['prenom']))." ".strtoupper($tab_prof['nom']);
+			echo casse_mot($tab_prof['prenom'],'majf2')." ".my_strtoupper($tab_prof['nom']);
 			$cpt_prof++;
 		}
 		echo ".</p>\n";

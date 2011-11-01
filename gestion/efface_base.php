@@ -62,7 +62,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 1)) {
         <!--table border = 10 bordercolor='red'-->
         <!--table style='border:10px solid red'-->
         <table class='bordercolor10'>
-        <tr><td><INPUT TYPE=SUBMIT value ="EFFACER LES DONNEES <?php echo strtoupper($gepiSettings['denomination_eleves']);?>" /></td></tr></table>
+        <tr><td><INPUT TYPE=SUBMIT value ="EFFACER LES DONNEES <?php echo my_strtoupper($gepiSettings['denomination_eleves']);?>" /></td></tr></table>
         <INPUT TYPE=HIDDEN name=is_posted value = 2 />
         </FORM></center>
         <?php
