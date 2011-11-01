@@ -380,7 +380,7 @@ echo '<form method="post" action="liste_saisies_selection_traitement.php" name="
 		Ajouter les saisies au traitement 
 		<?php 
 	    $desc = $traitement->getDescription();
-	    if (strlen($desc)>300) {
+	    if (mb_strlen($desc)>300) {
 	    	echo substr($desc,0,300).' ... ';
 	    } else {
 	    	echo $desc;
@@ -1213,7 +1213,7 @@ foreach ($results as $saisie) {
 	echo "<table width='100%'><tr><td>";
 	echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     $desc = $traitement->getDescription();
-    if (strlen($desc)>300) {
+    if (mb_strlen($desc)>300) {
     	echo substr($desc,0,300).' ... ';
     } else {
     	echo $desc;

@@ -379,7 +379,7 @@ function rechercheCreneauCsv2($creneau){
 	}else{
 		// Il faut chercher d'une autre façon le bon id de cours avec $test1[0]
 		$test2 = explode("h", $test1[0]); // $test2[0] = 8 et $test2[1] = 00
-		if (strlen($test2[0]) < 2) {
+		if (mb_strlen($test2[0]) < 2) {
 			// On ajoute un '0' devant l'heure
 			$heure = '0'.$test2[0];
 		}else{

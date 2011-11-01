@@ -129,8 +129,8 @@ if (isset($nom_salle) AND isset($numero_salle)) {
 // Quelques vérifications d'usage
 
 $verif_champs = 0;
-	$verif_long_num = strlen($numero_salle);
-	$verif_long_nom = strlen($nom_salle);
+	$verif_long_num = mb_strlen($numero_salle);
+	$verif_long_nom = mb_strlen($nom_salle);
 
 	if ($verif_long_num > 0) {
 		if ($verif_long_num <= 5 OR $verif_long_nom <= 30) {

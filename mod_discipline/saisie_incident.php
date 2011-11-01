@@ -583,7 +583,7 @@ if($etat_incident!='clos') {
 
 	
 				// Pour faire sauter le ", " en fin de $sql:
-				$sql=substr($sql,0,strlen($sql)-2);
+				$sql=substr($sql,0,mb_strlen($sql)-2);
 	
 				$sql.=" WHERE id_incident='$id_incident';";
 	

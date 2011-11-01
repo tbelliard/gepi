@@ -63,13 +63,13 @@ if(!checkdate($tmp_date[1],$tmp_date[0],$tmp_date[2])) {
 	$msg.="La date saisie n'est pas valide.<br />";
 }
 
-$l_duree=strlen($duree);
+$l_duree=mb_strlen($duree);
 $duree=preg_replace("/,/",".",preg_replace("/[^0-9.]/","",$duree));
 if($duree=="") {
 	$duree=1;
 	$msg.="La durée de retenue saisie n'était pas correcte. Elle a été remplacée par '1'.<r />";
 }
-elseif($l_duree!=strlen($duree)) {
+elseif($l_duree!=mb_strlen($duree)) {
 	$msg.="La durée de retenue saisie n'était pas correcte. Elle a été modifiée.<r />";
 }
 

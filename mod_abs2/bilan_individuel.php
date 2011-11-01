@@ -173,7 +173,7 @@ if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
 }
 $limite_jours=7;
 
-if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2)){
+if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || mb_strlen($nom_eleve)<2)){
     //si limitation de temps et si la limite de temps est dÃ©passÃ©e en mode toutes les classes on ne lance pas de calculs 
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';

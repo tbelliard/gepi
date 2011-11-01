@@ -1257,7 +1257,6 @@ elseif($mode=='ajout') {
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {
 			$tab_autres_sanctions[$lig->id_nature]=$lig->nature;
-			//if(strlen($lig->nature)>$largeur_champ_select) {$largeur_champ_select=strlen($lig->nature);}
 		}
 		$largeur_champ_select=20;
 		// On peut quand même se retrouver avec une superposition.
