@@ -445,7 +445,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 				}
 				if($my_echo_debug==1) my_echo_debug("\$ligne[$cpt]=\"$ligne[$cpt]\"\n");
 
-				$chaine=$ligne[$cpt].substr($texte,$j,1);
+				$chaine=$ligne[$cpt].mb_substr($texte,$j,1);
 				if($my_echo_debug==1) my_echo_debug("\$chaine=\"$chaine\"\n");
 
 				if($pdf->GetStringWidth($chaine)>$largeur_utile) {
@@ -461,12 +461,12 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 					}
 
 					$cpt++;
-					$ligne[$cpt]=substr($texte,$j,1);
-					if($my_echo_debug==1) my_echo_debug("On commence une nouvelle ligne avec le dernier caractère: \"".substr($texte,$j-1,1)."\"\n");
+					$ligne[$cpt]=mb_substr($texte,$j,1);
+					if($my_echo_debug==1) my_echo_debug("On commence une nouvelle ligne avec le dernier caractère: \"".mb_substr($texte,$j-1,1)."\"\n");
 					if($my_echo_debug==1) my_echo_debug("\$ligne[$cpt]=\"$ligne[$cpt]\"\n");
 				}
 				else {
-					$ligne[$cpt].=substr($texte,$j,1);
+					$ligne[$cpt].=mb_substr($texte,$j,1);
 					if($my_echo_debug==1) my_echo_debug("\$ligne[$cpt]=\"$ligne[$cpt]\"\n");
 				}
 			}
@@ -783,10 +783,10 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 					if(($cpt+2)*$hauteur_texte*(1+$r_interligne)*26/100>$h_cell) {
 						$d=1;
-						while(($pdf->GetStringWidth(substr($ligne[$cpt],0,mb_strlen($ligne[$cpt])-$d)."...")>=$largeur_dispo)&&($d<mb_strlen($ligne[$cpt]))) {
+						while(($pdf->GetStringWidth(mb_substr($ligne[$cpt],0,mb_strlen($ligne[$cpt])-$d)."...")>=$largeur_dispo)&&($d<mb_strlen($ligne[$cpt]))) {
 							$d++;
 						}
-						$ligne[$cpt]=substr($ligne[$cpt],0,mb_strlen($ligne[$cpt])-$d)."...";
+						$ligne[$cpt]=mb_substr($ligne[$cpt],0,mb_strlen($ligne[$cpt])-$d)."...";
 						break;
 					}
 

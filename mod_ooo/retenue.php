@@ -151,7 +151,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 		if(mysql_num_rows($res)>0) {
 			$lig=mysql_fetch_object($res);
 			//var retenue
-			$nom_resp = $lig->civilite." ".strtoupper($lig->nom)." ".ucfirst(substr($lig->prenom,0,1)).".";
+			$nom_resp = $lig->civilite." ".strtoupper($lig->nom)." ".ucfirst(mb_substr($lig->prenom,0,1)).".";
 		}
 		else {
 			echo "ERREUR: Login $lig_incident->declarant";
@@ -208,7 +208,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			    $lig_heure=mysql_fetch_object($res_heure); 
 				$h_deb = $lig_heure->heuredebut_definie_periode;
 				//on affiche que les 5 1er caratèeres de l'heure
-				$h_deb=substr($h_deb,0,5);
+				$h_deb=mb_substr($h_deb,0,5);
 				//remplacement des : par H dans la chaine
 				$h_deb=str_replace(":","H", $h_deb);
 			} else {

@@ -99,7 +99,7 @@ if ($current_group) {
   $i=0;
   foreach ($current_group["profs"]["users"] as $prof) {
     if ($i != 0) echo ", ";
-    echo substr($prof["prenom"],0,1) . ". " . $prof["nom"];
+    echo mb_substr($prof["prenom"],0,1) . ". " . $prof["nom"];
     $i++;
   }
   echo ")</b>";

@@ -136,7 +136,7 @@ if(mysql_num_rows($test_arch)>0) {
 		while($lig_erreur_login=mysql_fetch_object($res_erreur_mdp)) {
 			$tab_tmp=explode(':', $lig_erreur_login->description);
 			// On vire l'espace au début et la parenthèse à la fin
-			$current_login=substr($tab_tmp[1],1,mb_strlen($tab_tmp[1])-2);
+			$current_login=mb_substr($tab_tmp[1],1,mb_strlen($tab_tmp[1])-2);
 
 			echo "<option value='$current_login'";
 			if((isset($user_login2))&&($current_login==$user_login2)) {echo " selected='true'";}
@@ -198,7 +198,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 			if($_SESSION['email']!='') {
 				$lien_mail.="&amp;bcc=".$_SESSION['email'];
 			}
-			$lien_mail.="&amp;body=Bonjour%20".$user['civilite']."%20".$user['nom']."%20".substr(ucfirst($user['prenom']),0,1).".,%0A%0a"."%0A%0a"."%0A%0a"."%0A%0a"."Cordialement."."-- "."%0A%0a".$_SESSION['prenom']."%20".$_SESSION['nom']."\">";
+			$lien_mail.="&amp;body=Bonjour%20".$user['civilite']."%20".$user['nom']."%20".mb_substr(ucfirst($user['prenom']),0,1).".,%0A%0a"."%0A%0a"."%0A%0a"."%0A%0a"."Cordialement."."-- "."%0A%0a".$_SESSION['prenom']."%20".$_SESSION['nom']."\">";
 	
 			$lien_mail.=" <img src='../images/icons/mail.png' width='16' height='16' />";
 	

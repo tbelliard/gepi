@@ -762,7 +762,7 @@ width:".$largeur1."%;\n";
 						$chaine.=", $value";
 					}
 				}
-				$chaine=substr($chaine,2);
+				$chaine=mb_substr($chaine,2);
 				echo $chaine;
 			}
 			echo "</span></td></tr>\n";
@@ -1113,7 +1113,7 @@ width:".$largeur1."%;\n";
 						$chaine.=", $value";
 					}
 				}
-				$chaine=substr($chaine,2);
+				$chaine=mb_substr($chaine,2);
 				echo $chaine;
 
 			}
@@ -1128,7 +1128,7 @@ width:".$largeur1."%;\n";
 				//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
 				$chaine.=", $value";
 			}
-			$chaine=substr($chaine,2);
+			$chaine=mb_substr($chaine,2);
 			echo $chaine;
 		}
 		echo "</span></td></tr>\n";

@@ -59,7 +59,7 @@ function createRandomPassword() {
     //while ($i <= 7) {
     while ($i <= 5) {
         $num = rand() % 33;
-        $tmp = substr($chars, $num, 1);
+        $tmp = mb_substr($chars, $num, 1);
         $pass = $pass . $tmp;
         $i++;
     }
@@ -626,6 +626,7 @@ else {
 						// Aucun professeur ne porte le même nom dans la base GEPI. On va donc rentrer ce professeur dans la base
 	
 						$prof[$k]["prenom"]=traitement_magic_quotes(corriger_caracteres($prof[$k]["prenom"]));
+
 
 						if($_POST['login_gen_type'] == 'ent'){
 	

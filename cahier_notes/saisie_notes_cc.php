@@ -181,7 +181,7 @@ if (isset($_POST['notes'])) {
 	$tempo = '';
 	if(!isset($note_sur_dev_choisi)) {$note_sur_dev_choisi=20;}
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
-		$car = substr($temp, $i, 1);
+		$car = mb_substr($temp, $i, 1);
 		//echo "<p>\$car='$car'<br />";
 		//if (my_ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
 		if (my_ereg('^[0-9.,a-zA-Z-]{1}$', $car)) {

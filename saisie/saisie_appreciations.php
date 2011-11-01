@@ -297,7 +297,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 			// Il y avait une appréciation saisie
 			// Si l'autorisation de proposition de correction est donnée, c'est OK
 			// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
-			if(substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
+			if(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
 				$saisie_valide='y';
 			}
 			elseif($autorisation_exceptionnelle_de_saisie=='y') {
@@ -1124,7 +1124,7 @@ foreach ($liste_eleves as $eleve_login) {
 				//if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
 				if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
 
-					if((($eleve_app!='')&&(substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
+					if((($eleve_app!='')&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
 					($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')) {
 
 						//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"document.getElementById('correction_login_eleve').value='$eleve_login';document.getElementById('span_correction_login_eleve').innerHTML='$eleve_login';document.getElementById('correction_periode').value='$k';document.getElementById('span_correction_periode').innerHTML='$k';document.getElementById('correction_app_eleve').value=addslashes('$eleve_app');afficher_div('div_correction','y',-100,20);return false;\" title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' /></a></div>\n";
@@ -1590,7 +1590,7 @@ echo "</script>\n";
 // =======================
 // 20100604
 if(($_SESSION['statut']=='professeur')&&
-((substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')||($une_autorisation_exceptionnelle_de_saisie_au_moins=='y'))) {
+((mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')||($une_autorisation_exceptionnelle_de_saisie_au_moins=='y'))) {
 	$titre="Correction d'une appréciation";
 	$texte="<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form_correction' method=\"post\">\n";
 	$texte.=add_token_field();

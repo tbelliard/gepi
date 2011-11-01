@@ -106,7 +106,7 @@ $texte_presentation = 'Attention : Votre mot de passe est confidentiel. A votre 
 $url = parse_url($_SERVER['REQUEST_URI']);
 $temp = $url['path'];
 $d = mb_strlen($temp) - mb_strlen("impression/password_pdf.php") ;
-$gepi_path = substr($temp, 0, $d);
+$gepi_path = mb_substr($temp, 0, $d);
 
 if (!isset($_SERVER['HTTPS']) OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")) {
    $adresse_site_gepi = "HTTP://".$_SERVER["SERVER_NAME"] . $gepi_path;         

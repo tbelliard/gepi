@@ -376,6 +376,7 @@ if (!isset($is_posted)) {
 	
 								$affiche[1] = traitement_magic_quotes(corriger_caracteres($affiche[1]));
 
+
 								$temp1=generate_unique_login($affiche[0], $affiche[1], $_POST['login_gen_type']);
 
 								$login_prof = $temp1;

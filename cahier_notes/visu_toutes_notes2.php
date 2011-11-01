@@ -340,7 +340,7 @@ while($j < $nb_lignes_tableau) {
     if ($aff_date_naiss){
 		$tmpdate=mysql_result($appel_donnees_eleves, $j, "naissance");
 		$tmptab=explode("-",$tmpdate);
-		if(mb_strlen($tmptab[0])==4){$tmptab[0]=substr($tmptab[0],2,2);}
+		if(mb_strlen($tmptab[0])==4){$tmptab[0]=mb_substr($tmptab[0],2,2);}
         $col[$ind][$j+$ligne_supl]=$tmptab[2]."/".$tmptab[1]."/".$tmptab[0];
         $ind++;
 	}
@@ -1056,9 +1056,9 @@ while($i < $lignes_groupes){
 	}
 
 	$nom_complet_matiere = $current_group["description"];
-	$nom_complet_coupe = (mb_strlen($nom_complet_matiere) > 20)? urlencode(substr($nom_complet_matiere,0,20)."...") : urlencode($nom_complet_matiere);
+	$nom_complet_coupe = (mb_strlen($nom_complet_matiere) > 20)? urlencode(mb_substr($nom_complet_matiere,0,20)."...") : urlencode($nom_complet_matiere);
 
-	$nom_complet_coupe_csv=(mb_strlen($nom_complet_matiere) > 20) ? substr($nom_complet_matiere,0,20) : $nom_complet_matiere;
+	$nom_complet_coupe_csv=(mb_strlen($nom_complet_matiere) > 20) ? mb_substr($nom_complet_matiere,0,20) : $nom_complet_matiere;
 	$nom_complet_coupe_csv=preg_replace("/;/","",$nom_complet_coupe_csv);
 
 	//$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=$nom_complet_coupe&width=22\" WIDTH=\"22\" BORDER=\"0\" />";

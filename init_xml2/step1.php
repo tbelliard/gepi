@@ -711,7 +711,7 @@
 
 							if(isset($eleves[$i]["code_commune_insee_naiss"])){$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
 
-							$sql=substr($sql,0,mb_strlen($sql)-2);
+							$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
@@ -1239,7 +1239,7 @@
 							}
 
 							if($temoin>0){
-								$sql=substr($sql,0,mb_strlen($sql)-2);
+								$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 								$sql.=" WHERE ele_id='$lig->ELE_ID';";
 								affiche_debug($sql."<br />\n");
 								$res2=mysql_query($sql);

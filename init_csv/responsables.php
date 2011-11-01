@@ -180,28 +180,29 @@ if (!isset($_POST["action"])) {
 
 			//$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
 			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
-			if (mb_strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
+			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
 			//$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
 			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
 
 			// ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸
 
-			if (mb_strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
+			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
 
 			if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
 
 			$reg_adresse1 = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse1,"'"," ")))))));
 
-			if (mb_strlen($reg_adresse1) > 50) $reg_adresse1 = substr($reg_adresse1, 0, 50);
+			if (mb_strlen($reg_adresse1) > 50) $reg_adresse1 = mb_substr($reg_adresse1, 0, 50);
 
 			$reg_adresse2 = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse2,"'"," ")))))));
-			if (mb_strlen($reg_adresse2) > 50) $reg_adresse2 = substr($reg_adresse2, 0, 50);
+			if (mb_strlen($reg_adresse2) > 50) $reg_adresse2 = mb_substr($reg_adresse2, 0, 50);
 
 			$reg_code_postal = preg_replace("/[^0-9]/","",trim($reg_code_postal));
-			if (mb_strlen($reg_code_postal) > 6) $reg_code_postal = substr($reg_code_postal, 0, 6);
+			if (mb_strlen($reg_code_postal) > 6) $reg_code_postal = mb_substr($reg_code_postal, 0, 6);
 
 			$reg_commune = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_commune,"'"," ")))))));
-			if (mb_strlen($reg_commune) > 50) $reg_commune = substr($reg_commune, 0, 50);
+			if (mb_strlen($reg_commune) > 50) $reg_commune = mb_substr($reg_commune, 0, 50);
+
 
 			// On vérifie que l'élève existe
 			$test = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_eleve . "'"), 0);
@@ -349,24 +350,24 @@ if (!isset($_POST["action"])) {
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
 
 						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[1])))))));
-						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
+						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 
 						$tabligne[2] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[2]))))));
-						if (mb_strlen($tabligne[2]) > 50) $tabligne[2] = substr($tabligne[2], 0, 50);
+						if (mb_strlen($tabligne[2]) > 50) $tabligne[2] = mb_substr($tabligne[2], 0, 50);
 
 						if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") { $tabligne[3] = "";}
 
 						$tabligne[4] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[4],"'"," ")))))));
-						if (mb_strlen($tabligne[4]) > 50) $tabligne[4] = substr($tabligne[4], 0, 50);
+						if (mb_strlen($tabligne[4]) > 50) $tabligne[4] = mb_substr($tabligne[4], 0, 50);
 
 						$tabligne[5] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[5],"'"," ")))))));
-						if (mb_strlen($tabligne[5]) > 50) $tabligne[5] = substr($tabligne[5], 0, 50);
+						if (mb_strlen($tabligne[5]) > 50) $tabligne[5] = mb_substr($tabligne[5], 0, 50);
 
 						$tabligne[6] = preg_replace("/[^0-9]/","",trim($tabligne[6]));
-						if (mb_strlen($tabligne[6]) > 6) $tabligne[6] = substr($tabligne[6], 0, 6);
+						if (mb_strlen($tabligne[6]) > 6) $tabligne[6] = mb_substr($tabligne[6], 0, 6);
 
 						$tabligne[7] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[7],"'"," ")))))));
-						if (mb_strlen($tabligne[7]) > 50) $tabligne[7] = substr($tabligne[7], 0, 50);
+						if (mb_strlen($tabligne[7]) > 50) $tabligne[7] = mb_substr($tabligne[7], 0, 50);
 
 						$data_tab[$k] = array();
 						$data_tab[$k]["id_eleve"] = $tabligne[0];

@@ -32,7 +32,7 @@
 	//echo "<p>gepiPath=".$gepiPath."</p>\n";
 
 	$tmp_chemin=$gepiPath."/saisie/saisie_avis2.php";
-	if(substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin))!=$tmp_chemin){
+	if(mb_substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin))!=$tmp_chemin){
 		/*
 		echo "<html>\n";
 		echo "<head>\n";

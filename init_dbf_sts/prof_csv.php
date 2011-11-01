@@ -306,7 +306,7 @@ if (!isset($is_posted)) {
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
-                        //$temp1 = substr($temp1,0,8);
+                        //$temp1 = mb_substr($temp1,0,8);
 
                     } elseif ($_POST['login_gen_type'] == "name8") {
                         $temp1 = $affiche[0];
@@ -314,21 +314,21 @@ if (!isset($is_posted)) {
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
-                        $temp1 = substr($temp1,0,8);
+                        $temp1 = mb_substr($temp1,0,8);
                     } elseif ($_POST['login_gen_type'] == "fname8") {
                         $temp1 = $affiche[1]{0} . $affiche[0];
                         $temp1 = strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
-                        $temp1 = substr($temp1,0,8);
+                        $temp1 = mb_substr($temp1,0,8);
                     } elseif ($_POST['login_gen_type'] == "fname19") {
                         $temp1 = $affiche[1]{0} . $affiche[0];
                         $temp1 = strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
-                        $temp1 = substr($temp1,0,19);
+                        $temp1 = mb_substr($temp1,0,19);
                     } elseif ($_POST['login_gen_type'] == "firstdotname") {
                         if ($prenom_compose != '') {
                             $firstname = $prenom_compose;
@@ -342,7 +342,7 @@ if (!isset($is_posted)) {
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
-                        //$temp1 = substr($temp1,0,19);
+                        //$temp1 = mb_substr($temp1,0,19);
                     } elseif ($_POST['login_gen_type'] == "firstdotname19") {
                         if ($prenom_compose != '') {
                             $firstname = $prenom_compose;
@@ -355,14 +355,14 @@ if (!isset($is_posted)) {
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
-                        $temp1 = substr($temp1,0,19);
+                        $temp1 = mb_substr($temp1,0,19);
                     } elseif ($_POST['login_gen_type'] == "namef8") {
-                        $temp1 =  substr($affiche[0],0,7) . $affiche[1]{0};
+                        $temp1 =  mb_substr($affiche[0],0,7) . $affiche[1]{0};
                         $temp1 = strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
-                        //$temp1 = substr($temp1,0,8);
+                        //$temp1 = mb_substr($temp1,0,8);
                     } elseif ($_POST['login_gen_type'] == "lcs") {
                         $nom = $affiche[0];
                         $nom = strtolower($nom);

@@ -1029,7 +1029,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 			$lcs_tab_login["nom"] = $user["nom"];
 			$lcs_tab_login["email"] = $user["email"];
 			$long = mb_strlen($user["fullname"]) - mb_strlen($user["nom"]);
-			$lcs_tab_login["fullname"] = substr($user["fullname"], 0, $long) ;
+			$lcs_tab_login["fullname"] = mb_substr($user["fullname"], 0, $long) ;
 
 			// A ce stade, l'utilisateur est authentifié
 			// Etablir à nouveau la connexion à la base
@@ -1326,9 +1326,9 @@ if (getSettingValue("sso_cas_table") == 'yes') {
             
             $naissance = $user['raw']['entpersondatenaissance'][0];
             if ($naissance != '') {
-              $annee = substr($naissance, 0, 4);
-              $mois = substr($naissance, 4, 2);
-              $jour = substr($naissance, 6, 2);
+              $annee = mb_substr($naissance, 0, 4);
+              $mois = mb_substr($naissance, 4, 2);
+              $jour = mb_substr($naissance, 6, 2);
             } else {
               $annee = '0000';
               $mois = '00';
@@ -1447,7 +1447,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           //pour chaque dn d'eleve
           for ($i=0;$i<$nb_eleves_a_charge;$i++) {
               $eleve_uid = explode(",",$user['raw']['entauxpersreleleveeleve'][$i]);
-              $eleve_associe_login = substr($eleve_uid[0], 4);
+              $eleve_associe_login = mb_substr($eleve_uid[0], 4);
               $eleve_query = mysql_query("SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
               if (mysql_num_rows($eleve_query) == 1) {
                 $eleve_associe_ele_id = mysql_result($eleve_query, 0);

@@ -260,20 +260,20 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,8);
+		$temp1 = mb_substr($temp1,0,8);
 	} elseif ($_mode == "name9_p") {
 		// Format d'origine des comptes élèves dans Gepi
 		$temp1 = $_nom;
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,9);
+		$temp1 = mb_substr($temp1,0,9);
 		if($_prenom!='') {
 			$temp2 = preg_replace("/ /","", $_prenom);
 			$temp2 = preg_replace("/-/","_", $temp2);
 			$temp2 = preg_replace("/'/","", $temp2);
 			if($temp2!='') {
-				$temp1 .= '_'.substr($temp2,0,1);
+				$temp1 .= '_'.mb_substr($temp2,0,1);
 			}
 		}
 	} elseif ($_mode == "fname8") {
@@ -282,14 +282,14 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,8);
+		$temp1 = mb_substr($temp1,0,8);
 	} elseif ($_mode == "fname19") {
 		if($_prenom=='') {return FALSE;}
 		$temp1 = $_prenom{0} . $_nom;
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,19);
+		$temp1 = mb_substr($temp1,0,19);
 	} elseif ($_mode == "firstdotname") {
 		if($_prenom=='') {return FALSE;}
 
@@ -319,10 +319,10 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,19);
+		$temp1 = mb_substr($temp1,0,19);
 	} elseif ($_mode == "namef8") {
 		if($_prenom=='') {return FALSE;}
-		$temp1 =  substr($_nom,0,7) . $_prenom{0};
+		$temp1 =  mb_substr($_nom,0,7) . $_prenom{0};
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
@@ -335,7 +335,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 				$temp1 .= "_". $noms[1];
 			}
 		}
-		$temp1 = strtolower(substr($_prenom,0,1)). $temp1;
+		$temp1 = strtolower(mb_substr($_prenom,0,1)). $temp1;
 	} else {
 		return FALSE;
 	}
@@ -350,18 +350,18 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 	$login_user = $temp1;
 
 	// Nettoyage final
-	$login_user = substr($login_user, 0, 50);
+	$login_user = mb_substr($login_user, 0, 50);
 	$login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
 
 	$test1 = $login_user{0};
 	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-		$login_user = substr($login_user, 1);
+		$login_user = mb_substr($login_user, 1);
 		$test1 = $login_user{0};
 	}
 
 	$test1 = $login_user{mb_strlen($login_user)-1};
 	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-		$login_user = substr($login_user, 0, mb_strlen($login_user)-1);
+		$login_user = mb_substr($login_user, 0, mb_strlen($login_user)-1);
 		$test1 = $login_user{mb_strlen($login_user)-1};
 	}
 
@@ -402,8 +402,8 @@ function affiche_utilisateur($login,$id_classe) {
     $i='';
     if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
         $temp = explode("-", $prenom);
-        $i = substr($temp[0], 0, 1);
-        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".substr($temp[1], 0, 1);
+        $i = mb_substr($temp[0], 0, 1);
+        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
         $i .= ". ";
     }
     switch( $format ) {
@@ -540,20 +540,20 @@ function checkAccess() {
 
     	$sql = "SELECT autorisation
 	    from droits_speciaux
-    	where nom_fichier = '" . substr($url['path'], mb_strlen($gepiPath)) . "'
+    	where nom_fichier = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
 		AND id_statut = '" . $_SESSION['statut_special_id'] . "'";
 
     }else{
 
 		$sql = "select " . $_SESSION['statut'] . "
 	    from droits
-    	where id = '" . substr($url['path'], mb_strlen($gepiPath)) . "'
+    	where id = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
     	;";
 
 	}
 
     $dbCheckAccess = sql_query1($sql);
-    if (substr($url['path'], 0, mb_strlen($gepiPath)) != $gepiPath) {
+    if (mb_substr($url['path'], 0, mb_strlen($gepiPath)) != $gepiPath) {
         tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
         return (FALSE);
     } else {
@@ -762,21 +762,21 @@ function detect_browser($HTTP_USER_AGENT) {
 function affiche_date_naissance($date) {
     if (mb_strlen($date) == 10) {
         // YYYY-MM-DD
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 5, 2);
-        $jour = substr($date, 8, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 5, 2);
+        $jour = mb_substr($date, 8, 2);
     }
     elseif (mb_strlen($date) == 8 ) {
         // YYYYMMDD
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 4, 2);
-        $jour = substr($date, 6, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 4, 2);
+        $jour = mb_substr($date, 6, 2);
     }
     elseif (mb_strlen($date) == 19 ) {
         // YYYY-MM-DD xx:xx:xx
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 5, 2);
-        $jour = substr($date, 8, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 5, 2);
+        $jour = mb_substr($date, 8, 2);
     }
 
     else {
@@ -1006,7 +1006,7 @@ function tentative_intrusion($_niveau, $_description) {
 	$adresse_ip = $_SERVER['REMOTE_ADDR'];
 	$date = strftime("%Y-%m-%d %H:%M:%S");
 	$url = parse_url($_SERVER['REQUEST_URI']);
-    $fichier = substr($url['path'], mb_strlen($gepiPath));
+    $fichier = mb_substr($url['path'], mb_strlen($gepiPath));
 	$res = mysql_query("INSERT INTO tentatives_intrusion SET " .
 			"login = '".$user_login."', " .
 			"adresse_ip = '".$adresse_ip."', " .
@@ -1843,7 +1843,7 @@ function formate_date($date) {
  * @return string Le régime dans Gépi
  */
 function traite_regime_sconet($code_regime){
-	$premier_caractere_code_regime=substr($code_regime,0,1);
+	$premier_caractere_code_regime=mb_substr($code_regime,0,1);
 	switch($premier_caractere_code_regime){
 		case "0":
 			// 0       EXTERN  EXTERNE LIBRE
@@ -2529,8 +2529,8 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
-						if(substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=substr($_elenoet_ou_login,$i+1);
+						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
+							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;
@@ -2717,7 +2717,7 @@ function mail_connexion() {
 				$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
 			}
 			else if($active_hostbyaddr == "no_local") {
-				if ((substr($adresse_ip,0,3) == 127) or (substr($adresse_ip,0,3) == 10.) or (substr($adresse_ip,0,7) == 192.168)) {
+				if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
 					$result_hostbyaddr = "";
 				}
 				else{
@@ -2787,7 +2787,7 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 			$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
 		}
 		else if($active_hostbyaddr == "no_local") {
-			if ((substr($adresse_ip,0,3) == 127) or (substr($adresse_ip,0,3) == 10.) or (substr($adresse_ip,0,7) == 192.168)) {
+			if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
 				$result_hostbyaddr = "";
 			}
 			else{
@@ -3116,7 +3116,7 @@ function casse_mot($mot,$mode='maj') {
     	}
     	elseif($mode=='majf') {
     		if(mb_strlen($str)>1) {
-    			return strtoupper(substr($str,0,1)).strtolower(substr($str,1));
+    			return strtoupper(mb_substr($str,0,1)).strtolower(substr($str,1));
     		}
     		else {
     			return strtoupper($str);
@@ -3131,7 +3131,7 @@ function casse_mot($mot,$mode='maj') {
     			for($j=0;$j<count($tab2);$j++) {
     				if($j>0) {$chaine.="-";}
     				if(mb_strlen($tab2[$j])>1) {
-    					$chaine.=strtoupper(substr($tab2[$j],0,1)).strtolower(substr($tab2[$j],1));
+    					$chaine.=strtoupper(mb_substr($tab2[$j],0,1)).strtolower(mb_substr($tab2[$j],1));
     				}
     				else {
     					$chaine.=strtoupper($tab2[$j]);
@@ -3254,7 +3254,7 @@ function civ_nom_prenom($login,$mode='prenom') {
 		}
 		else {
 			// Initiale
-			$retour.=strtoupper($lig_user->nom)." ".strtoupper(substr($lig_user->prenom,0,1));
+			$retour.=strtoupper($lig_user->nom)." ".strtoupper(mb_substr($lig_user->prenom,0,1));
 		}
 	}
 	return $retour;

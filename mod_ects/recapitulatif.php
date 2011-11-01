@@ -443,7 +443,7 @@ require_once("../lib/header.inc");
           $cellstyle = 'central_cell';
         }
         echo "<td class='$cellstyle $column_classname' style='vertical-align: bottom;'>\n";
-        $nom_complet_coupe = (mb_strlen($matiere) > 20)? urlencode(substr($matiere,0,20)."...") : urlencode($matiere);
+        $nom_complet_coupe = (mb_strlen($matiere) > 20)? urlencode(mb_substr($matiere,0,20)."...") : urlencode($matiere);
         echo "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
         echo "</td>\n";
         $m++;

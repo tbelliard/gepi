@@ -227,9 +227,9 @@ if (!isset($_POST["action"])) {
 
 			// On nettoie et on vérifie :
 			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
-			if (mb_strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
+			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
 			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
-			if (mb_strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
+			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
 
 			if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
 
@@ -237,7 +237,7 @@ if (!isset($_POST["action"])) {
 
 			// Déjà fait avant:
 			$reg_login = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($reg_login)));
-			if (mb_strlen($reg_login) > 50) $reg_login = substr($reg_login, 0, 50);
+			if (mb_strlen($reg_login) > 50) $reg_login = mb_substr($reg_login, 0, 50);
 
 			// Maintenant que tout est propre, on fait un test pour voir si le compte n'existe pas déjà
 
@@ -262,7 +262,7 @@ if (!isset($_POST["action"])) {
 					// On génère un password :
 					$feed = "0123456789abcdefghijklmnopqrstuvwxyz";
 						for ($t=0; $t < 20; $t++){
-							$reg_password .= substr($feed, rand(0, mb_strlen($feed)-1), 1);
+							$reg_password .= mb_substr($feed, rand(0, mb_strlen($feed)-1), 1);
 						}
 						$reg_password = md5($reg_password);
 					break;
@@ -355,10 +355,10 @@ if (!isset($_POST["action"])) {
 
 						// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
-						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
 						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
-						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
+						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 
 						if ($tabligne[2] != "M." AND $tabligne[2] != "MME" AND $tabligne[2] != "MLLE") { $tabligne[2] = "";}
 

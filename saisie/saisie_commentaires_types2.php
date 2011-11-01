@@ -33,7 +33,7 @@
 
 	$tmp_chemin1=$gepiPath."/saisie/saisie_avis1.php";
 	$tmp_chemin2=$gepiPath."/saisie/saisie_avis2.php";
-	if((substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin1))!=$tmp_chemin1)&&(substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin2))!=$tmp_chemin2)){
+	if((mb_substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin1))!=$tmp_chemin1)&&(mb_substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin2))!=$tmp_chemin2)){
 		/*
 		echo "<html>\n";
 		echo "<head>\n";
