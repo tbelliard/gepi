@@ -84,7 +84,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 	// Détermination du format de la date de naissance
 	$call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE 1");
 	$test_eleve_naissance = @mysql_result($call_eleve_test, "0", "naissance");
-	$format = strlen($test_eleve_naissance);
+	$format = mb_strlen($test_eleve_naissance);
 
 
 	// Cas de la création d'un élève
@@ -453,17 +453,17 @@ if (isset($eleve_login)) {
     $eleve_email = mysql_result($call_eleve_info, "0", "email");
     $eleve_sexe = mysql_result($call_eleve_info, "0", "sexe");
     $eleve_naissance = mysql_result($call_eleve_info, "0", "naissance");
-    if (strlen($eleve_naissance) == 10) {
+    if (mb_strlen($eleve_naissance) == 10) {
         // YYYY-MM-DD
         $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
         $eleve_naissance_mois = substr($eleve_naissance, 5, 2);
         $eleve_naissance_jour = substr($eleve_naissance, 8, 2);
-    } elseif (strlen($eleve_naissance) == 8 ) {
+    } elseif (mb_strlen($eleve_naissance) == 8 ) {
         // YYYYMMDD
         $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
         $eleve_naissance_mois = substr($eleve_naissance, 4, 2);
         $eleve_naissance_jour = substr($eleve_naissance, 6, 2);
-    } elseif (strlen($eleve_naissance) == 19 ) {
+    } elseif (mb_strlen($eleve_naissance) == 19 ) {
         // YYYY-MM-DD xx:xx:xx
         $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
         $eleve_naissance_mois = substr($eleve_naissance, 5, 2);
@@ -753,7 +753,7 @@ if ($nombreligne != 0) {
 			echo "</td></tr>\n" ;
 
 
-			if(substr($lig_resp1->adr1,0,strlen($lig_resp1->adr1)-1)==substr($lig_resp2->adr1, 0, strlen($lig_resp2->adr1)-1) and ($lig_resp1->cp==$lig_resp2->cp) and ($lig_resp1->commune==$lig_resp2->commune) and ($lig_resp1->pays==$lig_resp2->pays)) {
+			if(substr($lig_resp1->adr1,0,mb_strlen($lig_resp1->adr1)-1)==substr($lig_resp2->adr1, 0, mb_strlen($lig_resp2->adr1)-1) and ($lig_resp1->cp==$lig_resp2->cp) and ($lig_resp1->commune==$lig_resp2->commune) and ($lig_resp1->pays==$lig_resp2->pays)) {
 				$message = "<b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b>";
 			} else {
 				if($chaine_adr2!='') {

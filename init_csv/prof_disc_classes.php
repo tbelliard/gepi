@@ -155,13 +155,13 @@ if (!isset($_POST["action"])) {
 
 			// On nettoie et on vérifie :
 			$reg_prof = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($reg_prof)));
-			if (strlen($reg_prof) > 50) $reg_prof = substr($reg_prof, 0, 50);
+			if (mb_strlen($reg_prof) > 50) $reg_prof = substr($reg_prof, 0, 50);
 
 			$reg_matiere = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($reg_matiere)));
-			if (strlen($reg_matiere) > 50) $reg_matiere = substr($reg_matiere, 0, 50);
+			if (mb_strlen($reg_matiere) > 50) $reg_matiere = substr($reg_matiere, 0, 50);
 
 			$reg_classes = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($reg_classes));
-			if (strlen($reg_classes) > 2000) $reg_classes = substr($reg_classes, 0, 2000); // C'est juste pour éviter une tentative d'overflow...
+			if (mb_strlen($reg_classes) > 2000) $reg_classes = substr($reg_classes, 0, 2000); // C'est juste pour éviter une tentative d'overflow...
 
 			$reg_type = preg_replace("/[^A-Za-z]/","",trim(strtoupper($reg_type)));
 			if ($reg_type != "CG" AND $reg_type != "OPT") $reg_type = "";
@@ -312,13 +312,13 @@ if (!isset($_POST["action"])) {
 
 						// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($tabligne[0])));
-						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 			
 						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[1])));
-						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
+						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 			
 						$tabligne[2] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[2]));
-						if (strlen($tabligne[2]) > 2000) $tabligne[2] = substr($tabligne[2], 0, 2000);
+						if (mb_strlen($tabligne[2]) > 2000) $tabligne[2] = substr($tabligne[2], 0, 2000);
 			
 						$tabligne[3] = preg_replace("/[^A-Za-z]/","",trim(strtoupper($tabligne[3])));
 						if ($tabligne[3] != "CG" AND $tabligne[3] != "OPT") $tabligne[3] = "";

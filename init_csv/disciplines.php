@@ -115,10 +115,10 @@ if (!isset($_POST["action"])) {
 
 			// On nettoie et on vérifie :
 			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($reg_nom_court)));
-			if (strlen($reg_nom_court) > 50) $reg_nom_court = substr($reg_nom_court, 0, 50);
+			if (mb_strlen($reg_nom_court) > 50) $reg_nom_court = substr($reg_nom_court, 0, 50);
 			//$reg_nom_long = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($reg_nom_long));
 			$reg_nom_long = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_nom_long))))));
-			if (strlen($reg_nom_long) > 200) $reg_nom_long = substr($reg_nom_long, 0, 200);
+			if (mb_strlen($reg_nom_long) > 200) $reg_nom_long = substr($reg_nom_long, 0, 200);
 
 			// Maintenant que tout est propre, on fait un test sur la table pour voir si la matière existe déjà ou pas
 
@@ -230,10 +230,10 @@ if (!isset($_POST["action"])) {
 
 							// On nettoie et on vérifie :
 							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[0])));
-							if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+							if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 							//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($tabligne[1]));
 							$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
-							if (strlen($tabligne[1]) > 200) $tabligne[1] = substr($tabligne[1], 0, 200);
+							if (mb_strlen($tabligne[1]) > 200) $tabligne[1] = substr($tabligne[1], 0, 200);
 
 							$data_tab[$k] = array();
 

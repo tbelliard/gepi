@@ -301,7 +301,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		// Détermination du format de la date de naissance
 		$call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE 1");
 		$test_eleve_naissance = @mysql_result($call_eleve_test, "0", "naissance");
-		$format = strlen($test_eleve_naissance);
+		$format = mb_strlen($test_eleve_naissance);
 
 
 		// Cas de la création d'un élève
@@ -672,7 +672,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			if(isset($reg_no_gep)){
 				//echo "\$reg_no_gep=$reg_no_gep<br />";
 				if($reg_no_gep!=""){
-					if(strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0) {
+					if(mb_strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0) {
 						if(isset($_POST['suppr_filephoto'])){
 							if($_POST['suppr_filephoto']=='y'){
 
@@ -907,7 +907,7 @@ elseif($_SESSION['statut']=="professeur"){
 		// Envoi de la photo
 		if(isset($reg_no_gep)) {
 			if($reg_no_gep!="") {
-				if(strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0){
+				if(mb_strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0){
 					if(isset($_POST['suppr_filephoto'])) {
 						check_token();
 						if($_POST['suppr_filephoto']=='y'){
@@ -1015,17 +1015,17 @@ if (isset($eleve_login)) {
 
     $eleve_sexe = mysql_result($call_eleve_info, "0", "sexe");
     $eleve_naissance = mysql_result($call_eleve_info, "0", "naissance");
-    if (strlen($eleve_naissance) == 10) {
+    if (mb_strlen($eleve_naissance) == 10) {
         // YYYY-MM-DD
         $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
         $eleve_naissance_mois = substr($eleve_naissance, 5, 2);
         $eleve_naissance_jour = substr($eleve_naissance, 8, 2);
-    } elseif (strlen($eleve_naissance) == 8 ) {
+    } elseif (mb_strlen($eleve_naissance) == 8 ) {
         // YYYYMMDD
         $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
         $eleve_naissance_mois = substr($eleve_naissance, 4, 2);
         $eleve_naissance_jour = substr($eleve_naissance, 6, 2);
-    } elseif (strlen($eleve_naissance) == 19 ) {
+    } elseif (mb_strlen($eleve_naissance) == 19 ) {
         // YYYY-MM-DD xx:xx:xx
         $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
         $eleve_naissance_mois = substr($eleve_naissance, 5, 2);
@@ -1223,11 +1223,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			}
 
 			$nb_resp=isset($_POST['nb_resp']) ? $_POST['nb_resp'] : 20;
-			if(strlen(preg_replace("/[0-9]/","",$nb_resp))!=0) {
+			if(mb_strlen(preg_replace("/[0-9]/","",$nb_resp))!=0) {
 				$nb_resp=20;
 			}
 			$num_premier_resp_rech=isset($_POST['num_premier_resp_rech']) ? $_POST['num_premier_resp_rech'] : 0;
-			if(strlen(preg_replace("/[0-9]/","",$num_premier_resp_rech))!=0) {
+			if(mb_strlen(preg_replace("/[0-9]/","",$num_premier_resp_rech))!=0) {
 				$num_premier_resp_rech=0;
 			}
 
@@ -1390,11 +1390,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			*/
 
 			$nb_etab=isset($_POST['nb_etab']) ? $_POST['nb_etab'] : (isset($_GET['nb_etab']) ? $_GET['nb_etab'] : 20);
-			if(strlen(preg_replace("/[0-9]/","",$nb_etab))!=0) {
+			if(mb_strlen(preg_replace("/[0-9]/","",$nb_etab))!=0) {
 				$nb_etab=20;
 			}
 			$num_premier_etab_rech=isset($_POST['num_premier_etab_rech']) ? $_POST['num_premier_etab_rech'] : (isset($_GET['num_premier_etab_rech']) ? $_GET['num_premier_etab_rech'] : 0);
-			if(strlen(preg_replace("/[0-9]/","",$num_premier_etab_rech))!=0) {
+			if(mb_strlen(preg_replace("/[0-9]/","",$num_premier_etab_rech))!=0) {
 				$num_premier_etab_rech=0;
 			}
 

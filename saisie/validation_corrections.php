@@ -80,9 +80,9 @@ if(isset($_POST['action_corrections'])) {
 
 		$current_nom_prenom_eleve=get_nom_prenom_eleve($current_login_ele);
 
-		if((strlen(my_ereg_replace('[A-Za-z0-9._-]','',$current_login_ele))==0)&&
-		(strlen(my_ereg_replace('[0-9]','',$current_id_groupe))==0)&&
-		(strlen(my_ereg_replace('[0-9]','',$current_periode))==0)) {
+		if((mb_strlen(my_ereg_replace('[A-Za-z0-9._-]','',$current_login_ele))==0)&&
+		(mb_strlen(my_ereg_replace('[0-9]','',$current_id_groupe))==0)&&
+		(mb_strlen(my_ereg_replace('[0-9]','',$current_periode))==0)) {
 
 			if ((isset($action[$i]))&&(in_array($action[$i],$tab_actions_valides))) {
 				if (isset($NON_PROTECT["appreciation".$i])) {

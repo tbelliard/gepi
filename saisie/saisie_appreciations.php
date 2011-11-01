@@ -330,8 +330,8 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		
 				$correction_nom_prenom_eleve=get_nom_prenom_eleve($correction_login_eleve);
 		
-				if((strlen(preg_replace('/[A-Za-z0-9._-]/','',$correction_login_eleve))!=0)||
-				(strlen(preg_replace('/[0-9]/','',$correction_periode))!=0)) {
+				if((mb_strlen(preg_replace('/[A-Za-z0-9._-]/','',$correction_login_eleve))!=0)||
+				(mb_strlen(preg_replace('/[0-9]/','',$correction_periode))!=0)) {
 					$msg.="Des caractères invalides sont proposés pour le login élève $correction_nom_prenom_eleve ou pour la période $correction_periode.<br />";
 				}
 				else {
