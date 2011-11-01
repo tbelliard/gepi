@@ -78,13 +78,20 @@ function test_remplace_accents()
     return true;
 }
 
-function test_casse_mot()
-{
-    if ("AUIE" != casse_mot("auie",'maj')) {echo 'échec ligne 83 mod_serveur/test_encoding_functions.php'; return false;} 
-    if ("auie" != casse_mot("AUIE",'min')) {echo 'échec ligne 84 mod_serveur/test_encoding_functions.php'; return false;} 
-    if ("B" != casse_mot("bépowǜdlj",'majf')) {echo 'échec ligne 85 mod_serveur/test_encoding_functions.php'; return false;} 
-    if (";Œ€ÂŨ" != casse_mot(";œ€âũ",'maj')) {echo 'échec ligne 86 mod_serveur/test_encoding_functions.php'; return false;} 
-    if ("Bonjour Je Suis Là" != casse_mot("bonjour je suis là",'majf2')) {echo 'échec ligne 87 mod_serveur/test_encoding_functions.php'; return false;} 
-    if ("É" != casse_mot("\xe9",'maj')) {echo 'échec ligne 88 mod_serveur/test_encoding_functions.php'; return false;} 
+function test_casse_mot() {
+    if (function_exists('mb_convert_case')) {
+        if ("AUIE" != casse_mot("auie",'maj')) {echo 'échec ligne 83 mod_serveur/test_encoding_functions.php'; return false;} 
+        if ("auie" != casse_mot("AUIE",'min')) {echo 'échec ligne 84 mod_serveur/test_encoding_functions.php'; return false;} 
+        if ("Bépowûdlj" != casse_mot("béPowûdlj",'majf')) {echo 'échec ligne 85 mod_serveur/test_encoding_functions.php'; return false;} 
+        if (";Œ€ÂŨ" != casse_mot(";œ€âũ",'maj')) {echo 'échec ligne 86 mod_serveur/test_encoding_functions.php'; return false;} 
+        if ("Bonjour Je Suis Là" != casse_mot("bonjour je suis là",'majf2')) {echo 'échec ligne 87 mod_serveur/test_encoding_functions.php'; return false;} 
+    } else {
+        if ("AUIE" != casse_mot("auie",'maj')) {echo 'échec ligne 89 mod_serveur/test_encoding_functions.php'; return false;} 
+        if ("auie" != casse_mot("AUIE",'min')) {echo 'échec ligne 90 mod_serveur/test_encoding_functions.php'; return false;} 
+        if ("Bepowudlj" != casse_mot("bépowǜdlj",'majf')) {echo 'échec ligne 91 mod_serveur/test_encoding_functions.php'; return false;} 
+        if (";AE" != casse_mot(";âé",'maj')) {echo 'échec ligne 92 mod_serveur/test_encoding_functions.php'; return false;} 
+        if ("Bonjour Je Suis La" != casse_mot("bonjour je suis là",'majf2')) {echo 'échec ligne 93 mod_serveur/test_encoding_functions.php'; return false;}
+    } 
     return true;
 }
+

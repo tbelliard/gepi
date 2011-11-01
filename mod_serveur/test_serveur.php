@@ -158,15 +158,12 @@ if ($test->versionGd()) {
 	if (function_exists('iconv')) {
 	    echo "iconv est installé sur votre système<br />";
 	} else {
-	    echo "iconv n'est pas installé sur votre système<br />";
+	    echo "iconv n'est pas installé sur votre système, ça n'est pas indispensable mais c'est recomandé<br />";
 	}
 	if (function_exists('mb_convert_encoding')) {
 	    echo "mbstring est installé sur votre système<br />";
 	} else {
-	    echo "mbstring n'est pas installé sur votre système<br />";
-	}
-	if (!function_exists('conv') && !function_exists('mb_convert_encoding')) {
-	    echo "<p style=\"color:red;\">au moins iconv ou mbstring doivent être installés sur votre système</p>";
+	    echo "mbstring n'est pas installé sur votre système, il n'est pas garanti que les accentuations seront gérées correctement par votre application<br />";
 	}
 	
 	echo "<p style=\"color:red;\">";

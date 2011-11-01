@@ -117,10 +117,8 @@ echo '<!--[if lt IE 7]>
 			$barre_note .= '	<ul class="niveau2">'."\n";
 				foreach($mes_groupes as $tmp_group) {
 					if((!isset($tmp_group["visibilite"]["cahier_notes"]))||($tmp_group["visibilite"]["cahier_notes"]=='y')) {
-						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-
 						if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light") {
+							$barre_note.= '		<li><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 						}
 						else {
 							$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
@@ -137,9 +135,9 @@ echo '<!--[if lt IE 7]>
 								$barre_note.='</a>';
 								$barre_note.='</li>'."\n";
 							}
-                           $barre_note.= '                 </ul>'."\n";
-                        }
-                        $barre_note.= '		</li>'."\n";
+							$barre_note.= '			</ul>'."\n";
+						}
+						$barre_note.= '		</li>'."\n";
 					}
 				}
 
@@ -173,9 +171,8 @@ echo '<!--[if lt IE 7]>
 	
 				foreach($mes_groupes as $tmp_group) {
 					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
-						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-
 						if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light") {
+							$barre_note.= '		<li><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 						}
 						else {
 							$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
@@ -209,6 +206,7 @@ echo '<!--[if lt IE 7]>
 					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
 						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
 						if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light") {
+							$barre_note.= '		<li><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 						}
 						else {
 							$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
@@ -382,6 +380,7 @@ echo '<!--[if lt IE 7]>
 		foreach($mes_groupes as $tmp_group) {
 			$barre_eleve.= '            <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe=&groupe='.$tmp_group['id'].'&equipepeda=&discipline=&statusgepi=&affdiscipline="'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</a></li>'."\n";
 		}
+		$barre_eleve.= '            <li><a href="'.$gepiPath.'/mod_trombinoscopes/plan_de_classe.php"'.insert_confirm_abandon().'>Plan de classe</a></li>'."\n";
 		$barre_eleve.= '         </ul>'."\n";
 		$barre_eleve.= '      </li>'."\n";
 	}
