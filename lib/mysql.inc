@@ -21,7 +21,7 @@ if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
   $cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);
 
 }
-if (empty($db_nopersist))
+if (!$db_nopersist)
     $db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
 else
     $db_c = mysql_connect($dbHost, $dbUser, $dbPass);

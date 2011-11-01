@@ -1034,7 +1034,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 
 			// A ce stade, l'utilisateur est authentifié
 			// Etablir à nouveau la connexion à la base
-			if (empty($db_nopersist))
+			if (!$db_nopersist)
 				$db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
 			else
 				$db_c = mysql_connect($dbHost, $dbUser, $dbPass);
