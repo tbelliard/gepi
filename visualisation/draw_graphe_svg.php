@@ -706,7 +706,7 @@
 			$matiere_tronquee=$matiere[$i];
 		}
 		else{
-			$matiere_tronquee=substr($matiere[$i],0,$tronquer_nom_court);
+			$matiere_tronquee=mb_substr($matiere[$i],0,$tronquer_nom_court);
 		}
 
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=$matiere[$i]\n");

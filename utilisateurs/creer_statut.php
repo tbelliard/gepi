@@ -82,7 +82,7 @@ if ($action == 'ajouter') {
 
 	// on fait quelques vérifications sur le nom du statut (si il existe déjà, longueur du nom, enlever les ' et les ",...)
 	// On ne garde que les 12 premières lettres
-	$stat_1 = substr(trim($nouveau_statut), 0, 12);
+	$stat_1 = mb_substr(trim($nouveau_statut), 0, 12);
 	// On enlève les accents, les apostrophes et les guillemets
 	$stat_2 = str_replace("\\", "", $stat_1);
 	$stat_2b = str_replace('"', '', $stat_2);

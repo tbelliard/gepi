@@ -178,7 +178,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						if(mysql_num_rows($res_ele_id_eleve)>0){
 							$tmp=0;
 							$lig_ele_id_eleve=mysql_fetch_object($res_ele_id_eleve);
-							$tmp=substr($lig_ele_id_eleve->ele_id,1);
+							$tmp=mb_substr($lig_ele_id_eleve->ele_id,1);
 							$tmp++;
 							$max_ele_id=$tmp;
 						}
@@ -191,7 +191,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						if(mysql_num_rows($res_ele_id_responsables2)>0){
 							$tmp=0;
 							$lig_ele_id_responsables2=mysql_fetch_object($res_ele_id_responsables2);
-							$tmp=substr($lig_ele_id_responsables2->ele_id,1);
+							$tmp=mb_substr($lig_ele_id_responsables2->ele_id,1);
 							$tmp++;
 							$max_ele_id2=$tmp;
 						}
@@ -455,19 +455,19 @@ if (isset($eleve_login)) {
     $eleve_naissance = mysql_result($call_eleve_info, "0", "naissance");
     if (strlen($eleve_naissance) == 10) {
         // YYYY-MM-DD
-        $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
-        $eleve_naissance_mois = substr($eleve_naissance, 5, 2);
-        $eleve_naissance_jour = substr($eleve_naissance, 8, 2);
+        $eleve_naissance_annee = mb_substr($eleve_naissance, 0, 4);
+        $eleve_naissance_mois = mb_substr($eleve_naissance, 5, 2);
+        $eleve_naissance_jour = mb_substr($eleve_naissance, 8, 2);
     } elseif (strlen($eleve_naissance) == 8 ) {
         // YYYYMMDD
-        $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
-        $eleve_naissance_mois = substr($eleve_naissance, 4, 2);
-        $eleve_naissance_jour = substr($eleve_naissance, 6, 2);
+        $eleve_naissance_annee = mb_substr($eleve_naissance, 0, 4);
+        $eleve_naissance_mois = mb_substr($eleve_naissance, 4, 2);
+        $eleve_naissance_jour = mb_substr($eleve_naissance, 6, 2);
     } elseif (strlen($eleve_naissance) == 19 ) {
         // YYYY-MM-DD xx:xx:xx
-        $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
-        $eleve_naissance_mois = substr($eleve_naissance, 5, 2);
-        $eleve_naissance_jour = substr($eleve_naissance, 8, 2);
+        $eleve_naissance_annee = mb_substr($eleve_naissance, 0, 4);
+        $eleve_naissance_mois = mb_substr($eleve_naissance, 5, 2);
+        $eleve_naissance_jour = mb_substr($eleve_naissance, 8, 2);
     } else {
         // Format inconnu
         $eleve_naissance_annee = "??";
@@ -753,7 +753,7 @@ if ($nombreligne != 0) {
 			echo "</td></tr>\n" ;
 
 
-			if(substr($lig_resp1->adr1,0,strlen($lig_resp1->adr1)-1)==substr($lig_resp2->adr1, 0, strlen($lig_resp2->adr1)-1) and ($lig_resp1->cp==$lig_resp2->cp) and ($lig_resp1->commune==$lig_resp2->commune) and ($lig_resp1->pays==$lig_resp2->pays)) {
+			if(mb_substr($lig_resp1->adr1,0,strlen($lig_resp1->adr1)-1)==mb_substr($lig_resp2->adr1, 0, strlen($lig_resp2->adr1)-1) and ($lig_resp1->cp==$lig_resp2->cp) and ($lig_resp1->commune==$lig_resp2->commune) and ($lig_resp1->pays==$lig_resp2->pays)) {
 				$message = "<b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b>";
 			} else {
 				if($chaine_adr2!='') {

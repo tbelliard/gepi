@@ -319,7 +319,7 @@ else {
 					$chaine_profs="";
 					foreach($tab_group_fut[$j]["profs"]["users"] as $tab_prof) {
 						if($chaine_profs!="") {$chaine_profs.=", ";}
-						$chaine_profs.=ucfirst(strtolower($tab_prof['nom']))." ".ucfirst(substr($tab_prof['prenom'],0,1));
+						$chaine_profs.=ucfirst(strtolower($tab_prof['nom']))." ".ucfirst(mb_substr($tab_prof['prenom'],0,1));
 					}
 
 					echo "<option value='".$tab_group_fut[$j]['id']."'";

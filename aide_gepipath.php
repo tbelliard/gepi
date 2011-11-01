@@ -118,7 +118,7 @@ $temp = $url['path'];
 
 $d = strlen($temp) - strlen("aide_gepipath.php") - 1;
 
-$gepi_path = substr($temp, 0, $d);
+$gepi_path = mb_substr($temp, 0, $d);
 
 if ($gepi_path != $gepiPath) {
 

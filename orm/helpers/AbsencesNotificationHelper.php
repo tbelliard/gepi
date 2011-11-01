@@ -167,7 +167,7 @@ class AbsencesNotificationHelper {
     include_once('../tbs/plugins/tbsdb_php.php');
 
     $TBS = new clsTinyButStrong; // new instance of TBS
-    if (substr($modele, -3) == "odt" ||substr($modele, -3) == "ods") {
+    if (mb_substr($modele, -3) == "odt" ||mb_substr($modele, -3) == "ods") {
 	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
 	$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
     }
@@ -259,8 +259,8 @@ class AbsencesNotificationHelper {
 	    $param['msg'] = $message; // message que l'on désire envoyer
 
 	    $tel = $notification->getTelephone();
-	    if (substr($tel, 0, 1) == '0') {
-		$tel = '33'.substr($tel, 1, 9);
+	    if (mb_substr($tel, 0, 1) == '0') {
+		$tel = '33'.mb_substr($tel, 1, 9);
 	    }
 	    $param['to'] = $tel; // numéros de téléphones auxquels on envoie le message
 	    $param['from'] = getSettingValue("gepiSchoolName"); // expéditeur du message (first class uniquement)
@@ -288,8 +288,8 @@ class AbsencesNotificationHelper {
 		$tel = str_replace(".","",$tel);
 		$tel = str_replace("-","",$tel);
 		$tel = str_replace("/","",$tel);
-	    if (substr($tel, 0, 1) == '0') { //Ajout indicatif 33
-		$tel = '33'.substr($tel, 1, 9);
+	    if (mb_substr($tel, 0, 1) == '0') { //Ajout indicatif 33
+		$tel = '33'.mb_substr($tel, 1, 9);
 	    }
         $param['to'] = $tel; // numéro de téléphone auxquel on envoie le message
 	    $param['from'] = str_replace(" ","",getSettingValue("gepiSchoolTel")); // expéditeur du message (facultatif)
@@ -349,7 +349,7 @@ class AbsencesNotificationHelper {
 
 	//traitement de la réponse
 	if (getSettingValue("abs2_sms_prestataire")=='tm4b') {
-	    if (substr($reponse, 0, 5) == 'error') {
+	    if (mb_substr($reponse, 0, 5) == 'error') {
 		$return_message = 'Erreur : message non envoyé. Code erreur : '.$reponse;
 		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 		$notification->setErreurMessageEnvoi($reponse);
@@ -365,7 +365,7 @@ class AbsencesNotificationHelper {
 		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 	    }
 	} else if (getSettingValue("abs2_sms_prestataire")=='pluriware') {
-            if (substr($reponse, 0, 3) == 'ERR') {
+            if (mb_substr($reponse, 0, 3) == 'ERR') {
                 $return_message = 'Erreur : message non envoyé. Code erreur : '.$reponse;
                 $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
                 $notification->setErreurMessageEnvoi($reponse);

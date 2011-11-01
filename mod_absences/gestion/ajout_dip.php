@@ -126,7 +126,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                       $erreur_jour = '1';
                       for ($i = 0;$i <= strlen($info_absence_eleve);$i++)
                        {
-                           switch (strtolower(substr($info_absence_eleve,$i,5)))
+                           switch (strtolower(mb_substr($info_absence_eleve,$i,5)))
                            {
                                case "lundi":
                                $erreur_jour = '0';
@@ -158,7 +158,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                                    $p = $data_Per['nom_definie_periode'];
                                    for($i =0;$i<strlen($info_absence_eleve);$i++)
                                     {
-                                        if (strtolower($p) == strtolower(substr($info_absence_eleve,$i,2)))
+                                        if (strtolower($p) == strtolower(mb_substr($info_absence_eleve,$i,2)))
                                          {
                                            $verification = '12'; $texte_erreur = "Cette période n'est pas bonne!";
                                          }

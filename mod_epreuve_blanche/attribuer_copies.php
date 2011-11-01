@@ -158,9 +158,9 @@ $info_prof=array();
 $eff_habituel_prof=array();
 while($lig=mysql_fetch_object($res)) {
 	//if($liste_profs!="") {$liste_profs.=",";}
-	//$liste_profs.=$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
+	//$liste_profs.=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
 	$login_prof[]=$lig->login;
-	$info_prof[]=$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
+	$info_prof[]=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
 
 	$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id AND jgp.id_groupe=jeg.id_groupe AND jeg.id_groupe=g.id AND jgp.login='".$lig->login."';";
 	$res_eff_prof=mysql_query($sql);

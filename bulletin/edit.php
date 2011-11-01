@@ -993,10 +993,10 @@ while ($i < $nombre_eleves2) {
 
 			if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
 				if((
-				(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)==substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
-				and (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)==substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
-				and (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
-				and (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+				(mb_substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)==mb_substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+				and (mb_substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)==mb_substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+				and (mb_substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==mb_substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+				and (mb_substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==mb_substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 				and ($cp_resp[1]==$cp_resp[2])
 				and ($commune_resp[1]==$commune_resp[2])
 				and ($pays_resp[1]==$pays_resp[2])
@@ -1082,10 +1082,10 @@ while ($i < $nombre_eleves2) {
 	//determination du nombre de bulletins à imprimer
 	if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
 		if((
-		(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
-		or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
-		or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
-		or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+		(mb_substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=mb_substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+		or (mb_substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=mb_substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+		or (mb_substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=mb_substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+		or (mb_substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=mb_substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 		or ($cp_resp[1]!=$cp_resp[2])
 		or ($commune_resp[1]!=$commune_resp[2])
 		or ($pays_resp[1]!=$pays_resp[2])
@@ -1116,7 +1116,7 @@ while ($i < $nombre_eleves2) {
             if($bulletin==1) {
                 // Impression d'une deuxième page de garde s'il y a un deuxième responsable
 /*
-                if ((substr($adr1, 0, strlen($adr1)-1) != substr($adr2, 0, strlen($adr1)-1) or ($cp1 != $cp2) or ($commune1 != $commune2))
+                if ((mb_substr($adr1, 0, strlen($adr1)-1) != mb_substr($adr2, 0, strlen($adr1)-1) or ($cp1 != $cp2) or ($commune1 != $commune2))
                     and ($adr2 != '') ) {
                     $ligne1 = $nom2." ".$prenom2;
                     $ligne2 = $adr2;
@@ -1128,10 +1128,10 @@ while ($i < $nombre_eleves2) {
 
                 }
 */
-				if (((substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
-				or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
-				or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
-				or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+				if (((mb_substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=mb_substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+				or (mb_substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=mb_substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+				or (mb_substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=mb_substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+				or (mb_substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=mb_substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 				or ($cp_resp[1]!=$cp_resp[2])
 				or ($commune_resp[1]!=$commune_resp[2])
 				or ($pays_resp[1]!=$pays_resp[2])
@@ -1234,10 +1234,10 @@ while ($i < $nombre_eleves2) {
 
 				if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
 					if((
-					(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)==substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
-					and (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)==substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
-					and (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
-					and (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+					(mb_substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)==mb_substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+					and (mb_substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)==mb_substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+					and (mb_substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==mb_substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+					and (mb_substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==mb_substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 					and ($cp_resp[1]==$cp_resp[2])
 					and ($commune_resp[1]==$commune_resp[2])
 					and ($pays_resp[1]==$pays_resp[2])
