@@ -752,7 +752,7 @@
         }
         if (isset($v_options[PCLZIP_OPT_ADD_PATH])) {
           // ----- Check for '/' in last path char
-          if ((mb_mb_strlen($v_path) > 0) && (substr($v_path, -1) != '/')) {
+          if ((mb_strlen($v_path) > 0) && (substr($v_path, -1) != '/')) {
             $v_path .= '/';
           }
           $v_path .= $v_options[PCLZIP_OPT_ADD_PATH];

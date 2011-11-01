@@ -261,7 +261,7 @@ if(
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
 	//if(!is_numeric($num_periode_saisie)) {
-	if(mb_mb_strlen(preg_replace("/[0-9]/","",$num_periode_saisie))==0) {
+	if(mb_strlen(preg_replace("/[0-9]/","",$num_periode_saisie))==0) {
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$num_periode_saisie' AND login='$eleve_saisie_avis';";
 		//echo "$sql<br />";
 		$verif=mysql_query($sql);
