@@ -405,10 +405,10 @@ function restoreMySqlDump($duree) {
 				if ($formattedQuery) {
 					$sql = $formattedQuery;
 					if (mysql_query($sql)) {//réussie sinon continue à concaténer
-						if(my_ereg("^DROP TABLE ",$sql)) {
+						if(preg_match("/^DROP TABLE /",$sql)) {
 							echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
 						}
-						elseif(my_ereg("^CREATE TABLE ",$sql)) {
+						elseif(preg_match("/^CREATE TABLE /",$sql)) {
 							echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
 						}
 						else {
@@ -530,10 +530,10 @@ function restoreMySqlDump($duree) {
 							if ($formattedQuery) {
 								$sql = $formattedQuery;
 								if (mysql_query($sql)) {//réussie sinon continue à concaténer
-									if(my_ereg("^DROP TABLE ",$sql)) {
+									if(preg_match("/^DROP TABLE /",$sql)) {
 										echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
 									}
-									elseif(my_ereg("^CREATE TABLE ",$sql)) {
+									elseif(preg_match("/^CREATE TABLE /",$sql)) {
 										echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
 									}
 									else {
@@ -1610,7 +1610,8 @@ while ($file = readdir($handle)) {
     and ($file != 'csv')
 	and ($file != 'notanet') //ne pas afficher le dossier notanet
     //=================================
-    and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
+    and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')
+    and(!preg_match('/sql.gz.txt$/i', $file))) {
         $tab_file[] = $file;
         $n++;
     }

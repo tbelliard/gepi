@@ -1145,16 +1145,14 @@ class Eleve extends BaseEleve {
     		    }
     		}
 	    }
-
-	    if ($date_fin != null) {
-		$date_fin_iteration = clone $date_fin;
-	    } else {
-		$date_fin_iteration = new DateTime('now');
-		$date_fin_iteration->setTime(23,59,59);
-	    }
-            if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
-                $date_fin_iteration = $this->getDateSortie(null);
-            }
+        if ($date_fin != null) {
+            $date_fin_iteration = clone $date_fin;
+        } else {
+            $date_fin_iteration = null;
+        }
+        if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
+            $date_fin_iteration = $this->getDateSortie(null);
+        }
 
 	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
@@ -1214,7 +1212,6 @@ class Eleve extends BaseEleve {
 	    if ($date_debut  == null)  {
 		return new PropelObjectCollection();
 	    }
-
 	    return $this->getDemiJourneesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 
@@ -1742,11 +1739,11 @@ class Eleve extends BaseEleve {
 		
 		LEFT JOIN (
 			(SELECT union_date from 
-				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
+				(	SELECT GREATEST(IFNULL(max(updated_at),CAST(0 as DATETIME)),IFNULL(max(deleted_at),CAST(0 as DATETIME))) as union_date FROM a_saisies WHERE eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
 				UNION ALL
-					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getId().' and '.$date_saisies_version_selection.' group by eleve_id
+					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),CAST(0 as DATETIME)),IFNULL(max(a_saisies_version.deleted_at),CAST(0 as DATETIME))) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getId().' and '.$date_saisies_version_selection.' group by eleve_id
 				UNION ALL
-					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
+					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),CAST(0 as DATETIME)),IFNULL(max(a_traitements.deleted_at),CAST(0 as DATETIME))) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
 
 				ORDER BY union_date DESC LIMIT 1
 				) AS union_date_union_all_select
@@ -1888,11 +1885,13 @@ class Eleve extends BaseEleve {
 		// préférence admin pour la demi journée
 	    $heure_demi_journee = 11;
 	    $minute_demi_journee = 50;
-	    try {
-			$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-			$heure_demi_journee = $dt_demi_journee->format('H');
-			$minute_demi_journee = $dt_demi_journee->format('i');
-	    } catch (Exception $x) {
+	    if (getSettingValue("abs2_heure_demi_journee") != null) {
+    	    try {
+    			$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+    			$heure_demi_journee = $dt_demi_journee->format('H');
+    			$minute_demi_journee = $dt_demi_journee->format('i');
+    	    } catch (Exception $x) {
+    	    }
 	    }
 	    
 	    //on initialise le début de l'itération pour creer les entrées si aucune date n'est précisée

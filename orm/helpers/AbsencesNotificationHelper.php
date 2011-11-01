@@ -69,11 +69,13 @@ class AbsencesNotificationHelper {
 
     $heure_demi_journee = 11;
     $minute_demi_journee = 50;
-    try {
-	$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-	$heure_demi_journee = $dt_demi_journee->format('H');
-	$minute_demi_journee = $dt_demi_journee->format('i');
-    } catch (Exception $x) {
+    if (getSettingValue("abs2_heure_demi_journee") != null) {
+        try {
+    	$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+    	$heure_demi_journee = $dt_demi_journee->format('H');
+    	$minute_demi_journee = $dt_demi_journee->format('i');
+        } catch (Exception $x) {
+        }
     }
     $temps_demi_journee = $heure_demi_journee.$minute_demi_journee;
 
