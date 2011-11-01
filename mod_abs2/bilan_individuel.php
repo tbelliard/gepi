@@ -186,7 +186,7 @@ if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="o
 }
 
 // pas de header ou menu dans le cas de l'export odt 
-// dï¿½but de l'affichage des options
+// début de l'affichage des options
 if ($affichage != 'ods' && $affichage != 'odt' ) {
     require_once("../lib/header.inc");
     include('menu_abs2.inc.php');
@@ -370,7 +370,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
     <?php
 }
 // fin de l'affichage des options
-// dï¿½but de la mise en session des donnï¿½es extraites (sauf si on est dans un filtrage des donnï¿½es affichï¿½es)
+// début de la mise en session des données extraites (sauf si on est dans un filtrage des données affichées)
 
 if ($affichage =='html' && $click_filtrage!=="ok" && $raz!=="ok") {
 
@@ -391,10 +391,10 @@ if ($id_eleve !== null && $id_eleve != '') {
 }
 $eleve_query->orderByNom()->orderByPrenom()->distinct();
 $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
-    if (!$table_synchro_ok) {//la table n'est pas synchronisï¿½e. On va vï¿½rifier individuellement les ï¿½lï¿½ves qui se sont pas synchronisï¿½s
+    if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
 		$eleve_col = $eleve_query->find();
 		if ($eleve_col->count()>150) {
-			echo 'Il semble que vous demander des statistiques sur trop d\'ï¿½lï¿½ves et votre table de statistiques n\'est pas synchronisï¿½e. Veuillez faire une demande pour moins d\'ï¿½lï¿½ves ou demander ï¿½ votre administreteur de remplir la table d\'agrï¿½gation.';
+			echo 'Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administreteur de remplir la table d\'agrégation.';
 			if (ob_get_contents()) {
 				ob_flush();
 			}
@@ -404,12 +404,12 @@ $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregation
 			$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
 		}
 	}
-     //on recommence la requetes, maintenant que la table est synchronisï¿½, avec les donnï¿½es d'absence
+     //on recommence la requetes, maintenant que la table est synchronisé, avec les données d'absence
         
     $eleve_col = $eleve_query->find();
     
 if ($eleve_col->isEmpty()) {    
-    echo"<h2 class='no'>Aucun ï¿½lï¿½ve avec les paramï¿½tres sï¿½lectionnï¿½s n'a ï¿½tï¿½ trouvï¿½.</h2>";
+    echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
     die();
 }
 $precedent_eleve_id = null;
