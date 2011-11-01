@@ -29,7 +29,6 @@ while ($ind < $nb_messages) {
 	$autre_message = "";
 
 	if ((strpos($statuts_destinataires1, substr($_SESSION['statut'], 0, 1))) || ($_SESSION['login']==$login_destinataire1)) {
-	//if ((strtolower($_SESSION['login'])==strtolower($statuts_destinataires1)) || ((strpos(strtolower($statuts_destinataires1), substr(strtolower($_SESSION['statut']), 0, 1)))&&(substr($statuts_destinataires1,0,1)=="_"))) {
 		if ($affiche_messages == 'yes') {
 			$autre_message = "hr";
 			$texte_messages_simpl_prof .= "<hr />";

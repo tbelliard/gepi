@@ -3085,7 +3085,7 @@ function my_echo_debug($texte) {
  * - 'majf'  -> Première lettre en majuscule, le reste en minuscule
  * - 'majf2' -> Première lettre de tous les mots en majuscule, le reste en minuscule
  *
- * @param type $mot chaine Ã  modifier
+ * @param type $mot chaine à modifier
  * @param type $mode Mode de conversion
  * @return type chaine mise en forme
  */
@@ -3142,6 +3142,28 @@ function casse_mot($mot,$mode='maj') {
     	}
     }
     throw new Exception('Parametre '.$mode.' non reconnu');
+}
+
+/**
+ * Retourne une chaine utf-8 passée en minuscules avec casse_mot()
+ * Fonction destinée à remplacer rapidement les appels strtolower() dans les pages
+ *
+ * @param type $mot chaine à modifier
+ * @return type chaine mise en forme
+ */
+function my_strtolower($mot) {
+	return casse_mot($mot,'min');
+}
+
+/**
+ * Retourne une chaine utf-8 passée en majuscules avec casse_mot()
+ * Fonction destinée à remplacer rapidement les appels strtoupper() dans les pages
+ *
+ * @param type $mot chaine à modifier
+ * @return type chaine mise en forme
+ */
+function my_strtoupper($mot) {
+	return casse_mot($mot,'maj');
 }
 
 /**

@@ -3,7 +3,7 @@
 *
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -442,7 +442,7 @@ if(!empty($model_bulletin)) {
 		while(!empty($periode[$o]))
 		{
 			$periode[$o] = my_eregi_replace("[ .'_-]{1}",'',$periode[$o]); //supprime les espace les . les ' les _ et -
-			$periode[$o] = strtolower($periode[$o]); // mets en minuscule
+			$periode[$o] = my_strtolower($periode[$o]); // mets en minuscule
 			$periode[$o] = html_entity_decode($periode[$o]);
 			$periode[$o] = my_eregi_replace("[éèëê]{1}","e",$periode[$o]); // supprime les accents
 			// A VOIR: Il pourrait bien y avoir d'autres caractères accentués.
@@ -472,7 +472,7 @@ if(!empty($model_bulletin)) {
 
 		// on transforme le nom de la période sans accent, sans espace...
 		$nom_periode_select = my_eregi_replace("[ .'_-]{1}",'',$nom_periode_select); //supprime les espace les . les ' les _ et -
-		$nom_periode_select = strtolower($nom_periode_select); // mais en minuscule
+		$nom_periode_select = my_strtolower($nom_periode_select); // mais en minuscule
 		$nom_periode_select = html_entity_decode($nom_periode_select);
 		$nom_periode_select = my_eregi_replace("[éèëê]{1}",'e',$nom_periode_select); // supprime les accents
 		// A VOIR: Il pourrait bien y avoir d'autres caractères accentués.
@@ -672,8 +672,8 @@ if(!empty($model_bulletin)) {
 		$classe_nomlong[$cpt_i] = $donner['nom_complet'];
 		$classe_nomcour[$cpt_i] = $donner['classe'];
 
-		//$photo[$cpt_i] = "../photos/eleves/".strtolower($donner['elenoet']).".jpg";
-		$tmp_photo=nom_photo(strtolower($donner['elenoet']));
+		//$photo[$cpt_i] = "../photos/eleves/".my_strtolower($donner['elenoet']).".jpg";
+		$tmp_photo=nom_photo(my_strtolower($donner['elenoet']));
 		//if("$tmp_photo"!=""){
 		if($tmp_photo){
 			//$photo[$cpt_i] = "../photos/eleves/".$tmp_photo;
@@ -2143,7 +2143,7 @@ if($pays_parents[$ident_eleve_aff][0]!=$pays_parents[$ident_eleve_aff][1]) {
 
 
 			//============================
-			if((strtolower($gepiSchoolPays)!=strtolower($pays_parents[$ident_eleve_aff][$responsable_place]))&&($pays_parents[$ident_eleve_aff][$responsable_place]!="")) {
+			if((my_strtolower($gepiSchoolPays)!=my_strtolower($pays_parents[$ident_eleve_aff][$responsable_place]))&&($pays_parents[$ident_eleve_aff][$responsable_place]!="")) {
 				$texte_1_responsable = $pays_parents[$ident_eleve_aff][$responsable_place];
 				$hauteur_caractere=10;
 				$pdf->SetFont('DejaVu','',$hauteur_caractere);
