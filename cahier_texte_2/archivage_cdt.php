@@ -419,7 +419,7 @@ else {
 				}
 
 				foreach($current_group['profs']['list'] as $key => $login_prof) {
-					$html.='echo "<div class=\'noprint\' style=\'float:right; width:10em; margin: 3px; text-align:center; border: 1px solid black;\'><a href=\'cdt_'.$login_prof.'.'.$extension.'\'>'.$current_group['profs']['users'][$login_prof]['civilite'].' '.$current_group['profs']['users'][$login_prof]['nom'].' '.strtoupper(substr($current_group['profs']['users'][$login_prof]['prenom'],0,1)).'</a></div>\n";';
+					$html.='echo "<div class=\'noprint\' style=\'float:right; width:10em; margin: 3px; text-align:center; border: 1px solid black;\'><a href=\'cdt_'.$login_prof.'.'.$extension.'\'>'.$current_group['profs']['users'][$login_prof]['civilite'].' '.$current_group['profs']['users'][$login_prof]['nom'].' '.my_strtoupper(substr($current_group['profs']['users'][$login_prof]['prenom'],0,1)).'</a></div>\n";';
 				}
 
 				$html.='}
@@ -627,7 +627,7 @@ else {
 								$liste_profs="";
 								while($lig_prof=mysql_fetch_object($res3)) {
 									if($liste_profs!="") {$liste_profs.=", ";}
-									$liste_profs.=$lig_prof->civilite." ".strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2');
+									$liste_profs.=$lig_prof->civilite." ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2');
 								}
 							}
 
@@ -664,7 +664,7 @@ else {
 
 				$html.="<div align='center'>\n";
 				while($lig_prof=mysql_fetch_object($res)) {
-					$html.="<a href='cdt_".$lig_prof->login.".$extension'> $lig_prof->civilite ".strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</a><br />";
+					$html.="<a href='cdt_".$lig_prof->login.".$extension'> $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</a><br />";
 
 					$sql="SELECT * FROM tempo3_cdt t, j_groupes_professeurs jgp WHERE jgp.id_groupe=t.id_groupe AND jgp.login='$lig_prof->login' ORDER BY classe, matiere;";
 					$res2=mysql_query($sql);
@@ -687,10 +687,10 @@ else {
 						$html2.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
 						$html2.="</p>\n";
 		
-						$html2.="<h2 style='text-align:center;'>Professeur&nbsp;: $lig_prof->civilite ".strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</h2>\n";
+						$html2.="<h2 style='text-align:center;'>Professeur&nbsp;: $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</h2>\n";
 
 						$html2.="<div align='center'>\n";
-						$html2.="<table border='0' summary='Tableau des enseignements de $lig_prof->civilite ".strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."'>\n";
+						$html2.="<table border='0' summary='Tableau des enseignements de $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."'>\n";
 						$classe_prec="";
 						$cpt=0;
 						while($lig_clas_mat=mysql_fetch_object($res2)) {
@@ -718,7 +718,7 @@ else {
 						$html2.="</table>\n";
 						$html2.="</div>\n";
 
-						$html2=html_entete("CDT: Professeur ".$lig_prof->civilite." ".strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2'),1,'y',"'$lig_prof->login'").$html2;
+						$html2=html_entete("CDT: Professeur ".$lig_prof->civilite." ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2'),1,'y',"'$lig_prof->login'").$html2;
 						$html2.=html_pied_de_page();
 				
 						$f=fopen($dossier_cdt."/cdt_".$lig_prof->login.".$extension","w+");

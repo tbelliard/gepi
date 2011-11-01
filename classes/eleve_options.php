@@ -397,7 +397,7 @@ while ($i < $nombre_ligne) {
 	if(mysql_num_rows($res_prof)>0){
 		$texte_alternatif="";
 		while($ligne=mysql_fetch_object($res_prof)){
-			$texte_alternatif.=", ".ucfirst(strtolower($ligne->prenom))." ".strtoupper($ligne->nom);
+			$texte_alternatif.=", ".casse_mot($ligne->prenom,'majf2')." ".my_strtoupper($ligne->nom);
 		}
 		$texte_alternatif=substr($texte_alternatif,2);
 	}
