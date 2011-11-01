@@ -345,7 +345,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
         $w=$this->w-$this->rMargin-$this->x;
     $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
     $s=str_replace("\r",'',$txt);
-    $nb=strlen($s);
+    $nb=mb_strlen($s);
     if($nb>0 and $s[$nb-1]=="\n")
         $nb--;
     $b=0;

@@ -43,7 +43,7 @@ function motif_de($nc_motif) {
 // fonction pour présenter les numéro de téléphone
 function present_tel($tel)
 {
-	$compt_nb_chiffre = strlen ($tel);
+	$compt_nb_chiffre = mb_strlen ($tel);
 	if ( $compt_nb_chiffre > 10 ) { $tel = $tel; }
 	elseif ( $compt_nb_chiffre === 10 ) {
 			//$tel1 = substr($tel, 0, 1);
@@ -1973,7 +1973,7 @@ function motif_type_abs($motif_absence)
 // fonction pour tronquer un texte
 function tronquer_texte($texte, $longeur_max)
 {
-    if (strlen($texte) > $longeur_max)
+    if (mb_strlen($texte) > $longeur_max)
     {
     $texte = substr($texte, 0, $longeur_max);
 	// on ne coupe pas au dernier espace mais au carcatére pret
