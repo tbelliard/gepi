@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 2008
+ * @copyright 2008-2011
  *
  * Fichier qui renvoie un select des classes de l'établissement
  * pour l'intégrer dans un fomulaire
@@ -32,7 +32,7 @@ echo '
 	for($i = 0; $i < $nbre; $i++){
 
 		$classe[$i] = mysql_result($query, $i, "id");
-		$nom[$i] = strtoupper(remplace_accents(mysql_result($query, $i, "classe"), 'all_nospace'));
+		$nom[$i] = my_strtoupper(remplace_accents(mysql_result($query, $i, "classe"), 'all_nospace'));
 
 		// On détermine le selected si c'est possible
 		if (trim($nom[$i]) == $classe_selected OR $nom[$i] == $classe_selected) {

@@ -4,7 +4,7 @@
  * Fichier d'initialisation de l'EdT par des fichiers CSV
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -93,7 +93,7 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
         // en proposant des champs de saisie pour modifier les données si on le souhaite
 	if ($action == "upload_file") {
         // On vérifie le nom du fichier...
-        if(strtolower($csv_file['name']) == "g_edt.csv") {
+        if(my_strtolower($csv_file['name']) == "g_edt.csv") {
 
             // Le nom est ok. On ouvre le fichier
             $fp = fopen($csv_file['tmp_name'],"r");
@@ -130,7 +130,8 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
     		$probleme = "";
     // Pour chaque entrée, on cherche l'id_groupe qui correspond à l'association prof-matière-classe
     	// On récupère le login du prof
-    	$prof_login = strtoupper(strtr($tab[0], "éèêë", "eeee"));
+    	//$prof_login = my_strtoupper(strtr($tab[0], "éèêë", "eeee"));
+    	$prof_login = my_strtoupper(remplace_accents($tab[0]));
     $req_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$prof_login."'");
     $rep_prof = mysql_fetch_array($req_prof);
     	if ($rep_prof["nom"] == "") {
@@ -138,13 +139,15 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont 
     	}
 
 		// On récupère l'id de la matière et l'id de la classe
-		$matiere = strtoupper(strtr($tab[1], "éèêë", "eeee"));
+		//$matiere = strtoupper(strtr($tab[1], "éèêë", "eeee"));
+		$matiere = my_strtoupper(remplace_accents($tab[1]));
 		$sql_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
 		$rep_matiere = mysql_fetch_array($sql_matiere);
 			if ($rep_matiere["nom_complet"] == "") {
 				$probleme .= "<p>Gepi ne retrouve pas la bonne mati&egrave;re.</p>\n";
 			}
-		$classe = strtoupper(strtr($tab[2], "éèêë", "eeee"));
+		//$classe = strtoupper(strtr($tab[2], "éèêë", "eeee"));
+		$classe = my_strtoupper(remplace_accents($tab[2]));
 	$sql_classe = mysql_query("SELECT id FROM classes WHERE classe = '".$classe."'");
 	$rep_classe = mysql_fetch_array($sql_classe);
 		if ($rep_classe == "") {
@@ -264,7 +267,7 @@ if ($aff_infos != "oui") {
 	// On s'occupe maintenant du fichier des salles
 	if ($action == "upload_file_salle") {
         // On vérifie le nom du fichier...
-        if(strtolower($csv_file['name']) == "g_salles.csv") {
+        if(my_strtolower($csv_file['name']) == "g_salles.csv") {
 
             // Le nom est ok. On ouvre le fichier
             $fp = fopen($csv_file['tmp_name'],"r");

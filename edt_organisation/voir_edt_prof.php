@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -71,7 +71,7 @@ for($i=0; $i<count($tab_select); $i++) {
 		$selected = "";
 	}
 	echo "
-			<option value='".$tab_select[$i]["login"]."'".$selected.">".strtoupper($tab_select[$i]["nom"]).' '.casse_mot($tab_select[$i]["prenom"],'majf2')."</option>
+			<option value='".$tab_select[$i]["login"]."'".$selected.">".my_strtoupper($tab_select[$i]["nom"]).' '.casse_mot($tab_select[$i]["prenom"],'majf2')."</option>
 		";
 
 }

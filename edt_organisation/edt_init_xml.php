@@ -1,9 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* Last modification  : 16/08/2007
-*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 * Ajout Sandrine Dangreville
 * Divison Informatique -Rectorat de Creteil
 * Importation de données des fichiers sts_emp et emp_sts

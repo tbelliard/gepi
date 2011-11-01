@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 2008
+ * @copyright 2008-2011
  *
  * Fichier qui renvoie un select des professeurs de l'établissement
  * pour l'intégrer dans un fomulaire
@@ -39,7 +39,7 @@ echo '
 
 		$utilisateur[$i] = mysql_result($query, $i, "login");
 		$nom[$i] = mysql_result($query, $i, "nom");
-		$nom_m[$i] = strtoupper(remplace_accents(mysql_result($query, $i, "nom"), 'all_nospace'));
+		$nom_m[$i] = my_strtoupper(remplace_accents(mysql_result($query, $i, "nom"), 'all_nospace'));
 		$prenom[$i] = mysql_result($query, $i, "prenom");
 
 		//Pour les noms composés, on ajoute un test
