@@ -752,7 +752,7 @@
         }
         if (isset($v_options[PCLZIP_OPT_ADD_PATH])) {
           // ----- Check for '/' in last path char
-          if ((strlen($v_path) > 0) && (substr($v_path, -1) != '/')) {
+          if ((strlen($v_path) > 0) && (mb_substr($v_path, -1) != '/')) {
             $v_path .= '/';
           }
           $v_path .= $v_options[PCLZIP_OPT_ADD_PATH];
@@ -912,7 +912,7 @@
         }
         if (isset($v_options[PCLZIP_OPT_ADD_PATH])) {
           // ----- Check for '/' in last path char
-          if ((strlen($v_path) > 0) && (substr($v_path, -1) != '/')) {
+          if ((strlen($v_path) > 0) && (mb_substr($v_path, -1) != '/')) {
             $v_path .= '/';
           }
           $v_path .= $v_options[PCLZIP_OPT_ADD_PATH];
@@ -2672,7 +2672,7 @@
       else {
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "'".$p_filename."' is a folder");
         // ----- Look for directory last '/'
-        if (@substr($p_header['stored_filename'], -1) != '/') {
+        if (@mb_substr($p_header['stored_filename'], -1) != '/') {
           $p_header['stored_filename'] .= '/';
         }
 
@@ -2782,19 +2782,19 @@
       }
       // ----- Look for partial path remove
       else if ($p_remove_dir != "") {
-        if (substr($p_remove_dir, -1) != '/')
+        if (mb_substr($p_remove_dir, -1) != '/')
           $p_remove_dir .= "/";
 
-        if (   (substr($p_filename, 0, 2) == "./")
-            || (substr($p_remove_dir, 0, 2) == "./")) {
+        if (   (mb_substr($p_filename, 0, 2) == "./")
+            || (mb_substr($p_remove_dir, 0, 2) == "./")) {
             
-          if (   (substr($p_filename, 0, 2) == "./")
-              && (substr($p_remove_dir, 0, 2) != "./")) {
+          if (   (mb_substr($p_filename, 0, 2) == "./")
+              && (mb_substr($p_remove_dir, 0, 2) != "./")) {
             $p_remove_dir = "./".$p_remove_dir;
           }
-          if (   (substr($p_filename, 0, 2) != "./")
-              && (substr($p_remove_dir, 0, 2) == "./")) {
-            $p_remove_dir = substr($p_remove_dir, 2);
+          if (   (mb_substr($p_filename, 0, 2) != "./")
+              && (mb_substr($p_remove_dir, 0, 2) == "./")) {
+            $p_remove_dir = mb_substr($p_remove_dir, 2);
           }
         }
 
@@ -2807,7 +2807,7 @@
           }
           else {
             //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "Remove path '$p_remove_dir' in file '$v_stored_filename'");
-            $v_stored_filename = substr($v_stored_filename,
+            $v_stored_filename = mb_substr($v_stored_filename,
                                         strlen($p_remove_dir));
             //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "Result is '$v_stored_filename'");
           }
@@ -2815,7 +2815,7 @@
       }
       // ----- Look for path to add
       if ($p_add_dir != "") {
-        if (substr($p_add_dir, -1) == "/")
+        if (mb_substr($p_add_dir, -1) == "/")
           $v_stored_filename = $p_add_dir.$v_stored_filename;
         else
           $v_stored_filename = $p_add_dir."/".$v_stored_filename;
@@ -3121,25 +3121,25 @@
 
     // ----- Check the path
     if (   ($p_path == "")
-	    || (   (substr($p_path, 0, 1) != "/")
-		    && (substr($p_path, 0, 3) != "../")
-			&& (substr($p_path,1,2)!=":/")))
+	    || (   (mb_substr($p_path, 0, 1) != "/")
+		    && (mb_substr($p_path, 0, 3) != "../")
+			&& (mb_substr($p_path,1,2)!=":/")))
       $p_path = "./".$p_path;
 
     // ----- Reduce the path last (and duplicated) '/'
     if (($p_path != "./") && ($p_path != "/"))
     {
       // ----- Look for the path end '/'
-      while (substr($p_path, -1) == "/")
+      while (mb_substr($p_path, -1) == "/")
       {
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-        $p_path = substr($p_path, 0, strlen($p_path)-1);
+        $p_path = mb_substr($p_path, 0, strlen($p_path)-1);
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
       }
     }
 
     // ----- Look for path to remove format (should end by /)
-    if (($p_remove_path != "") && (substr($p_remove_path, -1) != '/'))
+    if (($p_remove_path != "") && (mb_substr($p_remove_path, -1) != '/'))
     {
       $p_remove_path .= '/';
     }
@@ -3225,12 +3225,12 @@
               //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Compare with file '".$p_options[PCLZIP_OPT_BY_NAME][$j]."'");
 
               // ----- Look for a directory
-              if (substr($p_options[PCLZIP_OPT_BY_NAME][$j], -1) == "/") {
+              if (mb_substr($p_options[PCLZIP_OPT_BY_NAME][$j], -1) == "/") {
                   //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "The searched item is a directory");
 
                   // ----- Look if the directory is in the filename path
                   if (   (strlen($v_header['stored_filename']) > strlen($p_options[PCLZIP_OPT_BY_NAME][$j]))
-                      && (substr($v_header['stored_filename'], 0, strlen($p_options[PCLZIP_OPT_BY_NAME][$j])) == $p_options[PCLZIP_OPT_BY_NAME][$j])) {
+                      && (mb_substr($v_header['stored_filename'], 0, strlen($p_options[PCLZIP_OPT_BY_NAME][$j])) == $p_options[PCLZIP_OPT_BY_NAME][$j])) {
                       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "The directory is in the file path");
                       $v_extract = true;
                   }
@@ -3547,12 +3547,12 @@
       }
 
       $p_remove_path_size = strlen($p_remove_path);
-      if (substr($p_entry['filename'], 0, $p_remove_path_size) == $p_remove_path)
+      if (mb_substr($p_entry['filename'], 0, $p_remove_path_size) == $p_remove_path)
       {
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Found path '$p_remove_path' to remove in file '".$p_entry['filename']."'");
 
         // ----- Remove the path
-        $p_entry['filename'] = substr($p_entry['filename'], $p_remove_path_size);
+        $p_entry['filename'] = mb_substr($p_entry['filename'], $p_remove_path_size);
 
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Resulting file is '".$p_entry['filename']."'");
       }
@@ -3706,7 +3706,7 @@
 
     // ----- Check the directory availability and create it if necessary
     else {
-      if ((($p_entry['external']&0x00000010)==0x00000010) || (substr($p_entry['filename'], -1) == '/'))
+      if ((($p_entry['external']&0x00000010)==0x00000010) || (mb_substr($p_entry['filename'], -1) == '/'))
         $v_dir_to_check = $p_entry['filename'];
       else if (!strstr($p_entry['filename'], "/"))
         $v_dir_to_check = "";
@@ -4318,7 +4318,7 @@
     // ----- Look if it is a directory
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Internal (Hex) : '".sprintf("Ox%04X", $p_header['internal'])."'");
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "External (Hex) : '".sprintf("Ox%04X", $p_header['external'])."' (".(($p_header['external']&0x00000010)==0x00000010?'is a folder':'is a file').')');
-    if (substr($p_header['filename'], -1) == '/') {
+    if (mb_substr($p_header['filename'], -1) == '/') {
       //$p_header['external'] = 0x41FF0010;
       $p_header['external'] = 0x00000010;
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Force folder external : \''.sprintf("Ox%04X", $p_header['external']).'\'');
@@ -4660,12 +4660,12 @@
               //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Compare with file '".$p_options[PCLZIP_OPT_BY_NAME][$j]."'");
 
               // ----- Look for a directory
-              if (substr($p_options[PCLZIP_OPT_BY_NAME][$j], -1) == "/") {
+              if (mb_substr($p_options[PCLZIP_OPT_BY_NAME][$j], -1) == "/") {
                   //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "The searched item is a directory");
 
                   // ----- Look if the directory is in the filename path
                   if (   (strlen($v_header_list[$v_nb_extracted]['stored_filename']) > strlen($p_options[PCLZIP_OPT_BY_NAME][$j]))
-                      && (substr($v_header_list[$v_nb_extracted]['stored_filename'], 0, strlen($p_options[PCLZIP_OPT_BY_NAME][$j])) == $p_options[PCLZIP_OPT_BY_NAME][$j])) {
+                      && (mb_substr($v_header_list[$v_nb_extracted]['stored_filename'], 0, strlen($p_options[PCLZIP_OPT_BY_NAME][$j])) == $p_options[PCLZIP_OPT_BY_NAME][$j])) {
                       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "The directory is in the file path");
                       $v_found = true;
                   }
@@ -4941,9 +4941,9 @@
     //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, "PclZip::privDirCheck", "entry='$p_dir', is_dir='".($p_is_dir?"true":"false")."'");
 
     // ----- Remove the final '/'
-    if (($p_is_dir) && (substr($p_dir, -1)=='/'))
+    if (($p_is_dir) && (mb_substr($p_dir, -1)=='/'))
     {
-      $p_dir = substr($p_dir, 0, strlen($p_dir)-1);
+      $p_dir = mb_substr($p_dir, 0, strlen($p_dir)-1);
     }
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Looking for entry '$p_dir'");
 
@@ -5508,13 +5508,13 @@
     
     // ----- Look for path beginning by ./
     if (   ($p_dir == '.')
-        || ((strlen($p_dir) >=2) && (substr($p_dir, 0, 2) == './'))) {
-      $p_dir = PclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.substr($p_dir, 1);
+        || ((strlen($p_dir) >=2) && (mb_substr($p_dir, 0, 2) == './'))) {
+      $p_dir = PclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.mb_substr($p_dir, 1);
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Replacing ./ by full path in p_dir '".$p_dir."'");
     }
     if (   ($p_path == '.')
-        || ((strlen($p_path) >=2) && (substr($p_path, 0, 2) == './'))) {
-      $p_path = PclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.substr($p_path, 1);
+        || ((strlen($p_path) >=2) && (mb_substr($p_path, 0, 2) == './'))) {
+      $p_path = PclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.mb_substr($p_path, 1);
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Replacing ./ by full path in p_path '".$p_path."'");
     }
 
@@ -5699,7 +5699,7 @@
     
     $v_list = get_defined_constants();
     for (reset($v_list); $v_key = key($v_list); next($v_list)) {
-	  $v_prefix = substr($v_key, 0, 10);
+	  $v_prefix = mb_substr($v_key, 0, 10);
 	  if ((   ($v_prefix == 'PCLZIP_OPT')
          || ($v_prefix == 'PCLZIP_CB_')
          || ($v_prefix == 'PCLZIP_ATT'))
@@ -5732,10 +5732,10 @@
     if (stristr(php_uname(), 'windows')) {
       // ----- Look for potential disk letter
       if (($p_remove_disk_letter) && (($v_position = strpos($p_path, ':')) != false)) {
-          $p_path = substr($p_path, $v_position+1);
+          $p_path = mb_substr($p_path, $v_position+1);
       }
       // ----- Change potential windows directory separator
-      if ((strpos($p_path, '\\') > 0) || (substr($p_path, 0,1) == '\\')) {
+      if ((strpos($p_path, '\\') > 0) || (mb_substr($p_path, 0,1) == '\\')) {
           $p_path = strtr($p_path, '\\', '/');
       }
     }
