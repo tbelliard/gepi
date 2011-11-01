@@ -1028,7 +1028,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 			# les informations de l'utilisateur dans la base.
 			$lcs_tab_login["nom"] = $user["nom"];
 			$lcs_tab_login["email"] = $user["email"];
-			$long = strlen($user["fullname"]) - strlen($user["nom"]);
+			$long = mb_strlen($user["fullname"]) - mb_strlen($user["nom"]);
 			$lcs_tab_login["fullname"] = substr($user["fullname"], 0, $long) ;
 
 			// A ce stade, l'utilisateur est authentifié
@@ -1129,11 +1129,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 
 	    }
 
-		/*
-		$length = rand(35, 45);
-		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-		$_SESSION["gepi_alea"] = $r;
-		*/
+		
 		//generate_token($_SESSION['login']);
 		generate_token();
 
@@ -1571,9 +1567,9 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		$offset_sign = $offset < 0 == "-" ? "-" : "+";
 		$offset = abs($offset);
 		$offset_hours = $offset / 3600 % 24;
-		$offset_hours = strlen($offset_hours) == '1' ? "0".$offset_hours : $offset_hours;
+		$offset_hours = mb_strlen($offset_hours) == '1' ? "0".$offset_hours : $offset_hours;
 		$offset_minutes = $offset / 60 % 60;
-		$offset_minutes = strlen($offset_minutes) == '1' ? "0".$offset_minutes : $offset_minutes;
+		$offset_minutes = mb_strlen($offset_minutes) == '1' ? "0".$offset_minutes : $offset_minutes;
 		$mysql_offset = $offset_sign . $offset_hours . ":" . $offset_minutes;
 		$test = mysql_query("SET time_zone = '".$mysql_offset."'");
 	    }

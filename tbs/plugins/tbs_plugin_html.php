@@ -96,12 +96,12 @@ function f_Html_MergeItems(&$Txt,$ValueLst,$PrmLst,$PosBeg,$PosEnd) {
 						// Search for the closing tag after (taking care that this closing tag is optional in some HTML version)
 						$OptCPos = strpos($ZoneSrc,'<',$PosEndZ+1);
 						if ($OptCPos===false) {
-							$OptCPos = strlen($ZoneSrc);
+							$OptCPos = mb_strlen($ZoneSrc);
 						} else {
-							if (($OptCPos+1<strlen($ZoneSrc)) and ($ZoneSrc[$OptCPos+1]==='/')) {
+							if (($OptCPos+1<mb_strlen($ZoneSrc)) and ($ZoneSrc[$OptCPos+1]==='/')) {
 								$OptCPos = strpos($ZoneSrc,'>',$OptCPos);
 								if ($OptCPos===false) {
-									$OptCPos = strlen($ZoneSrc);
+									$OptCPos = mb_strlen($ZoneSrc);
 								} else {
 									$OptCPos++;
 								}
@@ -131,7 +131,7 @@ function f_Html_MergeItems(&$Txt,$ValueLst,$PrmLst,$PosBeg,$PosEnd) {
 				if ($IsList) {
 					// Look for the end of the item
 					$OptCPos = strpos($ZoneSrc,'<',$ItemLoc->PosEnd+1);
-					if ($OptCPos===false) $OptCPos = strlen($ZoneSrc);
+					if ($OptCPos===false) $OptCPos = mb_strlen($ZoneSrc);
 					if (isset($ItemLoc->PrmLst['value'])) {
 						$ItemValue = $ItemLoc->PrmLst['value'];
 					} else { // The value of the option is its caption.
@@ -157,7 +157,7 @@ function f_Html_MergeItems(&$Txt,$ValueLst,$PrmLst,$PosBeg,$PosEnd) {
 					if ($x!==false) {
 						if (!isset($ItemLoc->PrmLst[$ItemPrm])) {
 							$this->f_Html_InsertAttribute($ZoneSrc,$ItemPrmZ,$ItemLoc->PosEnd);
-							$Pos = $Pos + strlen($ItemPrmZ);
+							$Pos = $Pos + mb_strlen($ItemPrmZ);
 						}
 						if ($AddMissing) unset($Missing[$x]);
 						$SelNbr++;
@@ -191,11 +191,11 @@ function f_Html_IsHtml(&$Txt) {
 
 	// Search for opening and closing tags
 	$pos = strpos($Txt,'<');
-	if ( ($pos!==false) and ($pos<strlen($Txt)-1) ) {
+	if ( ($pos!==false) and ($pos<mb_strlen($Txt)-1) ) {
 		$pos = strpos($Txt,'>',$pos + 1);
-		if ( ($pos!==false) and ($pos<strlen($Txt)-1) ) {
+		if ( ($pos!==false) and ($pos<mb_strlen($Txt)-1) ) {
 			$pos = strpos($Txt,'</',$pos + 1);
-			if ( ($pos!==false)and ($pos<strlen($Txt)-1) ) {
+			if ( ($pos!==false)and ($pos<mb_strlen($Txt)-1) ) {
 				$pos = strpos($Txt,'>',$pos + 1);
 				if ($pos!==false) return true;
 			}
@@ -204,11 +204,11 @@ function f_Html_IsHtml(&$Txt) {
 
 	// Search for special char
 	$pos = strpos($Txt,'&');
-	if ( ($pos!==false) and ($pos<strlen($Txt)-1) ) {
+	if ( ($pos!==false) and ($pos<mb_strlen($Txt)-1) ) {
 		$pos2 = strpos($Txt,';',$pos+1);
 		if ($pos2!==false) {
 			$x = substr($Txt,$pos+1,$pos2-$pos-1); // We extract the found text between the couple of tags
-			if (strlen($x)<=10) {
+			if (mb_strlen($x)<=10) {
 				if (strpos($x,' ')===false) return true;
 			}
 		}
