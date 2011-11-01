@@ -205,7 +205,7 @@
 			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
 			}
-			elseif (mb_mb_substr($tab['lien'],0,4) == 'http') {
+			elseif (mb_substr($tab['lien'],0,4) == 'http') {
 				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
 			}
 			else {
