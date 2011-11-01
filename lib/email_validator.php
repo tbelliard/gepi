@@ -12,8 +12,8 @@ function validEmail($email) {
 	$isValid = false;
     }
     else {
-	$domain = substr($email, $atIndex+1);
-	$local = substr($email, 0, $atIndex);
+	$domain = mb_substr($email, $atIndex+1);
+	$local = mb_substr($email, 0, $atIndex);
 	$localLen = strlen($local);
 	$domainLen = strlen($domain);
 	if ($localLen < 1 || $localLen > 64) {

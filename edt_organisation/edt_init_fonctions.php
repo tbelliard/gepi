@@ -51,7 +51,7 @@ function renvoiIdSalle($chiffre){
 	// On cherche l'Id de la salle
 		$retour = 'erreur_salle';
 	// On ne prend que les 10 premières lettres du numéro ($chiffre)
-	$cherche = substr($chiffre, 0, 10);
+	$cherche = mb_substr($chiffre, 0, 10);
 	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$cherche."'");
 	if ($query) {
 		//$reponse = mysql_result($query, 0,"id_salle");
@@ -123,8 +123,8 @@ function nomTableCreneau($jour){
 // Id du créneau de début
 function renvoiIdCreneau($heure_brute, $jour){
 	// On transforme $heure_brute en un horaire de la forme hh:mm:ss
-	$minutes = substr($heure_brute, 2);
-	$heures = substr($heure_brute, 0, -2);
+	$minutes = mb_substr($heure_brute, 2);
+	$heures = mb_substr($heure_brute, 0, -2);
 	$heuredebut = $heures.':'.$minutes.':00';
 	$table = nomTableCreneau($jour);
 	$query = mysql_query("SELECT id_definie_periode FROM ".$table." WHERE
@@ -152,8 +152,8 @@ function dureeCreneau(){
 	$creneau = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux LIMIT 1"));
 	$deb = $creneau["heuredebut_definie_periode"];
 	$fin = $creneau["heurefin_definie_periode"];
-	$nombre_mn_deb = (substr($deb, 0, -5) * 60) + (substr($deb, 3, -3));
-	$nombre_mn_fin = (substr($fin, 0, -5) * 60) + (substr($fin, 3, -3));
+	$nombre_mn_deb = (mb_substr($deb, 0, -5) * 60) + (mb_substr($deb, 3, -3));
+	$nombre_mn_fin = (mb_substr($fin, 0, -5) * 60) + (mb_substr($fin, 3, -3));
 	$retour = $nombre_mn_fin - $nombre_mn_deb;
 
 	return $retour;
@@ -163,8 +163,8 @@ function dureeCreneau(){
 function renvoiDuree($deb, $fin){
 	// On détermine la durée d'un cours
 	$duree_cours_base = dureeCreneau();
-	$nombre_mn_deb = (substr($deb, 0, -2) * 60) + (substr($deb, 2));
-	$nombre_mn_fin = (substr($fin, 0, -2) * 60) + (substr($fin, 2));
+	$nombre_mn_deb = (mb_substr($deb, 0, -2) * 60) + (mb_substr($deb, 2));
+	$nombre_mn_fin = (mb_substr($fin, 0, -2) * 60) + (mb_substr($fin, 2));
 	$duree_mn = $nombre_mn_fin - $nombre_mn_deb;
 	// le nombre d'heures entières
 	$nbre = $duree_mn / $duree_cours_base;
@@ -191,7 +191,7 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 	// On détermine la durée d'un cours
 	$duree_cours_base = dureeCreneau();
 	// nbre de mn de l'heure de l'import
-	$nombre_mn_deb = (substr($heure_deb, 0, -2) * 60) + (substr($heure_deb, 2));
+	$nombre_mn_deb = (mb_substr($heure_deb, 0, -2) * 60) + (mb_substr($heure_deb, 2));
 	// Nombre de mn de l'horaire de Gepi
 	$table = nomTableCreneau($jour);
 	if ($id_creneau != '') {
@@ -407,8 +407,8 @@ function rechercheCreneauCsv2($creneau){
 		// on recherche si le début est bon ou pas pour savoir si le cours commence au début du créneau ou pas
 		$heure_debut = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$id_creneau."'"));
 		$test3 = explode(":", $heure_debut["heuredebut_definie_periode"]);
-		if (substr($test3[0], 0, -1) == "0") {
-			$heu = substr($test3[0], -1);
+		if (mb_substr($test3[0], 0, -1) == "0") {
+			$heu = mb_substr($test3[0], -1);
 		}else{
 			$heu = $test3[0];
 		}
@@ -441,7 +441,7 @@ function rechercheCreneauCsv2($creneau){
 			// On récupère le nombre de créneaux entiers
 			$nbre_t = explode(".", $test_duree); // $nbre_t[0] est donc le nombre créneaux entiers
 			if (isset($nbre_t[1])) {
-				$test2 = substr($nbre_t[1], 0, 1); // on ne garde que le premier chiffre après la virgule
+				$test2 = mb_substr($nbre_t[1], 0, 1); // on ne garde que le premier chiffre après la virgule
 			}else{
 				$test2 = 0;
 			}

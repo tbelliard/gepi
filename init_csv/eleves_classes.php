@@ -144,9 +144,9 @@ if (!isset($_POST["action"])) {
 
 			// On nettoie et on vérifie :
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
-			if (strlen($reg_id_int) > 50) $reg_id_int = substr($reg_id_int, 0, 50);
+			if (strlen($reg_id_int) > 50) $reg_id_int = mb_substr($reg_id_int, 0, 50);
 			$reg_classe = preg_replace("/[^A-Za-z0-9.\-]/","",trim($reg_classe));
-			if (strlen($reg_classe) > 100) $reg_classe = substr($reg_classe, 0, 100);
+			if (strlen($reg_classe) > 100) $reg_classe = mb_substr($reg_classe, 0, 100);
 
 
 			if(($reg_id_int!='')&&($reg_classe!='')){
@@ -277,9 +277,9 @@ if (!isset($_POST["action"])) {
 
 						// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
-						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+						if (strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 						$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[1]));
-						if (strlen($tabligne[1]) > 100) $tabligne[1] = substr($tabligne[1], 0, 100);
+						if (strlen($tabligne[1]) > 100) $tabligne[1] = mb_substr($tabligne[1], 0, 100);
 
 
 						$data_tab[$k] = array();

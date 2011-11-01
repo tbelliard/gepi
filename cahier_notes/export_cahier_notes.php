@@ -509,7 +509,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$date_dev[$cpt]=$tmptab[0];
 		// Pour le fichier ODS, on veut des dates au format aaaa-mm-jj
 		$tmptab2=explode("-",$tmptab[0]);
-		if(strlen($tmptab2[0])==4) {$tmptab2[0]=substr($tmptab2[0],2,2);}
+		if(strlen($tmptab2[0])==4) {$tmptab2[0]=mb_substr($tmptab2[0],2,2);}
 		$date_dev_fr[$cpt]=$tmptab2[2]."/".$tmptab2[1]."/".$tmptab2[0];
 
 
@@ -666,10 +666,10 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	$alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	$tabcol=array();
 	for($i=0;$i<strlen($alphabet);$i++) {
-		$tabcol[$i]=substr($alphabet,$i,1);
+		$tabcol[$i]=mb_substr($alphabet,$i,1);
 	}
 	for($i=strlen($alphabet);$i<2*strlen($alphabet);$i++) {
-		$tabcol[$i]="A".substr($alphabet,$i-strlen($alphabet),1);
+		$tabcol[$i]="A".mb_substr($alphabet,$i-strlen($alphabet),1);
 	}
 
 	// OpenOffice recalcule les valeurs lors de l'ouverture du document...

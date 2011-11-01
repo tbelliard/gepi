@@ -286,7 +286,7 @@ if ($aff_infos != "oui") {
 					$numero = htmlspecialchars($tab_salle[0]);
 					$nom_brut_salle = htmlspecialchars($tab_salle[1]);
 				// On ne garde que les 30 premiers caractères du nom de la salle
-				$nom_salle = substr($nom_brut_salle, 0, 30);
+				$nom_salle = mb_substr($nom_brut_salle, 0, 30);
 					if ($nom_salle == "") {
 						$affnom_salle = 'Sans nom';
 					} else {

@@ -481,7 +481,7 @@ if (isset($_POST['step'])) {
                             "no_gep"          => $info2[0]["employeenumber"][0]
                             );
                             $long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
-                            $prenom = substr($ret_people["fullname"], 0, $long) ;
+                            $prenom = mb_substr($ret_people["fullname"], 0, $long) ;
 
 
                             $add = add_eleve($uid,$ret_people["nom"],$prenom,$tmp[2],$tmp[1],$ret_people["no_gep"]);
@@ -501,7 +501,7 @@ if (isset($_POST['step'])) {
                         }
                         @ldap_free_result ( $result2 );
                     }
-                    $date_naissance = substr($tmp[1],6,2)."-".substr($tmp[1],4,2)."-".substr($tmp[1],0,4) ;
+                    $date_naissance = mb_substr($tmp[1],6,2)."-".mb_substr($tmp[1],4,2)."-".mb_substr($tmp[1],0,4) ;
                     echo "<tr><td>".$current_classe."</td><td>".$uid."</td><td>".$ret_people["nom"]."</td><td>".$prenom."</td><td>".$tmp[2]."</td><td>".$date_naissance."</td><td>".$ret_people["no_gep"]."</td></tr>\n";
                   }
                 }
