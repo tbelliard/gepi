@@ -45,7 +45,6 @@ function extr_valeur($lig){
 			}
 
 			// Pour importer séparemment les ElevesAvecAdresses.xml, Nomenclature.xml et d'autre part le Responsables.xml,
->>>>>>> .merge_file_bzHajt
 			// une variable:
 			$etape=isset($_POST['etape']) ? $_POST['etape'] : (isset($_GET['etape']) ? $_GET['etape'] : NULL);
 			// Il y a un problème de volume des données transférées si on envoye tout d'un coup.
@@ -1269,7 +1268,7 @@ function dragStop(event) {
 											$chaine.=";";
 										}
 										echo "</tr>\n";
-										$chaine=substr($chaine,0,strlen($chaine)-1);
+										$chaine=substr($chaine,0,mb_strlen($chaine)-1);
 										fwrite($fich,$chaine."\n");
 									}
 								}
@@ -1508,59 +1507,6 @@ function dragStop(event) {
 								//}
 								$i++;
 							}
-
-							/*
-							//fwrite($fich,"CODE_RNE;SIGLE;DENOM_PRINC;DENOM_COMPL;LIGNE1_ADRESSE;LIGNE2_ADRESSE;LIGNE3_ADRESSE;LIGNE4_ADRESSE;BOITE_POSTALE;MEL;TELEPHONE;LL_COMMUNE_INSEE\n");
-							fwrite($fich,"CODE_STRUCTURE;CODE_RNE;SIGLE;DENOM_PRINC;DENOM_COMPL;LIGNE1_ADRESSE;LIGNE2_ADRESSE;LIGNE3_ADRESSE;LIGNE4_ADRESSE;BOITE_POSTALE;MEL;TELEPHONE;LL_COMMUNE_INSEE\n");
-
-							echo "<table border='1'>\n";
-							echo "<tr>\n";
-							for($i=0;$i<count($tab_champs_scol_an_dernier);$i++){
-								echo "<th>$tab_champs_scol_an_dernier[$i]</th>\n";
-							}
-							echo "</tr>\n";
-							$i=0;
-							while($i<count($eleves)){
-								// Ligne commentée pour ne pas exclure des établissements parce qu'un élève y est passé et a quitté le notre.
-								//if($eleves[$i]["structures"][0]["code_structure"]!=""){
-									$temoin_tmp="";
-									$chaine="";
-									for($k=0;$k<$i;$k++){
-										if((isset($eleves[$k]["scolarite_an_dernier"]["code_rne"]))&&(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"]))){
-											if($eleves[$k]["scolarite_an_dernier"]["code_rne"]==$eleves[$i]["scolarite_an_dernier"]["code_rne"]){$temoin_tmp="oui";}
-										}
-									}
-									if($temoin_tmp!="oui"){
-										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
-											if($eleves[$i]["scolarite_an_dernier"]["code_rne"]!=""){
-												echo "<tr>\n";
-												//$chaine="";
-												//echo "<td>$i: ".$eleves[$i]["nom"]."</td>\n";
-												for($j=0;$j<count($tab_champs_scol_an_dernier);$j++){
-													$tmpmin=strtolower($tab_champs_scol_an_dernier[$j]);
-													echo "<td>";
-													if(isset($eleves[$i]["scolarite_an_dernier"]["$tmpmin"])){
-														echo $eleves[$i]["scolarite_an_dernier"]["$tmpmin"];
-														$chaine.=$eleves[$i]["scolarite_an_dernier"]["$tmpmin"];
-													}
-													else{
-														echo "&nbsp;";
-													}
-													echo "</td>\n";
-
-													//$chaine.=$eleves[$i]["scolarite_an_dernier"]["$tmpmin"].";";
-													$chaine.=";";
-												}
-												echo "</tr>\n";
-											}
-											$chaine=substr($chaine,0,strlen($chaine)-1);
-											fwrite($fich,$chaine."\n");
-										}
-									}
-								//}
-								$i++;
-							}
-							*/
 
 							echo "</table>\n";
 							fclose($fich);

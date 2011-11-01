@@ -105,7 +105,7 @@ $texte_presentation = 'Attention : Votre mot de passe est confidentiel. A votre 
 //recherche du dossier racine de GEPI pour obtenir l'adresse de l'application à saisir dans le navigateur
 $url = parse_url($_SERVER['REQUEST_URI']);
 $temp = $url['path'];
-$d = strlen($temp) - strlen("impression/password_pdf.php") ;
+$d = mb_strlen($temp) - mb_strlen("impression/password_pdf.php") ;
 $gepi_path = substr($temp, 0, $d);
 
 if (!isset($_SERVER['HTTPS']) OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")) {

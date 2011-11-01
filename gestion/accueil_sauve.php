@@ -393,8 +393,8 @@ function restoreMySqlDump($duree) {
 
 			//echo $TPSCOUR."<br />";
 			$buffer=gzgets($fileHandle);
-			if (substr($buffer,strlen($buffer),1)==0) {
-				$buffer=substr($buffer,0,strlen($buffer)-1);
+			if (substr($buffer,mb_strlen($buffer),1)==0) {
+				$buffer=substr($buffer,0,mb_strlen($buffer)-1);
 			}
 			//echo $buffer."<br />";
 
@@ -518,8 +518,8 @@ function restoreMySqlDump($duree) {
 	
 						//echo $TPSCOUR."<br />";
 						$buffer=gzgets($fileHandle);
-						if (substr($buffer,strlen($buffer),1)==0) {
-							$buffer=substr($buffer,0,strlen($buffer)-1);
+						if (substr($buffer,mb_strlen($buffer),1)==0) {
+							$buffer=substr($buffer,0,mb_strlen($buffer)-1);
 						}
 						//echo $buffer."<br />";
 	
@@ -753,8 +753,8 @@ function restoreMySqlDump_old($dumpFile,$duree) {
         }
         //echo $TPSCOUR."<br />";
         $buffer=gzgets($fileHandle);
-        if (substr($buffer,strlen($buffer),1)==0)
-            $buffer=substr($buffer,0,strlen($buffer)-1);
+        if (substr($buffer,mb_strlen($buffer),1)==0)
+            $buffer=substr($buffer,0,mb_strlen($buffer)-1);
 
         //echo $buffer."<br />";
 

@@ -415,7 +415,7 @@ check_token();
 			}
 		} // elseif...
 		else {
-			if (strlen($_POST['new_login']) > $longmax_login) {
+			if (mb_strlen($_POST['new_login']) > $longmax_login) {
 				$msg = "L'identifiant est trop long, il ne doit pas dépasser ".$longmax_login." caractères.";
 			}
 			else {

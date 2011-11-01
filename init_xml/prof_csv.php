@@ -376,94 +376,6 @@ if (!isset($is_posted)) {
 	
 								$affiche[1] = traitement_magic_quotes(corriger_caracteres($affiche[1]));
 
-								/*
-								if ($_POST['login_gen_type'] == "name") {
-									$temp1 = $affiche[0];
-									$temp1 = strtoupper($temp1);
-									$temp1 = my_ereg_replace(" ","", $temp1);
-									$temp1 = my_ereg_replace("-","_", $temp1);
-									$temp1 = my_ereg_replace("'","", $temp1);
-									//$temp1 = substr($temp1,0,8);
-	
-								} elseif ($_POST['login_gen_type'] == "name8") {
-									$temp1 = $affiche[0];
-									$temp1 = strtoupper($temp1);
-									$temp1 = my_ereg_replace(" ","", $temp1);
-									$temp1 = my_ereg_replace("-","_", $temp1);
-									$temp1 = my_ereg_replace("'","", $temp1);
-									$temp1 = substr($temp1,0,8);
-								} elseif ($_POST['login_gen_type'] == "fname8") {
-									$temp1 = $affiche[1]{0} . $affiche[0];
-									$temp1 = strtoupper($temp1);
-									$temp1 = my_ereg_replace(" ","", $temp1);
-									$temp1 = my_ereg_replace("-","_", $temp1);
-									$temp1 = my_ereg_replace("'","", $temp1);
-									$temp1 = substr($temp1,0,8);
-								} elseif ($_POST['login_gen_type'] == "fname19") {
-									$temp1 = $affiche[1]{0} . $affiche[0];
-									$temp1 = strtoupper($temp1);
-									$temp1 = my_ereg_replace(" ","", $temp1);
-									$temp1 = my_ereg_replace("-","_", $temp1);
-									$temp1 = my_ereg_replace("'","", $temp1);
-									$temp1 = substr($temp1,0,19);
-								} elseif ($_POST['login_gen_type'] == "firstdotname") {
-									if ($prenom_compose != '') {
-										$firstname = $prenom_compose;
-									} else {
-										$firstname = $premier_prenom;
-									}
-	
-									$temp1 = $firstname . "." . $affiche[0];
-									$temp1 = strtoupper($temp1);
-	
-									$temp1 = my_ereg_replace(" ","", $temp1);
-									$temp1 = my_ereg_replace("-","_", $temp1);
-									$temp1 = my_ereg_replace("'","", $temp1);
-									//$temp1 = substr($temp1,0,19);
-								} elseif ($_POST['login_gen_type'] == "firstdotname19") {
-									if ($prenom_compose != '') {
-										$firstname = $prenom_compose;
-									} else {
-										$firstname = $premier_prenom;
-									}
-	
-									$temp1 = $firstname . "." . $affiche[0];
-									$temp1 = strtoupper($temp1);
-									$temp1 = my_ereg_replace(" ","", $temp1);
-									$temp1 = my_ereg_replace("-","_", $temp1);
-									$temp1 = my_ereg_replace("'","", $temp1);
-									$temp1 = substr($temp1,0,19);
-								} elseif ($_POST['login_gen_type'] == "namef8") {
-									$temp1 =  substr($affiche[0],0,7) . $affiche[1]{0};
-									$temp1 = strtoupper($temp1);
-									$temp1 = my_ereg_replace(" ","", $temp1);
-									$temp1 = my_ereg_replace("-","_", $temp1);
-									$temp1 = my_ereg_replace("'","", $temp1);
-									//$temp1 = substr($temp1,0,8);
-								} elseif ($_POST['login_gen_type'] == "lcs") {
-									$nom = $affiche[0];
-									$nom = strtolower($nom);
-									if (preg_match("/\s/",$nom)) {
-										$noms = preg_split("/\s/",$nom);
-										$nom1 = $noms[0];
-										if (strlen($noms[0]) < 4) {
-											$nom1 .= "_". $noms[1];
-											$separator = " ";
-										} else {
-											$separator = "-";
-										}
-									} else {
-										$nom1 = $nom;
-										$sn = ucfirst($nom);
-									}
-									$firstletter_nom = $nom1{0};
-									$firstletter_nom = strtoupper($firstletter_nom);
-									$prenom = $affiche[1];
-									$prenom1 = $affiche[1]{0};
-									$temp1 = $prenom1 . $nom1;
-								}
-								*/
-
 								$temp1=generate_unique_login($affiche[0], $affiche[1], $_POST['login_gen_type']);
 
 								$login_prof = $temp1;
@@ -480,8 +392,7 @@ if (!isset($is_posted)) {
 								}
 								$affiche[0] = traitement_magic_quotes(corriger_caracteres($affiche[0]));
 								// Mot de passe
-								//echo "<tr><td colspan='4'>strlen($affiche[5])=".strlen($affiche[5])."<br />\$affiche[4]=$affiche[4]<br />\$_POST['sso']=".$_POST['sso']."</td></tr>";
-								if (strlen($affiche[5])>2 and $affiche[4]=="ENS" and $_POST['sso'] == "no") {
+								if (mb_strlen($affiche[5])>2 and $affiche[4]=="ENS" and $_POST['sso'] == "no") {
 									//
 									$pwd = md5(trim($affiche[5])); //NUMEN
 									//$mess_mdp = "NUMEN";

@@ -303,7 +303,7 @@ function extractMySqlDump($dumpFile,$duree,$force) {
 	    //if (substr($query,-1)==";") {
 	    if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
 	    //=============================================
-		    $query = "REPLACE" . substr($query,6, strlen($query));
+		    $query = "REPLACE" . substr($query,6, mb_strlen($query));
 		    $reg = mysql_query($query);
 		    echo "<p>$query</p>\n";
 		    if (!$reg) {

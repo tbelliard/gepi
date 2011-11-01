@@ -293,7 +293,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							if (preg_match("/\s/",$nom)) {
 								$noms = preg_split("/\s/",$nom);
 								$nom1 = $noms[0];
-								if (strlen($noms[0]) < 4) {
+								if (mb_strlen($noms[0]) < 4) {
 									$nom1 .= "_". $noms[1];
 									$separator = " ";
 								} else {
@@ -325,8 +325,6 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						}
 						$affiche[0] = traitement_magic_quotes(corriger_caracteres($affiche[0]));
 						// Mot de passe
-						//echo "<tr><td colspan='4'>strlen($affiche[5])=".strlen($affiche[5])."<br />\$affiche[4]=$affiche[4]<br />\$_POST['sso']=".$_POST['sso']."</td></tr>";
-						//if ($_POST['sso']== "no") {
 						if((!isset($_POST['sso']))||($_POST['sso']== "no")) {
 							$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
 							$mess_mdp = $pwd;

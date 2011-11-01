@@ -135,7 +135,7 @@ if($msg!=""){
 	// Fonction destinée à afficher verticalement, lettre par lettre, une chaine:
 	function aff_vertical($texte){
 		$chaine="";
-		for($i=0;$i<strlen($texte);$i++){
+		for($i=0;$i<mb_strlen($texte);$i++){
 			//echo substr($texte,$i,1)."<br />";
 			$chaine=$chaine.substr($texte,$i,1)."<br />";
 		}

@@ -136,7 +136,7 @@ if(mysql_num_rows($test_arch)>0) {
 		while($lig_erreur_login=mysql_fetch_object($res_erreur_mdp)) {
 			$tab_tmp=explode(':', $lig_erreur_login->description);
 			// On vire l'espace au début et la parenthèse à la fin
-			$current_login=substr($tab_tmp[1],1,strlen($tab_tmp[1])-2);
+			$current_login=substr($tab_tmp[1],1,mb_strlen($tab_tmp[1])-2);
 
 			echo "<option value='$current_login'";
 			if((isset($user_login2))&&($current_login==$user_login2)) {echo " selected='true'";}

@@ -429,7 +429,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>
 			}
 
 			if(isset($_POST['degrade_haut'])) {
-				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['degrade_haut'])))!=0)||(strlen($_POST['degrade_haut'])!=6)) {
+				if((mb_strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['degrade_haut'])))!=0)||(mb_strlen($_POST['degrade_haut'])!=6)) {
 					$degrade_haut="020202";
 				}
 				else {
