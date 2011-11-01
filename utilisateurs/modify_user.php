@@ -896,12 +896,12 @@ if (isset($user_login) and ($user_login!='')) {
 	$seconde_now = date("s");
 	$now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_now);
 
-	$annee_verrouillage = substr($date_verrouillage,0,4);
-	$mois_verrouillage =  substr($date_verrouillage,5,2);
-	$jour_verrouillage =  substr($date_verrouillage,8,2);
-	$heures_verrouillage = substr($date_verrouillage,11,2);
-	$minutes_verrouillage = substr($date_verrouillage,14,2);
-	$secondes_verrouillage = substr($date_verrouillage,17,2);
+	$annee_verrouillage = mb_substr($date_verrouillage,0,4);
+	$mois_verrouillage =  mb_substr($date_verrouillage,5,2);
+	$jour_verrouillage =  mb_substr($date_verrouillage,8,2);
+	$heures_verrouillage = mb_substr($date_verrouillage,11,2);
+	$minutes_verrouillage = mb_substr($date_verrouillage,14,2);
+	$secondes_verrouillage = mb_substr($date_verrouillage,17,2);
 	$date_verrouillage = mktime($heures_verrouillage, $minutes_verrouillage, $secondes_verrouillage, $mois_verrouillage, $jour_verrouillage, $annee_verrouillage);
 	if ($date_verrouillage  > ($now- getSettingValue("temps_compte_verrouille")*60)) {
 		echo "<br /><center><table border=\"1\" cellpadding=\"5\" width = \"90%\" bgcolor=\"#FFB0B8\"  summary='Verrouillage'><tr><td>\n";

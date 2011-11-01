@@ -1291,8 +1291,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "<p><b>Liste des professeurs heureux correcteurs désignés pour l'épreuve&nbsp;:</b></p>\n";
 				echo "<blockquote>\n";
 				while($lig=mysql_fetch_object($res_profs)) {
-					//echo "<a href='#'>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1)."<br />\n";
-					echo $lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
+					//echo "<a href='#'>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1)."<br />\n";
+					echo $lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
 					//echo " <span style='color:red'>Compter les copies attribuées</span>";
 
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$lig->login."';";
@@ -1667,9 +1667,9 @@ function checkbox_change(cpt) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 					echo "onchange=\"checkbox_change($cpt)\" ";
 					//if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";}
-					//echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+					//echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 					if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 					$cpt++;
 				}
 			}
@@ -1702,7 +1702,7 @@ function checkbox_change(cpt) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 					echo "onchange=\"checkbox_change($cpt)\" ";
 					if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 					$cpt++;
 
 					$i++;
@@ -1715,7 +1715,7 @@ function checkbox_change(cpt) {
 				while($lig=mysql_fetch_object($res_profs)) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 					if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";}
-					echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</label><br />\n";
+					echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</label><br />\n";
 					$cpt++;
 				}
 				*/

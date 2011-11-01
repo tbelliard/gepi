@@ -620,8 +620,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						}
 					}
 				}
-				elseif(substr($id_dev,0,1)=='P') {
-					$tmp_per=substr($id_dev,1);
+				elseif(mb_substr($id_dev,0,1)=='P') {
+					$tmp_per=mb_substr($id_dev,1);
 					$sql="UPDATE ex_groupes SET id_dev='0', type='moy_bull', valeur='$tmp_per' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
 					$res=mysql_query($sql);
 				}

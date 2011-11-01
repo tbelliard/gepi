@@ -143,7 +143,7 @@ while ($i < $nombreligne){
     // Adresse publique :
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse1','',$annee)) and ($adresse1 != "")) {
         if (($affiche_adresse1 == 'y')or(($affiche_adresse1 != 'y') and ($_login!="") )) {
-            if ((substr($adresse1,0,4) == "http") or (substr($adresse1,0,3) == "ftp")) {
+            if ((mb_substr($adresse1,0,4) == "http") or (mb_substr($adresse1,0,3) == "ftp")) {
                 echo "<span class=\"small\"> -  Accès public : <a href='".$adresse1."' title='".$adresse1."' ";
                 if (($en_construction == 'y') and ($message_avertissement!="")) echo " onclick='alert(\"".$message_avertissement."\");' ";
                 echo ">cliquer pour accéder au site</a></span>";
@@ -154,7 +154,7 @@ while ($i < $nombreligne){
     // Adresse privée :
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse2','',$annee)) and ($adresse2 != "")) {
         if ($adresse2 != "")  {
-            if ((substr($adresse2,0,4) == "http") or (substr($adresse2,0,3) == "ftp"))
+            if ((mb_substr($adresse2,0,4) == "http") or (mb_substr($adresse2,0,3) == "ftp"))
                 echo "<span class=\"small\"> -  Accès restreint : <a href='".$adresse2."' title='".$adresse2."' >cliquer pour accéder au site</a></span>";
             else
                 echo "<span class=\"small\"> -  Accès restreint : <b>".$adresse2."</b></span>";

@@ -126,7 +126,7 @@ if($_SESSION['statut']=='professeur'){
 					}
 					$cpt++;
 				}
-				$chaine_class=substr($chaine_class,1);
+				$chaine_class=mb_substr($chaine_class,1);
 
 			}
 

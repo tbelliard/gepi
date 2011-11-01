@@ -197,7 +197,7 @@
 
 						//echo ": ".$lig_mat_fac->mat;
 					}
-					elseif(substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
+					elseif(mb_substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
 						echo "<p class='discipline'>";
 						echo ucfirst(strtolower($tabmatieres[$j][0]))." : ";
 
@@ -1087,7 +1087,7 @@
 
 						//echo ": ".$lig_mat_fac->mat;
 					}
-					elseif(substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
+					elseif(mb_substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
 						echo "<p class='discipline'>";
 						echo ucfirst(strtolower($tabmatieres[$j][0]))." : ";
 
