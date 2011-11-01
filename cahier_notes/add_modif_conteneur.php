@@ -276,10 +276,10 @@ if ($id_conteneur)  {
 
 } else {
 	if(getSettingValue("gepi_denom_boite_genre")=='f'){
-		$nom_court = "Nouvelle ".strtolower(getSettingValue("gepi_denom_boite"));
+		$nom_court = "Nouvelle ".my_strtolower(getSettingValue("gepi_denom_boite"));
 	}
 	else{
-		$nom_court = "Nouveau ".strtolower(getSettingValue("gepi_denom_boite"));
+		$nom_court = "Nouveau ".my_strtolower(getSettingValue("gepi_denom_boite"));
 	}
 	$nom_complet = '';
 	$new_conteneur = 'yes';
@@ -295,10 +295,10 @@ if ($id_conteneur)  {
 }
 //**************** EN-TETE *****************
 if(getSettingValue("gepi_denom_boite_genre")=='f'){
-	$titre_page = "Carnet de notes - Ajout/modification d'une ".strtolower(getSettingValue("gepi_denom_boite"));
+	$titre_page = "Carnet de notes - Ajout/modification d'une ".my_strtolower(getSettingValue("gepi_denom_boite"));
 }
 else{
-	$titre_page = "Carnet de notes - Ajout/modification d'un ".strtolower(getSettingValue("gepi_denom_boite"));
+	$titre_page = "Carnet de notes - Ajout/modification d'un ".my_strtolower(getSettingValue("gepi_denom_boite"));
 }
 /**
  * Entête de la page
@@ -345,10 +345,10 @@ echo "<p class='bold'> Classe(s) : $nom_classe | Matière : $matiere_nom ($matie
 
 
 if(getSettingValue("gepi_denom_boite_genre")=='f'){
-	echo "<h2 class='gepi'>Configuration de la ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court :</h2>\n";
+	echo "<h2 class='gepi'>Configuration de la ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court :</h2>\n";
 }
 else{
-	echo "<h2 class='gepi'>Configuration du ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court :</h2>\n";
+	echo "<h2 class='gepi'>Configuration du ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court :</h2>\n";
 }
 
 
@@ -429,10 +429,10 @@ if($interface_simplifiee=="y"){
 
 			echo "<td style='background-color: #aae6aa; font-weight: bold;'>\n";
 			if(getSettingValue("gepi_denom_boite_genre")=='f'){
-				echo "Emplacement de la ".strtolower(getSettingValue("gepi_denom_boite")).":\n";
+				echo "Emplacement de la ".my_strtolower(getSettingValue("gepi_denom_boite")).":\n";
 			}
 			else{
-				echo "Emplacement du ".strtolower(getSettingValue("gepi_denom_boite")).":\n";
+				echo "Emplacement du ".my_strtolower(getSettingValue("gepi_denom_boite")).":\n";
 			}
 			echo "</td>\n";
 			echo "<td>\n";
@@ -484,10 +484,10 @@ if($interface_simplifiee=="y"){
 			echo "<tr style='display:none;'>\n";
 			echo "<td>";
 			if(getSettingValue("gepi_denom_boite_genre")=='f'){
-				echo "Emplacement de la ".strtolower(getSettingValue("gepi_denom_boite")).":\n";
+				echo "Emplacement de la ".my_strtolower(getSettingValue("gepi_denom_boite")).":\n";
 			}
 			else{
-				echo "Emplacement du ".strtolower(getSettingValue("gepi_denom_boite")).":\n";
+				echo "Emplacement du ".my_strtolower(getSettingValue("gepi_denom_boite")).":\n";
 			}
 			echo "</td>\n";
 			echo "<td>\n";
@@ -507,10 +507,10 @@ if($interface_simplifiee=="y"){
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold;'>\n";
 			if(getSettingValue("gepi_denom_boite_genre")=='f'){
-				echo "Coefficient de la ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
+				echo "Coefficient de la ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
 			}
 			else{
-				echo "Coefficient du ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
+				echo "Coefficient du ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
 			}
 
 			echo " (<a href='#' onmouseover=\"document.getElementById('coefinfo').style.display='block';\" onmouseout=\"document.getElementById('coefinfo').style.display='none';\">*</a>)\n";
@@ -526,10 +526,10 @@ if($interface_simplifiee=="y"){
 			echo "<tr style='display:none;'>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold;'>\n";
 			if(getSettingValue("gepi_denom_boite_genre")=='f'){
-				echo "Coefficient de la ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
+				echo "Coefficient de la ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
 			}
 			else{
-				echo "Coefficient du ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
+				echo "Coefficient du ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court\n";
 			}
 			echo "</td>\n";
 			echo "<td>\n";
@@ -617,10 +617,10 @@ else{
 	if ($parent != 0) {
 		echo "<br />\n";
 		if(getSettingValue("gepi_denom_boite_genre")=='f'){
-			echo "<table><tr><td><h3 class='gepi'>Emplacement de la ".strtolower(getSettingValue("gepi_denom_boite"))." : </h3></td>\n<td>\n";
+			echo "<table><tr><td><h3 class='gepi'>Emplacement de la ".my_strtolower(getSettingValue("gepi_denom_boite"))." : </h3></td>\n<td>\n";
 		}
 		else{
-			echo "<table><tr><td><h3 class='gepi'>Emplacement du ".strtolower(getSettingValue("gepi_denom_boite"))." : </h3></td>\n<td>\n";
+			echo "<table><tr><td><h3 class='gepi'>Emplacement du ".my_strtolower(getSettingValue("gepi_denom_boite"))." : </h3></td>\n<td>\n";
 		}
 		echo "<select size='1' name='parent'>\n";
 		
@@ -662,10 +662,10 @@ else{
 
 
 		if(getSettingValue("gepi_denom_boite_genre")=='f'){
-			echo "<h3 class='gepi'>Coefficient de la ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court</h3>\n";
+			echo "<h3 class='gepi'>Coefficient de la ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court</h3>\n";
 		}
 		else{
-			echo "<h3 class='gepi'>Coefficient du ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court</h3>\n";
+			echo "<h3 class='gepi'>Coefficient du ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court</h3>\n";
 		}
 		echo "<table><tr><td>Valeur de la pondération dans le calcul de la moyenne ";
 		if (isset($nom_racine)){
@@ -691,65 +691,65 @@ else{
 		}
 
 		if(getSettingValue("gepi_denom_boite_genre")=='f'){
-			echo "<h3 class='gepi'>Notes prises en comptes dans le calcul de la moyenne de la ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court</h3>\n";
+			echo "<h3 class='gepi'>Notes prises en comptes dans le calcul de la moyenne de la ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court</h3>\n";
 		}
 		else{
-			echo "<h3 class='gepi'>Notes prises en comptes dans le calcul de la moyenne du ".strtolower(getSettingValue("gepi_denom_boite"))." $nom_court</h3>\n";
+			echo "<h3 class='gepi'>Notes prises en comptes dans le calcul de la moyenne du ".my_strtolower(getSettingValue("gepi_denom_boite"))." $nom_court</h3>\n";
 		}
 		if($i>1){
 			echo "<table>\n<tr>";
 			echo "<td>";
 			echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes des ";
-			echo strtolower(getSettingValue("gepi_denom_boite"))."s ";
+			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s ";
 			echo " $chaine_sous_cont";
 			echo "en tenant compte des options dans ces ";
-			echo strtolower(getSettingValue("gepi_denom_boite"))."s.";
+			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
 			echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 			echo "</tr>\n";
 
 			echo "<tr>";
 			echo "<td>";
 			echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans les ";
-			echo strtolower(getSettingValue("gepi_denom_boite"))."s";
+			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s";
 			echo " $chaine_sous_cont";
 			echo "sans tenir compte des options définies dans ces ";
-			echo strtolower(getSettingValue("gepi_denom_boite"))."s.";
+			echo my_strtolower(getSettingValue("gepi_denom_boite"))."s.";
 		}
 		else{
 			if(getSettingValue("gepi_denom_boite_genre")=='f'){
 				echo "<table>\n<tr>";
 				echo "<td>";
 				echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes de la ";
-				echo strtolower(getSettingValue("gepi_denom_boite"));
+				echo my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
 				echo "en tenant compte des options dans cette ";
-				echo strtolower(getSettingValue("gepi_denom_boite"));
+				echo my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 				echo "</tr>\n";
 
 				echo "<tr>";
 				echo "<td>";
 				echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b> et dans la ";
-				echo strtolower(getSettingValue("gepi_denom_boite"));
+				echo my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
 				echo "sans tenir compte des options définies dans cette ";
-				echo strtolower(getSettingValue("gepi_denom_boite"));
+				echo my_strtolower(getSettingValue("gepi_denom_boite"));
 			}
 			else{
 				echo "<table>\n<tr>";
 				echo "<td>";
-				echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes du ".strtolower(getSettingValue("gepi_denom_boite"));
+				echo "la moyenne s'effectue sur toutes les notes contenues à la racine de <b>$nom_court</b> et sur les moyennes du ".my_strtolower(getSettingValue("gepi_denom_boite"));
 				echo " $chaine_sous_cont";
-				echo "en tenant compte des options dans ce ".strtolower(getSettingValue("gepi_denom_boite")).".";
+				echo "en tenant compte des options dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".";
 				echo "</td><td><input type='radio' name='mode' value='2' "; if ($mode=='2') echo "checked"; echo " /></td>";
 				echo "</tr>\n";
 
 				echo "<tr>";
 				echo "<td>";
 				echo "la moyenne s'effectue sur toutes les notes contenues dans <b>$nom_court</b>";
-				echo " et dans le ".strtolower(getSettingValue("gepi_denom_boite"))."";
+				echo " et dans le ".my_strtolower(getSettingValue("gepi_denom_boite"))."";
 				echo " $chaine_sous_cont";
-				echo "sans tenir compte des options définies dans ce ".strtolower(getSettingValue("gepi_denom_boite")).".";
+				echo "sans tenir compte des options définies dans ce ".my_strtolower(getSettingValue("gepi_denom_boite")).".";
 			}
 		}
 		echo "</td><td><input type='radio' name='mode' value='1' "; if ($mode=='1') echo "checked"; echo " /></td>";
@@ -867,7 +867,7 @@ else{
 		echo "Faire apparaître la moyenne sur le bulletin scolaire.";
 		echo "<br /><i>Si la case ci-contre est cochée, la moyenne de ce";
 		if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "tte";}
-		echo " ".strtolower(getSettingValue("gepi_denom_boite"))." apparaît sur le bulletin scolaire, en plus de la moyenne générale, à titre d'information.</i>";
+		echo " ".my_strtolower(getSettingValue("gepi_denom_boite"))." apparaît sur le bulletin scolaire, en plus de la moyenne générale, à titre d'information.</i>";
 		echo "</label>";
 		echo "</td>\n";
 

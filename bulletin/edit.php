@@ -8,7 +8,7 @@ $starttime = microtime();
 /*
 *  $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Sandrine Dangreville
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Sandrine Dangreville
 *
 * This file is part of GEPI.
 *
@@ -1054,7 +1054,7 @@ while ($i < $nombre_eleves2) {
 			$ligne3=$cp_resp[1]." ".$commune_resp[1];
 
 			//if($pays_resp[1]!="") {
-			if(($pays_resp[1]!="")&&(strtolower($pays_resp[1])!=strtolower($gepiSchoolPays))) {
+			if(($pays_resp[1]!="")&&(my_strtolower($pays_resp[1])!=my_strtolower($gepiSchoolPays))) {
 				//$ligne3.="<br />$pays_resp[1]";
 				if($ligne3!=" "){
 					$ligne3.="<br />";
@@ -1157,7 +1157,7 @@ while ($i < $nombre_eleves2) {
 					}
 					$ligne3=$cp_resp[2]." ".$commune_resp[2];
 
-					if(($pays_resp[2]!="")&&(strtolower($pays_resp[2])!=strtolower($gepiSchoolPays))) {
+					if(($pays_resp[2]!="")&&(my_strtolower($pays_resp[2])!=my_strtolower($gepiSchoolPays))) {
 						//$ligne3.="<br />$pays_resp[2]";
 						if($ligne3!=" "){
 							$ligne3.="<br />";
@@ -1296,7 +1296,7 @@ while ($i < $nombre_eleves2) {
 				}
 				$ligne3=$cp_resp[1]." ".$commune_resp[1];
 
-				if(($pays_resp[1]!="")&&(strtolower($pays_resp[1])!=strtolower($gepiSchoolPays))) {
+				if(($pays_resp[1]!="")&&(my_strtolower($pays_resp[1])!=my_strtolower($gepiSchoolPays))) {
 					//$ligne3.="<br />$pays_resp[1]";
 					if($ligne3!=" "){
 						$ligne3.="<br />";
@@ -1342,7 +1342,7 @@ while ($i < $nombre_eleves2) {
 				}
 				$ligne3=$cp_resp[2]." ".$commune_resp[2];
 
-				if(($pays_resp[2]!="")&&(strtolower($pays_resp[2])!=strtolower($gepiSchoolPays))) {
+				if(($pays_resp[2]!="")&&(my_strtolower($pays_resp[2])!=my_strtolower($gepiSchoolPays))) {
 					if($ligne3!=" "){
 						$ligne3.="<br />";
 					}
@@ -1575,7 +1575,7 @@ echo "'>\n";
 		echo "</td>\n";
 		echo "<td style='width:".$addressblock_classe_annee2."%;'>\n";
 		echo "<p class='bulletin' align='center'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />Année scolaire ".$gepiYear."</span><br />\n";
-		$temp = strtolower($nom_periode[$periode_num]);
+		$temp = my_strtolower($nom_periode[$periode_num]);
 		echo "Bulletin&nbsp;";
 		if($genre_periode=="M"){
 			echo "du ";
@@ -1715,7 +1715,7 @@ echo "'>\n";
 
 		if ($affiche_adresse != "y") {
 			echo "<p class='bulletin'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />Année scolaire ".$gepiYear."</span><br />";
-			$temp = strtolower($nom_periode[$periode_num]);
+			$temp = my_strtolower($nom_periode[$periode_num]);
 			echo "Bulletin&nbsp;";
 			if($genre_periode=="M"){
 				echo "du ";

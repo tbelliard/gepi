@@ -629,15 +629,15 @@ else {
 						if(isset($id_dev[$j])){
 							if(isset($tab_dev_note[$i][$j])) {
 
-								if(strtolower($tab_dev_note[$i][$j])=="abs"){
+								if(my_strtolower($tab_dev_note[$i][$j])=="abs"){
 									$note=0;
 									$elev_statut="abs";
 								}
-								elseif(strtolower($tab_dev_note[$i][$j])=="disp"){
+								elseif(my_strtolower($tab_dev_note[$i][$j])=="disp"){
 									$note=0;
 									$elev_statut="disp";
 								}
-								elseif(strtolower($tab_dev_note[$i][$j])=="-"){
+								elseif(my_strtolower($tab_dev_note[$i][$j])=="-"){
 									$note=0;
 									$elev_statut="-";
 								}
