@@ -44,9 +44,9 @@ if (!checkAccess()) {
 
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-if((strlen(my_ereg_replace("[0-9]","",$id_classe))!=0)||($id_classe=='')) {unset($id_classe);}
+if((mb_strlen(my_ereg_replace("[0-9]","",$id_classe))!=0)||($id_classe=='')) {unset($id_classe);}
 $periode_num=isset($_POST['periode_num']) ? $_POST['periode_num'] : (isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL);
-if((strlen(my_ereg_replace("[0-9]","",$periode_num))!=0)||($periode_num=='')) {unset($periode_num);}
+if((mb_strlen(my_ereg_replace("[0-9]","",$periode_num))!=0)||($periode_num=='')) {unset($periode_num);}
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 
 //debug_var();
@@ -72,24 +72,24 @@ include "../lib/periodes.inc.php";
 $_SESSION['chemin_retour'] = $gepiPath."/classes/classes_const.php?id_classe=".$id_classe;
 
 $id_future_classe=isset($_POST['id_future_classe']) ? $_POST['id_future_classe'] : (isset($_GET['id_future_classe']) ? $_GET['id_future_classe'] : NULL);
-if((strlen(my_ereg_replace("[0-9]","",$id_future_classe))!=0)||($id_future_classe=='')) {unset($id_future_classe);}
+if((mb_strlen(my_ereg_replace("[0-9]","",$id_future_classe))!=0)||($id_future_classe=='')) {unset($id_future_classe);}
 
 $id_grp=isset($_POST['id_grp']) ? $_POST['id_grp'] : (isset($_GET['id_grp']) ? $_GET['id_grp'] : NULL);
-//if((strlen(my_ereg_replace("[0-9]","",$grp))!=0)||($grp=='')) {unset($grp);}
+//if((mb_strlen(my_ereg_replace("[0-9]","",$grp))!=0)||($grp=='')) {unset($grp);}
 if(!is_array($id_grp)) {unset($id_grp);}
 else {
 	for($i=0;$i<count($id_grp);$i++) {
-		if((strlen(my_ereg_replace("[0-9]","",$id_grp[$i]))!=0)||($id_grp[$i]=='')) {unset($id_grp);break;}
+		if((mb_strlen(my_ereg_replace("[0-9]","",$id_grp[$i]))!=0)||($id_grp[$i]=='')) {unset($id_grp);break;}
 	}
 }
 
 $id_grp_fut=isset($_POST['id_grp_fut']) ? $_POST['id_grp_fut'] : (isset($_GET['id_grp_fut']) ? $_GET['id_grp_fut'] : NULL);
-//if((strlen(my_ereg_replace("[0-9]","",$grp_fut))!=0)||($grp_fut=='')) {unset($grp_fut);}
+//if((mb_strlen(my_ereg_replace("[0-9]","",$grp_fut))!=0)||($grp_fut=='')) {unset($grp_fut);}
 if(!is_array($id_grp_fut)) {unset($id_grp_fut);}
 else {
 	for($i=0;$i<count($id_grp_fut);$i++) {
 		// $grp_fut[$i] peut être vide si on abandonne les notes de la matière...
-		if(strlen(my_ereg_replace("[0-9]","",$id_grp_fut[$i]))!=0) {unset($id_grp_fut);break;}
+		if(mb_strlen(my_ereg_replace("[0-9]","",$id_grp_fut[$i]))!=0) {unset($id_grp_fut);break;}
 	}
 }
 

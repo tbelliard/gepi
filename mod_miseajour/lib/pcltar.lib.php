@@ -1371,7 +1371,7 @@ if (!defined("PCL_TAR"))
       }
 
       // ----- Check the path length
-      if (strlen($p_filename) > 99)
+      if (mb_strlen($p_filename) > 99)
       {
         // ----- Error log
         PclErrorLog(-5, "File name is too long (max. 99) : '$p_filename'");
@@ -1504,9 +1504,9 @@ if (!defined("PCL_TAR"))
           $p_remove_dir = substr($p_remove_dir, 2);
       }
 
-      if (substr($p_filename, 0, strlen($p_remove_dir)) == $p_remove_dir)
+      if (substr($p_filename, 0, mb_strlen($p_remove_dir)) == $p_remove_dir)
       {
-        $v_stored_filename = substr($p_filename, strlen($p_remove_dir));
+        $v_stored_filename = substr($p_filename, mb_strlen($p_remove_dir));
         TrFctMessage(__FILE__, __LINE__, 3, "Remove path '$p_remove_dir' in file '$p_filename' = '$v_stored_filename'");
       }
     }
@@ -1520,7 +1520,7 @@ if (!defined("PCL_TAR"))
     }
 
     // ----- Check the path length
-    if (strlen($v_stored_filename) > 99)
+    if (mb_strlen($v_stored_filename) > 99)
     {
       // ----- Error log
       PclErrorLog(-5, "Stored file name is too long (max. 99) : '$v_stored_filename'");
@@ -1632,7 +1632,7 @@ if (!defined("PCL_TAR"))
     if ($p_stored_filename == "")
       $p_stored_filename = $p_filename;
     $v_reduce_filename = PclTarHandlePathReduction($p_stored_filename);
-    TrFctMessage(__FILE__, __LINE__, 2, "Filename (reduced) '$v_reduce_filename', strlen ".strlen($v_reduce_filename));
+    TrFctMessage(__FILE__, __LINE__, 2, "Filename (reduced) '$v_reduce_filename', mb_strlen ".mb_strlen($v_reduce_filename));
 
     // ----- Get file info
     $v_info = stat($p_filename);
@@ -1813,7 +1813,7 @@ if (!defined("PCL_TAR"))
     {
       $p_remove_path .= '/';
     }
-    $p_remove_path_size = strlen($p_remove_path);
+    $p_remove_path_size = mb_strlen($p_remove_path);
 
     // ----- Study the mode
     switch ($p_mode) {
@@ -1924,7 +1924,7 @@ if (!defined("PCL_TAR"))
             TrFctMessage(__FILE__, __LINE__, 3, "Compare file '$v_header[filename]' with directory '$p_file_list[$i]'");
 
             // ----- Look if the directory is in the filename path
-            if ((strlen($v_header[filename]) > strlen($p_file_list[$i])) && (substr($v_header[filename], 0, strlen($p_file_list[$i])) == $p_file_list[$i]))
+            if ((mb_strlen($v_header[filename]) > mb_strlen($p_file_list[$i])) && (substr($v_header[filename], 0, mb_strlen($p_file_list[$i])) == $p_file_list[$i]))
             {
               // ----- The file is in the directory, so extract it
               TrFctMessage(__FILE__, __LINE__, 2, "File '$v_header[filename]' is in directory '$p_file_list[$i]' : extract it");
@@ -1979,7 +1979,7 @@ if (!defined("PCL_TAR"))
           while (substr($p_path, -1) == "/")
           {
             TrFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-            $p_path = substr($p_path, 0, strlen($p_path)-1);
+            $p_path = substr($p_path, 0, mb_strlen($p_path)-1);
             TrFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
           }
 
@@ -2228,7 +2228,7 @@ if (!defined("PCL_TAR"))
     {
       $p_remove_path .= '/';
     }
-    $p_remove_path_size = strlen($p_remove_path);
+    $p_remove_path_size = mb_strlen($p_remove_path);
 
     // ----- Open the tar file
     if ($p_tar_mode == "tar")
@@ -2441,7 +2441,7 @@ if (!defined("PCL_TAR"))
     $v_tar = $p_tar;
     $v_extract_file = 1;
 
-    $p_remove_path_size = strlen($p_remove_path);
+    $p_remove_path_size = mb_strlen($p_remove_path);
 
         // ----- Look for path to remove
         if (($p_remove_path != "")
@@ -2460,7 +2460,7 @@ if (!defined("PCL_TAR"))
           while (substr($p_path, -1) == "/")
           {
             TrFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-            $p_path = substr($p_path, 0, strlen($p_path)-1);
+            $p_path = substr($p_path, 0, mb_strlen($p_path)-1);
             TrFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
           }
 
@@ -2762,7 +2762,7 @@ if (!defined("PCL_TAR"))
           else
           {
             TrFctMessage(__FILE__, __LINE__, 3, "Look if '$v_header[filename]' is a file in $p_file_list[$i]");
-            if (substr($v_header[filename], strlen($p_file_list[$i]), 1) == "/")
+            if (substr($v_header[filename], mb_strlen($p_file_list[$i]), 1) == "/")
             {
               TrFctMessage(__FILE__, __LINE__, 3, "'$v_header[filename]' is a file in $p_file_list[$i]");
               $v_delete_file = TRUE;
@@ -2967,9 +2967,9 @@ if (!defined("PCL_TAR"))
       if (substr($p_file_list[$i], -1) != '/')
         $p_remove_dir .= "/";
 
-      if (substr($p_file_list[$i], 0, strlen($p_remove_dir)) == $p_remove_dir)
+      if (substr($p_file_list[$i], 0, mb_strlen($p_remove_dir)) == $p_remove_dir)
       {
-        $v_stored_list[$i] = substr($p_file_list[$i], strlen($p_remove_dir));
+        $v_stored_list[$i] = substr($p_file_list[$i], mb_strlen($p_remove_dir));
         TrFctMessage(__FILE__, __LINE__, 3, "Remove path '$p_remove_dir' in file '$p_file_list[$i]' = '$v_stored_list[$i]'");
       }
     }
@@ -3275,7 +3275,7 @@ if (!defined("PCL_TAR"))
     */
 
     // ----- Look for no more block
-    if (strlen($v_binary_data)==0)
+    if (mb_strlen($v_binary_data)==0)
     {
       $v_header[filename] = "";
       $v_header[status] = "empty";
@@ -3286,14 +3286,14 @@ if (!defined("PCL_TAR"))
     }
 
     // ----- Look for invalid block size
-    if (strlen($v_binary_data) != 512)
+    if (mb_strlen($v_binary_data) != 512)
     {
       $v_header[filename] = "";
       $v_header[status] = "invalid_header";
-      TrFctMessage(__FILE__, __LINE__, 2, "Invalid block size : ".strlen($v_binary_data));
+      TrFctMessage(__FILE__, __LINE__, 2, "Invalid block size : ".mb_strlen($v_binary_data));
 
       // ----- Error log
-      PclErrorLog(-10, "Invalid block size : ".strlen($v_binary_data));
+      PclErrorLog(-10, "Invalid block size : ".mb_strlen($v_binary_data));
 
       // ----- Return
       TrFctEnd(__FILE__, __LINE__, PclErrorCode(), PclErrorString());

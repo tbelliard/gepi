@@ -109,7 +109,7 @@ if(isset($_POST['is_posted'])) {
 
 	if (isset($_POST['sacocheUrl'])) {
 		$sacocheUrl = $_POST['sacocheUrl'];
-		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, strlen($sacocheUrl)-1);} //on enleve le / a  la fin
+		if (substr($sacocheUrl,mb_strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, mb_strlen($sacocheUrl)-1);} //on enleve le / a  la fin
 	  	saveSetting("sacocheUrl", $_POST['sacocheUrl']);
 	}
 

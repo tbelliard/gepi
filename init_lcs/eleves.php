@@ -480,7 +480,7 @@ if (isset($_POST['step'])) {
                             "naissance"       => $tmp[1],
                             "no_gep"          => $info2[0]["employeenumber"][0]
                             );
-                            $long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
+                            $long = mb_strlen($ret_people["fullname"]) - mb_strlen($ret_people["nom"]);
                             $prenom = substr($ret_people["fullname"], 0, $long) ;
 
 

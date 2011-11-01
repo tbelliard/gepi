@@ -294,17 +294,17 @@ else {
 									// Dans le cas d'un import de CSV réalisé depuis l'enregistrement ODS->CSV, on a 46 colonnes de devoirs
 									// Le tabeau $date_dev[] est rempli jusqu'à l'indice 45.
 									// Par contre, pour les devoirs, ne sont créés que ceux dont le nomc_dev[] est non vide
-									if((strlen(preg_replace("#[0-9/]#","",$tabligne[$i]))!=0)||($tabligne[$i]=="")){
+									if((mb_strlen(preg_replace("#[0-9/]#","",$tabligne[$i]))!=0)||($tabligne[$i]=="")){
 										$tabligne[$i]="$jour/$mois/$annee";
 									}
 									
 									$tmpdate=explode("/",$tabligne[$i]);
-									if(strlen($tmpdate[0])==4){
+									if(mb_strlen($tmpdate[0])==4){
 										// Ce cas ne devrait pas se produire...
 										$date="$tmpdate[0]-$tmpdate[1]-$tmpdate[2] 00:00:00";
 									}
 									else{
-										if(strlen($tmpdate[2])==2){
+										if(mb_strlen($tmpdate[2])==2){
 											$tmpdate[2]="20".$tmpdate[2];
 										}
 										$date="$tmpdate[2]-$tmpdate[1]-$tmpdate[0] 00:00:00";
@@ -319,7 +319,7 @@ else {
 									$tab_dev[$cpt_ele]['login']=$tabligne[$tabindice[1]];
 									// Il faudrait tester qu'il n'y a pas de caractères invalides dans le login...
 
-									if(strlen(preg_replace("/[A-Z0-9_]/","",$tabligne[$tabindice[1]]))==0){
+									if(mb_strlen(preg_replace("/[A-Z0-9_]/","",$tabligne[$tabindice[1]]))==0){
 										// L'élève fait-il partie du groupe?
 										$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (login='".$tab_dev[$cpt_ele]['login']."' AND id_groupe='$id_groupe' AND periode='$periode_num')";
 										$test=mysql_query($sql);

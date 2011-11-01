@@ -46,11 +46,11 @@
 	check_token();
 
 	$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;     // entier
-	if(strlen(preg_replace('/[0-9]/','',$id_classe))!=0) {$id_classe=NULL;}
+	if(mb_strlen(preg_replace('/[0-9]/','',$id_classe))!=0) {$id_classe=NULL;}
 	if($id_classe=='') {$id_classe=NULL;}
 
 	$periode=isset($_GET['periode']) ? $_GET['periode'] : NULL;           // entier
-	if(strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
+	if(mb_strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
 	if($periode=='') {$periode=NULL;}
 
 	$statut=isset($_GET['statut']) ? $_GET['statut'] : NULL;              // eleve, responsable ou ele_resp
@@ -61,7 +61,7 @@
 	else {$tab_liste_statuts=array("$statut");}
 
 	$id_div=isset($_GET['id_div']) ? $_GET['id_div'] : NULL;              // ...
-	if(strlen(preg_replace('/[0-9A-Za-z_]/','',$id_div))!=0) {$id_div=NULL;$id_classe=NULL;}
+	if(mb_strlen(preg_replace('/[0-9A-Za-z_]/','',$id_div))!=0) {$id_div=NULL;$id_classe=NULL;}
 
 	if($_GET['mode']=='manuel') {
 

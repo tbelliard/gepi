@@ -174,7 +174,7 @@ if (isset($_POST['notes'])) {
 	$temp = my_ereg_replace("\\\\n","\n",$temp);
 	//echo "\$temp=$temp<br />";
 	//echo "</pre>";
-	$longueur = strlen($temp);
+	$longueur = mb_strlen($temp);
 	$i = 0;
 	$fin_note = 'yes';
 	$indice = $_POST['debut_import']-2;
@@ -212,39 +212,7 @@ if (isset($_POST['notes'])) {
 		$i++;
 	}
 }
-/*
-// Ajout delineau -> fonctionnalité de copier/coller d'appréciations
-//-------------------------------------------------------------------------------------------------------------------
-if (isset($_POST['appreciations'])) {
-	check_token();
 
-	$temp = $_POST['appreciations']." 1";
-	$temp = my_ereg_replace("\\\\r","`",$temp);
-	$temp = my_ereg_replace("\\\\n","",$temp);
-	$temp = unslashes($temp);
- 	$longueur = strlen($temp);
-	$i = 0;
-	$fin_app = 'yes';
-	$indice = $_POST['debut_import']-2;
-	$tempo = "";
-	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
-		$car = substr($temp, $i, 1);
-		if (!my_ereg ("^[`]{1}$", $car)) {
-			if (($fin_app=='yes') or ($i == $longueur-1)) {
-				$fin_app = 'no';
-				$appreciations_import[$indice] = $tempo;
-				$indice++;
-				$tempo = '';
-			}
-			$tempo=$tempo.$car;
-		} else {
-  			$fin_app = 'yes';
-		}
-		$i++;
-	}
-}
-// Fin ajout delineau -> fonctionnalité de copier/coller d'appréciations
-*/
 
 
 if (isset($_POST['is_posted'])) {

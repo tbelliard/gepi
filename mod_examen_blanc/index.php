@@ -217,7 +217,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		$description=isset($_POST['description']) ? $_POST['description'] : "";
 		//$type_anonymat=isset($_POST['type_anonymat']) ? $_POST['type_anonymat'] : "ele_id";
 
-		if(strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸0-9_\.-]/"," ",$intitule);}
+		if(mb_strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸0-9_\.-]/"," ",$intitule);}
 		if($intitule=="") {$intitule="Examen blanc";}
 
 		//$tab_anonymat=array('elenoet','ele_id','no_gep','alea');
@@ -278,7 +278,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					$msg.="$coef[$i] contient des caractères non numériques.<br />\n";
 					$enregistrer='n';
 				}
-				elseif(strlen(preg_replace("/[^\.]/","",$coef[$i]))>1) {
+				elseif(mb_strlen(preg_replace("/[^\.]/","",$coef[$i]))>1) {
 					$msg.="Il y a plusieurs POINTS dans $coef[$i]<br />\n";
 					$enregistrer='n';
 				}

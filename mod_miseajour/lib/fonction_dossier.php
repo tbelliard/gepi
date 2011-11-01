@@ -159,7 +159,7 @@ function envoi_ftp($tableau, $destination)
 
 	     //on explose le chemin pour le mettre dans un tableau chaque nom de dossier
 		$premier_carct = $dossier_du_fichier{0};
-		$dernier_carct = $dossier_du_fichier{strlen($dossier_du_fichier)-1};
+		$dernier_carct = $dossier_du_fichier{mb_strlen($dossier_du_fichier)-1};
 		if($premier_carct==='/' and $dernier_carct==='/') { $dossier_du_fichier=substr("$dossier_du_fichier", 1); $dossier_du_fichier=substr("$dossier_du_fichier", 0, -1);}
 		if($premier_carct==='/' and $dernier_carct!='/') { $dossier_du_fichier=substr("$dossier_du_fichier", 1); }
 		if($premier_carct!='/' and $dernier_carct==='/') { $dossier_du_fichier=substr("$dossier_du_fichier", 0, -1); }

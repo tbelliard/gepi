@@ -90,7 +90,7 @@ if (isset($_POST["is_posted"])) {
     // Résumé
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume','W',$annee)) and (isset($_POST["reg_resume"]))) {
       $reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
-      if (strlen($reg_resume) > 600) {
+      if (mb_strlen($reg_resume) > 600) {
         $reg_resume = substr($reg_resume,0,597)."...";
         $msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
       }
@@ -101,7 +101,7 @@ if (isset($_POST["is_posted"])) {
     // Divers
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'divers','W',$annee)) and (isset($_POST["reg_divers"]))) {
       $reg_divers = isset($_POST["reg_divers"]) ? $_POST["reg_divers"] : NULL;
-      if (strlen($reg_divers) > 600) {
+      if (mb_strlen($reg_divers) > 600) {
         if ($msg != "") $msg .= "<br />";
         $msg .= "Erreur : le champs divers excède 600 caractères.<br />";
         $reg_divers = substr($reg_divers,0,597)."...";
@@ -113,7 +113,7 @@ if (isset($_POST["is_posted"])) {
     // Contacts
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'contacts','W',$annee)) and (isset($_POST["reg_contacts"]))) {
       $reg_contacts = isset($_POST["reg_contacts"]) ? $_POST["reg_contacts"] : NULL;
-      if (strlen($reg_contacts) > 600) {
+      if (mb_strlen($reg_contacts) > 600) {
         if ($msg != "") $msg .= "<br />";
         $msg .= "Erreur : le champs \"Contacts Extérieurs\" excède 600 caractères.<br />";
         $reg_contacts = substr($reg_contacts,0,597)."...";

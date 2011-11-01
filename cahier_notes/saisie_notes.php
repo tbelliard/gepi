@@ -237,7 +237,7 @@ if (isset($_POST['notes'])) {
 	$temp = $_POST['notes']." 1";
 	$temp = my_ereg_replace("\\\\r","\r",$temp);
 	$temp = my_ereg_replace("\\\\n","\n",$temp);
-	$longueur = strlen($temp);
+	$longueur = mb_strlen($temp);
 	$i = 0;
 	$fin_note = 'yes';
 	$indice = $_POST['debut_import']-2;
@@ -292,7 +292,7 @@ if (isset($_POST['appreciations'])) {
 	$temp = my_ereg_replace("\\\\r","`",$temp);
 	$temp = my_ereg_replace("\\\\n","",$temp);
 	$temp = unslashes($temp);
- 	$longueur = strlen($temp);
+ 	$longueur = mb_strlen($temp);
 	$i = 0;
 	$fin_app = 'yes';
 	$indice = $_POST['debut_import']-2;

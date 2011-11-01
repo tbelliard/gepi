@@ -369,7 +369,7 @@ if (!isset($is_posted)) {
                         if (preg_match("/\s/",$nom)) {
                             $noms = preg_split("/\s/",$nom);
                             $nom1 = $noms[0];
-                            if (strlen($noms[0]) < 4) {
+                            if (mb_strlen($noms[0]) < 4) {
                                 $nom1 .= "_". $noms[1];
                                 $separator = " ";
                             } else {
@@ -399,8 +399,8 @@ if (!isset($is_posted)) {
                     }
                     $affiche[0] = traitement_magic_quotes(corriger_caracteres($affiche[0]));
                     // Mot de passe
-                    //echo "<tr><td colspan='4'>strlen($affiche[5])=".strlen($affiche[5])."<br />\$affiche[4]=$affiche[4]<br />\$_POST['sso']=".$_POST['sso']."</td></tr>";
-                    if (strlen($affiche[5])>2 and $affiche[4]=="ENS" and $_POST['sso'] == "no") {
+                    //echo "<tr><td colspan='4'>mb_strlen($affiche[5])=".mb_strlen($affiche[5])."<br />\$affiche[4]=$affiche[4]<br />\$_POST['sso']=".$_POST['sso']."</td></tr>";
+                    if (mb_strlen($affiche[5])>2 and $affiche[4]=="ENS" and $_POST['sso'] == "no") {
                         //
                         $pwd = md5(trim($affiche[5])); //NUMEN
                         //$mess_mdp = "NUMEN";
