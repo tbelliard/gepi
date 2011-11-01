@@ -210,6 +210,8 @@ if ($etape == 4) {
 			$conn .= "# Chemin relatif vers GEPI\n";
 			$conn .= "\$gepiPath=\"$gepipath\";\n";
 			$conn .= "#\n";
+			$conn .= "\$db_nopersist=true;\n";
+			$conn .= "#\n";
 			$conn .= "# Authentification par CAS ?\n";
 			$conn .= "# Si vous souhaitez intégrer Gepi dans un environnement SSO avec CAS,\n";
 			$conn .= "# vous devrez renseigner le fichier /secure/config_cas.inc.php avec les\n";

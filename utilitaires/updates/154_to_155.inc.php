@@ -1115,4 +1115,18 @@ if ($test_tempo_utilisateurs!=-1) {
 		}
 	}
 }
+
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'utiliserMenuBarre'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('utiliserMenuBarre', 'no');");
+  if ($result_inter == '') {
+    $result.=msj_ok("Définition du paramètre utiliserMenuBarre : Ok !");
+  } else {
+    $result.=msj_erreur("Définition du paramètre utiliserMenuBarre : Erreur !");
+  }
+} else {
+  $result .= msj_present("Le paramètre utiliserMenuBarre existe déjà dans la table setting.");
+}
+
 ?>
