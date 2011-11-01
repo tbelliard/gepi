@@ -55,8 +55,8 @@ if (isset($_POST['action'])) {
         // On filtre un peu
         if (!is_numeric($_POST['priority'])) $_POST['priority'] = "0";
         // Le reste passera sans soucis, mais on coupe quand même si jamais c'est trop long
-        if (mb_strlen($_POST['nom_court']) > 250) $_POST['nom_court'] = substr($_POST['nom_court'], 0, 250);
-        if (mb_strlen($_POST['nom_complet']) > 250) $_POST['nom_complet'] = substr($_POST['nom_complet'], 0, 250);
+        if (mb_strlen($_POST['nom_court']) > 250) $_POST['nom_court'] = mb_substr($_POST['nom_court'], 0, 250);
+        if (mb_strlen($_POST['nom_complet']) > 250) $_POST['nom_complet'] = mb_substr($_POST['nom_complet'], 0, 250);
         // On enregistre
         if ($_POST['nom_court'] == '') {
             $msg .= "Le nom court ne peut pas être vide.<br/>";
@@ -87,8 +87,8 @@ if (isset($_POST['action'])) {
         if (!is_numeric($_POST['priority'])) $_POST['priority'] = "0";
         if (!is_numeric($_POST['categorie_id'])) $_POST['categorie_id'] = "0";
         // Le reste passera sans soucis, mais on coupe quand même si jamais c'est trop long
-        if (mb_strlen($_POST['nom_court']) > 250) $_POST['nom_court'] = substr($_POST['nom_court'], 0, 250);
-        if (mb_strlen($_POST['nom_complet']) > 250) $_POST['nom_complet'] = substr($_POST['nom_complet'], 0, 250);
+        if (mb_strlen($_POST['nom_court']) > 250) $_POST['nom_court'] = mb_substr($_POST['nom_court'], 0, 250);
+        if (mb_strlen($_POST['nom_complet']) > 250) $_POST['nom_complet'] = mb_substr($_POST['nom_complet'], 0, 250);
 
         if ($_POST['nom_court'] == '') {
             $msg .= "Le nom court ne peut pas être vide.<br/>";

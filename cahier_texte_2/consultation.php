@@ -74,7 +74,7 @@ unset($id_matiere);
 $id_matiere = isset($_POST["id_matiere"]) ? $_POST["id_matiere"] : (isset($_GET["id_matiere"]) ? $_GET["id_matiere"] : -1);
 unset($id_groupe);
 // modification Régis : traité "matiere" au cas où le javascript est désactivé
-$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : (isset($_POST['matiere']) ?  substr(strstr($_POST['matiere'],"id_groupe="),10) : (isset($_GET["matiere"]) ?  substr(strstr($_GET["matiere"],"id_groupe="),10) :  NULL)));
+$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : (isset($_POST['matiere']) ?  mb_substr(strstr($_POST['matiere'],"id_groupe="),10) : (isset($_GET["matiere"]) ?  mb_substr(strstr($_GET["matiere"],"id_groupe="),10) :  NULL)));
 if (is_numeric($id_groupe)) {
     $current_group = get_group($id_groupe);
     //if ($id_classe == NULL) $id_classe = $current_group["classes"]["list"][0];
@@ -84,7 +84,7 @@ if (is_numeric($id_groupe)) {
 
 unset($selected_eleve);
 // modification Régis : traité "eleve" au cas où le javascript est désactivé
-$login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] :(isset($_GET["login_eleve"]) ? $_GET["login_eleve"] :(isset($_POST['eleve']) ? substr(strstr($_POST['eleve'],"login_eleve="),12) : (isset($_GET["eleve"]) ? substr(strstr($_GET["eleve"],"login_eleve="),12) :false)));
+$login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] :(isset($_GET["login_eleve"]) ? $_GET["login_eleve"] :(isset($_POST['eleve']) ? mb_substr(strstr($_POST['eleve'],"login_eleve="),12) : (isset($_GET["eleve"]) ? mb_substr(strstr($_GET["eleve"],"login_eleve="),12) :false)));
 if ($login_eleve) {
 	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE (login = '" . $login_eleve . "')"));
 } else {
@@ -266,7 +266,7 @@ echo "<div class=\"centre_table\">\n";
 					$i=0;
 					foreach ($current_group["profs"]["users"] as $prof) {
 						if ($i != 0) echo ", ";
-						//echo substr($prof["prenom"],0,1) . ". " . $prof["nom"];
+						//echo mb_substr($prof["prenom"],0,1) . ". " . $prof["nom"];
 						//echo "\$id_classe=$id_classe<br />".$prof["login"]."<br />";
 						echo affiche_utilisateur($prof["login"],$selected_eleve_classe);
 						$i++;
@@ -377,7 +377,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
             $chaine = "";
             for ($k=0 ; $prof=sql_row($res_prof,$k) ; $k++) {
               if ($k != 0) $chaine .= ", ";
-              //$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+              //$chaine .= htmlspecialchars($prof[0])." ".mb_substr(htmlspecialchars($prof[1]),0,1).".";
             	// ???????????????????????????????
         			// Faudrait-il modifier ici pour utiliser
             	$chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
@@ -538,7 +538,7 @@ echo "<div class=\"centre_cont_texte\">\n";
               $chaine = "";
               for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
                 if ($k != 0) $chaine .= ", ";
-                //$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+                //$chaine .= htmlspecialchars($prof[0])." ".mb_substr(htmlspecialchars($prof[1]),0,1).".";
               $chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
               }
 

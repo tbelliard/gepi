@@ -417,7 +417,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							if(mysql_num_rows($res_ele_id_eleve)>0){
 								$tmp=0;
 								$lig_ele_id_eleve=mysql_fetch_object($res_ele_id_eleve);
-								$tmp=substr($lig_ele_id_eleve->ele_id,1);
+								$tmp=mb_substr($lig_ele_id_eleve->ele_id,1);
 								$tmp++;
 								$max_ele_id=$tmp;
 							}
@@ -430,7 +430,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							if(mysql_num_rows($res_ele_id_responsables2)>0){
 								$tmp=0;
 								$lig_ele_id_responsables2=mysql_fetch_object($res_ele_id_responsables2);
-								$tmp=substr($lig_ele_id_responsables2->ele_id,1);
+								$tmp=mb_substr($lig_ele_id_responsables2->ele_id,1);
 								$tmp++;
 								$max_ele_id2=$tmp;
 							}
@@ -1017,19 +1017,19 @@ if (isset($eleve_login)) {
     $eleve_naissance = mysql_result($call_eleve_info, "0", "naissance");
     if (mb_strlen($eleve_naissance) == 10) {
         // YYYY-MM-DD
-        $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
-        $eleve_naissance_mois = substr($eleve_naissance, 5, 2);
-        $eleve_naissance_jour = substr($eleve_naissance, 8, 2);
+        $eleve_naissance_annee = mb_substr($eleve_naissance, 0, 4);
+        $eleve_naissance_mois = mb_substr($eleve_naissance, 5, 2);
+        $eleve_naissance_jour = mb_substr($eleve_naissance, 8, 2);
     } elseif (mb_strlen($eleve_naissance) == 8 ) {
         // YYYYMMDD
-        $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
-        $eleve_naissance_mois = substr($eleve_naissance, 4, 2);
-        $eleve_naissance_jour = substr($eleve_naissance, 6, 2);
+        $eleve_naissance_annee = mb_substr($eleve_naissance, 0, 4);
+        $eleve_naissance_mois = mb_substr($eleve_naissance, 4, 2);
+        $eleve_naissance_jour = mb_substr($eleve_naissance, 6, 2);
     } elseif (mb_strlen($eleve_naissance) == 19 ) {
         // YYYY-MM-DD xx:xx:xx
-        $eleve_naissance_annee = substr($eleve_naissance, 0, 4);
-        $eleve_naissance_mois = substr($eleve_naissance, 5, 2);
-        $eleve_naissance_jour = substr($eleve_naissance, 8, 2);
+        $eleve_naissance_annee = mb_substr($eleve_naissance, 0, 4);
+        $eleve_naissance_mois = mb_substr($eleve_naissance, 5, 2);
+        $eleve_naissance_jour = mb_substr($eleve_naissance, 8, 2);
     } else {
         // Format inconnu
         $eleve_naissance_annee = "??";
@@ -1219,7 +1219,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
 
 			if($critere_recherche==""){
-				$critere_recherche=substr($eleve_nom,0,3);
+				$critere_recherche=mb_substr($eleve_nom,0,3);
 			}
 
 			$nb_resp=isset($_POST['nb_resp']) ? $_POST['nb_resp'] : 20;
@@ -1385,7 +1385,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 			/*
 			if($critere_recherche==""){
-				$critere_recherche=substr($eleve_nom,0,3);
+				$critere_recherche=mb_substr($eleve_nom,0,3);
 			}
 			*/
 

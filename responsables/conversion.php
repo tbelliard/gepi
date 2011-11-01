@@ -214,7 +214,7 @@ if($temoin==1){
 						if(mysql_num_rows($res_ele_id_eleve)>0){
 							$tmp=0;
 							$lig_ele_id_eleve=mysql_fetch_object($res_ele_id_eleve);
-							$tmp=substr($lig_ele_id_eleve->ele_id,1);
+							$tmp=mb_substr($lig_ele_id_eleve->ele_id,1);
 							$tmp++;
 							$max_ele_id=$tmp;
 						}
@@ -228,7 +228,7 @@ if($temoin==1){
 						if(mysql_num_rows($res_ele_id_responsables2)>0){
 							$tmp=0;
 							$lig_ele_id_responsables2=mysql_fetch_object($res_ele_id_responsables2);
-							$tmp=substr($lig_ele_id_responsables2->ele_id,1);
+							$tmp=mb_substr($lig_ele_id_responsables2->ele_id,1);
 							$tmp++;
 							$max_ele_id2=$tmp;
 						}
@@ -312,7 +312,7 @@ if($temoin==1){
 									}
 									else{
 										$ligtmp=mysql_fetch_object($restmp);
-										$nb1=substr($ligtmp->pers_id,1);
+										$nb1=mb_substr($ligtmp->pers_id,1);
 										$nb1++;
 									}
 									$pers_id="p".sprintf("%09d",$nb1);
@@ -326,7 +326,7 @@ if($temoin==1){
 									}
 									else{
 										$ligtmp=mysql_fetch_object($restmp);
-										$nb2=substr($ligtmp->adr_id,1);
+										$nb2=mb_substr($ligtmp->adr_id,1);
 										$nb2++;
 									}
 									$adr_id="a".sprintf("%09d",$nb2);

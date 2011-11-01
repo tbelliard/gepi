@@ -1268,7 +1268,7 @@ function dragStop(event) {
 											$chaine.=";";
 										}
 										echo "</tr>\n";
-										$chaine=substr($chaine,0,mb_strlen($chaine)-1);
+										$chaine=mb_substr($chaine,0,mb_strlen($chaine)-1);
 										fwrite($fich,$chaine."\n");
 									}
 								}
@@ -1500,7 +1500,7 @@ function dragStop(event) {
 
 												echo "</tr>\n";
 											}
-											$chaine=substr($chaine,0,strlen($chaine)-1);
+											$chaine=mb_substr($chaine,0,strlen($chaine)-1);
 											fwrite($fich,$chaine."\n");
 										}
 									}

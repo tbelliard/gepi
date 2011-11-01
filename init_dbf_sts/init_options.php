@@ -98,7 +98,7 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
         $tempo .= "ELEOPT".$i.", ";
         $i++;
     }
-    $tempo = substr($tempo, 0, -2);
+    $tempo = mb_substr($tempo, 0, -2);
 
     $call_data = mysql_query("SELECT $tempo FROM temp_gep_import WHERE DIVCOD = '$classe'");
     $tab_options = array();

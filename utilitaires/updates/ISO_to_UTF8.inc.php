@@ -80,7 +80,7 @@ $result.="&nbsp;-> Passage des tables en ".SET_DEST."<br />";
 $query = mysql_query("SHOW table status");
 if ($query) {
 	while ($row = mysql_fetch_array($query, MYSQL_ASSOC)) {
-        if (substr($row['Collation'],0,6) == 'latin1' ) {
+        if (mb_substr($row['Collation'],0,6) == 'latin1' ) {
             $donneesTable[] = $row['Name'];
         }
 	}

@@ -22,7 +22,7 @@ function get_denomination_prof($login) {
 	}
 	else {
 		$lig=mysql_fetch_object($res);
-		return $lig->civilite." ".casse_mot($lig->nom)." ".strtoupper(substr($lig->prenom,0,1));
+		return $lig->civilite." ".casse_mot($lig->nom)." ".strtoupper(mb_substr($lig->prenom,0,1));
 	}
 }
 

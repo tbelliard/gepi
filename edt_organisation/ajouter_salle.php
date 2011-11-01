@@ -240,7 +240,7 @@ if (isset($modif_salle)) {
 
 	// Traitement du nouveau nom de la salle
 if (isset($new_name) AND $new_name != "" ) {
-	$nettoyage1 = substr($new_name, 0, 30);
+	$nettoyage1 = mb_substr($new_name, 0, 30);
 	$new_name_propre = traitement_magic_quotes($nettoyage1); // cette fonction est dans le traitement_data.inc.php
 
 	$req_modif_nom = mysql_query("UPDATE salle_cours SET nom_salle = '$new_name_propre' WHERE id_salle = '$modif_salle'")

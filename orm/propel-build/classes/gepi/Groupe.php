@@ -84,7 +84,7 @@ class Groupe extends BaseGroupe {
 			foreach ($this->getClasses() as $classe) {
 				$str .= $classe->getNom() . ",&nbsp;";
 			}
-			$str = substr($str, 0, -7);
+			$str = mb_substr($str, 0, -7);
 			$str.= ")";
 			$this->descriptionAvecClasses = $str;
 			return $str;

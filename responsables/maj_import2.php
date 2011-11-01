@@ -1907,7 +1907,7 @@ else{
 				while($lig=mysql_fetch_object($res2)){
 					//$tab_naissance=explode("-",$lig->naissance);
 					//$naissance=$tab_naissance[0].$tab_naissance[1].$tab_naissance[2];
-					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+					$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 					//$sql="INSERT INTO tempo2 SET col1='$lig->ele_id', col2='$naissance';";
 					$sql="INSERT INTO tempo2 SET col1='$lig->ELE_ID', col2='$naissance';";
 					info_debug($sql);
@@ -2665,7 +2665,7 @@ else{
 								}
 
 
-								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
+								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 
 								// Des stripslashes() pour les apostrophes dans les noms
 								if($ele_lieu_naissance=="y") {
@@ -3200,7 +3200,7 @@ else{
 								echo "<input type='hidden' name='new_".$cpt."_sexe' value='$affiche[2]' />\n";
 								echo "</td>\n";
 
-								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
+								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 								echo "<td style='text-align: center;'>";
 								echo "$new_date";
 								if($ele_lieu_naissance=="y") {
@@ -3390,7 +3390,7 @@ else{
 
 					if($cpt>0){echo ", ";}
 
-					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+					$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 
 					/*
 					switch($lig->ELEREG){
@@ -3655,7 +3655,7 @@ else{
 	
 							if($cpt>0){echo ", ";}
 	
-							$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+							$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 	
 							/*
 							switch($lig->ELEREG){
@@ -3722,7 +3722,7 @@ else{
 									}
 									elseif($info[0]["uid"]["count"]==1) {
 										$login_eleve=$info[0]["uid"][0];
-	
+
 									}
 
 									@ldap_free_result ( $result );
@@ -3741,11 +3741,11 @@ else{
 								$temp1 = strtoupper($tmp_nom);
 								$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
 								$temp1 = strtr($temp1, " '-", "___");
-								$temp1 = substr($temp1,0,7);
+								$temp1 = mb_substr($temp1,0,7);
 								$temp2 = strtoupper($tmp_prenom);
 								$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
 								$temp2 = strtr($temp2, " '-", "___");
-								$temp2 = substr($temp2,0,1);
+								$temp2 = mb_substr($temp2,0,1);
 								$login_eleve = $temp1.'_'.$temp2;
 		
 								// On teste l'unicité du login que l'on vient de créer
@@ -4526,9 +4526,9 @@ else{
 						//for($loop=0;$loop<count($tmp_group[])) {}
 						foreach($tmp_group["profs"]["users"] as $login_prof) {
 							$chaine_profs.=", ";
-							$chaine_profs.=$login_prof['civilite']."&nbsp;".$login_prof['nom']." ".substr($login_prof['prenom'],0,1);
+							$chaine_profs.=$login_prof['civilite']."&nbsp;".$login_prof['nom']." ".mb_substr($login_prof['prenom'],0,1);
 						}
-						if($chaine_profs!='') {$chaine_profs=substr($chaine_profs,2);}
+						if($chaine_profs!='') {$chaine_profs=mb_substr($chaine_profs,2);}
 
 						$alt=$alt*(-1);
 						/*
@@ -5354,7 +5354,7 @@ else{
 					} elseif(isset($adresses[$i]["commune_etrangere"])) {
 						$sql.="commune='".$adresses[$i]["commune_etrangere"]."', ";
 					}
-					$sql=substr($sql,0,mb_strlen($sql)-2);
+					$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 					$sql.=";";
 					affiche_debug("$sql<br />\n");
 					info_debug($sql);

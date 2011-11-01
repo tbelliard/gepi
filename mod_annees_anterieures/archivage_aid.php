@@ -646,7 +646,7 @@ if(!isset($annee_scolaire)){
 			$chaine.=", ".$nom_type;
 		}
 		if($chaine!=""){
-			echo "<h2>Types d'AIDs restant à traiter</h2><p><b>".substr($chaine,2)."</b></p>\n";
+			echo "<h2>Types d'AIDs restant à traiter</h2><p><b>".mb_substr($chaine,2)."</b></p>\n";
 		}
 		if($temoin_encore_des_types>0){
 /*			echo "<script type='text/javascript'>

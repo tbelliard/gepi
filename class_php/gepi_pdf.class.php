@@ -131,7 +131,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 						$this->_out('0 Tw');
 				}
 				if ($prn==1) {
-					$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+					$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 				}
 				$i++;
 				$sep=-1;
@@ -142,7 +142,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 				if($border and $nl==2)
 					$b=$b2;
 				if ( $maxline && $nl > $maxline )
-					return substr($s,$i);
+					return mb_substr($s,$i);
 				continue;
 			}
 			if($c==' ')
@@ -165,7 +165,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 						if ($prn==1) $this->_out('0 Tw');
 					}
 					if ($prn==1) {
-						$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+						$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 					}
 				}else{
 					if($align=='J')
@@ -174,7 +174,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 						if ($prn==1) $this->_out(sprintf('%.3f Tw',$this->ws*$this->k));
 					}
 					if ($prn==1){
-						$this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill);
+						$this->Cell($w,$h,mb_substr($s,$j,$sep-$j),$b,2,$align,$fill);
 					}
 					$i=$sep+1;
 				}
@@ -186,7 +186,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 				if($border and $nl==2)
 					$b=$b2;
 				if ( $maxline && $nl > $maxline )
-					return substr($s,$i);
+					return mb_substr($s,$i);
 			}
 			else
 				$i++;
@@ -200,7 +200,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		if($border and is_int(strpos($border,'B')))
 			$b.='B';
 		if ($prn==1) {
-			$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+			$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 		}
 		$this->x=$this->lMargin;
 		return $nl;

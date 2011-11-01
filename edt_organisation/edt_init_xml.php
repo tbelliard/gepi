@@ -281,11 +281,11 @@ foreach ($o_service->ENSEIGNANTS->ENSEIGNANT->COURS_RATTACHES->COURS as $o_cours
 
 	//recherche des champs duree,heuredeb_dec
 $s_heure_debut=(string)$o_cours->HEURE_DEBUT;
-$s_heure=substr($s_heure_debut,0,2);
-$s_minute=substr($s_heure_debut,2,2);
+$s_heure=mb_substr($s_heure_debut,0,2);
+$s_minute=mb_substr($s_heure_debut,2,2);
 $s_duree_cours_brut=(string)$o_cours->DUREE;
-$s_duree_h=substr($s_duree_cours_brut,0,2);
-$s_duree_min=intval(abs(substr($s_duree_cours_brut,2,2)/30));
+$s_duree_h=mb_substr($s_duree_cours_brut,0,2);
+$s_duree_min=intval(abs(mb_substr($s_duree_cours_brut,2,2)/30));
 $i_duree=((integer)$s_duree_h*2+(integer)$s_duree_min);
 
 $mktime_cours=mktime ($s_heure, $s_minute, 0, 0, 0, 0);
@@ -424,11 +424,11 @@ $code_repetition_cours=(string)$o_cours_groupe->CODE_ALTERNANCE;
 
 	//recherche des champs duree,heuredeb_dec
 $s_heure_debut=(string)$o_cours_groupe->HEURE_DEBUT;
-$s_heure=substr($s_heure_debut,0,2);
-$s_minute=substr($s_heure_debut,2,2);
+$s_heure=mb_substr($s_heure_debut,0,2);
+$s_minute=mb_substr($s_heure_debut,2,2);
 $s_duree_cours_brut=(string)$o_cours_groupe->DUREE;
-$s_duree_h=substr($s_duree_cours_brut,0,2);
-$s_duree_min=intval(abs(substr($s_duree_cours_brut,2,2)/30));
+$s_duree_h=mb_substr($s_duree_cours_brut,0,2);
+$s_duree_min=intval(abs(mb_substr($s_duree_cours_brut,2,2)/30));
 $i_duree=((integer)$s_duree_h*2+(integer)$s_duree_min);
 
 $mktime_cours=mktime ($s_heure, $s_minute, 0, 0, 0, 0);

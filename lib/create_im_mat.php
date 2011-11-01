@@ -56,10 +56,10 @@ Header("Content-Type: image/png");
 $texte = urldecode($texte);
 if ($colortxt != '') {
     $colortxt = urldecode($colortxt);
-    if (substr($colortxt ,0,1)=="#") $color_bg=substr($colortxt,1,6);
-    $col_txt[0] = hexdec(substr($colortxt, 0, 2));
-    $col_txt[1] = hexdec(substr($colortxt, 2, 2));
-    $col_txt[2] = hexdec(substr($colortxt, 4, 2));
+    if (mb_substr($colortxt ,0,1)=="#") $color_bg=mb_substr($colortxt,1,6);
+    $col_txt[0] = hexdec(mb_substr($colortxt, 0, 2));
+    $col_txt[1] = hexdec(mb_substr($colortxt, 2, 2));
+    $col_txt[2] = hexdec(mb_substr($colortxt, 4, 2));
 } else {
     $col_txt[0] = 0;
     $col_txt[1] = 0;

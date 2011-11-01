@@ -109,7 +109,7 @@ while ($j < $nombre_groupes) {
 
     if ($recalcul_rang == "-1") $recalcul_rang = '';
 
-    if (substr($recalcul_rang, $periode_num-1, 1) != 'n') {
+    if (mb_substr($recalcul_rang, $periode_num-1, 1) != 'n') {
         $calcul_moy_gen = 'yes';
         // le recalcul du rang est nécessaire
         $k= 0;

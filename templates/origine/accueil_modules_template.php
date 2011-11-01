@@ -100,7 +100,7 @@
 							<img src="<?php echo $newentree->icone['chemin'] ?>" width='19' height='19' title="<?php echo $newentree->icone['titre'] ?>" alt="<?php echo $newentree->icone['alt'] ?>" />
 						</p>
 						<h3 class="colonne3 colonne3centre">
-							<a href="<?php echo substr($newentree->chemin,1) ?>">
+							<a href="<?php echo mb_substr($newentree->chemin,1) ?>">
 								<?php echo $newentree->titre ?>
 							</a>
 						</h3>

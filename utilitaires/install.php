@@ -137,15 +137,15 @@ if ($etape == 4) {
 		//$query = fgets($fd, 8000);
 		//=============================================
 		$query=" ";
-		while ((substr($query,-1)!=";") && (!feof($fd))) {
+		while ((mb_substr($query,-1)!=";") && (!feof($fd))) {
 			$t_query = fgets($fd, 8000);
-			if (substr($t_query,0,3)!="-- ") $query.=$t_query;
+			if (mb_substr($t_query,0,3)!="-- ") $query.=$t_query;
 			$query = trim($query); 
 		}
 		//=============================================
 		// MODIF: boireaus 20080218
-		//if (substr($query,-1)==";") {
-		//if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
+		//if (mb_substr($query,-1)==";") {
+		//if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 		//=============================================
 		if ($query!="") {
 			$reg = mysql_query($query);
@@ -165,8 +165,8 @@ if ($etape == 4) {
 			$query = trim($query);
 			//=============================================
 			// MODIF: boireaus 20080218
-			//if (substr($query,-1)==";") {
-			if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
+			//if (mb_substr($query,-1)==";") {
+			if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 			//=============================================
 				$reg = mysql_query($query);
 				if (!$reg) {
@@ -190,7 +190,7 @@ if ($etape == 4) {
 			$url = parse_url($_SERVER['REQUEST_URI']);
 			//$pathgepi = explode("/",$url['path']);
 			//$gepipath = "/".$pathgepi[1];
-			$gepipath = substr($url['path'], 0, -24);
+			$gepipath = mb_substr($url['path'], 0, -24);
 			$conn = "<"."?php\n";
 			$conn .= "# La ligne suivante est à modifier si vous voulez utiliser le multisite\n";
                         $conn .= "# Regardez le fichier modeles/connect-modele.inc.php pour information\n";

@@ -226,10 +226,10 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
     while ($t = mysql_fetch_array($result)) {
 	if ($t[0] == "log" ||
 	    $t[0] == "tentatives_intrusion" ||
-	    substr($t[0], 0,4) == "temp" ||
-	    substr($t[0], 0,3) == "tmp" ||
-	    substr($t[0], 0,4) == "a_tm" ||
-	    substr($t[0], 0,15) == "modele_bulletin") {
+	    mb_substr($t[0], 0,4) == "temp" ||
+	    mb_substr($t[0], 0,3) == "tmp" ||
+	    mb_substr($t[0], 0,4) == "a_tm" ||
+	    mb_substr($t[0], 0,15) == "modele_bulletin") {
 	    
 	    continue;
 	}
@@ -300,10 +300,10 @@ function extractMySqlDump($dumpFile,$duree,$force) {
 	    $query = trim($query);
 	    //=============================================
 	    // MODIF: boireaus 20080218
-	    //if (substr($query,-1)==";") {
-	    if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
+	    //if (mb_substr($query,-1)==";") {
+	    if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 	    //=============================================
-		    $query = "REPLACE" . substr($query,6, mb_strlen($query));
+		    $query = "REPLACE" . mb_substr($query,6, mb_strlen($query));
 		    $reg = mysql_query($query);
 		    echo "<p>$query</p>\n";
 		    if (!$reg) {

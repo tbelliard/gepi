@@ -393,12 +393,12 @@ function restoreMySqlDump($duree) {
 
 			//echo $TPSCOUR."<br />";
 			$buffer=gzgets($fileHandle);
-			if (substr($buffer,mb_strlen($buffer),1)==0) {
-				$buffer=substr($buffer,0,mb_strlen($buffer)-1);
+			if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
+				$buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
 			}
 			//echo $buffer."<br />";
 
-			if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
+			if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
 				if (!isset($debut_req))  $debut_req = $buffer;
 				$formattedQuery .= $buffer;
 				//echo $formattedQuery."<hr />";
@@ -518,12 +518,12 @@ function restoreMySqlDump($duree) {
 	
 						//echo $TPSCOUR."<br />";
 						$buffer=gzgets($fileHandle);
-						if (substr($buffer,mb_strlen($buffer),1)==0) {
-							$buffer=substr($buffer,0,mb_strlen($buffer)-1);
+						if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
+							$buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
 						}
 						//echo $buffer."<br />";
 	
-						if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
+						if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
 							if (!isset($debut_req))  $debut_req = $buffer;
 							$formattedQuery .= $buffer;
 							//echo $formattedQuery."<hr />";
@@ -657,7 +657,7 @@ function extractMySqlDump($dumpFile,$duree) {
         $buffer=gzgets($fileHandle);
 
 		// On ne met pas les lignes de commentaire, ni les lignes vides
-		if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/" AND trim($buffer)!='') {
+		if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/" AND trim($buffer)!='') {
 			if(preg_match("/^DROP TABLE /",$buffer)) {
 				if(isset($fich)) {fclose($fich);}
 				//$fich=fopen("../backup/".$dirname."/base_extraite_table_".$num_table.".sql","w+");
@@ -753,12 +753,12 @@ function restoreMySqlDump_old($dumpFile,$duree) {
         }
         //echo $TPSCOUR."<br />";
         $buffer=gzgets($fileHandle);
-        if (substr($buffer,mb_strlen($buffer),1)==0)
-            $buffer=substr($buffer,0,mb_strlen($buffer)-1);
+        if (mb_substr($buffer,mb_strlen($buffer),1)==0)
+            $buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
 
         //echo $buffer."<br />";
 
-        if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
+        if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
             if (!isset($debut_req))  $debut_req = $buffer;
             $formattedQuery .= $buffer;
               //echo $formattedQuery."<hr />";
@@ -1327,10 +1327,10 @@ if (isset($action) and ($action == 'system_dump'))  {
 
 	$req_version = mysql_result(mysql_query("SELECT version();"), 0);
 	$ver_mysql = explode(".", $req_version);
-	if (!is_numeric(substr($ver_mysql[2], 1, 1))) {
-		$ver_mysql[2] = substr($ver_mysql[2], 0, 1);
+	if (!is_numeric(mb_substr($ver_mysql[2], 1, 1))) {
+		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 1);
 	} else {
-		$ver_mysql[2] = substr($ver_mysql[2], 0, 2);
+		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 2);
 	}
 
 	if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {

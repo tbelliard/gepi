@@ -357,7 +357,7 @@ class LDAPServer {
 			$encodedpass = "{MD5}".base64_encode(pack("H*",md5($password)));
 		} elseif (strcasecmp($encoding, "ssha") == 0) {
 			mt_srand((double)microtime()*1000000);
-			$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack('h*', md5(mt_rand())), 0, 8), 4);
+			$salt = mhash_keygen_s2k(MHASH_SHA1, $password, mb_substr(pack('h*', md5(mt_rand())), 0, 8), 4);
 			$encodedpass = "{SSHA}".base64_encode(mhash(MHASH_SHA1, $password.$salt).$salt);
 		} else {
 			return false;

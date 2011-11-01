@@ -3,7 +3,7 @@
 //fonction qui renvoie l'extension du fichier
 function extension_nom_fichier($nom_fichier) {
   $lng =mb_strlen($nom_fichier);
-  $ext=substr($nom_fichier,$lng-3,3);
+  $ext=mb_substr($nom_fichier,$lng-3,3);
   return $ext;
 }
 
@@ -61,8 +61,7 @@ function creertousrep($fic) {
 //bloub peut ne pas exister ($fic se termine par / donc c'est un rép.)
 $p=strpos($fic,'/');
 while ($p<mb_strlen($fic) && $p=strpos($fic,'/',$p+1)) {
-    //print substr($fic,0,$p);
-    if (!is_dir($fic)) @mkdir(substr($fic,0,$p),0777);
+    if (!is_dir($fic)) @mkdir(mb_substr($fic,0,$p),0777);
 }
 return $fic;
 }

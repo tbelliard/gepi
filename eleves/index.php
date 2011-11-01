@@ -1235,7 +1235,7 @@ if(isset($quelles_classes)) {
 			");
 			*/
 			/*
-			if(substr($order_type,0,6)=='regime') {
+			if(mb_substr($order_type,0,6)=='regime') {
 				$tmp_order_type=my_ereg_replace('^regime,','',$order_type);
 			}
 			else {
