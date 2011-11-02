@@ -104,11 +104,11 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
 	$TBS = AbsencesNotificationHelper::MergeNotification($notif, $courrier_modele);
 	$source = $TBS->Source;
 	//on supprime la premiere balise text:p et la derniere apres le text:sequence-decls
-	$pos = strpos($source, '</text:sequence-decls>') + 23;
+	$pos = mb_strpos($source, '</text:sequence-decls>') + 23;
 	$source = mb_substr($source, $pos);
-	$pos = strpos($source, '>') + 1;
+	$pos = mb_strpos($source, '>') + 1;
 	$source = mb_substr($source, $pos);
-	$pos = strpos($source, '</office:text>');
+	$pos = mb_strpos($source, '</office:text>');
 	$source = mb_substr($source, 0, $pos - 9);
 	$courrier_source_col->append($source);
 
